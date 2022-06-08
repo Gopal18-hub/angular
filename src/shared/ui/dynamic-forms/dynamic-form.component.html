@@ -1,0 +1,21 @@
+<div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    
+    <div class="flex justify-between flex-wrap items-center xs:flex-column">
+      <div *ngFor="let question of questions; let i = index" class="form-row pb-2 {{question?.properties?.question_wrapper_class}}" [ngClass]="{'w-48 xs:w-full': (question.type != 'array' && question.type != 'object'), 'w-full': (question.type == 'array' || question.type == 'object'), 'hidden display-none':(question.type == 'hidden')}">
+        <app-question [question]="question" [form]="form" [questions]="questions" [index]="i"></app-question>
+      </div>
+    </div>
+   
+ 
+    <div class="im-form-actions flex justify-end mt-4">
+        <!-- <button mat-stroked-button color="warn" (click)="onCancel()" type="button" style="    margin-right: 5px;">Exit</button> -->
+        <button mat-stroked-button color="primary" type="button" class="mr-5" (click)="reset()">Reset </button>
+        <button mat-stroked-button color="primary" type="submit">{{(buttonLabel)?buttonLabel:"Check Now" }} </button>
+      </div>
+  </form>
+ 
+  <!-- <div *ngIf="payLoad" class="form-row">
+    <strong>Saved the following values</strong><br>{{payLoad}}
+  </div> -->
+</div>
