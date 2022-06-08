@@ -1,0 +1,22 @@
+::ng-deep .im-select-dropdown{    
+					 mat-optgroup{
+					 	label.mat-optgroup-label:empty{
+					 		display: none;
+					 	} 
+					 }   
+				}
+.full-width { 
+	width: 100%;
+}
+.w-48{
+	width: 48%;
+}				
+.im-textarea {
+	textarea{
+		overflow: hidden !important;
+		line-height: 24px;
+	}
+	.mat-form-field-infix{
+		padding-bottom: 1.24375em;
+	}
+}
