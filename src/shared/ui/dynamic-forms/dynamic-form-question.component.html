@@ -16,9 +16,9 @@
 			<mat-form-field class="full-width clearfix clear"  appearance="outline">
 				<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
 				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [required]="question.required" [min]="question.minimum" [max]="question.maximum" [readonly]="question.readonly" [step]="question.step">
-				<mat-error *ngIf="form.get(question.key).hasError('required')"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-error *ngIf="form.get(question.key).hasError('min')"> {{question.label}} value should be greater than or equal to  <strong>{{question.minimum}}</strong> </mat-error>
-				<mat-error *ngIf="form.get(question.key).hasError('max')"> {{question.label}} value should be less than or equal to  <strong>{{question.maximum}}</strong> </mat-error>
+				<mat-error *ngIf="form.get(question.key)?.hasError('required')"> {{question.label}} is <strong>required</strong> </mat-error>
+				<mat-error *ngIf="form.get(question.key)?.hasError('min')"> {{question.label}} value should be greater than or equal to  <strong>{{question.minimum}}</strong> </mat-error>
+				<mat-error *ngIf="form.get(question.key)?.hasError('max')"> {{question.label}} value should be less than or equal to  <strong>{{question.maximum}}</strong> </mat-error>
 				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
 			</mat-form-field>
 		</ng-container>
@@ -84,15 +84,15 @@
 					<ng-container *ngFor="let opt of question.options">
 						<mat-option [value]="opt.value" [disabled]="opt?.disabled"> {{opt.title}} </mat-option>
 						<ng-container *ngIf="opt?.child">
-							<mat-optgroup [label]="">
+							<mat-optgroup [label]="''">
 								<ng-container *ngFor="let child of opt.child">
 									<mat-option [value]="child.id"> {{child.name}} </mat-option>
 									<ng-container *ngIf="child?.child">
-										<mat-optgroup [label]="">
+										<mat-optgroup [label]="''">
 											<ng-container *ngFor="let child1 of child.child">
 												<mat-option [value]="child1.id" style="margin-left: 8px;"> {{child1.name}} </mat-option>
 												<ng-container *ngIf="child1?.child">
-													<mat-optgroup [label]="">
+													<mat-optgroup [label]="''">
 														<mat-option *ngFor="let child2 of child1.child" [value]="child2.id" style="margin-left: 16px;"> {{child2.name}} </mat-option>
 													</mat-optgroup>
 												</ng-container>

@@ -3,8 +3,12 @@
             <div>
                 <img src="assets/brandLogo.svg" />
             </div>
-            <form>
-                
+            <form (ngSubmit)="loginSubmit()" [formGroup]="loginForm">
+                <div class="flex justify-between flex-wrap items-center xs:flex-column">
+                    <div *ngFor="let question of questions; let i = index" class="form-row pb-2 {{question?.properties?.question_wrapper_class}}" [ngClass]="{'hidden display-none':(question.type == 'hidden')}">
+                      <maxhealth-question [question]="question" [form]="loginForm" [questions]="questions" [index]="i"></maxhealth-question>
+                    </div>
+                  </div>
             </form>
 
         </div> 

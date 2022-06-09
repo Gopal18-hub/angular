@@ -3,11 +3,8 @@ import { FormControl, FormGroup, FormArray, Validators, AbstractControl } from '
 import { QuestionBase } from '../interface/question-base';
 import { DropdownQuestion } from '../types/question-dropdown';
 import { TextboxQuestion }  from '../types/question-textbox';
-import { FileQuestion } from '../types/question-file';
 import { HttpService } from '../../../services/http.service';
 
-import { ObjectQuestion } from '../types/question-object';
-import { ArrayQuestion } from '../types/question-array';
 import { NumberQuestion } from '../types/question-number';
 import { RadioQuestion } from '../types/question-radio';
 import { CheckboxQuestion } from '../types/question-checkbox';
@@ -18,7 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 
 @Injectable()
 export class QuestionControlService {
-  formGroup: FormGroup;
+  formGroup: FormGroup | undefined;
 
   constructor(private http: HttpService, private auth: AuthService) { }
 
@@ -30,23 +27,18 @@ export class QuestionControlService {
       if (question.replaceValue && replaceVlaues) {
         question.value = this.replacer(question.replaceValue, replaceVlaues);
       }
-      if ((question.type == 'array' || question.type== 'object')  && question.properties) {
-        question.childQuestions = this.processJson(question.properties, refId, replaceVlaues);
-        if (question.type == 'array') data.push(new ArrayQuestion(question));
-        else if (question.type == 'object') data.push(new ObjectQuestion(question));
-      } else {
-        if(question.type=='dropdown') data.push(new DropdownQuestion(question));
-        else if(question.type=='string') data.push(new TextboxQuestion(question));
-        else if(question.type=='number') data.push(new NumberQuestion(question));
-        else if(question.type=='textarea') data.push(new TextboxQuestion(question));
-        else if(question.type=='hidden') data.push(new TextboxQuestion(question));
-        else if(question.type=='email') data.push(new TextboxQuestion(question));
-        else if(question.type=='radio') data.push(new RadioQuestion(question));
-        else if(question.type=='checkbox') data.push(new CheckboxQuestion(question));
-        else if(question.type=='range') data.push(new RangeQuestion(question));
-        else if(question.type=='upload') data.push(new FileQuestion(question, this.auth, refId));
-        else if(question.type=='colorpicker') data.push(new ColorpickerQuestion(question));
-      }
+   
+      if(question.type=='dropdown') data.push(new DropdownQuestion(question));
+      else if(question.type=='string') data.push(new TextboxQuestion(question));
+      else if(question.type=='number') data.push(new NumberQuestion(question));
+      else if(question.type=='textarea') data.push(new TextboxQuestion(question));
+      else if(question.type=='hidden') data.push(new TextboxQuestion(question));
+      else if(question.type=='email') data.push(new TextboxQuestion(question));
+      else if(question.type=='radio') data.push(new RadioQuestion(question));
+      else if(question.type=='checkbox') data.push(new CheckboxQuestion(question));
+      else if(question.type=='range') data.push(new RangeQuestion(question));
+      else if(question.type=='colorpicker') data.push(new ColorpickerQuestion(question));
+      
     }
 
 
@@ -70,9 +62,9 @@ export class QuestionControlService {
 
     questions.forEach(question => {
       if (question.type == 'object') {
-        let childQuestions = {};
-        question.childQuestions = question.childQuestions.sort((a, b) => a.order - b.order);
-        question.childQuestions.forEach(childQuestion => {
+        let childQuestions:any = {};
+        question.childQuestions = question.childQuestions.sort((a:any, b:any) => a.order - b.order);
+        question.childQuestions.forEach((childQuestion: any) => {
           childQuestions[childQuestion.key] = this.createControl(childQuestion);
         });
         group[question.key] = new FormGroup(childQuestions);
@@ -82,12 +74,12 @@ export class QuestionControlService {
         if (question.minimum) {
             conditions.push(this.minLengthArray(question.minimum));
         }
-        question.childQuestions = question.childQuestions.sort((a, b) => a.order - b.order);
+        question.childQuestions = question.childQuestions.sort((a:any, b:any) => a.order - b.order);
         if (question.value) {
-          let childQuestions = [];
-          question.value.forEach((arrayItem, i) => {
-            let temp = {}
-            question.childQuestions.forEach((childQuestion) => {
+          let childQuestions: any = [];
+          question.value.forEach((arrayItem: any, i: number) => {
+            let temp:any = {}
+            question.childQuestions.forEach((childQuestion: any) => {
               childQuestion.value = arrayItem[childQuestion.key];
               temp[childQuestion.key] = this.createControl(childQuestion);
             });
@@ -96,8 +88,8 @@ export class QuestionControlService {
           console.log(childQuestions);
           group[question.key] = new FormArray(childQuestions, conditions);
         } else {
-          let childQuestions = {};
-          question.childQuestions.forEach((childQuestion) => {
+          let childQuestions: any = {};
+          question.childQuestions.forEach((childQuestion: any) => {
             childQuestions[childQuestion.key] = this.createControl(childQuestion);
           });
           group[question.key] = new FormArray([new FormGroup(childQuestions)], conditions);  
@@ -108,15 +100,15 @@ export class QuestionControlService {
 
       }
     });
-    this.formGroup = new FormGroup(group, {validators: [this.customConditions]});
+    this.formGroup = new FormGroup(group);
     return this.formGroup;
   }
 
-  customConditions(formGroup: FormGroup) {
-    return null;
-  }
+  // customConditions(formGroup: FormGroup) {
+  //   return null;
+  // }
 
-  createControl(question, withValue = true) {
+  createControl(question: any, withValue = true) {
     let control;
     let conditions = [];
     if(question.required) {
@@ -134,8 +126,8 @@ export class QuestionControlService {
     }
     if (question.multiple) {
       if (question.value && withValue) {
-          let multipleControls = [];
-          question.value.forEach(element => {
+          let multipleControls: any = [];
+          question.value.forEach((element: any) => {
             multipleControls.push(new FormControl(element))
           });
           control  = new FormArray(multipleControls, conditions);
@@ -152,7 +144,7 @@ export class QuestionControlService {
     return control;
   }
 
-  replacer(template, obj) {
+  replacer(template: any, obj: any) {
     var keys = Object.keys(obj);
     var func = Function(...keys, "return `" + template + "`;");
   
@@ -162,10 +154,26 @@ export class QuestionControlService {
    minLengthArray(min: number){
     return (c: AbstractControl): {[key: string]: any} => {
       if (c.value.length >= min)
-        return null;
+        return { 'minLengthArray': {valid: true }};;
   
         return { 'minLengthArray': {valid: false }};
     }
+  }
+
+  createForm(questions: any, data: any) {
+    if (data) {
+      for (const [key, value] of Object.entries(data)) {
+        if (questions[key]) {
+          questions[key]['value'] = value;
+        }
+      }
+    }
+      let temp = this.processJson(questions);
+      let form  = this.toFormGroup(temp); 
+      if(data && form) {
+        form.patchValue(data);
+      }  
+      return { form: data, questions: temp };
   }
 
 }

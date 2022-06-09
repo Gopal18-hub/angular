@@ -1,10 +1,10 @@
 import { QuestionBase } from '../interface/question-base';
 
 export class DropdownQuestion extends QuestionBase<string> {
-  type = 'dropdown';
-  options: {title: string, value: string}[] = [];
+  override type = 'dropdown';
+  override options: {title: string, value: string}[] = [];
 
-  constructor(options: {} = {}) {
+  constructor(options: any = {}) {
     super(options);
     this.options = options['options'] || [];
   }

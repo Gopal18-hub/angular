@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { MaxHealthSnackBarModule } from '../../../shared/ui/snack-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +16,8 @@ import { SignupModule } from '@modules/signup';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    MaxHealthSnackBarModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LoginModule,

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-import { DynamicFormComponent } from './dynamic-form.component';
 import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
 
 import { QuestionControlService } from './service/question-control.service';
@@ -18,9 +17,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { OptionGroupComponent } from './partials/option-group/option-group.component';
 
-import { NgSelectModule } from '@ng-select/ng-select';
 
-import { FileUploadComponent } from '../file-upload/file-upload.component';
 
 @NgModule({
   imports: [
@@ -31,14 +28,13 @@ import { FileUploadComponent } from '../file-upload/file-upload.component';
     MatButtonModule,
     MatSelectModule,
     ReactiveFormsModule,
-    NgSelectModule,
     FormsModule,
     MatSliderModule,
     MatTooltipModule,
     MatProgressBarModule
   ],
-  exports:[ DynamicFormComponent, FileUploadComponent ],
-  declarations: [ DynamicFormComponent, DynamicFormQuestionComponent, OptionGroupComponent, FileUploadComponent ],
+  exports:[ DynamicFormQuestionComponent ],
+  declarations: [  DynamicFormQuestionComponent, OptionGroupComponent ],
   providers: [ QuestionControlService ]
 })
 export class DynamicFormsModule { }
