@@ -1,7 +1,7 @@
 import { HttpRequest } from '@angular/common/http';
 import { HttpService } from 'src/shared/services/http.service';
 import { Observable } from 'rxjs';
-import { constants } from 'src/auth/constants/authconstants';
+import { constants } from 'src/auth/core/constants/authconstants';
 
 
 
