@@ -58,6 +58,10 @@ export class AuthService {
   completeAuthentication(): Promise<User> {
         return this.manager.signinRedirectCallback();
   }
+
+  completeSilentRefresh():Promise<any>{
+    return this.manager.signinSilentCallback();
+  } 
   
   public updateUserDetails(data: any) {
     if (!this.loginUser.mobile_number) {
@@ -66,12 +70,12 @@ export class AuthService {
   }
 
   public getToken() {
-    return this.cookieService.get('test');
+    return this.cookieService.get('accessToken');
   }
 
 
   public setToken(token: string): void {
-    this.cookieService.set('test', token, { path: '/', domain: environment.cookieUrl, secure: true });
+    this.cookieService.set('accessToken', token, { path: '/', domain: environment.cookieUrl, secure: true });
   }
 
   public logout(): void {
@@ -84,7 +88,7 @@ export class AuthService {
       }
     });
       localStorage.clear();
-      this.cookieService.delete('test');
+      this.cookieService.delete('accessToken');
       this.cookieService.deleteAll();
       this.cookieService.deleteAll('/', environment.cookieUrl, true);
       this.startAuthentication();    
@@ -120,15 +124,15 @@ export class AuthService {
 export function getClientSettings(): UserManagerSettings {
   return {
   //   authority: 'https://localhost:443/',//for testing
-     authority: environment.IdendtityServerAPI,
+     authority: environment.IdentityServerUrl,
 
     client_id: 'hispwa',
       //redirect_uri: 'http://localhost:8100/auth-callback',//for testing
-    redirect_uri: environment.IdendtityRedirectURI+'auth-callback',
+    redirect_uri: environment.IentityServerRedirectUrl+'auth-callback',
 
      //  post_logout_redirect_uri: 'http://localhost:8100/',//for testing
-    post_logout_redirect_uri:  environment.IdendtityRedirectURI,
-   
+    post_logout_redirect_uri:  environment.IentityServerRedirectUrl,  
+
     response_type: "code",
     scope: "openid profile offline_access IdentityServerApi PC_OPRegApi PC_OPBillApi CommonDataApi",
     filterProtocolClaims: true,
@@ -137,6 +141,8 @@ export function getClientSettings(): UserManagerSettings {
     includeIdTokenInSilentRenew:true,
     revokeAccessTokenOnSignout:true,
     accessTokenExpiringNotificationTime:1200,
+    silent_redirect_uri: window.location.origin+'/silent-refresh',
+    silentRequestTimeout:60,
     userStore:new WebStorageStateStore({store:window.localStorage})  
     
   };

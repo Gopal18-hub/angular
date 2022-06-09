@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from '@modules/login';
 import { SignupModule } from '@modules/signup';
 import { AuthCallbackComponent } from '@modules/auth-callback/';
+import { SilentRefreshComponent } from '@modules/silent-refresh/';
 
 import { TokenInterceptor } from '../../../shared/services/interceptors/token.interceptor';
 
@@ -27,7 +28,8 @@ import { TokenInterceptor } from '../../../shared/services/interceptors/token.in
     BrowserAnimationsModule,
     LoginModule,
     SignupModule,
-    AuthCallbackComponent
+    AuthCallbackComponent,
+    SilentRefreshComponent
 
   ],
   providers: [{

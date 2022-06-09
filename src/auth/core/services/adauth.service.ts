@@ -18,7 +18,7 @@ export class ADAuthService {
     public authenticate(username:string,password:string)
     {
         let returnUrl;
-        const headers = { 'Content-Type':'application/json'};
+        //const headers = { 'Content-Type':'application/json'};
         const query = window.location.search.substring(1);
         const vars = query.split('&');
         for (let i = 0; i < vars.length; i++) {
