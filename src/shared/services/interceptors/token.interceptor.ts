@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { Observable } from 'rxjs';
+import { ApiHeaders } from '../../constants/ApiHeaders';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -14,10 +15,13 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(public auth: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // request = request.clone({
+    //   setHeaders: {
+    //     'Authorization': `Bearer ${this.auth.getToken()}`,
+    //   }
+    // });
     request = request.clone({
-      setHeaders: {
-        'Authorization': `Bearer ${this.auth.getToken()}`,
-      }
+      setHeaders: ApiHeaders.getHeaders(request.url)
     });
     return next.handle(request);
   }
