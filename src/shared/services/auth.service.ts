@@ -6,7 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { environment } from '@environments/environment';
 import { MaxHealthStorage } from './storage';
-import { sharedconstants } from '../constants/sharedconstants';
+import { ApiConstants } from '../constants/ApiConstants';
+import { UserManager, UserManagerSettings, User, WebStorageStateStore, OidcClient} from 'oidc-client';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,21 @@ export class AuthService {
 
   userProfileUpdated = new Subject<any>();
 
+  private manager = new UserManager(getClientSettings());  
 
-  constructor(private route: ActivatedRoute, private router: Router, public cookieService: CookieService, public http: HttpService) { }
-
+  constructor(private route: ActivatedRoute, private router: Router, public cookieService: CookieService, public http: HttpService) {
+    this.manager.getUser().then((user) => {
+      this.loginUser = user;
+    });
+    const query = window.location.search.substring(1);
+    const pathname = window.location.pathname;
+   
+    if((query == null || query == ""))    {
+      if(window.location.href == window.origin+"/" || pathname == "/login")
+      this.manager.signinRedirect();
+      
+    }
+   }
 
   public isAuthenticated(): boolean {
     const token = this.getToken();
@@ -30,6 +43,14 @@ export class AuthService {
     return token?true: false;
   }
 
+  startAuthentication(): Promise<void> {
+    return this.manager.signinRedirect();
+  }
+
+  completeAuthentication(): Promise<User> {
+        return this.manager.signinRedirectCallback();
+  }
+  
   public updateUserDetails(data: any) {
     if (!this.loginUser.mobile_number) {
       this.loginUser.mobile_number = data.mobile_number;
@@ -48,11 +69,8 @@ export class AuthService {
   public logout(): void {
    
     var query = window.location.search;
-    var logoutIdQuery = query && query.toLowerCase().indexOf('?logoutid=') == 0 && query;
-    const headers =  { 'Content-type':'application/json',
-    'Authorization': this.getToken()
-    };
-    let response = this.http.get(sharedconstants.logout + logoutIdQuery);  
+    var logoutIdQuery = query && query.toLowerCase().indexOf('?logoutid=') == 0 && query;   
+    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);  
 
     this.cookieService.delete('test');
     this.cookieService.deleteAll();
@@ -84,6 +102,29 @@ export class AuthService {
       this.router.navigate(['dashboard']);
     }
   }
+}
 
+export function getClientSettings(): UserManagerSettings {
+  return {
+  //   authority: 'https://localhost:443/',//for testing
+     authority: environment.IdendtityServerAPI,
 
+    client_id: 'hispwa',
+      //redirect_uri: 'http://localhost:8100/auth-callback',//for testing
+    redirect_uri: environment.IdendtityRedirectURI+'auth-callback',
+
+     //  post_logout_redirect_uri: 'http://localhost:8100/',//for testing
+    post_logout_redirect_uri:  environment.IdendtityRedirectURI,
+   
+    response_type: "code",
+    scope: "openid profile offline_access IdentityServerApi PC_OPRegApi PC_OPBillApi CommonDataApi",
+    filterProtocolClaims: true,
+    loadUserInfo: true,
+    automaticSilentRenew:true,
+    includeIdTokenInSilentRenew:true,
+    revokeAccessTokenOnSignout:true,
+    accessTokenExpiringNotificationTime:1200,
+    userStore:new WebStorageStateStore({store:window.localStorage})  
+    
+  };
 }
