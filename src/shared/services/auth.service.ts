@@ -36,6 +36,14 @@ export class AuthService {
     }
    }
 
+  public isLoggedIn(): boolean {    
+    if(this.loginUser == null)
+    {
+      this.manager.getUser().then(user=>{this.loginUser = user}).catch(e=>{console.log(e)});
+    }   
+    return this.loginUser != null && !this.loginUser.expired;
+  }
+
   public isAuthenticated(): boolean {
     const token = this.getToken();
     // Check whether the token is expired and return
@@ -70,12 +78,17 @@ export class AuthService {
    
     var query = window.location.search;
     var logoutIdQuery = query && query.toLowerCase().indexOf('?logoutid=') == 0 && query;   
-    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);  
-
-    this.cookieService.delete('test');
-    this.cookieService.deleteAll();
-    this.cookieService.deleteAll('/', environment.cookieUrl, true);
- 
+    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery).subscribe((response)=>{    
+      if (response.postLogoutRedirectUri) {
+        window.location = response.postLogoutRedirectUri;
+      }
+    });
+      localStorage.clear();
+      this.cookieService.delete('test');
+      this.cookieService.deleteAll();
+      this.cookieService.deleteAll('/', environment.cookieUrl, true);
+      this.startAuthentication();    
+        //this.router.navigate(['login']);   
   }
 
   public collectFailedRequest(request: any): void {

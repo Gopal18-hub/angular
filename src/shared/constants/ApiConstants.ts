@@ -5,7 +5,7 @@ import { environment } from '@environments/environment';
 export namespace ApiConstants
 {
 
-    export const logout  = environment.IdentityServerUrl + 'api/authenticate/logout';
+    export const logout  = environment.IdentityServerUrl + 'api/authenticate/Logout';
 
   
 }

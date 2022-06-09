@@ -26,21 +26,13 @@ export class ADAuthService {
           if (decodeURIComponent(pair[0]) == "ReturnUrl") {
             returnUrl = decodeURIComponent(pair[1]);
           }
-        }
-          
+        }          
         
-        let req = this.http.postExternal(ApiConstants.autheticate,JSON.stringify({
+        return this.http.postExternal(ApiConstants.autheticate,JSON.stringify({
                 username,
                 password,
                 returnUrl
               }));
-
-      
-        // let response = this.http.post(ApiConstants.autheticate,JSON.stringify({
-        //     username,
-        //     password,
-        //     returnUrl
-        //   }),undefined,{headers: headers , credentials: 'include'});
     }
 
 }

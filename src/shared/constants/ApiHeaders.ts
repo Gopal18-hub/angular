@@ -13,7 +13,35 @@ export namespace ApiHeaders
         },
         '172.30.0.16:1008': {
             'Content-Type': 'application/json'
-        }
+        },
+        'MaxHIS-Idsrv-dev.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-Reports-dev.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'localhost': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-Idsrv-sit.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-Idsrv-uat.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-common-uat.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-common-sit.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-OpReg-sit.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        'MaxHIS-OpReg-uat.maxhealthcare.in': {
+            'Content-Type': 'application/json'
+        },
+        
     }
 
 
