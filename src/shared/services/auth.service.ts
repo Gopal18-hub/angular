@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { environment } from '@environments/environment';
 import { MaxHealthStorage } from './storage';
+import { sharedconstants } from '../constants/sharedconstants';
 
 @Injectable({
   providedIn: 'root'
@@ -45,10 +46,18 @@ export class AuthService {
   }
 
   public logout(): void {
+   
+    var query = window.location.search;
+    var logoutIdQuery = query && query.toLowerCase().indexOf('?logoutid=') == 0 && query;
+    const headers =  { 'Content-type':'application/json',
+    'Authorization': this.getToken()
+    };
+    let response = this.http.get(sharedconstants.logout + logoutIdQuery);  
+
     this.cookieService.delete('test');
     this.cookieService.deleteAll();
     this.cookieService.deleteAll('/', environment.cookieUrl, true);
-
+ 
   }
 
   public collectFailedRequest(request: any): void {
@@ -75,5 +84,6 @@ export class AuthService {
       this.router.navigate(['dashboard']);
     }
   }
+
 
 }
