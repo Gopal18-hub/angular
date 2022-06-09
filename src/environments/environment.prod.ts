@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  ApiUrl: '',
+  cookieUrl: '',
   //dev environment urls
   CommonApiUrl : 'http://172.30.0.16:1009/',
   PatientApiUrl : 'http://172.30.0.16:1008/',  
