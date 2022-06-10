@@ -1,9 +1,9 @@
 import { QuestionBase } from '../interface/question-base';
 
-export class EditorQuestion extends QuestionBase<string> {
-  type = 'editor';
+export class PasswordQuestion extends QuestionBase<string> {
+  override type: string;
 
-  constructor(options: {} = {}) {
+  constructor(options: any = {}) {
     super(options);
     this.type = options['type'] || '';
   }

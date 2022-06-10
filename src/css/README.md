@@ -446,6 +446,8 @@ Also, we can change the border radius adding:
 - `.border-radius-sm` -> `border-radius: 0.125rem`
 - `.border-radius-md` -> `border-radius: 0.25rem`
 - `.border-radius-lg` -> `border-radius: 0.5rem`
+- `.border-radius-xlg` -> `border-radius: 0.75rem`
+- `.border-radius-xxlg` -> `border-radius: 1rem`
 - `.border-radius-full` -> `border-radius: 50%`
 - `.border-radius-pill` -> `border-radius: 50rem`
 
