@@ -8,19 +8,23 @@ import { RegistrationUnmergingComponent } from './submodules/registration-unmerg
 import { RegistrationComponent } from './registration.component';
 
 import { MaxHealthTableModule } from '../../../shared/ui/table';
-
-
+import { OpRegApprovalComponent } from './submodules/op-reg-approval/op-reg-approval.component';
+import { MatButtonModule } from '@angular/material/button';
+import {MatTabsModule} from '@angular/material/tabs';
 @NgModule({
   declarations: [
        OpRegistrationComponent,
        FindPatientComponent,
        DupRegMergingComponent,
        RegistrationUnmergingComponent,
-       RegistrationComponent
+       RegistrationComponent,
+       OpRegApprovalComponent
   ],
   imports: [
     RegistrationRoutingModule,
-    MaxHealthTableModule
+    MaxHealthTableModule,
+    MatButtonModule,
+    MatTabsModule
   ],
   exports: [],
   providers: [],
