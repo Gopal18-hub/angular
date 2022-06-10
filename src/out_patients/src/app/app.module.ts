@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderModule } from '../../../shared/modules/header';
 
 import { BillingModule } from '@modules/billing';
+import { RegistrationModule } from '@modules/registration';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { BillingModule } from '@modules/billing';
     AppRoutingModule,
     BrowserAnimationsModule,
     HeaderModule,
-    BillingModule
+    BillingModule,
+    RegistrationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
