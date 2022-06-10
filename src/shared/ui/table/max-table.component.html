@@ -1,4 +1,5 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<div class="border-radius-xxlg border max-table-wrapper"> 
+  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
 
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -20,7 +21,7 @@
 
     <ng-container *ngFor="let col of displayedColumns">
         <ng-container [matColumnDef]="col" *ngIf="col!='select'">
-            <th mat-header-cell *matHeaderCellDef> {{displayColumnsInfo[col].title}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayColumnsInfo[col].title}} </th>
             <td mat-cell *matCellDef="let element"> {{element[col]}} </td>
           </ng-container>
     </ng-container>
@@ -31,3 +32,4 @@
         (click)="selection.toggle(row)">
     </tr>
   </table>
+</div>
