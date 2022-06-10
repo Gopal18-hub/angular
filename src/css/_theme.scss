@@ -1,3 +1,19 @@
+@use '@angular/material' as mat;
+
+@font-face {
+    font-family: "proxima";
+    src: local("proxima"), url(./font/proxima/ProximaNova.otf) format("truetype");
+}
+@font-face {
+    font-family: "ProximaRegular";
+    src: local("proxima"), url(./font/proxima/ProximaNovaThin.otf) format("truetype");
+}
+
+@font-face {
+    font-family: "ProximaMedium";
+    src:local("proxima"), url(./font/proxima/ProximaNovaMedium.otf) format("truetype");
+}
+
 @import '~@angular/material/theming';
 @include mat-core();
 
@@ -41,3 +57,8 @@ $accent: mat-palette($mat-orange,200);
 $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
+
+$custom-typography: mat.define-typography-config(
+  $font-family: "proxima"
+);
+@include mat.core($custom-typography);
