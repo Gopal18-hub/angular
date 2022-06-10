@@ -8,6 +8,7 @@ import { RegistrationUnmergingComponent } from './submodules/registration-unmerg
 import { RegistrationComponent } from './registration.component';
 
 import { MaxHealthTableModule } from '../../../shared/ui/table';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { MaxHealthTableModule } from '../../../shared/ui/table';
   ],
   imports: [
     RegistrationRoutingModule,
-    MaxHealthTableModule
+    MaxHealthTableModule,
+    CommonModule
   ],
   exports: [],
   providers: [],
