@@ -1,6 +1,15 @@
 .login-wrapper{
     background-image: url('/assets/login-bg.svg');
+    background-size: cover;
+    background-position: 25% 100%;
+    width: 100vw;
+    overflow: hidden;
     &-box{
         background-color: #fff;
+        background-position-y: 101%;
+        background-size: 55%;
+        background-position-x: 102%;
+        background-image: url('/assets/stripe-banner.svg');
+        background-repeat: no-repeat;
     }
 }

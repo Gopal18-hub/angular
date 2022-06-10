@@ -7,6 +7,10 @@ import { LoginComponent } from './login.component';
 
 import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
+
 @NgModule({
   declarations: [
     LoginComponent
@@ -15,7 +19,9 @@ import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
     CommonModule,
     ReactiveFormsModule,
     LoginRoutingModule,
-    DynamicFormsModule
+    DynamicFormsModule,
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [],
   providers: [],

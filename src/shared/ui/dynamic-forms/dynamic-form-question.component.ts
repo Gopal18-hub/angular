@@ -10,12 +10,14 @@ import { QuestionControlService }    from './service/question-control.service';
 })
 export class DynamicFormQuestionComponent implements OnInit {
 
-  @Input() question!: QuestionBase<any>;
+  @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
   @Input() index: number | undefined;
-  @Input() form!: FormGroup;
+  @Input() form: FormGroup = {} as FormGroup
 
   get isValid() { return this.form.controls[this.question.key].valid; }
+
+  passwordHide = true;
 
   constructor(private qcs: QuestionControlService) {  }
 

@@ -1,10 +1,10 @@
 ::ng-deep .im-select-dropdown{    
-					 mat-optgroup{
-					 	label.mat-optgroup-label:empty{
-					 		display: none;
-					 	} 
-					 }   
-				}
+	mat-optgroup{
+		label.mat-optgroup-label:empty{
+			display: none;
+		} 
+	}   
+}
 .full-width { 
 	width: 100%;
 }

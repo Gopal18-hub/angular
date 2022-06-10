@@ -10,7 +10,8 @@ import { RadioQuestion } from '../types/question-radio';
 import { CheckboxQuestion } from '../types/question-checkbox';
 import { RangeQuestion } from '../types/question-range';
 import { ColorpickerQuestion } from '../types/question-colorpicker';
-
+import { AutoCompleteQuestion } from '../types/question-autocomplete';
+import { PasswordQuestion } from '../types/question-password';
 import { AuthService } from '../../../services/auth.service';
 
 @Injectable()
@@ -38,6 +39,8 @@ export class QuestionControlService {
       else if(question.type=='checkbox') data.push(new CheckboxQuestion(question));
       else if(question.type=='range') data.push(new RangeQuestion(question));
       else if(question.type=='colorpicker') data.push(new ColorpickerQuestion(question));
+      else if(question.type=='password') data.push(new PasswordQuestion(question));
+      else if(question.type=='autocomplete') data.push(new AutoCompleteQuestion(question));
       
     }
 
@@ -173,7 +176,18 @@ export class QuestionControlService {
       if(data && form) {
         form.patchValue(data);
       }  
-      return { form: data, questions: temp };
+      return { form: form, questions: temp };
+  }
+
+  validateAllFormFields(formGroup: FormGroup) {        
+    Object.keys(formGroup.controls).forEach(field => {  
+      const control = formGroup.get(field);             
+      if (control instanceof FormControl) {             
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {        
+        this.validateAllFormFields(control);            
+      }
+    });
   }
 
 }

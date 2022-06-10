@@ -21,17 +21,17 @@ export class LoginComponent implements OnInit {
       password: {
           type: 'password',
           title: 'Password',
-          require: true
+          required: true
       },
       location: {
         type: 'autocomplete',
         title: 'Location',
-        require: true
+        required: true
       },
       station: {
-        type: 'station',
+        type: 'autocomplete',
         title: 'Station',
-        require: true
+        required: true
       }
     }
   }
@@ -49,7 +49,11 @@ export class LoginComponent implements OnInit {
   }
 
   loginSubmit() {
+      if(this.loginForm.valid) {
 
+      } else {
+        this.formService.validateAllFormFields(this.loginForm);
+      }
   }
 
 }

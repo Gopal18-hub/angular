@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import { OptionGroupComponent } from './partials/option-group/option-group.component';
 
@@ -31,7 +32,8 @@ import { OptionGroupComponent } from './partials/option-group/option-group.compo
     FormsModule,
     MatSliderModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatAutocompleteModule
   ],
   exports:[ DynamicFormQuestionComponent ],
   declarations: [  DynamicFormQuestionComponent, OptionGroupComponent ],
