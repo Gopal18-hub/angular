@@ -9,8 +9,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { LoginModule } from '@modules/login';
 import { SignupModule } from '@modules/signup';
+import { AuthCallbackComponent } from '@modules/auth-callback/';
+import { SilentRefreshComponent } from '@modules/silent-refresh/';
 
 import { TokenInterceptor } from '../../../shared/services/interceptors/token.interceptor';
+
 
 
 @NgModule({
@@ -24,7 +27,10 @@ import { TokenInterceptor } from '../../../shared/services/interceptors/token.in
     AppRoutingModule,
     BrowserAnimationsModule,
     LoginModule,
-    SignupModule
+    SignupModule,
+    AuthCallbackComponent,
+    SilentRefreshComponent
+
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
