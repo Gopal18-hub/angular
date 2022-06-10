@@ -7,18 +7,20 @@ import { DupRegMergingComponent } from './submodules/dup-reg-merging/dup-reg-mer
 import { RegistrationUnmergingComponent } from './submodules/registration-unmerging/registration-unmerging.component';
 import { RegistrationComponent } from './registration.component';
 
+import { MaxHealthTableModule } from '../../../shared/ui/table';
+
 
 @NgModule({
   declarations: [
-  
-    OpRegistrationComponent,
+       OpRegistrationComponent,
        FindPatientComponent,
        DupRegMergingComponent,
        RegistrationUnmergingComponent,
        RegistrationComponent
   ],
   imports: [
-    RegistrationRoutingModule
+    RegistrationRoutingModule,
+    MaxHealthTableModule
   ],
   exports: [],
   providers: [],
