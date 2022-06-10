@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/shared/services/auth.service';
+import { AuthService } from '../../../../shared/services/auth.service';
 import * as Oidc from 'oidc-client';
-
-
-
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'auth-auth-callback',
@@ -14,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthCallbackComponent implements OnInit {
 
-  constructor(private router:Router,private auth:AuthService) { }
+  constructor(private router:Router, private auth:AuthService) { }
 
   ngOnInit(): void {
 
