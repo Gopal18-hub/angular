@@ -1,8 +1,11 @@
 .max-table-wrapper {
   height: calc(100vh - 143px);
   background-color: white;
+  overflow: hidden;
+  transform: rotate(0deg);
   table {
     width: 100%;
+    border-spacing: 0;
     .mat-header-row {
       background-color: #DAE9F8;
       height: 36px;
