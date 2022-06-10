@@ -12,6 +12,7 @@ import { SignupModule } from '@modules/signup';
 import { OpenIDModule } from '@modules/openid';
 
 import { TokenInterceptor } from '../../../shared/services/interceptors/token.interceptor';
+import { ADAuthService } from '../../../auth/core/services/adauth.service';
 
 
 
@@ -33,7 +34,9 @@ import { TokenInterceptor } from '../../../shared/services/interceptors/token.in
     provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptor,
     multi: true
-  }],
+  },
+  ADAuthService
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
