@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'maxhealth-sub',
+  selector: 'maxhealth-sub-header',
   templateUrl: './sub.component.html',
   styleUrls: ['./sub.component.scss']
 })

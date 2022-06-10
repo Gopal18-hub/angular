@@ -1,7 +1,7 @@
 <nav class="shadow-1 header-wrapper">
     <div class="flex justify-between items-center px-4 py-2">
         <a><img src="assets/brandLogo.svg" ></a>
-        <div class="flex flex-column">
+        <div class="flex flex-column right-section">
             <div>
                 <span class="mr-6">BLK Hospital</span>
                 <span class="mr-6">OPD 1 Ground floor</span>
@@ -9,10 +9,14 @@
 
             </div>
             <div>
-
+                <ul class="flex flex-row list-unstyled">
+                    <li *ngFor="let module of modules" class="mx-4 cursor-pointer">
+                            {{module.title}}
+                    </li>
+                </ul>
             </div>
         </div>
 
     </div>
-    
 </nav>
+<maxhealth-sub-header></maxhealth-sub-header>
