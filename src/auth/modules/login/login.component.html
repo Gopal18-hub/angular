@@ -1,11 +1,16 @@
 <div class="login-wrapper h-screen w-screen flex items-center justify-center">
-        <div class="shadow-1 w-1/3 h-3/4 login-wrapper-box flex flex-column p-8">
-            <div>
-                <img src="assets/brandLogo.svg" />
-            </div>
-            <form>
-                
-            </form>
-
-        </div> 
+  <div class="shadow-2 w-1/4 login-wrapper-box flex flex-column p-8 border-radius-xxlg">
+    <div>
+        <img src="assets/brandLogo.svg" class="w-2/5"/>
+    </div>
+    <form (ngSubmit)="loginSubmit()" [formGroup]="loginForm" class="mt-4 mb-6">
+      <div class="flex justify-between flex-wrap flex-column">
+          <div *ngFor="let question of questions; let i = index" class="font-xs form-row {{question?.properties?.question_wrapper_class}}" [ngClass]="{'hidden display-none':(question.type == 'hidden')}">
+            <maxhealth-question [question]="question" [form]="loginForm" [questions]="questions" [index]="i"></maxhealth-question>
+          </div>
+          <button mat-raised-button color="primary" class="w-1/3" type="submit">Login <mat-icon>east</mat-icon></button>
+          <a routerLink="reset-password" class="mt-2 change-password">Change Password</a>
+      </div>
+    </form>
+  </div> 
 </div>

@@ -8,8 +8,8 @@ export class QuestionBase<T>{
   type: string;
   options: any;
   upload_path: any;
-  minimum: number;
-  maximum: number;
+  minimum: number | undefined;
+  maximum: number | undefined;
   properties: any;
   childQuestions: any;
   multiple: boolean;

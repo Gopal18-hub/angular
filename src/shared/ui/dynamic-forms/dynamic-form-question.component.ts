@@ -9,13 +9,19 @@ import { QuestionControlService }    from './service/question-control.service';
   styleUrls: ['./dynamic-form.scss']
 })
 export class DynamicFormQuestionComponent implements OnInit {
-  @Input() question: QuestionBase<any>;
 
-  // get isValid() { return this.form.controls[this.question.key].valid; }
+  @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
+  @Input() questions: QuestionBase<any>[] = [];
+  @Input() index: number | undefined;
+  @Input() form: FormGroup = {} as FormGroup
+
+  get isValid() { return this.form.controls[this.question.key].valid; }
+
+  passwordHide = true;
 
   constructor(private qcs: QuestionControlService) {  }
 
-  compareFn: ((f1: any, f2: any) => boolean)|null = this.compareByValue;
+  compareFn: ((f1: any, f2: any) => boolean) = this.compareByValue;
 
   compareByValue(f1: any, f2: any) { 
     return f1 && f2 && f1 == f2; 
@@ -24,11 +30,11 @@ export class DynamicFormQuestionComponent implements OnInit {
   excuteCondition(conditions: any, value:any) {
     conditions.forEach((conditionParam: any) => {
       if (conditionParam.type == 'disabled') {
-        if (eval(conditionParam.condition)) {
-            this[conditionParam.type] = true;
-        } else {
-            this[conditionParam.type] = false;
-        }
+        // if (eval(conditionParam.condition)) {
+        //     this[conditionParam.type] = true;
+        // } else {
+        //     this[conditionParam.type] = false;
+        // }
       } else if (conditionParam.type == 'value') {
           let tempValue = eval(conditionParam.condition);
           this.form.controls[conditionParam.key].setValue(tempValue);
@@ -61,7 +67,7 @@ export class DynamicFormQuestionComponent implements OnInit {
   }
 
 
-  setValue(form, key, $event) {
+  setValue(form: any, key: string, $event: any) {
     form.controls[key].setValue($event.value)
   }
 
