@@ -11,5 +11,13 @@
         background-position-x: 102%;
         background-image: url('/assets/stripe-banner.svg');
         background-repeat: no-repeat;
+        form {
+            ::ng-deep mat-label {
+                color: var(--primary-color);
+            }
+            .change-password{
+                color: var(--primary-color);
+            }
+        }
     }
 }

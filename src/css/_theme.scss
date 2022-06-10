@@ -62,3 +62,7 @@ $custom-typography: mat.define-typography-config(
   $font-family: "proxima"
 );
 @include mat.core($custom-typography);
+
+:root {
+    --primary-color: #004084
+}
