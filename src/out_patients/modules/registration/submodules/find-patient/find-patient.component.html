@@ -1,3 +1,5 @@
-<div class="mx-6">
-    <maxhealth-table [config]="config" [data]="data"></maxhealth-table>
+<div class="mx-6" >
+    <ng-container *ngIf="showpatient">
+    <maxhealth-table  [config]="config" [data]="patientList"></maxhealth-table>
+</ng-container>
 </div>
