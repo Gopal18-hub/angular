@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
 import { FormGroup }                 from '@angular/forms';
 import { ADAuthService } from '../../../auth/core/services/adauth.service';
@@ -13,7 +13,7 @@ import { CookieService } from '../../../shared/services/cookie.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   public locationList:LocationModel[]=[];
   public stationList:StationModel[]=[];
@@ -65,8 +65,13 @@ export class LoginComponent implements OnInit {
       this.questions  = formResult.questions;
   }
 
-  validateUserName(username:string)
+  ngAfterViewInit(): void {
+    this.questions[0].elementRef.addEventListener('blur', this.validateUserName.bind(this));
+  }
+
+  validateUserName()
   {
+     let username = this.loginForm.value.username;
       this.adauth.authenticateUserName(username).subscribe((data:any)=>{
           this.userlocationandstation = data as UserLocationStationdataModel;
           this.locationList = this.userlocationandstation.locations;
@@ -93,11 +98,11 @@ export class LoginComponent implements OnInit {
                  this.authStatus=true;                                   
                  window.location = data["redirectUrl"];          
               }
-              else if(status = "InvalidUser")
+              else if(status == "InvalidUser")
               {
                 this.authStatus=false;           
               }
-              else if(status="UserValidationError") 
+              else if(status == "UserValidationError") 
               {
                 this.authStatus=false;
               }   

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { QuestionBase }     from './interface/question-base';
 import { QuestionControlService }    from './service/question-control.service';
@@ -8,7 +8,7 @@ import { QuestionControlService }    from './service/question-control.service';
   templateUrl: './dynamic-form-question.component.html',
   styleUrls: ['./dynamic-form.scss']
 })
-export class DynamicFormQuestionComponent implements OnInit {
+export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
 
   @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
@@ -18,6 +18,8 @@ export class DynamicFormQuestionComponent implements OnInit {
   get isValid() { return this.form.controls[this.question.key].valid; }
 
   passwordHide = true;
+
+  @ViewChild('element') element!:ElementRef; 
 
   constructor(private qcs: QuestionControlService) {  }
 
@@ -69,6 +71,12 @@ export class DynamicFormQuestionComponent implements OnInit {
 
   setValue(form: any, key: string, $event: any) {
     form.controls[key].setValue($event.value)
+  }
+
+  ngAfterViewInit(): void {
+    if (this.element) {
+      this.question.elementRef = this.element.nativeElement;
+    }
   }
 
 
