@@ -92,11 +92,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       });
   }
 
-  onLocationSelection(location:LocationModel){
-    this.locationdetail = location;
-    this.stationList.filter(e=>e.hspLocationId===location.hspLocationId);
-  }
-
   loginSubmit() {
     let status;
       if(this.loginForm.valid) {

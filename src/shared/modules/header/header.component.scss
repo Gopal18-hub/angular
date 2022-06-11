@@ -1,4 +1,17 @@
 :host{
-    height: 80px;
     width: 100vw;
+}
+.header-wrapper {
+    height: 80px;
+    background-color: white;
+    border-radius: 0 0 0 1rem;
+    .right-section {
+        height: 64px;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}
+
+.matmenuclass{
+    min-width:700px !important;
 }

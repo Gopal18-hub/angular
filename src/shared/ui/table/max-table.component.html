@@ -1,0 +1,40 @@
+<div class="border-radius-xxlg border max-table-wrapper"> 
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+  
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                        [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)"
+                        [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+  
+      <ng-container *ngFor="let col of displayedColumns">
+          <ng-container [matColumnDef]="col" *ngIf="col!='select'">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{displayColumnsInfo[col].title}} </th>
+              <td mat-cell *matCellDef="let element"> {{displayColumnsInfo[col].type === 'date' ? (element[col] | date: dateformat) : element[col]}} </td>
+            </ng-container>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          (click)="selection.toggle(row)" >
+          <!-- [matTooltip]="" -->
+      </tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10,15, 20]"
+                   showFirstLastButtons 
+                   aria-label="Select page of periodic elements">
+                   </mat-paginator>
+  </div>
+  

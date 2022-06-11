@@ -10,9 +10,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from '@modules/login';
 import { SignupModule } from '@modules/signup';
 import { OpenIDModule } from '@modules/openid';
+import { DashboardModule } from '@modules/dashboard';
 
 import { TokenInterceptor } from '../../../shared/services/interceptors/token.interceptor';
 import { ADAuthService } from '../../../auth/core/services/adauth.service';
+import { AuthGuardService } from '../../../shared/services/guards/auth-guard.service';
 
 
 
@@ -28,14 +30,16 @@ import { ADAuthService } from '../../../auth/core/services/adauth.service';
     BrowserAnimationsModule,
     LoginModule,
     SignupModule,
-    OpenIDModule
+    OpenIDModule,
+    DashboardModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptor,
     multi: true
   },
-  ADAuthService
+  ADAuthService,
+  AuthGuardService
 ],
   bootstrap: [AppComponent]
 })
