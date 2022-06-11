@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { HeaderComponent } from './header.component';
 import { SubComponent } from './sub/sub.component';
 import { CommonModule } from '@angular/common';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
@@ -10,7 +12,9 @@ import { CommonModule } from '@angular/common';
     SubComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatMenuModule,
+    MatButtonModule
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

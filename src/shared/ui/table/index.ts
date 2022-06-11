@@ -9,7 +9,9 @@ import { MaxTableComponent } from './max-table.component';
 
 import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-
+import {A11yModule} from '@angular/cdk/a11y';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 
@@ -22,7 +24,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     ReactiveFormsModule,
     FormsModule,
     MatTableModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    A11yModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   exports:[ MaxTableComponent ],
   declarations: [   

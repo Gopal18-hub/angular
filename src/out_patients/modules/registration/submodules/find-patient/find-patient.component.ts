@@ -1,47 +1,76 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { getallpatient } from '../../../../../out_patients/core/models/findpatientmodel';
+import { environment } from '@environments/environment';
+import { HttpService } from '../../../../../shared/services/http.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 @Component({
-  selector: 'out-patients-find-patient',
+  selector: 'find-patient',
   templateUrl: './find-patient.component.html',
   styleUrls: ['./find-patient.component.scss']
 })
 export class FindPatientComponent implements OnInit {
-
-  data: any[] = [
-    {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-    {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-    {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-    {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-    {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-    {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-    {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-    {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-    {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-    {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  ];
+  
+  patientList:getallpatient[]=[];
+  showpatient:boolean=false;
 
   config: any  = {
-    selectBox : true,
-    displayedColumns: ['position', 'name', 'weight', 'symbol'],
+    dateformat: 'dd/MM/yyyy',
+    selectBox : false,
+    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','category'],
     columnsInfo: {
-      position : {
-        title: 'Position'
+      maxid : {
+        title: 'MAX ID',
+        type: 'number'
       },
-      name : {
-        title: 'name'
+      ssn : {
+        title: 'SSN',
+        type: 'number'
       },
-      weight : {
-        title: 'weight'
+      date : {
+        title: 'Regn.Date',
+        type: 'date'
       },
-      symbol : {
-        title: 'symbol'
+      firstName : {
+        title: 'Name',
+        type: 'string'
+      },
+      age : {
+        title: 'Age',
+        type: 'number'
+      },
+      gender : {
+        title: 'Gender',
+        type: 'string'
+      },
+      dob : {
+        title: 'Date of Birth',
+        type: 'date'
+      },
+      place : {
+        title: 'Address',
+        type: 'string'
+      },
+      phone : {
+        title: 'Phone No.',
+        type: 'number'
+      },
+      category : {
+        title: 'Category'
       }
     }
-  }
-
-  constructor() { }
+  }  
+  constructor(private http: HttpService) { }
 
   ngOnInit(): void {
+    this.getAllpatients().subscribe((resultData) => {
+      this.patientList  = resultData as getallpatient[];
+      this.showpatient = true;  
+      console.log(this.patientList);
+    })
   }
 
+   getAllpatients(){
+    return this.http.get(environment.PatientApiUrl+'api/patient/getallpatientssearch');    
+  }
 }
