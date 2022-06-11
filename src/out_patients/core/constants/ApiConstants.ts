@@ -121,25 +121,49 @@ export namespace ApiConstants {
     );
   };
 
-  //POST PATIENT DETAILS FROM OPD FORM TYPE patientRegistrationModel.Model
+  //POST PATIENT DETAILS FROM OPD FORM BODY TYPE patientRegistrationModel.Model AND RESPONSE TYPE patientRegistrationModel
   export const postPatientDetails =
     environment.PatientApiUrl + "/api/patient/registeropdpatient";
 
-    //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET 
-    // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
-    export const hotlistedPatient = (maxId: number, hotlistingHeader: string,locationid:string,firstName:string,lastname:string,middleName:string,lastName:string,hotlistingcomment:string,type:string,userid:number) => {
-        return environment.PatientApiUrl +
-   "/api/patient/patienthotlisting/${maxId}/${hotlistingHeader}/${locationid}?firstName=${firstName}&middleName=${middleName}&lastName=${lastName}&hotlistingComment==${hotlistingcomment}&type==${type}&userId==${userid}";
-        }
+  //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
+  // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
+  export const hotlistedPatient = (
+    maxId: number,
+    hotlistingHeader: string,
+    locationid: string,
+    firstName: string,
+    lastname: string,
+    middleName: string,
+    lastName: string,
+    hotlistingcomment: string,
+    type: string,
+    userid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "/api/patient/patienthotlisting/${maxId}/${hotlistingHeader}/${locationid}?firstName=${firstName}&middleName=${middleName}&lastName=${lastName}&hotlistingComment==${hotlistingcomment}&type==${type}&userId==${userid}"
+    );
+  };
 
-//FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
-        export const PatientDMSDetail = (IaCode:string,RegistrationNo:number) => {
-            return environment.PatientApiUrl+'api/patient/getpatientdmsrefresh/${IaCode}/${RegistrationNo}';
+  //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
+  export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientdmsrefresh/${IaCode}/${RegistrationNo}"
+    );
+  };
 
-            
+  //POST CALL TO UPDATE THE PATIENT DETAIL, BODY TYPE patientRegistrationModel 
+  export const updatePatientDetail =
+    environment.PatientApiUrl + "/api/patient/updateopdpatientdetails";
 
+ //POST CALL TO MODIFY THE PATIENT DETAIL, BODY TYPE patientRegistrationModel 
+  export const modifyPatientDetail =
+  environment.PatientApiUrl + "/api/patient/modifyopdpatient";
 
+  //POST CALL FOR THE LIST OF SIMILAR PATIENT DETAIL, BODY TYPE SimilarSoundPatientDetails 
+  export const similarSoundPatientDetail =
+  environment.PatientApiUrl +"/api/patient/getsimilarsoundpatient";
 
-
-
+    
 }
