@@ -10,9 +10,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { OpRegApprovalComponent } from './submodules/op-reg-approval/op-reg-approval.component';
 import { MatButtonModule } from '@angular/material/button';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 import {MatTabsModule} from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MergeDialogComponent } from './submodules/dup-reg-merging/merge-dialog/merge-dialog.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -22,17 +29,32 @@ import { MatIconModule } from '@angular/material/icon';
        DupRegMergingComponent,
        RegistrationUnmergingComponent,
        RegistrationComponent,
-       OpRegApprovalComponent
+       OpRegApprovalComponent,
+          MergeDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
     MaxHealthTableModule,
-    MatButtonModule,
-    MatTabsModule,
     CommonModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTabsModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRippleModule,
+    MatDialogModule,
+    MatCheckboxModule,   
     DynamicFormsModule,
     ReactiveFormsModule,
     MatIconModule 
+
+   
+    
+    
+
+
   ],
   exports: [],
   providers: [],
