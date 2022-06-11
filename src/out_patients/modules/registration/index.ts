@@ -11,6 +11,9 @@ import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { OpRegApprovalComponent } from './submodules/op-reg-approval/op-reg-approval.component';
 import { MatButtonModule } from '@angular/material/button';
 import {MatTabsModule} from '@angular/material/tabs';
+import { CommonModule } from '@angular/common';
+
+
 @NgModule({
   declarations: [
        OpRegistrationComponent,
@@ -24,7 +27,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     RegistrationRoutingModule,
     MaxHealthTableModule,
     MatButtonModule,
-    MatTabsModule
+    MatTabsModule,
+    CommonModule
   ],
   exports: [],
   providers: [],
