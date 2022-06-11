@@ -7,7 +7,6 @@ import { LocationModel } from '../../../auth/core/models/locationmodel';
 import { UserLocationStationdataModel } from '../../../auth/core/models/userlocationstationdatamodel';
 import { CookieService } from '../../../shared/services/cookie.service';
 
-
 @Component({
   selector: 'auth-login',
   templateUrl: './login.component.html',
@@ -76,9 +75,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.userlocationandstation = data as UserLocationStationdataModel;
           this.locationList = this.userlocationandstation.locations;
           this.stationList = this.userlocationandstation.stations;
-          this.userId= Number(this.userlocationandstation.userId);
-          this.cookie.set('UserId',this.userId.toString());       
+          this.questions[2].options = this.locationList.map(l=>{return {title:l.organizationName, value:l.hspLocationId}});
+          
+          this.questions[3].options = this.stationList.map(s=>{return {title:s.stationName, value:s.stationid} }
+            );
 
+          this.userId= Number(this.userlocationandstation.userId);
+          this.cookie.set('UserId',this.userId.toString());  
+          
+          this.loginForm.controls['location'].valueChanges.subscribe(value=>{
+            console.log(value);
+            this.questions[3].options = this.stationList.filter(e=>e.hspLocationId===value.value)
+            .map(s=>{return {title:s.stationName, value:s.stationid} });
+              
+          });
       });
   }
 
