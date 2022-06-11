@@ -3,6 +3,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort, Sort} from '@angular/material/sort';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 
 @Component({
   selector: 'maxhealth-table',
@@ -16,10 +17,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit  {
   @Input() data: any;
 
   selection = new SelectionModel<any>(true, []);
-
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = [];
   displayColumnsInfo: any  = [];
+  dateformat:any;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -29,6 +31,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit  {
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
+    this.dateformat = this.config.dateformat;
     if(this.config.selectBox) {
       this.displayedColumns.unshift('select');
     }
@@ -36,6 +39,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit  {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
 

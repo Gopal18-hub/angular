@@ -9,7 +9,8 @@ import { RegistrationComponent } from './registration.component';
 
 import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { CommonModule } from '@angular/common';
-
+import { MatButtonModule } from '@angular/material/button';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { CommonModule } from '@angular/common';
   imports: [
     RegistrationRoutingModule,
     MaxHealthTableModule,
-    CommonModule
+    CommonModule,
+    MatButtonModule,
+    MatTabsModule
   ],
   exports: [],
   providers: [],
