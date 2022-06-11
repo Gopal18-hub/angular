@@ -8,11 +8,12 @@ import { MaxModules } from '../../constants/Modules';
 export class HeaderComponent implements OnInit {
 
   modules: any  = [];
-
+ 
   constructor() { }
 
   ngOnInit(): void {
       this.modules = MaxModules.getModules();
   }
+ 
 
 }

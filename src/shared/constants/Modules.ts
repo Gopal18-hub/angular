@@ -6,6 +6,7 @@ export namespace MaxModules
            title: "Out Patients",
            id: 1,
            defaultPath: '',
+           moreOptions: true,
            childrens: [
                {
                     id: 11,
