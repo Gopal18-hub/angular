@@ -5,7 +5,7 @@ import { OpRegistrationComponent } from './submodules/op-registration/op-registr
 import { FindPatientComponent } from './submodules/find-patient/find-patient.component';
 import { DupRegMergingComponent } from './submodules/dup-reg-merging/dup-reg-merging.component';
 import { RegistrationUnmergingComponent } from './submodules/registration-unmerging/registration-unmerging.component';
-import { RegistrationComponent } from './registration.component'
+import { RegistrationComponent } from './registration.component';
 import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +42,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatRippleModule,
     MatDialogModule,
     MatCheckboxModule
+   
+    
     
 
 
