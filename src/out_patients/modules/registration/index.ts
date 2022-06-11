@@ -8,9 +8,11 @@ import { RegistrationUnmergingComponent } from './submodules/registration-unmerg
 import { RegistrationComponent } from './registration.component';
 
 import { MaxHealthTableModule } from '../../../shared/ui/table';
-import { CommonModule } from '@angular/common';
+import { OpRegApprovalComponent } from './submodules/op-reg-approval/op-reg-approval.component';
 import { MatButtonModule } from '@angular/material/button';
 import {MatTabsModule} from '@angular/material/tabs';
+import { CommonModule } from '@angular/common';
+
 
 @NgModule({
   declarations: [
@@ -18,14 +20,15 @@ import {MatTabsModule} from '@angular/material/tabs';
        FindPatientComponent,
        DupRegMergingComponent,
        RegistrationUnmergingComponent,
-       RegistrationComponent
+       RegistrationComponent,
+       OpRegApprovalComponent
   ],
   imports: [
     RegistrationRoutingModule,
     MaxHealthTableModule,
-    CommonModule,
     MatButtonModule,
-    MatTabsModule
+    MatTabsModule,
+    CommonModule
   ],
   exports: [],
   providers: [],
