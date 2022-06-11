@@ -1,1 +1,50 @@
-<p>dup-reg-merging works!</p>
+<form class="example-form">  
+    <table class="example-full-width" cellspacing="0"><tr>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="First" [(ngModel)]="name" [ngModelOptions]="{standalone: true}">
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Mobile.No</mat-label>
+        <input matInput placeholder="879787878"[(ngModel)]="mobile" [ngModelOptions]="{standalone: true}">
+    </mat-form-field></td>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>DOB</mat-label>
+        <input matInput placeholder="11-09-1999" [(ngModel)]="dob" [ngModelOptions]="{standalone: true}">
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Email ID</mat-label>
+        <input matInput placeholder="abc@gmail.com" [(ngModel)]="email" [ngModelOptions]="{standalone: true}">
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Health ID</mat-label>
+        <input matInput placeholder="H001" [(ngModel)]="healthId" [ngModelOptions]="{standalone: true}">
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Aadhaar ID</mat-label>
+        <input matInput #postalCode maxlength="5" placeholder="82394709324934" value="" [(ngModel)]="aadhaarId" [ngModelOptions]="{standalone: true}">        
+      </mat-form-field></td>
+      <td><button mat-raised-button color="primary" class="col-m3" type="button" style="text-align:center" (click)="searchPatient()">Search</button></td>
+    </tr></table>
+  </form>
+<section class="absolute left-0 ml-10 shadow-1 maincrd">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+      <span class="float-left">
+          <a mat-tab-link>Duplicate Registration Merging</a>        
+      </span>       
+    </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+  <div class="maingrid">
+    <div class="mx-12" >
+      <ng-container *ngIf="showpatient">
+      <maxhealth-table  [config]="config" [data]="results" #table></maxhealth-table >
+  </ng-container>
+  
+  </div>
+</div>
+  <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+</section>
+
+
+
+
