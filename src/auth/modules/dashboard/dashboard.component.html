@@ -1,10 +1,9 @@
 <!-- <maxhealth-header></maxhealth-header> -->
 
-<section class="w-full">   
-    
-    <div class="table mx-6">
-        <ng-container *ngIf="apiProcessing">
-            <maxhealth-table  [config]="config" [data]="patientList"></maxhealth-table>
-        </ng-container>
-    </div>
+<section class="w-full">
+  <div class="table mx-6">
+    <ng-container *ngIf="apiProcessing">
+      <maxhealth-table [config]="config" [data]="patientList"></maxhealth-table>
+    </ng-container>
+  </div>
 </section>
