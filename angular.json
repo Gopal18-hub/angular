@@ -1252,8 +1252,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/auth/src/assets",
-              "silent-refresh.component.html",
+              "src/auth/src/assets",              
               "oidc-client.min.js"
             ],
             "styles": [

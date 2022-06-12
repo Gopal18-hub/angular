@@ -20,6 +20,8 @@ export class QuestionBase<T>{
   readonly: boolean;
   generateOptions: any;
   step: number;
+  elementRef: any;
+  customErrorMessage:string;
 
   constructor(options: {
       value?: T,
@@ -42,7 +44,9 @@ export class QuestionBase<T>{
       replaceValue?: string,
       readonly?: boolean,
       generateOptions?: any,
-      step?: number
+      step?: number,
+      elementRef?: any,
+      customErrorMessage?:string
     } = {}) {
     this.value = options.value || options.defaultValue;
     this.defaultValue = options.defaultValue;
@@ -69,5 +73,7 @@ export class QuestionBase<T>{
     if (options.maximum) {
       this.maximum = options.maximum;
     }
+    this.elementRef = options.elementRef || '';
+    this.customErrorMessage = options.customErrorMessage || '';
   }
 }

@@ -1,13 +1,13 @@
-import { locationmodel } from "./locationmodel";
-import { stationmodel } from "./stationmodel";
+import { LocationModel } from "./locationmodel";
+import { StationModel } from "./stationmodel";
 
-export class userlocationstationdatamodel{
-    locations:locationmodel[];
-    stations:stationmodel[];
+export class UserLocationStationdataModel{
+    locations:LocationModel[];
+    stations:StationModel[];
     userId:Number;   
     constructor(
-        locations:locationmodel[],
-        stations:stationmodel[],
+        locations:LocationModel[],
+        stations:StationModel[],
         userId:Number,
     )
     {

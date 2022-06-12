@@ -1,28 +1,27 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { PatientSearchModel } from '../../../../../out_patients/core/models/patientSearchModel';
+import { Component, OnInit } from '@angular/core';
+import { PatientSearchModel } from  '../../../auth/core/models/patientsearchmodel';
 import { environment } from '@environments/environment';
-import { HttpService } from '../../../../../shared/services/http.service';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
+import { HttpService } from '../../../shared/services/http.service';
+import { ApiConstants } from '../../../auth/core/constants/ApiConstants';
 
 @Component({
-  selector: 'find-patient',
-  templateUrl: './find-patient.component.html',
-  styleUrls: ['./find-patient.component.scss']
+  selector: 'auth-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class FindPatientComponent implements OnInit {
+export class DashboardComponent implements OnInit {
+
   
   patientList:PatientSearchModel[]=[];
-  isAPIProcess:boolean=false;
+  apiProcessing:boolean=false;
 
   config: any  = {
-    dateformat: 'dd/MM/yyyy',
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','category'],
     columnsInfo: {
       maxid : {
         title: 'MAX ID',
-        type: 'number'
+        type: 'number'        
       },
       ssn : {
         title: 'SSN',
@@ -60,18 +59,20 @@ export class FindPatientComponent implements OnInit {
         title: 'Category'
       }
     }
-  }  
+  }
   constructor(private http: HttpService) { }
 
   ngOnInit(): void {
+
     this.getAllpatients().subscribe((resultData) => {
-      this.patientList  = resultData ;
-      this.isAPIProcess = true;  
-      console.log(this.patientList);
-    })
+      this.patientList  = resultData;
+      this.apiProcessing = true; 
+    
+    });
   }
 
-   getAllpatients(){
-    return this.http.get(ApiConstants.searchPatientApiDefault);    
+  getAllpatients(){
+    return this.http.getExternal(ApiConstants.searchPatientDefault);    
   }
+
 }

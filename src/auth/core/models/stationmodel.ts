@@ -1,4 +1,4 @@
-export class stationmodel{
+export class StationModel{
     stationid: number;
     stationName: string;
     hspLocationId: number;

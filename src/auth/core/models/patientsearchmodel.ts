@@ -1,5 +1,5 @@
-export class getallpatient{
-   
+export class PatientSearchModel
+{
     maxid: string;
     ssn: string;
     patientName: string;
@@ -20,8 +20,7 @@ export class getallpatient{
     mergeLinked: string;
     id:number;
     
-    constructor(
-        
+    constructor(        
         maxid: string,
         ssn: string,
         patientName: string,
@@ -39,27 +38,27 @@ export class getallpatient{
         cghs: boolean,
         mergeLinked: string,
         firstName:string,
-    lastName:string,
-    id:number)
+        lastName:string,
+        id:number)
     {
         this.firstName=firstName;
-   this.lastName= lastName;
-       this.maxid= maxid;
-       this.ssn= ssn;
-       this.patientName= patientName;
-       this.age= age;
-       this.gender= gender;
-       this.completeAddress= completeAddress;
-       this.place= place;
-       this.phone= phone;
-       this.date= date;
-       this.dob= dob;
-       this.pEmail= pEmail;
-       this.hotList= hotList;
-       this.vip= vip;
-       this.od= od;
-       this.cghs= cghs;
-       this.mergeLinked= mergeLinked;
-       this.id=id;
+        this.lastName= lastName;
+        this.maxid= maxid;
+        this.ssn= ssn;
+        this.patientName= patientName;
+        this.age= age;
+        this.gender= gender;
+        this.completeAddress= completeAddress;
+        this.place= place;
+        this.phone= phone;
+        this.date= date;
+        this.dob= dob;
+        this.pEmail= pEmail;
+        this.hotList= hotList;
+        this.vip= vip;
+        this.od= od;
+        this.cghs= cghs;
+        this.mergeLinked= mergeLinked;
+        this.id=id;
     }
 }

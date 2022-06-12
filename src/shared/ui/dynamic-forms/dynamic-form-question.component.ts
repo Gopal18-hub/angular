@@ -1,14 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { QuestionBase }     from './interface/question-base';
 import { QuestionControlService }    from './service/question-control.service';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'maxhealth-question',
   templateUrl: './dynamic-form-question.component.html',
   styleUrls: ['./dynamic-form.scss']
 })
-export class DynamicFormQuestionComponent implements OnInit {
+export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
 
   @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
@@ -16,8 +18,13 @@ export class DynamicFormQuestionComponent implements OnInit {
   @Input() form: FormGroup = {} as FormGroup
 
   get isValid() { return this.form.controls[this.question.key].valid; }
+  get isCorrect() { return this.form.controls[this.question.key].errors?.['incorrect']; }
 
   passwordHide = true;
+
+  @ViewChild('element') element!:ElementRef; 
+
+  filteredOptions!:Observable<any>;
 
   constructor(private qcs: QuestionControlService) {  }
 
@@ -64,11 +71,33 @@ export class DynamicFormQuestionComponent implements OnInit {
       this.form.controls[this.question.key].valueChanges.subscribe(value=> {
           this.excuteCondition(this.question.conditions, value);
       })
+
+      if(this.question.type == 'autocomplete')
+      {
+        this.filteredOptions = this.form.controls[this.question.key].valueChanges.pipe(startWith(''),
+        map((value:any) => (typeof value === 'string' ? value : value?.title)),
+        map((title:any) => (title ? this._filter(title) : this.question.options.slice())));
+      }      
   }
 
+  displayFn(option:any): string {
+    return option && option.title ? option.title : '';
+  }
+
+  private _filter(title: string): any[] {
+    const filterValue = title.toLowerCase();
+
+    return this.question.options.filter((option:any) => option.title.toLowerCase().includes(filterValue));
+  }
 
   setValue(form: any, key: string, $event: any) {
     form.controls[key].setValue($event.value)
+  }
+
+  ngAfterViewInit(): void {
+    if (this.element) {
+      this.question.elementRef = this.element.nativeElement;
+    }
   }
 
 
