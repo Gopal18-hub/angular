@@ -1,7 +1,7 @@
 <nav class="shadow-1 header-wrapper">
-  <div class="flex justify-between items-center px-4 py-2">
+  <div class="flex justify-between items-center pl-4 py-2">
     <a><img src="assets/brandLogo.svg" /></a>
-    <div class="flex flex-column right-section">
+    <div class="flex flex-column right-section justify-between">
       <div>
         <span class="mr-6">BLK Hospital</span>
         <span class="mr-6">OPD 1 Ground floor</span>
@@ -9,7 +9,7 @@
       </div>
 
       <div>
-        <ul class="flex flex-row list-unstyled">
+        <ul class="flex flex-row list-unstyled main-modules items-center">
           <ng-container *ngFor="let module of modules">
             <ng-container *ngIf="module.moreOptions">
               <li [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">

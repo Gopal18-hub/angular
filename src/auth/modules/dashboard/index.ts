@@ -4,7 +4,7 @@ import { CommonModule } from "@angular/common";
 import { DashboardRoutingModule } from "./routes";
 import { DashboardComponent } from "./dashboard.component";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
-//import{HeaderModule} from '../../../shared/modules/header'
+import { HeaderModule } from "../../../shared/modules/header";
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -13,7 +13,7 @@ import { MaxHealthTableModule } from "../../../shared/ui/table";
     ReactiveFormsModule,
     DashboardRoutingModule,
     MaxHealthTableModule,
-    // HeaderModule
+    HeaderModule,
   ],
   exports: [],
   providers: [],

@@ -60,7 +60,7 @@ $theme: mat-light-theme($primary, $accent);
 @include angular-material-theme($theme);
 
 $custom-typography: mat.define-typography-config(
-  $font-family: "ProximaMedium",
+  $font-family: "proxima",
 );
 @include mat.core($custom-typography);
 
