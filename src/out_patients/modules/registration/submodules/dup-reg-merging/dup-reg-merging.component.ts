@@ -8,6 +8,7 @@ import { MaxTableComponent } from '../../../../../shared/ui/table/max-table.comp
 import { RegistrationUnmergingComponent } from '../registration-unmerging/registration-unmerging.component';
 import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 
@@ -19,7 +20,7 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 export class DupRegMergingComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   results: any;
-  showpatient: boolean = false;
+  isAPIProcess: boolean = false;
   name = '';
   dob = '';
   email = '';
@@ -27,7 +28,15 @@ export class DupRegMergingComponent implements OnInit {
   aadhaarId = '';
   mobile = '';
 
-  @ViewChild("table") tableRows!: MaxTableComponent
+  mergeSearchForm = new FormGroup({
+    name: new FormControl(''),   
+    mobile: new FormControl(''),
+    dob: new FormControl(''),
+    email: new FormControl(''),
+    healthId: new FormControl(''),
+    aadhaarId:new FormControl('')
+  });
+  // @ViewChild("table") tableRows!: MaxTableComponent
 
   constructor(private http: HttpService, public matDialog: MatDialog) { }
 
@@ -87,7 +96,7 @@ export class DupRegMergingComponent implements OnInit {
     this.patientList = [];
     this.getAllpatientsBySearch().subscribe((resultData) => {     
       this.results = resultData;
-      this.showpatient = true;     
+      this.isAPIProcess = true;     
     })  
 
   }
