@@ -8,6 +8,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderModule } from '../../../shared/modules/header';
 
 import { BillingModule } from '@modules/billing';
+import { RegistrationModule } from '@modules/registration';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MaxHealthSnackBarModule } from '../../../shared/ui/snack-bar';
+import { TokenInterceptor } from '../../../shared/services/interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -18,9 +22,16 @@ import { BillingModule } from '@modules/billing';
     AppRoutingModule,
     BrowserAnimationsModule,
     HeaderModule,
-    BillingModule
+    BillingModule,
+    RegistrationModule,
+    HttpClientModule,
+    MaxHealthSnackBarModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

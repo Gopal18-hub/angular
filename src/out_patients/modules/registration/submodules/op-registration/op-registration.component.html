@@ -1,0 +1,22 @@
+<div class="opd-reg-wrapper mx-6  items-center justify-center">
+<!-- <p>op-registration works!</p> -->
+<div class=" pt-3 pl-5 w-screen opd-reg-wrapper-ribbon">
+    <button mat-button class="p-1 h-full opd-reg-wrapper-ribbon-btn" >OP Registration</button>
+</div>
+<div class="shadow-2  h-screen w-screen opd-reg-wrapper-box  p-8 border-radius-xxlg">
+    registrationFormData
+    <form (ngSubmit)="registationFormSubmit()" [formGroup]="OPRegForm" class="mt-4 mb-6">
+        <div class="flex justify-between">
+            <div *ngFor="let question of questions; let i = index" class="font-xs form-row {{question?.properties?.question_wrapper_class}}" [ngClass]="{'hidden display-none':(question.type == 'hidden')}">
+              <maxhealth-question [question]="question" [form]="OPRegForm" [questions]="questions" [index]="i"></maxhealth-question>
+            </div>
+            <div class="font-xs form-row">
+           <button mat-raised-button color="primary" class="w-1/3" type="submit">Login <mat-icon>east</mat-icon></button>
+          </div>
+             
+            <a routerLink="reset-password" class="mt-2 change-password">Change Password</a>
+        </div>
+      </form>
+    
+</div>
+</div>
