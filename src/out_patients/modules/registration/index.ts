@@ -19,6 +19,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MergeDialogComponent } from './submodules/dup-reg-merging/merge-dialog/merge-dialog.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
+import { AppointmentSearchDialogComponent } from './submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
        RegistrationUnmergingComponent,
        RegistrationComponent,
        OpRegApprovalComponent,
-          MergeDialogComponent
+        MergeDialogComponent,
+          AppointmentSearchComponent,
+          AppointmentSearchDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
@@ -48,15 +52,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     DynamicFormsModule,
     ReactiveFormsModule,
     MatIconModule 
-
-   
-    
-    
-
-
   ],
   exports: [],
   providers: [],
+  entryComponents:[AppointmentSearchComponent],
   bootstrap: []
 })
 export class RegistrationModule { }
