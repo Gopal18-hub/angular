@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
   
   patientList:PatientSearchModel[]=[];
-  showpatient:boolean=false;
+  apiProcessing:boolean=false;
 
   config: any  = {
     selectBox : false,
@@ -65,8 +65,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
 
     this.getAllpatients().subscribe((resultData) => {
-      this.patientList  = resultData as PatientSearchModel[];
-      this.showpatient = true; 
+      this.patientList  = resultData;
+      this.apiProcessing = true; 
     
     });
   }
