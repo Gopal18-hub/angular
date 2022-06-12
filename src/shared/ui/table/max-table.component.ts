@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort, Sort} from '@angular/material/sort';
@@ -10,7 +10,7 @@ import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
   templateUrl: './max-table.component.html',
   styleUrls: ['./max-table.component.scss']
 })
-export class MaxTableComponent implements OnInit, AfterViewInit  {
+export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
 
   @Input() config: any;
 
@@ -28,6 +28,16 @@ export class MaxTableComponent implements OnInit, AfterViewInit  {
   constructor(private _liveAnnouncer: LiveAnnouncer) { }
 
   ngOnInit(): void {
+    this.dataSource = new MatTableDataSource<any>(this.data);
+    this.displayColumnsInfo = this.config.columnsInfo;
+    this.displayedColumns = this.config.displayedColumns;
+    this.dateformat = this.config.dateformat;
+    if(this.config.selectBox) {
+      this.displayedColumns.unshift('select');
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
