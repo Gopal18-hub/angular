@@ -1,5 +1,6 @@
 import { environment } from "@environments/environment";
 
+
 export namespace ApiConstants {
   //PATIENT AGE RESPONSE TYPE ageTypeModel[]
   export const ageTypeLookUp =
@@ -165,5 +166,28 @@ export namespace ApiConstants {
   export const similarSoundPatientDetail =
   environment.PatientApiUrl +"/api/patient/getsimilarsoundpatient";
 
+  //Find Patient API Call 
+  export const searchPatientApiDefault= environment.PatientApiUrl+'api/patient/getallpatientssearch';
+
+  //PATIENT TITLE MR/MRS etc.. RESPOSE TYPE sourceOfInfoModel[] NEED TO CANCATINATE $hspLocation/0 IN ENDPOINT
+  export const searchPatientApi = (maxId?: string,
+    SSN?:string,
+    Name?:string,
+    PhoneNumber?:string,
+    DOB?:string,
+    AadhaarId?:string,
+    HealthId?:string
+    ) => {
+    return (
+      environment.PatientApiUrl + 'api/patient/getallpatientssearch?MaxId='+maxId+'&SSN='+SSN+'&Name='+Name+'&PhoneNumber='+PhoneNumber+'&DOB='+DOB+'&AadhaarId='+AadhaarId+'&HealthId='+HealthId
+    );
+  };
+
+  export const mergePatientApi= (ActivePatientId:number, userId:number)=>
+  {
+    return (
+      environment.PatientApiUrl + 'api/patient/patientmerging/'+ActivePatientId+'/'+userId
+    );
+  };
     
 }

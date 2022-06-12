@@ -8,7 +8,7 @@
       <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
     <div class="maingrid flex">
     <div class="table p-3">
-        <ng-container *ngIf="showpatient">
+        <ng-container *ngIf="isAPIProcess">
             <maxhealth-table  [config]="config" [data]="patientList"></maxhealth-table>
         </ng-container>
     </div>

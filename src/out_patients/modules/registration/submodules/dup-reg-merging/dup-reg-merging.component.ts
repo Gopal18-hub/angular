@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { getallpatient } from '../../../../../out_patients/core/models/findpatientmodel';
+import { PatientSearchModel } from '../../../../../out_patients/core/models/patientSearchModel';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MaxTableComponent } from '../../../../../shared/ui/table/max-table.component';
 import { RegistrationUnmergingComponent } from '../registration-unmerging/registration-unmerging.component';
 import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
+import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 
 
 
@@ -16,7 +17,7 @@ import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
   styleUrls: ['./dup-reg-merging.component.scss']
 })
 export class DupRegMergingComponent implements OnInit {
-  patientList: getallpatient[] = [];
+  patientList: PatientSearchModel[] = [];
   results: any;
   showpatient: boolean = false;
   name = '';
@@ -85,17 +86,16 @@ export class DupRegMergingComponent implements OnInit {
   searchPatient() {    
     this.patientList = [];
     this.getAllpatientsBySearch().subscribe((resultData) => {     
-      this.results = resultData as getallpatient[];
+      this.results = resultData;
       this.showpatient = true;     
     })  
 
-  } 
-
-
+  }
+  
   getAllpatientsBySearch() {
-    return this.http.get(environment.PatientApiUrl + 'api/patient/getallpatientssearch?MaxId=' + '' + '&SSN=' + '' + '&Name=' + this.name + '&PhoneNumber=' + this.mobile + '&DOB=' + this.dob + '&AadhaarId=' + this.aadhaarId + '&HealthId=' + this.healthId);
+     return this.http.get(ApiConstants.searchPatientApi('','', this.name,this.mobile,this.dob, this.aadhaarId,this.healthId));
   }
   patientMerging() {
-    return this.http.get(environment.PatientApiUrl + 'api/patient/patientmerging/' + "activateUserid" + "userid")
+    return this.http.post(ApiConstants.mergePatientApi(0,0),{});
   }
 }
