@@ -1,77 +1,86 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 @font-face {
-    font-family: "proxima";
-    src: local("proxima"), url(./font/proxima/ProximaNova.otf) format("truetype");
+  font-family: "proxima";
+  src: local("proxima"), url(./font/proxima/ProximaNova.otf) format("truetype");
 }
 @font-face {
-    font-family: "ProximaRegular";
-    src: local("proxima"), url(./font/proxima/ProximaNovaThin.otf) format("truetype");
+  font-family: "ProximaRegular";
+  src: local("proxima"),
+    url(./font/proxima/ProximaNovaThin.otf) format("truetype");
 }
 
 @font-face {
-    font-family: "ProximaMedium";
-    src:local("proxima"), url(./font/proxima/ProximaNovaMedium.otf) format("truetype");
+  font-family: "ProximaMedium";
+  src: local("proxima"),
+    url(./font/proxima/ProximaNovaMedium.otf) format("truetype");
 }
 
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 @include mat-core();
 
-
 $max-brand: (
-    50: #ffffff,
-    100: #dde6f3,
-    200: #004084,
-    300: #7fa3d1,
-    400: #6992c9,
-    500: #5282c1,
-    600: #4072b4,
-    700: #38649d,
-    800: #305687,
-    900: #284770,
-    A100: #ffffff,
-    A200: #dde6f3,
-    A400: #6992c9,
-    A700: #38649d,
-    contrast: (
-        50: $black-87-opacity,
-        100: $black-87-opacity,
-        200: white,
-        300: $black-87-opacity,
-        400: $black-87-opacity,
-        500: white,
-        600: white,
-        700: white,
-        800: white,
-        900: white,
-        A100: $black-87-opacity,
-        A200: $black-87-opacity,
-        A400: $black-87-opacity,
-        A700: white,
-    )
+  50: #ffffff,
+  100: #dde6f3,
+  200: #004084,
+  300: #7fa3d1,
+  400: #6992c9,
+  500: #5282c1,
+  600: #4072b4,
+  700: #38649d,
+  800: #305687,
+  900: #284770,
+  A100: #ffffff,
+  A200: #dde6f3,
+  A400: #6992c9,
+  A700: #38649d,
+  contrast: (
+    50: $black-87-opacity,
+    100: $black-87-opacity,
+    200: white,
+    300: $black-87-opacity,
+    400: $black-87-opacity,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: $black-87-opacity,
+    A200: $black-87-opacity,
+    A400: $black-87-opacity,
+    A700: white,
+  ),
 );
 
-$primary: mat-palette($max-brand,200);
-$accent: mat-palette($mat-orange,200);
+$primary: mat-palette($max-brand, 200);
+$accent: mat-palette($mat-orange, 200);
 
 $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
 $custom-typography: mat.define-typography-config(
-  $font-family: "proxima"
+  $font-family: "ProximaMedium",
 );
 @include mat.core($custom-typography);
 
 :root {
-    --primary-color: #004084
+  --primary-color: #004084;
 }
 
-// mat-form-field{
-//     font-size: 12px;
-//     &.mat-form-field-appearance-outline{
-//         .mat-form-field-infix{
-//             padding: 0 !important;
-//         }
-//     } 
-// }
+mat-form-field {
+  font-size: 14px;
+  &.mat-form-field-appearance-outline {
+    .mat-form-field-infix {
+      padding: 0.9em 0 !important;
+      border-top: 0 !important;
+    }
+    .mat-form-field-suffix {
+      top: 0.4em;
+    }
+  }
+}
+
+.mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
+  padding: 0 !important;
+}
