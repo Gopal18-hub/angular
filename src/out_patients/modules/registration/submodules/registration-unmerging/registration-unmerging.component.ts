@@ -3,6 +3,7 @@ import { getmergepatientsearch } from '../../../../../out_patients/core/models/g
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -16,6 +17,11 @@ export class RegistrationUnmergingComponent implements OnInit {
   showunmerge:boolean=false;
   maxid: any='' ;
   ssn:any='';
+
+  unmergeSearchForm = new FormGroup({
+    maxid: new FormControl(''),   
+    ssn: new FormControl('')
+  });
 
   config: any  = {
     dateformat: 'dd/MM/yyyy',
