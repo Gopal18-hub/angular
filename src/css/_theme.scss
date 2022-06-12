@@ -84,3 +84,34 @@ mat-form-field {
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
 }
+
+.max-body-wrapper {
+  height: calc(100vh - 140px);
+  width: calc(100vw - 2em);
+  .banner {
+    background: #004084;
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid #004084;
+    height: 66px;
+    .mat-tab-links {
+      height: 100%;
+      ul {
+        li {
+          a {
+            border-radius: 7px 7px 0px 0px;
+            font-weight: 800;
+            color: #004084;
+            background-color: #fff;
+            height: 56px;
+            opacity: 1;
+            font-size: 18px;
+          }
+        }
+      }
+      .mat-ink-bar {
+        display: none;
+      }
+    }
+  }
+}
