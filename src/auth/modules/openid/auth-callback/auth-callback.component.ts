@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../shared/services/auth.service';
 import * as Oidc from 'oidc-client';
 
+
 @Component({
   selector: 'auth-auth-callback',
   templateUrl: './auth-callback.component.html',
@@ -16,6 +17,7 @@ export class AuthCallbackComponent implements OnInit {
 
     this.auth.completeAuthentication().then((user)=>{
       console.log(user.access_token); 
+      this.auth.setToken(user.access_token);
       localStorage.setItem('role',user.profile['role']); 
     }).catch((e)=>{
       console.log(e);

@@ -9,8 +9,8 @@ export class AuthGuardService implements CanActivate {
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let url: string = state.url;
     if (!this.auth.isAuthenticated()) {
-     // this.router.navigate(['auth'], { queryParams: { redirect: url } });
-      this.auth.startAuthentication();//added for redirecting to login page
+      //this.router.navigate(['login'], { queryParams: { redirect: url } });  
+      this.auth.startAuthentication();   
       return false;
     }
     //await this.auth.me();

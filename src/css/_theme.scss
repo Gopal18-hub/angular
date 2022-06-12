@@ -66,3 +66,12 @@ $custom-typography: mat.define-typography-config(
 :root {
     --primary-color: #004084
 }
+
+// mat-form-field{
+//     font-size: 12px;
+//     &.mat-form-field-appearance-outline{
+//         .mat-form-field-infix{
+//             padding: 0 !important;
+//         }
+//     } 
+// }

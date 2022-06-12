@@ -1,14 +1,19 @@
+import { Injectable } from '@angular/core';
 import { HttpHandler, HttpRequest, HttpClient } from '@angular/common/http';
-import { HttpService } from 'src/shared/services/http.service';
+import { HttpService } from '../../../shared/services/http.service';
 import { Observable } from 'rxjs';
-import { ApiConstants } from 'src/auth/core/constants/ApiConstants';
-import { TokenInterceptor } from 'src/shared/services/interceptors/token.interceptor'
+import { ApiConstants } from '../../../auth/core/constants/ApiConstants';
 
 
 
+@Injectable({
+  providedIn: 'root'
+})
 export class ADAuthService {
 
-    constructor(public http: HttpService, public tokeninteceptor: TokenInterceptor) { }
+    constructor(public http: HttpService) {
+
+     }
 
     public authenticateUserName(username:string):any
     {
@@ -17,8 +22,7 @@ export class ADAuthService {
 
     public authenticate(username:string,password:string)
     {
-        let returnUrl;
-        //const headers = { 'Content-Type':'application/json'};
+        let returnUrl;       
         const query = window.location.search.substring(1);
         const vars = query.split('&');
         for (let i = 0; i < vars.length; i++) {
@@ -26,8 +30,7 @@ export class ADAuthService {
           if (decodeURIComponent(pair[0]) == "ReturnUrl") {
             returnUrl = decodeURIComponent(pair[1]);
           }
-        }          
-        
+        }   
         return this.http.postExternal(ApiConstants.autheticate,JSON.stringify({
                 username,
                 password,

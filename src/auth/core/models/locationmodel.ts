@@ -1,4 +1,4 @@
-export class locationmodel{
+export class LocationModel{
     organizationName: string;
     iaCode: string;
     hspLocationId: number;
