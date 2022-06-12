@@ -18,6 +18,7 @@ export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
   @Input() form: FormGroup = {} as FormGroup
 
   get isValid() { return this.form.controls[this.question.key].valid; }
+  get isCorrect() { return this.form.controls[this.question.key].errors?.['incorrect']; }
 
   passwordHide = true;
 

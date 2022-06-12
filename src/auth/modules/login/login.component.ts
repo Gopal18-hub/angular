@@ -21,6 +21,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public locationdetail:LocationModel|undefined;
   public stationdetail:StationModel|undefined;
   authStatus:boolean=false;
+  public username:string = '';
+  Authentication:boolean=true;
 
   loginFormData = {
     title: "",
@@ -29,7 +31,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       username : {
           type: 'string',
           title: 'Username',
-          required: true
+          required: true          
       },
       password: {
           type: 'password',
@@ -66,12 +68,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener('blur', this.validateUserName.bind(this));
+    this.questions[0].elementRef.focus();
   }
 
+  reLoginForm(){
+    this.Authentication = true;
+    setTimeout(()=>{
+      this.questions[0].elementRef.focus();
+    },1 );
+
+  }
   validateUserName()
   {
-     let username = this.loginForm.value.username;
-      this.adauth.authenticateUserName(username).subscribe((data:any)=>{
+     this.username = this.loginForm.value.username;
+      this.adauth.authenticateUserName(this.username).subscribe((data:any)=>{
+        this.loginForm.controls['password'].enable();   
+        this.loginForm.controls['location'].enable(); 
+        this.loginForm.controls['station'].enable();   
           this.userlocationandstation = data as UserLocationStationdataModel;
           this.locationList = this.userlocationandstation.locations;
           this.stationList = this.userlocationandstation.stations;
@@ -81,14 +94,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
             );
 
           this.userId= Number(this.userlocationandstation.userId);
-          this.cookie.set('UserId',this.userId.toString());  
-          
+
           this.loginForm.controls['location'].valueChanges.subscribe(value=>{
-            console.log(value);
+            console.log(value);     
+            this.locationdetail = this.locationList.filter(l=>l.hspLocationId === value.value)[0];      
             this.questions[3].options = this.stationList.filter(e=>e.hspLocationId===value.value)
             .map(s=>{return {title:s.stationName, value:s.stationid} });
               
           });
+
+          this.loginForm.controls['station'].valueChanges.subscribe(value=>{
+            this.stationdetail = this.stationList.filter(s=>s.stationid === value.value)[0];
+          })
+      },
+      (error:any)=>{        
+        this.loginForm.controls['username'].setErrors({'incorrect': true});
+        this.questions[0].customErrorMessage = error.error;
+        this.loginForm.controls['password'].disable(); 
+        this.loginForm.controls['location'].disable(); 
+        this.loginForm.controls['station'].disable();   
+
       });
   }
 
@@ -100,23 +125,38 @@ export class LoginComponent implements OnInit, AfterViewInit {
               status = data["status"]; 
               if(status == "Valid")    
               {                
-                 this.authStatus=true;                                   
-                 window.location = data["redirectUrl"];          
+                 this.authStatus=true;   
+                 this.cookie.set('UserName',this.username);
+                 this.cookie.set('UserId', this.userId.toString());   
+                 this.cookie.set('LocationIACode',this.locationdetail!.iaCode);
+                 this.cookie.set('HSPLocationId',this.locationdetail!.hspLocationId.toString()); 
+                 this.cookie.set('Location',this.locationdetail!.organizationName);
+                 this.cookie.set('Station',this.stationdetail!.stationName);
+                 window.location = data["redirectUrl"]; 
+                 this.Authentication=true;         
               }
               else if(status == "InvalidUser")
               {
-                this.authStatus=false;           
+                this.authStatus=false;   
+                this.Authentication=false;   
+                this.loginForm.reset();        
               }
               else if(status == "UserValidationError") 
               {
                 this.authStatus=false;
+                this.Authentication=false; 
+                this.loginForm.reset();
               }   
               else 
               {
                 this.authStatus=false;
+                this.Authentication=false; 
+                this.loginForm.reset();
               } 
           },(error)=>{
             this.authStatus=false;
+            this.Authentication=false; 
+            this.loginForm.reset();
           });
           //need to add for display authentication error
         //return this.authStatus;
