@@ -1,32 +1,31 @@
 <section class="absolute left-0 ml-10 shadow-1 maincrd">
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-        <span class="float-left">
-            <a mat-tab-link *ngFor="let link of links"
-            (click)="activeLink = link"
-            [active]="activeLink == link"> {{link}} </a>
-            <a mat-tab-link>Op Registration Approval</a>
-            <a mat-tab-link>Hot Listing Approval</a>
-            <a mat-tab-link>Op Refund Approval</a>
-            <a mat-tab-link disabled></a>
-        </span>
-        <span class="ml-7">
-            <a mat-tab-link *ngFor="let link of links"
-            (click)="activeLink = link"
-            [active]="activeLink == link"> {{link}} </a>
-            <a mat-tab-link>View Pending Request</a>
-            <a mat-tab-link>Approved Requests</a>
-            <a mat-tab-link>Reject Requests</a>
-        </span>
-      </nav>
-      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-    <div class="maingrid flex">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <span class="float-left">
+      <a mat-tab-link>Op Registration Approval</a>
+      <a mat-tab-link>Hot Listing Approval</a>
+      <a mat-tab-link>Op Refund Approval</a>
+      <a mat-tab-link>View Pending Request</a>
+      <a mat-tab-link>Approved Requests</a>
+      <a mat-tab-link>Reject Requests</a>
+    </span>
+  </nav>
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+  <div class="maingrid flex">
     <div class="table p-3">
-        <maxhealth-table [config]="config" [data]="data"></maxhealth-table>
+      <maxhealth-table [config]="config" [data]="data"></maxhealth-table>
     </div>
     <div class="self-end float-right absolute right-30">
-        <button mat-raised-button color="primary" class="w-1/2 relative right-15" type="submit">Approve</button>
-        <button mat-raised-button color="primary" class="w-1/2" type="submit">Reject</button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="w-1/2 relative right-15"
+        type="submit"
+      >
+        Approve
+      </button>
+      <button mat-raised-button color="primary" class="w-1/2" type="submit">
+        Reject
+      </button>
     </div>
-    
-</div>
+  </div>
 </section>

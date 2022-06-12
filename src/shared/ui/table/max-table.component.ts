@@ -39,7 +39,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     this.dateformat = this.config.dateformat;
-    if (this.config.selectBox) {
+    if (this.config.selectBox && !this.displayedColumns.includes("select")) {
       this.displayedColumns.unshift("select");
     }
   }
