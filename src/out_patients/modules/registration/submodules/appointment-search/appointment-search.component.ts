@@ -16,8 +16,6 @@ export class AppointmentSearchComponent implements OnInit {
 
   openDialog()
 {
-  this.matDialog.open(AppointmentSearchDialogComponent,{})
+  this.matDialog.open(AppointmentSearchDialogComponent,{width:'80vw'})
 }
-
-
 }
