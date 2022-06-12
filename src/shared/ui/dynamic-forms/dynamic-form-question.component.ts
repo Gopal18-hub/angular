@@ -32,6 +32,8 @@ export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
 
   passwordHide = true;
 
+  arrowIcon = "arrow_drop_down";
+
   @ViewChild("element") element!: ElementRef;
 
   filteredOptions!: Observable<any>;
