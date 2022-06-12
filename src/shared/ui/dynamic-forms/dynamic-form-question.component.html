@@ -297,6 +297,7 @@
           [matAutocomplete]="auto"
           #element
         />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt">
             {{ opt.title }}
