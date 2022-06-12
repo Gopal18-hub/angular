@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { getallpatient } from '../../../../../out_patients/core/models/findpatientmodel';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 @Component({
   selector: 'find-patient',
@@ -9,11 +10,12 @@ import { HttpService } from '../../../../../shared/services/http.service';
   styleUrls: ['./find-patient.component.scss']
 })
 export class FindPatientComponent implements OnInit {
-
+  
   patientList:getallpatient[]=[];
   showpatient:boolean=false;
 
   config: any  = {
+    dateformat: 'dd/MM/yyyy',
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','category'],
     columnsInfo: {
@@ -63,8 +65,7 @@ export class FindPatientComponent implements OnInit {
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
       this.patientList  = resultData as getallpatient[];
-      this.showpatient = true;
-  
+      this.showpatient = true;  
       console.log(this.patientList);
     })
   }

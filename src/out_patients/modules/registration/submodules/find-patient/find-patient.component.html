@@ -1,5 +1,17 @@
-<div class="mx-6" >
-    <ng-container *ngIf="showpatient">
-    <maxhealth-table  [config]="config" [data]="patientList"></maxhealth-table>
-</ng-container>
+
+<section class="absolute left-0 ml-10 shadow-1 maincrd">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+        <span class="float-left">
+            <a mat-tab-link> Find Patient</a>        
+        </span>       
+      </nav>
+      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    <div class="maingrid flex">
+    <div class="table p-3">
+        <ng-container *ngIf="showpatient">
+            <maxhealth-table  [config]="config" [data]="patientList"></maxhealth-table>
+        </ng-container>
+    </div>
 </div>
+</section>
+

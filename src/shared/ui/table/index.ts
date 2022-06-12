@@ -11,7 +11,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {A11yModule} from '@angular/cdk/a11y';
 import {MatSortModule} from '@angular/material/sort';
-
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 
@@ -26,7 +26,8 @@ import {MatSortModule} from '@angular/material/sort';
     MatTableModule,
     MatCheckboxModule,
     A11yModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule
   ],
   exports:[ MaxTableComponent ],
   declarations: [   
