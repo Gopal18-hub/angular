@@ -1,68 +1,54 @@
 <nav class="shadow-1 header-wrapper">
-    <div class="flex justify-between items-center px-4 py-2">
-        <a><img src="assets/brandLogo.svg" ></a>
-        <div class="flex flex-column right-section">
-            <div>
-                <span class="mr-6">BLK Hospital</span>
-                <span class="mr-6">OPD 1 Ground floor</span>
-                <span class="mr-4">Welcome Username</span>
+  <div class="flex justify-between items-center px-4 py-2">
+    <a><img src="assets/brandLogo.svg" /></a>
+    <div class="flex flex-column right-section">
+      <div>
+        <span class="mr-6">BLK Hospital</span>
+        <span class="mr-6">OPD 1 Ground floor</span>
+        <span class="mr-4">Welcome Username</span>
+      </div>
 
+      <div>
+        <ul class="flex flex-row list-unstyled">
+          <ng-container *ngFor="let module of modules">
+            <ng-container *ngIf="module.moreOptions">
+              <li [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
+                {{ module.title }}
+              </li>
+            </ng-container>
+            <ng-container *ngIf="!module.moreOptions">
+              <li class="mr-4 cursor-pointer">
+                {{ module.title }}
+              </li>
+            </ng-container>
+          </ng-container>
+        </ul>
+        <mat-menu #menu="matMenu" class="header-menu">
+          <div class="flex flex-rows w-full">
+            <div class="flex flex-column w-1/2">
+              <button mat-button>Front Office</button>
+              <button mat-button>Marketing</button>
+              <button mat-button>Health Checkup</button>
             </div>
-            
-            <div>
-                <ul class="flex flex-row list-unstyled">
-                    <ng-container *ngFor="let module of modules" >
-                        <ng-container *ngIf="module.moreOptions">
-                            <li 
-                            [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
-                                    {{module.title}}
-                        </li>
-                        </ng-container>
-                        <ng-container *ngIf="!module.moreOptions">
-                            <li class="mr-4 cursor-pointer">
-                                    {{module.title}}
-                            </li>
-                        </ng-container>
-                       
-                    </ng-container>
-                  
-                </ul>
-                <mat-menu #menu="matMenu" >
-                     <div class="flex flex-rows ">
-                         <div class="flex flex-column ">
-                              <button mat-menu item class="matmenuclass">
-                                  Front Office
-                              </button>
-                              <button mat-button>
-                               Marketing
-                            </button>
-                            <button mat-button>
-                                Health Checkup
-                            </button>
-                         </div>
-                         <div class="flex flex-column w-1/2">
-                            <button mat-button>
-                                Front Office
-                            </button>
-                            <button mat-button>
-                              Front Office
-                          </button>
-                          <button mat-button>
-                              Front Office
-                          </button>
-                         </div>
+            <div class="flex flex-column w-1/2">
+              <mat-checkbox class="example-margin"
+                >Direct to different location</mat-checkbox
+              >
+              <mat-label>Location</mat-label>
+              <mat-form-field appearance="outline">
+                <mat-select name="location"> </mat-select>
+              </mat-form-field>
+              <mat-label>Station</mat-label>
 
-                     </div>
-                </mat-menu>       
+              <mat-form-field appearance="outline">
+                <mat-select name="station"> </mat-select>
+              </mat-form-field>
             </div>
-        </div>
-           
-        
-        
-        
-
+          </div>
+        </mat-menu>
+      </div>
     </div>
+  </div>
 </nav>
-
 
 <maxhealth-sub-header></maxhealth-sub-header>

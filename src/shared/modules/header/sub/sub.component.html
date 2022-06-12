@@ -1,53 +1,35 @@
 <div class="flex justify-between">
-        <div class="global-search">
-                <form>
-
-                </form>
+  <div class="global-search">
+    <form></form>
+  </div>
+  <div>
+    <ul class="flex flex-row list-unstyled">
+      <ng-container *ngFor="let module of submodules">
+        <ng-container *ngIf="module.moreOptions">
+          <li [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
+            {{ module.title }}
+          </li>
+        </ng-container>
+        <ng-container *ngIf="!module.moreOptions">
+          <li class="mr-4 cursor-pointer">
+            {{ module.title }}
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
+    <mat-menu #menu="matMenu">
+      <div class="flex flex-rows">
+        <div class="flex flex-column">
+          <button mat-menu item class="matmenuclass">Front Office</button>
+          <button mat-button>Marketing</button>
+          <button mat-button>Health Checkup</button>
         </div>
-        <div>
-            <ul class="flex flex-row list-unstyled">
-                <ng-container *ngFor="let module of submodules" >
-                    <ng-container *ngIf="module.moreOptions">
-                        <li 
-                        [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
-                                {{module.title}}
-                    </li>
-                    </ng-container>
-                    <ng-container *ngIf="!module.moreOptions">
-                        <li class="mr-4 cursor-pointer">
-                                {{module.title}}
-                        </li>
-                    </ng-container>
-                   
-                </ng-container>
-              
-            </ul>
-            <mat-menu #menu="matMenu" >
-                <div class="flex flex-rows ">
-                    <div class="flex flex-column ">
-                         <button mat-menu item class="matmenuclass">
-                             Front Office
-                         </button>
-                         <button mat-button>
-                          Marketing
-                       </button>
-                       <button mat-button>
-                           Health Checkup
-                       </button>
-                    </div>
-                    <div class="flex flex-column w-1/2">
-                       <button mat-button>
-                           Front Office
-                       </button>
-                       <button mat-button>
-                         Front Office
-                     </button>
-                     <button mat-button>
-                         Front Office
-                     </button>
-                    </div>
-
-                </div>
-           </mat-menu>   
+        <div class="flex flex-column w-1/2">
+          <button mat-button>Front Office</button>
+          <button mat-button>Front Office</button>
+          <button mat-button>Front Office</button>
         </div>
+      </div>
+    </mat-menu>
+  </div>
 </div>

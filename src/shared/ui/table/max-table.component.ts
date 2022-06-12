@@ -1,17 +1,24 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatSort, Sort} from '@angular/material/sort';
-import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterViewInit,
+  ViewChild,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
+import { SelectionModel } from "@angular/cdk/collections";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSort, Sort } from "@angular/material/sort";
+import { LiveAnnouncer } from "@angular/cdk/a11y";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 
 @Component({
-  selector: 'maxhealth-table',
-  templateUrl: './max-table.component.html',
-  styleUrls: ['./max-table.component.scss']
+  selector: "maxhealth-table",
+  templateUrl: "./max-table.component.html",
+  styleUrls: ["./max-table.component.scss"],
 })
-export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
-
+export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() config: any;
 
   @Input() data: any;
@@ -20,20 +27,20 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = [];
-  displayColumnsInfo: any  = [];
-  dateformat:any;
+  displayColumnsInfo: any = [];
+  dateformat: any;
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private _liveAnnouncer: LiveAnnouncer) { }
+  constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     this.dateformat = this.config.dateformat;
-    if(this.config.selectBox) {
-      this.displayedColumns.unshift('select');
+    if (this.config.selectBox) {
+      this.displayedColumns.unshift("select");
     }
   }
 
@@ -42,8 +49,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     this.dateformat = this.config.dateformat;
-    if(this.config.selectBox) {
-      this.displayedColumns.unshift('select');
+    if (this.config.selectBox) {
+      this.displayedColumns.unshift("select");
     }
   }
 
@@ -51,7 +58,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
-
 
   /** Announce the change in sort state for assistive technology. */
   announceSortChange(sortState: Sort) {
@@ -62,10 +68,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
     } else {
-      this._liveAnnouncer.announce('Sorting cleared');
+      this._liveAnnouncer.announce("Sorting cleared");
     }
   }
-
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -87,9 +92,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges  {
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: any): string {
     if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+      return `${this.isAllSelected() ? "deselect" : "select"} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+    return `${this.selection.isSelected(row) ? "deselect" : "select"} row ${
+      row.position + 1
+    }`;
   }
-
 }

@@ -1,16 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionGroupComponent } from './option-group.component';
+import { OptionGroupComponent } from "./option-group.component";
 
-describe('OptionGroupComponent', () => {
+describe("OptionGroupComponent", () => {
   let component: OptionGroupComponent;
   let fixture: ComponentFixture<OptionGroupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptionGroupComponent ]
-    })
-    .compileComponents();
+      declarations: [OptionGroupComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('OptionGroupComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
