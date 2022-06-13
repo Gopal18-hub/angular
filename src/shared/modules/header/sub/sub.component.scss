@@ -2,7 +2,7 @@
   height: 3.525em;
   align-items: center;
   &-left {
-    width: 40vw;
+    width: 39vw;
     height: 2.625em;
     .home-icon {
       svg {
@@ -32,7 +32,7 @@
     }
   }
   &-right {
-    width: 60vw;
+    width: 61vw;
     background-color: #fff;
     padding: 0 1em;
     border-radius: 0 0 0 1em;
@@ -51,17 +51,17 @@
 
 ::ng-deep {
   .sub-header-menu {
-    width: 42vw;
-    height: 34vh;
+    width: 48vw;
+    height: 24vh;
     overflow: hidden;
     max-width: initial !important;
     .mat-menu-content {
       height: 100%;
       .box {
-        height: 32vh;
+        height: 22vh;
       }
       .box > * {
-        flex: 1 1 calc(32vh / 4);
+        flex: 1 1 calc(20vh / 4);
         justify-content: flex-start;
         text-align: left;
       }
