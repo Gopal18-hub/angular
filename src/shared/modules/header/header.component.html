@@ -155,7 +155,8 @@
     </div>
   </div>
 </nav>
-
-<maxhealth-sub-header
-  [submodules]="activeModule?.childrens"
-></maxhealth-sub-header>
+<ng-container *ngIf="activeModule">
+  <maxhealth-sub-header
+    [submodules]="activeModule?.childrens"
+  ></maxhealth-sub-header>
+</ng-container>
