@@ -1,4 +1,4 @@
-export class getallpatient{
+export class PatientSearchModel{
    
     maxid: string;
     ssn: string;

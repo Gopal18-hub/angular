@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { getallpatient } from '../../../../../out_patients/core/models/findpatientmodel';
+import { PatientSearchModel } from '../../../../../out_patients/core/models/patientSearchModel';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 
 @Component({
   selector: 'find-patient',
@@ -11,8 +12,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 })
 export class FindPatientComponent implements OnInit {
   
-  patientList:getallpatient[]=[];
-  showpatient:boolean=false;
+  patientList:PatientSearchModel[]=[];
+  isAPIProcess:boolean=false;
 
   config: any  = {
     dateformat: 'dd/MM/yyyy',
@@ -64,13 +65,13 @@ export class FindPatientComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
-      this.patientList  = resultData as getallpatient[];
-      this.showpatient = true;  
+      this.patientList  = resultData ;
+      this.isAPIProcess = true;  
       console.log(this.patientList);
     })
   }
 
    getAllpatients(){
-    return this.http.get(environment.PatientApiUrl+'api/patient/getallpatientssearch');    
+    return this.http.get(ApiConstants.searchPatientApiDefault);    
   }
 }
