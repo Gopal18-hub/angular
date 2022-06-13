@@ -41,6 +41,10 @@
     ul {
       height: 2.625em;
       align-items: center;
+      width: 100%;
+      li {
+        width: auto;
+      }
     }
   }
 }
@@ -57,7 +61,7 @@
         height: 32vh;
       }
       .box > * {
-        flex: 1 1 calc(32vh / 5);
+        flex: 1 1 calc(32vh / 4);
         justify-content: flex-start;
       }
     }
