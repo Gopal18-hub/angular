@@ -1,0 +1,16 @@
+.submodule-wrapper {
+  height: 58px;
+  &-left {
+    width: 40vw;
+  }
+  &-right {
+    width: 60vw;
+    background-color: #fff;
+    padding: 0 1em;
+    border-radius: 0 0 0 1em;
+    ul {
+      height: 58px;
+      align-items: center;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   declarations: [HeaderComponent, SubComponent],
@@ -20,6 +21,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
     MatFormFieldModule,
     ReactiveFormsModule,
     FormsModule,
+    RouterModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

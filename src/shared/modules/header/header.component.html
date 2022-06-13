@@ -12,12 +12,19 @@
         <ul class="flex flex-row list-unstyled main-modules items-center">
           <ng-container *ngFor="let module of modules">
             <ng-container *ngIf="module.moreOptions">
-              <li [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
+              <li
+                [matMenuTriggerFor]="menu"
+                class="mr-4 cursor-pointer"
+                [ngClass]="{ active: activeModule?.id == module.id }"
+              >
                 {{ module.title }}
               </li>
             </ng-container>
             <ng-container *ngIf="!module.moreOptions">
-              <li class="mr-4 cursor-pointer">
+              <li
+                class="mr-4 cursor-pointer"
+                [ngClass]="{ active: activeModule?.id == module.id }"
+              >
                 {{ module.title }}
               </li>
             </ng-container>
@@ -51,4 +58,6 @@
   </div>
 </nav>
 
-<maxhealth-sub-header></maxhealth-sub-header>
+<maxhealth-sub-header
+  [submodules]="activeModule?.childrens"
+></maxhealth-sub-header>

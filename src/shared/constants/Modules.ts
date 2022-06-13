@@ -3,13 +3,13 @@ export namespace MaxModules {
     {
       title: "Out Patients",
       id: 1,
-      defaultPath: "",
+      defaultPath: "/out-patients",
       moreOptions: true,
       childrens: [
         {
           id: 11,
           title: "Registration",
-          defaultPath: "",
+          defaultPath: "registration",
           childrens: [
             {
               id: 111,

@@ -8,7 +8,16 @@ import { Component, OnInit, Input } from "@angular/core";
 export class SubComponent implements OnInit {
   @Input() submodules: any;
 
+  activeSubModule: any;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  onRouterLinkActive($event: any, imodule: any) {
+    console.log($event);
+    if ($event) {
+      this.activeSubModule = imodule;
+    }
+  }
 }

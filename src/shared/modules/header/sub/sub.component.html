@@ -1,17 +1,30 @@
-<div class="flex justify-between">
-  <div class="global-search">
+<div class="flex justify-between submodule-wrapper">
+  <div class="global-search submodule-wrapper-left">
     <form></form>
   </div>
-  <div>
+  <div class="submodule-wrapper-right">
     <ul class="flex flex-row list-unstyled">
       <ng-container *ngFor="let module of submodules">
         <ng-container *ngIf="module.moreOptions">
-          <li [matMenuTriggerFor]="menu" class="mr-4 cursor-pointer">
+          <li
+            [matMenuTriggerFor]="menu"
+            class="mr-4 cursor-pointer"
+            [routerLink]="module.defaultPath"
+            routerLinkActive="active-link"
+            (isActiveChange)="onRouterLinkActive($event, module)"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
             {{ module.title }}
           </li>
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
-          <li class="mr-4 cursor-pointer">
+          <li
+            class="mr-4 cursor-pointer"
+            [routerLink]="module.defaultPath"
+            routerLinkActive="active-link"
+            (isActiveChange)="onRouterLinkActive($event, module)"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
             {{ module.title }}
           </li>
         </ng-container>
