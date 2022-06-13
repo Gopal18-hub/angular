@@ -9,6 +9,8 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { MatInputModule } from "@angular/material/input";
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
   declarations: [HeaderComponent, SubComponent],
@@ -22,6 +24,8 @@ import { RouterModule } from "@angular/router";
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
+    MatInputModule,
+    MatIconModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

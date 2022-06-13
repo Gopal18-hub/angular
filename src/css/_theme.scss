@@ -75,7 +75,8 @@ mat-form-field {
       padding: 0.9em 0 !important;
       border-top: 0 !important;
     }
-    .mat-form-field-suffix {
+    .mat-form-field-suffix,
+    .mat-form-field-prefix {
       top: 0.5em;
     }
   }
