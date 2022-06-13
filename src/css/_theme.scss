@@ -104,14 +104,14 @@ mat-form-field {
       height: 100%;
       ul {
         li {
-          a {
+          a.mat-tab-label-active {
             border-radius: 7px 7px 0px 0px;
             font-weight: 800;
             color: #004084;
             background-color: #fff;
             height: 2.75rem;
             opacity: 1;
-            font-size: 1rem;
+            font-size: 0.85rem;
           }
         }
       }
@@ -122,6 +122,9 @@ mat-form-field {
   }
 }
 
-::ng-deep mat-dialog-container {
-  border-radius: 1em;
+.mat-dialog-container {
+  border-radius: 1em !important;
+}
+.mat-menu-panel {
+  border-radius: 1rem !important;
 }

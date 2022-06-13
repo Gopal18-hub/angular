@@ -209,6 +209,7 @@
             class="max-health-primary-color"
             *ngFor="let menuItem of aliasMenuItems"
             [routerLink]="menuItem.defaultPath"
+            disableRipple="true"
           >
             {{ menuItem.title }}
           </button>

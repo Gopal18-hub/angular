@@ -51,17 +51,17 @@
 
 ::ng-deep {
   .sub-header-menu {
-    width: 42vw;
-    height: 34vh;
+    width: 48vw;
+    height: 24vh;
     overflow: hidden;
     max-width: initial !important;
     .mat-menu-content {
       height: 100%;
       .box {
-        height: 32vh;
+        height: 22vh;
       }
       .box > * {
-        flex: 1 1 calc(32vh / 4);
+        flex: 1 1 calc(20vh / 4);
         justify-content: flex-start;
         text-align: left;
       }
