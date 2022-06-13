@@ -169,7 +169,7 @@
         <ng-container *ngIf="module.moreOptions">
           <li
             [matMenuTriggerFor]="menu"
-            class="mr-4 cursor-pointer"
+            class="mr-4 cursor-pointer max-health-primary-color"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
@@ -181,7 +181,7 @@
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
           <li
-            class="mr-4 cursor-pointer"
+            class="mr-4 cursor-pointer max-health-primary-color"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
@@ -197,7 +197,7 @@
         <div class="flex flex-column flex-wrap box">
           <button
             mat-button
-            class="my-4"
+            class="max-health-primary-color"
             *ngFor="let menuItem of aliasMenuItems"
             [routerLink]="menuItem.defaultPath"
           >

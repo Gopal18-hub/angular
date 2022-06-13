@@ -41,14 +41,18 @@
     ul {
       height: 2.625em;
       align-items: center;
+      width: 100%;
+      li {
+        white-space: nowrap;
+      }
     }
   }
 }
 
 ::ng-deep {
   .sub-header-menu {
-    width: 38vw;
-    height: 32vh;
+    width: 42vw;
+    height: 34vh;
     overflow: hidden;
     max-width: initial !important;
     .mat-menu-content {
@@ -57,8 +61,9 @@
         height: 32vh;
       }
       .box > * {
-        flex: 1 1 calc(32vh / 5);
+        flex: 1 1 calc(32vh / 4);
         justify-content: flex-start;
+        text-align: left;
       }
     }
   }

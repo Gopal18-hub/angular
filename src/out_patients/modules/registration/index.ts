@@ -21,7 +21,7 @@ import { MergeDialogComponent } from './submodules/dup-reg-merging/merge-dialog/
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
 import { AppointmentSearchDialogComponent } from './submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
-
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -37,6 +37,7 @@ import { AppointmentSearchDialogComponent } from './submodules/appointment-searc
   ],
   imports: [
     RegistrationRoutingModule,
+    MatCardModule,
     MaxHealthTableModule,
     CommonModule,
     MatButtonModule,
