@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: "proxima";
-  src: local("proxima"), url(./font/proxima/ProximaNova.otf) format("truetype");
+  src: local("proxima"),
+    url("./font/proxima/Mark Simonson - Proxima Nova.otf") format("truetype");
 }
 @font-face {
   font-family: "ProximaRegular";
@@ -67,6 +68,9 @@ $custom-typography: mat.define-typography-config(
 :root {
   --primary-color: #004084;
 }
+.max-health-primary-color {
+  color: var(--primary-color);
+}
 
 mat-form-field {
   font-size: 14px;
@@ -95,7 +99,7 @@ mat-form-field {
     color: #fff;
     border-radius: 10px 10px 0 0;
     border: 1px solid #004084;
-    height: 66px;
+    height: 4.125em;
     .mat-tab-links {
       height: 100%;
       ul {
@@ -105,9 +109,9 @@ mat-form-field {
             font-weight: 800;
             color: #004084;
             background-color: #fff;
-            height: 56px;
+            height: 3.5rem;
             opacity: 1;
-            font-size: 18px;
+            font-size: 1.125rem;
           }
         }
       }
@@ -116,4 +120,8 @@ mat-form-field {
       }
     }
   }
+}
+
+::ng-deep mat-dialog-container {
+  border-radius: 1em;
 }

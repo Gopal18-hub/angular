@@ -16,6 +16,8 @@ import { TokenInterceptor } from "../../../shared/services/interceptors/token.in
 import { ADAuthService } from "../../../auth/core/services/adauth.service";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 
+import { APP_BASE_HREF } from "@angular/common";
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -37,6 +39,7 @@ import { AuthGuardService } from "../../../shared/services/guards/auth-guard.ser
     },
     ADAuthService,
     AuthGuardService,
+    { provide: APP_BASE_HREF, useValue: "/" },
   ],
   bootstrap: [AppComponent],
 })

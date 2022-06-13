@@ -174,6 +174,7 @@
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
+            [matMenuTriggerData]="module"
           >
             {{ module.title }}
           </li>
@@ -191,19 +192,19 @@
         </ng-container>
       </ng-container>
     </ul>
-    <mat-menu #menu="matMenu">
-      <div class="flex flex-rows">
-        <div class="flex flex-column">
-          <button mat-menu item class="matmenuclass">Front Office</button>
-          <button mat-button>Marketing</button>
-          <button mat-button>Health Checkup</button>
+    <mat-menu #menu="matMenu" class="sub-header-menu">
+      <ng-template matMenuContent let-aliasMenuItems="childrens">
+        <div class="flex flex-column flex-wrap box">
+          <button
+            mat-button
+            class="my-4"
+            *ngFor="let menuItem of aliasMenuItems"
+            [routerLink]="menuItem.defaultPath"
+          >
+            {{ menuItem.title }}
+          </button>
         </div>
-        <div class="flex flex-column w-1/2">
-          <button mat-button>Front Office</button>
-          <button mat-button>Front Office</button>
-          <button mat-button>Front Office</button>
-        </div>
-      </div>
+      </ng-template>
     </mat-menu>
   </div>
 </div>

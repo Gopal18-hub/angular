@@ -39,7 +39,8 @@ export class TokenInterceptor implements HttpInterceptor {
             setHeaders: {
               'Authorization': `bearer ${this.auth.getToken()}`,
               'Content-Type': 'application/json'
-            }
+            },
+            withCredentials:true
           });
         }       
       }
