@@ -11,6 +11,11 @@
     height: 107px;
     align-items: flex-end;
     justify-content: space-between;
+    .logout-button {
+      min-width: initial;
+      padding: 0;
+      margin-right: 1.5em;
+    }
   }
   .main-modules {
     clip-path: polygon(

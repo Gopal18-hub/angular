@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MaxModules } from "../../constants/Modules";
 import { APP_BASE_HREF } from "@angular/common";
-
+import { AuthService } from "../../services/auth.service";
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -12,7 +12,10 @@ export class HeaderComponent implements OnInit {
 
   activeModule: any;
 
-  constructor(@Inject(APP_BASE_HREF) private baseHref: string) {}
+  constructor(
+    @Inject(APP_BASE_HREF) private baseHref: string,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.modules = MaxModules.getModules();
@@ -21,5 +24,9 @@ export class HeaderComponent implements OnInit {
         this.activeModule = element;
       }
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
