@@ -1,1 +1,35 @@
-<p>registration-unmerging works!</p>
+<form [formGroup]="unmergeSearchForm">
+  <div class="flex flex-row">
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Max ID</mat-label>
+      <input matInput placeholder="Max ID" formControlName="maxid" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>SSN</mat-label>
+      <input matInput placeholder="SSN" formControlName="ssn" >
+    </mat-form-field>
+  </div> 
+</form>
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Resgistration Unmerging</a>
+      </li>
+    </ul>
+  </nav>   
+  <mat-tab-nav-panel #tabPanel>
+    <div class="p-3 w-full">
+      <ng-container *ngIf="showunmerge">
+        <maxhealth-table
+          [config]="config"
+          [data]="unmergingList"
+        ></maxhealth-table>
+      </ng-container>
+    </div>
+  </mat-tab-nav-panel>     
+    <div class="self-end float-right absolute right-30">
+        <button mat-raised-button color="primary" class="w-full relative right-15" type="submit">Unmerge</button>        
+    </div>
+</section>
+

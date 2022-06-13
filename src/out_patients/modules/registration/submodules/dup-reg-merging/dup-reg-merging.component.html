@@ -1,1 +1,54 @@
-<p>dup-reg-merging works!</p>
+<form [formGroup]="mergeSearchForm" >  
+  <div class="flex flex-row">
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Mobile.No</mat-label>
+      <input matInput placeholder="Mobile" formControlName="mobile" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>DOB</mat-label>
+      <input matInput placeholder="DateOFBitrth" formControlName="dob" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Email ID</mat-label>
+      <input matInput placeholder="Email" formControlName="email" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Health ID</mat-label>
+      <input matInput placeholder="HealthId" formControlName="healthId" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Aadhaar ID</mat-label>
+      <input matInput placeholder="AadhaarId" formControlName="aadhaarId" >
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="col-m3" type="button" 
+    (click)="searchPatient()">Search</button>
+  </div>  
+</form>
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Duplicate Registration Merging</a>
+      </li>
+    </ul>           
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div class="p-3 w-full">
+      <ng-container *ngIf="isAPIProcess">
+        <maxhealth-table
+          [config]="config"
+          [data]="results"
+        ></maxhealth-table>
+      </ng-container>
+    </div>
+  </mat-tab-nav-panel> 
+  <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+</section>
+
+
+
+
