@@ -20,6 +20,10 @@
         input {
           font-size: 14px;
         }
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-end {
+          border: none;
+        }
       }
     }
   }
