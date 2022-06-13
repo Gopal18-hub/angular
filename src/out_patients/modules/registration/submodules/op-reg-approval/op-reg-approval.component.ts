@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class OpRegApprovalComponent implements OnInit {
   links = ['First', 'Second', 'Third'];
   activeLink = this.links[0]; 
+  isAPIProcess:boolean=false;
   data: any[] = [
     {MaxId: 'BHTN.148464', SSN:'08148464', title:'mr', PatientName: 'name name', Gender:'Male', Mobile:'9898989898', Email:'info@mail.com', Nationality:'Indian', Foreigner:'1', SMSnumber:'988889898',RequestedBy:'ABC', requesteddate:'22-9-2021'},
     {MaxId: 'BHTN.148464', SSN:'08148464', title:'mr', PatientName: 'name name', Gender:'Male', Mobile:'9898989898', Email:'info@mail.com', Nationality:'Indian', Foreigner:'1', SMSnumber:'988889898',RequestedBy:'ABC', requesteddate:'22-9-2021'},
