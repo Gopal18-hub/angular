@@ -11,6 +11,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
+import { MatDividerModule } from "@angular/material/divider";
 
 @NgModule({
   declarations: [HeaderComponent, SubComponent],
@@ -26,6 +27,7 @@ import { MatIconModule } from "@angular/material/icon";
     RouterModule,
     MatInputModule,
     MatIconModule,
+    MatDividerModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],
