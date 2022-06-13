@@ -55,7 +55,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       dob: {
-        type: "date",
+        type: "string",
         title: "Date of Birth",
         required: true,
       },
@@ -161,8 +161,8 @@ export class OpRegistrationComponent implements OnInit {
       },
       foreigner: {
         type: "checkbox",
-        title: "Nationality",
-        required: true,
+        title: "Foreigner",
+        required: false,
       },
       hotlist: {
         type: "checkbox",
@@ -175,7 +175,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
       },
       note:
-      {        type: "checkbox",
+      {  type: "checkbox",
         title: "Note",
         required: false,
       },

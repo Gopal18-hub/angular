@@ -1,20 +1,5 @@
 .opd-reg-wrapper {
-  background-size: cover;
-  background-position: 25% 100%;
-    overflow: hidden;
-  &-ribbon {
-    background-color: #004084;
-    height: 6vh;
-    border-radius: 0.5rem 0.5rem 0rem 0rem;
-    &-btn {
-      background-color: #fff;
-       border-radius: 0.5rem 0.5rem 0rem 0rem;
-      color: #004084;
-      border: none;
-      width: 11%;
-    }
-  }
-
+  
   &-box {
     background-color: #fff;
     background-position-y: 101%;
@@ -32,5 +17,44 @@
         color: var(--primary-color);
       }
     }
+    &-secondary
+    {
+      height: 44vh;
+      border: 1px solid blue;
+    }
+    &-address
+    {
+      height: 100%;
+      border: 1px solid blue;
+      width: 33.33%;
+      float: left;
+     
+     
+    }
+    &-checboxcontainer
+    {
+      background-color: #f6f6f6;
+    }
+    &-check
+    {
+      height: 100%;
+      border: 1px solid blue;
+      width: 28%;
+      float: left;
+    }
+   
   }
+
+}
+.father-container
+{
+  width: 15%;
+}
+.age-container
+{
+  width: 15%;
+}
+.autocomplete
+{
+  width: 7.66667%;
 }
