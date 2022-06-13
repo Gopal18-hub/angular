@@ -189,5 +189,19 @@ export namespace ApiConstants {
       environment.PatientApiUrl + 'api/patient/patientmerging/'+ActivePatientId+'/'+userId
     );
   };
+
+  export const mergePatientSearchApi= (MaxId:string, SSN:string)=>
+  {
+    return (
+      environment.PatientApiUrl + 'api/patient/getmergepatientsearch?MaxId='+MaxId+'&SSN='+SSN
+    );
+  };
+
+  export const unmergePatientAPi = (userId:number)=>
+  {
+    return (
+      environment.PatientApiUrl + 'api/patient/patientunmerging/'+userId
+    );
+  };
     
 }

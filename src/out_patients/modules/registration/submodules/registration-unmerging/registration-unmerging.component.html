@@ -8,28 +8,31 @@
       <mat-label>SSN</mat-label>
       <input matInput placeholder="SSN" formControlName="ssn" >
     </mat-form-field>
+    <button mat-raised-button color="primary" class="col-m3 h-1/2 ml-3" type="button" 
+    (click)="searchPatient()">Search</button>
   </div> 
 </form>
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
-        <a mat-tab-link [active]="true">Resgistration Unmerging</a>
+        <a mat-tab-link [active]="true">Registration Unmerging</a>
       </li>
     </ul>
   </nav>   
   <mat-tab-nav-panel #tabPanel>
     <div class="p-3 w-full">
-      <ng-container *ngIf="showunmerge">
-        <maxhealth-table
+      <ng-container *ngIf="isAPIProcess">
+        <maxhealth-table 
           [config]="config"
           [data]="unmergingList"
+          #table
         ></maxhealth-table>
       </ng-container>
     </div>
   </mat-tab-nav-panel>     
     <div class="self-end float-right absolute right-30">
-        <button mat-raised-button color="primary" class="w-full relative right-15" type="submit">Unmerge</button>        
+        <button mat-raised-button color="primary" class="w-full relative right-15" (click)="unMerge()" [disabled]="unmergebuttonDisabled">Unmerge</button>        
     </div>
 </section>
 
