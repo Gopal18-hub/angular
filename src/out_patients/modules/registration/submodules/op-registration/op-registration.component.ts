@@ -1,7 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { ApiConstants } from "../../../../core/constants/ApiConstants";
+import { CookieService } from "../../../../../shared/services/cookie.service";
+import { HttpService } from "../../../../../shared/services/http.service";
 import { QuestionControlService } from "../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import {PatientitleModel} from "../../../../core/models/patientTitleModel.Model"
+import { SourceOfInfoModel } from "../../../../core/models/sourceOfInfoModel.Model";
+import { AgetypeModel } from "../../../../core/models/ageTypeModel.Model";
+import { IdentityModel } from "../../../../core/models/identityModel.Model";
 @Component({
   selector: "out-patients-op-registration",
   templateUrl: "./op-registration.component.html",
@@ -10,6 +16,9 @@ import {PatientitleModel} from "../../../../core/models/patientTitleModel.Model"
 
 export class OpRegistrationComponent implements OnInit {
   public titleList:PatientitleModel[]=[];
+  public sourceOfInfoList:SourceOfInfoModel[]=[]
+  public ageTypeList: AgetypeModel[]=[];
+  public idTypeList: IdentityModel[]=[]
 
   registrationFormData = {
     title: "",
@@ -235,6 +244,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "Source of Info about Max Healthcare",
         required: false,
+        list:this.sourceOfInfoList
       }
      
 
@@ -242,8 +252,10 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
+  
+  
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(private formService: QuestionControlService, private cookie: CookieService,private http: HttpService) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -252,8 +264,67 @@ export class OpRegistrationComponent implements OnInit {
     );
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+
+   this.getTitleList();
+   this.getSourceOfInfoList();
+   this.getAgeTypeList();
+   this.getIDTypeList();
+    
+    
   }
   registationFormSubmit() {
     //ON SUBMITTING FORM ACTION
   }
+
+
+  //TITLE LIST API CALL
+  getTitleList()
+  {
+     let hspId=Number(this.cookie.get("HSPLocationId"));
+     this.http.get(ApiConstants.titleLookUp(hspId)).subscribe((resultData:any) => {
+      this.titleList  = resultData ;
+      this.questions[3].options=this.titleList.map((l) => {
+        return { title: l.name, value: l.id };
+      });
+    }
+     )
+  }
+
+  //SOURCE OF INFO DROP DOWN
+  getSourceOfInfoList()
+  {
+       this.http.get(ApiConstants.sourceofinfolookup).subscribe((resultData:any) => {
+      this.sourceOfInfoList  = resultData ;
+      this.questions[43].options=this.sourceOfInfoList.map((l) => {
+        return { title: l.name, value: l.id };
+      });
+    }
+     )
+  }
+
+  //AGE TYPE LIST
+  getAgeTypeList()
+  {
+       this.http.get(ApiConstants.ageTypeLookUp).subscribe((resultData:any) => {
+      this.ageTypeList  = resultData ;
+      this.questions[10].options=this.ageTypeList.map((l) => {
+        return { title: l.name, value: l.id };
+      });
+    }
+     )
+  }
+
+  //IDENTITY TYPE LOOKUP CALL
+  
+  getIDTypeList()
+  {
+       this.http.get(ApiConstants.identityTypeLookUp).subscribe((resultData:any) => {
+      this.idTypeList  = resultData ;
+      this.questions[16].options=this.idTypeList.map((l) => {
+        return { title: l.name, value: l.id };
+      });
+    }
+     )
+  }
 }
+

@@ -198,8 +198,8 @@ DMS
 <!-- --------------------------------------------------3RD ROW----------------------------------------------------------- -->
 <!-- ------------------------------------------------3RD ROW----------------------------------------------------- -->
 <div class="flex justify-between flex-wrap ">
-  
-  <div class="{{ questions[14].properties.question_wrapper_class }}"
+ 
+  <div class="{{ questions[15].properties.question_wrapper_class }}"
 
 >
   <maxhealth-question
@@ -209,8 +209,10 @@ DMS
     [index]="15"
   ></maxhealth-question>
 </div>
-<div class="{{ questions[16].properties.question_wrapper_class }}"
 
+<div class="w-full flex-wrap flex age-container "> 
+  
+<div class="w-1/3 {{ questions[16].properties.question_wrapper_class }}"
 >
 <maxhealth-question
   [question]="questions[16]"
@@ -218,10 +220,9 @@ DMS
   [questions]="questions[16]"
   [index]="16"
 ></maxhealth-question>
-</div>
 
-<div class="flex ">
-<div class="w-1/4 {{ questions[17].properties.question_wrapper_class }} "
+</div>
+<div class="w-2/3 {{ questions[17].properties.question_wrapper_class }} "
 >
 <maxhealth-question
   [question]="questions[17]"
@@ -229,6 +230,7 @@ DMS
   [questions]="questions[17]"
   [index]="17"
 ></maxhealth-question>
+</div>
 </div>
 <div class="{{ questions[18].properties.question_wrapper_class }}"
 >
@@ -239,7 +241,7 @@ DMS
     [index]="18"
   ></maxhealth-question>
   </div>
-</div>
+
 
 
 
