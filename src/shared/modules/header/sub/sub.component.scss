@@ -18,11 +18,14 @@
         margin: 0;
         padding: 0;
         input {
-          font-size: 14px;
+          font-size: 12px;
         }
         .mat-form-field-outline-start,
         .mat-form-field-outline-end {
           border: none;
+        }
+        .mat-form-field-suffix {
+          top: 0.4em;
         }
       }
     }
