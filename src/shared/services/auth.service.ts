@@ -77,21 +77,12 @@ export class AuthService {
     this.cookieService.set('accessToken', token, { path: '/', domain: environment.cookieUrl, secure: true });
   }
 
-  public logout(): void {
+  public logout(): any {
    
     var query = window.location.search;
     var logoutIdQuery = query && query.toLowerCase().indexOf('?logoutid=') == 0 && query;   
-    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery).subscribe((response)=>{    
-      if (response.postLogoutRedirectUri) {
-        window.location = response.postLogoutRedirectUri;
-      }
-    });
-      localStorage.clear();
-      this.cookieService.delete('accessToken');
-      this.cookieService.deleteAll();
-      this.cookieService.deleteAll('/', environment.cookieUrl, true);
-      this.startAuthentication();   
-      
+    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);
+      return response;
   }
 
   public collectFailedRequest(request: any): void {
