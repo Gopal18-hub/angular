@@ -1,0 +1,36 @@
+.opd-reg-wrapper {
+  background-size: cover;
+  background-position: 25% 100%;
+    overflow: hidden;
+  &-ribbon {
+    background-color: #004084;
+    height: 6vh;
+    border-radius: 0.5rem 0.5rem 0rem 0rem;
+    &-btn {
+      background-color: #fff;
+       border-radius: 0.5rem 0.5rem 0rem 0rem;
+      color: #004084;
+      border: none;
+      width: 11%;
+    }
+  }
+
+  &-box {
+    background-color: #fff;
+    background-position-y: 101%;
+    background-size: 55%;
+    background-position-x: 102%;
+    margin-left: 0%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-repeat: no-repeat;
+    form {
+      ::ng-deep mat-label {
+        color: var(--primary-color);
+      }
+      .change-password {
+        color: var(--primary-color);
+      }
+    }
+  }
+}

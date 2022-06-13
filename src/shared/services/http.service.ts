@@ -9,8 +9,8 @@ import { MaxHealthStorage } from './storage';
 import { MaxHealthSnackBarService } from '../ui/snack-bar';
 
 class Options {
-  showErrorMessage?: boolean = true;
-  showSuccessMessage?: boolean = true;
+  showErrorMessage?: boolean = false;
+  showSuccessMessage?: boolean = false;
 }
 
 @Injectable({
@@ -132,7 +132,7 @@ export class HttpService {
         this.__sowSnackBar(data);
       }
     } else {
-      this.__sowSnackBar(data);
+      //this.__sowSnackBar(data);
     }
 
   }
