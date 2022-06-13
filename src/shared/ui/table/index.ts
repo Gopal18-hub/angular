@@ -1,24 +1,22 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule }  from '@angular/material/icon';
-import { MaxTableComponent } from './max-table.component';
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MaxTableComponent } from "./max-table.component";
 
-import {MatTableModule} from '@angular/material/table';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {A11yModule} from '@angular/cdk/a11y';
-import {MatSortModule} from '@angular/material/sort';
-
-
-
+import { MatTableModule } from "@angular/material/table";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { A11yModule } from "@angular/cdk/a11y";
+import { MatSortModule } from "@angular/material/sort";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
   imports: [
     CommonModule,
-     MatIconModule,
+    MatIconModule,
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
@@ -26,12 +24,11 @@ import {MatSortModule} from '@angular/material/sort';
     MatTableModule,
     MatCheckboxModule,
     A11yModule,
-    MatSortModule
+    MatSortModule,
+    MatPaginatorModule,
   ],
-  exports:[ MaxTableComponent ],
-  declarations: [   
-    MaxTableComponent
-  ],
-  providers: [  ]
+  exports: [MaxTableComponent],
+  declarations: [MaxTableComponent],
+  providers: [],
 })
-export class MaxHealthTableModule { }
+export class MaxHealthTableModule {}

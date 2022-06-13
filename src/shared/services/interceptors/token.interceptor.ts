@@ -23,6 +23,9 @@ export class TokenInterceptor implements HttpInterceptor {
     if(request.url.endsWith('authenticate'))
     {
       request = request.clone({
+        setHeaders: {
+          'Content-Type': 'application/json',
+        },
         withCredentials:true
       });
     }
@@ -35,6 +38,7 @@ export class TokenInterceptor implements HttpInterceptor {
           request = request.clone({
             setHeaders: {
               'Authorization': `bearer ${this.auth.getToken()}`,
+              'Content-Type': 'application/json'
             }
           });
         }       

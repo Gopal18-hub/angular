@@ -1,19 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { MaxModules } from '../../constants/Modules';
+import { Component, OnInit, Inject } from "@angular/core";
+import { MaxModules } from "../../constants/Modules";
+import { APP_BASE_HREF } from "@angular/common";
+
 @Component({
-  selector: 'maxhealth-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: "maxhealth-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent implements OnInit {
+  modules: any = [];
 
-  modules: any  = [];
- 
-  constructor() { }
+  activeModule: any;
+
+  constructor(@Inject(APP_BASE_HREF) private baseHref: string) {}
 
   ngOnInit(): void {
-      this.modules = MaxModules.getModules();
+    this.modules = MaxModules.getModules();
+    this.modules.forEach((element: any) => {
+      if (element.defaultPath == this.baseHref) {
+        this.activeModule = element;
+      }
+    });
   }
- 
-
 }
