@@ -1,19 +1,13 @@
-import { NgModule } from '@angular/core';
+import { NgModule } from "@angular/core";
 
-import { SignupRoutingModule } from './routes';
-import { SignupComponent } from './signup.component';
-
+import { SignupRoutingModule } from "./routes";
+import { SignupComponent } from "./signup.component";
 
 @NgModule({
-  declarations: [
-  
-    SignupComponent
-  ],
-  imports: [
-    SignupRoutingModule
-  ],
+  declarations: [SignupComponent],
+  imports: [SignupRoutingModule],
   exports: [],
   providers: [],
-  bootstrap: []
+  bootstrap: [],
 })
-export class SignupModule { }
+export class SignupModule {}
