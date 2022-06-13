@@ -23,9 +23,10 @@
   <mat-tab-nav-panel #tabPanel>
     <div class="p-3 w-full">
       <ng-container *ngIf="isAPIProcess">
-        <maxhealth-table
+        <maxhealth-table 
           [config]="config"
           [data]="unmergingList"
+          #table
         ></maxhealth-table>
       </ng-container>
     </div>

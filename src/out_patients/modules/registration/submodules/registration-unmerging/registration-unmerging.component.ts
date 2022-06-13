@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit,ViewChild } from '@angular/core';
 import { getmergepatientsearch } from '../../../../../out_patients/core/models/getmergepatientsearch';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
@@ -7,6 +7,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { PatientmergeModel } from '../../../../../out_patients/core/models/patientMergeModel';
 import { CookieService } from '../../../../../shared/services/cookie.service';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatTabLabel } from '@angular/material/tabs';
+
 
 
 @Component({
@@ -14,7 +17,7 @@ import { CookieService } from '../../../../../shared/services/cookie.service';
   templateUrl: './registration-unmerging.component.html',
   styleUrls: ['./registration-unmerging.component.scss']
 })
-export class RegistrationUnmergingComponent implements OnInit {
+export class RegistrationUnmergingComponent implements OnInit {  
 
   unmergingList:getmergepatientsearch[]=[];
   unMergePostModel:PatientmergeModel[]=[];
@@ -34,6 +37,8 @@ export class RegistrationUnmergingComponent implements OnInit {
     maxid: new FormControl(''),   
     ssn: new FormControl('')
   });
+
+  @ViewChild('table') table:any;
 
   config: any  = {
     dateformat: 'dd/MM/yyyy',
@@ -83,58 +88,11 @@ export class RegistrationUnmergingComponent implements OnInit {
   }  
   constructor(private http: HttpService, private cookie:CookieService) { }
 
-  ngOnInit(): void {
-
-    
-  }
-
-   //child checkbox functionality for un merge
-  onCheckUnMergepatientdata(event:any,unmergepatient:getmergepatientsearch){
-  if(event.target.checked){
-   this.count++;
-    console.log(unmergepatient);
-    this.unmergecheckedList.push(unmergepatient);
-    this.unMergePostModel.push({id:unmergepatient.id});
-    console.log(this.unmergecheckedList);
-  
-  }else{
-    this.unmergeMastercheck.isSelected = false;
-    this.unmergecheckedList.forEach((item,index)=>{
-      if(item.id === unmergepatient.id){
-        this.unmergecheckedList.splice(index,1);
-        this.unMergePostModel.splice(index,1);
-      }
-    })
-
-    console.log(this.unmergecheckedList);
-   this.count--;
-  }
-
-  if(this.count < 1){
-    this.unmergebuttonDisabled=true;
-  }
-  else{
-    this.unmergebuttonDisabled=false;
-  }
-  }
-
-  //master check for un merge
-  onCheckmasterUnMergedata(event:any,unmergepatientresultList:getmergepatientsearch){
-  if(event.target.checked){
-    this.unmergeMastercheck.isSelected= true;
-    unmergepatientresultList['forEach']((item:any,index:any)=>{
-      item.isSelected = true;
-    })
-  }else{
-    if(unmergepatientresultList['length'] === this.unmergecheckedList.length){
-      unmergepatientresultList['forEach']((item:any,index:any)=>{
-        item.isSelected = false;
-      })
-    } 
-  }
+  ngOnInit(): void {    
   }
 
   unMerge(){
+    this.unMergePostModel=this.table.selection.selected.map((s:any)=>s.id);
     this.unMergePatient(this.unMergePostModel).subscribe((resultdata)=>{
       console.log(resultdata);
       this.unMergeresponse=resultdata;
@@ -144,15 +102,23 @@ export class RegistrationUnmergingComponent implements OnInit {
      this.unmergebuttonDisabled=true; 
     },error=>{
       console.log(error);
-    });
-   
+    });   
   }
 
   searchPatient() {
     this.getAllunmergepatient().subscribe((resultData) => {
       this.unmergingList  = resultData;
-      this.isAPIProcess = true;  
-      console.log(this.unmergingList);
+      this.isAPIProcess = true; 
+      setTimeout(()=>{        
+        this.table.selection.changed.subscribe((res:any)=>{        
+         
+          if(this.table.selection.selected.length>= 1)
+              this.unmergebuttonDisabled = false;
+              // this.unMergePostModel=this.table.selection.selected.map((s:any)=>s.id)
+              // console.log(this.unMergePostModel);
+        });
+      }) ;
+     
     })
   }
 
@@ -161,7 +127,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   unMergePatient(unmergeJSONObject:PatientmergeModel[]){
-    let userId = Number(this.cookie.get('UserId'));
+    let userId = 1;//Number(this.cookie.get('UserId'));
     return this.http.post(ApiConstants.unmergePatientAPi(userId),unmergeJSONObject);
   }
 
