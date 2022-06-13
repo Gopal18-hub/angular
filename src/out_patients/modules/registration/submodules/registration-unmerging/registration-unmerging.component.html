@@ -1,34 +1,35 @@
-<form class="example-form">  
-    <table class="example-full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>Max ID</mat-label>
-        <input matInput placeholder="Max ID" [(ngModel)]="maxid" [ngModelOptions]="{standalone: true}">
-      </mat-form-field></td>
-      <td><mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>SSN</mat-label>
-        <input matInput placeholder="SSN"[(ngModel)]="ssn" [ngModelOptions]="{standalone: true}">
-    </mat-form-field></td>
-    
-      <td><button mat-raised-button color="primary" class="col-m3" type="button" style="text-align:center" (click)="searchPatient()">Search</button></td>
-    </tr></table>
-  </form>
-<section class="absolute left-0 ml-10 shadow-1 maincrd">
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-        <span class="float-left">
-            <a mat-tab-link> Resgistration Unmerging</a>        
-        </span>       
-      </nav>
-      <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-    <div class="maingrid flex">
-    <div class="table p-3">
-        <ng-container *ngIf="showunmerge">
-            <maxhealth-table  [config]="config" [data]="unmergingList"></maxhealth-table>
-        </ng-container>
+<form [formGroup]="unmergeSearchForm">
+  <div class="flex flex-row">
+    <mat-form-field appearance = "outline"> 
+      <mat-label>Max ID</mat-label>
+      <input matInput placeholder="Max ID" formControlName="maxid" >
+    </mat-form-field>
+    <mat-form-field appearance = "outline"> 
+      <mat-label>SSN</mat-label>
+      <input matInput placeholder="SSN" formControlName="ssn" >
+    </mat-form-field>
+  </div> 
+</form>
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Resgistration Unmerging</a>
+      </li>
+    </ul>
+  </nav>   
+  <mat-tab-nav-panel #tabPanel>
+    <div class="p-3 w-full">
+      <ng-container *ngIf="showunmerge">
+        <maxhealth-table
+          [config]="config"
+          [data]="unmergingList"
+        ></maxhealth-table>
+      </ng-container>
     </div>
+  </mat-tab-nav-panel>     
     <div class="self-end float-right absolute right-30">
-        <button mat-raised-button color="primary" class="w-full relative right-15" type="submit">Unmerge</button>
-        
+        <button mat-raised-button color="primary" class="w-full relative right-15" type="submit">Unmerge</button>        
     </div>
-</div>
 </section>
 
