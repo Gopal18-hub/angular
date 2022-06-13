@@ -224,6 +224,13 @@ export class OpRegistrationComponent implements OnInit {
         title: "EWS",
         required: false,
       },
+    Insurance:
+    {
+      type: "radio",
+      title: "Corporate/Insurance",
+      required: false,
+    
+    },
       sourceOfInput: {
         type: "autocomplete",
         title: "Source of Info about Max Healthcare",

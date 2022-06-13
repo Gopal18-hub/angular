@@ -20,13 +20,12 @@
     &-secondary
     {
       height: 44vh;
-      border: 1px solid blue;
+    
     }
     &-address
     {
       height: 100%;
-      border: 1px solid blue;
-      width: 33.33%;
+         width: 30%;
       float: left;
      
      
@@ -34,15 +33,33 @@
     &-checboxcontainer
     {
       background-color: #f6f6f6;
+      float: left;
+      // width: 30%;
+    }
+   &-checboxcontainer
+    {
+      background-color: #f6f6f6;
+      // width: 30%;
     }
     &-check
     {
       height: 100%;
-      border: 1px solid blue;
-      width: 28%;
+           width: 20%;
       float: left;
     }
-   
+    &-radio
+    {
+      height: 100%;
+           width: 30%;
+      float: left;
+    }
+    &-imageblock
+    {
+      height: 100%;
+     
+      width: 20%;
+      float: left;
+    }
   }
 
 }
