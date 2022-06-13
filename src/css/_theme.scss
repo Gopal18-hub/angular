@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: "proxima";
-  src: local("proxima"), url(./font/proxima/ProximaNova.otf) format("truetype");
+  src: local("proxima"),
+    url("./font/proxima/Mark Simonson - Proxima Nova.otf") format("truetype");
 }
 @font-face {
   font-family: "ProximaRegular";
@@ -67,6 +68,9 @@ $custom-typography: mat.define-typography-config(
 :root {
   --primary-color: #004084;
 }
+.max-health-primary-color {
+  color: var(--primary-color);
+}
 
 mat-form-field {
   font-size: 14px;
@@ -116,4 +120,8 @@ mat-form-field {
       }
     }
   }
+}
+
+::ng-deep mat-dialog-container {
+  border-radius: 1em;
 }
