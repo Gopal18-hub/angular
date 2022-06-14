@@ -19,6 +19,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
+import { NotesDialogComponent } from "./notes-dialog/notes-dialog.component";
+import { HwcDialogComponent } from "./hwc-dialog/hwc-dialog.component";
+import { SeafarersDialogComponent } from "./seafarers-dialog/seafarers-dialog.component";
+import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
 @Component({
   selector: "out-patients-op-registration",
   templateUrl: "./op-registration.component.html",
@@ -454,7 +458,11 @@ export class OpRegistrationComponent implements OnInit {
   {
     // this.matDialog.open(PrintLabelDialogComponent, {width: '30vw', height: '30vh'});
     // this.matDialog.open(VipDialogComponent, {width: '30vw', height: '40vh'});
-    this.matDialog.open(HotListingDialogComponent, {width: '30vw', height: '52vh'})
+    // this.matDialog.open(HotListingDialogComponent, {width: '30vw', height: '52vh'});
+    // this.matDialog.open(NotesDialogComponent, {width: '30vw', height: '40vh'});
+    // this.matDialog.open(HwcDialogComponent, {width: '30vw', height: '40vh'});
+    // this.matDialog.open(SeafarersDialogComponent, {width: '30vw', height: '43vh'});
+    this.matDialog.open(ForeignerDialogComponent, {width: '30vw', height: '50vh'});
   }
 
 }

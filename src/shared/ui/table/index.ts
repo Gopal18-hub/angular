@@ -12,6 +12,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { A11yModule } from "@angular/cdk/a11y";
 import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { MatPaginatorModule } from "@angular/material/paginator";
     A11yModule,
     MatSortModule,
     MatPaginatorModule,
+    MatTooltipModule,
   ],
   exports: [MaxTableComponent],
   declarations: [MaxTableComponent],

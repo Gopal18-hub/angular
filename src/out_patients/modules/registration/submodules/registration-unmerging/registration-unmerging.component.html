@@ -1,4 +1,4 @@
-<form [formGroup]="unmergeSearchForm">
+<!-- <form [formGroup]="unmergeSearchForm">
   <div class="flex flex-row">
     <mat-form-field appearance = "outline"> 
       <mat-label>Max ID</mat-label>
@@ -11,8 +11,8 @@
     <button mat-raised-button color="primary" class="col-m3 h-1/2 ml-3" type="button" 
     (click)="searchPatient()">Search</button>
   </div> 
-</form>
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+</form> -->
+<section class="left-0 ml-10 shadow-1 max-body-wrapper">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -20,8 +20,9 @@
       </li>
     </ul>
   </nav>   
-  <mat-tab-nav-panel #tabPanel>
-    <div class="p-3 w-full">
+  <mat-tab-nav-panel #tabPanel> </mat-tab-nav-panel> 
+  <div class="maingrid flex">
+    <div class="table p-3">
       <ng-container *ngIf="isAPIProcess">
         <maxhealth-table 
           [config]="config"
@@ -29,9 +30,9 @@
           #table
         ></maxhealth-table>
       </ng-container>
-    </div>
-  </mat-tab-nav-panel>     
-    <div class="self-end float-right absolute right-30">
+    </div>     
+  </div>    
+  <div class="self-end float-right absolute right4pt5 mt-3">
         <button mat-raised-button color="primary" class="w-full relative right-15" (click)="unMerge()" [disabled]="unmergebuttonDisabled">Unmerge</button>        
     </div>
 </section>
