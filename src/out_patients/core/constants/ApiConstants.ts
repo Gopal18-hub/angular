@@ -203,5 +203,24 @@ export namespace ApiConstants {
       environment.PatientApiUrl + 'api/patient/patientunmerging/'+userId
     );
   };
+
+  export const approvalpostapproveApi =   environment.PatientApiUrl + 'api/patient/approverejectopregrequests';
     
+  export const hotlistingpostapproveApi= (UserId:number, flag:number)=>
+  {
+    return (
+      environment.PatientApiUrl + 'api/patient/approvedrejectdeletehotlisting/'+UserId+'/'+flag
+    );
+  };
+  export const opapprovalpending =   environment.PatientApiUrl + 'api/patient/getopregistrationpendingrequests';
+  
+  export const opapprovalaccepted =   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests';
+  
+  export const opapprovalrejected =   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests';
+  
+  export const ophotlistingpending =   environment.PatientApiUrl + 'api/patient/getpendinghotlist';
+  export const ophotlistingaccept =   environment.PatientApiUrl + 'api/patient/getapprovedhotlist';
+  
+  export const ophotlistingreject =   environment.PatientApiUrl + 'api/patient/getrejectedhotlist';
+ 
 }

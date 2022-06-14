@@ -45,32 +45,32 @@ export namespace MaxModules {
             {
               id: 117,
               title: "Hot Listing Approval",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "/registration/op-reg-approval",
             },
             {
               id: 118,
               title: "Bulk Upload Registration",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "",
             },
             {
               id: 119,
               title: "Search Patient Admit/Discharge",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "",
             },
             {
               id: 120,
               title: "Report for Bulk Upload Reg",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "",
             },
             {
               id: 121,
               title: "For Ambulance and Reg Charges",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "",
             },
             {
               id: 122,
               title: "Blood Group Entry",
-              defaultPath: "/registration/registration-unmerging",
+              defaultPath: "",
             },
           ],
         },
