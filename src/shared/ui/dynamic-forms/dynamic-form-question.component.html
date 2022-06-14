@@ -354,5 +354,15 @@
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>
+    <ng-container *ngSwitchCase="'checkbox'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <ul>
+        <li *ngFor="let opt of question.options">
+          <mat-checkbox [formControlName]="question.key">
+            {{ opt.title }}
+          </mat-checkbox>
+        </li>
+      </ul>
+    </ng-container>
   </div>
 </ng-container>
