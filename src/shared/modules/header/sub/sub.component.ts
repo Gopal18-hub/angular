@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from "@angular/core";
   styleUrls: ["./sub.component.scss"],
 })
 export class SubComponent implements OnInit {
-  @Input() submodules: any;
+  @Input() submodules: any = [];
 
   activeSubModule: any;
 
