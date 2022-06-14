@@ -78,7 +78,7 @@ export class OpRegistrationComponent implements OnInit {
         list:this.genderList
       },
       dob: {
-        type: "string",
+        type: "date",
         title: "Date of Birth",
         required: true,
       },
@@ -146,7 +146,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Locality",
         // required property is dependent on country
         required: true,
-        list:this.localityList;
+        list:this.localityList
       },
       localitytxt: {
         type: "string",
