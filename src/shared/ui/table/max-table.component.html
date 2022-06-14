@@ -28,7 +28,10 @@
     </ng-container>
 
     <ng-container *ngFor="let col of displayedColumns">
-      <ng-container [matColumnDef]="col" *ngIf="col != 'select'">
+      <ng-container
+        [matColumnDef]="col"
+        *ngIf="col != 'select' && col != 'actionItems'"
+      >
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ displayColumnsInfo[col].title }}
         </th>
