@@ -1,137 +1,357 @@
 <ng-container [ngSwitch]="question.type">
-	<div [formGroup]="form">
-		
-		<ng-container *ngSwitchCase="'hidden'">
-			<input [formControlName]="question.key" type="hidden" [id]="question.key"> 
-		</ng-container>
-		<ng-container *ngSwitchCase="'string'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [required]="question.required" [readonly]="question.readonly">
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'password'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [required]="question.required" [readonly]="question.readonly">
-				<button mat-icon-button matSuffix (click)="passwordHide = !passwordHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
-					<mat-icon>{{passwordHide ? 'visibility_off' : 'visibility'}}</mat-icon>
-				  </button>
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'number'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never"> 
-				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [required]="question.required" [min]="question.minimum" [max]="question.maximum" [readonly]="question.readonly" [step]="question.step">
-				<mat-error *ngIf="form.get(question.key)?.hasError('required')"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-error *ngIf="form.get(question.key)?.hasError('min')"> {{question.label}} value should be greater than or equal to  <strong>{{question.minimum}}</strong> </mat-error>
-				<mat-error *ngIf="form.get(question.key)?.hasError('max')"> {{question.label}} value should be less than or equal to  <strong>{{question.maximum}}</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'textarea'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear im-textarea"  appearance="outline" floatLabel="never">
-				<textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="5" [formControlName]="question.key" [id]="question.key" [required]="question.required" [readonly]="question.readonly"></textarea>
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'email'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [attr.required]="question.required">
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'colorpicker'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<input matInput placeholder=""  [formControlName]="question.key" type="color" [id]="question.key" [attr.required]="question.required">
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'radio'">
-			<div class="full-width mb-4">
-				<label>{{question.label}}: </label>
-				<mat-radio-group formControlName="floatLabel" class="flex flex-column" [formControlName]="question.key" [value]="question.value">
-					<ng-container *ngFor="let opt of question.options">
-						<mat-radio-button [value]="opt.value" class="py-2">{{opt.title}}</mat-radio-button>
-					</ng-container>
-				</mat-radio-group>
-			  </div>
-		</ng-container>
-		<ng-container *ngSwitchCase="'range'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear nopaading-infix"  appearance="outline" floatLabel="never">
-				<input matInput type="number"  [formControlName]="question.key" [id]="question.key" hidden />
-				<mat-slider
-				class="w-full"
-				[max]="question.maximum"
-				[min]="question.minimum"
-				[step]="question.step"
-				thumbLabel="true"
-				tickInterval="10"
-				[(value)]="question.value"
-				(change)="setValue(form, question.key, $event)"
-				>
-			</mat-slider>
-			<ng-container *ngIf="question.hintText">
-				<span matSuffix><mat-icon matTooltip="{{question.hintText}}">info</mat-icon></span>
-			</ng-container>
-			</mat-form-field>
-			 
-		</ng-container>
-		<ng-container *ngSwitchCase="'dropdown'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<mat-select [id]="question.key" [formControlName]="question.key" [value]="question.value" [panelClass]="'im-select-dropdown'" [compareWith]="compareFn" [required]="question.required">
-					<ng-container *ngFor="let opt of question.options">
-						<mat-option [value]="opt.value" [disabled]="opt?.disabled"> {{opt.title}} </mat-option>
-						<ng-container *ngIf="opt?.child">
-							<mat-optgroup [label]="''">
-								<ng-container *ngFor="let child of opt.child">
-									<mat-option [value]="child.id"> {{child.name}} </mat-option>
-									<ng-container *ngIf="child?.child">
-										<mat-optgroup [label]="''">
-											<ng-container *ngFor="let child1 of child.child">
-												<mat-option [value]="child1.id" style="margin-left: 8px;"> {{child1.name}} </mat-option>
-												<ng-container *ngIf="child1?.child">
-													<mat-optgroup [label]="''">
-														<mat-option *ngFor="let child2 of child1.child" [value]="child2.id" style="margin-left: 16px;"> {{child2.name}} </mat-option>
-													</mat-optgroup>
-												</ng-container>
-											</ng-container>
-										</mat-optgroup>
-									</ng-container>
-								</ng-container>
-							</mat-optgroup>
-						</ng-container>
-					</ng-container>
-				</mat-select>
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-		<ng-container *ngSwitchCase="'autocomplete'">
-			<mat-label [attr.for]="question.key">{{question.label}}</mat-label>
-			<mat-form-field class="full-width clearfix clear"  appearance="outline" floatLabel="never">
-				<input matInput placeholder=""  [formControlName]="question.key" [type]="question.type" [id]="question.key" [required]="question.required" [readonly]="question.readonly" [matAutocomplete]="auto">
-				<mat-autocomplete #auto="matAutocomplete" >
-					<mat-option *ngFor="let opt of question.options" [value]="opt.value">
-					  {{opt.title}}
-					</mat-option>
-				  </mat-autocomplete>
-				<mat-error *ngIf="!isValid"> {{question.label}} is <strong>required</strong> </mat-error>
-				<mat-hint *ngIf="question.hintText">{{question.hintText}}</mat-hint>
-			</mat-form-field>
-		</ng-container>
-	
-	</div>
+  <div [formGroup]="form">
+    <ng-container *ngSwitchCase="'hidden'">
+      <input
+        [formControlName]="question.key"
+        type="hidden"
+        [id]="question.key"
+        #element
+      />
+    </ng-container>
+    <ng-container *ngSwitchCase="'string'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          #element
+        />
+        <mat-error *ngIf="!isValid && !isCorrect">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="isCorrect && question.customErrorMessage">
+          {{ question.customErrorMessage }}</mat-error
+        >
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'password'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          #element
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="passwordHide = !passwordHide"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="passwordHide"
+        >
+          <mat-icon>{{
+            passwordHide ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'number'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [min]="question.minimum"
+          [max]="question.maximum"
+          [readonly]="question.readonly"
+          [step]="question.step"
+          #element
+        />
+        <mat-error *ngIf="form.get(question.key)?.hasError('required')">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="form.get(question.key)?.hasError('min')">
+          {{ question.label }} value should be greater than or equal to
+          <strong>{{ question.minimum }}</strong>
+        </mat-error>
+        <mat-error *ngIf="form.get(question.key)?.hasError('max')">
+          {{ question.label }} value should be less than or equal to
+          <strong>{{ question.maximum }}</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'textarea'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear im-textarea"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="5"
+          [formControlName]="question.key"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          #element
+        ></textarea>
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'email'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [attr.required]="question.required"
+          #element
+        />
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'colorpicker'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          type="color"
+          [id]="question.key"
+          [attr.required]="question.required"
+          #element
+        />
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'radio'">
+      <div class="full-width mb-4">
+        <label>{{ question.label }}: </label>
+        <mat-radio-group
+          formControlName="floatLabel"
+          class="flex flex-column"
+          [formControlName]="question.key"
+          [value]="question.value"
+        >
+          <ng-container *ngFor="let opt of question.options">
+            <mat-radio-button [value]="opt.value" class="py-2">{{
+              opt.title
+            }}</mat-radio-button>
+          </ng-container>
+        </mat-radio-group>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'range'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear nopaading-infix"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          type="number"
+          [formControlName]="question.key"
+          [id]="question.key"
+          hidden
+        />
+        <mat-slider
+          class="w-full"
+          [max]="question.maximum"
+          [min]="question.minimum"
+          [step]="question.step"
+          thumbLabel="true"
+          tickInterval="10"
+          [(value)]="question.value"
+          (change)="setValue(form, question.key, $event)"
+        >
+        </mat-slider>
+        <ng-container *ngIf="question.hintText">
+          <span matSuffix
+            ><mat-icon matTooltip="{{ question.hintText }}"
+              >info</mat-icon
+            ></span
+          >
+        </ng-container>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'dropdown'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <mat-select
+          [id]="question.key"
+          [formControlName]="question.key"
+          [value]="question.value"
+          [panelClass]="'im-select-dropdown'"
+          [compareWith]="compareFn"
+          [required]="question.required"
+          #element
+        >
+          <ng-container *ngFor="let opt of question.options">
+            <mat-option [value]="opt.value" [disabled]="opt?.disabled">
+              {{ opt.title }}
+            </mat-option>
+            <ng-container *ngIf="opt?.child">
+              <mat-optgroup [label]="''">
+                <ng-container *ngFor="let child of opt.child">
+                  <mat-option [value]="child.id"> {{ child.name }} </mat-option>
+                  <ng-container *ngIf="child?.child">
+                    <mat-optgroup [label]="''">
+                      <ng-container *ngFor="let child1 of child.child">
+                        <mat-option
+                          [value]="child1.id"
+                          style="margin-left: 8px"
+                        >
+                          {{ child1.name }}
+                        </mat-option>
+                        <ng-container *ngIf="child1?.child">
+                          <mat-optgroup [label]="''">
+                            <mat-option
+                              *ngFor="let child2 of child1.child"
+                              [value]="child2.id"
+                              style="margin-left: 16px"
+                            >
+                              {{ child2.name }}
+                            </mat-option>
+                          </mat-optgroup>
+                        </ng-container>
+                      </ng-container>
+                    </mat-optgroup>
+                  </ng-container>
+                </ng-container>
+              </mat-optgroup>
+            </ng-container>
+          </ng-container>
+        </mat-select>
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'autocomplete'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          [matAutocomplete]="auto"
+          #element
+        />
+        <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [displayWith]="displayFn"
+          (opened)="arrowIcon = 'arrow_drop_up'"
+          (closed)="arrowIcon = 'arrow_drop_down'"
+        >
+          <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt">
+            {{ opt.title }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="!isValid">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'date'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          #element
+          [matDatepicker]="datepicker"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datepicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datepicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button color="primary" matDatepickerApply>
+              Apply
+            </button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+        <mat-error *ngIf="!isValid && !isCorrect">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="isCorrect && question.customErrorMessage">
+          {{ question.customErrorMessage }}</mat-error
+        >
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+  </div>
 </ng-container>

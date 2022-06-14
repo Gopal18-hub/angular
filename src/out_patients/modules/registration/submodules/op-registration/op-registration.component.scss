@@ -1,0 +1,77 @@
+.opd-reg-wrapper {
+  
+  &-box {
+    background-color: #fff;
+    background-position-y: 101%;
+    background-size: 55%;
+    background-position-x: 102%;
+    margin-left: 0%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-repeat: no-repeat;
+    form {
+      ::ng-deep mat-label {
+        color: var(--primary-color);
+      }
+      .change-password {
+        color: var(--primary-color);
+      }
+    }
+    &-secondary
+    {
+      height: 44vh;
+    
+    }
+    &-address
+    {
+      height: 100%;
+         width: 30%;
+      float: left;
+     
+     
+    }
+    &-checboxcontainer
+    {
+      background-color: #f6f6f6;
+      float: left;
+      // width: 30%;
+    }
+   &-checboxcontainer
+    {
+      background-color: #f6f6f6;
+      // width: 30%;
+    }
+    &-check
+    {
+      height: 100%;
+           width: 20%;
+      float: left;
+    }
+    &-radio
+    {
+      height: 100%;
+           width: 30%;
+      float: left;
+    }
+    &-imageblock
+    {
+      height: 100%;
+     
+      width: 20%;
+      float: left;
+    }
+  }
+
+}
+.father-container
+{
+  width: 15%;
+}
+.age-container
+{
+  width: 15%;
+}
+.autocomplete
+{
+  width: 7.66667%;
+}
