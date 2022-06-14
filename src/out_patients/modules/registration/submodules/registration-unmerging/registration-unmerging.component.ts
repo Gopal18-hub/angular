@@ -41,7 +41,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   config: any  = {
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','category'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'MAX ID',
@@ -79,8 +79,10 @@ export class RegistrationUnmergingComponent implements OnInit {
         title: 'Phone No.',
         type: 'number'
       },
-      category : {
-        title: 'Category'
+      categoryIcons : {
+        title: 'Category',
+        type:'image',
+        width:34
       }
     }
   }  
