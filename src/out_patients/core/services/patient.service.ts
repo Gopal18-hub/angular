@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { getmergepatientsearch } from '../models/getmergepatientsearch';
 import { PatientSearchModel } from '../models/patientSearchModel';
 
 @Injectable({
@@ -20,20 +21,20 @@ export class PatientService {
 
     constructor() { }
 
-    getAllCategoryIcons(patientSearchModel:PatientSearchModel[])
+    getAllCategoryIcons(patientSearchModel:PatientSearchModel[] | getmergepatientsearch[], model: any = PatientSearchModel)
     {
         
         patientSearchModel.forEach((e)=>{            
             e.categoryIcons = this.getCategoryIcons(e);
         });
-        return patientSearchModel;
+        return patientSearchModel as typeof model;
     }
 
-    getCategoryIcons(patient:PatientSearchModel)
+    getCategoryIcons(patient:PatientSearchModel | getmergepatientsearch)
     {
         let returnIcons:any= [];
         Object.keys(patient).forEach((e)=>{
-            if(this.categoryIcons[e] && patient[e as keyof PatientSearchModel]){
+            if(this.categoryIcons[e] && patient[e as keyof (PatientSearchModel |getmergepatientsearch)]){
                 returnIcons.push('assets/patient-categories/'+this.categoryIcons[e]);
             }
         });

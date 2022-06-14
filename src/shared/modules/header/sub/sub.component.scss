@@ -52,7 +52,7 @@
 ::ng-deep {
   .sub-header-menu {
     width: 48vw;
-    height: 24vh;
+    //height: vh;
     overflow: hidden;
     max-width: initial !important;
     .mat-menu-content {
@@ -64,6 +64,23 @@
         flex: 1 1 calc(20vh / 4);
         justify-content: flex-start;
         text-align: left;
+      }
+    }
+  }
+  .search-header-menu {
+    width: 32vw;
+    max-width: initial !important;
+    maxhealth-question {
+      > div {
+        display: flex;
+        align-items: center;
+        mat-label {
+          width: 35%;
+        }
+        mat-form-field {
+          width: 65% !important;
+          font-size: 12px;
+        }
       }
     }
   }
