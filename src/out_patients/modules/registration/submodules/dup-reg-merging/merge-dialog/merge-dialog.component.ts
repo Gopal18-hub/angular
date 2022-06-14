@@ -4,6 +4,7 @@ import { CookieService } from '../../../../../../shared/services/cookie.service'
 import { ApiConstants } from '../../../../../../out_patients/core/constants/ApiConstants';
 import { PatientSearchModel } from '../../../../../../out_patients/core/models/patientSearchModel';
 import { HttpService } from '../../../../../../shared/services/http.service';
+import { PatientmergeModel } from '../../../../../../out_patients/core/models/patientMergeModel';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { HttpService } from '../../../../../../shared/services/http.service';
 export class MergeDialogComponent implements OnInit {
   selectedRows:PatientSearchModel[]=[];
   selectedid:any=[];  
+  mergePostModel:any[]=[];
   primaryid :number = 0;
 
   constructor(private http: HttpService,@Inject(MAT_DIALOG_DATA) public data : any,private dialogRef: MatDialogRef<MergeDialogComponent>,private cookie:CookieService) { }
@@ -23,7 +25,10 @@ export class MergeDialogComponent implements OnInit {
     this.selectedRows = this.data.tableRows.selection._selected;    
       this.selectedRows.forEach(element => {
         this.selectedid.push(element.id);
-      });        
+      }); 
+      
+      this.data.tableRows.selection.selected.map((s:any)=>{
+        this.mergePostModel.push({id:s.id})});
   }
   checboxSelected(event:any)
   {   
@@ -32,7 +37,7 @@ export class MergeDialogComponent implements OnInit {
   patientMerging() {   
     //let userId = Number(this.cookie.get('UserId'));
     let userId =105043
-    this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.selectedid).subscribe((res)=>
+    this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
     {
       this.dialogRef.close();      
     });
