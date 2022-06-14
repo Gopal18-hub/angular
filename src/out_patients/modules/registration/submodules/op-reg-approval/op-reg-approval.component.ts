@@ -31,6 +31,8 @@ export class OpRegApprovalComponent implements OnInit {
   fromdate:string="2022-01-01";
   todate:string="2022-06-30";
   hsplocationId:number=9;
+  enableapprovebtn:boolean=false;
+  enablehotlistbtn:boolean=false;
 
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
@@ -247,6 +249,8 @@ export class OpRegApprovalComponent implements OnInit {
       this.showapprovalpending = true;
       this.showapprovalaccepting = false;
       this.showapprovalreject = false;
+      this.enableapprovebtn = true;
+      this.enablehotlistbtn = true;
       console.log(this.opApprovalList);
     },error=>{
       this.opApprovalList =[];
@@ -288,6 +292,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
         this.ngOnInit();
+        this.enableapprovebtn = true;
       }
       else if(this.ophotlistingapproval = true)
       {
@@ -298,6 +303,7 @@ export class OpRegApprovalComponent implements OnInit {
           this.opApprovalHotList  = resultData as opRegHotlistModel[];
           this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);
           this.showapprovalpending = true;
+          this.enablehotlistbtn = true;
           console.log(this.opApprovalHotList);
         })
       }
@@ -314,6 +320,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.opApprovalacceptList  = resultData as opRegApprovalModel[];
         this.showapprovalaccepting = true;
         console.log(this.opApprovalacceptList);
+        this.enableapprovebtn = false;
       })
       }
       else if(this.ophotlistingapproval = true)
@@ -325,6 +332,7 @@ export class OpRegApprovalComponent implements OnInit {
           this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
           this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
           this.showapprovalaccepting = true;
+          this.enablehotlistbtn = false;
           console.log(this.opApprovalHotlistacceptList);
         })
       }
@@ -341,6 +349,8 @@ export class OpRegApprovalComponent implements OnInit {
         this.opApprovalrejectList = resultData as opRegApprovalModel[];
         this.showapprovalreject = true;
         console.log(this.opApprovalrejectList);
+        this.enableapprovebtn = false;
+       
       })
       }
       else if(this.ophotlistingapproval = true)
@@ -353,6 +363,7 @@ export class OpRegApprovalComponent implements OnInit {
           this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
           this.showapprovalreject = true;
           console.log(this.opApprovalHotlistrejectList);
+          this.enablehotlistbtn = false;
         })
       }
       

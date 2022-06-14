@@ -10,30 +10,7 @@
             <a mat-tab-link *ngFor="let link of link2" class="cursor-pointer"
             (click)="activeLink2 = link"
             [active]="activeLink2 == link" (click)="showgrid(link)"> {{link}} </a>
-        </span> 
-        <!-- <ul class="list-unstyled flex items-end">
-            <li class="ml-3">
-              <a mat-tab-link [active]="true" (click)="showmain('')"> OP Registration Approval</a>
-            </li>
-            <li class="ml-3">
-                <a mat-tab-link> Hot Listing Approval</a>
-              </li>
-              <li class="ml-3">
-                <a mat-tab-link> OP Refund Approval</a>
-              </li>
-          </ul>
-          <ul class="list-unstyled flex items-end">
-            <li class="ml-5">
-              <a mat-tab-link [active]="true"> View Pending Request</a>
-            </li>
-            <li class="ml-5">
-                <a mat-tab-link>Approved Requests</a>
-              </li>
-              <li class="ml-5  float-right">
-                <a mat-tab-link> Reject Requests</a>
-              </li>
-          </ul> -->
-
+        </span>
       </nav>
       <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
     <div  *ngIf="opapproval">
@@ -48,9 +25,9 @@
             <maxhealth-table [config]="approveorrejectconfig" [data]="opApprovalrejectList"></maxhealth-table>
         </ng-container>
     </div>
-    <div class="self-end float-left absolute left-4-%">
-        <button mat-raised-button color="primary" class="w-1/2 relative left-10" type="submit" *ngIf="opApprovalList" (click)="approvalApproveItem()">Approve</button>
-        <button mat-raised-button color="primary" class="w-1/2 left-15" type="submit" *ngIf="opApprovalList" (click)="approvalRejectItem()">Reject</button>
+    <div class="self-end float-right absolute right-5-%">
+        <button mat-raised-button color="primary" class="w-1/2 relative right-15" type="submit" *ngIf="opApprovalList && enableapprovebtn" (click)="approvalApproveItem()">Approve</button>
+        <button mat-raised-button color="primary" class="w-1/2" type="submit" *ngIf="opApprovalList && enableapprovebtn" (click)="approvalRejectItem()">Reject</button>
     </div>
     </div>
 
@@ -66,10 +43,10 @@
                 <maxhealth-table [config]="hotlistingapproveorrejectconfig" [data]="opApprovalHotlistrejectList"></maxhealth-table>
             </ng-container>
         </div>
-        <div class="flex flex-row self-end float-left absolute left-4-%">
-            <button mat-raised-button color="primary" class="w-1/2 relative left-10" type="submit" *ngIf="opApprovalHotList" (click)="hotlistApproveItem()">Approve</button>
-            <button mat-raised-button color="primary" class="w-1/2 left-15" type="submit" *ngIf="opApprovalHotList" (click)="hotlistRejectItem()">Reject</button>
-            <button mat-raised-button color="primary" class="w-1/2 relative left-20" type="submit" *ngIf="opApprovalHotList" (click)="hotlistDeleteItem()">Delete</button>
+        <div class="flex flex-row self-end float-right absolute right-5-%">
+            <button mat-raised-button color="primary" class="w-1/2 relative right-30" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistApproveItem()">Approve</button>
+            <button mat-raised-button color="primary" class="w-1/2 right-15" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistRejectItem()">Reject</button>
+            <button mat-raised-button color="primary" class="w-1/2 relative" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistDeleteItem()">Delete</button>
         </div>
         </div>
 </section>
