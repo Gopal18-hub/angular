@@ -1,20 +1,4 @@
 .opd-reg-wrapper {
-  background-size: cover;
-  background-position: 25% 100%;
-    overflow: hidden;
-  &-ribbon {
-    background-color: #004084;
-    height: 6vh;
-    border-radius: 0.5rem 0.5rem 0rem 0rem;
-    &-btn {
-      background-color: #fff;
-       border-radius: 0.5rem 0.5rem 0rem 0rem;
-      color: #004084;
-      border: none;
-      width: 11%;
-    }
-  }
-
   &-box {
     background-color: #fff;
     background-position-y: 101%;
@@ -31,6 +15,39 @@
       .change-password {
         color: var(--primary-color);
       }
+    }
+    &-secondary {
+      height: 44vh;
+    }
+    &-address {
+      height: 100%;
+      width: 30%;
+      float: left;
+    }
+    &-checboxcontainer {
+      background-color: #f6f6f6;
+      float: left;
+      // width: 30%;
+    }
+    &-checboxcontainer {
+      background-color: #f6f6f6;
+      // width: 30%;
+    }
+    &-check {
+      height: 100%;
+      width: 20%;
+      float: left;
+    }
+    &-radio {
+      height: 100%;
+      width: 30%;
+      float: left;
+    }
+    &-imageblock {
+      height: 100%;
+
+      width: 20%;
+      float: left;
     }
   }
 }

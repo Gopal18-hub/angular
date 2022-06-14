@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { getallpatient } from '../../../../../out_patients/core/models/findpatientmodel';
+import { PatientSearchModel } from '../../../../../out_patients/core/models/patientSearchModel';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -7,6 +7,8 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MaxTableComponent } from '../../../../../shared/ui/table/max-table.component';
 import { RegistrationUnmergingComponent } from '../registration-unmerging/registration-unmerging.component';
 import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
+import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 
@@ -16,9 +18,9 @@ import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
   styleUrls: ['./dup-reg-merging.component.scss']
 })
 export class DupRegMergingComponent implements OnInit {
-  patientList: getallpatient[] = [];
+  patientList: PatientSearchModel[] = [];
   results: any;
-  showpatient: boolean = false;
+  isAPIProcess: boolean = false;
   name = '';
   dob = '';
   email = '';
@@ -26,13 +28,22 @@ export class DupRegMergingComponent implements OnInit {
   aadhaarId = '';
   mobile = '';
 
-  @ViewChild("table") tableRows!: MaxTableComponent
+  mergeSearchForm = new FormGroup({
+    name: new FormControl(''),   
+    mobile: new FormControl(''),
+    dob: new FormControl(''),
+    email: new FormControl(''),
+    healthId: new FormControl(''),
+    aadhaarId:new FormControl('')
+  });
+   @ViewChild("table") tableRows!: MaxTableComponent
 
   constructor(private http: HttpService, public matDialog: MatDialog) { }
 
   config: any = {
+    dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
     columnsInfo: {
       maxid: {
         title: 'Max ID',
@@ -70,8 +81,10 @@ export class DupRegMergingComponent implements OnInit {
         title: 'Phone No.',
         type: 'number'
       },
-      category: {
-        title: 'Category'
+      categoryIcons: {
+        title: 'Category',
+        type:'image',
+        width:34
       }
     }
   }
@@ -79,23 +92,21 @@ export class DupRegMergingComponent implements OnInit {
   ngOnInit(): void { }
 
   openDialog() {
-   this.matDialog.open(MergeDialogComponent,{data:{name:"ABC"}})
+    
+   this.matDialog.open(MergeDialogComponent,{data:{tableRows:this.tableRows}})
   }
 
   searchPatient() {    
     this.patientList = [];
     this.getAllpatientsBySearch().subscribe((resultData) => {     
-      this.results = resultData as getallpatient[];
-      this.showpatient = true;     
+      this.results = resultData;
+      this.isAPIProcess = true;     
     })  
 
-  } 
-
-
+  }
+  
   getAllpatientsBySearch() {
-    return this.http.get(environment.PatientApiUrl + 'api/patient/getallpatientssearch?MaxId=' + '' + '&SSN=' + '' + '&Name=' + this.name + '&PhoneNumber=' + this.mobile + '&DOB=' + this.dob + '&AadhaarId=' + this.aadhaarId + '&HealthId=' + this.healthId);
+     return this.http.get(ApiConstants.searchPatientApi('','', this.name,this.mobile,this.dob, this.aadhaarId,this.healthId));
   }
-  patientMerging() {
-    return this.http.get(environment.PatientApiUrl + 'api/patient/patientmerging/' + "activateUserid" + "userid")
-  }
+ 
 }

@@ -1,4 +1,4 @@
-export class getallpatient{
+export class PatientSearchModel{
    
     maxid: string;
     ssn: string;
@@ -19,7 +19,7 @@ export class getallpatient{
     cghs: boolean;
     mergeLinked: string;
     id:number;
-    
+    categoryIcons?:any[];
     constructor(
         
         maxid: string,
@@ -40,7 +40,8 @@ export class getallpatient{
         mergeLinked: string,
         firstName:string,
     lastName:string,
-    id:number)
+    id:number,
+    categoryIcons?:any[])
     {
         this.firstName=firstName;
    this.lastName= lastName;
@@ -61,5 +62,6 @@ export class getallpatient{
        this.cghs= cghs;
        this.mergeLinked= mergeLinked;
        this.id=id;
+       this.categoryIcons = categoryIcons;
     }
 }

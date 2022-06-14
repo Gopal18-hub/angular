@@ -19,7 +19,17 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MergeDialogComponent } from './submodules/dup-reg-merging/merge-dialog/merge-dialog.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-
+import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
+import { AppointmentSearchDialogComponent } from './submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
+import {MatCardModule} from '@angular/material/card';
+import { PrintLabelDialogComponent } from './submodules/op-registration/print-label-dialog/print-label-dialog.component';
+import { VipDialogComponent } from './submodules/op-registration/vip-dialog/vip-dialog.component';
+import { HotListingDialogComponent } from './submodules/op-registration/hot-listing-dialog/hot-listing-dialog.component';
+import {MatSelectModule} from '@angular/material/select';
+import { NotesDialogComponent } from './submodules/op-registration/notes-dialog/notes-dialog.component';
+import { HwcDialogComponent } from './submodules/op-registration/hwc-dialog/hwc-dialog.component';
+import { SeafarersDialogComponent } from './submodules/op-registration/seafarers-dialog/seafarers-dialog.component';
+import { ForeignerDialogComponent } from './submodules/op-registration/foreigner-dialog/foreigner-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,10 +39,20 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
        RegistrationUnmergingComponent,
        RegistrationComponent,
        OpRegApprovalComponent,
-          MergeDialogComponent
+        MergeDialogComponent,
+          AppointmentSearchComponent,
+          AppointmentSearchDialogComponent,
+          PrintLabelDialogComponent,
+          VipDialogComponent,
+          HotListingDialogComponent,
+          NotesDialogComponent,
+          HwcDialogComponent,
+          SeafarersDialogComponent,
+          ForeignerDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
+    MatCardModule,
     MaxHealthTableModule,
     CommonModule,
     MatButtonModule,
@@ -47,16 +67,12 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatCheckboxModule,   
     DynamicFormsModule,
     ReactiveFormsModule,
-    MatIconModule 
-
-   
-    
-    
-
-
+    MatIconModule,
+    MatSelectModule
   ],
   exports: [],
   providers: [],
+  entryComponents:[AppointmentSearchComponent],
   bootstrap: []
 })
 export class RegistrationModule { }
