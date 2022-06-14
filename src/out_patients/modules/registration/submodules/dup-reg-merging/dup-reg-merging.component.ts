@@ -41,6 +41,7 @@ export class DupRegMergingComponent implements OnInit {
   constructor(private http: HttpService, public matDialog: MatDialog) { }
 
   config: any = {
+    dateformat: 'dd/MM/yyyy',
     selectBox: true,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'category'],
     columnsInfo: {

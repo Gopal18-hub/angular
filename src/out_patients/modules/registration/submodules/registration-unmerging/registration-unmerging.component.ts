@@ -20,9 +20,7 @@ import { MatTabLabel } from '@angular/material/tabs';
 export class RegistrationUnmergingComponent implements OnInit {  
 
   unmergingList:getmergepatientsearch[]=[];
-  unMergePostModel:PatientmergeModel[]=[];
-  unmergecheckedList:getmergepatientsearch[]=[];
-  unMergepatientresultList:getmergepatientsearch[]=[];
+  unMergePostModel:PatientmergeModel[]=[]; 
   isAPIProcess:boolean=false;
   unmergebuttonDisabled:boolean=true;
   unMergeresponse:string='';
@@ -90,15 +88,16 @@ export class RegistrationUnmergingComponent implements OnInit {
 
   ngOnInit(): void {    
   }
-
+  
   unMerge(){
-    this.unMergePostModel=this.table.selection.selected.map((s:any)=>s.id);
+
+    this.table.selection.selected.map((s:any)=>{
+      this.unMergePostModel.push({id:s.id})});
+
     this.unMergePatient(this.unMergePostModel).subscribe((resultdata)=>{
       console.log(resultdata);
-      this.unMergeresponse=resultdata;
-  
-    // this.openModal('unmerge-modal-1');
-     this.unMergepatientresultList=[];
+      this.unMergeresponse=resultdata;  
+    // this.openModal('unmerge-modal-1');   
      this.unmergebuttonDisabled=true; 
     },error=>{
       console.log(error);
@@ -110,12 +109,9 @@ export class RegistrationUnmergingComponent implements OnInit {
       this.unmergingList  = resultData;
       this.isAPIProcess = true; 
       setTimeout(()=>{        
-        this.table.selection.changed.subscribe((res:any)=>{        
-         
+        this.table.selection.changed.subscribe((res:any)=>{ 
           if(this.table.selection.selected.length>= 1)
-              this.unmergebuttonDisabled = false;
-              // this.unMergePostModel=this.table.selection.selected.map((s:any)=>s.id)
-              // console.log(this.unMergePostModel);
+              this.unmergebuttonDisabled = false;             
         });
       }) ;
      
