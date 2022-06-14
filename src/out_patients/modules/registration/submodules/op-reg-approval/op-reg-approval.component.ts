@@ -71,9 +71,9 @@ export class OpRegApprovalComponent implements OnInit {
       }
     }
   }
-  config1: any  = {
+  config1: any  = {    
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -95,9 +95,6 @@ export class OpRegApprovalComponent implements OnInit {
       },
       hotListing_Comment : {
         title: 'Remarks'
-      },
-      category : {
-        title: 'Category'
       }
     }
   }
