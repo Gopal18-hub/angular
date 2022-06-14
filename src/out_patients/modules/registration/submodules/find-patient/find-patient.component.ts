@@ -75,12 +75,12 @@ export class FindPatientComponent implements OnInit {
       },
     },
   };
-  constructor(private http: HttpService, private patient: PatientService) {}
+  constructor(private http: HttpService, private patientServie: PatientService) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
       this.patientList = resultData;
-      this.patientList = this.patient.getAllCategoryIcons(this.patientList);
+      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
 
       this.isAPIProcess = true;
       console.log(this.patientList);
