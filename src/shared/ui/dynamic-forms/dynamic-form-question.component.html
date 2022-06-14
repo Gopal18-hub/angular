@@ -45,7 +45,7 @@
           matInput
           placeholder=""
           [formControlName]="question.key"
-          [type]="question.type"
+          [type]="passwordHide ? 'password' : 'text'"
           [id]="question.key"
           [required]="question.required"
           [readonly]="question.readonly"
