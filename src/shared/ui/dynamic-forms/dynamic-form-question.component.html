@@ -45,7 +45,7 @@
           matInput
           placeholder=""
           [formControlName]="question.key"
-          [type]="question.type"
+          [type]="passwordHide ? 'password' : 'text'"
           [id]="question.key"
           [required]="question.required"
           [readonly]="question.readonly"
@@ -57,6 +57,7 @@
           (click)="passwordHide = !passwordHide"
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="passwordHide"
+          type="button"
         >
           <mat-icon>{{
             passwordHide ? "visibility_off" : "visibility"
@@ -311,6 +312,45 @@
         <mat-error *ngIf="!isValid">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'date'">
+      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [readonly]="question.readonly"
+          #element
+          [matDatepicker]="datepicker"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datepicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datepicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button color="primary" matDatepickerApply>
+              Apply
+            </button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+        <mat-error *ngIf="!isValid && !isCorrect">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="isCorrect && question.customErrorMessage">
+          {{ question.customErrorMessage }}</mat-error
+        >
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>

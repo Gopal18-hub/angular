@@ -17,7 +17,8 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 import { OptionGroupComponent } from "./partials/option-group/option-group.component";
-
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
 @NgModule({
   imports: [
     CommonModule,
@@ -32,6 +33,8 @@ import { OptionGroupComponent } from "./partials/option-group/option-group.compo
     MatTooltipModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
   ],
   exports: [DynamicFormQuestionComponent],
   declarations: [DynamicFormQuestionComponent, OptionGroupComponent],

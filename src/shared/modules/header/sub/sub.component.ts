@@ -6,9 +6,38 @@ import { Component, OnInit, Input } from "@angular/core";
   styleUrls: ["./sub.component.scss"],
 })
 export class SubComponent implements OnInit {
-  @Input() submodules: any;
+  @Input() submodules: any = [];
 
   activeSubModule: any;
+
+  searchFormData = {
+    "": {
+      title: "",
+      type: "object",
+      properties: {
+        username: {
+          type: "string",
+          title: "Username",
+          required: true,
+        },
+        password: {
+          type: "password",
+          title: "Password",
+          required: true,
+        },
+        location: {
+          type: "autocomplete",
+          title: "Location",
+          required: true,
+        },
+        station: {
+          type: "autocomplete",
+          title: "Station",
+          required: true,
+        },
+      },
+    },
+  };
 
   constructor() {}
 
