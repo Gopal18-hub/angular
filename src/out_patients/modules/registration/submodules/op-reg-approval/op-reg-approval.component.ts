@@ -47,7 +47,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvalconfig: any  = {   
     dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -61,7 +61,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      ptnName : {
+      firstName : {
         title: 'Patient Name',
         type: 'string'
       },
@@ -103,7 +103,7 @@ export class OpRegApprovalComponent implements OnInit {
   approveorrejectconfig: any  = {  
     dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -117,7 +117,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      ptnName : {
+      firstName : {
         title: 'Patient Name',
         type: 'string'
       },
@@ -384,17 +384,17 @@ export class OpRegApprovalComponent implements OnInit {
   }
   approvalApproveItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-    this.ApprovalidList.push(s.id)});
+    this.ApprovalidList.push({id:s.id})});
     let userId = 1;//Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
       for(let id of this.ApprovalidList)
       {        
-         const index: number = this.opApprovalList.findIndex(i => i.id == id);
+         const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
          if(index !== -1)
-         {
-          this.opApprovalList.splice(index,1);
+         {          
+          this.opApprovalList = this.opApprovalList.splice(index,1);
          }
       }
       this.ApprovalidList = [];
@@ -405,12 +405,21 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-      this.ApprovalidList.push(s.id)});
+      this.ApprovalidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
         console.log(resultdata);
+        for(let id of this.ApprovalidList)
+        {        
+           const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
+           if(index !== -1)
+           {
+            this.opApprovalList = this.opApprovalList.splice(index,1);
+           }
+        }
+        this.ApprovalidList = [];
       },error=>{
         console.log(error);
       }); 
@@ -421,16 +430,16 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistApproveItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push(s.id)});
+      this.HotListidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];
@@ -442,16 +451,16 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistRejectItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push(s.id)});
+      this.HotListidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];
@@ -463,16 +472,16 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistDeleteItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push(s.id)});
+      this.HotListidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];

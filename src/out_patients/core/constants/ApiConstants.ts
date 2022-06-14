@@ -219,11 +219,11 @@ export namespace ApiConstants {
   };
   
   export const opapprovalaccepted = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid
+    return(   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 1
     );   
   };
   export const opapprovalrejected = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(    environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid
+    return(    environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 2
        );   
       };
   export const ophotlistingpending = (fromdate:string, todate:string, hspLocationid:number) => {
