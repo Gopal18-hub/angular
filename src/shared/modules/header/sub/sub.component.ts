@@ -12,6 +12,8 @@ export class SubComponent implements OnInit {
 
   activeSubModule: any;
 
+  activePageItem: any;
+
   searchFormData = {
     global: {
       title: "",
@@ -19,81 +21,81 @@ export class SubComponent implements OnInit {
       properties: {
         maxID: {
           type: "string",
-          title: "Max ID"
+          title: "Max ID",
         },
         phone: {
           type: "string",
-          title: "Phone"
+          title: "Phone",
         },
         name: {
           type: "string",
-          title: "Name"
+          title: "Name",
         },
         dob: {
           type: "date",
-          title: "DOB"
+          title: "DOB",
         },
         healthID: {
           type: "string",
-          title: "Health ID"
+          title: "Health ID",
         },
         adhaar: {
           type: "string",
-          title: "Aadhaar"
+          title: "Aadhaar",
         },
       },
     },
-    merge:{
-      dateFormat:'dd/MM/yyyy',
+    merge: {
+      dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
-      properties: {       
+      properties: {
         name: {
           type: "string",
-          title: "Name"
+          title: "Name",
         },
         phone: {
           type: "string",
-          title: "Phone"
+          title: "Phone",
         },
         dob: {
           type: "date",
-          title: "DOB"
+          title: "DOB",
         },
-        email:{
+        email: {
           type: "string",
-          title: "Email"
-        }
+          title: "Email",
+        },
       },
     },
-    opapproval:{
-      dateFormat:'dd/MM/yyyy',
+    opapproval: {
+      dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
-      properties: {       
+      properties: {
         from: {
           type: "date",
-          title: "From"
+          title: "From",
         },
         to: {
           type: "date",
-          title: "To"
-        }
+          title: "To",
+        },
       },
     },
-    unmerge:{
-      dateFormat:'dd/MM/yyyy',
+    unmerge: {
+      dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
-      properties: {       
+      properties: {
         maxID: {
           type: "string",
-          title: "Max ID"
+          title: "Max ID",
         },
         ssn: {
           type: "string",
-          title: "SSN"
-        }
+          title: "SSN",
+        },
       },
     },
   };
@@ -114,9 +116,16 @@ export class SubComponent implements OnInit {
   }
 
   onRouterLinkActive($event: any, imodule: any) {
-    console.log($event);
+    console.log(imodule);
     if ($event) {
       this.activeSubModule = imodule;
+    }
+  }
+
+  onPageRouterLinkActive($event: any, mentItem: any) {
+    console.log(mentItem);
+    if ($event) {
+      this.activePageItem = mentItem;
     }
   }
 

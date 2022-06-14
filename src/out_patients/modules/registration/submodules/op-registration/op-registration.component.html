@@ -341,40 +341,45 @@
               class="opd-reg-wrapper-box-check flex justify-between flex-wrap w-2/10"
             >
               <mat-card
-                class="h-full w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap"
+                class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color"
               >
-                <div class="w-2/5">
-                  <maxhealth-question
-                    [question]="questions[30]"
-                    [form]="OPRegForm"
-                    [questions]="questions[30]"
-                    [index]="30"
-                  ></maxhealth-question>
+                <div class="flex">
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[30]"
+                      [form]="OPRegForm"
+                      [questions]="questions[30]"
+                      [index]="30"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[31]"
+                      [form]="OPRegForm"
+                      [questions]="questions[31]"
+                      [index]="31"
+                    ></maxhealth-question>
+                  </div>
                 </div>
-                <div class="w-2/5">
-                  <maxhealth-question
-                    [question]="questions[31]"
-                    [form]="OPRegForm"
-                    [questions]="questions[31]"
-                    [index]="31"
-                  ></maxhealth-question>
+                <div class="flex">
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[32]"
+                      [form]="OPRegForm"
+                      [questions]="questions[32]"
+                      [index]="32"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[33]"
+                      [form]="OPRegForm"
+                      [questions]="questions[33]"
+                      [index]="33"
+                    ></maxhealth-question>
+                  </div>
                 </div>
-                <div class="w-2/5">
-                  <maxhealth-question
-                    [question]="questions[32]"
-                    [form]="OPRegForm"
-                    [questions]="questions[32]"
-                    [index]="32"
-                  ></maxhealth-question>
-                </div>
-                <div class="w-2/5">
-                  <maxhealth-question
-                    [question]="questions[33]"
-                    [form]="OPRegForm"
-                    [questions]="questions[33]"
-                    [index]="33"
-                  ></maxhealth-question>
-                </div>
+
                 <div class="w-2/5">
                   <maxhealth-question
                     [question]="questions[34]"
@@ -422,10 +427,8 @@
             <div class="mx-8">&nbsp;</div>
 
             <div class="opd-reg-wrapper-box-radio flex flex-wrap w-3/10">
-              <mat-card
-                class="h-2/5 w-full opd-reg-wrapper-box-checboxcontainer"
-              >
-                <h3>Payment Mode</h3>
+              <mat-card class="w-full opd-reg-wrapper-box-checboxcontainer">
+                <h3 class="max-health-primary-color">Payment Mode</h3>
                 <!-- CASH RADIO BUTTON -->
                 <div class="flex flex-wrap">
                   <div class="w-1/2">
@@ -462,7 +465,7 @@
                   </div>
                 </div>
               </mat-card>
-              <div class="w-full">
+              <div class="w-full mt-2">
                 <maxhealth-question
                   [question]="questions[43]"
                   [form]="OPRegForm"
@@ -473,11 +476,11 @@
 
               <!-- SAVE MODIFY BUTTON -->
               <div class="flex w-full justify-between flex-wrap flex-column">
-                <div class="">
+                <div class="flex justify-between mb-1">
                   <button
                     mat-raised-button
                     color="primary"
-                    class="w-1/2 h-4/5"
+                    class="w-1/45"
                     type="submit"
                   >
                     Save
@@ -485,17 +488,17 @@
                   <button
                     mat-raised-button
                     color="primary"
-                    class="w-1/2 h-4/5"
+                    class="w-1/45"
                     type="submit"
                   >
                     Modify
                   </button>
                 </div>
-                <div>
+                <div class="flex justify-between">
                   <button
                     mat-raised-button
                     color="primary"
-                    class="w-1/2 h-4/5"
+                    class="w-1/45"
                     type="submit"
                   >
                     Print Label
@@ -503,7 +506,7 @@
                   <button
                     mat-raised-button
                     color="primary"
-                    class="w-1/2 h-4/5"
+                    class="w-1/45"
                     type="submit"
                   >
                     Print OD
@@ -516,34 +519,39 @@
         </form>
       </div>
       <div class="w-1/10 flex flex-column">
-        <button
-          mat-raised-button
-          color="primary"
-          class="w-3/4"
-          type="submit"
-          class="mt-2 h-1/6"
-          (click)="opendialog()"
+        <div
+          class="mt-4 px-4 py-4 h-3/5 flex flex-column justify-between hash-background"
         >
-          Find Patient
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          class="w-2/3"
-          type="submit"
-          class="mt-2 h-1/6"
-        >
-          DMS
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          class="w-3/4"
-          type="submit"
-          class="mt-2 h-1/6"
-        >
-          Verify Health ID
-        </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-3/4"
+            type="submit"
+            class="mt-2"
+            (click)="opendialog()"
+          >
+            Find Patient
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-2/3"
+            type="submit"
+            class="mt-2"
+          >
+            DMS
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-3/4"
+            type="submit"
+            class="mt-2"
+          >
+            Verify Health ID
+          </button>
+        </div>
+
         <div
           class="p-4 opd-reg-wrapper-box-imageblock flex justify-between flex-wrap"
         >
