@@ -45,7 +45,7 @@ export namespace ApiConstants {
     environment.CommonApiUrl + "api/lookup/getlocality";
 
   //PATIENT COUNTRY MASTER DATA, RESPONSE TYPE masterCountryModel[]
-  export const masterCountryDate =
+  export const masterCountryList =
     environment.CommonApiUrl + "api/lookup/getcountry";
 
   //PATIENT ADDRESS STATE BY COUNTRY ID, RESPONSE type stateModel[]
