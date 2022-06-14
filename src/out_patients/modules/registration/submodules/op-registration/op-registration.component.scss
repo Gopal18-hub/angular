@@ -1,5 +1,4 @@
 .opd-reg-wrapper {
-  
   &-box {
     background-color: #fff;
     background-position-y: 101%;
@@ -17,61 +16,38 @@
         color: var(--primary-color);
       }
     }
-    &-secondary
-    {
+    &-secondary {
       height: 44vh;
-    
     }
-    &-address
-    {
+    &-address {
       height: 100%;
-         width: 30%;
+      width: 30%;
       float: left;
-     
-     
     }
-    &-checboxcontainer
-    {
+    &-checboxcontainer {
       background-color: #f6f6f6;
       float: left;
       // width: 30%;
     }
-   &-checboxcontainer
-    {
+    &-checboxcontainer {
       background-color: #f6f6f6;
       // width: 30%;
     }
-    &-check
-    {
+    &-check {
       height: 100%;
-           width: 20%;
+      width: 20%;
       float: left;
     }
-    &-radio
-    {
+    &-radio {
       height: 100%;
-           width: 30%;
+      width: 30%;
       float: left;
     }
-    &-imageblock
-    {
+    &-imageblock {
       height: 100%;
-     
+
       width: 20%;
       float: left;
     }
   }
-
-}
-.father-container
-{
-  width: 15%;
-}
-.age-container
-{
-  width: 15%;
-}
-.autocomplete
-{
-  width: 7.66667%;
 }
