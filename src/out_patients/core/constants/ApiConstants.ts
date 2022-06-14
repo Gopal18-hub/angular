@@ -212,15 +212,32 @@ export namespace ApiConstants {
       environment.PatientApiUrl + 'api/patient/approvedrejectdeletehotlisting/'+UserId+'/'+flag
     );
   };
-  export const opapprovalpending =   environment.PatientApiUrl + 'api/patient/getopregistrationpendingrequests';
+  export const opapprovalpending = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(
+      environment.PatientApiUrl + 'api/patient/getopregistrationpendingrequests/'+fromdate+'/' + todate + '/' + hspLocationid
+    );   
+  };
   
-  export const opapprovalaccepted =   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests';
+  export const opapprovalaccepted = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 1
+    );   
+  };
+  export const opapprovalrejected = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(    environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 2
+       );   
+      };
+  export const ophotlistingpending = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(    environment.PatientApiUrl + 'api/patient/getpendinghotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+      );   
+  };
+  export const ophotlistingaccept = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(     environment.PatientApiUrl + 'api/patient/getapprovedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+       );   
+  };
   
-  export const opapprovalrejected =   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests';
-  
-  export const ophotlistingpending =   environment.PatientApiUrl + 'api/patient/getpendinghotlist';
-  export const ophotlistingaccept =   environment.PatientApiUrl + 'api/patient/getapprovedhotlist';
-  
-  export const ophotlistingreject =   environment.PatientApiUrl + 'api/patient/getrejectedhotlist';
+  export const ophotlistingreject = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(     environment.PatientApiUrl + 'api/patient/getrejectedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+      );   
+  };
  
 }

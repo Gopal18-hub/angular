@@ -6,6 +6,7 @@ import { opRegHotlistModel } from '../../../../../out_patients/core/models/opreg
 import { approveRejectModel } from '../../../../../out_patients/core/models/approveRejectModel';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { approverejectdeleteModel } from '../../../../../out_patients/core/models/approverejectdeleteModel';
+import { HotListingService } from "../../../../../out_patients/core/services/hot-listing.service";
 
 @Component({
   selector: 'out-patients-op-reg-approval',
@@ -27,6 +28,11 @@ export class OpRegApprovalComponent implements OnInit {
   opApprovalHotlistrejectList: opRegHotlistModel[] = [];
   approvePostobject:any;
   rejectPostobject:any;
+  fromdate:string="2022-01-01";
+  todate:string="2022-06-30";
+  hsplocationId:number=9;
+  enableapprovebtn:boolean=false;
+  enablehotlistbtn:boolean=false;
 
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
@@ -40,10 +46,10 @@ export class OpRegApprovalComponent implements OnInit {
   ApprovalidList:any=[];
   HotListidList:any=[];
 
-  approvalconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+  approvalconfig: any  = {   
+    dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -57,7 +63,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      ptnName : {
+      firstName : {
         title: 'Patient Name',
         type: 'string'
       },
@@ -96,10 +102,10 @@ export class OpRegApprovalComponent implements OnInit {
     }
   }
 
-  approveorrejectconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+  approveorrejectconfig: any  = {  
+    dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -113,7 +119,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      ptnName : {
+      firstName : {
         title: 'Patient Name',
         type: 'string'
       },
@@ -153,9 +159,10 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   hotlistingconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+    actionItems: true,
+    dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -165,7 +172,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      name : {
+      patientName : {
         title: 'Name',
         type: 'string'
       },
@@ -185,17 +192,19 @@ export class OpRegApprovalComponent implements OnInit {
         title:'Remarks',
         type: 'string'
       },
-      category : {
+      categoryIcons : {
         title: 'Category',
-        type: 'string'
+        type: "image",
+        width: 34,
       }
     }
   }
 
   hotlistingapproveorrejectconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+    actionItems: true,
+    dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment'],
+    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -205,7 +214,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      name : {
+      patientName : {
         title: 'Name',
         type: 'string'
       },
@@ -225,13 +234,14 @@ export class OpRegApprovalComponent implements OnInit {
         title:'Remarks',
         type: 'string'
       },
-      category : {
+      categoryIcons : {
         title: 'Category',
-        type: 'string'
+        type: "image",
+        width: 34,
       }
     }
   }
-  constructor(private http: HttpService) { }
+  constructor(private http: HttpService,private hotList: HotListingService) { }
   
   ngOnInit(): void {
     this.getopapprovalpending().subscribe((resultData) => {
@@ -239,6 +249,8 @@ export class OpRegApprovalComponent implements OnInit {
       this.showapprovalpending = true;
       this.showapprovalaccepting = false;
       this.showapprovalreject = false;
+      this.enableapprovebtn = true;
+      this.enablehotlistbtn = true;
       console.log(this.opApprovalList);
     },error=>{
       this.opApprovalList =[];
@@ -280,6 +292,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
         this.ngOnInit();
+        this.enableapprovebtn = true;
       }
       else if(this.ophotlistingapproval = true)
       {
@@ -288,7 +301,9 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingpending().subscribe((resultData) => {
           this.opApprovalHotList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);
           this.showapprovalpending = true;
+          this.enablehotlistbtn = true;
           console.log(this.opApprovalHotList);
         })
       }
@@ -305,6 +320,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.opApprovalacceptList  = resultData as opRegApprovalModel[];
         this.showapprovalaccepting = true;
         console.log(this.opApprovalacceptList);
+        this.enableapprovebtn = false;
       })
       }
       else if(this.ophotlistingapproval = true)
@@ -314,7 +330,9 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingaccept().subscribe((resultData) => {
           this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
           this.showapprovalaccepting = true;
+          this.enablehotlistbtn = false;
           console.log(this.opApprovalHotlistacceptList);
         })
       }
@@ -331,6 +349,8 @@ export class OpRegApprovalComponent implements OnInit {
         this.opApprovalrejectList = resultData as opRegApprovalModel[];
         this.showapprovalreject = true;
         console.log(this.opApprovalrejectList);
+        this.enableapprovebtn = false;
+       
       })
       }
       else if(this.ophotlistingapproval = true)
@@ -340,8 +360,10 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingreject().subscribe((resultData) => {
           this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
           this.showapprovalreject = true;
           console.log(this.opApprovalHotlistrejectList);
+          this.enablehotlistbtn = false;
         })
       }
       
@@ -349,41 +371,41 @@ export class OpRegApprovalComponent implements OnInit {
   }
   getopapprovalpending()
   {
-    return this.http.get(ApiConstants.opapprovalpending + '/2022-01-01/2022-06-30/9');   
+    return this.http.get(ApiConstants.opapprovalpending(this.fromdate,this.todate,this.hsplocationId));   
   }
   getopapprovalaccepted()
   {
-    return this.http.get(ApiConstants.opapprovalaccepted +'/2022-01-01/2022-06-30/9/1');   
+    return this.http.get(ApiConstants.opapprovalaccepted(this.fromdate,this.todate,this.hsplocationId));   
   }
   getopapprovalrejected()
   {
-    return this.http.get(ApiConstants.opapprovalrejected +'/2022-01-01/2022-06-30/9/2');
+    return this.http.get(ApiConstants.opapprovalrejected(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingpending()
   {
-    return this.http.get(ApiConstants.ophotlistingpending+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingpending(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingaccept()
   {
-    return this.http.get(ApiConstants.ophotlistingaccept+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingaccept(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingreject()
   {
-    return this.http.get(ApiConstants.ophotlistingreject+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingreject(this.fromdate,this.todate,this.hsplocationId));
   }
   approvalApproveItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-    this.ApprovalidList.push(s.id)});
+    this.ApprovalidList.push({id:s.id})});
     let userId = 1;//Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
       for(let id of this.ApprovalidList)
       {        
-         const index: number = this.opApprovalList.findIndex(i => i.id == id);
+         const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
          if(index !== -1)
-         {
-          this.opApprovalList.splice(index,1);
+         {          
+          this.opApprovalList = this.opApprovalList.splice(index,1);
          }
       }
       this.ApprovalidList = [];
@@ -394,12 +416,21 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-      this.ApprovalidList.push(s.id)});
+      this.ApprovalidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
         console.log(resultdata);
+        for(let id of this.ApprovalidList)
+        {        
+           const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
+           if(index !== -1)
+           {
+            this.opApprovalList = this.opApprovalList.splice(index,1);
+           }
+        }
+        this.ApprovalidList = [];
       },error=>{
         console.log(error);
       }); 
@@ -416,10 +447,10 @@ export class OpRegApprovalComponent implements OnInit {
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];
@@ -437,10 +468,10 @@ export class OpRegApprovalComponent implements OnInit {
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];
@@ -458,10 +489,10 @@ export class OpRegApprovalComponent implements OnInit {
         console.log(resultdata);
         for(let id of this.HotListidList)
         {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id);
+           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
            if(index !== -1)
            {
-            this.opApprovalHotList.splice(index,1);
+            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
            }
         }
         this.HotListidList = [];
