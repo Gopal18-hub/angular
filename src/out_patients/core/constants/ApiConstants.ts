@@ -36,7 +36,7 @@ export namespace ApiConstants {
   //PATIENT LOCALITY ON THE INPUT OF PINCODE, RESPONSE TYPE localityByPincode, NEED TO CONCATINATE PINCODE IN ENDPOINT
   export const localityLookUp = (pincode: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/getlocalityonpincode/${pincode}"
+      environment.CommonApiUrl + "api/lookup/getlocalityonpincode/"+pincode
     );
   };
 
@@ -59,7 +59,7 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS CITY BY STATE ID, RESPONSE type commonCityTypeModel[]
   export const cityByStateID = (stateId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getcity/${stateId}";
+    return environment.CommonApiUrl + "api/lookup/getcity/"+stateId;
   };
 
   //PATIENT ADDRESS CITY MASTER MODEL, RESPONSE type commonCityTypeModel[]
@@ -118,7 +118,7 @@ export namespace ApiConstants {
   export const patientDetails = (registrationno: number, iacode: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientbymaxid/${registrationno}/${iacode}"
+      "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode
     );
   };
 
