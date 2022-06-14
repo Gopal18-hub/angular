@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
 
   config: any = {
     actionItems:true,
+    dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: [
       "maxid",
