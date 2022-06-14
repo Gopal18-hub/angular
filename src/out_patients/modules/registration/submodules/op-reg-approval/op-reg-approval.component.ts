@@ -431,7 +431,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistRejectItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push(s.id)});
+      this.HotListidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
         console.log(resultdata);
@@ -452,7 +452,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistDeleteItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push(s.id)});
+      this.HotListidList.push({id:s.id})});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
         console.log(resultdata);
