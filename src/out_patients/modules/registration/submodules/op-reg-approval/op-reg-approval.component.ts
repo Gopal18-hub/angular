@@ -191,13 +191,9 @@ export class OpRegApprovalComponent implements OnInit {
       }
     }
   }
-<<<<<<< HEAD
-  config1: any  = {    
-=======
 
   hotlistingapproveorrejectconfig: any  = {
     dateformat: 'dd/MM/yyyy',
->>>>>>> cb5572fb1424d59bb8646c1a0b82b379cd5d8183
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment'],
     columnsInfo: {
@@ -226,16 +222,12 @@ export class OpRegApprovalComponent implements OnInit {
         type: 'string'
       },
       hotListing_Comment : {
-<<<<<<< HEAD
-        title: 'Remarks'
-=======
         title:'Remarks',
         type: 'string'
       },
       category : {
         title: 'Category',
         type: 'string'
->>>>>>> cb5572fb1424d59bb8646c1a0b82b379cd5d8183
       }
     }
   }
