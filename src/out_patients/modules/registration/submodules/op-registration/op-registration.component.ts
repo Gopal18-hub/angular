@@ -22,6 +22,7 @@ import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
 import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
 import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "out-patients-op-registration",
@@ -290,7 +291,8 @@ export class OpRegistrationComponent implements OnInit {
     private formService: QuestionControlService,
     private cookie: CookieService,
     private http: HttpService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    private datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -676,30 +678,28 @@ this.fatherSpouseOptionList.push({title:"Spouse",value:2});
 
   //WORKING ON THE BELOW FUNCTION
   patientSubmitDetails:patientRegistrationModel | undefined;
-  registationFormSubmit()
-  {}
-//   registationFormSubmit(){
-//   console.log("title",this.OPRegForm.value.title.title)
+  // registationFormSubmit()
+  // {}
+  registationFormSubmit(){
+  console.log("title",this.OPRegForm.value.title.title)
  
-//   let iacode=this.cookie.get("LocationIACode");
-//   let deptId=0;
-//   this.patientSubmitDetails = new patientRegistrationModel(0,iacode, this.datepipe.transform(Date.now(),'yyyy-MM-ddThh:mm:ss') || '{}',deptId,"", this.OPRegForm.value.title.title, this.OPRegForm.value.firstName,this.OPRegForm.value.middleName,
-//       this.OPRegForm.value.lastName, this.OPRegForm.value.motherName, this.getFather(), this.getFather()===""?false:true, this.datepipe.transform(this.OPRegForm.value.dob,
-//         'yyyy-MM-ddThh:mm:ss') || '{}',this.OPRegForm.value.gender.id, 11,this.getSpouseName(), 0,"", 0, "", "", "", "", this.OPRegForm.value.ageType.title, this.OPRegForm.value.age.title, this.OPRegForm.value.address,
-//       "", "", this.OPRegForm.value.city.title, this.District, this.State, this.countryId, this.pincode, saveform.MobileNumber,"", saveform.EmailID,
-//        this.ppagernumber, 0,
-//       this.Nationality, false, this.foreignerObj.passportNo,
-//       this.datepipe.transform( this.foreignerObj.IssueDate,
-//         'yyyy-MM-ddThh:mm:ss'), this.datepipe.transform( this.foreignerObj.Expirydate,
-//           'yyyy-MM-ddThh:mm:ss'), this.foreignerObj.Issueat, "", false, saveform.VIP, 0, this.Foreigner, false,
-//       0, "",this.hspcode, this.vipObj.VIPNotes, true, this.localityId, this.otherLocality, this.sourceId, false, "", "1900-01-01T00:00:00",
-//        "", "", saveform.Note, this.notesObj.Notesremarks,
-//       this.receivesms, this.promotionmsg, this.panno, this.cghsInt, this.ewsObj.bplCardNo,false,  saveform.Aadhar,  this.foreignerObj.HCF,
-//       this.LandLineNumber, this.OrganDonor, saveform.OTAdvance, this.seafarerObj.HKID,
-//       this.seafarerObj.rank, this.seafarerObj.Vesselname, this.seafarerObj.FDPGroup, saveform.HWC, this.hwcObj.HWCRemarks, this.Identity,
-//       this.Identitynumber, 0,this.ewsObj.bplCardAddress,saveform.HotList,"",""
-//     );
-// }
+  let iacode=this.cookie.get("LocationIACode");
+  let deptId=0;
+  this.patientSubmitDetails = new patientRegistrationModel(0,iacode, this.datepipe.transform(Date.now(),'yyyy-MM-ddThh:mm:ss') || '{}',deptId,"", this.OPRegForm.value.title.title, this.OPRegForm.value.firstName,this.OPRegForm.value.middleName,
+      this.OPRegForm.value.lastName, this.OPRegForm.value.motherName, this.getFather(), this.getFather()===""?false:true, this.datepipe.transform(this.OPRegForm.value.dob,
+        'yyyy-MM-ddThh:mm:ss') || '{}',this.OPRegForm.value.gender.id, 11,this.getSpouseName(), 0,"", 0, "", "", "", "", this.OPRegForm.value.ageType.title, this.OPRegForm.value.age.title, this.OPRegForm.value.address,
+      "", "", this.OPRegForm.value.city.title,this.OPRegForm.value.district.title, this.OPRegForm.value.state.title, this.OPRegForm.value.country.id, this.OPRegForm.value.pincode, this.OPRegForm.value.mobileNumber.title,"", this.OPRegForm.value.emailId,
+       this.OPRegForm.value, //PAGER NEED TO CHECK HOW CAN BE SENT
+       0,
+       this.OPRegForm.value.nationality.title, false, "PASSPORT NO","DATE FOR ISSUE PASSPORT NUMBER", "DATE FOR EXPIRY PASSPORT NUMBER"," ISSUE AT", "", false, this.OPRegForm.value.VIP, 0, this.OPRegForm.value.foreigner,!this.OPRegForm.value.dob?true:false,
+       Number(this.cookie.get("UserId")), "",Number(this.cookie.get("HSPLocationId")), "vip reason", this.OPRegForm.value.dob==""?false:true ,  this.OPRegForm.value.locality.id, this.OPRegForm.value.locality.value, this.OPRegForm.value.sourceId.id, false, this.OPRegForm.value.SSN, "1900-01-01T00:00:00",
+       "", "",this.OPRegForm.value.note, "this.notesObj.Notesremarks",
+       this.OPRegForm.value.surveySMS,  this.OPRegForm.value.receivePromotional, "this.panno", this.OPRegForm.value.cgs, "this.ewsObj.bplCardNo",false,  this.OPRegForm.value.adhaarId,  111111,
+       this.OPRegForm.value.altLandlineName, this.OPRegForm.value.organdonor,this.OPRegForm.value.otAdvanceExclude, "this.seafarerObj.HKID",
+      "this.seafarerObj.rank", "this.seafarerObj.Vesselname", "this.seafarerObj.FDPGroup",false," this.hwcObj.HWCRemarks", this.OPRegForm.value.idenityType.id,
+      this.OPRegForm.value.idenityValue.title, 0,"this.ewsObj.bplCardAddress",this.OPRegForm.value.hotlist,"hotlsitcomment","hotlistreason"
+    );
+}
 
 getFather():string
 {
