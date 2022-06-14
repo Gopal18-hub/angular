@@ -195,7 +195,7 @@ export class OpRegApprovalComponent implements OnInit {
   hotlistingapproveorrejectconfig: any  = {
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
