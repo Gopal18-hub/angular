@@ -44,6 +44,7 @@ export class OpRegistrationComponent implements OnInit {
       SSN: {
         type: "string",
         title: "SSN",
+        readonly:true
       },
       mobileNumber: {
         type: "number",
@@ -78,7 +79,7 @@ export class OpRegistrationComponent implements OnInit {
         list:this.genderList
       },
       dob: {
-        type: "date",
+        type: "date", 
         title: "Date of Birth",
         required: true,
       },
@@ -433,11 +434,11 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   
-   //MASTER LIST FOR STATES
+   //MASTER LIST FOR LOCALITY
    getLocalityList() {
     this.http.get(ApiConstants.localityMasterData).subscribe((resultData:any) => {
       this.localityList  = resultData ;
-      this.questions[25].options=this.localityList.map((l) => {
+      this.questions[22].options=this.localityList.map((l) => {
         return { title: l.localityName, value: l.id };
       });
     }
