@@ -16,14 +16,7 @@
         color: var(--primary-color);
       }
     }
-    &-secondary {
-      height: 44vh;
-    }
-    &-address {
-      height: 100%;
-      width: 30%;
-      float: left;
-    }
+
     &-checboxcontainer {
       background-color: #f6f6f6;
       float: left;
@@ -33,16 +26,7 @@
       background-color: #f6f6f6;
       // width: 30%;
     }
-    &-check {
-      height: 100%;
-      width: 20%;
-      float: left;
-    }
-    &-radio {
-      height: 100%;
-      width: 30%;
-      float: left;
-    }
+
     &-imageblock {
       height: 100%;
 
