@@ -677,8 +677,8 @@ this.fatherSpouseOptionList.push({title:"Spouse",value:2});
 
   //WORKING ON THE BELOW FUNCTION
   patientSubmitDetails:patientRegistrationModel | undefined;
-  // registationFormSubmit()
-  // {}
+  registationFormSubmit()
+  {}
 //   registationFormSubmit(){
 //   console.log("title",this.OPRegForm.value.title.title)
  
