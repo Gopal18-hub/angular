@@ -96,7 +96,10 @@
           ><mat-icon>search</mat-icon>
           <span class="border-right border-width-1 ml-2"></span>
         </span>
-        <span matSuffix
+        <span
+          matSuffix
+          class="cursor-pointer"
+          [matMenuTriggerFor]="gloablSearch"
           ><svg
             width="20"
             height="19"
@@ -162,14 +165,20 @@
         </span>
       </mat-form-field>
     </form>
+    <mat-menu
+      #gloablSearch="matMenu"
+      class="sub-header-menu"
+      xPosition="before"
+    >
+    </mat-menu>
   </div>
-  <div class="submodule-wrapper-right">
+  <div class="submodule-wrapper-right" *ngIf="submodules?.length > 0">
     <ul class="flex flex-row list-unstyled">
       <ng-container *ngFor="let module of submodules">
         <ng-container *ngIf="module.moreOptions">
           <li
             [matMenuTriggerFor]="menu"
-            class="mr-4 cursor-pointer"
+            class="mr-4 cursor-pointer max-health-primary-color"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
@@ -181,7 +190,7 @@
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
           <li
-            class="mr-4 cursor-pointer"
+            class="mr-4 cursor-pointer max-health-primary-color"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
@@ -197,9 +206,10 @@
         <div class="flex flex-column flex-wrap box">
           <button
             mat-button
-            class="my-4"
+            class="max-health-primary-color"
             *ngFor="let menuItem of aliasMenuItems"
             [routerLink]="menuItem.defaultPath"
+            disableRipple="true"
           >
             {{ menuItem.title }}
           </button>

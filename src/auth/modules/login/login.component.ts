@@ -77,6 +77,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.validateUserName.bind(this)
     );
     this.questions[0].elementRef.focus();
+    this.loginForm.controls["password"].disable();
+    this.loginForm.controls["location"].disable();
+    this.loginForm.controls["station"].disable();
   }
 
   reLoginForm() {
@@ -89,32 +92,32 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.username = this.loginForm.value.username;
     this.adauth.authenticateUserName(this.username).subscribe(
       (data: any) => {
-        this.loginForm.controls["password"].enable();
-        this.loginForm.controls["location"].enable();
-        this.loginForm.controls["station"].enable();
         this.userlocationandstation = data as UserLocationStationdataModel;
         this.locationList = this.userlocationandstation.locations;
         this.stationList = this.userlocationandstation.stations;
-        this.questions[2].options = this.locationList.map((l) => {
-          return { title: l.organizationName, value: l.hspLocationId };
-        });
-
         this.questions[3].options = this.stationList.map((s) => {
           return { title: s.stationName, value: s.stationid };
         });
 
+        this.questions[2].options = this.locationList.map((l) => {
+          return { title: l.organizationName, value: l.hspLocationId };
+        });
+
+        console.log(this.questions);
+
         this.userId = Number(this.userlocationandstation.userId);
 
         this.loginForm.controls["location"].valueChanges.subscribe((value) => {
-          console.log(value);
-          this.locationdetail = this.locationList.filter(
-            (l) => l.hspLocationId === value.value
-          )[0];
-          this.questions[3].options = this.stationList
-            .filter((e) => e.hspLocationId === value.value)
-            .map((s) => {
-              return { title: s.stationName, value: s.stationid };
-            });
+          if (value) {
+            this.locationdetail = this.locationList.filter(
+              (l) => l.hspLocationId === value.value
+            )[0];
+            this.questions[3].options = this.stationList
+              .filter((e) => e.hspLocationId === value.value)
+              .map((s) => {
+                return { title: s.stationName, value: s.stationid };
+              });
+          }
         });
 
         this.loginForm.controls["station"].valueChanges.subscribe((value) => {
@@ -122,6 +125,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
             (s) => s.stationid === value.value
           )[0];
         });
+        this.loginForm.controls["password"].enable();
+        this.loginForm.controls["location"].enable();
+        this.loginForm.controls["station"].enable();
+        this.questions[1].elementRef.focus();
       },
       (error: any) => {
         this.loginForm.controls["username"].setErrors({ incorrect: true });
