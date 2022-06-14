@@ -22,6 +22,7 @@ export class QuestionBase<T> {
   step: number;
   elementRef: any;
   customErrorMessage: string;
+  placeholder: string;
 
   constructor(
     options: {
@@ -48,6 +49,7 @@ export class QuestionBase<T> {
       step?: number;
       elementRef?: any;
       customErrorMessage?: string;
+      placeholder?: string;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -77,5 +79,6 @@ export class QuestionBase<T> {
     }
     this.elementRef = options.elementRef || "";
     this.customErrorMessage = options.customErrorMessage || "";
+    this.placeholder = options.placeholder || "";
   }
 }
