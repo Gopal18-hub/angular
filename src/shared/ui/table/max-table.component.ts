@@ -36,6 +36,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
+  @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
 
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
@@ -125,6 +126,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (type == "number") return this.numberTemplate;
     else if (type == "date") return this.dateTemplate;
     else if (type == "image") return this.imageTemplate;
+    else if (type == "checkbox") return this.checkboxTemplate;
     else return this.stringTemplate;
   }
 }

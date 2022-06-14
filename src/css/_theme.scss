@@ -96,9 +96,9 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(65vh);
-  width: calc(94vw);
+  height: calc(100vh - 152px);
   border-radius: 10px 10px 0 0;
+  overflow: hidden;
   .banner {
     background: #004084;
     color: #fff;
@@ -160,12 +160,24 @@ mat-form-field {
 }
 
 .mat-dialog-container {
-  border-radius: 1em !important;
+  border-radius: 1rem !important;
 }
 .mat-menu-panel {
   border-radius: 1rem !important;
 }
 
-.mat-raised-button {  
-  min-width: 125px !important;  
+.mat-raised-button {
+  min-width: 125px !important;
+}
+
+::-webkit-scrollbar {
+  width: 0.4em;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a8aa9c;
 }
