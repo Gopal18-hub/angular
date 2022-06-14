@@ -1,4 +1,4 @@
-<form [formGroup]="mergeSearchForm" >  
+<!-- <form [formGroup]="mergeSearchForm" >  
   <div class="flex flex-row">
     <mat-form-field appearance = "outline"> 
       <mat-label>Name</mat-label>
@@ -27,8 +27,8 @@
     <button mat-raised-button color="primary" class="col-m3" type="button" 
     (click)="searchPatient()">Search</button>
   </div>  
-</form>
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+</form> -->
+<section class="left-0 ml-10 shadow-1 max-body-wrapper">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -36,17 +36,21 @@
       </li>
     </ul>           
   </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <div class="p-3 w-full">
+  <mat-tab-nav-panel #tabPanel> </mat-tab-nav-panel> 
+  <div  class="maingrid flex">
+    <div class="table p-3">
       <ng-container *ngIf="isAPIProcess">
         <maxhealth-table
           [config]="config"
           [data]="results"
+          #table
         ></maxhealth-table>
       </ng-container>
     </div>
-  </mat-tab-nav-panel> 
-  <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+  </div>
+  <div class="self-end float-right absolute right6pc mt-3">
+    <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+   </div>
 </section>
 
 

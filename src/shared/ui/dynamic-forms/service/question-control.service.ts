@@ -14,6 +14,7 @@ import { HttpService } from "../../../services/http.service";
 import { NumberQuestion } from "../types/question-number";
 import { RadioQuestion } from "../types/question-radio";
 import { CheckboxQuestion } from "../types/question-checkbox";
+import { DateQuestion } from "../types/question-date";
 import { RangeQuestion } from "../types/question-range";
 import { ColorpickerQuestion } from "../types/question-colorpicker";
 import { AutoCompleteQuestion } from "../types/question-autocomplete";
@@ -61,6 +62,7 @@ export class QuestionControlService {
         data.push(new PasswordQuestion(question));
       else if (question.type == "autocomplete")
         data.push(new AutoCompleteQuestion(question));
+      else if (question.type == "date") data.push(new DateQuestion(question));
     }
 
     //questions = questions.sort((a, b) => a.order - b.order)

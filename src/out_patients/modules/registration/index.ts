@@ -21,7 +21,11 @@ import { MergeDialogComponent } from './submodules/dup-reg-merging/merge-dialog/
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
 import { AppointmentSearchDialogComponent } from './submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
-
+import {MatCardModule} from '@angular/material/card';
+import { PrintLabelDialogComponent } from './submodules/op-registration/print-label-dialog/print-label-dialog.component';
+import { VipDialogComponent } from './submodules/op-registration/vip-dialog/vip-dialog.component';
+import { HotListingDialogComponent } from './submodules/op-registration/hot-listing-dialog/hot-listing-dialog.component';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -33,10 +37,14 @@ import { AppointmentSearchDialogComponent } from './submodules/appointment-searc
        OpRegApprovalComponent,
         MergeDialogComponent,
           AppointmentSearchComponent,
-          AppointmentSearchDialogComponent
+          AppointmentSearchDialogComponent,
+          PrintLabelDialogComponent,
+          VipDialogComponent,
+          HotListingDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
+    MatCardModule,
     MaxHealthTableModule,
     CommonModule,
     MatButtonModule,
@@ -51,7 +59,8 @@ import { AppointmentSearchDialogComponent } from './submodules/appointment-searc
     MatCheckboxModule,   
     DynamicFormsModule,
     ReactiveFormsModule,
-    MatIconModule 
+    MatIconModule,
+    MatSelectModule
   ],
   exports: [],
   providers: [],

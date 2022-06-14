@@ -36,11 +36,12 @@ export class DupRegMergingComponent implements OnInit {
     healthId: new FormControl(''),
     aadhaarId:new FormControl('')
   });
-  // @ViewChild("table") tableRows!: MaxTableComponent
+   @ViewChild("table") tableRows!: MaxTableComponent
 
   constructor(private http: HttpService, public matDialog: MatDialog) { }
 
   config: any = {
+    dateformat: 'dd/MM/yyyy',
     selectBox: true,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'category'],
     columnsInfo: {
@@ -89,7 +90,8 @@ export class DupRegMergingComponent implements OnInit {
   ngOnInit(): void { }
 
   openDialog() {
-   this.matDialog.open(MergeDialogComponent,{data:{name:"ABC"}})
+    
+   this.matDialog.open(MergeDialogComponent,{data:{tableRows:this.tableRows}})
   }
 
   searchPatient() {    
@@ -104,7 +106,5 @@ export class DupRegMergingComponent implements OnInit {
   getAllpatientsBySearch() {
      return this.http.get(ApiConstants.searchPatientApi('','', this.name,this.mobile,this.dob, this.aadhaarId,this.healthId));
   }
-  patientMerging() {
-    return this.http.post(ApiConstants.mergePatientApi(0,0),{});
-  }
+ 
 }
