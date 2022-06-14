@@ -109,6 +109,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
         this.loginForm.controls["location"].valueChanges.subscribe((value) => {
           if (value) {
+            this.loginForm.controls["station"].enable();
             this.locationdetail = this.locationList.filter(
               (l) => l.hspLocationId === value.value
             )[0];
@@ -127,7 +128,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         });
         this.loginForm.controls["password"].enable();
         this.loginForm.controls["location"].enable();
-        this.loginForm.controls["station"].enable();
+        //this.loginForm.controls["station"].enable();
         this.questions[1].elementRef.focus();
       },
       (error: any) => {
