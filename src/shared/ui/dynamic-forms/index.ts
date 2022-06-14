@@ -19,6 +19,8 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { OptionGroupComponent } from "./partials/option-group/option-group.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -35,6 +37,7 @@ import { MatNativeDateModule } from "@angular/material/core";
     MatAutocompleteModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatCheckboxModule,
   ],
   exports: [DynamicFormQuestionComponent],
   declarations: [DynamicFormQuestionComponent, OptionGroupComponent],
