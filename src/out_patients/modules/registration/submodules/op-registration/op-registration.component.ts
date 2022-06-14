@@ -195,11 +195,13 @@ export class OpRegistrationComponent implements OnInit {
         type: "checkbox",
         title: "Hot Listing",
         required: false,
+        options:[{title:"hotList"}]
       },
       vip: {
         type: "checkbox",
         title: "VIP",
         required: false,
+        options:[{title:"Vip"}]
       },
       note:
       {  type: "checkbox",
