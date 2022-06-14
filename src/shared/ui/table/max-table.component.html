@@ -47,7 +47,7 @@
             *ngIf="displayColumnsInfo[col]?.type"
             [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
             [ngTemplateOutletContext]="{
-              $implicit: { output: element[col], config: config }
+              $implicit: { output: element[col], config: config, col: col }
             }"
           ></ng-container>
         </td>
@@ -91,6 +91,11 @@
 </ng-template>
 <ng-template #image let-data>
   <div *ngIf="data?.output" class="flex">
-    <img [src]="image" *ngFor="let image of data.output" />
+    <img
+      [src]="image"
+      *ngFor="let image of data.output"
+      [width]="data.config.columnsInfo[data.col]?.width"
+      [height]="data.config.columnsInfo[data.col]?.height"
+    />
   </div>
 </ng-template>
