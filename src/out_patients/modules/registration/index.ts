@@ -26,6 +26,10 @@ import { PrintLabelDialogComponent } from './submodules/op-registration/print-la
 import { VipDialogComponent } from './submodules/op-registration/vip-dialog/vip-dialog.component';
 import { HotListingDialogComponent } from './submodules/op-registration/hot-listing-dialog/hot-listing-dialog.component';
 import {MatSelectModule} from '@angular/material/select';
+import { NotesDialogComponent } from './submodules/op-registration/notes-dialog/notes-dialog.component';
+import { HwcDialogComponent } from './submodules/op-registration/hwc-dialog/hwc-dialog.component';
+import { SeafarersDialogComponent } from './submodules/op-registration/seafarers-dialog/seafarers-dialog.component';
+import { ForeignerDialogComponent } from './submodules/op-registration/foreigner-dialog/foreigner-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,11 @@ import {MatSelectModule} from '@angular/material/select';
           AppointmentSearchDialogComponent,
           PrintLabelDialogComponent,
           VipDialogComponent,
-          HotListingDialogComponent
+          HotListingDialogComponent,
+          NotesDialogComponent,
+          HwcDialogComponent,
+          SeafarersDialogComponent,
+          ForeignerDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
