@@ -89,6 +89,11 @@ mat-form-field {
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
 }
+.mat-form-field-appearance-outline.mat-form-field-disabled {
+  .mat-form-field-outline {
+    background: rgba(0, 0, 0, 0.06);
+  }
+}
 
 .max-body-wrapper {
   height: calc(100vh - 140px);
