@@ -49,7 +49,7 @@ export class TokenInterceptor implements HttpInterceptor {
         }       
       }
     }
-    if(request.url.includes('patientunmerging') || request.url.includes('patientmerging'))
+    if(request.url.includes('patientunmerging') || request.url.includes('patientmerging') || request.url.includes('approvedrejectdeletehotlisting'))
     {
       request = request.clone({
         setHeaders: {             
