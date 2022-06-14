@@ -12,6 +12,7 @@ import { RouterModule } from "@angular/router";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
+import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 
 @NgModule({
   declarations: [HeaderComponent, SubComponent],
@@ -28,6 +29,7 @@ import { MatDividerModule } from "@angular/material/divider";
     MatInputModule,
     MatIconModule,
     MatDividerModule,
+    DynamicFormsModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

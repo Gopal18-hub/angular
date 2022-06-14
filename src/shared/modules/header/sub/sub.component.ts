@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
+import { FormGroup } from "@angular/forms";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -11,37 +13,58 @@ export class SubComponent implements OnInit {
   activeSubModule: any;
 
   searchFormData = {
-    "": {
+    global: {
       title: "",
       type: "object",
       properties: {
-        username: {
+        maxID: {
           type: "string",
-          title: "Username",
+          title: "Max ID",
           required: true,
         },
-        password: {
-          type: "password",
-          title: "Password",
+        phone: {
+          type: "string",
+          title: "Phone",
           required: true,
         },
-        location: {
-          type: "autocomplete",
-          title: "Location",
+        name: {
+          type: "string",
+          title: "Name",
           required: true,
         },
-        station: {
-          type: "autocomplete",
-          title: "Station",
+        dob: {
+          type: "date",
+          title: "DOB",
+          required: true,
+        },
+        healthID: {
+          type: "string",
+          title: "Health ID",
+          required: true,
+        },
+        adhaar: {
+          type: "string",
+          title: "Aadhaar",
           required: true,
         },
       },
     },
   };
 
-  constructor() {}
+  searchForm!: FormGroup;
 
-  ngOnInit(): void {}
+  questions: any;
+
+  constructor(private formService: QuestionControlService) {}
+
+  ngOnInit(): void {
+    let formResult: any = this.formService.createForm(
+      this.searchFormData.global.properties,
+      {}
+    );
+    this.searchForm = formResult.form;
+    this.questions = formResult.questions;
+  }
 
   onRouterLinkActive($event: any, imodule: any) {
     console.log($event);
@@ -49,4 +72,6 @@ export class SubComponent implements OnInit {
       this.activeSubModule = imodule;
     }
   }
+
+  searchSubmit() {}
 }
