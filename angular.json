@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/out_patients",
+            "outputPath": "dist/out-patients",
             "index": "src/out_patients/src/index.html",
             "main": "src/out_patients/src/main.ts",
             "polyfills": "src/out_patients/src/polyfills.ts",
@@ -224,7 +224,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/in_patients",
+            "outputPath": "dist/in-patients",
             "index": "src/in_patients/src/index.html",
             "main": "src/in_patients/src/main.ts",
             "polyfills": "src/in_patients/src/polyfills.ts",
@@ -422,7 +422,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/operation_theater",
+            "outputPath": "dist/operation-theater",
             "index": "src/operation_theater/src/index.html",
             "main": "src/operation_theater/src/main.ts",
             "polyfills": "src/operation_theater/src/polyfills.ts",
@@ -521,7 +521,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/mis_reports",
+            "outputPath": "dist/mis-reports",
             "index": "src/mis_reports/src/index.html",
             "main": "src/mis_reports/src/main.ts",
             "polyfills": "src/mis_reports/src/polyfills.ts",
@@ -818,7 +818,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/adverse_events",
+            "outputPath": "dist/adverse-events",
             "index": "src/adverse_events/src/index.html",
             "main": "src/adverse_events/src/main.ts",
             "polyfills": "src/adverse_events/src/polyfills.ts",
@@ -917,7 +917,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/donate_blood",
+            "outputPath": "dist/donate-blood",
             "index": "src/donate_blood/src/index.html",
             "main": "src/donate_blood/src/main.ts",
             "polyfills": "src/donate_blood/src/polyfills.ts",
