@@ -96,8 +96,8 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 140px);
-  width: calc(100vw - 2em);
+  height: calc(65vh);
+  width: calc(94vw);
   border-radius: 10px 10px 0 0;
   .banner {
     background: #004084;
@@ -132,4 +132,8 @@ mat-form-field {
 }
 .mat-menu-panel {
   border-radius: 1rem !important;
+}
+
+.mat-raised-button {  
+  min-width: 125px !important;  
 }

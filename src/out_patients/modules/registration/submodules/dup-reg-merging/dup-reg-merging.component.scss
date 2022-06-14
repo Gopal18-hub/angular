@@ -1,6 +1,6 @@
 .maincrd{
     background:#fff; 
-    height: 80vh; 
+    height: 70vh; 
     width: 94vw; 
     border-radius: 10px;
 }
@@ -21,15 +21,18 @@
 }
 .maingrid{
     background-color: #fff;
-    
+    height: 62vh;
     
 }
 .table{
-    height: 40;
-    width: 125vw;
+    height: 62vh;
+    width: 98vw;
     overflow-y: scroll;
 }
 .float-left{
     padding-left: 1%;
     padding-top: 1%;
+}
+.right6pc{
+    right:6%;
 }
