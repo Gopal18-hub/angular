@@ -16,6 +16,10 @@ import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Mo
 import { StateModel } from "../../../../core/models/stateMasterModel.Model";
 import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
 import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
+import { MatDialog } from "@angular/material/dialog";
+import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
+import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
+import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
 @Component({
   selector: "out-patients-op-registration",
   templateUrl: "./op-registration.component.html",
@@ -282,11 +286,13 @@ export class OpRegistrationComponent implements OnInit {
   questions: any;
   stateList: StateModel[] = [];
 
-  constructor(
-    private formService: QuestionControlService,
-    private cookie: CookieService,
-    private http: HttpService
-  ) {}
+  
+ 
+
+  
+  
+
+  constructor(private formService: QuestionControlService, private cookie: CookieService,private http: HttpService, public matDialog: MatDialog) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -463,6 +469,12 @@ export class OpRegistrationComponent implements OnInit {
           return { title: l.localityName, value: l.id };
         });
       });
+  }
+  opendialog()
+  {
+    // this.matDialog.open(PrintLabelDialogComponent, {width: '30vw', height: '30vh'});
+    // this.matDialog.open(VipDialogComponent, {width: '30vw', height: '40vh'});
+    this.matDialog.open(HotListingDialogComponent, {width: '30vw', height: '52vh'})
   }
 
 
