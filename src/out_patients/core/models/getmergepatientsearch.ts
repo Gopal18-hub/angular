@@ -1,4 +1,5 @@
 export class getmergepatientsearch{
+  [x: string]: any;
     id: number;
     maxid: string;
     ssn: string;
