@@ -42,6 +42,7 @@ export class OpRegistrationComponent implements OnInit {
   disttList: DistrictModel[] = [];
   localityList: LocalityModel[] = [];
   fatherSpouseOptionList:[{title:string,value:number}]=[] as any;
+  stateList: StateModel[] = [];
 
   registrationFormData = {
     title: "",
@@ -105,6 +106,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "Age Type",
         required: true,
+        list: this.ageTypeList
       },
       emailId: {
         type: "email",
@@ -132,6 +134,7 @@ export class OpRegistrationComponent implements OnInit {
       idenityType: {
         type: "autocomplete",
         title: "Identity",
+        list:this.idTypeList
       },
       idenityValue: {
         type: "string",
@@ -182,6 +185,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "District",
         // required property is dependent on country
+        list:this.disttList,
         required: true,
       },
       state: {
@@ -189,11 +193,13 @@ export class OpRegistrationComponent implements OnInit {
         title: "State",
         // required property is dependent on country
         required: true,
+        list:this.stateList
       },
       country: {
         type: "autocomplete",
         title: "Country",
         required: true,
+        list:this.countryList
       },
       nationality: {
         type: "autocomplete",
@@ -285,7 +291,7 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
-  stateList: StateModel[] = [];
+ 
 
   constructor(
     private formService: QuestionControlService,
@@ -685,26 +691,28 @@ this.fatherSpouseOptionList.push({title:"Spouse",value:2});
  
   let iacode=this.cookie.get("LocationIACode");
   let deptId=0;
+  
   this.patientSubmitDetails = new patientRegistrationModel(0,iacode, this.datepipe.transform(Date.now(),'yyyy-MM-ddThh:mm:ss') || '{}',deptId,"", this.OPRegForm.value.title.title, this.OPRegForm.value.firstName,this.OPRegForm.value.middleName,
       this.OPRegForm.value.lastName, this.OPRegForm.value.motherName, this.getFather(), this.getFather()===""?false:true, this.datepipe.transform(this.OPRegForm.value.dob,
-        'yyyy-MM-ddThh:mm:ss') || '{}',this.OPRegForm.value.gender.id, 11,this.getSpouseName(), 0,"", 0, "", "", "", "", this.OPRegForm.value.ageType.title, this.OPRegForm.value.age.title, this.OPRegForm.value.address,
-      "", "", this.OPRegForm.value.city.title,this.OPRegForm.value.district.title, this.OPRegForm.value.state.title, this.OPRegForm.value.country.id, this.OPRegForm.value.pincode, this.OPRegForm.value.mobileNumber.title,"", this.OPRegForm.value.emailId,
+        'yyyy-MM-ddThh:mm:ss') || '{1900-01-01T00:00:00}',this.OPRegForm.value.gender.id, 11,this.getSpouseName(), 0,"", 0, "", "", "", "", this.OPRegForm.value.ageType.title, this.OPRegForm.value.age, this.OPRegForm.value.address,
+      "", "", this.OPRegForm.value.city.id,this.OPRegForm.value.district.id, this.OPRegForm.value.state.id, this.OPRegForm.value.country.id, this.OPRegForm.value.pincode, this.OPRegForm.value.mobileNumber.title,"", this.OPRegForm.value.emailId,
        this.OPRegForm.value, //PAGER NEED TO CHECK HOW CAN BE SENT
        0,
        this.OPRegForm.value.nationality.title, false, "PASSPORT NO","DATE FOR ISSUE PASSPORT NUMBER", "DATE FOR EXPIRY PASSPORT NUMBER"," ISSUE AT", "", false, this.OPRegForm.value.VIP, 0, this.OPRegForm.value.foreigner,!this.OPRegForm.value.dob?true:false,
-       Number(this.cookie.get("UserId")), "",Number(this.cookie.get("HSPLocationId")), "vip reason", this.OPRegForm.value.dob==""?false:true ,  this.OPRegForm.value.locality.id, this.OPRegForm.value.locality.value, this.OPRegForm.value.sourceId.id, false, this.OPRegForm.value.SSN, "1900-01-01T00:00:00",
+       Number(this.cookie.get("UserId")), "",Number(this.cookie.get("HSPLocationId")), "vip reason", this.OPRegForm.value.dob==""?false:true ,  this.OPRegForm.value.locality.id, this.OPRegForm.value.locality.value, this.OPRegForm.value.sourceOfInput.id, false, this.OPRegForm.value.SSN, "1900-01-01T00:00:00",
        "", "",this.OPRegForm.value.note, "this.notesObj.Notesremarks",
        this.OPRegForm.value.surveySMS,  this.OPRegForm.value.receivePromotional, "this.panno", this.OPRegForm.value.cgs, "this.ewsObj.bplCardNo",false,  this.OPRegForm.value.adhaarId,  111111,
        this.OPRegForm.value.altLandlineName, this.OPRegForm.value.organdonor,this.OPRegForm.value.otAdvanceExclude, "this.seafarerObj.HKID",
       "this.seafarerObj.rank", "this.seafarerObj.Vesselname", "this.seafarerObj.FDPGroup",false," this.hwcObj.HWCRemarks", this.OPRegForm.value.idenityType.id,
       this.OPRegForm.value.idenityValue.title, 0,"this.ewsObj.bplCardAddress",this.OPRegForm.value.hotlist,"hotlsitcomment","hotlistreason"
     );
+    console.log(this.patientSubmitDetails);
 }
 
 getFather():string
 {
  let response="";
-  if(this.OPRegForm.value.fatherSpouse=="Father")
+  if(this.OPRegForm.value.fatherSpouse.title=="Father")
   {
     return this.OPRegForm.value.fatherSpouseName;
   }
@@ -712,7 +720,7 @@ getFather():string
 }
 getSpouseName(){
 let response="";
-  if(this.OPRegForm.value.fatherSpouse!="Father")
+  if(this.OPRegForm.value.fatherSpouse.title!="Father")
   {
     return this.OPRegForm.value.fatherSpouseName;
   }
