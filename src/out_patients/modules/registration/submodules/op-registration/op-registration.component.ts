@@ -20,6 +20,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
+import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
 @Component({
   selector: "out-patients-op-registration",
   templateUrl: "./op-registration.component.html",
@@ -32,6 +33,7 @@ export class OpRegistrationComponent implements OnInit {
   public idTypeList: IdentityModel[] = [];
   public genderList: GenderModel[] = [];
   public nationalityList: NationalityModel[] = [];
+  public patientDetails: PatientDetails | undefined;
   countryList: MasterCountryModel[] = [];
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
@@ -54,6 +56,8 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
+        minimum: 10,
+        maximum: 10,
       },
       title: {
         type: "autocomplete",
@@ -61,17 +65,17 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
         list: this.titleList,
       },
-      firstname: {
+      firstName: {
         type: "string",
         title: "First Name",
         required: true,
       },
-      middlename: {
+      middleName: {
         type: "string",
         title: "Middle Name",
         required: true,
       },
-      lastname: {
+      lastName: {
         type: "string",
         title: "Last Name",
         required: true,
@@ -92,7 +96,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Age",
         required: true,
       },
-      agetype: {
+      ageType: {
         type: "autocomplete",
         title: "Age Type",
         required: true,
@@ -117,6 +121,7 @@ export class OpRegistrationComponent implements OnInit {
       altLandlineName: {
         type: "string",
         title: "Alt Contact/Landline",
+        conditions: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
       },
       idenityType: {
         type: "autocomplete",
@@ -153,7 +158,7 @@ export class OpRegistrationComponent implements OnInit {
         list: this.localityList,
         // required property is dependent on country
       },
-      localitytxt: {
+      localityTxt: {
         type: "string",
         title: "",
         // required property is dependent on country and text will be enabled on select of others
@@ -192,87 +197,77 @@ export class OpRegistrationComponent implements OnInit {
       },
       foreigner: {
         type: "checkbox",
-        title: "Foreigner",
         required: false,
-        options: [{ title: "foreigner" }],
+        options: [{ title: "Foreigner" }],
       },
       hotlist: {
         type: "checkbox",
-        title: "Hot Listing",
         required: false,
-        options: [{ title: "hotList" }],
+        options: [{ title: "Hot Listing" }],
       },
       vip: {
         type: "checkbox",
-        title: "VIP",
         required: false,
-        options: [{ title: "Vip" }],
+        options: [{ title: "VIP" }],
       },
       note: {
         type: "checkbox",
-        title: "Note",
         required: false,
-        options: [{ title: "notes" }],
+        options: [{ title: "Note" }],
       },
       hwc: {
         type: "checkbox",
-        title: "HWC",
         required: false,
-        options: [{ title: "hwc" }],
+        options: [{ title: "HWC" }],
       },
       organdonor: {
         type: "checkbox",
-        title: "Organ Donor",
         required: false,
-        options: [{ title: "od" }],
+        options: [{ title: "Organ Donor" }],
       },
       otAdvanceExclude: {
         type: "checkbox",
-        title: "OT Advance Exclude",
         required: false,
-        options: [{ title: "ot" }],
+        options: [{ title: "OT Advance Exclude" }],
       },
       verifiedOnline: {
         type: "checkbox",
-        title: "CGHS Patient Verified Online",
         required: false,
-        options: [{ title: "cghs" }],
+        options: [{ title: "CGHS Patient Verified Online" }],
       },
       surveySMS: {
         type: "checkbox",
-        title: "Customer agrees to receive any survey SMS/Email/Calls",
         required: false,
-        options: [{ title: "" }],
+        options: [
+          { title: "Customer agrees to receive any survey SMS/Email/Calls" },
+        ],
       },
       receivePromotional: {
         type: "checkbox",
-        title: "Customer agrees to receive Promotional Information",
         required: false,
-        options: [{ title: "cghs" }],
+        options: [
+          { title: "Customer agrees to receive Promotional Information" },
+        ],
       },
       cash: {
         type: "radio",
-        title: "Cash",
         required: true,
-        options: [{ title: "cghs" }],
+        options: [{ title: "Cash" }],
       },
       psuGovt: {
         type: "radio",
-        title: "PSU/Govt",
         required: false,
-        options: [{ title: "cghs" }],
+        options: [{ title: "PSU/Govt" }],
       },
       ews: {
         type: "radio",
-        title: "EWS",
         required: false,
-        options: [{ title: "cghs" }],
+        options: [{ title: "EWS" }],
       },
       Insurance: {
         type: "radio",
-        title: "Corporate/Insurance",
         required: false,
-        options: [{ title: "cghs" }],
+        options: [{ title: "Corporate/Insurance" }],
       },
       sourceOfInput: {
         type: "autocomplete",
@@ -286,13 +281,12 @@ export class OpRegistrationComponent implements OnInit {
   questions: any;
   stateList: StateModel[] = [];
 
-  
- 
-
-  
-  
-
-  constructor(private formService: QuestionControlService, private cookie: CookieService,private http: HttpService, public matDialog: MatDialog) {}
+  constructor(
+    private formService: QuestionControlService,
+    private cookie: CookieService,
+    private http: HttpService,
+    public matDialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -323,9 +317,12 @@ export class OpRegistrationComponent implements OnInit {
         let sex = this.titleList.filter((e) => e.id === value.value)[0].sex;
         this.questions[8].options = this.genderList
           .filter((e) => e.id === sex)
-         
+
           .map((s) => {
-            this.OPRegForm.controls['gender'].setValue({ title: s.name, value: s.id });
+            this.OPRegForm.controls["gender"].setValue({
+              title: s.name,
+              value: s.id,
+            });
             return { title: s.name, value: s.id };
           });
       }
@@ -339,8 +336,11 @@ export class OpRegistrationComponent implements OnInit {
       this.getCityListByState.bind(this)
     );
 
-  
-   
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.getPatientDetailsByMaxId.bind(this)
+    );
   }
 
   registationFormSubmit() {
@@ -470,44 +470,215 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
-  opendialog()
-  {
-    // this.matDialog.open(PrintLabelDialogComponent, {width: '30vw', height: '30vh'});
-    // this.matDialog.open(VipDialogComponent, {width: '30vw', height: '40vh'});
-    this.matDialog.open(HotListingDialogComponent, {width: '30vw', height: '52vh'})
+  opendialog() {
+    //  this.matDialog.open(PrintLabelDialogComponent, {width: '30vw', height: '30vh'});
+    //  this.matDialog.open(VipDialogComponent, {width: '30vw', height: '40vh'});
+    this.matDialog.open(HotListingDialogComponent, {
+      width: "30vw",
+      height: "52vh",
+    });
   }
 
-
-localityListByPin:LocalityByPincodeModel[]=[];
- //LOCALITY LIST FOR PINCODE
- getLocalityByPinCode() {
-  this.http
-    .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
-    .subscribe((resultData: any) => {
-      this.localityListByPin = resultData;
-      console.log(this.localityListByPin);
-      this.questions[22].options = this.localityListByPin.map((l) => {
-        return { title: l.name, value: l.id };
+  localityListByPin: LocalityByPincodeModel[] = [];
+  //LOCALITY LIST FOR PINCODE
+  getLocalityByPinCode() {
+    this.http
+      .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
+      .subscribe((resultData: any) => {
+        this.localityListByPin = resultData;
+        console.log(this.localityListByPin);
+        this.questions[22].options = this.localityListByPin.map((l) => {
+          return { title: l.name, value: l.id };
+        });
       });
-    });
-}
+  }
 
-cityListByState:CityModel[]=[];
-//CITY LIST FOR STATEID
-getCityListByState() {
-  this.http
-    .get(ApiConstants.cityByStateID(this.questions[26].options.value))
-    .subscribe((resultData: any) => {
-      this.cityList = resultData;
-      console.log(this.localityListByPin);
-      this.questions[24].options = this.cityList.map((l) => {
-        return { title: l.cityName, value: l.id };
+  cityListByState: CityModel[] = [];
+  //CITY LIST FOR STATEID
+  getCityListByState() {
+    this.http
+      .get(ApiConstants.cityByStateID(this.questions[26].options.value))
+      .subscribe((resultData: any) => {
+        this.cityList = resultData;
+        console.log(this.localityListByPin);
+        this.questions[24].options = this.cityList.map((l) => {
+          return { title: l.cityName, value: l.id };
+        });
       });
-    });
-}
+  }
 
+  //CITY LIST FOR STATEID
+  getPatientDetailsByMaxId() {
+    console.log(this.OPRegForm.value.maxid);
+    let regNumber = this.OPRegForm.value.maxid.split(".")[1];
+    let iacode = this.OPRegForm.value.maxid.split(".")[0];
+    this.http
+      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .subscribe((resultData: any) => {
+        this.patientDetails = resultData;
+        this.setValuesToOPRegForm(this.patientDetails);
+      });
+    // console.log(this.localityListByPin);
+    // this.questions[24].options = this.cityList.map((l) => {
+    //   return { title: l.cityName, value: l.id };
+    // });
+  }
 
+  setValuesToOPRegForm(patientDetails: PatientDetails | undefined) {
+    this.OPRegForm.controls["maxid"].setValue(this.patientDetails?.iacode+"."+
+      this.patientDetails?.registrationno
+    );
+    this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    this.OPRegForm.controls["mobileNumber"].setValue(
+      this.patientDetails?.pphone
+    );
+    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title,0);
+    this.OPRegForm.controls["firstName"].setValue(
+      this.patientDetails?.firstname
+    );
+    this.OPRegForm.controls["lastName"].setValue(this.patientDetails?.lastName);
+    this.OPRegForm.controls["middleName"].setValue(
+      this.patientDetails?.middleName
+    );
+    this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
+    this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+    this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
+    this.OPRegForm.controls["ageType"].setValue(
+      this.patientDetails?.ageTypeName
+    );
+    this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
+    if (this.patientDetails?.spouseName != "") {
+      this.OPRegForm.controls["fatherSpouse"].setValue("Spouse");
+      this.OPRegForm.controls["fatherSpouseName"].setValue(
+        this.patientDetails?.spouseName
+      );
+    } else {
+      this.OPRegForm.controls["fatherSpouse"].setValue("Father");
+      this.OPRegForm.controls["fatherSpouseName"].setValue(
+        this.patientDetails?.fathersname
+      );
+    }
 
+    this.OPRegForm.controls["motherName"].setValue(
+      this.patientDetails?.mothersMaidenName
+    );
+    this.OPRegForm.controls["altLandlineName"].setValue(
+      this.patientDetails?.landlineno
+    );
+    this.OPRegForm.controls["idenityType"].setValue(
+      this.patientDetails?.identityTypeId
+    );
+    this.OPRegForm.controls["idenityValue"].setValue(
+      this.patientDetails?.identityTypeNumber
+    );
+    this.OPRegForm.controls["adhaarId"].setValue(this.patientDetails?.adhaarId);
+    this.OPRegForm.controls["healthId"].setValue("");
+    this.OPRegForm.controls["address"].setValue(this.patientDetails?.address1);
+    this.OPRegForm.controls["pincode"].setValue(this.patientDetails?.ppinCode);
+    this.OPRegForm.controls["locality"].setValue(this.patientDetails?.locality);
+    this.OPRegForm.controls["city"].setValue(this.patientDetails?.city);
+    this.OPRegForm.controls["district"].setValue(
+      this.patientDetails?.districtName
+    );
+    this.OPRegForm.controls["state"].setValue(this.patientDetails?.stateName);
+    this.OPRegForm.controls["country"].setValue(
+      this.patientDetails?.countryName
+    );
+    this.OPRegForm.controls["nationality"].setValue(
+      this.patientDetails?.nationality
+    );
+    this.OPRegForm.controls["foreigner"].setValue(
+      this.patientDetails?.foreigner
+    );
+    this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
+    this.OPRegForm.controls["vip"].setValue(this.patientDetails?.vip);
+    this.OPRegForm.controls["note"].setValue(this.patientDetails?.note);
+    this.OPRegForm.controls["hwc"].setValue(this.patientDetails?.hwc);
+    this.OPRegForm.controls["organdonor"].setValue(
+      this.patientDetails?.isOrganDonor
+    );
+    this.OPRegForm.controls["otAdvanceExclude"].setValue(
+      this.patientDetails?.isOtadvanceExculded
+    );
+    this.OPRegForm.controls["verifiedOnline"].setValue(
+      this.patientDetails?.isCghsverified
+    );
+    this.OPRegForm.controls["surveySMS"].setValue(
+      this.patientDetails?.marketing1
+    );
+    this.OPRegForm.controls["receivePromotional"].setValue(
+      this.patientDetails?.marketing2
+    );
+    this.setPaymentMode(this.patientDetails?.ppagerNumber.toUpperCase());
+    this.OPRegForm.controls["sourceOfInput"].setValue(
+      this.patientDetails?.sourceofinfo
+    );
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+  }
+
+  setPaymentMode(ppagerNumber: string | undefined) {
+    switch (ppagerNumber) {
+      case "CASH":
+        this.OPRegForm.controls["cash"].setValue(ppagerNumber);
+        break;
+      case "EWS":
+        this.OPRegForm.controls["ews"].setValue(ppagerNumber);
+        break;
+        
+      case "CORPORATE/INSURANCE":
+        this.OPRegForm.controls["Insurance"].setValue(ppagerNumber);
+        break;
+      case "PSU/GOVT":
+        this.OPRegForm.controls["psuGovt"].setValue(ppagerNumber);
+        break;
+      default:
+        this.OPRegForm.controls["cash"].setValue(ppagerNumber);
+    }
+  }
+  // this.patientModel = new patientRegistrationModel(0, localStorage.getItem('locationIacode'), this.datepipe.transform(Date.now(),
+  //     'yyyy-MM-ddThh:mm:ss'), 0, "", this.Title, saveform.Firstname, saveform.Middlename,
+  //     saveform.Lastname, saveform.Mothername, this.FatherName, this.isFatherSelected,
+  //     this.datepipe.transform(saveform.birthdate,
+  //       'yyyy-MM-ddThh:mm:ss'),this.GenderInt, this.maritalStatus,
+  //     this.SpouseName, 0,"", 0, "", "", "", "", this.AgeTypeValue, saveform.Age, saveform.Address,
+  //     "", "", this.Cityortown, this.District, this.State, this.countryId, this.pincode, saveform.MobileNumber,"", saveform.EmailID,
+  //      this.ppagernumber, 0,
+  //     this.Nationality, false, this.foreignerObj.passportNo,
+  //     this.datepipe.transform( this.foreignerObj.IssueDate,
+  //       'yyyy-MM-ddThh:mm:ss'), this.datepipe.transform( this.foreignerObj.Expirydate,
+  //         'yyyy-MM-ddThh:mm:ss'), this.foreignerObj.Issueat, "", false, saveform.VIP, 0, this.Foreigner, false,
+  //     0, "",this.hspcode, this.vipObj.VIPNotes, true, this.localityId, this.otherLocality, this.sourceId, false, "", "1900-01-01T00:00:00",
+  //      "", "", saveform.Note, this.notesObj.Notesremarks,
+  //     this.receivesms, this.promotionmsg, this.panno, this.cghsInt, this.ewsObj.bplCardNo,false,  saveform.Aadhar,  this.foreignerObj.HCF,
+  //     this.LandLineNumber, this.OrganDonor, saveform.OTAdvance, this.seafarerObj.HKID,
+  //     this.seafarerObj.rank, this.seafarerObj.Vesselname, this.seafarerObj.FDPGroup, saveform.HWC, this.hwcObj.HWCRemarks, this.Identity,
+  //     this.Identitynumber, 0,this.ewsObj.bplCardAddress,saveform.HotList,"",""
+  //   );
 }
 // function ngAfterViewInit() {
 //   throw new Error("Function not implemented.");

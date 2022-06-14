@@ -118,7 +118,7 @@ export namespace ApiConstants {
   export const patientDetails = (registrationno: number, iacode: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientbymaxid/${registrationno}/${iacode}"
+      "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode
     );
   };
 
