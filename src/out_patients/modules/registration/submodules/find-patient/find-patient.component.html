@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper-nobtn">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -6,8 +6,8 @@
       </li>
     </ul>
   </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <div class="p-3 w-full">
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+    <div class="p-3 w-full h-full">
       <ng-container *ngIf="isAPIProcess">
         <maxhealth-table
           [config]="config"
@@ -15,5 +15,5 @@
         ></maxhealth-table>
       </ng-container>
     </div>
-  </mat-tab-nav-panel>
+  
 </section>

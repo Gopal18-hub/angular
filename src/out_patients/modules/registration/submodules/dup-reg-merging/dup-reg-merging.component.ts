@@ -43,7 +43,7 @@ export class DupRegMergingComponent implements OnInit {
   config: any = {
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
     columnsInfo: {
       maxid: {
         title: 'Max ID',
@@ -81,8 +81,10 @@ export class DupRegMergingComponent implements OnInit {
         title: 'Phone No.',
         type: 'number'
       },
-      category: {
-        title: 'Category'
+      categoryIcons: {
+        title: 'Category',
+        type:'image',
+        width:34
       }
     }
   }

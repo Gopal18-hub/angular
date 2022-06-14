@@ -4,6 +4,7 @@ import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
+import { PatientService } from '../../../../../out_patients/core/services/patient.service';
 
 @Component({
   selector: 'find-patient',
@@ -15,10 +16,10 @@ export class FindPatientComponent implements OnInit {
   patientList:PatientSearchModel[]=[];
   isAPIProcess:boolean=false;
 
-  config: any  = {
+  config: any  = {    
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','category'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'MAX ID',
@@ -56,16 +57,20 @@ export class FindPatientComponent implements OnInit {
         title: 'Phone No.',
         type: 'number'
       },
-      category : {
-        title: 'Category'
+      categoryIcons : {
+        title: 'Category',
+        type:'image',
+        width:34
       }
     }
   }  
-  constructor(private http: HttpService) { }
+  constructor(private http: HttpService, private patient:PatientService) { }
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
       this.patientList  = resultData ;
+      this.patientList =this.patient.getAllCategoryIcons(this.patientList);
+      
       this.isAPIProcess = true;  
       console.log(this.patientList);
     })
