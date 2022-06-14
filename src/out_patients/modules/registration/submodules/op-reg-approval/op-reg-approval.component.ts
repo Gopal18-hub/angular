@@ -28,6 +28,9 @@ export class OpRegApprovalComponent implements OnInit {
   opApprovalHotlistrejectList: opRegHotlistModel[] = [];
   approvePostobject:any;
   rejectPostobject:any;
+  fromdate:string="2022-01-01";
+  todate:string="2022-06-30";
+  hsplocationId:number=9;
 
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
@@ -357,27 +360,27 @@ export class OpRegApprovalComponent implements OnInit {
   }
   getopapprovalpending()
   {
-    return this.http.get(ApiConstants.opapprovalpending + '/2022-01-01/2022-06-30/9');   
+    return this.http.get(ApiConstants.opapprovalpending(this.fromdate,this.todate,this.hsplocationId));   
   }
   getopapprovalaccepted()
   {
-    return this.http.get(ApiConstants.opapprovalaccepted +'/2022-01-01/2022-06-30/9/1');   
+    return this.http.get(ApiConstants.opapprovalaccepted(this.fromdate,this.todate,this.hsplocationId));   
   }
   getopapprovalrejected()
   {
-    return this.http.get(ApiConstants.opapprovalrejected +'/2022-01-01/2022-06-30/9/2');
+    return this.http.get(ApiConstants.opapprovalrejected(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingpending()
   {
-    return this.http.get(ApiConstants.ophotlistingpending+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingpending(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingaccept()
   {
-    return this.http.get(ApiConstants.ophotlistingaccept+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingaccept(this.fromdate,this.todate,this.hsplocationId));
   }
   getophotlistingreject()
   {
-    return this.http.get(ApiConstants.ophotlistingreject+'/2022-01-01/2022-06-30/9');
+    return this.http.get(ApiConstants.ophotlistingreject(this.fromdate,this.todate,this.hsplocationId));
   }
   approvalApproveItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
@@ -418,7 +421,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   hotlistApproveItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push({id:s.id})});
+      this.HotListidList.push(s.id)});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
         console.log(resultdata);
