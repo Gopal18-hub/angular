@@ -6,6 +6,7 @@ import { opRegHotlistModel } from '../../../../../out_patients/core/models/opreg
 import { approveRejectModel } from '../../../../../out_patients/core/models/approveRejectModel';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { approverejectdeleteModel } from '../../../../../out_patients/core/models/approverejectdeleteModel';
+import { HotListingService } from "../../../../../out_patients/core/services/hot-listing.service";
 
 @Component({
   selector: 'out-patients-op-reg-approval',
@@ -40,8 +41,8 @@ export class OpRegApprovalComponent implements OnInit {
   ApprovalidList:any=[];
   HotListidList:any=[];
 
-  approvalconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+  approvalconfig: any  = {   
+    dateformat: "dd/MM/yyyy",
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
@@ -96,8 +97,8 @@ export class OpRegApprovalComponent implements OnInit {
     }
   }
 
-  approveorrejectconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+  approveorrejectconfig: any  = {  
+    dateformat: "dd/MM/yyyy",
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'title', 'ptnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
@@ -153,9 +154,10 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   hotlistingconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+    actionItems: true,
+    dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -165,7 +167,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      name : {
+      patientName : {
         title: 'Name',
         type: 'string'
       },
@@ -185,17 +187,19 @@ export class OpRegApprovalComponent implements OnInit {
         title:'Remarks',
         type: 'string'
       },
-      category : {
+      categoryIcons : {
         title: 'Category',
-        type: 'string'
+        type: "image",
+        width: 34,
       }
     }
   }
 
   hotlistingapproveorrejectconfig: any  = {
-    dateformat: 'dd/MM/yyyy',
+    actionItems: true,
+    dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'name', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment'],
+    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -205,7 +209,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      name : {
+      patientName : {
         title: 'Name',
         type: 'string'
       },
@@ -225,13 +229,14 @@ export class OpRegApprovalComponent implements OnInit {
         title:'Remarks',
         type: 'string'
       },
-      category : {
+      categoryIcons : {
         title: 'Category',
-        type: 'string'
+        type: "image",
+        width: 34,
       }
     }
   }
-  constructor(private http: HttpService) { }
+  constructor(private http: HttpService,private hotList: HotListingService) { }
   
   ngOnInit(): void {
     this.getopapprovalpending().subscribe((resultData) => {
@@ -288,6 +293,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingpending().subscribe((resultData) => {
           this.opApprovalHotList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);
           this.showapprovalpending = true;
           console.log(this.opApprovalHotList);
         })
@@ -314,6 +320,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingaccept().subscribe((resultData) => {
           this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
           this.showapprovalaccepting = true;
           console.log(this.opApprovalHotlistacceptList);
         })
@@ -340,6 +347,7 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.getophotlistingreject().subscribe((resultData) => {
           this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
+          this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
           this.showapprovalreject = true;
           console.log(this.opApprovalHotlistrejectList);
         })
