@@ -22,7 +22,7 @@ import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
 import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
 import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
-import { DatePipe } from "@angular/common";
+
 @Component({
   selector: "out-patients-op-registration",
   templateUrl: "./op-registration.component.html",
@@ -290,8 +290,7 @@ export class OpRegistrationComponent implements OnInit {
     private formService: QuestionControlService,
     private cookie: CookieService,
     private http: HttpService,
-    public matDialog: MatDialog,
-    private datepipe: DatePipe
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
