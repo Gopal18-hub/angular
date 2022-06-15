@@ -614,6 +614,48 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.ageTypeName
     );
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
+    this.OPRegForm.controls["country"].setValue(
+      this.patientDetails?.countryName
+    );
+    this.OPRegForm.controls["nationality"].setValue(
+      this.patientDetails?.nationality
+    );
+    this.OPRegForm.controls["foreigner"].setValue(
+      this.patientDetails?.foreigner
+    );
+    this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
+    this.populateUpdatePatientDetail(this.patientDetails);
+    //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+  }
+  populateUpdatePatientDetail(patientDetails: PatientDetails)
+  {
+    
     if (this.patientDetails?.spouseName != "") {
       this.OPRegForm.controls["fatherSpouse"].setValue("Spouse");
       this.OPRegForm.controls["fatherSpouseName"].setValue(
@@ -648,16 +690,6 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.districtName
     );
     this.OPRegForm.controls["state"].setValue(this.patientDetails?.stateName);
-    this.OPRegForm.controls["country"].setValue(
-      this.patientDetails?.countryName
-    );
-    this.OPRegForm.controls["nationality"].setValue(
-      this.patientDetails?.nationality
-    );
-    this.OPRegForm.controls["foreigner"].setValue(
-      this.patientDetails?.foreigner
-    );
-    this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
     this.OPRegForm.controls["vip"].setValue(this.patientDetails?.vip);
     this.OPRegForm.controls["note"].setValue(this.patientDetails?.note);
     this.OPRegForm.controls["hwc"].setValue(this.patientDetails?.hwc);
@@ -680,33 +712,6 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["sourceOfInput"].setValue(
       this.patientDetails?.sourceofinfo
     );
-    //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
   }
 
   setPaymentMode(ppagerNumber: string | undefined) {
@@ -840,6 +845,9 @@ export class OpRegistrationComponent implements OnInit {
       "hotlistreason"
     ));
   }
+
+
+ 
   getFather(): string {
     let response = "";
     if (this.OPRegForm.value.fatherSpouse.title == "Father") {
