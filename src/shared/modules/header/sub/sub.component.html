@@ -205,10 +205,6 @@
           <li
             [matMenuTriggerFor]="menu"
             class="mr-4 cursor-pointer max-health-primary-color"
-            [routerLink]="module.defaultPath"
-            routerLinkActive="active-link"
-            (isActiveChange)="onRouterLinkActive($event, module)"
-            [routerLinkActiveOptions]="{ exact: true }"
             [matMenuTriggerData]="module"
           >
             {{ module.title }}
@@ -236,7 +232,9 @@
               class="max-health-primary-color"
               [routerLink]="menuItem.defaultPath"
               disableRipple="true"
+              routerLinkActive="active-link"
               (isActiveChange)="onPageRouterLinkActive($event, menuItem)"
+              [routerLinkActiveOptions]="{ exact: true }"
             >
               {{ menuItem.title }}
             </button>
