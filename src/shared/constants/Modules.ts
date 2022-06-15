@@ -16,25 +16,25 @@ export namespace MaxModules {
               id: 111,
               title: "OP Registration",
               defaultPath: "/registration/op-registration",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 112,
               title: "Find Patient",
               defaultPath: "/registration/find-patient",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 113,
               title: "Duplicate Reg Merging",
               defaultPath: "/registration/dup-reg-merging",
-              globalSearchKey:'merge'
+              globalSearchKey: "merge",
             },
             {
               id: 114,
               title: "Registration Unmerging",
               defaultPath: "/registration/registration-unmerging",
-              globalSearchKey:'unmerge'
+              globalSearchKey: "unmerge",
             },
             {
               id: 115,
@@ -45,43 +45,38 @@ export namespace MaxModules {
               id: 116,
               title: "Op Patient Reg Approval List",
               defaultPath: "/registration/op-reg-approval",
-              globalSearchKey:'opapproval'
+              globalSearchKey: "opapproval",
             },
             {
               id: 117,
               title: "Hot Listing Approval",
               defaultPath: "/registration/op-reg-approval",
-              globalSearchKey:'opapproval'
+              globalSearchKey: "opapproval",
             },
             {
               id: 118,
               title: "Bulk Upload Registration",
-              defaultPath: "",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 119,
               title: "Search Patient Admit/Discharge",
-              defaultPath: "",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 120,
               title: "Report for Bulk Upload Reg",
-              defaultPath: "",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 121,
               title: "For Ambulance and Reg Charges",
-              defaultPath: "",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
             {
               id: 122,
               title: "Blood Group Entry",
-              defaultPath: "",
-              globalSearchKey:'global'
+              globalSearchKey: "global",
             },
           ],
         },
