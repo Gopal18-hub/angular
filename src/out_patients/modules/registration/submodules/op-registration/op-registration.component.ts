@@ -41,7 +41,8 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   localityList: LocalityModel[] = [];
-  fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
+  fatherSpouseOptionList:[{title:string,value:number}]=[] as any;
+  stateList: StateModel[] = [];
 
   registrationFormData = {
     title: "",
@@ -50,7 +51,7 @@ export class OpRegistrationComponent implements OnInit {
       maxid: {
         type: "string",
         title: "Max ID",
-        defaultValue: Number(this.cookie.get("LocationIACode")),
+        defaultValue: Number(this.cookie.get("LocationIACode"))
       },
       SSN: {
         type: "string",
@@ -105,6 +106,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "Age Type",
         required: true,
+        list: this.ageTypeList
       },
       emailId: {
         type: "email",
@@ -113,8 +115,8 @@ export class OpRegistrationComponent implements OnInit {
       },
       fatherSpouse: {
         type: "autocomplete",
-        title: "",
-        list: this.fatherSpouseOptionList,
+        title: "Father/Spouse Name",
+        list:this.fatherSpouseOptionList
       },
       fatherSpouseName: {
         type: "string",
@@ -132,10 +134,11 @@ export class OpRegistrationComponent implements OnInit {
       idenityType: {
         type: "autocomplete",
         title: "Identity",
+        list:this.idTypeList
       },
       idenityValue: {
         type: "string",
-        title: "&nbsp;",
+        title: "",
       },
       adhaarId: {
         type: "number",
@@ -182,6 +185,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "District",
         // required property is dependent on country
+        list:this.disttList,
         required: true,
       },
       state: {
@@ -189,11 +193,13 @@ export class OpRegistrationComponent implements OnInit {
         title: "State",
         // required property is dependent on country
         required: true,
+        list:this.stateList
       },
       country: {
         type: "autocomplete",
         title: "Country",
         required: true,
+        list:this.countryList
       },
       nationality: {
         type: "autocomplete",
@@ -285,7 +291,7 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
-  stateList: StateModel[] = [];
+ 
 
   constructor(
     private formService: QuestionControlService,
@@ -300,8 +306,8 @@ export class OpRegistrationComponent implements OnInit {
       this.registrationFormData.properties,
       {}
     );
-    this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
-    this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
+this.fatherSpouseOptionList.push({title:"Father",value:1});
+this.fatherSpouseOptionList.push({title:"Spouse",value:2});
 
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
@@ -325,6 +331,21 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+   
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+    // this.questions[26].elementRef.addEventListener(
+    //   "blur",
+    //   this.getCityListByState.bind(this)
+    // );
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.getPatientDetailsByMaxId.bind(this)
+    );
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         let sex = this.titleList.filter((e) => e.id === value.value)[0].sex;
@@ -340,21 +361,9 @@ export class OpRegistrationComponent implements OnInit {
           });
       }
     });
-    this.questions[21].elementRef.addEventListener(
-      "blur",
-      this.getLocalityByPinCode.bind(this)
-    );
-    this.questions[26].elementRef.addEventListener(
-      "blur",
-      this.getCityListByState.bind(this)
-    );
-
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.getPatientDetailsByMaxId.bind(this)
-    );
   }
+
+ 
 
   //TITLE LIST API CALL
   getTitleList() {
@@ -491,6 +500,7 @@ export class OpRegistrationComponent implements OnInit {
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
+   
     this.http
       .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
       .subscribe((resultData: any) => {
@@ -533,15 +543,28 @@ export class OpRegistrationComponent implements OnInit {
     // });
   }
 
+  postForm() {
+    this.http
+      .post(ApiConstants.postPatientDetails,this.getPatientSubmitRequestBody)
+      .subscribe((resultData: PatientDetails) => {
+        this.setValuesToOPRegForm(resultData);
+        console.log(resultData);
+        // this.questions[24].options = this.cityList.map((l) => {
+        //   return { title: l.cityName, value: l.id };
+        });
+      
+  }
+
+  //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
   setValuesToOPRegForm(patientDetails: PatientDetails | undefined) {
-    this.OPRegForm.controls["maxid"].setValue(
-      this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
+    this.OPRegForm.controls["maxid"].setValue(this.patientDetails?.iacode+"."+
+      this.patientDetails?.registrationno
     );
     this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
     this.OPRegForm.controls["mobileNumber"].setValue(
       this.patientDetails?.pphone
     );
-    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title, 0);
+    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title,0);
     this.OPRegForm.controls["firstName"].setValue(
       this.patientDetails?.firstname
     );
@@ -659,7 +682,7 @@ export class OpRegistrationComponent implements OnInit {
       case "EWS":
         this.OPRegForm.controls["ews"].setValue(ppagerNumber);
         break;
-
+        
       case "CORPORATE/INSURANCE":
         this.OPRegForm.controls["Insurance"].setValue(ppagerNumber);
         break;
@@ -671,125 +694,57 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+
+
   //WORKING ON THE BELOW FUNCTION
-  patientSubmitDetails: patientRegistrationModel | undefined;
+  patientSubmitDetails:patientRegistrationModel | undefined;
   // registationFormSubmit()
   // {}
-  registationFormSubmit() {
-    console.log("title", this.OPRegForm.value.title.title);
+  registationFormSubmit(){
+  this.postForm();
+}
 
-    let iacode = this.cookie.get("LocationIACode");
-    let deptId = 0;
-    this.patientSubmitDetails = new patientRegistrationModel(
-      0,
-      iacode,
-      this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",
-      deptId,
-      "",
-      this.OPRegForm.value.title.title,
-      this.OPRegForm.value.firstName,
-      this.OPRegForm.value.middleName,
-      this.OPRegForm.value.lastName,
-      this.OPRegForm.value.motherName,
-      this.getFather(),
-      this.getFather() === "" ? false : true,
-      this.datepipe.transform(
-        this.OPRegForm.value.dob,
-        "yyyy-MM-ddThh:mm:ss"
-      ) || "{}",
-      this.OPRegForm.value.gender.id,
-      11,
-      this.getSpouseName(),
-      0,
-      "",
-      0,
-      "",
-      "",
-      "",
-      "",
-      this.OPRegForm.value.ageType.title,
-      this.OPRegForm.value.age.title,
-      this.OPRegForm.value.address,
-      "",
-      "",
-      this.OPRegForm.value.city.title,
-      this.OPRegForm.value.district.title,
-      this.OPRegForm.value.state.title,
-      this.OPRegForm.value.country.id,
-      this.OPRegForm.value.pincode,
-      this.OPRegForm.value.mobileNumber.title,
-      "",
-      this.OPRegForm.value.emailId,
-      this.OPRegForm.value, //PAGER NEED TO CHECK HOW CAN BE SENT
-      0,
-      this.OPRegForm.value.nationality.title,
-      false,
-      "PASSPORT NO",
-      "DATE FOR ISSUE PASSPORT NUMBER",
-      "DATE FOR EXPIRY PASSPORT NUMBER",
-      " ISSUE AT",
-      "",
-      false,
-      this.OPRegForm.value.VIP,
-      0,
-      this.OPRegForm.value.foreigner,
-      !this.OPRegForm.value.dob ? true : false,
-      Number(this.cookie.get("UserId")),
-      "",
-      Number(this.cookie.get("HSPLocationId")),
-      "vip reason",
-      this.OPRegForm.value.dob == "" ? false : true,
-      this.OPRegForm.value.locality.id,
-      this.OPRegForm.value.locality.value,
-      this.OPRegForm.value.sourceId.id,
-      false,
-      this.OPRegForm.value.SSN,
-      "1900-01-01T00:00:00",
-      "",
-      "",
-      this.OPRegForm.value.note,
-      "this.notesObj.Notesremarks",
-      this.OPRegForm.value.surveySMS,
-      this.OPRegForm.value.receivePromotional,
-      "this.panno",
-      this.OPRegForm.value.cgs,
-      "this.ewsObj.bplCardNo",
-      false,
-      this.OPRegForm.value.adhaarId,
-      111111,
-      this.OPRegForm.value.altLandlineName,
-      this.OPRegForm.value.organdonor,
-      this.OPRegForm.value.otAdvanceExclude,
-      "this.seafarerObj.HKID",
-      "this.seafarerObj.rank",
-      "this.seafarerObj.Vesselname",
-      "this.seafarerObj.FDPGroup",
-      false,
-      " this.hwcObj.HWCRemarks",
-      this.OPRegForm.value.idenityType.id,
-      this.OPRegForm.value.idenityValue.title,
-      0,
-      "this.ewsObj.bplCardAddress",
-      this.OPRegForm.value.hotlist,
-      "hotlsitcomment",
-      "hotlistreason"
+
+getPatientSubmitRequestBody():patientRegistrationModel
+{
+  console.log("title",this.OPRegForm.value.title.title)
+ 
+  let iacode=this.cookie.get("LocationIACode");
+  let deptId=0;
+  
+   return this.patientSubmitDetails = new patientRegistrationModel(0,iacode, this.datepipe.transform(Date.now(),'yyyy-MM-ddThh:mm:ss') || '{}',deptId,"", this.OPRegForm.value.title.title, this.OPRegForm.value.firstName,this.OPRegForm.value.middleName,
+      this.OPRegForm.value.lastName, this.OPRegForm.value.motherName, this.getFather(), this.getFather()===""?false:true, this.datepipe.transform(this.OPRegForm.value.dob,
+        'yyyy-MM-ddThh:mm:ss') || '1900-01-01T00:00:00',this.OPRegForm.value.gender.value, 11,this.getSpouseName(), 0,"", 0, "", "", "", "", this.OPRegForm.value.ageType.title, this.OPRegForm.value.age, this.OPRegForm.value.address,
+      "", "", this.OPRegForm.value.city.value,this.OPRegForm.value.district.value, this.OPRegForm.value.state.value, this.OPRegForm.value.country.value, this.OPRegForm.value.pincode, this.OPRegForm.value.mobileNumber,"", this.OPRegForm.value.emailId,
+       "Cash", //PAGER NEED TO CHECK HOW CAN BE SENT
+       0,
+       this.OPRegForm.value.nationality.title, false, "PASSPORT NO","DATE FOR ISSUE PASSPORT NUMBER", "DATE FOR EXPIRY PASSPORT NUMBER"," ISSUE AT", "", false, this.OPRegForm.value.vip, 0, this.OPRegForm.value.foreigner,!this.OPRegForm.value.dob?true:false,
+       Number(this.cookie.get("UserId")), "",Number(this.cookie.get("HSPLocationId")), "vip reason", this.OPRegForm.value.dob==""?false:true ,  this.OPRegForm.value.locality.value, this.OPRegForm.value.locality.value, this.OPRegForm.value.sourceOfInput.value, false, this.OPRegForm.value.SSN, "1900-01-01T00:00:00",
+       "", "",this.OPRegForm.value.note, "this.notesObj.Notesremarks",
+       this.OPRegForm.value.surveySMS,  this.OPRegForm.value.receivePromotional, "this.panno", this.OPRegForm.value.verifiedOnline, "this.ewsObj.bplCardNo",false,  this.OPRegForm.value.adhaarId,  111111,
+       this.OPRegForm.value.altLandlineName, this.OPRegForm.value.organdonor,this.OPRegForm.value.otAdvanceExclude, "this.seafarerObj.HKID",
+      "this.seafarerObj.rank", "this.seafarerObj.Vesselname", "this.seafarerObj.FDPGroup",false," this.hwcObj.HWCRemarks", this.OPRegForm.value.idenityType.value,
+      this.OPRegForm.value.idenityValue, 0,"this.ewsObj.bplCardAddress",this.OPRegForm.value.hotlist,"hotlsitcomment","hotlistreason"
     );
+    console.log(this.patientSubmitDetails);
+}
+getFather():string
+{
+ let response="";
+  if(this.OPRegForm.value.fatherSpouse.title=="Father")
+  {
+    return this.OPRegForm.value.fatherSpouseName;
   }
-
-  getFather(): string {
-    let response = "";
-    if (this.OPRegForm.value.fatherSpouse == "Father") {
-      return this.OPRegForm.value.fatherSpouseName;
-    }
-    return response;
+  return response;
+}
+getSpouseName(){
+let response="";
+  if(this.OPRegForm.value.fatherSpouse.title!="Father")
+  {
+    return this.OPRegForm.value.fatherSpouseName;
   }
-  getSpouseName() {
-    let response = "";
-    if (this.OPRegForm.value.fatherSpouse != "Father") {
-      return this.OPRegForm.value.fatherSpouseName;
-    }
-    return response;
-  }
+  return response;
+}
 }
 // function ngAfterViewInit() {
 //   throw new Error("Function not implemented.");
