@@ -331,6 +331,8 @@
                     [form]="OPRegForm"
                     [questions]="questions[29]"
                     [index]="29"
+                    (click)="openForeigner()"
+                    
                   ></maxhealth-question>
                 </div>
               </div>
@@ -350,6 +352,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[30]"
                       [index]="30"
+                      (click)="openHotListDialog()"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -528,9 +531,9 @@
             class="w-3/4"
             type="submit"
             class="mt-2"
-            (click)="opendialog()"
+            
           >
-            Find Patient
+            Appointment Search
           </button>
           <button
             mat-raised-button
@@ -558,6 +561,26 @@
           <mat-card class="h-3/5 w-full opd-reg-wrapper-box-checboxcontainer">
             <!-- NEED TO ADD IMAGE ICON HERE -->
           </mat-card>
+        </div>
+        <div class="mt-4 px-4 py-4 h-1/5 flex flex-column justify-between">
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-2/3"
+            type="submit"
+            class="mt-2"
+          >
+            Clear
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-3/4"
+            type="submit"
+            class="mt-2"
+          >
+            Print Form
+          </button>
         </div>
       </div>
     </div>
