@@ -14,7 +14,7 @@ export class SubComponent implements OnInit {
 
   activePageItem: any;
 
-  searchFormData = {
+  searchFormData: any = {
     global: {
       title: "",
       type: "object",
@@ -107,8 +107,12 @@ export class SubComponent implements OnInit {
   constructor(private formService: QuestionControlService) {}
 
   ngOnInit(): void {
+    this.reInitiateSearch("global");
+  }
+
+  reInitiateSearch(type: string) {
     let formResult: any = this.formService.createForm(
-      this.searchFormData.global.properties,
+      this.searchFormData[type].properties,
       {}
     );
     this.searchForm = formResult.form;
@@ -126,6 +130,7 @@ export class SubComponent implements OnInit {
     console.log(mentItem);
     if ($event) {
       this.activePageItem = mentItem;
+      this.reInitiateSearch(this.activePageItem.globalSearchKey);
     }
   }
 
