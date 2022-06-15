@@ -75,6 +75,13 @@ $custom-typography: mat.define-typography-config(
 mat-form-field {
   font-size: 14px;
   &.mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: rgba(0, 0, 0, 0.35);
+    }
+    .mat-form-field-wrapper {
+      margin: 0 !important;
+      // padding-bottom: 1em;
+    }
     .mat-form-field-infix {
       padding: 0.9em 0 !important;
       border-top: 0 !important;

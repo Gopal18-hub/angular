@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { getmergepatientsearch } from '../models/getmergepatientsearch';
-import { PatientSearchModel } from '../models/patientSearchModel';
+import { opRegHotlistModel } from '../../../out_patients/core/models/opreghotlistapprovalModel.Model';
 
 @Injectable({
     providedIn: 'root'
   })
-export class PatientService {
+export class HotListingService {
     categoryIcons:any={
         'cghs': 'CGHS_Icon.svg',
         'hotList':'Hot_listing_icon.svg',
@@ -21,20 +20,20 @@ export class PatientService {
 
     constructor() { }
 
-    getAllCategoryIcons(patientSearchModel:PatientSearchModel[] | getmergepatientsearch[], model: any = PatientSearchModel)
+    getAllCategoryIcons(hotlisting:opRegHotlistModel[])
     {
         
-        patientSearchModel.forEach((e)=>{            
+        hotlisting.forEach((e)=>{            
             e.categoryIcons = this.getCategoryIcons(e);
         });
-        return patientSearchModel as typeof model;
+        return hotlisting;
     }
 
-    getCategoryIcons(patient:PatientSearchModel | getmergepatientsearch)
+    getCategoryIcons(hotlist:opRegHotlistModel)
     {
         let returnIcons:any= [];
-        Object.keys(patient).forEach((e)=>{
-            if(this.categoryIcons[e] && patient[e as keyof (PatientSearchModel |getmergepatientsearch)]){
+        Object.keys(hotlist).forEach((e)=>{
+            if(this.categoryIcons[e] && hotlist[e as keyof opRegHotlistModel]){
                 returnIcons.push('assets/patient-categories/'+this.categoryIcons[e]);
             }
         });
