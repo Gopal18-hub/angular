@@ -265,13 +265,14 @@ export class OpRegApprovalComponent implements OnInit {
       this.opapproval = true;
       this.ophotlistingapproval = false;
       this.showapprovalpending = true;
-      
+      this.showgrid('View Pending Request');
     }
     else if(link == "Hot Listing Approval")
     {
       this.opapproval = false;
       this.ophotlistingapproval = true;
       this.showapprovalpending = true;
+      this.showgrid('View Pending Request');
     }
     else if(link == "Op Refund Approval")
     {
@@ -303,9 +304,15 @@ export class OpRegApprovalComponent implements OnInit {
           this.opApprovalHotList  = resultData as opRegHotlistModel[];
           this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);
           this.showapprovalpending = true;
+          this.opApprovalHotlistacceptList = [];
+         
           this.enablehotlistbtn = true;
           console.log(this.opApprovalHotList);
-        })
+        },error=>{          
+          this.enablehotlistbtn = false;
+          this.opApprovalHotList=[];
+          console.log(error);
+        }); 
       }
       
     }
