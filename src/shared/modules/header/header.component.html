@@ -5,7 +5,7 @@
       <div class="mt-2 flex items-center user-info">
         <span class="mr-6 font-sm max-health-primary-color">{{location}}</span>
         <span class="mr-6 font-sm max-health-primary-color"
-          >{{station}}</span
+          >{{sation}}</span
         >
         <span class="mr-1 font-sm">Welcome {{usrname}}</span>
 
@@ -109,6 +109,7 @@
             <ng-container *ngIf="module.moreOptions">
               <li
                 [matMenuTriggerFor]="menu"
+                [matMenuTriggerData]="{ module: module }"
                 class="mr-4 cursor-pointer"
                 [ngClass]="{ active: activeModule?.id == module.id }"
               >
@@ -126,30 +127,34 @@
           </ng-container>
         </ul>
         <mat-menu #menu="matMenu" class="header-menu">
-          <div class="flex flex-rows w-full h-full p-4">
-            <div class="flex flex-column w-1/2 border-right items-start">
-              <button mat-button class="my-2">Front Office</button>
-              <mat-divider class="w-4/5"></mat-divider>
-              <button mat-button class="my-2">Marketing</button>
-              <mat-divider class="w-4/5"></mat-divider>
-              <button mat-button class="my-2">Health Checkup</button>
-              <mat-divider class="w-4/5"></mat-divider>
-            </div>
-            <div class="flex flex-column w-1/2 px-6">
-              <mat-checkbox class="example-margin"
-                >Direct to different location</mat-checkbox
-              >
-              <mat-label class="mt-4 max-health-primary-color">Location</mat-label>
-              <mat-form-field appearance="outline">
-                <mat-select name="location"> </mat-select>
-              </mat-form-field>
-              <mat-label class="mt-2 max-health-primary-color">Station</mat-label>
+          <ng-template matMenuContent let-module="module">
+            <div class="flex flex-rows w-full h-full p-4">
+              <div class="flex flex-column w-1/2 border-right items-start">
+                <button mat-button class="my-2" (click)="activeModule = module">
+                  Front Office
+                </button>
+                <mat-divider class="w-4/5"></mat-divider>
+                <button mat-button class="my-2">Marketing</button>
+                <mat-divider class="w-4/5"></mat-divider>
+                <button mat-button class="my-2">Health Checkup</button>
+                <mat-divider class="w-4/5"></mat-divider>
+              </div>
+              <div class="flex flex-column w-1/2 px-6">
+                <mat-checkbox class="example-margin"
+                  >Direct to different location</mat-checkbox
+                >
+                <mat-label class="mt-4">Location</mat-label>
+                <mat-form-field appearance="outline">
+                  <mat-select name="location"> </mat-select>
+                </mat-form-field>
+                <mat-label class="mt-2">Station</mat-label>
 
-              <mat-form-field appearance="outline">
-                <mat-select name="station"> </mat-select>
-              </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-select name="station"> </mat-select>
+                </mat-form-field>
+              </div>
             </div>
-          </div>
+          </ng-template>
         </mat-menu>
       </div>
     </div>
