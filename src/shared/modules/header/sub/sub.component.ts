@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -9,6 +10,8 @@ import { FormGroup } from "@angular/forms";
 })
 export class SubComponent implements OnInit {
   @Input() submodules: any = [];
+
+  @Input() module: any;
 
   activeSubModule: any;
 
@@ -104,10 +107,35 @@ export class SubComponent implements OnInit {
 
   questions: any;
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.reInitiateSearch("global");
+    this.submodules.forEach((element: any) => {
+      if (
+        element.defaultPath &&
+        window.location.pathname.includes(element.defaultPath)
+      ) {
+        console.log(element);
+        if (element.childrens) {
+          element.childrens.forEach((ch: any) => {
+            if (
+              ch.defaultPath &&
+              window.location.pathname.includes(ch.defaultPath)
+            ) {
+              this.activeSubModule = element;
+              this.activePageItem = ch;
+              console.log(this.activePageItem);
+
+              this.reInitiateSearch(this.activePageItem.globalSearchKey);
+            }
+          });
+        }
+      }
+    });
+    if (!this.activePageItem) this.reInitiateSearch("global");
   }
 
   reInitiateSearch(type: string) {
