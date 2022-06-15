@@ -3,6 +3,7 @@ import { PatientSearchModel } from "../../../auth/core/models/patientsearchmodel
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../shared/services/http.service";
 import { ApiConstants } from "../../../auth/core/constants/ApiConstants";
+import { PatientService } from "../../../out_patients/core/services/patient.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -14,6 +15,8 @@ export class DashboardComponent implements OnInit {
   apiProcessing: boolean = false;
 
   config: any = {
+    actionItems:true,
+    dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -25,7 +28,7 @@ export class DashboardComponent implements OnInit {
       "dob",
       "place",
       "phone",
-      "category",
+      "categoryIcons",
     ],
     columnsInfo: {
       maxid: {
@@ -64,16 +67,19 @@ export class DashboardComponent implements OnInit {
         title: "Phone No.",
         type: "number",
       },
-      category: {
+      categoryIcons: {
         title: "Category",
+        type:'image',
+        width:34
       },
     },
   };
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService, private patientServie: PatientService) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
       this.patientList = resultData;
+      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
       this.apiProcessing = true;
     });
   }

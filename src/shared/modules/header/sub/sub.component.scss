@@ -14,7 +14,7 @@
       width: 90%;
       font-size: 14px;
       background: #fff;
-      border-radius: 1em;
+      border-radius: 0.5em;
       .mat-form-field-wrapper {
         margin: 0;
         padding: 0;
@@ -32,7 +32,7 @@
     }
   }
   &-right {
-    width: 61vw;
+    width: 67.5vw;
     background-color: #fff;
     padding: 0 1em;
     border-radius: 0 0 0 1em;
@@ -52,7 +52,7 @@
 ::ng-deep {
   .sub-header-menu {
     width: 48vw;
-    height: 24vh;
+    //height: vh;
     overflow: hidden;
     max-width: initial !important;
     .mat-menu-content {
@@ -64,6 +64,25 @@
         flex: 1 1 calc(20vh / 4);
         justify-content: flex-start;
         text-align: left;
+      }
+    }
+  }
+  .search-header-menu {
+    width: 30vw;
+
+    max-width: initial !important;
+    maxhealth-question {
+      > div {
+        display: flex;
+        align-items: center;
+        mat-label {
+          width: 35%;
+          font-size: 12px;
+        }
+        mat-form-field {
+          width: 65% !important;
+          font-size: 12px;
+        }
       }
     }
   }
