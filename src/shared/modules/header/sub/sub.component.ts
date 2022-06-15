@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import { SearchService } from "../../../services/search.service";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -10,104 +12,47 @@ import { FormGroup } from "@angular/forms";
 export class SubComponent implements OnInit {
   @Input() submodules: any = [];
 
+  @Input() module: any;
+
   activeSubModule: any;
 
   activePageItem: any;
 
-  searchFormData: any = {
-    global: {
-      title: "",
-      type: "object",
-      properties: {
-        maxID: {
-          type: "string",
-          title: "Max ID",
-        },
-        phone: {
-          type: "string",
-          title: "Phone",
-        },
-        name: {
-          type: "string",
-          title: "Name",
-        },
-        dob: {
-          type: "date",
-          title: "DOB",
-        },
-        healthID: {
-          type: "string",
-          title: "Health ID",
-        },
-        adhaar: {
-          type: "string",
-          title: "Aadhaar",
-        },
-      },
-    },
-    merge: {
-      dateFormat: "dd/MM/yyyy",
-      title: "",
-      type: "object",
-      properties: {
-        name: {
-          type: "string",
-          title: "Name",
-        },
-        phone: {
-          type: "string",
-          title: "Phone",
-        },
-        dob: {
-          type: "date",
-          title: "DOB",
-        },
-        email: {
-          type: "string",
-          title: "Email",
-        },
-      },
-    },
-    opapproval: {
-      dateFormat: "dd/MM/yyyy",
-      title: "",
-      type: "object",
-      properties: {
-        from: {
-          type: "date",
-          title: "From",
-        },
-        to: {
-          type: "date",
-          title: "To",
-        },
-      },
-    },
-    unmerge: {
-      dateFormat: "dd/MM/yyyy",
-      title: "",
-      type: "object",
-      properties: {
-        maxID: {
-          type: "string",
-          title: "Max ID",
-        },
-        ssn: {
-          type: "string",
-          title: "SSN",
-        },
-      },
-    },
-  };
+  searchFormData: any;
 
   searchForm!: FormGroup;
 
   questions: any;
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private router: Router,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
-    this.reInitiateSearch("global");
+    this.searchFormData = this.searchService.searchFormData;
+
+    this.submodules.forEach((element: any) => {
+      if (
+        element.defaultPath &&
+        window.location.pathname.includes(element.defaultPath)
+      ) {
+        if (element.childrens) {
+          element.childrens.forEach((ch: any) => {
+            if (
+              ch.defaultPath &&
+              window.location.pathname.includes(ch.defaultPath)
+            ) {
+              this.activeSubModule = element;
+              this.activePageItem = ch;
+              this.reInitiateSearch(this.activePageItem.globalSearchKey);
+            }
+          });
+        }
+      }
+    });
+    if (!this.activePageItem) this.reInitiateSearch("global");
   }
 
   reInitiateSearch(type: string) {
@@ -134,5 +79,7 @@ export class SubComponent implements OnInit {
     }
   }
 
-  searchSubmit() {}
+  searchSubmit() {
+    this.searchService.searchTrigger.next({ data: this.searchForm.value });
+  }
 }

@@ -175,7 +175,11 @@
         [formGroup]="searchForm"
         class="mx-6 my-2"
       >
-        <div class="flex justify-between flex-wrap">
+        <div
+          class="flex justify-between flex-wrap"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+        >
           <div *ngFor="let question of questions; let i = index" class="w-1/45">
             <maxhealth-question
               [question]="question"
