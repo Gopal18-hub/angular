@@ -68,16 +68,20 @@
     }
   }
   .search-header-menu {
-    width: 30vw;
+    width: 29vw;
 
     max-width: initial !important;
+    margin-left: 5%;
+    margin-top: 3%;
+
     maxhealth-question {
       > div {
         display: flex;
-        align-items: center;
+        //align-items: center;
         mat-label {
           width: 35%;
           font-size: 12px;
+          padding-top: 0.5rem;
         }
         mat-form-field {
           width: 65% !important;
