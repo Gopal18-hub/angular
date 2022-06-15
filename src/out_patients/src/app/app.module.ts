@@ -9,6 +9,7 @@ import { HeaderModule } from "../../../shared/modules/header";
 
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
+import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthSnackBarModule } from "../../../shared/ui/snack-bar";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
@@ -26,6 +27,7 @@ import { APP_BASE_HREF } from "@angular/common";
     RegistrationModule,
     HttpClientModule,
     MaxHealthSnackBarModule,
+    EmployeeSponsorTaggingModule
   ],
   providers: [
     {

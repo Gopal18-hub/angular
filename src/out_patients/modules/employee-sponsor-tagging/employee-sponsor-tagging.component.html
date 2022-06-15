@@ -1,0 +1,100 @@
+<!-- <section>
+     <nav  >
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+              <a > OP Registration</a>
+            </li>
+          </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel> -->
+<!-- <mat-toolbar>
+    <span>Employee Sponsor Tagging</span>
+  </mat-toolbar> -->
+
+<!-- </section> -->
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper" style="background-color:white">
+<nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+    <!-- <a mat-tab-link *ngFor="let link of links"
+       (click)="activeLink = link"
+       [active]="activeLink == link"> {{link}} </a> -->
+       <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+            <a class="ml-3" mat-tab-link [active]="true">Employee Sponsor Tagging</a> 
+        </li>
+      </ul>
+   
+   
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+      <div >
+      <form >
+        <!-- <mat-form-field > -->
+         <div class="flex firstrow">
+        <div >
+            <mat-label class="mr-5 employeelabelclass">Max ID</mat-label>
+            <input type="text" class=" maxidclass" matInput [(ngModel)]="maxid"  >
+        </div>
+        <div >
+            <mat-label  class=" ml-2 mr-5 employeelabelclass">Mobile No</mat-label>
+            <input type="text" class="maxidclass" matInput [(ngModel)]="maxid"  >
+        </div>
+        <div >
+            <mat-label  class=" ml-2 mr-5 employeelabelclass">Employee code</mat-label>
+            <input type="text" class="maxidclass" matInput [(ngModel)]="maxid"  >
+        </div>
+        <div >
+            <mat-label  class="ml-2 mr-5 employeelabelclass">Company</mat-label>
+            <input type="text" class="maxidclass" matInput [(ngModel)]="maxid"  >
+        </div>
+        <div >
+        <mat-label  class=" ml-2 mr-5 employeelabelclass">Corporate</mat-label>
+            <input type="text" class="maxidclass" matInput [(ngModel)]="maxid"  >
+        </div>
+    </div>
+    <div class="p-4 flex  firstrow ">
+        <div>
+            <mat-label class="mr-5 employeelabelclass">Name:</mat-label>
+            <p></p>
+        </div>
+        <div>
+            <mat-label class=" ml-5 mr-5 employeelabelclass">Age:</mat-label>
+            <p></p>
+        </div>
+        <div>
+            <mat-label class=" ml-5 mr-5 employeelabelclass">Gender:</mat-label>
+            <p></p>
+        </div>
+        <div>
+            <mat-label class=" ml-5 mr-5 employeelabelclass">DOB:</mat-label>
+            <p></p>
+        </div>
+        <div>
+            <mat-label class=" ml-5 mr-5 employeelabelclass">Nationality:</mat-label>
+            <p></p>
+        </div>
+        <div>
+            <mat-label class=" ml-5 mr-5 employeelabelclass" >SSN:</mat-label>
+            <p></p>
+        </div>
+
+
+    </div>
+    <div>
+      <mat-label class="employeelabelclass">Employee Dependent  Details</mat-label>  
+    </div>
+        <!-- 
+            </mat-form-field> -->
+      </form>
+    </div>
+      
+
+      
+  </mat-tab-nav-panel>
+</section>
+  
+  <!-- <button mat-raised-button class="example-action-button" (click)="toggleBackground()">
+    Toggle background
+  </button>
+  <button mat-raised-button class="example-action-button" (click)="addLink()">
+    Add link
+  </button> -->
