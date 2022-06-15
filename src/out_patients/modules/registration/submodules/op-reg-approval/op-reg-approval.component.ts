@@ -316,11 +316,12 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalpending = false;
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
+        this.enableapprovebtn = false;
         this.getopapprovalaccepted().subscribe((resultData) => {
         this.opApprovalacceptList  = resultData as opRegApprovalModel[];
         this.showapprovalaccepting = true;
         console.log(this.opApprovalacceptList);
-        this.enableapprovebtn = false;
+       
       })
       }
       else if(this.ophotlistingapproval = true)
@@ -328,11 +329,12 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalpending = false;
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
+        this.enablehotlistbtn = false;
         this.getophotlistingaccept().subscribe((resultData) => {
           this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
           this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
           this.showapprovalaccepting = true;
-          this.enablehotlistbtn = false;
+         
           console.log(this.opApprovalHotlistacceptList);
         })
       }
@@ -345,11 +347,12 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalpending = false;
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
+        this.enableapprovebtn = false;
         this.getopapprovalrejected().subscribe((resultData) => {
         this.opApprovalrejectList = resultData as opRegApprovalModel[];
         this.showapprovalreject = true;
         console.log(this.opApprovalrejectList);
-        this.enableapprovebtn = false;
+      
        
       })
       }
@@ -358,12 +361,13 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalpending = false;
         this.showapprovalaccepting = false;
         this.showapprovalreject = false;
+        this.enablehotlistbtn = false;
         this.getophotlistingreject().subscribe((resultData) => {
           this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
           this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
           this.showapprovalreject = true;
           console.log(this.opApprovalHotlistrejectList);
-          this.enablehotlistbtn = false;
+         
         })
       }
       
