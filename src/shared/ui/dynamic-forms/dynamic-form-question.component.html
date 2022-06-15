@@ -9,7 +9,10 @@
       />
     </ng-container>
     <ng-container *ngSwitchCase="'string'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [innerHtml]="question.label"
+      ></mat-label>
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -23,6 +26,8 @@
           [id]="question.key"
           [required]="question.required"
           [readonly]="question.readonly"
+          [value]="question.value"
+          [placeholder]="question.placeholder"
           #element
         />
         <mat-error *ngIf="!isValid && !isCorrect">
@@ -49,6 +54,7 @@
           [id]="question.key"
           [required]="question.required"
           [readonly]="question.readonly"
+          [placeholder]="question.placeholder"
           #element
         />
         <button
@@ -87,6 +93,8 @@
           [max]="question.maximum"
           [readonly]="question.readonly"
           [step]="question.step"
+          [value]="question.value"
+          [placeholder]="question.placeholder"
           #element
         />
         <mat-error *ngIf="form.get(question.key)?.hasError('required')">
@@ -119,6 +127,8 @@
           [id]="question.key"
           [required]="question.required"
           [readonly]="question.readonly"
+          [value]="question.value"
+          [placeholder]="question.placeholder"
           #element
         ></textarea>
         <mat-error *ngIf="!isValid">
@@ -141,6 +151,7 @@
           [type]="question.type"
           [id]="question.key"
           [attr.required]="question.required"
+          [placeholder]="question.placeholder"
           #element
         />
         <mat-error *ngIf="!isValid">
@@ -173,7 +184,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="'radio'">
       <div class="full-width mb-4">
-        <label>{{ question.label }}: </label>
+        <label>{{ question.label }} </label>
         <mat-radio-group
           formControlName="floatLabel"
           class="flex flex-column"
@@ -236,6 +247,7 @@
           [panelClass]="'im-select-dropdown'"
           [compareWith]="compareFn"
           [required]="question.required"
+          [placeholder]="question.placeholder"
           #element
         >
           <ng-container *ngFor="let opt of question.options">
@@ -296,6 +308,7 @@
           [required]="question.required"
           [readonly]="question.readonly"
           [matAutocomplete]="auto"
+          [placeholder]="question.placeholder"
           #element
         />
         <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
@@ -332,6 +345,7 @@
           [readonly]="question.readonly"
           #element
           [matDatepicker]="datepicker"
+          [placeholder]="question.placeholder"
         />
         <mat-datepicker-toggle
           matSuffix
@@ -356,7 +370,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="'checkbox'">
       <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
-      <ul>
+      <ul class="list-unstyled">
         <li *ngFor="let opt of question.options">
           <mat-checkbox [formControlName]="question.key">
             {{ opt.title }}

@@ -37,7 +37,6 @@ An Utility CSS only library.
   - [Grid](#grid)
   - [Flex](#flex)
 
-
 ## DOCS
 
 ### Breakpoints
