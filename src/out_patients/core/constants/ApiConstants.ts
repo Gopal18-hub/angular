@@ -36,7 +36,7 @@ export namespace ApiConstants {
   //PATIENT LOCALITY ON THE INPUT OF PINCODE, RESPONSE TYPE localityByPincode, NEED TO CONCATINATE PINCODE IN ENDPOINT
   export const localityLookUp = (pincode: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/getlocalityonpincode/${pincode}"
+      environment.CommonApiUrl + "api/lookup/getlocalityonpincode/"+pincode
     );
   };
 
@@ -59,7 +59,7 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS CITY BY STATE ID, RESPONSE type commonCityTypeModel[]
   export const cityByStateID = (stateId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getcity/${stateId}";
+    return environment.CommonApiUrl + "api/lookup/getcity/"+stateId;
   };
 
   //PATIENT ADDRESS CITY MASTER MODEL, RESPONSE type commonCityTypeModel[]
@@ -118,7 +118,7 @@ export namespace ApiConstants {
   export const patientDetails = (registrationno: number, iacode: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientbymaxid/${registrationno}/${iacode}"
+      "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode
     );
   };
 
@@ -203,5 +203,41 @@ export namespace ApiConstants {
       environment.PatientApiUrl + 'api/patient/patientunmerging/'+userId
     );
   };
+
+  export const approvalpostapproveApi =   environment.PatientApiUrl + 'api/patient/approverejectopregrequests';
     
+  export const hotlistingpostapproveApi= (UserId:number, flag:number)=>
+  {
+    return (
+      environment.PatientApiUrl + 'api/patient/approvedrejectdeletehotlisting/'+UserId+'/'+flag
+    );
+  };
+  export const opapprovalpending = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(
+      environment.PatientApiUrl + 'api/patient/getopregistrationpendingrequests/'+fromdate+'/' + todate + '/' + hspLocationid
+    );   
+  };
+  
+  export const opapprovalaccepted = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 1
+    );   
+  };
+  export const opapprovalrejected = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(    environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 2
+       );   
+      };
+  export const ophotlistingpending = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(    environment.PatientApiUrl + 'api/patient/getpendinghotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+      );   
+  };
+  export const ophotlistingaccept = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(     environment.PatientApiUrl + 'api/patient/getapprovedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+       );   
+  };
+  
+  export const ophotlistingreject = (fromdate:string, todate:string, hspLocationid:number) => {
+    return(     environment.PatientApiUrl + 'api/patient/getrejectedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
+      );   
+  };
+ 
 }

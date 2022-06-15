@@ -13,7 +13,7 @@ import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging"
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthSnackBarModule } from "../../../shared/ui/snack-bar";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
-
+import { DatePipe } from "@angular/common";
 import { APP_BASE_HREF } from "@angular/common";
 
 @NgModule({
@@ -30,6 +30,7 @@ import { APP_BASE_HREF } from "@angular/common";
     EmployeeSponsorTaggingModule
   ],
   providers: [
+    DatePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

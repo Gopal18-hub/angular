@@ -22,6 +22,14 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
 import { AppointmentSearchDialogComponent } from './submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
 import {MatCardModule} from '@angular/material/card';
+import { PrintLabelDialogComponent } from './submodules/op-registration/print-label-dialog/print-label-dialog.component';
+import { VipDialogComponent } from './submodules/op-registration/vip-dialog/vip-dialog.component';
+import { HotListingDialogComponent } from './submodules/op-registration/hot-listing-dialog/hot-listing-dialog.component';
+import {MatSelectModule} from '@angular/material/select';
+import { NotesDialogComponent } from './submodules/op-registration/notes-dialog/notes-dialog.component';
+import { HwcDialogComponent } from './submodules/op-registration/hwc-dialog/hwc-dialog.component';
+import { SeafarersDialogComponent } from './submodules/op-registration/seafarers-dialog/seafarers-dialog.component';
+import { ForeignerDialogComponent } from './submodules/op-registration/foreigner-dialog/foreigner-dialog.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +41,14 @@ import {MatCardModule} from '@angular/material/card';
        OpRegApprovalComponent,
         MergeDialogComponent,
           AppointmentSearchComponent,
-          AppointmentSearchDialogComponent
+          AppointmentSearchDialogComponent,
+          PrintLabelDialogComponent,
+          VipDialogComponent,
+          HotListingDialogComponent,
+          NotesDialogComponent,
+          HwcDialogComponent,
+          SeafarersDialogComponent,
+          ForeignerDialogComponent
   ],
   imports: [
     RegistrationRoutingModule,
@@ -52,7 +67,8 @@ import {MatCardModule} from '@angular/material/card';
     MatCheckboxModule,   
     DynamicFormsModule,
     ReactiveFormsModule,
-    MatIconModule 
+    MatIconModule,
+    MatSelectModule
   ],
   exports: [],
   providers: [],
