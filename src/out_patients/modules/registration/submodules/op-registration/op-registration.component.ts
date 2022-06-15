@@ -24,6 +24,7 @@ import { PatientDetails } from "../../../../core/models/patientDetailsModel.Mode
 import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
 import { DatePipe } from "@angular/common";
  import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
+import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
 
 export interface DialogData {
   expieryDate: Date;
@@ -46,7 +47,7 @@ export class OpRegistrationComponent implements OnInit {
   public idTypeList: IdentityModel[] = [];
   public genderList: GenderModel[] = [];
   public nationalityList: NationalityModel[] = [];
-  public patientDetails: PatientDetails | undefined;
+  public patientDetails!: PatientDetails ;
   countryList: MasterCountryModel[] = [];
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
@@ -358,6 +359,34 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
+    this.questions[2].elementRef.addEventListener(
+      "change",
+this.onPhoneModify.bind(this)
+    )
+    this.questions[3].elementRef.addEventListener(
+      "blur",
+this.onTitleModify.bind(this)
+    )
+    this.questions[4].elementRef.addEventListener(
+      "change",
+this.onFistNameModify.bind(this)
+    )
+    this.questions[6].elementRef.addEventListener(
+      "change",
+this.onLastNameModify.bind(this)
+    )
+    this.questions[7].elementRef.addEventListener(
+      "change",
+this.onGenderModify.bind(this)
+    )
+    this.questions[12].elementRef.addEventListener(
+      "change",
+this.onTitleModify.bind(this)
+    )
+    this.questions[28].elementRef.addEventListener(
+      "blur",
+this.onNationalityModify.bind(this)
+    )
     // this.questions[26].elementRef.addEventListener(
     //   "blur",
     //   this.getCityListByState.bind(this)
@@ -569,14 +598,30 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
+
+        //RESOPONSE DATA BINDING WITH CONTROLS
         this.setValuesToOPRegForm(this.patientDetails);
+
+        //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+        this.registeredPatientDetails(this.patientDetails) ;
+      
       });
     // console.log(this.localityListByPin);
     // this.questions[24].options = this.cityList.map((l) => {
     //   return { title: l.cityName, value: l.id };
     // });
   }
-
+  onModifyDetail()
+  {
+    this.http
+    .post(ApiConstants.modifyPatientDetail, this.getModifiedPatientDetailObj())
+    .subscribe((resultData: PatientDetails) => {
+      this.setValuesToOPRegForm(resultData);
+      console.log(resultData);
+      // this.questions[24].options = this.cityList.map((l) => {
+      //   return { title: l.cityName, value: l.id };
+    });
+  }
   postForm() {
     console.log(this.getPatientSubmitRequestBody());
     this.http
@@ -614,6 +659,88 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.ageTypeName
     );
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
+    this.OPRegForm.controls["country"].setValue(
+      this.patientDetails?.countryName
+    );
+    this.OPRegForm.controls["nationality"].setValue(
+      this.patientDetails?.nationality
+    );
+    this.OPRegForm.controls["foreigner"].setValue(
+      this.patientDetails?.foreigner
+    );
+    this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
+    this.populateUpdatePatientDetail(this.patientDetails);
+    //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
+  }
+
+  onPhoneModify()
+  {
+console.log("phone changed");
+this.modfiedPatiendDetails.pphone=this.OPRegForm.value.mobileNumber;
+  }
+  onTitleModify()
+  {
+console.log("title changed");
+this.modfiedPatiendDetails.title=this.OPRegForm.value.title.title;
+  }
+  
+  onFistNameModify()
+  {
+console.log("firstname changed");
+this.modfiedPatiendDetails.firstname=this.OPRegForm.value.firstName;
+  }
+  onLastNameModify()
+  {
+console.log("lastname changed");
+this.modfiedPatiendDetails.lastName=this.OPRegForm.value.lastName;
+  }
+  onGenderModify()
+  {
+console.log("gender changed");
+this.modfiedPatiendDetails.sex=this.OPRegForm.value.gender.title;
+  }
+  onEmailModify()
+  {
+console.log("Age changed");
+this.modfiedPatiendDetails.pemail=this.OPRegForm.value.email;
+  }
+  onNationalityModify()
+  {
+console.log("country changed");
+this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
+  }
+  
+
+  //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
+  populateUpdatePatientDetail(patientDetails: PatientDetails)
+  {
+    
     if (this.patientDetails?.spouseName != "") {
       this.OPRegForm.controls["fatherSpouse"].setValue("Spouse");
       this.OPRegForm.controls["fatherSpouseName"].setValue(
@@ -648,16 +775,6 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.districtName
     );
     this.OPRegForm.controls["state"].setValue(this.patientDetails?.stateName);
-    this.OPRegForm.controls["country"].setValue(
-      this.patientDetails?.countryName
-    );
-    this.OPRegForm.controls["nationality"].setValue(
-      this.patientDetails?.nationality
-    );
-    this.OPRegForm.controls["foreigner"].setValue(
-      this.patientDetails?.foreigner
-    );
-    this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
     this.OPRegForm.controls["vip"].setValue(this.patientDetails?.vip);
     this.OPRegForm.controls["note"].setValue(this.patientDetails?.note);
     this.OPRegForm.controls["hwc"].setValue(this.patientDetails?.hwc);
@@ -680,33 +797,6 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["sourceOfInput"].setValue(
       this.patientDetails?.sourceofinfo
     );
-    //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
   }
 
   setPaymentMode(ppagerNumber: string | undefined) {
@@ -840,6 +930,9 @@ export class OpRegistrationComponent implements OnInit {
       "hotlistreason"
     ));
   }
+
+
+ 
   getFather(): string {
     let response = "";
     if (this.OPRegForm.value.fatherSpouse.title == "Father") {
@@ -853,6 +946,27 @@ export class OpRegistrationComponent implements OnInit {
       return this.OPRegForm.value.fatherSpouseName;
     }
     return response;
+  }
+
+  modfiedPatiendDetails!: ModifiedPatientDetailModel;
+  getModifiedPatientDetailObj():ModifiedPatientDetailModel
+  {
+   return this.modfiedPatiendDetails=new ModifiedPatientDetailModel(this.OPRegForm.value.maxid.split('.')[1], this.OPRegForm.value.maxid.split('.')[0],
+   this.OPRegForm.value.title, this.OPRegForm.value.firstName, this.OPRegForm.value.middleName, this.OPRegForm.value.lastName, this.OPRegForm.value.gender.title, this.OPRegForm.value.mobileNumber, "", this.OPRegForm.value.emailId,
+   this.OPRegForm.value.nationality.value, this.OPRegForm.value.foreigner||false, this.patientDetails.passportNo, this.datepipe.transform(this.patientDetails.issueDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00",
+   this.datepipe.transform(this.patientDetails.expiryDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00" , this.patientDetails.passportIssuedAt, Number(this.cookie.get("UserId")), Number(this.cookie.get("HSPLocationId")), false,this.OPRegForm.value.mobileNumber,false,"","")
+ 
+  }
+
+  // ON MOFIFY BUTTON PRESS CALL
+  registeredPatientDetails(patientDetails:ModifiedPatientDetailModel)
+  {
+    let expdate=patientDetails.expiryDate!=null?this.datepipe.transform(patientDetails.expiryDate, 'yyyy-MM-ddThh:mm:ss'):"1900-01-01T00:00:00";
+    this.modfiedPatiendDetails=new ModifiedPatientDetailModel(patientDetails.registrationno, patientDetails.iacode,
+      patientDetails.title, patientDetails.firstname, patientDetails.middleName, patientDetails.lastName, patientDetails.sex, patientDetails.pphone, "", patientDetails.pemail,
+      patientDetails.nationality, patientDetails.foreigner, patientDetails.passportNo, this.datepipe.transform(patientDetails.issueDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00",
+     expdate||"1900-01-01T00:00:00" , patientDetails.passportIssuedAt, Number(this.cookie.get("UserId")), Number(this.cookie.get("HSPLocationId")), false,patientDetails.pphone,false,"","")
+   
   }
 }
 
