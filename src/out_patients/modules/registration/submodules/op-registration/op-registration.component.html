@@ -51,6 +51,7 @@
                   [form]="OPRegForm"
                   [questions]="questions[3]"
                   [index]="3"
+                  (change)="onPhoneModify()"
                 ></maxhealth-question>
               </div>
               <div class="font-xs w-2/3">
@@ -332,7 +333,6 @@
                     [questions]="questions[29]"
                     [index]="29"
                     (click)="openForeigner()"
-                    
                   ></maxhealth-question>
                 </div>
               </div>
@@ -492,7 +492,7 @@
                     mat-raised-button
                     color="primary"
                     class="w-1/45"
-                    type="submit"
+                    (click)="onModifyDetail()"
                   >
                     Modify
                   </button>
@@ -531,7 +531,6 @@
             class="w-3/4"
             type="submit"
             class="mt-2"
-            
           >
             Appointment Search
           </button>

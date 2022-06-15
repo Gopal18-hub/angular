@@ -7,6 +7,11 @@ import { approveRejectModel } from '../../../../../out_patients/core/models/appr
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { approverejectdeleteModel } from '../../../../../out_patients/core/models/approverejectdeleteModel';
 import { HotListingService } from "../../../../../out_patients/core/services/hot-listing.service";
+import { Router } from '@angular/router';
+import { SearchService } from '../../../../../shared/services/search.service';
+import { CookieService } from '../../../../../shared/services/cookie.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'out-patients-op-reg-approval',
@@ -23,28 +28,26 @@ export class OpRegApprovalComponent implements OnInit {
   opApprovalacceptList: opRegApprovalModel[] = [];
   opApprovalrejectList: opRegApprovalModel[] = [];
 
-  opApprovalHotList: opRegHotlistModel[] = [];
-  opApprovalHotlistacceptList: opRegHotlistModel[] = [];
-  opApprovalHotlistrejectList: opRegHotlistModel[] = [];
   approvePostobject:any;
   rejectPostobject:any;
-  fromdate:string="2022-01-01";
-  todate:string="2022-06-30";
   hsplocationId:number=9;
   enableapprovebtn:boolean=false;
-  enablehotlistbtn:boolean=false;
-
+ 
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
   showapprovalreject:boolean = false;
-  isbuttonenable:boolean=false;
-  opapproval:boolean = true;
-  ophotlistingapproval:boolean = false;
+  from :any;
+  to :any;
+
+  opapprovalpageForm = new FormGroup({
+    from: new FormControl(''),
+    to: new FormControl('')
+  });
+  
   @ViewChild('approvaltable') approvaltable:any;
-  @ViewChild('hotlistingtable') hotlistingtable:any;
+ 
 
   ApprovalidList:any=[];
-  HotListidList:any=[];
 
   approvalconfig: any  = {   
     dateformat: "dd/MM/yyyy",
@@ -158,121 +161,38 @@ export class OpRegApprovalComponent implements OnInit {
     }
   }
 
-  hotlistingconfig: any  = {
-    actionItems: true,
-    dateformat: "dd/MM/yyyy",
-    selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
-    columnsInfo: {
-      maxid : {
-        title: 'Max ID',
-        type: 'string'
-      },
-      ssn : {
-        title: 'SSN',
-        type: 'number'
-      },
-      patientName : {
-        title: 'Name',
-        type: 'string'
-      },
-      age : {
-        title: 'Age',
-        type: 'number'
-      },
-      gender : {
-        title: 'Gender',
-        type: 'string'
-      },
-      hotListing_Header : {
-        title: 'Hotlisting Reason',
-        type: 'string'
-      },
-      hotListing_Comment : {
-        title:'Remarks',
-        type: 'string'
-      },
-      categoryIcons : {
-        title: 'Category',
-        type: "image",
-        width: 34,
-      }
-    }
-  }
-
-  hotlistingapproveorrejectconfig: any  = {
-    actionItems: true,
-    dateformat: "dd/MM/yyyy",
-    selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
-    columnsInfo: {
-      maxid : {
-        title: 'Max ID',
-        type: 'string'
-      },
-      ssn : {
-        title: 'SSN',
-        type: 'number'
-      },
-      patientName : {
-        title: 'Name',
-        type: 'string'
-      },
-      age : {
-        title: 'Age',
-        type: 'number'
-      },
-      gender : {
-        title: 'Gender',
-        type: 'string'
-      },
-      hotListing_Header : {
-        title: 'Hotlisting Reason',
-        type: 'string'
-      },
-      hotListing_Comment : {
-        title:'Remarks',
-        type: 'string'
-      },
-      categoryIcons : {
-        title: 'Category',
-        type: "image",
-        width: 34,
-      }
-    }
-  }
-  constructor(private http: HttpService,private hotList: HotListingService) { }
+  constructor(private http: HttpService,private router: Router,private searchService: SearchService
+    ,public datepipe: DatePipe, private cookie: CookieService) { }
   
   ngOnInit(): void {
-    this.getopapprovalpending().subscribe((resultData) => {
-      this.opApprovalList  = resultData as opRegApprovalModel[];
-      this.showapprovalpending = true;
-      this.showapprovalaccepting = false;
-      this.showapprovalreject = false;
-      this.enableapprovebtn = true;
-      this.enablehotlistbtn = true;
-      console.log(this.opApprovalList);
-    },error=>{
-      this.opApprovalList =[];
-      console.log(error);
-    }); 
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      this.searchApproval(formdata.data);
+    });
+   
   }
+
+  searchApproval(formdata:any) {
+    if(formdata['from'] == '' && formdata['to'] == '' )
+      return;
+      this.from = formdata['from'];
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');      
+      this.to = formdata['to'];
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
+      this.showmain("OP Registration Approval");
+  
+  }
+
   showmain(link: any)
   {
     console.log(link);
-    if(link == "Op Registration Approval")
+    if(link == "OP Registration Approval")
     {
-      this.opapproval = true;
-      this.ophotlistingapproval = false;
-      this.showapprovalpending = true;
       this.showgrid('View Pending Request');
     }
     else if(link == "Hot Listing Approval")
-    {
-      this.opapproval = false;
-      this.ophotlistingapproval = true;
-      this.showapprovalpending = true;
-      this.showgrid('View Pending Request');
+    { 
+      this.router.navigateByUrl('/registration/hot-listing-approval');   
+      
     }
     else if(link == "Op Refund Approval")
     {
@@ -285,125 +205,69 @@ export class OpRegApprovalComponent implements OnInit {
     this.opApprovalacceptList = [];
     this.opApprovalrejectList = [];
     console.log(link);
+
     if(link == "View Pending Request")
     {
-      if(this.opapproval == true)
-      {
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
-        this.ngOnInit();
-        this.enableapprovebtn = true;
-      }
-      else if(this.ophotlistingapproval = true)
-      {
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
-        this.getophotlistingpending().subscribe((resultData) => {
-          this.opApprovalHotList  = resultData as opRegHotlistModel[];
-          this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);
-          this.showapprovalpending = true;
-          this.opApprovalHotlistacceptList = [];
-         
-          this.enablehotlistbtn = true;
-          console.log(this.opApprovalHotList);
-        },error=>{          
-          this.enablehotlistbtn = false;
-          this.opApprovalHotList=[];
+      this.activeLink2 = link;     
+        this.getopapprovalpending().subscribe((resultData) => {
+          this.opApprovalList  = resultData as opRegApprovalModel[];
+          this.showapprovalpending = true;        
+          this.showapprovalaccepting = false;
+          this.showapprovalreject = false;
+          this.enableapprovebtn = true;
+          console.log(this.opApprovalList);
+        },error=>{
+          this.opApprovalList =[];
+          this.enableapprovebtn = false;  
           console.log(error);
-        }); 
-      }
-      
+        });           
     }
     else if(link == "Approved Requests")
-    {
-      if(this.opapproval == true)
-      {
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
+    {    
+      this.activeLink2 = link;
         this.enableapprovebtn = false;
+        this.showapprovalreject = false;
+        this.showapprovalpending = false;
         this.getopapprovalaccepted().subscribe((resultData) => {
         this.opApprovalacceptList  = resultData as opRegApprovalModel[];
         this.showapprovalaccepting = true;
-        console.log(this.opApprovalacceptList);
-       
-      })
-      }
-      else if(this.ophotlistingapproval = true)
-      {
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
-        this.enablehotlistbtn = false;
-        this.getophotlistingaccept().subscribe((resultData) => {
-          this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
-          this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
-          this.showapprovalaccepting = true;
-         
-          console.log(this.opApprovalHotlistacceptList);
-        })
-      }
-      
+        console.log(this.opApprovalacceptList);       
+      },error=>{   
+        this.opApprovalacceptList=[];       
+        console.log(error);
+      }); 
     }
     else if(link == "Reject Requests")
-    {
-      if(this.opapproval == true)
-      {
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
+    {   
+      this.activeLink2 = link;   
         this.enableapprovebtn = false;
         this.getopapprovalrejected().subscribe((resultData) => {
         this.opApprovalrejectList = resultData as opRegApprovalModel[];
         this.showapprovalreject = true;
-        console.log(this.opApprovalrejectList);
-      
-       
-      })
-      }
-      else if(this.ophotlistingapproval = true)
-      {
         this.showapprovalpending = false;
         this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
-        this.enablehotlistbtn = false;
-        this.getophotlistingreject().subscribe((resultData) => {
-          this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
-          this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
-          this.showapprovalreject = true;
-          console.log(this.opApprovalHotlistrejectList);
-         
-        })
-      }
+        console.log(this.opApprovalrejectList);
       
+      },error=>{     
+        this.opApprovalrejectList=[];     
+        console.log(error);
+      });       
+           
     }
   }
   getopapprovalpending()
   {
-    return this.http.get(ApiConstants.opapprovalpending(this.fromdate,this.todate,this.hsplocationId));   
+    return this.http.get(ApiConstants.opapprovalpending(this.from,this.to,this.hsplocationId));   
   }
   getopapprovalaccepted()
   {
-    return this.http.get(ApiConstants.opapprovalaccepted(this.fromdate,this.todate,this.hsplocationId));   
+    return this.http.get(ApiConstants.opapprovalaccepted(this.from,this.to,this.hsplocationId));   
   }
   getopapprovalrejected()
   {
-    return this.http.get(ApiConstants.opapprovalrejected(this.fromdate,this.todate,this.hsplocationId));
+    return this.http.get(ApiConstants.opapprovalrejected(this.from,this.to,this.hsplocationId));
   }
-  getophotlistingpending()
-  {
-    return this.http.get(ApiConstants.ophotlistingpending(this.fromdate,this.todate,this.hsplocationId));
-  }
-  getophotlistingaccept()
-  {
-    return this.http.get(ApiConstants.ophotlistingaccept(this.fromdate,this.todate,this.hsplocationId));
-  }
-  getophotlistingreject()
-  {
-    return this.http.get(ApiConstants.ophotlistingreject(this.fromdate,this.todate,this.hsplocationId));
-  }
+  
   approvalApproveItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
     this.ApprovalidList.push({id:s.id})});
@@ -448,73 +312,6 @@ export class OpRegApprovalComponent implements OnInit {
   }
   approvalpostapi(approvalJSONObject:approveRejectModel[]){   
     return this.http.post(ApiConstants.approvalpostapproveApi,approvalJSONObject);
-  }
-
-  hotlistApproveItem(){
-    this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
-        console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
-        this.HotListidList = [];
-      },error=>{
-        console.log(error);
-        this.HotListidList = [];
-      }); 
-  }
-
-  hotlistRejectItem(){
-    this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
-        console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
-        this.HotListidList = [];
-      },error=>{
-        console.log(error);
-        this.HotListidList = [];
-      }); 
-  }
-
-  hotlistDeleteItem(){
-    this.hotlistingtable.selection.selected.map((s:any)=>{
-      this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
-        console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
-        this.HotListidList = [];
-      },error=>{
-        console.log(error);
-        this.HotListidList = [];
-      }); 
-  }
-
-  hotlistingpostapi(hotlistingJSONObject:approverejectdeleteModel[],userid:number,flag:number){   
-    return this.http.post(ApiConstants.hotlistingpostapproveApi(userid,flag),hotlistingJSONObject);
   }
 }
 
