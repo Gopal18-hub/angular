@@ -11,7 +11,9 @@ import { environment } from '@environments/environment';
 })
 export class HeaderComponent implements OnInit {
   modules: any = [];
-
+  location:string = '';
+  station:string='';
+  usrname:string='';
   activeModule: any;
 
   constructor(
@@ -27,6 +29,11 @@ export class HeaderComponent implements OnInit {
         this.activeModule = element;
       }
     });
+
+    this.location = this.cookieService.get('Location');
+    this.station = this.cookieService.get('Station');
+    this.usrname= this.cookieService.get('UserName');
+
   }
 
   logout() {
