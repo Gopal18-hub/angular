@@ -9,6 +9,7 @@ import { RegistrationUnmergingComponent } from '../registration-unmerging/regist
 import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { FormControl, FormGroup } from '@angular/forms';
+import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 
 
 
@@ -38,11 +39,13 @@ export class DupRegMergingComponent implements OnInit {
   });
    @ViewChild("table") tableRows!: MaxTableComponent
 
-  constructor(private http: HttpService, public matDialog: MatDialog) { }
+  constructor(private http: HttpService, public matDialog: MatDialog,private patientServie: PatientService) { }
 
   config: any = {
+    actionItems:true,
+    dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'category'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
     columnsInfo: {
       maxid: {
         title: 'Max ID',
@@ -80,8 +83,10 @@ export class DupRegMergingComponent implements OnInit {
         title: 'Phone No.',
         type: 'number'
       },
-      category: {
-        title: 'Category'
+      categoryIcons: {
+        title: 'Category',
+        type:'image',
+        width:34
       }
     }
   }
@@ -97,6 +102,7 @@ export class DupRegMergingComponent implements OnInit {
     this.patientList = [];
     this.getAllpatientsBySearch().subscribe((resultData) => {     
       this.results = resultData;
+      this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;     
     })  
 
