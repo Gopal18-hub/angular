@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ForeignerDialogComponent } from './foreigner-dialog.component';
+import { ForeignerDialogComponent } from '../op-registration.component';
 
 describe('ForeignerDialogComponent', () => {
   let component: ForeignerDialogComponent;

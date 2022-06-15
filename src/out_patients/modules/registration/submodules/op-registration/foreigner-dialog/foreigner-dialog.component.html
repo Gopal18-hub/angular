@@ -2,27 +2,27 @@
 <div class="flex">
     <div>
         <mat-label class="label">Passport No</mat-label>
-        <input matInput placeholder="Passport No" class="input">
+        <input matInput [(ngModel)]="data.passportNum" placeholder="Passport No" class="input">
     </div>
     <div class="ml-10">
         <mat-label class="label">Issue Date</mat-label>
-        <input matInput placeholder="Issue Date" type="date" class="input">
+        <input matInput [(ngModel)]="data.issuedate" placeholder="Issue Date" type="date" class="input">
     </div>
 </div>
 <div class="flex mt-4">
     <div>
         <mat-label class="label">Expiry Date</mat-label>
-        <input matInput placeholder="Expiry Date" type="date" class="input">
+        <input matInput [(ngModel)]="data.expieryDate" placeholder="Expiry Date" type="date" class="input">
     </div>
     <div class="ml-10">
         <mat-label class="label">Issued At</mat-label>
-        <input matInput placeholder="Issued At" class="input">
+        <input matInput [(ngModel)]="data.issueAt" placeholder="Issued At" class="input">
     </div>
 </div>
 <div class="flex mt-4">
     <div>
         <mat-label class="label">HCF</mat-label><br>
-        <mat-select class="input">
+        <mat-select [(ngModel)]="data.hcf"  class="input">
             <mat-option>-Select-</mat-option>
         </mat-select>
     </div>
