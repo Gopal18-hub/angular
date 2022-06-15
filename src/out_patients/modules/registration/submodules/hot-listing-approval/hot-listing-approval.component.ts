@@ -8,6 +8,10 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 import { approverejectdeleteModel } from '../../../../../out_patients/core/models/approverejectdeleteModel';
 import { HotListingService } from "../../../../../out_patients/core/services/hot-listing.service";
 import { Router } from '@angular/router';
+import { SearchService } from '../../../../../shared/services/search.service';
+import { CookieService } from '../../../../../shared/services/cookie.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'out-patients-hot-listing-approval',
@@ -31,10 +35,14 @@ export class HotListingApprovalComponent implements OnInit {
   showapprovalaccepting:boolean = false;
   showapprovalreject:boolean = false;
 
-  fromdate:string="2022-01-01";
-  todate:string="2022-06-30";
-  hsplocationId:number=9;
   enablehotlistbtn:boolean=false;
+  from :any;
+  to :any;
+
+  hotlistingapprovalpageForm = new FormGroup({
+    from: new FormControl(''),
+    to: new FormControl('')
+  });
 
   hotlistingconfig: any  = {
     actionItems: true,
@@ -120,11 +128,26 @@ export class HotListingApprovalComponent implements OnInit {
     }
   }
 
-  constructor(private http: HttpService,private hotList: HotListingService,private router: Router) { }
+  constructor(private http: HttpService,private hotList: HotListingService,private router: Router,
+    private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe) { }
 
   ngOnInit(): void {
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      this.searchhotlisting(formdata.data);
+    });
     this.showmain("Hot Listing Approval");
   }
+  searchhotlisting(formdata:any) {
+    if(formdata['from'] == '' && formdata['to'] == '' )
+      return;
+      this.from = formdata['from'];
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');      
+      this.to = formdata['to'];
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
+      this.showmain("Hot Listing Approval");
+    
+  }
+  hsplocationId:any = this.cookie.get('LocationIACode');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
@@ -270,15 +293,15 @@ export class HotListingApprovalComponent implements OnInit {
 
   getophotlistingpending()
   {
-    return this.http.get(ApiConstants.ophotlistingpending(this.fromdate,this.todate,this.hsplocationId));
+    return this.http.get(ApiConstants.ophotlistingpending(this.from,this.to,this.hsplocationId));
   }
   getophotlistingaccept()
   {
-    return this.http.get(ApiConstants.ophotlistingaccept(this.fromdate,this.todate,this.hsplocationId));
+    return this.http.get(ApiConstants.ophotlistingaccept(this.from,this.to,this.hsplocationId));
   }
   getophotlistingreject()
   {
-    return this.http.get(ApiConstants.ophotlistingreject(this.fromdate,this.todate,this.hsplocationId));
+    return this.http.get(ApiConstants.ophotlistingreject(this.from,this.to,this.hsplocationId));
   }
 
 }
