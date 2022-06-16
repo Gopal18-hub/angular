@@ -383,7 +383,7 @@
                   </div>
                 </div>
 
-                <div class="w-2/5">
+                <div class="w-full">
                   <maxhealth-question
                     [question]="questions[34]"
                     [form]="OPRegForm"
@@ -391,7 +391,7 @@
                     [index]="34"
                   ></maxhealth-question>
                 </div>
-                <div class="w-2/5">
+                <div class="w-full">
                   <maxhealth-question
                     [question]="questions[35]"
                     [form]="OPRegForm"
@@ -399,7 +399,7 @@
                     [index]="35"
                   ></maxhealth-question>
                 </div>
-                <div class="w-2/5">
+                <div class="w-full">
                   <maxhealth-question
                     [question]="questions[36]"
                     [form]="OPRegForm"
@@ -408,7 +408,7 @@
                   ></maxhealth-question>
                 </div>
 
-                <div class="w-2/5">
+                <div class="w-full">
                   <maxhealth-question
                     [question]="questions[37]"
                     [form]="OPRegForm"
@@ -417,7 +417,7 @@
                   ></maxhealth-question>
                 </div>
 
-                <div class="w-2/5">
+                <div class="w-full">
                   <maxhealth-question
                     [question]="questions[38]"
                     [form]="OPRegForm"
@@ -503,6 +503,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    (click)="openReportModal('PrintLabel')"
                   >
                     Print Label
                   </button>
@@ -511,6 +512,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    (click)="openReportModal('PrintOD')"
                   >
                     Print OD
                   </button>
@@ -577,6 +579,7 @@
             class="w-3/4"
             type="submit"
             class="mt-2"
+            (click)="openReportModal('PrintForm')"
           >
             Print Form
           </button>
