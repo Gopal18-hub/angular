@@ -100,11 +100,13 @@ export class FindPatientComponent implements OnInit {
       this.isAPIProcess = true;
       console.log(this.patientList);
     });
+
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       console.log(formdata);
       this.searchPatient(formdata.data);
     });
-  }
+   
+  } 
 
   searchPatient(formdata: any) {
     if (
