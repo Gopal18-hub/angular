@@ -158,7 +158,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   unMergePatient(unmergeJSONObject:PatientmergeModel[]){
-    let userId = 1;//Number(this.cookie.get('UserId'));
+    let userId = Number(this.cookie.get('UserId'));
     return this.http.post(ApiConstants.unmergePatientAPi(userId),unmergeJSONObject);
   }
 

@@ -83,7 +83,11 @@ export class DynamicFormQuestionComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.question.type == "autocomplete") {
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
       this.filteredOptions = this.form.controls[
         this.question.key
       ].valueChanges.pipe(
@@ -102,7 +106,11 @@ export class DynamicFormQuestionComponent
     //   this.excuteCondition(this.question.conditions, value);
     // });
 
-    if (this.question.type == "autocomplete") {
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
       this.filteredOptions = this.form.controls[
         this.question.key
       ].valueChanges.pipe(

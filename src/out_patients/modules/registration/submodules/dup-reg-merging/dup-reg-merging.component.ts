@@ -116,7 +116,7 @@ export class DupRegMergingComponent implements OnInit {
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
       },(error:any)=>{
-        this.messageDialogService.error(error.error);
+        //this.messageDialogService.error(error.error);
       });
      
     });
