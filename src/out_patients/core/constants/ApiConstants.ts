@@ -28,14 +28,13 @@ export namespace ApiConstants {
       environment.CommonApiUrl + "api/lookup/titlelookup/"+hspLocationid+"/0"
     );
   };
-  export const hotlistMasterDataLookUp= (hspLocationid: number) => {
-    return (  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0')
+  export const hotlistMasterDataLookUp=  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0';
      
-    };
+  
 
   //OPERATOR WORKING STATION LOCATION, RESPOSE TYPE stationModel NEED TO CANCATINATE $hspLocation IN ENDPOINT
   export const stationLookup = (hspLocationid: number) => {
-    environment.CommonApiUrl + "api/lookup/stationlookup/0/${hspLocationid}";
+    environment.CommonApiUrl + "api/lookup/stationlookup/0/"+"hspLocationid}";
   };
 
   //PATIENT LOCALITY ON THE INPUT OF PINCODE, RESPONSE TYPE localityByPincode, NEED TO CONCATINATE PINCODE IN ENDPOINT
@@ -55,7 +54,7 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS STATE BY COUNTRY ID, RESPONSE type stateModel[]
   export const stateByCountryId = (countryId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getstate/${countryId}";
+    return environment.CommonApiUrl + "api/lookup/getstate/"+"countryId}";
   };
 
   //PATIENT ADDRESS STATE BY COUNTRY ID, RESPONSE type stateMasterModel
@@ -73,7 +72,7 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS DISTRICT BY STATE ID, RESPONSE type commonDisttModel[]
   export const districtBystateID = (stateId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getdistrict/${stateId}";
+    return environment.CommonApiUrl + "api/lookup/getdistrict/"+"stateId}";
   };
 
   //PATIENT ADDRESS DISTRICT BY STATE ID, RESPONSE type commonDisttModel[]
@@ -84,14 +83,14 @@ export namespace ApiConstants {
   export const addressByCityID = (cityID: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getlocalitydistrictstatebycity/${cityID}"
+      "api/lookup/getlocalitydistrictstatebycity/"+"cityID}"
     );
   };
 
   //PATIENT CITY DETAILS BY COUNTYID, RESPONSE type commonCityTypeModel[]
   export const CityDetail = (countryId: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/getcitybycountry/${countryId}"
+      environment.CommonApiUrl + "api/lookup/getcitybycountry/"+"countryId}"
     );
   };
 
@@ -99,7 +98,7 @@ export namespace ApiConstants {
   export const onlineserviceList = (hspLocationID: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getlistofallonlineservice/${hspLocationID}"
+      "api/lookup/getlistofallonlineservice/"+"hspLocationID}"
     );
   };
 
@@ -111,7 +110,7 @@ export namespace ApiConstants {
   export const addressByLocalityID = (locationid: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getcitydistrictstatecountryonlocality/${locationid}"
+      "api/lookup/getcitydistrictstatecountryonlocality/"+locationid
     );
   };
 
@@ -140,22 +139,22 @@ export namespace ApiConstants {
     firstName: string,
     lastname: string,
     middleName: string,
-    lastName: string,
-    hotlistingcomment: string,
+       hotlistingcomment: string,
     type: string,
     userid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/patienthotlisting/${maxId}/${hotlistingHeader}/${locationid}?firstName=${firstName}&middleName=${middleName}&lastName=${lastName}&hotlistingComment==${hotlistingcomment}&type==${type}&userId==${userid}"
+      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment=="+hotlistingcomment+"&type=="+type+"&userId=="+userid
     );
   };
+
 
   //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientdmsrefresh/${IaCode}/${RegistrationNo}"
+      "api/patient/getpatientdmsrefresh/"+"IaCode}/"+"RegistrationNo}"
     );
   };
 

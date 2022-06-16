@@ -40,8 +40,7 @@ export class MergeDialogComponent implements OnInit {
    this.primaryid = event.id;  
   }
   patientMerging() {   
-    //let userId = Number(this.cookie.get('UserId'));
-    let userId =105043
+    let userId = Number(this.cookie.get('UserId'));   
     this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
     {
       this.dialogRef.close();    
