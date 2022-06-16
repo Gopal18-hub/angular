@@ -921,7 +921,7 @@ export class OpRegistrationComponent implements OnInit {
       "this.seafarerObj.FDPGroup",
       false,
       " this.hwcObj.HWCRemarks",
-      this.OPRegForm.value.idenityType.value||"",
+      this.OPRegForm.value.idenityType.value||0,
       this.OPRegForm.value.idenityValue||""
     );
   }
