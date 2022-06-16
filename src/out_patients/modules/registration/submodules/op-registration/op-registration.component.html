@@ -12,8 +12,7 @@
     >
       <div class="w-9/10 flex h-full">
         <form
-          (ngSubmit)="registationFormSubmit()"
-          [formGroup]="OPRegForm"
+                  [formGroup]="OPRegForm"
           class="mt-2 mb-2"
         >
           <div class="flex flex-wrap">
@@ -352,7 +351,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[30]"
                       [index]="30"
-                      (click)="this.openHotListDialog()"
+                     
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -486,6 +485,7 @@
                     class="w-1/45"
                     type="submit"
                     [disabled]="!OPRegForm.valid"
+                    (click)="registationFormSubmit()"
                   >
                     Save
                   </button>
@@ -493,6 +493,7 @@
                     mat-raised-button
                     color="primary"
                     class="w-1/45"
+                    type="button"
                     (click)="onModifyDetail()"
                   >
                     Modify
