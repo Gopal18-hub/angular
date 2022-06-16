@@ -132,7 +132,14 @@ export class RegistrationUnmergingComponent implements OnInit {
       setTimeout(()=>{        
         this.table.selection.changed.subscribe((res:any)=>{ 
           if(this.table.selection.selected.length>= 1)
-              this.unmergebuttonDisabled = false;             
+          {
+            this.unmergebuttonDisabled = false;  
+          }
+          else
+          {
+            this.unmergebuttonDisabled = true;  
+          }
+                       
         });
       }) ;
      

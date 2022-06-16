@@ -23,6 +23,7 @@ export class DupRegMergingComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   results: any;
   isAPIProcess: boolean = false;
+  mergebuttonDisabled:boolean=true;
   name = '';
   dob = '';
   email = '';
@@ -38,7 +39,7 @@ export class DupRegMergingComponent implements OnInit {
     healthId: new FormControl(''),
     aadhaarId: new FormControl('')
   });
-  @ViewChild("table") tableRows!: MaxTableComponent
+  @ViewChild("table") tableRows: any
 
   constructor(private http: HttpService,
     public matDialog: MatDialog,
@@ -139,6 +140,18 @@ export class DupRegMergingComponent implements OnInit {
       this.results = resultData;
       this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;
+      setTimeout(()=>{        
+        this.tableRows.selection.changed.subscribe((res:any)=>{ 
+          if(this.tableRows.selection.selected.length> 1)
+          {
+            this.mergebuttonDisabled = false;   
+          }
+          else{
+            this.mergebuttonDisabled = true;   
+          }
+                       
+        });
+      }) ;
     })
 
   }
