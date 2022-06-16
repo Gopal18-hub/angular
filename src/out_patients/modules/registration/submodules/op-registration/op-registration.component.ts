@@ -30,6 +30,9 @@ import { DatePipe } from "@angular/common";
 import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
 import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
 import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
+import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
+import { single } from "rxjs";
+import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
 
 export interface DialogData {
   expieryDate: Date;
@@ -312,6 +315,9 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
+  hotlistMasterList: hotlistingreasonModel[]=[];
+  hotlistquestion: any;
+  hotlistRemark: any;
 
   constructor(
     private formService: QuestionControlService,
@@ -331,11 +337,17 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+    // this.Hotlistform=formResult.form;
+    // this.hotlistquestion=formResult.questions;
 
     //LIST FOR FATHER/SPOUSE
     this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
       return { title: l.title, value: l.value };
     });
+
+
+
+   
     this.getTitleList();
     this.getSourceOfInfoList();
     this.getAgeTypeList();
@@ -349,6 +361,19 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
   }
+
+
+  checkForMaxID()
+  {
+   if(this.MaxIDExist){
+   this.OPRegForm.controls["hotlist"].enable();
+   }
+   else
+   {
+    this.OPRegForm.controls["hotlist"].disable();
+   }
+  }
+
   openForeigner() {
     this.matDialog.open(ForeignerDialogComponent, {
       width: "30vw",
@@ -363,6 +388,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+
+  
+
+    this.checkForMaxID();
     console.log(this.passportNum);
 
     this.questions[21].elementRef.addEventListener(
@@ -566,16 +595,95 @@ export class OpRegistrationComponent implements OnInit {
       height: "30vh",
     });
   }
-  openHotListDialog() {
-    const dialogref = this.matDialog.open(HotListingDialogComponent, {
-      width: "30vw",
-      height: "52vh",
-    });
-    dialogref.afterClosed().subscribe((result) => {
-      console.log("The dialog was closed");
-    });
+  
+  gethotlistMasterData() {
+    this.http
+      .get(ApiConstants.hotlistMasterDataLookUp)
+      .subscribe((resultData: hotlistingreasonModel[]) => {
+         this.hotlistMasterList=resultData;
+        // this.Hotlistform.hotlistTitle
+        this.hotlistquestion[0].options = this.hotlistMasterList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
   }
 
+  Hotlistform= {
+    title: "",
+    type: "object",
+    properties: {
+    hotlistTitle: {
+    type: "autocomplete",
+    title: "Hot List",
+    required: true,
+    list:this.hotlistMasterList,
+  },
+  reason: {
+    type: "date",
+    title: "Date of Birth",
+    required: true,
+  }
+    }
+  }
+  hotlistReason:string="";
+
+ openHotListDialog() {
+    // const dialogref = this.matDialog.open(HotListingDialogComponent, {
+    //   width: "30vw",
+    //   height: "52vh",
+    // });
+ 
+    const dialogref= this.matDialog.open(FormDialogueComponent,
+    {
+      width: "30vw",
+      height: "52vh",
+      data:{title:"Hot Listing",form:{
+        hotlistTitle: {
+        type: "autocomplete",
+        title: "Hot Listing",
+        required: true,
+        list:this.hotlistMasterList,
+      },
+      reason: {
+        type: "string",
+        title: "Remark",
+        required: true,
+      }},layout:"single",buttonLabel:"Save"}
+    })
+    dialogref.afterClosed().subscribe((result) => {
+      this.hotlistReason=result.hotlistTitle;
+      this.hotlistRemark=result.reason;
+      this.postHotlistComment();
+      console.log("The dialog was closed");
+    });
+  
+}
+
+
+
+postHotlistComment()
+{
+  this.http
+  .get(
+    ApiConstants.hotlistedPatient(this.patientDetails.registrationno,
+      this.hotlistReason,
+      this.cookie.get("HSPLocationId"),
+      this.patientDetails.firstname,
+      this.patientDetails.lastName,
+      this.patientDetails.middleName,
+          this.hotlistRemark,
+      "",
+      Number(this.cookie.get("UserId")))
+   
+  )
+  .subscribe((resultData: any) => {
+   
+    console.log(resultData);
+    // this.questions[24].options = this.cityList.map((l) => {
+    //   return { title: l.cityName, value: l.id };
+  });
+
+}
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
@@ -604,7 +712,7 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
-  //CITY LIST FOR STATEID
+  MaxIDExist:boolean=false;
   getPatientDetailsByMaxId() {
     console.log(this.OPRegForm.value.maxid);
     let regNumber = this.OPRegForm.value.maxid.split(".")[1];
@@ -613,7 +721,8 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
-
+        this.MaxIDExist=true;
+        this.checkForMaxID();
         //RESOPONSE DATA BINDING WITH CONTROLS
         this.setValuesToOPRegForm(this.patientDetails);
 
@@ -926,6 +1035,7 @@ export class OpRegistrationComponent implements OnInit {
     );
   }
 
+  
   //WORKING ON THE BELOW FUNCTION
   patientSubmitDetails: patientRegistrationModel | undefined;
   // registationFormSubmit()

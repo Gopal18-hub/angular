@@ -485,6 +485,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    [disabled]="!OPRegForm.valid"
                   >
                     Save
                   </button>
@@ -568,6 +569,7 @@
             class="w-2/3"
             type="submit"
             class="mt-2"
+            (click)=OPRegForm.reset()
           >
             Clear
           </button>
