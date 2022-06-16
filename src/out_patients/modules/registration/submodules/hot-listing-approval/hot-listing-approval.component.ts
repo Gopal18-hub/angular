@@ -38,7 +38,8 @@ export class HotListingApprovalComponent implements OnInit {
   enablehotlistbtn:boolean=false;
   from :any;
   to :any;
-
+  today = new Date();
+  
   hotlistingapprovalpageForm = new FormGroup({
     from: new FormControl(''),
     to: new FormControl('')
@@ -60,7 +61,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       patientName : {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName",
       },
       age : {
         title: 'Age',
@@ -72,11 +74,13 @@ export class HotListingApprovalComponent implements OnInit {
       },
       hotListing_Header : {
         title: 'Hotlisting Reason',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "hotListing_Header",
       },
       hotListing_Comment : {
         title:'Remarks',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "hotListing_Comment",
       },
       categoryIcons : {
         title: 'Category',
@@ -102,7 +106,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       patientName : {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName"
       },
       age : {
         title: 'Age',
@@ -114,11 +119,13 @@ export class HotListingApprovalComponent implements OnInit {
       },
       hotListing_Header : {
         title: 'Hotlisting Reason',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "hotListing_Header",
       },
       hotListing_Comment : {
         title:'Remarks',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "hotListing_Comment",
       },
       categoryIcons : {
         title: 'Category',
@@ -138,16 +145,20 @@ export class HotListingApprovalComponent implements OnInit {
     this.showmain("Hot Listing Approval");
   }
   searchhotlisting(formdata:any) {
-    if(formdata['from'] == '' && formdata['to'] == '' )
-      return;
+    if(formdata['from'] == "" || formdata['to'] == "" ){
+      this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  
+      this.to = formdata['to'] != "" ? formdata['to'] : this.today;
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');  
+  }else{
       this.from = formdata['from'];
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');      
       this.to = formdata['to'];
-      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
-      this.showmain("Hot Listing Approval");
-    
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');       
   }
-  hsplocationId:any = this.cookie.get('LocationIACode');
+  this.showmain("Hot Listing Approval");
+  }
+  hsplocationId:any = 67;//this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
@@ -164,6 +175,19 @@ export class HotListingApprovalComponent implements OnInit {
   }
   showgrid(link: any) {
     console.log(link);
+    this.opApprovalHotList = [];
+    this.opApprovalHotlistacceptList = [];
+    this.opApprovalHotlistrejectList = [];
+
+    if((this.from == "" || this.from == undefined) || (this.to == "" || this.to == undefined)){
+      this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
+      this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
+     
+    }
+    
+
     if (link == "View Pending Request") {  
       this.activeLink2 = link;  
       this.getophotlistingpending().subscribe((resultData) => {
@@ -230,14 +254,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
         console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
+        this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
         console.log(error);
@@ -251,14 +268,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
         console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
+        this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
         console.log(error);
@@ -272,14 +282,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
         console.log(resultdata);
-        for(let id of this.HotListidList)
-        {        
-           const index: number = this.opApprovalHotList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalHotList = this.opApprovalHotList.splice(index,1);
-           }
-        }
+        this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
         console.log(error);

@@ -30,7 +30,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:number=9;
+  hsplocationId:number= 67 //this.cookie.get('HSPLocationId');;
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -38,6 +38,7 @@ export class OpRegApprovalComponent implements OnInit {
   showapprovalreject:boolean = false;
   from :any;
   to :any;
+  today = new Date();
 
   opapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -68,7 +69,8 @@ export class OpRegApprovalComponent implements OnInit {
       },
       firstName : {
         title: 'Patient Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "modifiedPtnName",
       },
       gender : {
         title: 'Gender',
@@ -80,7 +82,8 @@ export class OpRegApprovalComponent implements OnInit {
       },
       uEmail : {
         title: 'Email',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "uEmail",
       },
       unationality : {
         title: 'Nationality',
@@ -124,7 +127,8 @@ export class OpRegApprovalComponent implements OnInit {
       },
       firstName : {
         title: 'Patient Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "modifiedPtnName",
       },
       gender : {
         title: 'Gender',
@@ -136,7 +140,8 @@ export class OpRegApprovalComponent implements OnInit {
       },
       uEmail : {
         title: 'Email',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "uEmail",
       },
       unationality : {
         title: 'Nationality',
@@ -168,18 +173,24 @@ export class OpRegApprovalComponent implements OnInit {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchApproval(formdata.data);
     });
-   
+    this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata:any) {
-    if(formdata['from'] == '' && formdata['to'] == '' )
-      return;
+    if(formdata['from'] == "" || formdata['to'] == "" ){
+        this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
+        this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
+        this.to = formdata['to'] != "" ? formdata['to'] : this.today;
+        this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');  
+    }
+      else
+      {      
       this.from = formdata['from'];
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');      
       this.to = formdata['to'];
-      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
-      this.showmain("OP Registration Approval");
-  
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');         
+    }
+    this.showmain("OP Registration Approval");
   }
 
   showmain(link: any)
@@ -205,6 +216,14 @@ export class OpRegApprovalComponent implements OnInit {
     this.opApprovalacceptList = [];
     this.opApprovalrejectList = [];
     console.log(link);
+    if((this.from == "" || this.from == undefined) || (this.to == "" || this.to == undefined)){
+      this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
+      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
+      this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
+      
+    }
+    
 
     if(link == "View Pending Request")
     {
@@ -269,45 +288,33 @@ export class OpRegApprovalComponent implements OnInit {
   }
   
   approvalApproveItem(){
+   
     this.approvaltable.selection.selected.map((s:any)=>{
-    this.ApprovalidList.push({id:s.id})});
+    this.ApprovalidList.push(s.id)});
     let userId = 1;//Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
-      for(let id of this.ApprovalidList)
-      {        
-         const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
-         if(index !== -1)
-         {          
-          this.opApprovalList = this.opApprovalList.splice(index,1);
-         }
-      }
+      this.showgrid("View Pending Request");
       this.ApprovalidList = [];
     },error=>{
       console.log(error);
+      this.ApprovalidList = [];
     }); 
   }
 
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-      this.ApprovalidList.push({id:s.id})});
+      this.ApprovalidList.push(s.id)});
       let userId = 1;//Number(this.cookie.get('UserId'));
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
-        console.log(resultdata);
-        for(let id of this.ApprovalidList)
-        {        
-           const index: number = this.opApprovalList.findIndex(i => i.id == id.id);
-           if(index !== -1)
-           {
-            this.opApprovalList = this.opApprovalList.splice(index,1);
-           }
-        }
+        this.showgrid("View Pending Request");
         this.ApprovalidList = [];
       },error=>{
         console.log(error);
+        this.ApprovalidList = [];
       }); 
   }
   approvalpostapi(approvalJSONObject:approveRejectModel[]){   
