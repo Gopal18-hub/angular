@@ -14,53 +14,93 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   }
   maxid:string='';
   
-  config: any  = {
+  config1: any  = {
+    actionItems: true,
     dateformat: 'dd/MM/yyyy',
-    selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age','gender','dob','place','phone','category'],
+    selectBox : true,
+     // dependantName : {
+    displayedColumns: ['groupCompany', 'empCode', 'dob', 'employeeName', 'dependantName','maxid','gender','doj','age','relationship','remarks'],
     columnsInfo: {
       groupCompany : {
         title: 'Group Company',
-        type: 'number'
+        type: 'string'
       },
       empCode : {
         title: 'EMP Code',
         type: 'number'
       },
       dob : {
-        title: 'Regn.Date',
+        title: 'DOB',
         type: 'date'
       },
       employeeName : {
-        title: 'Name',
+        title: 'Employee Name',
         type: 'string'
       },
       dependantName : {
-        title: 'Age',
-        type: 'number'
+        title: 'Dependant Name',
+        type: 'string'
       },
       maxid : {
-        title: 'Gender',
+        title: 'Max Id',
         type: 'string'
       },
       gender : {
-        title: 'Date of Birth',
-        type: 'date'
-      },
-      doj : {
-        title: 'Address',
+        title: 'Gender',
         type: 'string'
       },
+      doj : {
+        title: 'DOJ',
+        type: 'date'
+      },
       age : {
-        title: 'Phone No.',
+        title: 'Age',
         type: 'number'
       },
       relationship : {
-        title: 'Category'
+        title: 'Relationship',
+        type: 'string'
       },
       remarks:{
-        title:'Remarks'
+        title:'Remarks',
+        type: 'string'
       }
     }
-  }  
+ // }  
+}
+  config2:any={
+    actionItems: true,
+    dateformat: 'dd/MM/yyyy',
+    selectBox : true,
+     // dependantName : {
+    displayedColumns: ['slno', 'companyname', 'dateandtime', 'addedby', 'updateddate','updatedby'],
+    columnsInfo: {
+      slno : {
+        title: 'Sl.no',
+        type: 'string'
+      },
+      companyname : {
+        title: 'Company Name',
+        type: 'number'
+      },
+      dateandtime : {
+        title: 'Added Date & Time',
+        type: 'date'
+      },
+      addedby : {
+        title: 'Added By',
+        type: 'string'
+      },
+      updateddate : {
+        title: 'Updated Date',
+        type: 'string'
+      },
+      updatedby : {
+        title: 'Updated By',
+        type: 'string'
+      },
+     
+    }
+  }
+
 }

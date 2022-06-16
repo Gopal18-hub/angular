@@ -6,6 +6,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { MaxHealthTableModule } from '../../../shared/ui/table';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { FormsModule } from '@angular/forms';
      MatFormFieldModule,
      MatInputModule,
      FormsModule,
+     MaxHealthTableModule
      
 
     ],
