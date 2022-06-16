@@ -1,10 +1,5 @@
 <h2 class="max-health-primary-color">{{ data.title }}</h2>
-<form
-  *ngIf="Authentication"
-  (ngSubmit)="loginSubmit()"
-  [formGroup]="form"
-  class="mt-4 mb-6"
->
+<form (ngSubmit)="submit()" [formGroup]="form" class="mt-4 mb-6">
   <div
     class="flex justify-between flex-wrap"
     [ngClass]="{ 'form-column': data.layout == 'single' }"
