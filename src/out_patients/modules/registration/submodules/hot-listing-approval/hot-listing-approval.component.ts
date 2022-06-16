@@ -158,7 +158,7 @@ export class HotListingApprovalComponent implements OnInit {
   }
   this.showmain("Hot Listing Approval");
   }
-  hsplocationId:any = 67;//this.cookie.get('HSPLocationId');
+  hsplocationId:any = this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
@@ -251,7 +251,7 @@ export class HotListingApprovalComponent implements OnInit {
   hotlistApproveItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
+      let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
         console.log(resultdata);
         this.showgrid("View Pending Request");
@@ -265,7 +265,7 @@ export class HotListingApprovalComponent implements OnInit {
   hotlistRejectItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
+      let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
         console.log(resultdata);
         this.showgrid("View Pending Request");
@@ -279,7 +279,7 @@ export class HotListingApprovalComponent implements OnInit {
   hotlistDeleteItem(){
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
-      let userId = 1;//Number(this.cookie.get('UserId'));
+      let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
         console.log(resultdata);
         this.showgrid("View Pending Request");
