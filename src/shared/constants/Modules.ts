@@ -43,7 +43,7 @@ export namespace MaxModules {
             },
             {
               id: 116,
-              title: "Op Patient Reg Approval List",
+              title: "OP Patient Reg Approval List",
               defaultPath: "/registration/op-reg-approval",
               globalSearchKey: "opapproval",
             },
