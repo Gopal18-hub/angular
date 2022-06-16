@@ -54,6 +54,7 @@ export class DashboardComponent implements OnInit {
       firstName: {
         title: "Name",
         type: "string",
+        tooltipColumn: "patientName",
       },
       age: {
         title: "Age",
@@ -70,6 +71,7 @@ export class DashboardComponent implements OnInit {
       place: {
         title: "Address",
         type: "string",
+        tooltipColumn: "completeAddress",
       },
       phone: {
         title: "Phone No.",

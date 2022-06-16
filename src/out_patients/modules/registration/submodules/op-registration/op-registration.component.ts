@@ -151,7 +151,7 @@ export class OpRegistrationComponent implements OnInit {
       },
       idenityValue: {
         type: "string",
-        title: "",
+        title: "&nbsp",
       },
       adhaarId: {
         type: "number",
@@ -355,6 +355,8 @@ export class OpRegistrationComponent implements OnInit {
   
   ngAfterViewInit(): void {
     console.log(this.passportNum);
+    
+    
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -387,6 +389,10 @@ this.onTitleModify.bind(this)
       "blur",
 this.onNationalityModify.bind(this)
     )
+    // this.questions[30].elementRef.addEventListener(
+    //   "click",
+    //   this.openHotListDialog.bind(this)
+    // );
     // this.questions[26].elementRef.addEventListener(
     //   "blur",
     //   this.getCityListByState.bind(this)
@@ -952,7 +958,7 @@ this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
   getModifiedPatientDetailObj():ModifiedPatientDetailModel
   {
    return this.modfiedPatiendDetails=new ModifiedPatientDetailModel(this.OPRegForm.value.maxid.split('.')[1], this.OPRegForm.value.maxid.split('.')[0],
-   this.OPRegForm.value.title, this.OPRegForm.value.firstName, this.OPRegForm.value.middleName, this.OPRegForm.value.lastName, this.OPRegForm.value.gender.title, this.OPRegForm.value.mobileNumber, "", this.OPRegForm.value.emailId,
+   this.OPRegForm.value.title.title, this.OPRegForm.value.firstName, this.OPRegForm.value.middleName, this.OPRegForm.value.lastName, this.OPRegForm.value.gender.value, this.OPRegForm.value.mobileNumber, "", this.OPRegForm.value.emailId,
    this.OPRegForm.value.nationality.value, this.OPRegForm.value.foreigner||false, this.patientDetails.passportNo, this.datepipe.transform(this.patientDetails.issueDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00",
    this.datepipe.transform(this.patientDetails.expiryDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00" , this.patientDetails.passportIssuedAt, Number(this.cookie.get("UserId")), Number(this.cookie.get("HSPLocationId")), false,this.OPRegForm.value.mobileNumber,false,"","")
  
