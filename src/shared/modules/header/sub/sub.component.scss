@@ -39,11 +39,17 @@
     display: flex;
     align-items: center;
     ul {
-      height: 2.625em;
+      height: 3.525em;
       align-items: center;
       width: 100%;
       li {
         white-space: nowrap;
+        &.active {
+          background: var(--primary-color);
+          color: #fff;
+          border-radius: 5px;
+          padding: 0.35rem;
+        }
       }
     }
   }
