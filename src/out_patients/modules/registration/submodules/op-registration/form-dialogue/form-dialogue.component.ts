@@ -27,4 +27,10 @@ export class FormDialogueComponent implements OnInit {
     this.form = formResult.form;
     this.questions = formResult.questions;
   }
+
+  submit() {
+    if (this.form.valid) {
+      this.dialogRef.close({ data: this.form.value });
+    }
+  }
 }

@@ -1,7 +1,7 @@
 <h2 class="max-health-primary-color">{{ data.title }}</h2>
 <form
   *ngIf="Authentication"
-  (ngSubmit)="loginSubmit()"
+  (ngSubmit)="submit()"
   [formGroup]="form"
   class="mt-4 mb-6"
 >
