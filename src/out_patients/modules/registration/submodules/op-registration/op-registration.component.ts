@@ -31,7 +31,7 @@ import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.co
 import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
 import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
 import { ReportService } from "../../../../../shared/services/report.service";
-import { hotlistingreasonModel } from "src/out_patients/core/models/hotlistingreason.model";
+import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
 import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
 
 export interface DialogData {
