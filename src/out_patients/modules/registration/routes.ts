@@ -7,6 +7,8 @@ import { RegistrationUnmergingComponent } from './submodules/registration-unmerg
 import { RegistrationComponent } from './registration.component';
 import { OpRegApprovalComponent } from './submodules/op-reg-approval/op-reg-approval.component';
 import { AppointmentSearchComponent } from './submodules/appointment-search/appointment-search.component';
+import { HotListingApprovalComponent } from './submodules/hot-listing-approval/hot-listing-approval.component';
+
 
 const routes: Routes = [
     {
@@ -18,6 +20,7 @@ const routes: Routes = [
           { path: 'registration-unmerging', component: RegistrationUnmergingComponent },
           { path: 'op-reg-approval', component: OpRegApprovalComponent},
           { path : 'appointment-search', component: AppointmentSearchComponent},
+          { path: 'hot-listing-approval', component: HotListingApprovalComponent },
           
       ]
     }

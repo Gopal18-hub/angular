@@ -10,6 +10,7 @@ import { CookieService } from '../../../../../shared/services/cookie.service';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTabLabel } from '@angular/material/tabs';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
+import { SearchService } from '../../../../../shared/services/search.service';
 
 
 
@@ -88,9 +89,15 @@ export class RegistrationUnmergingComponent implements OnInit {
       }
     }
   }  
-  constructor(private http: HttpService, private cookie:CookieService, private patientServie: PatientService) { }
+  constructor(private http: HttpService,
+     private cookie:CookieService,
+      private patientServie: PatientService,
+      private searchService :SearchService) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void { 
+    this.searchService.searchTrigger.subscribe((formdata)=>{
+        this.searchPatient(formdata.data);
+    });   
   }
   
   unMerge(){
@@ -103,13 +110,19 @@ export class RegistrationUnmergingComponent implements OnInit {
       this.unMergeresponse=resultdata;  
     // this.openModal('unmerge-modal-1');   
      this.unmergebuttonDisabled=true; 
-     window.location.reload();
+     this.unmergingList = [];
+     this.unMergePostModel = [];
+     
     },error=>{
       console.log(error);
     });   
   }
 
-  searchPatient() {
+  searchPatient(formdata:any) {
+    if(formdata['maxID'] == '' && formdata['ssn'] == '' )
+      return;
+      this.maxid = formdata['maxID'];
+      this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {
       this.unmergingList  = resultData;
       this.isAPIProcess = true; 
@@ -121,10 +134,11 @@ export class RegistrationUnmergingComponent implements OnInit {
         });
       }) ;
      
-    })
+    });
+    
   }
 
-   getAllunmergepatient(){
+   getAllunmergepatient(){   
     return this.http.get(ApiConstants.mergePatientSearchApi(this.maxid, this.ssn));    
   }
 
