@@ -35,24 +35,46 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ displayColumnsInfo[col].title }}
         </th>
-        <td
+        <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
+          <td mat-cell *matCellDef="let element">
+            <ng-container
+              *ngIf="displayColumnsInfo[col]?.type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutletContext]="{
+                $implicit: { output: element[col], config: config, col: col }
+              }"
+            ></ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="config.columnsInfo[col].tooltipColumn">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            matTooltipClass="example-tooltip-red"
+            [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
+          >
+            <ng-container
+              *ngIf="displayColumnsInfo[col]?.type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutletContext]="{
+                $implicit: { output: element[col], config: config, col: col }
+              }"
+            ></ng-container>
+          </td>
+        </ng-container>
+
+        <!-- <td
           mat-cell
           *matCellDef="let element"
           matTooltipClass="example-tooltip-red"
-        >
-          <!-- {{
+          [matToolTip]="element[config.columnsInfo[col].toottipColumn]"
+        > -->
+        <!-- {{
             displayColumnsInfo[col].type === "date"
               ? (element[col] | date: dateformat)
               : element[col]
           }} -->
-          <ng-container
-            *ngIf="displayColumnsInfo[col]?.type"
-            [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
-            [ngTemplateOutletContext]="{
-              $implicit: { output: element[col], config: config, col: col }
-            }"
-          ></ng-container>
-        </td>
       </ng-container>
     </ng-container>
 
