@@ -41,40 +41,40 @@ export class PatientService {
       value: "CGHS",
     },
     hotList: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "HOTLIST",
     },
     mergeLinked: {
       type: "dynamic",
       value: "mergeLinked",
     },
     vip: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "VIP",
     },
     note: {
       type: "dynamic",
-      value: "",
+      value: "noteReason",
     },
     cash: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "Cash",
     },
     psu: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "PSU",
     },
     ews: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "EWS",
     },
     ins: {
-      type: "dynamic",
-      value: "",
+      type: "static",
+      value: "INS",
     },
     hwc: {
-      type: "dynamic",
-      value: "",
+      type: "static ",
+      value: "HWC",
     },
   };
 
