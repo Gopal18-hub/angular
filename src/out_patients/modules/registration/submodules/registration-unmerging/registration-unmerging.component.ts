@@ -60,7 +60,8 @@ export class RegistrationUnmergingComponent implements OnInit {
       },
       patientName : {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName",
       },
       age : {
         title: 'Age',
@@ -76,7 +77,8 @@ export class RegistrationUnmergingComponent implements OnInit {
       },
       place : {
         title: 'Address',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "place",
       },
       phone : {
         title: 'Phone No.',

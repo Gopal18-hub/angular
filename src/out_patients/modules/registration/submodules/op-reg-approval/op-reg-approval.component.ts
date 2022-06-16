@@ -68,7 +68,8 @@ export class OpRegApprovalComponent implements OnInit {
       },
       firstName : {
         title: 'Patient Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "modifiedPtnName",
       },
       gender : {
         title: 'Gender',

@@ -65,7 +65,8 @@ export class DupRegMergingComponent implements OnInit {
       },
       firstName: {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName",
       },
       age: {
         title: 'Age',
@@ -81,7 +82,8 @@ export class DupRegMergingComponent implements OnInit {
       },
       place: {
         title: 'Address',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "completeAddress",
       },
       phone: {
         title: 'Phone No.',
