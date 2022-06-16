@@ -4,7 +4,7 @@
             <li class="ml-3"  *ngFor="let link of link1">
               <a mat-tab-link class="cursor-pointer"  [active]="activeLink1 == link ? true : false" (click)="showmain(link)"> {{link}}</a>
             </li>
-            <li class="ml-3"  *ngFor="let link of link2">
+            <li class="ml-3 float-right" *ngFor="let link of link2">
                 <a mat-tab-link class="cursor-pointer" [active]="activeLink2 == link ? true : false" (click)="showgrid(link)"> {{link}}</a>
               </li>
           </ul>            
