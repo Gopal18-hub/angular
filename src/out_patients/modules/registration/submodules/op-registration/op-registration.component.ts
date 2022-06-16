@@ -1136,19 +1136,19 @@ export class OpRegistrationComponent implements OnInit {
   
   openReportModal(btnname : string){
     if(btnname == "PrintLabel"){ 
-      this.reportService.getOPRegistrationPrintLabel('SHPS.148519');
+      this.reportService.getOPRegistrationPrintLabel(this.OPRegForm.value.maxid);
       {
         console.log("success");
      }   
     }
     else if(btnname == "PrintForm"){
-      this.reportService.getOPRegistrationForm('SHPS.148519')
+      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid)
       {
          console.log("success");
       }
     }
     else if(btnname == "PrintOD"){
-      this.reportService.getOPRegistrationOrganDonorForm('SHPS.148519') 
+      this.reportService.getOPRegistrationOrganDonorForm(this.OPRegForm.value.maxid) 
           console.log("success");
            
     }
