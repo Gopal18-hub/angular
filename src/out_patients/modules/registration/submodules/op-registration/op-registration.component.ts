@@ -30,6 +30,7 @@ import { DatePipe } from "@angular/common";
 import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
 import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
 import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
+import { ReportService } from "../../../../../shared/services/report.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -318,7 +319,8 @@ export class OpRegistrationComponent implements OnInit {
     private cookie: CookieService,
     private http: HttpService,
     public matDialog: MatDialog,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private reportService : ReportService
   ) {}
 
   ngOnInit(): void {
@@ -396,7 +398,11 @@ export class OpRegistrationComponent implements OnInit {
     this.questions[28].elementRef.addEventListener(
       "blur",
       this.onNationalityModify.bind(this)
-    );
+    )
+    this.questions[8].elementRef.addEventListener(
+      "blur",
+      this.onageCalculator.bind(this)
+    )
     // this.questions[30].elementRef.addEventListener(
     //   "click",
     //   this.openHotListDialog.bind(this)
@@ -1126,6 +1132,128 @@ export class OpRegistrationComponent implements OnInit {
       ""
     );
   }
+
+  
+  openReportModal(btnname : string){
+    if(btnname == "PrintLabel"){ 
+      this.reportService.getOPRegistrationPrintLabel('SHPS.148519');
+      {
+        console.log("success");
+     }   
+    }
+    else if(btnname == "PrintForm"){
+      this.reportService.getOPRegistrationForm('SHPS.148519')
+      {
+         console.log("success");
+      }
+    }
+    else if(btnname == "PrintOD"){
+      this.reportService.getOPRegistrationOrganDonorForm('SHPS.148519') 
+          console.log("success");
+           
+    }
+  }
+
+  //for Date of birth and age calculation
+  showAge: number | undefined;;
+  showAgeType: any;
+  dateNotValid: boolean = false;
+  convetAge: Date = new Date();
+  timeDiff: number | undefined;
+  dobFlag: boolean = false;
+  ageFlag: boolean = false;
+
+  onageCalculator() {
+    console.log(this.OPRegForm.value.dob);
+    if (this.OPRegForm.value.dob == '') {
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.value.ageType = null;
+    }
+    this.timeDiff = 0;
+    if (this.OPRegForm.value.dob) {
+      this.dobFlag = true;
+      this.ageFlag = false;
+    }
+    console.log(this.OPRegForm.value.age);
+
+    if (new Date((this.OPRegForm.value.dob)) > new Date(Date.now())) {
+      this.dateNotValid = true;
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.value.ageType = null;
+      let element: HTMLElement = document.getElementById('saveform') as HTMLElement;
+
+    } else {
+      this.dateNotValid = false;
+    }
+    let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+    if (year > 1000) {
+      if (this.OPRegForm.value.dob) {
+        this.timeDiff = new Date(Date.now()).getFullYear() - new Date(this.OPRegForm.value.dob).getFullYear();
+        if (this.timeDiff <= 0) {
+          this.timeDiff = new Date(Date.now()).getMonth() - new Date(this.OPRegForm.value.dob).getMonth();
+
+          if (this.timeDiff <= 0) {
+            this.timeDiff = new Date(Date.now()).getDate() - new Date(this.OPRegForm.value.dob).getDate();
+            if (this.timeDiff <= 0) {
+
+            }
+            else {
+              this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));            
+              this.OPRegForm.controls["ageType"].setValue({
+                title: this.ageTypeList[0].name,
+                value: this.ageTypeList[0].id,
+              });
+              console.log(this.ageTypeList[0].name);
+            }
+          }
+
+          else {
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[3].name,
+              value: this.ageTypeList[3].id,
+            });
+            console.log(this.ageTypeList[3].name);
+          }
+        }
+
+        else {
+          let currentmonth = new Date(Date.now()).getMonth();
+          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+          let monthDiff = currentmonth - MonthofDOB;
+          let monthDiff2 = MonthofDOB - currentmonth;
+          if ((monthDiff <= 1) && (monthDiff2 >= 1) && this.timeDiff == 1) {
+            if (monthDiff < 12 && this.timeDiff == 1) {
+              if (monthDiff <= 0) {
+                this.OPRegForm.controls["age"].setValue((12 - MonthofDOB) + currentmonth);
+              }
+              else {
+                this.OPRegForm.controls["age"].setValue(monthDiff);
+              }
+            }
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[3].name,
+              value: this.ageTypeList[3].id,
+            });
+          }
+          else {
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[4].name,
+              value: this.ageTypeList[4].id,
+            });
+            console.log(this.ageTypeList[4].name);
+          }
+        }
+      }
+      else {
+        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+        console.log(this.OPRegForm.value.ageType);
+      }
+    }
+  }
+
 }
 
 // function ngAfterViewInit() {

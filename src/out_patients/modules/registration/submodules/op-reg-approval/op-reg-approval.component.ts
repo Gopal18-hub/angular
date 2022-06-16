@@ -30,7 +30,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = this.cookie.get('HSPLocationId');
+  hsplocationId:any = Number(this.cookie.get('HSPLocationId'));
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
