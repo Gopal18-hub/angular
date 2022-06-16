@@ -544,7 +544,7 @@ this.onNationalityModify.bind(this)
       });
   }
   opendialog() {
-   const  this.matDialog.open(HotListingDialogComponent, {
+    this.matDialog.open(HotListingDialogComponent, {
       width: "30vw",
       height: "52vh",
     });
