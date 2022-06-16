@@ -11,6 +11,7 @@ import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTabLabel } from '@angular/material/tabs';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from '../../../../../shared/services/search.service';
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 
 
 
@@ -94,7 +95,8 @@ export class RegistrationUnmergingComponent implements OnInit {
   constructor(private http: HttpService,
      private cookie:CookieService,
       private patientServie: PatientService,
-      private searchService :SearchService) { }
+      private searchService :SearchService,
+      private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void { 
     this.searchService.searchTrigger.subscribe((formdata)=>{
@@ -114,9 +116,10 @@ export class RegistrationUnmergingComponent implements OnInit {
      this.unmergebuttonDisabled=true; 
      this.unmergingList = [];
      this.unMergePostModel = [];
-     
+     this.messageDialogService.success(resultdata);
     },error=>{
       console.log(error);
+      this.messageDialogService.error(error);
     });   
   }
 
@@ -142,7 +145,10 @@ export class RegistrationUnmergingComponent implements OnInit {
                        
         });
       }) ;
+
      
+    },(error:any)=>{
+      this.messageDialogService.error(error.error);
     });
     
   }
@@ -152,7 +158,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   unMergePatient(unmergeJSONObject:PatientmergeModel[]){
-    let userId = 1;//Number(this.cookie.get('UserId'));
+    let userId = Number(this.cookie.get('UserId'));
     return this.http.post(ApiConstants.unmergePatientAPi(userId),unmergeJSONObject);
   }
 

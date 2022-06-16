@@ -30,7 +30,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:number= 67 //this.cookie.get('HSPLocationId');;
+  hsplocationId:any = Number(this.cookie.get('HSPLocationId'));
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -291,7 +291,7 @@ export class OpRegApprovalComponent implements OnInit {
    
     this.approvaltable.selection.selected.map((s:any)=>{
     this.ApprovalidList.push(s.id)});
-    let userId = 1;//Number(this.cookie.get('UserId'));
+    let userId = Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
@@ -306,7 +306,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
       this.ApprovalidList.push(s.id)});
-      let userId = 1;//Number(this.cookie.get('UserId'));
+      let userId = Number(this.cookie.get('UserId'));
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{

@@ -16,23 +16,32 @@ import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Mo
 import { StateModel } from "../../../../core/models/stateMasterModel.Model";
 import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
 import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
 import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
 import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
 import { DatePipe } from "@angular/common";
- import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
+import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
 import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
+import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
+import { ReportService } from "../../../../../shared/services/report.service";
 
 export interface DialogData {
   expieryDate: Date;
   issueAt: string;
-  passportNum:number;
-  issuedate:Date;
-  hcf:{id:number,title:string}
-
+  passportNum: number;
+  issuedate: Date;
+  hcf: { id: number; title: string };
+}
+export interface HotlistDialogData {
+  hotlistReason: {};
+  hotlistNotes: {};
 }
 
 @Component({
@@ -47,7 +56,7 @@ export class OpRegistrationComponent implements OnInit {
   public idTypeList: IdentityModel[] = [];
   public genderList: GenderModel[] = [];
   public nationalityList: NationalityModel[] = [];
-  public patientDetails!: PatientDetails ;
+  public patientDetails!: PatientDetails;
   countryList: MasterCountryModel[] = [];
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
@@ -55,9 +64,9 @@ export class OpRegistrationComponent implements OnInit {
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
   stateList: StateModel[] = [];
   expieryDate: Date | undefined;
-  issueAt:string | undefined;
-  passportNum:number | undefined;
-  issuedate:Date | undefined;
+  issueAt: string | undefined;
+  passportNum: number | undefined;
+  issuedate: Date | undefined;
   registrationFormData = {
     title: "",
     type: "object",
@@ -304,13 +313,14 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
- 
+
   constructor(
     private formService: QuestionControlService,
     private cookie: CookieService,
     private http: HttpService,
     public matDialog: MatDialog,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private reportService : ReportService
   ) {}
 
   ngOnInit(): void {
@@ -341,53 +351,57 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
   }
-  openForeigner()
-  {
-  
+  openForeigner() {
     this.matDialog.open(ForeignerDialogComponent, {
       width: "30vw",
       height: "52vh",
-      data: {passportNum: this.passportNum, issuedate: this.issuedate, expieryDate:this.expieryDate, issueAt:this.issueAt }
-      
+      data: {
+        passportNum: this.passportNum,
+        issuedate: this.issuedate,
+        expieryDate: this.expieryDate,
+        issueAt: this.issueAt,
+      },
     });
   }
 
-  
   ngAfterViewInit(): void {
     console.log(this.passportNum);
-    
-    
+
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
     this.questions[2].elementRef.addEventListener(
       "change",
-this.onPhoneModify.bind(this)
-    )
+      this.onPhoneModify.bind(this)
+    );
     this.questions[3].elementRef.addEventListener(
       "blur",
-this.onTitleModify.bind(this)
-    )
+      this.onTitleModify.bind(this)
+    );
     this.questions[4].elementRef.addEventListener(
       "change",
-this.onFistNameModify.bind(this)
-    )
+      this.onFistNameModify.bind(this)
+    );
     this.questions[6].elementRef.addEventListener(
       "change",
-this.onLastNameModify.bind(this)
-    )
+      this.onLastNameModify.bind(this)
+    );
     this.questions[7].elementRef.addEventListener(
       "change",
-this.onGenderModify.bind(this)
-    )
+      this.onGenderModify.bind(this)
+    );
     this.questions[12].elementRef.addEventListener(
       "change",
-this.onTitleModify.bind(this)
-    )
+      this.onTitleModify.bind(this)
+    );
     this.questions[28].elementRef.addEventListener(
       "blur",
-this.onNationalityModify.bind(this)
+      this.onNationalityModify.bind(this)
+    )
+    this.questions[8].elementRef.addEventListener(
+      "blur",
+      this.onageCalculator.bind(this)
     )
     // this.questions[30].elementRef.addEventListener(
     //   "click",
@@ -549,21 +563,22 @@ this.onNationalityModify.bind(this)
       height: "52vh",
     });
   }
-  openVipDialog()
-  {
-    this.matDialog.open(VipDialogComponent, {width: '30vw', height: '40vh'});
-
+  openVipDialog() {
+    this.matDialog.open(VipDialogComponent, { width: "30vw", height: "40vh" });
   }
-  openPrintLabelDialog()
-  {
-    this.matDialog.open(PrintLabelDialogComponent, {width: '30vw', height: '30vh'});
-
+  openPrintLabelDialog() {
+    this.matDialog.open(PrintLabelDialogComponent, {
+      width: "30vw",
+      height: "30vh",
+    });
   }
-  openHotListDialog()
-  {
-    this.matDialog.open(HotListingDialogComponent, {
+  openHotListDialog() {
+    const dialogref = this.matDialog.open(HotListingDialogComponent, {
       width: "30vw",
       height: "52vh",
+    });
+    dialogref.afterClosed().subscribe((result) => {
+      console.log("The dialog was closed");
     });
   }
 
@@ -609,40 +624,52 @@ this.onNationalityModify.bind(this)
         this.setValuesToOPRegForm(this.patientDetails);
 
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
-        this.registeredPatientDetails(this.patientDetails) ;
-      
+        this.registeredPatientDetails(this.patientDetails);
       });
     // console.log(this.localityListByPin);
     // this.questions[24].options = this.cityList.map((l) => {
     //   return { title: l.cityName, value: l.id };
     // });
   }
-  onModifyDetail()
-  {
+  onModifyDetail() {
+    this.onUpdatePatientDetail();
     this.http
-    .post(ApiConstants.modifyPatientDetail, this.getModifiedPatientDetailObj())
-    .subscribe((resultData: PatientDetails) => {
-      this.setValuesToOPRegForm(resultData);
-      console.log(resultData);
-      // this.questions[24].options = this.cityList.map((l) => {
-      //   return { title: l.cityName, value: l.id };
-    });
-  }
-  postForm() {
-    console.log(this.getPatientSubmitRequestBody());
-    this.http
-      .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
+      .post(
+        ApiConstants.modifyPatientDetail,
+        this.getModifiedPatientDetailObj()
+      )
       .subscribe((resultData: PatientDetails) => {
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
         // this.questions[24].options = this.cityList.map((l) => {
         //   return { title: l.cityName, value: l.id };
       });
+    
+  }
+
+  onUpdatePatientDetail() {
+    console.log(this.getPatientUpdatedReqBody());
+    this.http
+      .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
+      .subscribe((resultData: PatientDetails) => {
+        this.populateUpdatePatientDetail(resultData);
+        console.log(resultData);
+             });
+  }
+  postForm() {
+    console.log(this.getPatientSubmitRequestBody());
+    // this.http
+    //   .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
+    //   .subscribe((resultData: PatientDetails) => {
+    //     this.setValuesToOPRegForm(resultData);
+    //     console.log(resultData);
+       
+    //   });
   }
 
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
   setValuesToOPRegForm(patientDetails: PatientDetails) {
-    this.patientDetails=patientDetails;
+    this.patientDetails = patientDetails;
     this.OPRegForm.controls["maxid"].setValue(
       this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
     );
@@ -705,48 +732,39 @@ this.onNationalityModify.bind(this)
     // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
   }
 
-  onPhoneModify()
-  {
-console.log("phone changed");
-this.modfiedPatiendDetails.pphone=this.OPRegForm.value.mobileNumber;
+  onPhoneModify() {
+    console.log("phone changed");
+    this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
   }
-  onTitleModify()
-  {
-console.log("title changed");
-this.modfiedPatiendDetails.title=this.OPRegForm.value.title.title;
+  onTitleModify() {
+    console.log("title changed");
+    this.modfiedPatiendDetails.title = this.OPRegForm.value.title.title;
   }
-  
-  onFistNameModify()
-  {
-console.log("firstname changed");
-this.modfiedPatiendDetails.firstname=this.OPRegForm.value.firstName;
+
+  onFistNameModify() {
+    console.log("firstname changed");
+    this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
   }
-  onLastNameModify()
-  {
-console.log("lastname changed");
-this.modfiedPatiendDetails.lastName=this.OPRegForm.value.lastName;
+  onLastNameModify() {
+    console.log("lastname changed");
+    this.modfiedPatiendDetails.lastName = this.OPRegForm.value.lastName;
   }
-  onGenderModify()
-  {
-console.log("gender changed");
-this.modfiedPatiendDetails.sex=this.OPRegForm.value.gender.title;
+  onGenderModify() {
+    console.log("gender changed");
+    this.modfiedPatiendDetails.sex = this.OPRegForm.value.gender.title;
   }
-  onEmailModify()
-  {
-console.log("Age changed");
-this.modfiedPatiendDetails.pemail=this.OPRegForm.value.email;
+  onEmailModify() {
+    console.log("Age changed");
+    this.modfiedPatiendDetails.pemail = this.OPRegForm.value.email;
   }
-  onNationalityModify()
-  {
-console.log("country changed");
-this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
+  onNationalityModify() {
+    console.log("country changed");
+    this.modfiedPatiendDetails.nationality =
+      this.OPRegForm.value.nationality.value;
   }
-  
 
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
-  populateUpdatePatientDetail(patientDetails: PatientDetails)
-  {
-    
+  populateUpdatePatientDetail(patientDetails: PatientDetails) {
     if (this.patientDetails?.spouseName != "") {
       this.OPRegForm.controls["fatherSpouse"].setValue("Spouse");
       this.OPRegForm.controls["fatherSpouseName"].setValue(
@@ -823,6 +841,95 @@ this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
       default:
         this.OPRegForm.controls["cash"].setValue(ppagerNumber);
     }
+  }
+
+  updateRequestBody!: UpdatepatientModel;
+  getPatientUpdatedReqBody():UpdatepatientModel {
+    return this.updateRequestBody = new UpdatepatientModel(
+      this.patientDetails.id,
+      this.OPRegForm.value.maxid.split(".")[1],
+      this.OPRegForm.value.maxid.split(".")[0],
+      this.datepipe.transform(this.patientDetails.regDateTime==null?Date.now():this.patientDetails.regDateTime, "yyyy-MM-ddThh:mm:ss")||"1900-01-01T00:00:00",
+      this.OPRegForm.value.motherName,
+      this.getFather(),
+      this.getFather() === "" ? false : true,
+      this.datepipe.transform(
+        this.OPRegForm.value.dob,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00",
+      11,
+      this.getSpouseName(),
+      0,
+      "",
+      0,
+      "",
+      this.OPRegForm.value.ageType.value,
+      this.OPRegForm.value.age,
+      this.OPRegForm.value.address,
+      "",
+      "",
+      this.OPRegForm.value.city.value,
+      this.OPRegForm.value.district.value,
+      this.OPRegForm.value.state.value,
+      this.OPRegForm.value.country.value,
+      this.OPRegForm.value.pincode,
+      "Cash", //PAGER NEED TO CHECK HOW CAN BE SENT
+      0,
+      "",
+      false,
+      this.OPRegForm.value.vip || false,
+      0,
+      this.OPRegForm.value.dob == "" ? true : false,
+      "1900-01-01T00:00:00",
+      "1900-01-01T00:00:00",
+      Number(this.cookie.get("UserId")),
+      false,
+      false, //IS CARD ISSUED
+      "1900-01-01T00:00:00",
+      "", //fee reason
+      0, //company id
+      Number(this.cookie.get("HSPLocationId")),
+      this.datepipe.transform(
+        Date.now(),
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00", //lat updted
+      "vip reason",
+      this.OPRegForm.value.dob == "" ? true : false,
+      this.OPRegForm.value.locality.value || 0,
+      this.OPRegForm.value.locality.value == undefined
+        ? this.OPRegForm.value.locality.title
+        : "",
+      this.OPRegForm.value.sourceOfInput.value || 0,
+      false,
+      false, //data clean flag
+      false, //isavailregcard
+      this.OPRegForm.value.SSN,
+      "", //referredname
+      "", //referredphone
+      this.OPRegForm.value.note || false,
+      "this.notesObj.Notesremarks",
+      this.OPRegForm.value.surveySMS || false,
+      this.OPRegForm.value.receivePromotional || false,
+      this.OPRegForm.value.verifiedOnline == "" ? 0 : 1,
+      "this.ewsObj.bplCardNo",
+      "addressOnCard",
+      "cghsbeneficiaryCompany",
+      this.OPRegForm.value.adhaarId,
+      111111,
+      this.OPRegForm.value.altLandlineName,
+      this.OPRegForm.value.organdonor || false,
+      this.OPRegForm.value.otAdvanceExclude || false,
+      0,
+      0,
+      "this.seafarerObj.HKID",
+      "this.seafarerObj.rank",
+      "this.seafarerObj.Vesselname",
+      "this.seafarerObj.FDPGroup",
+      false,
+      " this.hwcObj.HWCRemarks",
+      this.OPRegForm.value.idenityType.value||0,
+      this.OPRegForm.value.idenityValue||""
+    );
   }
 
   //WORKING ON THE BELOW FUNCTION
@@ -937,8 +1044,6 @@ this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
     ));
   }
 
-
- 
   getFather(): string {
     let response = "";
     if (this.OPRegForm.value.fatherSpouse.title == "Father") {
@@ -955,27 +1060,201 @@ this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.value;
   }
 
   modfiedPatiendDetails!: ModifiedPatientDetailModel;
-  getModifiedPatientDetailObj():ModifiedPatientDetailModel
-  {
-   return this.modfiedPatiendDetails=new ModifiedPatientDetailModel(this.OPRegForm.value.maxid.split('.')[1], this.OPRegForm.value.maxid.split('.')[0],
-   this.OPRegForm.value.title.title, this.OPRegForm.value.firstName, this.OPRegForm.value.middleName, this.OPRegForm.value.lastName, this.OPRegForm.value.gender.value, this.OPRegForm.value.mobileNumber, "", this.OPRegForm.value.emailId,
-   this.OPRegForm.value.nationality.value, this.OPRegForm.value.foreigner||false, this.patientDetails.passportNo, this.datepipe.transform(this.patientDetails.issueDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00",
-   this.datepipe.transform(this.patientDetails.expiryDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00" , this.patientDetails.passportIssuedAt, Number(this.cookie.get("UserId")), Number(this.cookie.get("HSPLocationId")), false,this.OPRegForm.value.mobileNumber,false,"","")
- 
+  getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
+    return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
+      this.OPRegForm.value.maxid.split(".")[1],
+      this.OPRegForm.value.maxid.split(".")[0],
+      this.OPRegForm.value.title.title,
+      this.OPRegForm.value.firstName,
+      this.OPRegForm.value.middleName,
+      this.OPRegForm.value.lastName,
+      this.OPRegForm.value.gender.value,
+      this.OPRegForm.value.mobileNumber,
+      "",
+      this.OPRegForm.value.emailId,
+      this.OPRegForm.value.nationality.value,
+      this.OPRegForm.value.foreigner || false,
+      this.patientDetails.passportNo,
+      this.datepipe.transform(
+        this.patientDetails.issueDate,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00",
+      this.datepipe.transform(
+        this.patientDetails.expiryDate,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00",
+      this.patientDetails.passportIssuedAt,
+      Number(this.cookie.get("UserId")),
+      Number(this.cookie.get("HSPLocationId")),
+      false,
+      this.OPRegForm.value.mobileNumber,
+      false,
+      "",
+      ""
+    ));
   }
 
   // ON MOFIFY BUTTON PRESS CALL
-  registeredPatientDetails(patientDetails:ModifiedPatientDetailModel)
-  {
-    let expdate=patientDetails.expiryDate!=null?this.datepipe.transform(patientDetails.expiryDate, 'yyyy-MM-ddThh:mm:ss'):"1900-01-01T00:00:00";
-    this.modfiedPatiendDetails=new ModifiedPatientDetailModel(patientDetails.registrationno, patientDetails.iacode,
-      patientDetails.title, patientDetails.firstname, patientDetails.middleName, patientDetails.lastName, patientDetails.sex, patientDetails.pphone, "", patientDetails.pemail,
-      patientDetails.nationality, patientDetails.foreigner, patientDetails.passportNo, this.datepipe.transform(patientDetails.issueDate, 'yyyy-MM-ddThh:mm:ss')||"1900-01-01T00:00:00",
-     expdate||"1900-01-01T00:00:00" , patientDetails.passportIssuedAt, Number(this.cookie.get("UserId")), Number(this.cookie.get("HSPLocationId")), false,patientDetails.pphone,false,"","")
-   
+  registeredPatientDetails(patientDetails: ModifiedPatientDetailModel) {
+    let expdate =
+      patientDetails.expiryDate != null
+        ? this.datepipe.transform(
+            patientDetails.expiryDate,
+            "yyyy-MM-ddThh:mm:ss"
+          )
+        : "1900-01-01T00:00:00";
+    this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
+      patientDetails.registrationno,
+      patientDetails.iacode,
+      patientDetails.title,
+      patientDetails.firstname,
+      patientDetails.middleName,
+      patientDetails.lastName,
+      patientDetails.sex,
+      patientDetails.pphone,
+      "",
+      patientDetails.pemail,
+      patientDetails.nationality,
+      patientDetails.foreigner,
+      patientDetails.passportNo,
+      this.datepipe.transform(
+        patientDetails.issueDate,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00",
+      expdate || "1900-01-01T00:00:00",
+      patientDetails.passportIssuedAt,
+      Number(this.cookie.get("UserId")),
+      Number(this.cookie.get("HSPLocationId")),
+      false,
+      patientDetails.pphone,
+      false,
+      "",
+      ""
+    );
   }
-}
 
+  
+  openReportModal(btnname : string){
+    if(btnname == "PrintLabel"){ 
+      this.reportService.getOPRegistrationPrintLabel(this.OPRegForm.value.maxid);
+      {
+        console.log("success");
+     }   
+    }
+    else if(btnname == "PrintForm"){
+      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid)
+      {
+         console.log("success");
+      }
+    }
+    else if(btnname == "PrintOD"){
+      this.reportService.getOPRegistrationOrganDonorForm(this.OPRegForm.value.maxid) 
+          console.log("success");
+           
+    }
+  }
+
+  //for Date of birth and age calculation
+  showAge: number | undefined;;
+  showAgeType: any;
+  dateNotValid: boolean = false;
+  convetAge: Date = new Date();
+  timeDiff: number | undefined;
+  dobFlag: boolean = false;
+  ageFlag: boolean = false;
+
+  onageCalculator() {
+    console.log(this.OPRegForm.value.dob);
+    if (this.OPRegForm.value.dob == '') {
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.value.ageType = null;
+    }
+    this.timeDiff = 0;
+    if (this.OPRegForm.value.dob) {
+      this.dobFlag = true;
+      this.ageFlag = false;
+    }
+    console.log(this.OPRegForm.value.age);
+
+    if (new Date((this.OPRegForm.value.dob)) > new Date(Date.now())) {
+      this.dateNotValid = true;
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.value.ageType = null;
+      let element: HTMLElement = document.getElementById('saveform') as HTMLElement;
+
+    } else {
+      this.dateNotValid = false;
+    }
+    let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+    if (year > 1000) {
+      if (this.OPRegForm.value.dob) {
+        this.timeDiff = new Date(Date.now()).getFullYear() - new Date(this.OPRegForm.value.dob).getFullYear();
+        if (this.timeDiff <= 0) {
+          this.timeDiff = new Date(Date.now()).getMonth() - new Date(this.OPRegForm.value.dob).getMonth();
+
+          if (this.timeDiff <= 0) {
+            this.timeDiff = new Date(Date.now()).getDate() - new Date(this.OPRegForm.value.dob).getDate();
+            if (this.timeDiff <= 0) {
+
+            }
+            else {
+              this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));            
+              this.OPRegForm.controls["ageType"].setValue({
+                title: this.ageTypeList[0].name,
+                value: this.ageTypeList[0].id,
+              });
+              console.log(this.ageTypeList[0].name);
+            }
+          }
+
+          else {
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[3].name,
+              value: this.ageTypeList[3].id,
+            });
+            console.log(this.ageTypeList[3].name);
+          }
+        }
+
+        else {
+          let currentmonth = new Date(Date.now()).getMonth();
+          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+          let monthDiff = currentmonth - MonthofDOB;
+          let monthDiff2 = MonthofDOB - currentmonth;
+          if ((monthDiff <= 1) && (monthDiff2 >= 1) && this.timeDiff == 1) {
+            if (monthDiff < 12 && this.timeDiff == 1) {
+              if (monthDiff <= 0) {
+                this.OPRegForm.controls["age"].setValue((12 - MonthofDOB) + currentmonth);
+              }
+              else {
+                this.OPRegForm.controls["age"].setValue(monthDiff);
+              }
+            }
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[3].name,
+              value: this.ageTypeList[3].id,
+            });
+          }
+          else {
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue({
+              title: this.ageTypeList[4].name,
+              value: this.ageTypeList[4].id,
+            });
+            console.log(this.ageTypeList[4].name);
+          }
+        }
+      }
+      else {
+        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+        console.log(this.OPRegForm.value.ageType);
+      }
+    }
+  }
+
+}
 
 // function ngAfterViewInit() {
 //   throw new Error("Function not implemented.");

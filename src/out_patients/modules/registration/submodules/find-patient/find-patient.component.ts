@@ -6,6 +6,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiConstants } from "../../../../../out_patients/core/constants/ApiConstants";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
+import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "find-patient",
@@ -40,7 +41,7 @@ export class FindPatientComponent implements OnInit {
     ],
     columnsInfo: {
       maxid: {
-        title: "MAX ID",
+        title: "Max ID",
         type: "number",
       },
       ssn: {
@@ -48,7 +49,7 @@ export class FindPatientComponent implements OnInit {
         type: "number",
       },
       date: {
-        title: "Regn.Date",
+        title: "Reg.Date",
         type: "date",
       },
       firstName: {
@@ -65,7 +66,7 @@ export class FindPatientComponent implements OnInit {
         type: "string",
       },
       dob: {
-        title: "Date of Birth",
+        title: "DOB",
         type: "date",
       },
       place: {
@@ -74,7 +75,7 @@ export class FindPatientComponent implements OnInit {
         tooltipColumn: "completeAddress",
       },
       phone: {
-        title: "Phone No.",
+        title: "Phone",
         type: "number",
       },
       categoryIcons: {
@@ -87,7 +88,8 @@ export class FindPatientComponent implements OnInit {
   constructor(
     private http: HttpService,
     private patientServie: PatientService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private messageDialogService:MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -98,13 +100,16 @@ export class FindPatientComponent implements OnInit {
       );
 
       this.isAPIProcess = true;
-      console.log(this.patientList);
+     
+
     });
+
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       console.log(formdata);
       this.searchPatient(formdata.data);
     });
-  }
+   
+  } 
 
   searchPatient(formdata: any) {
     if (
@@ -148,6 +153,8 @@ export class FindPatientComponent implements OnInit {
 
         this.isAPIProcess = true;
         console.log(this.patientList);
+      },(error)=>{
+        this.messageDialogService.error(error.error);
       });
     }
   }
