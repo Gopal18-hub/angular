@@ -11,7 +11,7 @@ import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { MaxHealthSnackBarModule } from "../../../shared/ui/snack-bar";
+import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
 import { DatePipe } from "@angular/common";
 import { APP_BASE_HREF } from "@angular/common";
@@ -26,8 +26,12 @@ import { APP_BASE_HREF } from "@angular/common";
     BillingModule,
     RegistrationModule,
     HttpClientModule,
+<<<<<<< HEAD
     MaxHealthSnackBarModule,
     EmployeeSponsorTaggingModule
+=======
+    MaxHealthMessageDialogModule,
+>>>>>>> b62f3088560587abe3b386846e5fa04134f12ce3
   ],
   providers: [
     DatePipe,

@@ -41,6 +41,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
   ngOnInit(): void {
+    console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;

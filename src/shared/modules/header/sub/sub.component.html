@@ -175,7 +175,11 @@
         [formGroup]="searchForm"
         class="mx-6 my-2"
       >
-        <div class="flex justify-between flex-wrap">
+        <div
+          class="flex justify-between flex-wrap"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+        >
           <div *ngFor="let question of questions; let i = index" class="w-1/45">
             <maxhealth-question
               [question]="question"
@@ -205,11 +209,8 @@
           <li
             [matMenuTriggerFor]="menu"
             class="mr-4 cursor-pointer max-health-primary-color"
-            [routerLink]="module.defaultPath"
-            routerLinkActive="active-link"
-            (isActiveChange)="onRouterLinkActive($event, module)"
-            [routerLinkActiveOptions]="{ exact: true }"
             [matMenuTriggerData]="module"
+            [ngClass]="{ active: activeSubModule?.title == module.title }"
           >
             {{ module.title }}
           </li>
@@ -236,7 +237,9 @@
               class="max-health-primary-color"
               [routerLink]="menuItem.defaultPath"
               disableRipple="true"
+              routerLinkActive="active-link"
               (isActiveChange)="onPageRouterLinkActive($event, menuItem)"
+              [routerLinkActiveOptions]="{ exact: true }"
             >
               {{ menuItem.title }}
             </button>
