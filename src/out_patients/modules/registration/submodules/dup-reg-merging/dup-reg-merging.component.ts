@@ -11,6 +11,7 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 import { FormControl, FormGroup } from '@angular/forms';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from '../../../../../shared/services/search.service';
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 
 
 
@@ -44,7 +45,8 @@ export class DupRegMergingComponent implements OnInit {
   constructor(private http: HttpService,
     public matDialog: MatDialog,
     private patientServie: PatientService,
-    private searchService: SearchService) { }
+    private searchService: SearchService,
+    private messageDialogService:MessageDialogService) { }
 
   config: any = {
     actionItems: true,
@@ -61,7 +63,7 @@ export class DupRegMergingComponent implements OnInit {
         type: 'number'
       },
       date: {
-        title: 'Regn.Date',
+        title: 'Reg.Date',
         type: 'date'
       },
       firstName: {
@@ -78,7 +80,7 @@ export class DupRegMergingComponent implements OnInit {
         type: 'string'
       },
       dob: {
-        title: 'Date of Birth',
+        title: 'DOB',
         type: 'date'
       },
       place: {
@@ -87,7 +89,7 @@ export class DupRegMergingComponent implements OnInit {
         tooltipColumn: "completeAddress",
       },
       phone: {
-        title: 'Phone No.',
+        title: 'Phone',
         type: 'number'
       },
       categoryIcons: {
@@ -107,12 +109,16 @@ export class DupRegMergingComponent implements OnInit {
   openDialog() {
 
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
-    matdialogref.afterClosed().subscribe(result => {     
+    matdialogref.afterClosed().subscribe(result => {  
+      this.messageDialogService.success("Patient has been merged successfully"); 
       this.getAllpatientsBySearch().subscribe((resultData) => {
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-      })
+      },(error:any)=>{
+        this.messageDialogService.error(error.error);
+      });
+     
     });
   }
   
@@ -152,7 +158,9 @@ export class DupRegMergingComponent implements OnInit {
                        
         });
       }) ;
-    })
+    },(error:any)=>{
+      this.messageDialogService.error(error.error);
+    });
 
   }
 
