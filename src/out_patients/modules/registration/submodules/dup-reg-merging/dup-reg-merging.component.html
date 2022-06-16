@@ -37,17 +37,18 @@
     </ul>           
   </nav>
   <mat-tab-nav-panel #tabPanel> 
-  <div  class="flex p-3 w-full h-3/4 display-block">    
-      <ng-container *ngIf="isAPIProcess">
+  <div  class="flex p-3 w-full h-4/5 display-block">    
+      <ng-container *ngIf="isAPIProcess"  class="w-full h-full">
         <maxhealth-table
+          class="w-full h-full"
           [config]="config"
           [data]="results"
           #table
         ></maxhealth-table>
       </ng-container>    
   </div>
-  <div class="float-right mt-3 mb-3 mr-3">
-    <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+  <div class="float-right mb-3 mr-3">
+    <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()" [disabled]="mergebuttonDisabled">Merge</button>
    </div>
   </mat-tab-nav-panel> 
 </section>

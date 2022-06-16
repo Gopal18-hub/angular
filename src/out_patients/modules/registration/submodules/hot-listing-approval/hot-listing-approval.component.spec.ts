@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ForeignerDialogComponent } from '../op-registration.component';
+import { HotListingApprovalComponent } from './hot-listing-approval.component';
 
-describe('ForeignerDialogComponent', () => {
-  let component: ForeignerDialogComponent;
-  let fixture: ComponentFixture<ForeignerDialogComponent>;
+describe('HotListingApprovalComponent', () => {
+  let component: HotListingApprovalComponent;
+  let fixture: ComponentFixture<HotListingApprovalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ForeignerDialogComponent ]
+      declarations: [ HotListingApprovalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ForeignerDialogComponent);
+    fixture = TestBed.createComponent(HotListingApprovalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

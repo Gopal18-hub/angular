@@ -10,6 +10,7 @@ import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
+import { SearchService } from '../../../../../shared/services/search.service';
 
 
 
@@ -22,6 +23,7 @@ export class DupRegMergingComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   results: any;
   isAPIProcess: boolean = false;
+  mergebuttonDisabled:boolean=true;
   name = '';
   dob = '';
   email = '';
@@ -30,19 +32,22 @@ export class DupRegMergingComponent implements OnInit {
   mobile = '';
 
   mergeSearchForm = new FormGroup({
-    name: new FormControl(''),   
+    name: new FormControl(''),
     mobile: new FormControl(''),
     dob: new FormControl(''),
     email: new FormControl(''),
     healthId: new FormControl(''),
-    aadhaarId:new FormControl('')
+    aadhaarId: new FormControl('')
   });
-   @ViewChild("table") tableRows!: MaxTableComponent
+  @ViewChild("table") tableRows: any
 
-  constructor(private http: HttpService, public matDialog: MatDialog,private patientServie: PatientService) { }
+  constructor(private http: HttpService,
+    public matDialog: MatDialog,
+    private patientServie: PatientService,
+    private searchService: SearchService) { }
 
   config: any = {
-    actionItems:true,
+    actionItems: true,
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
@@ -61,7 +66,8 @@ export class DupRegMergingComponent implements OnInit {
       },
       firstName: {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName",
       },
       age: {
         title: 'Age',
@@ -77,7 +83,8 @@ export class DupRegMergingComponent implements OnInit {
       },
       place: {
         title: 'Address',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "completeAddress",
       },
       phone: {
         title: 'Phone No.',
@@ -85,31 +92,72 @@ export class DupRegMergingComponent implements OnInit {
       },
       categoryIcons: {
         title: 'Category',
-        type:'image',
-        width:34
+        type: 'image',
+        width: 34
       }
     }
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      this.searchPatient(formdata.data);
+    });
+  }
 
   openDialog() {
-    
-   this.matDialog.open(MergeDialogComponent,{data:{tableRows:this.tableRows}})
-  }
 
-  searchPatient() {    
-    this.patientList = [];
-    this.getAllpatientsBySearch().subscribe((resultData) => {     
-      this.results = resultData;
-      this.results = this.patientServie.getAllCategoryIcons(this.results);
-      this.isAPIProcess = true;     
-    })  
-
+    const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
+    matdialogref.afterClosed().subscribe(result => {     
+      this.getAllpatientsBySearch().subscribe((resultData) => {
+        this.results = resultData;
+        this.results = this.patientServie.getAllCategoryIcons(this.results);
+        this.isAPIProcess = true;
+      })
+    });
   }
   
-  getAllpatientsBySearch() {
-     return this.http.get(ApiConstants.searchPatientApi('','', this.name,this.mobile,this.dob, this.aadhaarId,this.healthId));
+
+
+  searchPatient(formdata: any) {
+
+    if (formdata['name'] == '' && formdata['phone'] == '' 
+    && formdata['dob'] == '' && formdata['email'] == '')
+    {
+      return;
+    }
+    else if(formdata['name'] == '' && formdata['phone'] == '' 
+    && formdata['dob'] != '' && formdata['email'] == '')
+    {
+      return;
+    }
+       
+    this.patientList = [];
+    this.name = formdata['name'];
+    this.mobile  = formdata['phone'];
+    this.email = formdata['email'];
+    this.dob = formdata['dob'];
+    this.getAllpatientsBySearch().subscribe((resultData) => {
+      this.results = resultData;
+      this.results = this.patientServie.getAllCategoryIcons(this.results);
+      this.isAPIProcess = true;
+      setTimeout(()=>{        
+        this.tableRows.selection.changed.subscribe((res:any)=>{ 
+          if(this.tableRows.selection.selected.length> 1)
+          {
+            this.mergebuttonDisabled = false;   
+          }
+          else{
+            this.mergebuttonDisabled = true;   
+          }
+                       
+        });
+      }) ;
+    })
+
   }
- 
+
+  getAllpatientsBySearch() {
+    return this.http.get(ApiConstants.searchPatientApi('', '', this.name, this.mobile, this.dob, this.aadhaarId, this.healthId));
+  }
+
 }
