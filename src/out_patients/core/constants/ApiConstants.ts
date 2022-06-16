@@ -28,6 +28,11 @@ export namespace ApiConstants {
       environment.CommonApiUrl + "api/lookup/titlelookup/"+hspLocationid+"/0"
     );
   };
+  export const hotlistMasterDataLookUp= (hspLocationid: number) => {
+    return (  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0')
+     
+    };
+
   //OPERATOR WORKING STATION LOCATION, RESPOSE TYPE stationModel NEED TO CANCATINATE $hspLocation IN ENDPOINT
   export const stationLookup = (hspLocationid: number) => {
     environment.CommonApiUrl + "api/lookup/stationlookup/0/${hspLocationid}";
@@ -239,5 +244,7 @@ export namespace ApiConstants {
     return(     environment.PatientApiUrl + 'api/patient/getrejectedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
       );   
   };
- 
+
+     
+  
 }

@@ -136,9 +136,9 @@ export class HttpService {
 
   private __showSnackBar(data: any) {
     if (!data.success) {
-      this.messageDialog.error(data.message);
+    //  this.messageDialog.error(data.message);
     } else if (data.success && data.message) {
-      this.messageDialog.success(data.message);
+     // this.messageDialog.success(data.message);
     }
   }
 }

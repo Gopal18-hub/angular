@@ -5,6 +5,7 @@ import { ApiConstants } from '../../../../../../out_patients/core/constants/ApiC
 import { PatientSearchModel } from '../../../../../../out_patients/core/models/patientSearchModel';
 import { HttpService } from '../../../../../../shared/services/http.service';
 import { PatientmergeModel } from '../../../../../../out_patients/core/models/patientMergeModel';
+import { MessageDialogService } from '../../../../../../shared/ui/message-dialog/message-dialog.service';
 
 
 @Component({
@@ -18,7 +19,11 @@ export class MergeDialogComponent implements OnInit {
   mergePostModel:any[]=[];
   primaryid :number = 0;
 
-  constructor(private http: HttpService,@Inject(MAT_DIALOG_DATA) public data : any,private dialogRef: MatDialogRef<MergeDialogComponent>,private cookie:CookieService) { }
+  constructor(private http: HttpService,
+    @Inject(MAT_DIALOG_DATA) public data : any,
+    private dialogRef: MatDialogRef<MergeDialogComponent>,
+    private cookie:CookieService,
+    private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
     console.log(this.data.tableRows.selection._selected,"tableDialoagdata")
@@ -41,6 +46,7 @@ export class MergeDialogComponent implements OnInit {
     {
       this.dialogRef.close();    
       this.mergePostModel= [];  
+      
     });
   }  
 }
