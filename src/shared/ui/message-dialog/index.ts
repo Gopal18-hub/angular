@@ -21,4 +21,4 @@ import {
   ],
   providers: [],
 })
-export class MaxHealthTableModule {}
+export class MaxHealthMessageDialogModule {}

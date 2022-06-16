@@ -7,7 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 })
 export class MessageSuccessComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<MessageSuccessComponent>
+    public dialogRef: MatDialogRef<MessageSuccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {}
@@ -19,7 +19,7 @@ export class MessageSuccessComponent implements OnInit {
 })
 export class MessageInfoComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<MessageInfoComponent>
+    public dialogRef: MatDialogRef<MessageInfoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {}
@@ -27,11 +27,11 @@ export class MessageInfoComponent implements OnInit {
 
 @Component({
   selector: "maxhealth-warning-message",
-  templateUrl: "./warning.html",
+  templateUrl: "./error.html",
 })
 export class MessageWarningComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<MessageWarningComponent>
+    public dialogRef: MatDialogRef<MessageWarningComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {}
@@ -43,7 +43,7 @@ export class MessageWarningComponent implements OnInit {
 })
 export class MessageConfirmComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<MessageConfirmComponent>
+    public dialogRef: MatDialogRef<MessageConfirmComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {}
