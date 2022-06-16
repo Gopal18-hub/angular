@@ -30,6 +30,7 @@ import { NotesDialogComponent } from './submodules/op-registration/notes-dialog/
 import { HwcDialogComponent } from './submodules/op-registration/hwc-dialog/hwc-dialog.component';
 import { SeafarersDialogComponent } from './submodules/op-registration/seafarers-dialog/seafarers-dialog.component';
 import { ForeignerDialogComponent } from './submodules/op-registration/foreigner-dialog/foreigner-dialog.component';
+import { HotListingApprovalComponent } from './submodules/hot-listing-approval/hot-listing-approval.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ForeignerDialogComponent } from './submodules/op-registration/foreigner
           NotesDialogComponent,
           HwcDialogComponent,
           SeafarersDialogComponent,
-          ForeignerDialogComponent
+          ForeignerDialogComponent,
+          HotListingApprovalComponent
   ],
   imports: [
     RegistrationRoutingModule,
