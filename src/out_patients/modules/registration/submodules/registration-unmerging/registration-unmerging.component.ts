@@ -9,6 +9,8 @@ import { PatientmergeModel } from '../../../../../out_patients/core/models/patie
 import { CookieService } from '../../../../../shared/services/cookie.service';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTabLabel } from '@angular/material/tabs';
+import { PatientService } from "../../../../../out_patients/core/services/patient.service";
+import { SearchService } from '../../../../../shared/services/search.service';
 
 
 
@@ -39,6 +41,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   @ViewChild('table') table:any;
 
   config: any  = {
+    actionItems:true,
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','categoryIcons'],
@@ -86,9 +89,15 @@ export class RegistrationUnmergingComponent implements OnInit {
       }
     }
   }  
-  constructor(private http: HttpService, private cookie:CookieService) { }
+  constructor(private http: HttpService,
+     private cookie:CookieService,
+      private patientServie: PatientService,
+      private searchService :SearchService) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void { 
+    this.searchService.searchTrigger.subscribe((formdata)=>{
+        this.searchPatient(formdata.data);
+    });   
   }
   
   unMerge(){
@@ -101,15 +110,23 @@ export class RegistrationUnmergingComponent implements OnInit {
       this.unMergeresponse=resultdata;  
     // this.openModal('unmerge-modal-1');   
      this.unmergebuttonDisabled=true; 
+     this.unmergingList = [];
+     this.unMergePostModel = [];
+     
     },error=>{
       console.log(error);
     });   
   }
 
-  searchPatient() {
+  searchPatient(formdata:any) {
+    if(formdata['maxID'] == '' && formdata['ssn'] == '' )
+      return;
+      this.maxid = formdata['maxID'];
+      this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {
       this.unmergingList  = resultData;
       this.isAPIProcess = true; 
+      this.unmergingList = this.patientServie.getAllCategoryIcons(this.unmergingList,getmergepatientsearch);
       setTimeout(()=>{        
         this.table.selection.changed.subscribe((res:any)=>{ 
           if(this.table.selection.selected.length>= 1)
@@ -117,10 +134,11 @@ export class RegistrationUnmergingComponent implements OnInit {
         });
       }) ;
      
-    })
+    });
+    
   }
 
-   getAllunmergepatient(){
+   getAllunmergepatient(){   
     return this.http.get(ApiConstants.mergePatientSearchApi(this.maxid, this.ssn));    
   }
 

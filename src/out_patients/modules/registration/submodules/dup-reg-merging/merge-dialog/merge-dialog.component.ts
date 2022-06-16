@@ -39,7 +39,8 @@ export class MergeDialogComponent implements OnInit {
     let userId =105043
     this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
     {
-      this.dialogRef.close();      
+      this.dialogRef.close();    
+      this.mergePostModel= [];  
     });
   }  
 }

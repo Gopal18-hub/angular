@@ -9,7 +9,10 @@
       />
     </ng-container>
     <ng-container *ngSwitchCase="'string'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [innerHtml]="question.label"
+      ></mat-label>
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -181,7 +184,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="'radio'">
       <div class="full-width mb-4">
-        <label>{{ question.label }}: </label>
+        <label>{{ question.label }} </label>
         <mat-radio-group
           formControlName="floatLabel"
           class="flex flex-column"
@@ -367,7 +370,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="'checkbox'">
       <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
-      <ul>
+      <ul class="list-unstyled">
         <li *ngFor="let opt of question.options">
           <mat-checkbox [formControlName]="question.key">
             {{ opt.title }}
