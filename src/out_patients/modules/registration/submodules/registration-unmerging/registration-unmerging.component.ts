@@ -60,7 +60,8 @@ export class RegistrationUnmergingComponent implements OnInit {
       },
       patientName : {
         title: 'Name',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "patientName",
       },
       age : {
         title: 'Age',
@@ -76,7 +77,8 @@ export class RegistrationUnmergingComponent implements OnInit {
       },
       place : {
         title: 'Address',
-        type: 'string'
+        type: 'string',
+        tooltipColumn: "place",
       },
       phone : {
         title: 'Phone No.',
@@ -130,7 +132,14 @@ export class RegistrationUnmergingComponent implements OnInit {
       setTimeout(()=>{        
         this.table.selection.changed.subscribe((res:any)=>{ 
           if(this.table.selection.selected.length>= 1)
-              this.unmergebuttonDisabled = false;             
+          {
+            this.unmergebuttonDisabled = false;  
+          }
+          else
+          {
+            this.unmergebuttonDisabled = true;  
+          }
+                       
         });
       }) ;
      
