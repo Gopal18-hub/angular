@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { getmergepatientsearch } from "../models/getmergepatientsearch";
+import { PatientDetails } from "../models/patientDetailsModel.Model";
 import { PatientSearchModel } from "../models/patientSearchModel";
 
 @Injectable({
@@ -17,10 +18,15 @@ export class PatientService {
     ews: "EWS.svg",
     ins: "Ins_icon.svg",
     hwc: "HWC_icon.svg",
+    isCghsverified:"CGHS_Icon.svg",
   };
 
   categoryIconsActions: any = {
     cghs: {
+      action: "dialog",
+      properties: {},
+    },
+    isCghsverified: {
       action: "dialog",
       properties: {},
     },
@@ -37,6 +43,10 @@ export class PatientService {
 
   categoryIconsTooltip: any = {
     cghs: {
+      type: "static",
+      value: "CGHS",
+    },
+    isCghsverified: {
       type: "static",
       value: "CGHS",
     },
@@ -90,12 +100,12 @@ export class PatientService {
     return patientSearchModel as typeof model;
   }
 
-  getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch) {
+  getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch |PatientDetails) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
       if (
         this.categoryIcons[e] &&
-        patient[e as keyof (PatientSearchModel | getmergepatientsearch)]
+        patient[e as keyof (PatientSearchModel | getmergepatientsearch |PatientDetails)]
       ) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
@@ -110,6 +120,7 @@ export class PatientService {
                 this.categoryIconsTooltip[e]["value"] as keyof (
                   | PatientSearchModel
                   | getmergepatientsearch
+                  | PatientDetails
                 )
               ];
           }
