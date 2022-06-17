@@ -31,6 +31,8 @@ import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.co
 import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
 import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
 import { ReportService } from "../../../../../shared/services/report.service";
+import { PatientService } from "../../../../../out_patients/core/services/patient.service";
+import { SearchService } from "../../../../../shared/services/search.service";
 import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
 import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
 
@@ -69,7 +71,7 @@ export class OpRegistrationComponent implements OnInit {
   issueAt: string | undefined;
   passportNum: number | undefined;
   issuedate: Date | undefined;
-
+  categoryIcons:[]=[];
   registrationFormData = {
     title: "",
     type: "object",
@@ -325,7 +327,9 @@ export class OpRegistrationComponent implements OnInit {
     private http: HttpService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    private reportService: ReportService
+    private reportService : ReportService,
+    private patientService:PatientService,
+    private searchService:SearchService
   ) {}
 
   ngOnInit(): void {
@@ -379,6 +383,34 @@ export class OpRegistrationComponent implements OnInit {
         issueAt: this.issueAt,
       },
     });
+
+    this.searchService.searchTrigger.subscribe((formdata:any)=>{
+      this.searchPatient(formdata.data);
+    });
+  }
+
+  searchPatient(formdata: any) {
+    if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] == "" &&
+      formdata["maxID"] == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      return;
+    } else if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] != "" &&
+      formdata["maxID"] == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      return;
+    } else {
+      //need to implement search functionality
+    }
   }
 
   ngAfterViewInit(): void {
@@ -390,6 +422,12 @@ export class OpRegistrationComponent implements OnInit {
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
+    );
+    //Adding event to filter states based country
+    this.questions[27].elementRef.addEventListener(
+      "blur",
+      this.getStatesByCountry.bind(this),
+      this.getCitiesByCountry.bind(this)
     );
     this.questions[2].elementRef.addEventListener(
       "change",
@@ -713,6 +751,33 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
+  //Get StateList Basedon Country
+  getStatesByCountry(){
+    this.http
+    .get(ApiConstants.stateByCountryId(this.questions[27].options.value))
+    .subscribe((resultData: any) => {
+      this.stateList = resultData;
+     // console.log(this.localityListByPin);
+      this.questions[26].options = this.stateList.map((l) => {
+        return { title: l.stateName, value: l.id };
+      });
+    });
+  }
+
+  //Get CityList based on country
+  getCitiesByCountry(){
+    this.http
+    .get(ApiConstants.CityDetail(this.questions[27].options.value))
+    .subscribe((resultData: any) => {
+      this.cityList = resultData;
+     // console.log(this.localityListByPin);
+      this.questions[26].options = this.cityList.map((l) => {
+        return { title: l.cityName, value: l.id };
+      });
+    });
+  }
+
+  //Get Patient Details by Max ID
   MaxIDExist: boolean = false;
   getPatientDetailsByMaxId() {
     console.log(this.OPRegForm.value.maxid);
@@ -722,6 +787,8 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
+        this.categoryIcons = this.patientService.getCategoryIcons(this.patientDetails);
+        console.log( this.categoryIcons);
         this.MaxIDExist = true;
         this.checkForMaxID();
         //RESOPONSE DATA BINDING WITH CONTROLS
@@ -729,6 +796,7 @@ export class OpRegistrationComponent implements OnInit {
 
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
         this.registeredPatientDetails(this.patientDetails);
+      
       });
     // console.log(this.localityListByPin);
     // this.questions[24].options = this.cityList.map((l) => {
