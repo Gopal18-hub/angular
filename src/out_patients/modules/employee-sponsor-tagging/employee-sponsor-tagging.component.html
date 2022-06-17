@@ -5,96 +5,141 @@
                 <a class="ml-3" mat-tab-link [active]="true">Employee Sponsor Tagging</a> 
             </li>
         </ul>
-    
-    
     </nav>
     <mat-tab-nav-panel #tabPanel>
-        <div >
-        <form >
-            <!-- <mat-form-field > -->
-        <div class="flex firstrow">
-            <div >
-                <mat-label class="mr-5 employeelabelclass">Max ID</mat-label>
-                <input type="text" class=" maxidclass" matInput name="maxid" [(ngModel)]="maxid"  >
-            </div>
-            <div >
-                <mat-label  class=" ml-2 mr-5 employeelabelclass">Mobile No</mat-label>
-                <input type="text" class="maxidclass" matInput   >
-            </div>
-            <div >
-                <mat-label  class=" ml-2 mr-5 employeelabelclass">Employee code</mat-label>
-                <input type="text" class="maxidclass" matInput  >
-            </div>
-            <div >
-                <mat-label  class="ml-2 mr-5 employeelabelclass">Company</mat-label>
-                <input type="text" class="maxidclass" matInput  >
-
-               <!-- <maxhealth-question 
-               [question]="">
-
-               </maxhealth-question> -->
-            </div>
-            <div >
-            <mat-label  class=" ml-2 mr-5 employeelabelclass">Corporate</mat-label>
-                <input type="text" class="maxidclass" matInput  >
-            </div>
-        </div>
-        <div class="p-4 flex  firstrow ">
-            <div>
-                <mat-label class="mr-5 employeelabelclass">Name:</mat-label>
-                <p></p>
-            </div>
-            <div>
-                <mat-label class=" ml-5 mr-5 employeelabelclass">Age:</mat-label>
-                <p></p>
-            </div>
-            <div>
-                <mat-label class=" ml-5 mr-5 employeelabelclass">Gender:</mat-label>
-                <p></p>
-            </div>
-            <div>
-                <mat-label class=" ml-5 mr-5 employeelabelclass">DOB:</mat-label>
-                <p></p>
-            </div>
-            <div>
-                <mat-label class=" ml-5 mr-5 employeelabelclass">Nationality:</mat-label>
-                <p></p>
-            </div>
-            <div>
-                <mat-label class=" ml-5 mr-5 employeelabelclass" >SSN:</mat-label>
-                <p></p>
-            </div>
-
-
-        </div>
         <div>
-        <mat-label class="employeelabelclass">Employee Dependent  Details</mat-label>  
+            <form>
+                <div>
+                    <maxhealth-question
+                    [question]="question[0]"
+                    [form]="loginForm"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    >
+                      
+                    </maxhealth-question>
+                </div>
+            </form>
         </div>
-       
-            <!-- 
-                </mat-form-field> -->
+    </mat-tab-nav-panel>
+   <!-- <mat-tab-nav-panel #tabPanel>
+        <div >
+        <form [formGroup]="employeesponsorform" >
+            <div class="flex firstrow">
+                <div >
+                    <mat-label class="mr-5 employeelabelclass">Max ID</mat-label>
+                    <input type="text" class=" maxidclass" matInput  formControlName="maxId" (keydown.enter)="maxidApicall(employeesponsorform)"  >
+                </div>
+                <div >
+                    <mat-label  class=" ml-2 mr-5 employeelabelclass">Mobile No</mat-label>
+                    <input type="text" type="number" class="maxidclass" matInput formControlName="mobileNo"  >
+                </div>
+                <div >
+                    <mat-label  class=" ml-2 mr-5 employeelabelclass">Employee code</mat-label>
+                    <input type="text" class="maxidclass" matInput formControlName="employeeCode" >
+                </div>
+                <div >
+                    <mat-label  class="ml-2 mr-5 employeelabelclass">Company</mat-label>
+                 
+                <a href="www.google.com" (click)="disabled(employeesponsorform)">IOM</a>
+                <mat-form-field >
+                    <mat-label>Select</mat-label>
+                    <mat-select  formControlName="company" >
+                        <mat-option *ngFor="let value of hospitals" value="value.location"   >
+                    {{value.hospitalName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
+                <div >
+                <mat-label  class=" ml-2 mr-5 employeelabelclass">Corporate</mat-label>
+                <mat-form-field>
+                    <mat-label>Select</mat-label>
+                <mat-select  formControlName="corporate">
+                    <mat-option *ngFor="let value of hospitals" value="value.location" >
+                            {{value.Location}}
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+                </div>
+            </div>
+            <div class="p-4 flex  firstrow ">
+                <div>
+                    <mat-label class="mr-5 employeelabelclass">Name:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-label class=" ml-5 mr-5 employeelabelclass">Age:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-label class=" ml-5 mr-5 employeelabelclass">Gender:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-label class=" ml-5 mr-5 employeelabelclass">DOB:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-label class=" ml-5 mr-5 employeelabelclass">Nationality:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-label class=" ml-5 mr-5 employeelabelclass" >SSN:</mat-label>
+                    <p></p>
+                </div>
+                <div>
+                    <mat-checkbox formControlName="datecheckbox"
+                    >
+                    </mat-checkbox>
+                    <mat-form-field >
+                        <mat-label>From Date</mat-label>
+                        <input matInput  [matDatepicker]="picker1"  formControlName="fromDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field >
+                            <mat-label>To Date</mat-label>
+                            <input matInput  [matDatepicker]="picker2" formControlName="toDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker2" ></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                           
+                </div>
+
+
+            </div>
+            <div>
+            <mat-label class="employeelabelclass">Employee Dependent  Details</mat-label>  
+            </div>       
         </form>
         </div>
 
         <div class="p-3 w-full h-2/5 display-block" >
-            <!-- <ng-container> -->
+          
                 <maxhealth-table [config]="config1" >
                     
                 </maxhealth-table>
-            <!-- </ng-container> -->
+            
 
         </div>
 
         <div class=" w-full h-2/5 display-block" >
-            <!-- <ng-container> -->
+          
                 <maxhealth-table [config]="config2" >
                     
                 </maxhealth-table>
-            <!-- </ng-container> -->
+          
 
+        </div>
+
+        <div>
+            <button mat-raised-button color="primary"   (click)="opendialog()">Save</button>
+    <button mat-raised-button color="primary" (click)="deletebuttonclick()">Delete</button>
+    <button mat-raised-button color="primary">Clear</button>
         </div>
         
 
         
-    </mat-tab-nav-panel>
+    </mat-tab-nav-panel>  -->
 </section>

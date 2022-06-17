@@ -4,9 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
 import { HeaderModule } from "../../../shared/modules/header";
-
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
@@ -15,6 +13,7 @@ import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog"
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
 import { DatePipe } from "@angular/common";
 import { APP_BASE_HREF } from "@angular/common";
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,12 +25,10 @@ import { APP_BASE_HREF } from "@angular/common";
     BillingModule,
     RegistrationModule,
     HttpClientModule,
-<<<<<<< HEAD
-    MaxHealthSnackBarModule,
-    EmployeeSponsorTaggingModule
-=======
+    //MaxHealthSnackBarModule,
+    EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
->>>>>>> b62f3088560587abe3b386846e5fa04134f12ce3
+  
   ],
   providers: [
     DatePipe,
