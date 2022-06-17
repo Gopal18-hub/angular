@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="185" height="143" viewBox="0 0 185 143">
+  <g id="Group_544" data-name="Group 544" transform="translate(-712.001 -577)">
+    <text id="No_Record_Found" data-name="No Record Found" transform="translate(712.001 715)" fill="#c1c1c1" font-size="24" font-family="ProximaNova-Regular, Proxima Nova"><tspan x="0" y="0">No Record Found</tspan></text>
+    <g id="Group_548" data-name="Group 548" transform="translate(-392 32)">
+      <circle id="Ellipse_49" data-name="Ellipse 49" cx="45" cy="45" r="45" transform="translate(1152 545)" fill="#d8d8d8"/>
+      <circle id="Ellipse_50" data-name="Ellipse 50" cx="6.5" cy="6.5" r="6.5" transform="translate(1174 573)" fill="#fff"/>
+      <circle id="Ellipse_51" data-name="Ellipse 51" cx="6.5" cy="6.5" r="6.5" transform="translate(1208 573)" fill="#fff"/>
+      <path id="Path_216" data-name="Path 216" d="M18751.229-3008.064a1,1,0,0,1-.777-.37,1,1,0,0,1,.146-1.407,47.213,47.213,0,0,1,6.342-4.17,39.4,39.4,0,0,1,6.408-2.871,23.131,23.131,0,0,1,7.328-1.325,21.445,21.445,0,0,1,7.15,1.33,33.245,33.245,0,0,1,6,2.885,38.308,38.308,0,0,1,5.734,4.194,1,1,0,0,1,.055,1.413,1,1,0,0,1-.734.32,1,1,0,0,1-.68-.266,36.944,36.944,0,0,0-5.445-3.971c-2.961-1.781-7.459-3.905-12.076-3.905-8.953,0-18.719,7.84-18.816,7.919A1,1,0,0,1,18751.229-3008.064Z" transform="translate(-17573 3621)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
