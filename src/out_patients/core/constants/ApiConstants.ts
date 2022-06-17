@@ -28,10 +28,9 @@ export namespace ApiConstants {
       environment.CommonApiUrl + "api/lookup/titlelookup/"+`${hspLocationid}`+"/0"
     );
   };
-  export const hotlistMasterDataLookUp= (hspLocationid: number) => {
-    return (  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0')
+  export const hotlistMasterDataLookUp=  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0';
      
-    };
+  
 
   //OPERATOR WORKING STATION LOCATION, RESPOSE TYPE stationModel NEED TO CANCATINATE $hspLocation IN ENDPOINT
   export const stationLookup = (hspLocationid: number) => {
@@ -140,22 +139,22 @@ export namespace ApiConstants {
     firstName: string,
     lastname: string,
     middleName: string,
-    lastName: string,
-    hotlistingcomment: string,
+       hotlistingcomment: string,
     type: string,
     userid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/patienthotlisting/${maxId}/${hotlistingHeader}/${locationid}?firstName=${firstName}&middleName=${middleName}&lastName=${lastName}&hotlistingComment==${hotlistingcomment}&type==${type}&userId==${userid}"
+      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment=="+hotlistingcomment+"&type=="+type+"&userId=="+userid
     );
   };
+
 
   //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientdmsrefresh/${IaCode}/${RegistrationNo}"
+      "api/patient/getpatientdmsrefresh/"+"IaCode}/"+"RegistrationNo}"
     );
   };
 

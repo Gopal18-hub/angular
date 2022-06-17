@@ -33,6 +33,8 @@ import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
 import { ReportService } from "../../../../../shared/services/report.service";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
+import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
+import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
 
 export interface DialogData {
   expieryDate: Date;
@@ -87,9 +89,9 @@ export class OpRegistrationComponent implements OnInit {
       mobileNumber: {
         type: "number",
         title: "Mobile Number",
-        required: true,
-        minimum: 10,
-        maximum: 10,
+        required: true
+        // minimum: 10,
+        // maximum: 10,
       },
       title: {
         type: "autocomplete",
@@ -100,7 +102,7 @@ export class OpRegistrationComponent implements OnInit {
       firstName: {
         type: "string",
         title: "First Name",
-        required: true,
+        required: true
       },
       middleName: {
         type: "string",
@@ -121,7 +123,6 @@ export class OpRegistrationComponent implements OnInit {
       dob: {
         type: "date",
         title: "Date of Birth",
-        required: true,
       },
       age: {
         type: "number",
@@ -142,36 +143,44 @@ export class OpRegistrationComponent implements OnInit {
       fatherSpouse: {
         type: "autocomplete",
         list: this.fatherSpouseOptionList,
+        required: false,
       },
       fatherSpouseName: {
         type: "string",
         title: "",
+        required: false,
       },
       motherName: {
         type: "string",
         title: "Mother's Name",
+        required: false,
       },
       altLandlineName: {
         type: "number",
         title: "Alt Contact/Landline",
-        conditions: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
+        // pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
+        required: false,
       },
       idenityType: {
         type: "autocomplete",
         title: "Identity",
         list: this.idTypeList,
+        required: false,
       },
       idenityValue: {
         type: "string",
         title: "&nbsp",
+        required: false,
       },
       adhaarId: {
         type: "number",
         title: "Aadhaar ID",
+        required: false,
       },
       healthId: {
         type: "string",
         title: "Health ID",
+        required: false,
       },
       address: {
         type: "string",
@@ -196,7 +205,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "",
         // required property is dependent on country and text will be enabled on select of others
-        required: true,
+        required: false,
         hidden: true,
       },
       city: {
@@ -286,26 +295,18 @@ export class OpRegistrationComponent implements OnInit {
           { title: "Customer agrees to receive Promotional Information" },
         ],
       },
-      cash: {
-        type: "radio",
-        required: true,
-        options: [{ title: "Cash" }],
-      },
-      psuGovt: {
+      paymentMethod: {
         type: "radio",
         required: false,
-        options: [{ title: "PSU/Govt" }],
+        options: [{ title:"Cash",value: "cash" },{ title:"PSU/Govt",value:"psu/govt" },{ title:"EWS",value: "ews" },{title:"Corporate/Insurance", value: "ins"}],
+        defaultValue: "cash",
       },
-      ews: {
-        type: "radio",
-        required: false,
-        options: [{ title: "EWS" }],
-      },
-      Insurance: {
-        type: "radio",
-        required: false,
-        options: [{ title: "Corporate/Insurance" }],
-      },
+     
+      // Insurance: {
+      //   type: "radio",
+      //   required: false,
+      //   options: [],
+      // },
       sourceOfInput: {
         type: "autocomplete",
         title: "Source of Info about Max Healthcare",
@@ -316,6 +317,9 @@ export class OpRegistrationComponent implements OnInit {
   };
   OPRegForm!: FormGroup;
   questions: any;
+  hotlistMasterList: hotlistingreasonModel[] = [];
+  hotlistquestion: any;
+  hotlistRemark: any;
 
   constructor(
     private formService: QuestionControlService,
@@ -338,11 +342,14 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+    // this.Hotlistform=formResult.form;
+    // this.hotlistquestion=formResult.questions;
 
     //LIST FOR FATHER/SPOUSE
     this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
       return { title: l.title, value: l.value };
     });
+
     this.getTitleList();
     this.getSourceOfInfoList();
     this.getAgeTypeList();
@@ -356,6 +363,15 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
   }
+
+  checkForMaxID() {
+    if (this.MaxIDExist) {
+      this.OPRegForm.controls["hotlist"].enable();
+    } else {
+      this.OPRegForm.controls["hotlist"].disable();
+    }
+  }
+
   openForeigner() {
     this.matDialog.open(ForeignerDialogComponent, {
       width: "30vw",
@@ -398,7 +414,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.checkForMaxID();
     console.log(this.passportNum);
+
+    // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -437,11 +456,11 @@ export class OpRegistrationComponent implements OnInit {
     this.questions[28].elementRef.addEventListener(
       "blur",
       this.onNationalityModify.bind(this)
-    )
+    );
     this.questions[8].elementRef.addEventListener(
       "blur",
       this.onageCalculator.bind(this)
-    )
+    );
     // this.questions[30].elementRef.addEventListener(
     //   "click",
     //   this.openHotListDialog.bind(this)
@@ -611,16 +630,99 @@ export class OpRegistrationComponent implements OnInit {
       height: "30vh",
     });
   }
+
+  gethotlistMasterData() {
+    this.http
+      .get(ApiConstants.hotlistMasterDataLookUp)
+      .subscribe((resultData: hotlistingreasonModel[]) => {
+        this.hotlistMasterList = resultData;
+        // this.Hotlistform.hotlistTitle
+        this.hotlistquestion[0].options = this.hotlistMasterList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
+  }
+
+  Hotlistform = {
+    title: "",
+    type: "object",
+    properties: {
+      hotlistTitle: {
+        type: "autocomplete",
+        title: "Hot List",
+        required: true,
+        list: this.hotlistMasterList,
+      },
+      reason: {
+        type: "date",
+        title: "Date of Birth",
+        required: true,
+      },
+    },
+  };
+  hotlistReason: string = "";
+
   openHotListDialog() {
-    const dialogref = this.matDialog.open(HotListingDialogComponent, {
+    // const dialogref = this.matDialog.open(HotListingDialogComponent, {
+    //   width: "30vw",
+    //   height: "52vh",
+    // });
+
+    const dialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
       height: "52vh",
+      data: {
+        title: "Hot Listing",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            hotlistTitle: {
+              type: "autocomplete",
+              title: "Hot Listing",
+              required: true,
+              list: this.hotlistMasterList,
+            },
+            reason: {
+              type: "string",
+              title: "Remark",
+              required: true,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
     });
     dialogref.afterClosed().subscribe((result) => {
+      this.hotlistReason = result.hotlistTitle;
+      this.hotlistRemark = result.reason;
+      this.postHotlistComment();
       console.log("The dialog was closed");
     });
   }
 
+  postHotlistComment() {
+    this.http
+      .get(
+        ApiConstants.hotlistedPatient(
+          this.patientDetails.registrationno,
+          this.hotlistReason,
+          this.cookie.get("HSPLocationId"),
+          this.patientDetails.firstname,
+          this.patientDetails.lastName,
+          this.patientDetails.middleName,
+          this.hotlistRemark,
+          "",
+          Number(this.cookie.get("UserId"))
+        )
+      )
+      .subscribe((resultData: any) => {
+        console.log(resultData);
+        // this.questions[24].options = this.cityList.map((l) => {
+        //   return { title: l.cityName, value: l.id };
+      });
+  }
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
@@ -676,6 +778,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //Get Patient Details by Max ID
+  MaxIDExist: boolean = false;
   getPatientDetailsByMaxId() {
     console.log(this.OPRegForm.value.maxid);
     let regNumber = this.OPRegForm.value.maxid.split(".")[1];
@@ -686,6 +789,8 @@ export class OpRegistrationComponent implements OnInit {
         this.patientDetails = resultData;
         this.categoryIcons = this.patientService.getCategoryIcons(this.patientDetails);
         console.log( this.categoryIcons);
+        this.MaxIDExist = true;
+        this.checkForMaxID();
         //RESOPONSE DATA BINDING WITH CONTROLS
         this.setValuesToOPRegForm(this.patientDetails);
 
@@ -711,7 +816,6 @@ export class OpRegistrationComponent implements OnInit {
         // this.questions[24].options = this.cityList.map((l) => {
         //   return { title: l.cityName, value: l.id };
       });
-    
   }
 
   onUpdatePatientDetail() {
@@ -721,17 +825,17 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: PatientDetails) => {
         this.populateUpdatePatientDetail(resultData);
         console.log(resultData);
-             });
+      });
   }
   postForm() {
     console.log(this.getPatientSubmitRequestBody());
-    // this.http
-    //   .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
-    //   .subscribe((resultData: PatientDetails) => {
-    //     this.setValuesToOPRegForm(resultData);
-    //     console.log(resultData);
-       
-    //   });
+    this.http
+      .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
+      .subscribe((resultData: PatientDetails) => {
+        this.setValuesToOPRegForm(resultData);
+        console.log(resultData);
+
+      });
   }
 
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
@@ -911,12 +1015,17 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   updateRequestBody!: UpdatepatientModel;
-  getPatientUpdatedReqBody():UpdatepatientModel {
-    return this.updateRequestBody = new UpdatepatientModel(
+  getPatientUpdatedReqBody(): UpdatepatientModel {
+    return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
-      this.datepipe.transform(this.patientDetails.regDateTime==null?Date.now():this.patientDetails.regDateTime, "yyyy-MM-ddThh:mm:ss")||"1900-01-01T00:00:00",
+      this.datepipe.transform(
+        this.patientDetails.regDateTime == null
+          ? Date.now()
+          : this.patientDetails.regDateTime,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || "1900-01-01T00:00:00",
       this.OPRegForm.value.motherName,
       this.getFather(),
       this.getFather() === "" ? false : true,
@@ -956,10 +1065,8 @@ export class OpRegistrationComponent implements OnInit {
       "", //fee reason
       0, //company id
       Number(this.cookie.get("HSPLocationId")),
-      this.datepipe.transform(
-        Date.now(),
-        "yyyy-MM-ddThh:mm:ss"
-      ) || "1900-01-01T00:00:00", //lat updted
+      this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") ||
+        "1900-01-01T00:00:00", //lat updted
       "vip reason",
       this.OPRegForm.value.dob == "" ? true : false,
       this.OPRegForm.value.locality.value || 0,
@@ -994,9 +1101,9 @@ export class OpRegistrationComponent implements OnInit {
       "this.seafarerObj.FDPGroup",
       false,
       " this.hwcObj.HWCRemarks",
-      this.OPRegForm.value.idenityType.value||0,
-      this.OPRegForm.value.idenityValue||""
-    );
+      this.OPRegForm.value.idenityType.value || 0,
+      this.OPRegForm.value.idenityValue || ""
+    ));
   }
 
   //WORKING ON THE BELOW FUNCTION
@@ -1053,7 +1160,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.mobileNumber,
       "",
       this.OPRegForm.value.emailId,
-      "Cash", //PAGER NEED TO CHECK HOW CAN BE SENT
+      this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       this.OPRegForm.value.nationality.value,
       false,
@@ -1200,29 +1307,29 @@ export class OpRegistrationComponent implements OnInit {
     );
   }
 
-  
-  openReportModal(btnname : string){
-    if(btnname == "PrintLabel"){ 
-      this.reportService.getOPRegistrationPrintLabel(this.OPRegForm.value.maxid);
+  openReportModal(btnname: string) {
+    if (btnname == "PrintLabel") {
+      this.reportService.getOPRegistrationPrintLabel(
+        this.OPRegForm.value.maxid
+      );
       {
         console.log("success");
-     }   
-    }
-    else if(btnname == "PrintForm"){
-      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid)
-      {
-         console.log("success");
       }
-    }
-    else if(btnname == "PrintOD"){
-      this.reportService.getOPRegistrationOrganDonorForm(this.OPRegForm.value.maxid) 
-          console.log("success");
-           
+    } else if (btnname == "PrintForm") {
+      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid);
+      {
+        console.log("success");
+      }
+    } else if (btnname == "PrintOD") {
+      this.reportService.getOPRegistrationOrganDonorForm(
+        this.OPRegForm.value.maxid
+      );
+      console.log("success");
     }
   }
 
   //for Date of birth and age calculation
-  showAge: number | undefined;;
+  showAge: number | undefined;
   showAgeType: any;
   dateNotValid: boolean = false;
   convetAge: Date = new Date();
@@ -1232,7 +1339,7 @@ export class OpRegistrationComponent implements OnInit {
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
-    if (this.OPRegForm.value.dob == '') {
+    if (this.OPRegForm.value.dob == "") {
       this.OPRegForm.value.age = null;
       this.OPRegForm.value.ageType = null;
     }
@@ -1243,12 +1350,13 @@ export class OpRegistrationComponent implements OnInit {
     }
     console.log(this.OPRegForm.value.age);
 
-    if (new Date((this.OPRegForm.value.dob)) > new Date(Date.now())) {
+    if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
       this.dateNotValid = true;
       this.OPRegForm.value.age = null;
       this.OPRegForm.value.ageType = null;
-      let element: HTMLElement = document.getElementById('saveform') as HTMLElement;
-
+      let element: HTMLElement = document.getElementById(
+        "saveform"
+      ) as HTMLElement;
     } else {
       this.dateNotValid = false;
     }
@@ -1256,26 +1364,30 @@ export class OpRegistrationComponent implements OnInit {
 
     if (year > 1000) {
       if (this.OPRegForm.value.dob) {
-        this.timeDiff = new Date(Date.now()).getFullYear() - new Date(this.OPRegForm.value.dob).getFullYear();
+        this.timeDiff =
+          new Date(Date.now()).getFullYear() -
+          new Date(this.OPRegForm.value.dob).getFullYear();
         if (this.timeDiff <= 0) {
-          this.timeDiff = new Date(Date.now()).getMonth() - new Date(this.OPRegForm.value.dob).getMonth();
+          this.timeDiff =
+            new Date(Date.now()).getMonth() -
+            new Date(this.OPRegForm.value.dob).getMonth();
 
           if (this.timeDiff <= 0) {
-            this.timeDiff = new Date(Date.now()).getDate() - new Date(this.OPRegForm.value.dob).getDate();
+            this.timeDiff =
+              new Date(Date.now()).getDate() -
+              new Date(this.OPRegForm.value.dob).getDate();
             if (this.timeDiff <= 0) {
-
-            }
-            else {
-              this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));            
+            } else {
+              this.OPRegForm.controls["age"].setValue(
+                Math.floor(this.timeDiff)
+              );
               this.OPRegForm.controls["ageType"].setValue({
                 title: this.ageTypeList[0].name,
                 value: this.ageTypeList[0].id,
               });
               console.log(this.ageTypeList[0].name);
             }
-          }
-
-          else {
+          } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
             this.OPRegForm.controls["ageType"].setValue({
               title: this.ageTypeList[3].name,
@@ -1283,19 +1395,18 @@ export class OpRegistrationComponent implements OnInit {
             });
             console.log(this.ageTypeList[3].name);
           }
-        }
-
-        else {
+        } else {
           let currentmonth = new Date(Date.now()).getMonth();
           let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
           let monthDiff = currentmonth - MonthofDOB;
           let monthDiff2 = MonthofDOB - currentmonth;
-          if ((monthDiff <= 1) && (monthDiff2 >= 1) && this.timeDiff == 1) {
+          if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
             if (monthDiff < 12 && this.timeDiff == 1) {
               if (monthDiff <= 0) {
-                this.OPRegForm.controls["age"].setValue((12 - MonthofDOB) + currentmonth);
-              }
-              else {
+                this.OPRegForm.controls["age"].setValue(
+                  12 - MonthofDOB + currentmonth
+                );
+              } else {
                 this.OPRegForm.controls["age"].setValue(monthDiff);
               }
             }
@@ -1303,8 +1414,7 @@ export class OpRegistrationComponent implements OnInit {
               title: this.ageTypeList[3].name,
               value: this.ageTypeList[3].id,
             });
-          }
-          else {
+          } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
             this.OPRegForm.controls["ageType"].setValue({
               title: this.ageTypeList[4].name,
@@ -1313,14 +1423,12 @@ export class OpRegistrationComponent implements OnInit {
             console.log(this.ageTypeList[4].name);
           }
         }
-      }
-      else {
+      } else {
         this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
         console.log(this.OPRegForm.value.ageType);
       }
     }
   }
-
 }
 
 // function ngAfterViewInit() {

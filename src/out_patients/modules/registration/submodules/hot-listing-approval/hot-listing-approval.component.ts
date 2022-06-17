@@ -158,7 +158,7 @@ export class HotListingApprovalComponent implements OnInit {
   }
   this.showmain("Hot Listing Approval");
   }
-  hsplocationId:any = Number(this.cookie.get('HSPLocationId'));
+  hsplocationId:any = this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
