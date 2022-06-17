@@ -1,11 +1,14 @@
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper">
-  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-    <ul class="list-unstyled flex items-end">
-      <li class="ml-3">
-        <a mat-tab-link [active]="true"> OP Registration</a>
-      </li>
-    </ul>
-  </nav>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">   
+      <ul class="list-unstyled flex items-end ">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true"> OP Registration</a>
+        </li>
+      </ul>    
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img [src]="icon['src']" [alt]="icon['tooltip']" width="45px" class="mt-1">
+    </div>  
+  </nav> 
   <mat-tab-nav-panel #tabPanel>
     <div
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
