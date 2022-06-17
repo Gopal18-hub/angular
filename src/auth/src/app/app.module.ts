@@ -15,6 +15,12 @@ import { DashboardModule } from "@modules/dashboard";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
 import { ADAuthService } from "../../../auth/core/services/adauth.service";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
+import { MatDialogModule } from "@angular/material/dialog";
+import { AuthService } from "../../../shared/services/auth.service";
+import { HttpService } from "../../../shared/services/http.service";
+import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "../../../shared/services/search.service";
+import { CookieService } from "../../../shared/services/cookie.service";
 
 import { APP_BASE_HREF } from "@angular/common";
 
@@ -30,6 +36,7 @@ import { APP_BASE_HREF } from "@angular/common";
     SignupModule,
     OpenIDModule,
     DashboardModule,
+    MatDialogModule
   ],
   providers: [
     {
@@ -39,6 +46,11 @@ import { APP_BASE_HREF } from "@angular/common";
     },
     ADAuthService,
     AuthGuardService,
+    AuthService,
+    HttpService,
+    MessageDialogService,
+    SearchService,
+    CookieService,
     { provide: APP_BASE_HREF, useValue: "/" },
   ],
   bootstrap: [AppComponent],
