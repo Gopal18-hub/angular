@@ -1,15 +1,13 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { DynamicDefaultUiComponent } from './dynamic-default-ui.component';
+import { EmptyPlaceholderComponent } from './empty-placeholder.component';
 
 @NgModule({
     imports: [
       CommonModule,      
     ],
     exports: [],
-    declarations: [
-    DynamicDefaultUiComponent
-  ],
+    declarations: [ EmptyPlaceholderComponent ],
     providers: [],
   })
-  export class DynamicDefaultuiModule {}
+  export class EmptyPlaceholderModule {}

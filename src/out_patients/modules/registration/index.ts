@@ -32,6 +32,7 @@ import { SeafarersDialogComponent } from "./submodules/op-registration/seafarers
 import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner-dialog/foreigner-dialog.component";
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
+import { EmptyPlaceholderModule } from "src/shared/ui/empty-placeholder";
 
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
@@ -79,6 +80,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
     ReactiveFormsModule,
     MatIconModule,
     MatSelectModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [

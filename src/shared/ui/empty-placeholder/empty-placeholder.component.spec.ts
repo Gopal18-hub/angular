@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DynamicDefaultUiComponent } from './dynamic-default-ui.component';
+import { EmptyPlaceholderComponent } from './empty-placeholder.component';
 
 describe('DynamicDefaultUiComponent', () => {
-  let component: DynamicDefaultUiComponent;
-  let fixture: ComponentFixture<DynamicDefaultUiComponent>;
+  let component: EmptyPlaceholderComponent;
+  let fixture: ComponentFixture<EmptyPlaceholderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DynamicDefaultUiComponent ]
+      declarations: [ EmptyPlaceholderComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DynamicDefaultUiComponent);
+    fixture = TestBed.createComponent(EmptyPlaceholderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
