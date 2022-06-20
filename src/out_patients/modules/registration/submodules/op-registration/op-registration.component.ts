@@ -71,7 +71,7 @@ export class OpRegistrationComponent implements OnInit {
   issueAt: string | undefined;
   passportNum: number | undefined;
   issuedate: Date | undefined;
-  categoryIcons:[]=[];
+  categoryIcons: [] = [];
   registrationFormData = {
     title: "",
     type: "object",
@@ -89,7 +89,7 @@ export class OpRegistrationComponent implements OnInit {
       mobileNumber: {
         type: "number",
         title: "Mobile Number",
-        required: true
+        required: true,
         // minimum: 10,
         // maximum: 10,
       },
@@ -102,7 +102,7 @@ export class OpRegistrationComponent implements OnInit {
       firstName: {
         type: "string",
         title: "First Name",
-        required: true
+        required: true,
       },
       middleName: {
         type: "string",
@@ -298,10 +298,15 @@ export class OpRegistrationComponent implements OnInit {
       paymentMethod: {
         type: "radio",
         required: false,
-        options: [{ title:"Cash",value: "cash" },{ title:"PSU/Govt",value:"psu/govt" },{ title:"EWS",value: "ews" },{title:"Corporate/Insurance", value: "ins"}],
+        options: [
+          { title: "Cash", value: "cash" },
+          { title: "PSU/Govt", value: "psu/govt" },
+          { title: "EWS", value: "ews" },
+          { title: "Corporate/Insurance", value: "ins" },
+        ],
         defaultValue: "cash",
       },
-     
+
       // Insurance: {
       //   type: "radio",
       //   required: false,
@@ -327,9 +332,9 @@ export class OpRegistrationComponent implements OnInit {
     private http: HttpService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    private reportService : ReportService,
-    private patientService:PatientService,
-    private searchService:SearchService
+    private reportService: ReportService,
+    private patientService: PatientService,
+    private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
@@ -384,7 +389,7 @@ export class OpRegistrationComponent implements OnInit {
       },
     });
 
-    this.searchService.searchTrigger.subscribe((formdata:any)=>{
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchPatient(formdata.data);
     });
   }
@@ -477,17 +482,19 @@ export class OpRegistrationComponent implements OnInit {
     );
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
-        let sex = this.titleList.filter((e) => e.id === value.value)[0].sex;
-        this.questions[8].options = this.genderList
-          .filter((e) => e.id === sex)
+        let sex = this.titleList.filter((e) => e.id === value.value);
+        if (sex.length) {
+          this.questions[8].options = this.genderList
+            .filter((e) => e.id === sex[0].sex)
 
-          .map((s) => {
-            this.OPRegForm.controls["gender"].setValue({
-              title: s.name,
-              value: s.id,
+            .map((s) => {
+              this.OPRegForm.controls["gender"].setValue({
+                title: s.name,
+                value: s.id,
+              });
+              return { title: s.name, value: s.id };
             });
-            return { title: s.name, value: s.id };
-          });
+        }
       }
     });
   }
@@ -511,7 +518,7 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.sourceofinfolookup)
       .subscribe((resultData: any) => {
         this.sourceOfInfoList = resultData;
-        this.questions[43].options = this.sourceOfInfoList.map((l) => {
+        this.questions[40].options = this.sourceOfInfoList.map((l) => {
           return { title: l.name, value: l.id };
         });
       });
@@ -752,29 +759,29 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //Get StateList Basedon Country
-  getStatesByCountry(){
+  getStatesByCountry() {
     this.http
-    .get(ApiConstants.stateByCountryId(this.questions[27].options.value))
-    .subscribe((resultData: any) => {
-      this.stateList = resultData;
-     // console.log(this.localityListByPin);
-      this.questions[26].options = this.stateList.map((l) => {
-        return { title: l.stateName, value: l.id };
+      .get(ApiConstants.stateByCountryId(this.questions[27].options.value))
+      .subscribe((resultData: any) => {
+        this.stateList = resultData;
+        // console.log(this.localityListByPin);
+        this.questions[26].options = this.stateList.map((l) => {
+          return { title: l.stateName, value: l.id };
+        });
       });
-    });
   }
 
   //Get CityList based on country
-  getCitiesByCountry(){
+  getCitiesByCountry() {
     this.http
-    .get(ApiConstants.CityDetail(this.questions[27].options.value))
-    .subscribe((resultData: any) => {
-      this.cityList = resultData;
-     // console.log(this.localityListByPin);
-      this.questions[26].options = this.cityList.map((l) => {
-        return { title: l.cityName, value: l.id };
+      .get(ApiConstants.CityDetail(this.questions[27].options.value))
+      .subscribe((resultData: any) => {
+        this.cityList = resultData;
+        // console.log(this.localityListByPin);
+        this.questions[26].options = this.cityList.map((l) => {
+          return { title: l.cityName, value: l.id };
+        });
       });
-    });
   }
 
   //Get Patient Details by Max ID
@@ -787,8 +794,10 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
-        this.categoryIcons = this.patientService.getCategoryIcons(this.patientDetails);
-        console.log( this.categoryIcons);
+        this.categoryIcons = this.patientService.getCategoryIcons(
+          this.patientDetails
+        );
+        console.log(this.categoryIcons);
         this.MaxIDExist = true;
         this.checkForMaxID();
         //RESOPONSE DATA BINDING WITH CONTROLS
@@ -796,7 +805,6 @@ export class OpRegistrationComponent implements OnInit {
 
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
         this.registeredPatientDetails(this.patientDetails);
-      
       });
     // console.log(this.localityListByPin);
     // this.questions[24].options = this.cityList.map((l) => {
@@ -834,7 +842,6 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: PatientDetails) => {
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
-
       });
   }
 
@@ -909,7 +916,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   onTitleModify() {
     console.log("title changed");
-    this.modfiedPatiendDetails.title = this.OPRegForm.value.title.title;
+    if (this.OPRegForm.value.title)
+      this.modfiedPatiendDetails.title = this.OPRegForm.value.title.title;
   }
 
   onFistNameModify() {
