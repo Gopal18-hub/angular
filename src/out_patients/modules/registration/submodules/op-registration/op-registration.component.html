@@ -11,8 +11,8 @@
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
     >
       <div class="w-9/10 flex h-full">
-        <form
-                  [formGroup]="OPRegForm"
+        <form         
+          [formGroup]="OPRegForm"
           class="mt-2 mb-2"
         >
           <div class="flex flex-wrap">
@@ -50,8 +50,7 @@
                   [form]="OPRegForm"
                   [questions]="questions[3]"
                   [index]="3"
-                  (change)="onPhoneModify()"
-                ></maxhealth-question>
+                                ></maxhealth-question>
               </div>
               <div class="font-xs w-2/3">
                 <maxhealth-question
@@ -101,7 +100,7 @@
                   [question]="questions[8]"
                   [form]="OPRegForm"
                   [questions]="questions[8]"
-                  [index]="1"
+                  [index]="8"
                 ></maxhealth-question>
               </div>
 
@@ -331,7 +330,7 @@
                     [form]="OPRegForm"
                     [questions]="questions[29]"
                     [index]="29"
-                    (click)="openForeigner()"
+                    
                   ></maxhealth-question>
                 </div>
               </div>
@@ -351,7 +350,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[30]"
                       [index]="30"
-                     
+                      
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -493,7 +492,7 @@
                     mat-raised-button
                     color="primary"
                     class="w-1/45"
-                    type="button"
+                  type="button"
                     (click)="onModifyDetail()"
                   >
                     Modify

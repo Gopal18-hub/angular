@@ -16,11 +16,6 @@ import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Mo
 import { StateModel } from "../../../../core/models/stateMasterModel.Model";
 import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
 import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
@@ -33,18 +28,23 @@ import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
 import { ReportService } from "../../../../../shared/services/report.service";
 import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
 import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
-
-export interface DialogData {
-  expieryDate: Date;
-  issueAt: string;
-  passportNum: number;
-  issuedate: Date;
-  hcf: { id: number; title: string };
-}
-export interface HotlistDialogData {
-  hotlistReason: {};
-  hotlistNotes: {};
-}
+import { AddressonLocalityModel } from "../../../../core/models/addressonLocality.Model";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+// export interface DialogData {
+//   expieryDate: Date;
+//   issueAt: string;
+//   passportNum: number;
+//   issuedate: Date;
+//   hcf: { id: number; title: string };
+// }
+// export interface HotlistDialogData {
+//   hotlistReason: {};
+//   hotlistNotes: {};
+// }
 
 @Component({
   selector: "out-patients-op-registration",
@@ -87,12 +87,10 @@ export class OpRegistrationComponent implements OnInit {
       mobileNumber: {
         type: "number",
         title: "Mobile Number",
-        required: true
-        // minimum: 10,
-        // maximum: 10,
-      },
+        required: true,
+              },
       title: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Title",
         required: true,
         list: this.titleList,
@@ -100,7 +98,7 @@ export class OpRegistrationComponent implements OnInit {
       firstName: {
         type: "string",
         title: "First Name",
-        required: true
+        required: true,
       },
       middleName: {
         type: "string",
@@ -113,7 +111,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       gender: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Gender",
         required: true,
         list: this.genderList,
@@ -128,7 +126,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       ageType: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Age Type",
         required: true,
         list: this.ageTypeList,
@@ -139,7 +137,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       fatherSpouse: {
-        type: "autocomplete",
+        type: "dropdown",
         list: this.fatherSpouseOptionList,
         required: false,
       },
@@ -160,7 +158,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
       },
       idenityType: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Identity",
         list: this.idTypeList,
         required: false,
@@ -193,7 +191,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       locality: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Locality",
         required: true,
         list: this.localityList,
@@ -207,34 +205,34 @@ export class OpRegistrationComponent implements OnInit {
         hidden: true,
       },
       city: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "City/Town",
         // required property is dependent on country
         required: true,
         list: this.cityList,
       },
       district: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "District",
         // required property is dependent on country
         list: this.disttList,
         required: true,
       },
       state: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "State",
         // required property is dependent on country
         required: true,
         list: this.stateList,
       },
       country: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Country",
         required: true,
         list: this.countryList,
       },
       nationality: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Nationality",
         required: true,
         list: this.nationalityList,
@@ -296,17 +294,17 @@ export class OpRegistrationComponent implements OnInit {
       paymentMethod: {
         type: "radio",
         required: false,
-        options: [{ title:"Cash",value: "cash" },{ title:"PSU/Govt",value:"psu/govt" },{ title:"EWS",value: "ews" },{title:"Corporate/Insurance", value: "ins"}],
-        defaultValue: "cash",
+        defaultValue:"cash",
+        options: [
+          { title: "Cash", value: "cash" },
+          { title: "PSU/Govt", value: "psu/govt" },
+          { title: "EWS", value: "ews" },
+          { title: "Corporate/Insurance", value: "ins" },
+        ],
+        
       },
-     
-      // Insurance: {
-      //   type: "radio",
-      //   required: false,
-      //   options: [],
-      // },
       sourceOfInput: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Source of Info about Max Healthcare",
         required: false,
         list: this.sourceOfInfoList,
@@ -333,14 +331,13 @@ export class OpRegistrationComponent implements OnInit {
       this.registrationFormData.properties,
       {}
     );
+   
+    this.OPRegForm = formResult.form;
+    this.questions = formResult.questions;
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
-    this.OPRegForm = formResult.form;
-    this.questions = formResult.questions;
-    // this.Hotlistform=formResult.form;
-    // this.hotlistquestion=formResult.questions;
-
+  
     //LIST FOR FATHER/SPOUSE
     this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
       return { title: l.title, value: l.value };
@@ -386,7 +383,11 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.passportNum);
 
     // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
-
+    this.questions[22].elementRef.addEventListener(
+      "blur",
+      this.addressByLocalityID.bind(this)
+    );
+  
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -423,10 +424,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
-    // this.questions[30].elementRef.addEventListener(
-    //   "click",
-    //   this.openHotListDialog.bind(this)
-    // );
+    this.questions[30].elementRef.addEventListener(
+      "click",
+      this.openHotListDialog.bind(this)
+    );
     // this.questions[26].elementRef.addEventListener(
     //   "blur",
     //   this.getCityListByState.bind(this)
@@ -466,7 +467,35 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
-
+  AddressonLocalityModellst!:AddressonLocalityModel;
+  addressByLocalityID()
+  {
+   
+    this.http
+    .get(ApiConstants.addressByLocalityID(this.OPRegForm.value.locality.value))
+    .subscribe((resultData:AddressonLocalityModel) => {
+      this.AddressonLocalityModellst = resultData;
+      this.OPRegForm.controls["city"].setValue(
+        {title:this.AddressonLocalityModellst.cityName,value:this.AddressonLocalityModellst.cityId}
+      );
+      this.OPRegForm.controls["country"].setValue(
+        {title:this.AddressonLocalityModellst.countryName,value:this.AddressonLocalityModellst.countryid}
+      );
+      this.OPRegForm.controls["state"].setValue(
+        {title:this.AddressonLocalityModellst.stateName,value:this.AddressonLocalityModellst.stateId}
+      );
+      // this.OPRegForm.controls["pincode"].setValue(
+      //   {title:this.AddressonLocalityModellst.,value:this.AddressonLocalityModellst.cityId}
+      // );
+      this.OPRegForm.controls["district"].setValue(
+        {title:this.AddressonLocalityModellst.districtName,value:this.AddressonLocalityModellst.districtId}
+      );
+      // this.OPRegForm.controls["city"].setValue(
+      //   {title:this.AddressonLocalityModellst.,value:this.AddressonLocalityModellst.cityId}
+      // );
+     
+    });
+  }
   //SOURCE OF INFO DROP DOWN
   getSourceOfInfoList() {
     this.http
@@ -605,23 +634,6 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
-  Hotlistform = {
-    title: "",
-    type: "object",
-    properties: {
-      hotlistTitle: {
-        type: "autocomplete",
-        title: "Hot List",
-        required: true,
-        list: this.hotlistMasterList,
-      },
-      reason: {
-        type: "date",
-        title: "Date of Birth",
-        required: true,
-      },
-    },
-  };
   hotlistReason: string = "";
 
   openHotListDialog() {
@@ -640,7 +652,7 @@ export class OpRegistrationComponent implements OnInit {
           type: "object",
           properties: {
             hotlistTitle: {
-              type: "autocomplete",
+              type: "dropdown",
               title: "Hot Listing",
               required: true,
               list: this.hotlistMasterList,
@@ -730,10 +742,7 @@ export class OpRegistrationComponent implements OnInit {
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
         this.registeredPatientDetails(this.patientDetails);
       });
-    // console.log(this.localityListByPin);
-    // this.questions[24].options = this.cityList.map((l) => {
-    //   return { title: l.cityName, value: l.id };
-    // });
+    
   }
   onModifyDetail() {
     this.onUpdatePatientDetail();
@@ -745,9 +754,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: PatientDetails) => {
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
-        // this.questions[24].options = this.cityList.map((l) => {
-        //   return { title: l.cityName, value: l.id };
-      });
+          });
   }
 
   onUpdatePatientDetail() {
@@ -766,7 +773,6 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: PatientDetails) => {
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
-
       });
   }
 
@@ -1092,7 +1098,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.mobileNumber,
       "",
       this.OPRegForm.value.emailId,
-      this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
+      this.OPRegForm.value.paymentMethod.value, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       this.OPRegForm.value.nationality.value,
       false,
