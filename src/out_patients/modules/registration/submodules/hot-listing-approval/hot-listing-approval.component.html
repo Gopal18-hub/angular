@@ -10,7 +10,7 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel> 
-    <div class="maingrid flex" >
+    <div  class="w-full h-full" *ngIf="!defaultUI" >
         <div class="p-2 w-full h-full display-block">
             <ng-container *ngIf="showapprovalpending">
                 <maxhealth-table [config]="hotlistingconfig" [data]="opApprovalHotList" #hotlistingtable></maxhealth-table>
@@ -27,6 +27,12 @@
             <button mat-raised-button color="primary" class="w-1/2 right-15" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistRejectItem()">Reject</button>
             <button mat-raised-button color="primary" class="w-1/2 relative" type="submit" *ngIf="opApprovalHotList && enablehotlistbtn" (click)="hotlistDeleteItem()">Delete</button>
         </div>
+        </div>
+        <div class="w-full h-full" *ngIf="defaultUI">
+ <empty-placeholder [defaultplaceholder]="hotlistplaceholder">
+
+ </empty-placeholder>
+  
         </div>
     </mat-tab-nav-panel>
 </section>

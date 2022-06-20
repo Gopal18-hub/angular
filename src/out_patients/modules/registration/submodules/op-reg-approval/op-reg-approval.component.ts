@@ -39,6 +39,8 @@ export class OpRegApprovalComponent implements OnInit {
   from :any;
   to :any;
   today = new Date();
+  defaultUI:boolean = true;
+  opapprovalplaceholder:string = "Please search From Date and To Date ";
 
   opapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -177,6 +179,7 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   searchApproval(formdata:any) {
+    this.defaultUI = false;
     if(formdata['from'] == "" || formdata['to'] == "" ){
         this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
         this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   

@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { SearchService } from '../../../../../shared/services/search.service';
 import { CookieService } from '../../../../../shared/services/cookie.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'out-patients-hot-listing-approval',
@@ -34,11 +34,12 @@ export class HotListingApprovalComponent implements OnInit {
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
   showapprovalreject:boolean = false;
-
+  defaultUI:boolean = true;
   enablehotlistbtn:boolean=false;
   from :any;
   to :any;
   today = new Date();
+  hotlistplaceholder:string="Please search From Date and To Date ";
   
   hotlistingapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -145,6 +146,7 @@ export class HotListingApprovalComponent implements OnInit {
     this.showmain("Hot Listing Approval");
   }
   searchhotlisting(formdata:any) {
+    this.defaultUI = false;
     if(formdata['from'] == "" || formdata['to'] == "" ){
       this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  

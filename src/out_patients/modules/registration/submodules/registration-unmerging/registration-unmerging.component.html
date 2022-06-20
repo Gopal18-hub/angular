@@ -21,7 +21,8 @@
     </ul>
   </nav>   
   <mat-tab-nav-panel #tabPanel>
-    <div class="flex p-3 w-full h-3/4 display-block">     
+     <div  class="w-full h-full" *ngIf="!defaultUI">
+    <div class="p-2 w-full h-full display-block">     
         <ng-container *ngIf="isAPIProcess" class="w-full h-4/5">
           <maxhealth-table 
             class="w-full"
@@ -33,6 +34,13 @@
     </div>    
     <div class="float-right mt-3 mb-3 mr-3">
           <button mat-raised-button color="primary" class="w-full" (click)="unMerge()" [disabled]="unmergebuttonDisabled">Unmerge</button>        
+    </div>
+  </div>
+
+  <div  class="w-full h-full" *ngIf="defaultUI">
+    <empty-placeholder [defaultplaceholder]="unmergeplaceholder">
+
+    </empty-placeholder>
     </div>
   </mat-tab-nav-panel> 
   
