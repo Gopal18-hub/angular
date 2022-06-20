@@ -40,6 +40,7 @@ export namespace MaxModules {
               id: 115,
               title: "Registration Modification",
               defaultPath: "/registration/op-registration",
+              globalSearchKey: "global",
             },
             {
               id: 116,
