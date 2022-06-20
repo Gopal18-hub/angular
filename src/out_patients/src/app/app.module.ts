@@ -14,6 +14,11 @@ import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog"
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
 import { DatePipe } from "@angular/common";
 import { APP_BASE_HREF } from "@angular/common";
+import { AuthService } from "../../../shared/services/auth.service";
+import { HttpService } from "../../../shared/services/http.service";
+import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "../../../shared/services/search.service";
+import { CookieService } from "../../../shared/services/cookie.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +39,11 @@ import { APP_BASE_HREF } from "@angular/common";
       useClass: TokenInterceptor,
       multi: true,
     },
+    AuthService,
+    HttpService,
+    MessageDialogService,
+    SearchService,
+    CookieService,
     { provide: APP_BASE_HREF, useValue: "/out-patients" },
   ],
   bootstrap: [AppComponent],

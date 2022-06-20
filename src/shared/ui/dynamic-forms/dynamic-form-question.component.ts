@@ -101,7 +101,8 @@ export class DynamicFormQuestionComponent
   }
 
   ngOnInit() {
-    this.question.label = this.question.label.replace(/_/gi, " ");
+    if (this.question)
+      this.question.label = this.question.label.replace(/_/gi, " ");
     // this.form.controls[this.question.key].valueChanges.subscribe((value) => {
     //   this.excuteCondition(this.question.conditions, value);
     // });
