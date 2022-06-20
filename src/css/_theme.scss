@@ -66,7 +66,7 @@ $custom-typography: mat.define-typography-config(
 @include mat.core($custom-typography);
 
 :root {
-  --primary-color: #004084;
+  --primary-color: #004484;
 }
 .max-health-primary-color {
   color: var(--primary-color);
@@ -76,14 +76,14 @@ mat-form-field {
   font-size: 14px;
   &.mat-form-field-appearance-outline {
     .mat-form-field-outline {
-      color: rgba(0, 0, 0, 0.35);
+      color: rgba(0, 0, 0);
     }
     .mat-form-field-wrapper {
       margin: 0 !important;
       // padding-bottom: 1em;
     }
     .mat-form-field-infix {
-      padding: 0.9em 0 !important;
+      padding: 0.6em 0 !important;
       border-top: 0 !important;
     }
     .mat-form-field-suffix,
@@ -92,7 +92,10 @@ mat-form-field {
     }
   }
 }
-
+.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+  width: 1.5em !important;
+  height: 1.5em !important;
+}
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
 }
@@ -187,4 +190,43 @@ mat-form-field {
 
 ::-webkit-scrollbar-thumb {
   background-color: #a8aa9c;
+}
+
+.mat-option {
+  font-family: proxima;
+  font-size: 14px;
+}
+
+.mat-cell,
+.mat-footer-cell {
+  font-size: 13px !important;
+}
+
+.mat-header-cell {
+  font-size: 14px !important;
+  font-weight: 600;
+}
+
+.mat-button,
+.mat-icon-button,
+.mat-stroked-button {
+  color: #004484;
+}
+.mat-checkbox-layout .mat-checkbox-label {
+  color: #004484;
+}
+.whitePanel {
+  background-color: #fff;
+}
+
+.mat-checkbox-layout {
+  white-space: normal !important;
+}
+.mat-checkbox-inner-container {
+  margin-top: 4px;
+}
+
+.mat-h1, .mat-headline, .mat-typography .mat-h1, .mat-typography .mat-headline, .mat-typography h1{
+  height:10vh;
+  margin-left:5rem;
 }

@@ -9,7 +9,13 @@ import { MiscellaneousBillingComponent } from './submodules/miscellaneous-billin
 import { InitiateDepositComponent } from './submodules/initiate-deposit/initiate-deposit.component';
 
 import { BillingRoutingModule } from './routes';
+import { PaymentModeComponent } from './submodules/billing/payment-mode/payment-mode.component';
 
+import {MatGridListModule} from '@angular/material/grid-list';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -20,10 +26,17 @@ import { BillingRoutingModule } from './routes';
        OnlineOpBillsComponent,
        OpOrderRequestComponent,
        MiscellaneousBillingComponent,
-       InitiateDepositComponent
+       InitiateDepositComponent,
+       PaymentModeComponent
   ],
   imports: [
-    BillingRoutingModule
+    BillingRoutingModule,
+    MatGridListModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule
   ],
   exports: [],
   providers: [],

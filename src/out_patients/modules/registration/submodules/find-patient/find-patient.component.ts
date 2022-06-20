@@ -5,6 +5,7 @@ import { HttpService } from "../../../../../shared/services/http.service";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiConstants } from "../../../../../out_patients/core/constants/ApiConstants";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
+import { SearchService } from "../../../../../shared/services/search.service";
 
 @Component({
   selector: "find-patient",
@@ -14,6 +15,12 @@ import { PatientService } from "../../../../../out_patients/core/services/patien
 export class FindPatientComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   isAPIProcess: boolean = false;
+  name = "";
+  dob = "";
+  maxId = "";
+  healthId = "";
+  aadhaarId = "";
+  mobile = "";
 
   config: any = {
     actionItems: true,
@@ -47,6 +54,7 @@ export class FindPatientComponent implements OnInit {
       firstName: {
         title: "Name",
         type: "string",
+        tooltipColumn: "patientName",
       },
       age: {
         title: "Age",
@@ -63,6 +71,7 @@ export class FindPatientComponent implements OnInit {
       place: {
         title: "Address",
         type: "string",
+        tooltipColumn: "completeAddress",
       },
       phone: {
         title: "Phone No.",
@@ -75,19 +84,91 @@ export class FindPatientComponent implements OnInit {
       },
     },
   };
-  constructor(private http: HttpService, private patientServie: PatientService) {}
+  constructor(
+    private http: HttpService,
+    private patientServie: PatientService,
+    private searchService: SearchService
+  ) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
-      this.patientList = resultData;
-      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+      this.patientList = resultData as PatientSearchModel[];
+      this.patientList = this.patientServie.getAllCategoryIcons(
+        this.patientList
+      );
 
       this.isAPIProcess = true;
       console.log(this.patientList);
     });
+
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      console.log(formdata);
+      this.searchPatient(formdata.data);
+    });
+   
+  } 
+
+  searchPatient(formdata: any) {
+    if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] == "" &&
+      formdata["maxID"] == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      this.getAllpatients().subscribe((resultData) => {
+        this.patientList = resultData;
+        this.patientList = this.patientServie.getAllCategoryIcons(
+          this.patientList
+        );
+
+        this.isAPIProcess = true;
+        console.log(this.patientList);
+      });
+    } else if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] != "" &&
+      formdata["maxID"] == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      return;
+    } else {
+      this.maxId = formdata["maxID"];
+      this.name = formdata["name"];
+      this.mobile = formdata["phone"];
+      this.dob = formdata["dob"];
+      this.aadhaarId = formdata["adhaar"];
+      this.healthId = formdata["healthID"];
+      this.getAllpatientsBySearch().subscribe((resultData) => {
+        this.patientList = resultData;
+        this.patientList = this.patientServie.getAllCategoryIcons(
+          this.patientList
+        );
+
+        this.isAPIProcess = true;
+        console.log(this.patientList);
+      });
+    }
   }
 
   getAllpatients() {
     return this.http.get(ApiConstants.searchPatientApiDefault);
+  }
+
+  getAllpatientsBySearch() {
+    return this.http.get(
+      ApiConstants.searchPatientApi(
+        this.maxId,
+        "",
+        this.name,
+        this.mobile,
+        this.dob,
+        this.aadhaarId,
+        this.healthId
+      )
+    );
   }
 }
