@@ -72,6 +72,7 @@ export class OpRegistrationComponent implements OnInit {
   passportNum: number | undefined;
   issuedate: Date | undefined;
   categoryIcons: [] = [];
+   
   registrationFormData = {
     title: "",
     type: "object",
@@ -79,7 +80,7 @@ export class OpRegistrationComponent implements OnInit {
       maxid: {
         type: "string",
         title: "Max ID",
-        defaultValue: Number(this.cookie.get("LocationIACode")),
+        defaultValue: this.cookie.get("LocationIACode")+'.',
       },
       SSN: {
         type: "string",
@@ -89,9 +90,7 @@ export class OpRegistrationComponent implements OnInit {
       mobileNumber: {
         type: "number",
         title: "Mobile Number",
-        required: true,
-        // minimum: 10,
-        // maximum: 10,
+        required: true,       
       },
       title: {
         type: "autocomplete",
@@ -349,11 +348,12 @@ export class OpRegistrationComponent implements OnInit {
     this.questions = formResult.questions;
     // this.Hotlistform=formResult.form;
     // this.hotlistquestion=formResult.questions;
-
+    
     //LIST FOR FATHER/SPOUSE
     this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
       return { title: l.title, value: l.value };
     });
+
 
     this.getTitleList();
     this.getSourceOfInfoList();
@@ -367,6 +367,8 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllDisttList();
     this.getAllStateList();
     this.getLocalityList();
+    this.OPRegForm.controls['nationality'].setValue({title:'Indian'});  
+    this.OPRegForm.controls['country'].setValue({title:'India'});         
   }
 
   checkForMaxID() {
@@ -374,6 +376,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["hotlist"].enable();
     } else {
       this.OPRegForm.controls["hotlist"].disable();
+      this.OPRegForm.controls
     }
   }
 
@@ -466,6 +469,12 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
+    //this event to make DOB as mandatory if patient age <18 years
+    this.questions[10].elementRef.addEventListener(
+      "blur",
+      this.validatePatientAge.bind(this)
+    );
+
     // this.questions[30].elementRef.addEventListener(
     //   "click",
     //   this.openHotListDialog.bind(this)
@@ -480,6 +489,7 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getPatientDetailsByMaxId.bind(this)
     );
+    //on change of Title Gender nees to be changed
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         let sex = this.titleList.filter((e) => e.id === value.value);
@@ -1436,6 +1446,29 @@ export class OpRegistrationComponent implements OnInit {
         console.log(this.OPRegForm.value.ageType);
       }
     }
+  }
+
+  validatePatientAge(){
+    //need to implement logic for patient who has age < 18 years but DOB not provided.
+    // need to mention DOB as mandatory.   
+    if(this.OPRegForm.value.age != null 
+      || this.OPRegForm.value.age != undefined 
+      || this.OPRegForm.value.age!= '' )
+      {
+        if(this.OPRegForm.value.age >0 
+          && this.OPRegForm.value.age <= 18
+          && (this.OPRegForm.value.ageType != null
+            || this.OPRegForm.value.ageType != undefined))
+        {
+          if(this.OPRegForm.value.dob== null
+            || this.OPRegForm.value.dob == undefined
+            || this.OPRegForm.value.dob =='')
+            {
+              this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+              this.questions[8].customErrorMessage = "DOB is required, Age is less than 18 Years";
+            }
+        }
+      }
   }
 }
 

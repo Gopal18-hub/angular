@@ -493,6 +493,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
+                    [disabled]="!MaxIDExist"
                     (click)="onModifyDetail()"
                   >
                     Modify
@@ -504,6 +505,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    [disabled]="!MaxIDExist"
                     (click)="openReportModal('PrintLabel')"
                   >
                     Print Label
@@ -513,6 +515,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    [disabled]="!MaxIDExist"
                     (click)="openReportModal('PrintOD')"
                   >
                     Print OD
@@ -596,6 +599,7 @@
             color="primary"
             type="button"
             class="mt-1"
+            [disabled]="!MaxIDExist"
             (click)="openReportModal('PrintForm')"
           >
             Print Form
