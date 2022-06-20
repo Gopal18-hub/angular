@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
-import { FormGroup} from '@angular/forms';
+import { FormGroup,FormControl} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SavedialogComponent } from './save-dialog/save-dialog.component';
 import { DeletedialogComponent } from './delete-dialog/delete-dialog.component';
@@ -20,55 +20,58 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     properties:{
       maxId:{
         type:"string",
-        title:"Max ID"
+        // title:"Max ID"
       },
       mobileNo:{
         type:"string",
-        title:"Mobile No"
+        // title:"Mobile No"
       },
       employeeCode:{
         type:"string",
-        title:"Employee code"
+        // title:"Employee code"
       },
-      // company:{
-      //   type:"string",
-      //   title:"Company"
-      // },
-      // corporate:{
-      //   type:"autocomplete",
-      //   title:"Corporate"
-      // },
+      company:{
+        type:"autocomplete",
+        // title:"Company"
+      },
+      corporate:{
+        type:"autocomplete",
+        // title:"Corporate"
+      },
       name:{
-        type:"string",
-        title:"Name"
+       type:"string",
+        //title:"Name"
       },
       age:{
         type:"number",
-        title:"Age"
+        // title:"Age"
       },
       gender:{
         type:"string",
-        title:"Gender"
+        // title:"Gender"
       },
       dob:{
         type:"string",
-        title:"DOB"
+        // title:"DOB"
       },
       nationality:{
         type:"string",
-        title:"Nationality"
+        // title:"Nationality"
       },
       ssn:{
         type:"number",
-        title:"SSN"
+       // title:"SSN"
+      },
+      datecheckbox:{
+        type:"checkbox"
       },
       fromdate:{
         type:"date",
-        title:"From Date"
+       // title:"From Date"
       },
       todate:{
         type:"date",
-        title:"To Date"
+        //title:"To Date"
       }
     }
   }

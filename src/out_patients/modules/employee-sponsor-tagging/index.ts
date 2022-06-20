@@ -18,8 +18,9 @@ import { SavedialogComponent } from './save-dialog/save-dialog.component';
 import { SavesuccessdialogComponent } from './savesuccess-dialog/savesuccess-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-// import { DynamicFormQuestionComponent } from 'src/shared/ui/dynamic-forms/dynamic-form-question.component';
-import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
+// import { DynamicFormQuestionComponent } from '../../../shared/ui/dynamic-forms/dynamic-form-question.component';
+import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+//import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -28,8 +29,8 @@ import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
      DeletesuccessdialogComponent,
      SavedialogComponent,
      SavesuccessdialogComponent,
-     DynamicFormsModule
-     //DynamicFormQuestionComponent
+    
+    //  DynamicFormQuestionComponent
   ],
     imports: [
      EmployeeSponsorRoutingModule,
@@ -45,7 +46,8 @@ import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
      MatDatepickerModule,
      MatCheckboxModule,
      MatIconModule,
-     MatButtonModule
+     MatButtonModule,
+     DynamicFormsModule,
      
 
     ],
