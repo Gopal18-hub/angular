@@ -6,7 +6,7 @@ import { EmptyPlaceholderComponent } from './empty-placeholder.component';
     imports: [
       CommonModule,      
     ],
-    exports: [],
+    exports: [EmptyPlaceholderComponent],
     declarations: [ EmptyPlaceholderComponent ],
     providers: [],
   })
