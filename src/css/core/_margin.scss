@@ -9,7 +9,7 @@ $margins-and-letters: ((top, t) (right, r) (bottom, b) (left, l));
 
       @each $margin, $letter in $margins-and-letters {
         &#{$letter}-#{$n} {
-          margin-#{$margin}: $n * 0.25rem;
+          margin-#{$margin}: $n * 0.25rem !important;
         }
       }
     }
