@@ -32,6 +32,13 @@ import { SeafarersDialogComponent } from "./submodules/op-registration/seafarers
 import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner-dialog/foreigner-dialog.component";
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
+import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+
+import { AuthService } from "../../../shared/services/auth.service";
+import { HttpService } from "../../../shared/services/http.service";
+import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "../../../shared/services/search.service";
+import { CookieService } from "../../../shared/services/cookie.service";
 
 @NgModule({
   declarations: [
@@ -73,9 +80,16 @@ import { FormDialogueComponent } from "./submodules/op-registration/form-dialogu
     ReactiveFormsModule,
     MatIconModule,
     MatSelectModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
-  providers: [],
+  providers: [
+    AuthService,
+    HttpService,
+    MessageDialogService,
+    SearchService,
+    CookieService,
+  ],
   entryComponents: [AppointmentSearchComponent, FormDialogueComponent],
   bootstrap: [],
 })

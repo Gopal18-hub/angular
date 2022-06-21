@@ -8,6 +8,8 @@
     </ul>           
   </nav>
   <mat-tab-nav-panel #tabPanel> 
+
+    <div class="w-full h-full" *ngIf="!defaultUI">
   <div  class="flex p-3 w-full h-4/5 display-block">    
       <ng-container *ngIf="isAPIProcess"  class="w-full h-full">
         <maxhealth-table
@@ -21,6 +23,13 @@
   <div class="float-right mb-3 mr-3">
     <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()" [disabled]="mergebuttonDisabled">Merge</button>
    </div>
+</div>
+
+<div  class="w-full h-full" *ngIf="defaultUI">
+   <empty-placeholder [defaultplaceholder]="mergeplaceholder">
+
+  </empty-placeholder>
+</div>
   </mat-tab-nav-panel> 
 </section>
 

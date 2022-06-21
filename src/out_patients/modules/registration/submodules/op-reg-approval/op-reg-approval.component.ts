@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 import { SearchService } from '../../../../../shared/services/search.service';
 import { CookieService } from '../../../../../shared/services/cookie.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 
 @Component({
   selector: 'out-patients-op-reg-approval',
@@ -30,7 +31,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = Number(this.cookie.get('HSPLocationId'));
+  hsplocationId:any = this.cookie.get('HSPLocationId');
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -39,6 +40,8 @@ export class OpRegApprovalComponent implements OnInit {
   from :any;
   to :any;
   today = new Date();
+  defaultUI:boolean = true;
+  opapprovalplaceholder:string = "Please search From Date and To Date ";
 
   opapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -167,16 +170,16 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   constructor(private http: HttpService,private router: Router,private searchService: SearchService
-    ,public datepipe: DatePipe, private cookie: CookieService) { }
+    ,public datepipe: DatePipe, private cookie: CookieService, private messageDialogService:MessageDialogService) { }
   
   ngOnInit(): void {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchApproval(formdata.data);
     });
-    this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata:any) {
+    this.defaultUI = false;
     if(formdata['from'] == "" || formdata['to'] == "" ){
         this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
         this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
@@ -220,10 +223,8 @@ export class OpRegApprovalComponent implements OnInit {
       this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
       this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
       this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
-      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
-      
-    }
-    
+      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');         
+    }    
 
     if(link == "View Pending Request")
     {
@@ -235,10 +236,11 @@ export class OpRegApprovalComponent implements OnInit {
           this.showapprovalreject = false;
           this.enableapprovebtn = true;
           console.log(this.opApprovalList);
-        },error=>{
+        },(error:any)=>{
           this.opApprovalList =[];
           this.enableapprovebtn = false;  
           console.log(error);
+          this.messageDialogService.error(error.error);
         });           
     }
     else if(link == "Approved Requests")
@@ -254,6 +256,7 @@ export class OpRegApprovalComponent implements OnInit {
       },error=>{   
         this.opApprovalacceptList=[];       
         console.log(error);
+        this.messageDialogService.error(error.error);
       }); 
     }
     else if(link == "Reject Requests")
@@ -270,6 +273,7 @@ export class OpRegApprovalComponent implements OnInit {
       },error=>{     
         this.opApprovalrejectList=[];     
         console.log(error);
+        this.messageDialogService.error(error.error);
       });       
            
     }
@@ -295,11 +299,13 @@ export class OpRegApprovalComponent implements OnInit {
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
+      this.messageDialogService.success("Update Request Approved"); 
       this.showgrid("View Pending Request");
       this.ApprovalidList = [];
     },error=>{
       console.log(error);
       this.ApprovalidList = [];
+      this.messageDialogService.error("Error in Approve Request"); 
     }); 
   }
 
@@ -310,11 +316,13 @@ export class OpRegApprovalComponent implements OnInit {
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
+        this.messageDialogService.success("Update Request Rejected");
         this.showgrid("View Pending Request");
         this.ApprovalidList = [];
       },error=>{
         console.log(error);
         this.ApprovalidList = [];
+        this.messageDialogService.error("Error in Teject Request"); 
       }); 
   }
   approvalpostapi(approvalJSONObject:approveRejectModel[]){   
