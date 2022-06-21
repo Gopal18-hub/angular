@@ -1,4 +1,8 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
+import { FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import { SearchService } from "../../../services/search.service";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -8,45 +12,74 @@ import { Component, OnInit, Input } from "@angular/core";
 export class SubComponent implements OnInit {
   @Input() submodules: any = [];
 
+  @Input() module: any;
+
   activeSubModule: any;
 
-  searchFormData = {
-    "": {
-      title: "",
-      type: "object",
-      properties: {
-        username: {
-          type: "string",
-          title: "Username",
-          required: true,
-        },
-        password: {
-          type: "password",
-          title: "Password",
-          required: true,
-        },
-        location: {
-          type: "autocomplete",
-          title: "Location",
-          required: true,
-        },
-        station: {
-          type: "autocomplete",
-          title: "Station",
-          required: true,
-        },
-      },
-    },
-  };
+  activePageItem: any;
 
-  constructor() {}
+  searchFormData: any;
 
-  ngOnInit(): void {}
+  searchForm!: FormGroup;
+
+  questions: any;
+
+  constructor(
+    private formService: QuestionControlService,
+    private router: Router,
+    private searchService: SearchService
+  ) {}
+
+  ngOnInit(): void {
+    this.searchFormData = this.searchService.searchFormData;
+
+    this.submodules.forEach((element: any) => {
+      if (
+        element.defaultPath &&
+        window.location.pathname.includes(element.defaultPath)
+      ) {
+        if (element.childrens) {
+          element.childrens.forEach((ch: any) => {
+            if (
+              ch.defaultPath &&
+              window.location.pathname.includes(ch.defaultPath)
+            ) {
+              this.activeSubModule = element;
+              this.activePageItem = ch;
+              this.reInitiateSearch(this.activePageItem.globalSearchKey);
+            }
+          });
+        }
+      }
+    });
+    if (!this.activePageItem) this.reInitiateSearch("global");
+  }
+
+  reInitiateSearch(type: string) {
+    let formResult: any = this.formService.createForm(
+      this.searchFormData[type].properties,
+      {}
+    );
+    this.searchForm = formResult.form;
+    this.questions = formResult.questions;
+  }
 
   onRouterLinkActive($event: any, imodule: any) {
-    console.log($event);
+    console.log(imodule);
     if ($event) {
       this.activeSubModule = imodule;
     }
+  }
+
+  onPageRouterLinkActive($event: any, mentItem: any) {
+    console.log(mentItem);
+    if ($event) {
+      this.activePageItem = mentItem;
+      this.reInitiateSearch(this.activePageItem.globalSearchKey);
+    }
+  }
+
+  searchSubmit() {
+    this.searchService.searchTrigger.next({ data: this.searchForm.value });
   }
 }

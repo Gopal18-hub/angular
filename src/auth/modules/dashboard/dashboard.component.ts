@@ -3,6 +3,8 @@ import { PatientSearchModel } from "../../../auth/core/models/patientsearchmodel
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../shared/services/http.service";
 import { ApiConstants } from "../../../auth/core/constants/ApiConstants";
+import { PatientService } from "../../../out_patients/core/services/patient.service";
+import { SearchService } from "../../../shared/services/search.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -12,8 +14,17 @@ import { ApiConstants } from "../../../auth/core/constants/ApiConstants";
 export class DashboardComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   apiProcessing: boolean = false;
+  name = '';
+  dob = '';
+  maxId = '';
+  healthId = '';
+  aadhaarId = '';
+  mobile = '';
+
 
   config: any = {
+    actionItems:true,
+    dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -25,7 +36,7 @@ export class DashboardComponent implements OnInit {
       "dob",
       "place",
       "phone",
-      "category",
+      "categoryIcons",
     ],
     columnsInfo: {
       maxid: {
@@ -43,6 +54,7 @@ export class DashboardComponent implements OnInit {
       firstName: {
         title: "Name",
         type: "string",
+        tooltipColumn: "patientName",
       },
       age: {
         title: "Age",
@@ -59,26 +71,80 @@ export class DashboardComponent implements OnInit {
       place: {
         title: "Address",
         type: "string",
+        tooltipColumn: "completeAddress",
       },
       phone: {
         title: "Phone No.",
         type: "number",
       },
-      category: {
+      categoryIcons: {
         title: "Category",
+        type:'image',
+        width:34
       },
     },
   };
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService,
+     private patientServie: PatientService,
+     private searchService:SearchService) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
       this.patientList = resultData;
+      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+
       this.apiProcessing = true;
+      console.log(this.patientList);
+    });
+    this.searchService.searchTrigger.subscribe((formdata:any)=>{
+      console.log(formdata);
+        this.searchPatient(formdata.data);
     });
   }
 
   getAllpatients() {
     return this.http.getExternal(ApiConstants.searchPatientDefault);
+  }
+
+  searchPatient(formdata:any)
+  {
+    if (formdata['name'] == '' && formdata['phone'] == '' 
+    && formdata['dob'] == '' && formdata['maxID'] == ''
+    && formdata['healthID'] == '' && formdata['adhaar'] == '')
+    {
+      this.getAllpatients().subscribe((resultData) => {
+        this.patientList = resultData;
+        this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+  
+        this.apiProcessing = true;
+        console.log(this.patientList);
+      });
+    }
+    else if(formdata['name'] == '' && formdata['phone'] == '' 
+    && formdata['dob'] != '' && formdata['maxID'] == ''
+    && formdata['healthID'] == '' && formdata['adhaar'] == '')
+    {
+      return;
+    }
+    else{
+      this.maxId = formdata['maxID'];
+      this.name = formdata['name'];
+      this.mobile = formdata['phone'];
+      this.dob = formdata['dob'];
+      this.aadhaarId = formdata['adhaar'];
+      this.healthId = formdata['healthID'];
+      this.getAllpatientsBySearch().subscribe((resultData) => {
+        this.patientList = resultData;
+        this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+  
+        this.apiProcessing = true;
+        console.log(this.patientList);
+      });
+    }
+
+  }
+
+  getAllpatientsBySearch() {
+    return this.http.get(ApiConstants.searchPatientApi(this.maxId,'', this.name, this.mobile, this.dob, this.aadhaarId, this.healthId));
   }
 }

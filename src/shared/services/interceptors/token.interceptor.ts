@@ -17,10 +17,10 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
    
     request = request.clone({
-      //setHeaders: ApiHeaders.getHeaders(request.url)
+      //setHeaders: ApiHeaders.getHeaders(request.url) 
       setHeaders: {
         'Content-Type': 'application/json'
-      }
+      }    
     });
 
     
@@ -36,20 +36,17 @@ export class TokenInterceptor implements HttpInterceptor {
     if(request.url.includes('Logout'))
     {
       if(!request.headers.has('Authorization'))
-      {  
-        if(this.auth.isLoggedIn())     
-        {
+      {        
           request = request.clone({
             setHeaders: {
               'Authorization': `bearer ${this.auth.getToken()}`,
               'Content-Type': 'application/json'
             },
             withCredentials:true
-          });
-        }       
+          });              
       }
     }
-    if(request.url.includes('patientunmerging') || request.url.includes('patientmerging'))
+    if(request.url.includes('patientunmerging') || request.url.includes('patientmerging') || request.url.includes('approvedrejectdeletehotlisting')||request.url.includes('modifyopdpatient'))
     {
       request = request.clone({
         setHeaders: {             

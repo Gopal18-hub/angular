@@ -1,34 +1,5 @@
-<!-- <form [formGroup]="mergeSearchForm" >  
-  <div class="flex flex-row">
-    <mat-form-field appearance = "outline"> 
-      <mat-label>Name</mat-label>
-      <input matInput placeholder="Name" formControlName="name" >
-    </mat-form-field>
-    <mat-form-field appearance = "outline"> 
-      <mat-label>Mobile.No</mat-label>
-      <input matInput placeholder="Mobile" formControlName="mobile" >
-    </mat-form-field>
-    <mat-form-field appearance = "outline"> 
-      <mat-label>DOB</mat-label>
-      <input matInput placeholder="DateOFBitrth" formControlName="dob" >
-    </mat-form-field>
-    <mat-form-field appearance = "outline"> 
-      <mat-label>Email ID</mat-label>
-      <input matInput placeholder="Email" formControlName="email" >
-    </mat-form-field>
-    <mat-form-field appearance = "outline"> 
-      <mat-label>Health ID</mat-label>
-      <input matInput placeholder="HealthId" formControlName="healthId" >
-    </mat-form-field>
-    <mat-form-field appearance = "outline"> 
-      <mat-label>Aadhaar ID</mat-label>
-      <input matInput placeholder="AadhaarId" formControlName="aadhaarId" >
-    </mat-form-field>
-    <button mat-raised-button color="primary" class="col-m3" type="button" 
-    (click)="searchPatient()">Search</button>
-  </div>  
-</form> -->
-<section class="left-0 ml-10 shadow-1 max-body-wrapper">
+
+<section class="ml-4 mr-4 shadow-1 max-body-wrapper whitePanel">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -36,21 +7,30 @@
       </li>
     </ul>           
   </nav>
-  <mat-tab-nav-panel #tabPanel> </mat-tab-nav-panel> 
-  <div  class="maingrid flex">
-    <div class="table p-3">
-      <ng-container *ngIf="isAPIProcess">
+  <mat-tab-nav-panel #tabPanel> 
+
+    <div class="w-full h-full" *ngIf="!defaultUI">
+  <div  class="flex p-3 w-full h-4/5 display-block">    
+      <ng-container *ngIf="isAPIProcess"  class="w-full h-full">
         <maxhealth-table
+          class="w-full h-full"
           [config]="config"
           [data]="results"
           #table
         ></maxhealth-table>
-      </ng-container>
-    </div>
+      </ng-container>    
   </div>
-  <div class="self-end float-right absolute right6pc mt-3">
-    <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()">Merge</button>
+  <div class="float-right mb-3 mr-3">
+    <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()" [disabled]="mergebuttonDisabled">Merge</button>
    </div>
+</div>
+
+<div  class="w-full h-full" *ngIf="defaultUI">
+   <empty-placeholder [defaultplaceholder]="mergeplaceholder">
+
+  </empty-placeholder>
+</div>
+  </mat-tab-nav-panel> 
 </section>
 
 

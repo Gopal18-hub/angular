@@ -16,38 +16,27 @@
         color: var(--primary-color);
       }
     }
-    &-secondary {
-      height: 44vh;
-    }
-    &-address {
-      height: 100%;
-      width: 30%;
-      float: left;
-    }
-    &-checboxcontainer {
-      background-color: #f6f6f6;
-      float: left;
-      // width: 30%;
-    }
-    &-checboxcontainer {
-      background-color: #f6f6f6;
-      // width: 30%;
-    }
-    &-check {
-      height: 100%;
-      width: 20%;
-      float: left;
-    }
-    &-radio {
-      height: 100%;
-      width: 30%;
-      float: left;
-    }
-    &-imageblock {
-      height: 100%;
 
-      width: 20%;
+    &-checboxcontainer {
+      background-color: #f6f6f6;
       float: left;
+      // width: 30%;
     }
+    &-checboxcontainer {
+      background-color: #f6f6f6;
+      > * {
+        margin-bottom: 0.5em;
+      }
+      // width: 30%;
+    }
+
+    // &-imageblock {
+    //   height: 100%;
+    //   width: 100%;
+    //   float: left;
+    // }
   }
+}
+.hash-background {
+  background-color: #f6f6f6;
 }

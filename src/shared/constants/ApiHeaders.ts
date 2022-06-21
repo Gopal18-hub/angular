@@ -14,7 +14,10 @@ export namespace ApiHeaders {
     "MaxHIS-Reports-dev.maxhealthcare.in": {
       "Content-Type": "application/json",
     },
-    localhost: {
+    "localhost:8100": {
+      "Content-Type": "application/json",
+    },
+    "localhost:4200": {
       "Content-Type": "application/json",
     },
     "MaxHIS-Idsrv-sit.maxhealthcare.in": {
@@ -47,7 +50,7 @@ export namespace ApiHeaders {
   };
 
   export function getHeaders(url: string, data?: any) {
-    const urlParsing = new URL(url);
+    const urlParsing = new URL(url);    
     let host = urlParsing.hostname;
     if (host) {
       return fixedHeaders[host];

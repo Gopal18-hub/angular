@@ -6,6 +6,7 @@ import {
   ViewChild,
   OnChanges,
   SimpleChanges,
+  TemplateRef,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
@@ -28,19 +29,30 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   dataSource: any;
   displayedColumns: string[] = [];
   displayColumnsInfo: any = [];
-  dateformat: any;
 
   @ViewChild(MatSort) sort!: MatSort;
+
+  @ViewChild("string") stringTemplate!: TemplateRef<any>;
+  @ViewChild("number") numberTemplate!: TemplateRef<any>;
+  @ViewChild("date") dateTemplate!: TemplateRef<any>;
+  @ViewChild("image") imageTemplate!: TemplateRef<any>;
+  @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
 
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
   ngOnInit(): void {
+    console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
-    this.dateformat = this.config.dateformat;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
       this.displayedColumns.unshift("select");
+    }
+    if (
+      this.config.actionItems &&
+      !this.displayedColumns.includes("actionItems")
+    ) {
+      this.displayedColumns.push("actionItems");
     }
   }
 
@@ -48,9 +60,20 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
-    this.dateformat = this.config.dateformat;
-    if (this.config.selectBox) {
+    if (this.config.selectBox && !this.displayedColumns.includes("select")) {
       this.displayedColumns.unshift("select");
+    }
+    if (
+      this.config.actionItems &&
+      !this.displayedColumns.includes("actionItems")
+    ) {
+      this.displayedColumns.push("actionItems");
+    }
+    if (
+      this.config.actionItems &&
+      !this.displayedColumns.includes("actionItems")
+    ) {
+      this.displayedColumns.push("actionItems");
     }
   }
 
@@ -97,5 +120,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     return `${this.selection.isSelected(row) ? "deselect" : "select"} row ${
       row.position + 1
     }`;
+  }
+
+  getTemplate(type: string) {
+    if (type == "string") return this.stringTemplate;
+    else if (type == "number") return this.numberTemplate;
+    else if (type == "date") return this.dateTemplate;
+    else if (type == "image") return this.imageTemplate;
+    else if (type == "checkbox") return this.checkboxTemplate;
+    else return this.stringTemplate;
   }
 }

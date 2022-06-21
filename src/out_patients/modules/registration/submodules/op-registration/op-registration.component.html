@@ -1,577 +1,608 @@
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper">
-  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-    <ul class="list-unstyled flex items-end">
-      <li class="ml-3">
-        <a mat-tab-link [active]="true"> OP Registration</a>
-      </li>
-    </ul>
-  </nav>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">   
+      <ul class="list-unstyled flex items-end ">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true"> OP Registration</a>
+        </li>
+      </ul>    
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img [src]="icon['src']" [alt]="icon['tooltip']" width="45px" class="mt-1">
+    </div>  
+  </nav> 
   <mat-tab-nav-panel #tabPanel>
-    <div class="shadow-2  h-screen w-full opd-reg-wrapper-box  p-8 border-radius-xxlg">
-           <form (ngSubmit)="registationFormSubmit()" [formGroup]="OPRegForm" class="mt-4 mb-6">
-        <div class="flex justify-between flex-wrap ">
-          <div class="{{ questions[0].properties.question_wrapper_class }}"
-         
-          >
-            <maxhealth-question
-              [question]="questions[0]"
-              [form]="OPRegForm"
-              [questions]="questions[0]"
-              [index]="0"
-            ></maxhealth-question>
-          </div>
-          <div class="{{ questions[1].properties.question_wrapper_class }}"
-        
-        >
-          <maxhealth-question
-            [question]="questions[1]"
-            [form]="OPRegForm"
-            [questions]="questions[1]"
-            [index]="1"
-          ></maxhealth-question>
-        </div>
-        <div class="{{ questions[2].properties.question_wrapper_class }}"
-        [ngClass]="{ 'hidden display-none': questions[2].type == 'hidden' }"
-      >
-        <maxhealth-question
-          [question]="questions[2]"
-          [form]="OPRegForm"
-          [questions]="questions[2]"
-          [index]="2"
-        ></maxhealth-question>
-      </div>
-      
-    <div class="flex ">
-        <div class="w-1/4 {{ questions[3].properties.question_wrapper_class }} "
-      >
-        <maxhealth-question
-          [question]="questions[3]"
-          [form]="OPRegForm"
-          [questions]="questions[3]"
-          [index]="3"
-        ></maxhealth-question>
-      </div>
-        <div class="{{ questions[4].properties.question_wrapper_class }}"
-        >
-          <maxhealth-question
-            [question]="questions[4]"
-            [form]="OPRegForm"
-            [questions]="questions[4]"
-            [index]="4"
-          ></maxhealth-question>
-          </div>
-      </div>
-      
-     
-     
-      
-      <div class=" {{ questions[5].properties.question_wrapper_class }}"
+    <div
+      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
     >
-      <maxhealth-question
-        [question]="questions[5]"
-        [form]="OPRegForm"
-        [questions]="questions[5]"
-        [index]="5"
-      ></maxhealth-question>
-    </div>
-    
-      <div class="{{ questions[6].properties.question_wrapper_class }}"
-    >
-      <maxhealth-question
-        [question]="questions[6]"
-        [form]="OPRegForm"
-        [questions]="questions[6]"
-        [index]="6"
-      ></maxhealth-question>
-    </div>
-    <button
-    mat-raised-button
-    color="primary"
-    class="w-3/4"
-    type="submit" 
-    class="mt-2 h-1/6"
-    (click)="opendialog()"
-  >
-  Find Patient
-</button>
-        </div>
-<!-- --------------------------------------------second row ---------------------------------------------------------- -->
-
-<div class="flex justify-between flex-wrap ">
-  <div class="autocomplete {{ questions[7].properties.question_wrapper_class }}"
- 
-  >
-    <maxhealth-question
-      [question]="questions[7]"
-      [form]="OPRegForm"
-      [questions]="questions[7]"
-      [index]="7"
-    ></maxhealth-question>
-  </div>
-  <div class="{{ questions[8].properties.question_wrapper_class }}"
-
->
-  <maxhealth-question
-    [question]="questions[8]"
-    [form]="OPRegForm"
-    [questions]="questions[8]"
-    [index]="1"
-  ></maxhealth-question>
-</div>
-
-  <!-- AGE CONTAINER -->
-<div class="flex age-container ">
-<div class="w-1/3 {{ questions[9].properties.question_wrapper_class }}">
-<maxhealth-question
-  [question]="questions[9]"
-  [form]="OPRegForm"
-  [questions]="questions[9]"
-  [index]="9"
-></maxhealth-question>
-</div>
-<div class="w-2/3 {{ questions[10].properties.question_wrapper_class }} "
->
-<maxhealth-question
-  [question]="questions[10]"
-  [form]="OPRegForm"
-  [questions]="questions[10]"
-  [index]="10"
-></maxhealth-question>
-</div>
-</div>
-
-<!-- EMAIL ID -->
-<div class=" {{ questions[11].properties.question_wrapper_class }}"
->
-  <maxhealth-question
-    [question]="questions[11]"
-    [form]="OPRegForm"
-    [questions]="questions[11]"
-    [index]="11"
-  ></maxhealth-question>
-  </div>
-
-  <!-- FATHER/SPOUSE CONTAINER -->
-  <div class="flex age-container ">
-    <div class="w-1/3 {{ questions[12].properties.question_wrapper_class }}">
-    <maxhealth-question
-      [question]="questions[12]"
-      [form]="OPRegForm"
-      [questions]="questions[12]"
-      [index]="12"
-    ></maxhealth-question>
-    </div>
-    <div class="w-2/3 {{ questions[13].properties.question_wrapper_class }} "
-    >
-    <maxhealth-question
-      [question]="questions[13]"
-      [form]="OPRegForm"
-      [questions]="questions[13]"
-      [index]="13"
-    ></maxhealth-question>
-    </div>
-    </div>
-
-<!-- MOTHER NAME -->
-<div class="{{ questions[14].properties.question_wrapper_class }}"
- 
-  >
-    <maxhealth-question
-      [question]="questions[14]"
-      [form]="OPRegForm"
-      [questions]="questions[14]"
-      [index]="14"
-    ></maxhealth-question>
-  </div>
-<button
-mat-raised-button
-color="primary"
-class="w-2/3"
-type="submit" 
-class="mt-2 h-1/6"
-
->
-DMS
-</button>
-</div>
-
-<!-- --------------------------------------------------3RD ROW----------------------------------------------------------- -->
-<!-- ------------------------------------------------3RD ROW----------------------------------------------------- -->
-<div class="flex justify-between flex-wrap ">
- 
-  <div class="{{ questions[15].properties.question_wrapper_class }}"
-
->
-  <maxhealth-question
-    [question]="questions[15]"
-    [form]="OPRegForm"
-    [questions]="questions[15]"
-    [index]="15"
-  ></maxhealth-question>
-</div>
-
-<div class="w-full flex-wrap flex age-container "> 
-  
-<div class="w-1/3 {{ questions[16].properties.question_wrapper_class }}"
->
-<maxhealth-question
-  [question]="questions[16]"
-  [form]="OPRegForm"
-  [questions]="questions[16]"
-  [index]="16"
-></maxhealth-question>
-
-</div>
-<div class="w-2/3 {{ questions[17].properties.question_wrapper_class }} "
->
-<maxhealth-question
-  [question]="questions[17]"
-  [form]="OPRegForm"
-  [questions]="questions[17]"
-  [index]="17"
-></maxhealth-question>
-</div>
-</div>
-<div class="{{ questions[18].properties.question_wrapper_class }}"
->
-  <maxhealth-question
-    [question]="questions[18]"
-    [form]="OPRegForm"
-    [questions]="questions[18]"
-    [index]="18"
-  ></maxhealth-question>
-  </div>
-
-
-
-
-
-<div class=" {{ questions[19].properties.question_wrapper_class }}"
->
-<maxhealth-question
-[question]="questions[19]"
-[form]="OPRegForm"
-[questions]="questions[19]"
-[index]="19"
-></maxhealth-question>
-</div>
-
-<div class="{{ questions[20].properties.question_wrapper_class }}"
->
-<maxhealth-question
-[question]="questions[20]"
-[form]="OPRegForm"
-[questions]="questions[20]"
-[index]="20"
-></maxhealth-question>
-</div>
-<button
-mat-raised-button
-color="primary"
-class="w-3/4"
-type="submit" 
-class="mt-2 h-1/6"
-
->
-Verify Health ID 
-</button>
-</div>
-
-<!-- -----------------------------------------------4th row--------------------------------------- -->
-
-<div class="opd-reg-wrapper-box-secondary w-full border-radius-xxlg">
-
-  <!-- -------------------------------------------------ADDRESS------------------------------------------------ -->
- 
-  <!-- PINCODE -->
-  <div class="opd-reg-wrapper-box-address flex justify-between flex-wrap">
-  <div class=" w-1/2 {{ questions[21].properties.question_wrapper_class }}"
-  >
-  <maxhealth-question
-  [question]="questions[21]"
-  [form]="OPRegForm"
-  [questions]="questions[21]"
-  [index]="21"
-  ></maxhealth-question>
-  </div>
-  <div class="w-1/2 {{ questions[22].properties.question_wrapper_class }}"
-  >
-  <maxhealth-question
-  [question]="questions[22]"
-  [form]="OPRegForm"
-  [questions]="questions[22]"
-  [index]="22"
-  ></maxhealth-question>
- </div>
-
- <!-- HIDDEN OTHER TEXT FIELD FOR LOCALITY-->
- <div class="w-1/2{{ questions[23].properties.question_wrapper_class }}" hidden
- >
- <maxhealth-question
- [question]="questions[23]"
- [form]="OPRegForm"
- [questions]="questions[23]"
- [index]="23"
- ></maxhealth-question>
- </div>
-
-  <!-- CITY/TOWN -->
- <div class="w-1/2 {{ questions[24].properties.question_wrapper_class }}">
- <maxhealth-question
- [question]="questions[24]"
- [form]="OPRegForm"
- [questions]="questions[24]"
- [index]="24"
- ></maxhealth-question>
-</div>
-
-<div class="w-1/2 {{ questions[25].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[25]"
-  [form]="OPRegForm"
-  [questions]="questions[25]"
-  [index]="25"
-  ></maxhealth-question>
- </div>
-
- <div class="w-1/2 {{ questions[26].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[26]"
-  [form]="OPRegForm"
-  [questions]="questions[26]"
-  [index]="26"
-  ></maxhealth-question>
- </div>
-
- <div class="w-1/2 {{ questions[27].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[27]"
-  [form]="OPRegForm"
-  [questions]="questions[27]"
-  [index]="27"
-  ></maxhealth-question>
- </div>
-
- <!-- NATIONALITY -->
- <div class="w-1/2 {{ questions[28].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[28]"
-  [form]="OPRegForm"
-  [questions]="questions[28]"
-  [index]="28"
-  ></maxhealth-question>
- </div>
-
- <!-- FOREIGN CHECKBOX -->
- <div class="w-1/2 {{ questions[29].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[29]"
-  [form]="OPRegForm"
-  [questions]="questions[29]"
-  [index]="29"
-  ></maxhealth-question>
- </div>
-  </div>
-
-  
-
-<div class=" p-4 opd-reg-wrapper-box-check flex justify-between flex-wrap " >
-  <mat-card class="h-full w-full opd-reg-wrapper-box-checboxcontainer">
-    <div class="w-1/2 {{ questions[30].properties.question_wrapper_class }}"
-    >
-    <maxhealth-question
-    [question]="questions[30]"
-    [form]="OPRegForm"
-    [questions]="questions[30]"
-    [index]="30"
-    ></maxhealth-question>
-   </div>
-      <div class="w-1/2 {{ questions[31].properties.question_wrapper_class }}"
-      >
-      <maxhealth-question
-      [question]="questions[31]"
-      [form]="OPRegForm"
-      [questions]="questions[31]"
-      [index]="31"
-      ></maxhealth-question>
-     </div>
-            <div class="w-1/2 {{ questions[32].properties.question_wrapper_class }}"
-        >
-        <maxhealth-question
-        [question]="questions[32]"
-        [form]="OPRegForm"
-        [questions]="questions[32]"
-        [index]="32"
-        ></maxhealth-question>
-       </div>
-          <div class="w-1/2 {{ questions[33].properties.question_wrapper_class }}"
-          >
-          <maxhealth-question
-          [question]="questions[33]"
-          [form]="OPRegForm"
-          [questions]="questions[33]"
-          [index]="33"
-          ></maxhealth-question>
-         </div>
-            <div class="w-1/2 {{ questions[34].properties.question_wrapper_class }}"
-            >
-            <maxhealth-question
-            [question]="questions[34]"
-            [form]="OPRegForm"
-            [questions]="questions[34]"
-            [index]="34"
-            ></maxhealth-question>
-           </div>
-              <div class="w-1/2 {{ questions[35].properties.question_wrapper_class }}"
-              >
-              <maxhealth-question
-              [question]="questions[35]"
-              [form]="OPRegForm"
-              [questions]="questions[35]"
-              [index]="35"
-              ></maxhealth-question>
-             </div>
-                <div class="w-1/2 {{ questions[36].properties.question_wrapper_class }}"
-                >
+      <div class="w-6/7 flex h-full">
+        <form [formGroup]="OPRegForm" class="mt-2 mb-2">
+          <div class="flex flex-wrap">
+            <div class="w-1/3 flex">
+              <div class="font-xs mr-4 w-1/3">
                 <maxhealth-question
-                [question]="questions[36]"
-                [form]="OPRegForm"
-                [questions]="questions[36]"
-                [index]="36"
-                ></maxhealth-question>
-               </div>
-               
-                  <div class="w-1/2 {{ questions[37].properties.question_wrapper_class }}"
-                  >
-                  <maxhealth-question
-                  [question]="questions[37]"
+                  [question]="questions[0]"
                   [form]="OPRegForm"
-                  [questions]="questions[37]"
-                  [index]="37"
+                  [questions]="questions[0]"
+                  [index]="0"
+                ></maxhealth-question>
+              </div>
+              <div class="font-xs mr-4 w-1/3">
+                <maxhealth-question
+                  [question]="questions[1]"
+                  [form]="OPRegForm"
+                  [questions]="questions[1]"
+                  [index]="1"
+                ></maxhealth-question>
+              </div>
+              <div class="font-xs w-1/3">
+                <maxhealth-question
+                  [question]="questions[2]"
+                  [form]="OPRegForm"
+                  [questions]="questions[2]"
+                  [index]="2"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+            <div class="w-2/10 flex">
+              <div class="font-xs mr-2 w-1/3">
+                <maxhealth-question
+                  [question]="questions[3]"
+                  [form]="OPRegForm"
+                  [questions]="questions[3]"
+                  [index]="3"
+                                ></maxhealth-question>
+              </div>
+              <div class="font-xs w-2/3">
+                <maxhealth-question
+                  [question]="questions[4]"
+                  [form]="OPRegForm"
+                  [questions]="questions[4]"
+                  [index]="4"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+
+            <div class="w-3/10 flex">
+              <div class="font-xs mr-4 w-1/2">
+                <maxhealth-question
+                  [question]="questions[5]"
+                  [form]="OPRegForm"
+                  [questions]="questions[5]"
+                  [index]="5"
+                ></maxhealth-question>
+              </div>
+
+              <div class="font-xs w-1/2">
+                <maxhealth-question
+                  [question]="questions[6]"
+                  [form]="OPRegForm"
+                  [questions]="questions[6]"
+                  [index]="6"
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+          <!-- --------------------------------------------second row ---------------------------------------------------------- -->
+
+          <div class="flex flex-wrap">
+            <div class="w-1/3 flex">
+              <div class="autocomplete font-xs mr-4 w-1/3">
+                <maxhealth-question
+                  [question]="questions[7]"
+                  [form]="OPRegForm"
+                  [questions]="questions[7]"
+                  [index]="7"
+                ></maxhealth-question>
+              </div>
+              <div class="font-xs mr-4 w-1/3">
+                <maxhealth-question
+                  [question]="questions[8]"
+                  [form]="OPRegForm"
+                  [questions]="questions[8]"
+                  [index]="8"
+                ></maxhealth-question>
+              </div>
+
+              <!-- AGE CONTAINER -->
+              <div class="flex age-container font-xs w-1/3">
+                <div class="w-1/3 mr-1">
+                  <maxhealth-question
+                    [question]="questions[9]"
+                    [form]="OPRegForm"
+                    [questions]="questions[9]"
+                    [index]="9"
                   ></maxhealth-question>
-                 </div>
-                
-                    <div class="w-1/2 {{ questions[38].properties.question_wrapper_class }}"
-                    >
+                </div>
+                <div class="w-2/3">
+                  <maxhealth-question
+                    [question]="questions[10]"
+                    [form]="OPRegForm"
+                    [questions]="questions[10]"
+                    [index]="10"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+            <div class="w-2/10 flex">
+              <!-- EMAIL ID -->
+              <div class="w-full font-xs">
+                <maxhealth-question
+                  [question]="questions[11]"
+                  [form]="OPRegForm"
+                  [questions]="questions[11]"
+                  [index]="11"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+
+            <div class="w-3/10 flex">
+              <!-- FATHER/SPOUSE CONTAINER -->
+              <div class="flex flex-column w-1/2 mr-4 font-xs">
+                <mat-label>Father/Spouse Name</mat-label>
+                <div class="flex age-container items-center">
+                  <div class="w-1/3 mr-1 font-xs">
                     <maxhealth-question
+                      [question]="questions[12]"
+                      [form]="OPRegForm"
+                      [questions]="questions[12]"
+                      [index]="12"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/3 font-xs">
+                    <maxhealth-question
+                      [question]="questions[13]"
+                      [form]="OPRegForm"
+                      [questions]="questions[13]"
+                      [index]="13"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MOTHER NAME -->
+              <div class="w-1/2 font-xs">
+                <maxhealth-question
+                  [question]="questions[14]"
+                  [form]="OPRegForm"
+                  [questions]="questions[14]"
+                  [index]="14"
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+
+          <!-- --------------------------------------------------3RD ROW----------------------------------------------------------- -->
+          <!-- ------------------------------------------------3RD ROW----------------------------------------------------- -->
+          <div class="flex flex-wrap font-xs">
+            <div class="w-1/3 flex">
+              <div class="w-1/3 mr-4">
+                <maxhealth-question
+                  [question]="questions[15]"
+                  [form]="OPRegForm"
+                  [questions]="questions[15]"
+                  [index]="15"
+                ></maxhealth-question>
+              </div>
+
+              <div class="flex age-container w-2/3">
+                <div class="w-1/3 mr-1">
+                  <maxhealth-question
+                    [question]="questions[16]"
+                    [form]="OPRegForm"
+                    [questions]="questions[16]"
+                    [index]="16"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-9/10">
+                  <maxhealth-question
+                    [question]="questions[17]"
+                    [form]="OPRegForm"
+                    [questions]="questions[17]"
+                    [index]="17"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+            <div class="w-2/10 flex">
+              <div class="">
+                <maxhealth-question
+                  [question]="questions[18]"
+                  [form]="OPRegForm"
+                  [questions]="questions[18]"
+                  [index]="18"
+                ></maxhealth-question>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+
+            <div class="w-3/10 flex">
+              <div class=" ">
+                <maxhealth-question
+                  [question]="questions[19]"
+                  [form]="OPRegForm"
+                  [questions]="questions[19]"
+                  [index]="19"
+                ></maxhealth-question>
+              </div>
+            </div>
+          </div>
+
+          <!-- -----------------------------------------------4th row--------------------------------------- -->
+
+          <div class="flex flex-wrap font-xs">
+            <!-- -------------------------------------------------ADDRESS------------------------------------------------ -->
+
+            <!-- PINCODE -->
+            <div class="flex flex-column w-1/3">
+              <div class="w-full">
+                <maxhealth-question
+                  [question]="questions[20]"
+                  [form]="OPRegForm"
+                  [questions]="questions[20]"
+                  [index]="20"
+                ></maxhealth-question>
+              </div>
+              <div class="flex w-full justify-between">
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[21]"
+                    [form]="OPRegForm"
+                    [questions]="questions[21]"
+                    [index]="21"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[22]"
+                    [form]="OPRegForm"
+                    [questions]="questions[22]"
+                    [index]="22"
+                  ></maxhealth-question>
+                </div>
+              </div>
+
+              <!-- HIDDEN OTHER TEXT FIELD FOR LOCALITY-->
+              <div class="w-1/2" hidden>
+                <maxhealth-question
+                  [question]="questions[23]"
+                  [form]="OPRegForm"
+                  [questions]="questions[23]"
+                  [index]="23"
+                ></maxhealth-question>
+              </div>
+              <div class="flex w-full justify-between">
+                <!-- CITY/TOWN -->
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[24]"
+                    [form]="OPRegForm"
+                    [questions]="questions[24]"
+                    [index]="24"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[25]"
+                    [form]="OPRegForm"
+                    [questions]="questions[25]"
+                    [index]="25"
+                  ></maxhealth-question>
+                </div>
+              </div>
+              <div class="flex w-full justify-between">
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[26]"
+                    [form]="OPRegForm"
+                    [questions]="questions[26]"
+                    [index]="26"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[27]"
+                    [form]="OPRegForm"
+                    [questions]="questions[27]"
+                    [index]="27"
+                  ></maxhealth-question>
+                </div>
+              </div>
+              <div class="flex w-full justify-between items-center">
+                <!-- NATIONALITY -->
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[28]"
+                    [form]="OPRegForm"
+                    [questions]="questions[28]"
+                    [index]="28"
+                  ></maxhealth-question>
+                </div>
+                <!-- FOREIGN CHECKBOX -->
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[29]"
+                    [form]="OPRegForm"
+                    [questions]="questions[29]"
+                    [index]="29"
+                    (click)="passportDetailsdialog()" 
+                  ></maxhealth-question>
+                </div>
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[30]"
+                    [form]="OPRegForm"
+                    [questions]="questions[30]"
+                    [index]="30"
+                    (click)="seafarersDetailsdialog()"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+
+            <div
+              class="opd-reg-wrapper-box-check flex justify-between flex-wrap w-2/10"
+            >
+              <mat-card
+                class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color"
+              >
+                <div class="flex">
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[31]"
+                      [form]="OPRegForm"
+                      [questions]="questions[31]"
+                      [index]="31"
+                      (click)="openHotListDialog()"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[32]"
+                      [form]="OPRegForm"
+                      [questions]="questions[32]"
+                      [index]="32"
+                      (click)="openVipNotes()"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+                <div class="flex">
+                 
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[33]"
+                      [form]="OPRegForm"
+                      [questions]="questions[33]"
+                      [index]="33"
+                       (click)="openNotes()"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[34]"
+                    [form]="OPRegForm"
+                    [questions]="questions[34]"
+                    [index]="34"
+                    (click)="openEWSDialogue()"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[35]"
+                    [form]="OPRegForm"
+                    [questions]="questions[35]"
+                    [index]="35"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[36]"
+                    [form]="OPRegForm"
+                    [questions]="questions[36]"
+                    [index]="36"
+                  ></maxhealth-question>
+                </div>
+
+                <div class="w-full">
+                  <maxhealth-question
+                    [question]="questions[37]"
+                    [form]="OPRegForm"
+                    [questions]="questions[37]"
+                    [index]="37"
+                  ></maxhealth-question>
+                </div>
+                <div class="w-full">
+                  <maxhealth-question
                     [question]="questions[38]"
                     [form]="OPRegForm"
                     [questions]="questions[38]"
                     [index]="38"
+                   
+                  ></maxhealth-question>
+                  <maxhealth-question
+                  [question]="questions[39]"
+                  [form]="OPRegForm"
+                  [questions]="questions[39]"
+                  [index]="39"
+              
+                ></maxhealth-question>
+                </div>
+              </mat-card>
+            </div>
+            <div class="mx-8">&nbsp;</div>
+
+            <div class="opd-reg-wrapper-box-radio flex flex-wrap w-3/10">
+              <mat-card class="w-full opd-reg-wrapper-box-checboxcontainer">
+                <h3 class="max-health-primary-color">Payment Mode</h3>
+                <!-- CASH RADIO BUTTON -->
+                <div class="flex flex-wrap">
+                  
+                  <div class="w-1/2">
+                    <maxhealth-question
+                      [question]="questions[40]"
+                      [form]="OPRegForm"
+                      [questions]="questions[40]"
+                      [index]="40"
                     ></maxhealth-question>
-                   </div>
+                  </div>
+                  <div class="w-2/5">
+                    <maxhealth-question
+                      [question]="questions[41]"
+                      [form]="OPRegForm"
+                      [questions]="questions[41]"
+                      [index]="41"
+                    ></maxhealth-question>
+                  </div>
+                </div>
+              </mat-card>
+              <!-- <div class="w-full mt-2">
+                <maxhealth-question
+                  [question]="questions[43]"
+                  [form]="OPRegForm"
+                  [questions]="questions[43]"
+                  [index]="43"
+                ></maxhealth-question>
+              </div> -->
 
+              <!-- SAVE MODIFY BUTTON -->
+              <div class="flex w-full justify-between flex-wrap flex-column">
+                <div class="flex justify-between mb-1">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="submit"
+                    [disabled]="!OPRegForm.valid"
+                    (click)="registationFormSubmit()"
+                  >
+                    Save
+                  </button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="button"
+                    [disabled]="!MaxIDExist"
+                    (click)="onModifyDetail()"
+                  >
+                    Modify
+                  </button>
+                </div>
+                <div class="flex justify-between">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="submit"
+                    [disabled]="!MaxIDExist"
+                    (click)="openReportModal('PrintLabel')"
+                  >
+                    Print Label
+                  </button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="w-1/45"
+                    type="submit"
+                    [disabled]="!MaxIDExist"
+                    (click)="openReportModal('PrintOD')"
+                  >
+                    Print OD
+                  </button>
+                </div>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="w-1/15 flex flex-column">
+        <div
+          class="mt-4 mx-4 px-4 py-4 h-1/3 flex flex-column justify-between hash-background"
+        >
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full font-xs"
+            type="button"
+          >
+            Appointment Search
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full"
+            type="button"
+          >
+            DMS
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="w-full"
+            type="button"
+          >
+            Verify Health ID
+          </button>
+        </div>
 
-  </mat-card>
-</div>
-<div class=" p-4 opd-reg-wrapper-box-radio flex justify-between flex-wrap ">
-  <mat-card class="h-2/5 w-full opd-reg-wrapper-box-checboxcontainer">
-
-    
- <!-- CASH RADIO BUTTON -->
- <div class="w-1/2 {{ questions[39].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[39]"
-  [form]="OPRegForm"
-  [questions]="questions[39]"
-  [index]="39"
-  ></maxhealth-question>
- </div>
- <div class="w-1/2 {{ questions[40].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[40]"
-  [form]="OPRegForm"
-  [questions]="questions[40]"
-  [index]="40"
-  ></maxhealth-question>
- </div>
- <div class="w-1/2 {{ questions[41].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[41]"
-  [form]="OPRegForm"
-  [questions]="questions[41]"
-  [index]="41"
-  ></maxhealth-question>
- </div>
- <div class="w-1/2 {{ questions[42].properties.question_wrapper_class }}">
-  <maxhealth-question
-  [question]="questions[42]"
-  [form]="OPRegForm"
-  [questions]="questions[42]"
-  [index]="42"
-  ></maxhealth-question>
- </div>
-</mat-card>
-    <div class="w-full {{ questions[43].properties.question_wrapper_class }}">
-      <maxhealth-question
-      [question]="questions[43]"
-      [form]="OPRegForm"
-      [questions]="questions[43]"
-      [index]="43"
-      ></maxhealth-question>
-     </div>
-
-     <!-- SAVE MODIFY BUTTON -->
-     <div class="flex w-full justify-between flex-wrap flex-column" >
-       <div class="">
-      <button
-      mat-raised-button
-      color="primary"
-      class="w-1/2 h-4/5"
-      type="submit" 
-            
-    >
-    Save
-  </button>
-  <button
-mat-raised-button
-  color="primary"
-  class="w-1/2 h-4/5"
-  type="submit" 
-    
-    
->
-Modify
-</button>
-     </div>
-    <div>
-      <button
-      mat-raised-button
-      color="primary"
-      class="w-1/2 h-4/5"
-      type="submit" 
-            
-    >
-    Print Label
-  </button>
-  <button
-mat-raised-button
-  color="primary"
-  class="w-1/2 h-4/5"
-  type="submit" 
-    
-    
->
-Print OD
-</button>
-    
-</div>
-<!-- </div> -->
-
-  
-</div>
-</div>
-<div class=" p-4 opd-reg-wrapper-box-imageblock flex justify-between flex-wrap ">
-  <mat-card class="h-3/5 w-full opd-reg-wrapper-box-checboxcontainer">
-      <!-- NEED TO ADD IMAGE ICON HERE -->
-  </mat-card>
-</div>
-</div>
-</form>  
-</div>
-
-  
-   
-    
+        <div class="p-4 flex justify-center flex-wrap">
+          <svg
+            width="242"
+            height="239"
+            viewBox="0 0 242 239"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="width: 150px; height: 150px"
+          >
+            <path
+              d="M230 0H12C5.37258 0 0 5.37258 0 12V227C0 233.627 5.37258 239 12 239H230C236.627 239 242 233.627 242 227V12C242 5.37258 236.627 0 230 0Z"
+              fill="white"
+            />
+            <path
+              d="M230 0.5H12C5.64873 0.5 0.5 5.64873 0.5 12V227C0.5 233.351 5.64873 238.5 12 238.5H230C236.351 238.5 241.5 233.351 241.5 227V12C241.5 5.64873 236.351 0.5 230 0.5Z"
+              stroke="#707070"
+            />
+            <path
+              d="M191 162H54V161.8C54 161.7 54 161.593 54 161.491C53.97 151.195 55.7934 140.977 59.383 131.326C61.089 126.758 63.2032 122.352 65.7 118.163C68.128 114.092 70.9276 110.255 74.063 106.7C77.1279 103.224 80.5228 100.054 84.2 97.234C87.8233 94.4591 91.7229 92.0648 95.837 90.089C104.154 86.081 113.268 83.9996 122.501 83.9996C131.733 83.9996 140.847 86.081 149.164 90.089C153.278 92.0648 157.177 94.4591 160.8 97.234C164.477 100.054 167.872 103.224 170.937 106.7C174.072 110.255 176.872 114.092 179.3 118.163C181.796 122.352 183.91 126.757 185.616 131.325C189.206 140.975 191.029 151.191 191 161.487C191 161.656 191 161.829 191 161.999V162Z"
+              fill="#E5E5E5"
+            />
+            <path
+              d="M122.5 116C150.943 116 174 92.4949 174 63.5C174 34.5051 150.943 11 122.5 11C94.0573 11 71 34.5051 71 63.5C71 92.4949 94.0573 116 122.5 116Z"
+              fill="#F2F2F2"
+            />
+          </svg>
+        </div>
+        <div class="px-4 py-0 h-1/5 flex flex-column">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="mt-4 mb-2"
+            (click)="OPRegForm.reset()"
+          >
+            Clear
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            class="mt-1"
+            [disabled]="!MaxIDExist"
+            (click)="openReportModal('PrintForm')"
+          >
+            Print Form
+          </button>
+        </div>
+      </div>
+    </div>
   </mat-tab-nav-panel>
 </section>
