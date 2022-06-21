@@ -29,6 +29,8 @@ export class RegistrationUnmergingComponent implements OnInit {
   unMergeresponse:string='';
   maxid: any='' ;
   ssn:any='';
+  defaultUI:boolean = true;
+  unmergeplaceholder:string = "Please search Max ID or SSN";
   unmergeMastercheck={
     isSelected:false
   }
@@ -124,6 +126,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   searchPatient(formdata:any) {
+    this.defaultUI = false;
     if(formdata['maxID'] == '' && formdata['ssn'] == '' )
       return;
       this.maxid = formdata['maxID'];

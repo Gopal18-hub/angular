@@ -50,8 +50,7 @@
                   [form]="OPRegForm"
                   [questions]="questions[3]"
                   [index]="3"
-                  (change)="onPhoneModify()"
-                ></maxhealth-question>
+                                ></maxhealth-question>
               </div>
               <div class="font-xs w-2/3">
                 <maxhealth-question
@@ -101,7 +100,7 @@
                   [question]="questions[8]"
                   [form]="OPRegForm"
                   [questions]="questions[8]"
-                  [index]="1"
+                  [index]="8"
                 ></maxhealth-question>
               </div>
 
@@ -331,7 +330,16 @@
                     [form]="OPRegForm"
                     [questions]="questions[29]"
                     [index]="29"
-                    (click)="openForeigner()"
+                    (click)="passportDetailsdialog()" 
+                  ></maxhealth-question>
+                </div>
+                <div class="w-1/45">
+                  <maxhealth-question
+                    [question]="questions[30]"
+                    [form]="OPRegForm"
+                    [questions]="questions[30]"
+                    [index]="30"
+                    (click)="seafarersDetailsdialog()"
                   ></maxhealth-question>
                 </div>
               </div>
@@ -347,36 +355,32 @@
                 <div class="flex">
                   <div class="w-2/5">
                     <maxhealth-question
-                      [question]="questions[30]"
-                      [form]="OPRegForm"
-                      [questions]="questions[30]"
-                      [index]="30"
-                    ></maxhealth-question>
-                  </div>
-                  <div class="w-2/5">
-                    <maxhealth-question
                       [question]="questions[31]"
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
+                      (click)="openHotListDialog()"
                     ></maxhealth-question>
                   </div>
-                </div>
-                <div class="flex">
                   <div class="w-2/5">
                     <maxhealth-question
                       [question]="questions[32]"
                       [form]="OPRegForm"
                       [questions]="questions[32]"
                       [index]="32"
+                      (click)="openVipNotes()"
                     ></maxhealth-question>
                   </div>
+                </div>
+                <div class="flex">
+                 
                   <div class="w-2/5">
                     <maxhealth-question
                       [question]="questions[33]"
                       [form]="OPRegForm"
                       [questions]="questions[33]"
                       [index]="33"
+                       (click)="openNotes()"
                     ></maxhealth-question>
                   </div>
                 </div>
@@ -387,6 +391,7 @@
                     [form]="OPRegForm"
                     [questions]="questions[34]"
                     [index]="34"
+                    (click)="openEWSDialogue()"
                   ></maxhealth-question>
                 </div>
                 <div class="w-full">
@@ -414,14 +419,21 @@
                     [index]="37"
                   ></maxhealth-question>
                 </div>
-
                 <div class="w-full">
                   <maxhealth-question
                     [question]="questions[38]"
                     [form]="OPRegForm"
                     [questions]="questions[38]"
                     [index]="38"
+                   
                   ></maxhealth-question>
+                  <maxhealth-question
+                  [question]="questions[39]"
+                  [form]="OPRegForm"
+                  [questions]="questions[39]"
+                  [index]="39"
+              
+                ></maxhealth-question>
                 </div>
               </mat-card>
             </div>
@@ -432,14 +444,7 @@
                 <h3 class="max-health-primary-color">Payment Mode</h3>
                 <!-- CASH RADIO BUTTON -->
                 <div class="flex flex-wrap">
-                  <div class="w-1/2">
-                    <maxhealth-question
-                      [question]="questions[39]"
-                      [form]="OPRegForm"
-                      [questions]="questions[39]"
-                      [index]="39"
-                    ></maxhealth-question>
-                  </div>
+                  
                   <div class="w-1/2">
                     <maxhealth-question
                       [question]="questions[40]"
@@ -448,7 +453,7 @@
                       [index]="40"
                     ></maxhealth-question>
                   </div>
-                  <div class="w-1/2">
+                  <div class="w-2/5">
                     <maxhealth-question
                       [question]="questions[41]"
                       [form]="OPRegForm"
@@ -456,24 +461,16 @@
                       [index]="41"
                     ></maxhealth-question>
                   </div>
-                  <div class="w-1/2">
-                    <maxhealth-question
-                      [question]="questions[42]"
-                      [form]="OPRegForm"
-                      [questions]="questions[42]"
-                      [index]="42"
-                    ></maxhealth-question>
-                  </div>
                 </div>
               </mat-card>
-              <div class="w-full mt-2">
+              <!-- <div class="w-full mt-2">
                 <maxhealth-question
                   [question]="questions[43]"
                   [form]="OPRegForm"
                   [questions]="questions[43]"
                   [index]="43"
                 ></maxhealth-question>
-              </div>
+              </div> -->
 
               <!-- SAVE MODIFY BUTTON -->
               <div class="flex w-full justify-between flex-wrap flex-column">
@@ -493,6 +490,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
+                    [disabled]="!MaxIDExist"
                     (click)="onModifyDetail()"
                   >
                     Modify
@@ -504,6 +502,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    [disabled]="!MaxIDExist"
                     (click)="openReportModal('PrintLabel')"
                   >
                     Print Label
@@ -513,6 +512,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
+                    [disabled]="!MaxIDExist"
                     (click)="openReportModal('PrintOD')"
                   >
                     Print OD
@@ -596,6 +596,7 @@
             color="primary"
             type="button"
             class="mt-1"
+            [disabled]="!MaxIDExist"
             (click)="openReportModal('PrintForm')"
           >
             Print Form
