@@ -145,7 +145,7 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment=="+hotlistingcomment+"&type=="+type+"&userId=="+userid
+      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment="+hotlistingcomment+"&type="+type+"&userId="+userid
     );
   };
 
