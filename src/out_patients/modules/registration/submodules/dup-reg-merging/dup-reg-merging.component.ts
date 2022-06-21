@@ -31,6 +31,8 @@ export class DupRegMergingComponent implements OnInit {
   healthId = '';
   aadhaarId = '';
   mobile = '';
+  defaultUI:boolean=true;
+  mergeplaceholder:string="Please search Name, Phone, DOB and Email ";
 
   mergeSearchForm = new FormGroup({
     name: new FormControl(''),
@@ -125,7 +127,7 @@ export class DupRegMergingComponent implements OnInit {
 
 
   searchPatient(formdata: any) {
-
+this.defaultUI = false;
     if (formdata['name'] == '' && formdata['phone'] == '' 
     && formdata['dob'] == '' && formdata['email'] == '')
     {
