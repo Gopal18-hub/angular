@@ -36,6 +36,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { AppointmentSearchDialogComponent } from "../../submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 export interface DialogData {
   expieryDate: Date;
   issueAt: string;
@@ -43,10 +44,6 @@ export interface DialogData {
   issuedate: Date;
   hcf: { id: number; title: string };
 }
-// export interface HotlistDialogData {
-//   hotlistReason: {};
-//   hotlistNotes: {};
-// }
 
 @Component({
   selector: "out-patients-op-registration",
@@ -381,6 +378,7 @@ export class OpRegistrationComponent implements OnInit {
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
     //LIST FOR FATHER/SPOUSE
+
     this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
       return { title: l.title, value: l.value };
     });
@@ -556,6 +554,8 @@ export class OpRegistrationComponent implements OnInit {
     // });
   }
 
+ 
+  
   //TITLE LIST API CALL
   getTitleList() {
     let hspId = Number(this.cookie.get("HSPLocationId"));
@@ -710,22 +710,15 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
-  opendialog() {
-    this.matDialog.open(HotListingDialogComponent, {
-      width: "30vw",
-      height: "52vh",
-    });
-  }
-  openVipDialog() {
-    this.matDialog.open(VipDialogComponent, { width: "30vw", height: "40vh" });
-  }
-  openPrintLabelDialog() {
-    this.matDialog.open(PrintLabelDialogComponent, {
-      width: "30vw",
-      height: "30vh",
-    });
-  }
-  hotlistDialogList: { title: string, value: number }[] = [] as any
+  
+hotlistDialogList:{title:string,value:number}[]=[] as any
+
+  // gethotlistMasterData(): {title:string,value:number}[] {
+  //   let arr=[] as any;
+  //    this.http
+ 
+  // }
+  // hotlistDialogList: { title: string, value: number }[] = [] as any
   gethotlistMasterData(): { title: string, value: number }[] {
     let arr = [] as any;
     this.http
@@ -742,7 +735,43 @@ export class OpRegistrationComponent implements OnInit {
           // this.questions[24].options = this.cityList.map((l) => {
           //   return { title: l.cityName, value: l.id };
         });
-        return arr = this.hotlistDialogList;
+        this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
+          width: "30vw",
+          height: "52vh",
+          data: {
+            title: "Hot Listing",
+            form: {
+              title: "",
+              type: "object",
+              properties: {
+                hotlistTitle: {
+                  type: "autocomplete",
+                  title: "Hot Listing",
+                  required: true,
+                  options: this.hotlistDialogList,
+                },
+                reason: {
+                  type: "textarea",
+                  title: "Remark",
+                  required: true,
+                },
+              },
+            },
+            layout: "single",
+            buttonLabel: "Save",
+          },
+        });
+        this.hotlistdialogref.afterClosed().subscribe((result:any) => {
+          console.log("The dialog was closed");
+          console.log(result);
+          this.hotlistReason = result.data.hotlistTitle.title;
+          this.hotlistRemark = result.data.reason;
+          this.postHotlistComment(this.hotlistReason,this.hotlistRemark);
+          console.log(this.hotlistReason,this.hotlistRemark)
+          // this.postHotlistComment();
+    
+          
+        });
       });
     return arr;
   }
@@ -757,55 +786,20 @@ export class OpRegistrationComponent implements OnInit {
     //   height: "52vh",
     // });
 
-    this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
-      data: {
-        title: "Hot Listing",
-        form: {
-          title: "",
-          type: "object",
-          properties: {
-            hotlistTitle: {
-              type: "autocomplete",
-              title: "Hot Listing",
-              required: true,
-              list: this.gethotlistMasterData(),
-            },
-            reason: {
-              type: "string",
-              title: "Remark",
-              required: true,
-            },
-          },
-        },
-        layout: "single",
-        buttonLabel: "Save",
-      },
-    });
-    this.hotlistdialogref.afterClosed().subscribe((result: any) => {
-      console.log("The dialog was closed");
-      console.log(result);
-      this.hotlistReason = result.hotlistTitle;
-      this.hotlistRemark = result.reason;
-      console.log(this.hotlistReason, this.hotlistRemark)
-      // this.postHotlistComment();
-
-
-    });
+   
   }
 
-  postHotlistComment() {
+  postHotlistComment(title:string,remark:string) {
     this.http
       .get(
         ApiConstants.hotlistedPatient(
           this.patientDetails.registrationno,
-          this.hotlistReason,
+          title,
           this.cookie.get("HSPLocationId"),
           this.patientDetails.firstname,
           this.patientDetails.lastName,
           this.patientDetails.middleName,
-          this.hotlistRemark,
+          remark,
           "",
           Number(this.cookie.get("UserId"))
         )
@@ -894,7 +888,8 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
   onModifyDetail() {
-    this.onUpdatePatientDetail();
+    // this.onUpdatePatientDetail();
+    this.modifyDialogg();
     this.http
       .post(
         ApiConstants.modifyPatientDetail,
@@ -1083,23 +1078,28 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   setPaymentMode(ppagerNumber: string | undefined) {
-    switch (ppagerNumber) {
-      case "CASH":
-        this.OPRegForm.controls["cash"].setValue(ppagerNumber);
-        break;
-      case "EWS":
-        this.OPRegForm.controls["ews"].setValue(ppagerNumber);
-        break;
 
-      case "CORPORATE/INSURANCE":
-        this.OPRegForm.controls["Insurance"].setValue(ppagerNumber);
-        break;
-      case "PSU/GOVT":
-        this.OPRegForm.controls["psuGovt"].setValue(ppagerNumber);
-        break;
-      default:
-        this.OPRegForm.controls["cash"].setValue(ppagerNumber);
-    }
+    this.OPRegForm.value.paymentMethod
+    this.OPRegForm.controls["paymentMethod"].setValue(
+      ppagerNumber
+    );
+    // switch (ppagerNumber) {
+    //   case "CASH":
+    //     this.OPRegForm.controls["cash"].setValue(ppagerNumber);
+    //     break;
+    //   case "EWS":
+    //     this.OPRegForm.controls["ews"].setValue(ppagerNumber);
+    //     break;
+
+    //   case "CORPORATE/INSURANCE":
+    //     this.OPRegForm.controls["Insurance"].setValue(ppagerNumber);
+    //     break;
+    //   case "PSU/GOVT":
+    //     this.OPRegForm.controls["psuGovt"].setValue(ppagerNumber);
+    //     break;
+    //   default:
+    //     this.OPRegForm.controls["cash"].setValue(ppagerNumber);
+    // }
   }
 
   updateRequestBody!: UpdatepatientModel;
@@ -1248,7 +1248,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.mobileNumber,
       "",
       this.OPRegForm.value.emailId,
-      this.OPRegForm.value.paymentMethod.value, //PAGER NEED TO CHECK HOW CAN BE SENT
+      this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       this.OPRegForm.value.nationality.value,
       false,
@@ -1281,7 +1281,7 @@ export class OpRegistrationComponent implements OnInit {
       this.noteRemark,
       this.OPRegForm.value.surveySMS || false,
       this.OPRegForm.value.receivePromotional || false,
-      this.OPRegForm.value.paymentMethod.value,
+      "",
       this.OPRegForm.value.verifiedOnline == "" ? 0 : 1,
       "this.ewsObj.bplCardNo",
       false,
@@ -1295,8 +1295,8 @@ export class OpRegistrationComponent implements OnInit {
       "this.seafarerObj.Vesselname",
       "this.seafarerObj.FDPGroup",
       false,
-      " this.hwcObj.HWCRemarks",
-      this.OPRegForm.value.idenityType.value || 0,
+      this.hwcRemark,
+      this.OPRegForm.value.idenityType.value||0,
       this.OPRegForm.value.idenityValue,
       0,
       "this.ewsObj.bplCardAddress",
@@ -1686,6 +1686,106 @@ export class OpRegistrationComponent implements OnInit {
       console.log("HWC dialog was closed");
     });
   }
+  openDialog()
+  {
+    this.matDialog.open(AppointmentSearchDialogComponent,{width:'100vw', height: "52vh"})
+  }
+
+
+  modifyDialogg() {
+    const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
+      width: "30vw",
+      height: "80vh",
+      data: {
+        title: "Passport Details",
+                  form: {
+    title: "",
+    type: "object",
+    properties: {
+      firstName: {
+        type: "string",
+        title: "First Name",
+        required: true,
+      },
+      modifiedfirstName: {
+        type: "string",
+        title: "First Name",
+        required: true,
+      },
+      middleName: {
+        type: "string",
+        title: "Middle Name",
+        required: true,
+      },
+      
+      modifiedmiddleName: {
+        type: "string",
+        title: "Middle Name",
+        required: true,
+      },
+      lastName: {
+        type: "string",
+        title: "Last Name",
+        required: true,
+      },
+    
+      modifiedlastName: {
+        type: "string",
+        title: "Last Name",
+        required: true,
+      },
+      gender: {
+        type: "string",
+        title: "Gender",
+        required: true,
+      },
+    
+      modifiedgender: {
+        type: "string",
+        title: "Gender",
+        required: true,
+      },
+      email: {
+        type: "email",
+        title: "Email id",
+        required: true,
+      },
+    
+      modifiedemail: {
+        type: "email",
+        title: "Email id",
+        required: true,
+      },
+      mobileNumber: {
+        type: "number",
+        title: "Mobile Number",
+        required: true,
+      },
+      modifiedMobileNumber: {
+        type: "number",
+        title: "Mobile Number",
+        required: true,
+      },
+      nationality: {
+        type: "number",
+        title: "Nationality",
+        required: true,
+      },
+       modifiedNationality: {
+        type: "number",
+        title: "Nationality",
+        required: true,
+      },
+     
+    }},
+    layout: "double",
+    buttonLabel: "Save",
+  },
+});
+  }
+  
+
+  
 
   passportDetailsdialog() {
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
