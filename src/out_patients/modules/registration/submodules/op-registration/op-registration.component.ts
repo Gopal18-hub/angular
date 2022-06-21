@@ -44,10 +44,6 @@ export interface DialogData {
   issuedate: Date;
   hcf: { id: number; title: string };
 }
-// export interface HotlistDialogData {
-//   hotlistReason: {};
-//   hotlistNotes: {};
-// }
 
 @Component({
   selector: "out-patients-op-registration",
@@ -756,8 +752,9 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
         this.hotlistdialogref.afterClosed().subscribe((result:any) => {
           console.log("The dialog was closed");
           console.log(result);
-          this.hotlistReason = result.hotlistTitle;
-          this.hotlistRemark = result.reason;
+          this.hotlistReason = result.data.hotlistTitle.title;
+          this.hotlistRemark = result.data.reason;
+          this.postHotlistComment(this.hotlistReason,this.hotlistRemark);
           console.log(this.hotlistReason,this.hotlistRemark)
           // this.postHotlistComment();
     
@@ -780,17 +777,17 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
    
   }
 
-  postHotlistComment() {
+  postHotlistComment(title:string,remark:string) {
     this.http
       .get(
         ApiConstants.hotlistedPatient(
           this.patientDetails.registrationno,
-          this.hotlistReason,
+          title,
           this.cookie.get("HSPLocationId"),
           this.patientDetails.firstname,
           this.patientDetails.lastName,
           this.patientDetails.middleName,
-          this.hotlistRemark,
+          remark,
           "",
           Number(this.cookie.get("UserId"))
         )
