@@ -38,6 +38,8 @@ import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { DMSComponent } from '../registration/submodules/dms/dms.component';
+
 
 @NgModule({
   declarations: [
@@ -59,6 +61,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
     ForeignerDialogComponent,
     HotListingApprovalComponent,
     FormDialogueComponent,
+    DMSComponent
   ],
   imports: [
     RegistrationRoutingModule,
