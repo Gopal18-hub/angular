@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { CookieService } from "./cookie.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SearchService {
+  constructor(private cookie: CookieService) { }
   searchTrigger = new Subject<any>();
 
   searchFormData: any = {
@@ -15,6 +17,7 @@ export class SearchService {
         maxID: {
           type: "string",
           title: "Max ID",
+          defaultValue: this.cookie.get("LocationIACode") + '.',
         },
         phone: {
           type: "string",
@@ -31,10 +34,12 @@ export class SearchService {
         healthID: {
           type: "string",
           title: "Health ID",
+          readonly:true,
         },
         adhaar: {
           type: "string",
           title: "Aadhaar",
+          readonly:true,
         },
       },
     },
