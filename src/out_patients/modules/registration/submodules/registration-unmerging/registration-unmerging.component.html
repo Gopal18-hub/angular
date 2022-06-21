@@ -1,4 +1,4 @@
-<form [formGroup]="unmergeSearchForm">
+<!-- <form [formGroup]="unmergeSearchForm">
   <div class="flex flex-row">
     <mat-form-field appearance = "outline"> 
       <mat-label>Max ID</mat-label>
@@ -8,28 +8,42 @@
       <mat-label>SSN</mat-label>
       <input matInput placeholder="SSN" formControlName="ssn" >
     </mat-form-field>
+    <button mat-raised-button color="primary" class="col-m3 h-1/2 ml-3" type="button" 
+    (click)="searchPatient()">Search</button>
   </div> 
-</form>
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+</form> -->
+<section class="ml-4 mr-4 shadow-1 max-body-wrapper whitePanel">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
-        <a mat-tab-link [active]="true">Resgistration Unmerging</a>
+        <a mat-tab-link [active]="true">Registration Unmerging</a>
       </li>
     </ul>
   </nav>   
   <mat-tab-nav-panel #tabPanel>
-    <div class="p-3 w-full">
-      <ng-container *ngIf="showunmerge">
-        <maxhealth-table
-          [config]="config"
-          [data]="unmergingList"
-        ></maxhealth-table>
-      </ng-container>
+     <div  class="w-full h-full" *ngIf="!defaultUI">
+    <div class="p-2 w-full h-full display-block">     
+        <ng-container *ngIf="isAPIProcess" class="w-full h-4/5">
+          <maxhealth-table 
+            class="w-full"
+            [config]="config"
+            [data]="unmergingList"
+            #table
+          ></maxhealth-table>
+        </ng-container>        
+    </div>    
+    <div class="float-right mt-3 mb-3 mr-3">
+          <button mat-raised-button color="primary" class="w-full" (click)="unMerge()" [disabled]="unmergebuttonDisabled">Unmerge</button>        
     </div>
-  </mat-tab-nav-panel>     
-    <div class="self-end float-right absolute right-30">
-        <button mat-raised-button color="primary" class="w-full relative right-15" type="submit">Unmerge</button>        
+  </div>
+
+  <div  class="w-full h-full" *ngIf="defaultUI">
+    <empty-placeholder [defaultplaceholder]="unmergeplaceholder">
+
+    </empty-placeholder>
     </div>
+  </mat-tab-nav-panel> 
+  
 </section>
+
 

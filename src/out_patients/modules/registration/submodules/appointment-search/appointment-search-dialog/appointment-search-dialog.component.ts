@@ -103,8 +103,16 @@ export class AppointmentSearchDialogComponent implements OnInit {
   searchAppointment() {
     this.searchResults = [];
     //this.http.getExternal(ApiConstants.getAppointmentPatientSearch(this.appointmentSearchForm.value.phone,this.appointmentSearchForm.value.name,'',this.appointmentSearchForm.value.isDateRange,this.appointmentSearchForm.value.startdate,this.appointmentSearchForm.value.enddate,'',this.appointmentSearchForm.value.booknumber)).subscribe((response)=>{
-    this.getAppointmentSearch().subscribe((response) => { this.searchResults = response; });  
-    this.searchAppPatient = true;
+    this.getAppointmentSearch().subscribe((response) => { this.searchResults = response; 
+    if(this.searchResults.length==0)
+    {
+      this.searchAppPatient = false;
+    }
+    else{
+      this.searchAppPatient = true;
+    }
+    });  
+   
   }
   clear() {
     this.appointmentSearchForm.reset();

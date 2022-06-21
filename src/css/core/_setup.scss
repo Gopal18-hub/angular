@@ -17,6 +17,18 @@ body {
   background-color: #ecf5ff;
   font-weight: 400;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  border-color: black;
 }
 
 /**
@@ -419,4 +431,11 @@ button,
 
 table {
   border-collapse: collapse;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
 }

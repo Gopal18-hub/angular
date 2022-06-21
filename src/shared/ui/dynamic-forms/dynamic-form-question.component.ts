@@ -5,6 +5,8 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnChanges,
+  SimpleChanges,
 } from "@angular/core";
 import { FormGroup, FormArray, FormControl, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
@@ -17,7 +19,9 @@ import { map, startWith } from "rxjs/operators";
   templateUrl: "./dynamic-form-question.component.html",
   styleUrls: ["./dynamic-form.scss"],
 })
-export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
+export class DynamicFormQuestionComponent
+  implements OnInit, AfterViewInit, OnChanges
+{
   @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
   @Input() index: number | undefined;
@@ -78,13 +82,36 @@ export class DynamicFormQuestionComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
-    this.question.label = this.question.label.replace(/_/gi, " ");
-    this.form.controls[this.question.key].valueChanges.subscribe((value) => {
-      this.excuteCondition(this.question.conditions, value);
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
+      this.filteredOptions = this.form.controls[
+        this.question.key
+      ].valueChanges.pipe(
+        startWith(""),
+        map((value: any) => (typeof value === "string" ? value : value?.title)),
+        map((title: any) =>
+          title ? this._filter(title) : this.question.options.slice()
+        )
+      );
+    }
+  }
 
-    if (this.question.type == "autocomplete") {
+  ngOnInit() {
+    if (this.question)
+      this.question.label = this.question.label.replace(/_/gi, " ");
+    // this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+    //   this.excuteCondition(this.question.conditions, value);
+    // });
+
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
       this.filteredOptions = this.form.controls[
         this.question.key
       ].valueChanges.pipe(

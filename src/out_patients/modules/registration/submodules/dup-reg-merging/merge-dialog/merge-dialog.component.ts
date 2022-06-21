@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from '@environments/environment';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CookieService } from '../../../../../../shared/services/cookie.service';
+import { ApiConstants } from '../../../../../../out_patients/core/constants/ApiConstants';
+import { PatientSearchModel } from '../../../../../../out_patients/core/models/patientSearchModel';
 import { HttpService } from '../../../../../../shared/services/http.service';
+import { PatientmergeModel } from '../../../../../../out_patients/core/models/patientMergeModel';
+import { MessageDialogService } from '../../../../../../shared/ui/message-dialog/message-dialog.service';
+
 
 @Component({
   selector: 'out-patients-merge-dialog',
@@ -8,19 +14,38 @@ import { HttpService } from '../../../../../../shared/services/http.service';
   styleUrls: ['./merge-dialog.component.scss']
 })
 export class MergeDialogComponent implements OnInit {
+  selectedRows:PatientSearchModel[]=[];
+  selectedid:any=[];  
+  mergePostModel:any[]=[];
+  primaryid :number = 0;
 
-  constructor(private http: HttpService,) { }
+  constructor(private http: HttpService,
+    @Inject(MAT_DIALOG_DATA) public data : any,
+    private dialogRef: MatDialogRef<MergeDialogComponent>,
+    private cookie:CookieService,
+    private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
+    console.log(this.data.tableRows.selection._selected,"tableDialoagdata")
+    this.selectedRows = this.data.tableRows.selection._selected;    
+      this.selectedRows.forEach(element => {
+        this.selectedid.push(element.id);
+      }); 
+      
+      this.data.tableRows.selection.selected.map((s:any)=>{
+        this.mergePostModel.push({id:s.id})});
   }
-  mergePatients() {  
-    
+  checboxSelected(event:any)
+  {   
+   this.primaryid = event.id;  
   }
-
-
- 
-  patientMerging() {
-    return this.http.get(environment.PatientApiUrl + 'api/patient/patientmerging/' + "activateUserid" + "userid")
-  }
-
+  patientMerging() {   
+    let userId = Number(this.cookie.get('UserId'));   
+    this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
+    {
+      this.dialogRef.close();    
+      this.mergePostModel= [];  
+      
+    });
+  }  
 }
