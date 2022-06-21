@@ -1,6 +1,14 @@
 export namespace MaxModules {
   const modules = [
     {
+      title: "Dashboard",
+      id: 0,
+      defaultPath: "/dashboard",
+      moreOptions: false,
+      globalSearchKey: "global",
+      childrens: [],
+    },
+    {
       title: "Out Patients",
       id: 1,
       defaultPath: "/out-patients",

@@ -524,24 +524,36 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getPatientDetailsByMaxId.bind(this)
     );
-    //on change of Title Gender nees to be changed
+    //on change of Title Gender needs to be changed
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         let sex = this.titleList.filter((e) => e.id === value.value);
         if (sex.length) {
           this.questions[8].options = this.genderList
             .filter((e) => e.id === sex[0].sex)
-
             .map((s) => {
               this.OPRegForm.controls["gender"].setValue({
-                title: s.name,
-                value: s.id,
-              });
-              return { title: s.name, value: s.id };
+                title: s.name
+              });             
             });
         }
       }
     });
+
+    // //on change of Gender Title needs to be changed
+    // this.OPRegForm.controls["gender"].valueChanges.subscribe((value: any) => {
+    //   if (value) {
+    //     let sex = this.titleList.filter((e) => e.id === value.value);
+    //     if (sex.length) {
+    //       this.questions[3].options = this.titleList           
+    //         .map((s) => {
+    //           this.OPRegForm.controls["title"].setValue({
+    //             title: s.name
+    //           });            
+    //         });
+    //     }
+    //   }
+    // });
   }
 
   //TITLE LIST API CALL
