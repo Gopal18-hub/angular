@@ -78,25 +78,25 @@ export class OpRegistrationComponent implements OnInit {
     rank: string;
     FDPGroup: string;
   } = {
-    HKID: "",
-    Vesselname: "",
-    rank: "",
-    FDPGroup: "",
-  };
+      HKID: "",
+      Vesselname: "",
+      rank: "",
+      FDPGroup: "",
+    };
 
-  passportDetails:{
-    passportNo:string,
-    IssueDate:string,
-    Expirydate:string,
-    Issueat:string,
-    HCF:number
-  } ={
-    passportNo:"",
-    IssueDate:"null",
-    Expirydate:"null",
-    Issueat:"",
-    HCF:0
-  };
+  passportDetails: {
+    passportNo: string,
+    IssueDate: string,
+    Expirydate: string,
+    Issueat: string,
+    HCF: number
+  } = {
+      passportNo: "",
+      IssueDate: "null",
+      Expirydate: "null",
+      Issueat: "",
+      HCF: 0
+    };
   vip!: string;
   noteRemark!: string;
   hwcRemark!: string;
@@ -104,9 +104,9 @@ export class OpRegistrationComponent implements OnInit {
     bplCardNo: string;
     bplCardAddress: string;
   } = {
-    bplCardNo: "",
-    bplCardAddress: "",
-  };
+      bplCardNo: "",
+      bplCardAddress: "",
+    };
   registrationFormData = {
     title: "",
     type: "object",
@@ -114,7 +114,7 @@ export class OpRegistrationComponent implements OnInit {
       maxid: {
         type: "string",
         title: "Max ID",
-        defaultValue: Number(this.cookie.get("LocationIACode")),
+        defaultValue: this.cookie.get("LocationIACode") + '.',
       },
       SSN: {
         type: "string",
@@ -367,7 +367,7 @@ export class OpRegistrationComponent implements OnInit {
     private reportService: ReportService,
     private patientService: PatientService,
     private searchService: SearchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -385,6 +385,7 @@ export class OpRegistrationComponent implements OnInit {
       return { title: l.title, value: l.value };
     });
 
+
     this.getTitleList();
     this.getSourceOfInfoList();
     this.getAgeTypeList();
@@ -397,6 +398,8 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllDisttList();
     this.getAllStateList();
     this.getLocalityList();
+    this.OPRegForm.controls['nationality'].setValue({ title: 'Indian' });
+    this.OPRegForm.controls['country'].setValue({ title: 'India' });
   }
 
   checkForMaxID() {
@@ -404,6 +407,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["hotlist"].enable();
     } else {
       this.OPRegForm.controls["hotlist"].disable();
+      this.OPRegForm.controls
     }
   }
 
@@ -500,6 +504,12 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
+    //this event to make DOB as mandatory if patient age <18 years
+    this.questions[10].elementRef.addEventListener(
+      "blur",
+      this.validatePatientAge.bind(this)
+    );
+
     // this.questions[30].elementRef.addEventListener(
     //   "click",
     //   this.openHotListDialog.bind(this)
@@ -514,6 +524,7 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getPatientDetailsByMaxId.bind(this)
     );
+    //on change of Title Gender nees to be changed
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         let sex = this.titleList.filter((e) => e.id === value.value);
@@ -702,31 +713,30 @@ export class OpRegistrationComponent implements OnInit {
       height: "30vh",
     });
   }
-hotlistDialogList:{title:string,value:number}[]=[] as any
-  gethotlistMasterData():{title:string,value:number}[] {
-    let arr=[] as any;
-     this.http
+  hotlistDialogList: { title: string, value: number }[] = [] as any
+  gethotlistMasterData(): { title: string, value: number }[] {
+    let arr = [] as any;
+    this.http
       .get(ApiConstants.hotlistMasterDataLookUp)
       .subscribe((resultData: hotlistingreasonModel[]) => {
         this.hotlistMasterList = resultData;
         console.log(resultData);
         // this.Hotlistform.hotlistTitle
         console.log(this.hotlistdialogref);
-        
+
         // this.hotlistDialogList = this.hotlistMasterList.map((l) => 
-        this.hotlistDialogList=this.hotlistMasterList.map((l) =>
-        {
+        this.hotlistDialogList = this.hotlistMasterList.map((l) => {
           return { title: l.name, value: l.id };
           // this.questions[24].options = this.cityList.map((l) => {
-            //   return { title: l.cityName, value: l.id };
+          //   return { title: l.cityName, value: l.id };
         });
-         return arr=this.hotlistDialogList;
+        return arr = this.hotlistDialogList;
       });
-      return arr;
+    return arr;
   }
 
   hotlistReason: string = "";
-  hotlistdialogref:any;
+  hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
     console.log(this.hotlistDialogList);
@@ -761,15 +771,15 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
         buttonLabel: "Save",
       },
     });
-    this.hotlistdialogref.afterClosed().subscribe((result:any) => {
+    this.hotlistdialogref.afterClosed().subscribe((result: any) => {
       console.log("The dialog was closed");
       console.log(result);
       this.hotlistReason = result.hotlistTitle;
       this.hotlistRemark = result.reason;
-      console.log(this.hotlistReason,this.hotlistRemark)
+      console.log(this.hotlistReason, this.hotlistRemark)
       // this.postHotlistComment();
 
-      
+
     });
   }
 
@@ -1132,7 +1142,7 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
       0, //company id
       Number(this.cookie.get("HSPLocationId")),
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") ||
-        "1900-01-01T00:00:00", //lat updted
+      "1900-01-01T00:00:00", //lat updted
       this.vip,
       this.OPRegForm.value.dob == "" ? true : false,
       this.OPRegForm.value.locality.value || 0,
@@ -1274,7 +1284,7 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
       "this.seafarerObj.FDPGroup",
       false,
       " this.hwcObj.HWCRemarks",
-      this.OPRegForm.value.idenityType.value||0,
+      this.OPRegForm.value.idenityType.value || 0,
       this.OPRegForm.value.idenityValue,
       0,
       "this.ewsObj.bplCardAddress",
@@ -1339,9 +1349,9 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
     let expdate =
       patientDetails.expiryDate != null
         ? this.datepipe.transform(
-            patientDetails.expiryDate,
-            "yyyy-MM-ddThh:mm:ss"
-          )
+          patientDetails.expiryDate,
+          "yyyy-MM-ddThh:mm:ss"
+        )
         : "1900-01-01T00:00:00";
     this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       patientDetails.registrationno,
@@ -1496,45 +1506,63 @@ hotlistDialogList:{title:string,value:number}[]=[] as any
     }
   }
 
+  validatePatientAge() {
+    //need to implement logic for patient who has age < 18 years but DOB not provided.
+    // need to mention DOB as mandatory.   
+    if (this.OPRegForm.value.age != null
+      || this.OPRegForm.value.age != undefined
+      || this.OPRegForm.value.age != '') {
+      if (this.OPRegForm.value.age > 0
+        && this.OPRegForm.value.age <= 18
+        && (this.OPRegForm.value.ageType != null
+          || this.OPRegForm.value.ageType != undefined)) {
+        if (this.OPRegForm.value.dob == null
+          || this.OPRegForm.value.dob == undefined
+          || this.OPRegForm.value.dob == '') {
+          this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+          this.questions[8].customErrorMessage = "DOB is required, Age is less than 18 Years";
+        }
+      }
+    }
+  }
   //DIALOGS ---------------------------------------------------------------------------------------
-modifyDialog()
-{
-  const modifyDialog = this.matDialog.open(FormDialogueComponent, {
-    width: "30vw",
-    height: "52vh",
-    data: {
-      title: "Please confirm modified details",
-      form: {
-        title: "",
-        type: "object",
-        properties: {
-          firstName: {
-            type: "First name",
-            title: "",
-            required: true,
-          },
-          modifiedFirstName: {
-            type: "First name",
-            title: "",
-            required: true,
-          },
-          middleName: {
-            type: "Middle name",
-            title: "",
-            required: true,
-          },
-          modifiedmiddleName: {
-            type: "Middle name",
-            title: "",
-            required: true,
+  modifyDialog() {
+    const modifyDialog = this.matDialog.open(FormDialogueComponent, {
+      width: "30vw",
+      height: "52vh",
+      data: {
+        title: "Please confirm modified details",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            firstName: {
+              type: "First name",
+              title: "",
+              required: true,
+            },
+            modifiedFirstName: {
+              type: "First name",
+              title: "",
+              required: true,
+            },
+            middleName: {
+              type: "Middle name",
+              title: "",
+              required: true,
+            },
+            modifiedmiddleName: {
+              type: "Middle name",
+              title: "",
+              required: true,
+            },
           },
         },
+        layout: "single",
+        buttonLabel: "Save",
       },
-      layout: "single",
-      buttonLabel: "Save",
-    },
-  });
-}
+    });
+  }
   openVipNotes() {
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -1557,7 +1585,7 @@ modifyDialog()
       },
     });
     vipNotesDialogref.afterClosed().subscribe((result) => {
-      this.vip=result.data.VipNotes;
+      this.vip = result.data.VipNotes;
       console.log("openVipNotes dialog was closed");
     });
   }
@@ -1584,7 +1612,7 @@ modifyDialog()
     });
     notesDialogref.afterClosed().subscribe((result) => {
       console.log(result);
-      this.noteRemark=result.data.notes;
+      this.noteRemark = result.data.notes;
       console.log("notes dialog was closed");
     });
   }
@@ -1642,7 +1670,7 @@ modifyDialog()
       },
     });
     HWCnotesDialogref.afterClosed().subscribe((result) => {
-      this.hwcRemark=result.data.HWCRemark;
+      this.hwcRemark = result.data.HWCRemark;
       console.log("HWC dialog was closed");
     });
   }

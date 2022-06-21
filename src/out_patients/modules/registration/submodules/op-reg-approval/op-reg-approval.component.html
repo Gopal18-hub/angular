@@ -10,7 +10,7 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel>
-    <div  class="maingrid flex">
+    <div  class="w-full h-full" *ngIf="!defaultUI">
     <div class="p-2 w-full h-full display-block ">
         <ng-container *ngIf="showapprovalpending">
             <maxhealth-table [config]="approvalconfig" [data]="opApprovalList" #approvaltable></maxhealth-table>
@@ -26,6 +26,12 @@
         <button mat-raised-button color="primary" class="w-1/2 relative right-15" type="submit" *ngIf="opApprovalList && enableapprovebtn" (click)="approvalApproveItem()">Approve</button>
         <button mat-raised-button color="primary" class="w-1/2" type="submit" *ngIf="opApprovalList && enableapprovebtn" (click)="approvalRejectItem()">Reject</button>
     </div>
+    </div>
+
+    <div  class="w-full h-full" *ngIf="defaultUI">
+    <empty-placeholder [defaultplaceholder]="opapprovalplaceholder">
+
+    </empty-placeholder>
     </div>
     </mat-tab-nav-panel>
 </section>

@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 import { SearchService } from '../../../../../shared/services/search.service';
 import { CookieService } from '../../../../../shared/services/cookie.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 
 @Component({
   selector: 'out-patients-hot-listing-approval',
@@ -34,11 +35,12 @@ export class HotListingApprovalComponent implements OnInit {
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
   showapprovalreject:boolean = false;
-
+  defaultUI:boolean = true;
   enablehotlistbtn:boolean=false;
   from :any;
   to :any;
   today = new Date();
+  hotlistplaceholder:string="Please search From Date and To Date ";
   
   hotlistingapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -136,15 +138,16 @@ export class HotListingApprovalComponent implements OnInit {
   }
 
   constructor(private http: HttpService,private hotList: HotListingService,private router: Router,
-    private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe) { }
+    private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe, private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchhotlisting(formdata.data);
     });
-    this.showmain("Hot Listing Approval");
+   
   }
   searchhotlisting(formdata:any) {
+    this.defaultUI = false;
     if(formdata['from'] == "" || formdata['to'] == "" ){
       this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  
@@ -193,7 +196,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.getophotlistingpending().subscribe((resultData) => {
         this.opApprovalHotList  = resultData as opRegHotlistModel[];
         this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);    
-        this.opApprovalHotlistacceptList = [];       
+          
         this.enablehotlistbtn = true;
         this.showapprovalpending = true;
         this.showapprovalaccepting = false;
@@ -201,10 +204,10 @@ export class HotListingApprovalComponent implements OnInit {
         console.log(this.opApprovalHotList);
       },error=>{          
         this.enablehotlistbtn = false;
-        this.showapprovalaccepting = false;
-        this.showapprovalreject = false;
-        this.opApprovalHotList=[];
+        this.showapprovalpending = false;      
+         
         console.log(error);
+        this.messageDialogService.error(error.error);
       }); 
     }
     else if (link == "Approved Requests") {
@@ -219,12 +222,10 @@ export class HotListingApprovalComponent implements OnInit {
         
         console.log(this.opApprovalHotlistacceptList);
       },error=>{          
-        this.enablehotlistbtn = false;
-        this.showapprovalpending = false;
-        this.showapprovalaccepting = true;
-        this.showapprovalreject = false;
-        this.opApprovalHotList=[];
+         this.enablehotlistbtn = false;
+         this.showapprovalaccepting = false;
         console.log(error);
+        this.messageDialogService.error(error.error);
       }); 
     }
     else if (link == "Reject Requests") 
@@ -237,13 +238,15 @@ export class HotListingApprovalComponent implements OnInit {
       this.getophotlistingreject().subscribe((resultData) => {
         this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
         this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
-        this.showapprovalreject = true;
+        //this.showapprovalreject = true;
         console.log(this.opApprovalHotlistrejectList);
        
       },error=>{          
         this.enablehotlistbtn = false;
-        this.opApprovalHotList=[];
+        this.showapprovalreject = false;
+      
         console.log(error);
+        this.messageDialogService.error(error.error);
       }); 
     }
   }
