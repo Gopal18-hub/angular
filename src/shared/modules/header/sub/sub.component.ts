@@ -65,7 +65,6 @@ export class SubComponent implements OnInit {
   }
 
   onRouterLinkActive($event: any, imodule: any) {
-    console.log(imodule);
     if ($event) {
       this.activeSubModule = imodule;
     }

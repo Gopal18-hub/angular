@@ -18,6 +18,7 @@ import { AuthGuardService } from "../../../shared/services/guards/auth-guard.ser
 import { MatDialogModule } from "@angular/material/dialog";
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
+import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
@@ -38,7 +39,8 @@ import { MatIconModule } from "@angular/material/icon";
     OpenIDModule,
     DashboardModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MaxHealthMessageDialogModule,
   ],
   providers: [
     {
