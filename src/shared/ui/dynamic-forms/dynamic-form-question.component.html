@@ -34,6 +34,9 @@
         <mat-error *ngIf="!isValid && !isCorrect">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
+        </mat-error>
         <mat-error *ngIf="isCorrect && question.customErrorMessage">
           {{ question.customErrorMessage }}</mat-error
         >
@@ -102,6 +105,9 @@
         <mat-error *ngIf="form.get(question.key)?.hasError('required')">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
+        </mat-error>
         <mat-error *ngIf="form.get(question.key)?.hasError('min')">
           {{ question.label }} value should be greater than or equal to
           <strong>{{ question.minimum }}</strong>
@@ -159,6 +165,9 @@
         />
         <mat-error *ngIf="!isValid">
           {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
         </mat-error>
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
