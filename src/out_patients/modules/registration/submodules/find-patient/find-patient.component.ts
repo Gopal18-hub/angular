@@ -21,6 +21,10 @@ export class FindPatientComponent implements OnInit {
   healthId = "";
   aadhaarId = "";
   mobile = "";
+  showspinner:boolean=true;
+  findpatientimage:string | undefined;
+  findpatientmessage:string | undefined;
+  defaultUI:boolean=true;
 
   config: any = {
     actionItems: true,
@@ -40,7 +44,7 @@ export class FindPatientComponent implements OnInit {
     ],
     columnsInfo: {
       maxid: {
-        title: "MAX ID",
+        title: "Max ID",
         type: "number",
       },
       ssn: {
@@ -48,7 +52,7 @@ export class FindPatientComponent implements OnInit {
         type: "number",
       },
       date: {
-        title: "Regn.Date",
+        title: "Reg Date",
         type: "date",
       },
       firstName: {
@@ -65,7 +69,7 @@ export class FindPatientComponent implements OnInit {
         type: "string",
       },
       dob: {
-        title: "Date of Birth",
+        title: "DOB",
         type: "date",
       },
       place: {
@@ -74,7 +78,7 @@ export class FindPatientComponent implements OnInit {
         tooltipColumn: "completeAddress",
       },
       phone: {
-        title: "Phone No.",
+        title: "Phone",
         type: "number",
       },
       categoryIcons: {
@@ -91,24 +95,35 @@ export class FindPatientComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.defaultUI = false;
     this.getAllpatients().subscribe((resultData) => {
+      this.showspinner = false;
       this.patientList = resultData as PatientSearchModel[];
       this.patientList = this.patientServie.getAllCategoryIcons(
         this.patientList
       );
-
+     
       this.isAPIProcess = true;
       console.log(this.patientList);
+    },error=>{
+      console.log(error);
+      this.patientList = [];
+      this.defaultUI = true;
+      this.findpatientmessage  = "No records found";
+        this.findpatientimage  = "norecordfound"; 
     });
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       console.log(formdata);
+      this.isAPIProcess = false;
       this.searchPatient(formdata.data);
     });
    
   } 
 
   searchPatient(formdata: any) {
+    this.defaultUI=false;
+    this.showspinner = true;
     if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
@@ -118,6 +133,7 @@ export class FindPatientComponent implements OnInit {
       formdata["adhaar"] == ""
     ) {
       this.getAllpatients().subscribe((resultData) => {
+        this.showspinner = false;
         this.patientList = resultData;
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
@@ -125,7 +141,13 @@ export class FindPatientComponent implements OnInit {
 
         this.isAPIProcess = true;
         console.log(this.patientList);
-      });
+      },error=>{
+        console.log(error);
+        this.patientList = [];
+        this.defaultUI = true;
+        this.findpatientmessage  = "No records found";
+          this.findpatientimage  = "norecordfound"; 
+      }); 
     } else if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
@@ -143,6 +165,7 @@ export class FindPatientComponent implements OnInit {
       this.aadhaarId = formdata["adhaar"];
       this.healthId = formdata["healthID"];
       this.getAllpatientsBySearch().subscribe((resultData) => {
+        this.showspinner = false;
         this.patientList = resultData;
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
@@ -150,6 +173,12 @@ export class FindPatientComponent implements OnInit {
 
         this.isAPIProcess = true;
         console.log(this.patientList);
+      },error=>{
+        console.log(error);
+        this.patientList = [];
+        this.defaultUI = true;
+        this.findpatientmessage  = "No records found";
+          this.findpatientimage  = "norecordfound"; 
       });
     }
   }

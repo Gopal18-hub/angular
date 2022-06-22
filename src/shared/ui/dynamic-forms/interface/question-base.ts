@@ -23,6 +23,7 @@ export class QuestionBase<T> {
   elementRef: any;
   customErrorMessage: string;
   placeholder: string;
+  pattern: string;
 
   constructor(
     options: {
@@ -50,6 +51,7 @@ export class QuestionBase<T> {
       elementRef?: any;
       customErrorMessage?: string;
       placeholder?: string;
+      pattern?: string;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -80,5 +82,6 @@ export class QuestionBase<T> {
     this.elementRef = options.elementRef || "";
     this.customErrorMessage = options.customErrorMessage || "";
     this.placeholder = options.placeholder || "";
+    this.pattern = options.pattern || "";
   }
 }

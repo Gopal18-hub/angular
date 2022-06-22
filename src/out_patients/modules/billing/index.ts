@@ -17,6 +17,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
 
+import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list';
+
+
+
 @NgModule({
   declarations: [
        BillingComponent,
@@ -36,7 +45,13 @@ import {MatDividerModule} from '@angular/material/divider';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDividerModule
+    MatDividerModule,
+    DynamicFormsModule,
+    BrowserModule,
+    CommonModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatListModule
   ],
   exports: [],
   providers: [],

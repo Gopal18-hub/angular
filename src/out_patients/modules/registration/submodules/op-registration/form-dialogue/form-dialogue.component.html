@@ -9,7 +9,8 @@
       class=""
       [ngClass]="{
         'hidden display-none': question.type == 'hidden',
-        'w-1/45': data.layout == 'double'
+        'w-1/45': data.layout == 'double',
+        'w-full': data.layout == 'single'
       }"
     >
       <maxhealth-question
