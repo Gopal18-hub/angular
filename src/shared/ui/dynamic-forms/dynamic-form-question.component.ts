@@ -34,6 +34,10 @@ export class DynamicFormQuestionComponent
     return this.form.controls[this.question.key].errors?.["incorrect"];
   }
 
+  get patternError() {
+    return this.form.controls[this.question.key].errors?.["pattern"];
+  }
+
   passwordHide = true;
 
   arrowIcon = "arrow_drop_down";
