@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { RegistrationRoutingModule } from "./routes";
+import {  SimilarPatientDialog } from "./submodules/op-registration/op-registration.component";
 import { OpRegistrationComponent } from "./submodules/op-registration/op-registration.component";
 import { FindPatientComponent } from "./submodules/find-patient/find-patient.component";
 import { DupRegMergingComponent } from "./submodules/dup-reg-merging/dup-reg-merging.component";
@@ -34,6 +35,7 @@ import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/h
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
+import { MatRadioModule } from "@angular/material/radio";
 
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
@@ -65,10 +67,11 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     HotListingApprovalComponent,
     FormDialogueComponent,
     DMSComponent,
-    ModifyDialogComponent
+    ModifyDialogComponent,  SimilarPatientDialog,
   ],
   imports: [
     RegistrationRoutingModule,
+  
     MatCardModule,
     MaxHealthTableModule,
     CommonModule,
@@ -88,6 +91,7 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     MatSelectModule,
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
   ],
   exports: [],
   providers: [
