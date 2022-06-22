@@ -20,6 +20,9 @@ import {MatDividerModule} from '@angular/material/divider';
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list';
 
 
 
@@ -45,7 +48,10 @@ import { BrowserModule } from '@angular/platform-browser';
     MatDividerModule,
     DynamicFormsModule,
     BrowserModule,
-    CommonModule
+    CommonModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatListModule
   ],
   exports: [],
   providers: [],

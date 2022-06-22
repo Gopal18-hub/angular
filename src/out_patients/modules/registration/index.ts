@@ -33,6 +33,7 @@ import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
 
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
@@ -86,6 +87,7 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     MatIconModule,
     MatSelectModule,
     EmptyPlaceholderModule,
+    MatProgressSpinnerModule,
   ],
   exports: [],
   providers: [

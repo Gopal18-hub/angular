@@ -16,6 +16,9 @@ import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Mo
 import { StateModel } from "../../../../core/models/stateMasterModel.Model";
 import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
 import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
+import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
+import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
+import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
 import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
 import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
 import { DatePipe } from "@angular/common";
@@ -83,11 +86,11 @@ export class OpRegistrationComponent implements OnInit {
   };
 
   passportDetails: {
-    passportNo: string;
-    IssueDate: string;
-    Expirydate: string;
-    Issueat: string;
-    HCF: number;
+    passportNo: string,
+    IssueDate: string,
+    Expirydate: string,
+    Issueat: string,
+    HCF: number
   } = {
     passportNo: "",
     IssueDate: "null",
@@ -125,7 +128,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       title: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Title",
         required: true,
         list: this.titleList,
@@ -146,7 +149,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       gender: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Gender",
         required: true,
         list: this.genderList,
@@ -161,7 +164,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       ageType: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Age Type",
         required: true,
         list: this.ageTypeList,
@@ -172,7 +175,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
       },
       fatherSpouse: {
-        type: "autocomplete",
+        type: "dropdown",
         list: this.fatherSpouseOptionList,
         required: false,
       },
@@ -193,7 +196,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
       },
       idenityType: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Identity",
         list: this.idTypeList,
         required: false,
@@ -343,14 +346,13 @@ export class OpRegistrationComponent implements OnInit {
         defaultValue: "cash",
       },
       sourceOfInput: {
-        type: "autocomplete",
+        type: "dropdown",
         title: "Source of Info about Max Healthcare",
         required: false,
         list: this.sourceOfInfoList,
       },
     },
-  };
-  AddressonLocalityModellst!: AddressonLocalityModel;
+  }; 
   OPRegForm!: FormGroup;
   questions: any;
   hotlistMasterList: hotlistingreasonModel[] = [];
@@ -398,16 +400,17 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllDisttList();
     this.getAllStateList();
     this.getLocalityList();
-    this.OPRegForm.controls["nationality"].setValue({ title: "Indian" });
-    this.OPRegForm.controls["country"].setValue({ title: "India" });
+   
+    this.OPRegForm.controls['nationality'].setValue({title:"Indian"});
+    this.OPRegForm.controls['country'].setValue({title:"India"});
+    this.OPRegForm.controls["foreigner"].disable();
   }
 
   checkForMaxID() {
     if (this.MaxIDExist) {
       this.OPRegForm.controls["hotlist"].enable();
     } else {
-      this.OPRegForm.controls["hotlist"].disable();
-      this.OPRegForm.controls;
+      this.OPRegForm.controls["hotlist"].disable();      
     }
   }
 
@@ -448,58 +451,54 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.passportNum);
 
     // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
+
+    //blur event call of Locality to fetch Address
     this.questions[22].elementRef.addEventListener(
       "blur",
       this.addressByLocalityID.bind(this)
     );
-
+    
+    //blur event call to fetch locality based on pincode
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
-    //Adding event to filter states based country
+    //Adding event to filter states and cities based on country
     this.questions[27].elementRef.addEventListener(
       "blur",
       this.getStatesByCountry.bind(this),
       this.getCitiesByCountry.bind(this)
     );
+    //chnage event for Mobile Field
     this.questions[2].elementRef.addEventListener(
       "change",
       this.onPhoneModify.bind(this)
     );
-    this.questions[3].elementRef.addEventListener(
-      "blur",
-      this.onTitleModify.bind(this)
-    );
+    //chnage event for FirstName 
     this.questions[4].elementRef.addEventListener(
       "change",
       this.onFistNameModify.bind(this)
     );
+    //chnage event for Last Name
     this.questions[6].elementRef.addEventListener(
       "change",
       this.onLastNameModify.bind(this)
     );
-    this.questions[7].elementRef.addEventListener(
-      "change",
-      this.onGenderModify.bind(this)
-    );
-    this.questions[12].elementRef.addEventListener(
-      "change",
-      this.onTitleModify.bind(this)
-    );
+    
+    //nationality blur event 
     this.questions[28].elementRef.addEventListener(
       "blur",
       this.onNationalityModify.bind(this)
     );
+    //DOB blur event
     this.questions[8].elementRef.addEventListener(
       "blur",
       this.onageCalculator.bind(this)
     );
-    //this event to make DOB as mandatory if patient age <18 years
-    this.questions[10].elementRef.addEventListener(
-      "blur",
-      this.validatePatientAge.bind(this)
-    );
+    //on value chnae event of age Type 
+    this.OPRegForm.controls['ageType'].valueChanges.subscribe((value)=>{
+        this.validatePatientAge();
+    });
 
     // this.questions[30].elementRef.addEventListener(
     //   "click",
@@ -516,38 +515,105 @@ export class OpRegistrationComponent implements OnInit {
       this.getPatientDetailsByMaxId.bind(this)
     );
 
-    //on change of Title Gender nees to be changed
-    this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
+    //on change of Title Gender needs to be changed
+    this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {     
       if (value) {
-        let sex = this.titleList.filter((e) => e.id === value.value);
-        if (sex.length) {
-          this.questions[8].options = this.genderList
-            .filter((e) => e.id === sex[0].sex)
-            .map((s) => {
-              this.OPRegForm.controls["gender"].setValue({
-                title: s.name
-              });             
-            });
-        }
+        if(!this.OPRegForm.controls["gender"].value)
+        {
+          let sex = this.titleList.filter((e) => e.id === value);
+          if (sex.length) {
+            let exists = this.genderList
+              .filter((e) => e.id === sex[0].sex);           
+                this.OPRegForm.controls["gender"].setValue(exists[0].id);
+          }
+        }       
       }
     });
 
-    // //on change of Gender Title needs to be changed
-    // this.OPRegForm.controls["gender"].valueChanges.subscribe((value: any) => {
-    //   if (value) {
-    //     let sex = this.titleList.filter((e) => e.id === value.value);
-    //     if (sex.length) {
-    //       this.questions[3].options = this.titleList           
-    //         .map((s) => {
-    //           this.OPRegForm.controls["title"].setValue({
-    //             title: s.name
-    //           });            
-    //         });
-    //     }
-    //   }
-    // });
+    // //on change of Gender Title needs to be dafult for Transgender
+    this.OPRegForm.controls["gender"].valueChanges.subscribe((value: any) => {
+      console.log("Gender"+ value);
+      if (value) {
+        let genderName = this.genderList.filter(g=>g.id === value)[0].name;
+        if(genderName != '' && genderName != undefined && genderName != null)
+        {
+          if(genderName == "Transgender")
+          {
+            this.OPRegForm.controls["title"].setValue(0);
+          }
+        }    
+      }
+    });
+
+    //IdenityType value change
+    this.questions[17].elementRef.addEventListener(
+      "blur",
+      this.checkIndetityValue.bind(this)
+    );
+
+    //Father or Spouse value change
+    this.questions[13].elementRef.addEventListener(
+      "blur",
+      this.checkFatherSpouseName.bind(this)
+    );
+    
+    // nationality value chnage event to enable foreigner
+    this.OPRegForm.controls["nationality"].valueChanges.subscribe((value)=>{
+      console.log(value);
+      if( value.title != "Indian" 
+        && value !=null 
+        && value != undefined
+        && value !=''
+        && value.title != ''
+        && value.title != null)
+      {
+        this.OPRegForm.controls["foreigner"].enable();
+        this.OPRegForm.controls["foreigner"].setValue(true);
+       // this.passportDetailsdialog();
+      }
+      else{
+        this.OPRegForm.controls["foreigner"].disable();
+        this.OPRegForm.controls["foreigner"].setValue(false);
+      }
+    });
+
   }
 
+  //validation for Indetity Number if Identity Type Selected
+  checkIndetityValue(){  
+    let IdenityType = this.OPRegForm.controls['idenityType'].value;
+    if(IdenityType != null || IdenityType != undefined || IdenityType !='' || IdenityType > 0)
+    {
+      if(this.OPRegForm.controls['idenityValue'].value =='' 
+      || this.OPRegForm.controls['idenityValue'].value ==undefined
+      || this.OPRegForm.controls['idenityValue'].value == null)
+      {
+        let identityTypeName = this.idTypeList.filter(i=>i.id === IdenityType)[0].name;
+        this.OPRegForm.controls["idenityValue"].setErrors({ incorrect: true });
+        this.questions[17].customErrorMessage = "Please enter valid "+ identityTypeName +" number";
+      }
+    }
+  }
+
+  //validation for empty Father or SPouse Name if Type selected
+  checkFatherSpouseName(){
+    let FatherSpouse = this.OPRegForm.controls['fatherSpouse'].value;
+    if(FatherSpouse != null 
+      || FatherSpouse != undefined
+      || FatherSpouse != ''
+      || FatherSpouse > 0)
+      {
+        if(this.OPRegForm.controls['fatherSpouseName'].value =='' 
+        || this.OPRegForm.controls['fatherSpouseName'].value ==undefined
+        || this.OPRegForm.controls['fatherSpouseName'].value == null)
+        {
+          let selectedName = this.fatherSpouseOptionList.filter(f=>f.value === FatherSpouse)[0].title;
+          this.OPRegForm.controls["fatherSpouseName"].setErrors({ incorrect: true });
+          this.questions[13].customErrorMessage = "Please enter "+selectedName+" name";
+        }
+      }
+  }
+  
   //TITLE LIST API CALL
   getTitleList() {
     let hspId = Number(this.cookie.get("HSPLocationId"));
@@ -560,7 +626,7 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
-
+  AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID() {
     this.http
       .get(
@@ -1942,7 +2008,3 @@ export class OpRegistrationComponent implements OnInit {
     this.matDialog.open(DMSComponent, { width: "100vw", height: "52vh" ,data: { list:dmsDetailList  }} );
   }
 }
-
-// function ngAfterViewInit() {
-//   throw new Error("Function not implemented.");
-// }

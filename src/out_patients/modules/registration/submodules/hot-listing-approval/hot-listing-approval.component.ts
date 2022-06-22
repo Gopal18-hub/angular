@@ -21,7 +21,7 @@ import { MessageDialogService } from '../../../../../shared/ui/message-dialog/me
 })
 export class HotListingApprovalComponent implements OnInit {
 
-  link1 = ['OP Registration Approval', 'Hot Listing Approval', 'OP Refund Approval'];
+  link1 = ['OP Registration Approval', 'Hot Listing Approval']; //, 'OP Refund Approval'
   link2 = ['View Pending Request', 'Approved Requests', 'Reject Requests'];
   activeLink1 = this.link1[1];
   activeLink2 = this.link2[0];
@@ -35,12 +35,14 @@ export class HotListingApprovalComponent implements OnInit {
   showapprovalpending:boolean = false;
   showapprovalaccepting:boolean = false;
   showapprovalreject:boolean = false;
-  defaultUI:boolean = true;
+  defaultUI:boolean = false;
   enablehotlistbtn:boolean=false;
+  showhotlistingspinner:boolean = true;
   from :any;
   to :any;
   today = new Date();
-  hotlistplaceholder:string="Please search From Date and To Date ";
+  hotlistingmessage:string="Please search From Date and To Date ";
+  hotlistingicon:string="placeholder";  
   
   hotlistingapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -147,7 +149,7 @@ export class HotListingApprovalComponent implements OnInit {
    
   }
   searchhotlisting(formdata:any) {
-    this.defaultUI = false;
+    this.defaultUI = true;
     if(formdata['from'] == "" || formdata['to'] == "" ){
       this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  
@@ -161,7 +163,8 @@ export class HotListingApprovalComponent implements OnInit {
   }
   this.showmain("Hot Listing Approval");
   }
-  hsplocationId:any = this.cookie.get('HSPLocationId');
+
+  hsplocationId:any = 9 ;// this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
@@ -183,10 +186,12 @@ export class HotListingApprovalComponent implements OnInit {
     this.opApprovalHotlistrejectList = [];
 
     if((this.from == "" || this.from == undefined) || (this.to == "" || this.to == undefined)){
-      this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
-      this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
-      this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
-      this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
+      // this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
+      // this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd'); 
+      // this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
+      // this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
+      this.defaultUI = false;
+      this.showhotlistingspinner = false;
      
     }
     
@@ -194,6 +199,8 @@ export class HotListingApprovalComponent implements OnInit {
     if (link == "View Pending Request") {  
       this.activeLink2 = link;  
       this.getophotlistingpending().subscribe((resultData) => {
+        this.showhotlistingspinner = false;
+        this.defaultUI = true;
         this.opApprovalHotList  = resultData as opRegHotlistModel[];
         this.opApprovalHotList = this.hotList.getAllCategoryIcons(this.opApprovalHotList);    
           
@@ -204,10 +211,11 @@ export class HotListingApprovalComponent implements OnInit {
         console.log(this.opApprovalHotList);
       },error=>{          
         this.enablehotlistbtn = false;
-        this.showapprovalpending = false;      
-         
+        this.showapprovalpending = false;    
+        this.defaultUI = false;   
+        this.hotlistingmessage  = "No records found";
+        this.hotlistingicon  = "norecordfound"; 
         console.log(error);
-        this.messageDialogService.error(error.error);
       }); 
     }
     else if (link == "Approved Requests") {
@@ -217,15 +225,19 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalreject = false;
       this.enablehotlistbtn = false;
       this.getophotlistingaccept().subscribe((resultData) => {
+        this.defaultUI = true;
+        this.showhotlistingspinner = false;
         this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
         this.opApprovalHotlistacceptList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistacceptList);
-        
-        console.log(this.opApprovalHotlistacceptList);
+      
+        console.log(this.defaultUI);
       },error=>{          
          this.enablehotlistbtn = false;
          this.showapprovalaccepting = false;
-        console.log(error);
-        this.messageDialogService.error(error.error);
+         this.defaultUI = false;   
+         this.hotlistingmessage  = "No records found";
+         this.hotlistingicon  = "norecordfound"; 
+        console.log(error);       
       }); 
     }
     else if (link == "Reject Requests") 
@@ -236,17 +248,21 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalreject = true;
       this.enablehotlistbtn = false;
       this.getophotlistingreject().subscribe((resultData) => {
+        this.showhotlistingspinner = false;
+        this.defaultUI = true;
         this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
         this.opApprovalHotlistrejectList = this.hotList.getAllCategoryIcons(this.opApprovalHotlistrejectList);
-        //this.showapprovalreject = true;
+     
         console.log(this.opApprovalHotlistrejectList);
        
       },error=>{          
         this.enablehotlistbtn = false;
         this.showapprovalreject = false;
-      
+        this.defaultUI = false;   
+        this.hotlistingmessage  = "No records found";
+        this.hotlistingicon  = "norecordfound"; 
         console.log(error);
-        this.messageDialogService.error(error.error);
+      
       }); 
     }
   }
@@ -262,6 +278,9 @@ export class HotListingApprovalComponent implements OnInit {
       },error=>{
         console.log(error);
         this.HotListidList = [];
+        this.defaultUI = false;   
+        this.hotlistingmessage  = "No records found";
+        this.hotlistingicon  = "norecordfound"; 
       }); 
   }
 
@@ -276,6 +295,9 @@ export class HotListingApprovalComponent implements OnInit {
       },error=>{
         console.log(error);
         this.HotListidList = [];
+        this.defaultUI = false;   
+        this.hotlistingmessage  = "No records found";
+        this.hotlistingicon  = "norecordfound"; 
       }); 
   }
 
@@ -290,6 +312,9 @@ export class HotListingApprovalComponent implements OnInit {
       },error=>{
         console.log(error);
         this.HotListidList = [];
+        this.defaultUI = false;   
+        this.hotlistingmessage  = "No records found";
+        this.hotlistingicon  = "norecordfound"; 
       }); 
   }
 

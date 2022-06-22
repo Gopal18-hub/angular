@@ -1,170 +1,169 @@
-<h1 mat-dialog-title>Payment Receipt</h1>
-
-<mat-grid-list cols="3" rowHeight="1:1.2">
-    <mat-grid-tile>
-        <div>
-            <div>Payment Methods</div>
-            <div class="m-3">
-                <label (click)="showDetails('cash')">Cash</label>
-                <!-- <label></label> -->
+<div class="row">
+    <h4 class="header"mat-dialog-title><span class="m-1">Payment Receipt</span></h4>
+<div class="flex ">    
+    <div class="w-1/5">
+       <h5>Payment Methods</h5>
+        <mat-tab-group (selectedTabChange)="tabChanged($event)">
+            <mat-tab label="Cash"></mat-tab>
+            <mat-tab label="Cheque"></mat-tab>
+            <mat-tab label="Credit Card"></mat-tab>
+            <mat-tab label="Demand Draft"></mat-tab>
+            <mat-tab label="Mobile Payment"></mat-tab>
+            <mat-tab label="Online Payment"></mat-tab>
+            <mat-tab label="UPI"></mat-tab>
+            <mat-tab label="Due Amount"></mat-tab>
+          </mat-tab-group>
+    </div>
+    <div class="w-2/5 font-sm">
+        <div class="search-header-menu">
+            <!--Cash  -->
+            <div *ngIf="isShowCash">
+                <h5>Cash Details</h5>
+                <form [formGroup]="cashForm" >                   
+                    <div *ngFor="let question of questions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="cashForm" [questions]="questions" [index]="i">
+                        </maxhealth-question>
+                        
+    
+                    
+                    
+                    </div>                    
+                </form>
             </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
+            <!--Cheque  -->
+            <div *ngIf="isShowCheque">
+                <h5>Cheque Details</h5>
+                <form [formGroup]="chequeForm" >                   
+                    <div *ngFor="let question of chequeQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="chequeForm" [questions]="chequeQuestions"
+                            [index]="i"></maxhealth-question>  
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <label (click)="showDetails('cheque')">Cheque</label>
-                <!-- <label>Cheque</label> -->
+            <!--Credit Card  -->
+            <div *ngIf="isShowcCard">
+                <h5>Credit Card Details</h5>
+                <form [formGroup]="cCardForm"  >                   
+                    <div *ngFor="let question of cCardQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="cCardForm" [questions]="cCardQuestions"
+                            [index]="i"></maxhealth-question>
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
+            <!--DD  -->
+            <div *ngIf="isShowDraft">
+                <h5>Demand Draft Details</h5>
+                <form [formGroup]="draftForm"  >
+                    <div *ngFor="let question of draftQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="draftForm" [questions]="draftQuestions"
+                            [index]="i"></maxhealth-question>
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <label (click)="showDetails('cCard')">Credit Card</label>
+            <!--Mobile  -->
+            <div *ngIf="isShowMobile">
+                <h5>Mobile Payment Details</h5>
+                <form [formGroup]="mobileForm"  >                   
+                    <div *ngFor="let question of mobileQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="mobileForm" [questions]="mobileQuestions"
+                            [index]="i"></maxhealth-question>
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
+            <!--Online  -->
+            <div *ngIf="isShowOnline">
+                <h5>Online Payment Details</h5>
+                <form [formGroup]="onlineForm"  >
+                    <div *ngFor="let question of onlineQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="onlineForm" [questions]="onlineQuestions"
+                            [index]="i"></maxhealth-question>
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <label (click)="showDetails('draft')">Demand Draft</label>
+            <!--UPI  -->
+            <div *ngIf="isShowUpi">
+                <h5>UPI Payment Details</h5>
+                <form [formGroup]="upiForm"  >                   
+                    <div *ngFor="let question of upiQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="upiForm" [questions]="upiQuestions" [index]="i">
+                        </maxhealth-question>  
+                    </div>
+                </form>
             </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
-            </div>
-            <div class="m-3">
-                <label (click)="showDetails('mobile')">Mobile Payment</label>
-            </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
-            </div>
-            <div class="m-3">
-                <label (click)="showDetails('online')">Online Payment</label>
-            </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
-            </div>
-
-            <div class="m-3">
-                <label (click)="showDetails('upi')">UPI</label>
-            </div>
-            <div class="m-3">
-                <mat-divider></mat-divider>
-            </div>
-            <div class="m-3">
-                <label (click)="showDetails('due')">Due Amount</label>
+            <!--Due  -->
+            <div *ngIf="isShowDue">
+                <h5>Due Payment Details</h5>
+                <form [formGroup]="dueForm"  >
+                    <div *ngFor="let question of dueQuestions; let i = index" class="w-full">
+                        <maxhealth-question [question]="question" [form]="dueForm" [questions]="dueQuestions" [index]="i">
+                        </maxhealth-question>
+                    </div>
+                </form>
             </div>
         </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile>
-
-        <!--Cash  -->
-        <div *ngIf="isShowCash">
-            <div>Cash Details</div>
-            <form [formGroup]="cashForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of questions; let i = index">
-                    <maxhealth-question [question]="question" [form]="cashForm" [questions]="questions" [index]="i">
-                    </maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
+    </div>
+    <div class="w-2/5">
+        <div class="billSummary border-radius-md">            
+        <div class="flex">
+            <div class="w-1/2">
+                   <ul>
+                    <li class="m-1">Bill Summary</li>
+                    <li class="m-1"> Total Bill Amount </li>
+                    <li class="m-1"> Total Deposit </li>
+                    <li class="m-1"> Total Refund </li>
+                    <li class="m-1"> Total Discount </li>
+                    <li class="m-1"> Credit Limit</li>
+                   </ul>
+            </div>
+            <div class="w-1/2">
+                <ul>
+                    <li class="m-1" class="emptyBill">Bill</li>  
+                    <li class="m-1"> 7500.00 </li>
+                    <li class="m-1"> 0.00 </li>
+                    <li class="m-1"> 0.00 </li>
+                    <li class="m-1"> 0.00 </li>
+                    <li class="m-1"> 0.00</li>
+                   </ul>
+            </div>   
         </div>
-        <!--Cheque  -->
-        <div *ngIf="isShowCheque">
-            <div>Cheque Details</div>
-            <form [formGroup]="chequeForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of chequeQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="chequeForm" [questions]="chequeQuestions"
-                        [index]="i"></maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
+        &nbsp;
+        <div class="flex">            
+            <div class="w-1/2">
+                   <ul>
+                    <li class="m-1">On Settlement</li>
+                    <li class="m-1"> Amount Refunded </li>
+                    <li class="m-1"> Amount Received </li>                   
+                   </ul>
+            </div>            
+            <div class="w-1/2">
+                <ul>     
+                    <li class="m-1" class="emptyBill">Bill</li>             
+                    <li class="m-1"> 0.00 </li>
+                    <li class="m-1"> 0.00</li>
+                   </ul>
+            </div>            
         </div>
-        <!--Credit Card  -->
-        <div *ngIf="isShowcCard">
-            <div>Credit Card Details</div>
-            <form [formGroup]="cCardForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of cCardQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="cCardForm" [questions]="cCardQuestions"
-                        [index]="i"></maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
         </div>
-        <!--DD  -->
-        <div *ngIf="isShowDraft">
-            <div>Cheque Details</div>
-            <form [formGroup]="draftForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of draftQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="draftForm" [questions]="draftQuestions"
-                        [index]="i"></maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
+        &nbsp;
+        <div class="priceBreakup border-radius-md">
+        <div class="flex ">            
+            <div class="w-1/2">
+                   <ul>
+                    <li class="m-1">Payment Breakup</li>
+                    <li class="m-1"> Cash</li>
+                    <li class="m-1"> Credit Card </li>                   
+                   </ul>
+            </div>            
+            <div class="w-1/2">
+                <ul>     
+                    <li class="m-1" class="emptyList">Payment</li>             
+                    <li class="m-1"> 7000.00 </li>
+                    <li class="m-1"> 500.00</li>
+                   </ul>
+            </div>
+            
         </div>
-        <!--Mobile  -->
-        <div *ngIf="isShowMobile">
-            <div>Mobile Details</div>
-            <form [formGroup]="mobileForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of mobileQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="mobileForm" [questions]="mobileQuestions"
-                        [index]="i"></maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
-        </div>
-        <!--Online  -->
-        <div *ngIf="isShowOnline">
-            <div>Online Details</div>
-            <form [formGroup]="onlineForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of onlineQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="onlineForm" [questions]="onlineQuestions"
-                        [index]="i"></maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
-        </div>
-        <!--UPI  -->
-        <div *ngIf="isShowUpi">
-            <div>UPI</div>
-            <form [formGroup]="upiForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of upiQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="upiForm" [questions]="upiQuestions" [index]="i">
-                    </maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
-        </div>
-        <!--Due  -->
-        <div *ngIf="isShowDue">
-            <div>Due Amount</div>
-            <form [formGroup]="dueForm">
-                <!-- <div class="flex justify-between flex-wrap flex-column"> -->
-                <div *ngFor="let question of dueQuestions; let i = index">
-                    <maxhealth-question [question]="question" [form]="dueForm" [questions]="dueQuestions" [index]="i">
-                    </maxhealth-question>
-                    <!-- </div> -->
-
-                </div>
-            </form>
-        </div>
-
-    </mat-grid-tile>
-
-    <mat-grid-tile>
-        Bill Summary
-    </mat-grid-tile>
-</mat-grid-list>
+        </div>        
+    </div>
+</div>
+</div>
