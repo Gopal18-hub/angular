@@ -86,11 +86,11 @@ export class OpRegistrationComponent implements OnInit {
   };
 
   passportDetails: {
-    passportNo: string,
-    IssueDate: string,
-    Expirydate: string,
-    Issueat: string,
-    HCF: number
+    passportNo: string;
+    IssueDate: string;
+    Expirydate: string;
+    Issueat: string;
+    HCF: number;
   } = {
     passportNo: "",
     IssueDate: "null",
@@ -352,7 +352,7 @@ export class OpRegistrationComponent implements OnInit {
         list: this.sourceOfInfoList,
       },
     },
-  }; 
+  };
   OPRegForm!: FormGroup;
   questions: any;
   hotlistMasterList: hotlistingreasonModel[] = [];
@@ -400,9 +400,9 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllDisttList();
     this.getAllStateList();
     this.getLocalityList();
-   
-    this.OPRegForm.controls['nationality'].setValue({title:"Indian"});
-    this.OPRegForm.controls['country'].setValue({title:"India"});
+
+    this.OPRegForm.controls["nationality"].setValue({ title: "Indian" });
+    this.OPRegForm.controls["country"].setValue({ title: "India" });
     this.OPRegForm.controls["foreigner"].disable();
   }
 
@@ -410,11 +410,10 @@ export class OpRegistrationComponent implements OnInit {
     if (this.MaxIDExist) {
       this.OPRegForm.controls["hotlist"].enable();
     } else {
-      this.OPRegForm.controls["hotlist"].disable();      
+      this.OPRegForm.controls["hotlist"].disable();
     }
   }
 
- 
   searchPatient(formdata: any) {
     if (
       formdata["name"] == "" &&
@@ -457,7 +456,7 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.addressByLocalityID.bind(this)
     );
-    
+
     //blur event call to fetch locality based on pincode
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -474,7 +473,7 @@ export class OpRegistrationComponent implements OnInit {
       "change",
       this.onPhoneModify.bind(this)
     );
-    //chnage event for FirstName 
+    //chnage event for FirstName
     this.questions[4].elementRef.addEventListener(
       "change",
       this.onFistNameModify.bind(this)
@@ -484,8 +483,8 @@ export class OpRegistrationComponent implements OnInit {
       "change",
       this.onLastNameModify.bind(this)
     );
-    
-    //nationality blur event 
+
+    //nationality blur event
     this.questions[28].elementRef.addEventListener(
       "blur",
       this.onNationalityModify.bind(this)
@@ -495,9 +494,9 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
-    //on value chnae event of age Type 
-    this.OPRegForm.controls['ageType'].valueChanges.subscribe((value)=>{
-        this.validatePatientAge();
+    //on value chnae event of age Type
+    this.OPRegForm.controls["ageType"].valueChanges.subscribe((value) => {
+      this.validatePatientAge();
     });
 
     // this.questions[30].elementRef.addEventListener(
@@ -516,32 +515,30 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //on change of Title Gender needs to be changed
-    this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {     
+    console.log( this.OPRegForm.controls["title"]);
+    console.log(this.OPRegForm.value.title)
+    this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
-        if(!this.OPRegForm.controls["gender"].value)
-        {
+        if (!this.OPRegForm.controls["gender"].value) {
           let sex = this.titleList.filter((e) => e.id === value);
           if (sex.length) {
-            let exists = this.genderList
-              .filter((e) => e.id === sex[0].sex);           
-                this.OPRegForm.controls["gender"].setValue(exists[0].id);
+            let exists = this.genderList.filter((e) => e.id === sex[0].sex);
+            this.OPRegForm.controls["gender"].setValue(exists[0].id);
           }
-        }       
+        }
       }
     });
 
     // //on change of Gender Title needs to be dafult for Transgender
     this.OPRegForm.controls["gender"].valueChanges.subscribe((value: any) => {
-      console.log("Gender"+ value);
+      console.log("Gender" + value);
       if (value) {
-        let genderName = this.genderList.filter(g=>g.id === value)[0].name;
-        if(genderName != '' && genderName != undefined && genderName != null)
-        {
-          if(genderName == "Transgender")
-          {
+        let genderName = this.genderList.filter((g) => g.id === value)[0].name;
+        if (genderName != "" && genderName != undefined && genderName != null) {
+          if (genderName == "Transgender") {
             this.OPRegForm.controls["title"].setValue(0);
           }
-        }    
+        }
       }
     });
 
@@ -556,64 +553,78 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.checkFatherSpouseName.bind(this)
     );
-    
+
     // nationality value chnage event to enable foreigner
-    this.OPRegForm.controls["nationality"].valueChanges.subscribe((value)=>{
+    this.OPRegForm.controls["nationality"].valueChanges.subscribe((value) => {
       console.log(value);
-      if( value.title != "Indian" 
-        && value !=null 
-        && value != undefined
-        && value !=''
-        && value.title != ''
-        && value.title != null)
-      {
+      if (
+        value.title != "Indian" &&
+        value != null &&
+        value != undefined &&
+        value != "" &&
+        value.title != "" &&
+        value.title != null
+      ) {
         this.OPRegForm.controls["foreigner"].enable();
         this.OPRegForm.controls["foreigner"].setValue(true);
-       // this.passportDetailsdialog();
-      }
-      else{
+        // this.passportDetailsdialog();
+      } else {
         this.OPRegForm.controls["foreigner"].disable();
         this.OPRegForm.controls["foreigner"].setValue(false);
       }
     });
-
   }
 
   //validation for Indetity Number if Identity Type Selected
-  checkIndetityValue(){  
-    let IdenityType = this.OPRegForm.controls['idenityType'].value;
-    if(IdenityType != null || IdenityType != undefined || IdenityType !='' || IdenityType > 0)
-    {
-      if(this.OPRegForm.controls['idenityValue'].value =='' 
-      || this.OPRegForm.controls['idenityValue'].value ==undefined
-      || this.OPRegForm.controls['idenityValue'].value == null)
-      {
-        let identityTypeName = this.idTypeList.filter(i=>i.id === IdenityType)[0].name;
+  checkIndetityValue() {
+    let IdenityType = this.OPRegForm.controls["idenityType"].value;
+    if (
+      IdenityType != null ||
+      IdenityType != undefined ||
+      IdenityType != "" ||
+      IdenityType > 0
+    ) {
+      if (
+        this.OPRegForm.controls["idenityValue"].value == "" ||
+        this.OPRegForm.controls["idenityValue"].value == undefined ||
+        this.OPRegForm.controls["idenityValue"].value == null
+      ) {
+        let identityTypeName = this.idTypeList.filter(
+          (i) => i.id === IdenityType
+        )[0].name;
         this.OPRegForm.controls["idenityValue"].setErrors({ incorrect: true });
-        this.questions[17].customErrorMessage = "Please enter valid "+ identityTypeName +" number";
+        this.questions[17].customErrorMessage =
+          "Please enter valid " + identityTypeName + " number";
       }
     }
   }
 
   //validation for empty Father or SPouse Name if Type selected
-  checkFatherSpouseName(){
-    let FatherSpouse = this.OPRegForm.controls['fatherSpouse'].value;
-    if(FatherSpouse != null 
-      || FatherSpouse != undefined
-      || FatherSpouse != ''
-      || FatherSpouse > 0)
-      {
-        if(this.OPRegForm.controls['fatherSpouseName'].value =='' 
-        || this.OPRegForm.controls['fatherSpouseName'].value ==undefined
-        || this.OPRegForm.controls['fatherSpouseName'].value == null)
-        {
-          let selectedName = this.fatherSpouseOptionList.filter(f=>f.value === FatherSpouse)[0].title;
-          this.OPRegForm.controls["fatherSpouseName"].setErrors({ incorrect: true });
-          this.questions[13].customErrorMessage = "Please enter "+selectedName+" name";
-        }
+  checkFatherSpouseName() {
+    let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
+    if (
+      FatherSpouse != null ||
+      FatherSpouse != undefined ||
+      FatherSpouse != "" ||
+      FatherSpouse > 0
+    ) {
+      if (
+        this.OPRegForm.controls["fatherSpouseName"].value == "" ||
+        this.OPRegForm.controls["fatherSpouseName"].value == undefined ||
+        this.OPRegForm.controls["fatherSpouseName"].value == null
+      ) {
+        let selectedName = this.fatherSpouseOptionList.filter(
+          (f) => f.value === FatherSpouse
+        )[0].title;
+        this.OPRegForm.controls["fatherSpouseName"].setErrors({
+          incorrect: true,
+        });
+        this.questions[13].customErrorMessage =
+          "Please enter " + selectedName + " name";
       }
+    }
   }
-  
+
   //TITLE LIST API CALL
   getTitleList() {
     let hspId = Number(this.cookie.get("HSPLocationId"));
@@ -768,45 +779,42 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
-  DMSList:DMSrefreshModel[]=[]
+  DMSList: DMSrefreshModel[] = [];
   getPatientDMSDetail() {
     let arr = [] as any;
     this.http
-      .get(ApiConstants.PatientDMSDetail(this.patientDetails.iacode,this.patientDetails.registrationno))
+      .get(
+        ApiConstants.PatientDMSDetail(
+          this.patientDetails.iacode,
+          this.patientDetails.registrationno
+        )
+      )
       .subscribe((resultData: DMSrefreshModel[]) => {
         this.DMSList = resultData;
         console.log(resultData);
         this.openDMSDialog(this.DMSList);
       });
-    }
-    
+  }
 
-    hcfDetailMasterList: { title: string; value: number }[] = [] as any;
+  hcfDetailMasterList: { title: string; value: number }[] = [] as any;
 
+  //CLICK EVENT FROM FOREIGN CHECKBOX
+  showPassportDetails() {
+    this.getHCFDetails();
+  }
 
-    //CLICK EVENT FROM FOREIGN CHECKBOX
-    showPassportDetails()
-    {
-      this. getHCFDetails();
-    }
-
-    getHCFDetails()
-    {     
-      this.http
+  getHCFDetails() {
+    this.http
       .get(ApiConstants.hcfLookUp(Number(this.cookie.get("HSPLocationId"))))
       .subscribe((resultData: GenernicIdNameModel[]) => {
-       
         console.log(resultData);
         console.log(this.hcfDetailMasterList);
-            this.hcfDetailMasterList = resultData.map((l) => {
+        this.hcfDetailMasterList = resultData.map((l) => {
           return { title: l.name, value: l.id };
-         
         });
         this.passportDetailsdialog(this.hcfDetailMasterList);
-    });
+      });
   }
-  
-
 
   //HOTLISTING POP UP DROP DOWN VALUES
   hotlistDialogList: { title: string; value: number }[] = [] as any;
@@ -1226,7 +1234,7 @@ export class OpRegistrationComponent implements OnInit {
       "",
       0,
       "",
-      this.OPRegForm.value.ageType.value,
+      this.OPRegForm.controls["ageType"].value,
       this.OPRegForm.value.age,
       this.OPRegForm.value.address,
       "",
@@ -1272,21 +1280,21 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.surveySMS || false,
       this.OPRegForm.value.receivePromotional || false,
       this.OPRegForm.value.verifiedOnline == "" ? 0 : 1,
-      "this.ewsObj.bplCardNo",
-      "addressOnCard",
+       this.ewsDetails.bplCardNo,
+       this.ewsDetails.bplCardAddress,
       "cghsbeneficiaryCompany",
       this.OPRegForm.value.adhaarId,
-      111111,
+      this.passportDetails.HCF,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
       0,
       0,
-      "this.seafarerObj.HKID",
-      "this.seafarerObj.rank",
-      "this.seafarerObj.Vesselname",
-      "this.seafarerObj.FDPGroup",
-      false,
+      this.seafarerDetails.HKID,
+      this.seafarerDetails.rank,
+      this.seafarerDetails.Vesselname,
+      this.seafarerDetails.FDPGroup,
+      this.OPRegForm.value.hwc || false,
       this.hwcRemark,
       this.OPRegForm.value.idenityType.value || 0,
       this.OPRegForm.value.idenityValue || ""
@@ -1324,7 +1332,7 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.value.dob,
         "yyyy-MM-ddThh:mm:ss"
       ) || "1900-01-01T00:00:00",
-      this.OPRegForm.value.gender.value,
+      this.OPRegForm.controls["gender"].value,
       11,
       this.getSpouseName(),
       0,
@@ -1334,7 +1342,8 @@ export class OpRegistrationComponent implements OnInit {
       "",
       "",
       "",
-      this.OPRegForm.value.ageType.value,
+      
+      this.OPRegForm.controls["ageType"].value,
       this.OPRegForm.value.age,
       this.OPRegForm.value.address,
       "",
@@ -1351,10 +1360,10 @@ export class OpRegistrationComponent implements OnInit {
       0,
       this.OPRegForm.value.nationality.value,
       false,
-      "PASSPORT NO",
-      "1900-01-01T00:00:00",
-      "1900-01-01T00:00:00",
-      " ISSUE AT",
+      this.passportDetails.passportNo,
+      this.passportDetails.IssueDate,
+      this.passportDetails.Expirydate,
+      this.passportDetails.Issueat,
       "",
       false,
       this.OPRegForm.value.vip || false,
@@ -1382,23 +1391,24 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.receivePromotional || false,
       "",
       this.OPRegForm.value.verifiedOnline == "" ? 0 : 1,
-      "this.ewsObj.bplCardNo",
+      this.ewsDetails.bplCardNo
+    ,
       false,
       this.OPRegForm.value.adhaarId,
-      111111,
+      this.passportDetails.HCF,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
-      "this.seafarerObj.HKID",
-      "this.seafarerObj.rank",
-      "this.seafarerObj.Vesselname",
-      "this.seafarerObj.FDPGroup",
+      this.seafarerDetails.HKID,
+      this.seafarerDetails.rank,
+      this.seafarerDetails.Vesselname,
+      this.seafarerDetails.FDPGroup,
       false,
       this.hwcRemark,
       this.OPRegForm.value.idenityType.value || 0,
       this.OPRegForm.value.idenityValue,
       0,
-      "this.ewsObj.bplCardAddress",
+      this.ewsDetails.bplCardNo,
       this.OPRegForm.value.hotlist || false,
       "hotlsitcomment",
       "hotlistreason"
@@ -1426,11 +1436,11 @@ export class OpRegistrationComponent implements OnInit {
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
-      this.OPRegForm.value.title.title,
+      this.OPRegForm.controls["title"].value,
       this.OPRegForm.value.firstName,
       this.OPRegForm.value.middleName,
       this.OPRegForm.value.lastName,
-      this.OPRegForm.value.gender.value,
+      this.OPRegForm.controls["gender"].value,
       this.OPRegForm.value.mobileNumber,
       "",
       this.OPRegForm.value.emailId,
@@ -1529,7 +1539,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.OPRegForm.value.dob);
     if (this.OPRegForm.value.dob == "") {
       this.OPRegForm.value.age = null;
-      this.OPRegForm.value.ageType = null;
+      this.OPRegForm.controls["ageType"].setValue(null);
     }
     this.timeDiff = 0;
     if (this.OPRegForm.value.dob) {
@@ -1541,7 +1551,7 @@ export class OpRegistrationComponent implements OnInit {
     if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
       this.dateNotValid = true;
       this.OPRegForm.value.age = null;
-      this.OPRegForm.value.ageType = null;
+      this.OPRegForm.controls["ageType"].setValue(null);
       let element: HTMLElement = document.getElementById(
         "saveform"
       ) as HTMLElement;
@@ -1613,7 +1623,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       } else {
         this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
-        console.log(this.OPRegForm.value.ageType);
+        console.log(this.OPRegForm.controls["ageType"].value);
       }
     }
   }
@@ -1629,8 +1639,8 @@ export class OpRegistrationComponent implements OnInit {
       if (
         this.OPRegForm.value.age > 0 &&
         this.OPRegForm.value.age <= 18 &&
-        (this.OPRegForm.value.ageType != null ||
-          this.OPRegForm.value.ageType != undefined)
+        (this.OPRegForm.controls["ageType"].value != null ||
+          this.OPRegForm.controls["ageType"].value != undefined)
       ) {
         if (
           this.OPRegForm.value.dob == null ||
@@ -1645,7 +1655,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   //DIALOGS ---------------------------------------------------------------------------------------
-  
+
   openVipNotes() {
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -1728,6 +1738,8 @@ export class OpRegistrationComponent implements OnInit {
     });
     EWSDialogref.afterClosed().subscribe((result) => {
       console.log("HWC dialog was closed");
+      this.ewsDetails={ bplCardNo: result.data.BPLAddress,
+      bplCardAddress:result.data.bplCardNo}
     });
   }
 
@@ -1778,8 +1790,8 @@ export class OpRegistrationComponent implements OnInit {
           title: "",
           type: "object",
           properties: {
-            msg1:{
-              title:"Existing Data"
+            msg1: {
+              title: "Existing Data",
             },
             firstName: {
               type: "string",
@@ -1788,8 +1800,8 @@ export class OpRegistrationComponent implements OnInit {
               required: true,
               readonly: true,
             },
-            msg2:{
-              title:"Modified Data"
+            msg2: {
+              title: "Modified Data",
             },
             modifiedfirstName: {
               type: "string",
@@ -1898,9 +1910,10 @@ export class OpRegistrationComponent implements OnInit {
               defaultValue: this.OPRegForm.value.foreigner,
               readonly: true,
             },
-            msg:{
-              title:"*Please note that highlighted text are the modified data."
-            }
+            msg: {
+              title:
+                "*Please note that highlighted text are the modified data.",
+            },
           },
         },
         layout: "double",
@@ -1911,8 +1924,8 @@ export class OpRegistrationComponent implements OnInit {
       this.postModifyCall();
     });
   }
- 
-  passportDetailsdialog(hcfMasterList:any) {
+
+  passportDetailsdialog(hcfMasterList: any) {
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
       height: "52vh",
@@ -1945,7 +1958,7 @@ export class OpRegistrationComponent implements OnInit {
             hcf: {
               type: "autocomplete",
               title: "HCF",
-             options: hcfMasterList,
+              options: hcfMasterList,
             },
           },
         },
@@ -1955,9 +1968,14 @@ export class OpRegistrationComponent implements OnInit {
     });
     passportDetailDialogref.afterClosed().subscribe((result) => {
       console.log("passport dialog was closed");
-      this.passportDetails={Expirydate:result.data.expiryDate,Issueat:result.data.issuedAt,IssueDate:result.data.issueDate,passportNo:result.data.passportNo,HCF:result.data.hcf.value};
-     console.log(this.passportDetails);
-      
+      this.passportDetails = {
+        Expirydate: result.data.expiryDate,
+        Issueat: result.data.issuedAt,
+        IssueDate: result.data.issueDate,
+        passportNo: result.data.passportNo,
+        HCF: result.data.hcf.value,
+      };
+      console.log(this.passportDetails);
     });
   }
 
@@ -2002,9 +2020,19 @@ export class OpRegistrationComponent implements OnInit {
     );
     seafarersDetailDialogref.afterClosed().subscribe((result) => {
       console.log("seafarers dialog was closed");
+      this.seafarerDetails = {
+        HKID: result.data.hkID,
+        Vesselname: result.data.vesselName,
+        rank: result.data.rank,
+        FDPGroup: result.data.fdpGroup,
+      };
     });
   }
-  openDMSDialog(dmsDetailList:any) {
-    this.matDialog.open(DMSComponent, { width: "100vw", height: "52vh" ,data: { list:dmsDetailList  }} );
+  openDMSDialog(dmsDetailList: any) {
+    this.matDialog.open(DMSComponent, {
+      width: "100vw",
+      height: "52vh",
+      data: { list: dmsDetailList },
+    });
   }
 }
