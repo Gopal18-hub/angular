@@ -7,16 +7,19 @@ import { OnlineOpBillsComponent } from './submodules/online-op-bills/online-op-b
 import { OpOrderRequestComponent } from './submodules/op-order-request/op-order-request.component';
 import { MiscellaneousBillingComponent } from './submodules/miscellaneous-billing/miscellaneous-billing.component';
 import { InitiateDepositComponent } from './submodules/initiate-deposit/initiate-deposit.component';
-
 import { BillingRoutingModule } from './routes';
 import { PaymentModeComponent } from './submodules/billing/payment-mode/payment-mode.component';
-
 import {MatGridListModule} from '@angular/material/grid-list';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
-
+import { MatButtonModule } from "@angular/material/button";
+import { RefundDialogComponent } from './submodules/deposit/refund-dialog/refund-dialog.component';
+import { MatDialogModule } from "@angular/material/dialog";
+import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
+import {MatTabsModule} from '@angular/material/tabs';
+import { MatRadioModule } from '@angular/material/radio';
 @NgModule({
   declarations: [
        BillingComponent,
@@ -27,7 +30,9 @@ import {MatDividerModule} from '@angular/material/divider';
        OpOrderRequestComponent,
        MiscellaneousBillingComponent,
        InitiateDepositComponent,
-       PaymentModeComponent
+       PaymentModeComponent,
+       RefundDialogComponent,
+       
   ],
   imports: [
     BillingRoutingModule,
@@ -36,7 +41,12 @@ import {MatDividerModule} from '@angular/material/divider';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDividerModule
+    MatDividerModule,
+    MatButtonModule,
+    MatDialogModule,
+    DynamicFormsModule,
+    MatTabsModule,
+    MatRadioModule
   ],
   exports: [],
   providers: [],
