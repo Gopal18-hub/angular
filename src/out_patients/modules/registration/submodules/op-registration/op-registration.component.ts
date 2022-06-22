@@ -86,11 +86,11 @@ export class OpRegistrationComponent implements OnInit {
   };
 
   passportDetails: {
-    passportNo: string;
-    IssueDate: string;
-    Expirydate: string;
-    Issueat: string;
-    HCF: number;
+    passportNo: string,
+    IssueDate: string,
+    Expirydate: string,
+    Issueat: string,
+    HCF: number
   } = {
     passportNo: "",
     IssueDate: "null",
@@ -126,12 +126,15 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
+        pattern:"^[1-9]{1}[0-9]{9}",
+        minimum:10,
+        maximum:10,
       },
       title: {
         type: "dropdown",
         title: "Title",
         required: true,
-        list: this.titleList,
+        options: this.titleList,
       },
       firstName: {
         type: "string",
@@ -152,7 +155,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "dropdown",
         title: "Gender",
         required: true,
-        list: this.genderList,
+        options: this.genderList,
       },
       dob: {
         type: "date",
@@ -167,7 +170,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "dropdown",
         title: "Age Type",
         required: true,
-        list: this.ageTypeList,
+        options: this.ageTypeList,
       },
       emailId: {
         type: "email",
@@ -176,7 +179,7 @@ export class OpRegistrationComponent implements OnInit {
       },
       fatherSpouse: {
         type: "dropdown",
-        list: this.fatherSpouseOptionList,
+        options: this.fatherSpouseOptionList,
         required: false,
       },
       fatherSpouseName: {
@@ -198,7 +201,7 @@ export class OpRegistrationComponent implements OnInit {
       idenityType: {
         type: "dropdown",
         title: "Identity",
-        list: this.idTypeList,
+        options: this.idTypeList,
         required: false,
       },
       idenityValue: {
@@ -232,7 +235,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "autocomplete",
         title: "Locality",
         required: true,
-        list: this.localityList,
+        options: this.localityList,
         // required property is dependent on country
       },
       localityTxt: {
@@ -247,13 +250,13 @@ export class OpRegistrationComponent implements OnInit {
         title: "City/Town",
         // required property is dependent on country
         required: true,
-        list: this.cityList,
+        options: this.cityList,
       },
       district: {
         type: "autocomplete",
         title: "District",
         // required property is dependent on country
-        list: this.disttList,
+        options: this.disttList,
         required: true,
       },
       state: {
@@ -261,19 +264,19 @@ export class OpRegistrationComponent implements OnInit {
         title: "State",
         // required property is dependent on country
         required: true,
-        list: this.stateList,
+        options: this.stateList,
       },
       country: {
         type: "autocomplete",
         title: "Country",
         required: true,
-        list: this.countryList,
+        options: this.countryList,
       },
       nationality: {
         type: "autocomplete",
         title: "Nationality",
         required: true,
-        list: this.nationalityList,
+        options: this.nationalityList,
       },
       foreigner: {
         type: "checkbox",
@@ -349,7 +352,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "dropdown",
         title: "Source of Info about Max Healthcare",
         required: false,
-        list: this.sourceOfInfoList,
+        options: this.sourceOfInfoList,
       },
     },
   };
@@ -401,8 +404,8 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
 
-    this.OPRegForm.controls["nationality"].setValue({ title: "Indian" });
-    this.OPRegForm.controls["country"].setValue({ title: "India" });
+    this.OPRegForm.controls["nationality"].setValue({ title: "Indian", value: 149 });
+    this.OPRegForm.controls["country"].setValue({ title: "India", value: 1});
     this.OPRegForm.controls["foreigner"].disable();
   }
 
@@ -497,8 +500,7 @@ export class OpRegistrationComponent implements OnInit {
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges.subscribe((value) => {
       this.validatePatientAge();
-    });
-
+    }); 
     // this.questions[30].elementRef.addEventListener(
     //   "click",
     //   this.openHotListDialog.bind(this)
@@ -520,7 +522,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         if (!this.OPRegForm.controls["gender"].value) {
-          let sex = this.titleList.filter((e) => e.id === value);
+          let sex = this.titleList.filter((e) => e.name === value);
           if (sex.length) {
             let exists = this.genderList.filter((e) => e.id === sex[0].sex);
             this.OPRegForm.controls["gender"].setValue(exists[0].id);
@@ -633,7 +635,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: any) => {
         this.titleList = resultData;
         this.questions[3].options = this.titleList.map((l) => {
-          return { title: l.name, value: l.id };
+          return { title: l.name, value: l.name };
         });
       });
   }
@@ -1048,8 +1050,10 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.ageTypeName
     );
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-    this.OPRegForm.controls["country"].setValue(
-      this.patientDetails?.countryName
+    this.OPRegForm.controls["country"].setValue({
+      title: this.patientDetails?.countryName, value:  this.patientDetails?.companyId
+    }
+      
     );
     this.OPRegForm.controls["nationality"].setValue(
       this.patientDetails?.nationality
@@ -1268,7 +1272,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
         : "",
-      this.OPRegForm.value.sourceOfInput.value || 0,
+      this.OPRegForm.controls["sourceOfInput"].value|| 0,
       false,
       false, //data clean flag
       false, //isavailregcard
@@ -1296,7 +1300,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.FDPGroup,
       this.OPRegForm.value.hwc || false,
       this.hwcRemark,
-      this.OPRegForm.value.idenityType.value || 0,
+      this.OPRegForm.controls["idenityType"].value|| 0,
       this.OPRegForm.value.idenityValue || ""
     ));
   }
@@ -1321,7 +1325,7 @@ export class OpRegistrationComponent implements OnInit {
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",
       deptId,
       "",
-      this.OPRegForm.value.title.title,
+      this.OPRegForm.controls["title"].value,
       this.OPRegForm.value.firstName,
       this.OPRegForm.value.middleName,
       this.OPRegForm.value.lastName,
@@ -1342,7 +1346,6 @@ export class OpRegistrationComponent implements OnInit {
       "",
       "",
       "",
-      
       this.OPRegForm.controls["ageType"].value,
       this.OPRegForm.value.age,
       this.OPRegForm.value.address,
@@ -1379,7 +1382,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
         : "",
-      this.OPRegForm.value.sourceOfInput.value || 0,
+      this.OPRegForm.controls["sourceOfInput"].value|| 0,
       false,
       this.OPRegForm.value.SSN,
       "1900-01-01T00:00:00",
@@ -1405,7 +1408,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.FDPGroup,
       false,
       this.hwcRemark,
-      this.OPRegForm.value.idenityType.value || 0,
+      this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
       0,
       this.ewsDetails.bplCardNo,
@@ -1417,14 +1420,16 @@ export class OpRegistrationComponent implements OnInit {
 
   getFather(): string {
     let response = "";
-    if (this.OPRegForm.value.fatherSpouse.title == "Father") {
+    let selectedName = this.fatherSpouseOptionList.filter(f=>f.value ===this.OPRegForm.controls["fatherSpouse"].value)[0].title;
+    if (selectedName == "Father") {
       return this.OPRegForm.value.fatherSpouseName;
     }
     return response;
   }
   getSpouseName() {
     let response = "";
-    if (this.OPRegForm.value.fatherSpouse.title != "Father") {
+    let selectedName = this.fatherSpouseOptionList.filter(f=>f.value ===this.OPRegForm.controls["fatherSpouse"].value)[0].title;
+    if (selectedName != "Father") {
       return this.OPRegForm.value.fatherSpouseName;
     }
     return response;
@@ -1579,18 +1584,12 @@ export class OpRegistrationComponent implements OnInit {
               this.OPRegForm.controls["age"].setValue(
                 Math.floor(this.timeDiff)
               );
-              this.OPRegForm.controls["ageType"].setValue({
-                title: this.ageTypeList[0].name,
-                value: this.ageTypeList[0].id,
-              });
+              this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
               console.log(this.ageTypeList[0].name);
             }
           } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue({
-              title: this.ageTypeList[3].name,
-              value: this.ageTypeList[3].id,
-            });
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
             console.log(this.ageTypeList[3].name);
           }
         } else {
@@ -1608,16 +1607,10 @@ export class OpRegistrationComponent implements OnInit {
                 this.OPRegForm.controls["age"].setValue(monthDiff);
               }
             }
-            this.OPRegForm.controls["ageType"].setValue({
-              title: this.ageTypeList[3].name,
-              value: this.ageTypeList[3].id,
-            });
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
           } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue({
-              title: this.ageTypeList[4].name,
-              value: this.ageTypeList[4].id,
-            });
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[4].id);
             console.log(this.ageTypeList[4].name);
           }
         }
