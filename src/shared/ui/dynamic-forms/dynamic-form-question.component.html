@@ -30,6 +30,8 @@
           [value]="question.value"
           [placeholder]="question.placeholder"
           [pattern]="question.pattern"
+          [minlength]="question.minimum"
+          [maxlength]="question.maximum"
           #element
         />
         <mat-error *ngIf="!isValid && !isCorrect">
@@ -434,6 +436,9 @@
           </mat-checkbox>
         </li>
       </ul>
+      <mat-error *ngIf="isCorrect && question.customErrorMessage">
+        {{ question.customErrorMessage }}</mat-error
+      >
     </ng-container>
   </div>
 </ng-container>
