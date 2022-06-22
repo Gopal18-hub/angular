@@ -130,9 +130,9 @@ export class HttpService {
         this.__showSnackBar(data);
       }
     } else {
-      if (!options!.showErrorMessage && !options!.showSuccessMessage) {
-        this.__showSnackBar(data);
-      }
+      // if (!options!.showErrorMessage && !options!.showSuccessMessage) {
+      //   this.__showSnackBar(data);
+      // }
     }
   }
 
