@@ -20,6 +20,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 // import { DynamicFormQuestionComponent } from '../../../shared/ui/dynamic-forms/dynamic-form-question.component';
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { CompanydialogComponent } from './companydialog/companydialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 //import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -29,6 +31,7 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
      DeletesuccessdialogComponent,
      SavedialogComponent,
      SavesuccessdialogComponent,
+     CompanydialogComponent,
     
     //  DynamicFormQuestionComponent
   ],
@@ -48,6 +51,7 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
      MatIconModule,
      MatButtonModule,
      DynamicFormsModule,
+     MatDialogModule
      
 
     ],

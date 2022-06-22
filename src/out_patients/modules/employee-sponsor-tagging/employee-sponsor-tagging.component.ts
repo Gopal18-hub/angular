@@ -5,7 +5,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { SavedialogComponent } from './save-dialog/save-dialog.component';
 import { DeletedialogComponent } from './delete-dialog/delete-dialog.component';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
-
+import { CookieService } from'../../../shared/services/cookie.service';
+import { DatePipe } from '@angular/common';
+import { __values } from 'tslib';
+import { CompanydialogComponent } from './companydialog/companydialog.component';
 
 @Component({
   selector: 'out-patients-employee-sponsor-tagging',
@@ -20,10 +23,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     properties:{
       maxId:{
         type:"string",
+        defaultValue: (this.cookie.get("LocationIACode")),
         // title:"Max ID"
       },
       mobileNo:{
-        type:"string",
+        type:"number",
+        //maximum:10
         // title:"Mobile No"
       },
       employeeCode:{
@@ -36,6 +41,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       corporate:{
         type:"autocomplete",
+        disabled:true
         // title:"Corporate"
       },
       name:{
@@ -63,7 +69,10 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
        // title:"SSN"
       },
       datecheckbox:{
-        type:"checkbox"
+        type:"checkbox",
+        options:[{
+          title:""
+        }]
       },
       fromdate:{
         type:"date",
@@ -82,17 +91,31 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   constructor(
     private dialog:MatDialog,
-    private formService: QuestionControlService
+    private formService: QuestionControlService,
+    private cookie: CookieService,private datepipe:DatePipe
     ) { }
 
   ngOnInit(): void {
-
+    console.log(this.cookie.get("LocationIACode"));
+    
+    
     let formResult: any = this.formService.createForm(
       this.employeesponsorformData.properties,
       {}
     );
     this.employeesponsorForm = formResult.form;
     this.questions = formResult.questions;
+    let todaydate=new Date();
+    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
+    console.log(this.employeesponsorForm.controls["fromdate"].value);
+    this.employeesponsorForm.controls["todate"].setValue(todaydate);
+    console.log( this.employeesponsorForm.controls["todate"].value);
+   //disable fromdate and todate
+    this.employeesponsorForm.controls["fromdate"].disable();
+    this.employeesponsorForm.controls["todate"].disable();
+  //disable corporate dropdown
+  this.employeesponsorForm.controls["corporate"].disable();
+  
   }
   // employeesponsorform = new FormGroup({
   //   maxId: new FormControl(''),
@@ -243,6 +266,31 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   deletebuttonclick(){
     this.dialog.open(DeletedialogComponent,  {width:'40vw',
       height:'30vh',panelClass:'custom-container'},)
+  }
+
+  oncheckboxClick(event:any){
+    console.log(event);
+    this.employeesponsorForm.controls["datecheckbox"].valueChanges.subscribe(value =>{
+      console.log(value);
+      if(value== true){
+        this.employeesponsorForm.controls["fromdate"].enable();
+        this.employeesponsorForm.controls["todate"].enable();
+      }else{
+        this.employeesponsorForm.controls["fromdate"].disable();
+        this.employeesponsorForm.controls["todate"].disable();
+      }
+    })
+  }
+
+
+  iomClick(){
+    this.dialog.open(CompanydialogComponent,{width:'20vw',height:'30vh'})
+  }
+
+  clearTabledata(){
+    let todaydate=new Date();
+    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
+    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
   }
 
 }

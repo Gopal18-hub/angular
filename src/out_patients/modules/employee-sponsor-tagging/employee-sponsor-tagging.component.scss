@@ -7,9 +7,10 @@
     
 }
 .firstrow{
-    background :#F6F6F6;    
+    background :#F6F6F6; 
+     
 }
-.employeelabelclass{
+.employeeclass{
     color: #004084;
     font:Proxima Nova;
 }
@@ -22,4 +23,15 @@
         pointer-events: none;
         opacity: 0.5;
         text-decoration: none;
+    }
+
+    .dateclass{
+       
+        background: #d8d8d8;
+    }
+
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+    
     }
