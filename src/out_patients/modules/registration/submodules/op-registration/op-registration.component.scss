@@ -30,6 +30,12 @@
       // width: 30%;
     }
 
+    ::ng-deep mat-radio-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
     // &-imageblock {
     //   height: 100%;
     //   width: 100%;
