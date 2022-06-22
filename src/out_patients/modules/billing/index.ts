@@ -14,12 +14,20 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
-import { MatButtonModule } from "@angular/material/button";
+
 import { RefundDialogComponent } from './submodules/deposit/refund-dialog/refund-dialog.component';
 import { MatDialogModule } from "@angular/material/dialog";
-import { DynamicFormsModule } from '../../../shared/ui/dynamic-forms';
-import {MatTabsModule} from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
+
+import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list';
+
+
+
 @NgModule({
   declarations: [
        BillingComponent,
@@ -47,6 +55,9 @@ import { MatRadioModule } from '@angular/material/radio';
     DynamicFormsModule,
     MatTabsModule,
     MatRadioModule
+    BrowserModule,
+    CommonModule,
+    MatListModule
   ],
   exports: [],
   providers: [],

@@ -31,6 +31,10 @@ export class DupRegMergingComponent implements OnInit {
   healthId = '';
   aadhaarId = '';
   mobile = '';
+  defaultUI:boolean=true;
+  showmergespinner:boolean=true;
+  mergeicon:string="placeholder";
+  mergingmessage:string="Please search Name, Phone, DOB and Email ";
 
   mergeSearchForm = new FormGroup({
     name: new FormControl(''),
@@ -63,7 +67,7 @@ export class DupRegMergingComponent implements OnInit {
         type: 'number'
       },
       date: {
-        title: 'Reg.Date',
+        title: 'Reg Date',
         type: 'date'
       },
       firstName: {
@@ -116,7 +120,8 @@ export class DupRegMergingComponent implements OnInit {
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
       },(error:any)=>{
-        //this.messageDialogService.error(error.error);
+        // this.mergingmessage  = "No records found";
+        // this.mergeicon  = "norecordfound";
       });
      
     });
@@ -125,7 +130,7 @@ export class DupRegMergingComponent implements OnInit {
 
 
   searchPatient(formdata: any) {
-
+    this.defaultUI=false;
     if (formdata['name'] == '' && formdata['phone'] == '' 
     && formdata['dob'] == '' && formdata['email'] == '')
     {
@@ -142,10 +147,13 @@ export class DupRegMergingComponent implements OnInit {
     this.mobile  = formdata['phone'];
     this.email = formdata['email'];
     this.dob = formdata['dob'];
+   
     this.getAllpatientsBySearch().subscribe((resultData) => {
+      this.showmergespinner = false;     
       this.results = resultData;
       this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;
+     
       setTimeout(()=>{        
         this.tableRows.selection.changed.subscribe((res:any)=>{ 
           if(this.tableRows.selection.selected.length> 1)
@@ -159,7 +167,9 @@ export class DupRegMergingComponent implements OnInit {
         });
       }) ;
     },(error:any)=>{
-      this.messageDialogService.error(error.error);
+      this.defaultUI = true;
+      this.mergingmessage  = "No records found";
+      this.mergeicon  = "norecordfound";
     });
 
   }
