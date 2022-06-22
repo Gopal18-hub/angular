@@ -26,11 +26,13 @@ export class RegistrationUnmergingComponent implements OnInit {
   unMergePostModel:PatientmergeModel[]=[]; 
   isAPIProcess:boolean=false;
   unmergebuttonDisabled:boolean=true;
+  showunmergespinner:boolean=true;
   unMergeresponse:string='';
   maxid: any='' ;
   ssn:any='';
   defaultUI:boolean = true;
-  unmergeplaceholder:string = "Please search Max ID or SSN";
+  unmergeimage:string = "placeholder";
+  unmergemessage:string = "Please search Max ID or SSN";
   unmergeMastercheck={
     isSelected:false
   }
@@ -50,7 +52,7 @@ export class RegistrationUnmergingComponent implements OnInit {
     displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','categoryIcons'],
     columnsInfo: {
       maxid : {
-        title: 'MAX ID',
+        title: 'Max ID',
         type: 'number'
       },
       ssn : {
@@ -58,7 +60,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         type: 'number'
       },
       date : {
-        title: 'Regn.Date',
+        title: 'Reg Date',
         type: 'date'
       },
       patientName : {
@@ -75,7 +77,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         type: 'string'
       },
       dob : {
-        title: 'Date of Birth',
+        title: 'DOB',
         type: 'date'
       },
       place : {
@@ -84,7 +86,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         tooltipColumn: "place",
       },
       phone : {
-        title: 'Phone No.',
+        title: 'Phone',
         type: 'number'
       },
       categoryIcons : {
@@ -121,7 +123,9 @@ export class RegistrationUnmergingComponent implements OnInit {
      this.messageDialogService.success(resultdata);
     },error=>{
       console.log(error);
-      this.messageDialogService.error(error);
+      this.defaultUI = true;
+      this.unmergemessage  = "No records found";
+        this.unmergeimage  = "norecordfound"; 
     });   
   }
 
@@ -132,6 +136,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       this.maxid = formdata['maxID'];
       this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {
+      this.showunmergespinner = false;
       this.unmergingList  = resultData;
       this.isAPIProcess = true; 
       this.unmergingList = this.patientServie.getAllCategoryIcons(this.unmergingList,getmergepatientsearch);
@@ -151,7 +156,9 @@ export class RegistrationUnmergingComponent implements OnInit {
 
      
     },(error:any)=>{
-      this.messageDialogService.error(error.error);
+      this.defaultUI = true;
+      this.unmergemessage  = "No records found";
+        this.unmergeimage  = "norecordfound"; 
     });
     
   }
