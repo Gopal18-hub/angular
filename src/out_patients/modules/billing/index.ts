@@ -39,7 +39,7 @@ import {MatListModule} from '@angular/material/list';
        MiscellaneousBillingComponent,
        InitiateDepositComponent,
        PaymentModeComponent,
-       RefundDialogComponent,
+       RefundDialogComponent
        
   ],
   imports: [
@@ -54,7 +54,7 @@ import {MatListModule} from '@angular/material/list';
     MatDialogModule,
     DynamicFormsModule,
     MatTabsModule,
-    MatRadioModule
+    MatRadioModule,
     BrowserModule,
     CommonModule,
     MatListModule

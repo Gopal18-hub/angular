@@ -14,13 +14,13 @@ export class RefundDialogComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      dropdown: {
+      servicetype: {
         type: "autocomplete",
       },
       text: {
         type: "string"
       },
-      checkbox: {
+      form60: {
         type: "checkbox",
         options: [{
           title: ''
@@ -45,6 +45,171 @@ export class RefundDialogComponent implements OnInit {
           { title: "No", value: "no" }
         ]
       },
+      deposithead: {
+        type: "autocomplete",
+      },
+      refunddeposit: {
+        type: "string"
+      },
+      otpmobile: {
+        type: "string"
+      },
+      mobielno: {
+        type: "string"
+      },
+      mail: {
+        type: "string"
+      },
+      pancheck: {
+        type: "checkbox",
+        options: [{
+          title: ''
+        }]
+      },
+      panno: {
+        type: "string"
+      },
+      chequeno: {
+        type: "string"
+      },
+      chequeissuedate: {
+        type: "string"
+      },
+      chequebankname: {
+        type: "string"
+      },
+      chequebranchname: {
+        tpe: "string"
+      },
+      chequeamount: {
+        type: "string"
+      },
+      chequeauth: {
+        type: "string"
+      },
+      creditcardno: {
+        type: "string"
+      },
+      creditholdername: {
+        type: "string"
+      },
+      creditbankno:{
+        type: "string"
+      },
+      creditbranchno:{
+        type: "string"
+      },
+      creditamount: {
+        type: "string"
+      },
+      creditapproval: {
+        type: "string"
+      },
+      creditterminal: {
+        type: "string"
+      },
+      creditacquiring: {
+        type: "string"
+      },
+      demandddno: {
+        type: "string"
+      },
+      demandissuedate: {
+        type: "string"
+      },
+      demandbankname: {
+        type: "string"
+      },
+      demandbranch: {
+        type: "string"
+      },
+      demandamount: {
+        type: "string"
+      },
+      demandauth: {
+        type: "string"
+      },
+      mobilesendermobile: {
+        type: "string"
+      },
+      mobilesendermmid: {
+        type: "string"
+      },
+      mobilesendername: {
+        type: "string"
+      },
+      mobilebankname: {
+        type: "string"
+      },
+      mobilebranchname: {
+        type: "string"
+      },
+      mobilebeneficary: {
+        type: "string"
+      },
+      mobiletransactionamt: {
+        type: "string"
+      },
+      mobiletransactionref: {
+        type: "string"
+      },
+      onlinetransacid: {
+        type: "string"
+      },
+      onlinebookingid: {
+        type: "string"
+      },
+      onlinecontactno: {
+        type: "string"
+      },
+      onlineamount: {
+        type: "string"
+      },
+      paytmamount: {
+        type: "string"
+      },
+      paytmwallet: {
+        type: "string"
+      },
+      paytmsendermobile: {
+        type: "string"
+      },
+      paytmsenername: {
+        type: "string"
+      },
+      paytmotp: {
+        type: "string"
+      },
+      paytmtransacref: {
+        type: "string"
+      },
+      paytmorderid: {
+        type: "string"
+      },
+      upicardno: {
+        type: "string"
+      },
+      upitransactionid: {
+        type: "string"
+      },
+      upibankname: {
+        type: "string"
+      },
+      upiamount : {
+        type: "string"
+      },
+      upibatchno: {
+        type: "string"
+      },
+      upiapproval: {
+        type: "string"
+      },
+      upiterminal: {
+        type: "string"
+      },
+      upiacquiring: {
+        type: "string"
+      }
     },
   };
   refundform!: FormGroup;
