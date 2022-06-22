@@ -20,3 +20,8 @@
     padding-bottom: 1.24375em;
   }
 }
+mat-label.mat-form-field-required-marker.ng-star-inserted:after {
+  content: "*";
+  color: red;
+  margin-left: 0.2em;
+}
