@@ -1,5 +1,9 @@
 @use "@angular/material" as mat;
-
+body {
+  * {
+    zoom: 1;
+  }
+}
 @font-face {
   font-family: "proxima";
   src: local("proxima"),
