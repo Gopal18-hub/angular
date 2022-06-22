@@ -23,6 +23,7 @@ import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
 
 import { APP_BASE_HREF } from "@angular/common";
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +37,8 @@ import { APP_BASE_HREF } from "@angular/common";
     SignupModule,
     OpenIDModule,
     DashboardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule
   ],
   providers: [
     {
