@@ -487,11 +487,11 @@ export class OpRegistrationComponent implements OnInit {
       this.onLastNameModify.bind(this)
     );
 
-    //nationality blur event
-    this.questions[28].elementRef.addEventListener(
-      "blur",
-      this.onNationalityModify.bind(this)
-    );
+    //nationality blur event //commented as valuchnages event present
+    // this.questions[28].elementRef.addEventListener(
+    //   "blur",
+    //   this.onNationalityModify.bind(this)
+    // );
     //DOB blur event
     this.questions[8].elementRef.addEventListener(
       "blur",
@@ -516,9 +516,7 @@ export class OpRegistrationComponent implements OnInit {
       this.getPatientDetailsByMaxId.bind(this)
     );
 
-    //on change of Title Gender needs to be changed
-    console.log( this.OPRegForm.controls["title"]);
-    console.log(this.OPRegForm.value.title)
+    //on change of Title Gender needs to be changed  
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         if (!this.OPRegForm.controls["gender"].value) {
@@ -559,6 +557,11 @@ export class OpRegistrationComponent implements OnInit {
     // nationality value chnage event to enable foreigner
     this.OPRegForm.controls["nationality"].valueChanges.subscribe((value) => {
       console.log(value);
+      console.log( this.modfiedPatiendDetails);
+      //chnage for modify nationality details
+      this.modfiedPatiendDetails.nationality = value.value;
+      this.checkForModifiedPatientDetail();
+
       if (
         value.title != "Indian" &&
         value != null &&
@@ -569,12 +572,13 @@ export class OpRegistrationComponent implements OnInit {
       ) {
         this.OPRegForm.controls["foreigner"].enable();
         this.OPRegForm.controls["foreigner"].setValue(true);
-        // this.passportDetailsdialog();
+         this.showPassportDetails();
       } else {
         this.OPRegForm.controls["foreigner"].disable();
         this.OPRegForm.controls["foreigner"].setValue(false);
       }
     });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -1960,15 +1964,24 @@ export class OpRegistrationComponent implements OnInit {
       },
     });
     passportDetailDialogref.afterClosed().subscribe((result) => {
-      console.log("passport dialog was closed");
-      this.passportDetails = {
-        Expirydate: result.data.expiryDate,
-        Issueat: result.data.issuedAt,
-        IssueDate: result.data.issueDate,
-        passportNo: result.data.passportNo,
-        HCF: result.data.hcf.value,
-      };
-      console.log(this.passportDetails);
+      console.log("passport dialog was closed ");
+      if(result == undefined || result.data == undefined)
+      {
+        this.OPRegForm.controls["foreigner"].setValue(false);
+        // this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
+        // this.questions[28].customErrorMessage =
+        //   "foreigner checkbox unchecked as passport details not entered.";
+      }
+      else{
+        this.passportDetails = {
+          Expirydate: result.data.expiryDate,
+          Issueat: result.data.issuedAt,
+          IssueDate: result.data.issueDate,
+          passportNo: result.data.passportNo,
+          HCF: result.data.hcf.value,
+        };
+        console.log(this.passportDetails);
+      }     
     });
   }
 
