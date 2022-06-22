@@ -244,3 +244,44 @@ mat-form-field {
     transform: translateY(10%) !important;
   }
 }
+
+.maxhealth-vertical-tab {
+  .mat-tab-group {
+    flex-direction: row !important;
+    .mat-tab-header {
+      border-bottom: 0;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+      width: 25%;
+      &.mat-tab-header-pagination-controls-enabled {
+        .mat-tab-header-pagination {
+          display: none !important;
+        }
+      }
+    }
+    .mat-tab-body-wrapper {
+      width: 100%;
+      .mat-tab-body-content {
+        height: 80vh;
+      }
+    }
+    .mat-tab-labels {
+      flex-direction: column !important;
+      overflow-y: auto;
+      height: 80vh;
+      display: inline-grid;
+      width: 100%;
+      .mat-tab-label {
+        min-width: 120px;
+        justify-content: flex-start;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+    }
+    .mat-tab-label-active {
+      border-bottom: 2px solid #d50000 !important;
+    }
+
+    .mat-ink-bar {
+      display: none;
+    }
+  }
+}
