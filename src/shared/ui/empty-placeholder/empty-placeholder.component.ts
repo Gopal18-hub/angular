@@ -30,8 +30,8 @@ const norecordfoundIcon =  `<svg class="svg-icon" style="color:red; width: 4em; 
 
 export class EmptyPlaceholderComponent implements OnInit {
 
-  @Input() configimage: any;
-  @Input() data: any;
+  @Input() icon: any;
+  @Input() message: any;
 
   Maxmessage: string | undefined;
   displayImageInfo: any = [];
@@ -42,8 +42,8 @@ export class EmptyPlaceholderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.Maxmessage = this.data;  
-    this.displayImageInfo = this.configimage; 
+    this.Maxmessage = this.message;  
+    this.displayImageInfo = this.icon; 
   }
 
 }
