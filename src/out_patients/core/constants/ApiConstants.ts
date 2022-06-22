@@ -173,11 +173,9 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/updateopdpatientdetails";
 
  //POST CALL TO MODIFY THE PATIENT DETAIL, BODY TYPE patientRegistrationModel 
-  export const modifyPatientDetail =(IaCode: string, RegistrationNo: number) => {
-    return (
-  environment.PatientApiUrl + "api/patient/modifyopdpatient"
-    )
-  }
+  export const modifyPatientDetail =
+  environment.PatientApiUrl + "api/patient/modifyopdpatient";
+
   //POST CALL FOR THE LIST OF SIMILAR PATIENT DETAIL, BODY TYPE SimilarSoundPatientDetails 
   export const similarSoundPatientDetail =
   environment.PatientApiUrl +"api/patient/getsimilarsoundpatient";

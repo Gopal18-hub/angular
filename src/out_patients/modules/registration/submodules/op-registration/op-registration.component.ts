@@ -1552,9 +1552,8 @@ console.log( this.OPRegForm.controls["title"].value);
 
   // getSimilarPatientDetails()
   // {
-
   //   this.http
-  //     .get(ApiConstants.similarSoundPatientDetail())
+  //     .get(ApiConstants.titleLookUp(hspId))
   //     .subscribe((resultData: any) => {
   //       this.titleList = resultData;
   //       this.questions[3].options = this.titleList.map((l) => {
