@@ -8,8 +8,8 @@ export class QuestionBase<T> {
   type: string;
   options: any;
   upload_path: any;
-  minimum: number | undefined;
-  maximum: number | undefined;
+  minimum: string | number | null;
+  maximum: string | number | null;
   properties: any;
   childQuestions: any;
   multiple: boolean;
@@ -73,12 +73,8 @@ export class QuestionBase<T> {
     this.readonly = options.readonly || false;
     this.generateOptions = options.generateOptions || "";
     this.step = options.step || 1;
-    if (options.minimum) {
-      this.minimum = options.minimum;
-    }
-    if (options.maximum) {
-      this.maximum = options.maximum;
-    }
+    this.minimum = options.minimum || "";
+    this.maximum = options.maximum || "";
     this.elementRef = options.elementRef || "";
     this.customErrorMessage = options.customErrorMessage || "";
     this.placeholder = options.placeholder || "";
