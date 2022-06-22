@@ -34,6 +34,7 @@ import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/h
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
+import { MatRadioModule } from "@angular/material/radio";
 
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
@@ -88,6 +89,7 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     MatSelectModule,
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
   ],
   exports: [],
   providers: [
