@@ -836,7 +836,7 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
           SimilarPatientDialog,
           {
             width: "100vw",
-            height: "52vh",
+            height: "80vh",
             data: {
               searchResults:this.similarContactPatientList
             }
@@ -966,6 +966,7 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
         this.questions[22].options = this.localityListByPin.map((l) => {
           return { title: l.name, value: l.id };
         });
+        console.log(this.questions[22].options);
       });
   }
 
@@ -2045,9 +2046,9 @@ console.log( this.OPRegForm.controls["title"].value);
       if(result == undefined || result.data == undefined)
       {
         this.OPRegForm.controls["foreigner"].setValue(false);
-        // this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
-        // this.questions[28].customErrorMessage =
-        //   "foreigner checkbox unchecked as passport details not entered.";
+        this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
+        this.questions[28].customErrorMessage =
+          "foreigner unchecked as passport not entered.";
       }
       else{
       
@@ -2129,10 +2130,10 @@ function phone(similarSoundPatientDetail: string, phone: any, arg2: { this: any;
 })
 export class SimilarPatientDialog {
  
-  constructor(private dialogRef: MatDialogRef<SimilarPatientDialog>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
+  constructor(private dialogRef: MatDialogRef<SimilarPatientDialog>, @Inject(MAT_DIALOG_DATA) public data : any ) { }
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
-    console.log(this.searchResults);
+    console.log(this.data.searchResults);
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }  
 
