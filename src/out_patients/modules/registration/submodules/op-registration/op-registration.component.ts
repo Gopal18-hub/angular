@@ -447,7 +447,14 @@ export class OpRegistrationComponent implements OnInit {
     //  this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
-    console.log(this.passportNum);
+    this.OPRegForm.controls["paymentMethod"].valueChanges.subscribe((value: any) =>{
+
+      if(value=="ews")
+      {
+this.openEWSDialogue();
+      }
+
+      });
 
     // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
 
@@ -1721,7 +1728,7 @@ export class OpRegistrationComponent implements OnInit {
           type: "object",
           properties: {
             bplCardNo: {
-              type: "autocomplete",
+              type: "string",
               title: "BPL Card No.",
               required: true,
             },
@@ -1969,9 +1976,9 @@ export class OpRegistrationComponent implements OnInit {
     passportDetailDialogref.afterClosed().subscribe((result) => {
       console.log("passport dialog was closed");
       this.passportDetails = {
-        Expirydate: result.data.expiryDate,
+        Expirydate:  this.datepipe.transform(result.data.expiryDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
         Issueat: result.data.issuedAt,
-        IssueDate: result.data.issueDate,
+        IssueDate: this.datepipe.transform(result.data.result.data.issueDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
         passportNo: result.data.passportNo,
         HCF: result.data.hcf.value,
       };
