@@ -1,8 +1,5 @@
-.maincrd{
-    background:#fff; 
-    height: 80vh; 
-    width: 94vw; 
-    border-radius: 10px;
+.spinner{
+    margin-left: 47%; margin-top: 13%;
 }
 .banner{
     background:#004084;
@@ -12,20 +9,4 @@
         color: #fff;
         opacity: 1;
     }
-}
-.maingrid{
-    background-color: #fff;
-    height: 70vh;
-}
-.table{
-    height: 62vh;
-    width: 95vw;
-    overflow-y: scroll;
-}
-.btn{
-    height: 30px;
-    width: 100px;
-    border: none;
-    background-color: #004084;
-    color: #fff;
 }
