@@ -7,6 +7,7 @@ export namespace MaxModules {
       moreOptions: false,
       globalSearchKey: "global",
       childrens: [],
+      dontShow: true,
     },
     {
       title: "Out Patients",

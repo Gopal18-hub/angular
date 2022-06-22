@@ -3,11 +3,11 @@
     <a><img src="assets/brandLogo.svg" class="w-4/5" /></a>
     <div class="flex flex-column right-section justify-between">
       <div class="mt-2 flex items-center user-info">
-        <span class="mr-6 font-sm max-health-primary-color">{{location}}</span>
-        <span class="mr-6 font-sm max-health-primary-color"
-          >{{station}}</span
-        >
-        <span class="mr-1 font-sm">Welcome {{usrname}}</span>
+        <span class="mr-6 font-sm max-health-primary-color">{{
+          location
+        }}</span>
+        <span class="mr-6 font-sm max-health-primary-color">{{ station }}</span>
+        <span class="mr-1 font-sm">Welcome {{ usrname }}</span>
 
         <span class="mr-6"
           ><svg
@@ -106,23 +106,25 @@
       <div>
         <ul class="flex flex-row list-unstyled main-modules items-center">
           <ng-container *ngFor="let module of modules">
-            <ng-container *ngIf="module.moreOptions">
-              <li
-                [matMenuTriggerFor]="menu"
-                [matMenuTriggerData]="{ module: module }"
-                class="mr-4 cursor-pointer"
-                [ngClass]="{ active: activeModule?.id == module.id }"
-              >
-                {{ module.title }}
-              </li>
-            </ng-container>
-            <ng-container *ngIf="!module.moreOptions">
-              <li
-                class="mr-4 cursor-pointer"
-                [ngClass]="{ active: activeModule?.id == module.id }"
-              >
-                {{ module.title }}
-              </li>
+            <ng-container *ngIf="!module.dontShow">
+              <ng-container *ngIf="module.moreOptions">
+                <li
+                  [matMenuTriggerFor]="menu"
+                  [matMenuTriggerData]="{ module: module }"
+                  class="mr-4 cursor-pointer"
+                  [ngClass]="{ active: activeModule?.id == module.id }"
+                >
+                  {{ module.title }}
+                </li>
+              </ng-container>
+              <ng-container *ngIf="!module.moreOptions">
+                <li
+                  class="mr-4 cursor-pointer"
+                  [ngClass]="{ active: activeModule?.id == module.id }"
+                >
+                  {{ module.title }}
+                </li>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ul>
@@ -143,11 +145,15 @@
                 <mat-checkbox class="example-margin"
                   >Direct to different location</mat-checkbox
                 >
-                <mat-label class="mt-4 max-health-primary-color">Location</mat-label>
+                <mat-label class="mt-4 max-health-primary-color"
+                  >Location</mat-label
+                >
                 <mat-form-field appearance="outline">
                   <mat-select name="location"> </mat-select>
                 </mat-form-field>
-                <mat-label class="mt-2 max-health-primary-color">Station</mat-label>
+                <mat-label class="mt-2 max-health-primary-color"
+                  >Station</mat-label
+                >
 
                 <mat-form-field appearance="outline">
                   <mat-select name="station"> </mat-select>
