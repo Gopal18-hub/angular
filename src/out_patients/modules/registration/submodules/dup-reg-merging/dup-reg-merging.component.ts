@@ -115,7 +115,7 @@ export class DupRegMergingComponent implements OnInit {
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
       if(result == "success"){
-      this.messageDialogService.success("Patient has been merged successfully"); 
+      this.messageDialogService.success("Max ID has been mapped with "); 
       this.getAllpatientsBySearch().subscribe((resultData) => {
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
