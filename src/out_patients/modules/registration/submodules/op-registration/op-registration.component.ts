@@ -41,6 +41,7 @@ import { DMSComponent } from "../dms/dms.component";
 import { ModifyDialogComponent } from "../../../../core/modify-dialog/modify-dialog.component";
 import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
 import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
+import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 export interface DialogData {
   expieryDate: Date;
   issueAt: string;
@@ -483,6 +484,12 @@ this.openEWSDialogue();
       "change",
       this.onPhoneModify.bind(this)
     );
+    // this.questions[2].elementRef.addEventListener(
+    //   "blur",
+      
+    // );
+
+   
     //chnage event for FirstName
     this.questions[4].elementRef.addEventListener(
       "change",
@@ -805,6 +812,30 @@ this.openEWSDialogue();
       });
   }
 
+
+similarContactPatientList:SimilarSoundPatientResponse[]=[]
+  getSimilarPatientDetails()
+  {
+    if(!this.MaxIDExist){
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail,{phone:this.OPRegForm.value.PhoneNumber})
+      .subscribe((resultData: SimilarSoundPatientResponse[]) => {
+        this.similarContactPatientList = resultData;
+        console.log( this.similarContactPatientList);
+        const seafarersDetailDialogref = this.matDialog.open(
+          SimilarPatientDialog,
+          {
+            width: "100vw",
+            height: "52vh",
+            data: {
+              searchResults:this.similarContactPatientList
+            }
+          })
+      });
+    }
+  }
+
+
   hcfDetailMasterList: { title: string; value: number }[] = [] as any;
 
   //CLICK EVENT FROM FOREIGN CHECKBOX
@@ -1101,6 +1132,8 @@ this.openEWSDialogue();
 
   onPhoneModify() {
     console.log("phone changed");
+    
+    this. getSimilarPatientDetails();
     this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
     this.checkForModifiedPatientDetail();
   }
@@ -2051,3 +2084,62 @@ console.log( this.OPRegForm.controls["title"].value);
     });
   }
 }
+function phone(similarSoundPatientDetail: string, phone: any, arg2: { this: any; }) {
+  throw new Error("Function not implemented.");
+}
+@Component({
+  selector: 'out-patients-op-registration',
+  templateUrl: 'similarPatient-dialog.html',
+})
+export class SimilarPatientDialog {
+ 
+  constructor(private dialogRef: MatDialogRef<SimilarPatientDialog>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
+  // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
+  ngOnInit(): void {
+    console.log(this.searchResults);
+    // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
+  }  
+
+  config: any = {
+    selectBox: false,
+    displayedColumns: ['maxid', 'firstName', 'lastName', 'phone', 'address', 'age', 'gender'],
+    columnsInfo: {
+      maxid: {
+        title: 'Max ID',
+        type: 'string'
+      },
+      firstName: {
+        title: 'First Name',
+        type: 'string'
+      },
+      lastName: {
+        title: 'Last Name',
+        type: 'string'
+      },
+      phone:
+      {
+        title: 'Phone No. ',
+        type: 'string'
+      },
+      address: {
+        title: 'Address ',
+        type: 'string'
+      },
+      age: {
+        title: 'Age ',
+        type: 'string'
+      },
+      gender:
+      {
+        title: 'Gender',
+        type: 'string'
+      }
+     
+    
+    }
+    }
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
