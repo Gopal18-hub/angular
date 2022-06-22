@@ -190,6 +190,7 @@
           class="flex flex-column"
           [formControlName]="question.key"
           [value]="question.value"
+          #element
         >
           <ng-container *ngFor="let opt of question.options">
             <mat-radio-button [value]="opt.value" class="py-2">{{
