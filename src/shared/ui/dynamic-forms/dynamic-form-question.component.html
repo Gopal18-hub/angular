@@ -28,6 +28,7 @@
           [readonly]="question.readonly"
           [value]="question.value"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="!isValid && !isCorrect">
@@ -95,6 +96,7 @@
           [step]="question.step"
           [value]="question.value"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="form.get(question.key)?.hasError('required')">
@@ -152,6 +154,7 @@
           [id]="question.key"
           [attr.required]="question.required"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="!isValid">
