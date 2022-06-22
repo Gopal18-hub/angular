@@ -126,9 +126,9 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
-        pattern:"^[1-9]{1}[0-9]{9}",
-        minimum:10,
-        maximum:10,
+        // pattern:"^[1-9]{1}[0-9]{9}",
+        // minimum:10,
+        // maximum:10,
       },
       title: {
         type: "dropdown",
@@ -1200,7 +1200,7 @@ this.openEWSDialogue();
 
   setPaymentMode(ppagerNumber: string | undefined) {
     this.OPRegForm.value.paymentMethod;
-    this.OPRegForm.controls["paymentMethod"].setValue(ppagerNumber);
+    this.OPRegForm.controls["paymentMethod"].setValue(ppagerNumber?.toLowerCase());
     // switch (ppagerNumber) {
     //   case "CASH":
     //     this.OPRegForm.controls["cash"].setValue(ppagerNumber);
@@ -1321,8 +1321,7 @@ this.openEWSDialogue();
   }
 
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    console.log("title", this.OPRegForm.value.title.title);
-
+console.log( this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
 
@@ -1396,7 +1395,7 @@ this.openEWSDialogue();
       "",
       "",
       this.OPRegForm.value.note || false,
-      this.noteRemark,
+      this.noteRemark||"",
       this.OPRegForm.value.surveySMS || false,
       this.OPRegForm.value.receivePromotional || false,
       "",
@@ -1414,31 +1413,35 @@ this.openEWSDialogue();
       this.seafarerDetails.Vesselname,
       this.seafarerDetails.FDPGroup,
       false,
-      this.hwcRemark,
+      this.hwcRemark||"",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
       0,
       this.ewsDetails.bplCardNo,
       this.OPRegForm.value.hotlist || false,
-      "hotlsitcomment",
-      "hotlistreason"
+      "",
+      ""
     ));
   }
 
   getFather(): string {
     let response = "";
+    if(this.OPRegForm.controls["fatherSpouse"].value!=undefined&&this.OPRegForm.controls["fatherSpouse"].value!=""){
     let selectedName = this.fatherSpouseOptionList.filter(f=>f.value ===this.OPRegForm.controls["fatherSpouse"].value)[0].title;
     if (selectedName == "Father") {
       return this.OPRegForm.value.fatherSpouseName;
     }
+  }
     return response;
   }
   getSpouseName() {
     let response = "";
+    if(this.OPRegForm.controls["fatherSpouse"].value!=undefined&&this.OPRegForm.controls["fatherSpouse"].value!=""){
     let selectedName = this.fatherSpouseOptionList.filter(f=>f.value ===this.OPRegForm.controls["fatherSpouse"].value)[0].title;
     if (selectedName != "Father") {
       return this.OPRegForm.value.fatherSpouseName;
     }
+  }
     return response;
   }
 
@@ -1546,6 +1549,19 @@ this.openEWSDialogue();
   timeDiff: number | undefined;
   dobFlag: boolean = false;
   ageFlag: boolean = false;
+
+  // getSimilarPatientDetails()
+  // {
+
+  //   this.http
+  //     .get(ApiConstants.similarSoundPatientDetail())
+  //     .subscribe((resultData: any) => {
+  //       this.titleList = resultData;
+  //       this.questions[3].options = this.titleList.map((l) => {
+  //         return { title: l.name, value: l.name };
+  //       });
+  //     });
+  // }
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
@@ -1971,7 +1987,7 @@ this.openEWSDialogue();
       this.passportDetails = {
         Expirydate:  this.datepipe.transform(result.data.expiryDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
         Issueat: result.data.issuedAt,
-        IssueDate: this.datepipe.transform(result.data.result.data.issueDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
+        IssueDate: this.datepipe.transform(result.data.issueDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
         passportNo: result.data.passportNo,
         HCF: result.data.hcf.value,
       };
