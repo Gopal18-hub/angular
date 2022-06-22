@@ -29,6 +29,13 @@
           top: 0.4em;
         }
       }
+      .search-pointer-trigger {
+        .mat-menu-trigger {
+          position: absolute;
+          left: 136px;
+          top: 1em;
+        }
+      }
     }
   }
   &-right {
@@ -90,7 +97,7 @@
           padding-top: 0.5rem;
         }
         mat-form-field {
-          width: 75% !important;          
+          width: 75% !important;
           font-size: 12px;
         }
       }
