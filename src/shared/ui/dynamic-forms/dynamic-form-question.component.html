@@ -12,6 +12,7 @@
       <mat-label
         [attr.for]="question.key"
         [innerHtml]="question.label"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
       ></mat-label>
       <mat-form-field
         class="full-width clearfix clear"
@@ -28,10 +29,14 @@
           [readonly]="question.readonly"
           [value]="question.value"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="!isValid && !isCorrect">
           {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
         </mat-error>
         <mat-error *ngIf="isCorrect && question.customErrorMessage">
           {{ question.customErrorMessage }}</mat-error
@@ -40,7 +45,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'password'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -76,7 +85,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'number'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -95,10 +108,14 @@
           [step]="question.step"
           [value]="question.value"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="form.get(question.key)?.hasError('required')">
           {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
         </mat-error>
         <mat-error *ngIf="form.get(question.key)?.hasError('min')">
           {{ question.label }} value should be greater than or equal to
@@ -112,7 +129,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'textarea'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear im-textarea"
         appearance="outline"
@@ -138,7 +159,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'email'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -152,16 +177,24 @@
           [id]="question.key"
           [attr.required]="question.required"
           [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
           #element
         />
         <mat-error *ngIf="!isValid">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
+        </mat-error>
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'colorpicker'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -184,7 +217,10 @@
     </ng-container>
     <ng-container *ngSwitchCase="'radio'">
       <div class="full-width mb-4">
-        <label>{{ question.label }} </label>
+        <label
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}
+        </label>
         <mat-radio-group
           formControlName="floatLabel"
           class="flex flex-column"
@@ -201,7 +237,11 @@
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="'range'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear nopaading-infix"
         appearance="outline"
@@ -235,7 +275,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'dropdown'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -294,7 +338,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'autocomplete'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -330,7 +378,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'date'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <mat-form-field
         class="full-width clearfix clear"
         appearance="outline"
@@ -370,7 +422,11 @@
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'checkbox'">
-      <mat-label [attr.for]="question.key">{{ question.label }}</mat-label>
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
       <ul class="list-unstyled">
         <li *ngFor="let opt of question.options">
           <mat-checkbox [formControlName]="question.key">
