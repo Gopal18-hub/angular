@@ -141,16 +141,19 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
+        pattern:"^[A-Za-z]{1}[A-Za-z. '']+",
       },
       middleName: {
         type: "string",
         title: "Middle Name",
         required: true,
+        pattern:"[A-Za-z. '']{1,32}",
       },
       lastName: {
         type: "string",
         title: "Last Name",
         required: true,
+        pattern:"[A-Za-z. '']{1,32}"
       },
       gender: {
         type: "dropdown",
@@ -166,6 +169,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Age",
         required: true,
+        pattern:"[0-9]{1,3}"
       },
       ageType: {
         type: "dropdown",
@@ -177,6 +181,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "email",
         title: "Email id",
         required: true,
+        pattern:"^[A-Za-z0-9._%+-]{1}[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$",
       },
       fatherSpouse: {
         type: "dropdown",
@@ -196,7 +201,7 @@ export class OpRegistrationComponent implements OnInit {
       altLandlineName: {
         type: "number",
         title: "Alt Contact/Landline",
-        // pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
+        pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
         required: false,
       },
       idenityType: {
@@ -446,6 +451,7 @@ export class OpRegistrationComponent implements OnInit {
     if (this.MaxIDExist) {
       this.isPatientdetailModified = true;
     }
+    return this.isPatientdetailModified;
   }
   ngAfterViewInit(): void {
     //  this.checkForMaxID();
@@ -501,18 +507,18 @@ this.openEWSDialogue();
       this.onLastNameModify.bind(this)
     );
 
-    //nationality blur event
-    this.questions[28].elementRef.addEventListener(
-      "blur",
-      this.onNationalityModify.bind(this)
-    );
+    // //nationality blur event
+    // this.questions[28].elementRef.addEventListener(
+    //   "blur",
+    //   this.onNationalityModify.bind(this)
+    // );
     //DOB blur event
     this.questions[8].elementRef.addEventListener(
       "blur",
       this.onageCalculator.bind(this)
     );
     //on value chnae event of age Type
-    this.OPRegForm.controls["ageType"].valueChanges.subscribe((value) => {
+    this.OPRegForm.controls["ageType"].valueChanges.subscribe((value:any) => {
       this.validatePatientAge();
     }); 
     // this.questions[30].elementRef.addEventListener(
@@ -530,9 +536,7 @@ this.openEWSDialogue();
       this.getPatientDetailsByMaxId.bind(this)
     );
 
-    //on change of Title Gender needs to be changed
-    console.log( this.OPRegForm.controls["title"]);
-    console.log(this.OPRegForm.value.title)
+    //on change of Title Gender needs to be changed  
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         if (!this.OPRegForm.controls["gender"].value) {
@@ -571,8 +575,9 @@ this.openEWSDialogue();
     );
 
     // nationality value chnage event to enable foreigner
-    this.OPRegForm.controls["nationality"].valueChanges.subscribe((value) => {
-      console.log(value);
+    this.OPRegForm.controls["nationality"].valueChanges.subscribe((value:any) => {
+      console.log(value);     
+      this.onNationalityModify.bind(this);
       if (
         value.title != "Indian" &&
         value != null &&
@@ -583,12 +588,13 @@ this.openEWSDialogue();
       ) {
         this.OPRegForm.controls["foreigner"].enable();
         this.OPRegForm.controls["foreigner"].setValue(true);
-        // this.passportDetailsdialog();
+         this.showPassportDetails();
       } else {
         this.OPRegForm.controls["foreigner"].disable();
         this.OPRegForm.controls["foreigner"].setValue(false);
       }
     });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -1132,43 +1138,57 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
 
   onPhoneModify() {
     console.log("phone changed");
-    
-    this. getSimilarPatientDetails();
-    this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
-    this.checkForModifiedPatientDetail();
+
+    if(this.checkForModifiedPatientDetail())
+    {
+      this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+    }else{
+      this. getSimilarPatientDetails();
+    }
   }
   onTitleModify() {
     console.log("title changed");
-    if (this.OPRegForm.value.title)
+    if(this.checkForModifiedPatientDetail())
+    {
+      if (this.OPRegForm.value.title)
       this.modfiedPatiendDetails.title = this.OPRegForm.value.title.title;
-    this.checkForModifiedPatientDetail();
+    }
   }
 
   onFistNameModify() {
     console.log("firstname changed");
-    this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
-    this.checkForModifiedPatientDetail();
+    if(this.checkForModifiedPatientDetail())
+    {
+      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+    }
   }
   onLastNameModify() {
     console.log("lastname changed");
-    this.modfiedPatiendDetails.lastName = this.OPRegForm.value.lastName;
-    this.checkForModifiedPatientDetail();
+    if(this.checkForModifiedPatientDetail())
+    {
+      this.modfiedPatiendDetails.lastName = this.OPRegForm.value.lastName;
+    }  
   }
   onGenderModify() {
     console.log("gender changed");
-    this.modfiedPatiendDetails.sex = this.OPRegForm.value.gender.title;
-    this.checkForModifiedPatientDetail();
+    if(this.checkForModifiedPatientDetail()){
+      this.modfiedPatiendDetails.sex = this.OPRegForm.value.gender.title;
+    }
   }
   onEmailModify() {
     console.log("Age changed");
-    this.modfiedPatiendDetails.pemail = this.OPRegForm.value.emailId;
-    this.checkForModifiedPatientDetail();
+    if(this.checkForModifiedPatientDetail())
+    {
+      this.modfiedPatiendDetails.pemail = this.OPRegForm.value.emailId;
+    }
   }
   onNationalityModify() {
     console.log("country changed");
-    this.modfiedPatiendDetails.nationality =
-      this.OPRegForm.value.nationality.value;
-    this.checkForModifiedPatientDetail();
+    if(this.checkForModifiedPatientDetail())
+      {
+        this.modfiedPatiendDetails.nationality =
+        this.OPRegForm.value.nationality.value;        
+      }   
   }
 
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
@@ -2015,15 +2035,27 @@ console.log( this.OPRegForm.controls["title"].value);
       },
     });
     passportDetailDialogref.afterClosed().subscribe((result) => {
-      console.log("passport dialog was closed");
-      this.passportDetails = {
-        Expirydate:  this.datepipe.transform(result.data.expiryDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
-        Issueat: result.data.issuedAt,
-        IssueDate: this.datepipe.transform(result.data.issueDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
-        passportNo: result.data.passportNo,
-        HCF: result.data.hcf.value,
-      };
-      console.log(this.passportDetails);
+      
+      
+      console.log("passport dialog was closed ");
+      if(result == undefined || result.data == undefined)
+      {
+        this.OPRegForm.controls["foreigner"].setValue(false);
+        // this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
+        // this.questions[28].customErrorMessage =
+        //   "foreigner checkbox unchecked as passport details not entered.";
+      }
+      else{
+      
+        this.passportDetails = {
+          Expirydate:  this.datepipe.transform(result.data.expiryDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
+          Issueat: result.data.issuedAt,
+          IssueDate: this.datepipe.transform(result.data.issueDate,"yyyy-MM-ddThh:mm:ss")|| "1900-01-01T00:00:00",
+          passportNo: result.data.passportNo,
+          HCF: result.data.hcf.value,
+        };
+        console.log(this.passportDetails);
+      }     
     });
   }
 
