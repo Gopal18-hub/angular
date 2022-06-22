@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { RegistrationRoutingModule } from "./routes";
+import {  SimilarPatientDialog } from "./submodules/op-registration/op-registration.component";
 import { OpRegistrationComponent } from "./submodules/op-registration/op-registration.component";
 import { FindPatientComponent } from "./submodules/find-patient/find-patient.component";
 import { DupRegMergingComponent } from "./submodules/dup-reg-merging/dup-reg-merging.component";
@@ -66,10 +67,11 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     HotListingApprovalComponent,
     FormDialogueComponent,
     DMSComponent,
-    ModifyDialogComponent
+    ModifyDialogComponent,  SimilarPatientDialog,
   ],
   imports: [
     RegistrationRoutingModule,
+  
     MatCardModule,
     MaxHealthTableModule,
     CommonModule,
