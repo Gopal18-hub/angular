@@ -42,6 +42,9 @@ import { ModifyDialogComponent } from "../../../../core/modify-dialog/modify-dia
 import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
 import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
+import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
+
+
 export interface DialogData {
   expieryDate: Date;
   issueAt: string;
@@ -67,6 +70,7 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   localityList: LocalityModel[] = [];
+  localitybyCityList: LocalityModel[] = [];
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
   stateList: StateModel[] = [];
   expieryDate: Date | undefined;
@@ -74,6 +78,7 @@ export class OpRegistrationComponent implements OnInit {
   passportNum: number | undefined;
   issuedate: Date | undefined;
   categoryIcons: [] = [];
+  passportNo: string="";
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -146,7 +151,7 @@ export class OpRegistrationComponent implements OnInit {
       middleName: {
         type: "string",
         title: "Middle Name",
-        required: true,
+        required: false,
         pattern:"[A-Za-z. '']{1,32}",
       },
       lastName: {
@@ -417,6 +422,16 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["nationality"].setValue({ title: "Indian", value: 149 });
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1});
     this.OPRegForm.controls["foreigner"].disable();
+    this.getStatesByCountry();
+    this.getCitiesByCountry();
+    let HSPLocationId = Number(this.cookie.get("HSPLocationId"));
+    if(HSPLocationId != 69)
+    {
+      this.OPRegForm.controls["seaFarer"].disable();
+    }
+    else{
+      this.OPRegForm.controls["seaFarer"].enable();
+    }
   }
 
   checkForMaxID() {
@@ -465,41 +480,23 @@ export class OpRegistrationComponent implements OnInit {
 
       if(value=="ews")
       {
-this.openEWSDialogue();
+        this.openEWSDialogue();
       }
 
       });
 
     // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
-
-    //blur event call of Locality to fetch Address
-    this.questions[22].elementRef.addEventListener(
-      "blur",
-      this.addressByLocalityID.bind(this)
-    );
-
     //blur event call to fetch locality based on pincode
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
-    //Adding event to filter states and cities based on country
-    this.questions[27].elementRef.addEventListener(
-      "blur",
-      this.getStatesByCountry.bind(this),
-      this.getCitiesByCountry.bind(this)
-    );
+    
     //chnage event for Mobile Field
     this.questions[2].elementRef.addEventListener(
       "change",
       this.onPhoneModify.bind(this)
-    );
-    // this.questions[2].elementRef.addEventListener(
-    //   "blur",
-      
-    // );
-
-   
+    );  
     //chnage event for FirstName
     this.questions[4].elementRef.addEventListener(
       "change",
@@ -511,11 +508,6 @@ this.openEWSDialogue();
       this.onLastNameModify.bind(this)
     );
 
-    // //nationality blur event
-    // this.questions[28].elementRef.addEventListener(
-    //   "blur",
-    //   this.onNationalityModify.bind(this)
-    // );
     //DOB blur event
     this.questions[8].elementRef.addEventListener(
       "blur",
@@ -524,15 +516,67 @@ this.openEWSDialogue();
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges.subscribe((value:any) => {
       this.validatePatientAge();
-    }); 
-    // this.questions[30].elementRef.addEventListener(
-    //   "click",
-    //   this.openHotListDialog.bind(this)
-    // );
-    // this.questions[26].elementRef.addEventListener(
-    //   "blur",
-    //   this.getCityListByState.bind(this)
-    // );
+    });    
+
+    //value chnage event of country to fill city list and staelist
+    this.OPRegForm.controls["country"].valueChanges.subscribe((value:any)=>{
+      if( this.OPRegForm.value.country.value!= undefined
+        && this.OPRegForm.value.country.value!= null
+        && this.OPRegForm.value.country.value!= ""){
+          this.getStatesByCountry();
+          this.getCitiesByCountry();
+          if(this.OPRegForm.value.country.value != 1)
+          {
+            this.questions[21].required = false;           
+            this.questions[22].required = false;
+            this.questions[23].required = false;
+            this.questions[24].required = false;
+            this.questions[25].required = false;
+            this.questions[26].required = false;
+            this.OPRegForm.controls["nationality"].setValue({title: "", value: 0 });
+          }
+      }     
+    });
+    //value chnage event of state to fill city list and district list
+    this.OPRegForm.controls["state"].valueChanges.subscribe((value:any)=>{
+      if( this.OPRegForm.value.state.value!= undefined
+        && this.OPRegForm.value.state.value!= null
+        && this.OPRegForm.value.state.value!= "")
+        {
+          this.getDistricyListByState();
+          this.getCityListByState(); 
+        }            
+    });
+
+    //city chnage event 
+    this.OPRegForm.controls["city"].valueChanges.subscribe((value:any)=>{
+
+      if((this.OPRegForm.value.locality.value == undefined
+          || this.OPRegForm.value.locality.value == null
+          || this.OPRegForm.value.locality.value <= 0
+          || this.OPRegForm.value.locality.value == "")
+        && (this.OPRegForm.value.pincode == undefined 
+          || this.OPRegForm.value.pincode == null
+          ||this.OPRegForm.value.pincode <= 0
+          || this.OPRegForm.value.pincode == "")
+        && (this.OPRegForm.value.state.value == undefined
+          || this.OPRegForm.value.state.value == null
+          || this.OPRegForm.value.state.value == ""
+          || this.OPRegForm.value.state.value <= 0))
+          {
+            this.getAddressByCity();
+          }
+          else{
+            this.getLocalityByCity();
+          }
+
+     
+    });
+
+    //locality chnage event
+    this.OPRegForm.controls["locality"].valueChanges.subscribe((value:any)=>{
+      this.addressByLocalityID();
+    });
 
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener(
@@ -599,6 +643,45 @@ this.openEWSDialogue();
       }
     });
 
+    this.OPRegForm.controls["foreigner"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.showPassportDetails();
+      }
+    });
+
+    this.OPRegForm.controls["seaFarer"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.seafarersDetailsdialog();
+      }
+    });
+
+    this.OPRegForm.controls["hotlist"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.openHotListDialog();
+      }
+    });
+    this.OPRegForm.controls["vip"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.openVipNotes();
+      }
+    });
+    this.OPRegForm.controls["note"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.openNotes();
+      }
+    });
+    this.OPRegForm.controls["hwc"].valueChanges.subscribe((value:any)=>{
+      if(value)
+      {
+        this.openHWCNotes();
+      }
+    });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -610,18 +693,25 @@ this.openEWSDialogue();
       IdenityType != "" ||
       IdenityType > 0
     ) {
+      let identityTypeName = this.idTypeList.filter(
+        (i) => i.id === IdenityType
+      )[0].name;
       if (
         this.OPRegForm.controls["idenityValue"].value == "" ||
         this.OPRegForm.controls["idenityValue"].value == undefined ||
         this.OPRegForm.controls["idenityValue"].value == null
-      ) {
-        let identityTypeName = this.idTypeList.filter(
-          (i) => i.id === IdenityType
-        )[0].name;
+      ) {       
         this.OPRegForm.controls["idenityValue"].setErrors({ incorrect: true });
         this.questions[17].customErrorMessage =
           "Please enter valid " + identityTypeName + " number";
       }
+      else{
+        if(identityTypeName == "Passport")
+        {
+          this.passportNo =  this.OPRegForm.controls["idenityValue"].value;
+        }
+      }
+
     }
   }
 
@@ -664,13 +754,22 @@ this.openEWSDialogue();
       });
   }
   AddressonLocalityModellst!: AddressonLocalityModel;
-  addressByLocalityID() {
-    this.http
-      .get(
-        ApiConstants.addressByLocalityID(this.OPRegForm.value.locality.value)
-      )
-      .subscribe((resultData: AddressonLocalityModel) => {
+  addressByLocalityID() {  
+    if(this.OPRegForm.value.city.value == undefined
+      || this.OPRegForm.value.city.value == ""
+      || this.OPRegForm.value.city.value == null)
+    {
+      if(this.OPRegForm.value.locality.value != undefined
+        && this.OPRegForm.value.locality.value != null
+        && this.OPRegForm.value.locality.value != "")
+        {
+          this.http
+           .get(
+              ApiConstants.addressByLocalityID(this.OPRegForm.value.locality.value)
+             )
+            .subscribe((resultData: AddressonLocalityModel) => {
         this.AddressonLocalityModellst = resultData;
+      
         this.OPRegForm.controls["city"].setValue({
           title: this.AddressonLocalityModellst.cityName,
           value: this.AddressonLocalityModellst.cityId,
@@ -682,18 +781,31 @@ this.openEWSDialogue();
         this.OPRegForm.controls["state"].setValue({
           title: this.AddressonLocalityModellst.stateName,
           value: this.AddressonLocalityModellst.stateId,
-        });
-        // this.OPRegForm.controls["pincode"].setValue(
-        //   {title:this.AddressonLocalityModellst.,value:this.AddressonLocalityModellst.cityId}
-        // );
+        });       
         this.OPRegForm.controls["district"].setValue({
           title: this.AddressonLocalityModellst.districtName,
           value: this.AddressonLocalityModellst.districtId,
-        });
-        // this.OPRegForm.controls["city"].setValue(
-        //   {title:this.AddressonLocalityModellst.,value:this.AddressonLocalityModellst.cityId}
-        // );
-      });
+        });       
+         });
+        }      
+    }
+    else
+    {
+      if(this.OPRegForm.value.pincode == undefined
+        ||this.OPRegForm.value.pincode == null
+        ||this.OPRegForm.value.pincode == ""
+        || this.OPRegForm.value.pincode <=0)
+        {
+          if(this.OPRegForm.value.locality.value != undefined
+            && this.OPRegForm.value.locality.value != null
+            && this.OPRegForm.value.locality.value != ""
+            && this.OPRegForm.value.locality.value > 0)
+            {
+              let pincode = this.localitybyCityList.filter(l=>l.id === this.OPRegForm.value.locality.value)[0].pincode;
+              this.OPRegForm.controls["pincode"].setValue(pincode);
+            }
+        }
+    }   
   }
   //SOURCE OF INFO DROP DOWN
   getSourceOfInfoList() {
@@ -958,7 +1070,11 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
-    this.http
+    if(this.OPRegForm.value.pincode != undefined
+      && this.OPRegForm.value.pincode >0
+      && this.OPRegForm.value.pincode != null)
+      {
+        this.http
       .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
       .subscribe((resultData: any) => {
         this.localityListByPin = resultData;
@@ -968,13 +1084,18 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
         });
         console.log(this.questions[22].options);
       });
+      }    
   }
 
   cityListByState: CityModel[] = [];
   //CITY LIST FOR STATEID
   getCityListByState() {
-    this.http
-      .get(ApiConstants.cityByStateID(this.questions[26].options.value))
+    if(this.OPRegForm.value.state.value != undefined
+       && this.OPRegForm.value.state.value != null
+       && this.OPRegForm.value.state.value != "")
+    {
+      this.http
+      .get(ApiConstants.cityByStateID(this.OPRegForm.value.state.value))
       .subscribe((resultData: any) => {
         this.cityList = resultData;
         console.log(this.localityListByPin);
@@ -982,12 +1103,73 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
           return { title: l.cityName, value: l.id };
         });
       });
+    }   
   }
 
+  //DISTRICT LIST BY STATE
+  getDistricyListByState(){
+    if(this.OPRegForm.value.state.value != undefined
+      && this.OPRegForm.value.state.value != null
+      && this.OPRegForm.value.state.value != ""){
+    this.http
+    .get(ApiConstants.districtBystateID(this.OPRegForm.value.state.value))
+    .subscribe((resultData: any) => {
+      this.disttList = resultData;    
+      this.questions[25].options = this.disttList.map((l) => {
+        return { title: l.districtName, value: l.id };
+      });
+    });
+  }
+  }
+
+  //locality by city
+  getLocalityByCity(){    
+    console.log(this.OPRegForm.value.city.value);
+    if(this.OPRegForm.value.city.value != undefined
+      && this.OPRegForm.value.city.value != null
+      && this.OPRegForm.value.city.value != ""){
+        this.http
+        .get(ApiConstants.localityBycityID(this.OPRegForm.value.city.value))
+        .subscribe((resultData: any) => {
+          this.localitybyCityList = resultData;    
+          this.questions[22].options = this.localitybyCityList.map((l) => {
+          return { title: l.localityName, value: l.id };
+        });
+      });
+    }    
+  }
+  
+  addressByCity:AddressonCityModel[]=[];
+  //address BY City
+  getAddressByCity(){
+    
+    if(this.OPRegForm.value.city.value != undefined
+      && this.OPRegForm.value.city.value != null
+      && this.OPRegForm.value.city.value != ""){
+        this.http
+        .get(ApiConstants.addressByCityID(this.OPRegForm.value.city.value))
+        .subscribe((resultData: any) => {
+          this.addressByCity = resultData; 
+          this.OPRegForm.controls["state"].setValue({
+            title: this.addressByCity[0].stateName,
+            value: this.addressByCity[0].stateId
+          });       
+          this.OPRegForm.controls["district"].setValue({
+            title: this.addressByCity[0].districtName,
+            value: this.addressByCity[0].districtId
+          });          
+          this.getLocalityByCity();
+      });     
+    }  
+  }
   //Get StateList Basedon Country
   getStatesByCountry() {
-    this.http
-      .get(ApiConstants.stateByCountryId(this.questions[27].options.value))
+    if(this.OPRegForm.value.country.value != undefined
+      && this.OPRegForm.value.country.value !=null
+      && this.OPRegForm.value.country.value != "")
+    {
+      this.http
+      .get(ApiConstants.stateByCountryId(this.OPRegForm.value.country.value))
       .subscribe((resultData: any) => {
         this.stateList = resultData;
         // console.log(this.localityListByPin);
@@ -995,21 +1177,27 @@ similarContactPatientList:SimilarSoundPatientResponse[]=[]
           return { title: l.stateName, value: l.id };
         });
       });
+    }    
   }
 
   //Get CityList based on country
   getCitiesByCountry() {
-    this.http
-      .get(ApiConstants.CityDetail(this.questions[27].options.value))
+    if(this.OPRegForm.value.country.value != undefined
+      && this.OPRegForm.value.country.value !=null
+      && this.OPRegForm.value.country.value != "")
+    {
+      this.http
+      .get(ApiConstants.CityDetail(this.OPRegForm.value.country.value))
       .subscribe((resultData: any) => {
         this.cityList = resultData;
         // console.log(this.localityListByPin);
-        this.questions[26].options = this.cityList.map((l) => {
+        this.questions[24].options = this.cityList.map((l) => {
           return { title: l.cityName, value: l.id };
         });
       });
+    }
   }
-
+  
   //Get Patient Details by Max ID
   MaxIDExist: boolean = false;
   getPatientDetailsByMaxId() {
@@ -2012,6 +2200,7 @@ console.log( this.OPRegForm.controls["title"].value);
               type: "string",
               title: "Passport No.",
               required: true,
+              defaultValue:this.passportNo,
             },
             issueDate: {
               type: "date",
