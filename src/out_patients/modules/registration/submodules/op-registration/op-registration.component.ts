@@ -191,11 +191,13 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "",
         required: false,
+        pattern:"^[A-Za-z]{1}[A-Za-z. '']{1,32}",
       },
       motherName: {
         type: "string",
         title: "Mother's Name",
         required: false,
+        pattern:"^[A-Za-z]{1}[A-Za-z. '']{1,32}",
       },
       altLandlineName: {
         type: "number",
@@ -218,6 +220,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Aadhaar ID",
         required: false,
+        pattern:"^[1-9]{1}[0-9]{11}",
       },
       healthId: {
         type: "string",
@@ -229,6 +232,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Address",
         // required property is dependent on country
         required: true,
+        pattern:"^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,32}",
       },
       pincode: {
         type: "number",
