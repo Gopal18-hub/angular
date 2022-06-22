@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { RefundDialogComponent } from './refund-dialog/refund-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'out-patients-deposit',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DepositComponent implements OnInit {
 
-  constructor() { }
+  constructor(public matDialog: MatDialog) { }
 
   ngOnInit(): void {
+  }
+  openrefunddialog()
+  {
+    this.matDialog.open(RefundDialogComponent, { width: "60%", height: "90%"});
   }
 
 }

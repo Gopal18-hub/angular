@@ -32,7 +32,9 @@ export class DupRegMergingComponent implements OnInit {
   aadhaarId = '';
   mobile = '';
   defaultUI:boolean=true;
-  mergeplaceholder:string="Please search Name, Phone, DOB and Email ";
+  showmergespinner:boolean=true;
+  mergeicon:string="placeholder";
+  mergingmessage:string="Please search Name, Phone, DOB and Email ";
 
   mergeSearchForm = new FormGroup({
     name: new FormControl(''),
@@ -65,7 +67,7 @@ export class DupRegMergingComponent implements OnInit {
         type: 'number'
       },
       date: {
-        title: 'Reg.Date',
+        title: 'Reg Date',
         type: 'date'
       },
       firstName: {
@@ -112,22 +114,23 @@ export class DupRegMergingComponent implements OnInit {
 
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
-      this.messageDialogService.success("Patient has been merged successfully"); 
+      if(result == "success"){
+      this.messageDialogService.success("Max ID has been mapped with "); 
       this.getAllpatientsBySearch().subscribe((resultData) => {
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-      },(error:any)=>{
-        //this.messageDialogService.error(error.error);
+        this.mergebuttonDisabled = true;        
       });
-     
-    });
-  }
+    }   
+   
+  });
+}
   
 
 
   searchPatient(formdata: any) {
-this.defaultUI = false;
+    this.defaultUI=false;
     if (formdata['name'] == '' && formdata['phone'] == '' 
     && formdata['dob'] == '' && formdata['email'] == '')
     {
@@ -144,10 +147,13 @@ this.defaultUI = false;
     this.mobile  = formdata['phone'];
     this.email = formdata['email'];
     this.dob = formdata['dob'];
+   
     this.getAllpatientsBySearch().subscribe((resultData) => {
+      this.showmergespinner = false;     
       this.results = resultData;
       this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;
+     
       setTimeout(()=>{        
         this.tableRows.selection.changed.subscribe((res:any)=>{ 
           if(this.tableRows.selection.selected.length> 1)
@@ -161,7 +167,9 @@ this.defaultUI = false;
         });
       }) ;
     },(error:any)=>{
-      this.messageDialogService.error(error.error);
+      this.defaultUI = true;
+      this.mergingmessage  = "No records found";
+      this.mergeicon  = "norecordfound";
     });
 
   }

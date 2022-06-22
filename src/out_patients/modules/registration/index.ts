@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { RegistrationRoutingModule } from "./routes";
+import {  SimilarPatientDialog } from "./submodules/op-registration/op-registration.component";
 import { OpRegistrationComponent } from "./submodules/op-registration/op-registration.component";
 import { FindPatientComponent } from "./submodules/find-patient/find-patient.component";
 import { DupRegMergingComponent } from "./submodules/dup-reg-merging/dup-reg-merging.component";
@@ -33,12 +34,17 @@ import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
+import { MatRadioModule } from "@angular/material/radio";
 
 import { AuthService } from "../../../shared/services/auth.service";
 import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { DMSComponent } from '../registration/submodules/dms/dms.component';
+import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.component";
+
 
 @NgModule({
   declarations: [
@@ -60,9 +66,12 @@ import { CookieService } from "../../../shared/services/cookie.service";
     ForeignerDialogComponent,
     HotListingApprovalComponent,
     FormDialogueComponent,
+    DMSComponent,
+    ModifyDialogComponent,  SimilarPatientDialog,
   ],
   imports: [
     RegistrationRoutingModule,
+  
     MatCardModule,
     MaxHealthTableModule,
     CommonModule,
@@ -81,6 +90,8 @@ import { CookieService } from "../../../shared/services/cookie.service";
     MatIconModule,
     MatSelectModule,
     EmptyPlaceholderModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
   ],
   exports: [],
   providers: [
