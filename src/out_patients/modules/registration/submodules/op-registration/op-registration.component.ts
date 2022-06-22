@@ -39,6 +39,8 @@ import {
 import { AppointmentSearchDialogComponent } from "../../submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 import { DMSComponent } from "../dms/dms.component";
 import { ModifyDialogComponent } from "../../../../core/modify-dialog/modify-dialog.component";
+import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
+import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 export interface DialogData {
   expieryDate: Date;
   issueAt: string;
@@ -412,23 +414,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  openForeigner() {
-    this.matDialog.open(ForeignerDialogComponent, {
-      width: "30vw",
-      height: "52vh",
-      data: {
-        passportNum: this.passportNum,
-        issuedate: this.issuedate,
-        expieryDate: this.expieryDate,
-        issueAt: this.issueAt,
-      },
-    });
-
-    this.searchService.searchTrigger.subscribe((formdata: any) => {
-      this.searchPatient(formdata.data);
-    });
-  }
-
+ 
   searchPatient(formdata: any) {
     if (
       formdata["name"] == "" &&
@@ -583,7 +569,7 @@ export class OpRegistrationComponent implements OnInit {
       {
         this.OPRegForm.controls["foreigner"].enable();
         this.OPRegForm.controls["foreigner"].setValue(true);
-        this.passportDetailsdialog();
+       // this.passportDetailsdialog();
       }
       else{
         this.OPRegForm.controls["foreigner"].disable();
@@ -782,15 +768,48 @@ export class OpRegistrationComponent implements OnInit {
         });
       });
   }
+  DMSList:DMSrefreshModel[]=[]
+  getPatientDMSDetail() {
+    let arr = [] as any;
+    this.http
+      .get(ApiConstants.PatientDMSDetail(this.patientDetails.iacode,this.patientDetails.registrationno))
+      .subscribe((resultData: DMSrefreshModel[]) => {
+        this.DMSList = resultData;
+        console.log(resultData);
+        this.openDMSDialog(this.DMSList);
+      });
+    }
+    
 
+    hcfDetailMasterList: { title: string; value: number }[] = [] as any;
+
+
+    //CLICK EVENT FROM FOREIGN CHECKBOX
+    showPassportDetails()
+    {
+      this. getHCFDetails();
+    }
+
+    getHCFDetails()
+    {     
+      this.http
+      .get(ApiConstants.hcfLookUp(Number(this.cookie.get("HSPLocationId"))))
+      .subscribe((resultData: GenernicIdNameModel[]) => {
+       
+        console.log(resultData);
+        console.log(this.hcfDetailMasterList);
+            this.hcfDetailMasterList = resultData.map((l) => {
+          return { title: l.name, value: l.id };
+         
+        });
+        this.passportDetailsdialog(this.hcfDetailMasterList);
+    });
+  }
+  
+
+
+  //HOTLISTING POP UP DROP DOWN VALUES
   hotlistDialogList: { title: string; value: number }[] = [] as any;
-
-  // gethotlistMasterData(): {title:string,value:number}[] {
-  //   let arr=[] as any;
-  //    this.http
-
-  // }
-  // hotlistDialogList: { title: string, value: number }[] = [] as any
   gethotlistMasterData(): { title: string; value: number }[] {
     let arr = [] as any;
     this.http
@@ -1750,7 +1769,7 @@ export class OpRegistrationComponent implements OnInit {
     //         width: "30vw",
     //         height: "80vh",
     //  }
-    const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
+    const modifyDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
       height: "80vh",
       data: {
@@ -1888,12 +1907,12 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Submit for Approval",
       },
     });
-    passportDetailDialogref.afterClosed().subscribe((result) => {
+    modifyDetailDialogref.afterClosed().subscribe((result) => {
       this.postModifyCall();
     });
   }
-
-  passportDetailsdialog() {
+ 
+  passportDetailsdialog(hcfMasterList:any) {
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
       height: "52vh",
@@ -1923,11 +1942,10 @@ export class OpRegistrationComponent implements OnInit {
               title: "Issued At",
               required: true,
             },
-
             hcf: {
-              type: "autcomplete",
+              type: "autocomplete",
               title: "HCF",
-              required: true,
+             options: hcfMasterList,
             },
           },
         },
@@ -1937,13 +1955,9 @@ export class OpRegistrationComponent implements OnInit {
     });
     passportDetailDialogref.afterClosed().subscribe((result) => {
       console.log("passport dialog was closed");
-      console.log(result);
-
-      if(result == undefined || result == null || result == '' )
-      {
-        this.OPRegForm.controls["foreigner"].setErrors({ incorrect: true });
-        this.questions[29].customErrorMessage = "Passport details required";
-      }
+      this.passportDetails={Expirydate:result.data.expiryDate,Issueat:result.data.issuedAt,IssueDate:result.data.issueDate,passportNo:result.data.passportNo,HCF:result.data.hcf.value};
+     console.log(this.passportDetails);
+      
     });
   }
 
@@ -1990,7 +2004,7 @@ export class OpRegistrationComponent implements OnInit {
       console.log("seafarers dialog was closed");
     });
   }
-  openDMSDialog() {
-    this.matDialog.open(DMSComponent, { width: "100vw", height: "52vh" });
+  openDMSDialog(dmsDetailList:any) {
+    this.matDialog.open(DMSComponent, { width: "100vw", height: "52vh" ,data: { list:dmsDetailList  }} );
   }
 }

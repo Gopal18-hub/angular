@@ -330,7 +330,7 @@
                     [form]="OPRegForm"
                     [questions]="questions[29]"
                     [index]="29"
-                    (click)="passportDetailsdialog()" 
+                    (click)="showPassportDetails()" 
                   ></maxhealth-question>
                 </div>
                 <div class="w-1/45">
@@ -542,7 +542,7 @@
             color="primary"
             class="w-full"
             type="button"
-            (click)="openDMSDialog()"
+            (click)="getPatientDMSDetail()"
           >
             DMS
           </button>
