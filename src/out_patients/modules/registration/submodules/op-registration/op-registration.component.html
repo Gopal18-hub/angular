@@ -329,23 +329,25 @@
                   ></maxhealth-question>
                 </div>
                 <!-- FOREIGN CHECKBOX -->
-                <div class="w-1/45">
-                  <maxhealth-question
-                    [question]="questions[29]"
-                    [form]="OPRegForm"
-                    [questions]="questions[29]"
-                    [index]="29"
-                    (click)="showPassportDetails()"
-                  ></maxhealth-question>
-                </div>
-                <div class="w-1/45">
-                  <maxhealth-question
-                    [question]="questions[30]"
-                    [form]="OPRegForm"
-                    [questions]="questions[30]"
-                    [index]="30"
-                    (click)="seafarersDetailsdialog()"
-                  ></maxhealth-question>
+                <div class="w-1/45 justify-between items-center flex">
+                  <div class="w-1/45">
+                    <maxhealth-question
+                      [question]="questions[29]"
+                      [form]="OPRegForm"
+                      [questions]="questions[29]"
+                      [index]="29"
+                      (click)="showPassportDetails()"
+                    ></maxhealth-question>
+                  </div>
+                  <div class="w-1/45">
+                    <maxhealth-question
+                      [question]="questions[30]"
+                      [form]="OPRegForm"
+                      [questions]="questions[30]"
+                      [index]="30"
+                      (click)="seafarersDetailsdialog()"
+                    ></maxhealth-question>
+                  </div>
                 </div>
               </div>
             </div>
