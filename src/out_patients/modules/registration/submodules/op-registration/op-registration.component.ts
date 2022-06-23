@@ -555,6 +555,11 @@ export class OpRegistrationComponent implements OnInit {
         "change",
         this.onFistNameModify.bind(this)
       );
+       //chnage event for middle name
+       this.questions[4].elementRef.addEventListener(
+        "change",
+        this.onMiddleNameModify.bind(this)
+      );
       //chnage event for Last Name
       this.questions[6].elementRef.addEventListener(
         "change",
@@ -710,6 +715,7 @@ export class OpRegistrationComponent implements OnInit {
       (value: any) => {
         if  (value && !this.MaxIDExist) {
           this.showPassportDetails();
+
         }
       }
     );
@@ -1053,6 +1059,7 @@ export class OpRegistrationComponent implements OnInit {
   //CLICK EVENT FROM FOREIGN CHECKBOX
   showPassportDetails() {
     this.getHCFDetails();
+    this.modfiedPatiendDetails.foreigner=true;
   }
 
   getHCFDetails() {
@@ -1324,7 +1331,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   onModifyDetail() {
-    this.onUpdatePatientDetail();
+    // this.onUpdatePatientDetail();
 
     if (this.isPatientdetailModified) {
       this.modifyDialogg();
@@ -1444,10 +1451,18 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  onMiddleNameModify()
+  {
+    console.log("middle name changed");
+    if (this.checkForModifiedPatientDetail()) {
+      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+    }
+  }
+
   onFistNameModify() {
     console.log("firstname changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
     }
   }
   onLastNameModify() {
@@ -1785,12 +1800,21 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName == "Father") {
-        return this.OPRegForm.value.fatherSpouseName;
-      }
+      // let selectedName = this.fatherSpouseOptionList.filter(
+      //   (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
+      // );
+      // if(selectedName.length==0)
+      // {
+      //   response="";
+      // }
+      // else
+      // {
+        if (this.OPRegForm.controls["fatherSpouse"].value.toLowerCase) {
+            return this.OPRegForm.value.fatherSpouseName;
+          }
+      // }
+      //
+      // console.log(selectedName);
     }
     return response;
   }
@@ -2167,149 +2191,152 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   modifyDialogg() {
-    // const passportDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
-    //         width: "30vw",
-    //         height: "80vh",
-    //  }
-    const modifyDetailDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "80vh",
-      data: {
-        title: "Passport Details",
-        form: {
-          title: "",
-          type: "object",
-          properties: {
-            msg1: {
-              title: "Existing Data",
-            },
-            firstName: {
-              type: "string",
-              title: "First Name",
-              defaultValue: this.patientDetails.firstname,
-              required: true,
-              readonly: true,
-            },
-            msg2: {
-              title: "Modified Data",
-            },
-            modifiedfirstName: {
-              type: "string",
-              title: "First Name",
-              defaultValue: this.OPRegForm.value.firstName,
-              required: true,
-              readonly: true,
-            },
-            middleName: {
-              type: "string",
-              title: "Middle Name",
-              defaultValue: this.patientDetails.middleName,
-              required: true,
-              readonly: true,
-            },
 
-            modifiedmiddleName: {
-              type: "string",
-              title: "Middle Name",
-              defaultValue: this.OPRegForm.value.middleName,
-              required: true,
-              readonly: true,
-            },
-            lastName: {
-              type: "string",
-              title: "Last Name",
-              defaultValue: this.patientDetails.lastName,
-              required: true,
-              readonly: true,
-            },
+    this.getModifiedPatientDetailObj();
+    const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
+            width: "30vw",
+            height: "80vh",
+            data:{patientDetails:this.patientDetails,modifiedDetails:this.modfiedPatiendDetails}
+     });
+    // const modifyDetailDialogref = this.matDialog.open(FormDialogueComponent, {
+    //   width: "30vw",
+    //   height: "80vh",
+    //   data: {
+    //     title: "Passport Details",
+    //     form: {
+    //       title: "",
+    //       type: "object",
+    //       properties: {
+    //         msg1: {
+    //           title: "Existing Data",
+    //         },
+    //         firstName: {
+    //           type: "string",
+    //           title: "First Name",
+    //           defaultValue: this.patientDetails.firstname,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         msg2: {
+    //           title: "Modified Data",
+    //         },
+    //         modifiedfirstName: {
+    //           type: "string",
+    //           title: "First Name",
+    //           defaultValue: this.OPRegForm.value.firstName,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         middleName: {
+    //           type: "string",
+    //           title: "Middle Name",
+    //           defaultValue: this.patientDetails.middleName,
+    //           required: true,
+    //           readonly: true,
+    //         },
 
-            modifiedlastName: {
-              type: "string",
-              title: "Last Name",
-              defaultValue: this.OPRegForm.value.lastName,
-              required: true,
-              readonly: true,
-            },
-            gender: {
-              type: "string",
-              title: "Gender",
-              defaultValue: this.patientDetails.sexName,
-              required: true,
-              readonly: true,
-            },
+    //         modifiedmiddleName: {
+    //           type: "string",
+    //           title: "Middle Name",
+    //           defaultValue: this.OPRegForm.value.middleName,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         lastName: {
+    //           type: "string",
+    //           title: "Last Name",
+    //           defaultValue: this.patientDetails.lastName,
+    //           required: true,
+    //           readonly: true,
+    //         },
 
-            modifiedgender: {
-              type: "string",
-              title: "Gender",
-              defaultValue: this.OPRegForm.value.gender.title,
-              required: true,
-              readonly: true,
-            },
-            email: {
-              type: "email",
-              title: "Email id",
-              defaultValue: this.patientDetails.pemail,
-              required: true,
-              readonly: true,
-            },
+    //         modifiedlastName: {
+    //           type: "string",
+    //           title: "Last Name",
+    //           defaultValue: this.OPRegForm.value.lastName,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         gender: {
+    //           type: "string",
+    //           title: "Gender",
+    //           defaultValue: this.patientDetails.sexName,
+    //           required: true,
+    //           readonly: true,
+    //         },
 
-            modifiedemail: {
-              type: "email",
-              title: "Email id",
-              defaultValue: this.OPRegForm.value.emailId,
-              required: true,
-              readonly: true,
-            },
-            mobileNumber: {
-              type: "number",
-              title: "Mobile Number",
-              defaultValue: this.patientDetails.pphone,
-              required: true,
-              readonly: true,
-            },
-            modifiedMobileNumber: {
-              type: "number",
-              title: "Mobile Number",
-              defaultValue: this.OPRegForm.value.mobileNumber,
-              required: true,
-              readonly: true,
-            },
-            nationality: {
-              type: "string",
-              title: "Nationality",
-              defaultValue: this.patientDetails.nationalityName,
-              required: true,
-              readonly: true,
-            },
-            modifiedNationality: {
-              type: "string",
-              title: "Nationality",
-              defaultValue: this.OPRegForm.value.nationality.title,
-              required: true,
-              readonly: true,
-            },
-            foreigner: {
-              type: "checkbox",
-              options: [{ title: "Foreigner" }],
-              defaultValue: this.patientDetails.foreigner,
-              readonly: true,
-            },
-            modifiedForeigner: {
-              type: "checkbox",
-              options: [{ title: "Foreigner" }],
-              defaultValue: this.OPRegForm.value.foreigner,
-              readonly: true,
-            },
-            msg: {
-              title:
-                "*Please note that highlighted text are the modified data.",
-            },
-          },
-        },
-        layout: "double",
-        buttonLabel: "Submit for Approval",
-      },
-    });
+    //         modifiedgender: {
+    //           type: "string",
+    //           title: "Gender",
+    //           defaultValue: this.OPRegForm.value.gender.title,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         email: {
+    //           type: "email",
+    //           title: "Email id",
+    //           defaultValue: this.patientDetails.pemail,
+    //           required: true,
+    //           readonly: true,
+    //         },
+
+    //         modifiedemail: {
+    //           type: "email",
+    //           title: "Email id",
+    //           defaultValue: this.OPRegForm.value.emailId,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         mobileNumber: {
+    //           type: "number",
+    //           title: "Mobile Number",
+    //           defaultValue: this.patientDetails.pphone,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         modifiedMobileNumber: {
+    //           type: "number",
+    //           title: "Mobile Number",
+    //           defaultValue: this.OPRegForm.value.mobileNumber,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         nationality: {
+    //           type: "string",
+    //           title: "Nationality",
+    //           defaultValue: this.patientDetails.nationalityName,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         modifiedNationality: {
+    //           type: "string",
+    //           title: "Nationality",
+    //           defaultValue: this.OPRegForm.value.nationality.title,
+    //           required: true,
+    //           readonly: true,
+    //         },
+    //         foreigner: {
+    //           type: "checkbox",
+    //           options: [{ title: "Foreigner" }],
+    //           defaultValue: this.patientDetails.foreigner,
+    //           readonly: true,
+    //         },
+    //         modifiedForeigner: {
+    //           type: "checkbox",
+    //           options: [{ title: "Foreigner" }],
+    //           defaultValue: this.OPRegForm.value.foreigner,
+    //           readonly: true,
+    //         },
+    //         msg: {
+    //           title:
+    //             "*Please note that highlighted text are the modified data.",
+    //         },
+    //       },
+    //     },
+    //     layout: "double",
+    //     buttonLabel: "Submit for Approval",
+    //   },
+    // });
     modifyDetailDialogref.afterClosed().subscribe((result) => {
       this.postModifyCall();
     });
