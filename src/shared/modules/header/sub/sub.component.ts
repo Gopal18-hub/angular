@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Inject } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { SearchService } from "../../../services/search.service";
+import { APP_BASE_HREF } from "@angular/common";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -25,6 +26,7 @@ export class SubComponent implements OnInit {
   questions: any;
 
   constructor(
+    @Inject(APP_BASE_HREF) public baseHref: string,
     private formService: QuestionControlService,
     private router: Router,
     private searchService: SearchService
@@ -65,7 +67,6 @@ export class SubComponent implements OnInit {
   }
 
   onRouterLinkActive($event: any, imodule: any) {
-    console.log(imodule);
     if ($event) {
       this.activeSubModule = imodule;
     }

@@ -1,10 +1,9 @@
 <h2 mat-dialog-title>Patient Details</h2>
 <div mat-dialog-content>   
-    <div class="overflow-x-none">
-     
-        <div class="overflow-y-scroll relative">
+    <div class="overflow-x-none ">     
+        <div class="relative table-height">
             <ng-container >
-                <maxhealth-table [config]="config" [data]="searchResults"></maxhealth-table>
+                <maxhealth-table [config]="config" [data]="data.searchResults"></maxhealth-table>
             </ng-container>
         </div>
        

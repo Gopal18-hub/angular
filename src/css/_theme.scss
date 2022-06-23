@@ -1,5 +1,9 @@
 @use "@angular/material" as mat;
-
+body {
+  * {
+    zoom: 1;
+  }
+}
 @font-face {
   font-family: "proxima";
   src: local("proxima"),
@@ -108,7 +112,7 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 152px);
+  height: calc(100vh - 140px);
   border-radius: 10px 10px 0 0;
   overflow: hidden;
   .banner {
@@ -116,7 +120,7 @@ mat-form-field {
     color: #fff;
     border-radius: 10px 10px 0 0;
     border: 1px solid #004084;
-    height: 3.225rem;
+    height: 2.525rem;
     .mat-tab-links {
       height: 100%;
       ul {
@@ -126,7 +130,7 @@ mat-form-field {
             font-weight: 800;
             color: #004084;
             background-color: #fff;
-            height: 2.75rem;
+            height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
           }
@@ -184,6 +188,7 @@ mat-form-field {
 
 ::-webkit-scrollbar {
   width: 0.4em;
+  height: 0.3em;
 }
 
 ::-webkit-scrollbar-track {
@@ -284,4 +289,13 @@ mat-form-field {
       display: none;
     }
   }
+}
+
+.max-dialog-close-icon {
+  right: -1.2em;
+  top: -1em;
+}
+.mat-tooltip {
+  background-color: #fff;
+  color: #272727 !important;
 }
