@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, NgZone } from "@angular/core";
+import { Component, Inject, OnInit, NgZone, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -708,38 +708,39 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
       (value: any) => {
-        if (value) {
+        if  (value && !this.MaxIDExist) {
           this.showPassportDetails();
         }
       }
     );
 
     this.OPRegForm.controls["seaFarer"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.seafarersDetailsdialog();
       }
     });
 
     this.OPRegForm.controls["hotlist"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value && !this.MaxIDExist) {
         this.openHotListDialog();
       }
     });
     this.OPRegForm.controls["vip"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value) {
         this.openVipNotes();
       }
     });
     this.OPRegForm.controls["note"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openNotes();
       }
     });
     this.OPRegForm.controls["hwc"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openHWCNotes();
       }
     });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -770,6 +771,19 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  vipChecked()
+  {
+    this.OPRegForm.controls["vip"]
+      .valueChanges.subscribe(
+        (value: any) => {
+          if  (value) {
+            this.openHotListDialog();
+          }
+        }
+      );
+     
+  
+  }
   //validation for empty Father or SPouse Name if Type selected
   checkFatherSpouseName() {
     let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
@@ -1000,12 +1014,13 @@ export class OpRegistrationComponent implements OnInit {
     if (!this.MaxIDExist) {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
-          phone: this.OPRegForm.value.PhoneNumber,
+          phone: this.OPRegForm.value.mobileNumber,
         })
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
-          const seafarersDetailDialogref = this.matDialog.open(
+          if(this.similarContactPatientList.length!=0){
+          const similarSoundDialogref = this.matDialog.open(
             SimilarPatientDialog,
             {
               width: "100vw",
@@ -1015,7 +1030,21 @@ export class OpRegistrationComponent implements OnInit {
               },
             }
           );
-        });
+          similarSoundDialogref.afterClosed().subscribe((result) => {
+            console.log(result.data["added"][0].maxid);
+            let maxID=result.data["added"][0].maxid;
+            this.OPRegForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId()
+            console.log("seafarers dialog was closed");
+           
+          });
+        }else{
+          console.log("no data found");
+        }
+      }
+        );
+      
+        
     }
   }
 
@@ -2017,8 +2046,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openVipNotes() {
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "VIP Remarks",
         form: {
@@ -2043,8 +2072,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -2071,10 +2100,10 @@ export class OpRegistrationComponent implements OnInit {
 
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "50vh",
       data: {
-        title: "HWC Remarks",
+        title: "EWS Details",
         form: {
           title: "",
           type: "object",
@@ -2106,8 +2135,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2425,6 +2454,7 @@ function phone(
   templateUrl: "similarPatient-dialog.html",
 })
 export class SimilarPatientDialog {
+  @ViewChild("patientDetail") tableRows: any
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -2432,11 +2462,18 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
+  
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
+  }
+  ngAfterViewInit()
+  {
+    this.getMaxID();
   }
 
   config: any = {
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: [
       "maxid",
       "firstName",
@@ -2477,7 +2514,21 @@ export class SimilarPatientDialog {
       },
     },
   };
-  onNoClick(): void {
-    this.dialogRef.close();
+  getMaxID() {   
+    console.log(event);
+    
+    this.tableRows.selection.changed.subscribe((res:any)=>{
+
+      this.dialogRef.close({data:res});
+
+
+    })
   }
+    
+  
+       
+     
+     
+    
+  
 }
