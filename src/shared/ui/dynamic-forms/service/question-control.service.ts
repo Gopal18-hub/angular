@@ -84,49 +84,7 @@ export class QuestionControlService {
     questions = questions.sort((a, b) => a.order - b.order);
 
     questions.forEach((question) => {
-      if (question.type == "object") {
-        let childQuestions: any = {};
-        question.childQuestions = question.childQuestions.sort(
-          (a: any, b: any) => a.order - b.order
-        );
-        question.childQuestions.forEach((childQuestion: any) => {
-          childQuestions[childQuestion.key] = this.createControl(childQuestion);
-        });
-        group[question.key] = new FormGroup(childQuestions);
-      } else if (question.type == "array") {
-        let conditions = [];
-        if (question.minimum) {
-          conditions.push(this.minLengthArray(question.minimum));
-        }
-        question.childQuestions = question.childQuestions.sort(
-          (a: any, b: any) => a.order - b.order
-        );
-        if (question.value) {
-          let childQuestions: any = [];
-          question.value.forEach((arrayItem: any, i: number) => {
-            let temp: any = {};
-            question.childQuestions.forEach((childQuestion: any) => {
-              childQuestion.value = arrayItem[childQuestion.key];
-              temp[childQuestion.key] = this.createControl(childQuestion);
-            });
-            childQuestions[i] = new FormGroup(temp);
-          });
-          console.log(childQuestions);
-          group[question.key] = new FormArray(childQuestions, conditions);
-        } else {
-          let childQuestions: any = {};
-          question.childQuestions.forEach((childQuestion: any) => {
-            childQuestions[childQuestion.key] =
-              this.createControl(childQuestion);
-          });
-          group[question.key] = new FormArray(
-            [new FormGroup(childQuestions)],
-            conditions
-          );
-        }
-      } else {
-        group[question.key] = this.createControl(question);
-      }
+      group[question.key] = this.createControl(question);
     });
     this.formGroup = new FormGroup(group);
     return this.formGroup;

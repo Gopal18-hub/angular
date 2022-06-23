@@ -18,6 +18,7 @@ export class MergeDialogComponent implements OnInit {
   selectedid:any=[];  
   mergePostModel:any[]=[];
   primaryid :number = 0;
+  submitbtndisable:boolean = true;
 
   constructor(private http: HttpService,
     @Inject(MAT_DIALOG_DATA) public data : any,
@@ -37,15 +38,21 @@ export class MergeDialogComponent implements OnInit {
   }
   checboxSelected(event:any)
   {   
-   this.primaryid = event.id;  
+   //this.primaryid = event.id;  
+  this.submitbtndisable = false;
+
   }
   patientMerging() {   
     let userId = Number(this.cookie.get('UserId'));   
     this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
-    {
-      this.dialogRef.close();    
+    {   
       this.mergePostModel= [];  
+      this.primaryid = 0;
+      this.dialogRef.close('success'); 
       
     });
+  }
+  closemergepopup(){
+    this.dialogRef.close('close'); 
   }  
 }

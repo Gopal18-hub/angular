@@ -149,4 +149,10 @@ export class DynamicFormQuestionComponent
       this.question.elementRef = this.element.nativeElement;
     }
   }
+
+  generateRandomEmail() {
+    this.form.controls[this.question.key].setValue(
+      new Date().getTime() + "-temp@maxhealthcare.com"
+    );
+  }
 }

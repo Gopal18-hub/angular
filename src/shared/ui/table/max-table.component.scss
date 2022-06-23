@@ -47,3 +47,28 @@ table tr:last-child td:last-child,
 table thead:last-child tr:last-child th:last-child {
   border-bottom-right-radius: 1rem;
 }
+
+.more-actions {
+  background: #ababab;
+  border-radius: 12px;
+  padding: 0 1em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  width: fit-content;
+}
+::ng-deep .table-more-actions {
+  border-radius: initial !important;
+  .mat-menu-item {
+    height: 32px;
+    line-height: 32px;
+    border-top: 1px solid #ccc;
+    margin: 0.5em;
+    width: calc(100% - 1em);
+    text-align: center;
+    &:first-child {
+      border: none;
+    }
+  }
+}
