@@ -63,18 +63,6 @@
             ></ng-container>
           </td>
         </ng-container>
-
-        <!-- <td
-          mat-cell
-          *matCellDef="let element"
-          matTooltipClass="example-tooltip-red"
-          [matToolTip]="element[config.columnsInfo[col].toottipColumn]"
-        > -->
-        <!-- {{
-            displayColumnsInfo[col].type === "date"
-              ? (element[col] | date: dateformat)
-              : element[col]
-          }} -->
       </ng-container>
     </ng-container>
 
@@ -103,7 +91,7 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns"
@@ -143,5 +131,9 @@
   </div>
 </ng-template>
 <ng-template #checkbox let-data>
-  <mat-checkbox [checked]="!!data.output" disabled></mat-checkbox>
+  <mat-checkbox
+    [checked]="!!data.output"
+    disabled
+    color="primary"
+  ></mat-checkbox>
 </ng-template>
