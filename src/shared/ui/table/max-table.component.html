@@ -4,6 +4,7 @@
     [dataSource]="dataSource"
     matSort
     (matSortChange)="announceSortChange($event)"
+    [class.row-click]="config.clickedRows"
   >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -13,6 +14,7 @@
           [checked]="selection.hasValue() && isAllSelected()"
           [indeterminate]="selection.hasValue() && !isAllSelected()"
           [aria-label]="checkboxLabel()"
+          color="primary"
         >
         </mat-checkbox>
       </th>
@@ -22,6 +24,7 @@
           (change)="$event ? selection.toggle(row) : null"
           [checked]="selection.isSelected(row)"
           [aria-label]="checkboxLabel(row)"
+          color="primary"
         >
         </mat-checkbox>
       </td>
@@ -92,13 +95,24 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      (click)="selection.toggle(row)"
-    >
-      <!-- [matTooltip]="" -->
-    </tr>
+    <ng-container *ngIf="config.clickedRows">
+      <tr
+        mat-row
+        (click)="selection.toggle(row)"
+        *matRowDef="let row; columns: displayedColumns"
+        [class.row-is-clicked]="selection.isSelected(row)"
+      ></tr>
+    </ng-container>
+    <ng-container *ngIf="config.selectBox">
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="selection.toggle(row)"
+      ></tr>
+    </ng-container>
+    <ng-container *ngIf="!config.selectBox && !config.clickedRows">
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </ng-container>
   </table>
   <!-- <mat-paginator
     [pageSizeOptions]="[10, 15, 20]"
