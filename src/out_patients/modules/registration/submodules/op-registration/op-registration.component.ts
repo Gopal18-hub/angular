@@ -99,8 +99,8 @@ export class OpRegistrationComponent implements OnInit {
     HCF: number;
   } = {
     passportNo: "",
-    IssueDate: "null",
-    Expirydate: "null",
+    IssueDate: "",
+    Expirydate: "",
     Issueat: "",
     HCF: 0,
   };
@@ -132,7 +132,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
-        // pattern:"^[1-9]{1}[0-9]{9}",
+        pattern:"^[1-9]{1}[0-9]{9}",
         // minimum:10,
         // maximum:10,
       },
@@ -403,7 +403,7 @@ export class OpRegistrationComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
-      console.log(formdata);      
+        
       this.searchPatient(formdata.data);
     });
 
@@ -474,16 +474,9 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       return;
     } 
-    else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      formdata["maxID"] != "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
+    else if (formdata["maxID"] != "") {
       let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid<=0 && maxid != undefined && maxid != null)
+      if(maxid > 0 && maxid != undefined && maxid != null)
       {
         this.OPRegForm.value.maxid=formdata["maxID"];
         this.getPatientDetailsByMaxId();
@@ -502,13 +495,13 @@ export class OpRegistrationComponent implements OnInit {
         )
       ).subscribe(
         (resultData) => {        
-          this.router.navigateByUrl('/find-patient', { state: {
-            MaxId:formdata["maxID"],
-            Name:formdata["name"],
-            PhoneNumber: formdata["phone"],
-            DOB: formdata["dob"],
-            HealthId:formdata["healthID"],
-            AadhaarId:formdata["adhaar"],
+          this.router.navigate(["registration","find-patient"], { queryParams: {
+            maxID:formdata["maxID"],
+            name:formdata["name"],
+            phone: formdata["phone"],
+            dob: formdata["dob"],
+            healthID:formdata["healthID"],
+            adhaar:formdata["adhaar"],
               }
             });         
         },
@@ -613,6 +606,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].required = false;
           this.questions[25].required = false;
           this.questions[26].required = false;
+          this.questions[21]= {...this.questions[21]};
           this.OPRegForm.controls["nationality"].setValue(undefined);
         }
       }
@@ -1345,7 +1339,10 @@ export class OpRegistrationComponent implements OnInit {
         this.getModifiedPatientDetailObj()
       )
       .subscribe((resultData: PatientDetails) => {
-        this.setValuesToOPRegForm(resultData);
+        
+        if(this.OPRegForm.value.maxid){
+        this.getPatientDetailsByMaxId(); 
+        }       // this.setValuesToOPRegForm(resultData);
         console.log(resultData);
       });
   }
@@ -1799,22 +1796,10 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      // let selectedName = this.fatherSpouseOptionList.filter(
-      //   (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      // );
-      // if(selectedName.length==0)
-      // {
-      //   response="";
-      // }
-      // else
-      // {
-        if (this.OPRegForm.controls["fatherSpouse"].value.toLowerCase) {
-            return this.OPRegForm.value.fatherSpouseName;
-          }
-      // }
-      //
-      // console.log(selectedName);
+    ) {     
+      if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+        return this.OPRegForm.value.fatherSpouseName;
+      }
     }
     return response;
   }
@@ -1823,11 +1808,8 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName != "Father") {
+    ) {      
+      if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2082,6 +2064,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+              defaultValue: this.vip,
             },
           },
         },
@@ -2108,6 +2091,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+              defaultValue: this.noteRemark,
             },
           },
         },
@@ -2136,11 +2120,13 @@ export class OpRegistrationComponent implements OnInit {
               type: "string",
               title: "BPL Card No.",
               required: true,
+              defaultValue: this.ewsDetails.bplCardNo,
             },
             BPLAddress: {
               type: "textarea",
               title: "Address on card",
               required: true,
+              defaultValue: this.ewsDetails.bplCardAddress,
             },
           },
         },
@@ -2171,6 +2157,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "HWC Remarks",
               required: true,
+              defaultValue:this.hwcRemark,
             },
           },
         },
@@ -2362,16 +2349,19 @@ export class OpRegistrationComponent implements OnInit {
               type: "date",
               title: "Issue Date",
               required: true,
+              defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
+              defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
               type: "string",
               title: "Issued At",
               required: true,
+              defaultValue: this.passportDetails.Issueat,
             },
             hcf: {
               type: "autocomplete",
@@ -2428,21 +2418,25 @@ export class OpRegistrationComponent implements OnInit {
                 type: "string",
                 title: "HK ID",
                 required: true,
+                defaultValue:this.seafarerDetails.HKID,
               },
               vesselName: {
                 type: "string",
                 title: "Vessel name",
                 required: true,
+                defaultValue:this.seafarerDetails.Vesselname,
               },
               rank: {
                 type: "string",
                 title: "Rank",
                 required: true,
+                defaultValue:this.seafarerDetails.rank,
               },
               fdpGroup: {
                 type: "string",
                 title: "FDP Group",
                 required: true,
+                defaultValue:this.seafarerDetails.FDPGroup,
               },
             },
           },
