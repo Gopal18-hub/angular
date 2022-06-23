@@ -78,6 +78,11 @@
         justify-content: flex-start;
         text-align: left;
       }
+      button {
+        &:hover {
+          font-weight: 600;
+        }
+      }
     }
   }
   .search-header-menu {
