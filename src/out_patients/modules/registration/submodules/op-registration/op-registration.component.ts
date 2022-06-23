@@ -621,11 +621,17 @@ export class OpRegistrationComponent implements OnInit {
       this.checkIndetityValue.bind(this)
     );
 
-    //Father or Spouse value change
-    this.questions[13].elementRef.addEventListener(
+     //IdenityType value change
+     this.questions[17].elementRef.addEventListener(
       "blur",
-      this.checkFatherSpouseName.bind(this)
+      this.checkIndetityValue.bind(this)
     );
+
+    // //Father or Spouse value change
+    // this.questions[32].elementRef.addEventListener(
+    //   "click",
+    //  this.vipChecked.bind(this)
+    // );
 
     // nationality value chnage event to enable foreigner
     this.OPRegForm.controls["nationality"].valueChanges.subscribe(
@@ -652,38 +658,39 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
       (value: any) => {
-        if (value) {
+        if  (value && !this.MaxIDExist) {
           this.showPassportDetails();
         }
       }
     );
 
     this.OPRegForm.controls["seaFarer"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.seafarersDetailsdialog();
       }
     });
 
     this.OPRegForm.controls["hotlist"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value && !this.MaxIDExist) {
         this.openHotListDialog();
       }
     });
     this.OPRegForm.controls["vip"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value) {
         this.openVipNotes();
       }
     });
     this.OPRegForm.controls["note"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openNotes();
       }
     });
     this.OPRegForm.controls["hwc"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openHWCNotes();
       }
     });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -714,6 +721,19 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  vipChecked()
+  {
+    this.OPRegForm.controls["vip"]
+      .valueChanges.subscribe(
+        (value: any) => {
+          if  (value) {
+            this.openHotListDialog();
+          }
+        }
+      );
+     
+  
+  }
   //validation for empty Father or SPouse Name if Type selected
   checkFatherSpouseName() {
     let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
@@ -944,12 +964,12 @@ export class OpRegistrationComponent implements OnInit {
     if (!this.MaxIDExist) {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
-          phone: this.OPRegForm.value.PhoneNumber,
+          phone: this.OPRegForm.value.mobileNumber,
         })
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
-          const seafarersDetailDialogref = this.matDialog.open(
+          const similarSoundDialogref = this.matDialog.open(
             SimilarPatientDialog,
             {
               width: "100vw",
@@ -959,7 +979,13 @@ export class OpRegistrationComponent implements OnInit {
               },
             }
           );
+          similarSoundDialogref.afterClosed().subscribe((result) => {
+            console.log(result.selection);
+            console.log("seafarers dialog was closed");
+           
+          });
         });
+        
     }
   }
 
@@ -1940,8 +1966,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openVipNotes() {
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "VIP Remarks",
         form: {
@@ -1966,8 +1992,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -1994,10 +2020,10 @@ export class OpRegistrationComponent implements OnInit {
 
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "50vh",
       data: {
-        title: "HWC Remarks",
+        title: "EWS Details",
         form: {
           title: "",
           type: "object",
@@ -2029,8 +2055,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2400,7 +2426,9 @@ export class SimilarPatientDialog {
       },
     },
   };
-  onNoClick(): void {
-    this.dialogRef.close();
+  getMaxID(event: Event) {   
+    console.log(event);
+      this.dialogRef.close({ data: event });
+    
   }
 }
