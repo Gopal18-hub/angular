@@ -13,6 +13,7 @@ import { A11yModule } from "@angular/cdk/a11y";
 import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     MatSortModule,
     MatPaginatorModule,
     MatTooltipModule,
+    MatMenuModule,
   ],
   exports: [MaxTableComponent],
   declarations: [MaxTableComponent],

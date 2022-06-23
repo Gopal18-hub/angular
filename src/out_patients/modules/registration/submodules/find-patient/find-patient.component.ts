@@ -21,13 +21,33 @@ export class FindPatientComponent implements OnInit {
   healthId = "";
   aadhaarId = "";
   mobile = "";
-  showspinner:boolean=true;
-  findpatientimage:string | undefined;
-  findpatientmessage:string | undefined;
-  defaultUI:boolean=true;
+  showspinner: boolean = true;
+  findpatientimage: string | undefined;
+  findpatientmessage: string | undefined;
+  defaultUI: boolean = true;
 
   config: any = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -96,33 +116,35 @@ export class FindPatientComponent implements OnInit {
 
   ngOnInit(): void {
     this.defaultUI = false;
-    this.getAllpatients().subscribe((resultData) => {
-      this.showspinner = false;
-      this.patientList = resultData as PatientSearchModel[];
-      this.patientList = this.patientServie.getAllCategoryIcons(
-        this.patientList
-      );
-     
-      this.isAPIProcess = true;
-      console.log(this.patientList);
-    },error=>{
-      console.log(error);
-      this.patientList = [];
-      this.defaultUI = true;
-      this.findpatientmessage  = "No records found";
-        this.findpatientimage  = "norecordfound"; 
-    });
+    this.getAllpatients().subscribe(
+      (resultData) => {
+        this.showspinner = false;
+        this.patientList = resultData as PatientSearchModel[];
+        this.patientList = this.patientServie.getAllCategoryIcons(
+          this.patientList
+        );
+
+        this.isAPIProcess = true;
+        console.log(this.patientList);
+      },
+      (error) => {
+        console.log(error);
+        this.patientList = [];
+        this.defaultUI = true;
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
+      }
+    );
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       console.log(formdata);
       this.isAPIProcess = false;
       this.searchPatient(formdata.data);
     });
-   
-  } 
+  }
 
   searchPatient(formdata: any) {
-    this.defaultUI=false;
+    this.defaultUI = false;
     this.showspinner = true;
     if (
       formdata["name"] == "" &&
@@ -132,22 +154,25 @@ export class FindPatientComponent implements OnInit {
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
-      this.getAllpatients().subscribe((resultData) => {
-        this.showspinner = false;
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(
-          this.patientList
-        );
+      this.getAllpatients().subscribe(
+        (resultData) => {
+          this.showspinner = false;
+          this.patientList = resultData;
+          this.patientList = this.patientServie.getAllCategoryIcons(
+            this.patientList
+          );
 
-        this.isAPIProcess = true;
-        console.log(this.patientList);
-      },error=>{
-        console.log(error);
-        this.patientList = [];
-        this.defaultUI = true;
-        this.findpatientmessage  = "No records found";
-          this.findpatientimage  = "norecordfound"; 
-      }); 
+          this.isAPIProcess = true;
+          console.log(this.patientList);
+        },
+        (error) => {
+          console.log(error);
+          this.patientList = [];
+          this.defaultUI = true;
+          this.findpatientmessage = "No records found";
+          this.findpatientimage = "norecordfound";
+        }
+      );
     } else if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
@@ -164,22 +189,25 @@ export class FindPatientComponent implements OnInit {
       this.dob = formdata["dob"];
       this.aadhaarId = formdata["adhaar"];
       this.healthId = formdata["healthID"];
-      this.getAllpatientsBySearch().subscribe((resultData) => {
-        this.showspinner = false;
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(
-          this.patientList
-        );
+      this.getAllpatientsBySearch().subscribe(
+        (resultData) => {
+          this.showspinner = false;
+          this.patientList = resultData;
+          this.patientList = this.patientServie.getAllCategoryIcons(
+            this.patientList
+          );
 
-        this.isAPIProcess = true;
-        console.log(this.patientList);
-      },error=>{
-        console.log(error);
-        this.patientList = [];
-        this.defaultUI = true;
-        this.findpatientmessage  = "No records found";
-          this.findpatientimage  = "norecordfound"; 
-      });
+          this.isAPIProcess = true;
+          console.log(this.patientList);
+        },
+        (error) => {
+          console.log(error);
+          this.patientList = [];
+          this.defaultUI = true;
+          this.findpatientmessage = "No records found";
+          this.findpatientimage = "norecordfound";
+        }
+      );
     }
   }
 
