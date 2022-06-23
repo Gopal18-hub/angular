@@ -1,4 +1,15 @@
+<div class="relative">
 <h2 class="max-health-primary-color">{{ data.title }}</h2>
+
+<button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
 <form (ngSubmit)="submit()" [formGroup]="form" class="mt-4 mb-6">
   <div
     class="flex justify-between flex-wrap"
@@ -33,3 +44,4 @@
     </button>
   </div>
 </form>
+</div>

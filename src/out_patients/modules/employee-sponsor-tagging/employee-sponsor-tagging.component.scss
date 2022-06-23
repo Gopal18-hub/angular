@@ -1,0 +1,37 @@
+.maxidclass{
+    border: 1px solid gray;
+    width: 10vw;
+    border-radius: 4px;
+    height: 21px;
+    margin-top: 10px;
+    
+}
+.firstrow{
+    background :#F6F6F6; 
+     
+}
+.employeeclass{
+    color: #004084;
+    font:Proxima Nova;
+}
+
+
+
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+
+    .dateclass{
+       
+        background: #d8d8d8;
+    }
+
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+    
+    }
