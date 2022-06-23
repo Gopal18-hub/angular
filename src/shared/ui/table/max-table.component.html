@@ -86,7 +86,18 @@
         </div>
         <mat-menu #menu="matMenu" class="table-more-actions">
           <ng-container *ngFor="let item of config.actionItemList">
-            <button mat-menu-item>{{ item.title }}</button>
+            <ng-container [ngSwitch]="item.actionType">
+              <ng-container *ngSwitchCase="'link'">
+                <button mat-menu-item [routerLink]="item.routeLink">
+                  {{ item.title }}
+                </button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <button mat-menu-item>
+                  {{ item.title }}
+                </button>
+              </ng-container>
+            </ng-container>
           </ng-container>
         </mat-menu>
       </td>

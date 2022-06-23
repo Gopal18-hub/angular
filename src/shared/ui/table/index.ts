@@ -14,6 +14,7 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { MatMenuModule } from "@angular/material/menu";
     MatPaginatorModule,
     MatTooltipModule,
     MatMenuModule,
+    RouterModule,
   ],
   exports: [MaxTableComponent],
   declarations: [MaxTableComponent],
