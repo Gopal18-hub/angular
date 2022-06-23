@@ -15,8 +15,9 @@ export class MessageDialogService {
 
   success(message: string) {
     const dialogRef = this.dialog.open(MessageSuccessComponent, {
-      width: "25vw",
-      maxWidth: "25vw",
+      width: "40vw",
+      minWidth: "25vw",
+      maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
       autoFocus: false,
@@ -27,6 +28,7 @@ export class MessageDialogService {
   error(message: string) {
     const dialogRef = this.dialog.open(MessageInfoComponent, {
       width: "40vw",
+      minWidth: "25vw",
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
@@ -38,6 +40,7 @@ export class MessageDialogService {
   info(message: string) {
     const dialogRef = this.dialog.open(MessageWarningComponent, {
       width: "40vw",
+      minWidth: "25vw",
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
@@ -49,6 +52,7 @@ export class MessageDialogService {
   confirm(icon: string, message: string) {
     const dialogRef = this.dialog.open(MessageSuccessComponent, {
       width: "40vw",
+      minWidth: "25vw",
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
