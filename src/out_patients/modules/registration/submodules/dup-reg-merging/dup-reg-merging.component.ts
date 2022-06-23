@@ -154,12 +154,13 @@ export class DupRegMergingComponent implements OnInit {
 
   searchPatient(formdata: any) {
     this.defaultUI=false;
-    if (formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] == '' && formdata['email'] == '')
-    {
-      return;
-    }
-    else if(formdata['name'] == '' && formdata['phone'] == '' 
+    // if (formdata['name'] == '' && formdata['phone'] == '' 
+    // && formdata['dob'] == '' && formdata['email'] == '')
+    // {
+    //   return;
+    // }
+    // else 
+    if(formdata['name'] == '' && formdata['phone'] == '' 
     && formdata['dob'] != '' && formdata['email'] == '')
     {
       return;

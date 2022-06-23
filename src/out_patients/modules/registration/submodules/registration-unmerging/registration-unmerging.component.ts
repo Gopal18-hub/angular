@@ -153,8 +153,8 @@ export class RegistrationUnmergingComponent implements OnInit {
 
   searchPatient(formdata:any) {
     this.defaultUI = false;
-    if(formdata['maxID'] == '' && formdata['ssn'] == '' )
-      return;
+    // if(formdata['maxID'] == '' && formdata['ssn'] == '' )
+    //   return;
       this.maxid = formdata['maxID'];
       this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {
