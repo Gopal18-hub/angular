@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HeaderModule } from "../../../shared/modules/header";
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
+import { PatientHistoryModule } from "@modules/patient-history";
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
@@ -18,7 +19,6 @@ import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
-import { PatientHistoryModule } from "@modules/patient-history";
 
 
 @NgModule({
