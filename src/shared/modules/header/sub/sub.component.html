@@ -234,13 +234,17 @@
       </ng-container>
     </ul>
     <mat-menu #menu="matMenu" class="sub-header-menu">
-      <ng-template matMenuContent let-aliasMenuItems="childrens">
+      <ng-template
+        matMenuContent
+        let-aliasMenuItems="childrens"
+        let-tenentPath="tenentPath"
+      >
         <div class="flex flex-column flex-wrap box">
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
               mat-button
               class="max-health-primary-color"
-              [routerLink]="menuItem.defaultPath"
+              [routerLink]="tenentPath + menuItem.defaultPath"
               disableRipple="true"
               routerLinkActive="active-link"
               (isActiveChange)="onPageRouterLinkActive($event, menuItem)"
