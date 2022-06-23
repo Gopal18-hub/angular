@@ -145,3 +145,9 @@
 <ng-template #checkbox let-data>
   <mat-checkbox [checked]="!!data.output" disabled></mat-checkbox>
 </ng-template>
+
+<ng-template #button let-data>
+ 
+ <button
+mat-raised-button (click)="!!data.output" disabled></button>
+</ng-template>
