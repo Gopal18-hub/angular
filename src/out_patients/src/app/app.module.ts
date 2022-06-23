@@ -18,6 +18,7 @@ import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { PatientHistoryModule } from "@modules/patient-history";
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
     //MaxHealthSnackBarModule,
     EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
+    PatientHistoryModule
   
   ],
   providers: [
