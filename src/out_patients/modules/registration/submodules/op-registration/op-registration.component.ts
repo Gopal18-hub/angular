@@ -168,6 +168,7 @@ export class OpRegistrationComponent implements OnInit {
       dob: {
         type: "date",
         title: "Date of Birth",
+        required: false,
       },
       age: {
         type: "number",
@@ -398,6 +399,12 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      console.log(formdata);      
+      this.searchPatient(formdata.data);
+    });
+
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
@@ -463,7 +470,19 @@ export class OpRegistrationComponent implements OnInit {
       formdata["adhaar"] == ""
     ) {
       return;
-    } else {
+    } 
+    else if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] == "" &&
+      formdata["maxID"] != "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      this.OPRegForm.value.maxid=formdata["maxID"];
+      this.getPatientDetailsByMaxId();
+    } 
+    else {
       //need to implement search functionality
     }
   }
@@ -514,11 +533,31 @@ export class OpRegistrationComponent implements OnInit {
       this.questions[8].elementRef.addEventListener(
         "blur",
         this.onageCalculator.bind(this)
+      );          
+       //IdenityType value change
+      this.questions[17].elementRef.addEventListener(
+       "blur",
+        this.checkIndetityValue.bind(this)
       );
-    });
+
+      //Father or Spouse value change
+      this.questions[13].elementRef.addEventListener(
+        "blur",
+        this.checkFatherSpouseName.bind(this)
+      );
+
+    });   
+
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges.subscribe((value: any) => {
-      this.validatePatientAge();
+      if(value != undefined
+        && value != null
+        && value != ""
+        && value > 0)
+        {
+          this.validatePatientAge();
+        }
+     
     });
 
     //value chnage event of country to fill city list and staelist
@@ -537,10 +576,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].required = false;
           this.questions[25].required = false;
           this.questions[26].required = false;
-          this.OPRegForm.controls["nationality"].setValue({
-            title: "",
-            value: 0,
-          });
+          this.OPRegForm.controls["nationality"].setValue(undefined);
         }
       }
     });
@@ -614,25 +650,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       }
     });
-
-    //IdenityType value change
-    this.questions[17].elementRef.addEventListener(
-      "blur",
-      this.checkIndetityValue.bind(this)
-    );
-
-     //IdenityType value change
-     this.questions[17].elementRef.addEventListener(
-      "blur",
-      this.checkIndetityValue.bind(this)
-    );
-
-    // //Father or Spouse value change
-    // this.questions[32].elementRef.addEventListener(
-    //   "click",
-    //  this.vipChecked.bind(this)
-    // );
-
+   
     // nationality value chnage event to enable foreigner
     this.OPRegForm.controls["nationality"].valueChanges.subscribe(
       (value: any) => {
@@ -1946,9 +1964,9 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       if (
         this.OPRegForm.value.age > 0 &&
-        this.OPRegForm.value.age <= 18 &&
+        this.OPRegForm.value.age < 18 &&
         (this.OPRegForm.controls["ageType"].value != null ||
-          this.OPRegForm.controls["ageType"].value != undefined)
+        this.OPRegForm.controls["ageType"].value != undefined)
       ) {
         if (
           this.OPRegForm.value.dob == null ||
@@ -1960,6 +1978,12 @@ export class OpRegistrationComponent implements OnInit {
             "DOB is required, Age is less than 18 Years";
         }
       }
+      else if(this.OPRegForm.controls["ageType"].value == 1
+            &&  this.OPRegForm.value.age >= 18 ){
+              this.OPRegForm.controls["dob"].setErrors({ incorrect: false });
+              this.questions[8].customErrorMessage =
+                "";
+      }     
     }
   }
   //DIALOGS ---------------------------------------------------------------------------------------

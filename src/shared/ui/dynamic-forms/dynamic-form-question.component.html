@@ -231,6 +231,7 @@
           [formControlName]="question.key"
           [value]="question.value"
           #element
+          color="primary"
         >
           <ng-container *ngFor="let opt of question.options">
             <mat-radio-button [value]="opt.value" class="py-2">{{
@@ -436,7 +437,7 @@
       >
       <ul class="list-unstyled">
         <li *ngFor="let opt of question.options">
-          <mat-checkbox [formControlName]="question.key">
+          <mat-checkbox [formControlName]="question.key" color="primary">
             {{ opt.title }}
           </mat-checkbox>
         </li>

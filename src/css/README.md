@@ -278,7 +278,15 @@ And we can use any breakpoint prefix, i.e:
 - `.w-3/5` -> `width: 60%`
 - `.w-4/5` -> `width: 80%`
 - `.w-1/6` -> `width: 16.66667%`
-- `.w-full` -> `width: 100%`
+- `.w-1/7` -> `width: 14.28571%`
+- `.w-6/7` -> `width: 85.71428%`
+- `.w-9/10`-> `width: 90%`
+- `.w-1/10`-> `width: 10%`
+- `.w-3/10`-> `width: 30%`
+- `.w-2/10`-> `width: 20%`
+- `.w-1/45`-> `width: 45%`
+- `.w-1/15`-> `width: 15%`
+- `.w-full`-> `width: 100%`
 - `.w-screen` -> `width: 100vw`
 - `.w-auto` -> `width: auto`
 
