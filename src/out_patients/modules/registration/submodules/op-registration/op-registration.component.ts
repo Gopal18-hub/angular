@@ -43,6 +43,7 @@ import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
 import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
+import { Router } from "@angular/router";
 
 export interface DialogData {
   expieryDate: Date;
@@ -388,7 +389,8 @@ export class OpRegistrationComponent implements OnInit {
     private reportService: ReportService,
     private patientService: PatientService,
     private searchService: SearchService,
-    public zone: NgZone
+    public zone: NgZone,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -441,6 +443,7 @@ export class OpRegistrationComponent implements OnInit {
     } else {
       this.OPRegForm.controls["seaFarer"].enable();
     }
+    this.checkForMaxID();
   }
 
   checkForMaxID() {
@@ -479,11 +482,40 @@ export class OpRegistrationComponent implements OnInit {
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
-      this.OPRegForm.value.maxid=formdata["maxID"];
-      this.getPatientDetailsByMaxId();
+      let maxid=Number(formdata["maxID"].split('.')[1]);
+      if(maxid<=0 && maxid != undefined && maxid != null)
+      {
+        this.OPRegForm.value.maxid=formdata["maxID"];
+        this.getPatientDetailsByMaxId();
+      }     
     } 
     else {
-      //need to implement search functionality
+       this.http.get(
+        ApiConstants.searchPatientApi(
+          formdata["maxID"],
+          "",
+          formdata["name"],
+          formdata["phone"],
+          formdata["dob"],
+          formdata["adhaar"],
+          formdata["healthID"]
+        )
+      ).subscribe(
+        (resultData) => {        
+          this.router.navigateByUrl('/find-patient', { state: {
+            MaxId:formdata["maxID"],
+            Name:formdata["name"],
+            PhoneNumber: formdata["phone"],
+            DOB: formdata["dob"],
+            HealthId:formdata["healthID"],
+            AadhaarId:formdata["adhaar"],
+              }
+            });         
+        },
+        (error) => {
+         
+        }
+      );
     }
   }
 
@@ -1311,7 +1343,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["mobileNumber"].setValue(
       this.patientDetails?.pphone
     );
-    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title, 0);
+    this.OPRegForm.controls["title"].setValue( this.patientDetails?.title);
     this.OPRegForm.controls["firstName"].setValue(
       this.patientDetails?.firstname
     );
@@ -1322,17 +1354,16 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
     this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
-    this.OPRegForm.controls["ageType"].setValue(
-      this.patientDetails?.ageTypeName
-    );
+    this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
     this.OPRegForm.controls["country"].setValue({
       title: this.patientDetails?.countryName,
-      value: this.patientDetails?.companyId,
+      value: this.patientDetails?.pcountry,
+    });   
+    this.OPRegForm.controls["nationality"].setValue({
+      title:this.patientDetails?.nationalityName,
+      value:this.patientDetails?.nationality,
     });
-    this.OPRegForm.controls["nationality"].setValue(
-      this.patientDetails?.nationality
-    );
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
@@ -1446,12 +1477,28 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["healthId"].setValue("");
     this.OPRegForm.controls["address"].setValue(this.patientDetails?.address1);
     this.OPRegForm.controls["pincode"].setValue(this.patientDetails?.ppinCode);
-    this.OPRegForm.controls["locality"].setValue(this.patientDetails?.locality);
-    this.OPRegForm.controls["city"].setValue(this.patientDetails?.city);
-    this.OPRegForm.controls["district"].setValue(
-      this.patientDetails?.districtName
-    );
-    this.OPRegForm.controls["state"].setValue(this.patientDetails?.stateName);
+    this.OPRegForm.controls["state"].setValue({
+      title: this.patientDetails?.stateName,
+      value: this.patientDetails?.pstate,
+    });
+    this.OPRegForm.controls["district"].setValue({
+      title: this.patientDetails?.districtName,
+      value: this.patientDetails?.pdistrict,
+    });
+    this.OPRegForm.controls["city"].setValue({
+      title: this.patientDetails?.city,
+      value: this.patientDetails?.pcity,
+    });
+    this.OPRegForm.controls["locality"].setValue({
+      title: this.patientDetails?.localityName,
+      value: this.patientDetails?.locality,
+    });
+   // this.OPRegForm.controls["locality"].setValue(this.patientDetails?.locality);
+   // this.OPRegForm.controls["city"].setValue(this.patientDetails?.city);
+    // this.OPRegForm.controls["district"].setValue(
+    //   this.patientDetails?.districtName
+    // );
+    //this.OPRegForm.controls["state"].setValue(this.patientDetails?.stateName);
     this.OPRegForm.controls["vip"].setValue(this.patientDetails?.vip);
     this.OPRegForm.controls["note"].setValue(this.patientDetails?.note);
     this.OPRegForm.controls["hwc"].setValue(this.patientDetails?.hwc);
