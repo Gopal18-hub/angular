@@ -17,6 +17,16 @@
       height: 38px;
       background-color: #f9f9f9;
     }
+    .row-is-clicked {
+      font-weight: bold;
+    }
+    &.row-click {
+      .mat-row .mat-cell {
+        border-bottom: 1px solid transparent;
+        border-top: 1px solid transparent;
+        cursor: pointer;
+      }
+    }
   }
 }
 table thead:first-child tr:last-child th:first-child {
