@@ -41,10 +41,12 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
   ngOnInit(): void {
-    console.log(this.data);
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
+    if (this.config.clickSelection && this.config.clickSelection == "single") {
+      this.selection = new SelectionModel<any>(false, []);
+    }
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
       this.displayedColumns.unshift("select");
     }

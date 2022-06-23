@@ -1,0 +1,215 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper" style="background-color:white">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Employee Sponsor Tagging</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full p-2">
+        <div >
+        <form  [formGroup]="employeesponsorForm">
+            <!------------------------------------------- FIRST ROW------------------------------------------>
+            <div class="firstrow employeeclass">
+                <div class="flex p-2">
+                    <div class="flex">
+                        <div>
+                            <mat-label>Max ID</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5 ">
+                            <maxhealth-question
+                                [question]="questions[0]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[0]"
+                                [index]="0"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex ml-0">
+                        <div class="pl-0">
+                            <mat-label>Mobile No</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                                [question]="questions[1]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[1]"
+                                [index]="1"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex w-1/2">
+                        <div>
+                            <mat-label >Employee Code</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                                [question]="questions[2]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[2]"
+                                [index]="2"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div>
+                            <mat-label>Company</mat-label>
+                        </div>
+                        <div class="ml-2">
+                            <a class="text-underline"  (click)="iomClick()">IOM</a>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                                [question]="questions[3]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[3]"
+                                [index]="3"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div>
+                            <mat-label>Corporate</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                                [question]="questions[4]"
+                                [form]="employeesponsorForm"
+                                [questions]="questions[4]"
+                                [index]="4"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---------------------------------------------SECOND ROW-------------------------------------------------->
+            <div class="firstrow employeeclass mt-1">
+                <div class="first_main flex  p-2 align-items-center">
+                    <div class="flex w-1/10">
+                        <div class="w-1/2">
+                            <mat-label>Name:</mat-label>
+                        </div>
+                        <div  class="ml-3 w-1/2">
+                        <span ></span>
+                        </div>
+                    </div>
+                    <div class="flex ml-6 ">
+                        <div class="w-1/2">
+                            <mat-label>Age:</mat-label>
+                        </div>
+                        <div class="ml-3 w-1/2">
+                        <span></span>
+                        </div>
+                    </div>
+                    <div class="flex ml-6 w-1/10 ">
+                        <div class="w-1/2">
+                            <mat-label>Gender:</mat-label>
+                        </div>
+                        <div class="ml-3 w-1/2">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="flex ml-6 w-1/10">
+                        <div class="w-1/4">
+                            <mat-label>DOB:</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/4">
+                        <span></span>
+                        </div>
+                    </div>
+                    <div class="flex ml-6 w-1/10">
+                        <div class="1/2">
+                            <mat-label>Nationality:</mat-label>
+                        </div>
+                        <div class="ml-3 w-1/2">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="flex ml-6 w-1/10">
+                        <div class="w-1/4">
+                            <mat-label>SSN:</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/4">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="flex dateclass align-items-center border-radius-lg pt-0 mr-12" >
+                    <div class="flex">
+                        <maxhealth-question
+                        [question]="questions[11]"
+                        [form]="employeesponsorForm"
+                        [questions]="questions[11]"
+                        [index]="11"
+                        (click)="oncheckboxClick($event)"
+                        >
+                        </maxhealth-question>
+                        <!-- <div class="ml-3 w-3/5">
+                            <span></span>
+                        </div> -->
+                    </div>
+                
+                        <div class="flex align-items-center">
+                        <div class="ml-2">
+                            <mat-label>From Date</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                        [question]="questions[12]"
+                        [form]="employeesponsorForm"
+                        [questions]="questions[12]"
+                        [index]="12"
+                        >
+                        </maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center">
+                        <div>
+                            <mat-label>To Date</mat-label>
+                        </div>
+                        <div class="ml-3 w-3/5">
+                            <maxhealth-question
+                            [question]="questions[13]"
+                            [form]="employeesponsorForm"
+                            [questions]="questions[13]"
+                            [index]="13"
+                            >
+                            </maxhealth-question>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+       </form>
+     </div>
+     <div class="h-1/2">
+        <div class="pl-3 pt-3 employeeclass font-bold font-base">
+            <mat-label>Employee Dependent Details</mat-label>
+        </div>
+        <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
+        <div class="h-1/2 mt-2">
+            <maxhealth-table [config]="config1"></maxhealth-table>
+        </div>
+        <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
+        <div class="h-1/2 mt-2">
+            <maxhealth-table [config]="config2"></maxhealth-table>
+        </div>
+        <div class="float-right mt-2 mr-3">
+            <button mat-raised-button color="primary" (click)="employeeSave()">Save</button>
+            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()">Delete</button>
+            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();clearTabledata()">Clear</button>
+        </div>
+    </div>
+        
+    </div>
+      
+    
+    </mat-tab-nav-panel>
+</section>
