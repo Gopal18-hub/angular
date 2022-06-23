@@ -25,6 +25,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
+import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
 
 
 
@@ -39,7 +40,8 @@ import {MatListModule} from '@angular/material/list';
        MiscellaneousBillingComponent,
        InitiateDepositComponent,
        PaymentModeComponent,
-       RefundDialogComponent
+       RefundDialogComponent,
+       DmgMappingComponent
        
   ],
   imports: [
