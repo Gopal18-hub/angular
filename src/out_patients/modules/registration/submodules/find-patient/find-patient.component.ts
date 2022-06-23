@@ -6,6 +6,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiConstants } from "../../../../../out_patients/core/constants/ApiConstants";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "find-patient",
@@ -15,6 +16,7 @@ import { SearchService } from "../../../../../shared/services/search.service";
 export class FindPatientComponent implements OnInit {
   patientList: PatientSearchModel[] = [];
   isAPIProcess: boolean = false;
+  processingQueryParams : boolean= false;
   name = "";
   dob = "";
   maxId = "";
@@ -113,30 +115,42 @@ export class FindPatientComponent implements OnInit {
   constructor(
     private http: HttpService,
     private patientServie: PatientService,
-    private searchService: SearchService
-  ) {}
+    private searchService: SearchService,
+    private route:ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe((value)=>{
+      this.isAPIProcess = false;
+      this.searchPatient(value);
+      this.processingQueryParams = true;
+    });
+  }
 
   ngOnInit(): void {
     this.defaultUI = false;
-    this.getAllpatients().subscribe(
-      (resultData) => {
-        this.showspinner = false;
-        this.patientList = resultData as PatientSearchModel[];
-        this.patientList = this.patientServie.getAllCategoryIcons(
-          this.patientList
-        );
-
-        this.isAPIProcess = true;
-        console.log(this.patientList);
-      },
-      (error) => {
-        console.log(error);
-        this.patientList = [];
-        this.defaultUI = true;
-        this.findpatientmessage = "No records found";
-        this.findpatientimage = "norecordfound";
-      }
-    );
+ 
+    if(!this.processingQueryParams)
+    {
+      this.getAllpatients().subscribe(
+        (resultData) => {
+          this.showspinner = false;
+          this.patientList = resultData as PatientSearchModel[];
+          this.patientList = this.patientServie.getAllCategoryIcons(
+            this.patientList
+          );
+  
+          this.isAPIProcess = true;
+          console.log(this.patientList);
+        },
+        (error) => {
+          console.log(error);
+          this.patientList = [];
+          this.defaultUI = true;
+          this.findpatientmessage = "No records found";
+          this.findpatientimage = "norecordfound";
+        }
+      );
+    }
+   
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       console.log(formdata);
@@ -158,13 +172,14 @@ export class FindPatientComponent implements OnInit {
     ) {
       this.getAllpatients().subscribe(
         (resultData) => {
-          this.showspinner = false;
+          this.showspinner = false;         
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
           );
 
           this.isAPIProcess = true;
+          this.defaultUI = false;
           console.log(this.patientList);
         },
         (error) => {
@@ -194,6 +209,7 @@ export class FindPatientComponent implements OnInit {
       this.getAllpatientsBySearch().subscribe(
         (resultData) => {
           this.showspinner = false;
+          this.patientList = [];
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList

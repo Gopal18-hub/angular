@@ -132,7 +132,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
-        // pattern:"^[1-9]{1}[0-9]{9}",
+        pattern:"^[1-9]{1}[0-9]{9}",
         // minimum:10,
         // maximum:10,
       },
@@ -403,7 +403,7 @@ export class OpRegistrationComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
-      console.log(formdata);      
+        
       this.searchPatient(formdata.data);
     });
 
@@ -474,16 +474,9 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       return;
     } 
-    else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      formdata["maxID"] != "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
+    else if (formdata["maxID"] != "") {
       let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid<=0 && maxid != undefined && maxid != null)
+      if(maxid > 0 && maxid != undefined && maxid != null)
       {
         this.OPRegForm.value.maxid=formdata["maxID"];
         this.getPatientDetailsByMaxId();
@@ -502,13 +495,13 @@ export class OpRegistrationComponent implements OnInit {
         )
       ).subscribe(
         (resultData) => {        
-          this.router.navigateByUrl('/find-patient', { state: {
-            MaxId:formdata["maxID"],
-            Name:formdata["name"],
-            PhoneNumber: formdata["phone"],
-            DOB: formdata["dob"],
-            HealthId:formdata["healthID"],
-            AadhaarId:formdata["adhaar"],
+          this.router.navigate(["registration","find-patient"], { queryParams: {
+            maxID:formdata["maxID"],
+            name:formdata["name"],
+            phone: formdata["phone"],
+            dob: formdata["dob"],
+            healthID:formdata["healthID"],
+            adhaar:formdata["adhaar"],
               }
             });         
         },
@@ -608,6 +601,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].required = false;
           this.questions[25].required = false;
           this.questions[26].required = false;
+          this.questions[21]= {...this.questions[21]};
           this.OPRegForm.controls["nationality"].setValue(undefined);
         }
       }
@@ -1755,11 +1749,8 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName == "Father") {
+    ) {     
+      if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -1770,11 +1761,8 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName != "Father") {
+    ) {      
+      if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
