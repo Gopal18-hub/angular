@@ -54,6 +54,28 @@ export class DupRegMergingComponent implements OnInit {
 
   config: any = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        //actionType: "link",
+        //routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
     displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
@@ -114,8 +136,9 @@ export class DupRegMergingComponent implements OnInit {
 
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
-      if(result == "success"){
-      this.messageDialogService.success("Max ID has been mapped with "); 
+      var resultArr = result.split(',');
+      if(resultArr[0] == "success"){
+      this.messageDialogService.success("Max ID has been mapped with " + resultArr[1] ); 
       this.getAllpatientsBySearch().subscribe((resultData) => {
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);

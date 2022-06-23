@@ -51,6 +51,28 @@ export class HotListingApprovalComponent implements OnInit {
 
   hotlistingconfig: any  = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: "dd/MM/yyyy",
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
@@ -96,6 +118,28 @@ export class HotListingApprovalComponent implements OnInit {
 
   hotlistingapproveorrejectconfig: any  = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+       // actionType: "link",
+       // routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: "dd/MM/yyyy",
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
