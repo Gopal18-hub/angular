@@ -51,6 +51,28 @@ export class HotListingApprovalComponent implements OnInit {
 
   hotlistingconfig: any  = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: "dd/MM/yyyy",
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
@@ -96,6 +118,28 @@ export class HotListingApprovalComponent implements OnInit {
 
   hotlistingapproveorrejectconfig: any  = {
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+       // actionType: "link",
+       // routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: "dd/MM/yyyy",
     selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
@@ -164,7 +208,7 @@ export class HotListingApprovalComponent implements OnInit {
   this.showmain("Hot Listing Approval");
   }
 
-  hsplocationId:any = 9; //  this.cookie.get('HSPLocationId');
+  hsplocationId:any = 16; //  this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
@@ -173,7 +217,7 @@ export class HotListingApprovalComponent implements OnInit {
     }
     else if (link == "Hot Listing Approval") {
       this.activeLink1 = link;
-      this.showgrid('View Pending Request');
+      this.activeLink2 != "" ? this.showgrid(this.activeLink2) : this.showgrid("View Pending Request");      
     }
     else if (link == "OP Refund Approval") {
 
@@ -273,6 +317,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
         console.log(resultdata);
+        this.messageDialogService.success("Update Request Approved");
         this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
@@ -290,6 +335,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
         console.log(resultdata);
+        this.messageDialogService.success("Update Request Rejected");
         this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
@@ -307,6 +353,7 @@ export class HotListingApprovalComponent implements OnInit {
       let userId = Number(this.cookie.get('UserId'));
       this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
         console.log(resultdata);
+        this.messageDialogService.success("Update Request Deleted");
         this.showgrid("View Pending Request");
         this.HotListidList = [];
       },error=>{
