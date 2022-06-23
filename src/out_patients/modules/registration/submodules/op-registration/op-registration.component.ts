@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, NgZone } from "@angular/core";
+import { Component, Inject, OnInit, NgZone, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -987,6 +987,7 @@ export class OpRegistrationComponent implements OnInit {
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
+          if(this.similarContactPatientList.length!=0){
           const similarSoundDialogref = this.matDialog.open(
             SimilarPatientDialog,
             {
@@ -998,11 +999,19 @@ export class OpRegistrationComponent implements OnInit {
             }
           );
           similarSoundDialogref.afterClosed().subscribe((result) => {
-            console.log(result.selection);
+            console.log(result.data["added"][0].maxid);
+            let maxID=result.data["added"][0].maxid;
+            this.OPRegForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId()
             console.log("seafarers dialog was closed");
            
           });
-        });
+        }else{
+          console.log("no data found");
+        }
+      }
+        );
+      
         
     }
   }
@@ -2398,6 +2407,7 @@ function phone(
   templateUrl: "similarPatient-dialog.html",
 })
 export class SimilarPatientDialog {
+  @ViewChild("patientDetail") tableRows: any
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -2405,11 +2415,18 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
+  
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
+  }
+  ngAfterViewInit()
+  {
+    this.getMaxID();
   }
 
   config: any = {
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: [
       "maxid",
       "firstName",
@@ -2450,9 +2467,21 @@ export class SimilarPatientDialog {
       },
     },
   };
-  getMaxID(event: Event) {   
+  getMaxID() {   
     console.log(event);
-      this.dialogRef.close({ data: event });
     
+    this.tableRows.selection.changed.subscribe((res:any)=>{
+
+      this.dialogRef.close({data:res});
+
+
+    })
   }
+    
+  
+       
+     
+     
+    
+  
 }
