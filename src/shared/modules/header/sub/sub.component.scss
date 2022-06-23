@@ -51,6 +51,7 @@
       width: 100%;
       li {
         white-space: nowrap;
+        font-size: 0.8rem;
         &.active {
           background: var(--primary-color);
           color: #fff;
