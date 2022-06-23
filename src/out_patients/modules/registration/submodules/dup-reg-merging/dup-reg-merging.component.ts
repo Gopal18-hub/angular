@@ -52,7 +52,7 @@ export class DupRegMergingComponent implements OnInit {
     private searchService: SearchService,
     private messageDialogService:MessageDialogService) { }
 
-  config: any = {
+  config: any = {    
     actionItems: true,
     actionItemList: [
       {
@@ -139,11 +139,14 @@ export class DupRegMergingComponent implements OnInit {
       var resultArr = result.split(',');
       if(resultArr[0] == "success"){
       this.messageDialogService.success("Max ID has been mapped with " + resultArr[1] ); 
+      
       this.getAllpatientsBySearch().subscribe((resultData) => {
+      
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-        this.mergebuttonDisabled = true;        
+        this.mergebuttonDisabled = true;     
+        this.tableRows.selection.clear();   
       });
     }   
    

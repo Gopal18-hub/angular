@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { PatientSearchModel } from "../../../../../out_patients/core/models/patientSearchModel";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../shared/services/http.service";
@@ -6,13 +6,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiConstants } from "../../../../../out_patients/core/constants/ApiConstants";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "find-patient",
   templateUrl: "./find-patient.component.html",
   styleUrls: ["./find-patient.component.scss"],
 })
-export class FindPatientComponent implements OnInit {
+export class FindPatientComponent implements OnInit, AfterViewInit {
   patientList: PatientSearchModel[] = [];
   isAPIProcess: boolean = false;
   name = "";
@@ -25,8 +26,12 @@ export class FindPatientComponent implements OnInit {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
+  
+  @ViewChild("table") tableRows: any
 
   config: any = {
+    clickedRows: true,
+    clickSelection: "single",
     actionItems: true,
     actionItemList: [
       {
@@ -113,7 +118,8 @@ export class FindPatientComponent implements OnInit {
   constructor(
     private http: HttpService,
     private patientServie: PatientService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +134,12 @@ export class FindPatientComponent implements OnInit {
 
         this.isAPIProcess = true;
         console.log(this.patientList);
+        setTimeout(()=>{        
+          this.tableRows.selection.changed.subscribe((res:any)=>{ 
+            console.log(res);
+            this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}})
+          });
+        });
       },
       (error) => {
         console.log(error);
@@ -145,6 +157,9 @@ export class FindPatientComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(){
+    
+  }
   searchPatient(formdata: any) {
     this.defaultUI = false;
     this.showspinner = true;
