@@ -168,6 +168,7 @@ export class OpRegistrationComponent implements OnInit {
       dob: {
         type: "date",
         title: "Date of Birth",
+        required: false,
       },
       age: {
         type: "number",
@@ -398,6 +399,12 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+      console.log(formdata);      
+      this.searchPatient(formdata.data);
+    });
+
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
@@ -463,7 +470,19 @@ export class OpRegistrationComponent implements OnInit {
       formdata["adhaar"] == ""
     ) {
       return;
-    } else {
+    } 
+    else if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      formdata["dob"] == "" &&
+      formdata["maxID"] != "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      this.OPRegForm.value.maxid=formdata["maxID"];
+      this.getPatientDetailsByMaxId();
+    } 
+    else {
       //need to implement search functionality
     }
   }
@@ -1941,7 +1960,9 @@ export class OpRegistrationComponent implements OnInit {
       }
       else if(this.OPRegForm.controls["ageType"].value == 1
             &&  this.OPRegForm.value.age >= 18 ){
-       
+              this.OPRegForm.controls["dob"].setErrors({ incorrect: false });
+              this.questions[8].customErrorMessage =
+                "";
       }     
     }
   }
