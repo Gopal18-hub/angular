@@ -20,7 +20,7 @@ export class SavedialogComponent implements OnInit {
    
   }
   savesuccess(){
-  this.dialog.open(SavesuccessdialogComponent,{width:'40vw',height:'40vh'})
+  this.dialog.open(SavesuccessdialogComponent,{width:'20vw',height:'40vh'})
   }
 
 }

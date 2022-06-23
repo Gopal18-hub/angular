@@ -202,8 +202,8 @@
             <maxhealth-table [config]="config2"></maxhealth-table>
         </div>
         <div class="float-right mt-2 mr-3">
-            <button mat-raised-button color="primary" [disabled]="true">Save</button>
-            <button mat-raised-button color="primary" class="ml-3"  [disabled]="true">Delete</button>
+            <button mat-raised-button color="primary" (click)="employeeSave()">Save</button>
+            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()">Delete</button>
             <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();clearTabledata()">Clear</button>
         </div>
     </div>

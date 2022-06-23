@@ -254,17 +254,19 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(employeesponsorform.mobileNo);
   }
 
-  opendialog()
+  //save popup
+  employeeSave()
   {
-    this.dialog.open(SavedialogComponent, {width: '30vw', height: '30vh', data: {
+    console.log('inside employee save');
+    this.dialog.open(SavedialogComponent, {width: '20vw', height: '30vh', data: {
       id: 12334,
       name: 'name'
     }});
   }
 
   //delete popup
-  deletebuttonclick(){
-    this.dialog.open(DeletedialogComponent,  {width:'40vw',
+  employeeDelete(){
+    this.dialog.open(DeletedialogComponent,  {width:'20vw',
       height:'30vh',panelClass:'custom-container'},)
   }
 
@@ -290,7 +292,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   clearTabledata(){
     let todaydate=new Date();
     this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
-    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
+    this.employeesponsorForm.controls["todate"].setValue(todaydate);
   }
 
 }
