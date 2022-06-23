@@ -83,4 +83,8 @@ export class SubComponent implements OnInit {
   searchSubmit() {
     this.searchService.searchTrigger.next({ data: this.searchForm.value });
   }
+
+  goToHome() {
+    window.location.href = window.location.origin + "/dashboard";
+  }
 }

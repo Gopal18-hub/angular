@@ -31,8 +31,8 @@ export class FindPatientComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/registration/dup-reg-merging",
+        //actionType: "link",
+        //routeLink: "",
       },
       {
         title: "Bill Details",
