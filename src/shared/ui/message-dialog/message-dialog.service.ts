@@ -19,6 +19,7 @@ export class MessageDialogService {
       maxWidth: "25vw",
       panelClass: "message-success",
       data: { message: message },
+      autoFocus: false,
     });
     return dialogRef;
   }
@@ -29,6 +30,7 @@ export class MessageDialogService {
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
+      autoFocus: false,
     });
     return dialogRef;
   }
@@ -39,6 +41,7 @@ export class MessageDialogService {
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
+      autoFocus: false,
     });
     return dialogRef;
   }
@@ -49,6 +52,7 @@ export class MessageDialogService {
       maxWidth: "40vw",
       panelClass: "message-success",
       data: { message: message },
+      autoFocus: false,
     });
     return dialogRef;
   }

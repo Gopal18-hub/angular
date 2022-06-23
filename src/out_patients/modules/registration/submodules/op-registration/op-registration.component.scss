@@ -46,3 +46,9 @@
 .hash-background {
   background-color: #f6f6f6;
 }
+
+::ng-deep {
+  .table-height{
+    height:65vh;
+  }
+}

@@ -9,6 +9,7 @@ import { HeaderModule } from "../../../shared/modules/header";
 
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
+import { PatientHistoryModule } from "@modules/patient-history";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
@@ -31,6 +32,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
     RegistrationModule,
     HttpClientModule,
     MaxHealthMessageDialogModule,
+    PatientHistoryModule
   ],
   providers: [
     DatePipe,

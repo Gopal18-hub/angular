@@ -76,6 +76,11 @@ export namespace ApiConstants {
     return environment.CommonApiUrl + "api/lookup/getcity/"+`${stateId}`;
   };
 
+  //PATIENT ADDRESS ocality BY City ID, RESPONSE type commonCityTypeModel[]
+  export const localityBycityID = (cityId: number) => {
+    return environment.CommonApiUrl + "api/lookup/getlocality/"+`${cityId}`;
+  };
+
   //PATIENT ADDRESS CITY MASTER MODEL, RESPONSE type commonCityTypeModel[]
   export const cityMasterData =
     environment.CommonApiUrl + "api/lookup/getcity";

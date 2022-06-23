@@ -30,6 +30,8 @@
           [value]="question.value"
           [placeholder]="question.placeholder"
           [pattern]="question.pattern"
+          [minlength]="question.minimum"
+          [maxlength]="question.maximum"
           #element
         />
         <mat-error *ngIf="!isValid && !isCorrect">
@@ -161,7 +163,9 @@
     <ng-container *ngSwitchCase="'email'">
       <mat-label
         [attr.for]="question.key"
+        class="cursor-pointer"
         [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        (click)="generateRandomEmail()"
         >{{ question.label }}</mat-label
       >
       <mat-form-field
@@ -371,9 +375,12 @@
             {{ opt.title }}
           </mat-option>
         </mat-autocomplete>
-        <mat-error *ngIf="!isValid">
+        <mat-error *ngIf="!isValid && !isCorrect">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
+        <mat-error *ngIf="isCorrect && question.customErrorMessage">
+          {{ question.customErrorMessage }}</mat-error
+        >
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>
@@ -434,6 +441,9 @@
           </mat-checkbox>
         </li>
       </ul>
+      <mat-error *ngIf="isCorrect && question.customErrorMessage">
+        {{ question.customErrorMessage }}</mat-error
+      >
     </ng-container>
   </div>
 </ng-container>
