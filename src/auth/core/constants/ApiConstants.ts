@@ -10,17 +10,18 @@ export namespace ApiConstants {
   export const searchPatientDefault =
     environment.PatientApiUrl + "api/patient/getallpatientssearch";
 
-    export const searchPatientApi = (maxId?: string,
-      SSN?:string,
-      Name?:string,
-      PhoneNumber?:string,
-      DOB?:string,
-      AadhaarId?:string,
-      HealthId?:string
-      ) => {
-      return (
-        environment.PatientApiUrl + 'api/patient/getallpatientssearch?MaxId='+maxId+'&SSN='+SSN+'&Name='+Name+'&PhoneNumber='+PhoneNumber+'&DOB='+DOB+'&AadhaarId='+AadhaarId+'&HealthId='+HealthId
-      );
-    };
-  
+  export function getSearchPatientUrl(
+    MaxId?: string,
+    Name?: string,
+    PhoneNumber?: string,
+    DOB?: string,
+    AadhaarId?: string,
+    HealthId?: string
+  ) {
+    let searchPatient =
+      environment.PatientApiUrl +
+      "api/patient/getallpatientssearch?MaxId=${MaxId}&Name=${Name}&PhoneNumber=${PhoneNumber}&DOB=${DOB}&AadhaarId=${AadhaarId}&HealthId=${HealthId}";
+
+    return searchPatient;
+  }
 }
