@@ -163,7 +163,9 @@
     <ng-container *ngSwitchCase="'email'">
       <mat-label
         [attr.for]="question.key"
+        class="cursor-pointer"
         [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        (click)="generateRandomEmail()"
         >{{ question.label }}</mat-label
       >
       <mat-form-field
