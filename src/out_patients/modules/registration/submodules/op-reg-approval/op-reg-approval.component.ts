@@ -31,7 +31,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = 9; // this.cookie.get('HSPLocationId');
+  hsplocationId:any = 9 ; //this.cookie.get('HSPLocationId');
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -236,7 +236,7 @@ export class OpRegApprovalComponent implements OnInit {
     if(link == "View Pending Request")
     {      
       this.activeLink2 = link;     
-        this.getopapprovalpending().subscribe((resultData) => {
+        this.getopapprovalaccepted().subscribe((resultData) => {
           this.showapprovalspinner = false;
           this.defaultUI = true; 
           this.opApprovalList  = resultData as opRegApprovalModel[];

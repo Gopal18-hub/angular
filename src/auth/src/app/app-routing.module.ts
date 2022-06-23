@@ -1,5 +1,10 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import {
+  RouterModule,
+  Routes,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from "@angular/router";
 import { AuthCallbackComponent } from "../../../auth/modules/openid/auth-callback/auth-callback.component";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 
@@ -18,5 +23,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [],
 })
 export class AppRoutingModule {}

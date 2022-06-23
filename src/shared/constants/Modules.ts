@@ -7,6 +7,7 @@ export namespace MaxModules {
       moreOptions: false,
       globalSearchKey: "global",
       childrens: [],
+      dontShow: true,
     },
     {
       title: "Out Patients",
@@ -19,6 +20,7 @@ export namespace MaxModules {
           title: "Registration",
           defaultPath: "registration",
           moreOptions: true,
+          tenentPath: "/out-patients",
           childrens: [
             {
               id: 111,

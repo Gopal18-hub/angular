@@ -114,18 +114,18 @@ export class DupRegMergingComponent implements OnInit {
 
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
-      this.messageDialogService.success("Patient has been merged successfully"); 
+      if(result == "success"){
+      this.messageDialogService.success("Max ID has been mapped with "); 
       this.getAllpatientsBySearch().subscribe((resultData) => {
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-      },(error:any)=>{
-        // this.mergingmessage  = "No records found";
-        // this.mergeicon  = "norecordfound";
+        this.mergebuttonDisabled = true;        
       });
-     
-    });
-  }
+    }   
+   
+  });
+}
   
 
 
