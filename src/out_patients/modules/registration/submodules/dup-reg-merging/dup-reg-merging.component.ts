@@ -175,7 +175,7 @@ export class DupRegMergingComponent implements OnInit {
     this.name = formdata['name'];
     this.mobile  = formdata['phone'];
     this.email = formdata['email'];
-    this.dob = formdata['dob'];
+    this.dob = formdata['dob'] == null ? '' : formdata['dob'];
    
     this.getAllpatientsBySearch().subscribe((resultData) => {
       this.showmergespinner = false;  
