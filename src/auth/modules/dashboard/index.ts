@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { DashboardRoutingModule } from "./routes";
 import { DashboardComponent } from "./dashboard.component";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
@@ -18,7 +18,7 @@ import { MatIconModule } from "@angular/material/icon";
     MatIconModule,
   ],
   exports: [],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [],
 })
 export class DashboardModule {}

@@ -82,6 +82,16 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (
+      data: any,
+      sortHeaderId: string
+    ): string => {
+      if (typeof data[sortHeaderId] === "string") {
+        return data[sortHeaderId].toLocaleLowerCase();
+      }
+
+      return data[sortHeaderId];
+    };
   }
 
   /** Announce the change in sort state for assistive technology. */

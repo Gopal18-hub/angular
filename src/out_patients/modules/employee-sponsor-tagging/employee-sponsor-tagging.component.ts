@@ -24,49 +24,19 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       maxId:{
         type:"string",
         defaultValue: (this.cookie.get("LocationIACode")),
-        // title:"Max ID"
       },
       mobileNo:{
         type:"number",
-        //maximum:10
-        // title:"Mobile No"
       },
       employeeCode:{
         type:"string",
-        // title:"Employee code"
       },
       company:{
         type:"autocomplete",
-        // title:"Company"
       },
       corporate:{
         type:"autocomplete",
         disabled:true
-        // title:"Corporate"
-      },
-      name:{
-       type:"string",
-        //title:"Name"
-      },
-      age:{
-        type:"number",
-        // title:"Age"
-      },
-      gender:{
-        type:"string",
-        // title:"Gender"
-      },
-      dob:{
-        type:"string",
-        // title:"DOB"
-      },
-      nationality:{
-        type:"string",
-        // title:"Nationality"
-      },
-      ssn:{
-        type:"number",
-       // title:"SSN"
       },
       datecheckbox:{
         type:"checkbox",
@@ -76,15 +46,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       fromdate:{
         type:"date",
-       // title:"From Date"
       },
       todate:{
         type:"date",
-        //title:"To Date"
       }
     }
   }
 
+  name:any;
   employeesponsorForm!: FormGroup;
 
   questions: any;
@@ -117,16 +86,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   this.employeesponsorForm.controls["corporate"].disable();
   
   }
-  // employeesponsorform = new FormGroup({
-  //   maxId: new FormControl(''),
-  //   mobileNo: new FormControl(''),
-  //   employeeCode: new FormControl(''),
-  //   company:new FormControl(''),
-  //   corporate:new FormControl(''),
-  //   datecheckbox: new FormControl(''),
-  //   fromDate: new FormControl(''),
-  //   toDate: new FormControl(''),
-  // });
+ 
 
 
 
@@ -219,20 +179,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     }
   }
 
-  hospitals=[
-    {
-      hospitalName:'Apollo',
-      Location:'Chennai'
-    },
-    {
-      hospitalName:'MIOT',
-      Location:'Chennai'
-    },
-    {
-      hospitalName:'Global',
-      Location:'Chennai'
-    }
-  ]
 
   disabled(employeesponsorform:any){
     if(employeesponsorform.maxId){
@@ -241,9 +187,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       return false;
 
     }
-    
-    
-    // if(this.employeesponsorform.maxId)
   }
 
   maxidApicall(employeesponsorform:any){
@@ -258,7 +201,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   employeeSave()
   {
     console.log('inside employee save');
-    this.dialog.open(SavedialogComponent, {width: '20vw', height: '30vh', data: {
+    this.dialog.open(SavedialogComponent, {width: '25vw', height: '30vh', data: {
       id: 12334,
       name: 'name'
     }});
@@ -266,7 +209,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   //delete popup
   employeeDelete(){
-    this.dialog.open(DeletedialogComponent,  {width:'20vw',
+    this.dialog.open(DeletedialogComponent,  {width:'25vw',
       height:'30vh',panelClass:'custom-container'},)
   }
 

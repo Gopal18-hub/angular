@@ -75,7 +75,7 @@ export class HotListingApprovalComponent implements OnInit {
     ],
     dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
+    displayedColumns: ['maxid', 'ssn', 'fullname', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -85,7 +85,7 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      patientName : {
+      fullname : {
         title: 'Name',
         type: 'string',
         tooltipColumn: "patientName",
@@ -142,7 +142,7 @@ export class HotListingApprovalComponent implements OnInit {
     ],
     dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'patientName', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
+    displayedColumns: ['maxid', 'ssn', 'fullname', 'age', 'gender', 'hotListing_Header', 'hotListing_Comment', 'categoryIcons'],
     columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -152,7 +152,7 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'SSN',
         type: 'number'
       },
-      patientName : {
+      fullname : {
         title: 'Name',
         type: 'string',
         tooltipColumn: "patientName"
@@ -187,17 +187,19 @@ export class HotListingApprovalComponent implements OnInit {
     private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe, private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
+   // this.today= 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchhotlisting(formdata.data);
     });
    
   }
   searchhotlisting(formdata:any) {
+    this.today = new Date();
     this.defaultUI = true;
     if(formdata['from'] == "" || formdata['to'] == "" ){
       this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  
-      this.to = formdata['to'] != "" ? formdata['to'] : this.today;
+      this.to = formdata['to'] != "" ? formdata['to'] : new Date();
       this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');  
   }else{
       this.from = formdata['from'];
@@ -208,12 +210,12 @@ export class HotListingApprovalComponent implements OnInit {
   this.showmain("Hot Listing Approval");
   }
 
-  hsplocationId:any = 16; //  this.cookie.get('HSPLocationId');
+  hsplocationId:any = this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
-    if (link == "OP Registration Approval") {
-      this.router.navigateByUrl('/registration/op-reg-approval');  
+    if (link == "OP Registration Approval") {   
+      this.router.navigate(["registration","op-reg-approval"]);   
     }
     else if (link == "Hot Listing Approval") {
       this.activeLink1 = link;
@@ -243,6 +245,10 @@ export class HotListingApprovalComponent implements OnInit {
     if (link == "View Pending Request") {  
       this.activeLink2 = link;  
       this.getophotlistingpending().subscribe((resultData) => {
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstname + ' ' + item.lastName;
+          return item;
+        });
         this.showhotlistingspinner = false;
         this.defaultUI = true;
         this.opApprovalHotList  = resultData as opRegHotlistModel[];
@@ -269,6 +275,10 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalreject = false;
       this.enablehotlistbtn = false;
       this.getophotlistingaccept().subscribe((resultData) => {
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstname + ' ' + item.lastName;
+          return item;
+        });
         this.defaultUI = true;
         this.showhotlistingspinner = false;
         this.opApprovalHotlistacceptList  = resultData as opRegHotlistModel[];
@@ -292,6 +302,10 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalreject = true;
       this.enablehotlistbtn = false;
       this.getophotlistingreject().subscribe((resultData) => {
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstname + ' ' + item.lastName;
+          return item;
+        });
         this.showhotlistingspinner = false;
         this.defaultUI = true;
         this.opApprovalHotlistrejectList  = resultData as opRegHotlistModel[];
