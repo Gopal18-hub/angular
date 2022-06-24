@@ -1,9 +1,19 @@
-<div
-      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
+<div class="relative"
     >
-
-    <form [formGroup]="OPUpdateForm" class="mt-2 mb-2">
-        <div class="font-xs mr-4 w-1/2">
+           
+      <button
+          mat-icon-button
+          aria-label="close dialog"
+          mat-dialog-close
+          class="absolute max-dialog-close-icon"
+          type="button"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+    <form [formGroup]="OPUpdateForm" class="mt-4 mb-6">
+      <div
+    class="flex justify-between flex-wrap">
+        <div class="'w-1/45'">
             <maxhealth-question
               [question]="questions[0]"
               [form]="OPUpdateForm"
@@ -12,7 +22,7 @@
             ></maxhealth-question>
           </div>
    
-        <div class="font-xs mr-4 w-1/2">
+        <div class="w-1/45">
             <maxhealth-question
               [question]="questions[1]"
               [form]="OPUpdateForm"
@@ -21,7 +31,7 @@
             ></maxhealth-question>
         
     </div>
-    <div class="font-xs mr-4 w-1/2">
+    <div class="w-1/45">
         <maxhealth-question
           [question]="questions[2]"
           [form]="OPUpdateForm"
@@ -30,7 +40,7 @@
         ></maxhealth-question>
     
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[3]"
       [form]="OPUpdateForm"
@@ -39,7 +49,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[4]"
       [form]="OPUpdateForm"
@@ -48,7 +58,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[5]"
       [form]="OPUpdateForm"
@@ -57,7 +67,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[6]"
       [form]="OPUpdateForm"
@@ -66,7 +76,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[7]"
       [form]="OPUpdateForm"
@@ -75,7 +85,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[8]"
       [form]="OPUpdateForm"
@@ -84,7 +94,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[9]"
       [form]="OPUpdateForm"
@@ -93,7 +103,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[10]"
       [form]="OPUpdateForm"
@@ -102,7 +112,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[11]"
       [form]="OPUpdateForm"
@@ -111,7 +121,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[12]"
       [form]="OPUpdateForm"
@@ -120,7 +130,7 @@
     ></maxhealth-question>
 
 </div>
-<div class="font-xs mr-4 w-1/2">
+<div class="w-1/45">
     <maxhealth-question
       [question]="questions[13]"
       [form]="OPUpdateForm"
@@ -129,6 +139,8 @@
     ></maxhealth-question>
 
 </div>
+</div>
+
 </form>
 
 <div class="flex w-full justify-between flex-wrap flex-column">

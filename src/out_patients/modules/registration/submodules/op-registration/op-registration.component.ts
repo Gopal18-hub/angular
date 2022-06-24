@@ -2180,9 +2180,12 @@ export class OpRegistrationComponent implements OnInit {
   modifyDialogg() {
 
     this.getModifiedPatientDetailObj();
+    this.modfiedPatiendDetails.title=this.genderList.filter(g=>g.id === this.OPRegForm.controls['gender'].value)[0].name;
+    this.modfiedPatiendDetails.nationality=this.OPRegForm.value.nationality.title;
+    
     const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
             width: "30vw",
-            height: "80vh",
+            height: "90vh",
             data:{patientDetails:this.patientDetails,modifiedDetails:this.modfiedPatiendDetails}
      });
     // const modifyDetailDialogref = this.matDialog.open(FormDialogueComponent, {

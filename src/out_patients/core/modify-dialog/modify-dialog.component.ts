@@ -50,7 +50,7 @@ updateregistrationFormData= {
         modifiedfirstName: {
           type: "string",
           title: "First Name",
-          defaultValue: this.data.modifiedDetails.firstName,
+          defaultValue: this.data.modifiedDetails.firstname,
           required: true,
           readonly: true,
         },
@@ -65,7 +65,7 @@ updateregistrationFormData= {
         modifiedmiddleName: {
           type: "string",
           title: "Middle Name",
-          defaultValue: this.data.modifiedDetails.firstNamemiddleName,
+          defaultValue: this.data.modifiedDetails.middleName,
           required: true,
           readonly: true,
         },
@@ -80,7 +80,7 @@ updateregistrationFormData= {
         modifiedlastName: {
           type: "string",
           title: "Last Name",
-          defaultValue: this.data.modifiedDetails.firstNamelastName,
+          defaultValue: this.data.modifiedDetails.lastName,
           required: true,
           readonly: true,
         },
@@ -95,7 +95,7 @@ updateregistrationFormData= {
         modifiedgender: {
           type: "string",
           title: "Gender",
-          defaultValue: this.data.modifiedDetails.firstNamegender.title,
+          defaultValue: this.data.modifiedDetails.title,
           required: true,
           readonly: true,
         },
@@ -110,7 +110,7 @@ updateregistrationFormData= {
         modifiedemail: {
           type: "email",
           title: "Email id",
-          defaultValue: this.data.modifiedDetails.firstNameemailId,
+          defaultValue: this.data.modifiedDetails.pemail,
           required: true,
           readonly: true,
         },
@@ -124,7 +124,7 @@ updateregistrationFormData= {
         modifiedMobileNumber: {
           type: "number",
           title: "Mobile Number",
-          defaultValue: this.data.modifiedDetails.firstNamemobileNumber,
+          defaultValue: this.data.modifiedDetails.pphone,
           required: true,
           readonly: true,
         },
@@ -138,7 +138,7 @@ updateregistrationFormData= {
         modifiedNationality: {
           type: "string",
           title: "Nationality",
-          defaultValue: this.data.modifiedDetails.firstNamenationality.title,
+          defaultValue: this.data.modifiedDetails.nationality,
           required: true,
           readonly: true,
         },
@@ -151,7 +151,7 @@ updateregistrationFormData= {
         modifiedForeigner: {
           type: "checkbox",
           options: [{ title: "Foreigner" }],
-          defaultValue: this.data.modifiedDetails.firstNameforeigner,
+          defaultValue: this.data.modifiedDetails.foreigner,
           readonly: true,
         },
        }
