@@ -25,6 +25,9 @@
       overflow: hidden;
       white-space: break-spaces;
       word-break: break-all;
+      &:not(.mat-column-select) {
+        min-width: 128px;
+      }
     }
     &.row-click {
       .mat-row .mat-cell {
