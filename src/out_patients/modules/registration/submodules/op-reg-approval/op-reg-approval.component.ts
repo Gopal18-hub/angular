@@ -31,7 +31,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = 9 ; //this.cookie.get('HSPLocationId');
+  hsplocationId:any = 16 ; //this.cookie.get('HSPLocationId');
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -58,7 +58,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvalconfig: any  = {   
     dateformat: "dd/MM/yyyy",
     selectBox : true,
-    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'fullname', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -72,7 +72,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      firstName : {
+      fullname : {
         title: 'Patient Name',
         type: 'string',
         tooltipColumn: "modifiedPtnName",
@@ -116,7 +116,7 @@ export class OpRegApprovalComponent implements OnInit {
   approveorrejectconfig: any  = {  
     dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'title', 'firstName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'modifiedPtnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -130,7 +130,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      firstName : {
+      modifiedPtnName : {
         title: 'Patient Name',
         type: 'string',
         tooltipColumn: "modifiedPtnName",
@@ -180,7 +180,7 @@ export class OpRegApprovalComponent implements OnInit {
     });
   }
 
-  searchApproval(formdata:any) {
+  searchApproval(formdata:any) {   
     this.defaultUI = true;
     this.showapprovalspinner = true;
     if(formdata['from'] == "" || formdata['to'] == "" ){
@@ -196,15 +196,15 @@ export class OpRegApprovalComponent implements OnInit {
       this.to = formdata['to'];
       this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');         
     }
-    this.showmain("OP Registration Approval");
+   this.showmain("OP Registration Approval");
   }
 
   showmain(link: any)
   {
     console.log(link);
     if(link == "OP Registration Approval")
-    {
-      this.showgrid('View Pending Request');
+    {      
+      this.activeLink2 != "" ? this.showgrid(this.activeLink2) : this.showgrid("View Pending Request");
     }
     else if(link == "Hot Listing Approval")
     { 
@@ -236,10 +236,13 @@ export class OpRegApprovalComponent implements OnInit {
     if(link == "View Pending Request")
     {      
       this.activeLink2 = link;     
-        this.getopapprovalaccepted().subscribe((resultData) => {
+        this.getopapprovalpending().subscribe((resultData) => {
           this.showapprovalspinner = false;
           this.defaultUI = true; 
           this.opApprovalList  = resultData as opRegApprovalModel[];
+          //this.opApprovalList[0].fullname=this.opApprovalList[0].firstName+this.opApprovalList[0].lastName;
+          //console.log(this.opApprovalList);
+
           this.showapprovalpending = true;        
           this.showapprovalaccepting = false;
           this.showapprovalreject = false;
@@ -314,7 +317,7 @@ export class OpRegApprovalComponent implements OnInit {
    
     this.approvaltable.selection.selected.map((s:any)=>{
     this.ApprovalidList.push(s.id)});
-    let userId = Number(this.cookie.get('UserId'));
+    let userId = 1 ;//Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
@@ -333,11 +336,11 @@ export class OpRegApprovalComponent implements OnInit {
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
       this.ApprovalidList.push(s.id)});
-      let userId = Number(this.cookie.get('UserId'));
+      let userId = 1 ;// Number(this.cookie.get('UserId'));
       this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
   
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
-        this.messageDialogService.success("Update Request Rejected");
+        this.messageDialogService.success("Request is deleted");
         this.showgrid("View Pending Request");
         this.ApprovalidList = [];
       },error=>{
