@@ -734,6 +734,17 @@ export class OpRegistrationComponent implements OnInit {
 
   }
 
+  clear(){
+    this.OPRegForm.reset();
+    this.categoryIcons = [];
+    this.OPRegForm.value.maxid =  this.cookie.get("LocationIACode") + ".";
+    this.OPRegForm.controls["nationality"].setValue({
+      title: "Indian",
+      value: 149,
+    });
+    this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
+    this.checkForMaxID();
+  }
   //validation for Indetity Number if Identity Type Selected
   checkIndetityValue() {
     let IdenityType = this.OPRegForm.controls["idenityType"].value;
