@@ -25,9 +25,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
-import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
-
-
+import { VisitHistoryDialogComponent } from './submodules/details/visit-history-dialog/visit-history-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MaxHealthTableModule } from '../../../shared/ui/table';
+import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-report.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.compon
        InitiateDepositComponent,
        PaymentModeComponent,
        RefundDialogComponent,
-       DmgMappingComponent
+       VisitHistoryDialogComponent,
+       DispatchReportComponent
        
   ],
   imports: [
@@ -59,7 +61,9 @@ import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.compon
     MatRadioModule,
     BrowserModule,
     CommonModule,
-    MatListModule
+    MatListModule,
+    MatIconModule,
+    MaxHealthTableModule
   ],
   exports: [],
   providers: [],
