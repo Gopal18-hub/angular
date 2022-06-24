@@ -31,7 +31,7 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
-    actionItems: true,
+    actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     displayedColumns: [
@@ -52,11 +52,11 @@ export class PatientHistoryComponent implements OnInit {
     columnsInfo: {
       billno: {
         title: "Bill.No",
-        type: "number",
+        type: "string",
       },
       type: {
         title: "Type",
-        type: "number",
+        type: "string",
       },
       billdate: {
         title: "Bill Date",
@@ -92,7 +92,7 @@ export class PatientHistoryComponent implements OnInit {
       },
       company: {
         title: "Company",
-        type: "number",
+        type: "string",
       },
       operatorname: {
         title: "Operator Name",
@@ -105,7 +105,11 @@ export class PatientHistoryComponent implements OnInit {
       },
     },
   };
-
+  data: any[] = [
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+    refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+  }
+  ]
   patientname:any;
   age:any;
   gender:any;
