@@ -27,7 +27,7 @@ const routes: Routes = [
           { path:  'dmg-mapping', component:DmgMappingComponent}       
     
       ]
-    }
+    },
   {
     path: "billing",
     component: BillingComponent,
