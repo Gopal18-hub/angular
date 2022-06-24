@@ -32,6 +32,7 @@ export class opRegApprovalModel{
     foreigner:number;
     uForeigner:number;
     ssn:string;
+    fullname?:string;
   
   constructor(
     maxid: string,
@@ -66,7 +67,8 @@ export class opRegApprovalModel{
     insertdatetime: string,
     foreigner:number,
     uForeigner:number,
-    ssn:string
+    ssn:string,
+    fullname?:string
   )  {
    this.maxid= maxid,
    this.ptnName= ptnName,
@@ -101,6 +103,6 @@ export class opRegApprovalModel{
    this.foreigner=foreigner,
    this.uForeigner=uForeigner;
    this.ssn =ssn;
-  
+   this.fullname = firstName + lastName;
   }
 }

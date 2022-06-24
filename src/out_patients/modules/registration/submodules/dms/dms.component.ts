@@ -12,7 +12,7 @@ export class DMSComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<DMSComponent>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
-    this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
+    this.searchResults={verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"};
   }
   
 
