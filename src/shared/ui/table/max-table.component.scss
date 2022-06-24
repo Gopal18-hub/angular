@@ -35,8 +35,15 @@
       padding-right: 8px;
       &.mat-column-select {
         width: 24px !important;
+        flex: 0 0 24px !important;
       }
     }
+    .mat-header-row {
+      .mat-column-select {
+        width: 60px !important;
+      }
+    }
+
     &.row-click {
       .mat-row .mat-cell {
         // border-bottom: 1px solid transparent;
