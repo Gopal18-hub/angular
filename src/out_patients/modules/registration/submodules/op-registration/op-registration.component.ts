@@ -454,35 +454,11 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  searchPatient(formdata: any) {
-    if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      formdata["maxID"] == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      return;
-    } else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] != "" &&
-      formdata["maxID"] == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      return;
-    } 
-    else if (formdata["maxID"] != "") {
+  searchPatient(formdata: any) {    
       let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid > 0 && maxid != undefined && maxid != null)
-      {
-        this.OPRegForm.value.maxid=formdata["maxID"];
-        this.getPatientDetailsByMaxId();
-      }     
-    } 
-    else {
+      if(maxid <= 0 && maxid == undefined && maxid == null){
+        formdata["maxID"] = "";
+      }
        this.http.get(
         ApiConstants.searchPatientApi(
           formdata["maxID"],
@@ -506,10 +482,17 @@ export class OpRegistrationComponent implements OnInit {
             });         
         },
         (error) => {
-         
+          this.router.navigate(["registration","find-patient"], { queryParams: {
+            maxID:formdata["maxID"],
+            name:formdata["name"],
+            phone: formdata["phone"],
+            dob: formdata["dob"],
+            healthID:formdata["healthID"],
+            adhaar:formdata["adhaar"],
+              }
+            });         
         }
-      );
-    }
+      );    
   }
 
   checkForModifiedPatientDetail() {

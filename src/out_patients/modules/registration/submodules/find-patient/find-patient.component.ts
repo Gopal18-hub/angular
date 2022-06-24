@@ -7,6 +7,7 @@ import { ApiConstants } from "../../../../../out_patients/core/constants/ApiCons
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
 import { Router,ActivatedRoute } from "@angular/router";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "find-patient",
@@ -121,7 +122,8 @@ export class FindPatientComponent implements OnInit {
     private patientServie: PatientService,
     private searchService: SearchService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private datepipe: DatePipe
   ) {
     this.route.queryParams.subscribe((value)=>{
       this.isAPIProcess = false;
@@ -131,7 +133,7 @@ export class FindPatientComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.defaultUI = false;
+    //this.defaultUI = false;
  
     if(!this.processingQueryParams)
     {
@@ -159,6 +161,7 @@ export class FindPatientComponent implements OnInit {
         (error) => {
           console.log(error);
           this.patientList = [];
+          this.showspinner = false;
           this.defaultUI = true;
           this.findpatientmessage = "No records found";
           this.findpatientimage = "norecordfound";
@@ -177,11 +180,27 @@ export class FindPatientComponent implements OnInit {
   searchPatient(formdata: any) {
     this.defaultUI = false;
     this.showspinner = true;
+    let dateOfBirth;
+    let maxid = formdata["maxID"].split('.')[1];
+      if(maxid <= 0 || maxid == undefined || maxid == null || maxid == "")
+      {
+        this.maxId = "";
+      }
+      else{
+        this.maxId = formdata["maxID"];
+      }
+      if(formdata["dob"] != undefined || formdata["dob"] != null || formdata["dob"] != "")
+      {
+        dateOfBirth = this.datepipe.transform(formdata["dob"],'dd/MM/yyyy');
+      }
+      else{
+        dateOfBirth = "";
+      }
     if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
       formdata["dob"] == "" &&
-      formdata["maxID"] == "" &&
+      this.maxId == "" &&
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
@@ -212,43 +231,20 @@ export class FindPatientComponent implements OnInit {
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
       formdata["dob"] != "" &&
-      formdata["maxID"] == "" &&
+      this.maxId == "" &&
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
-      return;
-    } else {
-      let maxid = formdata["maxID"].split('.')[1];
-      if(maxid <= 0 || maxid == "" || maxid == undefined)
-      {
-        this.getAllpatients().subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            this.patientList = resultData as PatientSearchModel[];
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-	      resultData = resultData.map((item:any) => {
-            item.fullname = item.firstName + ' ' + item.lastName;
-            return item;
-          });
-    
-            this.isAPIProcess = true;
-            console.log(this.patientList);
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-      }else{
-        this.maxId = formdata["maxID"];
+      this.patientList = [];
+      this.showspinner = false;
+      this.defaultUI = true;
+      this.findpatientimage= "placeholder";
+      this.findpatientmessage = "Please Select Name / Phone with DOB as search criteria";
+          
+    } else {  
         this.name = formdata["name"];
         this.mobile = formdata["phone"];
-        this.dob = formdata["dob"];
+        this.dob = dateOfBirth || "";
         this.aadhaarId = formdata["adhaar"];
         this.healthId = formdata["healthID"];
         this.getAllpatientsBySearch().subscribe(
@@ -266,12 +262,12 @@ export class FindPatientComponent implements OnInit {
           (error) => {
             console.log(error);
             this.patientList = [];
+            this.showspinner = false;
             this.defaultUI = true;
             this.findpatientmessage = "No records found";
             this.findpatientimage = "norecordfound";
           }
-        );
-      }     
+        );         
     }
   }
 
