@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, NgZone } from "@angular/core";
+import { Component, Inject, OnInit, NgZone, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -99,8 +99,8 @@ export class OpRegistrationComponent implements OnInit {
     HCF: number;
   } = {
     passportNo: "",
-    IssueDate: "null",
-    Expirydate: "null",
+    IssueDate: "",
+    Expirydate: "",
     Issueat: "",
     HCF: 0,
   };
@@ -132,7 +132,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "number",
         title: "Mobile Number",
         required: true,
-        // pattern:"^[1-9]{1}[0-9]{9}",
+        pattern:"^[1-9]{1}[0-9]{9}",
         // minimum:10,
         // maximum:10,
       },
@@ -403,7 +403,7 @@ export class OpRegistrationComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
-      console.log(formdata);      
+        
       this.searchPatient(formdata.data);
     });
 
@@ -474,16 +474,9 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       return;
     } 
-    else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      formdata["maxID"] != "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
+    else if (formdata["maxID"] != "") {
       let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid<=0 && maxid != undefined && maxid != null)
+      if(maxid > 0 && maxid != undefined && maxid != null)
       {
         this.OPRegForm.value.maxid=formdata["maxID"];
         this.getPatientDetailsByMaxId();
@@ -502,13 +495,13 @@ export class OpRegistrationComponent implements OnInit {
         )
       ).subscribe(
         (resultData) => {        
-          this.router.navigateByUrl('/find-patient', { state: {
-            MaxId:formdata["maxID"],
-            Name:formdata["name"],
-            PhoneNumber: formdata["phone"],
-            DOB: formdata["dob"],
-            HealthId:formdata["healthID"],
-            AadhaarId:formdata["adhaar"],
+          this.router.navigate(["registration","find-patient"], { queryParams: {
+            maxID:formdata["maxID"],
+            name:formdata["name"],
+            phone: formdata["phone"],
+            dob: formdata["dob"],
+            healthID:formdata["healthID"],
+            adhaar:formdata["adhaar"],
               }
             });         
         },
@@ -608,6 +601,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].required = false;
           this.questions[25].required = false;
           this.questions[26].required = false;
+          this.questions[21]= {...this.questions[21]};
           this.OPRegForm.controls["nationality"].setValue(undefined);
         }
       }
@@ -708,38 +702,39 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
       (value: any) => {
-        if (value) {
+        if  (value && !this.MaxIDExist) {
           this.showPassportDetails();
         }
       }
     );
 
     this.OPRegForm.controls["seaFarer"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.seafarersDetailsdialog();
       }
     });
 
     this.OPRegForm.controls["hotlist"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value && !this.MaxIDExist) {
         this.openHotListDialog();
       }
     });
     this.OPRegForm.controls["vip"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if  (value) {
         this.openVipNotes();
       }
     });
     this.OPRegForm.controls["note"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openNotes();
       }
     });
     this.OPRegForm.controls["hwc"].valueChanges.subscribe((value: any) => {
-      if (value) {
+      if (value && !this.MaxIDExist) {
         this.openHWCNotes();
       }
     });
+
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -770,6 +765,19 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  vipChecked()
+  {
+    this.OPRegForm.controls["vip"]
+      .valueChanges.subscribe(
+        (value: any) => {
+          if  (value) {
+            this.openHotListDialog();
+          }
+        }
+      );
+     
+  
+  }
   //validation for empty Father or SPouse Name if Type selected
   checkFatherSpouseName() {
     let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
@@ -1000,12 +1008,13 @@ export class OpRegistrationComponent implements OnInit {
     if (!this.MaxIDExist) {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
-          phone: this.OPRegForm.value.PhoneNumber,
+          phone: this.OPRegForm.value.mobileNumber,
         })
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
-          const seafarersDetailDialogref = this.matDialog.open(
+          if(this.similarContactPatientList.length!=0){
+          const similarSoundDialogref = this.matDialog.open(
             SimilarPatientDialog,
             {
               width: "100vw",
@@ -1015,7 +1024,21 @@ export class OpRegistrationComponent implements OnInit {
               },
             }
           );
-        });
+          similarSoundDialogref.afterClosed().subscribe((result) => {
+            console.log(result.data["added"][0].maxid);
+            let maxID=result.data["added"][0].maxid;
+            this.OPRegForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId()
+            console.log("seafarers dialog was closed");
+           
+          });
+        }else{
+          console.log("no data found");
+        }
+      }
+        );
+      
+        
     }
   }
 
@@ -1309,7 +1332,10 @@ export class OpRegistrationComponent implements OnInit {
         this.getModifiedPatientDetailObj()
       )
       .subscribe((resultData: PatientDetails) => {
-        this.setValuesToOPRegForm(resultData);
+        
+        if(this.OPRegForm.value.maxid){
+        this.getPatientDetailsByMaxId(); 
+        }       // this.setValuesToOPRegForm(resultData);
         console.log(resultData);
       });
   }
@@ -1755,11 +1781,8 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName == "Father") {
+    ) {     
+      if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -1770,11 +1793,8 @@ export class OpRegistrationComponent implements OnInit {
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {
-      let selectedName = this.fatherSpouseOptionList.filter(
-        (f) => f.value === this.OPRegForm.controls["fatherSpouse"].value
-      )[0].title;
-      if (selectedName != "Father") {
+    ) {      
+      if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2017,8 +2037,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openVipNotes() {
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "VIP Remarks",
         form: {
@@ -2029,6 +2049,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+              defaultValue: this.vip,
             },
           },
         },
@@ -2043,8 +2064,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -2055,6 +2076,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+              defaultValue: this.noteRemark,
             },
           },
         },
@@ -2071,10 +2093,10 @@ export class OpRegistrationComponent implements OnInit {
 
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "50vh",
       data: {
-        title: "HWC Remarks",
+        title: "EWS Details",
         form: {
           title: "",
           type: "object",
@@ -2083,11 +2105,13 @@ export class OpRegistrationComponent implements OnInit {
               type: "string",
               title: "BPL Card No.",
               required: true,
+              defaultValue: this.ewsDetails.bplCardNo,
             },
             BPLAddress: {
               type: "textarea",
               title: "Address on card",
               required: true,
+              defaultValue: this.ewsDetails.bplCardAddress,
             },
           },
         },
@@ -2106,8 +2130,8 @@ export class OpRegistrationComponent implements OnInit {
 
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
-      width: "30vw",
-      height: "52vh",
+      width: "28vw",
+      height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2118,6 +2142,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "HWC Remarks",
               required: true,
+              defaultValue:this.hwcRemark,
             },
           },
         },
@@ -2144,7 +2169,7 @@ export class OpRegistrationComponent implements OnInit {
     //  }
     const modifyDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
-      height: "80vh",
+      height: "90vh",
       data: {
         title: "Passport Details",
         form: {
@@ -2212,7 +2237,7 @@ export class OpRegistrationComponent implements OnInit {
             modifiedgender: {
               type: "string",
               title: "Gender",
-              defaultValue: this.OPRegForm.value.gender.title,
+              defaultValue: this.genderList.filter(g=>g.id === this.OPRegForm.controls['gender'].value)[0].name,
               required: true,
               readonly: true,
             },
@@ -2306,16 +2331,19 @@ export class OpRegistrationComponent implements OnInit {
               type: "date",
               title: "Issue Date",
               required: true,
+              defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
+              defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
               type: "string",
               title: "Issued At",
               required: true,
+              defaultValue: this.passportDetails.Issueat,
             },
             hcf: {
               type: "autocomplete",
@@ -2372,21 +2400,25 @@ export class OpRegistrationComponent implements OnInit {
                 type: "string",
                 title: "HK ID",
                 required: true,
+                defaultValue:this.seafarerDetails.HKID,
               },
               vesselName: {
                 type: "string",
                 title: "Vessel name",
                 required: true,
+                defaultValue:this.seafarerDetails.Vesselname,
               },
               rank: {
                 type: "string",
                 title: "Rank",
                 required: true,
+                defaultValue:this.seafarerDetails.rank,
               },
               fdpGroup: {
                 type: "string",
                 title: "FDP Group",
                 required: true,
+                defaultValue:this.seafarerDetails.FDPGroup,
               },
             },
           },
@@ -2425,6 +2457,7 @@ function phone(
   templateUrl: "similarPatient-dialog.html",
 })
 export class SimilarPatientDialog {
+  @ViewChild("patientDetail") tableRows: any
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -2432,11 +2465,18 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
+  
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
+  }
+  ngAfterViewInit()
+  {
+    this.getMaxID();
   }
 
   config: any = {
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: [
       "maxid",
       "firstName",
@@ -2477,7 +2517,21 @@ export class SimilarPatientDialog {
       },
     },
   };
-  onNoClick(): void {
-    this.dialogRef.close();
+  getMaxID() {   
+    console.log(event);
+    
+    this.tableRows.selection.changed.subscribe((res:any)=>{
+
+      this.dialogRef.close({data:res});
+
+
+    })
   }
+    
+  
+       
+     
+     
+    
+  
 }
