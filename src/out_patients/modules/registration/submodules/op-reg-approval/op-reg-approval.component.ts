@@ -31,7 +31,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = 9 ; //this.cookie.get('HSPLocationId');
+  hsplocationId:any = this.cookie.get('HSPLocationId');
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -116,7 +116,7 @@ export class OpRegApprovalComponent implements OnInit {
   approveorrejectconfig: any  = {  
     dateformat: "dd/MM/yyyy",
     selectBox : false,
-    displayedColumns: ['maxid', 'ssn', 'title', 'modifiedPtnName', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
+    displayedColumns: ['maxid', 'ssn', 'title', 'fullname', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
         title: 'Max ID',
@@ -130,7 +130,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: 'Title',
         type: 'string'
       },
-      modifiedPtnName : {
+      fullname : {
         title: 'Patient Name',
         type: 'string',
         tooltipColumn: "modifiedPtnName",
@@ -237,12 +237,13 @@ export class OpRegApprovalComponent implements OnInit {
     {      
       this.activeLink2 = link;     
         this.getopapprovalpending().subscribe((resultData) => {
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
           this.showapprovalspinner = false;
           this.defaultUI = true; 
-          this.opApprovalList  = resultData as opRegApprovalModel[];
-          //this.opApprovalList[0].fullname=this.opApprovalList[0].firstName+this.opApprovalList[0].lastName;
-          //console.log(this.opApprovalList);
-
+          this.opApprovalList  = resultData as opRegApprovalModel[];          
           this.showapprovalpending = true;        
           this.showapprovalaccepting = false;
           this.showapprovalreject = false;
@@ -264,6 +265,10 @@ export class OpRegApprovalComponent implements OnInit {
         this.showapprovalreject = false;
         this.showapprovalpending = false;
         this.getopapprovalaccepted().subscribe((resultData) => {
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
           this.showapprovalspinner = false;
           this.defaultUI = true; 
         this.opApprovalacceptList  = resultData as opRegApprovalModel[];
@@ -282,6 +287,10 @@ export class OpRegApprovalComponent implements OnInit {
       this.activeLink2 = link;   
         this.enableapprovebtn = false;
         this.getopapprovalrejected().subscribe((resultData) => {
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
         this.showapprovalspinner = false;
         this.defaultUI = true; 
         this.opApprovalrejectList = resultData as opRegApprovalModel[];
@@ -317,7 +326,7 @@ export class OpRegApprovalComponent implements OnInit {
    
     this.approvaltable.selection.selected.map((s:any)=>{
     this.ApprovalidList.push(s.id)});
-    let userId = 1 ;//Number(this.cookie.get('UserId'));
+    let userId = Number(this.cookie.get('UserId'));
     this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);

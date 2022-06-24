@@ -61,7 +61,7 @@ export class FindPatientComponent implements OnInit, AfterViewInit {
       "maxid",
       "ssn",
       "date",
-      "firstName",
+      "fullname",
       "age",
       "gender",
       "dob",
@@ -82,7 +82,7 @@ export class FindPatientComponent implements OnInit, AfterViewInit {
         title: "Reg Date",
         type: "date",
       },
-      firstName: {
+      fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
@@ -127,6 +127,10 @@ export class FindPatientComponent implements OnInit, AfterViewInit {
     this.getAllpatients().subscribe(
       (resultData) => {
         this.showspinner = false;
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstName + ' ' + item.lastName;
+          return item;
+        });
         this.patientList = resultData as PatientSearchModel[];
         this.patientList = this.patientServie.getAllCategoryIcons(
           this.patientList
@@ -175,10 +179,14 @@ export class FindPatientComponent implements OnInit, AfterViewInit {
         (resultData) => {
           this.showspinner = false;
           this.patientList = resultData;
+          
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
           );
-
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
           this.isAPIProcess = true;
           console.log(this.patientList);
         },
@@ -213,7 +221,10 @@ export class FindPatientComponent implements OnInit, AfterViewInit {
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
           );
-
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
           this.isAPIProcess = true;
           console.log(this.patientList);
         },
