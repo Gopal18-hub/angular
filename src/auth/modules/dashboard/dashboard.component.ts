@@ -23,7 +23,29 @@ export class DashboardComponent implements OnInit {
 
 
   config: any = {
-    actionItems:true,
+    actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        //actionType: "link",
+        //routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: [
@@ -40,7 +62,7 @@ export class DashboardComponent implements OnInit {
     ],
     columnsInfo: {
       maxid: {
-        title: "MAX ID",
+        title: "Max ID",
         type: "number",
       },
       ssn: {
@@ -48,7 +70,7 @@ export class DashboardComponent implements OnInit {
         type: "number",
       },
       date: {
-        title: "Regn.Date",
+        title: "Reg.Date",
         type: "date",
       },
       firstName: {
@@ -65,7 +87,7 @@ export class DashboardComponent implements OnInit {
         type: "string",
       },
       dob: {
-        title: "Date of Birth",
+        title: "DOB",
         type: "date",
       },
       place: {
@@ -74,7 +96,7 @@ export class DashboardComponent implements OnInit {
         tooltipColumn: "completeAddress",
       },
       phone: {
-        title: "Phone No.",
+        title: "Phone",
         type: "number",
       },
       categoryIcons: {
@@ -127,19 +149,39 @@ export class DashboardComponent implements OnInit {
       return;
     }
     else{
-      this.maxId = formdata['maxID'];
-      this.name = formdata['name'];
-      this.mobile = formdata['phone'];
-      this.dob = formdata['dob'];
-      this.aadhaarId = formdata['adhaar'];
-      this.healthId = formdata['healthID'];
-      this.getAllpatientsBySearch().subscribe((resultData) => {
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
-  
-        this.apiProcessing = true;
-        console.log(this.patientList);
-      });
+      let maxid = formdata["maxID"].split('.')[1];
+      if(maxid <= 0 || maxid == "" || maxid == undefined)
+      {
+        this.getAllpatients().subscribe(
+          (resultData) => {           
+            this.patientList = resultData as PatientSearchModel[];
+            this.patientList = this.patientServie.getAllCategoryIcons(
+              this.patientList
+            );
+    
+            this.apiProcessing = true;
+            console.log(this.patientList);
+          },
+          (error) => {
+            console.log(error);
+            this.patientList = [];          
+          }
+        );
+      }else{
+        this.maxId = formdata['maxID'];
+        this.name = formdata['name'];
+        this.mobile = formdata['phone'];
+        this.dob = formdata['dob'];
+        this.aadhaarId = formdata['adhaar'];
+        this.healthId = formdata['healthID'];
+        this.getAllpatientsBySearch().subscribe((resultData) => {
+          this.patientList = resultData;
+          this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+    
+          this.apiProcessing = true;
+          console.log(this.patientList);
+        });
+      }     
     }
 
   }

@@ -187,6 +187,7 @@ export class HotListingApprovalComponent implements OnInit {
     private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe, private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
+   // this.today= 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchhotlisting(formdata.data);
     });
@@ -208,7 +209,7 @@ export class HotListingApprovalComponent implements OnInit {
   this.showmain("Hot Listing Approval");
   }
 
-  hsplocationId:any = 16; //  this.cookie.get('HSPLocationId');
+  hsplocationId:any = 9; //  this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);
