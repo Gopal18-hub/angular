@@ -18,7 +18,7 @@ export class ModifyDialogComponent implements OnInit {
   OPUpdateForm!: FormGroup;
   ufirstname:string | undefined;
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data : {patientDetails:any,modifiedDetails:any},
+    @Inject(MAT_DIALOG_DATA) public data : {patientDetails:any,modifiedDetails:any,rejectButton:boolean,submitButton:boolean},
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
     private formService: QuestionControlService,
     public matDialog: MatDialog,
@@ -166,6 +166,16 @@ updateregistrationFormData= {
        
           this.dialogRef.close();
         
+      }
+      reject()
+      {
+        this.dialogRef.close({data:"reject Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno})
+      }
+
+      Accept()
+      {
+        this.dialogRef.close({data:"Accepted Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno})
+
       }
       
     

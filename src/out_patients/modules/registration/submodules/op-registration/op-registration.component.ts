@@ -2170,6 +2170,7 @@ export class OpRegistrationComponent implements OnInit {
      });
     
     modifyDetailDialogref.afterClosed().subscribe((result) => {
+      console.log(result);
       this.postModifyCall();
     });
   }
