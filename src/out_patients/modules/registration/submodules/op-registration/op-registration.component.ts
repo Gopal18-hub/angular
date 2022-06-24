@@ -43,7 +43,7 @@ import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
 import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
-import { Router } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 
 export interface DialogData {
   expieryDate: Date;
@@ -390,8 +390,11 @@ export class OpRegistrationComponent implements OnInit {
     private patientService: PatientService,
     private searchService: SearchService,
     public zone: NgZone,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
+    
+  }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -400,12 +403,7 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     this.OPRegForm = formResult.form;
-    this.questions = formResult.questions;
-
-    this.searchService.searchTrigger.subscribe((formdata: any) => {
-        
-      this.searchPatient(formdata.data);
-    });
+    this.questions = formResult.questions;    
 
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
@@ -428,6 +426,16 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllDisttList();
     this.getAllStateList();
     this.getLocalityList();
+
+    this.route.queryParams.subscribe((value)=>{
+      this.OPRegForm.value.maxid = value['maxId'];
+      this.getPatientDetailsByMaxId();
+    });
+
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
+        
+      this.searchPatient(formdata.data);
+    });
 
     this.OPRegForm.controls["nationality"].setValue({
       title: "Indian",
@@ -454,35 +462,11 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  searchPatient(formdata: any) {
-    if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      formdata["maxID"] == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      return;
-    } else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] != "" &&
-      formdata["maxID"] == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      return;
-    } 
-    else if (formdata["maxID"] != "") {
+  searchPatient(formdata: any) {    
       let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid > 0 && maxid != undefined && maxid != null)
-      {
-        this.OPRegForm.value.maxid=formdata["maxID"];
-        this.getPatientDetailsByMaxId();
-      }     
-    } 
-    else {
+      if(maxid <= 0 && maxid == undefined && maxid == null){
+        formdata["maxID"] = "";
+      }
        this.http.get(
         ApiConstants.searchPatientApi(
           formdata["maxID"],
@@ -506,10 +490,17 @@ export class OpRegistrationComponent implements OnInit {
             });         
         },
         (error) => {
-         
+          this.router.navigate(["registration","find-patient"], { queryParams: {
+            maxID:formdata["maxID"],
+            name:formdata["name"],
+            phone: formdata["phone"],
+            dob: formdata["dob"],
+            healthID:formdata["healthID"],
+            adhaar:formdata["adhaar"],
+              }
+            });         
         }
-      );
-    }
+      );    
   }
 
   checkForModifiedPatientDetail() {
@@ -1296,8 +1287,9 @@ export class OpRegistrationComponent implements OnInit {
   MaxIDExist: boolean = false;
   getPatientDetailsByMaxId() {
     console.log(this.OPRegForm.value.maxid);
-    let regNumber = this.OPRegForm.value.maxid.split(".")[1];
-    let iacode = this.OPRegForm.value.maxid.split(".")[0];
+    
+    let regNumber = Number(this.OPRegForm.value.maxid.split('.')[1]);
+    let iacode = this.OPRegForm.value.maxid.split('.')[0];
     this.http
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
