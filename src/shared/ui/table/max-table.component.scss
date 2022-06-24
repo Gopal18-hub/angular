@@ -45,6 +45,10 @@
   align-items: center;
   justify-items: center;
   width: fit-content;
+  .mat-icon {
+    line-height: 20px;
+    height: 20px;
+  }
 }
 ::ng-deep .table-more-actions {
   border-radius: initial !important;
