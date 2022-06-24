@@ -177,9 +177,12 @@ export class DupRegMergingComponent implements OnInit {
     // }
     // else 
     if(formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] != '' && formdata['email'] == '')
+    && dateOfBirth != '' && formdata['email'] == '')
     {
-      return;
+      this.showmergespinner = false;  
+      this.defaultUI = true;
+      this.mergingmessage  = "Please Select Name / Phone with DOB as search criteria";
+      this.mergeicon  = "placeholder";
     }
        
     this.patientList = [];
@@ -212,6 +215,7 @@ export class DupRegMergingComponent implements OnInit {
       }) ;
     },(error:any)=>{
       this.defaultUI = true;
+      this.showmergespinner = false;
       this.mergingmessage  = "No records found";
       this.mergeicon  = "norecordfound";
     });
