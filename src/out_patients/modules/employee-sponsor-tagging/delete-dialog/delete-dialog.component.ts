@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconRegistry } from '@angular/material/icon';
 
 import { DomSanitizer } from '@angular/platform-browser';
+import { MessageDialogService } from '../../../../../src/shared/ui/message-dialog/message-dialog.service';
 
 
 @Component({
@@ -12,7 +13,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class DeletedialogComponent implements OnInit {
 
-  constructor(private matIconRegistry: MatIconRegistry,private domsanitiser:DomSanitizer) {
+  constructor(
+    private matIconRegistry: MatIconRegistry,
+    private domsanitiser:DomSanitizer,
+    private messagedialogservice:MessageDialogService) {
   //   this.matIconregistry
   // .addSvgIcon('warning','assets/warning.svg');
   this.matIconRegistry.addSvgIcon(
@@ -23,6 +27,9 @@ export class DeletedialogComponent implements OnInit {
    }
    
   ngOnInit(): void {
+  }
+  deletesuccess(){
+      this.messagedialogservice.success('Deleted Successfully');
   }
 
 
