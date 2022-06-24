@@ -14,7 +14,9 @@ export class AppointmentSearchDialogComponent implements OnInit {
   today = new Date();
   todayDate = new Date(this.today.setDate(this.today.getDate()));
   tomorrow =  new Date(this.today.setDate(this.today.getDate() + 1));
-
+  findpatientimage: string | undefined;
+  findpatientmessage: string | undefined;
+  defaultUI:boolean=false;
   appointmentSearchForm = new FormGroup({
     name: new FormControl(''),
     booknumber: new FormControl(''),
@@ -102,16 +104,28 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   searchAppointment() {
     this.searchResults = [];
+    console.log("app search called");
     //this.http.getExternal(ApiConstants.getAppointmentPatientSearch(this.appointmentSearchForm.value.phone,this.appointmentSearchForm.value.name,'',this.appointmentSearchForm.value.isDateRange,this.appointmentSearchForm.value.startdate,this.appointmentSearchForm.value.enddate,'',this.appointmentSearchForm.value.booknumber)).subscribe((response)=>{
     this.getAppointmentSearch().subscribe((response) => { this.searchResults = response; 
     if(this.searchResults.length==0)
     {
       this.searchAppPatient = false;
+      this.defaultUI=true;
+      this.findpatientimage = "norecordfound";
+      this.findpatientmessage="No Appointment Found"
     }
     else{
       this.searchAppPatient = true;
+      this.defaultUI=false;
     }
-    });  
+    },(error: any) => {
+      console.log(error);
+      this.searchResults = [];
+      this.defaultUI = true;
+      this.findpatientmessage = "No records found";
+      this.findpatientimage = "norecordfound";
+    }
+    );  
    
   }
   clear() {

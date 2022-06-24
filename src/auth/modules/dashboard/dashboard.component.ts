@@ -1,10 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { PatientSearchModel } from "../../../auth/core/models/patientsearchmodel";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../shared/services/http.service";
 import { ApiConstants } from "../../../auth/core/constants/ApiConstants";
 import { PatientService } from "../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../shared/services/search.service";
+import { DatePipe } from "@angular/common";
+import { Router,ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "auth-dashboard",
@@ -20,9 +22,16 @@ export class DashboardComponent implements OnInit {
   healthId = '';
   aadhaarId = '';
   mobile = '';
+  showspinner: boolean = true;
+  findpatientimage: string | undefined;
+  findpatientmessage: string | undefined;
+  defaultUI: boolean = true;
 
+  @ViewChild("table") table: any
 
   config: any = {
+    clickedRows: true,
+    clickSelection: "single",
     actionItems: true,
     actionItemList: [
       {
@@ -108,15 +117,24 @@ export class DashboardComponent implements OnInit {
   };
   constructor(private http: HttpService,
      private patientServie: PatientService,
-     private searchService:SearchService) {}
+     private searchService:SearchService,
+     private datepipe:DatePipe,
+     private router:Router) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
+      this.showspinner = false;
+      this.defaultUI = false;
       this.patientList = resultData;
-      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
-
+      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);      
       this.apiProcessing = true;
       console.log(this.patientList);
+      setTimeout(()=>{        
+        this.table.selection.changed.subscribe((res:any)=>{ 
+          console.log(res);
+          this.router.navigate(["out-patients","registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+        });
+      });
     });
     this.searchService.searchTrigger.subscribe((formdata:any)=>{
       console.log(formdata);
@@ -128,64 +146,99 @@ export class DashboardComponent implements OnInit {
     return this.http.getExternal(ApiConstants.searchPatientDefault);
   }
 
-  searchPatient(formdata:any)
-  {
-    if (formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] == '' && formdata['maxID'] == ''
-    && formdata['healthID'] == '' && formdata['adhaar'] == '')
-    {
-      this.getAllpatients().subscribe((resultData) => {
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
-  
-        this.apiProcessing = true;
-        console.log(this.patientList);
-      });
-    }
-    else if(formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] != '' && formdata['maxID'] == ''
-    && formdata['healthID'] == '' && formdata['adhaar'] == '')
-    {
-      return;
-    }
-    else{
-      let maxid = formdata["maxID"].split('.')[1];
-      if(maxid <= 0 || maxid == "" || maxid == undefined)
+  searchPatient(formdata: any) {
+   // this.defaultUI = false;
+    this.showspinner = true;
+    let dateOfBirth;
+    let maxid = formdata["maxID"].split('.')[1];
+      if(maxid <= 0 || maxid == undefined || maxid == null || maxid == "")
       {
-        this.getAllpatients().subscribe(
-          (resultData) => {           
-            this.patientList = resultData as PatientSearchModel[];
+        this.maxId = "";
+      }
+      else{
+        this.maxId = formdata["maxID"];
+      }
+      if(formdata["dob"] != undefined || formdata["dob"] != null || formdata["dob"] != "")
+      {
+        dateOfBirth = this.datepipe.transform(formdata["dob"],'dd/MM/yyyy');
+      }
+      else{
+        dateOfBirth = "";
+      }
+    if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      dateOfBirth == "" &&
+      this.maxId == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      this.getAllpatients().subscribe(
+        (resultData) => {
+          this.showspinner = false;             
+          this.patientList = resultData;
+          this.patientList = this.patientServie.getAllCategoryIcons(
+            this.patientList
+          );
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
+          this.apiProcessing = true;
+          this.defaultUI = false;
+          console.log(this.patientList);
+        },
+        (error) => {
+          console.log(error);
+          this.patientList = [];
+          this.defaultUI = true;
+          this.findpatientmessage = "No records found";
+          this.findpatientimage = "norecordfound";
+        }
+      );
+    } else if (
+      formdata["name"] == "" &&
+      formdata["phone"] == "" &&
+      dateOfBirth != "" &&
+      this.maxId == "" &&
+      formdata["healthID"] == "" &&
+      formdata["adhaar"] == ""
+    ) {
+      this.patientList = [];
+      this.showspinner = false;
+      this.defaultUI = true;
+      this.findpatientimage= "placeholder";
+      this.findpatientmessage = "Please Select Name / Phone with DOB as search criteria";
+          
+    } else {  
+        this.name = formdata["name"];
+        this.mobile = formdata["phone"];
+        this.dob = dateOfBirth || "";
+        this.aadhaarId = formdata["adhaar"];
+        this.healthId = formdata["healthID"];
+        this.getAllpatientsBySearch().subscribe(
+          (resultData) => {
+            this.showspinner = false;
+            this.defaultUI = false;
+            this.patientList = [];
+            this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
-            );
-    
+            );  
             this.apiProcessing = true;
             console.log(this.patientList);
           },
           (error) => {
             console.log(error);
-            this.patientList = [];          
+            this.patientList = [];
+            this.showspinner = false;
+            this.defaultUI = true;
+            this.findpatientmessage = "No records found";
+            this.findpatientimage = "norecordfound";
           }
-        );
-      }else{
-        this.maxId = formdata['maxID'];
-        this.name = formdata['name'];
-        this.mobile = formdata['phone'];
-        this.dob = formdata['dob'];
-        this.aadhaarId = formdata['adhaar'];
-        this.healthId = formdata['healthID'];
-        this.getAllpatientsBySearch().subscribe((resultData) => {
-          this.patientList = resultData;
-          this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
-    
-          this.apiProcessing = true;
-          console.log(this.patientList);
-        });
-      }     
+        );         
     }
-
   }
-
   getAllpatientsBySearch() {
     return this.http.get(ApiConstants.searchPatientApi(this.maxId,'', this.name, this.mobile, this.dob, this.aadhaarId, this.healthId));
   }
