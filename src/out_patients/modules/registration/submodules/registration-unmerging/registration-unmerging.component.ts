@@ -46,7 +46,29 @@ export class RegistrationUnmergingComponent implements OnInit {
   @ViewChild('table') table:any;
 
   config: any  = {
-    actionItems:true,
+    actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+       // actionType: "link",
+       // routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','categoryIcons'],
@@ -131,8 +153,8 @@ export class RegistrationUnmergingComponent implements OnInit {
 
   searchPatient(formdata:any) {
     this.defaultUI = false;
-    if(formdata['maxID'] == '' && formdata['ssn'] == '' )
-      return;
+    // if(formdata['maxID'] == '' && formdata['ssn'] == '' )
+    //   return;
       this.maxid = formdata['maxID'];
       this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {

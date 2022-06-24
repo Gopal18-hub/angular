@@ -19,6 +19,7 @@ export class MergeDialogComponent implements OnInit {
   mergePostModel:any[]=[];
   primaryid :number = 0;
   submitbtndisable:boolean = true;
+  patientnamewithmaxid:string | undefined;
 
   constructor(private http: HttpService,
     @Inject(MAT_DIALOG_DATA) public data : any,
@@ -38,8 +39,8 @@ export class MergeDialogComponent implements OnInit {
   }
   checboxSelected(event:any)
   {   
-   //this.primaryid = event.id;  
-  this.submitbtndisable = false;
+   this.patientnamewithmaxid = event.maxid + '/' + event.firstName + ' ' + event.lastName;  
+   this.submitbtndisable = false;
 
   }
   patientMerging() {   
@@ -48,7 +49,7 @@ export class MergeDialogComponent implements OnInit {
     {   
       this.mergePostModel= [];  
       this.primaryid = 0;
-      this.dialogRef.close('success'); 
+      this.dialogRef.close('success' + ',' + this.patientnamewithmaxid); 
       
     });
   }
