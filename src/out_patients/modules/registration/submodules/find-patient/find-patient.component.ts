@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { PatientSearchModel } from "../../../../../out_patients/core/models/patientSearchModel";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../shared/services/http.service";
@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ApiConstants } from "../../../../../out_patients/core/constants/ApiConstants";
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../../../shared/services/search.service";
-import { ActivatedRoute } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "find-patient",
@@ -27,8 +27,12 @@ export class FindPatientComponent implements OnInit {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
+  
+  @ViewChild("table") tableRows: any
 
   config: any = {
+    clickedRows: true,
+    clickSelection: "single",
     actionItems: true,
     actionItemList: [
       {
@@ -58,7 +62,7 @@ export class FindPatientComponent implements OnInit {
       "maxid",
       "ssn",
       "date",
-      "firstName",
+      "fullname",
       "age",
       "gender",
       "dob",
@@ -79,7 +83,7 @@ export class FindPatientComponent implements OnInit {
         title: "Reg Date",
         type: "date",
       },
-      firstName: {
+      fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
@@ -116,7 +120,8 @@ export class FindPatientComponent implements OnInit {
     private http: HttpService,
     private patientServie: PatientService,
     private searchService: SearchService,
-    private route:ActivatedRoute
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.route.queryParams.subscribe((value)=>{
       this.isAPIProcess = false;
@@ -133,6 +138,10 @@ export class FindPatientComponent implements OnInit {
       this.getAllpatients().subscribe(
         (resultData) => {
           this.showspinner = false;
+	   resultData = resultData.map((item:any) => {
+          item.fullname = item.firstName + ' ' + item.lastName;
+          return item;
+        });
           this.patientList = resultData as PatientSearchModel[];
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
@@ -140,6 +149,12 @@ export class FindPatientComponent implements OnInit {
   
           this.isAPIProcess = true;
           console.log(this.patientList);
+	   setTimeout(()=>{        
+          this.tableRows.selection.changed.subscribe((res:any)=>{ 
+            console.log(res);
+            this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+          });
+        });
         },
         (error) => {
           console.log(error);
@@ -177,7 +192,10 @@ export class FindPatientComponent implements OnInit {
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
           );
-
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
           this.isAPIProcess = true;
           this.defaultUI = false;
           console.log(this.patientList);
@@ -210,6 +228,10 @@ export class FindPatientComponent implements OnInit {
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
+	      resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          });
     
             this.isAPIProcess = true;
             console.log(this.patientList);
