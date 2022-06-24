@@ -52,7 +52,7 @@ export class DupRegMergingComponent implements OnInit {
     private searchService: SearchService,
     private messageDialogService:MessageDialogService) { }
 
-  config: any = {
+  config: any = {    
     actionItems: true,
     actionItemList: [
       {
@@ -78,7 +78,7 @@ export class DupRegMergingComponent implements OnInit {
     ],
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'fullname', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
     columnsInfo: {
       maxid: {
         title: 'Max ID',
@@ -92,7 +92,7 @@ export class DupRegMergingComponent implements OnInit {
         title: 'Reg Date',
         type: 'date'
       },
-      firstName: {
+      fullname: {
         title: 'Name',
         type: 'string',
         tooltipColumn: "patientName",
@@ -133,17 +133,22 @@ export class DupRegMergingComponent implements OnInit {
   }
 
   openDialog() {
-
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
       var resultArr = result.split(',');
       if(resultArr[0] == "success"){
       this.messageDialogService.success("Max ID has been mapped with " + resultArr[1] ); 
+      
       this.getAllpatientsBySearch().subscribe((resultData) => {
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstName + ' ' + item.lastName;
+          return item;
+        });
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-        this.mergebuttonDisabled = true;        
+        this.mergebuttonDisabled = true;     
+        this.tableRows.selection.clear();   
       });
     }   
    
@@ -173,7 +178,11 @@ export class DupRegMergingComponent implements OnInit {
     this.dob = formdata['dob'];
    
     this.getAllpatientsBySearch().subscribe((resultData) => {
-      this.showmergespinner = false;     
+      this.showmergespinner = false;  
+      resultData = resultData.map((item:any) => {
+        item.fullname = item.firstName + ' ' + item.lastName;
+        return item;
+      });   
       this.results = resultData;
       this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;

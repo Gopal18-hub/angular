@@ -24,7 +24,7 @@ export class getmergepatientsearch {
   middleName: string;
   lastName: string;
   categoryIcons?: string;
-
+  fullname?:string;
   constructor(
     id: number,
     maxid: string,
@@ -49,7 +49,8 @@ export class getmergepatientsearch {
     firstName: string,
     middleName: string,
     lastName: string,
-    categoryIcons?: string
+    categoryIcons?: string,
+    fullname?:string
   ) {
     this.id = id;
     this.maxid = maxid;
@@ -75,5 +76,6 @@ export class getmergepatientsearch {
     this.middleName = middleName;
     this.lastName = lastName;
     this.categoryIcons = categoryIcons;
+    this.fullname = firstName + ' ' + lastName;
   }
 }
