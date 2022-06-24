@@ -19,6 +19,7 @@ export class PatientSearchModel {
   mergeLinked: string;
   id: number;
   categoryIcons?: any[];
+  fullname?: string;
   constructor(
     maxid: string,
     ssn: string,
@@ -39,7 +40,8 @@ export class PatientSearchModel {
     firstName: string,
     lastName: string,
     id: number,
-    categoryIcons?: any[]
+    categoryIcons?: any[],
+    fullname?:string,
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -61,5 +63,6 @@ export class PatientSearchModel {
     this.mergeLinked = mergeLinked;
     this.id = id;
     this.categoryIcons = categoryIcons;
+    this.fullname = firstName + ' ' + lastName;
   }
 }
