@@ -21,8 +21,10 @@ export class DashboardComponent implements OnInit {
   healthId = '';
   aadhaarId = '';
   mobile = '';
+  showspinner: boolean = true;
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
+  defaultUI: boolean = true;
 
   config: any = {
     actionItems: true,
@@ -131,7 +133,9 @@ export class DashboardComponent implements OnInit {
     return this.http.getExternal(ApiConstants.searchPatientDefault);
   }
 
-  searchPatient(formdata: any) {   
+  searchPatient(formdata: any) {
+    this.defaultUI = false;
+    this.showspinner = true;
     let dateOfBirth;
     let maxid = formdata["maxID"].split('.')[1];
       if(maxid <= 0 || maxid == undefined || maxid == null || maxid == "")
@@ -157,7 +161,8 @@ export class DashboardComponent implements OnInit {
       formdata["adhaar"] == ""
     ) {
       this.getAllpatients().subscribe(
-        (resultData) => {                
+        (resultData) => {
+          this.showspinner = false;         
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
@@ -167,11 +172,13 @@ export class DashboardComponent implements OnInit {
             return item;
           });
           this.apiProcessing = true;
-        
+          this.defaultUI = false;
+          console.log(this.patientList);
         },
         (error) => {
           console.log(error);
-          this.patientList = [];        
+          this.patientList = [];
+          this.defaultUI = true;
           this.findpatientmessage = "No records found";
           this.findpatientimage = "norecordfound";
         }
@@ -184,7 +191,9 @@ export class DashboardComponent implements OnInit {
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
-      this.patientList = [];     
+      this.patientList = [];
+      this.showspinner = false;
+      this.defaultUI = true;
       this.findpatientimage= "placeholder";
       this.findpatientmessage = "Please Select Name / Phone with DOB as search criteria";
           
@@ -196,25 +205,27 @@ export class DashboardComponent implements OnInit {
         this.healthId = formdata["healthID"];
         this.getAllpatientsBySearch().subscribe(
           (resultData) => {
-          
+            this.showspinner = false;
             this.patientList = [];
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
-            );  
+            );
+  
             this.apiProcessing = true;
             console.log(this.patientList);
           },
           (error) => {
             console.log(error);
-            this.patientList = [];          
+            this.patientList = [];
+            this.showspinner = false;
+            this.defaultUI = true;
             this.findpatientmessage = "No records found";
             this.findpatientimage = "norecordfound";
           }
         );         
     }
   }
-
   getAllpatientsBySearch() {
     return this.http.get(ApiConstants.searchPatientApi(this.maxId,'', this.name, this.mobile, this.dob, this.aadhaarId, this.healthId));
   }
