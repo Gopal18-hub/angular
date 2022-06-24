@@ -183,6 +183,7 @@ export class OpRegApprovalComponent implements OnInit {
   searchApproval(formdata:any) {   
     this.defaultUI = true;
     this.showapprovalspinner = true;
+    this.today = new Date();
     if(formdata['from'] == "" || formdata['to'] == "" ){
         this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
         this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
@@ -208,7 +209,7 @@ export class OpRegApprovalComponent implements OnInit {
     }
     else if(link == "Hot Listing Approval")
     { 
-      this.router.navigateByUrl('/registration/hot-listing-approval');   
+      this.router.navigate(["registration","hot-listing-approval"]);   
       
     }
     else if(link == "Op Refund Approval")
