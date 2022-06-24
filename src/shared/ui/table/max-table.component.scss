@@ -22,20 +22,10 @@
     }
     .mat-row .mat-cell {
       overflow: hidden;
-      white-space: break-spaces;
-      word-break: break-all;
-      word-wrap: break-word !important;
-      white-space: unset !important;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       flex: 0 0 100px !important;
       width: 100px !important;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-
-      -ms-word-break: break-all;
-      /* This is the dangerous one in WebKit, as it breaks things wherever */
-      word-break: break-all;
-      /* Instead use this non-standard one: */
-      word-break: break-word;
 
       /* Adds a hyphen where the word breaks, if supported (No Blink) */
       -ms-hyphens: auto;
