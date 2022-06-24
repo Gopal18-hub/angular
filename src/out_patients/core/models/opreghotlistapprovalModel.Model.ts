@@ -18,6 +18,9 @@ export class opRegHotlistModel{
     cghs: boolean;
     mergeLinked: string;
     categoryIcons?:any[];
+    firstname?:string;
+    lastName?:string;
+    fullname?:string;
     constructor(
         id: number,
         maxid: string,
@@ -38,6 +41,9 @@ export class opRegHotlistModel{
         cghs: boolean,
         mergeLinked: string,
         categoryIcons?:any[],
+        firstname?: string,
+        lastName?: string,
+        fullname?:string
     )  {
         this.id= id;
         this.maxid= maxid;
@@ -58,5 +64,8 @@ export class opRegHotlistModel{
         this.cghs= cghs;
         this.mergeLinked= mergeLinked;
         this.categoryIcons = categoryIcons;
+        this.firstname = firstname;
+        this.lastName = lastName;
+        this.fullname = firstname + ' ' + lastName;
     }
 }
