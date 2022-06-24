@@ -105,6 +105,13 @@ export class PatientHistoryComponent implements OnInit {
       },
     },
   };
+
+  patientname:any;
+  age:any;
+  gender:any;
+  dob:any;
+  nationality:any;
+  ssn:any;
   constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
