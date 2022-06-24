@@ -56,6 +56,7 @@
             *matCellDef="let element"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
+            class="pr-4"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
@@ -153,7 +154,5 @@
 </ng-template>
 
 <ng-template #button let-data>
- 
- <button
-mat-raised-button (click)="!!data.output" disabled></button>
+  <button mat-raised-button (click)="(!!data.output)" disabled></button>
 </ng-template>
