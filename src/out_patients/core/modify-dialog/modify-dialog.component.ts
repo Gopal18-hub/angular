@@ -16,7 +16,7 @@ export class ModifyDialogComponent implements OnInit {
  
   questions: any;
   OPUpdateForm!: FormGroup;
-
+  ufirstname:string | undefined;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data : {patientDetails:any,modifiedDetails:any},
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
@@ -24,15 +24,19 @@ export class ModifyDialogComponent implements OnInit {
     public matDialog: MatDialog,
     // private cookie:CookieService,
    ) { }
-   
+ 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.updateregistrationFormData.properties,
-      {}
+      {
+       
+      }
+     
 
     );
     this.OPUpdateForm = formResult.form;
     this.questions = formResult.questions;
+   
 }
 
 updateregistrationFormData= {
@@ -155,6 +159,13 @@ updateregistrationFormData= {
           readonly: true,
         },
        }
+
+       
+      }
+      submit() {
+       
+          this.dialogRef.close();
+        
       }
       
     
