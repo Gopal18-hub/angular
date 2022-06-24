@@ -1,46 +1,84 @@
 <h2 mat-dialog-title>Appointment Patient Search</h2>
-<div mat-dialog-content>   
-    <div class="overflow-x-none">
-        <form [formGroup]="appointmentSearchForm"> 
-            <div class="flex flex-row">                            
-                        <mat-form-field appearance = "outline"> 
-                            <mat-label>Name</mat-label>
-                            <input matInput placeholder="Name" formControlName="name" >
-                        </mat-form-field>
-                        <mat-form-field appearance = "outline">
-                            <mat-label>Book No</mat-label>
-                            <input matInput placeholder="Booking Number" formControlName="booknumber">
-                        </mat-form-field> 
-                        <mat-form-field appearance = "outline">
-                            <mat-label>Phone</mat-label>
-                            <input matInput placeholder="Phone" formControlName="phone">
-                        </mat-form-field>    
-                        <div>
-                            <!-- <mat-checkbox [formControl]="checked" ></mat-checkbox> -->
-                            <mat-checkbox
-                            [checked]="isChecked"                       
-                            (change)="dateRangeSelected($event)">           
-                            </mat-checkbox>
-                        </div>                    
-                        <mat-form-field appearance = "outline">
-                            <mat-label>From Date</mat-label>
-                            <input matInput placeholder="Startdate" formControlName="startdate" type="date">
-                        </mat-form-field>    
-                        <mat-form-field appearance = "outline">
-                            <mat-label>To Date</mat-label>
-                            <input matInput placeholder="Enddate"  type="date" formControlName="enddate">
-                        </mat-form-field>
-                    <button mat-raised-button color="primary" class="col-m3" type="button" 
-                            (click)="clear()">Clear</button>
-                    <button mat-raised-button color="primary" class="col-m3" type="button" 
-                            (click)="searchAppointment()">Search</button>           
-        </div>    
-    </form>
-        <div class="overflow-y-scroll relative">
-            <ng-container *ngIf="searchAppPatient">
-                <maxhealth-table [config]="config" [data]="searchResults"></maxhealth-table>
-            </ng-container>
+<div mat-dialog-content class="h-4/5">
+  <div class="overflow-x-none">
+    <form [formGroup]="appointmentSearchForm">
+      <div class="flex flex-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name" formControlName="name" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Book No</mat-label>
+          <input
+            matInput
+            placeholder="Booking Number"
+            formControlName="booknumber"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput placeholder="Phone" formControlName="phone" />
+        </mat-form-field>
+        <div>
+          <!-- <mat-checkbox [formControl]="checked" ></mat-checkbox> -->
+          <mat-checkbox
+            [checked]="isChecked"
+            (change)="dateRangeSelected($event)"
+          >
+          </mat-checkbox>
         </div>
-    </div>
-      
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input
+            matInput
+            placeholder="Startdate"
+            formControlName="startdate"
+            type="date"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input
+            matInput
+            placeholder="Enddate"
+            type="date"
+            formControlName="enddate"
+          />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          class="col-m3"
+          type="button"
+          (click)="clear()"
+        >
+          Clear
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="col-m3"
+          type="button"
+          (click)="searchAppointment()"
+        >
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="overflow-x-none h-full">
+    <ng-container class="h-full" *ngIf="defaultUI">
+      <empty-placeholder
+        [icon]="findpatientimage"
+        [message]="findpatientmessage"
+      >
+      </empty-placeholder>
+    </ng-container>
+    <ng-container *ngIf="searchAppPatient">
+      <maxhealth-table
+        [config]="config"
+        [data]="searchResults"
+      ></maxhealth-table>
+    </ng-container>
+  </div>
 </div>
