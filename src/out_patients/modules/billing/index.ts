@@ -29,6 +29,7 @@ import { VisitHistoryDialogComponent } from './submodules/details/visit-history-
 import { MatIconModule } from '@angular/material/icon';
 import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-report.component';
+import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-r
        PaymentModeComponent,
        RefundDialogComponent,
        VisitHistoryDialogComponent,
-       DispatchReportComponent
+       DispatchReportComponent,
+       DmgMappingComponent
        
   ],
   imports: [
