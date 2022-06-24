@@ -2085,8 +2085,9 @@ export class OpRegistrationComponent implements OnInit {
   }
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
-      width: "100vw",
-      height: "52vh",
+      maxWidth: "100vw",
+      width: "95vw",
+      height: "90vh",
     });
   }
 

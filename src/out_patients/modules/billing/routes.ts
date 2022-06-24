@@ -16,15 +16,15 @@ import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.compon
 
 const routes: Routes = [
     {
-      path: 'billing', component: BillingComponent, children: [
+      path: 'out-patient-billing', component: BillingComponent, children: [
           { path: '', component: BillingComponentPage },
           { path: 'deposit', component: DepositComponent },
           { path: 'details', component: DetailsComponent },
           { path: 'online-op-bill', component: OnlineOpBillsComponent },
           { path: 'op-order-request', component: OpOrderRequestComponent },
           { path: 'miscellaneous-billing', component: MiscellaneousBillingComponent },
-          { path: 'initiate-deposite', component: InitiateDepositComponent },
-          { path: 'dispatch-report', component: DispatchReportComponent}       
+          { path: 'initiate-deposit', component: InitiateDepositComponent },
+          { path: 'dispatch-report', component: DispatchReportComponent} ,      
           { path:  'dmg-mapping', component:DmgMappingComponent}       
     
       ]
