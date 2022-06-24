@@ -151,8 +151,6 @@ export class DynamicFormQuestionComponent
   }
 
   generateRandomEmail() {
-    this.form.controls[this.question.key].setValue(
-      new Date().getTime() + "-temp@maxhealthcare.com"
-    );
+    this.form.controls[this.question.key].setValue("info@maxhealthcare.com");
   }
 }

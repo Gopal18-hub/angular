@@ -49,7 +49,7 @@ export class RefundDialogComponent implements OnInit {
         type: "autocomplete",
       },
       refunddeposit: {
-        type: "string"
+        type: "string",
       },
       otpmobile: {
         type: "string"
