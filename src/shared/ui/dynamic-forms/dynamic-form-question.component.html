@@ -163,7 +163,9 @@
     <ng-container *ngSwitchCase="'email'">
       <mat-label
         [attr.for]="question.key"
+        class="cursor-pointer"
         [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        (click)="generateRandomEmail()"
         >{{ question.label }}</mat-label
       >
       <mat-form-field
@@ -229,6 +231,7 @@
           [formControlName]="question.key"
           [value]="question.value"
           #element
+          color="primary"
         >
           <ng-container *ngFor="let opt of question.options">
             <mat-radio-button [value]="opt.value" class="py-2">{{
@@ -434,7 +437,7 @@
       >
       <ul class="list-unstyled">
         <li *ngFor="let opt of question.options">
-          <mat-checkbox [formControlName]="question.key">
+          <mat-checkbox [formControlName]="question.key" color="primary">
             {{ opt.title }}
           </mat-checkbox>
         </li>
