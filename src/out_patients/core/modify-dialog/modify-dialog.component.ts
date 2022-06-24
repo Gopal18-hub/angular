@@ -169,12 +169,12 @@ updateregistrationFormData= {
       }
       reject()
       {
-        this.dialogRef.close({data:"reject Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno})
+        this.dialogRef.close({data:"reject Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno + ", id :" + this.data.patientDetails.id})
       }
 
       Accept()
       {
-        this.dialogRef.close({data:"Accepted Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno})
+        this.dialogRef.close({data:"Accepted Maxid :"+this.data.patientDetails.iacode+"."+this.data.patientDetails.registrationno + ", id :" + this.data.patientDetails.id})
 
       }
       

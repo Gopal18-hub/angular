@@ -13,6 +13,9 @@ import { CookieService } from '../../../../../shared/services/cookie.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
+import { OpdpendingrequestModel } from '../../../../../out_patients/core/models/OpPendingRequestModel.Model';
+import { ModifyDialogComponent } from '../../../../core/modify-dialog/modify-dialog.component';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
   selector: 'out-patients-op-reg-approval',
@@ -31,7 +34,8 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = this.cookie.get('HSPLocationId');
+  hsplocationId:any = 67; //this.cookie.get('HSPLocationId');
+  userId:number = Number(this.cookie.get('UserId'));
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -44,6 +48,8 @@ export class OpRegApprovalComponent implements OnInit {
   defaultUI:boolean = false;
   opappprovalmessage:string = "Please search From Date and To Date ";
   opapprovalimage:string="placeholder";
+  patientDetails: any =[];
+  modfiedPatiendDetails: any =[];
   
   opapprovalpageForm = new FormGroup({
     from: new FormControl(''),
@@ -55,9 +61,11 @@ export class OpRegApprovalComponent implements OnInit {
 
   ApprovalidList:any=[];
 
-  approvalconfig: any  = {   
+  approvalconfig: any  = {
+   clickedRows: true,
+    clickSelection: "single",   
     dateformat: "dd/MM/yyyy",
-    selectBox : true,
+    selectBox : false,
     displayedColumns: ['maxid', 'ssn', 'title', 'fullname', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
      columnsInfo: {
       maxid : {
@@ -172,7 +180,8 @@ export class OpRegApprovalComponent implements OnInit {
   }
 
   constructor(private http: HttpService,private router: Router,private searchService: SearchService
-    ,public datepipe: DatePipe, private cookie: CookieService, private messageDialogService:MessageDialogService) { }
+    ,public datepipe: DatePipe, private cookie: CookieService, private messageDialogService:MessageDialogService ,
+    public matDialog: MatDialog) { }
   
   ngOnInit(): void {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
@@ -249,6 +258,12 @@ export class OpRegApprovalComponent implements OnInit {
           this.showapprovalaccepting = false;
           this.showapprovalreject = false;
           this.enableapprovebtn = true;
+          setTimeout(()=>{  
+          this.approvaltable.selection.changed.subscribe((res:any)=>{ 
+            console.log(res);
+            this.modifyDialog(res.added[0]);
+          });         
+        });   
           console.log(this.opApprovalList);
         },(error:any)=>{
           this.opApprovalList =[];
@@ -326,9 +341,8 @@ export class OpRegApprovalComponent implements OnInit {
   approvalApproveItem(){
    
     this.approvaltable.selection.selected.map((s:any)=>{
-    this.ApprovalidList.push(s.id)});
-    let userId = Number(this.cookie.get('UserId'));
-    this.approvePostobject = new approveRejectModel(this.ApprovalidList,userId,0);
+    this.ApprovalidList.push(s.id)});   
+    this.approvePostobject = new approveRejectModel(this.ApprovalidList,this.userId,0);
     this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
       console.log(resultdata);
       this.messageDialogService.success("Update Request Approved"); 
@@ -345,10 +359,8 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvalRejectItem(){
     this.approvaltable.selection.selected.map((s:any)=>{
-      this.ApprovalidList.push(s.id)});
-      let userId = 1 ;// Number(this.cookie.get('UserId'));
-      this.rejectPostobject = new approveRejectModel(this.ApprovalidList,userId,1);
-  
+      this.ApprovalidList.push(s.id)});     
+      this.rejectPostobject = new approveRejectModel(this.ApprovalidList,this.userId,1);  
       this.approvalpostapi(this.rejectPostobject).subscribe((resultdata)=>{
         this.messageDialogService.success("Request is deleted");
         this.showgrid("View Pending Request");
@@ -364,5 +376,61 @@ export class OpRegApprovalComponent implements OnInit {
   approvalpostapi(approvalJSONObject:approveRejectModel[]){   
     return this.http.post(ApiConstants.approvalpostapproveApi,approvalJSONObject);
   }
+
+  modifyDialog(modfiedapprovalPatiendDetailsForPopUp:OpdpendingrequestModel) {
+    this.patientDetails = [];
+    this.modfiedPatiendDetails =[];
+      this.patientDetails.push({
+         firstname:modfiedapprovalPatiendDetailsForPopUp.firstName,
+         middleName:modfiedapprovalPatiendDetailsForPopUp.middleName,
+         lastName:modfiedapprovalPatiendDetailsForPopUp.lastName,
+         sexName:modfiedapprovalPatiendDetailsForPopUp.gender,
+         pemail:modfiedapprovalPatiendDetailsForPopUp.email,
+         pphone:modfiedapprovalPatiendDetailsForPopUp.mobile,
+         nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
+         foreigner: modfiedapprovalPatiendDetailsForPopUp.foreigner,
+         id: modfiedapprovalPatiendDetailsForPopUp.id        
+        });
+
+        this.modfiedPatiendDetails.push({
+          firstname:modfiedapprovalPatiendDetailsForPopUp.modifiedFirstName,
+          middleName:modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
+          lastName:modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
+          title:modfiedapprovalPatiendDetailsForPopUp.uGender,
+          pemail:modfiedapprovalPatiendDetailsForPopUp.uEmail,
+          pphone:modfiedapprovalPatiendDetailsForPopUp.uMobile,
+          nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,
+          foreigner: modfiedapprovalPatiendDetailsForPopUp.uForeigner        
+         });
+
+     const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
+            width: "30vw",
+            height: "96vh",
+            data:{patientDetails:this.patientDetails[0],modifiedDetails:this.modfiedPatiendDetails[0],submitButton:true}
+     });
+    
+    modifyDetailDialogref.afterClosed().subscribe((result) => {
+      console.log(result); 
+      var resultArr = result.split(',');
+      // if(resultArr[1] == "id"){
+
+      // }
+      this.ApprovalidList.push(); 
+      this.approvePostobject = new approveRejectModel(this.ApprovalidList,this.userId,0);
+      this.approvalpostapi(this.approvePostobject).subscribe((resultdata)=>{
+        console.log(resultdata);
+        this.messageDialogService.success("Update Request Approved"); 
+        this.showgrid("View Pending Request");
+        this.ApprovalidList = [];
+      },error=>{
+        console.log(error);
+        this.ApprovalidList = [];
+        this.defaultUI = true; 
+        this.opappprovalmessage  = "No records found";
+          this.opapprovalimage  = "norecordfound"; 
+      }); 
+    });
+  }
+
 }
 
