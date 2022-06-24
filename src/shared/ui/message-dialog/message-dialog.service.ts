@@ -15,9 +15,9 @@ export class MessageDialogService {
 
   success(message: string) {
     const dialogRef = this.dialog.open(MessageSuccessComponent, {
-      width: "40vw",
-      minWidth: "25vw",
-      maxWidth: "40vw",
+      width: "30vw",
+      minWidth: "20vw",
+      maxWidth: "30vw",
       panelClass: "message-success",
       data: { message: message },
       autoFocus: false,
