@@ -20,6 +20,12 @@
     .row-is-clicked {
       font-weight: bold;
     }
+    .mat-row .mat-cell {
+      max-width: 20vw;
+      overflow: hidden;
+      white-space: break-spaces;
+      word-break: break-all;
+    }
     &.row-click {
       .mat-row .mat-cell {
         border-bottom: 1px solid transparent;
@@ -29,44 +35,20 @@
     }
   }
 }
-table thead:first-child tr:last-child th:first-child {
-  border-bottom-left-radius: 1rem;
-}
-table thead:first-child tr:last-child th:last-child {
-  border-bottom-right-radius: 1rem;
-}
-table thead + tbody tr:first-child td:first-child {
-  border-top-left-radius: 1rem;
-}
-table thead + tbody tr:first-child td:last-child {
-  border-top-right-radius: 1rem;
-}
-table tr:first-child td:first-child,
-table thead tr:first-child th:first-child {
-  border-top-left-radius: 1rem;
-}
-table tr:first-child td:last-child,
-table thead tr:first-child th:last-child {
-  border-top-right-radius: 1rem;
-}
-table tr:last-child td:first-child,
-table thead:last-child tr:last-child th:first-child {
-  border-bottom-left-radius: 1rem;
-}
-table tr:last-child td:last-child,
-table thead:last-child tr:last-child th:last-child {
-  border-bottom-right-radius: 1rem;
-}
 
 .more-actions {
   background: #ababab;
   border-radius: 12px;
-  padding: 0 1em;
+  padding: 0 0.5em;
   color: #fff;
   display: flex;
   align-items: center;
   justify-items: center;
   width: fit-content;
+  .mat-icon {
+    line-height: 20px;
+    height: 20px;
+  }
 }
 ::ng-deep .table-more-actions {
   border-radius: initial !important;
