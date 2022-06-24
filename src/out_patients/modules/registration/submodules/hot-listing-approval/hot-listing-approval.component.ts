@@ -199,7 +199,7 @@ export class HotListingApprovalComponent implements OnInit {
     if(formdata['from'] == "" || formdata['to'] == "" ){
       this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
       this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');  
-      this.to = formdata['to'] != "" ? formdata['to'] : this.today;
+      this.to = formdata['to'] != "" ? formdata['to'] : new Date();
       this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');  
   }else{
       this.from = formdata['from'];
@@ -210,7 +210,7 @@ export class HotListingApprovalComponent implements OnInit {
   this.showmain("Hot Listing Approval");
   }
 
-  hsplocationId:any = this.cookie.get('HSPLocationId');
+  hsplocationId:any = 9; // this.cookie.get('HSPLocationId');
   indirectlink:any;
   showmain(link: any) {
     console.log(link);

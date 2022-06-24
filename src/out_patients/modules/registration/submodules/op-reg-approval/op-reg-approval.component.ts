@@ -31,7 +31,7 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject:any;
   rejectPostobject:any;
-  hsplocationId:any = this.cookie.get('HSPLocationId');
+  hsplocationId:any = 67 ; // this.cookie.get('HSPLocationId');
   enableapprovebtn:boolean=false;
  
   showapprovalpending:boolean = false;
@@ -187,7 +187,7 @@ export class OpRegApprovalComponent implements OnInit {
     if(formdata['from'] == "" || formdata['to'] == "" ){
         this.from = formdata['from'] != "" ? formdata['from'] : this.today.setDate( this.today.getDate() - 30 );
         this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');   
-        this.to = formdata['to'] != "" ? formdata['to'] : this.today;
+        this.to = formdata['to'] != "" ? formdata['to'] : new Date();
         this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');  
     }
       else
