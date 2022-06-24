@@ -10,6 +10,7 @@ import { OnlineOpBillsComponent } from './submodules/online-op-bills/online-op-b
 import { OpOrderRequestComponent } from './submodules/op-order-request/op-order-request.component';
 import { MiscellaneousBillingComponent } from './submodules/miscellaneous-billing/miscellaneous-billing.component';
 import { InitiateDepositComponent } from './submodules/initiate-deposit/initiate-deposit.component';
+import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-report.component';
 import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
 
 
@@ -23,6 +24,7 @@ const routes: Routes = [
           { path: 'op-order-request', component: OpOrderRequestComponent },
           { path: 'miscellaneous-billing', component: MiscellaneousBillingComponent },
           { path: 'initiate-deposite', component: InitiateDepositComponent },
+          { path: 'dispatch-report', component: DispatchReportComponent}       
           { path:  'dmg-mapping', component:DmgMappingComponent}       
     
       ]

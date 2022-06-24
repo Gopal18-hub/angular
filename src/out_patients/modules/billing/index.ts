@@ -25,8 +25,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
-
-
+import { VisitHistoryDialogComponent } from './submodules/details/visit-history-dialog/visit-history-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MaxHealthTableModule } from '../../../shared/ui/table';
+import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-report.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import {MatListModule} from '@angular/material/list';
        MiscellaneousBillingComponent,
        InitiateDepositComponent,
        PaymentModeComponent,
-       RefundDialogComponent
+       RefundDialogComponent,
+       VisitHistoryDialogComponent,
+       DispatchReportComponent
        
   ],
   imports: [
@@ -57,7 +61,9 @@ import {MatListModule} from '@angular/material/list';
     MatRadioModule,
     BrowserModule,
     CommonModule,
-    MatListModule
+    MatListModule,
+    MatIconModule,
+    MaxHealthTableModule
   ],
   exports: [],
   providers: [],
