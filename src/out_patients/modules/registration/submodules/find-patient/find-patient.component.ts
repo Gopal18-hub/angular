@@ -140,7 +140,7 @@ export class FindPatientComponent implements OnInit {
       this.getAllpatients().subscribe(
         (resultData) => {
           this.showspinner = false;
-	   resultData = resultData.map((item:any) => {
+	        resultData = resultData.map((item:any) => {
           item.fullname = item.firstName + ' ' + item.lastName;
           return item;
         });
@@ -217,6 +217,12 @@ export class FindPatientComponent implements OnInit {
           });
           this.isAPIProcess = true;
           this.defaultUI = false;
+          setTimeout(()=>{        
+            this.tableRows.selection.changed.subscribe((res:any)=>{ 
+              console.log(res);
+              this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+            });
+          });
           console.log(this.patientList);
         },
         (error) => {
@@ -251,12 +257,22 @@ export class FindPatientComponent implements OnInit {
           (resultData) => {
             this.showspinner = false;
             this.patientList = [];
+            resultData = resultData.map((item:any) => {
+              item.fullname = item.firstName + ' ' + item.lastName;
+              return item;
+            })
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
   
             this.isAPIProcess = true;
+            setTimeout(()=>{        
+              this.tableRows.selection.changed.subscribe((res:any)=>{ 
+                console.log(res);
+                this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+              });
+            });
             console.log(this.patientList);
           },
           (error) => {

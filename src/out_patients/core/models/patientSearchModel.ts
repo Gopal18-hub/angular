@@ -63,6 +63,7 @@ export class PatientSearchModel {
     this.mergeLinked = mergeLinked;
     this.id = id;
     this.categoryIcons = categoryIcons;
-    this.fullname = firstName + ' ' + lastName;
+    fullname = firstName + ' ' + lastName;
+    this.fullname = fullname;
   }
 }

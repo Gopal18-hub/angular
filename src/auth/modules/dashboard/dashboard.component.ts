@@ -125,6 +125,10 @@ export class DashboardComponent implements OnInit {
     this.getAllpatients().subscribe((resultData) => {
       this.showspinner = false;
       this.defaultUI = false;
+      resultData = resultData.map((item:any) => {
+        item.fullname = item.firstName + ' ' + item.lastName;
+        return item;
+      })
       this.patientList = resultData;
       this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);      
       this.apiProcessing = true;
@@ -175,7 +179,11 @@ export class DashboardComponent implements OnInit {
     ) {
       this.getAllpatients().subscribe(
         (resultData) => {
-          this.showspinner = false;             
+          this.showspinner = false;  
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          })           
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
@@ -186,6 +194,12 @@ export class DashboardComponent implements OnInit {
           });
           this.apiProcessing = true;
           this.defaultUI = false;
+          setTimeout(()=>{        
+            this.table.selection.changed.subscribe((res:any)=>{ 
+              console.log(res);
+              this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+            });
+          });
           console.log(this.patientList);
         },
         (error) => {
@@ -221,11 +235,21 @@ export class DashboardComponent implements OnInit {
             this.showspinner = false;
             this.defaultUI = false;
             this.patientList = [];
+            resultData = resultData.map((item:any) => {
+              item.fullname = item.firstName + ' ' + item.lastName;
+              return item;
+            })
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );  
             this.apiProcessing = true;
+            setTimeout(()=>{        
+              this.table.selection.changed.subscribe((res:any)=>{ 
+                console.log(res);
+                this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+              });
+            });
             console.log(this.patientList);
           },
           (error) => {

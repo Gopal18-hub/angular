@@ -44,6 +44,7 @@ import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router,ActivatedRoute } from "@angular/router";
+import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -392,6 +393,7 @@ export class OpRegistrationComponent implements OnInit {
     public zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
+    private messageDialogService:MessageDialogService,
   ) {
     
   }
@@ -1324,6 +1326,11 @@ export class OpRegistrationComponent implements OnInit {
 
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
         this.registeredPatientDetails(this.patientDetails);
+      },(error)=>{
+          if(error.error == "Patient Not found")
+          {
+            //this.messageDialogService.info(error.error);
+          }
       });
   }
 
