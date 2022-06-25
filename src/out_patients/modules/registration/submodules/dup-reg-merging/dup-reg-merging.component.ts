@@ -181,7 +181,7 @@ export class DupRegMergingComponent implements OnInit {
     {
       this.showmergespinner = false;  
       this.defaultUI = true;
-      this.mergingmessage  = "Please Select Name / Phone with DOB as search criteria";
+      this.mergingmessage  = "Please enter Name / Phone in combination with DOB as search criteria";
       this.mergeicon  = "placeholder";
     }
        

@@ -239,7 +239,7 @@ export class FindPatientComponent implements OnInit {
       this.showspinner = false;
       this.defaultUI = true;
       this.findpatientimage= "placeholder";
-      this.findpatientmessage = "Please Select Name / Phone with DOB as search criteria";
+      this.findpatientmessage = "Please enter Name / Phone in combination with DOB as search criteria";
           
     } else {  
         this.name = formdata["name"];
