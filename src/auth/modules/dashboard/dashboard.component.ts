@@ -73,6 +73,9 @@ export class DashboardComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -111,7 +114,10 @@ export class DashboardComponent implements OnInit {
       categoryIcons: {
         title: "Category",
         type:'image',
-        width:34
+        width:34,
+        style: {
+          width: "220px",
+        },
       },
     },
   };
