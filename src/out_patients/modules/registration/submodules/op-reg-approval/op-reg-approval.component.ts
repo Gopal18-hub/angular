@@ -63,9 +63,9 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvalconfig: any = {
     clickedRows: true,
-    clickSelection: "single",
+    clickSelection: "multiple",
     dateformat: "dd/MM/yyyy",
-    selectBox: false,
+    selectBox: true,
     displayedColumns: ['maxid', 'ssn', 'title', 'fullname', 'gender', 'uMobile', 'uEmail', 'unationality', 'uForeigner', 'usmsRecNo', 'operatorName', 'insertdatetime'],
     columnsInfo: {
       maxid: {
@@ -187,6 +187,7 @@ export class OpRegApprovalComponent implements OnInit {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchApproval(formdata.data);
     });
+   // this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata: any) {
