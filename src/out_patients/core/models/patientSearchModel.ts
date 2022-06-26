@@ -18,8 +18,10 @@ export class PatientSearchModel {
   cghs: boolean;
   mergeLinked: string;
   id: number;
+  pPageNumber:string;
   categoryIcons?: any[];
   fullname?: string;
+ 
   constructor(
     maxid: string,
     ssn: string,
@@ -40,8 +42,10 @@ export class PatientSearchModel {
     firstName: string,
     lastName: string,
     id: number,
+    pPageNumber:string,
     categoryIcons?: any[],
     fullname?:string,
+    
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -65,5 +69,6 @@ export class PatientSearchModel {
     this.categoryIcons = categoryIcons;
     fullname = firstName + ' ' + lastName;
     this.fullname = fullname;
+    this.pPageNumber = pPageNumber;
   }
 }
