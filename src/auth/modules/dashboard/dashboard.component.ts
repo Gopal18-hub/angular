@@ -111,7 +111,10 @@ export class DashboardComponent implements OnInit {
       categoryIcons: {
         title: "Category",
         type:'image',
-        width:34
+        width:34,
+        style: {
+          width: "220px",
+        },
       },
     },
   };

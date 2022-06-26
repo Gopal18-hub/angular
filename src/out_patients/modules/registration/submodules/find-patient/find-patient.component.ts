@@ -75,6 +75,9 @@ export class FindPatientComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -115,7 +118,7 @@ export class FindPatientComponent implements OnInit {
         type: "image",
         width: 34,
         style: {
-          width: "200px",
+          width: "220px",
         },
       },
     },
