@@ -43,11 +43,11 @@
           <td
             mat-cell
             *matCellDef="let element"
-            (click)="selection.toggle(element)"
+            (click)="columnClickFun(element, col)"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -61,11 +61,11 @@
             *matCellDef="let element"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
-            (click)="selection.toggle(element)"
+            (click)="columnClickFun(element, col)"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -108,7 +108,7 @@
         [class.row-is-clicked]="selection.isSelected(row)"
       ></tr>
     </ng-container>
-    <ng-container *ngIf="config.selectBox">
+    <ng-container *ngIf="config.selectBox && !config.clickedRows">
       <!-- <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
