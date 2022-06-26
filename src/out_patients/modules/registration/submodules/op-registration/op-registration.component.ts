@@ -1314,7 +1314,7 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
-        this.categoryIcons = this.patientService.getCategoryIcons(
+        this.categoryIcons = this.patientService.getCategoryIconsForPatient(
           this.patientDetails
         );
         this.MaxIDExist = true;
