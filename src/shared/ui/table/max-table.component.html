@@ -36,7 +36,12 @@
         [matColumnDef]="col"
         *ngIf="col != 'select' && col != 'actionItems'"
       >
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [style.width]="config?.columnsInfo[col]?.style?.width"
+        >
           {{ displayColumnsInfo[col].title }}
         </th>
         <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
