@@ -304,3 +304,22 @@ mat-form-field {
   color: #272727 !important;
   border: 1px solid #ebe8e8;
 }
+
+.mat-option {
+  &.mat-selected {
+    &:not(.mat-option-multiple):not(.mat-option-disabled) {
+      background-color: #004084;
+      color: #fff;
+    }
+  }
+  &:hover {
+    &:not(.mat-option-disabled) {
+      background-color: #004084;
+      color: #fff;
+    }
+  }
+  &.mat-active {
+    background-color: #004084;
+    color: #fff;
+  }
+}
