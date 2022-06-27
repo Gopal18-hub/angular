@@ -18,9 +18,14 @@ export class PatientService {
     ews: "EWS.svg",
     ins: "Ins_icon.svg",
     hwc: "HWC_icon.svg",
-    isCghsverified:"CGHS_Icon.svg",
+    isCghsverified:"CGHS_Icon.svg",    
   };
-
+  pageNumberIcons:any ={
+    "Cash":"Cash_Icon.svg",
+    "PSU/Govt": "PSU_icon.svg",
+    "Corporate/Insurance":"Ins_icon.svg",
+    "EWS":"EWS.svg",
+  };
   categoryIconsActions: any = {
     cghs: {
       action: "dialog",
@@ -100,12 +105,25 @@ export class PatientService {
     return patientSearchModel as typeof model;
   }
 
-  getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch |PatientDetails) {
+  getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
-      if (
+      if(e=="pPagerNumber" 
+      && this.pageNumberIcons[patient["pPagerNumber"]])
+      {
+        let tempPager: any = {
+          src: "assets/patient-categories/" + this.pageNumberIcons[patient["pPagerNumber"]],
+        };
+        if (this.categoryIconsTooltip[patient["pPagerNumber"]]) {
+          if (this.categoryIconsTooltip[patient["pPagerNumber"]]["type"] == "static") {
+            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
+          }          
+        }
+        returnIcons.push(tempPager);
+      }
+      else if (
         this.categoryIcons[e] &&
-        patient[e as keyof (PatientSearchModel | getmergepatientsearch |PatientDetails)]
+        patient[e as keyof (PatientSearchModel | getmergepatientsearch)]
       ) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
@@ -127,6 +145,53 @@ export class PatientService {
         }
         returnIcons.push(temp);
       }
+    });
+
+    return returnIcons;
+  }
+
+  getCategoryIconsForPatient(patient: PatientDetails) {
+    let returnIcons: any = [];
+    Object.keys(patient).forEach((e) => {
+      if(e=="ppagerNumber" 
+      && this.pageNumberIcons[patient["ppagerNumber"]])
+      {
+        console.log(patient["ppagerNumber"]);
+        let tempPager: any = {
+          src: "assets/patient-categories/" + this.pageNumberIcons[patient["ppagerNumber"]],
+        };
+        if (this.categoryIconsTooltip[patient["ppagerNumber"]]) {
+          if (this.categoryIconsTooltip[patient["ppagerNumber"]]["type"] == "static") {
+            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
+          }          
+        }
+        returnIcons.push(tempPager);
+      }
+      else if (
+        this.categoryIcons[e] &&
+        patient[e as keyof (PatientDetails)]
+      ) {
+        let temp: any = {
+          src: "assets/patient-categories/" + this.categoryIcons[e],
+        };
+        if (this.categoryIconsTooltip[e]) {
+          if (this.categoryIconsTooltip[e]["type"] == "static") {
+            temp["tooltip"] = this.categoryIconsTooltip[e]["value"];
+          }
+          if (this.categoryIconsTooltip[e]["type"] == "dynamic") {
+            temp["tooltip"] =
+              patient[
+                this.categoryIconsTooltip[e]["value"] as keyof (
+                  | PatientSearchModel
+                  | getmergepatientsearch
+                  | PatientDetails
+                )
+              ];
+          }
+        }
+        returnIcons.push(temp);
+      }
+     
     });
 
     return returnIcons;

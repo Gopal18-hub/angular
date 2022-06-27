@@ -174,7 +174,7 @@ export class PatientDetails{
     pphone: string,
     pcellno: string,
     pemail: string,
-    ppagerNumber: string,
+    ppagerNumber: string,    
     religion: number,
     nationality: number,
     caution: boolean,

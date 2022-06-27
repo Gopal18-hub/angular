@@ -14,6 +14,20 @@ import { DispatchReportComponent } from "./submodules/dispatch-report/dispatch-r
 import { DmgMappingComponent } from "./submodules/dmg-mapping/dmg-mapping.component";
 
 const routes: Routes = [
+    {
+      path: 'out-patient-billing', component: BillingComponent, children: [
+          { path: '', component: BillingComponentPage },
+          { path: 'deposit', component: DepositComponent },
+          { path: 'details', component: DetailsComponent },
+          { path: 'online-op-bill', component: OnlineOpBillsComponent },
+          { path: 'op-order-request', component: OpOrderRequestComponent },
+          { path: 'miscellaneous-billing', component: MiscellaneousBillingComponent },
+          { path: 'initiate-deposit', component: InitiateDepositComponent },
+          { path: 'dispatch-report', component: DispatchReportComponent} ,      
+          { path:  'dmg-mapping', component:DmgMappingComponent}       
+    
+      ]
+    },
   {
     path: "billing",
     component: BillingComponent,

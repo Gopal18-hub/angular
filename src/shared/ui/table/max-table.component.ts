@@ -7,6 +7,8 @@ import {
   OnChanges,
   SimpleChanges,
   TemplateRef,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
@@ -23,6 +25,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() config: any;
 
   @Input() data: any;
+
+  @Output() columnClick: EventEmitter<any> = new EventEmitter();
 
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -82,6 +86,16 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (
+      data: any,
+      sortHeaderId: string
+    ): string => {
+      if (typeof data[sortHeaderId] === "string") {
+        return data[sortHeaderId].toLocaleLowerCase();
+      }
+
+      return data[sortHeaderId];
+    };
   }
 
   /** Announce the change in sort state for assistive technology. */
@@ -131,5 +145,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (type == "image") return this.imageTemplate;
     else if (type == "checkbox") return this.checkboxTemplate;
     else return this.stringTemplate;
+  }
+
+  columnClickFun(element: any, col: string) {
+    this.columnClick.emit({ row: element, column: col });
+    if (this.config.selectBox && this.config.clickedRows) return;
+    this.selection.toggle(element);
   }
 }

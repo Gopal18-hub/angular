@@ -87,20 +87,24 @@ mat-form-field {
       // padding-bottom: 1em;
     }
     .mat-form-field-infix {
-      padding: 0.6em 0 !important;
+      padding: 0.6em 0 0.4em 0 !important;
       border-top: 0 !important;
     }
     .mat-form-field-suffix,
     .mat-form-field-prefix {
-      top: 0.5em;
+      top: 0.35em;
     }
   }
 }
 .mat-form-field:not(.mat-form-field-appearance-legacy)
   .mat-form-field-suffix
   .mat-icon-button {
-  width: 1.5em !important;
-  height: 1.5em !important;
+  width: 1.2em !important;
+  height: 1.2em !important;
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+  }
 }
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
@@ -112,8 +116,8 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 140px);
-  border-radius: 10px 10px 0 0;
+  height: calc(100vh - 130px);
+  border-radius: 10px 10px;
   overflow: hidden;
   .banner {
     background: #004084;
@@ -246,7 +250,7 @@ mat-form-field {
 }
 .mat-form-field-appearance-outline {
   .mat-select-arrow-wrapper {
-    transform: translateY(10%) !important;
+    transform: translateY(5%) !important;
   }
 }
 
@@ -298,4 +302,5 @@ mat-form-field {
 .mat-tooltip {
   background-color: #fff;
   color: #272727 !important;
+  border: 1px solid #ebe8e8;
 }
