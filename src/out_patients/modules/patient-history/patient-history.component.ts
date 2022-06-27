@@ -2,6 +2,7 @@ import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
+import { MessageDialogService } from '../../../shared/ui/message-dialog/message-dialog.service';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -116,7 +117,7 @@ export class PatientHistoryComponent implements OnInit {
   dob:any;
   nationality:any;
   ssn:any;
-  constructor( private formService: QuestionControlService) { }
+  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -126,5 +127,17 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistoryform = formResult.form;
     this.questions = formResult.questions;
   }
-
+  patienthistorysearch()
+  {
+    console.log(this.patienthistoryform.value);
+  }
+  printdialog()
+  {
+    console.log("print successfully");
+    this.msgdialog.success("Printing Successfull");
+  }
+  clear()
+  {
+    this.patienthistoryform.reset();
+  }
 }
