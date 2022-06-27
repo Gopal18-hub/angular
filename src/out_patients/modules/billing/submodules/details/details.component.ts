@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import { MatDialog } from '@angular/material/dialog';
+import { VisitHistoryDialogComponent } from './visit-history-dialog/visit-history-dialog.component';
 @Component({
   selector: 'out-patients-details',
   templateUrl: './details.component.html',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetailsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public matDialog: MatDialog) { }
 
   ngOnInit(): void {
   }
-
+  openhistory()
+  {
+    this.matDialog.open(VisitHistoryDialogComponent, { width: "70%", height: "50%"});
+  }
 }

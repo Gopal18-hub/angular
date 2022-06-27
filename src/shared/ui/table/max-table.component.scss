@@ -1,5 +1,5 @@
 .max-table-wrapper {
-  height: 90%;
+  height: 100%;
   background-color: white;
   overflow: auto;
   transform: rotate(0deg);
@@ -17,33 +17,68 @@
       height: 38px;
       background-color: #f9f9f9;
     }
+    .row-is-clicked {
+      font-weight: bold;
+    }
+    .mat-row .mat-cell {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      flex: 0 0 100px !important;
+      width: 100px !important;
+
+      /* Adds a hyphen where the word breaks, if supported (No Blink) */
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+      padding-right: 8px;
+      &.mat-column-select {
+        width: 24px !important;
+        flex: 0 0 24px !important;
+      }
+    }
+    .mat-header-row {
+      .mat-column-select {
+        width: 60px !important;
+      }
+    }
+
+    &.row-click {
+      .mat-row .mat-cell {
+        // border-bottom: 1px solid transparent;
+        // border-top: 1px solid transparent;
+        cursor: pointer;
+      }
+    }
   }
 }
-table thead:first-child tr:last-child th:first-child {
-  border-bottom-left-radius: 1rem;
+
+.more-actions {
+  background: #ababab;
+  border-radius: 12px;
+  padding: 0 0.5em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  width: fit-content;
+  .mat-icon {
+    line-height: 20px;
+    height: 20px;
+  }
 }
-table thead:first-child tr:last-child th:last-child {
-  border-bottom-right-radius: 1rem;
-}
-table thead + tbody tr:first-child td:first-child {
-  border-top-left-radius: 1rem;
-}
-table thead + tbody tr:first-child td:last-child {
-  border-top-right-radius: 1rem;
-}
-table tr:first-child td:first-child,
-table thead tr:first-child th:first-child {
-  border-top-left-radius: 1rem;
-}
-table tr:first-child td:last-child,
-table thead tr:first-child th:last-child {
-  border-top-right-radius: 1rem;
-}
-table tr:last-child td:first-child,
-table thead:last-child tr:last-child th:first-child {
-  border-bottom-left-radius: 1rem;
-}
-table tr:last-child td:last-child,
-table thead:last-child tr:last-child th:last-child {
-  border-bottom-right-radius: 1rem;
+::ng-deep .table-more-actions {
+  border-radius: initial !important;
+  .mat-menu-item {
+    height: 32px;
+    line-height: 32px;
+    border-top: 1px solid #ccc;
+    margin: 0.5em;
+    width: calc(100% - 1em);
+    text-align: center;
+    &:first-child {
+      border: none;
+    }
+  }
 }

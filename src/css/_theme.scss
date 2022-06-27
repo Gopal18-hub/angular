@@ -1,5 +1,9 @@
 @use "@angular/material" as mat;
-
+body {
+  * {
+    zoom: 1;
+  }
+}
 @font-face {
   font-family: "proxima";
   src: local("proxima"),
@@ -83,18 +87,24 @@ mat-form-field {
       // padding-bottom: 1em;
     }
     .mat-form-field-infix {
-      padding: 0.6em 0 !important;
+      padding: 0.6em 0 0.4em 0 !important;
       border-top: 0 !important;
     }
     .mat-form-field-suffix,
     .mat-form-field-prefix {
-      top: 0.5em;
+      top: 0.35em;
     }
   }
 }
-.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
-  width: 1.5em !important;
-  height: 1.5em !important;
+.mat-form-field:not(.mat-form-field-appearance-legacy)
+  .mat-form-field-suffix
+  .mat-icon-button {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+  }
 }
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
@@ -106,15 +116,15 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 152px);
-  border-radius: 10px 10px 0 0;
+  height: calc(100vh - 130px);
+  border-radius: 10px 10px;
   overflow: hidden;
   .banner {
     background: #004084;
     color: #fff;
     border-radius: 10px 10px 0 0;
     border: 1px solid #004084;
-    height: 3.225rem;
+    height: 2.525rem;
     .mat-tab-links {
       height: 100%;
       ul {
@@ -124,7 +134,7 @@ mat-form-field {
             font-weight: 800;
             color: #004084;
             background-color: #fff;
-            height: 2.75rem;
+            height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
           }
@@ -182,6 +192,7 @@ mat-form-field {
 
 ::-webkit-scrollbar {
   width: 0.4em;
+  height: 0.3em;
 }
 
 ::-webkit-scrollbar-track {
@@ -226,7 +237,70 @@ mat-form-field {
   margin-top: 4px;
 }
 
-.mat-h1, .mat-headline, .mat-typography .mat-h1, .mat-typography .mat-headline, .mat-typography h1{
-  height:10vh;
-  margin-left:5rem;
+.mat-h1,
+.mat-headline,
+.mat-typography .mat-h1,
+.mat-typography .mat-headline,
+.mat-typography h1 {
+  height: 10vh;
+  margin-left: 5rem;
+}
+.maxhealth-spacer {
+  flex: 1 1 auto;
+}
+.mat-form-field-appearance-outline {
+  .mat-select-arrow-wrapper {
+    transform: translateY(5%) !important;
+  }
+}
+
+.maxhealth-vertical-tab {
+  .mat-tab-group {
+    flex-direction: row !important;
+    .mat-tab-header {
+      border-bottom: 0;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+      width: 25%;
+      &.mat-tab-header-pagination-controls-enabled {
+        .mat-tab-header-pagination {
+          display: none !important;
+        }
+      }
+    }
+    .mat-tab-body-wrapper {
+      width: 100%;
+      .mat-tab-body-content {
+        height: 80vh;
+      }
+    }
+    .mat-tab-labels {
+      flex-direction: column !important;
+      overflow-y: auto;
+      height: 80vh;
+      display: inline-grid;
+      width: 100%;
+      .mat-tab-label {
+        min-width: 120px;
+        justify-content: flex-start;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+    }
+    .mat-tab-label-active {
+      border-bottom: 2px solid #d50000 !important;
+    }
+
+    .mat-ink-bar {
+      display: none;
+    }
+  }
+}
+
+.max-dialog-close-icon {
+  right: -1.2em;
+  top: -1em;
+}
+.mat-tooltip {
+  background-color: #fff;
+  color: #272727 !important;
+  border: 1px solid #ebe8e8;
 }

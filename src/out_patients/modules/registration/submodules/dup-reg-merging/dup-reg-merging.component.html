@@ -9,9 +9,13 @@
   </nav>
   <mat-tab-nav-panel #tabPanel> 
 
+    <mat-progress-spinner mode="indeterminate" value="25" diameter="60"  *ngIf="!defaultUI && showmergespinner" 
+   class="spinner">
+    </mat-progress-spinner>
+
     <div class="w-full h-full" *ngIf="!defaultUI">
-  <div  class="flex p-3 w-full h-4/5 display-block">    
-      <ng-container *ngIf="isAPIProcess"  class="w-full h-full">
+  <div  class="flex px-3 pt-3 pb-1 w-full h-4/5 display-block">    
+      <ng-container *ngIf="isAPIProcess">
         <maxhealth-table
           class="w-full h-full"
           [config]="config"
@@ -20,14 +24,13 @@
         ></maxhealth-table>
       </ng-container>    
   </div>
-  <div class="float-right mb-3 mr-3">
+  <div class="float-right mb-3 mr-3 mt-1">
     <button mat-raised-button color="primary" class="col-m3 center" type="button" (click)="openDialog()" [disabled]="mergebuttonDisabled">Merge</button>
    </div>
 </div>
 
 <div  class="w-full h-full" *ngIf="defaultUI">
-   <empty-placeholder [defaultplaceholder]="mergeplaceholder">
-
+   <empty-placeholder [icon]="mergeicon" [message]="mergingmessage">
   </empty-placeholder>
 </div>
   </mat-tab-nav-panel> 

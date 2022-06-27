@@ -130,15 +130,17 @@ export class HttpService {
         this.__showSnackBar(data);
       }
     } else {
-      this.__showSnackBar(data);
+      // if (!options!.showErrorMessage && !options!.showSuccessMessage) {
+      //   this.__showSnackBar(data);
+      // }
     }
   }
 
   private __showSnackBar(data: any) {
     if (!data.success) {
-    //  this.messageDialog.error(data.message);
+      //  this.messageDialog.error(data.message);
     } else if (data.success && data.message) {
-     // this.messageDialog.success(data.message);
+      // this.messageDialog.success(data.message);
     }
   }
 }

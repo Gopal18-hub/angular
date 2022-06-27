@@ -6,6 +6,8 @@ export namespace ApiConstants {
   export const ageTypeLookUp =
     environment.CommonApiUrl + "api/lookup/agetypelookup/0";
 
+    
+
   //PATIENT GENDER RESPONSE TYPE genderModel[]
   export const genderLookUp =
     environment.CommonApiUrl + "api/lookup/genderlookup/0";
@@ -44,6 +46,14 @@ export namespace ApiConstants {
     );
   };
 
+   //PATIENT HCF MASTER MODEL FOR PASSPORT
+   export const hcfLookUp = (hspLocation: number) => {
+    return (
+      environment.CommonApiUrl + "api/lookup/hcflookup/"+hspLocation+"?0"
+    );
+  };
+  
+
   //PATIENT master LOCALITY RESPONSE TYPE localityMasterModel
   export const localityMasterData =
     environment.CommonApiUrl + "api/lookup/getlocality";
@@ -64,6 +74,11 @@ export namespace ApiConstants {
   //PATIENT ADDRESS CITY BY STATE ID, RESPONSE type commonCityTypeModel[]
   export const cityByStateID = (stateId: number) => {
     return environment.CommonApiUrl + "api/lookup/getcity/"+`${stateId}`;
+  };
+
+  //PATIENT ADDRESS ocality BY City ID, RESPONSE type commonCityTypeModel[]
+  export const localityBycityID = (cityId: number) => {
+    return environment.CommonApiUrl + "api/lookup/getlocality/"+`${cityId}`;
   };
 
   //PATIENT ADDRESS CITY MASTER MODEL, RESPONSE type commonCityTypeModel[]
@@ -119,7 +134,7 @@ export namespace ApiConstants {
     ----------------------------------------------------------------------------------------------------------*/
 
   //PATIENT DETAILS BY REGISTATION NUMBER(MANDATORY) AND IADCODE(MANDATORY) RESPONSE TYPE patientDetailsModel
-  export const patientDetails = (registrationno: number, iacode: number) => {
+  export const patientDetails = (registrationno: number, iacode: string) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode
@@ -145,7 +160,7 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment=="+hotlistingcomment+"&type=="+type+"&userId=="+userid
+      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment="+hotlistingcomment+"&type="+type+"&userId="+userid
     );
   };
 
@@ -154,7 +169,7 @@ export namespace ApiConstants {
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientdmsrefresh/"+"IaCode}/"+"RegistrationNo}"
+      "api/patient/getpatientdmsrefresh/"+IaCode+'/'+RegistrationNo
     );
   };
 
