@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
   selector: 'out-patients-payment-mode',
@@ -20,7 +21,7 @@ export class PaymentModeComponent implements OnInit {
       }
     },
   };
-  isShowCash: boolean = false;
+  isShowCash: boolean = true;
   questions: any;
   //cheque
   chequeForm!: FormGroup;
@@ -185,7 +186,7 @@ export class PaymentModeComponent implements OnInit {
       },
       orderId: {
         type: "string",
-        title: "order ID",
+        title: "Order ID",
         required: true,
       },
     },
@@ -363,23 +364,8 @@ export class PaymentModeComponent implements OnInit {
     this.dueQuestions = dueformResult.questions;
 
   }
-  // showCash()
-  // {
-  //   this.isShowCash =  true;    
-  // }
-  // showCheque()
-  // {
-  //   this.isShowCheque = true;
-  // }
-  // showcCard()
-  // {
-  //   this.isShowcCard = true;
-  // }
-  // showDraft()
-  // {
-  //   this.isShowDraft = true;
-  // }
-  showDetails(event: any) {
+ 
+  tabChanged(tabChangeEvent: MatTabChangeEvent):void {
     this.isShowCash = false;
     this.isShowCheque = false;
     this.isShowcCard = false;
@@ -390,28 +376,28 @@ export class PaymentModeComponent implements OnInit {
     this.isShowDue = false;
 
 
-    if (event === 'cash') {
+    if (tabChangeEvent.tab.textLabel === 'Cash') {
       this.isShowCash = true;
     }
-    else if (event === 'cheque') {
+    else if (tabChangeEvent.tab.textLabel === 'Cheque') {
       this.isShowCheque = true;
     }
-    else if (event === 'cCard') {
+    else if (tabChangeEvent.tab.textLabel === 'Credit Card') {
       this.isShowcCard = true;
     }
-    else if (event === 'draft') {
+    else if (tabChangeEvent.tab.textLabel === 'Demand Draft') {
       this.isShowDraft = true;
     }
-    else if (event === 'mobile') {
+    else if (tabChangeEvent.tab.textLabel === 'Mobile Payment') {
       this.isShowMobile = true;
     }
-    else if (event === 'online') {
+    else if (tabChangeEvent.tab.textLabel === 'Online Payment') {
       this.isShowOnline = true;
     }
-    else if (event === 'upi') {
+    else if (tabChangeEvent.tab.textLabel === 'UPI') {
       this.isShowUpi = true;
     }
-    else if (event === 'due') {
+    else if (tabChangeEvent.tab.textLabel === 'Due Amount') {
       this.isShowDue = true;
     }
 

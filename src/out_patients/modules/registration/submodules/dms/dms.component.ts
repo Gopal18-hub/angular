@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 @Component({
   selector: 'out-patients-dms',
   templateUrl: './dms.component.html',
@@ -7,40 +9,57 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class DMSComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(private dialogRef: MatDialogRef<DMSComponent>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
+  // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
+    this.searchResults={verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"};
   }
-
-  // config: any = {
-  //   selectBox: false,
-  //   displayedColumns: ['Document Type', 'Document Name', 'Original File Name', 'View', 'Remark', 'Mode', 'Is Verified', 'Verify'],
-  //     idType: {
-  //       title: '',
-  //       type: 'string'
-  //     },
-  //     docName: {
-  //       title: '',
-  //       type: 'string'
-  //     },
-  //     fileName: {
-  //       title: '',
-  //       type: 'string'
-  //     },
-  //     view: {
-  //       title: '',
-  //       type: 'button'
-  //     },
-  //     remark: {
-  //       title: '',
-  //       type: 'string'
-  //     },
-  //     mode:
-  //     {
-        
-  //     }
-
   
-  //   }
+
+  config: any = {
+    selectBox: false,
+    displayedColumns: ['idType', 'docName', 'fileName', 'view', 'remark', 'mode', 'isVerified', 'verify'],
+    columnsInfo: {
+      idType: {
+        title: 'Document Type',
+        type: 'string'
+      },
+      docName: {
+        title: 'Document Name',
+        type: 'string'
+      },
+      fileName: {
+        title: 'Original File Name',
+        type: 'string'
+      },
+      view: {
+        title: 'View',
+        type: 'string'
+      },
+      remark: {
+        title: 'Remarks ',
+        type: 'string'
+      },
+      mode:
+      {
+        title: 'Mode',
+        type: 'string'
+      }
+      ,
+      isVerified:
+      {
+        title: 'Is Verified',
+        type: 'checkbox'
+      }
+      ,
+      verify:
+      {
+        title: 'Verify',
+        type: 'button'
+      }
+
+    }
+    }
+    
   }
 
