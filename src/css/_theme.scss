@@ -140,6 +140,9 @@ mat-form-field {
               background-color: #fff;
             }
           }
+          &:last-child {
+            margin-right: 0.75rem;
+          }
         }
       }
       .mat-ink-bar {
