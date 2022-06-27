@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { PatientSearchModel } from "../../../auth/core/models/patientsearchmodel";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../shared/services/http.service";
@@ -6,6 +6,7 @@ import { ApiConstants } from "../../../auth/core/constants/ApiConstants";
 import { PatientService } from "../../../out_patients/core/services/patient.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { DatePipe } from "@angular/common";
+import { Router,ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "auth-dashboard",
@@ -26,7 +27,11 @@ export class DashboardComponent implements OnInit {
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
 
+  @ViewChild("table") table: any
+
   config: any = {
+    clickedRows: true,
+    clickSelection: "single",
     actionItems: true,
     actionItemList: [
       {
@@ -68,6 +73,9 @@ export class DashboardComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -106,22 +114,37 @@ export class DashboardComponent implements OnInit {
       categoryIcons: {
         title: "Category",
         type:'image',
-        width:34
+        width:34,
+        style: {
+          width: "220px",
+        },
       },
     },
   };
   constructor(private http: HttpService,
      private patientServie: PatientService,
      private searchService:SearchService,
-     private datepipe:DatePipe) {}
+     private datepipe:DatePipe,
+     private router:Router) {}
 
   ngOnInit(): void {
     this.getAllpatients().subscribe((resultData) => {
+      this.showspinner = false;
+      this.defaultUI = false;
+      resultData = resultData.map((item:any) => {
+        item.fullname = item.firstName + ' ' + item.lastName;
+        return item;
+      })
       this.patientList = resultData;
-      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
-
+      this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);      
       this.apiProcessing = true;
       console.log(this.patientList);
+      setTimeout(()=>{        
+        this.table.selection.changed.subscribe((res:any)=>{ 
+          console.log(res);
+          this.router.navigate(["out-patients","registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+        });
+      });
     });
     this.searchService.searchTrigger.subscribe((formdata:any)=>{
       console.log(formdata);
@@ -134,7 +157,7 @@ export class DashboardComponent implements OnInit {
   }
 
   searchPatient(formdata: any) {
-    this.defaultUI = false;
+   // this.defaultUI = false;
     this.showspinner = true;
     let dateOfBirth;
     let maxid = formdata["maxID"].split('.')[1];
@@ -155,14 +178,18 @@ export class DashboardComponent implements OnInit {
     if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
+      dateOfBirth == "" &&
       this.maxId == "" &&
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
     ) {
       this.getAllpatients().subscribe(
         (resultData) => {
-          this.showspinner = false;         
+          this.showspinner = false;  
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          })           
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
@@ -173,6 +200,12 @@ export class DashboardComponent implements OnInit {
           });
           this.apiProcessing = true;
           this.defaultUI = false;
+          setTimeout(()=>{        
+            this.table.selection.changed.subscribe((res:any)=>{ 
+              console.log(res);
+              this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+            });
+          });
           console.log(this.patientList);
         },
         (error) => {
@@ -186,7 +219,7 @@ export class DashboardComponent implements OnInit {
     } else if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
-      formdata["dob"] != "" &&
+      dateOfBirth != "" &&
       this.maxId == "" &&
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
@@ -195,7 +228,7 @@ export class DashboardComponent implements OnInit {
       this.showspinner = false;
       this.defaultUI = true;
       this.findpatientimage= "placeholder";
-      this.findpatientmessage = "Please Select Name / Phone with DOB as search criteria";
+      this.findpatientmessage = "Please enter Name / Phone in combination with DOB as search criteria";
           
     } else {  
         this.name = formdata["name"];
@@ -206,13 +239,23 @@ export class DashboardComponent implements OnInit {
         this.getAllpatientsBySearch().subscribe(
           (resultData) => {
             this.showspinner = false;
+            this.defaultUI = false;
             this.patientList = [];
+            resultData = resultData.map((item:any) => {
+              item.fullname = item.firstName + ' ' + item.lastName;
+              return item;
+            })
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
-            );
-  
+            );  
             this.apiProcessing = true;
+            setTimeout(()=>{        
+              this.table.selection.changed.subscribe((res:any)=>{ 
+                console.log(res);
+                this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+              });
+            });
             console.log(this.patientList);
           },
           (error) => {
