@@ -93,6 +93,25 @@ export class PatientService {
     },
   };
 
+  pageNumberIconsTooltip:any ={
+    "Cash":{
+      type: "static",
+      value: "Cash",
+    },
+    "PSU/Govt":{
+      type: "static",
+      value: "PSU",
+    },
+    "Corporate/Insurance":{
+      type: "static",
+      value: "INS",
+    },
+    "EWS":{
+      type: "static",
+      value: "EWS",
+    },
+  };
+
   constructor() {}
 
   getAllCategoryIcons(
@@ -114,9 +133,9 @@ export class PatientService {
         let tempPager: any = {
           src: "assets/patient-categories/" + this.pageNumberIcons[patient["pPagerNumber"]],
         };
-        if (this.categoryIconsTooltip[patient["pPagerNumber"]]) {
-          if (this.categoryIconsTooltip[patient["pPagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
+        if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]) {
+          if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]["type"] == "static") {
+            tempPager["tooltip"] = this.pageNumberIconsTooltip[patient["pPagerNumber"]]["value"];
           }          
         }
         returnIcons.push(tempPager);
@@ -160,9 +179,9 @@ export class PatientService {
         let tempPager: any = {
           src: "assets/patient-categories/" + this.pageNumberIcons[patient["ppagerNumber"]],
         };
-        if (this.categoryIconsTooltip[patient["ppagerNumber"]]) {
-          if (this.categoryIconsTooltip[patient["ppagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
+        if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
+          if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] == "static") {
+            tempPager["tooltip"] = this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
           }          
         }
         returnIcons.push(tempPager);
