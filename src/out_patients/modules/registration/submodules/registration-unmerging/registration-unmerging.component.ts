@@ -182,8 +182,7 @@ export class RegistrationUnmergingComponent implements OnInit {
 
      
     },(error:any)=>{
-      this.defaultUI = true;
-     // this.router.navigate(["registration","find-patient"], {queryParams:{maxId: this.maxid}})
+      this.defaultUI = true;    
       this.unmergemessage  = "No records found";
         this.unmergeimage  = "norecordfound"; 
     });
