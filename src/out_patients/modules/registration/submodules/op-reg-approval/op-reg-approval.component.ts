@@ -143,9 +143,9 @@ export class OpRegApprovalComponent implements OnInit {
     displayedColumns: [
       "maxid",
       "ssn",
-      "title",
+      "mTitle",
       "fullname",
-      "gender",
+      "uGender",
       "uMobile",
       "uEmail",
       "unationality",
@@ -163,7 +163,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: "SSN",
         type: "number",
       },
-      title: {
+      mTitle: {
         title: "Title",
         type: "string",
       },
@@ -172,7 +172,7 @@ export class OpRegApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
       },
-      gender: {
+      uGender: {
         title: "Gender",
         type: "string",
       },
@@ -222,7 +222,12 @@ export class OpRegApprovalComponent implements OnInit {
     this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchApproval(formdata.data);
     });
-    // this.showmain("OP Registration Approval");
+    if(this.from == undefined && this.to == undefined)
+    {
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-1),"dd/MM/yyyy");
+      this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
+    }
+     this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata: any) {
@@ -283,7 +288,7 @@ export class OpRegApprovalComponent implements OnInit {
       this.getopapprovalpending().subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
+            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
