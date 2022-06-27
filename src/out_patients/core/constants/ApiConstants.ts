@@ -134,7 +134,7 @@ export namespace ApiConstants {
     ----------------------------------------------------------------------------------------------------------*/
 
   //PATIENT DETAILS BY REGISTATION NUMBER(MANDATORY) AND IADCODE(MANDATORY) RESPONSE TYPE patientDetailsModel
-  export const patientDetails = (registrationno: number, iacode: number) => {
+  export const patientDetails = (registrationno: number, iacode: string) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode

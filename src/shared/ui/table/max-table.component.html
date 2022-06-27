@@ -5,10 +5,11 @@
     matSort
     (matSortChange)="announceSortChange($event)"
     [class.row-click]="config.clickedRows"
+    fixedLayout="true"
   >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef class="pr-4">
+      <th mat-header-cell *matHeaderCellDef>
         <mat-checkbox
           (change)="$event ? masterToggle() : null"
           [checked]="selection.hasValue() && isAllSelected()"
@@ -35,14 +36,23 @@
         [matColumnDef]="col"
         *ngIf="col != 'select' && col != 'actionItems'"
       >
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [style.width]="config?.columnsInfo[col]?.style?.width"
+        >
           {{ displayColumnsInfo[col].title }}
         </th>
         <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
-          <td mat-cell *matCellDef="let element" class="pr-4">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            (click)="columnClickFun(element, col)"
+          >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -56,10 +66,11 @@
             *matCellDef="let element"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
+            (click)="columnClickFun(element, col)"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -71,7 +82,7 @@
 
     <ng-container matColumnDef="actionItems">
       <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-      <td mat-cell *matCellDef="let element">
+      <td mat-cell *matCellDef="let element" class="pl-4">
         <div class="more-actions cursor-pointer" [matMenuTriggerFor]="menu">
           <mat-icon>more_horiz</mat-icon>
         </div>
@@ -98,17 +109,17 @@
     <ng-container *ngIf="config.clickedRows">
       <tr
         mat-row
-        (click)="selection.toggle(row)"
         *matRowDef="let row; columns: displayedColumns"
         [class.row-is-clicked]="selection.isSelected(row)"
       ></tr>
     </ng-container>
-    <ng-container *ngIf="config.selectBox">
-      <tr
+    <ng-container *ngIf="config.selectBox && !config.clickedRows">
+      <!-- <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         (click)="selection.toggle(row)"
-      ></tr>
+      ></tr> -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </ng-container>
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
@@ -153,7 +164,5 @@
 </ng-template>
 
 <ng-template #button let-data>
- 
- <button
-mat-raised-button (click)="!!data.output" disabled></button>
+  <button mat-raised-button (click)="(!!data.output)" disabled></button>
 </ng-template>

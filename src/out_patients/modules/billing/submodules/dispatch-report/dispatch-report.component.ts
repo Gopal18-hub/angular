@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../../../shared/ui/dynamic-forms/service/question-control.service';
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 @Component({
   selector: 'out-patients-dispatch-report',
   templateUrl: './dispatch-report.component.html',
@@ -95,7 +96,7 @@ export class DispatchReportComponent implements OnInit {
   };
   dispatchhistoryform!: FormGroup;
   questions: any;
-  constructor( private formService: QuestionControlService ) { }
+  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -128,6 +129,10 @@ export class DispatchReportComponent implements OnInit {
   clear()
   {
     this.dispatchhistoryform.reset();
+  }
+  savedialog()
+  {
+    this.msgdialog.success("Data Saved Suuccesully");
   }
 
 }
