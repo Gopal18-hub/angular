@@ -123,7 +123,10 @@ export class DupRegMergingComponent implements OnInit {
       categoryIcons: {
         title: 'Category',
         type: 'image',
-        width: 34
+        width: 34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }
@@ -177,9 +180,12 @@ export class DupRegMergingComponent implements OnInit {
     // }
     // else 
     if(formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] != '' && formdata['email'] == '')
+    && dateOfBirth != '' && formdata['email'] == '')
     {
-      return;
+      this.showmergespinner = false;  
+      this.defaultUI = true;
+      this.mergingmessage  = "Please enter Name / Phone in combination with DOB as search criteria";
+      this.mergeicon  = "placeholder";
     }
        
     this.patientList = [];
@@ -212,6 +218,7 @@ export class DupRegMergingComponent implements OnInit {
       }) ;
     },(error:any)=>{
       this.defaultUI = true;
+      this.showmergespinner = false;
       this.mergingmessage  = "No records found";
       this.mergeicon  = "norecordfound";
     });

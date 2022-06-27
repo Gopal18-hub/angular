@@ -112,6 +112,9 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'Category',
         type: "image",
         width: 34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }
@@ -179,6 +182,9 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'Category',
         type: "image",
         width: 34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }

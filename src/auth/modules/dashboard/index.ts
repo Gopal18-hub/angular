@@ -6,6 +6,8 @@ import { DashboardComponent } from "./dashboard.component";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { HeaderModule } from "../../../shared/modules/header";
 import { MatIconModule } from "@angular/material/icon";
+import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -16,6 +18,8 @@ import { MatIconModule } from "@angular/material/icon";
     MaxHealthTableModule,
     HeaderModule,
     MatIconModule,
+    EmptyPlaceholderModule,
+    MatProgressSpinnerModule,
   ],
   exports: [],
   providers: [DatePipe],
