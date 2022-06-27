@@ -89,6 +89,7 @@ export class SearchService {
         maxID: {
           type: "string",
           title: "Max ID",
+          defaultValue: this.cookie.get("LocationIACode") + '.',
         },
         ssn: {
           type: "string",
