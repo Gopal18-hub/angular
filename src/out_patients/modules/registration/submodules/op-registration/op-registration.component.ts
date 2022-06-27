@@ -685,6 +685,7 @@ export class OpRegistrationComponent implements OnInit {
       }
     });
    
+   
     
     // this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
     //   (value: any) => {
@@ -695,32 +696,7 @@ export class OpRegistrationComponent implements OnInit {
     //   }
     // );
 
-    this.OPRegForm.controls["seaFarer"].valueChanges.subscribe((value: any) => {
-      if (value && !this.MaxIDExist) {
-        this.seafarersDetailsdialog();
-      }
-    });
-
-    this.OPRegForm.controls["hotlist"].valueChanges.subscribe((value: any) => {
-      if  (value && !this.MaxIDExist) {
-        this.openHotListDialog();
-      }
-    });
-    this.OPRegForm.controls["vip"].valueChanges.subscribe((value: any) => {
-      if  (value) {
-        this.openVipNotes();
-      }
-    });
-    this.OPRegForm.controls["note"].valueChanges.subscribe((value: any) => {
-      if (value && !this.MaxIDExist) {
-        this.openNotes();
-      }
-    });
-    this.OPRegForm.controls["hwc"].valueChanges.subscribe((value: any) => {
-      if (value && !this.MaxIDExist) {
-        this.openHWCNotes();
-      }
-    });
+   
 
   }
 
@@ -766,18 +742,53 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  vipChecked()
-  {
-    this.OPRegForm.controls["vip"]
-      .valueChanges.subscribe(
-        (value: any) => {
-          if  (value) {
-            this.openHotListDialog();
-          }
-        }
-      );
+  // vipChecked()
+  // {
+  //   this.OPRegForm.controls["vip"]
+  //     .valueChanges.subscribe(
+  //       (value: any) => {
+  //         if  (value) {
+  //           this.openHotListDialog();
+  //         }
+  //       }
+  //     );
      
   
+  // }
+seaferrorCLick(event:Event){
+  if(this.OPRegForm.controls["seaFarer"].value){
+      this.seafarersDetailsdialog();
+    }
+}
+
+hotlistClick(event:Event){
+  if(this.OPRegForm.controls["hotlist"].value){
+      this.openHotListDialog();
+    }
+ 
+}
+ 
+hwcClick(event:Event){
+  if(this.OPRegForm.controls["hwc"].value){
+      this.openHWCNotes();
+    }
+
+}
+
+  openVIP(event:Event)
+  { let flag=0;
+    console.log(this.OPRegForm.controls["vip"].value);
+    if (!this.OPRegForm.controls["vip"].value) {
+      this.openVipNotes();
+    }
+    
+  }
+NotesClick(event:Event)
+{
+   if(!this.OPRegForm.controls["note"].value){
+        this.openNotes();
+      }
+    
   }
   //validation for empty Father or SPouse Name if Type selected
   checkFatherSpouseName() {
@@ -1088,7 +1099,7 @@ export class OpRegistrationComponent implements OnInit {
         });
         this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
           width: "30vw",
-          height: "52vh",
+          height: "62vh",
           data: {
             title: "Hot Listing",
             form: {
@@ -1467,6 +1478,22 @@ export class OpRegistrationComponent implements OnInit {
         this.modfiedPatiendDetails.title = this.OPRegForm.value.title.title;
     }
   }
+
+
+ 
+
+  //TO OPEN FOREIGN 
+  // openForeign()
+  // {
+  //   this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
+  //     (value: any) => {
+  //       if (value) {
+  //         this.showPassportDetails();
+  //       }
+  //     }
+  //   );
+  // }
+
 
   onMiddleNameModify()
   {
@@ -2095,9 +2122,10 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
   //DIALOGS ---------------------------------------------------------------------------------------
 
   openVipNotes() {
+   
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "45vh",
+      height: "42vh",
       data: {
         title: "VIP Remarks",
         form: {
@@ -2120,6 +2148,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
       this.vip = result.data.VipNotes;
       console.log("openVipNotes dialog was closed");
     });
+  
   }
 
 
@@ -2127,7 +2156,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "45vh",
+      height: "47vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -2158,7 +2187,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "50vh",
+      height: "56vh",
       data: {
         title: "EWS Details",
         form: {
@@ -2197,7 +2226,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "42vh",
+      height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2232,8 +2261,9 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
   }
 
   modfiedPatiendDetailsForPopUp!:ModifiedPatientDetailModel;
-  modifyDialogg() {
 
+
+  modifyDialogg() {
     this.modfiedPatiendDetailsForPopUp=this.getModifiedPatientDetailObj();
     this.modfiedPatiendDetailsForPopUp.title=this.genderList.filter(g=>g.id === this.OPRegForm.controls['gender'].value)[0].name;
     this.modfiedPatiendDetailsForPopUp.nationality=this.OPRegForm.value.nationality.title;
@@ -2250,7 +2280,12 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     });
   }
 
-  passportDetailsdialog(hcfMasterList: any) {
+  passportDetailsdialog(hcfMasterList: { title: string, value: number}[]) {
+    let hcfTitle
+    if(this.passportDetails.HCF!=0 && this.passportDetails.HCF!=undefined && this.passportDetails.HCF!=null){
+    let hcfvalue = hcfMasterList.filter((e) => e.value === this.passportDetails.HCF);
+    hcfTitle=hcfvalue[0].title;
+    }
 
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
@@ -2289,7 +2324,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
             hcf: {
               type: "autocomplete",
               title: "HCF",
-              defaultValue:this.passportDetails.HCF,
+              defaultValue:hcfTitle,
               required: true,
               options: hcfMasterList,
             },
