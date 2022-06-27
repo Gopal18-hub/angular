@@ -14,7 +14,7 @@
                     <div class="w-2/5">
                         <mat-label class="max-health-primary-color">Billed Location</mat-label>
                     </div>
-                    <div class="w-3/5">
+                    <div class="w-3/5 bg-white border-radius-md">
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="dispatchhistoryform"
@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <!-- Inside grey part -->
-                <div class="flex ml-12 bg-grey p-1 w-1/3">
-                    <div class="ml-3 mt-1">
+                <div class="flex align-items-center ml-12 bg-grey p-1 w-1/3">
+                    <!-- <div class="ml-3 mt-1">
                         <maxhealth-question
                         [question]="questions[1]"
                         [form]="dispatchhistoryform"
@@ -33,11 +33,11 @@
                         [index]="1"
                         (click)="enabledate()"
                         ></maxhealth-question>
-                    </div>
-                    <div class="w-auto mt-1 wt-nowrap ml-3">
+                    </div> -->
+                    <div class="w-auto  wt-nowrap ml-6">
                         <mat-label class="max-health-primary-color">From Date</mat-label>
                     </div>
-                    <div class="ml-3 w-1/4 bg-white">
+                    <div class="ml-3 w-1/4 bg-white border-radius-md">
                         <maxhealth-question
                         [question]="questions[2]"
                         [form]="dispatchhistoryform"
@@ -45,10 +45,10 @@
                         [index]="2"
                         ></maxhealth-question>
                     </div>
-                    <div class="w-auto mt-1 wt-nowrap ml-3">
+                    <div class="w-auto mt-1 wt-nowrap ml-6">
                         <mat-label class="max-health-primary-color">To Date</mat-label>
                     </div>
-                    <div class="w-1/4 ml-3 bg-white">
+                    <div class="w-1/4 ml-3 bg-white border-radius-md">
                         <maxhealth-question
                         [question]="questions[3]"
                         [form]="dispatchhistoryform"
@@ -71,7 +71,7 @@
                 <!-- buttons -->
                 <div class="float-right flex w-1/5 mr-3">
                     <div class="mr-4">
-                        <button mat-raised-button color="primary" type="submit">Show</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()">Show</button>
                     </div>
                     <div class="mr-4">
                         <button mat-raised-button color="primary" type="submit">Pending Reports</button>
