@@ -30,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MaxHealthTableModule } from '../../../shared/ui/table';
 import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-report.component';
 import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
+import { ExpiredPatientCheckComponent } from './submodules/expired-patient-check/expired-patient-check.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.compon
        RefundDialogComponent,
        VisitHistoryDialogComponent,
        DispatchReportComponent,
-       DmgMappingComponent
+       DmgMappingComponent,
+       ExpiredPatientCheckComponent
        
   ],
   imports: [

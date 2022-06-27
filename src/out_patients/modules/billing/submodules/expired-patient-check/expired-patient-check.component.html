@@ -1,0 +1,89 @@
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel" >
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Employee Sponsor Tagging</a> 
+            </li>
+        </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full bg-image" >
+
+            <!-------------------------------------FIRST ROW------------------------------------------------------>
+        <div class="flex h-2/10 pt-3"  style="background-color: #F6F6F6">
+            <div class="w-3/4 ">
+        <form [formGroup]="expiredpatientForm">
+            <div class="flex">
+                <div class="ml-2 max-health-primary-color">
+                    <mat-label >Max ID</mat-label>
+                </div>  
+                <div class="ml-2">
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="expiredpatientForm"
+                    [questions]="questions[0]"
+                    [index]="0">
+                    </maxhealth-question>
+                </div>
+                <div class="ml-2 max-health-primary-color">
+                     <mat-label>Mobile No.</mat-label>
+                </div>
+                <div class="ml-2">
+                    <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="expiredpatientForm"
+                    [questions]="questions[1]"
+                    [index]="1">
+                    </maxhealth-question>
+                </div>
+        
+            </div>
+        </form>
+    </div>
+         <div class="w-1/4 mr-3 ">
+                <button mat-raised-button  color="primary"  class="float-right">Search</button>
+            </div>
+        </div>
+        <!----------------------------------------SECOND ROW--------------------------------------------------------------->
+        <div class=" flex h-2/10 mt-1 p-3" style="background-color: #F6F6F6">
+        <div class="w-1/15 max-health-primary-color">
+            <mat-label>Name:</mat-label>
+            <span></span>
+        </div>
+        <div class="w-1/10 max-health-primary-color">
+            <mat-label>Age:</mat-label>
+            <span></span>
+        </div>
+        <div class="w-1/15 max-health-primary-color">
+            <mat-label>Gender:</mat-label>
+            <span></span>
+        </div>
+        <div class="w-1/15 max-health-primary-color">
+            <mat-label>DOB:</mat-label>
+            <span></span>
+        </div>
+        <div class="w-1/15 max-health-primary-color">
+            <mat-label>Nationality:</mat-label>
+            <span></span>
+        </div>
+        <div class="w-1/15 max-health-primary-color">
+            <mat-label>SSN:</mat-label>
+            <span></span>
+        </div>
+        </div>
+        <!-------------------------------------------THIRD ROW------------------------------------------------------------------>
+        <div  class="h-3/5 w-full flex ">
+            <div class="w-2/10">
+sdkjhjdfgh
+            </div>
+            <div class="h-1/2 w-1/2 mt-6  pr-12 border-dotted">
+
+            </div>
+            <div class="w-2/10">
+adjfhd
+            </div>
+        </div>
+        
+        </div> 
+    </mat-tab-nav-panel>   
+   

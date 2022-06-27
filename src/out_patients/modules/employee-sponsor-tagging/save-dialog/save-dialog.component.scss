@@ -8,3 +8,8 @@
 .text-color{
     color:#004084;
 }
+
+::ng-deep mat-icon{
+    height: 60% !important;
+    width: 60% !important;
+}

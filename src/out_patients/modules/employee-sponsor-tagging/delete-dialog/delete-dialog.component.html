@@ -1,16 +1,15 @@
-<div>
-    <span class="material-icons closeiconclass" mat-dialog-close>close</span>
-</div>
-<!-- <span class="material-icons warningiconclass">warning</span> -->
-<div style="margin-left:19vh">
-<mat-icon svgIcon="warning"></mat-icon>
-
-</div>
-<div>
-<p class="deletepopupclass">Do you want to Delete?</p>
-</div>
-<div class="flex">
-<button mat-raised-button (click)="deletesuccess()" mat-dialog-close>Ok</button>
-<button mat-raised-button color="primary">Cancel</button>
-<br>
+<div class="w-full h-full">
+    <div class=" w-full h-1/10">
+        <span class="material-icons float-right" mat-dialog-close>close</span>
+    </div>
+    <div class="w-full h-2/5 flex align-items-center justify-content-center">
+        <mat-icon svgIcon="warning"></mat-icon>
+    </div>
+    <div class="w-full h-1/10 text-center">
+        <p class="text-color">Do you want to delete?</p> 
+    </div>
+    <div class="flex w-full h-1/10 justify-content-center">
+        <button mat-raised-button (click)="deletesuccess()" mat-dialog-close >OK</button>
+        <button mat-raised-button color="primary" mat-dialog-close class="ml-4">Cancel</button>
+    </div>
 </div>

@@ -12,6 +12,7 @@ import { MiscellaneousBillingComponent } from "./submodules/miscellaneous-billin
 import { InitiateDepositComponent } from "./submodules/initiate-deposit/initiate-deposit.component";
 import { DispatchReportComponent } from "./submodules/dispatch-report/dispatch-report.component";
 import { DmgMappingComponent } from "./submodules/dmg-mapping/dmg-mapping.component";
+import { ExpiredPatientCheckComponent } from "./submodules/expired-patient-check/expired-patient-check.component";
 
 const routes: Routes = [
   {
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: "initiate-deposite", component: InitiateDepositComponent },
       { path: "dispatch-report", component: DispatchReportComponent },
       { path: "dmg-mapping", component: DmgMappingComponent },
+      {path:"expired-patient-check",component:ExpiredPatientCheckComponent}
     ],
   },
 ];

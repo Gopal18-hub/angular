@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessageDialogService } from '../../../../../src/shared/ui/message-dialog/message-dialog.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'out-patients-save-dialog',
   templateUrl: './save-dialog.component.html',
@@ -10,17 +12,18 @@ import { MessageDialogService } from '../../../../../src/shared/ui/message-dialo
 export class SavedialogComponent implements OnInit {
 
   constructor(
-    // @Inject(MAT_DIALOG_DATA) public data: MatDialog,
   public dialog:MatDialog,
-  public messagedialogservice:MessageDialogService
+  public messagedialogservice:MessageDialogService,
+  private maticonregistry:MatIconRegistry,
+  private domsanitizer:DomSanitizer
   ) { 
-    // console.log(data);
-    // let result=data;
+    this.maticonregistry.addSvgIcon('warning',
+    this.domsanitizer.bypassSecurityTrustResourceUrl('assets/warning.svg'));
     
   }
 
   ngOnInit(): void {
-    // console.log(this.data);
+   
    
   }
   savesuccess(){
