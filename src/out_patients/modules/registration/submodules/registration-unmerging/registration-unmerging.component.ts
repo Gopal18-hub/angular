@@ -88,7 +88,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       patientName : {
         title: 'Name',
         type: 'string',
-        tooltipColumn: "patientName",
+        tooltipColumn: "patientFullName",
       },
       age : {
         title: 'Age',
