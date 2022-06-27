@@ -7,6 +7,7 @@ export namespace MaxModules {
       moreOptions: false,
       globalSearchKey: "global",
       childrens: [],
+      dontShow: true,
     },
     {
       title: "Out Patients",
@@ -19,6 +20,7 @@ export namespace MaxModules {
           title: "Registration",
           defaultPath: "registration",
           moreOptions: true,
+          tenentPath: "/out-patients",
           childrens: [
             {
               id: 111,
@@ -93,7 +95,82 @@ export namespace MaxModules {
           id: -1,
           title: "Out Patient Billing",
           defaultPath: "",
-          childrens: [],
+          tenentPath: "/out-patients",
+          childrens: [
+            {
+              id: 211,
+              title: "Out Patient Billing",
+              defaultPath: "/out-patient-billing/",
+              globalSearchKey: "global",
+            },
+            {
+              id: 212,
+              title: "Deposit",
+              defaultPath: "/out-patient-billing/deposit",
+              globalSearchKey: "global",
+            },
+            {
+              id: 213,
+              title: "Bill Details",
+              defaultPath: "/out-patient-billing/details",
+              globalSearchKey: "global",
+            },
+            {
+              id: 214,
+              title: "Online Generated OP Bills",
+              defaultPath: "/out-patient-billing/online-op-bill",
+              globalSearchKey: "global",
+            },
+            {
+              id: 215,
+              title: "OP Order Request",
+              defaultPath: "/out-patient-billing/op-order-request",
+              globalSearchKey: "global",
+            },
+            {
+              id: 216,
+              title: "Miscellaneous Billing",
+              defaultPath: "/out-patient-billing/miscellaneous-billing",
+              globalSearchKey: "global",
+            },
+            {
+              id: 217,
+              title: "Initiate Deposit",
+              defaultPath: "/out-patient-billing/initiate-deposit",
+              globalSearchKey: "global",
+            },
+            {
+              id: 218,
+              title: "OP Refund Approval",
+              defaultPath: "/out-patient-billing/",
+              globalSearchKey: "global",
+            },
+            {
+              id: 219,
+              title: "DMG Mapping",
+              defaultPath: "/out-patient-billing/dmg-mapping",
+              globalSearchKey: "global",
+            },
+            {
+              id: 220,
+              title: "Post Discharge Follow Up Billing",
+              defaultPath: "/out-patient-billing/",
+              globalSearchKey: "global",
+            },
+            {
+              id: 221,
+              title: "Dispatch Report",
+              defaultPath: "/out-patient-billing/dispatch-report",
+              globalSearchKey: "global",
+            },
+            {
+              id: 222,
+              title: "Expired Patient Check",
+              defaultPath: "/out-patient-billing/",
+              globalSearchKey: "global",
+            },
+            
+          ],
           moreOptions: true,
         },
         {
@@ -106,9 +183,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Patient History",
-          defaultPath: "",
+          defaultPath: "patient-history",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,

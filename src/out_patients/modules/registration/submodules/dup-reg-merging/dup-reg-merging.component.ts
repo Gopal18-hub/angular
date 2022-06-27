@@ -12,6 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from '../../../../../shared/services/search.service';
 import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
+import { DatePipe } from "@angular/common";
 
 
 
@@ -45,18 +46,41 @@ export class DupRegMergingComponent implements OnInit {
     aadhaarId: new FormControl('')
   });
   @ViewChild("table") tableRows: any
-
+ 
   constructor(private http: HttpService,
     public matDialog: MatDialog,
     private patientServie: PatientService,
     private searchService: SearchService,
-    private messageDialogService:MessageDialogService) { }
+    private messageDialogService:MessageDialogService,
+    private datepipe : DatePipe) { }
 
-  config: any = {
+  config: any = {    
     actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        //actionType: "link",
+        //routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['maxid', 'ssn', 'date', 'firstName', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
+    displayedColumns: ['maxid', 'ssn', 'date', 'fullname', 'age', 'gender', 'dob', 'place', 'phone', 'categoryIcons'],
     columnsInfo: {
       maxid: {
         title: 'Max ID',
@@ -70,7 +94,7 @@ export class DupRegMergingComponent implements OnInit {
         title: 'Reg Date',
         type: 'date'
       },
-      firstName: {
+      fullname: {
         title: 'Name',
         type: 'string',
         tooltipColumn: "patientName",
@@ -99,7 +123,10 @@ export class DupRegMergingComponent implements OnInit {
       categoryIcons: {
         title: 'Category',
         type: 'image',
-        width: 34
+        width: 34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }
@@ -111,45 +138,68 @@ export class DupRegMergingComponent implements OnInit {
   }
 
   openDialog() {
-
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
     matdialogref.afterClosed().subscribe(result => {  
-      this.messageDialogService.success("Patient has been merged successfully"); 
+      var resultArr = result.split(',');
+      if(resultArr[0] == "success"){
+      this.messageDialogService.success("Max ID has been mapped with " + resultArr[1] ); 
+      
       this.getAllpatientsBySearch().subscribe((resultData) => {
+        resultData = resultData.map((item:any) => {
+          item.fullname = item.firstName + ' ' + item.lastName;
+          return item;
+        });
         this.results = resultData;
         this.results = this.patientServie.getAllCategoryIcons(this.results);
         this.isAPIProcess = true;
-      },(error:any)=>{
-        // this.mergingmessage  = "No records found";
-        // this.mergeicon  = "norecordfound";
+        this.mergebuttonDisabled = true;     
+        this.tableRows.selection.clear();   
       });
-     
-    });
-  }
+    }   
+   
+  });
+}
   
 
 
   searchPatient(formdata: any) {
     this.defaultUI=false;
-    if (formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] == '' && formdata['email'] == '')
+    let dateOfBirth;
+
+    if(formdata["dob"] != undefined || formdata["dob"] != null || formdata["dob"] != "")
     {
-      return;
+      dateOfBirth = this.datepipe.transform(formdata["dob"],'dd/MM/yyyy');
     }
-    else if(formdata['name'] == '' && formdata['phone'] == '' 
-    && formdata['dob'] != '' && formdata['email'] == '')
+    else{
+      dateOfBirth = "";
+    }
+    // if (formdata['name'] == '' && formdata['phone'] == '' 
+    // && formdata['dob'] == '' && formdata['email'] == '')
+    // {
+    //   return;
+    // }
+    // else 
+    if(formdata['name'] == '' && formdata['phone'] == '' 
+    && dateOfBirth != '' && formdata['email'] == '')
     {
-      return;
+      this.showmergespinner = false;  
+      this.defaultUI = true;
+      this.mergingmessage  = "Please enter Name / Phone in combination with DOB as search criteria";
+      this.mergeicon  = "placeholder";
     }
        
     this.patientList = [];
     this.name = formdata['name'];
     this.mobile  = formdata['phone'];
     this.email = formdata['email'];
-    this.dob = formdata['dob'];
+    this.dob = dateOfBirth || "";
    
     this.getAllpatientsBySearch().subscribe((resultData) => {
-      this.showmergespinner = false;     
+      this.showmergespinner = false;  
+      resultData = resultData.map((item:any) => {
+        item.fullname = item.firstName + ' ' + item.lastName;
+        return item;
+      });   
       this.results = resultData;
       this.results = this.patientServie.getAllCategoryIcons(this.results);
       this.isAPIProcess = true;
@@ -168,6 +218,7 @@ export class DupRegMergingComponent implements OnInit {
       }) ;
     },(error:any)=>{
       this.defaultUI = true;
+      this.showmergespinner = false;
       this.mergingmessage  = "No records found";
       this.mergeicon  = "norecordfound";
     });

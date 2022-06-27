@@ -1,0 +1,55 @@
+.col-black{
+    color: #000;
+}
+.col-white{
+    color: #fff;
+}
+.back-primary{
+    background-color: #004084;
+}
+.bold{
+    font-weight: bold;
+}
+.lighter{
+    font-weight: lighter;
+}
+.wt-nowrap{
+    white-space: nowrap;
+}
+.pointer{
+    cursor: pointer;
+}
+.secondary{
+    background-color: #45C0BE;
+}
+
+::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0 !important;
+}
+
+// :host ::ng-deep .mat-tab-group {
+//     flex-direction: row;
+//   }
+//   :host ::ng-deep .mat-tab-header {
+//     border-bottom: none;
+//   }
+//   :host ::ng-deep .mat-tab-header-pagination {
+//     display: none !important;
+//   }
+//   :host ::ng-deep .mat-tab-labels {
+//     flex-direction: column;
+//   }
+//   :host ::ng-deep .mat-ink-bar {
+//     height: 100%;
+//     left: 98% !important;
+//   }
+//   :host ::ng-deep .mat-tab-body-wrapper {
+//     flex: 1 1 auto;
+//   }
+
+.bg-white{
+    background-color: #fff;
+}
+.height{
+    height: 65vh;
+}

@@ -33,7 +33,7 @@
     ::ng-deep mat-radio-group {
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: space-between;
+      column-gap: 32%;
     }
 
     // &-imageblock {
@@ -45,4 +45,13 @@
 }
 .hash-background {
   background-color: #f6f6f6;
+}
+
+::ng-deep {
+  .table-height {
+    height: 65vh;
+  }
+}
+.wc-35-6 {
+  width: 35.666%;
 }

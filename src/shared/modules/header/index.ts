@@ -13,9 +13,11 @@ import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { RedirectComponent } from "./redirect/redirect.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
-  declarations: [HeaderComponent, SubComponent],
+  declarations: [HeaderComponent, SubComponent, RedirectComponent],
   imports: [
     CommonModule,
     MatMenuModule,
@@ -30,6 +32,7 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
     MatIconModule,
     MatDividerModule,
     DynamicFormsModule,
+    MatProgressSpinnerModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

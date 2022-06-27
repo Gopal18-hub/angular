@@ -11,9 +11,9 @@ import { environment } from "@environments/environment";
 })
 export class HeaderComponent implements OnInit {
   modules: any = [];
-  location:string = '';
-  station:string='';
-  usrname:string='';
+  location: string = "";
+  station: string = "";
+  usrname: string = "";
   activeModule: any;
 
   constructor(
@@ -25,15 +25,17 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.modules = MaxModules.getModules();
     this.modules.forEach((element: any) => {
-      if (element.defaultPath == this.baseHref) {
+      if (
+        element.defaultPath == this.baseHref ||
+        element.defaultPath == window.location.pathname
+      ) {
         this.activeModule = element;
       }
     });
 
-    this.location = this.cookieService.get('Location');
-    this.station = this.cookieService.get('Station');
-    this.usrname= this.cookieService.get('UserName');
-
+    this.location = this.cookieService.get("Location");
+    this.station = this.cookieService.get("Station");
+    this.usrname = this.cookieService.get("UserName");
   }
 
   logout() {

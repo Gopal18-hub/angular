@@ -12,7 +12,7 @@ import { MatTabLabel } from '@angular/material/tabs';
 import { PatientService } from "../../../../../out_patients/core/services/patient.service";
 import { SearchService } from '../../../../../shared/services/search.service';
 import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
-
+import { Router } from "@angular/router";
 
 
 @Component({
@@ -46,7 +46,29 @@ export class RegistrationUnmergingComponent implements OnInit {
   @ViewChild('table') table:any;
 
   config: any  = {
-    actionItems:true,
+    actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+       // actionType: "link",
+       // routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
     displayedColumns: ['maxid', 'ssn', 'date', 'patientName', 'age','gender','dob','place','phone','categoryIcons'],
@@ -92,7 +114,10 @@ export class RegistrationUnmergingComponent implements OnInit {
       categoryIcons : {
         title: 'Category',
         type:'image',
-        width:34
+        width:34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }  
@@ -100,7 +125,8 @@ export class RegistrationUnmergingComponent implements OnInit {
      private cookie:CookieService,
       private patientServie: PatientService,
       private searchService :SearchService,
-      private messageDialogService:MessageDialogService) { }
+      private messageDialogService:MessageDialogService,
+      private router:Router) { }
 
   ngOnInit(): void { 
     this.searchService.searchTrigger.subscribe((formdata)=>{
@@ -131,8 +157,8 @@ export class RegistrationUnmergingComponent implements OnInit {
 
   searchPatient(formdata:any) {
     this.defaultUI = false;
-    if(formdata['maxID'] == '' && formdata['ssn'] == '' )
-      return;
+    // if(formdata['maxID'] == '' && formdata['ssn'] == '' )
+    //   return;
       this.maxid = formdata['maxID'];
       this.ssn = formdata['ssn'];
     this.getAllunmergepatient().subscribe((resultData) => {
@@ -157,6 +183,7 @@ export class RegistrationUnmergingComponent implements OnInit {
      
     },(error:any)=>{
       this.defaultUI = true;
+     // this.router.navigate(["registration","find-patient"], {queryParams:{maxId: this.maxid}})
       this.unmergemessage  = "No records found";
         this.unmergeimage  = "norecordfound"; 
     });
