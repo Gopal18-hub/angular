@@ -330,6 +330,7 @@
                   ></maxhealth-question>
                 </div>
                 <!-- FOREIGN CHECKBOX -->
+                   <!-- (click)="openForeign()" -->
                 <div class="w-1/45 justify-between items-center flex">
                   <div class="w-1/45">
                     <maxhealth-question
@@ -337,6 +338,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[29]"
                       [index]="29"
+                   
                     ></maxhealth-question>
                   </div>
                   <div class="w-1/45">
@@ -345,6 +347,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[30]"
                       [index]="30"
+                      (click)="seaferrorCLick($event)"
                     ></maxhealth-question>
                   </div>
                 </div>
@@ -365,6 +368,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
+                     (click)="hotlistClick($event)"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -373,6 +377,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[32]"
                       [index]="32"
+                      (click)="openVIP($event)"
                     ></maxhealth-question>
                   </div>
                 </div>
@@ -383,6 +388,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[33]"
                       [index]="33"
+                      (click)="NotesClick($event)"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -391,6 +397,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[34]"
                       [index]="34"
+                      (click)="hwcClick($event)"
                     ></maxhealth-question>
                   </div>
                 </div>
