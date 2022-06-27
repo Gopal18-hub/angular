@@ -102,6 +102,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       age: {
         title: "Age",
         type: "number",
+        disabledSort:true,
       },
       gender: {
         title: "Gender",
@@ -119,6 +120,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       phone: {
         title: "Phone",
         type: "number",
+        disabledSort:true,
       },
       categoryIcons: {
         title: "Category",
@@ -127,6 +129,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         style: {
           width: "220px",
         },
+        disabledSort:true,
       },
     },
   };
