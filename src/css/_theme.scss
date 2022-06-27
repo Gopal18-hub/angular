@@ -129,14 +129,16 @@ mat-form-field {
       height: 100%;
       ul {
         li {
-          a.mat-tab-label-active {
-            border-radius: 7px 7px 0px 0px;
-            font-weight: 800;
-            color: #004084;
-            background-color: #fff;
+          a {
             height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
+            &.mat-tab-label-active {
+              border-radius: 7px 7px 0px 0px;
+              font-weight: 800;
+              color: #004084;
+              background-color: #fff;
+            }
           }
         }
       }
@@ -148,7 +150,7 @@ mat-form-field {
 }
 
 .max-body-wrapper-nobtn {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 130px);
   width: calc(100vw - 2em);
   border-radius: 10px 10px 0 0;
   .banner {
@@ -156,24 +158,31 @@ mat-form-field {
     color: #fff;
     border-radius: 10px 10px 0 0;
     border: 1px solid #004084;
-    height: 3.225rem;
+    height: 2.525rem;
     .mat-tab-links {
       height: 100%;
       ul {
         li {
-          a.mat-tab-label-active {
-            border-radius: 7px 7px 0px 0px;
-            font-weight: 800;
-            color: #004084;
-            background-color: #fff;
-            height: 2.75rem;
+          a {
+            height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
+            &.mat-tab-label-active {
+              border-radius: 7px 7px 0px 0px;
+              font-weight: 800;
+              color: #004084;
+              background-color: #fff;
+            }
           }
         }
       }
       .mat-ink-bar {
         display: none;
+      }
+    }
+    .mat-tab-nav-bar {
+      .mat-ink-bar {
+        height: 0;
       }
     }
   }
