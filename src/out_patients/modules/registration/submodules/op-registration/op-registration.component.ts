@@ -44,6 +44,7 @@ import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router,ActivatedRoute } from "@angular/router";
+import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -392,6 +393,7 @@ export class OpRegistrationComponent implements OnInit {
     public zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
+    private messageDialogService:MessageDialogService,
   ) {
     
   }
@@ -734,6 +736,17 @@ export class OpRegistrationComponent implements OnInit {
 
   }
 
+  clear(){
+    this.OPRegForm.reset();
+    this.categoryIcons = [];
+    this.OPRegForm.value.maxid =  this.cookie.get("LocationIACode") + ".";
+    this.OPRegForm.controls["nationality"].setValue({
+      title: "Indian",
+      value: 149,
+    });
+    this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
+    this.checkForMaxID();
+  }
   //validation for Indetity Number if Identity Type Selected
   checkIndetityValue() {
     let IdenityType = this.OPRegForm.controls["idenityType"].value;
@@ -1301,7 +1314,7 @@ export class OpRegistrationComponent implements OnInit {
       .get(ApiConstants.patientDetails(regNumber, iacode))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails = resultData;
-        this.categoryIcons = this.patientService.getCategoryIcons(
+        this.categoryIcons = this.patientService.getCategoryIconsForPatient(
           this.patientDetails
         );
         this.MaxIDExist = true;
@@ -1313,6 +1326,11 @@ export class OpRegistrationComponent implements OnInit {
 
         //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
         this.registeredPatientDetails(this.patientDetails);
+      },(error)=>{
+          if(error.error == "Patient Not found")
+          {
+            //this.messageDialogService.info(error.error);
+          }
       });
   }
 
@@ -2151,8 +2169,9 @@ export class OpRegistrationComponent implements OnInit {
   }
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
-      width: "100vw",
-      height: "52vh",
+      maxWidth: "100vw",
+      width: "95vw",
+      height: "90vh",
     });
   }
 
