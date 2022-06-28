@@ -148,7 +148,8 @@ export class PatientHistoryComponent implements OnInit {
   ssn:any;
   @ViewChild("table") tableRows: any
   constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService) { }
-
+  today: any;
+  fromdate: any;
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.patienthistoryFormData.properties,
@@ -156,6 +157,14 @@ export class PatientHistoryComponent implements OnInit {
     );
     this.patienthistoryform = formResult.form;
     this.questions = formResult.questions;
+    this.today = new Date();
+    this.patienthistoryform.controls["todate"].setValue(this.today);
+    this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
+  }
+  ngAfterViewInit(): void{
+    
   }
   patienthistorysearch()
   {
@@ -168,5 +177,10 @@ export class PatientHistoryComponent implements OnInit {
   clear()
   {
     this.patienthistoryform.reset();
+    this.today = new Date();
+    this.patienthistoryform.controls["todate"].setValue(this.today);
+    this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
   }
 }
