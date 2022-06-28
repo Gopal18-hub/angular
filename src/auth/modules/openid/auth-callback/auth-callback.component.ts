@@ -21,8 +21,8 @@ export class AuthCallbackComponent implements OnInit {
       .then((user) => {
         // console.log(user.access_token);
         // this.auth.setToken(user.access_token);
-        this.cookie.set('accessToken',user.access_token);
-        localStorage.setItem("role", user.profile["role"]);
+        this.cookie.set('accessToken',user.access_token);        
+        this.cookie.set("role", user.profile["role"]);
       })
       .catch((e) => {
         console.log(e);

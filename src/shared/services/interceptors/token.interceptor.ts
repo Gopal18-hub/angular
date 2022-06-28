@@ -32,11 +32,11 @@ export class TokenInterceptor implements HttpInterceptor {
         withCredentials: true,
       });
     }
-    if (request.url.includes("Logout")) {
+    if (request.url.includes("Logout")  || request.url.includes('MaxPermission')) {
       if (!request.headers.has("Authorization")) {
         request = request.clone({
           setHeaders: {
-            Authorization: `bearer ${this.auth.getToken()}`,
+            "Authorization": `bearer ${this.auth.getToken()}`,
             "Content-Type": "application/json",
           },
           withCredentials: true,
