@@ -43,8 +43,9 @@ import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
 import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
 import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
-import { Router,ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
+// import { title } from "process";
 
 export interface DialogData {
   expieryDate: Date;
@@ -130,10 +131,11 @@ export class OpRegistrationComponent implements OnInit {
         readonly: true,
       },
       mobileNumber: {
+        // type: "tel",
         type: "number",
         title: "Mobile Number",
         required: true,
-        pattern:"^[1-9]{1}[0-9]{9}",
+        pattern: "^[1-9]{1}[0-9]{9}",
         // minimum:10,
         // maximum:10,
       },
@@ -394,19 +396,17 @@ export class OpRegistrationComponent implements OnInit {
     public zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
-    private messageDialogService:MessageDialogService,
-  ) {
-    
-  }
+    private messageDialogService: MessageDialogService
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.registrationFormData.properties,
       {}
     );
-
+    this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
-    this.questions = formResult.questions;    
+    this.questions = formResult.questions;
 
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
@@ -430,13 +430,14 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
 
-    this.route.queryParams.subscribe((value)=>{
-      this.OPRegForm.value.maxid = value['maxId'];
-      this.getPatientDetailsByMaxId();
+    this.route.queryParams.subscribe((value) => {
+      if (value["maxId"]) {
+        this.OPRegForm.value.maxid = value["maxId"];
+        this.getPatientDetailsByMaxId();
+      }
     });
 
     this.searchService.searchTrigger.subscribe((formdata: any) => {
-        
       this.searchPatient(formdata.data);
     });
 
@@ -465,12 +466,13 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  searchPatient(formdata: any) {    
-      let maxid=Number(formdata["maxID"].split('.')[1]);
-      if(maxid <= 0 && maxid == undefined && maxid == null){
-        formdata["maxID"] = "";
-      }
-       this.http.get(
+  searchPatient(formdata: any) {
+    let maxid = Number(formdata["maxID"].split(".")[1]);
+    if (maxid <= 0 && maxid == undefined && maxid == null) {
+      formdata["maxID"] = "";
+    }
+    this.http
+      .get(
         ApiConstants.searchPatientApi(
           formdata["maxID"],
           "",
@@ -480,30 +482,33 @@ export class OpRegistrationComponent implements OnInit {
           formdata["adhaar"],
           formdata["healthID"]
         )
-      ).subscribe(
-        (resultData) => {        
-          this.router.navigate(["registration","find-patient"], { queryParams: {
-            maxID:formdata["maxID"],
-            name:formdata["name"],
-            phone: formdata["phone"],
-            dob: formdata["dob"],
-            healthID:formdata["healthID"],
-            adhaar:formdata["adhaar"],
-              }
-            });         
+      )
+      .subscribe(
+        (resultData) => {
+          this.router.navigate(["registration", "find-patient"], {
+            queryParams: {
+              maxID: formdata["maxID"],
+              name: formdata["name"],
+              phone: formdata["phone"],
+              dob: formdata["dob"],
+              healthID: formdata["healthID"],
+              adhaar: formdata["adhaar"],
+            },
+          });
         },
         (error) => {
-          this.router.navigate(["registration","find-patient"], { queryParams: {
-            maxID:formdata["maxID"],
-            name:formdata["name"],
-            phone: formdata["phone"],
-            dob: formdata["dob"],
-            healthID:formdata["healthID"],
-            adhaar:formdata["adhaar"],
-              }
-            });         
+          this.router.navigate(["registration", "find-patient"], {
+            queryParams: {
+              maxID: formdata["maxID"],
+              name: formdata["name"],
+              phone: formdata["phone"],
+              dob: formdata["dob"],
+              healthID: formdata["healthID"],
+              adhaar: formdata["adhaar"],
+            },
+          });
         }
-      );    
+      );
   }
 
   checkForModifiedPatientDetail() {
@@ -517,17 +522,22 @@ export class OpRegistrationComponent implements OnInit {
     //  this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
-    this.OPRegForm.controls["paymentMethod"].valueChanges.subscribe(
-      (value: any) => {
-        if (value == "ews") {
-          this.openEWSDialogue();
-        }
-      }
-    );
 
     this.zone.run(() => {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
+      if (this.maxIDChangeCall==false) {
+        this.OPRegForm.controls["paymentMethod"].valueChanges.subscribe(
+          (value: any) => {
+            if (value == "ews") {
+              if (this.maxIDChangeCall==false){
+              this.openEWSDialogue();
+              }
+            }
+          }
+        );
+      }
+
       this.questions[21].elementRef.addEventListener(
         "blur",
         this.getLocalityByPinCode.bind(this)
@@ -543,8 +553,8 @@ export class OpRegistrationComponent implements OnInit {
         "change",
         this.onFistNameModify.bind(this)
       );
-       //chnage event for middle name
-       this.questions[4].elementRef.addEventListener(
+      //chnage event for middle name
+      this.questions[4].elementRef.addEventListener(
         "change",
         this.onMiddleNameModify.bind(this)
       );
@@ -558,10 +568,10 @@ export class OpRegistrationComponent implements OnInit {
       this.questions[8].elementRef.addEventListener(
         "blur",
         this.onageCalculator.bind(this)
-      );          
-       //IdenityType value change
+      );
+      //IdenityType value change
       this.questions[17].elementRef.addEventListener(
-       "blur",
+        "blur",
         this.checkIndetityValue.bind(this)
       );
 
@@ -571,30 +581,24 @@ export class OpRegistrationComponent implements OnInit {
         this.checkFatherSpouseName.bind(this)
       );
 
-
       // nationality value chnage event to enable foreigner
-    this.questions[28].elementRef.addEventListener(
-      "blur",      
-        this.onNationalityModify.bind(this)       
-    );
-    }); 
-    
-      //ON MAXID CHANGE
-      this.questions[0].elementRef.addEventListener(
+      this.questions[28].elementRef.addEventListener(
         "blur",
-        this.getPatientDetailsByMaxId.bind(this)
+        this.onNationalityModify.bind(this)
       );
+    });
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.getPatientDetailsByMaxId.bind(this)
+    );
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges.subscribe((value: any) => {
-      if(value != undefined
-        && value != null
-        && value != ""
-        && value > 0)
-        {
-          this.validatePatientAge();
-        }
-     
+      if (value != undefined && value != null && value != "" && value > 0) {
+        this.validatePatientAge();
+      }
     });
 
     //value chnage event of country to fill city list and staelist
@@ -613,7 +617,7 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[24].required = false;
           this.questions[25].required = false;
           this.questions[26].required = false;
-          this.questions[21]= {...this.questions[21]};
+          this.questions[21] = { ...this.questions[21] };
           this.OPRegForm.controls["nationality"].setValue(undefined);
         }
       }
@@ -657,8 +661,6 @@ export class OpRegistrationComponent implements OnInit {
       this.addressByLocalityID();
     });
 
-  
-
     //on change of Title Gender needs to be changed
     this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
@@ -684,9 +686,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       }
     });
-   
-   
-    
+
     // this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
     //   (value: any) => {
     //     if  (value && !this.MaxIDExist) {
@@ -695,24 +695,21 @@ export class OpRegistrationComponent implements OnInit {
     //     }
     //   }
     // );
-
-   
-
   }
 
-  clear(){
+  clear() {
     this.OPRegForm.reset();
     this.categoryIcons = [];
-    this.OPRegForm.value.maxid =  this.cookie.get("LocationIACode") + ".";
+    this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
     this.OPRegForm.controls["nationality"].setValue({
       title: "Indian",
       value: 149,
     });
+
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
-    this.MaxIDExist=false;
+    this.MaxIDExist = false;
     this.checkForMaxID();
   }
-
 
   //validation for Indetity Number if Identity Type Selected
   checkIndetityValue() {
@@ -752,43 +749,37 @@ export class OpRegistrationComponent implements OnInit {
   //         }
   //       }
   //     );
-     
-  
+
   // }
-seaferrorCLick(event:Event){
-  if(this.OPRegForm.controls["seaFarer"].value){
+  seaferrorCLick(event: Event) {
+    if (!this.OPRegForm.controls["seaFarer"].value) {
       this.seafarersDetailsdialog();
     }
-}
+  }
 
-hotlistClick(event:Event){
-  if(this.OPRegForm.controls["hotlist"].value){
+  hotlistClick(event: Event) {
+    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
       this.openHotListDialog();
     }
- 
-}
- 
-hwcClick(event:Event){
-  if(this.OPRegForm.controls["hwc"].value){
+  }
+
+  hwcClick(event: Event) {
+    if (!this.OPRegForm.controls["hwc"].value) {
       this.openHWCNotes();
     }
+  }
 
-}
-
-  openVIP(event:Event)
-  { let flag=0;
+  openVIP(event: Event) {
+    let flag = 0;
     console.log(this.OPRegForm.controls["vip"].value);
     if (!this.OPRegForm.controls["vip"].value) {
       this.openVipNotes();
     }
-    
   }
-NotesClick(event:Event)
-{
-   if(!this.OPRegForm.controls["note"].value){
-        this.openNotes();
-      }
-    
+  NotesClick(event: Event) {
+    if (!this.OPRegForm.controls["note"].value) {
+      this.openNotes();
+    }
   }
   //validation for empty Father or SPouse Name if Type selected
   checkFatherSpouseName() {
@@ -1025,32 +1016,28 @@ NotesClick(event:Event)
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
-          if(this.similarContactPatientList.length!=0){
-          const similarSoundDialogref = this.matDialog.open(
-            SimilarPatientDialog,
-            {
-              width: "100vw",
-              height: "80vh",
-              data: {
-                searchResults: this.similarContactPatientList,
-              },
-            }
-          );
-          similarSoundDialogref.afterClosed().subscribe((result) => {
-            console.log(result.data["added"][0].maxid);
-            let maxID=result.data["added"][0].maxid;
-            this.OPRegForm.controls["maxid"].setValue(maxID);
-            this.getPatientDetailsByMaxId()
-            console.log("seafarers dialog was closed");
-           
-          });
-        }else{
-          console.log("no data found");
-        }
-      }
-        );
-      
-        
+          if (this.similarContactPatientList.length != 0) {
+            const similarSoundDialogref = this.matDialog.open(
+              SimilarPatientDialog,
+              {
+                width: "100vw",
+                height: "80vh",
+                data: {
+                  searchResults: this.similarContactPatientList,
+                },
+              }
+            );
+            similarSoundDialogref.afterClosed().subscribe((result) => {
+              console.log(result.data["added"][0].maxid);
+              let maxID = result.data["added"][0].maxid;
+              this.OPRegForm.controls["maxid"].setValue(maxID);
+              this.getPatientDetailsByMaxId();
+              console.log("seafarers dialog was closed");
+            });
+          } else {
+            console.log("no data found");
+          }
+        });
     }
   }
 
@@ -1059,11 +1046,9 @@ NotesClick(event:Event)
   //CLICK EVENT FROM FOREIGN CHECKBOX
   showPassportDetails() {
     this.getHCFDetails();
-   if(this.modfiedPatiendDetails)
-   {
-    this.modfiedPatiendDetails.foreigner=true;
-   }
-   
+    if (this.modfiedPatiendDetails) {
+      this.modfiedPatiendDetails.foreigner = true;
+    }
   }
 
   getHCFDetails() {
@@ -1310,41 +1295,48 @@ NotesClick(event:Event)
   }
 
   //Get Patient Details by Max ID
+  maxIDChangeCall: boolean = false;
   MaxIDExist: boolean = false;
   getPatientDetailsByMaxId() {
+    this.maxIDChangeCall = true;
     console.log(this.OPRegForm.value.maxid);
-    
-    let regNumber = Number(this.OPRegForm.value.maxid.split('.')[1]);
-    let iacode = this.OPRegForm.value.maxid.split('.')[0];
-    this.http
-      .get(ApiConstants.patientDetails(regNumber, iacode))
-      .subscribe((resultData: PatientDetails) => {
-        this.patientDetails = resultData;
-        this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-          this.patientDetails
-        );
-        this.MaxIDExist = true;
-        console.log(this.categoryIcons);
-        this.checkForMaxID();
-        //RESOPONSE DATA BINDING WITH CONTROLS
 
-        this.setValuesToOPRegForm(this.patientDetails);
+    let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
 
-        //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
-        this.registeredPatientDetails(this.patientDetails);
-      },(error)=>{
-          if(error.error == "Patient Not found")
-          {
+    //HANDLING IF MAX ID IS NOT PRESENT
+    if (regNumber != 0) {
+      let iacode = this.OPRegForm.value.maxid.split(".")[0];
+      this.http.get(ApiConstants.patientDetails(regNumber, iacode)).subscribe(
+        (resultData: PatientDetails) => {
+          this.patientDetails = resultData;
+          this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            this.patientDetails
+          );
+          this.MaxIDExist = true;
+          console.log(this.categoryIcons);
+          this.checkForMaxID();
+          //RESOPONSE DATA BINDING WITH CONTROLS
+
+          this.setValuesToOPRegForm(this.patientDetails);
+
+          //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+          this.registeredPatientDetails(this.patientDetails);
+          this.maxIDChangeCall = false;
+        },
+        (error) => {
+          if (error.error == "Patient Not found") {
             // this.messageDialogService.info(error.error);
             this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
-            this.questions[0].customErrorMessage =
-              "Invalid Max ID";
+            this.questions[0].customErrorMessage = "Invalid Max ID";
           }
-      });
+          this.maxIDChangeCall = false;
+        }
+      );
+    }
   }
 
   onModifyDetail() {
-     this.onUpdatePatientDetail();
+    this.onUpdatePatientDetail();
 
     if (this.isPatientdetailModified) {
       this.modifyDialogg();
@@ -1358,16 +1350,14 @@ NotesClick(event:Event)
         this.getModifiedPatientDetailObj()
       )
       .subscribe((resultData: PatientDetails) => {
-        
-        if(this.OPRegForm.value.maxid){
-        this.getPatientDetailsByMaxId(); 
-        }       // this.setValuesToOPRegForm(resultData);
+        if (this.OPRegForm.value.maxid) {
+          this.getPatientDetailsByMaxId();
+        } // this.setValuesToOPRegForm(resultData);
         console.log(resultData);
       });
   }
 
   onUpdatePatientDetail() {
-  
     this.http
       .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
       .subscribe((resultData: PatientDetails) => {
@@ -1395,7 +1385,7 @@ NotesClick(event:Event)
     this.OPRegForm.controls["mobileNumber"].setValue(
       this.patientDetails?.pphone
     );
-    this.OPRegForm.controls["title"].setValue( this.patientDetails?.title);
+    this.OPRegForm.controls["title"].setValue(this.patientDetails?.title);
     this.OPRegForm.controls["firstName"].setValue(
       this.patientDetails?.firstname
     );
@@ -1411,27 +1401,32 @@ NotesClick(event:Event)
     this.OPRegForm.controls["country"].setValue({
       title: this.patientDetails?.countryName,
       value: this.patientDetails?.pcountry,
-    });   
+    });
     this.OPRegForm.controls["nationality"].setValue({
-      title:this.patientDetails?.nationalityName,
-      value:this.patientDetails?.nationality,
+      title: this.patientDetails?.nationalityName,
+      value: this.patientDetails?.nationality,
     });
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
-
-    //PASSPORT DETAILS 
-    this.passportDetails.Expirydate=this.patientDetails?.expiryDate;
-    this.passportDetails.IssueDate=this.patientDetails?.issueDate;
-    this.passportDetails.HCF=this.patientDetails?.hcfId;
-    this.passportDetails.Issueat=this.patientDetails?.passportIssuedAt;
-    this.passportDetails.passportNo=this.patientDetails?.passportNo;
-
+    //PASSPORT DETAILS
+     if( this.passportDetails.passportNo!=""){
+    this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
+    this.passportDetails.IssueDate = this.patientDetails?.issueDate;
+    this.passportDetails.HCF = this.patientDetails?.hcfId;
+    this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
+    this.passportDetails.passportNo = this.patientDetails?.passportNo;
+     }
+     else{
+      this.passportDetails.Expirydate = "";
+      this.passportDetails.IssueDate = "";
+      this.passportDetails.HCF = 0;
+      this.passportDetails.Issueat = "";
+      this.passportDetails.passportNo = "";
+     }
     this.populateUpdatePatientDetail(this.patientDetails);
-
-
 
     //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
     // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
@@ -1479,10 +1474,7 @@ NotesClick(event:Event)
     }
   }
 
-
- 
-
-  //TO OPEN FOREIGN 
+  //TO OPEN FOREIGN
   // openForeign()
   // {
   //   this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
@@ -1494,9 +1486,7 @@ NotesClick(event:Event)
   //   );
   // }
 
-
-  onMiddleNameModify()
-  {
+  onMiddleNameModify() {
     console.log("middle name changed");
     if (this.checkForModifiedPatientDetail()) {
       this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
@@ -1544,7 +1534,7 @@ NotesClick(event:Event)
       this.OPRegForm.controls["foreigner"].disable();
       this.OPRegForm.controls["foreigner"].setValue(false);
     }
-  
+
     if (this.checkForModifiedPatientDetail()) {
       this.modfiedPatiendDetails.nationality =
         this.OPRegForm.value.nationality.value;
@@ -1558,10 +1548,18 @@ NotesClick(event:Event)
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.spouseName
       );
+      this.OPRegForm.controls["fatherSpouse"].setValue({
+        title:"Spouse",value:2}
+      );
+
+      //fatherSpouse
     } else {
       this.OPRegForm.controls["fatherSpouse"].setValue("Father");
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.fathersname
+      );
+      this.OPRegForm.controls["fatherSpouse"].setValue({
+        title:"Father",value:1}
       );
     }
 
@@ -1597,22 +1595,21 @@ NotesClick(event:Event)
       title: patientDetails?.localityName,
       value: patientDetails?.locality,
     });
-  
+
     //FOR CHECKBOX
     this.OPRegForm.controls["vip"].setValue(patientDetails?.vip);
     //FOR VIP NOTES
-    this.vip=patientDetails.vipreason;
-
+    this.vip = patientDetails.vipreason;
 
     //FOR CHECKBOX
     this.OPRegForm.controls["note"].setValue(patientDetails?.note);
     //FOR NOTES NOTES
-    this.noteRemark=patientDetails.notereason;
+    this.noteRemark = patientDetails.notereason;
 
     //FOR CHECKBOX
     this.OPRegForm.controls["hwc"].setValue(patientDetails?.hwc);
     //FOR HWC NOTES
-    this.hwcRemark=patientDetails.hwcRemarks;
+    this.hwcRemark = patientDetails.hwcRemarks;
 
     //FOR CHECKBOX
     this.OPRegForm.controls["organdonor"].setValue(
@@ -1627,9 +1624,7 @@ NotesClick(event:Event)
     this.OPRegForm.controls["verifiedOnline"].setValue(
       patientDetails?.isCghsverified
     );
-    this.OPRegForm.controls["surveySMS"].setValue(
-      patientDetails?.marketing1
-    );
+    this.OPRegForm.controls["surveySMS"].setValue(patientDetails?.marketing1);
     this.OPRegForm.controls["receivePromotional"].setValue(
       patientDetails?.marketing2
     );
@@ -1638,13 +1633,12 @@ NotesClick(event:Event)
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
 
     //FOR EWS POP UP
-    if(patientDetails.ppagerNumber.toUpperCase()=="EWS")
-    {
-this.ewsDetails.bplCardNo =patientDetails.bplcardNo;
-this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
+    if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
+      this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
+      this.ewsDetails.bplCardAddress = patientDetails.addressOnCard;
     }
 
-//SOURCE OF INFO DROPDOWN
+    //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
       patientDetails?.sourceofinfo
     );
@@ -1656,7 +1650,6 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     this.OPRegForm.controls["paymentMethod"].setValue(
       ppagerNumber?.toLowerCase()
     );
-  
   }
 
   updateRequestBody!: UpdatepatientModel;
@@ -1763,6 +1756,8 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
+    //IF PASSPOET DETAILS HAVE NOT BEEN ADDED 
+    this.getPassportDetailObj();
 
     return (this.patientSubmitDetails = new patientRegistrationModel(
       0,
@@ -1812,6 +1807,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
       this.passportDetails.IssueDate,
       this.passportDetails.Expirydate,
       this.passportDetails.Issueat,
+      
       "",
       false,
       this.OPRegForm.value.vip || false,
@@ -1862,13 +1858,28 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     ));
   }
 
+
+  //SETTING UP DEFAULT DATE AND HCF VALUE FOR API CALLS
+  getPassportDetailObj(){
+  if( this.passportDetails.passportNo==""){
+   
+      this.passportDetails.Expirydate = "1900-01-01T00:00:00";
+      this.passportDetails.IssueDate = "1900-01-01T00:00:00";
+      this.passportDetails.HCF = 0;
+      this.passportDetails.Issueat = "";
+      this.passportDetails.passportNo = "";
+     }
+    }
+
+    //FETCHING FATHER DETAILS FROM DROP DOWN
   getFather(): string {
     let response = "";
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {     
+    ) {
       if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+    
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -1879,7 +1890,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     if (
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
-    ) {      
+    ) {
       if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
         return this.OPRegForm.value.fatherSpouseName;
       }
@@ -2099,7 +2110,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
         this.OPRegForm.value.age > 0 &&
         this.OPRegForm.value.age < 18 &&
         (this.OPRegForm.controls["ageType"].value != null ||
-        this.OPRegForm.controls["ageType"].value != undefined)
+          this.OPRegForm.controls["ageType"].value != undefined)
       ) {
         if (
           this.OPRegForm.value.dob == null ||
@@ -2110,22 +2121,21 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
           this.questions[8].customErrorMessage =
             "DOB is required, Age is less than 18 Years";
         }
+      } else if (
+        this.OPRegForm.controls["ageType"].value == 1 &&
+        this.OPRegForm.value.age >= 18
+      ) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: false });
+        this.questions[8].customErrorMessage = "";
       }
-      else if(this.OPRegForm.controls["ageType"].value == 1
-            &&  this.OPRegForm.value.age >= 18 ){
-              this.OPRegForm.controls["dob"].setErrors({ incorrect: false });
-              this.questions[8].customErrorMessage =
-                "";
-      }     
     }
   }
   //DIALOGS ---------------------------------------------------------------------------------------
 
   openVipNotes() {
-   
     const vipNotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "42vh",
+      // height: "42vh",
       data: {
         title: "VIP Remarks",
         form: {
@@ -2145,18 +2155,17 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
       },
     });
     vipNotesDialogref.afterClosed().subscribe((result) => {
+      if(result!="" && result!=undefined){
       this.vip = result.data.VipNotes;
+      }
       console.log("openVipNotes dialog was closed");
     });
-  
   }
-
-
 
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "47vh",
+      // height: "47vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -2177,17 +2186,16 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     });
     notesDialogref.afterClosed().subscribe((result) => {
       console.log(result);
-      this.noteRemark = result.data.notes;
+      if(result!="" && result!=undefined){
+      this.noteRemark = result.data.notes;}
       console.log("notes dialog was closed");
     });
   }
 
-
-
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "56vh",
+      // height: "56vh",
       data: {
         title: "EWS Details",
         form: {
@@ -2214,19 +2222,20 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     });
     EWSDialogref.afterClosed().subscribe((result) => {
       console.log("HWC dialog was closed");
+      if(result!="" && result!=undefined){
       this.ewsDetails = {
         bplCardNo: result.data.BPLAddress,
         bplCardAddress: result.data.bplCardNo,
       };
+    }
     });
+  
   }
-
-
 
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "45vh",
+      // height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2237,7 +2246,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
               type: "textarea",
               title: "HWC Remarks",
               required: true,
-              defaultValue:this.hwcRemark,
+              defaultValue: this.hwcRemark,
             },
           },
         },
@@ -2246,11 +2255,12 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
       },
     });
     HWCnotesDialogref.afterClosed().subscribe((result) => {
+      if(result!="" && result!=undefined){
       this.hwcRemark = result.data.HWCRemark;
+      }
       console.log("HWC dialog was closed");
     });
   }
-
 
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
@@ -2260,37 +2270,48 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     });
   }
 
-  modfiedPatiendDetailsForPopUp!:ModifiedPatientDetailModel;
-
+  modfiedPatiendDetailsForPopUp!: ModifiedPatientDetailModel;
 
   modifyDialogg() {
-    this.modfiedPatiendDetailsForPopUp=this.getModifiedPatientDetailObj();
-    this.modfiedPatiendDetailsForPopUp.title=this.genderList.filter(g=>g.id === this.OPRegForm.controls['gender'].value)[0].name;
-    this.modfiedPatiendDetailsForPopUp.nationality=this.OPRegForm.value.nationality.title;
-    
+    this.modfiedPatiendDetailsForPopUp = this.getModifiedPatientDetailObj();
+    this.modfiedPatiendDetailsForPopUp.title = this.genderList.filter(
+      (g) => g.id === this.OPRegForm.controls["gender"].value
+    )[0].name;
+    this.modfiedPatiendDetailsForPopUp.nationality =
+      this.OPRegForm.value.nationality.title;
+
     const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
-            width: "30vw",
-            height: "96vh",
-            data:{patientDetails:this.patientDetails,modifiedDetails:this.modfiedPatiendDetailsForPopUp}
-     });
-    
+      width: "30vw",
+      height: "96vh",
+      data: {
+        patientDetails: this.patientDetails,
+        modifiedDetails: this.modfiedPatiendDetailsForPopUp,
+      },
+    });
+
     modifyDetailDialogref.afterClosed().subscribe((result) => {
       console.log(result);
       this.postModifyCall();
     });
   }
 
-  passportDetailsdialog(hcfMasterList: { title: string, value: number}[]) {
-    let hcfTitle
-    if(this.passportDetails.HCF!=0 && this.passportDetails.HCF!=undefined && this.passportDetails.HCF!=null){
-    let hcfvalue = hcfMasterList.filter((e) => e.value === this.passportDetails.HCF);
-    hcfTitle=hcfvalue[0].title;
+  passportDetailsdialog(hcfMasterList: { title: string; value: number }[]) {
+    let hcfTitle;
+    if (
+      this.passportDetails.HCF != 0 &&
+      this.passportDetails.HCF != undefined &&
+      this.passportDetails.HCF != null
+    ) {
+      let hcfvalue = hcfMasterList.filter(
+        (e) => e.value === this.passportDetails.HCF
+      );
+      hcfTitle = hcfvalue[0].title;
     }
 
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
-      height: "52vh",
+    // height: "52vh",
       data: {
         title: "Passport Details",
         form: {
@@ -2324,7 +2345,7 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
             hcf: {
               type: "autocomplete",
               title: "HCF",
-              defaultValue:hcfTitle,
+              defaultValue: hcfTitle,
               required: true,
               options: hcfMasterList,
             },
@@ -2378,25 +2399,25 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
                 type: "string",
                 title: "HK ID",
                 required: true,
-                defaultValue:this.seafarerDetails.HKID,
+                defaultValue: this.seafarerDetails.HKID,
               },
               vesselName: {
                 type: "string",
                 title: "Vessel name",
                 required: true,
-                defaultValue:this.seafarerDetails.Vesselname,
+                defaultValue: this.seafarerDetails.Vesselname,
               },
               rank: {
                 type: "string",
                 title: "Rank",
                 required: true,
-                defaultValue:this.seafarerDetails.rank,
+                defaultValue: this.seafarerDetails.rank,
               },
               fdpGroup: {
                 type: "string",
                 title: "FDP Group",
                 required: true,
-                defaultValue:this.seafarerDetails.FDPGroup,
+                defaultValue: this.seafarerDetails.FDPGroup,
               },
             },
           },
@@ -2407,12 +2428,14 @@ this.ewsDetails.bplCardAddress=patientDetails.addressOnCard
     );
     seafarersDetailDialogref.afterClosed().subscribe((result) => {
       console.log("seafarers dialog was closed");
+      if(result!="" && result!=undefined){
       this.seafarerDetails = {
         HKID: result.data.hkID,
         Vesselname: result.data.vesselName,
         rank: result.data.rank,
         FDPGroup: result.data.fdpGroup,
       };
+    }
     });
   }
   openDMSDialog(dmsDetailList: any) {
@@ -2435,7 +2458,7 @@ function phone(
   templateUrl: "similarPatient-dialog.html",
 })
 export class SimilarPatientDialog {
-  @ViewChild("patientDetail") tableRows: any
+  @ViewChild("patientDetail") tableRows: any;
   constructor(
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -2443,11 +2466,10 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-  
+
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
-  ngAfterViewInit()
-  {
+  ngAfterViewInit() {
     this.getMaxID();
   }
 
@@ -2495,21 +2517,11 @@ export class SimilarPatientDialog {
       },
     },
   };
-  getMaxID() {   
+  getMaxID() {
     console.log(event);
-    
-    this.tableRows.selection.changed.subscribe((res:any)=>{
 
-      this.dialogRef.close({data:res});
-
-
-    })
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      this.dialogRef.close({ data: res });
+    });
   }
-    
-  
-       
-     
-     
-    
-  
 }
