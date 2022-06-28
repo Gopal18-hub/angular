@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, NgZone, ViewChild,  OnDestroy } from "@angular/core";
+import { Component, Inject, OnInit, NgZone, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -45,8 +45,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
-import { Subject } from "rxjs/internal/Subject";
-import { takeUntil } from "rxjs/operators";
+import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 // import { title } from "process";
 
 export interface DialogData {
@@ -386,8 +385,6 @@ export class OpRegistrationComponent implements OnInit {
   hotlistRemark: any;
   isPatientdetailModified: boolean = false;
 
-  private readonly _destroying$ = new Subject<void>();
-
   constructor(
     private formService: QuestionControlService,
     private cookie: CookieService,
@@ -434,18 +431,14 @@ export class OpRegistrationComponent implements OnInit {
     this.getAllStateList();
     this.getLocalityList();
 
-    this.route.queryParams
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value) => {
+    this.route.queryParams.subscribe((value) => {
       if (value["maxId"]) {
         this.OPRegForm.value.maxid = value["maxId"];
         this.getPatientDetailsByMaxId();
       }
     });
 
-    this.searchService.searchTrigger
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((formdata: any) => {
+    this.searchService.searchTrigger.subscribe((formdata: any) => {
       this.searchPatient(formdata.data);
     });
 
@@ -464,11 +457,6 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["seaFarer"].enable();
     }
     this.checkForMaxID();
-  }
-
-  ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
   }
 
   checkForMaxID() {
@@ -496,7 +484,6 @@ export class OpRegistrationComponent implements OnInit {
           formdata["healthID"]
         )
       )
-      .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
           this.router.navigate(["registration", "find-patient"], {
@@ -541,14 +528,11 @@ export class OpRegistrationComponent implements OnInit {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
       if (this.maxIDChangeCall==false) {
-        this.OPRegForm.controls["paymentMethod"]       
-        .valueChanges
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
+        this.OPRegForm.controls["paymentMethod"].valueChanges.subscribe(
           (value: any) => {
             if (value == "ews") {
-              if (this.maxIDChangeCall == false) {
-                this.openEWSDialogue();
+              if (this.maxIDChangeCall==false){
+              this.openEWSDialogue();
               }
             }
           }
@@ -612,18 +596,14 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //on value chnae event of age Type
-    this.OPRegForm.controls["ageType"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["ageType"].valueChanges.subscribe((value: any) => {
       if (value != undefined && value != null && value != "" && value > 0) {
         this.validatePatientAge();
       }
     });
 
     //value chnage event of country to fill city list and staelist
-    this.OPRegForm.controls["country"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["country"].valueChanges.subscribe((value: any) => {
       if (
         this.OPRegForm.value.country.value != undefined &&
         this.OPRegForm.value.country.value != null &&
@@ -644,9 +624,7 @@ export class OpRegistrationComponent implements OnInit {
       }
     });
     //value chnage event of state to fill city list and district list
-    this.OPRegForm.controls["state"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["state"].valueChanges.subscribe((value: any) => {
       if (
         this.OPRegForm.value.state.value != undefined &&
         this.OPRegForm.value.state.value != null &&
@@ -658,9 +636,7 @@ export class OpRegistrationComponent implements OnInit {
     });
 
     //city chnage event
-    this.OPRegForm.controls["city"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["city"].valueChanges.subscribe((value: any) => {
       if (
         (this.OPRegForm.value.locality.value == undefined ||
           this.OPRegForm.value.locality.value == null ||
@@ -682,16 +658,12 @@ export class OpRegistrationComponent implements OnInit {
     });
 
     //locality chnage event
-    this.OPRegForm.controls["locality"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["locality"].valueChanges.subscribe((value: any) => {
       this.addressByLocalityID();
     });
 
     //on change of Title Gender needs to be changed
-    this.OPRegForm.controls["title"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["title"].valueChanges.subscribe((value: any) => {
       if (value) {
         if (!this.OPRegForm.controls["gender"].value) {
           let sex = this.titleList.filter((e) => e.name === value);
@@ -704,9 +676,7 @@ export class OpRegistrationComponent implements OnInit {
     });
 
     // //on change of Gender Title needs to be dafult for Transgender
-    this.OPRegForm.controls["gender"].valueChanges
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value: any) => {
+    this.OPRegForm.controls["gender"].valueChanges.subscribe((value: any) => {
       console.log("Gender" + value);
       if (value) {
         let genderName = this.genderList.filter((g) => g.id === value)[0].name;
@@ -730,7 +700,6 @@ export class OpRegistrationComponent implements OnInit {
 
   clear() {
     this.OPRegForm.reset();
-    this.OPRegForm.markAsUntouched();
     this.categoryIcons = [];
     this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
     this.OPRegForm.controls["nationality"].setValue({
@@ -844,7 +813,6 @@ export class OpRegistrationComponent implements OnInit {
     let hspId = Number(this.cookie.get("HSPLocationId"));
     this.http
       .get(ApiConstants.titleLookUp(hspId))
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.titleList = resultData;
         this.questions[3].options = this.titleList.map((l) => {
@@ -870,7 +838,6 @@ export class OpRegistrationComponent implements OnInit {
               this.OPRegForm.value.locality.value
             )
           )
-          .pipe(takeUntil(this._destroying$))
           .subscribe((resultData: AddressonLocalityModel) => {
             this.AddressonLocalityModellst = resultData;
 
@@ -917,7 +884,6 @@ export class OpRegistrationComponent implements OnInit {
   getSourceOfInfoList() {
     this.http
       .get(ApiConstants.sourceofinfolookup)
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.sourceOfInfoList = resultData;
         this.questions[41].options = this.sourceOfInfoList.map((l) => {
@@ -928,9 +894,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //AGE TYPE LIST
   getAgeTypeList() {
-    this.http.get(ApiConstants.ageTypeLookUp)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
+    this.http.get(ApiConstants.ageTypeLookUp).subscribe((resultData: any) => {
       this.ageTypeList = resultData;
       this.questions[10].options = this.ageTypeList.map((l) => {
         return { title: l.name, value: l.id };
@@ -943,7 +907,6 @@ export class OpRegistrationComponent implements OnInit {
   getIDTypeList() {
     this.http
       .get(ApiConstants.identityTypeLookUp)
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.idTypeList = resultData;
         this.questions[16].options = this.idTypeList.map((l) => {
@@ -954,9 +917,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //GENDER LIST FOR GENDER DROP DOWN
   getGenderList() {
-    this.http.get(ApiConstants.genderLookUp)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
+    this.http.get(ApiConstants.genderLookUp).subscribe((resultData: any) => {
       this.genderList = resultData;
       this.questions[7].options = this.genderList.map((l) => {
         return { title: l.name, value: l.id };
@@ -968,7 +929,6 @@ export class OpRegistrationComponent implements OnInit {
   getAllNAtionalityList() {
     this.http
       .get(ApiConstants.nationalityLookUp)
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.nationalityList = resultData;
         this.questions[28].options = this.nationalityList.map((l) => {
@@ -981,7 +941,6 @@ export class OpRegistrationComponent implements OnInit {
   getAllCountryList() {
     this.http
       .get(ApiConstants.masterCountryList)
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.countryList = resultData;
         this.questions[27].options = this.countryList.map((l) => {
@@ -992,9 +951,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //MASTER LIST FOR COUNTRY
   getAllCityList() {
-    this.http.get(ApiConstants.cityMasterData)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
+    this.http.get(ApiConstants.cityMasterData).subscribe((resultData: any) => {
       this.cityList = resultData;
       this.questions[24].options = this.cityList.map((l) => {
         return { title: l.cityName, value: l.id };
@@ -1014,9 +971,7 @@ export class OpRegistrationComponent implements OnInit {
 
   //MASTER LIST FOR STATES
   getAllStateList() {
-    this.http.get(ApiConstants.stateMasterData)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
+    this.http.get(ApiConstants.stateMasterData).subscribe((resultData: any) => {
       this.stateList = resultData;
       this.questions[26].options = this.stateList.map((l) => {
         return { title: l.stateName, value: l.id };
@@ -1028,7 +983,6 @@ export class OpRegistrationComponent implements OnInit {
   getLocalityList() {
     this.http
       .get(ApiConstants.localityMasterData)
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.localityList = resultData;
         this.questions[22].options = this.localityList.map((l) => {
@@ -1046,7 +1000,6 @@ export class OpRegistrationComponent implements OnInit {
           this.patientDetails.registrationno
         )
       )
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: DMSrefreshModel[]) => {
         this.DMSList = resultData;
         console.log(resultData);
@@ -1061,7 +1014,6 @@ export class OpRegistrationComponent implements OnInit {
         .post(ApiConstants.similarSoundPatientDetail, {
           phone: this.OPRegForm.value.mobileNumber,
         })
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: SimilarSoundPatientResponse[]) => {
           this.similarContactPatientList = resultData;
           console.log(this.similarContactPatientList);
@@ -1076,9 +1028,7 @@ export class OpRegistrationComponent implements OnInit {
                 },
               }
             );
-            similarSoundDialogref.afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
+            similarSoundDialogref.afterClosed().subscribe((result) => {
               console.log(result.data["added"][0].maxid);
               let maxID = result.data["added"][0].maxid;
               this.OPRegForm.controls["maxid"].setValue(maxID);
@@ -1105,7 +1055,6 @@ export class OpRegistrationComponent implements OnInit {
   getHCFDetails() {
     this.http
       .get(ApiConstants.hcfLookUp(Number(this.cookie.get("HSPLocationId"))))
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: GenernicIdNameModel[]) => {
         console.log(resultData);
         console.log(this.hcfDetailMasterList);
@@ -1116,6 +1065,22 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
+  showRegisteredId()
+  {
+    let formsubmitdialogref = this.matDialog.open(RegistrationDialogueComponent,{
+      width: "30vw",
+       
+          data: { message1:"Patient Document Saved" ,
+          message2:"Max ID: "+this.patientDetails.iacode+"."+this.patientDetails.registrationno,
+          btn1:true,
+          btn2:true,
+          bt1Msg:"Proceed to Billing",
+          bt2Msg:" Proceed to Deposit"          
+
+    }});
+    
+  
+  }
   //HOTLISTING POP UP DROP DOWN VALUES
   hotlistDialogList: { title: string; value: number }[] = [] as any;
   gethotlistMasterData(): { title: string; value: number }[] {
@@ -1160,9 +1125,7 @@ export class OpRegistrationComponent implements OnInit {
             buttonLabel: "Save",
           },
         });
-        this.hotlistdialogref.afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((result: any) => {
+        this.hotlistdialogref.afterClosed().subscribe((result: any) => {
           console.log("The dialog was closed");
           console.log(result);
           this.hotlistReason = result.data.hotlistTitle.title;
@@ -1201,7 +1164,6 @@ export class OpRegistrationComponent implements OnInit {
           Number(this.cookie.get("UserId"))
         )
       )
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         console.log(resultData);
         // this.questions[24].options = this.cityList.map((l) => {
@@ -1218,7 +1180,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.localityListByPin = resultData;
           this.questions[22].options = this.localityListByPin.map((l) => {
@@ -1239,7 +1200,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.cityByStateID(this.OPRegForm.value.state.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.cityList = resultData;
           this.questions[24].options = this.cityList.map((l) => {
@@ -1259,7 +1219,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.districtBystateID(this.OPRegForm.value.state.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.disttList = resultData;
           this.questions[25].options = this.disttList.map((l) => {
@@ -1280,7 +1239,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.localityBycityID(this.OPRegForm.value.city.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.localitybyCityList = resultData;
           this.questions[22].options = this.localitybyCityList.map((l) => {
@@ -1301,7 +1259,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.addressByCityID(this.OPRegForm.value.city.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.addressByCity = resultData;
           this.OPRegForm.controls["state"].setValue({
@@ -1325,7 +1282,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.stateByCountryId(this.OPRegForm.value.country.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.stateList = resultData;
           // console.log(this.localityListByPin);
@@ -1345,7 +1301,6 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       this.http
         .get(ApiConstants.CityDetail(this.OPRegForm.value.country.value))
-        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: any) => {
           this.cityList = resultData;
           // console.log(this.localityListByPin);
@@ -1368,9 +1323,7 @@ export class OpRegistrationComponent implements OnInit {
     //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.OPRegForm.value.maxid.split(".")[0];
-      this.http.get(ApiConstants.patientDetails(regNumber, iacode))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
+      this.http.get(ApiConstants.patientDetails(regNumber, iacode)).subscribe(
         (resultData: PatientDetails) => {
           this.patientDetails = resultData;
           this.categoryIcons = this.patientService.getCategoryIconsForPatient(
@@ -1413,7 +1366,6 @@ export class OpRegistrationComponent implements OnInit {
         ApiConstants.modifyPatientDetail,
         this.getModifiedPatientDetailObj()
       )
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientDetails) => {
         if (this.OPRegForm.value.maxid) {
           this.getPatientDetailsByMaxId();
@@ -1425,7 +1377,6 @@ export class OpRegistrationComponent implements OnInit {
   onUpdatePatientDetail() {
     this.http
       .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientDetails) => {
         this.populateUpdatePatientDetail(resultData);
         console.log(resultData);
@@ -1435,10 +1386,12 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.getPatientSubmitRequestBody());
     this.http
       .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
-      .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientDetails) => {
+        this.patientDetails=resultData;
+        this.showRegisteredId();
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
+       
       });
   }
 
@@ -1479,19 +1432,20 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
-    if (this.passportDetails.passportNo != "") {
-      this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
-      this.passportDetails.IssueDate = this.patientDetails?.issueDate;
-      this.passportDetails.HCF = this.patientDetails?.hcfId;
-      this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
-      this.passportDetails.passportNo = this.patientDetails?.passportNo;
-    } else {
+     if( this.passportDetails.passportNo!=""){
+    this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
+    this.passportDetails.IssueDate = this.patientDetails?.issueDate;
+    this.passportDetails.HCF = this.patientDetails?.hcfId;
+    this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
+    this.passportDetails.passportNo = this.patientDetails?.passportNo;
+     }
+     else{
       this.passportDetails.Expirydate = "";
       this.passportDetails.IssueDate = "";
       this.passportDetails.HCF = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
-    }
+     }
     this.populateUpdatePatientDetail(this.patientDetails);
 
     //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
@@ -1615,9 +1569,8 @@ export class OpRegistrationComponent implements OnInit {
         patientDetails?.spouseName
       );
       this.OPRegForm.controls["fatherSpouse"].setValue({
-        title: "Spouse",
-        value: 2,
-      });
+        title:"Spouse",value:2}
+      );
 
       //fatherSpouse
     } else {
@@ -1626,9 +1579,8 @@ export class OpRegistrationComponent implements OnInit {
         patientDetails?.fathersname
       );
       this.OPRegForm.controls["fatherSpouse"].setValue({
-        title: "Father",
-        value: 1,
-      });
+        title:"Father",value:1}
+      );
     }
 
     this.OPRegForm.controls["motherName"].setValue(
@@ -1824,7 +1776,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
-    //IF PASSPOET DETAILS HAVE NOT BEEN ADDED
+    //IF PASSPOET DETAILS HAVE NOT BEEN ADDED 
     this.getPassportDetailObj();
 
     return (this.patientSubmitDetails = new patientRegistrationModel(
@@ -1875,7 +1827,7 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.IssueDate,
       this.passportDetails.Expirydate,
       this.passportDetails.Issueat,
-
+      
       "",
       false,
       this.OPRegForm.value.vip || false,
@@ -1926,18 +1878,20 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
+
   //SETTING UP DEFAULT DATE AND HCF VALUE FOR API CALLS
-  getPassportDetailObj() {
-    if (this.passportDetails.passportNo == "") {
+  getPassportDetailObj(){
+  if( this.passportDetails.passportNo==""){
+   
       this.passportDetails.Expirydate = "1900-01-01T00:00:00";
       this.passportDetails.IssueDate = "1900-01-01T00:00:00";
       this.passportDetails.HCF = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
+     }
     }
-  }
 
-  //FETCHING FATHER DETAILS FROM DROP DOWN
+    //FETCHING FATHER DETAILS FROM DROP DOWN
   getFather(): string {
     let response = "";
     if (
@@ -1945,6 +1899,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
       if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+    
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2219,9 +2174,7 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Save",
       },
     });
-    vipNotesDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    vipNotesDialogref.afterClosed().subscribe((result) => {
       if(result!="" && result!=undefined){
       this.vip = result.data.VipNotes;
       }
@@ -2251,13 +2204,10 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Save",
       },
     });
-    notesDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    notesDialogref.afterClosed().subscribe((result) => {
       console.log(result);
-      if (result != "" && result != undefined) {
-        this.noteRemark = result.data.notes;
-      }
+      if(result!="" && result!=undefined){
+      this.noteRemark = result.data.notes;}
       console.log("notes dialog was closed");
     });
   }
@@ -2290,21 +2240,20 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Save",
       },
     });
-    EWSDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    EWSDialogref.afterClosed().subscribe((result) => {
       console.log("HWC dialog was closed");
-      if (result != "" && result != undefined) {
-        this.ewsDetails = {
-          bplCardNo: result.data.BPLAddress,
-          bplCardAddress: result.data.bplCardNo,
-        };
-      }
-      else{
-        this.OPRegForm.controls["paymentMethod"].setErrors({ incorrect: true });
-        this.questions[40].customErrorMessage ="Invalid EWS details";
-      }
+      if(result!="" && result!=undefined){
+      this.ewsDetails = {
+        bplCardNo: result.data.BPLAddress,
+        bplCardAddress: result.data.bplCardNo,
+      };
+    }
+    else{
+      this.OPRegForm.controls["paymentMethod"].setErrors({ incorrect: true });
+      this.questions[40].customErrorMessage ="Invalid EWS details";
+    }
     });
+  
   }
 
   openHWCNotes() {
@@ -2329,9 +2278,7 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Save",
       },
     });
-    HWCnotesDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    HWCnotesDialogref.afterClosed().subscribe((result) => {
       if(result!="" && result!=undefined){
       this.hwcRemark = result.data.HWCRemark;
       }
@@ -2366,9 +2313,7 @@ export class OpRegistrationComponent implements OnInit {
       },
     });
 
-    modifyDetailDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    modifyDetailDialogref.afterClosed().subscribe((result) => {
       console.log(result);
       this.postModifyCall();
     });
@@ -2390,7 +2335,7 @@ export class OpRegistrationComponent implements OnInit {
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
-      // height: "52vh",
+    // height: "52vh",
       data: {
         title: "Passport Details",
         form: {
@@ -2434,9 +2379,7 @@ export class OpRegistrationComponent implements OnInit {
         buttonLabel: "Save",
       },
     });
-    passportDetailDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    passportDetailDialogref.afterClosed().subscribe((result) => {
       console.log("passport dialog was closed ");
       if (result == undefined || result.data == undefined) {
         this.OPRegForm.controls["foreigner"].setValue(false);
@@ -2507,18 +2450,16 @@ export class OpRegistrationComponent implements OnInit {
         },
       }
     );
-    seafarersDetailDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    seafarersDetailDialogref.afterClosed().subscribe((result) => {
       console.log("seafarers dialog was closed");
-      if (result != "" && result != undefined) {
-        this.seafarerDetails = {
-          HKID: result.data.hkID,
-          Vesselname: result.data.vesselName,
-          rank: result.data.rank,
-          FDPGroup: result.data.fdpGroup,
-        };
-      }
+      if(result!="" && result!=undefined){
+      this.seafarerDetails = {
+        HKID: result.data.hkID,
+        Vesselname: result.data.vesselName,
+        rank: result.data.rank,
+        FDPGroup: result.data.fdpGroup,
+      };
+    }
     });
   }
   openDMSDialog(dmsDetailList: any) {
@@ -2603,8 +2544,7 @@ export class SimilarPatientDialog {
   getMaxID() {
     console.log(event);
 
-    this.tableRows.selection.changed   
-    .subscribe((res: any) => {
+    this.tableRows.selection.changed.subscribe((res: any) => {
       this.dialogRef.close({ data: res });
     });
   }
