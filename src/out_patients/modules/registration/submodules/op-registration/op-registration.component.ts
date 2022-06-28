@@ -1088,6 +1088,10 @@ export class OpRegistrationComponent implements OnInit {
           } else {
             console.log("no data found");
           }
+        },
+        (error) => {
+          console.log(error);
+          this.messageDialogService.info(error.error)
         });
     }
   }
@@ -1116,12 +1120,12 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
-  showRegisteredId()
+  showRegisteredId(message1:string)
   {
     let formsubmitdialogref = this.matDialog.open(RegistrationDialogueComponent,{
       width: "30vw",
        
-          data: { message1:"Patient Document Saved" ,
+          data: { message1:message1 ,
           message2:"Max ID: "+this.patientDetails.iacode+"."+this.patientDetails.registrationno,
           btn1:true,
           btn2:true,
@@ -1187,7 +1191,12 @@ export class OpRegistrationComponent implements OnInit {
           this.postHotlistComment(this.hotlistReason, this.hotlistRemark);
           console.log(this.hotlistReason, this.hotlistRemark);
           // this.postHotlistComment();
-        });
+        },
+        (error: { error: string; }) => {
+          console.log(error);
+                    this.messageDialogService.info(error.error)
+        }
+        );
       });
     return arr;
   }
@@ -1223,7 +1232,21 @@ export class OpRegistrationComponent implements OnInit {
         console.log(resultData);
         // this.questions[24].options = this.cityList.map((l) => {
         //   return { title: l.cityName, value: l.id };
-      });
+      },
+      (error) => {
+        console.log(error);
+        if(!(error.error.text=="You Have Successfully Added Host List Comment.")){
+        this.messageDialogService.info(error.error.text)}
+        // else
+        // {
+        //   You have already added a host list comment against this Max ID 
+        // }
+      else{
+        this.messageDialogService.success("You Have Successfully Added Host List for MAX ID - "+ this.patientDetails.iacode+"."+this.patientDetails.registrationno)
+      }
+    }
+      
+      );
   }
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
@@ -1431,12 +1454,23 @@ export class OpRegistrationComponent implements OnInit {
         this.getModifiedPatientDetailObj()
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: PatientDetails) => {
+      .subscribe((resultData) => {
         if (this.OPRegForm.value.maxid) {
+          
           this.getPatientDetailsByMaxId();
         } // this.setValuesToOPRegForm(resultData);
+        if(resultData=="Your request has been processed successfully")
+        {
+          this.showRegisteredId("Modified request went for approval");
+        }
         console.log(resultData);
-      });
+      },
+      (error) => {
+        console.log(error);
+        this.messageDialogService.info(error.error)
+      }
+      
+      );
   }
 
   onUpdatePatientDetail() {
@@ -1446,7 +1480,10 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((resultData: PatientDetails) => {
         this.populateUpdatePatientDetail(resultData);
         console.log(resultData);
-      });
+      },(error) => {
+       this.messageDialogService.error(error.error);
+      }
+      );
   }
   postForm() {
     console.log(this.getPatientSubmitRequestBody());
@@ -1455,11 +1492,16 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientDetails) => {
         this.patientDetails=resultData;
-        this.showRegisteredId();
+        this.showRegisteredId("Patient Document Saved");
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
        
-      });
+      },
+      (error) => {
+        console.log(error);
+        this.messageDialogService.info(error.error)
+      }
+      );
   }
 
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
