@@ -18,13 +18,13 @@ export class PatientService {
     ews: "EWS.svg",
     ins: "Ins_icon.svg",
     hwc: "HWC_icon.svg",
-    isCghsverified:"CGHS_Icon.svg",    
+    isCghsverified: "CGHS_Icon.svg",
   };
-  pageNumberIcons:any ={
-    "Cash":"Cash_Icon.svg",
+  pageNumberIcons: any = {
+    Cash: "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
-    "Corporate/Insurance":"Ins_icon.svg",
-    "EWS":"EWS.svg",
+    "Corporate/Insurance": "Ins_icon.svg",
+    EWS: "EWS.svg",
   };
   categoryIconsActions: any = {
     cghs: {
@@ -93,6 +93,25 @@ export class PatientService {
     },
   };
 
+  pageNumberIconsTooltip: any = {
+    Cash: {
+      type: "static",
+      value: "Cash",
+    },
+    "PSU/Govt": {
+      type: "static",
+      value: "PSU",
+    },
+    "Corporate/Insurance": {
+      type: "static",
+      value: "INS",
+    },
+    EWS: {
+      type: "static",
+      value: "EWS",
+    },
+  };
+
   constructor() {}
 
   getAllCategoryIcons(
@@ -108,20 +127,26 @@ export class PatientService {
   getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
-      if(e=="pPagerNumber" 
-      && this.pageNumberIcons[patient["pPagerNumber"]])
-      {
+      if (
+        e == "pPagerNumber" &&
+        this.pageNumberIcons[patient["pPagerNumber"]]
+      ) {
         let tempPager: any = {
-          src: "assets/patient-categories/" + this.pageNumberIcons[patient["pPagerNumber"]],
+          src:
+            "assets/patient-categories/" +
+            this.pageNumberIcons[patient["pPagerNumber"]],
         };
-        if (this.categoryIconsTooltip[patient["pPagerNumber"]]) {
-          if (this.categoryIconsTooltip[patient["pPagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
-          }          
+        if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]) {
+          if (
+            this.pageNumberIconsTooltip[patient["pPagerNumber"]]["type"] ==
+            "static"
+          ) {
+            tempPager["tooltip"] =
+              this.pageNumberIconsTooltip[patient["pPagerNumber"]]["value"];
+          }
         }
         returnIcons.push(tempPager);
-      }
-      else if (
+      } else if (
         this.categoryIcons[e] &&
         patient[e as keyof (PatientSearchModel | getmergepatientsearch)]
       ) {
@@ -153,24 +178,27 @@ export class PatientService {
   getCategoryIconsForPatient(patient: PatientDetails) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
-      if(e=="ppagerNumber" 
-      && this.pageNumberIcons[patient["ppagerNumber"]])
-      {
+      if (
+        e == "ppagerNumber" &&
+        this.pageNumberIcons[patient["ppagerNumber"]]
+      ) {
         console.log(patient["ppagerNumber"]);
         let tempPager: any = {
-          src: "assets/patient-categories/" + this.pageNumberIcons[patient["ppagerNumber"]],
+          src:
+            "assets/patient-categories/" +
+            this.pageNumberIcons[patient["ppagerNumber"]],
         };
-        if (this.categoryIconsTooltip[patient["ppagerNumber"]]) {
-          if (this.categoryIconsTooltip[patient["ppagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.categoryIconsTooltip[e]["value"];
-          }          
+        if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
+          if (
+            this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] ==
+            "static"
+          ) {
+            tempPager["tooltip"] =
+              this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
+          }
         }
         returnIcons.push(tempPager);
-      }
-      else if (
-        this.categoryIcons[e] &&
-        patient[e as keyof (PatientDetails)]
-      ) {
+      } else if (this.categoryIcons[e] && patient[e as keyof PatientDetails]) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
         };
@@ -191,7 +219,6 @@ export class PatientService {
         }
         returnIcons.push(temp);
       }
-     
     });
 
     return returnIcons;
