@@ -89,7 +89,7 @@ export class OpRegistrationComponent implements OnInit {
   passportNum: number | undefined;
   issuedate: Date | undefined;
   categoryIcons: [] = [];
-  passportNo: string = "";
+  passportNo: string = "";  
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -761,11 +761,10 @@ export class OpRegistrationComponent implements OnInit {
     // );
   }
 
-  clear() {
+  clear() {  
     this.OPRegForm.reset();
     this.OPRegForm.markAsUntouched();
-    this.categoryIcons = [];
-    this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
+    this.categoryIcons = [];   
 
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
@@ -792,8 +791,11 @@ export class OpRegistrationComponent implements OnInit {
       FDPGroup: "",
     };
     this.patientDetails = { ...this.patientDetails };
-this.modfiedPatiendDetails={...this.modfiedPatiendDetails};
-this.maxIDChangeCall=false;
+    this.modfiedPatiendDetails={...this.modfiedPatiendDetails};
+    this.maxIDChangeCall=false;
+    this.router.navigate([],{queryParamsHandling:""});
+    this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
+    this.OPRegForm.value.email = "";
 
     this.OPRegForm.controls["nationality"].setValue({
       title: "Indian",
@@ -1865,6 +1867,8 @@ this.maxIDChangeCall=false;
 
     //FOR CHECKBOX
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
+
+    this.categoryIcons = this.patientService.getCategoryIconsForPatient(patientDetails);
 
     //FOR EWS POP UP
     if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
