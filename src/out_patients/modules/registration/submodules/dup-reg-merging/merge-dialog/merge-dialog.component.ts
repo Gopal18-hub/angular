@@ -6,7 +6,8 @@ import { PatientSearchModel } from '../../../../../../out_patients/core/models/p
 import { HttpService } from '../../../../../../shared/services/http.service';
 import { PatientmergeModel } from '../../../../../../out_patients/core/models/patientMergeModel';
 import { MessageDialogService } from '../../../../../../shared/ui/message-dialog/message-dialog.service';
-
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'out-patients-merge-dialog',
@@ -20,6 +21,8 @@ export class MergeDialogComponent implements OnInit {
   primaryid :number = 0;
   submitbtndisable:boolean = true;
   patientnamewithmaxid:string | undefined;
+
+  private readonly _destroying$ = new Subject<void>();
 
   constructor(private http: HttpService,
     @Inject(MAT_DIALOG_DATA) public data : any,
@@ -37,6 +40,12 @@ export class MergeDialogComponent implements OnInit {
       this.data.tableRows.selection.selected.map((s:any)=>{
         this.mergePostModel.push({id:s.id})});
   }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   checboxSelected(event:any)
   {   
    this.patientnamewithmaxid = event.maxid + '/' + event.firstName + ' ' + event.lastName;  
@@ -45,7 +54,9 @@ export class MergeDialogComponent implements OnInit {
   }
   patientMerging() {   
     let userId = Number(this.cookie.get('UserId'));   
-    this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel).subscribe((res)=>
+    this.http.post(ApiConstants.mergePatientApi(this.primaryid,userId),this.mergePostModel)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res)=>
     {   
       this.mergePostModel= [];  
       this.primaryid = 0;
