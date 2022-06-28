@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild,OnDestroy } from "@angular/core";
 import { getmergepatientsearch } from "../../../../../out_patients/core/models/getmergepatientsearch";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../shared/services/http.service";
@@ -13,6 +13,8 @@ import { PatientService } from "../../../../../out_patients/core/services/patien
 import { SearchService } from "../../../../../shared/services/search.service";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 import { Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "out-patients-registration-unmerging",
@@ -133,6 +135,9 @@ export class RegistrationUnmergingComponent implements OnInit {
       },
     },
   };
+
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -143,17 +148,28 @@ export class RegistrationUnmergingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchService.searchTrigger.subscribe((formdata) => {
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((formdata) => {
       this.searchPatient(formdata.data);
     });
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   unMerge() {
-    this.table.selection.selected.map((s: any) => {
+    this.table.selection.selected
+    .pipe(takeUntil(this._destroying$))
+    .map((s: any) => {
       this.unMergePostModel.push({ id: s.id });
     });
 
-    this.unMergePatient(this.unMergePostModel).subscribe(
+    this.unMergePatient(this.unMergePostModel)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
       (resultdata) => {
         console.log(resultdata);
         this.unMergeresponse = resultdata;
@@ -178,7 +194,9 @@ export class RegistrationUnmergingComponent implements OnInit {
     //   return;
     this.maxid = formdata["maxID"];
     this.ssn = formdata["ssn"];
-    this.getAllunmergepatient().subscribe(
+    this.getAllunmergepatient()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
       (resultData) => {
         this.showunmergespinner = false;
         this.unmergingList = resultData;
@@ -188,7 +206,9 @@ export class RegistrationUnmergingComponent implements OnInit {
           getmergepatientsearch
         );
         setTimeout(() => {
-          this.table.selection.changed.subscribe((res: any) => {
+          this.table.selection.changed
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
             if (this.table.selection.selected.length >= 1) {
               this.unmergebuttonDisabled = false;
             } else {
