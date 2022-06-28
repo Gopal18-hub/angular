@@ -20,7 +20,7 @@ import { ColorpickerQuestion } from "../types/question-colorpicker";
 import { AutoCompleteQuestion } from "../types/question-autocomplete";
 import { PasswordQuestion } from "../types/question-password";
 import { AuthService } from "../../../services/auth.service";
-
+import { TelQuestion } from "../types/question-tel";
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
@@ -44,6 +44,7 @@ export class QuestionControlService {
         data.push(new DropdownQuestion(question));
       else if (question.type == "string")
         data.push(new TextboxQuestion(question));
+      else if (question.type == "tel") data.push(new TelQuestion(question));
       else if (question.type == "number")
         data.push(new NumberQuestion(question));
       else if (question.type == "textarea")

@@ -130,6 +130,50 @@
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>
+    <ng-container *ngSwitchCase="'tel'">
+      <mat-label
+        [attr.for]="question.key"
+        [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+        >{{ question.label }}</mat-label
+      >
+      <mat-form-field
+        class="full-width clearfix clear"
+        appearance="outline"
+        floatLabel="never"
+      >
+        <input
+          matInput
+          placeholder=""
+          [formControlName]="question.key"
+          [type]="question.type"
+          [id]="question.key"
+          [required]="question.required"
+          [min]="question.minimum"
+          [max]="question.maximum"
+          [readonly]="question.readonly"
+          [step]="question.step"
+          [value]="question.value"
+          [placeholder]="question.placeholder"
+          [pattern]="question.pattern"
+          #element
+        />
+        <mat-error *ngIf="form.get(question.key)?.hasError('required')">
+          {{ question.label }} is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="patternError">
+          {{ question.label }} is <strong>Invalid</strong>
+        </mat-error>
+        <mat-error *ngIf="form.get(question.key)?.hasError('min')">
+          {{ question.label }} value should be greater than or equal to
+          <strong>{{ question.minimum }}</strong>
+        </mat-error>
+        <mat-error *ngIf="form.get(question.key)?.hasError('max')">
+          {{ question.label }} value should be less than or equal to
+          <strong>{{ question.maximum }}</strong>
+        </mat-error>
+        <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+      </mat-form-field>
+    </ng-container>
     <ng-container *ngSwitchCase="'textarea'">
       <mat-label
         [attr.for]="question.key"
@@ -183,7 +227,18 @@
           [placeholder]="question.placeholder"
           [pattern]="question.pattern"
           #element
+          list="defaultEmails"
         />
+        <datalist
+          id="defaultEmails"
+          *ngIf="form.value[question.key].indexOf('@') != -1"
+        >
+          <ng-container *ngFor="let emailDomain of emailDomains">
+            <option *ngIf="emailDomain">
+              {{ form.value[question.key].split("@")[0] }}@{{ emailDomain }}
+            </option>
+          </ng-container>
+        </datalist>
         <mat-error *ngIf="!isValid">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
