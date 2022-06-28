@@ -46,6 +46,27 @@ export class DynamicFormQuestionComponent
 
   filteredOptions!: Observable<any>;
 
+  emailDomains: string[] = [
+    "yahoo.com",
+    "gmail.com",
+    "google.com",
+    "hotmail.com",
+    "me.com",
+    "aol.com",
+    "mac.com",
+    "live.com",
+    "comcast.com",
+    "googlemail.com",
+    "msn.com",
+    "hotmail.co.uk",
+    "yahoo.co.uk",
+    "facebook.com",
+    "verizon.net",
+    "att.net",
+    "gmz.com",
+    "mail.com",
+  ];
+
   constructor(private qcs: QuestionControlService) {}
 
   compareFn: (f1: any, f2: any) => boolean = this.compareByValue;
