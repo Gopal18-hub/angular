@@ -45,6 +45,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
+// import { title } from "process";
 
 export interface DialogData {
   expieryDate: Date;
@@ -525,11 +526,13 @@ export class OpRegistrationComponent implements OnInit {
     this.zone.run(() => {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
-      if (!this.maxIDChangeCall) {
+      if (this.maxIDChangeCall==false) {
         this.OPRegForm.controls["paymentMethod"].valueChanges.subscribe(
           (value: any) => {
             if (value == "ews") {
+              if (this.maxIDChangeCall==false){
               this.openEWSDialogue();
+              }
             }
           }
         );
@@ -1545,10 +1548,18 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.spouseName
       );
+      this.OPRegForm.controls["fatherSpouse"].setValue({
+        title:"Spouse",value:2}
+      );
+
+      //fatherSpouse
     } else {
       this.OPRegForm.controls["fatherSpouse"].setValue("Father");
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.fathersname
+      );
+      this.OPRegForm.controls["fatherSpouse"].setValue({
+        title:"Father",value:1}
       );
     }
 
@@ -1847,7 +1858,9 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
-getPassportDetailObj(){
+
+  //SETTING UP DEFAULT DATE AND HCF VALUE FOR API CALLS
+  getPassportDetailObj(){
   if( this.passportDetails.passportNo==""){
    
       this.passportDetails.Expirydate = "1900-01-01T00:00:00";
@@ -1857,6 +1870,8 @@ getPassportDetailObj(){
       this.passportDetails.passportNo = "";
      }
     }
+
+    //FETCHING FATHER DETAILS FROM DROP DOWN
   getFather(): string {
     let response = "";
     if (
@@ -1864,6 +1879,7 @@ getPassportDetailObj(){
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
       if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+    
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2139,7 +2155,9 @@ getPassportDetailObj(){
       },
     });
     vipNotesDialogref.afterClosed().subscribe((result) => {
+      if(result!="" && result!=undefined){
       this.vip = result.data.VipNotes;
+      }
       console.log("openVipNotes dialog was closed");
     });
   }
@@ -2147,7 +2165,7 @@ getPassportDetailObj(){
   openNotes() {
     const notesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "47vh",
+      // height: "47vh",
       data: {
         title: "Note Remarks",
         form: {
@@ -2168,7 +2186,8 @@ getPassportDetailObj(){
     });
     notesDialogref.afterClosed().subscribe((result) => {
       console.log(result);
-      this.noteRemark = result.data.notes;
+      if(result!="" && result!=undefined){
+      this.noteRemark = result.data.notes;}
       console.log("notes dialog was closed");
     });
   }
@@ -2176,7 +2195,7 @@ getPassportDetailObj(){
   openEWSDialogue() {
     const EWSDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "56vh",
+      // height: "56vh",
       data: {
         title: "EWS Details",
         form: {
@@ -2203,17 +2222,20 @@ getPassportDetailObj(){
     });
     EWSDialogref.afterClosed().subscribe((result) => {
       console.log("HWC dialog was closed");
+      if(result!="" && result!=undefined){
       this.ewsDetails = {
         bplCardNo: result.data.BPLAddress,
         bplCardAddress: result.data.bplCardNo,
       };
+    }
     });
+  
   }
 
   openHWCNotes() {
     const HWCnotesDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "28vw",
-      height: "45vh",
+      // height: "45vh",
       data: {
         title: "HWC Remarks",
         form: {
@@ -2233,7 +2255,9 @@ getPassportDetailObj(){
       },
     });
     HWCnotesDialogref.afterClosed().subscribe((result) => {
+      if(result!="" && result!=undefined){
       this.hwcRemark = result.data.HWCRemark;
+      }
       console.log("HWC dialog was closed");
     });
   }
@@ -2287,7 +2311,7 @@ getPassportDetailObj(){
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
-      height: "52vh",
+    // height: "52vh",
       data: {
         title: "Passport Details",
         form: {
@@ -2404,12 +2428,14 @@ getPassportDetailObj(){
     );
     seafarersDetailDialogref.afterClosed().subscribe((result) => {
       console.log("seafarers dialog was closed");
+      if(result!="" && result!=undefined){
       this.seafarerDetails = {
         HKID: result.data.hkID,
         Vesselname: result.data.vesselName,
         rank: result.data.rank,
         FDPGroup: result.data.fdpGroup,
       };
+    }
     });
   }
   openDMSDialog(dmsDetailList: any) {
