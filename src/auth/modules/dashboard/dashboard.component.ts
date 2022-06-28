@@ -73,6 +73,9 @@ export class DashboardComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -90,6 +93,7 @@ export class DashboardComponent implements OnInit {
       age: {
         title: "Age",
         type: "number",
+        disabledSort:true,
       },
       gender: {
         title: "Gender",
@@ -107,11 +111,16 @@ export class DashboardComponent implements OnInit {
       phone: {
         title: "Phone",
         type: "number",
+        disabledSort:true,
       },
       categoryIcons: {
         title: "Category",
         type:'image',
-        width:34
+        width:34,
+        style: {
+          width: "220px",
+        },
+        disabledSort:true,
       },
     },
   };
@@ -125,6 +134,10 @@ export class DashboardComponent implements OnInit {
     this.getAllpatients().subscribe((resultData) => {
       this.showspinner = false;
       this.defaultUI = false;
+      resultData = resultData.map((item:any) => {
+        item.fullname = item.firstName + ' ' + item.lastName;
+        return item;
+      })
       this.patientList = resultData;
       this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);      
       this.apiProcessing = true;
@@ -175,7 +188,11 @@ export class DashboardComponent implements OnInit {
     ) {
       this.getAllpatients().subscribe(
         (resultData) => {
-          this.showspinner = false;             
+          this.showspinner = false;  
+          resultData = resultData.map((item:any) => {
+            item.fullname = item.firstName + ' ' + item.lastName;
+            return item;
+          })           
           this.patientList = resultData;
           this.patientList = this.patientServie.getAllCategoryIcons(
             this.patientList
@@ -186,6 +203,12 @@ export class DashboardComponent implements OnInit {
           });
           this.apiProcessing = true;
           this.defaultUI = false;
+          setTimeout(()=>{        
+            this.table.selection.changed.subscribe((res:any)=>{ 
+              console.log(res);
+              this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+            });
+          });
           console.log(this.patientList);
         },
         (error) => {
@@ -221,11 +244,21 @@ export class DashboardComponent implements OnInit {
             this.showspinner = false;
             this.defaultUI = false;
             this.patientList = [];
+            resultData = resultData.map((item:any) => {
+              item.fullname = item.firstName + ' ' + item.lastName;
+              return item;
+            })
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );  
             this.apiProcessing = true;
+            setTimeout(()=>{        
+              this.table.selection.changed.subscribe((res:any)=>{ 
+                console.log(res);
+                this.router.navigate(["registration","op-registration"],{queryParams:{maxId:res.added[0].maxid}});
+              });
+            });
             console.log(this.patientList);
           },
           (error) => {

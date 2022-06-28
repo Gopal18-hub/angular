@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.validateUserName.bind(this)
     );
     this.questions[0].elementRef.focus();
-    this.loginForm.controls["password"].disable();
+    //this.loginForm.controls["password"].disable();
     this.loginForm.controls["location"].disable();
     this.loginForm.controls["station"].disable();
   }
@@ -110,6 +110,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.loginForm.controls["location"].valueChanges.subscribe((value) => {
           if (value) {
             this.loginForm.controls["station"].enable();
+            this.loginForm.controls["station"].setValue(null);
             this.locationdetail = this.locationList.filter(
               (l) => l.hspLocationId === value.value
             )[0];
@@ -126,7 +127,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
             (s) => s.stationid === value.value
           )[0];
         });
-        this.loginForm.controls["password"].enable();
+       // this.loginForm.controls["password"].enable();
         this.loginForm.controls["location"].enable();
         //this.loginForm.controls["station"].enable();
         this.questions[1].elementRef.focus();
@@ -134,7 +135,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       (error: any) => {
         this.loginForm.controls["username"].setErrors({ incorrect: true });
         this.questions[0].customErrorMessage = error.error;
-        this.loginForm.controls["password"].disable();
+       // this.loginForm.controls["password"].disable();
         this.loginForm.controls["location"].disable();
         this.loginForm.controls["station"].disable();
       }

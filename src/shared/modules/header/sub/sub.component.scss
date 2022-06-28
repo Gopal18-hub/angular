@@ -18,12 +18,19 @@
       .mat-form-field-wrapper {
         margin: 0;
         padding: 0;
+        .mat-form-field-flex {
+          padding: 0.35em 1em;
+        }
         input {
           font-size: 12px;
+          width: 96%;
         }
         .mat-form-field-outline-start,
         .mat-form-field-outline-end {
           border: none;
+        }
+        .mat-form-field-prefix {
+          color: #afafaf;
         }
         .mat-form-field-suffix {
           top: 0.4em;
@@ -96,24 +103,26 @@
     maxhealth-question {
       > div {
         display: flex;
-        //align-items: center;
+        align-items: center;
         mat-label {
           width: 35%;
           font-size: 12px;
-          padding-top: 0.5rem;
         }
         mat-form-field {
           width: 75% !important;
           font-size: 12px;
+          .mat-form-field-wrapper {
+            padding-bottom: 0;
+          }
         }
       }
     }
   }
 }
-.search-note{
+.search-note {
   font-size: 10px;
   font-family: proxima;
-  font-style: normal; 
-  color: red;
-  float:left;
+  font-style: normal;
+  //color: red;
+  float: left;
 }

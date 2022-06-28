@@ -36,18 +36,24 @@
         [matColumnDef]="col"
         *ngIf="col != 'select' && col != 'actionItems'"
       >
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [disabled]="config?.columnsInfo[col]?.disabledSort"
+          [style.width]="config?.columnsInfo[col]?.style?.width"
+        >
           {{ displayColumnsInfo[col].title }}
         </th>
         <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
           <td
             mat-cell
             *matCellDef="let element"
-            (click)="selection.toggle(element)"
+            (click)="columnClickFun(element, col)"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -61,11 +67,11 @@
             *matCellDef="let element"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
-            (click)="selection.toggle(element)"
+            (click)="columnClickFun(element, col)"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col].type)"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -108,7 +114,7 @@
         [class.row-is-clicked]="selection.isSelected(row)"
       ></tr>
     </ng-container>
-    <ng-container *ngIf="config.selectBox">
+    <ng-container *ngIf="config.selectBox && !config.clickedRows">
       <!-- <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"

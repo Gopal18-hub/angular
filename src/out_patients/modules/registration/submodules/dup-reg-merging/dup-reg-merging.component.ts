@@ -101,7 +101,8 @@ export class DupRegMergingComponent implements OnInit {
       },
       age: {
         title: 'Age',
-        type: 'number'
+        type: 'number',
+        disabledSort:true,
       },
       gender: {
         title: 'Gender',
@@ -118,12 +119,17 @@ export class DupRegMergingComponent implements OnInit {
       },
       phone: {
         title: 'Phone',
-        type: 'number'
+        type: 'number',
+        disabledSort:true,
       },
       categoryIcons: {
         title: 'Category',
         type: 'image',
-        width: 34
+        width: 34,
+        style: {
+          width: "220px",
+        },
+        disabledSort:true,
       }
     }
   }
