@@ -692,7 +692,15 @@ export class OpRegistrationComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((value: any) => {
       if (value) {
-        if (!this.OPRegForm.controls["gender"].value) {
+        let gender = "";
+        if(this.OPRegForm.controls["gender"].value != undefined
+        && this.OPRegForm.controls["gender"].value != ""
+        && this.OPRegForm.controls["gender"].value!= null)
+        {
+          gender = this.genderList.filter((g) => g.id === this.OPRegForm.controls["gender"].value)[0].name;
+        }
+       
+        if (gender == "" || gender == undefined || gender == null ||  gender != "Transgender" ) {
           let sex = this.titleList.filter((e) => e.name === value);
           if (sex.length) {
             let exists = this.genderList.filter((e) => e.id === sex[0].sex);
@@ -849,68 +857,7 @@ export class OpRegistrationComponent implements OnInit {
           return { title: l.name, value: l.name };
         });
       });
-  }
-  AddressonLocalityModellst!: AddressonLocalityModel;
-  addressByLocalityID() {
-    if (
-      this.OPRegForm.value.city.value == undefined ||
-      this.OPRegForm.value.city.value == "" ||
-      this.OPRegForm.value.city.value == null
-    ) {
-      if (
-        this.OPRegForm.value.locality.value != undefined &&
-        this.OPRegForm.value.locality.value != null &&
-        this.OPRegForm.value.locality.value != ""
-      ) {
-        this.http
-          .get(
-            ApiConstants.addressByLocalityID(
-              this.OPRegForm.value.locality.value
-            )
-          )
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((resultData: AddressonLocalityModel) => {
-            this.AddressonLocalityModellst = resultData;
-
-            this.OPRegForm.controls["city"].setValue({
-              title: this.AddressonLocalityModellst.cityName,
-              value: this.AddressonLocalityModellst.cityId,
-            });
-            this.OPRegForm.controls["country"].setValue({
-              title: this.AddressonLocalityModellst.countryName,
-              value: this.AddressonLocalityModellst.countryid,
-            });
-            this.OPRegForm.controls["state"].setValue({
-              title: this.AddressonLocalityModellst.stateName,
-              value: this.AddressonLocalityModellst.stateId,
-            });
-            this.OPRegForm.controls["district"].setValue({
-              title: this.AddressonLocalityModellst.districtName,
-              value: this.AddressonLocalityModellst.districtId,
-            });
-          });
-      }
-    } else {
-      if (
-        this.OPRegForm.value.pincode == undefined ||
-        this.OPRegForm.value.pincode == null ||
-        this.OPRegForm.value.pincode == "" ||
-        this.OPRegForm.value.pincode <= 0
-      ) {
-        if (
-          this.OPRegForm.value.locality.value != undefined &&
-          this.OPRegForm.value.locality.value != null &&
-          this.OPRegForm.value.locality.value != "" &&
-          this.OPRegForm.value.locality.value > 0
-        ) {
-          let pincode = this.localitybyCityList.filter(
-            (l) => l.id === this.OPRegForm.value.locality.value
-          )[0].pincode;
-          this.OPRegForm.controls["pincode"].setValue(pincode);
-        }
-      }
-    }
-  }
+  } 
   //SOURCE OF INFO DROP DOWN
   getSourceOfInfoList() {
     this.http
@@ -961,81 +908,7 @@ export class OpRegistrationComponent implements OnInit {
       });
     });
   }
-
-  //MASTER LIST FOR NATIONALITY
-  getAllNAtionalityList() {
-    this.http
-      .get(ApiConstants.nationalityLookUp)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: any) => {
-        this.nationalityList = resultData;
-        this.questions[28].options = this.nationalityList.map((l) => {
-          return { title: l.name, value: l.id };
-        });
-      });
-  }
-
-  //MASTER LIST FOR COUNTRY
-  getAllCountryList() {
-    this.http
-      .get(ApiConstants.masterCountryList)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: any) => {
-        this.countryList = resultData;
-        this.questions[27].options = this.countryList.map((l) => {
-          return { title: l.countryName, value: l.id };
-        });
-      });
-  }
-
-  //MASTER LIST FOR COUNTRY
-  getAllCityList() {
-    this.http.get(ApiConstants.cityMasterData)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
-      this.cityList = resultData;
-      this.questions[24].options = this.cityList.map((l) => {
-        return { title: l.cityName, value: l.id };
-      });
-    });
-  }
-
-  //MASTER LIST FOR Distt
-  getAllDisttList() {
-    this.http.get(ApiConstants.disttMasterData)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
-      this.disttList = resultData;
-      this.questions[25].options = this.disttList.map((l) => {
-        return { title: l.districtName, value: l.id };
-      });
-    });
-  }
-
-  //MASTER LIST FOR STATES
-  getAllStateList() {
-    this.http.get(ApiConstants.stateMasterData)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: any) => {
-      this.stateList = resultData;
-      this.questions[26].options = this.stateList.map((l) => {
-        return { title: l.stateName, value: l.id };
-      });
-    });
-  }
-
-  //MASTER LIST FOR LOCALITY
-  getLocalityList() {
-    this.http
-      .get(ApiConstants.localityMasterData)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: any) => {
-        this.localityList = resultData;
-        this.questions[22].options = this.localityList.map((l) => {
-          return { title: l.localityName, value: l.id };
-        });
-      });
-  }
+ 
   DMSList: DMSrefreshModel[] = [];
   getPatientDMSDetail() {
     let arr = [] as any;
@@ -1248,6 +1121,84 @@ export class OpRegistrationComponent implements OnInit {
       
       );
   }
+  
+  ///Address Related functionality
+
+   //MASTER LIST FOR NATIONALITY
+   getAllNAtionalityList() {
+    this.http
+      .get(ApiConstants.nationalityLookUp)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: any) => {
+        this.nationalityList = resultData;
+        this.questions[28].options = this.nationalityList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
+  }
+
+  //MASTER LIST FOR COUNTRY
+  getAllCountryList() {
+    this.http
+      .get(ApiConstants.masterCountryList)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: any) => {
+        this.countryList = resultData;
+        this.questions[27].options = this.countryList.map((l) => {
+          return { title: l.countryName, value: l.id };
+        });
+      });
+  }
+
+  //MASTER LIST FOR COUNTRY
+  getAllCityList() {
+    this.http.get(ApiConstants.cityMasterData)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: any) => {
+      this.cityList = resultData;
+      this.questions[24].options = this.cityList.map((l) => {
+        return { title: l.cityName, value: l.id };
+      });
+    });
+  }
+
+  //MASTER LIST FOR Distt
+  getAllDisttList() {
+    this.http.get(ApiConstants.disttMasterData)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: any) => {
+      this.disttList = resultData;
+      this.questions[25].options = this.disttList.map((l) => {
+        return { title: l.districtName, value: l.id };
+      });
+    });
+  }
+
+  //MASTER LIST FOR STATES
+  getAllStateList() {
+    this.http.get(ApiConstants.stateMasterData)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: any) => {
+      this.stateList = resultData;
+      this.questions[26].options = this.stateList.map((l) => {
+        return { title: l.stateName, value: l.id };
+      });
+    });
+  }
+
+  //MASTER LIST FOR LOCALITY
+  getLocalityList() {
+    this.http
+      .get(ApiConstants.localityMasterData)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: any) => {
+        this.localityList = resultData;
+        this.questions[22].options = this.localityList.map((l) => {
+          return { title: l.localityName, value: l.id };
+        });
+      });
+  }
+  
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
@@ -1266,6 +1217,69 @@ export class OpRegistrationComponent implements OnInit {
           });
           this.questions[22] = { ...this.questions[22] };
         });
+    }
+  }
+
+  //fetch Address based on locality or set pincode on selection of locality
+  AddressonLocalityModellst!: AddressonLocalityModel;
+  addressByLocalityID() {
+    if (
+      this.OPRegForm.value.city.value == undefined ||
+      this.OPRegForm.value.city.value == "" ||
+      this.OPRegForm.value.city.value == null
+    ) {
+      if (
+        this.OPRegForm.value.locality.value != undefined &&
+        this.OPRegForm.value.locality.value != null &&
+        this.OPRegForm.value.locality.value != ""
+      ) {
+        this.http
+          .get(
+            ApiConstants.addressByLocalityID(
+              this.OPRegForm.value.locality.value
+            )
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((resultData: any) => {
+            this.AddressonLocalityModellst = resultData[0];
+
+            this.OPRegForm.controls["city"].setValue({
+              title: this.AddressonLocalityModellst.cityName,
+              value: this.AddressonLocalityModellst.cityId,
+            });
+            this.OPRegForm.controls["country"].setValue({
+              title: this.AddressonLocalityModellst.countryName,
+              value: this.AddressonLocalityModellst.countryid,
+            });
+            this.OPRegForm.controls["state"].setValue({
+              title: this.AddressonLocalityModellst.stateName,
+              value: this.AddressonLocalityModellst.stateId,
+            });
+            this.OPRegForm.controls["district"].setValue({
+              title: this.AddressonLocalityModellst.districtName,
+              value: this.AddressonLocalityModellst.districtId,
+            });
+          });
+      }
+    } else {
+      if (
+        this.OPRegForm.value.pincode == undefined ||
+        this.OPRegForm.value.pincode == null ||
+        this.OPRegForm.value.pincode == "" ||
+        this.OPRegForm.value.pincode <= 0
+      ) {
+        if (
+          this.OPRegForm.value.locality.value != undefined &&
+          this.OPRegForm.value.locality.value != null &&
+          this.OPRegForm.value.locality.value != "" &&
+          this.OPRegForm.value.locality.value > 0
+        ) {
+          let pincode = this.localitybyCityList.filter(
+            (l) => l.id === this.OPRegForm.value.locality.value
+          )[0].pincode;
+          this.OPRegForm.controls["pincode"].setValue(pincode);
+        }
+      }
     }
   }
 
