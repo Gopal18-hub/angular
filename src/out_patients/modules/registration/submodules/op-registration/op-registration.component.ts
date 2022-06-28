@@ -45,6 +45,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
+import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 // import { title } from "process";
 
 export interface DialogData {
@@ -1064,6 +1065,22 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
+  showRegisteredId()
+  {
+    let formsubmitdialogref = this.matDialog.open(RegistrationDialogueComponent,{
+      width: "30vw",
+       
+          data: { message1:"Patient Document Saved" ,
+          message2:"Max ID: "+this.patientDetails.iacode+"."+this.patientDetails.registrationno,
+          btn1:true,
+          btn2:true,
+          bt1Msg:"Proceed to Billing",
+          bt2Msg:" Proceed to Deposit"          
+
+    }});
+    
+  
+  }
   //HOTLISTING POP UP DROP DOWN VALUES
   hotlistDialogList: { title: string; value: number }[] = [] as any;
   gethotlistMasterData(): { title: string; value: number }[] {
@@ -1370,8 +1387,11 @@ export class OpRegistrationComponent implements OnInit {
     this.http
       .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
       .subscribe((resultData: PatientDetails) => {
+        this.patientDetails=resultData;
+        this.showRegisteredId();
         this.setValuesToOPRegForm(resultData);
         console.log(resultData);
+       
       });
   }
 
