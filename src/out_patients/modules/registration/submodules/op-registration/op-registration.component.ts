@@ -1543,14 +1543,16 @@ export class OpRegistrationComponent implements OnInit {
     this.http
       .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
       .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData: PatientDetails) => {
-          this.populateUpdatePatientDetail(resultData);
-          console.log(resultData);
-        },
-        (error) => {
-          this.messageDialogService.error(error.error);
+      .subscribe((resultData: PatientDetails) => {
+        this.populateUpdatePatientDetail(resultData);
+        if(!this.isPatientdetailModified)
+        {
+        this.messageDialogService.success("Patient Details has been modified");
         }
+        console.log(resultData);
+      },(error) => {
+       this.messageDialogService.error(error.error);
+      }
       );
   }
   postForm() {
@@ -1885,7 +1887,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.state.value,
       this.OPRegForm.value.country.value,
       this.OPRegForm.value.pincode,
-      "Cash", //PAGER NEED TO CHECK HOW CAN BE SENT
+     this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       "",
       false,
