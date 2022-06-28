@@ -1,3 +1,21 @@
 .bg-image{
-    background-image:url("../../../../src/assets/backgroundimage.png")
+    background-image:url("../../../../src/assets/backgroundimage.png");
+    background-position: center;
+    background-size: 100% 100%;
+    height:100%;
+}
+
+.card-class{
+    background-color: white;
+    border: 1px ridge gray;
+}
+
+.bg-white{
+    background-color:white;
+}
+.bg-row{
+    background-color: #F6F6F6;
+}
+.asterisk-color{
+    color: red;
 }

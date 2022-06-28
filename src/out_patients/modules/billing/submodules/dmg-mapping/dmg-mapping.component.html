@@ -9,11 +9,11 @@
     <mat-tab-nav-panel #tabPanel>
         <!---------------------------------FIRST ROW----------------------------------------------------->
       <div class="p-2 flex w-full bg-dmg">
-          <div class="w-9/10">
+          <div class="w-9/10 pt-2">
         <form [formGroup]="dmgMappingForm">
           <div class="flex">
             <mat-label>Max ID</mat-label>
-            <div class="ml-3">
+            <div class="ml-3 w-1/10 bg-white">
             <maxhealth-question
             [question]="questions[0]"
             [form]="dmgMappingForm"
@@ -24,7 +24,7 @@
             </div>
 
             <mat-label class="ml-3">Mobile No.</mat-label>
-            <div class="ml-3">
+            <div class="ml-3 w-1/10 bg-white">
             <maxhealth-question
             [question]="questions[1]"
             [form]="dmgMappingForm"
@@ -36,9 +36,9 @@
           </div>
         </form>
          </div>
-        <div class="float-right w-1/10 ml-12 flex"  >
-            <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42">
+        <div class="float-right w-1/10 mr-6 flex"  >
+            <div >
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
                 <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
                   <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4" transform="translate(-12883 23266)" fill="#fff"/>
                   <g id="Group_1383" data-name="Group 1383" transform="translate(-14630.995 22990.941)">
@@ -48,9 +48,11 @@
                 </g>
               </svg>
             </div>
-        <button   mat-raised-button color="primary">
-            Search
-        </button>
+            <div class="ml-0" >
+            <button   mat-raised-button color="primary">
+                Search
+            </button>
+             </div>
         </div> 
     </div>
     <!------------------------------------------SECOND ROW----------------------------------------->

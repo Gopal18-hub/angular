@@ -27,7 +27,7 @@ export class SavedialogComponent implements OnInit {
    
   }
   savesuccess(){
-    this.messagedialogservice.confirm('successtick','Saved Successfully');
+    this.messagedialogservice.success('Saved Successfully');
   // this.dialog.open(SavesuccessdialogComponent,{width:'20vw',height:'40vh'})
 
   }

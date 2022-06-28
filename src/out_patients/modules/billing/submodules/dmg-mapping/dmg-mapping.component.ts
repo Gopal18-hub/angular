@@ -108,7 +108,7 @@ export class DmgMappingComponent implements OnInit {
   //  );
   }
   dmgsave(){
-    this.messagedialogservice.error('DMG mapped to this patient');
+    this.messagedialogservice.success('DMG mapped to this patient');
   }
   
 
