@@ -585,6 +585,15 @@ export class OpRegistrationComponent implements OnInit {
         "blur",
         this.onageCalculator.bind(this)
       );
+      this.OPRegForm.controls["dob"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value != undefined && value != null && value != "" && value > 0) {
+          this.OPRegForm.controls["dob"].setValue(value);
+          this.onageCalculator();
+        }
+      });
+  
       //IdenityType value change
       this.questions[17].elementRef.addEventListener(
         "blur",
