@@ -1,7 +1,8 @@
 import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
+import { MessageDialogService } from '../../../shared/ui/message-dialog/message-dialog.service';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -17,7 +18,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
       },
       mobile: {
-        type: "string"
+        type: "number"
       },
       fromdate: {
         type: "date"
@@ -31,7 +32,7 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
-    actionItems: true,
+    actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     displayedColumns: [
@@ -52,11 +53,11 @@ export class PatientHistoryComponent implements OnInit {
     columnsInfo: {
       billno: {
         title: "Bill.No",
-        type: "number",
+        type: "string",
       },
       type: {
         title: "Type",
-        type: "number",
+        type: "string",
       },
       billdate: {
         title: "Bill Date",
@@ -92,11 +93,13 @@ export class PatientHistoryComponent implements OnInit {
       },
       company: {
         title: "Company",
-        type: "number",
+        type: "string",
+        tooltipColumn: "company"
       },
       operatorname: {
         title: "Operator Name",
         type: "string",
+        tooltipColumn: "operatorname"
       },
       printhistory: {
         title: "Print History",
@@ -105,14 +108,46 @@ export class PatientHistoryComponent implements OnInit {
       },
     },
   };
-
+  data: any[] = [
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+    refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+    refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    },
+    { billno: 'BLDP24923', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+      refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: 'cross'
+    }
+  ]
   patientname:any;
   age:any;
   gender:any;
   dob:any;
   nationality:any;
   ssn:any;
-  constructor( private formService: QuestionControlService) { }
+  @ViewChild("table") tableRows: any
+  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -122,5 +157,16 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistoryform = formResult.form;
     this.questions = formResult.questions;
   }
-
+  patienthistorysearch()
+  {
+    console.log(this.patienthistoryform.value);
+  }
+  printdialog()
+  {    
+    this.msgdialog.success("Printing Successfull");
+  }
+  clear()
+  {
+    this.patienthistoryform.reset();
+  }
 }

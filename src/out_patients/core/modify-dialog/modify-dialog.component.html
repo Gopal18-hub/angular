@@ -1,5 +1,7 @@
-<div class="relative max-health-primary-color">
-  <h2 class="max-health-primary-color">Please confirm modified details</h2>
+<div class="relative max-health-primary-color modify-dialog-wrapper">
+  
+  <label class="max-health-primary-color font-base font-bolder"
+          >Please confirm modified details</label>
   <button
     mat-icon-button
     aria-label="close dialog"
@@ -10,10 +12,10 @@
     <mat-icon>close</mat-icon>
   </button>
 
-  <form [formGroup]="OPUpdateForm" class="mt-4 mb-6">
+  <form [formGroup]="OPUpdateForm" class="mt-4 mb-2">
     <div class="flex justify-between flex-wrap">
-      <div class="w-1/45">Existing Data</div>
-      <div class="w-1/45">Modified Data</div>
+      <div class="w-1/45 mb-1">Existing Data</div>
+      <div class="w-1/45 mb-1">Modified Data</div>
       <div class="w-1/45">
         <maxhealth-question
           [question]="questions[0]"
@@ -175,7 +177,7 @@
     <div class="highlight-Red">
       *Please note that highlighted text are the modified data.
     </div>
-    <div class="flex w-full flex-wrap flex-column right-2">
+    <div class="flex w-full flex-wrap flex-column right-2 pt-3">
       <div class="flex">
       <div *ngIf="data.submitButton">
         <button mat-raised-button color="primary" class="w-1/45 text-center" type="button" (click)="Accept()">

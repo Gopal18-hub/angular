@@ -13,3 +13,16 @@
 ::ng-deep .mat-form-field-wrapper{
     padding-bottom: 0 !important;
 }
+::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+::ng-deep .mat-radio-button{
+    margin-left: 15px;
+    padding-bottom: 0 !important;
+}
+::ng-deep .max-table-wrapper table{
+    width: -webkit-fill-available !important;
+    white-space: nowrap;
+}
