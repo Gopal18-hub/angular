@@ -2228,6 +2228,10 @@ export class OpRegistrationComponent implements OnInit {
         bplCardAddress: result.data.bplCardNo,
       };
     }
+    else{
+      this.OPRegForm.controls["paymentMethod"].setErrors({ incorrect: true });
+      this.questions[40].customErrorMessage ="Invalid EWS details";
+    }
     });
   
   }
