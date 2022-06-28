@@ -45,6 +45,8 @@ import { CookieService } from "../../../shared/services/cookie.service";
 import { DMSComponent } from '../registration/submodules/dms/dms.component';
 import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.component";
 
+import { RegistrationDialogueComponent } from '../../../out_patients/modules/registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component';
+
 
 @NgModule({
   declarations: [
@@ -68,10 +70,10 @@ import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.co
     FormDialogueComponent,
     DMSComponent,
     ModifyDialogComponent,  SimilarPatientDialog,
+    RegistrationDialogueComponent
   ],
   imports: [
     RegistrationRoutingModule,
-  
     MatCardModule,
     MaxHealthTableModule,
     CommonModule,
