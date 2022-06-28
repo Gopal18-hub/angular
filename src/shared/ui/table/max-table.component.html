@@ -40,6 +40,7 @@
           mat-header-cell
           *matHeaderCellDef
           mat-sort-header
+          [disabled]="config?.columnsInfo[col]?.disabledSort"
           [style.width]="config?.columnsInfo[col]?.style?.width"
         >
           {{ displayColumnsInfo[col].title }}
