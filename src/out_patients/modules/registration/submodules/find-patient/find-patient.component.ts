@@ -95,6 +95,7 @@ export class FindPatientComponent implements OnInit {
       age: {
         title: "Age",
         type: "number",
+        disabledSort:true,
       },
       gender: {
         title: "Gender",
@@ -112,6 +113,7 @@ export class FindPatientComponent implements OnInit {
       phone: {
         title: "Phone",
         type: "number",
+        disabledSort:true,
       },
       categoryIcons: {
         title: "Category",
@@ -120,6 +122,7 @@ export class FindPatientComponent implements OnInit {
         style: {
           width: "220px",
         },
+        disabledSort:true,
       },
     },
   };
