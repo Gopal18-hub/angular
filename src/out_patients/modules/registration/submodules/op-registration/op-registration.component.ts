@@ -2319,7 +2319,7 @@ export class OpRegistrationComponent implements OnInit {
           properties: {
             HWCRemark: {
               type: "textarea",
-              title: "HWC Remarks",
+              //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
             },
