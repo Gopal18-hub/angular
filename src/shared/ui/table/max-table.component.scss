@@ -20,22 +20,30 @@
     .row-is-clicked {
       font-weight: bold;
     }
-    .mat-row .mat-cell {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      flex: 0 0 100px !important;
-      width: 100px !important;
+    .mat-row {
+      &:hover {
+        background-color: var(--primary-color);
+        .mat-cell {
+          color: #fff;
+        }
+      }
+      .mat-cell {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        flex: 0 0 100px !important;
+        width: 100px !important;
 
-      /* Adds a hyphen where the word breaks, if supported (No Blink) */
-      -ms-hyphens: auto;
-      -moz-hyphens: auto;
-      -webkit-hyphens: auto;
-      hyphens: auto;
-      padding-right: 8px;
-      &.mat-column-select {
-        width: 24px !important;
-        flex: 0 0 24px !important;
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        padding-right: 8px;
+        &.mat-column-select {
+          width: 24px !important;
+          flex: 0 0 24px !important;
+        }
       }
     }
     .mat-header-row {

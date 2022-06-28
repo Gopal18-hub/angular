@@ -4,6 +4,7 @@ import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
 import { CookieService } from "../../services/cookie.service";
 import { environment } from "@environments/environment";
+import { PermissionService } from "../../services/permission.service";
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -19,7 +20,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,
     private authService: AuthService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -35,10 +37,10 @@ export class HeaderComponent implements OnInit {
 
     this.location = this.cookieService.get("Location");
     this.station = this.cookieService.get("Station");
-    this.usrname = this.cookieService.get("UserName");
+    this.usrname = this.cookieService.get("UserName");   
   }
 
-  logout() {
+  logout() {     
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {
         window.location = response.postLogoutRedirectUri;
@@ -49,5 +51,15 @@ export class HeaderComponent implements OnInit {
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
       this.authService.startAuthentication();
     });
+  }
+
+  getPermissions(){    
+    this.permissionService.getPermissionsRoleWise()
+    .subscribe((response:any)=>{
+      console.log(response);
+
+    },(error:any)=>{
+        console.log(error);
+    }); 
   }
 }

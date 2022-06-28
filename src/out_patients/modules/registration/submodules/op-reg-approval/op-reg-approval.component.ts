@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { opRegApprovalModel } from "../../../../../out_patients/core/models/opregapprovalModel.Model";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../shared/services/http.service";
@@ -20,6 +20,9 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "out-patients-op-reg-approval",
@@ -143,9 +146,9 @@ export class OpRegApprovalComponent implements OnInit {
     displayedColumns: [
       "maxid",
       "ssn",
-      "title",
+      "mTitle",
       "fullname",
-      "gender",
+      "uGender",
       "uMobile",
       "uEmail",
       "unationality",
@@ -163,7 +166,7 @@ export class OpRegApprovalComponent implements OnInit {
         title: "SSN",
         type: "number",
       },
-      title: {
+      mTitle: {
         title: "Title",
         type: "string",
       },
@@ -172,7 +175,7 @@ export class OpRegApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
       },
-      gender: {
+      uGender: {
         title: "Gender",
         type: "string",
       },
@@ -208,6 +211,8 @@ export class OpRegApprovalComponent implements OnInit {
     },
   };
 
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(
     private http: HttpService,
     private router: Router,
@@ -219,10 +224,17 @@ export class OpRegApprovalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchService.searchTrigger.subscribe((formdata: any) => {
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((formdata: any) => {
       this.searchApproval(formdata.data);
     });
-    // this.showmain("OP Registration Approval");
+    if(this.from == undefined && this.to == undefined)
+    {
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-1),"dd/MM/yyyy");
+      this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
+    }
+     this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata: any) {
@@ -280,10 +292,12 @@ export class OpRegApprovalComponent implements OnInit {
 
     if (link == "View Pending Request") {
       this.activeLink2 = link;
-      this.getopapprovalpending().subscribe(
+      this.getopapprovalpending()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
+            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
@@ -315,7 +329,9 @@ export class OpRegApprovalComponent implements OnInit {
       this.enableapprovebtn = false;
       this.showapprovalreject = false;
       this.showapprovalpending = false;
-      this.getopapprovalaccepted().subscribe(
+      this.getopapprovalaccepted()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
             item.fullname = item.firstName + " " + item.lastName;
@@ -390,7 +406,9 @@ export class OpRegApprovalComponent implements OnInit {
       this.userId,
       0
     );
-    this.approvalpostapi(this.approvePostobject).subscribe(
+    this.approvalpostapi(this.approvePostobject)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
       (resultdata) => {
         console.log(resultdata);
         this.messageDialogService.success("Update Request Approved");
@@ -416,7 +434,9 @@ export class OpRegApprovalComponent implements OnInit {
       this.userId,
       1
     );
-    this.approvalpostapi(this.rejectPostobject).subscribe(
+    this.approvalpostapi(this.rejectPostobject)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
       (resultdata) => {
         this.messageDialogService.success("Request is deleted");
         this.showgrid("View Pending Request");
@@ -474,7 +494,9 @@ export class OpRegApprovalComponent implements OnInit {
       },
     });
 
-    modifyDetailDialogref.afterClosed().subscribe((result) => {
+    modifyDetailDialogref.afterClosed()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((result) => {
       console.log(result.data);
       var resultArr = result.data.split(",");
       var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
@@ -487,7 +509,9 @@ export class OpRegApprovalComponent implements OnInit {
             this.userId,
             0
           );
-          this.approvalpostapi(this.approvePostobject).subscribe(
+          this.approvalpostapi(this.approvePostobject)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
             (resultdata) => {
               console.log(resultdata);
               this.messageDialogService.success("Update Request Approved");
@@ -511,7 +535,9 @@ export class OpRegApprovalComponent implements OnInit {
             this.userId,
             1
           );
-          this.approvalpostapi(this.rejectPostobject).subscribe(
+          this.approvalpostapi(this.rejectPostobject)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
             (resultdata) => {
               this.messageDialogService.success("Request is Rejected");
               this.showgrid("View Pending Request");

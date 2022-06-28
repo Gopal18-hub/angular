@@ -6,6 +6,8 @@ import { StationModel } from "../../../auth/core/models/stationmodel";
 import { LocationModel } from "../../../auth/core/models/locationmodel";
 import { UserLocationStationdataModel } from "../../../auth/core/models/userlocationstationdatamodel";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "auth-login",
@@ -56,6 +58,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   questions: any;
 
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(
     private formService: QuestionControlService,
     private adauth: ADAuthService,
@@ -71,13 +75,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.questions = formResult.questions;
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener(
       "blur",
       this.validateUserName.bind(this)
     );
     this.questions[0].elementRef.focus();
-    this.loginForm.controls["password"].disable();
+    //this.loginForm.controls["password"].disable();
     this.loginForm.controls["location"].disable();
     this.loginForm.controls["station"].disable();
   }
@@ -90,7 +99,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   validateUserName() {
     this.username = this.loginForm.value.username;
-    this.adauth.authenticateUserName(this.username).subscribe(
+    this.adauth.authenticateUserName(this.username)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
       (data: any) => {
         this.userlocationandstation = data as UserLocationStationdataModel;
         this.locationList = this.userlocationandstation.locations;
@@ -107,9 +118,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
         this.userId = Number(this.userlocationandstation.userId);
 
-        this.loginForm.controls["location"].valueChanges.subscribe((value) => {
+        this.loginForm.controls["location"].valueChanges
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((value) => {
           if (value) {
             this.loginForm.controls["station"].enable();
+            this.loginForm.controls["station"].setValue(null);
             this.locationdetail = this.locationList.filter(
               (l) => l.hspLocationId === value.value
             )[0];
@@ -121,12 +135,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
           }
         });
 
-        this.loginForm.controls["station"].valueChanges.subscribe((value) => {
+        this.loginForm.controls["station"].valueChanges
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((value) => {
           this.stationdetail = this.stationList.filter(
             (s) => s.stationid === value.value
           )[0];
         });
-        this.loginForm.controls["password"].enable();
+       // this.loginForm.controls["password"].enable();
         this.loginForm.controls["location"].enable();
         //this.loginForm.controls["station"].enable();
         this.questions[1].elementRef.focus();
@@ -134,7 +150,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       (error: any) => {
         this.loginForm.controls["username"].setErrors({ incorrect: true });
         this.questions[0].customErrorMessage = error.error;
-        this.loginForm.controls["password"].disable();
+       // this.loginForm.controls["password"].disable();
         this.loginForm.controls["location"].disable();
         this.loginForm.controls["station"].disable();
       }
@@ -149,6 +165,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.loginForm.value.username,
           this.loginForm.value.password
         )
+        .pipe(takeUntil(this._destroying$))
         .subscribe(
           (data) => {
             status = data["status"];
