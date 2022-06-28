@@ -757,6 +757,35 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.markAsUntouched();
     this.categoryIcons = [];
     this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
+
+    //CLEARING PASSPORT DETAILS
+    this.passportDetails = {
+      passportNo: "",
+      IssueDate: "",
+      Expirydate: "",
+      Issueat: "",
+      HCF: 0,
+    };
+    this.noteRemark = "";
+    this.hwcRemark = "";
+    this.ewsDetails = {
+      bplCardNo: "",
+      bplCardAddress: "",
+    };
+    this.hotlistReason = "";
+    this.hotlistRemark = "";
+    this.vip = "";
+
+    this.seafarerDetails = {
+      HKID: "",
+      Vesselname: "",
+      rank: "",
+      FDPGroup: "",
+    };
+    this.patientDetails = { ...this.patientDetails };
+this.modfiedPatiendDetails={...this.modfiedPatiendDetails};
+this.maxIDChangeCall=false;
+
     this.OPRegForm.controls["nationality"].setValue({
       title: "Indian",
       value: 149,
@@ -764,6 +793,8 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
     this.MaxIDExist = false;
+    this.setPaymentMode("CASH");
+
     this.checkForMaxID();
   }
 
@@ -1534,16 +1565,19 @@ export class OpRegistrationComponent implements OnInit {
     this.http
       .post(ApiConstants.updatePatientDetail, this.getPatientUpdatedReqBody())
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: PatientDetails) => {
-        this.populateUpdatePatientDetail(resultData);
-        if(!this.isPatientdetailModified)
-        {
-        this.messageDialogService.success("Patient Details has been modified");
+      .subscribe(
+        (resultData: PatientDetails) => {
+          this.populateUpdatePatientDetail(resultData);
+          if (!this.isPatientdetailModified) {
+            this.messageDialogService.success(
+              "Patient Details has been modified"
+            );
+          }
+          console.log(resultData);
+        },
+        (error) => {
+          this.messageDialogService.error(error.error);
         }
-        console.log(resultData);
-      },(error) => {
-       this.messageDialogService.error(error.error);
-      }
       );
   }
   postForm() {
@@ -1878,7 +1912,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.state.value,
       this.OPRegForm.value.country.value,
       this.OPRegForm.value.pincode,
-     this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
+      this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       "",
       false,
