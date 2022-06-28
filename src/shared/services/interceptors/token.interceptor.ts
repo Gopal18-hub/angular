@@ -1,59 +1,60 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
-import { AuthService } from '../auth.service';
-import { Observable } from 'rxjs';
-import { ApiHeaders } from '../../constants/ApiHeaders';
+  HttpInterceptor,
+} from "@angular/common/http";
+import { AuthService } from "../auth.service";
+import { Observable } from "rxjs";
+import { ApiHeaders } from "../../constants/ApiHeaders";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-
   constructor(public auth: AuthService) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-   
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     request = request.clone({
-      //setHeaders: ApiHeaders.getHeaders(request.url) 
+      //setHeaders: ApiHeaders.getHeaders(request.url)
       setHeaders: {
-        'Content-Type': 'application/json'
-      }    
+        "Content-Type": "application/json",
+      },
     });
 
-    
-    if(request.url.endsWith('authenticate'))
-    {
+    if (request.url.endsWith("authenticate")) {
       request = request.clone({
         setHeaders: {
-          'Content-Type': 'application/json',          
+          "Content-Type": "application/json",
         },
-        withCredentials:true
+        withCredentials: true,
       });
     }
-    if(request.url.includes('Logout'))
-    {
-      if(!request.headers.has('Authorization'))
-      {        
-          request = request.clone({
-            setHeaders: {
-              'Authorization': `bearer ${this.auth.getToken()}`,
-              'Content-Type': 'application/json'
-            },
-            withCredentials:true
-          });              
+    if (request.url.includes("Logout")) {
+      if (!request.headers.has("Authorization")) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `bearer ${this.auth.getToken()}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
       }
     }
-    if(request.url.includes('patientunmerging') || request.url.includes('patientmerging') || request.url.includes('approvedrejectdeletehotlisting')||request.url.includes('modifyopdpatient'))
-    {
+    if (
+      request.url.includes("patientunmerging") ||
+      request.url.includes("patientmerging") ||
+      request.url.includes("approvedrejectdeletehotlisting") ||
+      request.url.includes("modifyopdpatient")
+    ) {
       request = request.clone({
-        setHeaders: {             
-          'Content-Type': 'application/json'
+        setHeaders: {
+          "Content-Type": "application/json",
         },
-        responseType:"text"
-      }); 
+        responseType: "text",
+      });
     }
     return next.handle(request);
   }

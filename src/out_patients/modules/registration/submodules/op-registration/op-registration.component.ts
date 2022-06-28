@@ -547,8 +547,8 @@ export class OpRegistrationComponent implements OnInit {
         .subscribe(
           (value: any) => {
             if (value == "ews") {
-              if (this.maxIDChangeCall==false){
-              this.openEWSDialogue();
+              if (this.maxIDChangeCall == false) {
+                this.openEWSDialogue();
               }
             }
           }
@@ -730,6 +730,7 @@ export class OpRegistrationComponent implements OnInit {
 
   clear() {
     this.OPRegForm.reset();
+    this.OPRegForm.markAsUntouched();
     this.categoryIcons = [];
     this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
     this.OPRegForm.controls["nationality"].setValue({
@@ -1478,20 +1479,19 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
-     if( this.passportDetails.passportNo!=""){
-    this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
-    this.passportDetails.IssueDate = this.patientDetails?.issueDate;
-    this.passportDetails.HCF = this.patientDetails?.hcfId;
-    this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
-    this.passportDetails.passportNo = this.patientDetails?.passportNo;
-     }
-     else{
+    if (this.passportDetails.passportNo != "") {
+      this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
+      this.passportDetails.IssueDate = this.patientDetails?.issueDate;
+      this.passportDetails.HCF = this.patientDetails?.hcfId;
+      this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
+      this.passportDetails.passportNo = this.patientDetails?.passportNo;
+    } else {
       this.passportDetails.Expirydate = "";
       this.passportDetails.IssueDate = "";
       this.passportDetails.HCF = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
-     }
+    }
     this.populateUpdatePatientDetail(this.patientDetails);
 
     //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
@@ -1615,8 +1615,9 @@ export class OpRegistrationComponent implements OnInit {
         patientDetails?.spouseName
       );
       this.OPRegForm.controls["fatherSpouse"].setValue({
-        title:"Spouse",value:2}
-      );
+        title: "Spouse",
+        value: 2,
+      });
 
       //fatherSpouse
     } else {
@@ -1625,8 +1626,9 @@ export class OpRegistrationComponent implements OnInit {
         patientDetails?.fathersname
       );
       this.OPRegForm.controls["fatherSpouse"].setValue({
-        title:"Father",value:1}
-      );
+        title: "Father",
+        value: 1,
+      });
     }
 
     this.OPRegForm.controls["motherName"].setValue(
@@ -1822,7 +1824,7 @@ export class OpRegistrationComponent implements OnInit {
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
-    //IF PASSPOET DETAILS HAVE NOT BEEN ADDED 
+    //IF PASSPOET DETAILS HAVE NOT BEEN ADDED
     this.getPassportDetailObj();
 
     return (this.patientSubmitDetails = new patientRegistrationModel(
@@ -1873,7 +1875,7 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.IssueDate,
       this.passportDetails.Expirydate,
       this.passportDetails.Issueat,
-      
+
       "",
       false,
       this.OPRegForm.value.vip || false,
@@ -1924,20 +1926,18 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
-
   //SETTING UP DEFAULT DATE AND HCF VALUE FOR API CALLS
-  getPassportDetailObj(){
-  if( this.passportDetails.passportNo==""){
-   
+  getPassportDetailObj() {
+    if (this.passportDetails.passportNo == "") {
       this.passportDetails.Expirydate = "1900-01-01T00:00:00";
       this.passportDetails.IssueDate = "1900-01-01T00:00:00";
       this.passportDetails.HCF = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
-     }
     }
+  }
 
-    //FETCHING FATHER DETAILS FROM DROP DOWN
+  //FETCHING FATHER DETAILS FROM DROP DOWN
   getFather(): string {
     let response = "";
     if (
@@ -1945,7 +1945,6 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
       if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
-    
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2256,8 +2255,9 @@ export class OpRegistrationComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
       console.log(result);
-      if(result!="" && result!=undefined){
-      this.noteRemark = result.data.notes;}
+      if (result != "" && result != undefined) {
+        this.noteRemark = result.data.notes;
+      }
       console.log("notes dialog was closed");
     });
   }
@@ -2294,14 +2294,17 @@ export class OpRegistrationComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
       console.log("HWC dialog was closed");
-      if(result!="" && result!=undefined){
-      this.ewsDetails = {
-        bplCardNo: result.data.BPLAddress,
-        bplCardAddress: result.data.bplCardNo,
-      };
-    }
+      if (result != "" && result != undefined) {
+        this.ewsDetails = {
+          bplCardNo: result.data.BPLAddress,
+          bplCardAddress: result.data.bplCardNo,
+        };
+      }
+      else{
+        this.OPRegForm.controls["paymentMethod"].setErrors({ incorrect: true });
+        this.questions[40].customErrorMessage ="Invalid EWS details";
+      }
     });
-  
   }
 
   openHWCNotes() {
@@ -2387,7 +2390,7 @@ export class OpRegistrationComponent implements OnInit {
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
-    // height: "52vh",
+      // height: "52vh",
       data: {
         title: "Passport Details",
         form: {
@@ -2508,14 +2511,14 @@ export class OpRegistrationComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
       console.log("seafarers dialog was closed");
-      if(result!="" && result!=undefined){
-      this.seafarerDetails = {
-        HKID: result.data.hkID,
-        Vesselname: result.data.vesselName,
-        rank: result.data.rank,
-        FDPGroup: result.data.fdpGroup,
-      };
-    }
+      if (result != "" && result != undefined) {
+        this.seafarerDetails = {
+          HKID: result.data.hkID,
+          Vesselname: result.data.vesselName,
+          rank: result.data.rank,
+          FDPGroup: result.data.fdpGroup,
+        };
+      }
     });
   }
   openDMSDialog(dmsDetailList: any) {
