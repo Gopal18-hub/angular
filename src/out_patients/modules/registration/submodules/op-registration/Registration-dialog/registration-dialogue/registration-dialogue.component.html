@@ -16,17 +16,17 @@
         </g>
       </svg>
     </div>
-    <div mat-dialog-content class="max-health-primary-color font-bold text-center mb-6">{{data.message1}}</div>
-    <div mat-dialog-content class="font-bold text-center mb-6">{{data.message2}}</div>
-    <div class="flex w-full flex-wrap flex-column right-2 pt-3">
+    <div mat-dialog-content class="max-health-primary-color font-bold text-center mb-2">{{data.message1}}</div>
+    <div mat-dialog-content class="font-bold text-center mb-2">{{data.message2}}</div>
+    <div class="flex w-full flex-wrap flex-column right-2 pt-3 ml-6">
         <div class="flex">
         <div *ngIf="data.btn1">
-          <button mat-raised-button color="primary" class="w-1/45 text-center" type="button" >
+          <button mat-raised-button color="primary" class="w-1/50 text-center" type="button" >
             {{data.bt1Msg}}
           </button>
         </div>
         <div *ngIf="data.btn2" class="ml-5">
-          <button mat-raised-button color="primary" class="w-1/45 text-center" type="button" >
+          <button mat-raised-button color="primary" class="w-1/50 text-center" type="button" >
             {{data.bt2Msg}}
           </button>
         </div>
