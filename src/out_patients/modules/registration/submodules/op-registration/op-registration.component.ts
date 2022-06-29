@@ -52,7 +52,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
-import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
+import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -771,12 +771,13 @@ export class OpRegistrationComponent implements OnInit {
     //   }
     // );
   }
-
+  showspinner: boolean = false;
   clear() {
+    this.showspinner = true;
     this.OPRegForm.reset();
     this.OPRegForm.markAsUntouched();
     this.categoryIcons = [];
-
+   
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -821,6 +822,7 @@ export class OpRegistrationComponent implements OnInit {
     this.setPaymentMode("CASH");
 
     this.checkForMaxID();
+    this.showspinner = false;
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -2575,6 +2577,8 @@ export class OpRegistrationComponent implements OnInit {
       hcfTitle = hcfvalue[0].title;
     }
 
+    let minExpDate=new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+1));
+    let maxYear =new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+15));
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -2595,12 +2599,16 @@ export class OpRegistrationComponent implements OnInit {
               type: "date",
               title: "Issue Date",
               required: true,
+              maximum:new Date(),
+             
               defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
+              minimum:minExpDate,
+              maximum:maxYear,
               defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
