@@ -41,7 +41,7 @@
           [question]="questions[2]"
           [form]="OPUpdateForm"
           [questions]="questions[2]"
-          [index]="2"
+          [index]="2"       
           
         ></maxhealth-question>
       </div>
@@ -52,7 +52,7 @@
           [questions]="questions[3]"
           [index]="3"
           [ngClass]="{           
-            'dataModified': data.patientDetails.lastName != data.modifiedDetails.lastName
+            'dataModified': data.patientDetails.middleName != data.modifiedDetails.middleName
                       }"
         ></maxhealth-question>
       </div>
@@ -71,7 +71,9 @@
           [form]="OPUpdateForm"
           [questions]="questions[5]"
           [index]="5"
-          
+          [ngClass]="{           
+            'dataModified': data.patientDetails.lastName != data.modifiedDetails.lastName
+                      }"
         ></maxhealth-question>
       </div>
       <div class="w-1/45">

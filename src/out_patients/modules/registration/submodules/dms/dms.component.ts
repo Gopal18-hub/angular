@@ -11,11 +11,19 @@ export class DMSComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<DMSComponent>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
+  
+  defaultUI:boolean = true;
+  dmsmessage:string="No Records Found";
+  dmsicon:string="placeholder";  
+  MaxID:string | undefined;
+  Firstname:string | undefined;
+  Lastname:string | undefined;
+
   ngOnInit(): void {
     this.searchResults={verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"};
   }
   
-
+  
   config: any = {
     selectBox: false,
     displayedColumns: ['idType', 'docName', 'fileName', 'view', 'remark', 'mode', 'isVerified', 'verify'],
@@ -61,5 +69,33 @@ export class DMSComponent implements OnInit {
     }
     }
     
+uploadkycclick(){
+      // this.closeModal('DMSpopup');
+      window.open("http://172.25.1.22:7020/eDocsLogin.do?mode=eDocsSSOLoginForm&loginMode=SSO&userId=M026749&maxId="+this.MaxID+"&pFirstName="+this.Firstname+"&pLastName="+this.Lastname);
+      }
+
+RefreshDMSbtn()
+{
+      // this.DMSlist =[];
+      // this.registrationAPI.getDMSvalue(this.iacode,this.registrationno).subscribe((resultData) =>{
+      // console.log(resultData);
+      // for(var i = 0; i< resultData.length; i++)
+      // {
+      //   if(resultData[i].fileTypeId != 0)
+      //   {
+      //     this.hiddengrid=false;
+      //     this.DMSlist.push(resultData[i]);
+      //     if(resultData[i].isVerified !=0)
+      //     {
+      //       this.isDMSverify = true;
+      //     }
+      //   }
+      // }      
+      //   console.log(this.DMSlist);
+      // },error=>{
+      //   console.log(error);
+      // });
+      }
+
   }
 

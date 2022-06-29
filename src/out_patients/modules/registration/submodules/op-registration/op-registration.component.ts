@@ -101,7 +101,7 @@ export class OpRegistrationComponent implements OnInit {
     rank: "",
     FDPGroup: "",
   };
-
+  today:Date =  new Date((new Date().getTime() - 3888000000));
   passportDetails: {
     passportNo: string;
     IssueDate: string;
@@ -182,6 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
+        max:this.today
       },
       age: {
         type: "number",
@@ -392,7 +393,7 @@ export class OpRegistrationComponent implements OnInit {
   hotlistquestion: any;
   hotlistRemark: any;
   isPatientdetailModified: boolean = false;
-
+ 
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -414,7 +415,17 @@ export class OpRegistrationComponent implements OnInit {
     let formResult: any = this.formService.createForm(
       this.registrationFormData.properties,
       {}
+      
     );
+   
+      //       .pipe(takeUntil(this._destroying$))
+    //       .subscribe((value: any) => {
+    //         if (value == "ews") {
+    //           if (this.maxIDChangeCall == false) {
+    //             this.openEWSDialogue();
+    //           }
+    //         }
+    //       });
     this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
@@ -802,6 +813,9 @@ export class OpRegistrationComponent implements OnInit {
       title: "Indian",
       value: 149,
     });
+    this.OPRegForm.controls["maxid"].setValue(
+    this.cookie.get("LocationIACode") + "."
+    )
 
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
     this.MaxIDExist = false;
@@ -2543,7 +2557,9 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-        this.postModifyCall();
+        if(result == 'success'){
+          this.postModifyCall();
+        }
       });
   }
 
@@ -2724,7 +2740,7 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-
+   
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
