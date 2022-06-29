@@ -2714,8 +2714,7 @@ export class OpRegistrationComponent implements OnInit {
   }
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
-      width: "100vw",
-      height: "52vh",
+      width: "100vw",    
       data: { list: dmsDetailList },
     });
   }
