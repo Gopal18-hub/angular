@@ -55,6 +55,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
       name: {
         type: "string",
         title: "Name",
+        // pattern: "^[A-Za-z]{1}[A-Za-z. '']+"
         // defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       bookingNo: {
@@ -64,9 +65,12 @@ export class AppointmentSearchDialogComponent implements OnInit {
       },
       
       phone: {
-        type: "string",
+        type: "number",
         title: "Phone",
-        required: false
+        required: false,
+      //  pattern: "^[1-9]{1}[0-9]{9}",
+        maximum:10
+
       },
       datevalidation: {  type: "checkbox",
       required: false,
