@@ -486,7 +486,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
-                    [disabled]="!OPRegForm.valid"
+                    [disabled]="!OPRegForm.valid||MaxIDExist"
                     (click)="registationFormSubmit()"
                   >
                     Save
