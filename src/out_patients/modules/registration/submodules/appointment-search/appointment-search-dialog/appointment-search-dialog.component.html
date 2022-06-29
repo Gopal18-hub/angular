@@ -34,12 +34,14 @@
             </div>
             <div class="w-1/15 ml-2 bg-white">
                 <mat-form-field appearance="outline" class="w-full">
-                    <input matInput placeholder="Phone" type="number"  pattern="^[1-9]{1}[0-9]{9}"  formControlName="phone"/>
+                    <input matInput placeholder="Phone" type="number"  pattern="^[1-9]{1}[0-9]{9}" #phoneNo formControlName="phone"/>
+                   
                 </mat-form-field>
+                
             </div>
             <div class="flex align-items-center w-2/3 ml-2 p-2 bg-grey border-radius-md">
                 <div>
-                    <mat-checkbox [checked]="isChecked" (change)="dateRangeSelected($event)"></mat-checkbox>
+                    <mat-checkbox [checked]="isChecked"  (change)="dateRangeSelected($event)"></mat-checkbox>
                 </div>
                 <div class="w-auto wt-nowrap ml-2">
                     <mat-label class="max-health-primary-color">From Date</mat-label>

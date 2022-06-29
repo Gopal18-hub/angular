@@ -101,7 +101,7 @@ export class OpRegistrationComponent implements OnInit {
     rank: "",
     FDPGroup: "",
   };
-
+  today:Date =  new Date((new Date().getTime() - 3888000000));
   passportDetails: {
     passportNo: string;
     IssueDate: string;
@@ -182,6 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
+        max:this.today
       },
       age: {
         type: "number",
@@ -392,7 +393,7 @@ export class OpRegistrationComponent implements OnInit {
   hotlistquestion: any;
   hotlistRemark: any;
   isPatientdetailModified: boolean = false;
-
+ 
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -416,7 +417,7 @@ export class OpRegistrationComponent implements OnInit {
       {}
       
     );
-     
+   
       //       .pipe(takeUntil(this._destroying$))
     //       .subscribe((value: any) => {
     //         if (value == "ews") {
@@ -812,6 +813,9 @@ export class OpRegistrationComponent implements OnInit {
       title: "Indian",
       value: 149,
     });
+    this.OPRegForm.controls["maxid"].setValue(
+    this.cookie.get("LocationIACode") + "."
+    )
 
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
     this.MaxIDExist = false;
@@ -2710,8 +2714,7 @@ export class OpRegistrationComponent implements OnInit {
   }
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
-      width: "100vw",
-      height: "52vh",
+      width: "100vw",    
       data: { list: dmsDetailList },
     });
   }

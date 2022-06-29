@@ -3,7 +3,7 @@ import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../../shared/services/http.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AppointmentSearchModel } from '../../../../../../out_patients/core/models/appointmentSearchModel.Model';
-//import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'out-patients-appointment-search-dialog',
@@ -12,8 +12,8 @@ import { AppointmentSearchModel } from '../../../../../../out_patients/core/mode
 })
 export class AppointmentSearchDialogComponent implements OnInit {
   today = new Date();
-  todayDate = new Date(this.today.setDate(this.today.getDate()));
-  tomorrow =  new Date(this.today.setDate(this.today.getDate() + 1));
+  todayDate = this.datepipe.transform(Date.now(), 'yyyy-MM-dd');
+  tomorrow =  this.datepipe.transform(Date.now(), 'yyyy-MM-dd');
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI:boolean=false;
@@ -21,8 +21,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
     name: new FormControl(''),
     booknumber: new FormControl(''),
     phone: new FormControl(''),
-    startdate: new FormControl('2022-06-12'),
-    enddate: new FormControl('2022-06-13'),
+    startdate: new FormControl(this.todayDate),
+    enddate: new FormControl(this.todayDate),
     isDateRange: new FormControl(0),
     checked: new FormControl("true"),
   });
@@ -31,10 +31,14 @@ export class AppointmentSearchDialogComponent implements OnInit {
   searchResults: AppointmentSearchModel[] = [];
   isChecked: boolean = false;
   isDateDisabled : boolean=false;
+ 
+  constructor(private http: HttpService, private datepipe: DatePipe) { }
+  ngOnInit(): void {
+this.searchAppointment();
 
-  constructor(private http: HttpService) { }
-  ngOnInit(): void {}
+  }
 
+  
 
   config: any = {
     selectBox: false,
@@ -245,6 +249,11 @@ export class AppointmentSearchDialogComponent implements OnInit {
     );  
    
   }
+  
+  get patternError() {
+    return this.appointmentSearchForm.controls["phoneNo"].errors?.["pattern"];
+  }
+
   clear() {
     this.appointmentSearchForm.reset();
   }
