@@ -1193,10 +1193,11 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   postHotlistComment(title: string, remark: string) {
+    let maxid=this.patientDetails.iacode+"."+this.patientDetails.registrationno;
     this.http
       .get(
         ApiConstants.hotlistedPatient(
-          this.patientDetails.registrationno,
+          maxid,
           title,
           this.cookie.get("HSPLocationId"),
           this.patientDetails.firstname,
@@ -1693,33 +1694,6 @@ export class OpRegistrationComponent implements OnInit {
     }
     this.populateUpdatePatientDetail(this.patientDetails);
 
-    //THERE ARE MORE FUNCTIONALITIES NEEDED TO BE ADDED BELOW
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
-    // this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
   }
 
   onPhoneModify() {
@@ -1739,17 +1713,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  //TO OPEN FOREIGN
-  // openForeign()
-  // {
-  //   this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
-  //     (value: any) => {
-  //       if (value) {
-  //         this.showPassportDetails();
-  //       }
-  //     }
-  //   );
-  // }
+ 
 
   onMiddleNameModify() {
     console.log("middle name changed");
@@ -1809,25 +1773,23 @@ export class OpRegistrationComponent implements OnInit {
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
     if (patientDetails?.spouseName != "") {
-      this.OPRegForm.controls["fatherSpouse"].setValue("Spouse");
+      // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
+      this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse" });
+    
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.spouseName
       );
-      this.OPRegForm.controls["fatherSpouse"].setValue({
-        title: "Spouse",
-        value: 2,
-      });
-
       //fatherSpouse
     } else {
-      this.OPRegForm.controls["fatherSpouse"].setValue("Father");
+      // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Father", value: 1 })
+if(patientDetails?.fathersname != "")
+     {
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.fathersname
       );
-      this.OPRegForm.controls["fatherSpouse"].setValue({
-        title: "Father",
-        value: 1,
-      });
+    this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Father"})
+
+     }
     }
 
     this.OPRegForm.controls["motherName"].setValue(
