@@ -1,31 +1,38 @@
-<h2 mat-dialog-title>DMS</h2>
-<div mat-dialog-content>   
-    <div class="overflow-x-none">
+<div>
+  <mat-label class="max-health-primary-color font-base font-bolder">DMS</mat-label>
+  <mat-icon mat-dialog-close color="primary" class="float-right" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+</div>
+    <div class="pt-2">
      
-        <div class="overflow-y-scroll relative">
-            <ng-container >
+        <div>
+            <ng-container>
                 <maxhealth-table [config]="config" [data]="searchResults"></maxhealth-table>
             </ng-container>
         </div>
+        <div  class="w-2/10">
+          <empty-placeholder [icon]="dmsicon" [message]="dmsmessage">
        
+         </empty-placeholder>
+       </div>
+       <div class="float-left">
+        <button
+        mat-raised-button
+        color="primary"
+        class="w-2/10"
+        type="button"
+        (click)="uploadkycclick()"
+      >
+       Upload KYC
+      </button> 
+       <button
+      mat-raised-button
+      color="primary"
+      class="w-2/10 left-15"
+      type="button"
+      (click)="RefreshDMSbtn()"
+    >
+      Refresh
+    </button> 
     </div>
-    <div>
-    <button
-    mat-raised-button
-    color="primary"
-    class="w-full"
-    type="button"
+    </div>
   
-  >
-   Upload KYC
-  </button>  <button
-  mat-raised-button
-  color="primary"
-  class="w-full"
-  type="button"
- 
->
-  Refresh
-</button> 
-</div>
-</div>

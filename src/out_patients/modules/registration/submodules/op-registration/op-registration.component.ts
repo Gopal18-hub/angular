@@ -2543,7 +2543,9 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-        this.postModifyCall();
+        if(result == 'success'){
+          this.postModifyCall();
+        }
       });
   }
 
