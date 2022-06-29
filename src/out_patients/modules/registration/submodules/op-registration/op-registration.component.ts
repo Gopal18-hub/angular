@@ -182,7 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
-        max: this.today,
+        max: new Date(),
       },
       age: {
         type: "number",
@@ -331,7 +331,7 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Note" }],
+        options: [{ title: "Notes" }],
       },
       hwc: {
         type: "checkbox",
@@ -564,7 +564,7 @@ export class OpRegistrationComponent implements OnInit {
 
     // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
     //blur event call to fetch locality based on pincode
-    if (this.maxIDChangeCall == false) {
+    // if (this.maxIDChangeCall == false) {
       this.OPRegForm.controls["paymentMethod"].valueChanges
         .pipe(takeUntil(this._destroying$))
         .subscribe((value: any) => {
@@ -574,7 +574,7 @@ export class OpRegistrationComponent implements OnInit {
             }
           }
         });
-    }
+    // }
 
     this.questions[21].elementRef.addEventListener(
       "blur",
@@ -2557,6 +2557,8 @@ if(patientDetails?.fathersname != "")
       );
       hcfTitle = hcfvalue[0].title;
     }
+    let minExpDate=new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+1));
+    let maxYear =new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+15));
 
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
@@ -2578,12 +2580,15 @@ if(patientDetails?.fathersname != "")
               type: "date",
               title: "Issue Date",
               required: true,
+              maximum:new Date(),
               defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
+              minimum:minExpDate,
+              maximum:maxYear,
               defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
