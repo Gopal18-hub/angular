@@ -1,4 +1,7 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper">
+<section
+  class="ml-4 shadow-1 mr-4 max-body-wrapper"
+  *ngIf="!formProcessingFlag"
+>
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -486,7 +489,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
-                    [disabled]="!OPRegForm.valid||MaxIDExist"
+                    [disabled]="!OPRegForm.valid || MaxIDExist"
                     (click)="registationFormSubmit()"
                   >
                     Save
