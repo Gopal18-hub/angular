@@ -414,7 +414,17 @@ export class OpRegistrationComponent implements OnInit {
     let formResult: any = this.formService.createForm(
       this.registrationFormData.properties,
       {}
+      
     );
+     
+      //       .pipe(takeUntil(this._destroying$))
+    //       .subscribe((value: any) => {
+    //         if (value == "ews") {
+    //           if (this.maxIDChangeCall == false) {
+    //             this.openEWSDialogue();
+    //           }
+    //         }
+    //       });
     this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
@@ -2726,7 +2736,7 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-
+   
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
