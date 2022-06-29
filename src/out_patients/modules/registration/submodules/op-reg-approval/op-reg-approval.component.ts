@@ -231,8 +231,8 @@ export class OpRegApprovalComponent implements OnInit {
     });
     if(this.from == undefined && this.to == undefined)
     {
-     // this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-1),"dd/MM/yyyy");
-      //this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-24),"dd/MM/yyyy");
+      this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
     }
      this.showmain("OP Registration Approval");
   }
