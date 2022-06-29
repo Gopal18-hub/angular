@@ -52,7 +52,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
-import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
+import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -101,7 +101,7 @@ export class OpRegistrationComponent implements OnInit {
     rank: "",
     FDPGroup: "",
   };
-  today:Date =  new Date((new Date().getTime() - 3888000000));
+  today: Date = new Date(new Date().getTime() - 3888000000);
   passportDetails: {
     passportNo: string;
     IssueDate: string;
@@ -182,7 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
-        maximum:new Date()
+        max: this.today,
       },
       age: {
         type: "number",
@@ -331,7 +331,7 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Notes" }],
+        options: [{ title: "Note" }],
       },
       hwc: {
         type: "checkbox",
@@ -388,12 +388,13 @@ export class OpRegistrationComponent implements OnInit {
   };
 
   OPRegForm!: FormGroup;
+  formProcessingFlag: boolean = true;
   questions: any;
   hotlistMasterList: hotlistingreasonModel[] = [];
   hotlistquestion: any;
   hotlistRemark: any;
   isPatientdetailModified: boolean = false;
- 
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -412,46 +413,7 @@ export class OpRegistrationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let formResult: any = this.formService.createForm(
-      this.registrationFormData.properties,
-      {}
-      
-    );
-   
-      //       .pipe(takeUntil(this._destroying$))
-    //       .subscribe((value: any) => {
-    //         if (value == "ews") {
-    //           if (this.maxIDChangeCall == false) {
-    //             this.openEWSDialogue();
-    //           }
-    //         }
-    //       });
-    this.maxIDChangeCall = false;
-    this.OPRegForm = formResult.form;
-    this.questions = formResult.questions;
-
-    this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
-    this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
-
-    //LIST FOR FATHER/SPOUSE
-
-    this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
-      return { title: l.title, value: l.value };
-    });
-
-    this.getTitleList();
-    this.getSourceOfInfoList();
-    this.getAgeTypeList();
-    this.getIDTypeList();
-    this.getGenderList();
-    this.getAllNAtionalityList();
-    this.getAllCountryList();
-    this.getAllCityList();
-    this.getAllDisttList();
-    this.getAllDisttList();
-    this.getAllStateList();
-    this.getLocalityList();
-
+    this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
       .subscribe((value) => {
@@ -460,28 +422,7 @@ export class OpRegistrationComponent implements OnInit {
           this.getPatientDetailsByMaxId();
         }
       });
-
-    this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((formdata: any) => {
-        this.searchPatient(formdata.data);
-      });
-
-    this.OPRegForm.controls["nationality"].setValue({
-      title: "Indian",
-      value: 149,
-    });
-    this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
-    this.OPRegForm.controls["foreigner"].disable();
-    this.getStatesByCountry();
-    this.getCitiesByCountry();
-    let HSPLocationId = Number(this.cookie.get("HSPLocationId"));
-    if (HSPLocationId != 69) {
-      this.OPRegForm.controls["seaFarer"].disable();
-    } else {
-      this.OPRegForm.controls["seaFarer"].enable();
-    }
-    this.checkForMaxID();
+    this.formProcessingFlag = false;
   }
 
   ngOnDestroy(): void {
@@ -550,12 +491,82 @@ export class OpRegistrationComponent implements OnInit {
     return this.isPatientdetailModified;
   }
 
-  ngAfterViewInit(): void {
+  formInit() {
+    let formResult: any = this.formService.createForm(
+      this.registrationFormData.properties,
+      {}
+    );
+
+    //       .pipe(takeUntil(this._destroying$))
+    //       .subscribe((value: any) => {
+    //         if (value == "ews") {
+    //           if (this.maxIDChangeCall == false) {
+    //             this.openEWSDialogue();
+    //           }
+    //         }
+    //       });
+    this.maxIDChangeCall = false;
+    this.OPRegForm = formResult.form;
+    this.questions = formResult.questions;
+
+    this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
+    this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
+
+    //LIST FOR FATHER/SPOUSE
+
+    this.questions[12].options = this.fatherSpouseOptionList.map((l) => {
+      return { title: l.title, value: l.value };
+    });
+
+    this.getTitleList();
+    this.getSourceOfInfoList();
+    this.getAgeTypeList();
+    this.getIDTypeList();
+    this.getGenderList();
+    this.getAllNAtionalityList();
+    this.getAllCountryList();
+    this.getAllCityList();
+    this.getAllDisttList();
+    this.getAllDisttList();
+    this.getAllStateList();
+    this.getLocalityList();
+
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        this.searchPatient(formdata.data);
+      });
+
+    this.OPRegForm.controls["nationality"].setValue({
+      title: "Indian",
+      value: 149,
+    });
+    this.OPRegForm.controls["country"].setValue({
+      title: "India",
+      value: 1,
+    });
+    this.OPRegForm.controls["foreigner"].disable();
+    this.getStatesByCountry();
+    this.getCitiesByCountry();
+    let HSPLocationId = Number(this.cookie.get("HSPLocationId"));
+    if (HSPLocationId != 69) {
+      this.OPRegForm.controls["seaFarer"].disable();
+    } else {
+      this.OPRegForm.controls["seaFarer"].enable();
+    }
+    this.checkForMaxID();
+  }
+
+  formProcessing() {
     //  this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
+
+    // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
+    //blur event call to fetch locality based on pincode
     if (this.maxIDChangeCall == false) {
       this.OPRegForm.controls["paymentMethod"].valueChanges
+        .pipe(takeUntil(this._destroying$))
         .subscribe((value: any) => {
           if (value == "ews") {
             if (this.maxIDChangeCall == false) {
@@ -564,79 +575,64 @@ export class OpRegistrationComponent implements OnInit {
           }
         });
     }
-    this.zone.run(() => {
-      // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
-      //blur event call to fetch locality based on pincode
-      //if (this.maxIDChangeCall == false) {
-        this.OPRegForm.controls["paymentMethod"].valueChanges
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((value: any) => {
-            if (value == "ews") {
-              if (this.maxIDChangeCall == false) {
-                this.openEWSDialogue();
-              }
-            }
-          });
-      //}
 
-      this.questions[21].elementRef.addEventListener(
-        "blur",
-        this.getLocalityByPinCode.bind(this)
-      );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
 
-      //chnage event for Mobile Field
-      this.questions[2].elementRef.addEventListener(
-        "change",
-        this.onPhoneModify.bind(this)
-      );
-      //chnage event for FirstName
-      this.questions[4].elementRef.addEventListener(
-        "change",
-        this.onFistNameModify.bind(this)
-      );
-      //chnage event for middle name
-      this.questions[4].elementRef.addEventListener(
-        "change",
-        this.onMiddleNameModify.bind(this)
-      );
-      //chnage event for Last Name
-      this.questions[6].elementRef.addEventListener(
-        "change",
-        this.onLastNameModify.bind(this)
-      );
+    //chnage event for Mobile Field
+    this.questions[2].elementRef.addEventListener(
+      "change",
+      this.onPhoneModify.bind(this)
+    );
+    //chnage event for FirstName
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onFistNameModify.bind(this)
+    );
+    //chnage event for middle name
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onMiddleNameModify.bind(this)
+    );
+    //chnage event for Last Name
+    this.questions[6].elementRef.addEventListener(
+      "change",
+      this.onLastNameModify.bind(this)
+    );
 
-      //DOB blur event
-      this.questions[8].elementRef.addEventListener(
-        "blur",
-        this.onageCalculator.bind(this)
-      );
-      this.OPRegForm.controls["dob"].valueChanges
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((value: any) => {
-          if (value != undefined && value != null && value != "" && value > 0) {
-            this.OPRegForm.controls["dob"].setValue(value);
-            this.onageCalculator();
-          }
-        });
+    //DOB blur event
+    this.questions[8].elementRef.addEventListener(
+      "blur",
+      this.onageCalculator.bind(this)
+    );
+    this.OPRegForm.controls["dob"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value != undefined && value != null && value != "" && value > 0) {
+          this.OPRegForm.controls["dob"].setValue(value);
+          this.onageCalculator();
+        }
+      });
 
-      //IdenityType value change
-      this.questions[17].elementRef.addEventListener(
-        "blur",
-        this.checkIndetityValue.bind(this)
-      );
+    //IdenityType value change
+    this.questions[17].elementRef.addEventListener(
+      "blur",
+      this.checkIndetityValue.bind(this)
+    );
 
-      //Father or Spouse value change
-      this.questions[13].elementRef.addEventListener(
-        "blur",
-        this.checkFatherSpouseName.bind(this)
-      );
+    //Father or Spouse value change
+    this.questions[13].elementRef.addEventListener(
+      "blur",
+      this.checkFatherSpouseName.bind(this)
+    );
 
-      // nationality value chnage event to enable foreigner
-      this.questions[28].elementRef.addEventListener(
-        "blur",
-        this.onNationalityModify.bind(this)
-      );
-    });
+    // nationality value chnage event to enable foreigner
+    this.questions[28].elementRef.addEventListener(
+      "blur",
+      this.onNationalityModify.bind(this)
+    );
 
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener(
@@ -781,13 +777,40 @@ export class OpRegistrationComponent implements OnInit {
     //   }
     // );
   }
-  showspinner: boolean = false;
+
+  ngAfterViewInit(): void {
+    this.formProcessing();
+  }
+
   clear() {
-    this.showspinner = true;
-    this.OPRegForm.reset();
-    this.OPRegForm.markAsUntouched();
+    this.formProcessingFlag = true;
+    this.questions = [];
+    //this.OPRegForm = null;
+    // this.OPRegForm.reset({
+    //   maxid: this.cookie.get("LocationIACode") + ".",
+    //   nationality: {
+    //     title: "Indian",
+    //     value: 149,
+    //   },
+    //   country: {
+    //     title: "India",
+    //     value: 1,
+    //   },
+    //   paymentMethod: "cash",
+    // });
+    // this.OPRegForm.markAsUntouched();
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.formInit();
+    this.formProcessingFlag = false;
+    setTimeout(() => {
+      this.formProcessing();
+    }, 10000);
     this.categoryIcons = [];
-   
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -815,24 +838,10 @@ export class OpRegistrationComponent implements OnInit {
     this.patientDetails = { ...this.patientDetails };
     this.modfiedPatiendDetails = { ...this.modfiedPatiendDetails };
     this.maxIDChangeCall = false;
-    this.router.navigate([], { queryParamsHandling: "" });
-    this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
-    this.OPRegForm.value.email = "";
 
-    this.OPRegForm.controls["nationality"].setValue({
-      title: "Indian",
-      value: 149,
-    });
-    this.OPRegForm.controls["maxid"].setValue(
-    this.cookie.get("LocationIACode") + "."
-    )
-
-    this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
     this.MaxIDExist = false;
-    this.setPaymentMode("CASH");
 
-    this.checkForMaxID();
-    this.showspinner = false;
+    //this.checkForMaxID();
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -2478,7 +2487,7 @@ if(patientDetails?.fathersname != "")
           properties: {
             HWCRemark: {
               type: "textarea",
-              //title: "HWC Remarks",
+              title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
             },
@@ -2530,7 +2539,7 @@ if(patientDetails?.fathersname != "")
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-        if(result == 'success'){
+        if (result == "success") {
           this.postModifyCall();
         }
       });
@@ -2549,8 +2558,6 @@ if(patientDetails?.fathersname != "")
       hcfTitle = hcfvalue[0].title;
     }
 
-    let minExpDate=new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+1));
-    let maxYear =new Date(new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear()+15));
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -2571,16 +2578,12 @@ if(patientDetails?.fathersname != "")
               type: "date",
               title: "Issue Date",
               required: true,
-              maximum:new Date(),
-             
               defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
-              minimum:minExpDate,
-              maximum:maxYear,
               defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
@@ -2693,7 +2696,7 @@ if(patientDetails?.fathersname != "")
   }
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
-      width: "100vw",    
+      width: "100vw",
       data: { list: dmsDetailList },
     });
   }
@@ -2718,7 +2721,7 @@ export class SimilarPatientDialog {
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-   
+
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
