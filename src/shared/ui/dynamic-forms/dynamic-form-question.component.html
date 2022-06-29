@@ -149,6 +149,9 @@
           {{ question.label }} value should be less than or equal to
           <strong>{{ question.maximum }}</strong>
         </mat-error>
+        <mat-error *ngIf="isCorrect && question.customErrorMessage">
+          {{ question.customErrorMessage }}</mat-error
+        >
         <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
       </mat-form-field>
     </ng-container>
