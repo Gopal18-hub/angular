@@ -24,6 +24,7 @@ export class QuestionBase<T> {
   customErrorMessage: string;
   placeholder: string;
   pattern: string;
+  onlyKeyPressAlpha: boolean;
 
   constructor(
     options: {
@@ -52,6 +53,7 @@ export class QuestionBase<T> {
       customErrorMessage?: string;
       placeholder?: string;
       pattern?: string;
+      onlyKeyPressAlpha?: boolean;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -79,5 +81,6 @@ export class QuestionBase<T> {
     this.customErrorMessage = options.customErrorMessage || "";
     this.placeholder = options.placeholder || "";
     this.pattern = options.pattern || "";
+    this.onlyKeyPressAlpha = options.onlyKeyPressAlpha || false;
   }
 }
