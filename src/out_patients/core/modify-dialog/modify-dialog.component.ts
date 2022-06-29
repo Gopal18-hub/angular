@@ -164,7 +164,7 @@ updateregistrationFormData= {
       }
       submit() {
        
-          this.dialogRef.close();
+          this.dialogRef.close('success');
         
       }
       reject()

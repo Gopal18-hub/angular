@@ -19,21 +19,43 @@
         appearance="outline"
         floatLabel="never"
       >
-        <input
-          matInput
-          placeholder=""
-          [formControlName]="question.key"
-          [type]="question.type"
-          [id]="question.key"
-          [required]="question.required"
-          [readonly]="question.readonly"
-          [value]="question.value"
-          [placeholder]="question.placeholder"
-          [pattern]="question.pattern"
-          [minlength]="question.minimum"
-          [maxlength]="question.maximum"
-          #element
-        />
+        <ng-container *ngIf="question.onlyKeyPressAlpha">
+          <input
+            matInput
+            placeholder=""
+            [formControlName]="question.key"
+            [type]="question.type"
+            [id]="question.key"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            [value]="question.value"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern"
+            [minlength]="question.minimum"
+            [maxlength]="question.maximum"
+            #element
+            (keypress)="keyPressAlpha($event)"
+          />
+        </ng-container>
+
+        <ng-container *ngIf="!question.onlyKeyPressAlpha">
+          <input
+            matInput
+            placeholder=""
+            [formControlName]="question.key"
+            [type]="question.type"
+            [id]="question.key"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            [value]="question.value"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern"
+            [minlength]="question.minimum"
+            [maxlength]="question.maximum"
+            #element
+          />
+        </ng-container>
+
         <mat-error *ngIf="!isValid && !isCorrect">
           {{ question.label }} is <strong>required</strong>
         </mat-error>
