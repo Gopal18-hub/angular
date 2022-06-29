@@ -112,9 +112,9 @@ export class HttpService {
       if (options && !options.showErrorMessage) {
       } else {
         if (error.error && error.error.message) {
-          this.messageDialog.error(error.error.message);
+        //  this.messageDialog.error(error.error.message);
         } else {
-          this.messageDialog.error("Someting happend please try again");
+         // this.messageDialog.error("Someting happend please try again");
         }
       }
     }

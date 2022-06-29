@@ -567,7 +567,17 @@ export class OpRegistrationComponent implements OnInit {
     this.zone.run(() => {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
-    
+      //if (this.maxIDChangeCall == false) {
+        this.OPRegForm.controls["paymentMethod"].valueChanges
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((value: any) => {
+            if (value == "ews") {
+              if (this.maxIDChangeCall == false) {
+                this.openEWSDialogue();
+              }
+            }
+          });
+      //}
 
       this.questions[21].elementRef.addEventListener(
         "blur",
@@ -2468,7 +2478,7 @@ if(patientDetails?.fathersname != "")
           properties: {
             HWCRemark: {
               type: "textarea",
-              title: "HWC Remarks",
+              //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
             },
