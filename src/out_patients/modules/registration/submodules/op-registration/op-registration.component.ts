@@ -2548,13 +2548,6 @@ export class OpRegistrationComponent implements OnInit {
     let maxYear = new Date(
       new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 15)
     );
-
-    let minExpDate = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
-    );
-    let maxYear = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 15)
-    );
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
