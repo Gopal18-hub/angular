@@ -21,10 +21,10 @@ export class PatientService {
     isCghsverified: "CGHS_Icon.svg",
   };
   pageNumberIcons: any = {
-    Cash: "Cash_Icon.svg",
+    "Cash": "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
     "Corporate/Insurance": "Ins_icon.svg",
-    EWS: "EWS.svg",
+    "ews": "EWS.svg",
   };
   categoryIconsActions: any = {
     cghs: {
@@ -94,7 +94,7 @@ export class PatientService {
   };
 
   pageNumberIconsTooltip: any = {
-    Cash: {
+    "Cash": {
       type: "static",
       value: "Cash",
     },
@@ -106,7 +106,7 @@ export class PatientService {
       type: "static",
       value: "INS",
     },
-    EWS: {
+    "ews": {
       type: "static",
       value: "EWS",
     },

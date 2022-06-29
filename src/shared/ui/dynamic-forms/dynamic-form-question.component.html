@@ -156,6 +156,7 @@
           [placeholder]="question.placeholder"
           [pattern]="question.pattern"
           #element
+          (keypress)="keyPressNumbers($event)"
         />
         <mat-error *ngIf="form.get(question.key)?.hasError('required')">
           {{ question.label }} is <strong>required</strong>
