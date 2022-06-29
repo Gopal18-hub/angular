@@ -89,7 +89,7 @@ export class OpRegistrationComponent implements OnInit {
   passportNum: number | undefined;
   issuedate: Date | undefined;
   categoryIcons: [] = [];
-  passportNo: string = "";  
+  passportNo: string = "";
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -591,14 +591,14 @@ export class OpRegistrationComponent implements OnInit {
         this.onageCalculator.bind(this)
       );
       this.OPRegForm.controls["dob"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value != undefined && value != null && value != "" && value > 0) {
-          this.OPRegForm.controls["dob"].setValue(value);
-          this.onageCalculator();
-        }
-      });
-  
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((value: any) => {
+          if (value != undefined && value != null && value != "" && value > 0) {
+            this.OPRegForm.controls["dob"].setValue(value);
+            this.onageCalculator();
+          }
+        });
+
       //IdenityType value change
       this.questions[17].elementRef.addEventListener(
         "blur",
@@ -698,7 +698,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["locality"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        this.addressByLocalityID();
+        this.addressByLocalityID(value);
       });
 
     //on change of Title Gender needs to be changed
@@ -762,10 +762,10 @@ export class OpRegistrationComponent implements OnInit {
     // );
   }
 
-  clear() {  
+  clear() {
     this.OPRegForm.reset();
     this.OPRegForm.markAsUntouched();
-    this.categoryIcons = [];   
+    this.categoryIcons = [];
 
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
@@ -792,9 +792,9 @@ export class OpRegistrationComponent implements OnInit {
       FDPGroup: "",
     };
     this.patientDetails = { ...this.patientDetails };
-    this.modfiedPatiendDetails={...this.modfiedPatiendDetails};
-    this.maxIDChangeCall=false;
-    this.router.navigate([],{queryParamsHandling:""});
+    this.modfiedPatiendDetails = { ...this.modfiedPatiendDetails };
+    this.maxIDChangeCall = false;
+    this.router.navigate([], { queryParamsHandling: "" });
     this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
     this.OPRegForm.value.email = "";
 
@@ -1309,23 +1309,19 @@ export class OpRegistrationComponent implements OnInit {
 
   //fetch Address based on locality or set pincode on selection of locality
   AddressonLocalityModellst!: AddressonLocalityModel;
-  addressByLocalityID() {
+  addressByLocalityID(locality: any) {
     if (
       this.OPRegForm.value.city.value == undefined ||
       this.OPRegForm.value.city.value == "" ||
       this.OPRegForm.value.city.value == null
     ) {
       if (
-        this.OPRegForm.value.locality.value != undefined &&
-        this.OPRegForm.value.locality.value != null &&
-        this.OPRegForm.value.locality.value != ""
+        locality.value != undefined &&
+        locality.value != null &&
+        locality.value != ""
       ) {
         this.http
-          .get(
-            ApiConstants.addressByLocalityID(
-              this.OPRegForm.value.locality.value
-            )
-          )
+          .get(ApiConstants.addressByLocalityID(locality.value))
           .pipe(takeUntil(this._destroying$))
           .subscribe((resultData: any) => {
             this.AddressonLocalityModellst = resultData[0];
@@ -1356,13 +1352,13 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.value.pincode <= 0
       ) {
         if (
-          this.OPRegForm.value.locality.value != undefined &&
-          this.OPRegForm.value.locality.value != null &&
-          this.OPRegForm.value.locality.value != "" &&
-          this.OPRegForm.value.locality.value > 0
+          locality.value != undefined &&
+          locality.value != null &&
+          locality.value != "" &&
+          locality.value > 0
         ) {
           let pincode = this.localitybyCityList.filter(
-            (l) => l.id === this.OPRegForm.value.locality.value
+            (l) => l.id === locality.value
           )[0].pincode;
           this.OPRegForm.controls["pincode"].setValue(pincode);
         }
@@ -1869,7 +1865,8 @@ export class OpRegistrationComponent implements OnInit {
     //FOR CHECKBOX
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
 
-    this.categoryIcons = this.patientService.getCategoryIconsForPatient(patientDetails);
+    this.categoryIcons =
+      this.patientService.getCategoryIconsForPatient(patientDetails);
 
     //FOR EWS POP UP
     if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
