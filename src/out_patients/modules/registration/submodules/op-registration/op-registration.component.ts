@@ -182,7 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
-        max:this.today
+        maximum:new Date()
       },
       age: {
         type: "number",
@@ -331,7 +331,7 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Note" }],
+        options: [{ title: "Notes" }],
       },
       hwc: {
         type: "checkbox",
@@ -554,21 +554,20 @@ export class OpRegistrationComponent implements OnInit {
     //  this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
-
+    if (this.maxIDChangeCall == false) {
+      this.OPRegForm.controls["paymentMethod"].valueChanges
+        .subscribe((value: any) => {
+          if (value == "ews") {
+            if (this.maxIDChangeCall == false) {
+              this.openEWSDialogue();
+            }
+          }
+        });
+    }
     this.zone.run(() => {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
-      if (this.maxIDChangeCall == false) {
-        this.OPRegForm.controls["paymentMethod"].valueChanges
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((value: any) => {
-            if (value == "ews") {
-              if (this.maxIDChangeCall == false) {
-                this.openEWSDialogue();
-              }
-            }
-          });
-      }
+    
 
       this.questions[21].elementRef.addEventListener(
         "blur",
