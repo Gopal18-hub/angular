@@ -254,7 +254,10 @@
         />
         <datalist
           id="defaultEmails"
-          *ngIf="form.value[question.key].indexOf('@') != -1"
+          *ngIf="
+            form.value[question.key] &&
+            form.value[question.key].indexOf('@') != -1
+          "
         >
           <ng-container *ngFor="let emailDomain of emailDomains">
             <option *ngIf="emailDomain">
@@ -485,6 +488,8 @@
           #element
           [matDatepicker]="datepicker"
           [placeholder]="question.placeholder"
+          [max]="question.maximum"
+          [min]="question.minimum"
         />
         <mat-datepicker-toggle
           matSuffix
