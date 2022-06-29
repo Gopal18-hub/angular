@@ -554,11 +554,11 @@ export class OpRegistrationComponent implements OnInit {
     //  this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
-
+console.log(this.maxIDChangeCall);
     this.zone.run(() => {
       // this.OPRegForm.controls["cash"].setValue({title:"cash",value:"Cash"});
       //blur event call to fetch locality based on pincode
-      if (this.maxIDChangeCall == false) {
+    //if (this.maxIDChangeCall == false) {
         this.OPRegForm.controls["paymentMethod"].valueChanges
           .pipe(takeUntil(this._destroying$))
           .subscribe((value: any) => {
@@ -568,7 +568,7 @@ export class OpRegistrationComponent implements OnInit {
               }
             }
           });
-      }
+     // }
 
       this.questions[21].elementRef.addEventListener(
         "blur",
@@ -2505,7 +2505,7 @@ export class OpRegistrationComponent implements OnInit {
           properties: {
             HWCRemark: {
               type: "textarea",
-              title: "HWC Remarks",
+             // title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
             },
