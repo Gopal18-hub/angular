@@ -1,3 +1,13 @@
+<div class="relative max-health-primary-color">
+    <button
+      mat-icon-button
+      aria-label="close dialog"
+      mat-dialog-close
+      class="absolute max-dialog-close-icon"
+      type="button"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
 <section class="overflow-x-none overflow-y-none">
 <h2 mat-dialog-title class="max-health-primary-color">Appointment Patient Search</h2>
 <div class="h-4/5 flex w-full align-items-center p-3 bg-secondary border-radius-md">
@@ -8,7 +18,7 @@
             </div>
             <div class="w-1/15 ml-2 bg-white">
                 <mat-form-field appearance="outline" class="w-full">
-                    <input matInput placeholder="Name" formControlName="name" />
+                    <input matInput placeholder="Name" type="text" pattern="^[A-Za-z]{1}[A-Za-z. '']+"  formControlName="name" />
                 </mat-form-field>
             </div>
             <div class="w-4/5 wt-nowrap ml-2">
@@ -24,7 +34,7 @@
             </div>
             <div class="w-1/15 ml-2 bg-white">
                 <mat-form-field appearance="outline" class="w-full">
-                    <input matInput placeholder="Phone" formControlName="phone"/>
+                    <input matInput placeholder="Phone" type="number"  pattern="^[1-9]{1}[0-9]{9}"  formControlName="phone"/>
                 </mat-form-field>
             </div>
             <div class="flex align-items-center w-2/3 ml-2 p-2 bg-grey border-radius-md">
@@ -78,3 +88,4 @@
       
   </div>
 </section>
+</div>
