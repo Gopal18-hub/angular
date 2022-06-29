@@ -89,7 +89,7 @@ export class OpRegistrationComponent implements OnInit {
   passportNum: number | undefined;
   issuedate: Date | undefined;
   categoryIcons: [] = [];
-  passportNo: string = "";
+  passportNo: string = "";  
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -590,6 +590,15 @@ export class OpRegistrationComponent implements OnInit {
         "blur",
         this.onageCalculator.bind(this)
       );
+      this.OPRegForm.controls["dob"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value != undefined && value != null && value != "" && value > 0) {
+          this.OPRegForm.controls["dob"].setValue(value);
+          this.onageCalculator();
+        }
+      });
+  
       //IdenityType value change
       this.questions[17].elementRef.addEventListener(
         "blur",
@@ -753,11 +762,42 @@ export class OpRegistrationComponent implements OnInit {
     // );
   }
 
-  clear() {
+  clear() {  
     this.OPRegForm.reset();
     this.OPRegForm.markAsUntouched();
-    this.categoryIcons = [];
+    this.categoryIcons = [];   
+
+    //CLEARING PASSPORT DETAILS
+    this.passportDetails = {
+      passportNo: "",
+      IssueDate: "",
+      Expirydate: "",
+      Issueat: "",
+      HCF: 0,
+    };
+    this.noteRemark = "";
+    this.hwcRemark = "";
+    this.ewsDetails = {
+      bplCardNo: "",
+      bplCardAddress: "",
+    };
+    this.hotlistReason = "";
+    this.hotlistRemark = "";
+    this.vip = "";
+
+    this.seafarerDetails = {
+      HKID: "",
+      Vesselname: "",
+      rank: "",
+      FDPGroup: "",
+    };
+    this.patientDetails = { ...this.patientDetails };
+    this.modfiedPatiendDetails={...this.modfiedPatiendDetails};
+    this.maxIDChangeCall=false;
+    this.router.navigate([],{queryParamsHandling:""});
     this.OPRegForm.value.maxid = this.cookie.get("LocationIACode") + ".";
+    this.OPRegForm.value.email = "";
+
     this.OPRegForm.controls["nationality"].setValue({
       title: "Indian",
       value: 149,
@@ -765,6 +805,8 @@ export class OpRegistrationComponent implements OnInit {
 
     this.OPRegForm.controls["country"].setValue({ title: "India", value: 1 });
     this.MaxIDExist = false;
+    this.setPaymentMode("CASH");
+
     this.checkForMaxID();
   }
 
@@ -1538,6 +1580,11 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           this.populateUpdatePatientDetail(resultData);
+          if (!this.isPatientdetailModified) {
+            this.messageDialogService.success(
+              "Patient Details has been modified"
+            );
+          }
           console.log(resultData);
         },
         (error) => {
@@ -1822,6 +1869,8 @@ export class OpRegistrationComponent implements OnInit {
     //FOR CHECKBOX
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
 
+    this.categoryIcons = this.patientService.getCategoryIconsForPatient(patientDetails);
+
     //FOR EWS POP UP
     if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
       this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
@@ -1877,7 +1926,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.state.value,
       this.OPRegForm.value.country.value,
       this.OPRegForm.value.pincode,
-      "Cash", //PAGER NEED TO CHECK HOW CAN BE SENT
+      this.OPRegForm.value.paymentMethod, //PAGER NEED TO CHECK HOW CAN BE SENT
       0,
       "",
       false,
