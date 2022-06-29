@@ -12,7 +12,7 @@ export class ReportService {
 
   getOPRegistrationForm(_iacode: string) {
     this.baseUrl =
-      environment.ReportsApiUrl + "/PrintFormReport";
+      environment.ReportsApiUrl + "PrintFormReport";
     window.open(
       this.baseUrl + "?" + _iacode,
       "_blank",
@@ -21,7 +21,7 @@ export class ReportService {
   }
   getOPRegistrationPrintLabel(_iacode: string) {
     this.baseUrl =
-      environment.ReportsApiUrl + "/PrintLabel";
+      environment.ReportsApiUrl + "PrintLabel";
     window.open(
       this.baseUrl + "?" + _iacode,
       "_blank",
@@ -30,7 +30,7 @@ export class ReportService {
   }
   getOPRegistrationOrganDonorForm(_iacode: string) {
     this.baseUrl =
-      environment.ReportsApiUrl + "/PrintOrganDonorForm";
+      environment.ReportsApiUrl + "PrintOrganDonorForm";
     window.open(
       this.baseUrl + "?" + _iacode,
       "_blank",
