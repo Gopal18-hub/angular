@@ -1611,12 +1611,14 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: PatientDetails) => {
+          this.maxIDChangeCall = true;// Added to avoid overlapping of ews popup and successdialog
           this.populateUpdatePatientDetail(resultData);
           if (!this.isPatientdetailModified) {
             this.messageDialogService.success(
               "Patient Details has been modified"
             );
           }
+          this.maxIDChangeCall = false;
           console.log(resultData);
         },
         (error) => {
@@ -1775,7 +1777,7 @@ export class OpRegistrationComponent implements OnInit {
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
-      this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse" });
+      this.OPRegForm.controls["fatherSpouse"].setValue(2);
     
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.spouseName
@@ -1788,7 +1790,7 @@ if(patientDetails?.fathersname != "")
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.fathersname
       );
-    this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Father"})
+    this.OPRegForm.controls["fatherSpouse"].setValue(1)
 
      }
     }
@@ -1887,6 +1889,7 @@ if(patientDetails?.fathersname != "")
 
   updateRequestBody!: UpdatepatientModel;
   getPatientUpdatedReqBody(): UpdatepatientModel {
+    console.log(this.OPRegForm.controls["idenityType"].value);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
@@ -1975,6 +1978,7 @@ if(patientDetails?.fathersname != "")
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue || ""
     ));
+   
   }
 
   //WORKING ON THE BELOW FUNCTION
