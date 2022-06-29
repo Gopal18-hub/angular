@@ -52,7 +52,7 @@ import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilars
 import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
-import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
+import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -182,7 +182,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
-        max: this.today,
+        maximum: new Date(),
       },
       age: {
         type: "number",
@@ -331,7 +331,7 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Note" }],
+        options: [{ title: "Notes" }],
       },
       hwc: {
         type: "checkbox",
@@ -611,7 +611,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value != undefined && value != null && value != "" && value > 0) {
-          this.OPRegForm.controls["dob"].setValue(value);
+          //this.OPRegForm.controls["dob"].setValue(value);
           this.onageCalculator();
         }
       });
@@ -2525,7 +2525,7 @@ export class OpRegistrationComponent implements OnInit {
           properties: {
             HWCRemark: {
               type: "textarea",
-              title: "HWC Remarks",
+              //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
             },
@@ -2596,6 +2596,12 @@ export class OpRegistrationComponent implements OnInit {
       hcfTitle = hcfvalue[0].title;
     }
 
+    let minExpDate = new Date(
+      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
+    );
+    let maxYear = new Date(
+      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 15)
+    );
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -2616,12 +2622,16 @@ export class OpRegistrationComponent implements OnInit {
               type: "date",
               title: "Issue Date",
               required: true,
+              maximum: new Date(),
+
               defaultValue: this.passportDetails.IssueDate,
             },
             expiryDate: {
               type: "date",
               title: "Expiry Date",
               required: true,
+              minimum: minExpDate,
+              maximum: maxYear,
               defaultValue: this.passportDetails.Expirydate,
             },
             issuedAt: {
