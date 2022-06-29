@@ -55,6 +55,7 @@ import { MessageDialogService } from "../../../../../shared/ui/message-dialog/me
 import { RegistrationDialogueComponent } from "../../submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { MatInput } from "@angular/material/input";
 
 export interface DialogData {
   expieryDate: Date;
@@ -415,8 +416,14 @@ export class OpRegistrationComponent implements OnInit {
     private route: ActivatedRoute,
     private messageDialogService: MessageDialogService
   ) {}
+  
+  
 
+
+  bool: boolean | undefined;
   ngOnInit(): void {
+    this.bool = true;
+   
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
