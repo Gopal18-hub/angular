@@ -28,7 +28,7 @@ export class DynamicFormQuestionComponent
   @Input() form: FormGroup = {} as FormGroup;
 
   get isValid() {
-    return this.form.controls[this.question.key].valid;
+    return !this.form.controls[this.question.key].errors?.["required"];
   }
   get isCorrect() {
     return this.form.controls[this.question.key].errors?.["incorrect"];
@@ -173,5 +173,31 @@ export class DynamicFormQuestionComponent
 
   generateRandomEmail() {
     this.form.controls[this.question.key].setValue("info@maxhealthcare.com");
+  }
+
+  keyPressNumbers(event: any) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Only Numbers 0-9
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  keyPressAlpha(event: any) {
+    // if (!this.question.pattern) {
+    //   this.question.pattern = '/[a-zA-Z]/';
+    // }
+
+    const inp = String.fromCharCode(event.keyCode);
+
+    if (/[a-zA-Z. ]/.test(inp)) {
+      return true;
+    } else {
+      event.preventDefault();
+      return false;
+    }
   }
 }
