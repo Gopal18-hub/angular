@@ -183,7 +183,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "date",
         title: "Date of Birth",
         required: false,
-        max: new Date(),
+        maximum: new Date(),
       },
       age: {
         type: "number",
