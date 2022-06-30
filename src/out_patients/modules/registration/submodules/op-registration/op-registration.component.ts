@@ -588,6 +588,51 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
+    this.OPRegForm.controls["vip"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.openVipNotes();
+          }
+        
+      });
+      this.OPRegForm.controls["note"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.openNotes();
+        
+        }
+      });
+      this.OPRegForm.controls["hwc"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+      
+          if (this.maxIDChangeCall == false && value) {
+            this.openHWCNotes();
+          
+        }
+      });
+      this.OPRegForm.controls["hotlist"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+      
+          if (this.maxIDChangeCall == false && value) {
+            this.openHotListDialog(); 
+          }
+        
+      });
+      // this.OPRegForm.controls["foreigner"].valueChanges
+      // .pipe(takeUntil(this._destroying$))
+      // .subscribe((value: any) => {      
+      //     if (this.maxIDChangeCall == false) {
+      //       this.showPassportDetails();
+      //     }
+        
+      // });
+      
    
   
     //chnage event for Mobile Field

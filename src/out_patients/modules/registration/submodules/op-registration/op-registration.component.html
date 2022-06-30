@@ -364,7 +364,7 @@
             >
               <mat-card
                 class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color pb-0"
-              >
+              >  <!-- (click)="hotlistClick($event)" -->
                 <div class="flex">
                   <div class="w-3/4">
                     <maxhealth-question
@@ -372,36 +372,39 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
-                      (click)="hotlistClick($event)"
+                    
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
+                     <!-- (click)="openVIP($event)" -->
                     <maxhealth-question
                       [question]="questions[32]"
                       [form]="OPRegForm"
                       [questions]="questions[32]"
                       [index]="32"
-                      (click)="openVIP($event)"
+                     
                     ></maxhealth-question>
                   </div>
                 </div>
                 <div class="flex">
                   <div class="w-3/4">
+                      <!-- (click)="NotesClick($event)" -->
+
                     <maxhealth-question
                       [question]="questions[33]"
                       [form]="OPRegForm"
                       [questions]="questions[33]"
                       [index]="33"
-                      (click)="NotesClick($event)"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
+                      <!-- (click)="hwcClick($event)" -->
+
                     <maxhealth-question
                       [question]="questions[34]"
                       [form]="OPRegForm"
                       [questions]="questions[34]"
                       [index]="34"
-                      (click)="hwcClick($event)"
                     ></maxhealth-question>
                   </div>
                 </div>
