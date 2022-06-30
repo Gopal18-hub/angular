@@ -588,6 +588,73 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
+    //chnage event for email Field
+
+  this.questions[11].elementRef.addEventListener(
+    "change",
+    this.onEmailModify.bind(this)
+  );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+
+    this.OPRegForm.controls["vip"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.openVipNotes();
+          }
+        
+      });
+
+      this.OPRegForm.controls["seaFarer"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.seafarersDetailsdialog();
+          }
+        
+      });
+
+      this.OPRegForm.controls["note"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.openNotes();
+        
+        }
+      });
+      this.OPRegForm.controls["hwc"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+      
+          if (this.maxIDChangeCall == false && value) {
+            this.openHWCNotes();
+          
+        }
+      });
+      this.OPRegForm.controls["hotlist"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+      
+          if (this.maxIDChangeCall == false && value) {
+            this.openHotListDialog(); 
+          }
+        
+      });
+      // this.OPRegForm.controls["foreigner"].valueChanges
+      // .pipe(takeUntil(this._destroying$))
+      // .subscribe((value: any) => {      
+      //     if (this.maxIDChangeCall == false) {
+      //       this.showPassportDetails();
+      //     }
+        
+      // });
+      
    
   
     //chnage event for Mobile Field
@@ -827,7 +894,7 @@ export class OpRegistrationComponent implements OnInit {
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
-    }, 10000);
+    }, 100);
     this.categoryIcons = [];
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
