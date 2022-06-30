@@ -2500,9 +2500,9 @@ if(patientDetails?.fathersname != "")
 
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw",
-      width: "95vw",
-      height: "90vh",
+      maxWidth: "100vw"
+     
+     
     });
   }
 
