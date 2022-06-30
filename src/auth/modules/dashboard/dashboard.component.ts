@@ -154,8 +154,7 @@ export class DashboardComponent implements OnInit {
         this.apiProcessing = true;
         console.log(this.patientList);
         setTimeout(() => {
-          this.table.selection.changed
-            .pipe(takeUntil(this._destroying$))
+          this.table.selection.changed            
             .subscribe((res: any) => {
               console.log(res);
               this.router.navigate(
@@ -229,8 +228,7 @@ export class DashboardComponent implements OnInit {
             this.apiProcessing = true;
             this.defaultUI = false;
             setTimeout(() => {
-              this.table.selection.changed
-                .pipe(takeUntil(this._destroying$))
+              this.table.selection.changed              
                 .subscribe((res: any) => {
                   console.log(res);
                   this.router.navigate(["registration", "op-registration"], {
@@ -285,8 +283,7 @@ export class DashboardComponent implements OnInit {
             );
             this.apiProcessing = true;
             setTimeout(() => {
-              this.table.selection.changed
-                .pipe(takeUntil(this._destroying$))
+              this.table.selection.changed               
                 .subscribe((res: any) => {
                   console.log(res);
                   this.router.navigate(["registration", "op-registration"], {

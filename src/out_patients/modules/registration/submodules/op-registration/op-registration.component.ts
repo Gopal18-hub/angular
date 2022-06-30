@@ -894,7 +894,10 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarersDetailsdialog();
     }
   }
-
+  foreignCLick(event: Event) {
+    if (!this.OPRegForm.controls["foreigner"].value) {
+this.showPassportDetails();    }
+  }
   hotlistClick(event: Event) {
     if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
       this.openHotListDialog();
@@ -2500,9 +2503,9 @@ if(patientDetails?.fathersname != "")
 
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw",
-      width: "95vw",
-      height: "90vh",
+      maxWidth: "100vw"
+     
+     
     });
   }
 
@@ -2632,6 +2635,9 @@ if(patientDetails?.fathersname != "")
             HCF: result.data.hcf.value,
           };
           console.log(this.passportDetails);
+          this.OPRegForm.controls["nationality"].setErrors(null);
+          this.questions[28].customErrorMessage =
+            "";
         }
       });
   }
@@ -2697,7 +2703,7 @@ if(patientDetails?.fathersname != "")
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
       width: "100vw",
-      data: { list: dmsDetailList },
+      data: { list: dmsDetailList,maxid:this.patientDetails.iacode+"."+this.patientDetails.registrationno,firstName:this.patientDetails.firstname,lastName:this.patientDetails.lastName },
     });
   }
 }

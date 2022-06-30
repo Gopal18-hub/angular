@@ -37,7 +37,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   OPRegForm!: FormGroup;
   questions: any;
-  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>,) {}
+  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.FormData.properties,
