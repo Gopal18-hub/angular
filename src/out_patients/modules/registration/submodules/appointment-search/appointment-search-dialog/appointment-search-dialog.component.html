@@ -12,13 +12,13 @@
 <section class="overflow-x-none overflow-y-none">
 <h2 mat-dialog-title class="max-health-primary-color">Appointment Patient Search</h2>
 <div class="h-full flex w-full align-items-center  bg-secondary border-radius-md">
-    <form [formGroup]="OPRegForm" class="flex w-full align-items-center">
+    <form [formGroup]="OPAppointmentForm" class="flex w-full align-items-center">
         <div class="flex w-4/5 align-items-center justify-between">
           <div class="flex align-items-center w-3/5 p-2 border-radius-md">
             <div class="w-1/5 wt-nowrap mr-6" >
                 <maxhealth-question
                   [question]="questions[0]"
-                  [form]="OPRegForm"
+                  [form]="OPAppointmentForm"
                   [questions]="questions[0]"
                   [index]="0"
                 ></maxhealth-question>
@@ -26,7 +26,7 @@
             <div class="w-1/5 wt-nowrap ml-4 mr-12 ">
                 <maxhealth-question
                 [question]="questions[1]"
-                [form]="OPRegForm"
+                [form]="OPAppointmentForm"
                 [questions]="questions[1]"
                 [index]="1"
               ></maxhealth-question>
@@ -35,7 +35,7 @@
               <div class="ml-4">
                 <maxhealth-question
                 [question]="questions[2]"
-                [form]="OPRegForm"
+                [form]="OPAppointmentForm"
                 [questions]="questions[2]"
                 [index]="2"
               ></maxhealth-question>
@@ -46,7 +46,7 @@
                 <div class="w-1/10 wt-nowrap mr-1 mb-1">
                     <maxhealth-question
                     [question]="questions[3]"
-                    [form]="OPRegForm"
+                    [form]="OPAppointmentForm"
                     [questions]="questions[3]"
                     [index]="3"
                   ></maxhealth-question>
@@ -55,7 +55,7 @@
                
                     <maxhealth-question
                 [question]="questions[4]"
-                [form]="OPRegForm"
+                [form]="OPAppointmentForm"
                 [questions]="questions[4]"
                 [index]="4"
               ></maxhealth-question>
@@ -65,7 +65,7 @@
                   
                     <maxhealth-question
                     [question]="questions[5]"
-                    [form]="OPRegForm"
+                    [form]="OPAppointmentForm"
                     [questions]="questions[5]"
                     [index]="5"
                   ></maxhealth-question>
