@@ -27,6 +27,8 @@ export class PatientService {
     "Corporate/Insurance": "Ins_icon.svg",
     "ins": "Ins_icon.svg",
     "ews": "EWS.svg",
+    "cash": "Cash_Icon.svg",
+    "psu/govt": "PSU_icon.svg",
   };
   categoryIconsActions: any = {
     cghs: {
@@ -119,6 +121,14 @@ export class PatientService {
     "ews": {
       type: "static",
       value: "EWS",
+    },
+    "cash": {
+      type: "static",
+      value: "CASH",
+    },
+    "psu/govt": {
+      type: "static",
+      value: "PSU",
     },
   };
 
