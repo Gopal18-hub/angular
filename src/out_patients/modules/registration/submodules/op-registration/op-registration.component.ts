@@ -5,6 +5,7 @@ import {
   NgZone,
   ViewChild,
   OnDestroy,
+  HostListener,
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
@@ -53,9 +54,10 @@ import { AddressonCityModel } from "../../../../../out_patients/core/models/addr
 import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
-import { Subject } from "rxjs";
+import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
+import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
 
 export interface DialogData {
   expieryDate: Date;
@@ -374,7 +376,7 @@ export class OpRegistrationComponent implements OnInit {
       },
       paymentMethod: {
         type: "radio",
-        required: false,
+        required: true,
         options: [
           { title: "Cash", value: "cash" },
           { title: "PSU/Govt", value: "psu/govt" },
@@ -401,6 +403,12 @@ export class OpRegistrationComponent implements OnInit {
   isPatientdetailModified: boolean = false;
 
   private readonly _destroying$ = new Subject<void>();
+
+  // @HostListener allows us to also guard against browser refresh, close, etc.
+  @HostListener("window:beforeunload")
+  canDeactivate(): Observable<boolean> | boolean {
+    return !this.OPRegForm.dirty;
+  }
 
   constructor(
     private formService: QuestionControlService,
@@ -580,7 +588,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
-
+   
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -644,6 +652,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getPatientDetailsByMaxId.bind(this)
     );
+    // this.questions[0].elementRef.addEventListener(
+      
+    //   this.getPatientDetailsByMaxId.bind(this)
+    // );
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
@@ -896,7 +908,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   foreignCLick(event: Event) {
     if (!this.OPRegForm.controls["foreigner"].value) {
-this.showPassportDetails();    }
+      this.showPassportDetails();
+    }
   }
   hotlistClick(event: Event) {
     if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
@@ -1603,7 +1616,7 @@ this.showPassportDetails();    }
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: PatientDetails) => {
-          this.maxIDChangeCall = true;// Added to avoid overlapping of ews popup and successdialog
+          this.maxIDChangeCall = true; // Added to avoid overlapping of ews popup and successdialog
           this.populateUpdatePatientDetail(resultData);
           if (!this.isPatientdetailModified) {
             this.messageDialogService.success(
@@ -1767,21 +1780,19 @@ this.showPassportDetails();    }
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
       this.OPRegForm.controls["fatherSpouse"].setValue(2);
-    
+
       this.OPRegForm.controls["fatherSpouseName"].setValue(
         patientDetails?.spouseName
       );
       //fatherSpouse
     } else {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Father", value: 1 })
-if(patientDetails?.fathersname != "")
-     {
-      this.OPRegForm.controls["fatherSpouseName"].setValue(
-        patientDetails?.fathersname
-      );
-    this.OPRegForm.controls["fatherSpouse"].setValue(1)
-
-     }
+      if (patientDetails?.fathersname != "") {
+        this.OPRegForm.controls["fatherSpouseName"].setValue(
+          patientDetails?.fathersname
+        );
+        this.OPRegForm.controls["fatherSpouse"].setValue(1);
+      }
     }
 
     this.OPRegForm.controls["motherName"].setValue(
@@ -1967,7 +1978,6 @@ if(patientDetails?.fathersname != "")
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue || ""
     ));
-   
   }
 
   //WORKING ON THE BELOW FUNCTION
@@ -2465,6 +2475,7 @@ if(patientDetails?.fathersname != "")
             incorrect: true,
           });
           this.questions[40].customErrorMessage = "Invalid EWS details";
+        
         }
       });
   }
@@ -2503,9 +2514,7 @@ if(patientDetails?.fathersname != "")
 
   openDialog() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw"
-     
-     
+      maxWidth: "100vw",
     });
   }
 
@@ -2636,8 +2645,7 @@ if(patientDetails?.fathersname != "")
           };
           console.log(this.passportDetails);
           this.OPRegForm.controls["nationality"].setErrors(null);
-          this.questions[28].customErrorMessage =
-            "";
+          this.questions[28].customErrorMessage = "";
         }
       });
   }
@@ -2703,7 +2711,13 @@ if(patientDetails?.fathersname != "")
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
       width: "100vw",
-      data: { list: dmsDetailList,maxid:this.patientDetails.iacode+"."+this.patientDetails.registrationno,firstName:this.patientDetails.firstname,lastName:this.patientDetails.lastName },
+      data: {
+        list: dmsDetailList,
+        maxid:
+          this.patientDetails.iacode + "." + this.patientDetails.registrationno,
+        firstName: this.patientDetails.firstname,
+        lastName: this.patientDetails.lastName,
+      },
     });
   }
 }
