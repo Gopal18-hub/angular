@@ -1632,6 +1632,8 @@ this.showPassportDetails();    }
           this.patientDetails = resultData;
           this.showRegisteredId("Patient Document Saved");
           this.setValuesToOPRegForm(resultData);
+         this.MaxIDExist=true;
+         this.checkForMaxID();
           console.log(resultData);
         },
         (error) => {
