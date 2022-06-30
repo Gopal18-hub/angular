@@ -161,8 +161,7 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   unMerge() {
-    this.table.selection.selected
-    .pipe(takeUntil(this._destroying$))
+    this.table.selection.selected    
     .map((s: any) => {
       this.unMergePostModel.push({ id: s.id });
     });

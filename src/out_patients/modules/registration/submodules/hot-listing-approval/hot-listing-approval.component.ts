@@ -205,6 +205,12 @@ export class HotListingApprovalComponent implements OnInit {
     .subscribe((formdata: any) => {
       this.searchhotlisting(formdata.data);
     });
+    if(this.from == undefined && this.to == undefined)
+    {
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-2),"yyyy-MM-dd");
+      this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+    }
+    this.showmain("Hot Listing Approval");
    
   }
   ngOnDestroy(): void {
