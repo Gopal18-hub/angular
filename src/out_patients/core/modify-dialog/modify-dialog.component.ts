@@ -104,7 +104,7 @@ updateregistrationFormData= {
           readonly: true,
         },
         email: {
-          type: "email",
+          type: "string",
           title: "Email id",
           defaultValue: this.data.patientDetails.pemail,
           required: false,
@@ -112,7 +112,7 @@ updateregistrationFormData= {
         },
 
         modifiedemail: {
-          type: "email",
+          type: "string",
           title: "Email id",
           defaultValue: this.data.modifiedDetails.pemail,
           required: false,
@@ -164,7 +164,7 @@ updateregistrationFormData= {
       }
       submit() {
        
-          this.dialogRef.close();
+          this.dialogRef.close('success');
         
       }
       reject()

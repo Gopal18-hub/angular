@@ -28,7 +28,7 @@ export class DynamicFormQuestionComponent
   @Input() form: FormGroup = {} as FormGroup;
 
   get isValid() {
-    return this.form.controls[this.question.key].valid;
+    return !this.form.controls[this.question.key].errors?.["required"];
   }
   get isCorrect() {
     return this.form.controls[this.question.key].errors?.["incorrect"];
@@ -45,6 +45,27 @@ export class DynamicFormQuestionComponent
   @ViewChild("element") element!: ElementRef;
 
   filteredOptions!: Observable<any>;
+
+  emailDomains: string[] = [
+    "yahoo.com",
+    "gmail.com",
+    "google.com",
+    "hotmail.com",
+    "me.com",
+    "aol.com",
+    "mac.com",
+    "live.com",
+    "comcast.com",
+    "googlemail.com",
+    "msn.com",
+    "hotmail.co.uk",
+    "yahoo.co.uk",
+    "facebook.com",
+    "verizon.net",
+    "att.net",
+    "gmz.com",
+    "mail.com",
+  ];
 
   constructor(private qcs: QuestionControlService) {}
 
@@ -102,6 +123,10 @@ export class DynamicFormQuestionComponent
         )
       );
     }
+    if (this.element) {
+      console.log(this.element);
+      this.question.elementRef = this.element.nativeElement;
+    }
   }
 
   ngOnInit() {
@@ -146,11 +171,38 @@ export class DynamicFormQuestionComponent
 
   ngAfterViewInit(): void {
     if (this.element) {
+      console.log(this.element);
       this.question.elementRef = this.element.nativeElement;
     }
   }
 
   generateRandomEmail() {
     this.form.controls[this.question.key].setValue("info@maxhealthcare.com");
+  }
+
+  keyPressNumbers(event: any) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Only Numbers 0-9
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  keyPressAlpha(event: any) {
+    // if (!this.question.pattern) {
+    //   this.question.pattern = '/[a-zA-Z]/';
+    // }
+
+    const inp = String.fromCharCode(event.keyCode);
+
+    if (/[a-zA-Z. ]/.test(inp)) {
+      return true;
+    } else {
+      event.preventDefault();
+      return false;
+    }
   }
 }

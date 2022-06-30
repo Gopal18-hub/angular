@@ -30,6 +30,7 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
+          maximum:new Date()
         },
         healthID: {
           type: "string",
@@ -59,6 +60,7 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
+          maximum:new Date()
         },
         email: {
           type: "string",
