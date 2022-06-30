@@ -35,7 +35,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
   isDateDisabled: boolean = false;
   
 
-  OPRegForm!: FormGroup;
+  OPAppointmentForm!: FormGroup;
   questions: any;
   constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {}
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class AppointmentSearchDialogComponent implements OnInit {
       this.FormData.properties,
       {}
     );
-    this.OPRegForm = formResult.form;
+    this.OPAppointmentForm = formResult.form;
     this.questions = formResult.questions;
     this.searchAppointment();
   }
@@ -329,31 +329,31 @@ export class AppointmentSearchDialogComponent implements OnInit {
   // }
 
   clear() {
-    this.OPRegForm.reset();
+    this.OPAppointmentForm.reset();
   }
   getAppointmentSearch() {
     return this.http.get(
       environment.PatientApiUrl +
         "api/patient/getappointmentpatientssearch?phone=" +
-        this.OPRegForm.value.phoneNo +
+        this.OPAppointmentForm.value.phoneNo +
         "&fname=" +
-        this.OPRegForm.value.name +
+        this.OPAppointmentForm.value.name +
         "&lname=" +
         "" +
         "&IsDateRange=" +
-        this.OPRegForm.value.datevalidation +
+        this.OPAppointmentForm.value.datevalidation +
         "&fromDate=" +
-        this.OPRegForm.value.fromDate +
+        this.OPAppointmentForm.value.fromDate +
         "&ToDate=" +
-        this.OPRegForm.value.toDate +
+        this.OPAppointmentForm.value.toDate +
         "&SearchFrom=" +
         "" +
         "&BookingNo=" +
-        this.OPRegForm.value.bookingNo
+        this.OPAppointmentForm.value.bookingNo
     );
   }
  close(){
-   this.OPRegForm.reset();
+   this.OPAppointmentForm.reset();
    this.dialogRef.close();
  }
 

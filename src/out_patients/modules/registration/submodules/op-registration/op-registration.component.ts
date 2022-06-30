@@ -376,7 +376,7 @@ export class OpRegistrationComponent implements OnInit {
       },
       paymentMethod: {
         type: "radio",
-        required: false,
+        required: true,
         options: [
           { title: "Cash", value: "cash" },
           { title: "PSU/Govt", value: "psu/govt" },
@@ -588,7 +588,7 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
-
+   
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -652,6 +652,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getPatientDetailsByMaxId.bind(this)
     );
+    // this.questions[0].elementRef.addEventListener(
+      
+    //   this.getPatientDetailsByMaxId.bind(this)
+    // );
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
@@ -2471,6 +2475,7 @@ export class OpRegistrationComponent implements OnInit {
             incorrect: true,
           });
           this.questions[40].customErrorMessage = "Invalid EWS details";
+        
         }
       });
   }
