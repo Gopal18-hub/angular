@@ -597,6 +597,17 @@ export class OpRegistrationComponent implements OnInit {
           }
         
       });
+
+      this.OPRegForm.controls["seaFarer"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+       
+          if (this.maxIDChangeCall == false && value) {
+            this.seafarersDetailsdialog();
+          }
+        
+      });
+
       this.OPRegForm.controls["note"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
