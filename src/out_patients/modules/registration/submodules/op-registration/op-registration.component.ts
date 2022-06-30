@@ -588,7 +588,12 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
-   
+    //chnage event for email Field
+
+  this.questions[11].elementRef.addEventListener(
+    "change",
+    this.onEmailModify.bind(this)
+  );
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
