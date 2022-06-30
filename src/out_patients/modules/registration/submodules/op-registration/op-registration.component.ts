@@ -894,7 +894,10 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarersDetailsdialog();
     }
   }
-
+  foreignCLick(event: Event) {
+    if (!this.OPRegForm.controls["foreigner"].value) {
+this.showPassportDetails();    }
+  }
   hotlistClick(event: Event) {
     if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
       this.openHotListDialog();
@@ -2632,6 +2635,9 @@ if(patientDetails?.fathersname != "")
             HCF: result.data.hcf.value,
           };
           console.log(this.passportDetails);
+          this.OPRegForm.controls["nationality"].setErrors(null);
+          this.questions[28].customErrorMessage =
+            "";
         }
       });
   }
