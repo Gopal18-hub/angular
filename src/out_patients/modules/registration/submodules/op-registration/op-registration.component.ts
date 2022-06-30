@@ -2697,7 +2697,7 @@ if(patientDetails?.fathersname != "")
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {
       width: "100vw",
-      data: { list: dmsDetailList },
+      data: { list: dmsDetailList,maxid:this.patientDetails.iacode+"."+this.patientDetails.registrationno,firstName:this.patientDetails.firstname,lastName:this.patientDetails.lastName },
     });
   }
 }

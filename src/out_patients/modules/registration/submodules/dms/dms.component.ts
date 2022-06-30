@@ -9,18 +9,16 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class DMSComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<DMSComponent>, @Inject(MAT_DIALOG_DATA) public searchResults : any ) { }
+  constructor(private dialogRef: MatDialogRef<DMSComponent>, @Inject(MAT_DIALOG_DATA) public data :{searchResults : any, maxid:string, firstName:string, lastName:string} ) { }
   // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   
   defaultUI:boolean = true;
   dmsmessage:string="No Records Found";
   dmsicon:string="placeholder";  
-  MaxID:string | undefined;
-  Firstname:string | undefined;
-  Lastname:string | undefined;
+ 
 
   ngOnInit(): void {
-    this.searchResults={verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"};
+    this.data.searchResults={verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"};
   }
   
   
@@ -71,7 +69,7 @@ export class DMSComponent implements OnInit {
     
 uploadkycclick(){
       // this.closeModal('DMSpopup');
-      window.open("http://172.25.1.22:7020/eDocsLogin.do?mode=eDocsSSOLoginForm&loginMode=SSO&userId=M026749&maxId="+this.MaxID+"&pFirstName="+this.Firstname+"&pLastName="+this.Lastname);
+      window.open("http://172.25.1.22:7020/eDocsLogin.do?mode=eDocsSSOLoginForm&loginMode=SSO&userId=M026749&maxId="+this.data.maxid+"&pFirstName="+this.data.firstName+"&pLastName="+this.data.lastName);
       }
 
 RefreshDMSbtn()
