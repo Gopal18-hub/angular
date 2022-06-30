@@ -670,7 +670,11 @@ export class OpRegistrationComponent implements OnInit {
           this.validatePatientAge();
         }
       });
-
+      this.questions[21].elementRef.addEventListener(
+        "blur",
+        this.getLocalityByPinCode.bind(this)
+      );
+  
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -823,6 +827,7 @@ export class OpRegistrationComponent implements OnInit {
     // this.OPRegForm.markAsUntouched();
     this._destroying$.next(undefined);
     this._destroying$.complete();
+    this.fatherSpouseOptionList=[] as any;
     this.router.navigate([], {
       queryParams: {},
       relativeTo: this.route,
