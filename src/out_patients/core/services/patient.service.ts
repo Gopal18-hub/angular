@@ -19,11 +19,13 @@ export class PatientService {
     ins: "Ins_icon.svg",
     hwc: "HWC_icon.svg",
     isCghsverified: "CGHS_Icon.svg",
+    hotlist: "Hot_listing_icon.svg",
   };
   pageNumberIcons: any = {
     "Cash": "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
     "Corporate/Insurance": "Ins_icon.svg",
+    "ins": "Ins_icon.svg",
     "ews": "EWS.svg",
   };
   categoryIconsActions: any = {
@@ -56,6 +58,10 @@ export class PatientService {
       value: "CGHS",
     },
     hotList: {
+      type: "static",
+      value: "HOTLIST",
+    },
+    hotlist: {
       type: "static",
       value: "HOTLIST",
     },
@@ -103,6 +109,10 @@ export class PatientService {
       value: "PSU",
     },
     "Corporate/Insurance": {
+      type: "static",
+      value: "INS",
+    },
+    "ins": {
       type: "static",
       value: "INS",
     },
