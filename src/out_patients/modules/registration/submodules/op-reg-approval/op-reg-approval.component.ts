@@ -173,7 +173,7 @@ export class OpRegApprovalComponent implements OnInit {
       fullname: {
         title: "Patient Name",
         type: "string",
-        tooltipColumn: "modifiedPtnName",
+        tooltipColumn: "fullname",
       },
       uGender: {
         title: "Gender",
@@ -186,7 +186,7 @@ export class OpRegApprovalComponent implements OnInit {
       uEmail: {
         title: "Email",
         type: "string",
-        tooltipColumn: "uEmail",
+        tooltipColumn: "email",
       },
       unationality: {
         title: "Nationality",
@@ -231,8 +231,8 @@ export class OpRegApprovalComponent implements OnInit {
     });
     if(this.from == undefined && this.to == undefined)
     {
-     // this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-1),"dd/MM/yyyy");
-      //this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-2),"yyyy-MM-dd");
+      this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
      this.showmain("OP Registration Approval");
   }
@@ -334,7 +334,7 @@ export class OpRegApprovalComponent implements OnInit {
       .subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
+            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
@@ -357,7 +357,7 @@ export class OpRegApprovalComponent implements OnInit {
       this.getopapprovalrejected().subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
+            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
