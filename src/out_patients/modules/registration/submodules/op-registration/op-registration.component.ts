@@ -894,7 +894,7 @@ export class OpRegistrationComponent implements OnInit {
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
-    }, 10000);
+    }, 100);
     this.categoryIcons = [];
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
