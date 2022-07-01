@@ -56,14 +56,11 @@ import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
        DmgMappingComponent,
        SelectAtleastOneComponent,
        MoreThanMonthComponent,
-<<<<<<< HEAD
        ExpiredPatientCheckComponent,
        SaveexpiredpatientDialogComponent,
        DeleteexpiredpatientDialogComponent,
        DepositDialogComponent,
-=======
        Form60Component
->>>>>>> 846ba1e92bae1c823ce8e3557c820ee2a7b24860
        
   ],
   imports: [
@@ -84,11 +81,8 @@ import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
     MatListModule,
     MatIconModule,
     MaxHealthTableModule,
-<<<<<<< HEAD
     
-=======
     sharedbillingModule
->>>>>>> 846ba1e92bae1c823ce8e3557c820ee2a7b24860
   ],
   exports: [],
   providers: [],

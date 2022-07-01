@@ -222,6 +222,7 @@ export class RefundDialogComponent implements OnInit {
   };
   refundform!: FormGroup;
   questions: any;
+  onRefundReceiptpage:boolean=true;
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {
    }
