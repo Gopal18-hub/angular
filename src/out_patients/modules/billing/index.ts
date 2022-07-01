@@ -37,6 +37,8 @@ import { SaveexpiredpatientDialogComponent } from './submodules/expired-patient-
 import { DeleteexpiredpatientDialogComponent } from './submodules/expired-patient-check/deleteexpiredpatient-dialog/deleteexpiredpatient-dialog.component';
 import { DepositDialogComponent } from './submodules/deposit/deposit-dialog/deposit-dialog.component';
 
+import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
+import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
 @NgModule({
   declarations: [
        BillingComponent,
@@ -54,10 +56,14 @@ import { DepositDialogComponent } from './submodules/deposit/deposit-dialog/depo
        DmgMappingComponent,
        SelectAtleastOneComponent,
        MoreThanMonthComponent,
+<<<<<<< HEAD
        ExpiredPatientCheckComponent,
        SaveexpiredpatientDialogComponent,
        DeleteexpiredpatientDialogComponent,
        DepositDialogComponent,
+=======
+       Form60Component
+>>>>>>> 846ba1e92bae1c823ce8e3557c820ee2a7b24860
        
   ],
   imports: [
@@ -78,7 +84,11 @@ import { DepositDialogComponent } from './submodules/deposit/deposit-dialog/depo
     MatListModule,
     MatIconModule,
     MaxHealthTableModule,
+<<<<<<< HEAD
     
+=======
+    sharedbillingModule
+>>>>>>> 846ba1e92bae1c823ce8e3557c820ee2a7b24860
   ],
   exports: [],
   providers: [],

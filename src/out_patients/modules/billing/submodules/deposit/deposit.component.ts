@@ -16,7 +16,13 @@ export class DepositComponent implements OnInit {
   }
   openrefunddialog()
   {
-    this.matDialog.open(RefundDialogComponent, { width: "60%", height: "90%"});
+    this.matDialog.open(RefundDialogComponent, { 
+      width: "70vw", 
+      height: "98vh", 
+      data:{
+        Mobile: 9898989898, 
+        Mail: "mail@gmail.com"
+      }});
   }
   openDepositdialog(){
     this.matDialog.open(DepositDialogComponent,{width:'70vw',height:'95vh'});
