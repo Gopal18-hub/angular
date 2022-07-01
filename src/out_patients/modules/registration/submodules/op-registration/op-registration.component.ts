@@ -832,25 +832,25 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
 
-    // //on change of Gender Title needs to be dafult for Transgender
-    this.OPRegForm.controls["gender"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        console.log("Gender" + value);
-        if (value) {
-          let genderName = this.genderList.filter((g) => g.id === value)[0]
-            .name;
-          if (
-            genderName != "" &&
-            genderName != undefined &&
-            genderName != null
-          ) {
-            if (genderName == "Transgender") {
-              this.OPRegForm.controls["title"].setValue(0);
-            }
-          }
-        }
-      });
+    // // //on change of Gender Title needs to be dafult for Transgender
+    // this.OPRegForm.controls["gender"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((value: any) => {
+    //     console.log("Gender" + value);
+    //     if (value) {
+    //       let genderName = this.genderList.filter((g) => g.id === value)[0]
+    //         .name;
+    //       if (
+    //         genderName != "" &&
+    //         genderName != undefined &&
+    //         genderName != null
+    //       ) {
+    //         if (genderName == "Transgender") {
+    //           this.OPRegForm.controls["title"].setValue(0);
+    //         }
+    //       }
+    //     }
+    //   });
 
     // this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
     //   (value: any) => {
