@@ -874,7 +874,6 @@ export class OpRegistrationComponent implements OnInit {
     // this.OPRegForm.markAsUntouched();
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.fatherSpouseOptionList=[] as any;
     this.router.navigate([], {
       queryParams: {},
       relativeTo: this.route,
@@ -883,8 +882,17 @@ export class OpRegistrationComponent implements OnInit {
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
-    }, 10000);
+    }, 100
+    );
+    this.flushAllObjects();
+    //this.checkForMaxID();
+  }
+
+  flushAllObjects()
+  {
     this.categoryIcons = [];
+    this.fatherSpouseOptionList=[] as any;
+
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -909,13 +917,12 @@ export class OpRegistrationComponent implements OnInit {
       rank: "",
       FDPGroup: "",
     };
-    this.patientDetails = { ...this.patientDetails };
-    this.modfiedPatiendDetails = { ...this.modfiedPatiendDetails };
+    this.patientDetails = [] as any;
+    this.modfiedPatiendDetails =  [] as any;
     this.maxIDChangeCall = false;
 
     this.MaxIDExist = false;
 
-    //this.checkForMaxID();
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -1608,6 +1615,9 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: PatientDetails) => {
+            // this.clear();
+            this. flushAllObjects();
+            this.maxIDChangeCall = true;
             this.patientDetails = resultData;
             this.categoryIcons = this.patientService.getCategoryIconsForPatient(
               this.patientDetails
@@ -1625,10 +1635,20 @@ export class OpRegistrationComponent implements OnInit {
           },
           (error) => {
             if (error.error == "Patient Not found") {
+             
               // this.messageDialogService.info(error.error);
+              this.router.navigate([], {
+                queryParams: {},
+                relativeTo: this.route,
+              });
+              this. flushAllObjects();
+              this.setValuesToOPRegForm(this.patientDetails);
+              this.OPRegForm.controls["maxid"].setValue(iacode+"."+regNumber);
               this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
             }
+            // this.clear();
+
             this.maxIDChangeCall = false;
           }
         );
@@ -1728,7 +1748,12 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.middleName
     );
     this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
-    this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+    if(this.patientDetails?.dateOfBirth=="1900-01-01T00:00:00"){
+      this.OPRegForm.controls["dob"].setValue("");
+    }else{
+      this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+
+    }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
@@ -1921,16 +1946,23 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //FOR CHECKBOX
+    //IF PAGERNO IS NOT UNDERFINED
+    if(patientDetails?.ppagerNumber){
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
-
+    }
     this.categoryIcons =
       this.patientService.getCategoryIconsForPatient(patientDetails);
 
     //FOR EWS POP UP
+    //IF PAGERNO IS NOT UNDERFINED
+    if(patientDetails?.ppagerNumber){
     if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
       this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
       this.ewsDetails.bplCardAddress = patientDetails.addressOnCard;
     }
+  }else{
+    this.setPaymentMode("cash");
+  }
 
     //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
@@ -2309,6 +2341,7 @@ export class OpRegistrationComponent implements OnInit {
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
+    if(!this.MaxIDExist){
     if (this.OPRegForm.value.dob == "") {
       this.OPRegForm.value.age = null;
       this.OPRegForm.controls["ageType"].setValue(null);
@@ -2388,6 +2421,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log(this.OPRegForm.controls["ageType"].value);
       }
     }
+  }
   }
 
   validatePatientAge() {

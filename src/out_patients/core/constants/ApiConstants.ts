@@ -165,6 +165,24 @@ export namespace ApiConstants {
   };
 
 
+  //appointment patient search 
+  export const appointmentPatientDetail = (phoneNo: string, name: string,lastname:string,datevalidation:number,fromdate:string,todate:string,bookingNo:string) => {
+    return (
+      environment.PatientApiUrl +"api/patient/getappointmentpatientssearch?phone=" + phoneNo +"&fname=" +
+        name +
+        "&lname=" +lastname+
+        "" +
+        "&IsDateRange=" +
+         datevalidation+
+        "&fromDate=" +
+        fromdate +
+        "&ToDate=" +
+        todate +
+        "&SearchFrom=" +1+
+                "&BookingNo=" +
+                bookingNo);
+    }
+
   //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
     return (
