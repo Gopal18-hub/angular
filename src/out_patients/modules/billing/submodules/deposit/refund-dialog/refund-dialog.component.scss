@@ -35,6 +35,12 @@
 .height{
     height: 63vh;
 }
+.bg-grey{
+    background:#F6F6F6;
+}
+.bg-lightgrey{
+    background-color: #D2D0D0;
+}
 ::ng-deep mat-radio-group {
     flex-direction: row !important;
     justify-content: space-between;
@@ -42,33 +48,4 @@
 ::ng-deep .mat-radio-button{
     margin-left: 10px;
     padding-bottom: 0 !important;
-}
-::ng-deep .mat-tab-label{
-    height: 30px !important;
-    color: #004084 ;
-    opacity: 1 !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
-{
-    height: 50vh !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
-    border-bottom: 0 !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
-    background-color:#004084;
-    opacity: 1;
-    color: white;
-    border-bottom: none !important;
-    border-radius: 5px;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
-    border-right: none !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
-    height: 55vh !important;
-}
-::ng-deep .mat-dialog-container{
-    overflow: hidden !important;
-    padding: 10px 24px 24px 24px;
 }

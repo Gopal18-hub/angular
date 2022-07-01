@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
@@ -7,7 +7,7 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
   styleUrls: ['./payment-methods.component.scss']
 })
 export class PaymentMethodsComponent implements OnInit {
-
+  @Input() fromdeposit !: boolean;
   refundFormData = {
     title: "",
     type: "object",
