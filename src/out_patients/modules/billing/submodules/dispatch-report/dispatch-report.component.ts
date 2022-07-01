@@ -114,6 +114,9 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
   }
+  ngAfterViewInit(): void{
+    
+  }
   // enabledate()
   // {
   //   this.dispatchhistoryform.controls["checkbox1"].valueChanges.subscribe( value=> {
@@ -141,7 +144,6 @@ export class DispatchReportComponent implements OnInit {
     var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
     var dif_in_time = tdate.getTime() - fdate.getTime();
     var dif_in_days = dif_in_time / ( 1000 * 3600 *24);
-    console.log(dif_in_days);
     if(this.dispatchhistoryform.controls["billedlocation"].value == '' || 
         this.dispatchhistoryform.controls["billedlocation"].value == undefined ||
         this.dispatchhistoryform.controls["radio"].value == '' ||
