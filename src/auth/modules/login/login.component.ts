@@ -99,62 +99,86 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   validateUserName() {
     this.username = this.loginForm.value.username;
-    this.adauth.authenticateUserName(this.username)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (data: any) => {
-        this.userlocationandstation = data as UserLocationStationdataModel;
-        this.locationList = this.userlocationandstation.locations;
-        this.stationList = this.userlocationandstation.stations;
-        this.questions[3].options = this.stationList.map((s) => {
-          return { title: s.stationName, value: s.stationid };
-        });
-
-        this.questions[2].options = this.locationList.map((l) => {
-          return { title: l.organizationName, value: l.hspLocationId };
-        });
-
-        console.log(this.questions);
-
-        this.userId = Number(this.userlocationandstation.userId);
-
-        this.loginForm.controls["location"].valueChanges
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((value) => {
-          if (value) {
-            this.loginForm.controls["station"].enable();
-            this.loginForm.controls["station"].setValue(null);
-            this.locationdetail = this.locationList.filter(
-              (l) => l.hspLocationId === value.value
-            )[0];
-            this.questions[3].options = this.stationList
-              .filter((e) => e.hspLocationId === value.value)
-              .map((s) => {
-                return { title: s.stationName, value: s.stationid };
-              });
+    this.adauth
+      .authenticateUserName(this.username)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (data: any) => {
+          this.userlocationandstation = data as UserLocationStationdataModel;
+          this.locationList = this.userlocationandstation.locations;
+          this.stationList = this.userlocationandstation.stations;
+          if (this.stationList.length == 1) {
+            this.loginForm.controls["station"].setValue({
+              title: this.stationList[0].stationName,
+              value: this.stationList[0].stationid,
+            });
+          } else {
+            this.questions[3].options = this.stationList.map((s) => {
+              return { title: s.stationName, value: s.stationid };
+            });
           }
-        });
 
-        this.loginForm.controls["station"].valueChanges
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((value) => {
-          this.stationdetail = this.stationList.filter(
-            (s) => s.stationid === value.value
-          )[0];
-        });
-       // this.loginForm.controls["password"].enable();
-        this.loginForm.controls["location"].enable();
-        //this.loginForm.controls["station"].enable();
-        this.questions[1].elementRef.focus();
-      },
-      (error: any) => {
-        this.loginForm.controls["username"].setErrors({ incorrect: true });
-        this.questions[0].customErrorMessage = error.error;
-       // this.loginForm.controls["password"].disable();
-        this.loginForm.controls["location"].disable();
-        this.loginForm.controls["station"].disable();
-      }
-    );
+          if (this.locationList.length == 1) {
+            this.loginForm.controls["location"].setValue({
+              title: this.locationList[0].organizationName,
+              value: this.locationList[0].hspLocationId,
+            });
+          } else {
+            this.questions[2].options = this.locationList.map((l) => {
+              return { title: l.organizationName, value: l.hspLocationId };
+            });
+          }
+
+          console.log(this.questions);
+
+          this.userId = Number(this.userlocationandstation.userId);
+
+          this.loginForm.controls["location"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value) => {
+              if (value) {
+                this.loginForm.controls["station"].enable();
+                this.loginForm.controls["station"].setValue(null);
+                this.locationdetail = this.locationList.filter(
+                  (l) => l.hspLocationId === value.value
+                )[0];
+                if(this.stationList.length > 1)
+                {
+                  this.questions[3].options = this.stationList
+                  .filter((e) => e.hspLocationId === value.value)
+                  .map((s) => {
+                    return { title: s.stationName, value: s.stationid };
+                  });
+                }
+                else{
+                  this.loginForm.controls["station"].setValue({
+                    title: this.stationList[0].stationName,
+                    value: this.stationList[0].stationid,
+                  });
+                }               
+              }
+            });
+
+          this.loginForm.controls["station"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value) => {
+              this.stationdetail = this.stationList.filter(
+                (s) => s.stationid === value.value
+              )[0];
+            });
+          // this.loginForm.controls["password"].enable();
+          this.loginForm.controls["location"].enable();
+          //this.loginForm.controls["station"].enable();
+          this.questions[1].elementRef.focus();
+        },
+        (error: any) => {
+          this.loginForm.controls["username"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = error.error;
+          // this.loginForm.controls["password"].disable();
+          this.loginForm.controls["location"].disable();
+          this.loginForm.controls["station"].disable();
+        }
+      );
   }
 
   loginSubmit() {
