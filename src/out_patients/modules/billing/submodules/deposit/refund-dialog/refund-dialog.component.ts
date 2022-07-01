@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
-
-
+import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
@@ -28,14 +28,12 @@ export class RefundDialogComponent implements OnInit {
       },
        payable_name: {
          type: "string",
-         title: "Payable Name"
        },
        remarks: {
          type: "textarea",
-         title: "Remarks"
        },
        amount: {
-         type: "string"
+         type: "number"
        },
        cardvalidate: {
         type: "radio",
@@ -52,13 +50,15 @@ export class RefundDialogComponent implements OnInit {
         type: "string",
       },
       otpmobile: {
-        type: "string"
+        type: "number"
       },
       mobielno: {
-        type: "string"
+        type: "number",
+        readonly: "true"
       },
       mail: {
-        type: "string"
+        type: "string",
+        readonly: "true"
       },
       pancheck: {
         type: "checkbox",
@@ -70,40 +70,40 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       chequeno: {
-        type: "string"
+        type: "number"
       },
       chequeissuedate: {
-        type: "string"
+        type: "date"
       },
       chequebankname: {
         type: "string"
       },
       chequebranchname: {
-        tpe: "string"
+        type: "string"
       },
       chequeamount: {
-        type: "string"
+        type: "number"
       },
       chequeauth: {
         type: "string"
       },
       creditcardno: {
-        type: "string"
+        type: "number"
       },
       creditholdername: {
         type: "string"
       },
       creditbankno:{
-        type: "string"
+        type: "number"
       },
-      creditbranchno:{
+      creditbatchno:{
         type: "string"
       },
       creditamount: {
-        type: "string"
+        type: "number"
       },
       creditapproval: {
-        type: "string"
+        type: "number"
       },
       creditterminal: {
         type: "string"
@@ -115,7 +115,7 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       demandissuedate: {
-        type: "string"
+        type: "date"
       },
       demandbankname: {
         type: "string"
@@ -124,16 +124,16 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       demandamount: {
-        type: "string"
+        type: "number"
       },
       demandauth: {
         type: "string"
       },
       mobilesendermobile: {
-        type: "string"
+        type: "number"
       },
       mobilesendermmid: {
-        type: "string"
+        type: "number"
       },
       mobilesendername: {
         type: "string"
@@ -145,10 +145,10 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       mobilebeneficary: {
-        type: "string"
+        type: "number"
       },
       mobiletransactionamt: {
-        type: "string"
+        type: "number"
       },
       mobiletransactionref: {
         type: "string"
@@ -160,25 +160,25 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       onlinecontactno: {
-        type: "string"
+        type: "number"
       },
       onlineamount: {
-        type: "string"
+        type: "number"
       },
       paytmamount: {
-        type: "string"
+        type: "number"
       },
       paytmwallet: {
         type: "string"
       },
       paytmsendermobile: {
-        type: "string"
+        type: "number"
       },
       paytmsenername: {
         type: "string"
       },
       paytmotp: {
-        type: "string"
+        type: "number"
       },
       paytmtransacref: {
         type: "string"
@@ -187,7 +187,7 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       upicardno: {
-        type: "string"
+        type: "number"
       },
       upitransactionid: {
         type: "string"
@@ -196,7 +196,7 @@ export class RefundDialogComponent implements OnInit {
         type: "string"
       },
       upiamount : {
-        type: "string"
+        type: "number"
       },
       upibatchno: {
         type: "string"
@@ -209,12 +209,22 @@ export class RefundDialogComponent implements OnInit {
       },
       upiacquiring: {
         type: "string"
+      },
+      mainradio: {
+        type: "radio",
+        required: false,
+        options: [
+          { title: "Form 60", value: "form60" },
+          { title: "Pan card No.", value: "pancardno" },
+        ]
       }
     },
   };
   refundform!: FormGroup;
   questions: any;
-  constructor( private formService: QuestionControlService) { }
+  constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
+  private matdialog: MatDialog) {
+   }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -223,6 +233,42 @@ export class RefundDialogComponent implements OnInit {
     );
     this.refundform = formResult.form;
     this.questions = formResult.questions;
+    console.log(this.data);
+    this.refundform.controls["mobielno"].setValue(this.data.Mobile);
+    this.refundform.controls["mail"].setValue(this.data.Mail);
+    this.refundform.controls["panno"].disable();
+    this.refundform.controls["mainradio"].disable();
   }
-
+  ngAfterViewInit(): void{
+    this.refundform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
+      if(value == "form60")
+      {
+        this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh"});
+        this.refundform.controls["panno"].disable();
+      }
+      else{
+        this.refundform.controls["panno"].enable();
+      }
+    })
+    this.refundform.controls["amount"].valueChanges.subscribe(
+      (res:any)=>{
+      if(res > 200000)
+      {
+        console.log("200000");
+        this.refundform.controls["panno"].enable();
+        this.refundform.controls["mainradio"].enable();
+      }
+      else{
+        this.refundform.controls["panno"].disable();
+        this.refundform.controls["mainradio"].disable();
+        this.refundform.controls["mainradio"].reset();
+      }
+    });
+  }
+  clear()
+  {
+    this.refundform.reset();
+    this.refundform.controls["mobielno"].setValue(this.data.Mobile);
+    this.refundform.controls["mail"].setValue(this.data.Mail);
+  }
 }

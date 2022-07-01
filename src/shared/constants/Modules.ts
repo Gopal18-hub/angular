@@ -211,9 +211,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Employee Sponsor Tagging",
-          defaultPath: "",
+          defaultPath: "employee-sponsor-tagging",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
