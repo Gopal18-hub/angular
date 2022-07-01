@@ -107,17 +107,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.userlocationandstation = data as UserLocationStationdataModel;
           this.locationList = this.userlocationandstation.locations;
           this.stationList = this.userlocationandstation.stations;
-          if (this.stationList.length == 1) {
-            this.loginForm.controls["station"].setValue({
-              title: this.stationList[0].stationName,
-              value: this.stationList[0].stationid,
-            });
-          } else {
-            this.questions[3].options = this.stationList.map((s) => {
-              return { title: s.stationName, value: s.stationid };
-            });
-          }
 
+          this.questions[3].options = this.stationList.map((s) => {
+            return { title: s.stationName, value: s.stationid };
+          });
+
+          //changes for UAT defect fix to select station bydefault if only one location
           if (this.locationList.length == 1) {
             this.loginForm.controls["location"].setValue({
               title: this.locationList[0].organizationName,
@@ -142,20 +137,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.locationdetail = this.locationList.filter(
                   (l) => l.hspLocationId === value.value
                 )[0];
-                if(this.stationList.length > 1)
-                {
+                //changes for UAT defect fix to select station bydefault if only one station
+                if (this.stationList.length > 1) {
                   this.questions[3].options = this.stationList
-                  .filter((e) => e.hspLocationId === value.value)
-                  .map((s) => {
-                    return { title: s.stationName, value: s.stationid };
-                  });
-                }
-                else{
+                    .filter((e) => e.hspLocationId === value.value)
+                    .map((s) => {
+                      return { title: s.stationName, value: s.stationid };
+                    });
+                } else {
                   this.loginForm.controls["station"].setValue({
                     title: this.stationList[0].stationName,
                     value: this.stationList[0].stationid,
                   });
-                }               
+                }
               }
             });
 
