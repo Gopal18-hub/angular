@@ -12,6 +12,7 @@ import { PaymentMethodsComponent } from "./submodules/payment-methods/payment-me
 import { FormSixtyComponent } from "./submodules/form60/form-sixty.component";
 import { MatButtonModule } from "@angular/material/button";
 import { ServiceDepositComponent } from './submodules/service-deposit/service-deposit.component';
+import { MatTabsModule } from "@angular/material/tabs";
 @NgModule({
   imports: [
     RouterModule,
@@ -23,7 +24,8 @@ import { ServiceDepositComponent } from './submodules/service-deposit/service-de
     MatInputModule,
     MatFormFieldModule,
     DynamicFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule
   ],
   exports: [ FormSixtyComponent, PaymentMethodsComponent,ServiceDepositComponent],
   declarations: [
