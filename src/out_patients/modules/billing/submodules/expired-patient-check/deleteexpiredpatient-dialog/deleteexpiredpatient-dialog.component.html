@@ -1,0 +1,19 @@
+<div class="h-full w-full">
+    <div class="h-1/10">
+        <span class="material-icons float-right cursor-pointer" mat-dialog-close>close</span>
+    </div>
+    <div class="h-1/15  w-full flex justify-content-center align-items-center">
+        <mat-icon svgIcon="warning"></mat-icon>
+    </div>
+    <div class="h-1/10 max-health-primary-color mt-3">
+        <p>Do You Want To Delete Expired Patient Details?</p>
+    </div>
+    <div class="h-2/10">
+        <button mat-raised-button (click)="deleteExpiredpatient()" mat-dialog-close>
+            Yes
+        </button>
+        <button class="ml-2" mat-raised-button color="primary">
+            No
+        </button>
+    </div>
+</div>
