@@ -169,7 +169,6 @@ export namespace MaxModules {
               defaultPath: "/out-patient-billing/",
               globalSearchKey: "global",
             },
-            
           ],
           moreOptions: true,
         },

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { PatientSearchModel } from '../../../../../out_patients/core/models/patientSearchModel';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
@@ -13,7 +13,8 @@ import { PatientService } from "../../../../../out_patients/core/services/patien
 import { SearchService } from '../../../../../shared/services/search.service';
 import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
 import { DatePipe } from "@angular/common";
-
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 
 @Component({
@@ -47,6 +48,8 @@ export class DupRegMergingComponent implements OnInit {
   });
   @ViewChild("table") tableRows: any
  
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(private http: HttpService,
     public matDialog: MatDialog,
     private patientServie: PatientService,
@@ -135,19 +138,30 @@ export class DupRegMergingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchService.searchTrigger.subscribe((formdata: any) => {
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((formdata: any) => {
       this.searchPatient(formdata.data);
     });
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   openDialog() {
     const matdialogref =this.matDialog.open(MergeDialogComponent, { data: { tableRows: this.tableRows } });
-    matdialogref.afterClosed().subscribe(result => {  
+    matdialogref.afterClosed()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(result => {  
       var resultArr = result.split(',');
       if(resultArr[0] == "success"){
       this.messageDialogService.success("Max ID has been mapped with " + resultArr[1] ); 
       
-      this.getAllpatientsBySearch().subscribe((resultData) => {
+      this.getAllpatientsBySearch()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
         resultData = resultData.map((item:any) => {
           item.fullname = item.firstName + ' ' + item.lastName;
           return item;
@@ -197,7 +211,9 @@ export class DupRegMergingComponent implements OnInit {
     this.email = formdata['email'];
     this.dob = dateOfBirth || "";
    
-    this.getAllpatientsBySearch().subscribe((resultData) => {
+    this.getAllpatientsBySearch()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData) => {
       this.showmergespinner = false;  
       resultData = resultData.map((item:any) => {
         item.fullname = item.firstName + ' ' + item.lastName;
@@ -208,7 +224,9 @@ export class DupRegMergingComponent implements OnInit {
       this.isAPIProcess = true;
      
       setTimeout(()=>{        
-        this.tableRows.selection.changed.subscribe((res:any)=>{ 
+        this.tableRows.selection.changed
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res:any)=>{ 
           if(this.tableRows.selection.selected.length> 1)
           {
             this.mergebuttonDisabled = false;   

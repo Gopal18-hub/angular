@@ -148,7 +148,7 @@ export namespace ApiConstants {
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
   export const hotlistedPatient = (
-    maxId: number,
+    maxId: string,
     hotlistingHeader: string,
     locationid: string,
     firstName: string,
