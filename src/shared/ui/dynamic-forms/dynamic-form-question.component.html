@@ -499,12 +499,12 @@
           [for]="datepicker"
         ></mat-datepicker-toggle>
         <mat-datepicker #datepicker>
-          <mat-datepicker-actions>
+          <!-- <mat-datepicker-actions>
             <button mat-button matDatepickerCancel>Cancel</button>
             <button mat-raised-button color="primary" matDatepickerApply>
               Apply
             </button>
-          </mat-datepicker-actions>
+          </mat-datepicker-actions> -->
         </mat-datepicker>
         <mat-error *ngIf="!isValid && !isCorrect">
           {{ question.label }} is <strong>required</strong>
