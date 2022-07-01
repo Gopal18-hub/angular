@@ -32,7 +32,8 @@ import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-r
 import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
 import { SelectAtleastOneComponent } from './submodules/dispatch-report/select-atleast-one/select-atleast-one.component';
 import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-month/more-than-month.component';
-
+import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
+import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
 @NgModule({
   declarations: [
        BillingComponent,
@@ -49,7 +50,8 @@ import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-m
        DispatchReportComponent,
        DmgMappingComponent,
        SelectAtleastOneComponent,
-       MoreThanMonthComponent
+       MoreThanMonthComponent,
+       Form60Component
        
   ],
   imports: [
@@ -69,7 +71,8 @@ import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-m
     CommonModule,
     MatListModule,
     MatIconModule,
-    MaxHealthTableModule
+    MaxHealthTableModule,
+    sharedbillingModule
   ],
   exports: [],
   providers: [],
