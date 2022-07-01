@@ -166,7 +166,7 @@ export namespace MaxModules {
             {
               id: 222,
               title: "Expired Patient Check",
-              defaultPath: "/out-patient-billing/",
+              defaultPath: "/out-patient-billing/expired-patient-check",
               globalSearchKey: "global",
             },
           ],
@@ -210,9 +210,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Employee Sponsor Tagging",
-          defaultPath: "",
+          defaultPath: "employee-sponsor-tagging",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
