@@ -107,8 +107,8 @@ export class OpRegistrationComponent implements OnInit {
   today: Date = new Date(new Date().getTime() - 3888000000);
   passportDetails: {
     passportNo: string;
-    IssueDate: string;
-    Expirydate: string;
+    IssueDate: string|null;
+    Expirydate: string|null;
     Issueat: string;
     HCF: number;
   } = {
@@ -885,17 +885,25 @@ export class OpRegistrationComponent implements OnInit {
     // this.OPRegForm.markAsUntouched();
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.fatherSpouseOptionList=[] as any;
     this.router.navigate([], {
       queryParams: {},
       relativeTo: this.route,
     });
     this.formInit();
     this.formProcessingFlag = false;
-    setTimeout(() => {
+     setTimeout(() => {
       this.formProcessing();
-    }, 100);
+     }, 10
+     );
+    this.flushAllObjects();
+    //this.checkForMaxID();
+  }
+
+  flushAllObjects()
+  {
     this.categoryIcons = [];
+    this.fatherSpouseOptionList=[] as any;
+
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -920,13 +928,12 @@ export class OpRegistrationComponent implements OnInit {
       rank: "",
       FDPGroup: "",
     };
-    this.patientDetails = { ...this.patientDetails };
-    this.modfiedPatiendDetails = { ...this.modfiedPatiendDetails };
+    this.patientDetails = [] as any;
+    this.modfiedPatiendDetails =  [] as any;
     this.maxIDChangeCall = false;
 
     this.MaxIDExist = false;
 
-    //this.checkForMaxID();
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -1619,6 +1626,9 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: PatientDetails) => {
+            // this.clear();
+            this. flushAllObjects();
+            this.maxIDChangeCall = true;
             this.patientDetails = resultData;
             this.categoryIcons = this.patientService.getCategoryIconsForPatient(
               this.patientDetails
@@ -1636,10 +1646,20 @@ export class OpRegistrationComponent implements OnInit {
           },
           (error) => {
             if (error.error == "Patient Not found") {
+             
               // this.messageDialogService.info(error.error);
+              this.router.navigate([], {
+                queryParams: {},
+                relativeTo: this.route,
+              });
+              this. flushAllObjects();
+              this.setValuesToOPRegForm(this.patientDetails);
+              this.OPRegForm.controls["maxid"].setValue(iacode+"."+regNumber);
               this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
             }
+            // this.clear();
+
             this.maxIDChangeCall = false;
           }
         );
@@ -1700,7 +1720,7 @@ export class OpRegistrationComponent implements OnInit {
       );
   }
   postForm() {
-    console.log(this.getPatientSubmitRequestBody());
+    console.log("request body"+this.getPatientSubmitRequestBody());
     this.http
       .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
       .pipe(takeUntil(this._destroying$))
@@ -1739,7 +1759,13 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.middleName
     );
     this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
-    this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+    if(this.patientDetails?.dob){
+      this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+      
+    }else{
+      this.OPRegForm.controls["dob"].setValue("");
+
+    }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
@@ -1932,16 +1958,23 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //FOR CHECKBOX
+    //IF PAGERNO IS NOT UNDERFINED
+    if(patientDetails?.ppagerNumber){
     this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
-
+    }
     this.categoryIcons =
       this.patientService.getCategoryIconsForPatient(patientDetails);
 
     //FOR EWS POP UP
+    //IF PAGERNO IS NOT UNDERFINED
+    if(patientDetails?.ppagerNumber){
     if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
       this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
       this.ewsDetails.bplCardAddress = patientDetails.addressOnCard;
     }
+  }else{
+    this.setPaymentMode("cash");
+  }
 
     //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
@@ -2059,6 +2092,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   getPatientSubmitRequestBody(): patientRegistrationModel {
+    let dob= (this.OPRegForm.value.dob == ""||this.OPRegForm.value.dob == undefined) ? false : true;
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
@@ -2119,12 +2153,12 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.vip || false,
       0,
       this.OPRegForm.value.foreigner || false,
-      this.OPRegForm.value.dob == "" ? true : false,
+      dob,
       Number(this.cookie.get("UserId")),
       "",
       Number(this.cookie.get("HSPLocationId")),
       this.vip,
-      this.OPRegForm.value.dob == "" ? true : false,
+      !dob,
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
@@ -2167,8 +2201,8 @@ export class OpRegistrationComponent implements OnInit {
   //SETTING UP DEFAULT DATE AND HCF VALUE FOR API CALLS
   getPassportDetailObj() {
     if (this.passportDetails.passportNo == "") {
-      this.passportDetails.Expirydate = "1900-01-01T00:00:00";
-      this.passportDetails.IssueDate = "1900-01-01T00:00:00";
+      this.passportDetails.Expirydate = null;
+      this.passportDetails.IssueDate = null;
       this.passportDetails.HCF = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
@@ -2221,11 +2255,11 @@ export class OpRegistrationComponent implements OnInit {
       this.datepipe.transform(
         this.patientDetails.issueDate,
         "yyyy-MM-ddThh:mm:ss"
-      ) || "1900-01-01T00:00:00",
+      ) || null,
       this.datepipe.transform(
         this.patientDetails.expiryDate,
         "yyyy-MM-ddThh:mm:ss"
-      ) || "1900-01-01T00:00:00",
+      ) || null,
       this.patientDetails.passportIssuedAt,
       Number(this.cookie.get("UserId")),
       Number(this.cookie.get("HSPLocationId")),
@@ -2263,8 +2297,8 @@ export class OpRegistrationComponent implements OnInit {
       this.datepipe.transform(
         patientDetails.issueDate,
         "yyyy-MM-ddThh:mm:ss"
-      ) || "1900-01-01T00:00:00",
-      expdate || "1900-01-01T00:00:00",
+      ) || null,
+      expdate || null,
       patientDetails.passportIssuedAt,
       Number(this.cookie.get("UserId")),
       Number(this.cookie.get("HSPLocationId")),
@@ -2320,6 +2354,7 @@ export class OpRegistrationComponent implements OnInit {
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
+    if(!this.MaxIDExist){
     if (this.OPRegForm.value.dob == "") {
       this.OPRegForm.value.age = null;
       this.OPRegForm.controls["ageType"].setValue(null);
@@ -2399,6 +2434,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log(this.OPRegForm.controls["ageType"].value);
       }
     }
+  }
   }
 
   validatePatientAge() {
@@ -2583,8 +2619,15 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   openDialog() {
-    this.matDialog.open(AppointmentSearchDialogComponent, {
+   let appointmentSearchDialogref= this.matDialog.open(AppointmentSearchDialogComponent, {
       maxWidth: "100vw",
+    });
+    appointmentSearchDialogref.afterClosed()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((result) => {
+      console.log(result);
+     
+      console.log("appointment dialog was closed");
     });
   }
 
@@ -2678,7 +2721,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "autocomplete",
               title: "HCF",
               defaultValue: hcfTitle,
-              required: true,
+              required: false,
               options: hcfMasterList,
             },
           },
@@ -2703,13 +2746,13 @@ export class OpRegistrationComponent implements OnInit {
               this.datepipe.transform(
                 result.data.expiryDate,
                 "yyyy-MM-ddThh:mm:ss"
-              ) || "1900-01-01T00:00:00",
+              ) || null,
             Issueat: result.data.issuedAt,
             IssueDate:
               this.datepipe.transform(
                 result.data.issueDate,
                 "yyyy-MM-ddThh:mm:ss"
-              ) || "1900-01-01T00:00:00",
+              ) || null,
             passportNo: result.data.passportNo,
             HCF: result.data.hcf.value,
           };

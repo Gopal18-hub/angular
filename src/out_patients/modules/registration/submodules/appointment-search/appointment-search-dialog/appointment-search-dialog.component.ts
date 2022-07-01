@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../../shared/services/http.service";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -6,6 +6,7 @@ import { AppointmentSearchModel } from "../../../../../../out_patients/core/mode
 import { DatePipe } from "@angular/common";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service"
 import { MatDialogRef } from "@angular/material/dialog";
+import { ApiConstants } from '../../../../../../out_patients/core/constants/ApiConstants';
 
 @Component({
   selector: "out-patients-appointment-search-dialog",
@@ -13,6 +14,7 @@ import { MatDialogRef } from "@angular/material/dialog";
   styleUrls: ["./appointment-search-dialog.component.scss"],
 })
 export class AppointmentSearchDialogComponent implements OnInit {
+  @ViewChild("patientDetail") tableRows: any;
   today = new Date();
   todayDate = this.datepipe.transform(Date.now(), "yyyy-MM-dd");
   tomorrow = this.datepipe.transform(Date.now(), "yyyy-MM-dd");
@@ -34,10 +36,10 @@ export class AppointmentSearchDialogComponent implements OnInit {
   isChecked: boolean = false;
   isDateDisabled: boolean = false;
   
-
-  OPAppointmentForm!: FormGroup;
+    OPAppointmentForm!: FormGroup;
   questions: any;
-  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {}
+  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {
+  }
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.FormData.properties,
@@ -46,6 +48,11 @@ export class AppointmentSearchDialogComponent implements OnInit {
     this.OPAppointmentForm = formResult.form;
     this.questions = formResult.questions;
     this.searchAppointment();
+   
+  }
+  ngAfterViewInit() {
+    this.getMaxID();
+    
   }
 
   FormData = {
@@ -55,13 +62,16 @@ export class AppointmentSearchDialogComponent implements OnInit {
       name: {
         type: "string",
         title: "Name",
+        
+        defaultValue:""
         // pattern: "^[A-Za-z]{1}[A-Za-z. '']+"
         // defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       bookingNo: {
         type: "string",
         title: "Booking Number",
-        required: false
+        required: false,
+        defaultValue:""
       },
       
       phone: {
@@ -69,12 +79,15 @@ export class AppointmentSearchDialogComponent implements OnInit {
         title: "Phone",
         required: false,
       //  pattern: "^[1-9]{1}[0-9]{9}",
-        maximum:10
+        maximum:10,
+        defaultValue:""
 
       },
       datevalidation: {  type: "checkbox",
       required: false,
-      options: [{ title: ""}]},
+      options: [{ title: ""}],
+      defaultValue:0
+    },
       fromDate: { type: "date",  title: "From Date",defaultValue:this.todayDate,required: false },
       toDate: { type: "date",  title: "To Date",defaultValue:this.todayDate,required: false },
     },
@@ -82,6 +95,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   config: any = {
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: [
       "id",
       "title",
@@ -127,158 +142,278 @@ export class AppointmentSearchDialogComponent implements OnInit {
       id: {
         title: "Id",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       title: {
         title: "Title",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       firstName: {
         title: "First Name",
-        type: "string",
+        type: "string", style: {
+          width: "120px",
+        }
       },
       lastName: {
         title: "Last Name",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
+        style: {
+          width: "120px",
+        },
+        tooltipColumn:"doctorName"
       },
       billDatetime: {
         title: "Time Slot",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       nationality: {
         title: "Nationality",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       country: {
         title: "Country",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       state: {
         title: "State",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       city: {
         title: "City",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       houseNo: {
         title: "House No",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       locality: {
         title: "Locality",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       occupation: {
         title: "Occupation",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       howdidyouknow: {
         title: "How Did You Know?",
         type: "string",
+        style: {
+          width: "190px",
+        }
       },
       isdoborAge: {
         title: "ISDOBORAge",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       dob: {
         title: "DOB",
         type: "date",
+        style: {
+          width: "120px",
+        }
       },
       age: {
         title: "Age",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       mobileno: {
         title: "Mobiel No.",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       email: {
         title: "Email",
         type: "string",
+        style: {
+          width: "180px",
+        }
       },
       paymentDate: {
         title: "Payment Date",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       bookingNo: {
         title: "Booking No.",
         type: "string",
+        style: {
+          width: "180px",
+        },
+        tooltipColumn:"bookingNo"
       },
       transactionNo: {
         title: "Transaction No.",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       amount: {
         title: "Amount",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       orderInfo: {
         title: "Order info",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       nbBankName: {
         title: "NB Bank Name",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       iAcode: {
         title: "IA Code",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       registrationno: {
         title: "Registration No.",
         type: "string",
+        style: {
+          width: "120px",
+        },
+        tooltipColumn:"registrationno"
       },
       locationId: {
         title: "Location ID",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       billid: {
         title: "Bill ID",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       isRefunded: {
         title: "Is Refunded",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       refundedReceiptNo: {
         title: "Refund Receipt",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       registeredDateTime: {
         title: "Registered Date Time",
         type: "string",
+        style: {
+          width: "180px",
+        },
+        tooltipColumn: "registeredDateTime"
       },
       registeredBy: {
         title: "Registered By",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       billNo: {
         title: "Bill No.",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       refundedDateTime: {
         title: "Refunded Date Time",
         type: "string",
+        style: {
+          width: "180px",
+        }
       },
       refundReason: {
         title: "Refund Reason",
         type: "string",
+        style: {
+          width: "150px",
+        }
       },
       sex: {
         title: "Sex",
         type: "string",
+        style: {
+          width: "120px",
+        }
       },
       maritalStatus: {
         title: "Martial Status",
         type: "string",
+        style: {
+          width: "125px",
+        }
       },
     },
   };
@@ -308,9 +443,13 @@ export class AppointmentSearchDialogComponent implements OnInit {
           this.defaultUI = true;
           this.findpatientimage = "norecordfound";
           this.findpatientmessage = "No Appointment Found";
+         
         } else {
           this.searchAppPatient = true;
           this.defaultUI = false;
+          this.tableRows= this.searchResults;
+          this.getMaxID();
+         
         }
       },
       (error: any) => {
@@ -332,29 +471,21 @@ export class AppointmentSearchDialogComponent implements OnInit {
     this.OPAppointmentForm.reset();
   }
   getAppointmentSearch() {
-    return this.http.get(
-      environment.PatientApiUrl +
-        "api/patient/getappointmentpatientssearch?phone=" +
-        this.OPAppointmentForm.value.phoneNo +
-        "&fname=" +
-        this.OPAppointmentForm.value.name +
-        "&lname=" +
-        "" +
-        "&IsDateRange=" +
-        this.OPAppointmentForm.value.datevalidation +
-        "&fromDate=" +
-        this.OPAppointmentForm.value.fromDate +
-        "&ToDate=" +
-        this.OPAppointmentForm.value.toDate +
-        "&SearchFrom=" +
-        "" +
-        "&BookingNo=" +
-        this.OPAppointmentForm.value.bookingNo
-    );
+    return this.http.get(ApiConstants.appointmentPatientDetail(this.OPAppointmentForm.value.phoneNo||"",this.OPAppointmentForm.value.name||"",this.OPAppointmentForm.value.lastname||"",this.OPAppointmentForm.value.datevalidation==false?0:1,this.datepipe.transform(this.OPAppointmentForm.value.fromDate,'yyyy-MM-dd')||"",this.datepipe.transform(this.OPAppointmentForm.value.toDate,'yyyy-MM-dd')||"",this.OPAppointmentForm.value.bookingNo));
   }
  close(){
    this.OPAppointmentForm.reset();
    this.dialogRef.close();
  }
-
+ getMaxID() {
+  console.log("getmaxid called",this.tableRows);
+  console.log("getmaxid called",this.tableRows.selection);
+  setTimeout(() => {
+  this.tableRows.selection.changed.subscribe((res: any) => {
+    this.dialogRef.close({ data: res });
+  });
+});
+ 
+}
+//  'http://localhost:7005/api/patient/getappointmentpatientssearch?fname=Dev&IsDateRange=0&fromDate=2022-03-01&ToDate=2022-03-31&SearchFrom=1' \
 }
