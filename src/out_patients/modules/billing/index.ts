@@ -32,7 +32,13 @@ import { DispatchReportComponent } from './submodules/dispatch-report/dispatch-r
 import { DmgMappingComponent } from './submodules/dmg-mapping/dmg-mapping.component';
 import { SelectAtleastOneComponent } from './submodules/dispatch-report/select-atleast-one/select-atleast-one.component';
 import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-month/more-than-month.component';
+import { ExpiredPatientCheckComponent } from './submodules/expired-patient-check/expired-patient-check.component';
+import { SaveexpiredpatientDialogComponent } from './submodules/expired-patient-check/saveexpiredpatient-dialog/saveexpiredpatient-dialog.component';
+import { DeleteexpiredpatientDialogComponent } from './submodules/expired-patient-check/deleteexpiredpatient-dialog/deleteexpiredpatient-dialog.component';
+import { DepositDialogComponent } from './submodules/deposit/deposit-dialog/deposit-dialog.component';
 
+import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
+import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
 @NgModule({
   declarations: [
        BillingComponent,
@@ -49,7 +55,12 @@ import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-m
        DispatchReportComponent,
        DmgMappingComponent,
        SelectAtleastOneComponent,
-       MoreThanMonthComponent
+       MoreThanMonthComponent,
+       ExpiredPatientCheckComponent,
+       SaveexpiredpatientDialogComponent,
+       DeleteexpiredpatientDialogComponent,
+       DepositDialogComponent,
+       Form60Component
        
   ],
   imports: [
@@ -69,7 +80,9 @@ import { MoreThanMonthComponent } from './submodules/dispatch-report/more-than-m
     CommonModule,
     MatListModule,
     MatIconModule,
-    MaxHealthTableModule
+    MaxHealthTableModule,
+    
+    sharedbillingModule
   ],
   exports: [],
   providers: [],
