@@ -588,6 +588,17 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
+    //chnage event for email Field
+
+  this.questions[11].elementRef.addEventListener(
+    "change",
+    this.onEmailModify.bind(this)
+  );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+
     this.OPRegForm.controls["vip"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -883,7 +894,7 @@ export class OpRegistrationComponent implements OnInit {
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
-    }, 10000);
+    }, 100);
     this.categoryIcons = [];
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
