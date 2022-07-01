@@ -25,7 +25,8 @@ const routes: Routes = [
           { path: 'miscellaneous-billing', component: MiscellaneousBillingComponent },
           { path: 'initiate-deposit', component: InitiateDepositComponent },
           { path: 'dispatch-report', component: DispatchReportComponent} ,      
-          { path:  'dmg-mapping', component:DmgMappingComponent}       
+          { path:  'dmg-mapping', component:DmgMappingComponent},
+          {path:"expired-patient-check",component:ExpiredPatientCheckComponent}           
     
       ]
     },
