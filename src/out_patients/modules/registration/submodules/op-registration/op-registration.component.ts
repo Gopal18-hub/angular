@@ -7,6 +7,7 @@ import {
   OnDestroy,
   HostListener,
 } from "@angular/core";
+
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -513,15 +514,7 @@ export class OpRegistrationComponent implements OnInit {
       {}
     );
 
-    //       .pipe(takeUntil(this._destroying$))
-    //       .subscribe((value: any) => {
-    //         if (value == "ews") {
-    //           if (this.maxIDChangeCall == false) {
-    //             this.openEWSDialogue();
-    //           }
-    //         }
-    //       });
-    this.maxIDChangeCall = false;
+       this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
@@ -575,7 +568,7 @@ export class OpRegistrationComponent implements OnInit {
 
   formProcessing() {
     //  this.checkForMaxID();
-
+   
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
     this.OPRegForm.controls["paymentMethod"].valueChanges
@@ -865,8 +858,10 @@ export class OpRegistrationComponent implements OnInit {
   ngAfterViewInit(): void {
     this.formProcessing();
   }
+  clearClicked:boolean=false;
 
   clear() {
+    this.clearClicked=true;
     this.formProcessingFlag = true;
     this.questions = [];
     //this.OPRegForm = null;
@@ -891,12 +886,15 @@ export class OpRegistrationComponent implements OnInit {
     });
     this.formInit();
     this.formProcessingFlag = false;
+    
      setTimeout(() => {
       this.formProcessing();
+    
      }, 10
      );
     this.flushAllObjects();
     //this.checkForMaxID();
+    this.clearClicked=false;
   }
 
   flushAllObjects()
@@ -1103,8 +1101,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   DMSList: DMSrefreshModel[] = [];
+  dmsClicked:boolean=false;
   getPatientDMSDetail() {
-    let arr = [] as any;
+    this.matDialog.closeAll();
+          let arr = [] as any;
     this.http
       .get(
         ApiConstants.PatientDMSDetail(
@@ -1118,11 +1118,17 @@ export class OpRegistrationComponent implements OnInit {
         console.log(resultData);
         this.openDMSDialog(this.DMSList);
       });
+      // this.OPRegForm.controls["dms"].disable();
+      // this.dmsClicked=false;
   }
 
-  similarContactPatientList: SimilarSoundPatientResponse[] = [];
+ similarContactPatientList: SimilarSoundPatientResponse[] = [];
   getSimilarPatientDetails() {
-    if (!this.MaxIDExist) {
+    // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
+  
+    this.matDialog.closeAll();
+console.log( this.similarContactPatientList.length );
+    if ((!this.MaxIDExist) )  {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
           phone: this.OPRegForm.value.mobileNumber,
@@ -1147,11 +1153,14 @@ export class OpRegistrationComponent implements OnInit {
                 .afterClosed()
                 .pipe(takeUntil(this._destroying$))
                 .subscribe((result) => {
+                  if(result){
                   console.log(result.data["added"][0].maxid);
                   let maxID = result.data["added"][0].maxid;
                   this.OPRegForm.controls["maxid"].setValue(maxID);
                   this.getPatientDetailsByMaxId();
+                  }
                   console.log("seafarers dialog was closed");
+                  this.similarContactPatientList=[];
                 });
             } else {
               console.log("no data found");
@@ -1727,17 +1736,21 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           this.patientDetails = resultData;
-          this.showRegisteredId("Patient Document Saved");
+          this.showRegisteredId("Patient Registered Successfully");
+          this.flushAllObjects();
+          this.maxIDChangeCall = true;
           this.setValuesToOPRegForm(resultData);
          this.MaxIDExist=true;
-         this.checkForMaxID();
+                  this.checkForMaxID();
           console.log(resultData);
+          this.maxIDChangeCall = false;
         },
         (error) => {
           console.log(error);
           this.messageDialogService.info(error.error);
         }
       );
+    
   }
 
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
@@ -2121,8 +2134,7 @@ export class OpRegistrationComponent implements OnInit {
       this.getSpouseName(),
       0,
       "",
-      0,
-      "",
+      0,      "",
       "",
       "",
       "",
@@ -2186,7 +2198,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.rank,
       this.seafarerDetails.Vesselname,
       this.seafarerDetails.FDPGroup,
-      false,
+      this.OPRegForm.controls["hwc"].value,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
@@ -2340,18 +2352,7 @@ export class OpRegistrationComponent implements OnInit {
   dobFlag: boolean = false;
   ageFlag: boolean = false;
 
-  // getSimilarPatientDetails()
-  // {
-  //   this.http
-  //     .get(ApiConstants.titleLookUp(hspId))
-  //     .subscribe((resultData: any) => {
-  //       this.titleList = resultData;
-  //       this.questions[3].options = this.titleList.map((l) => {
-  //         return { title: l.name, value: l.name };
-  //       });
-  //     });
-  // }
-
+ 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
     if(!this.MaxIDExist){
@@ -2617,18 +2618,23 @@ export class OpRegistrationComponent implements OnInit {
         console.log("HWC dialog was closed");
       });
   }
-
+  appointmentSearchClicked:boolean=false
   openDialog() {
+
+    this.appointmentSearchClicked=true;
    let appointmentSearchDialogref= this.matDialog.open(AppointmentSearchDialogComponent, {
       maxWidth: "100vw",
     });
     appointmentSearchDialogref.afterClosed()
     .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
+    .subscribe((result  ) => {
       console.log(result);
-     
+     this.patientDetails=result.data.added[0] as PatientDetails;
+     this.setValuesToOPRegForm( this.patientDetails);
+     console.log("this is patient Detail obj",this.patientDetails);
       console.log("appointment dialog was closed");
     });
+    this.appointmentSearchClicked=false;
   }
 
   modfiedPatiendDetailsForPopUp!: ModifiedPatientDetailModel;
@@ -2762,8 +2768,10 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
-
+   seafarersDetailDialogref:any|null;
   seafarersDetailsdialog() {
+
+    if(!this.seafarersDetailDialogref){
     const seafarersDetailDialogref = this.matDialog.open(
       FormDialogueComponent,
       {
@@ -2819,9 +2827,13 @@ export class OpRegistrationComponent implements OnInit {
             FDPGroup: result.data.fdpGroup,
           };
         }
+        this.seafarersDetailDialogref=null;
       });
+     
+    }
   }
   openDMSDialog(dmsDetailList: any) {
+
     this.matDialog.open(DMSComponent, {
       width: "100vw",
       data: {
@@ -2832,7 +2844,9 @@ export class OpRegistrationComponent implements OnInit {
         lastName: this.patientDetails.lastName,
       },
     });
+   
   }
+
 }
 function phone(
   similarSoundPatientDetail: string,
