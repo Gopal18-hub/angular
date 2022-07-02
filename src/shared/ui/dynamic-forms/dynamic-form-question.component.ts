@@ -108,6 +108,9 @@ export class DynamicFormQuestionComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.element) {
+      this.question.elementRef = this.element.nativeElement;
+    }
     if (
       this.question &&
       this.question.type &&
@@ -122,9 +125,6 @@ export class DynamicFormQuestionComponent
           title ? this._filter(title) : this.question.options.slice()
         )
       );
-    }
-    if (this.element) {
-      this.question.elementRef = { ...this.element.nativeElement };
     }
   }
 
@@ -170,7 +170,7 @@ export class DynamicFormQuestionComponent
 
   ngAfterViewInit(): void {
     if (this.element) {
-      this.question.elementRef = { ...this.element.nativeElement };
+      this.question.elementRef = this.element.nativeElement;
     }
   }
 

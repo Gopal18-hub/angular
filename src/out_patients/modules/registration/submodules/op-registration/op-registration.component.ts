@@ -564,6 +564,72 @@ export class OpRegistrationComponent implements OnInit {
     this.checkForMaxID();
   }
 
+  formEvents() {
+    //chnage event for email Field
+
+    this.questions[11].elementRef.addEventListener(
+      "change",
+      this.onEmailModify.bind(this)
+    );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+    //chnage event for Mobile Field
+    this.questions[2].elementRef.addEventListener(
+      "change",
+      this.onPhoneModify.bind(this)
+    );
+    //chnage event for FirstName
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onFistNameModify.bind(this)
+    );
+    //chnage event for middle name
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onMiddleNameModify.bind(this)
+    );
+    //chnage event for Last Name
+    this.questions[6].elementRef.addEventListener(
+      "change",
+      this.onLastNameModify.bind(this)
+    );
+    //DOB blur event
+    this.questions[8].elementRef.addEventListener(
+      "blur",
+      this.onageCalculator.bind(this)
+    );
+
+    //IdenityType value change
+    this.questions[17].elementRef.addEventListener(
+      "blur",
+      this.checkIndetityValue.bind(this)
+    );
+
+    //Father or Spouse value change
+    this.questions[13].elementRef.addEventListener(
+      "blur",
+      this.checkFatherSpouseName.bind(this)
+    );
+
+    // nationality value chnage event to enable foreigner
+    this.questions[28].elementRef.addEventListener(
+      "blur",
+      this.onNationalityModify.bind(this)
+    );
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.getPatientDetailsByMaxId.bind(this)
+    );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+  }
+
   formProcessing() {
     //  this.checkForMaxID();
 
@@ -579,12 +645,6 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
-    //chnage event for email Field
-
-    this.questions[11].elementRef.addEventListener(
-      "change",
-      this.onEmailModify.bind(this)
-    );
 
     this.OPRegForm.controls["vip"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -632,32 +692,6 @@ export class OpRegistrationComponent implements OnInit {
 
     // });
 
-    //chnage event for Mobile Field
-    this.questions[2].elementRef.addEventListener(
-      "change",
-      this.onPhoneModify.bind(this)
-    );
-    //chnage event for FirstName
-    this.questions[4].elementRef.addEventListener(
-      "change",
-      this.onFistNameModify.bind(this)
-    );
-    //chnage event for middle name
-    this.questions[4].elementRef.addEventListener(
-      "change",
-      this.onMiddleNameModify.bind(this)
-    );
-    //chnage event for Last Name
-    this.questions[6].elementRef.addEventListener(
-      "change",
-      this.onLastNameModify.bind(this)
-    );
-
-    //DOB blur event
-    this.questions[8].elementRef.addEventListener(
-      "blur",
-      this.onageCalculator.bind(this)
-    );
     this.OPRegForm.controls["dob"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -667,29 +701,6 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
 
-    //IdenityType value change
-    this.questions[17].elementRef.addEventListener(
-      "blur",
-      this.checkIndetityValue.bind(this)
-    );
-
-    //Father or Spouse value change
-    this.questions[13].elementRef.addEventListener(
-      "blur",
-      this.checkFatherSpouseName.bind(this)
-    );
-
-    // nationality value chnage event to enable foreigner
-    this.questions[28].elementRef.addEventListener(
-      "blur",
-      this.onNationalityModify.bind(this)
-    );
-
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.getPatientDetailsByMaxId.bind(this)
-    );
     // this.questions[0].elementRef.addEventListener(
 
     //   this.getPatientDetailsByMaxId.bind(this)
@@ -703,10 +714,6 @@ export class OpRegistrationComponent implements OnInit {
           this.validatePatientAge();
         }
       });
-    this.questions[21].elementRef.addEventListener(
-      "blur",
-      this.getLocalityByPinCode.bind(this)
-    );
 
     this.OPRegForm.controls["pincode"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -813,39 +820,11 @@ export class OpRegistrationComponent implements OnInit {
           }
         }
       });
-
-    // // //on change of Gender Title needs to be dafult for Transgender
-    // this.OPRegForm.controls["gender"].valueChanges
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value: any) => {
-    //     console.log("Gender" + value);
-    //     if (value) {
-    //       let genderName = this.genderList.filter((g) => g.id === value)[0]
-    //         .name;
-    //       if (
-    //         genderName != "" &&
-    //         genderName != undefined &&
-    //         genderName != null
-    //       ) {
-    //         if (genderName == "Transgender") {
-    //           this.OPRegForm.controls["title"].setValue(0);
-    //         }
-    //       }
-    //     }
-    //   });
-
-    // this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
-    //   (value: any) => {
-    //     if  (value && !this.MaxIDExist) {
-    //       this.showPassportDetails();
-
-    //     }
-    //   }
-    // );
   }
 
   ngAfterViewInit(): void {
     this.formProcessing();
+    this.formEvents();
   }
   clearClicked: boolean = false;
 
