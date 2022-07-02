@@ -77,7 +77,7 @@ export class PatientService {
     },
     note: {
       type: "dynamic",
-      value: "noteReason",
+      value: "notereason",
     },
     cash: {
       type: "static",
