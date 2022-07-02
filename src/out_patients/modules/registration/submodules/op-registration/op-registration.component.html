@@ -547,6 +547,7 @@
             color="primary"
             class="w-full font-xs"
             type="button"
+            [disabled]="appointmentSearchClicked"
             (click)="openDialog()"
           >
             Appointment Search
@@ -556,6 +557,7 @@
             color="primary"
             class="w-full"
             type="button"
+            [disabled]="dmsClicked"
             (click)="getPatientDMSDetail()"
           >
             DMS
@@ -653,6 +655,7 @@
             color="primary"
             type="button"
             class="mt-1 mb-2"
+            [disabled]="clearClicked"
             (click)="clear()"
           >
             Clear

@@ -7,6 +7,7 @@ import {
   OnDestroy,
   HostListener,
 } from "@angular/core";
+
 import { FormGroup } from "@angular/forms";
 import { ApiConstants } from "../../../../core/constants/ApiConstants";
 import { CookieService } from "../../../../../shared/services/cookie.service";
@@ -111,13 +112,13 @@ export class OpRegistrationComponent implements OnInit {
     IssueDate: string | null;
     Expirydate: string | null;
     Issueat: string;
-    HCF: number;
+    HCF: { title: string; value: number };
   } = {
     passportNo: "",
     IssueDate: "",
     Expirydate: "",
     Issueat: "",
-    HCF: 0,
+    HCF: { title: "", value: 0 },
   };
   vip!: string;
   noteRemark!: string;
@@ -514,14 +515,6 @@ export class OpRegistrationComponent implements OnInit {
       {}
     );
 
-    //       .pipe(takeUntil(this._destroying$))
-    //       .subscribe((value: any) => {
-    //         if (value == "ews") {
-    //           if (this.maxIDChangeCall == false) {
-    //             this.openEWSDialogue();
-    //           }
-    //         }
-    //       });
     this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
@@ -859,8 +852,10 @@ export class OpRegistrationComponent implements OnInit {
   ngAfterViewInit(): void {
     this.formProcessing();
   }
+  clearClicked: boolean = false;
 
   clear() {
+    this.clearClicked = true;
     this.formProcessingFlag = true;
     this.questions = [];
     //this.OPRegForm = null;
@@ -890,6 +885,7 @@ export class OpRegistrationComponent implements OnInit {
     }, 10);
     this.flushAllObjects();
     //this.checkForMaxID();
+    this.clearClicked = false;
   }
 
   flushAllObjects() {
@@ -902,7 +898,7 @@ export class OpRegistrationComponent implements OnInit {
       IssueDate: "",
       Expirydate: "",
       Issueat: "",
-      HCF: 0,
+      HCF: { title: "", value: 0 },
     };
     this.noteRemark = "";
     this.hwcRemark = "";
@@ -1094,7 +1090,9 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   DMSList: DMSrefreshModel[] = [];
+  dmsClicked: boolean = false;
   getPatientDMSDetail() {
+    this.matDialog.closeAll();
     let arr = [] as any;
     this.http
       .get(
@@ -1109,10 +1107,16 @@ export class OpRegistrationComponent implements OnInit {
         console.log(resultData);
         this.openDMSDialog(this.DMSList);
       });
+    // this.OPRegForm.controls["dms"].disable();
+    // this.dmsClicked=false;
   }
 
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
   getSimilarPatientDetails() {
+    // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
+
+    this.matDialog.closeAll();
+    console.log(this.similarContactPatientList.length);
     if (!this.MaxIDExist) {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
@@ -1138,11 +1142,14 @@ export class OpRegistrationComponent implements OnInit {
                 .afterClosed()
                 .pipe(takeUntil(this._destroying$))
                 .subscribe((result) => {
-                  console.log(result.data["added"][0].maxid);
-                  let maxID = result.data["added"][0].maxid;
-                  this.OPRegForm.controls["maxid"].setValue(maxID);
-                  this.getPatientDetailsByMaxId();
+                  if (result) {
+                    console.log(result.data["added"][0].maxid);
+                    let maxID = result.data["added"][0].maxid;
+                    this.OPRegForm.controls["maxid"].setValue(maxID);
+                    this.getPatientDetailsByMaxId();
+                  }
                   console.log("seafarers dialog was closed");
+                  this.similarContactPatientList = [];
                 });
             } else {
               console.log("no data found");
@@ -1762,11 +1769,14 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           this.patientDetails = resultData;
-          this.showRegisteredId("Patient Document Saved");
+          this.showRegisteredId("Patient Registered Successfully");
+          this.flushAllObjects();
+          this.maxIDChangeCall = true;
           this.setValuesToOPRegForm(resultData);
           this.MaxIDExist = true;
           this.checkForMaxID();
           console.log(resultData);
+          this.maxIDChangeCall = false;
         },
         (error) => {
           console.log(error);
@@ -1816,16 +1826,16 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
-    if (this.passportDetails.passportNo != "") {
+    if (this.patientDetails.passportNo != "") {
       this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
       this.passportDetails.IssueDate = this.patientDetails?.issueDate;
-      this.passportDetails.HCF = this.patientDetails?.hcfId;
+      this.passportDetails.HCF.value = this.patientDetails?.hcfId;
       this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
       this.passportDetails.passportNo = this.patientDetails?.passportNo;
     } else {
       this.passportDetails.Expirydate = "";
       this.passportDetails.IssueDate = "";
-      this.passportDetails.HCF = 0;
+      this.passportDetails.HCF.value = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
@@ -2099,7 +2109,7 @@ export class OpRegistrationComponent implements OnInit {
       this.ewsDetails.bplCardAddress,
       "cghsbeneficiaryCompany",
       this.OPRegForm.value.adhaarId,
-      this.passportDetails.HCF,
+      this.passportDetails.HCF.value,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
@@ -2214,7 +2224,7 @@ export class OpRegistrationComponent implements OnInit {
       this.ewsDetails.bplCardNo,
       false,
       this.OPRegForm.value.adhaarId,
-      this.passportDetails.HCF,
+      this.passportDetails.HCF.value,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
@@ -2222,7 +2232,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.rank,
       this.seafarerDetails.Vesselname,
       this.seafarerDetails.FDPGroup,
-      false,
+      this.OPRegForm.controls["hwc"].value,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
@@ -2239,7 +2249,7 @@ export class OpRegistrationComponent implements OnInit {
     if (this.passportDetails.passportNo == "") {
       this.passportDetails.Expirydate = null;
       this.passportDetails.IssueDate = null;
-      this.passportDetails.HCF = 0;
+      this.passportDetails.HCF.value = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
@@ -2375,18 +2385,6 @@ export class OpRegistrationComponent implements OnInit {
   timeDiff: number | undefined;
   dobFlag: boolean = false;
   ageFlag: boolean = false;
-
-  // getSimilarPatientDetails()
-  // {
-  //   this.http
-  //     .get(ApiConstants.titleLookUp(hspId))
-  //     .subscribe((resultData: any) => {
-  //       this.titleList = resultData;
-  //       this.questions[3].options = this.titleList.map((l) => {
-  //         return { title: l.name, value: l.name };
-  //       });
-  //     });
-  // }
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
@@ -2662,8 +2660,9 @@ export class OpRegistrationComponent implements OnInit {
         console.log("HWC dialog was closed");
       });
   }
-
+  appointmentSearchClicked: boolean = false;
   openDialog() {
+    this.appointmentSearchClicked = true;
     let appointmentSearchDialogref = this.matDialog.open(
       AppointmentSearchDialogComponent,
       {
@@ -2675,9 +2674,26 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-
+        this.patientDetails = result.data.added[0] as PatientDetails;
+        this.setValuesToOPRegForm(this.patientDetails);
+        console.log("this is patient Detail obj", this.patientDetails);
         console.log("appointment dialog was closed");
       });
+    this.appointmentSearchClicked = false;
+    // let appointmentSearchDialogref = this.matDialog.open(
+    //   AppointmentSearchDialogComponent,
+    //   {
+    //     maxWidth: "100vw",
+    //   }
+    // );
+    // appointmentSearchDialogref
+    //   .afterClosed()
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((result) => {
+    //     console.log(result);
+
+    //     console.log("appointment dialog was closed");
+    //   });
   }
 
   modfiedPatiendDetailsForPopUp!: ModifiedPatientDetailModel;
@@ -2713,21 +2729,32 @@ export class OpRegistrationComponent implements OnInit {
   passportDetailsdialog(hcfMasterList: { title: string; value: number }[]) {
     let hcfTitle;
     if (
-      this.passportDetails.HCF != 0 &&
+      this.passportDetails.HCF.value != 0 &&
       this.passportDetails.HCF != undefined &&
       this.passportDetails.HCF != null
     ) {
-      let hcfvalue = hcfMasterList.filter(
-        (e) => e.value === this.passportDetails.HCF
-      );
-      hcfTitle = hcfvalue[0].title;
+      let hcfvalue = hcfMasterList.filter((e) => {
+        e.value == this.passportDetails.HCF.value;
+        return e.value;
+      });
+      hcfTitle = {
+        title: hcfvalue[0].title,
+        value: this.passportDetails.HCF.value,
+      };
     }
-    let minExpDate = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
-    );
-    let maxYear = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 15)
-    );
+    let minExpDate;
+    let maxYear;
+    if (this.passportDetails.passportNo != "") {
+    } else {
+      minExpDate = new Date(
+        new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
+      );
+      maxYear = new Date(
+        new Date(Date.now()).setFullYear(
+          new Date(Date.now()).getFullYear() + 15
+        )
+      );
+    }
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -2803,7 +2830,7 @@ export class OpRegistrationComponent implements OnInit {
                 "yyyy-MM-ddThh:mm:ss"
               ) || null,
             passportNo: result.data.passportNo,
-            HCF: result.data.hcf.value,
+            HCF: result.data.hcf,
           };
           console.log(this.passportDetails);
           this.OPRegForm.controls["nationality"].setErrors(null);
@@ -2811,64 +2838,67 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
   }
-
+  seafarersDetailDialogref: any | null;
   seafarersDetailsdialog() {
-    const seafarersDetailDialogref = this.matDialog.open(
-      FormDialogueComponent,
-      {
-        width: "30vw",
-        height: "52vh",
-        data: {
-          title: "Seafarers Details",
-          form: {
-            title: "",
-            type: "object",
-            properties: {
-              hkID: {
-                type: "string",
-                title: "HK ID",
-                required: true,
-                defaultValue: this.seafarerDetails.HKID,
-              },
-              vesselName: {
-                type: "string",
-                title: "Vessel name",
-                required: true,
-                defaultValue: this.seafarerDetails.Vesselname,
-              },
-              rank: {
-                type: "string",
-                title: "Rank",
-                required: true,
-                defaultValue: this.seafarerDetails.rank,
-              },
-              fdpGroup: {
-                type: "string",
-                title: "FDP Group",
-                required: true,
-                defaultValue: this.seafarerDetails.FDPGroup,
+    if (!this.seafarersDetailDialogref) {
+      const seafarersDetailDialogref = this.matDialog.open(
+        FormDialogueComponent,
+        {
+          width: "30vw",
+          height: "52vh",
+          data: {
+            title: "Seafarers Details",
+            form: {
+              title: "",
+              type: "object",
+              properties: {
+                hkID: {
+                  type: "string",
+                  title: "HK ID",
+                  required: true,
+                  defaultValue: this.seafarerDetails.HKID,
+                },
+                vesselName: {
+                  type: "string",
+                  title: "Vessel name",
+                  required: true,
+                  defaultValue: this.seafarerDetails.Vesselname,
+                },
+                rank: {
+                  type: "string",
+                  title: "Rank",
+                  required: true,
+                  defaultValue: this.seafarerDetails.rank,
+                },
+                fdpGroup: {
+                  type: "string",
+                  title: "FDP Group",
+                  required: true,
+                  defaultValue: this.seafarerDetails.FDPGroup,
+                },
               },
             },
+            layout: "double",
+            buttonLabel: "Save",
           },
-          layout: "double",
-          buttonLabel: "Save",
-        },
-      }
-    );
-    seafarersDetailDialogref
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        console.log("seafarers dialog was closed");
-        if (result != "" && result != undefined) {
-          this.seafarerDetails = {
-            HKID: result.data.hkID,
-            Vesselname: result.data.vesselName,
-            rank: result.data.rank,
-            FDPGroup: result.data.fdpGroup,
-          };
         }
-      });
+      );
+      seafarersDetailDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          console.log("seafarers dialog was closed");
+          if (result != "" && result != undefined) {
+            this.seafarerDetails = {
+              HKID: result.data.hkID,
+              Vesselname: result.data.vesselName,
+              rank: result.data.rank,
+              FDPGroup: result.data.fdpGroup,
+            };
+          }
+          this.seafarersDetailDialogref = null;
+        });
+    }
   }
   openDMSDialog(dmsDetailList: any) {
     this.matDialog.open(DMSComponent, {

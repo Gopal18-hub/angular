@@ -17,7 +17,9 @@ export class FormDialogueComponent implements OnInit {
     public dialogRef: MatDialogRef<FormDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formService: QuestionControlService
-  ) {}
+  ) {
+
+  }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -26,6 +28,7 @@ export class FormDialogueComponent implements OnInit {
     );
     this.form = formResult.form;
     this.questions = formResult.questions;
+    this.questions[0].elementRef("focus");
   }
 
   submit() {
