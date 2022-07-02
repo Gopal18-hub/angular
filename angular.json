@@ -24,7 +24,7 @@
             "index": "src/out_patients/src/index.html",
             "main": "src/out_patients/src/main.ts",
             "polyfills": "src/out_patients/src/polyfills.ts",
-            "tsConfig": "src/out_patients/tsconfig.app.json",
+            "tsConfig": "src/out_patients/tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/out_patients/src/favicon.ico",
@@ -1119,7 +1119,7 @@
             "index": "src/auth/src/index.html",
             "main": "src/auth/src/main.ts",
             "polyfills": "src/auth/src/polyfills.ts",
-            "tsConfig": "src/auth/tsconfig.app.json",
+            "tsConfig": "src/auth/tsconfig.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/auth/src/favicon.ico", "src/auth/src/assets"],
             "styles": [
