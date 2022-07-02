@@ -6,8 +6,12 @@
     "baseUrl": "./",
     "types": [],
     "paths": {
-        "@modules/*" : ["modules/*"],
-        "@environments/*": ["../environments/*"]
+        "@modules/*": [
+          "./modules/*"
+        ],
+        "@core/*": [
+          "./core/*"
+        ]
     }
   },
   "files": [
