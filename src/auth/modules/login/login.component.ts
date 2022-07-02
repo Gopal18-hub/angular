@@ -85,8 +85,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
       "blur",
       this.validateUserName.bind(this)
     );
+
+    this.loginForm.controls["username"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value) => {
+        if (!value) {
+          this.loginForm.controls["password"].setValue("");
+          this.loginForm.controls["location"].setValue({ title: "", value: 0 });
+          this.loginForm.controls["station"].setValue({ title: "", value: 0 });
+          this.questions[0].elementRef.focus();
+          this.loginForm.controls["location"].disable();
+          this.loginForm.controls["station"].disable();
+        }
+      });
     this.questions[0].elementRef.focus();
-    //this.loginForm.controls["password"].disable();
     this.loginForm.controls["location"].disable();
     this.loginForm.controls["station"].disable();
   }
