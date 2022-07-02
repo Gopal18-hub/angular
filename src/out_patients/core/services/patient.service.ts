@@ -22,12 +22,12 @@ export class PatientService {
     hotlist: "Hot_listing_icon.svg",
   };
   pageNumberIcons: any = {
-    "Cash": "Cash_Icon.svg",
+    Cash: "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
     "Corporate/Insurance": "Ins_icon.svg",
-    "ins": "Ins_icon.svg",
-    "ews": "EWS.svg",
-    "cash": "Cash_Icon.svg",
+    ins: "Ins_icon.svg",
+    ews: "EWS.svg",
+    cash: "Cash_Icon.svg",
     "psu/govt": "PSU_icon.svg",
   };
   categoryIconsActions: any = {
@@ -96,13 +96,13 @@ export class PatientService {
       value: "INS",
     },
     hwc: {
-      type: "static ",
-      value: "HWC",
+      type: "dynamic",
+      value: "hwcRemarks",
     },
   };
 
   pageNumberIconsTooltip: any = {
-    "Cash": {
+    Cash: {
       type: "static",
       value: "Cash",
     },
@@ -114,15 +114,15 @@ export class PatientService {
       type: "static",
       value: "INS",
     },
-    "ins": {
+    ins: {
       type: "static",
       value: "INS",
     },
-    "ews": {
+    ews: {
       type: "static",
       value: "EWS",
     },
-    "cash": {
+    cash: {
       type: "static",
       value: "CASH",
     },
@@ -229,11 +229,7 @@ export class PatientService {
           if (this.categoryIconsTooltip[e]["type"] == "dynamic") {
             temp["tooltip"] =
               patient[
-                this.categoryIconsTooltip[e]["value"] as keyof (
-                  | PatientSearchModel
-                  | getmergepatientsearch
-                  | PatientDetails
-                )
+                this.categoryIconsTooltip[e]["value"] as keyof PatientDetails
               ];
           }
         }
