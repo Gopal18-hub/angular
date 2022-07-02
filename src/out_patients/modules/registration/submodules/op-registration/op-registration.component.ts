@@ -708,11 +708,6 @@ export class OpRegistrationComponent implements OnInit {
       this.getLocalityByPinCode.bind(this)
     );
 
-    // this.questions[21].elementRef.addEventListener(
-    //   "change",
-    //   this.clearAddressOnPincodeChange.bind(this)
-    // );
-
     this.OPRegForm.controls["pincode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
