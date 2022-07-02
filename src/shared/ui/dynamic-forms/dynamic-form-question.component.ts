@@ -124,7 +124,6 @@ export class DynamicFormQuestionComponent
       );
     }
     if (this.element) {
-      console.log(this.element);
       this.question.elementRef = { ...this.element.nativeElement };
     }
   }
@@ -171,8 +170,7 @@ export class DynamicFormQuestionComponent
 
   ngAfterViewInit(): void {
     if (this.element) {
-      console.log(this.element);
-      this.question.elementRef = this.element.nativeElement;
+      this.question.elementRef = { ...this.element.nativeElement };
     }
   }
 
