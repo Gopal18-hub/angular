@@ -324,7 +324,7 @@ export class OpRegistrationComponent implements OnInit {
       seaFarer: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Seaferers" }],
+        options: [{ title: "Seafarers" }],
       },
       hotlist: {
         type: "checkbox",
@@ -563,8 +563,8 @@ export class OpRegistrationComponent implements OnInit {
       value: 1,
     });
     this.OPRegForm.controls["foreigner"].disable();
-    this.getStatesByCountry(1);
-    this.getCitiesByCountry(1);
+    this.getStatesByCountry({ title: "India", value: 1 });
+    this.getCitiesByCountry({ title: "India", value: 1 });
 
     this.isNSSHLocation =
       this.cookie.get("LocationIACode") == "NSSH" ? true : false;
@@ -591,10 +591,6 @@ export class OpRegistrationComponent implements OnInit {
     this.questions[11].elementRef.addEventListener(
       "change",
       this.onEmailModify.bind(this)
-    );
-    this.questions[21].elementRef.addEventListener(
-      "blur",
-      this.getLocalityByPinCode.bind(this)
     );
 
     this.OPRegForm.controls["vip"].valueChanges
@@ -719,6 +715,19 @@ export class OpRegistrationComponent implements OnInit {
       this.getLocalityByPinCode.bind(this)
     );
 
+    // this.questions[21].elementRef.addEventListener(
+    //   "change",
+    //   this.clearAddressOnPincodeChange.bind(this)
+    // );
+
+    this.OPRegForm.controls["pincode"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if(!this.countrybasedflow){
+          this.clearAddressOnPincodeChange();
+        }
+        
+      });
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -1409,6 +1418,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
+      this.countrybasedflow = false;
       this.http
         .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
         .pipe(takeUntil(this._destroying$))
@@ -1422,7 +1432,51 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  clearAddressOnPincodeChange() {
+    if (
+      this.OPRegForm.value.city.value != undefined &&
+      this.OPRegForm.value.city.value != null &&
+      this.OPRegForm.value.city.value != ""
+    )
+    {
+      this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
+    }
+
+    if (
+      this.OPRegForm.value.locality.value != undefined &&
+      this.OPRegForm.value.locality.value != null &&
+      this.OPRegForm.value.locality.value != ""
+    )
+    {
+      this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
+    }
+
+    if (
+      this.OPRegForm.value.state.value != undefined &&
+      this.OPRegForm.value.state.value != null &&
+      this.OPRegForm.value.state.value != ""
+    )
+    {
+      this.OPRegForm.controls["state"].setValue({ title: "", value: 0 });
+    }
+    if (
+      this.OPRegForm.value.district.value != undefined &&
+      this.OPRegForm.value.district.value != null &&
+      this.OPRegForm.value.district.value != ""
+    )
+    {
+      this.OPRegForm.controls["district"].setValue({ title: "", value: 0 });
+    }
+    
+    
+    this.OPRegForm.controls["country"].setValue({
+      title: "India",
+      value: 1,
+    });
+  }
+
   //fetch Address based on locality or set pincode on selection of locality
+  countrybasedflow:boolean=false;
   AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID(locality: any) {
     if (
@@ -1459,6 +1513,7 @@ export class OpRegistrationComponent implements OnInit {
             });
           });
       }
+      this.countrybasedflow = false;
     } else {
       if (
         this.OPRegForm.value.pincode == undefined ||
@@ -1475,7 +1530,9 @@ export class OpRegistrationComponent implements OnInit {
           let pincode = this.localitybyCityList.filter(
             (l) => l.id === locality.value
           )[0].pincode;
+          this.countrybasedflow = true;
           this.OPRegForm.controls["pincode"].setValue(pincode);
+          this.countrybasedflow = false;
         }
       }
     }
