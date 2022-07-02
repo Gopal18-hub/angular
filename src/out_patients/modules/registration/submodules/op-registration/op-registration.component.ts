@@ -723,10 +723,9 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["pincode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if(!this.countrybasedflow){
+        if (!this.countrybasedflow) {
           this.clearAddressOnPincodeChange();
         }
-        
       });
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
@@ -1437,8 +1436,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.city.value != undefined &&
       this.OPRegForm.value.city.value != null &&
       this.OPRegForm.value.city.value != ""
-    )
-    {
+    ) {
       this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
     }
 
@@ -1446,8 +1444,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value != undefined &&
       this.OPRegForm.value.locality.value != null &&
       this.OPRegForm.value.locality.value != ""
-    )
-    {
+    ) {
       this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
     }
 
@@ -1455,20 +1452,17 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.state.value != undefined &&
       this.OPRegForm.value.state.value != null &&
       this.OPRegForm.value.state.value != ""
-    )
-    {
+    ) {
       this.OPRegForm.controls["state"].setValue({ title: "", value: 0 });
     }
     if (
       this.OPRegForm.value.district.value != undefined &&
       this.OPRegForm.value.district.value != null &&
       this.OPRegForm.value.district.value != ""
-    )
-    {
+    ) {
       this.OPRegForm.controls["district"].setValue({ title: "", value: 0 });
     }
-    
-    
+
     this.OPRegForm.controls["country"].setValue({
       title: "India",
       value: 1,
@@ -1476,7 +1470,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   //fetch Address based on locality or set pincode on selection of locality
-  countrybasedflow:boolean=false;
+  countrybasedflow: boolean = false;
   AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID(locality: any) {
     if (

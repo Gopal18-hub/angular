@@ -229,7 +229,9 @@ export class DupRegMergingComponent implements OnInit {
         formdata["phone"] == undefined ||
         formdata["phone"] == null) &&
       dateOfBirth != "" &&
-      (formdata["email"] == ""|| formdata["email"] == undefined || formdata["email"] == null)
+      (formdata["email"] == "" ||
+        formdata["email"] == undefined ||
+        formdata["email"] == null)
     ) {
       this.showmergespinner = false;
       this.defaultUI = true;
