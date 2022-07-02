@@ -111,13 +111,13 @@ export class OpRegistrationComponent implements OnInit {
     IssueDate: string | null;
     Expirydate: string | null;
     Issueat: string;
-    HCF: number;
+    HCF: { title: string; value: number };
   } = {
     passportNo: "",
     IssueDate: "",
     Expirydate: "",
     Issueat: "",
-    HCF: 0,
+    HCF: { title: "", value: 0 },
   };
   vip!: string;
   noteRemark!: string;
@@ -892,7 +892,7 @@ export class OpRegistrationComponent implements OnInit {
       IssueDate: "",
       Expirydate: "",
       Issueat: "",
-      HCF: 0,
+      HCF: { title: "", value: 0 },
     };
     this.noteRemark = "";
     this.hwcRemark = "";
@@ -1777,16 +1777,16 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
-    if (this.passportDetails.passportNo != "") {
+    if (this.patientDetails.passportNo != "") {
       this.passportDetails.Expirydate = this.patientDetails?.expiryDate;
       this.passportDetails.IssueDate = this.patientDetails?.issueDate;
-      this.passportDetails.HCF = this.patientDetails?.hcfId;
+      this.passportDetails.HCF.value = this.patientDetails?.hcfId;
       this.passportDetails.Issueat = this.patientDetails?.passportIssuedAt;
       this.passportDetails.passportNo = this.patientDetails?.passportNo;
     } else {
       this.passportDetails.Expirydate = "";
       this.passportDetails.IssueDate = "";
-      this.passportDetails.HCF = 0;
+      this.passportDetails.HCF.value = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
@@ -2060,7 +2060,7 @@ export class OpRegistrationComponent implements OnInit {
       this.ewsDetails.bplCardAddress,
       "cghsbeneficiaryCompany",
       this.OPRegForm.value.adhaarId,
-      this.passportDetails.HCF,
+      this.passportDetails.HCF.value,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
@@ -2175,7 +2175,7 @@ export class OpRegistrationComponent implements OnInit {
       this.ewsDetails.bplCardNo,
       false,
       this.OPRegForm.value.adhaarId,
-      this.passportDetails.HCF,
+      this.passportDetails.HCF.value,
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
@@ -2200,7 +2200,7 @@ export class OpRegistrationComponent implements OnInit {
     if (this.passportDetails.passportNo == "") {
       this.passportDetails.Expirydate = null;
       this.passportDetails.IssueDate = null;
-      this.passportDetails.HCF = 0;
+      this.passportDetails.HCF.value = 0;
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
@@ -2680,21 +2680,32 @@ export class OpRegistrationComponent implements OnInit {
   passportDetailsdialog(hcfMasterList: { title: string; value: number }[]) {
     let hcfTitle;
     if (
-      this.passportDetails.HCF != 0 &&
+      this.passportDetails.HCF.value != 0 &&
       this.passportDetails.HCF != undefined &&
       this.passportDetails.HCF != null
     ) {
-      let hcfvalue = hcfMasterList.filter(
-        (e) => e.value === this.passportDetails.HCF
-      );
-      hcfTitle = hcfvalue[0].title;
+      let hcfvalue = hcfMasterList.filter((e) => {
+        e.value == this.passportDetails.HCF.value;
+        return e.value;
+      });
+      hcfTitle = {
+        title: hcfvalue[0].title,
+        value: this.passportDetails.HCF.value,
+      };
     }
-    let minExpDate = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
-    );
-    let maxYear = new Date(
-      new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 15)
-    );
+    let minExpDate;
+    let maxYear;
+    if (this.passportDetails.passportNo != "") {
+    } else {
+      minExpDate = new Date(
+        new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
+      );
+      maxYear = new Date(
+        new Date(Date.now()).setFullYear(
+          new Date(Date.now()).getFullYear() + 15
+        )
+      );
+    }
     //MEED TO SET DEFAULT HCF VALUE
     const passportDetailDialogref = this.matDialog.open(FormDialogueComponent, {
       width: "30vw",
@@ -2770,7 +2781,7 @@ export class OpRegistrationComponent implements OnInit {
                 "yyyy-MM-ddThh:mm:ss"
               ) || null,
             passportNo: result.data.passportNo,
-            HCF: result.data.hcf.value,
+            HCF: result.data.hcf,
           };
           console.log(this.passportDetails);
           this.OPRegForm.controls["nationality"].setErrors(null);
