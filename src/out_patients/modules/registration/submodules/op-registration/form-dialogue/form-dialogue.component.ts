@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, AfterViewInit } from "@angular/core";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { FormGroup } from "@angular/forms";
@@ -8,7 +8,7 @@ import { FormGroup } from "@angular/forms";
   templateUrl: "./form-dialogue.component.html",
   styleUrls: ["./form-dialogue.component.scss"],
 })
-export class FormDialogueComponent implements OnInit {
+export class FormDialogueComponent implements OnInit, AfterViewInit {
   form!: FormGroup;
 
   questions: any;
@@ -17,9 +17,7 @@ export class FormDialogueComponent implements OnInit {
     public dialogRef: MatDialogRef<FormDialogueComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formService: QuestionControlService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -28,7 +26,10 @@ export class FormDialogueComponent implements OnInit {
     );
     this.form = formResult.form;
     this.questions = formResult.questions;
-    this.questions[0].elementRef("focus");
+  }
+
+  ngAfterViewInit(): void {
+    this.questions[0].elementRef.focus();
   }
 
   submit() {
