@@ -348,5 +348,13 @@ input[type="number"]::-webkit-inner-spin-button {
 .mat-select-panel .mat-optgroup-label,
 .mat-select-panel .mat-option {
   line-height: 2em !important;
-  height: 2em !important;
+  height: 2em !important; 
+}
+.mat-select-panel{
+  margin-top:18%;
+  margin-left: 10%;
+}
+
+.mat-select-panel.mat-primary.im-select-dropdown{
+  min-width: 100% !important;
 }
