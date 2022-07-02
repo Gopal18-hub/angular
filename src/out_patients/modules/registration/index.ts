@@ -14,7 +14,10 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatNativeDateModule, MatRippleModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { MatDialogModule } from "@angular/material/dialog";
+import {
+  MatDialogModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+} from "@angular/material/dialog";
 import { MatTabsModule } from "@angular/material/tabs";
 import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
@@ -106,6 +109,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SearchService,
     CookieService,
     PendingChangesGuard,
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { autoFocus: false } },
   ],
   entryComponents: [AppointmentSearchComponent, FormDialogueComponent],
   bootstrap: [],
