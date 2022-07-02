@@ -59,6 +59,7 @@ import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
 import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
+import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 
 export interface DialogData {
   expieryDate: Date;
@@ -692,13 +693,26 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.getPatientDetailsByMaxId.bind(this)
-    );
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        this.getPatientDetailsByMaxId();
+      }
+    });
     // this.questions[0].elementRef.addEventListener(
 
-    //   this.getPatientDetailsByMaxId.bind(this)
+    //    input.addEventListener("keypress", function(event) {
+    // If the user presses the "Enter" key on the keyboard
+    // if (event.key === "Enter") {
+    //   // Cancel the default action, if needed
+    //   event.preventDefault();
+    //   // Trigger the button element with a click
+    //   document.getElementById("myBtn").click();
+    // }
+    // });
     // );
 
     //on value chnae event of age Type
@@ -2514,6 +2528,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+
               defaultValue: this.noteRemark,
             },
           },
