@@ -108,8 +108,8 @@ export class OpRegistrationComponent implements OnInit {
   today: Date = new Date(new Date().getTime() - 3888000000);
   passportDetails: {
     passportNo: string;
-    IssueDate: string|null;
-    Expirydate: string|null;
+    IssueDate: string | null;
+    Expirydate: string | null;
     Issueat: string;
     HCF: number;
   } = {
@@ -514,7 +514,7 @@ export class OpRegistrationComponent implements OnInit {
       {}
     );
 
-       this.maxIDChangeCall = false;
+    this.maxIDChangeCall = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
@@ -568,7 +568,7 @@ export class OpRegistrationComponent implements OnInit {
 
   formProcessing() {
     //  this.checkForMaxID();
-   
+
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
     this.OPRegForm.controls["paymentMethod"].valueChanges
@@ -583,10 +583,10 @@ export class OpRegistrationComponent implements OnInit {
     // }
     //chnage event for email Field
 
-  this.questions[11].elementRef.addEventListener(
-    "change",
-    this.onEmailModify.bind(this)
-  );
+    this.questions[11].elementRef.addEventListener(
+      "change",
+      this.onEmailModify.bind(this)
+    );
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -595,61 +595,49 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["vip"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-       
-          if (this.maxIDChangeCall == false && value) {
-            this.openVipNotes();
-          }
-        
-      });
-
-      this.OPRegForm.controls["seaFarer"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-       
-          if (this.maxIDChangeCall == false && value) {
-            this.seafarersDetailsdialog();
-          }
-        
-      });
-
-      this.OPRegForm.controls["note"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-       
-          if (this.maxIDChangeCall == false && value) {
-            this.openNotes();
-        
+        if (this.maxIDChangeCall == false && value) {
+          this.openVipNotes();
         }
       });
-      this.OPRegForm.controls["hwc"].valueChanges
+
+    this.OPRegForm.controls["seaFarer"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-      
-          if (this.maxIDChangeCall == false && value) {
-            this.openHWCNotes();
-          
+        if (this.maxIDChangeCall == false && value) {
+          this.seafarersDetailsdialog();
         }
       });
-      this.OPRegForm.controls["hotlist"].valueChanges
+
+    this.OPRegForm.controls["note"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-      
-          if (this.maxIDChangeCall == false && value) {
-            this.openHotListDialog(); 
-          }
-        
+        if (this.maxIDChangeCall == false && value) {
+          this.openNotes();
+        }
       });
-      // this.OPRegForm.controls["foreigner"].valueChanges
-      // .pipe(takeUntil(this._destroying$))
-      // .subscribe((value: any) => {      
-      //     if (this.maxIDChangeCall == false) {
-      //       this.showPassportDetails();
-      //     }
-        
-      // });
-      
-   
-  
+    this.OPRegForm.controls["hwc"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (this.maxIDChangeCall == false && value) {
+          this.openHWCNotes();
+        }
+      });
+    this.OPRegForm.controls["hotlist"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (this.maxIDChangeCall == false && value) {
+          this.openHotListDialog();
+        }
+      });
+    // this.OPRegForm.controls["foreigner"].valueChanges
+    // .pipe(takeUntil(this._destroying$))
+    // .subscribe((value: any) => {
+    //     if (this.maxIDChangeCall == false) {
+    //       this.showPassportDetails();
+    //     }
+
+    // });
+
     //chnage event for Mobile Field
     this.questions[2].elementRef.addEventListener(
       "change",
@@ -709,7 +697,7 @@ export class OpRegistrationComponent implements OnInit {
       this.getPatientDetailsByMaxId.bind(this)
     );
     // this.questions[0].elementRef.addEventListener(
-      
+
     //   this.getPatientDetailsByMaxId.bind(this)
     // );
 
@@ -721,11 +709,11 @@ export class OpRegistrationComponent implements OnInit {
           this.validatePatientAge();
         }
       });
-      this.questions[21].elementRef.addEventListener(
-        "blur",
-        this.getLocalityByPinCode.bind(this)
-      );
-  
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -858,10 +846,10 @@ export class OpRegistrationComponent implements OnInit {
   ngAfterViewInit(): void {
     this.formProcessing();
   }
-  clearClicked:boolean=false;
+  clearClicked: boolean = false;
 
   clear() {
-    this.clearClicked=true;
+    this.clearClicked = true;
     this.formProcessingFlag = true;
     this.questions = [];
     //this.OPRegForm = null;
@@ -886,21 +874,17 @@ export class OpRegistrationComponent implements OnInit {
     });
     this.formInit();
     this.formProcessingFlag = false;
-    
-     setTimeout(() => {
+    setTimeout(() => {
       this.formProcessing();
-    
-     }, 10
-     );
+    }, 10);
     this.flushAllObjects();
     //this.checkForMaxID();
-    this.clearClicked=false;
+    this.clearClicked = false;
   }
 
-  flushAllObjects()
-  {
+  flushAllObjects() {
     this.categoryIcons = [];
-    this.fatherSpouseOptionList=[] as any;
+    this.fatherSpouseOptionList = [] as any;
 
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
@@ -927,11 +911,10 @@ export class OpRegistrationComponent implements OnInit {
       FDPGroup: "",
     };
     this.patientDetails = [] as any;
-    this.modfiedPatiendDetails =  [] as any;
+    this.modfiedPatiendDetails = [] as any;
     this.maxIDChangeCall = false;
 
     this.MaxIDExist = false;
-
   }
 
   //validation for Indetity Number if Identity Type Selected
@@ -1101,10 +1084,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   DMSList: DMSrefreshModel[] = [];
-  dmsClicked:boolean=false;
+  dmsClicked: boolean = false;
   getPatientDMSDetail() {
     this.matDialog.closeAll();
-          let arr = [] as any;
+    let arr = [] as any;
     this.http
       .get(
         ApiConstants.PatientDMSDetail(
@@ -1118,17 +1101,17 @@ export class OpRegistrationComponent implements OnInit {
         console.log(resultData);
         this.openDMSDialog(this.DMSList);
       });
-      // this.OPRegForm.controls["dms"].disable();
-      // this.dmsClicked=false;
+    // this.OPRegForm.controls["dms"].disable();
+    // this.dmsClicked=false;
   }
 
- similarContactPatientList: SimilarSoundPatientResponse[] = [];
+  similarContactPatientList: SimilarSoundPatientResponse[] = [];
   getSimilarPatientDetails() {
     // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
-  
+
     this.matDialog.closeAll();
-console.log( this.similarContactPatientList.length );
-    if ((!this.MaxIDExist) )  {
+    console.log(this.similarContactPatientList.length);
+    if (!this.MaxIDExist) {
       this.http
         .post(ApiConstants.similarSoundPatientDetail, {
           phone: this.OPRegForm.value.mobileNumber,
@@ -1153,14 +1136,14 @@ console.log( this.similarContactPatientList.length );
                 .afterClosed()
                 .pipe(takeUntil(this._destroying$))
                 .subscribe((result) => {
-                  if(result){
-                  console.log(result.data["added"][0].maxid);
-                  let maxID = result.data["added"][0].maxid;
-                  this.OPRegForm.controls["maxid"].setValue(maxID);
-                  this.getPatientDetailsByMaxId();
+                  if (result) {
+                    console.log(result.data["added"][0].maxid);
+                    let maxID = result.data["added"][0].maxid;
+                    this.OPRegForm.controls["maxid"].setValue(maxID);
+                    this.getPatientDetailsByMaxId();
                   }
                   console.log("seafarers dialog was closed");
-                  this.similarContactPatientList=[];
+                  this.similarContactPatientList = [];
                 });
             } else {
               console.log("no data found");
@@ -1636,7 +1619,7 @@ console.log( this.similarContactPatientList.length );
         .subscribe(
           (resultData: PatientDetails) => {
             // this.clear();
-            this. flushAllObjects();
+            this.flushAllObjects();
             this.maxIDChangeCall = true;
             this.patientDetails = resultData;
             this.categoryIcons = this.patientService.getCategoryIconsForPatient(
@@ -1655,15 +1638,16 @@ console.log( this.similarContactPatientList.length );
           },
           (error) => {
             if (error.error == "Patient Not found") {
-             
               // this.messageDialogService.info(error.error);
               this.router.navigate([], {
                 queryParams: {},
                 relativeTo: this.route,
               });
-              this. flushAllObjects();
+              this.flushAllObjects();
               this.setValuesToOPRegForm(this.patientDetails);
-              this.OPRegForm.controls["maxid"].setValue(iacode+"."+regNumber);
+              this.OPRegForm.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
               this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
             }
@@ -1729,7 +1713,7 @@ console.log( this.similarContactPatientList.length );
       );
   }
   postForm() {
-    console.log("request body"+this.getPatientSubmitRequestBody());
+    console.log("request body" + this.getPatientSubmitRequestBody());
     this.http
       .post(ApiConstants.postPatientDetails, this.getPatientSubmitRequestBody())
       .pipe(takeUntil(this._destroying$))
@@ -1740,8 +1724,8 @@ console.log( this.similarContactPatientList.length );
           this.flushAllObjects();
           this.maxIDChangeCall = true;
           this.setValuesToOPRegForm(resultData);
-         this.MaxIDExist=true;
-                  this.checkForMaxID();
+          this.MaxIDExist = true;
+          this.checkForMaxID();
           console.log(resultData);
           this.maxIDChangeCall = false;
         },
@@ -1750,7 +1734,6 @@ console.log( this.similarContactPatientList.length );
           this.messageDialogService.info(error.error);
         }
       );
-    
   }
 
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
@@ -1772,12 +1755,10 @@ console.log( this.similarContactPatientList.length );
       this.patientDetails?.middleName
     );
     this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
-    if(this.patientDetails?.dob){
+    if (this.patientDetails?.dob) {
       this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
-      
-    }else{
+    } else {
       this.OPRegForm.controls["dob"].setValue("");
-
     }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
@@ -1972,22 +1953,22 @@ console.log( this.similarContactPatientList.length );
 
     //FOR CHECKBOX
     //IF PAGERNO IS NOT UNDERFINED
-    if(patientDetails?.ppagerNumber){
-    this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
+    if (patientDetails?.ppagerNumber) {
+      this.setPaymentMode(patientDetails?.ppagerNumber.toUpperCase());
     }
     this.categoryIcons =
       this.patientService.getCategoryIconsForPatient(patientDetails);
 
     //FOR EWS POP UP
     //IF PAGERNO IS NOT UNDERFINED
-    if(patientDetails?.ppagerNumber){
-    if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
-      this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
-      this.ewsDetails.bplCardAddress = patientDetails.addressOnCard;
+    if (patientDetails?.ppagerNumber) {
+      if (patientDetails.ppagerNumber.toUpperCase() == "EWS") {
+        this.ewsDetails.bplCardNo = patientDetails.bplcardNo;
+        this.ewsDetails.bplCardAddress = patientDetails.addressOnCard;
+      }
+    } else {
+      this.setPaymentMode("cash");
     }
-  }else{
-    this.setPaymentMode("cash");
-  }
 
     //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
@@ -2105,7 +2086,10 @@ console.log( this.similarContactPatientList.length );
   }
 
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    let dob= (this.OPRegForm.value.dob == ""||this.OPRegForm.value.dob == undefined) ? false : true;
+    let dob =
+      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
+        ? false
+        : true;
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
@@ -2134,7 +2118,8 @@ console.log( this.similarContactPatientList.length );
       this.getSpouseName(),
       0,
       "",
-      0,      "",
+      0,
+      "",
       "",
       "",
       "",
@@ -2352,90 +2337,99 @@ console.log( this.similarContactPatientList.length );
   dobFlag: boolean = false;
   ageFlag: boolean = false;
 
- 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
-    if(!this.MaxIDExist){
-    if (this.OPRegForm.value.dob == "") {
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(null);
-    }
-    this.timeDiff = 0;
-    if (this.OPRegForm.value.dob) {
-      this.dobFlag = true;
-      this.ageFlag = false;
-    }
-    console.log(this.OPRegForm.value.age);
-
-    if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
-      this.dateNotValid = true;
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(null);
-      let element: HTMLElement = document.getElementById(
-        "saveform"
-      ) as HTMLElement;
-    } else {
-      this.dateNotValid = false;
-    }
-    let year = new Date(this.OPRegForm.value.dob).getFullYear();
-
-    if (year > 1000) {
+    if (!this.MaxIDExist) {
+      if (this.OPRegForm.value.dob == "") {
+        this.OPRegForm.value.age = null;
+        this.OPRegForm.controls["ageType"].setValue(null);
+      }
+      this.timeDiff = 0;
       if (this.OPRegForm.value.dob) {
-        this.timeDiff =
-          new Date(Date.now()).getFullYear() -
-          new Date(this.OPRegForm.value.dob).getFullYear();
-        if (this.timeDiff <= 0) {
-          this.timeDiff =
-            new Date(Date.now()).getMonth() -
-            new Date(this.OPRegForm.value.dob).getMonth();
+        this.dobFlag = true;
+        this.ageFlag = false;
+      }
+      console.log(this.OPRegForm.value.age);
 
+      if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
+        this.dateNotValid = true;
+        this.OPRegForm.value.age = null;
+        this.OPRegForm.controls["ageType"].setValue(null);
+        let element: HTMLElement = document.getElementById(
+          "saveform"
+        ) as HTMLElement;
+      } else {
+        this.dateNotValid = false;
+      }
+      let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+      if (year > 1000) {
+        if (this.OPRegForm.value.dob) {
+          this.timeDiff =
+            new Date(Date.now()).getFullYear() -
+            new Date(this.OPRegForm.value.dob).getFullYear();
           if (this.timeDiff <= 0) {
             this.timeDiff =
-              new Date(Date.now()).getDate() -
-              new Date(this.OPRegForm.value.dob).getDate();
+              new Date(Date.now()).getMonth() -
+              new Date(this.OPRegForm.value.dob).getMonth();
+
             if (this.timeDiff <= 0) {
+              this.timeDiff =
+                new Date(Date.now()).getDate() -
+                new Date(this.OPRegForm.value.dob).getDate();
+              if (this.timeDiff <= 0) {
+              } else {
+                this.OPRegForm.controls["age"].setValue(
+                  Math.floor(this.timeDiff)
+                );
+                this.OPRegForm.controls["ageType"].setValue(
+                  this.ageTypeList[0].id
+                );
+                console.log(this.ageTypeList[0].name);
+              }
             } else {
               this.OPRegForm.controls["age"].setValue(
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[0].id
+                this.ageTypeList[3].id
               );
-              console.log(this.ageTypeList[0].name);
+              console.log(this.ageTypeList[3].name);
             }
           } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-            console.log(this.ageTypeList[3].name);
+            let currentmonth = new Date(Date.now()).getMonth();
+            let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+            let monthDiff = currentmonth - MonthofDOB;
+            let monthDiff2 = MonthofDOB - currentmonth;
+            if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
+              if (monthDiff < 12 && this.timeDiff == 1) {
+                if (monthDiff <= 0) {
+                  this.OPRegForm.controls["age"].setValue(
+                    12 - MonthofDOB + currentmonth
+                  );
+                } else {
+                  this.OPRegForm.controls["age"].setValue(monthDiff);
+                }
+              }
+              this.OPRegForm.controls["ageType"].setValue(
+                this.ageTypeList[3].id
+              );
+            } else {
+              this.OPRegForm.controls["age"].setValue(
+                Math.floor(this.timeDiff)
+              );
+              this.OPRegForm.controls["ageType"].setValue(
+                this.ageTypeList[4].id
+              );
+              console.log(this.ageTypeList[4].name);
+            }
           }
         } else {
-          let currentmonth = new Date(Date.now()).getMonth();
-          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
-          let monthDiff = currentmonth - MonthofDOB;
-          let monthDiff2 = MonthofDOB - currentmonth;
-          if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
-            if (monthDiff < 12 && this.timeDiff == 1) {
-              if (monthDiff <= 0) {
-                this.OPRegForm.controls["age"].setValue(
-                  12 - MonthofDOB + currentmonth
-                );
-              } else {
-                this.OPRegForm.controls["age"].setValue(monthDiff);
-              }
-            }
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-          } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[4].id);
-            console.log(this.ageTypeList[4].name);
-          }
+          this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+          console.log(this.OPRegForm.controls["ageType"].value);
         }
-      } else {
-        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
-        console.log(this.OPRegForm.controls["ageType"].value);
       }
     }
-  }
   }
 
   validatePatientAge() {
@@ -2582,7 +2576,6 @@ console.log( this.similarContactPatientList.length );
             incorrect: true,
           });
           this.questions[40].customErrorMessage = "Invalid EWS details";
-        
         }
       });
   }
@@ -2618,23 +2611,40 @@ console.log( this.similarContactPatientList.length );
         console.log("HWC dialog was closed");
       });
   }
-  appointmentSearchClicked:boolean=false
+  appointmentSearchClicked: boolean = false;
   openDialog() {
+    this.appointmentSearchClicked = true;
+    let appointmentSearchDialogref = this.matDialog.open(
+      AppointmentSearchDialogComponent,
+      {
+        maxWidth: "100vw",
+      }
+    );
+    appointmentSearchDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        console.log(result);
+        this.patientDetails = result.data.added[0] as PatientDetails;
+        this.setValuesToOPRegForm(this.patientDetails);
+        console.log("this is patient Detail obj", this.patientDetails);
+        console.log("appointment dialog was closed");
+      });
+    this.appointmentSearchClicked = false;
+    // let appointmentSearchDialogref = this.matDialog.open(
+    //   AppointmentSearchDialogComponent,
+    //   {
+    //     maxWidth: "100vw",
+    //   }
+    // );
+    // appointmentSearchDialogref
+    //   .afterClosed()
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((result) => {
+    //     console.log(result);
 
-    this.appointmentSearchClicked=true;
-   let appointmentSearchDialogref= this.matDialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw",
-    });
-    appointmentSearchDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result  ) => {
-      console.log(result);
-     this.patientDetails=result.data.added[0] as PatientDetails;
-     this.setValuesToOPRegForm( this.patientDetails);
-     console.log("this is patient Detail obj",this.patientDetails);
-      console.log("appointment dialog was closed");
-    });
-    this.appointmentSearchClicked=false;
+    //     console.log("appointment dialog was closed");
+    //   });
   }
 
   modfiedPatiendDetailsForPopUp!: ModifiedPatientDetailModel;
@@ -2768,72 +2778,69 @@ console.log( this.similarContactPatientList.length );
         }
       });
   }
-   seafarersDetailDialogref:any|null;
+  seafarersDetailDialogref: any | null;
   seafarersDetailsdialog() {
-
-    if(!this.seafarersDetailDialogref){
-    const seafarersDetailDialogref = this.matDialog.open(
-      FormDialogueComponent,
-      {
-        width: "30vw",
-        height: "52vh",
-        data: {
-          title: "Seafarers Details",
-          form: {
-            title: "",
-            type: "object",
-            properties: {
-              hkID: {
-                type: "string",
-                title: "HK ID",
-                required: true,
-                defaultValue: this.seafarerDetails.HKID,
-              },
-              vesselName: {
-                type: "string",
-                title: "Vessel name",
-                required: true,
-                defaultValue: this.seafarerDetails.Vesselname,
-              },
-              rank: {
-                type: "string",
-                title: "Rank",
-                required: true,
-                defaultValue: this.seafarerDetails.rank,
-              },
-              fdpGroup: {
-                type: "string",
-                title: "FDP Group",
-                required: true,
-                defaultValue: this.seafarerDetails.FDPGroup,
+    if (!this.seafarersDetailDialogref) {
+      const seafarersDetailDialogref = this.matDialog.open(
+        FormDialogueComponent,
+        {
+          width: "30vw",
+          height: "52vh",
+          data: {
+            title: "Seafarers Details",
+            form: {
+              title: "",
+              type: "object",
+              properties: {
+                hkID: {
+                  type: "string",
+                  title: "HK ID",
+                  required: true,
+                  defaultValue: this.seafarerDetails.HKID,
+                },
+                vesselName: {
+                  type: "string",
+                  title: "Vessel name",
+                  required: true,
+                  defaultValue: this.seafarerDetails.Vesselname,
+                },
+                rank: {
+                  type: "string",
+                  title: "Rank",
+                  required: true,
+                  defaultValue: this.seafarerDetails.rank,
+                },
+                fdpGroup: {
+                  type: "string",
+                  title: "FDP Group",
+                  required: true,
+                  defaultValue: this.seafarerDetails.FDPGroup,
+                },
               },
             },
+            layout: "double",
+            buttonLabel: "Save",
           },
-          layout: "double",
-          buttonLabel: "Save",
-        },
-      }
-    );
-    seafarersDetailDialogref
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        console.log("seafarers dialog was closed");
-        if (result != "" && result != undefined) {
-          this.seafarerDetails = {
-            HKID: result.data.hkID,
-            Vesselname: result.data.vesselName,
-            rank: result.data.rank,
-            FDPGroup: result.data.fdpGroup,
-          };
         }
-        this.seafarersDetailDialogref=null;
-      });
-     
+      );
+      seafarersDetailDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          console.log("seafarers dialog was closed");
+          if (result != "" && result != undefined) {
+            this.seafarerDetails = {
+              HKID: result.data.hkID,
+              Vesselname: result.data.vesselName,
+              rank: result.data.rank,
+              FDPGroup: result.data.fdpGroup,
+            };
+          }
+          this.seafarersDetailDialogref = null;
+        });
     }
   }
   openDMSDialog(dmsDetailList: any) {
-
     this.matDialog.open(DMSComponent, {
       width: "100vw",
       data: {
@@ -2844,9 +2851,7 @@ console.log( this.similarContactPatientList.length );
         lastName: this.patientDetails.lastName,
       },
     });
-   
   }
-
 }
 function phone(
   similarSoundPatientDetail: string,
