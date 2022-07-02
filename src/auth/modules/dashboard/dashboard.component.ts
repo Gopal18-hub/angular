@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
       "maxid",
       "ssn",
       "date",
-      "firstName",
+      "fullname",
       "age",
       "gender",
       "dob",
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
         title: "Reg.Date",
         type: "date",
       },
-      firstName: {
+      fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
