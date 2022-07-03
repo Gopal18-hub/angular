@@ -2206,7 +2206,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.rank,
       this.seafarerDetails.Vesselname,
       this.seafarerDetails.FDPGroup,
-      this.OPRegForm.controls["hwc"].value,
+      this.OPRegForm.controls["hwc"].value || false,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
