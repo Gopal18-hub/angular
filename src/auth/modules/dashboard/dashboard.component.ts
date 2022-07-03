@@ -145,6 +145,7 @@ export class DashboardComponent implements OnInit {
         this.defaultUI = false;
         resultData = resultData.map((item: any) => {
           item.fullname = item.firstName + " " + item.lastName;
+          item.notereason = item.noteReason;
           return item;
         });
         this.patientList = resultData;
@@ -154,14 +155,13 @@ export class DashboardComponent implements OnInit {
         this.apiProcessing = true;
         console.log(this.patientList);
         setTimeout(() => {
-          this.table.selection.changed            
-            .subscribe((res: any) => {
-              console.log(res);
-              this.router.navigate(
-                ["out-patients", "registration", "op-registration"],
-                { queryParams: { maxId: res.added[0].maxid } }
-              );
-            });
+          this.table.selection.changed.subscribe((res: any) => {
+            console.log(res);
+            this.router.navigate(
+              ["out-patients", "registration", "op-registration"],
+              { queryParams: { maxId: res.added[0].maxid } }
+            );
+          });
         });
       });
     this.searchService.searchTrigger
@@ -236,6 +236,7 @@ export class DashboardComponent implements OnInit {
             );
             resultData = resultData.map((item: any) => {
               item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
               return item;
             });
             this.apiProcessing = true;

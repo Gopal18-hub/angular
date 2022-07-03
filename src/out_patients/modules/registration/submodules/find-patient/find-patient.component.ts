@@ -165,6 +165,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
             this.showspinner = false;
             resultData = resultData.map((item: any) => {
               item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
               return item;
             });
             this.patientList = resultData as PatientSearchModel[];
@@ -259,14 +260,16 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         .subscribe(
           (resultData) => {
             this.showspinner = false;
+
+            resultData = resultData.map((item: any) => {
+              item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
+              return item;
+            });
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
             this.isAPIProcess = true;
             this.defaultUI = false;
             setTimeout(() => {

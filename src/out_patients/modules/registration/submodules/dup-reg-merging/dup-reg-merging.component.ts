@@ -253,6 +253,7 @@ export class DupRegMergingComponent implements OnInit {
           this.showmergespinner = false;
           resultData = resultData.map((item: any) => {
             item.fullname = item.firstName + " " + item.lastName;
+            item.notereason = item.noteReason;
             return item;
           });
           this.results = resultData;
