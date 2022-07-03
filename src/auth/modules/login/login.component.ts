@@ -6,8 +6,10 @@ import { StationModel } from "../../../auth/core/models/stationmodel";
 import { LocationModel } from "../../../auth/core/models/locationmodel";
 import { UserLocationStationdataModel } from "../../../auth/core/models/userlocationstationdatamodel";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { AuthService } from "@shared/services/auth.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { environment } from "@environments/environment";
 
 @Component({
   selector: "auth-login",
@@ -63,7 +65,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   constructor(
     private formService: QuestionControlService,
     private adauth: ADAuthService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
