@@ -351,10 +351,16 @@ input[type="number"]::-webkit-inner-spin-button {
   height: 2em !important; 
 }
 .mat-select-panel{
-  margin-top:18%;
+  margin-top:17%;
   margin-left: 10%;
 }
 
 .mat-select-panel.mat-primary.im-select-dropdown{
   min-width: 100% !important;
+}
+
+.mat-autocomplete-panel .mat-optgroup-label,
+.mat-autocomplete-panel .mat-option{
+  line-height: 1.5em !important;
+  height: 1.5em !important; 
 }

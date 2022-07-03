@@ -107,6 +107,8 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
+  invalidChars: any = ["e", "E"];
+
   passportDetails: {
     passportNo: string;
     IssueDate: string | null;
@@ -601,6 +603,12 @@ export class OpRegistrationComponent implements OnInit {
       this.onageCalculator.bind(this)
     );
 
+    //ALt contact /Landline NUmber alphabate e prevention
+    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
+      if (this.invalidChars.includes(e.key)) {
+        e.preventDefault();
+      }
+    });
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
       "blur",
