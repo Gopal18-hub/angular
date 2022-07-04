@@ -15,6 +15,11 @@ export class BillingComponent implements OnInit {
   }
   openBillPaymentDialog()
   {
-    this.matDialog.open(PaymentModeComponent,{width:'100%',height:'80%'})
+    this.matDialog.open(PaymentModeComponent,{ width: "70vw", 
+    height: "98vh", 
+    data:{
+      Mobile: 9898989898, 
+      Mail: "mail@gmail.com"
+    }});
   }
 }
