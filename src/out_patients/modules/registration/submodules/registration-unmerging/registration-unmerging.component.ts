@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild,OnDestroy } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewChild,
+  OnDestroy,
+} from "@angular/core";
 import { getmergepatientsearch } from "../../../../../out_patients/core/models/getmergepatientsearch";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../shared/services/http.service";
@@ -104,7 +110,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       age: {
         title: "Age",
         type: "number",
-        disabledSort:true,
+        disabledSort: true,
       },
       gender: {
         title: "Gender",
@@ -122,7 +128,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       phone: {
         title: "Phone",
         type: "number",
-        disabledSort:true,
+        disabledSort: true,
       },
       categoryIcons: {
         title: "Category",
@@ -131,7 +137,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         style: {
           width: "220px",
         },
-        disabledSort:true,
+        disabledSort: true,
       },
     },
   };
@@ -149,10 +155,10 @@ export class RegistrationUnmergingComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchService.searchTrigger
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((formdata) => {
-      this.searchPatient(formdata.data);
-    });
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata) => {
+        this.searchPatient(formdata.data);
+      });
   }
 
   ngOnDestroy(): void {
@@ -161,30 +167,30 @@ export class RegistrationUnmergingComponent implements OnInit {
   }
 
   unMerge() {
-    this.table.selection.selected    
-    .map((s: any) => {
+    this.table.selection.selected.map((s: any) => {
       this.unMergePostModel.push({ id: s.id });
     });
 
     this.unMergePatient(this.unMergePostModel)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => {
-        console.log(resultdata);
-        this.unMergeresponse = resultdata;
-        // this.openModal('unmerge-modal-1');
-        this.unmergebuttonDisabled = true;
-        this.unmergingList = [];
-        this.unMergePostModel = [];
-        this.messageDialogService.success(resultdata);
-      },
-      (error) => {
-        console.log(error);
-        this.defaultUI = true;
-        this.unmergemessage = "No records found";
-        this.unmergeimage = "norecordfound";
-      }
-    );
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultdata) => {
+          console.log(resultdata);
+
+          this.unMergeresponse = resultdata;
+          // this.openModal('unmerge-modal-1');
+          this.unmergebuttonDisabled = true;
+          this.unmergingList = [];
+          this.unMergePostModel = [];
+          this.messageDialogService.success(resultdata);
+        },
+        (error) => {
+          console.log(error);
+          this.defaultUI = true;
+          this.unmergemessage = "No records found";
+          this.unmergeimage = "norecordfound";
+        }
+      );
   }
 
   searchPatient(formdata: any) {
@@ -194,34 +200,38 @@ export class RegistrationUnmergingComponent implements OnInit {
     this.maxid = formdata["maxID"];
     this.ssn = formdata["ssn"];
     this.getAllunmergepatient()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultData) => {
-        this.showunmergespinner = false;
-        this.unmergingList = resultData;
-        this.isAPIProcess = true;
-        this.unmergingList = this.patientServie.getAllCategoryIcons(
-          this.unmergingList,
-          getmergepatientsearch
-        );
-        setTimeout(() => {
-          this.table.selection.changed
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((res: any) => {
-            if (this.table.selection.selected.length >= 1) {
-              this.unmergebuttonDisabled = false;
-            } else {
-              this.unmergebuttonDisabled = true;
-            }
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData) => {
+          this.showunmergespinner = false;
+          resultData = resultData.map((item: any) => {
+            item.notereason = item.noteReason;
+            return item;
           });
-        });
-      },
-      (error: any) => {
-        this.defaultUI = true;
-        this.unmergemessage = "No records found";
-        this.unmergeimage = "norecordfound";
-      }
-    );
+          this.unmergingList = resultData;
+          this.isAPIProcess = true;
+          this.unmergingList = this.patientServie.getAllCategoryIcons(
+            this.unmergingList,
+            getmergepatientsearch
+          );
+          setTimeout(() => {
+            this.table.selection.changed
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((res: any) => {
+                if (this.table.selection.selected.length >= 1) {
+                  this.unmergebuttonDisabled = false;
+                } else {
+                  this.unmergebuttonDisabled = true;
+                }
+              });
+          });
+        },
+        (error: any) => {
+          this.defaultUI = true;
+          this.unmergemessage = "No records found";
+          this.unmergeimage = "norecordfound";
+        }
+      );
   }
 
   getAllunmergepatient() {
