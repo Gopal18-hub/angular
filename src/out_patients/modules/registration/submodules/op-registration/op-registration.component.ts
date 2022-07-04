@@ -2140,13 +2140,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    let dob =
-      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
-        ? false
-        : true;
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
+
     //IF PASSPOET DETAILS HAVE NOT BEEN ADDED
     this.getPassportDetailObj();
 
@@ -2204,12 +2201,12 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.vip || false,
       0,
       this.OPRegForm.value.foreigner || false,
-      dob,
+      this.getDobStatus(),
       Number(this.cookie.get("UserId")),
       "",
       Number(this.cookie.get("HSPLocationId")),
       this.vip,
-      !dob,
+      !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
