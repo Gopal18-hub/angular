@@ -59,6 +59,7 @@ import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
 import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
+import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 
 export interface DialogData {
   expieryDate: Date;
@@ -708,11 +709,6 @@ export class OpRegistrationComponent implements OnInit {
           this.onageCalculator();
         }
       });
-
-    // this.questions[0].elementRef.addEventListener(
-
-    //   this.getPatientDetailsByMaxId.bind(this)
-    // );
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
@@ -2001,10 +1997,25 @@ export class OpRegistrationComponent implements OnInit {
       this.setPaymentMode("cash");
     }
 
+    //FOR SEAFAROR
+    this.OPRegForm.controls["seaFarer"].setValue(
+      patientDetails.hkid != "" ? true : false
+    );
+
+    this.setValuesToSeaFarer(patientDetails);
+
     //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
       patientDetails?.sourceofinfo
     );
+  }
+
+  //FOR ASSIGNING SEAFARER DETAILS TO POP UP
+  setValuesToSeaFarer(patientDetails: PatientDetails) {
+    this.seafarerDetails.HKID = patientDetails.hkid;
+    this.seafarerDetails.FDPGroup = patientDetails.fdpgroup;
+    this.seafarerDetails.Vesselname = patientDetails.vesselName;
+    this.seafarerDetails.rank = patientDetails.rank;
   }
 
   //POPULATING THE MODE OF PATMENT FOR PATIENT DETAILS
@@ -2015,8 +2026,20 @@ export class OpRegistrationComponent implements OnInit {
     );
   }
 
+  getDobStatus(): boolean {
+    let dob =
+      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
+        ? false
+        : true;
+    return dob;
+  }
+
   updateRequestBody!: UpdatepatientModel;
   getPatientUpdatedReqBody(): UpdatepatientModel {
+    let dob =
+      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
+        ? false
+        : true;
     console.log(this.OPRegForm.controls["idenityType"].value);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
@@ -2057,7 +2080,7 @@ export class OpRegistrationComponent implements OnInit {
       false,
       this.OPRegForm.value.vip || false,
       0,
-      this.OPRegForm.value.dob == "" ? true : false,
+      this.getDobStatus(),
       "1900-01-01T00:00:00",
       "1900-01-01T00:00:00",
       Number(this.cookie.get("UserId")),
@@ -2070,7 +2093,7 @@ export class OpRegistrationComponent implements OnInit {
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") ||
         "1900-01-01T00:00:00", //lat updted
       this.vip,
-      this.OPRegForm.value.dob == "" ? true : false,
+      !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
@@ -2097,10 +2120,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.otAdvanceExclude || false,
       0,
       0,
-      this.seafarerDetails.HKID,
-      this.seafarerDetails.rank,
-      this.seafarerDetails.Vesselname,
-      this.seafarerDetails.FDPGroup,
+      this.seafarerDetails.HKID || "",
+      this.seafarerDetails.rank || "",
+      this.seafarerDetails.Vesselname || "",
+      this.seafarerDetails.FDPGroup || "",
       this.OPRegForm.value.hwc || false,
       this.hwcRemark,
       this.OPRegForm.controls["idenityType"].value || 0,
@@ -2210,10 +2233,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
-      this.seafarerDetails.HKID,
-      this.seafarerDetails.rank,
-      this.seafarerDetails.Vesselname,
-      this.seafarerDetails.FDPGroup,
+      this.seafarerDetails.HKID || "",
+      this.seafarerDetails.rank || "",
+      this.seafarerDetails.Vesselname || "",
+      this.seafarerDetails.FDPGroup || "",
       this.OPRegForm.controls["hwc"].value || false,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
@@ -2545,6 +2568,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+
               defaultValue: this.noteRemark,
             },
           },
