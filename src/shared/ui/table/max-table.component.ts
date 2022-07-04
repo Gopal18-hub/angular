@@ -64,6 +64,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.dataSource = new MatTableDataSource<any>(this.data);
+    if (this.sort) this.dataSource.sort = this.sort;
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {

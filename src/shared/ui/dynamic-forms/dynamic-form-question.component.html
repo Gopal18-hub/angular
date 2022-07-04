@@ -490,7 +490,7 @@
         >
           <input
             matInput
-            placeholder=""
+            placeholder="__/__/____"
             [formControlName]="question.key"
             [type]="'text'"
             [id]="question.key"
@@ -498,7 +498,6 @@
             [readonly]="question.readonly"
             #element
             [matDatepicker]="datepicker"
-            [placeholder]="question.placeholder"
             [max]="question.maximum"
             [min]="question.minimum"
           />
