@@ -459,6 +459,7 @@
             [displayWith]="displayFn"
             (opened)="arrowIcon = 'arrow_drop_up'"
             (closed)="arrowIcon = 'arrow_drop_down'"
+            (optionSelected)="handler($event)"
           >
             <mat-option
               *ngFor="let opt of filteredOptions | async"

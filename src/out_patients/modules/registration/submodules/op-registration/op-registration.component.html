@@ -14,8 +14,9 @@
         [src]="icon['src']"
         [alt]="icon['tooltip']"
         width="45px"
-        class="mt-1"
+        class="mt-1 cursor-pointer"
         [matTooltip]="icon['tooltip']"
+        (click)="doCategoryIconAction(icon)"
       />
     </div>
   </nav>
