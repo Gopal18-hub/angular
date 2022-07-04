@@ -49,3 +49,6 @@
     margin-left: 10px;
     padding-bottom: 0 !important;
 }
+::ng-deep textarea{
+    min-height: 120px !important;
+}

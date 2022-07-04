@@ -25,7 +25,7 @@ export class DepositComponent implements OnInit {
       }});
   }
   openDepositdialog(){
-    this.matDialog.open(DepositDialogComponent,{width:'70vw',height:'95vh'});
+    this.matDialog.open(DepositDialogComponent,{width:'70vw',height:'98vh'});
   }
 
 }

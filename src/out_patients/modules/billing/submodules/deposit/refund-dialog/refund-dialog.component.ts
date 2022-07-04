@@ -237,8 +237,8 @@ export class RefundDialogComponent implements OnInit {
     console.log(this.data);
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
     this.refundform.controls["mail"].setValue(this.data.Mail);
-    this.refundform.controls["panno"].disable();
-    this.refundform.controls["mainradio"].disable();
+    // this.refundform.controls["panno"].disable();
+    // this.refundform.controls["mainradio"].disable();
   }
   ngAfterViewInit(): void{
     this.refundform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
