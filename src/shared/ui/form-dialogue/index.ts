@@ -17,6 +17,7 @@ import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
   ],
   exports: [FormDialogueComponent],
   declarations: [FormDialogueComponent],
+  entryComponents: [FormDialogueComponent],
   providers: [],
 })
 export class FormDialogueModule {}
