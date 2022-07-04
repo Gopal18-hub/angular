@@ -590,7 +590,7 @@ export class OpRegistrationComponent implements OnInit {
       this.onFistNameModify.bind(this)
     );
     //chnage event for middle name
-    this.questions[4].elementRef.addEventListener(
+    this.questions[5].elementRef.addEventListener(
       "change",
       this.onMiddleNameModify.bind(this)
     );
@@ -885,7 +885,7 @@ export class OpRegistrationComponent implements OnInit {
       bplCardNo: "",
       bplCardAddress: "",
     };
-    this.hotlistReason = "";
+    this.hotlistReason = { title: "", value: 0 };
     this.hotlistRemark = "";
     this.vip = "";
 
@@ -948,7 +948,10 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   foreignCLick(event: Event) {
-    if (!this.OPRegForm.controls["foreigner"].value) {
+    if (
+      !this.OPRegForm.controls["foreigner"].value &&
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian"
+    ) {
       this.showPassportDetails();
     }
   }
@@ -1110,7 +1113,7 @@ export class OpRegistrationComponent implements OnInit {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
-                  width: "100vw",
+                  width: "60vw",
                   height: "80vh",
                   data: {
                     searchResults: this.similarContactPatientList,
@@ -1206,6 +1209,16 @@ export class OpRegistrationComponent implements OnInit {
           // this.questions[24].options = this.cityList.map((l) => {
           //   return { title: l.cityName, value: l.id };
         });
+        let hotlistvalue = this.hotlistDialogList.filter((e) => {
+          e.title == this.hotlistReason.title;
+          return e.value;
+        });
+
+        this.hotlistReason = {
+          title: this.hotlistReason.title,
+          value: hotlistvalue[0].value,
+        };
+
         this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
           width: "30vw",
           height: "62vh",
@@ -1219,11 +1232,13 @@ export class OpRegistrationComponent implements OnInit {
                   type: "autocomplete",
                   title: "Hot Listing",
                   required: true,
+                  defaultValue: this.hotlistReason,
                   options: this.hotlistDialogList,
                 },
                 reason: {
                   type: "textarea",
                   title: "Remark",
+                  defaultValue: this.hotlistRemark,
                   required: true,
                 },
               },
@@ -1241,7 +1256,10 @@ export class OpRegistrationComponent implements OnInit {
               console.log(result);
               this.hotlistReason = result.data.hotlistTitle.title;
               this.hotlistRemark = result.data.reason;
-              this.postHotlistComment(this.hotlistReason, this.hotlistRemark);
+              this.postHotlistComment(
+                this.hotlistReason.title,
+                this.hotlistRemark
+              );
               console.log(this.hotlistReason, this.hotlistRemark);
               // this.postHotlistComment();
             },
@@ -1254,7 +1272,7 @@ export class OpRegistrationComponent implements OnInit {
     return arr;
   }
 
-  hotlistReason: string = "";
+  hotlistReason!: { title: string; value: number };
   hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
@@ -1802,6 +1820,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
+    this.enableDisableForeignerCheck(this.patientDetails);
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
@@ -1818,7 +1837,21 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
+    this.setHotlistDetails(this.patientDetails);
     this.populateUpdatePatientDetail(this.patientDetails);
+  }
+
+  setHotlistDetails(patientDetail: PatientDetails) {
+    this.hotlistReason.title = patientDetail.hotlistreason;
+    this.hotlistRemark = patientDetail.hotlistcomments;
+  }
+
+  enableDisableForeignerCheck(patientDetails: PatientDetails) {
+    if (patientDetails.nationalityName.toLowerCase() == "indian") {
+      this.OPRegForm.controls["foreigner"].disable();
+    } else {
+      this.OPRegForm.controls["foreigner"].enable();
+    }
   }
 
   onPhoneModify() {
@@ -1841,14 +1874,14 @@ export class OpRegistrationComponent implements OnInit {
   onMiddleNameModify() {
     console.log("middle name changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
     }
   }
 
   onFistNameModify() {
     console.log("firstname changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
+      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstname;
     }
   }
   onLastNameModify() {
@@ -2287,6 +2320,7 @@ export class OpRegistrationComponent implements OnInit {
   modfiedPatiendDetails!: ModifiedPatientDetailModel;
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
+    this.checkForForeignerCheckbox();
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -2320,6 +2354,14 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
+  checkForForeignerCheckbox() {
+    if (
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian" &&
+      this.OPRegForm.value.foreigner == false
+    ) {
+      this.OPRegForm.controls["foreigner"].setValue(true);
+    }
+  }
   // ON MOFIFY BUTTON PRESS CALL
   registeredPatientDetails(patientDetails: ModifiedPatientDetailModel) {
     let expdate =
@@ -2695,6 +2737,7 @@ export class OpRegistrationComponent implements OnInit {
       AppointmentSearchDialogComponent,
       {
         maxWidth: "100vw",
+        width: "95vw",
       }
     );
     appointmentSearchDialogref
@@ -2839,30 +2882,36 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log("passport dialog was closed ");
-        if (result == undefined || result.data == undefined) {
-          this.OPRegForm.controls["foreigner"].setValue(false);
-          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
-          this.questions[28].customErrorMessage =
-            "foreigner unchecked as passport not entered.";
+        if (this.passportDetails.passportNo != "") {
+          this.OPRegForm.controls["foreigner"].setValue(true);
         } else {
-          this.passportDetails = {
-            Expirydate:
-              this.datepipe.transform(
-                result.data.expiryDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            Issueat: result.data.issuedAt,
-            IssueDate:
-              this.datepipe.transform(
-                result.data.issueDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            passportNo: result.data.passportNo,
-            HCF: result.data.hcf,
-          };
-          console.log(this.passportDetails);
-          this.OPRegForm.controls["nationality"].setErrors(null);
-          this.questions[28].customErrorMessage = "";
+          if (result == undefined || result.data == undefined) {
+            this.OPRegForm.controls["foreigner"].setValue(false);
+            this.OPRegForm.controls["nationality"].setErrors({
+              incorrect: true,
+            });
+            this.questions[28].customErrorMessage =
+              "foreigner unchecked as passport not entered.";
+          } else {
+            this.passportDetails = {
+              Expirydate:
+                this.datepipe.transform(
+                  result.data.expiryDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              Issueat: result.data.issuedAt,
+              IssueDate:
+                this.datepipe.transform(
+                  result.data.issueDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              passportNo: result.data.passportNo,
+              HCF: result.data.hcf,
+            };
+            console.log(this.passportDetails);
+            this.OPRegForm.controls["nationality"].setErrors(null);
+            this.questions[28].customErrorMessage = "";
+          }
         }
       });
   }
@@ -2985,6 +3034,9 @@ export class SimilarPatientDialog {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       firstName: {
         title: "First Name",
@@ -3001,14 +3053,24 @@ export class SimilarPatientDialog {
       address: {
         title: "Address ",
         type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
       },
       age: {
         title: "Age ",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "70px",
+        },
       },
     },
   };
