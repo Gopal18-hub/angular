@@ -230,8 +230,17 @@ export class DynamicFormQuestionComponent
 
     this.subscription = this.trigger.panelClosingActions.subscribe(
       (e) => {
+        console.log(e);
         if ((!e || !e.source) && !this.question.allowSearchInput) {
-          this.form.controls[this.question.key].setValue(null);
+          const selected = this.question.options
+            .map((option: any) => option.value)
+            .find(
+              (option: any) =>
+                option === this.form.controls[this.question.key].value.value
+            );
+          if (selected == null) {
+            this.form.controls[this.question.key].setValue(null);
+          }
         }
       },
       (err) => this._subscribeToClosingActions(),
