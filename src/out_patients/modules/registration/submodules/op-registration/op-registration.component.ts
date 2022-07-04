@@ -884,7 +884,7 @@ export class OpRegistrationComponent implements OnInit {
       bplCardNo: "",
       bplCardAddress: "",
     };
-    this.hotlistReason = "";
+    this.hotlistReason = { title: "", value: 0 };
     this.hotlistRemark = "";
     this.vip = "";
 
@@ -1208,6 +1208,16 @@ export class OpRegistrationComponent implements OnInit {
           // this.questions[24].options = this.cityList.map((l) => {
           //   return { title: l.cityName, value: l.id };
         });
+        let hotlistvalue = this.hotlistDialogList.filter((e) => {
+          e.title == this.hotlistReason.title;
+          return e.value;
+        });
+
+        this.hotlistReason = {
+          title: this.hotlistReason.title,
+          value: hotlistvalue[0].value,
+        };
+
         this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
           width: "30vw",
           height: "62vh",
@@ -1221,11 +1231,13 @@ export class OpRegistrationComponent implements OnInit {
                   type: "autocomplete",
                   title: "Hot Listing",
                   required: true,
+                  defaultValue: this.hotlistReason,
                   options: this.hotlistDialogList,
                 },
                 reason: {
                   type: "textarea",
                   title: "Remark",
+                  defaultValue: this.hotlistRemark,
                   required: true,
                 },
               },
@@ -1243,7 +1255,10 @@ export class OpRegistrationComponent implements OnInit {
               console.log(result);
               this.hotlistReason = result.data.hotlistTitle.title;
               this.hotlistRemark = result.data.reason;
-              this.postHotlistComment(this.hotlistReason, this.hotlistRemark);
+              this.postHotlistComment(
+                this.hotlistReason.title,
+                this.hotlistRemark
+              );
               console.log(this.hotlistReason, this.hotlistRemark);
               // this.postHotlistComment();
             },
@@ -1256,7 +1271,7 @@ export class OpRegistrationComponent implements OnInit {
     return arr;
   }
 
-  hotlistReason: string = "";
+  hotlistReason!: { title: string; value: number };
   hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
@@ -1821,7 +1836,13 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
+    this.setHotlistDetails(this.patientDetails);
     this.populateUpdatePatientDetail(this.patientDetails);
+  }
+
+  setHotlistDetails(patientDetail: PatientDetails) {
+    this.hotlistReason.title = patientDetail.hotlistreason;
+    this.hotlistRemark = patientDetail.hotlistcomments;
   }
 
   enableDisableForeignerCheck(patientDetails: PatientDetails) {
