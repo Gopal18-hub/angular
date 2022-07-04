@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { getmergepatientsearch } from "../models/getmergepatientsearch";
 import { PatientDetails } from "../models/patientDetailsModel.Model";
 import { PatientSearchModel } from "../models/patientSearchModel";
-import { FormDialogueComponent } from "@modules/registration/submodules/op-registration/form-dialogue/form-dialogue.component";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable({
   providedIn: "root",
