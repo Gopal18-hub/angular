@@ -590,7 +590,7 @@ export class OpRegistrationComponent implements OnInit {
       this.onFistNameModify.bind(this)
     );
     //chnage event for middle name
-    this.questions[4].elementRef.addEventListener(
+    this.questions[5].elementRef.addEventListener(
       "change",
       this.onMiddleNameModify.bind(this)
     );
@@ -1110,7 +1110,7 @@ export class OpRegistrationComponent implements OnInit {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
-                  width: "100vw",
+                  width: "60vw",
                   height: "80vh",
                   data: {
                     searchResults: this.similarContactPatientList,
@@ -1841,14 +1841,14 @@ export class OpRegistrationComponent implements OnInit {
   onMiddleNameModify() {
     console.log("middle name changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
     }
   }
 
   onFistNameModify() {
     console.log("firstname changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
+      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstname;
     }
   }
   onLastNameModify() {
@@ -2681,6 +2681,7 @@ export class OpRegistrationComponent implements OnInit {
       AppointmentSearchDialogComponent,
       {
         maxWidth: "100vw",
+        width: "95vw",
       }
     );
     appointmentSearchDialogref
@@ -2971,6 +2972,9 @@ export class SimilarPatientDialog {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       firstName: {
         title: "First Name",
@@ -2987,14 +2991,24 @@ export class SimilarPatientDialog {
       address: {
         title: "Address ",
         type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
       },
       age: {
         title: "Age ",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "70px",
+        },
       },
     },
   };
