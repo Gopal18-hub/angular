@@ -129,15 +129,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
             return { title: s.stationName, value: s.stationid };
           });
 
+          this.questions[2].options = this.locationList.map((l) => {
+            return { title: l.organizationName, value: l.hspLocationId };
+          });
           //changes for UAT defect fix to select station bydefault if only one location
           if (this.locationList.length == 1) {
             this.loginForm.controls["location"].setValue({
               title: this.locationList[0].organizationName,
               value: this.locationList[0].hspLocationId,
-            });
-          } else {
-            this.questions[2].options = this.locationList.map((l) => {
-              return { title: l.organizationName, value: l.hspLocationId };
             });
           }
 

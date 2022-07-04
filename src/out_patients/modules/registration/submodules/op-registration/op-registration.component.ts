@@ -109,7 +109,6 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
-  invalidChars: any = ["e", "E"];
 
   passportDetails: {
     passportNo: string;
@@ -234,7 +233,7 @@ export class OpRegistrationComponent implements OnInit {
         onlyKeyPressAlpha: true,
       },
       altLandlineName: {
-        type: "number",
+        type: "tel",
         title: "Alt Contact/Landline",
         pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
         required: false,
@@ -609,12 +608,7 @@ export class OpRegistrationComponent implements OnInit {
       "focus",
       this.onageCalculator.bind(this)
     );
-    //ALt contact /Landline NUmber alphabate e prevention
-    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
-      if (this.invalidChars.includes(e.key)) {
-        e.preventDefault();
-      }
-    });
+
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
       "blur",
