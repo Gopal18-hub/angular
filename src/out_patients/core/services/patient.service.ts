@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { getmergepatientsearch } from "../models/getmergepatientsearch";
 import { PatientDetails } from "../models/patientDetailsModel.Model";
 import { PatientSearchModel } from "../models/patientSearchModel";
+import { FormDialogueComponent } from "@modules/registration/submodules/op-registration/form-dialogue/form-dialogue.component";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Injectable({
   providedIn: "root",
@@ -22,19 +24,16 @@ export class PatientService {
     hotlist: "Hot_listing_icon.svg",
   };
   pageNumberIcons: any = {
-    "Cash": "Cash_Icon.svg",
+    Cash: "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
     "Corporate/Insurance": "Ins_icon.svg",
-    "ins": "Ins_icon.svg",
-    "ews": "EWS.svg",
-    "cash": "Cash_Icon.svg",
+    ins: "Ins_icon.svg",
+    ews: "EWS.svg",
+    cash: "Cash_Icon.svg",
     "psu/govt": "PSU_icon.svg",
   };
   categoryIconsActions: any = {
-    cghs: {
-      action: "dialog",
-      properties: {},
-    },
+    cghs: {},
     isCghsverified: {
       action: "dialog",
       properties: {},
@@ -42,7 +41,13 @@ export class PatientService {
     hotList: "",
     mergeLinked: "",
     vip: "",
-    note: "",
+    note: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        data: {},
+      },
+    },
     cash: "",
     psu: "",
     ews: "",
@@ -102,7 +107,7 @@ export class PatientService {
   };
 
   pageNumberIconsTooltip: any = {
-    "Cash": {
+    Cash: {
       type: "static",
       value: "Cash",
     },
@@ -114,15 +119,15 @@ export class PatientService {
       type: "static",
       value: "INS",
     },
-    "ins": {
+    ins: {
       type: "static",
       value: "INS",
     },
-    "ews": {
+    ews: {
       type: "static",
       value: "EWS",
     },
-    "cash": {
+    cash: {
       type: "static",
       value: "CASH",
     },
@@ -132,7 +137,7 @@ export class PatientService {
     },
   };
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   getAllCategoryIcons(
     patientSearchModel: PatientSearchModel[] | getmergepatientsearch[],
@@ -242,5 +247,16 @@ export class PatientService {
     });
 
     return returnIcons;
+  }
+
+  doAction(type: string) {
+    if (this.categoryIconsActions[type]) {
+      if (this.categoryIconsActions[type].action == "dialog") {
+      }
+      this.dialog.open(
+        this.categoryIconsActions[type].component,
+        this.categoryIconsActions[type].properties
+      );
+    }
   }
 }
