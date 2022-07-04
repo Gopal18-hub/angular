@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authStatus: boolean = false;
   public username: string = "";
   Authentication: boolean = true;
+  public name: string = "";
 
   loginFormData = {
     title: "",
@@ -143,6 +144,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           console.log(this.questions);
 
           this.userId = Number(this.userlocationandstation.userId);
+          this.name = this.userlocationandstation.name;
 
           this.loginForm.controls["location"].valueChanges
             .pipe(takeUntil(this._destroying$))
@@ -207,6 +209,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.authStatus = true;
               this.cookie.set("UserName", this.username);
               this.cookie.set("UserId", this.userId.toString());
+              this.cookie.set("Name", this.name);
               this.cookie.set("LocationIACode", this.locationdetail!.iaCode);
               this.cookie.set(
                 "HSPLocationId",
