@@ -95,6 +95,7 @@ export class OpRegistrationComponent implements OnInit {
   issuedate: Date | undefined;
   categoryIcons: [] = [];
   passportNo: string = "";
+  isNSSHLocation: boolean = false;
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -107,6 +108,8 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
+  invalidChars: any = ["e", "E"];
+
   passportDetails: {
     passportNo: string;
     IssueDate: string | null;
@@ -325,7 +328,7 @@ export class OpRegistrationComponent implements OnInit {
       seaFarer: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Seaferers" }],
+        options: [{ title: "Seafarers" }],
       },
       hotlist: {
         type: "checkbox",
@@ -556,15 +559,84 @@ export class OpRegistrationComponent implements OnInit {
       value: 1,
     });
     this.OPRegForm.controls["foreigner"].disable();
-    this.getStatesByCountry(1);
-    this.getCitiesByCountry(1);
-    let HSPLocationId = Number(this.cookie.get("HSPLocationId"));
-    if (HSPLocationId != 69) {
-      this.OPRegForm.controls["seaFarer"].disable();
-    } else {
-      this.OPRegForm.controls["seaFarer"].enable();
-    }
+    this.getStatesByCountry({ title: "India", value: 1 });
+    this.getCitiesByCountry({ title: "India", value: 1 });
+
+    this.isNSSHLocation =
+      this.cookie.get("LocationIACode") == "NSSH" ? true : false;
     this.checkForMaxID();
+  }
+
+  formEvents() {
+    //chnage event for email Field
+
+    this.questions[11].elementRef.addEventListener(
+      "change",
+      this.onEmailModify.bind(this)
+    );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
+    //chnage event for Mobile Field
+    this.questions[2].elementRef.addEventListener(
+      "change",
+      this.onPhoneModify.bind(this)
+    );
+    //chnage event for FirstName
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onFistNameModify.bind(this)
+    );
+    //chnage event for middle name
+    this.questions[4].elementRef.addEventListener(
+      "change",
+      this.onMiddleNameModify.bind(this)
+    );
+    //chnage event for Last Name
+    this.questions[6].elementRef.addEventListener(
+      "change",
+      this.onLastNameModify.bind(this)
+    );
+    //DOB blur event
+    this.questions[8].elementRef.addEventListener(
+      "blur",
+      this.onageCalculator.bind(this)
+    );
+
+    //ALt contact /Landline NUmber alphabate e prevention
+    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
+      if (this.invalidChars.includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+    //IdenityType value change
+    this.questions[17].elementRef.addEventListener(
+      "blur",
+      this.checkIndetityValue.bind(this)
+    );
+
+    //Father or Spouse value change
+    this.questions[13].elementRef.addEventListener(
+      "blur",
+      this.checkFatherSpouseName.bind(this)
+    );
+
+    // nationality value chnage event to enable foreigner
+    this.questions[28].elementRef.addEventListener(
+      "blur",
+      this.onNationalityModify.bind(this)
+    );
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.getPatientDetailsByMaxId.bind(this)
+    );
+    this.questions[21].elementRef.addEventListener(
+      "blur",
+      this.getLocalityByPinCode.bind(this)
+    );
   }
 
   formProcessing() {
@@ -582,16 +654,6 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
     // }
-    //chnage event for email Field
-
-    this.questions[11].elementRef.addEventListener(
-      "change",
-      this.onEmailModify.bind(this)
-    );
-    this.questions[21].elementRef.addEventListener(
-      "blur",
-      this.getLocalityByPinCode.bind(this)
-    );
 
     this.OPRegForm.controls["vip"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -639,32 +701,6 @@ export class OpRegistrationComponent implements OnInit {
 
     // });
 
-    //chnage event for Mobile Field
-    this.questions[2].elementRef.addEventListener(
-      "change",
-      this.onPhoneModify.bind(this)
-    );
-    //chnage event for FirstName
-    this.questions[4].elementRef.addEventListener(
-      "change",
-      this.onFistNameModify.bind(this)
-    );
-    //chnage event for middle name
-    this.questions[4].elementRef.addEventListener(
-      "change",
-      this.onMiddleNameModify.bind(this)
-    );
-    //chnage event for Last Name
-    this.questions[6].elementRef.addEventListener(
-      "change",
-      this.onLastNameModify.bind(this)
-    );
-
-    //DOB blur event
-    this.questions[8].elementRef.addEventListener(
-      "blur",
-      this.onageCalculator.bind(this)
-    );
     this.OPRegForm.controls["dob"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -674,34 +710,6 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
 
-    //IdenityType value change
-    this.questions[17].elementRef.addEventListener(
-      "blur",
-      this.checkIndetityValue.bind(this)
-    );
-
-    //Father or Spouse value change
-    this.questions[13].elementRef.addEventListener(
-      "blur",
-      this.checkFatherSpouseName.bind(this)
-    );
-
-    // nationality value chnage event to enable foreigner
-    this.questions[28].elementRef.addEventListener(
-      "blur",
-      this.onNationalityModify.bind(this)
-    );
-
-    //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-      if (event.key === "Enter") {
-        // Cancel the default action, if needed
-        event.preventDefault();
-
-        this.getPatientDetailsByMaxId();
-      }
-    });
     // this.questions[0].elementRef.addEventListener(
 
     //    input.addEventListener("keypress", function(event) {
@@ -723,11 +731,14 @@ export class OpRegistrationComponent implements OnInit {
           this.validatePatientAge();
         }
       });
-    this.questions[21].elementRef.addEventListener(
-      "blur",
-      this.getLocalityByPinCode.bind(this)
-    );
 
+    this.OPRegForm.controls["pincode"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (!this.countrybasedflow) {
+          this.clearAddressOnPincodeChange();
+        }
+      });
     //value chnage event of country to fill city list and staelist
     this.OPRegForm.controls["country"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -826,39 +837,11 @@ export class OpRegistrationComponent implements OnInit {
           }
         }
       });
-
-    // //on change of Gender Title needs to be dafult for Transgender
-    this.OPRegForm.controls["gender"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        console.log("Gender" + value);
-        if (value) {
-          let genderName = this.genderList.filter((g) => g.id === value)[0]
-            .name;
-          if (
-            genderName != "" &&
-            genderName != undefined &&
-            genderName != null
-          ) {
-            if (genderName == "Transgender") {
-              this.OPRegForm.controls["title"].setValue(0);
-            }
-          }
-        }
-      });
-
-    // this.OPRegForm.controls["foreigner"].valueChanges.subscribe(
-    //   (value: any) => {
-    //     if  (value && !this.MaxIDExist) {
-    //       this.showPassportDetails();
-
-    //     }
-    //   }
-    // );
   }
 
   ngAfterViewInit(): void {
     this.formProcessing();
+    this.formEvents();
   }
   clearClicked: boolean = false;
 
@@ -1432,6 +1415,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
+      this.countrybasedflow = false;
       this.http
         .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
         .pipe(takeUntil(this._destroying$))
@@ -1445,7 +1429,46 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  clearAddressOnPincodeChange() {
+    if (
+      this.OPRegForm.value.city.value != undefined &&
+      this.OPRegForm.value.city.value != null &&
+      this.OPRegForm.value.city.value != ""
+    ) {
+      this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
+    }
+
+    if (
+      this.OPRegForm.value.locality.value != undefined &&
+      this.OPRegForm.value.locality.value != null &&
+      this.OPRegForm.value.locality.value != ""
+    ) {
+      this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
+    }
+
+    if (
+      this.OPRegForm.value.state.value != undefined &&
+      this.OPRegForm.value.state.value != null &&
+      this.OPRegForm.value.state.value != ""
+    ) {
+      this.OPRegForm.controls["state"].setValue({ title: "", value: 0 });
+    }
+    if (
+      this.OPRegForm.value.district.value != undefined &&
+      this.OPRegForm.value.district.value != null &&
+      this.OPRegForm.value.district.value != ""
+    ) {
+      this.OPRegForm.controls["district"].setValue({ title: "", value: 0 });
+    }
+
+    this.OPRegForm.controls["country"].setValue({
+      title: "India",
+      value: 1,
+    });
+  }
+
   //fetch Address based on locality or set pincode on selection of locality
+  countrybasedflow: boolean = false;
   AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID(locality: any) {
     if (
@@ -1482,6 +1505,7 @@ export class OpRegistrationComponent implements OnInit {
             });
           });
       }
+      this.countrybasedflow = false;
     } else {
       if (
         this.OPRegForm.value.pincode == undefined ||
@@ -1498,7 +1522,9 @@ export class OpRegistrationComponent implements OnInit {
           let pincode = this.localitybyCityList.filter(
             (l) => l.id === locality.value
           )[0].pincode;
+          this.countrybasedflow = true;
           this.OPRegForm.controls["pincode"].setValue(pincode);
+          this.countrybasedflow = false;
         }
       }
     }
@@ -2197,7 +2223,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarerDetails.rank,
       this.seafarerDetails.Vesselname,
       this.seafarerDetails.FDPGroup,
-      this.OPRegForm.controls["hwc"].value,
+      this.OPRegForm.controls["hwc"].value || false,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
       this.OPRegForm.value.idenityValue,
