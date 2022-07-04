@@ -2519,7 +2519,12 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   doCategoryIconAction(categoryIcon: any) {
-    this.patientService.doAction(categoryIcon.type);
+    const data: any = {
+      note: {
+        notes: this.noteRemark,
+      },
+    };
+    this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
   }
 
   //DIALOGS ---------------------------------------------------------------------------------------

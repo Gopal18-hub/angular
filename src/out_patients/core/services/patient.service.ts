@@ -45,7 +45,25 @@ export class PatientService {
       action: "dialog",
       component: FormDialogueComponent,
       properties: {
-        data: {},
+        width: "28vw",
+        data: {
+          title: "Note Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                required: true,
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
       },
     },
     cash: "",
@@ -247,14 +265,21 @@ export class PatientService {
     return returnIcons;
   }
 
-  doAction(type: string) {
+  doAction(type: string, data: any) {
     if (this.categoryIconsActions[type]) {
       if (this.categoryIconsActions[type].action == "dialog") {
+        if (data) {
+          Object.keys(data).forEach((ele) => {
+            this.categoryIconsActions[type].properties.data.form.properties[
+              ele
+            ].defaultValue = data[ele];
+          });
+        }
+        this.dialog.open(
+          this.categoryIconsActions[type].component,
+          this.categoryIconsActions[type].properties
+        );
       }
-      this.dialog.open(
-        this.categoryIconsActions[type].component,
-        this.categoryIconsActions[type].properties
-      );
     }
   }
 }
