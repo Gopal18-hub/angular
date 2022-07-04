@@ -2523,6 +2523,20 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         notes: this.noteRemark,
       },
+      vip: {
+        notes: this.vip,
+      },
+      hwc: {
+        notes: this.hwcRemark,
+      },
+      ppagerNumber: {
+        bplCardNo: this.ewsDetails.bplCardNo,
+        BPLAddress: this.ewsDetails.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReason,
+        reason: this.hotlistRemark,
+      },
     };
     this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
   }

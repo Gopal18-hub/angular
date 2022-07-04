@@ -34,13 +34,32 @@ export class PatientService {
   };
   categoryIconsActions: any = {
     cghs: {},
-    isCghsverified: {
-      action: "dialog",
-      properties: {},
-    },
-    hotList: "",
+    isCghsverified: {},
     mergeLinked: "",
-    vip: "",
+    vip: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "VIP Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
     note: {
       action: "dialog",
       component: FormDialogueComponent,
@@ -55,7 +74,66 @@ export class PatientService {
               notes: {
                 type: "textarea",
                 title: "",
-                required: true,
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
+    hotlist: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "30vw",
+        data: {
+          title: "Hot Listing",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              hotlistTitle: {
+                type: "autocomplete",
+                title: "Hot Listing",
+                readonly: true,
+                defaultValue: "",
+              },
+              reason: {
+                type: "textarea",
+                title: "Remark",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
+    hotList: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "30vw",
+        data: {
+          title: "Hot Listing",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              hotlistTitle: {
+                type: "autocomplete",
+                title: "Hot Listing",
+                readonly: true,
+                defaultValue: "",
+              },
+              reason: {
+                type: "textarea",
+                title: "Remark",
                 readonly: true,
                 defaultValue: "",
               },
@@ -68,9 +146,61 @@ export class PatientService {
     },
     cash: "",
     psu: "",
-    ews: "",
+    ppagerNumber: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "EWS Details",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              bplCardNo: {
+                type: "string",
+                title: "BPL Card No.",
+                readonly: true,
+                defaultValue: "",
+              },
+              BPLAddress: {
+                type: "textarea",
+                title: "Address on card",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
     ins: "",
-    hwc: "",
+    hwc: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "HWC Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
   };
 
   categoryIconsTooltip: any = {
