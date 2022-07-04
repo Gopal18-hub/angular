@@ -212,6 +212,7 @@ export class PatientService {
           src:
             "assets/patient-categories/" +
             this.pageNumberIcons[patient["ppagerNumber"]],
+          type: e,
         };
         if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
           if (
@@ -226,6 +227,7 @@ export class PatientService {
       } else if (this.categoryIcons[e] && patient[e as keyof PatientDetails]) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
+          type: e,
         };
         if (this.categoryIconsTooltip[e]) {
           if (this.categoryIconsTooltip[e]["type"] == "static") {

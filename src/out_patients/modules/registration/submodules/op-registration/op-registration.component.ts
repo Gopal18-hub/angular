@@ -60,6 +60,7 @@ import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
 import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
 import { AnyCatcher } from "rxjs/internal/AnyCatcher";
+import { AnimationPlayer } from "@angular/animations";
 
 export interface DialogData {
   expieryDate: Date;
@@ -2516,6 +2517,11 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
   }
+
+  doCategoryIconAction(categoryIcon: any) {
+    this.patientService.doAction(categoryIcon.type);
+  }
+
   //DIALOGS ---------------------------------------------------------------------------------------
 
   openVipNotes() {
