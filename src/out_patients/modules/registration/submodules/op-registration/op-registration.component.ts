@@ -710,19 +710,6 @@ export class OpRegistrationComponent implements OnInit {
         }
       });
 
-    // this.questions[0].elementRef.addEventListener(
-
-    //    input.addEventListener("keypress", function(event) {
-    // If the user presses the "Enter" key on the keyboard
-    // if (event.key === "Enter") {
-    //   // Cancel the default action, if needed
-    //   event.preventDefault();
-    //   // Trigger the button element with a click
-    //   document.getElementById("myBtn").click();
-    // }
-    // });
-    // );
-
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
       .pipe(takeUntil(this._destroying$))
