@@ -279,6 +279,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Locality",
         required: true,
         options: this.localityList,
+        allowSearchInput: true,
         // required property is dependent on country
       },
       localityTxt: {

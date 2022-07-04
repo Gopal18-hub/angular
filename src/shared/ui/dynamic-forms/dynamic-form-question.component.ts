@@ -230,7 +230,7 @@ export class DynamicFormQuestionComponent
 
     this.subscription = this.trigger.panelClosingActions.subscribe(
       (e) => {
-        if (!e || !e.source) {
+        if ((!e || !e.source) && !this.question.allowSearchInput) {
           this.form.controls[this.question.key].setValue(null);
         }
       },
