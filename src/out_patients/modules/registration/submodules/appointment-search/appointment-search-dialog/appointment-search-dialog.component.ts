@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { environment } from "@environments/environment";
 import { HttpService } from "../../../../../../shared/services/http.service";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -14,6 +14,7 @@ import { ApiConstants } from '../../../../../../out_patients/core/constants/ApiC
   styleUrls: ["./appointment-search-dialog.component.scss"],
 })
 export class AppointmentSearchDialogComponent implements OnInit {
+  @ViewChild("patientDetail") tableRows: any;
   today = new Date();
   todayDate = this.datepipe.transform(Date.now(), "yyyy-MM-dd");
   tomorrow = this.datepipe.transform(Date.now(), "yyyy-MM-dd");
@@ -35,10 +36,10 @@ export class AppointmentSearchDialogComponent implements OnInit {
   isChecked: boolean = false;
   isDateDisabled: boolean = false;
   
-
-  OPAppointmentForm!: FormGroup;
+    OPAppointmentForm!: FormGroup;
   questions: any;
-  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {}
+  constructor(private http: HttpService, private datepipe: DatePipe, private formService: QuestionControlService, public dialogRef: MatDialogRef<AppointmentSearchDialogComponent>) {
+  }
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.FormData.properties,
@@ -47,6 +48,11 @@ export class AppointmentSearchDialogComponent implements OnInit {
     this.OPAppointmentForm = formResult.form;
     this.questions = formResult.questions;
     this.searchAppointment();
+   
+  }
+  ngAfterViewInit() {
+    this.getMaxID();
+    
   }
 
   FormData = {
@@ -89,6 +95,8 @@ export class AppointmentSearchDialogComponent implements OnInit {
 
   config: any = {
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: [
       "id",
       "title",
@@ -435,9 +443,13 @@ export class AppointmentSearchDialogComponent implements OnInit {
           this.defaultUI = true;
           this.findpatientimage = "norecordfound";
           this.findpatientmessage = "No Appointment Found";
+         
         } else {
           this.searchAppPatient = true;
           this.defaultUI = false;
+          this.tableRows= this.searchResults;
+          this.getMaxID();
+         
         }
       },
       (error: any) => {
@@ -465,5 +477,15 @@ export class AppointmentSearchDialogComponent implements OnInit {
    this.OPAppointmentForm.reset();
    this.dialogRef.close();
  }
+ getMaxID() {
+  console.log("getmaxid called",this.tableRows);
+  console.log("getmaxid called",this.tableRows.selection);
+  setTimeout(() => {
+  this.tableRows.selection.changed.subscribe((res: any) => {
+    this.dialogRef.close({ data: res });
+  });
+});
+ 
+}
 //  'http://localhost:7005/api/patient/getappointmentpatientssearch?fname=Dev&IsDateRange=0&fromDate=2022-03-01&ToDate=2022-03-31&SearchFrom=1' \
 }

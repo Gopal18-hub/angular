@@ -11,6 +11,7 @@ import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "./storage";
 
 import { MessageDialogService } from "../ui/message-dialog/message-dialog.service";
+import { Router } from "@angular/router";
 
 class Options {
   showErrorMessage?: boolean = false;
@@ -23,7 +24,8 @@ class Options {
 export class HttpService {
   constructor(
     private http: HttpClient,
-    private messageDialog: MessageDialogService
+    private messageDialog: MessageDialogService,
+    private router: Router
   ) {}
 
   /** GET data from the server */
@@ -107,14 +109,15 @@ export class HttpService {
     options?: Options
   ) {
     if (error.status === 401) {
-      window.location.reload();
+      //window.location.reload();
+      this.router.navigate(["login"]);
     } else {
       if (options && !options.showErrorMessage) {
       } else {
         if (error.error && error.error.message) {
-        //  this.messageDialog.error(error.error.message);
+          //  this.messageDialog.error(error.error.message);
         } else {
-         // this.messageDialog.error("Someting happend please try again");
+          // this.messageDialog.error("Someting happend please try again");
         }
       }
     }

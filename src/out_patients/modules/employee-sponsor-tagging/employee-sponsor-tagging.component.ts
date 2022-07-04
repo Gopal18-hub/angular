@@ -23,7 +23,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     properties:{
       maxId:{
         type:"string",
-        defaultValue: (this.cookie.get("LocationIACode")),
+        defaultValue: (this.cookie.get("LocationIACode")+ "."),
       },
       mobileNo:{
         type:"number",
@@ -92,7 +92,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   
   config1: any  = {
-    actionItems: true,
+    actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
     displayedColumns: ['groupCompany', 'empCode', 'dob', 'employeeName', 'dependantName','maxid','gender','doj','age','relationship','remarks'],
@@ -161,7 +161,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       dateandtime : {
         title: 'Added Date & Time',
-        type: 'date'
+        type: 'string'
       },
       addedby : {
         title: 'Added By',
@@ -197,17 +197,16 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(employeesponsorform.mobileNo);
   }
 
-  //save popup
+  //SAVE DIALOG
   employeeSave()
   {
-    console.log('inside employee save');
     this.dialog.open(SavedialogComponent, {width: '25vw', height: '30vh', data: {
       id: 12334,
       name: 'name'
     }});
   }
 
-  //delete popup
+  //DELETE DIALOG
   employeeDelete(){
     this.dialog.open(DeletedialogComponent,  {width:'25vw',
       height:'30vh',panelClass:'custom-container'},)
@@ -236,6 +235,100 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     let todaydate=new Date();
     this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
     this.employeesponsorForm.controls["todate"].setValue(todaydate);
+    this.data=[];
+    this.data1=[];
   }
+
+  //HARD CODED DATA FOR EMPLOYEE DEPENDANT TABLE
+  data:any[]=[
+    {
+      groupCompany:"Max healthcare",
+      empCode:"B015330",
+      dob:"10/1/2017",
+      employeeName:"Mr.Amit kumar",
+      dependantName:"priti",
+      maxid:"",
+      gender:"F",
+      doj:"10/1/2017",
+      age:"53",
+      relationship:"Mother",
+      remarks:""
+    },
+    {
+      groupCompany:"Max healthcare",
+      empCode:"B015330",
+      dob:"10/1/2017",
+      employeeName:"Mr.Amit kumar",
+      dependantName:"priti",
+      maxid:"",
+      gender:"F",
+      doj:"10/1/2017",
+      age:"53",
+      relationship:"Mother",
+      remarks:""
+    },
+    {
+      groupCompany:"Max healthcare",
+      empCode:"B015330",
+      dob:"10/1/2017",
+      employeeName:"Mr.Amit kumar",
+      dependantName:"priti",
+      maxid:"",
+      gender:"F",
+      doj:"10/1/2017",
+      age:"53",
+      relationship:"Mother",
+      remarks:""
+    },
+    {
+      groupCompany:"Max healthcare",
+      empCode:"B015330",
+      dob:"10/1/2017",
+      employeeName:"Mr.Amit kumar",
+      dependantName:"priti",
+      maxid:"",
+      gender:"F",
+      doj:"10/1/2017",
+      age:"53",
+      relationship:"Mother",
+      remarks:""
+    }
+  ]
+
+  //HARD CODED DATA FOR SECOIND TABLE
+  data1:any[]=[
+    {
+     slno:"1",
+     companyname:"xxxxx",
+     dateandtime:"05/11/2022 08:48:52 AM",
+     addedby:"xxx",
+     updateddate:"05/11/2022",
+     updatedby:"xxxx"
+    },
+    {
+      slno:"2",
+      companyname:"yyy",
+      dateandtime:"05/11/2022 08:48:52 AM",
+      addedby:"xxx",
+      updateddate:"05/11/2022",
+      updatedby:"xxxx"
+    },
+    {
+      slno:"3",
+     companyname:"zzz",
+     dateandtime:"05/11/2022 08:48:52 AM",
+     addedby:"xxx",
+     updateddate:"05/11/2022",
+     updatedby:"xxxx"
+    },
+    {
+      slno:"4",
+      companyname:"aaa",
+      dateandtime:"05/11/2022 08:48:52 AM",
+      addedby:"xxx",
+      updateddate:"05/11/2022",
+      updatedby:"xxxx"
+    }
+  ]
 
 }

@@ -5,8 +5,8 @@ export class ModifiedPatientDetailModel{
     pemail: string;
     nationality: number;
     passportNo: string;
-    issueDate: string;
-    expiryDate: string;
+    issueDate: string|null;
+    expiryDate: string|null;
     passportIssuedAt: string;
     
     foreigner: boolean;
@@ -41,8 +41,8 @@ constructor(
     nationality: number,
     foreigner: boolean,
     passportNo: string,
-    issueDate: string,
-    expiryDate: string,
+    issueDate: string|null,
+    expiryDate: string|null,
     passportIssuedAt: string,
     operatorId: number,
     hsplocationId: number,

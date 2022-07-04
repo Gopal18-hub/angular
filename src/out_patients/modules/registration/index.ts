@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
+import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
 import { RegistrationRoutingModule } from "./routes";
 import { SimilarPatientDialog } from "./submodules/op-registration/op-registration.component";
 import { OpRegistrationComponent } from "./submodules/op-registration/op-registration.component";
@@ -7,14 +7,17 @@ import { FindPatientComponent } from "./submodules/find-patient/find-patient.com
 import { DupRegMergingComponent } from "./submodules/dup-reg-merging/dup-reg-merging.component";
 import { RegistrationUnmergingComponent } from "./submodules/registration-unmerging/registration-unmerging.component";
 import { RegistrationComponent } from "./registration.component";
-import { MaxHealthTableModule } from "../../../shared/ui/table";
+import { MaxHealthTableModule } from "@shared/ui/table";
 import { OpRegApprovalComponent } from "./submodules/op-reg-approval/op-reg-approval.component";
 import { MatButtonModule } from "@angular/material/button";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatNativeDateModule, MatRippleModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { MatDialogModule } from "@angular/material/dialog";
+import {
+  MatDialogModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+} from "@angular/material/dialog";
 import { MatTabsModule } from "@angular/material/tabs";
 import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
@@ -33,20 +36,21 @@ import { SeafarersDialogComponent } from "./submodules/op-registration/seafarers
 import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner-dialog/foreigner-dialog.component";
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
-import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatRadioModule } from "@angular/material/radio";
 
-import { AuthService } from "../../../shared/services/auth.service";
-import { HttpService } from "../../../shared/services/http.service";
-import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
-import { SearchService } from "../../../shared/services/search.service";
-import { CookieService } from "../../../shared/services/cookie.service";
+import { AuthService } from "@shared/services/auth.service";
+import { HttpService } from "@shared/services/http.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "@shared/services/search.service";
+import { CookieService } from "@shared/services/cookie.service";
 import { DMSComponent } from "../registration/submodules/dms/dms.component";
-import { ModifyDialogComponent } from "../../core/modify-dialog/modify-dialog.component";
+import { ModifyDialogComponent } from "@core/modify-dialog/modify-dialog.component";
 
-import { RegistrationDialogueComponent } from "../../modules/registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
-import { PendingChangesGuard } from "../../../shared/services/guards/pending-change-guard.service";
+import { RegistrationDialogueComponent } from "@modules/registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
+import { PendingChangesGuard } from "@shared/services/guards/pending-change-guard.service";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -95,6 +99,7 @@ import { PendingChangesGuard } from "../../../shared/services/guards/pending-cha
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
     MatRadioModule,
+    MatTooltipModule,
   ],
   exports: [],
   providers: [
@@ -104,6 +109,7 @@ import { PendingChangesGuard } from "../../../shared/services/guards/pending-cha
     SearchService,
     CookieService,
     PendingChangesGuard,
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { autoFocus: false } },
   ],
   entryComponents: [AppointmentSearchComponent, FormDialogueComponent],
   bootstrap: [],
