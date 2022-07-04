@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BillingForm } from '@core/constants/BillingForm';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 
 @Component({
@@ -9,60 +10,7 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
 })
 export class FormSixtyComponent implements OnInit {
 
-  form60FormData = {
-    title: "",
-    type: "object",
-    properties: {
-      aadharno: {
-        type: "number",
-      },
-      appliedforpan: {
-        type: "checkbox",
-        options: [{
-          title: ''
-        }]
-      },
-      dateofapplication: {
-        type: "date"
-      },
-      applicationno: {
-        type: "number"
-      },
-      agriculturalincome: {
-        type: "string"
-      },
-      otherthanagriculturalincome: {
-        type: "string"
-      },
-      iddocumenttype: {
-        type: "autocomplete"
-      },
-      iddocidentityno: {
-        type: "number"
-      },
-      idnameofauthority: {
-        type: "string"
-      },
-      tickforsamedoc: {
-        type: "checkbox",
-        options: [{
-          title: ''
-        }]
-      },
-      addressdocumenttype: {
-        type: "autocomplete"
-      },
-      addressdocidentityno: {
-        type: "number"
-      },
-      addressnameofauthority: {
-        type: "string"
-      },
-      remarks: {
-        type: "string"
-      }
-    },
-  };
+  form60FormData = BillingForm.form60FormData;
   form60form!: FormGroup;
   questions: any;
   today: any;

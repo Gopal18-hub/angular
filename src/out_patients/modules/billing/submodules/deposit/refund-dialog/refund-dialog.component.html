@@ -44,7 +44,7 @@
             <payment-methods></payment-methods>
         </div> -->
 
-        <payment-methods></payment-methods>
+        <payment-methods [forrefund]="forrefund" (paymentform)="paymentformevent($event)"></payment-methods>
 
         <div class="w-1/3 h-full float-right ">
             <div class="w-full h-full back-primary p-2 col-white">
