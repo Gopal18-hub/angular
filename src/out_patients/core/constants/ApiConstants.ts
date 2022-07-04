@@ -148,7 +148,7 @@ export namespace ApiConstants {
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
   export const hotlistedPatient = (
-    maxId: number,
+    maxId: string,
     hotlistingHeader: string,
     locationid: string,
     firstName: string,
@@ -164,6 +164,24 @@ export namespace ApiConstants {
     );
   };
 
+
+  //appointment patient search 
+  export const appointmentPatientDetail = (phoneNo: string, name: string,lastname:string,datevalidation:number,fromdate:string,todate:string,bookingNo:string) => {
+    return (
+      environment.PatientApiUrl +"api/patient/getappointmentpatientssearch?phone=" + phoneNo +"&fname=" +
+        name +
+        "&lname=" +lastname+
+        "" +
+        "&IsDateRange=" +
+         datevalidation+
+        "&fromDate=" +
+        fromdate +
+        "&ToDate=" +
+        todate +
+        "&SearchFrom=" +1+
+                "&BookingNo=" +
+                bookingNo);
+    }
 
   //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {

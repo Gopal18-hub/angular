@@ -18,13 +18,17 @@ export class PatientService {
     ews: "EWS.svg",
     ins: "Ins_icon.svg",
     hwc: "HWC_icon.svg",
-    isCghsverified:"CGHS_Icon.svg",    
+    isCghsverified: "CGHS_Icon.svg",
+    hotlist: "Hot_listing_icon.svg",
   };
-  pageNumberIcons:any ={
-    "Cash":"Cash_Icon.svg",
+  pageNumberIcons: any = {
+    Cash: "Cash_Icon.svg",
     "PSU/Govt": "PSU_icon.svg",
-    "Corporate/Insurance":"Ins_icon.svg",
-    "EWS":"EWS.svg",
+    "Corporate/Insurance": "Ins_icon.svg",
+    ins: "Ins_icon.svg",
+    ews: "EWS.svg",
+    cash: "Cash_Icon.svg",
+    "psu/govt": "PSU_icon.svg",
   };
   categoryIconsActions: any = {
     cghs: {
@@ -59,6 +63,10 @@ export class PatientService {
       type: "static",
       value: "HOTLIST",
     },
+    hotlist: {
+      type: "static",
+      value: "HOTLIST",
+    },
     mergeLinked: {
       type: "dynamic",
       value: "mergeLinked",
@@ -69,7 +77,7 @@ export class PatientService {
     },
     note: {
       type: "dynamic",
-      value: "noteReason",
+      value: "notereason",
     },
     cash: {
       type: "static",
@@ -88,27 +96,39 @@ export class PatientService {
       value: "INS",
     },
     hwc: {
-      type: "static ",
-      value: "HWC",
+      type: "dynamic",
+      value: "hwcRemarks",
     },
   };
 
-  pageNumberIconsTooltip:any ={
-    "Cash":{
+  pageNumberIconsTooltip: any = {
+    Cash: {
       type: "static",
       value: "Cash",
     },
-    "PSU/Govt":{
+    "PSU/Govt": {
       type: "static",
       value: "PSU",
     },
-    "Corporate/Insurance":{
+    "Corporate/Insurance": {
       type: "static",
       value: "INS",
     },
-    "EWS":{
+    ins: {
+      type: "static",
+      value: "INS",
+    },
+    ews: {
       type: "static",
       value: "EWS",
+    },
+    cash: {
+      type: "static",
+      value: "CASH",
+    },
+    "psu/govt": {
+      type: "static",
+      value: "PSU",
     },
   };
 
@@ -127,20 +147,26 @@ export class PatientService {
   getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
-      if(e=="pPagerNumber" 
-      && this.pageNumberIcons[patient["pPagerNumber"]])
-      {
+      if (
+        e == "pPagerNumber" &&
+        this.pageNumberIcons[patient["pPagerNumber"]]
+      ) {
         let tempPager: any = {
-          src: "assets/patient-categories/" + this.pageNumberIcons[patient["pPagerNumber"]],
+          src:
+            "assets/patient-categories/" +
+            this.pageNumberIcons[patient["pPagerNumber"]],
         };
         if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]) {
-          if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.pageNumberIconsTooltip[patient["pPagerNumber"]]["value"];
-          }          
+          if (
+            this.pageNumberIconsTooltip[patient["pPagerNumber"]]["type"] ==
+            "static"
+          ) {
+            tempPager["tooltip"] =
+              this.pageNumberIconsTooltip[patient["pPagerNumber"]]["value"];
+          }
         }
         returnIcons.push(tempPager);
-      }
-      else if (
+      } else if (
         this.categoryIcons[e] &&
         patient[e as keyof (PatientSearchModel | getmergepatientsearch)]
       ) {
@@ -172,24 +198,27 @@ export class PatientService {
   getCategoryIconsForPatient(patient: PatientDetails) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
-      if(e=="ppagerNumber" 
-      && this.pageNumberIcons[patient["ppagerNumber"]])
-      {
+      if (
+        e == "ppagerNumber" &&
+        this.pageNumberIcons[patient["ppagerNumber"]]
+      ) {
         console.log(patient["ppagerNumber"]);
         let tempPager: any = {
-          src: "assets/patient-categories/" + this.pageNumberIcons[patient["ppagerNumber"]],
+          src:
+            "assets/patient-categories/" +
+            this.pageNumberIcons[patient["ppagerNumber"]],
         };
         if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
-          if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] == "static") {
-            tempPager["tooltip"] = this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
-          }          
+          if (
+            this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] ==
+            "static"
+          ) {
+            tempPager["tooltip"] =
+              this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
+          }
         }
         returnIcons.push(tempPager);
-      }
-      else if (
-        this.categoryIcons[e] &&
-        patient[e as keyof (PatientDetails)]
-      ) {
+      } else if (this.categoryIcons[e] && patient[e as keyof PatientDetails]) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
         };
@@ -200,17 +229,12 @@ export class PatientService {
           if (this.categoryIconsTooltip[e]["type"] == "dynamic") {
             temp["tooltip"] =
               patient[
-                this.categoryIconsTooltip[e]["value"] as keyof (
-                  | PatientSearchModel
-                  | getmergepatientsearch
-                  | PatientDetails
-                )
+                this.categoryIconsTooltip[e]["value"] as keyof PatientDetails
               ];
           }
         }
         returnIcons.push(temp);
       }
-     
     });
 
     return returnIcons;

@@ -6,6 +6,10 @@ import { StationModel } from "../../../auth/core/models/stationmodel";
 import { LocationModel } from "../../../auth/core/models/locationmodel";
 import { UserLocationStationdataModel } from "../../../auth/core/models/userlocationstationdatamodel";
 import { CookieService } from "../../../shared/services/cookie.service";
+import { AuthService } from "@shared/services/auth.service";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { environment } from "@environments/environment";
 
 @Component({
   selector: "auth-login",
@@ -56,10 +60,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   questions: any;
 
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(
     private formService: QuestionControlService,
     private adauth: ADAuthService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -71,13 +78,30 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.questions = formResult.questions;
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener(
       "blur",
       this.validateUserName.bind(this)
     );
+
+    this.loginForm.controls["username"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value) => {
+        if (!value) {
+          this.loginForm.controls["password"].setValue("");
+          this.loginForm.controls["location"].setValue({ title: "", value: 0 });
+          this.loginForm.controls["station"].setValue({ title: "", value: 0 });
+          this.questions[0].elementRef.focus();
+          this.loginForm.controls["location"].disable();
+          this.loginForm.controls["station"].disable();
+        }
+      });
     this.questions[0].elementRef.focus();
-    this.loginForm.controls["password"].disable();
     this.loginForm.controls["location"].disable();
     this.loginForm.controls["station"].disable();
   }
@@ -90,55 +114,80 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   validateUserName() {
     this.username = this.loginForm.value.username;
-    this.adauth.authenticateUserName(this.username).subscribe(
-      (data: any) => {
-        this.userlocationandstation = data as UserLocationStationdataModel;
-        this.locationList = this.userlocationandstation.locations;
-        this.stationList = this.userlocationandstation.stations;
-        this.questions[3].options = this.stationList.map((s) => {
-          return { title: s.stationName, value: s.stationid };
-        });
+    this.adauth
+      .authenticateUserName(this.username)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (data: any) => {
+          this.userlocationandstation = data as UserLocationStationdataModel;
+          this.locationList = this.userlocationandstation.locations;
+          this.stationList = this.userlocationandstation.stations;
 
-        this.questions[2].options = this.locationList.map((l) => {
-          return { title: l.organizationName, value: l.hspLocationId };
-        });
+          this.questions[3].options = this.stationList.map((s) => {
+            return { title: s.stationName, value: s.stationid };
+          });
 
-        console.log(this.questions);
-
-        this.userId = Number(this.userlocationandstation.userId);
-
-        this.loginForm.controls["location"].valueChanges.subscribe((value) => {
-          if (value) {
-            this.loginForm.controls["station"].enable();
-            this.locationdetail = this.locationList.filter(
-              (l) => l.hspLocationId === value.value
-            )[0];
-            this.questions[3].options = this.stationList
-              .filter((e) => e.hspLocationId === value.value)
-              .map((s) => {
-                return { title: s.stationName, value: s.stationid };
-              });
+          //changes for UAT defect fix to select station bydefault if only one location
+          if (this.locationList.length == 1) {
+            this.loginForm.controls["location"].setValue({
+              title: this.locationList[0].organizationName,
+              value: this.locationList[0].hspLocationId,
+            });
+          } else {
+            this.questions[2].options = this.locationList.map((l) => {
+              return { title: l.organizationName, value: l.hspLocationId };
+            });
           }
-        });
 
-        this.loginForm.controls["station"].valueChanges.subscribe((value) => {
-          this.stationdetail = this.stationList.filter(
-            (s) => s.stationid === value.value
-          )[0];
-        });
-        this.loginForm.controls["password"].enable();
-        this.loginForm.controls["location"].enable();
-        //this.loginForm.controls["station"].enable();
-        this.questions[1].elementRef.focus();
-      },
-      (error: any) => {
-        this.loginForm.controls["username"].setErrors({ incorrect: true });
-        this.questions[0].customErrorMessage = error.error;
-        this.loginForm.controls["password"].disable();
-        this.loginForm.controls["location"].disable();
-        this.loginForm.controls["station"].disable();
-      }
-    );
+          console.log(this.questions);
+
+          this.userId = Number(this.userlocationandstation.userId);
+
+          this.loginForm.controls["location"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value) => {
+              if (value) {
+                this.loginForm.controls["station"].enable();
+                this.loginForm.controls["station"].setValue(null);
+                this.locationdetail = this.locationList.filter(
+                  (l) => l.hspLocationId === value.value
+                )[0];
+                //changes for UAT defect fix to select station bydefault if only one station
+                if (this.stationList.length > 1) {
+                  this.questions[3].options = this.stationList
+                    .filter((e) => e.hspLocationId === value.value)
+                    .map((s) => {
+                      return { title: s.stationName, value: s.stationid };
+                    });
+                } else {
+                  this.loginForm.controls["station"].setValue({
+                    title: this.stationList[0].stationName,
+                    value: this.stationList[0].stationid,
+                  });
+                }
+              }
+            });
+
+          this.loginForm.controls["station"].valueChanges
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((value) => {
+              this.stationdetail = this.stationList.filter(
+                (s) => s.stationid === value.value
+              )[0];
+            });
+          // this.loginForm.controls["password"].enable();
+          this.loginForm.controls["location"].enable();
+          //this.loginForm.controls["station"].enable();
+          this.questions[1].elementRef.focus();
+        },
+        (error: any) => {
+          this.loginForm.controls["username"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = error.error;
+          // this.loginForm.controls["password"].disable();
+          this.loginForm.controls["location"].disable();
+          this.loginForm.controls["station"].disable();
+        }
+      );
   }
 
   loginSubmit() {
@@ -149,6 +198,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.loginForm.value.username,
           this.loginForm.value.password
         )
+        .pipe(takeUntil(this._destroying$))
         .subscribe(
           (data) => {
             status = data["status"];

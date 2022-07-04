@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../../../shared/ui/dynamic-forms/service/question-control.service';
-
+import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'out-patients-dmg-mapping',
@@ -88,8 +90,10 @@ export class DmgMappingComponent implements OnInit {
   dmgMappingForm! : FormGroup;
   questions:any;
   constructor(
-    private formService: QuestionControlService
-    ) { }
+    private formService: QuestionControlService,
+    private messagedialogservice:MessageDialogService,
+    private maticonregistry:MatIconRegistry,
+    private domsanitizer:DomSanitizer) { }
 
   ngOnInit(): void {
     let formResult:any = this.formService.createForm(
@@ -98,6 +102,13 @@ export class DmgMappingComponent implements OnInit {
     )
     this.dmgMappingForm= formResult.form;
     this.questions=formResult.questions;
+
+  //  this.maticonregistry.addSvgIcon('searchlens',
+  //  this.domsanitizer.bypassSecurityTrustResourceUrl('E:\Clone_105300_newFramework\HIS-ANGULAR.reginabegum.mohamed.abdulla\src\out_patients\src\assets\lens.svg')
+  //  );
+  }
+  dmgsave(){
+    this.messagedialogservice.success('DMG mapped to this patient');
   }
   
 
