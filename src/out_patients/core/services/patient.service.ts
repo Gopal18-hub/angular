@@ -82,7 +82,7 @@ export class PatientService {
     },
     note: {
       type: "dynamic",
-      value: "noteReason",
+      value: "notereason",
     },
     cash: {
       type: "static",
@@ -101,8 +101,8 @@ export class PatientService {
       value: "INS",
     },
     hwc: {
-      type: "static ",
-      value: "HWC",
+      type: "dynamic",
+      value: "hwcRemarks",
     },
   };
 
@@ -234,11 +234,7 @@ export class PatientService {
           if (this.categoryIconsTooltip[e]["type"] == "dynamic") {
             temp["tooltip"] =
               patient[
-                this.categoryIconsTooltip[e]["value"] as keyof (
-                  | PatientSearchModel
-                  | getmergepatientsearch
-                  | PatientDetails
-                )
+                this.categoryIconsTooltip[e]["value"] as keyof PatientDetails
               ];
           }
         }

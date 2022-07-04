@@ -18,10 +18,13 @@ export class PatientSearchModel {
   cghs: boolean;
   mergeLinked: string;
   id: number;
-  pPagerNumber:string;
+  pPagerNumber: string;
+  note: boolean;
+  noteReason: string;
+  notereason: string;
   categoryIcons?: any[];
   fullname?: string;
- 
+
   constructor(
     maxid: string,
     ssn: string,
@@ -42,10 +45,12 @@ export class PatientSearchModel {
     firstName: string,
     lastName: string,
     id: number,
-    pPagerNumber:string,
+    pPagerNumber: string,
+    note: boolean,
+    noteReason: string,
+    notereason: string,
     categoryIcons?: any[],
-    fullname?:string,
-    
+    fullname?: string
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -67,8 +72,11 @@ export class PatientSearchModel {
     this.mergeLinked = mergeLinked;
     this.id = id;
     this.categoryIcons = categoryIcons;
-    fullname = firstName + ' ' + lastName;
+    fullname = firstName + " " + lastName;
     this.fullname = fullname;
     this.pPagerNumber = pPagerNumber;
+    this.note = note;
+    this.noteReason = noteReason;
+    this.notereason = noteReason; //added property to avoid issue while displaying categoryicons
   }
 }

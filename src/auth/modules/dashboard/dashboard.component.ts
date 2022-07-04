@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
       "maxid",
       "ssn",
       "date",
-      "firstName",
+      "fullname",
       "age",
       "gender",
       "dob",
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
         title: "Reg.Date",
         type: "date",
       },
-      firstName: {
+      fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
@@ -145,6 +145,7 @@ export class DashboardComponent implements OnInit {
         this.defaultUI = false;
         resultData = resultData.map((item: any) => {
           item.fullname = item.firstName + " " + item.lastName;
+          item.notereason = item.noteReason;
           return item;
         });
         this.patientList = resultData;
@@ -154,14 +155,13 @@ export class DashboardComponent implements OnInit {
         this.apiProcessing = true;
         console.log(this.patientList);
         setTimeout(() => {
-          this.table.selection.changed            
-            .subscribe((res: any) => {
-              console.log(res);
-              this.router.navigate(
-                ["out-patients", "registration", "op-registration"],
-                { queryParams: { maxId: res.added[0].maxid } }
-              );
-            });
+          this.table.selection.changed.subscribe((res: any) => {
+            console.log(res);
+            this.router.navigate(
+              ["out-patients", "registration", "op-registration"],
+              { queryParams: { maxId: res.added[0].maxid } }
+            );
+          });
         });
       });
     this.searchService.searchTrigger
@@ -182,18 +182,27 @@ export class DashboardComponent implements OnInit {
   }
 
   searchPatient(formdata: any) {
-    // this.defaultUI = false;
+    this.defaultUI = false;
     this.showspinner = true;
     let dateOfBirth;
-    let maxid = formdata["maxID"].split(".")[1];
-    if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
-      this.maxId = "";
-    } else {
-      this.maxId = formdata["maxID"];
-    }
     if (
-      formdata["dob"] != undefined ||
-      formdata["dob"] != null ||
+      formdata["maxID"] != undefined &&
+      formdata["maxID"] != "" &&
+      formdata["maxID"] != null
+    ) {
+      let maxid = formdata["maxID"].split(".")[1];
+      if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
+        this.maxId = "";
+      } else {
+        this.maxId = formdata["maxID"];
+      }
+    } else {
+      this.maxId = "";
+    }
+
+    if (
+      formdata["dob"] != undefined &&
+      formdata["dob"] != null &&
       formdata["dob"] != ""
     ) {
       dateOfBirth = this.datepipe.transform(formdata["dob"], "dd/MM/yyyy");
@@ -201,34 +210,40 @@ export class DashboardComponent implements OnInit {
       dateOfBirth = "";
     }
     if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
+      (formdata["name"] == "" ||
+        formdata["name"] == undefined ||
+        formdata["name"] == null) &&
+      (formdata["phone"] == "" ||
+        formdata["phone"] == undefined ||
+        formdata["phone"] == null) &&
       dateOfBirth == "" &&
       this.maxId == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
+      (formdata["healthID"] == "" ||
+        formdata["healthID"] == undefined ||
+        formdata["healthID"] == null) &&
+      (formdata["adhaar"] == "" ||
+        formdata["adhaar"] == undefined ||
+        formdata["adhaar"] == null)
     ) {
       this.getAllpatients()
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
             this.showspinner = false;
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
-            // resultData = resultData.map((item:any) => {
-            //   item.fullname = item.firstName + ' ' + item.lastName;
-            //   return item;
-            // });
+            resultData = resultData.map((item: any) => {
+              item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
+              return item;
+            });
             this.apiProcessing = true;
             this.defaultUI = false;
             setTimeout(() => {
-              this.table.selection.changed              
+              this.table.selection.changed
+                .pipe(takeUntil(this._destroying$))
                 .subscribe((res: any) => {
                   console.log(res);
                   this.router.navigate(["registration", "op-registration"], {
@@ -249,7 +264,7 @@ export class DashboardComponent implements OnInit {
     } else if (
       formdata["name"] == "" &&
       formdata["phone"] == "" &&
-      dateOfBirth != "" &&
+      formdata["dob"] != "" &&
       this.maxId == "" &&
       formdata["healthID"] == "" &&
       formdata["adhaar"] == ""
@@ -271,7 +286,6 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           (resultData) => {
             this.showspinner = false;
-            this.defaultUI = false;
             this.patientList = [];
             resultData = resultData.map((item: any) => {
               item.fullname = item.firstName + " " + item.lastName;
@@ -281,9 +295,11 @@ export class DashboardComponent implements OnInit {
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
+
             this.apiProcessing = true;
             setTimeout(() => {
-              this.table.selection.changed               
+              this.table.selection.changed
+                .pipe(takeUntil(this._destroying$))
                 .subscribe((res: any) => {
                   console.log(res);
                   this.router.navigate(["registration", "op-registration"], {
