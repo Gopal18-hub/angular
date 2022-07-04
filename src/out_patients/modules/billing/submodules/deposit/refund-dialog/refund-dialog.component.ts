@@ -223,6 +223,9 @@ export class RefundDialogComponent implements OnInit {
   refundform!: FormGroup;
   questions: any;
   onRefundReceiptpage:boolean=true;
+  paymentform!: FormGroup;
+  today: any;
+  forrefund:boolean = false;
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {
    }
@@ -235,10 +238,12 @@ export class RefundDialogComponent implements OnInit {
     this.refundform = formResult.form;
     this.questions = formResult.questions;
     console.log(this.data);
+    this.today = new Date();
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
     this.refundform.controls["mail"].setValue(this.data.Mail);
-    this.refundform.controls["panno"].disable();
-    this.refundform.controls["mainradio"].disable();
+    // this.refundform.controls["panno"].disable();
+    // this.refundform.controls["mainradio"].disable();
+    console.log('inside refund page');
   }
   ngAfterViewInit(): void{
     this.refundform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
@@ -266,9 +271,15 @@ export class RefundDialogComponent implements OnInit {
       }
     });
   }
+  paymentformevent(event:any){
+    console.log(event);
+    this.paymentform = event;
+  }
   clear()
   {
-    this.refundform.reset();
+    this.paymentform.reset();
+    this.paymentform.controls["chequeissuedate"].setValue(this.today);
+    this.paymentform.controls["demandissuedate"].setValue(this.today);
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
     this.refundform.controls["mail"].setValue(this.data.Mail);
   }
