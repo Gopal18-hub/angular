@@ -948,7 +948,10 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   foreignCLick(event: Event) {
-    if (!this.OPRegForm.controls["foreigner"].value) {
+    if (
+      !this.OPRegForm.controls["foreigner"].value &&
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian"
+    ) {
       this.showPassportDetails();
     }
   }
@@ -1802,6 +1805,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
+    this.enableDisableForeignerCheck(this.patientDetails);
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
@@ -1819,6 +1823,14 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.passportNo = "";
     }
     this.populateUpdatePatientDetail(this.patientDetails);
+  }
+
+  enableDisableForeignerCheck(patientDetails: PatientDetails) {
+    if (patientDetails.nationalityName.toLowerCase() == "indian") {
+      this.OPRegForm.controls["foreigner"].disable();
+    } else {
+      this.OPRegForm.controls["foreigner"].enable();
+    }
   }
 
   onPhoneModify() {
@@ -2287,6 +2299,7 @@ export class OpRegistrationComponent implements OnInit {
   modfiedPatiendDetails!: ModifiedPatientDetailModel;
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
+    this.checkForForeignerCheckbox();
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -2320,6 +2333,14 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
+  checkForForeignerCheckbox() {
+    if (
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian" &&
+      this.OPRegForm.value.foreigner == false
+    ) {
+      this.OPRegForm.controls["foreigner"].setValue(true);
+    }
+  }
   // ON MOFIFY BUTTON PRESS CALL
   registeredPatientDetails(patientDetails: ModifiedPatientDetailModel) {
     let expdate =
@@ -2826,30 +2847,36 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log("passport dialog was closed ");
-        if (result == undefined || result.data == undefined) {
-          this.OPRegForm.controls["foreigner"].setValue(false);
-          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
-          this.questions[28].customErrorMessage =
-            "foreigner unchecked as passport not entered.";
+        if (this.passportDetails.passportNo != "") {
+          this.OPRegForm.controls["foreigner"].setValue(true);
         } else {
-          this.passportDetails = {
-            Expirydate:
-              this.datepipe.transform(
-                result.data.expiryDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            Issueat: result.data.issuedAt,
-            IssueDate:
-              this.datepipe.transform(
-                result.data.issueDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            passportNo: result.data.passportNo,
-            HCF: result.data.hcf,
-          };
-          console.log(this.passportDetails);
-          this.OPRegForm.controls["nationality"].setErrors(null);
-          this.questions[28].customErrorMessage = "";
+          if (result == undefined || result.data == undefined) {
+            this.OPRegForm.controls["foreigner"].setValue(false);
+            this.OPRegForm.controls["nationality"].setErrors({
+              incorrect: true,
+            });
+            this.questions[28].customErrorMessage =
+              "foreigner unchecked as passport not entered.";
+          } else {
+            this.passportDetails = {
+              Expirydate:
+                this.datepipe.transform(
+                  result.data.expiryDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              Issueat: result.data.issuedAt,
+              IssueDate:
+                this.datepipe.transform(
+                  result.data.issueDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              passportNo: result.data.passportNo,
+              HCF: result.data.hcf,
+            };
+            console.log(this.passportDetails);
+            this.OPRegForm.controls["nationality"].setErrors(null);
+            this.questions[28].customErrorMessage = "";
+          }
         }
       });
   }
