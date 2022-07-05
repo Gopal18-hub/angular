@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BillingForm } from '@core/constants/BillingForm';
-import { DatePipe } from '@angular/common';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
   selector: 'payment-methods',
@@ -18,7 +18,7 @@ export class PaymentMethodsComponent implements OnInit {
   today: any;
   forrefundpage:boolean = true;
   fordepositpage:boolean = true;
-  constructor( private formService: QuestionControlService, private datepipe: DatePipe) { }
+  constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -26,16 +26,19 @@ export class PaymentMethodsComponent implements OnInit {
       {}
     );
     this.forrefundpage = this.fromrefund;
-    console.log(this.forrefundpage);
     this.fordepositpage=this.fromrefund;
     this.refundform = formResult.form;
     this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;
     this.today = new Date();
-    console.log(this.paymentform);
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
-    console.log(this.forrefundpage);
+  }
+  onTabChanged(event: MatTabChangeEvent){
+    if(event.index == 1)
+    {
+      this.refundform.controls["amount"].setValue('');
+    }
   }
 
 }

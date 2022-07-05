@@ -190,19 +190,8 @@ export class DepositDialogComponent implements OnInit {
   depositForm!: FormGroup;
   questions: any;
   onDepositpage: boolean = true;
-
-
-    }
-  }
-
-  depositForm! :FormGroup;
-  questions:any;
   selectedTabvalue!: string;
-  onDepositpage:boolean=true;
-  
-  constructor(
-    private formService: QuestionControlService
-  ) { }
+  constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(

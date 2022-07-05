@@ -159,13 +159,14 @@ export namespace BillingForm {
           upiacquiring: {
             type: "string"
           },
-          mainradio: {
-            type: "radio",
-            required: false,
-            options: [
-              { title: "Form 60", value: "form60" },
-              { title: "Pan card No.", value: "pancardno" },
-            ]
+          internetmobile: {
+              type: "number"
+          },
+          internetemail: {
+              type: "string"
+          },
+          internetamount: {
+              type: "number"
           }
         },
     };
