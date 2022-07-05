@@ -520,7 +520,7 @@ export class OpRegistrationComponent implements OnInit {
     }
     return this.isPatientdetailModified;
   }
-  checkForModifiedBationality() {
+  checkForModifiedNationality() {
     this.nationalityChanged = false;
     if (this.MaxIDExist) {
       this.nationalityChanged = true;
@@ -1998,7 +1998,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.nationality.title !=
       this.patientDetails.nationalityName
     ) {
-      if (this.checkForModifiedBationality()) {
+      if (this.checkForModifiedNationality()) {
         this.modfiedPatiendDetails.nationality =
           this.OPRegForm.value.nationality.value;
       }
