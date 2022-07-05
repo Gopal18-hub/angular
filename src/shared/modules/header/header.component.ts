@@ -44,6 +44,10 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
     //oidc.user:https://localhost/:hispwa
     let storage = localStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
@@ -72,10 +76,7 @@ export class HeaderComponent implements OnInit {
       this.cookieService.delete("accessToken");
       this.cookieService.set("accessToken", accessToken);
     }
-    this.router.navigate([], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
+
     this.authService.logout().subscribe((response: any) => {
       if (response.postLogoutRedirectUri) {
         window.location = response.postLogoutRedirectUri;
