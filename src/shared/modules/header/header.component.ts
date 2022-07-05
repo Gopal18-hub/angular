@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
 
     this.location = this.cookieService.get("Location");
     this.station = this.cookieService.get("Station");
-    this.usrname = this.cookieService.get("UserName");
+    this.usrname = this.cookieService.get("Name");
   }
 
   logout() {
