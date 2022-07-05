@@ -7,8 +7,8 @@ import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { HeaderModule } from "../../../shared/modules/header";
 import { MatIconModule } from "@angular/material/icon";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"; 
-
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { FormDialogueModule } from "@shared/ui/form-dialogue";
 @NgModule({
   declarations: [DashboardComponent],
   imports: [
@@ -20,6 +20,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatIconModule,
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
+    FormDialogueModule,
   ],
   exports: [],
   providers: [DatePipe],
