@@ -510,6 +510,13 @@ export class OpRegistrationComponent implements OnInit {
     this.isPatientdetailModified = false;
     if (this.MaxIDExist) {
       this.isPatientdetailModified = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
     }
     return this.isPatientdetailModified;
   }
@@ -1972,10 +1979,16 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["foreigner"].disable();
       this.OPRegForm.controls["foreigner"].setValue(false);
     }
-
-    if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.nationality =
-        this.OPRegForm.value.nationality.value;
+    if (
+      this.OPRegForm.value.nationality.title !=
+      this.patientDetails.nationalityName
+    ) {
+      if (this.checkForModifiedPatientDetail()) {
+        this.modfiedPatiendDetails.nationality =
+          this.OPRegForm.value.nationality.value;
+      }
+    } else {
+      this.isPatientdetailModified = false;
     }
   }
 
