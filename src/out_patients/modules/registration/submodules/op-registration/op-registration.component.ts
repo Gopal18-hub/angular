@@ -2669,7 +2669,13 @@ export class OpRegistrationComponent implements OnInit {
         reason: this.hotlistRemark,
       },
     };
-    this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
   }
 
   //DIALOGS ---------------------------------------------------------------------------------------
