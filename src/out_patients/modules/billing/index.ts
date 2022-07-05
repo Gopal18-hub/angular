@@ -39,6 +39,7 @@ import { DepositDialogComponent } from './submodules/deposit/deposit-dialog/depo
 
 import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
 import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
+import { PatientIdentityInfoComponent } from '@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component';
 @NgModule({
   declarations: [
        BillingComponent,
@@ -60,7 +61,8 @@ import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
        SaveexpiredpatientDialogComponent,
        DeleteexpiredpatientDialogComponent,
        DepositDialogComponent,
-       Form60Component
+       Form60Component,
+       PatientIdentityInfoComponent
        
   ],
   imports: [
