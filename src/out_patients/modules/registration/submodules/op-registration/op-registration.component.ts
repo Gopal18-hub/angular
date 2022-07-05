@@ -532,7 +532,7 @@ export class OpRegistrationComponent implements OnInit {
       //   this.isPatientdetailModified = false;
       // }
     }
-    return this.isPatientdetailModified;
+    return this.nationalityChanged;
   }
 
   formInit() {
