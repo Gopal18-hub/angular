@@ -9,37 +9,37 @@ import {
 } from "@angular/core";
 
 import { FormGroup } from "@angular/forms";
-import { ApiConstants } from "../../../../core/constants/ApiConstants";
-import { CookieService } from "../../../../../shared/services/cookie.service";
-import { HttpService } from "../../../../../shared/services/http.service";
-import { QuestionControlService } from "../../../../../shared/ui/dynamic-forms/service/question-control.service";
-import { PatientitleModel } from "../../../../core/models/patientTitleModel.Model";
-import { SourceOfInfoModel } from "../../../../core/models/sourceOfInfoModel.Model";
-import { AgetypeModel } from "../../../../core/models/ageTypeModel.Model";
-import { IdentityModel } from "../../../../core/models/identityModel.Model";
-import { GenderModel } from "../../../../core/models/genderModel.Model";
-import { NationalityModel } from "../../../../core/models/nationalityModel.Model";
-import { MasterCountryModel } from "../../../../core/models/masterCountryModel.Model";
-import { CityModel } from "../../../../core/models/cityByStateIDModel.Model";
-import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Model";
-import { StateModel } from "../../../../core/models/stateMasterModel.Model";
-import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
-import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { CookieService } from "@shared/services/cookie.service";
+import { HttpService } from "@shared/services/http.service";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { PatientitleModel } from "@core/models/patientTitleModel.Model";
+import { SourceOfInfoModel } from "@core/models/sourceOfInfoModel.Model";
+import { AgetypeModel } from "@core/models/ageTypeModel.Model";
+import { IdentityModel } from "@core/models/identityModel.Model";
+import { GenderModel } from "@core/models/genderModel.Model";
+import { NationalityModel } from "@core/models/nationalityModel.Model";
+import { MasterCountryModel } from "@core/models/masterCountryModel.Model";
+import { CityModel } from "@core/models/cityByStateIDModel.Model";
+import { DistrictModel } from "@core/models/districtByStateIDModel.Model";
+import { StateModel } from "@core/models/stateMasterModel.Model";
+import { LocalityModel } from "@core/models/locationMasterModel.Model";
+import { LocalityByPincodeModel } from "@core/models/localityByPincodeModel.Model";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
-import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
-import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
 import { DatePipe } from "@angular/common";
 import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
-import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
-import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
-import { ReportService } from "../../../../../shared/services/report.service";
-import { PatientService } from "../../../../../out_patients/core/services/patient.service";
-import { SearchService } from "../../../../../shared/services/search.service";
-import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
-import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
-import { AddressonLocalityModel } from "../../../../core/models/addressonLocality.Model";
+import { ModifiedPatientDetailModel } from "@core/models/modifiedPatientDeatailModel.Model";
+import { UpdatepatientModel } from "@core/models/updateopd.Model";
+import { ReportService } from "@shared/services/report.service";
+import { PatientService } from "@core/services/patient.service";
+import { SearchService } from "@shared/services/search.service";
+import { hotlistingreasonModel } from "@core/models/hotlistingreason.model";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { AddressonLocalityModel } from "@core/models/addressonLocality.Model";
 import {
   MatDialog,
   MatDialogRef,
@@ -47,18 +47,20 @@ import {
 } from "@angular/material/dialog";
 import { AppointmentSearchDialogComponent } from "../../submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 import { DMSComponent } from "../dms/dms.component";
-import { ModifyDialogComponent } from "../../../../core/modify-dialog/modify-dialog.component";
-import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
-import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
-import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
-import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
+import { ModifyDialogComponent } from "@core/modify-dialog/modify-dialog.component";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { GenernicIdNameModel } from "@core/models/idNameModel.Model";
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
+import { AddressonCityModel } from "@core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
-import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
-import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
+import { ComponentCanDeactivate } from "@shared/services/guards/pending-change-guard.service";
+import { AnyCatcher } from "rxjs/internal/AnyCatcher";
+import { AnimationPlayer } from "@angular/animations";
 
 export interface DialogData {
   expieryDate: Date;
@@ -107,7 +109,6 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
-  invalidChars: any = ["e", "E"];
 
   passportDetails: {
     passportNo: string;
@@ -232,7 +233,7 @@ export class OpRegistrationComponent implements OnInit {
         onlyKeyPressAlpha: true,
       },
       altLandlineName: {
-        type: "number",
+        type: "tel",
         title: "Alt Contact/Landline",
         pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
         required: false,
@@ -277,6 +278,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Locality",
         required: true,
         options: this.localityList,
+        allowSearchInput: true,
         // required property is dependent on country
       },
       localityTxt: {
@@ -588,7 +590,7 @@ export class OpRegistrationComponent implements OnInit {
       this.onFistNameModify.bind(this)
     );
     //chnage event for middle name
-    this.questions[4].elementRef.addEventListener(
+    this.questions[5].elementRef.addEventListener(
       "change",
       this.onMiddleNameModify.bind(this)
     );
@@ -602,13 +604,11 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
+    this.questions[9].elementRef.addEventListener(
+      "focus",
+      this.onageCalculator.bind(this)
+    );
 
-    //ALt contact /Landline NUmber alphabate e prevention
-    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
-      if (this.invalidChars.includes(e.key)) {
-        e.preventDefault();
-      }
-    });
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
       "blur",
@@ -708,11 +708,6 @@ export class OpRegistrationComponent implements OnInit {
           this.onageCalculator();
         }
       });
-
-    // this.questions[0].elementRef.addEventListener(
-
-    //   this.getPatientDetailsByMaxId.bind(this)
-    // );
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
@@ -888,7 +883,7 @@ export class OpRegistrationComponent implements OnInit {
       bplCardNo: "",
       bplCardAddress: "",
     };
-    this.hotlistReason = "";
+    this.hotlistReason = { title: "", value: 0 };
     this.hotlistRemark = "";
     this.vip = "";
 
@@ -951,7 +946,10 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   foreignCLick(event: Event) {
-    if (!this.OPRegForm.controls["foreigner"].value) {
+    if (
+      !this.OPRegForm.controls["foreigner"].value &&
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian"
+    ) {
       this.showPassportDetails();
     }
   }
@@ -1113,7 +1111,7 @@ export class OpRegistrationComponent implements OnInit {
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
-                  width: "100vw",
+                  width: "60vw",
                   height: "80vh",
                   data: {
                     searchResults: this.similarContactPatientList,
@@ -1209,6 +1207,16 @@ export class OpRegistrationComponent implements OnInit {
           // this.questions[24].options = this.cityList.map((l) => {
           //   return { title: l.cityName, value: l.id };
         });
+        let hotlistvalue = this.hotlistDialogList.filter((e) => {
+          e.title == this.hotlistReason.title;
+          return e.value;
+        });
+
+        this.hotlistReason = {
+          title: this.hotlistReason.title,
+          value: hotlistvalue[0].value,
+        };
+
         this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
           width: "30vw",
           height: "62vh",
@@ -1222,11 +1230,13 @@ export class OpRegistrationComponent implements OnInit {
                   type: "autocomplete",
                   title: "Hot Listing",
                   required: true,
+                  defaultValue: this.hotlistReason,
                   options: this.hotlistDialogList,
                 },
                 reason: {
                   type: "textarea",
                   title: "Remark",
+                  defaultValue: this.hotlistRemark,
                   required: true,
                 },
               },
@@ -1244,7 +1254,10 @@ export class OpRegistrationComponent implements OnInit {
               console.log(result);
               this.hotlistReason = result.data.hotlistTitle.title;
               this.hotlistRemark = result.data.reason;
-              this.postHotlistComment(this.hotlistReason, this.hotlistRemark);
+              this.postHotlistComment(
+                this.hotlistReason.title,
+                this.hotlistRemark
+              );
               console.log(this.hotlistReason, this.hotlistRemark);
               // this.postHotlistComment();
             },
@@ -1257,7 +1270,7 @@ export class OpRegistrationComponent implements OnInit {
     return arr;
   }
 
-  hotlistReason: string = "";
+  hotlistReason!: { title: string; value: number };
   hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
@@ -1794,10 +1807,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-    this.OPRegForm.controls["country"].setValue({
-      title: this.patientDetails?.countryName,
-      value: this.patientDetails?.pcountry,
-    });
+
     this.OPRegForm.controls["nationality"].setValue({
       title: this.patientDetails?.nationalityName,
       value: this.patientDetails?.nationality,
@@ -1805,6 +1815,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
+    this.enableDisableForeignerCheck(this.patientDetails);
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
@@ -1821,7 +1832,21 @@ export class OpRegistrationComponent implements OnInit {
       this.passportDetails.Issueat = "";
       this.passportDetails.passportNo = "";
     }
+    this.setHotlistDetails(this.patientDetails);
     this.populateUpdatePatientDetail(this.patientDetails);
+  }
+
+  setHotlistDetails(patientDetail: PatientDetails) {
+    this.hotlistReason.title = patientDetail.hotlistreason;
+    this.hotlistRemark = patientDetail.hotlistcomments;
+  }
+
+  enableDisableForeignerCheck(patientDetails: PatientDetails) {
+    if (patientDetails.nationalityName.toLowerCase() == "indian") {
+      this.OPRegForm.controls["foreigner"].disable();
+    } else {
+      this.OPRegForm.controls["foreigner"].enable();
+    }
   }
 
   onPhoneModify() {
@@ -1844,14 +1869,14 @@ export class OpRegistrationComponent implements OnInit {
   onMiddleNameModify() {
     console.log("middle name changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstName;
+      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
     }
   }
 
   onFistNameModify() {
     console.log("firstname changed");
     if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.middleName = this.OPRegForm.value.middleName;
+      this.modfiedPatiendDetails.firstname = this.OPRegForm.value.firstname;
     }
   }
   onLastNameModify() {
@@ -1898,6 +1923,10 @@ export class OpRegistrationComponent implements OnInit {
 
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
+    this.OPRegForm.controls["country"].setValue({
+      title: this.patientDetails?.countryName,
+      value: this.patientDetails?.pcountry,
+    });
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
       this.OPRegForm.controls["fatherSpouse"].setValue(2);
@@ -2001,10 +2030,25 @@ export class OpRegistrationComponent implements OnInit {
       this.setPaymentMode("cash");
     }
 
+    //FOR SEAFAROR
+    this.OPRegForm.controls["seaFarer"].setValue(
+      patientDetails.hkid != "" ? true : false
+    );
+
+    this.setValuesToSeaFarer(patientDetails);
+
     //SOURCE OF INFO DROPDOWN
     this.OPRegForm.controls["sourceOfInput"].setValue(
       patientDetails?.sourceofinfo
     );
+  }
+
+  //FOR ASSIGNING SEAFARER DETAILS TO POP UP
+  setValuesToSeaFarer(patientDetails: PatientDetails) {
+    this.seafarerDetails.HKID = patientDetails.hkid;
+    this.seafarerDetails.FDPGroup = patientDetails.fdpgroup;
+    this.seafarerDetails.Vesselname = patientDetails.vesselName;
+    this.seafarerDetails.rank = patientDetails.rank;
   }
 
   //POPULATING THE MODE OF PATMENT FOR PATIENT DETAILS
@@ -2015,8 +2059,20 @@ export class OpRegistrationComponent implements OnInit {
     );
   }
 
+  getDobStatus(): boolean {
+    let dob =
+      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
+        ? false
+        : true;
+    return dob;
+  }
+
   updateRequestBody!: UpdatepatientModel;
   getPatientUpdatedReqBody(): UpdatepatientModel {
+    let dob =
+      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
+        ? false
+        : true;
     console.log(this.OPRegForm.controls["idenityType"].value);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
@@ -2057,7 +2113,7 @@ export class OpRegistrationComponent implements OnInit {
       false,
       this.OPRegForm.value.vip || false,
       0,
-      this.OPRegForm.value.dob == "" ? true : false,
+      this.getDobStatus(),
       "1900-01-01T00:00:00",
       "1900-01-01T00:00:00",
       Number(this.cookie.get("UserId")),
@@ -2070,7 +2126,7 @@ export class OpRegistrationComponent implements OnInit {
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") ||
         "1900-01-01T00:00:00", //lat updted
       this.vip,
-      this.OPRegForm.value.dob == "" ? true : false,
+      !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
@@ -2097,10 +2153,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.otAdvanceExclude || false,
       0,
       0,
-      this.seafarerDetails.HKID,
-      this.seafarerDetails.rank,
-      this.seafarerDetails.Vesselname,
-      this.seafarerDetails.FDPGroup,
+      this.seafarerDetails.HKID || "",
+      this.seafarerDetails.rank || "",
+      this.seafarerDetails.Vesselname || "",
+      this.seafarerDetails.FDPGroup || "",
       this.OPRegForm.value.hwc || false,
       this.hwcRemark,
       this.OPRegForm.controls["idenityType"].value || 0,
@@ -2117,13 +2173,10 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   getPatientSubmitRequestBody(): patientRegistrationModel {
-    let dob =
-      this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
-        ? false
-        : true;
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
     let deptId = 0;
+
     //IF PASSPOET DETAILS HAVE NOT BEEN ADDED
     this.getPassportDetailObj();
 
@@ -2181,12 +2234,12 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.vip || false,
       0,
       this.OPRegForm.value.foreigner || false,
-      dob,
+      this.getDobStatus(),
       Number(this.cookie.get("UserId")),
       "",
       Number(this.cookie.get("HSPLocationId")),
       this.vip,
-      !dob,
+      !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
@@ -2210,10 +2263,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.altLandlineName,
       this.OPRegForm.value.organdonor || false,
       this.OPRegForm.value.otAdvanceExclude || false,
-      this.seafarerDetails.HKID,
-      this.seafarerDetails.rank,
-      this.seafarerDetails.Vesselname,
-      this.seafarerDetails.FDPGroup,
+      this.seafarerDetails.HKID || "",
+      this.seafarerDetails.rank || "",
+      this.seafarerDetails.Vesselname || "",
+      this.seafarerDetails.FDPGroup || "",
       this.OPRegForm.controls["hwc"].value || false,
       this.hwcRemark || "",
       this.OPRegForm.controls["idenityType"].value || 0,
@@ -2266,6 +2319,7 @@ export class OpRegistrationComponent implements OnInit {
   modfiedPatiendDetails!: ModifiedPatientDetailModel;
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
+    this.checkForForeignerCheckbox();
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -2299,6 +2353,14 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
+  checkForForeignerCheckbox() {
+    if (
+      this.OPRegForm.value.nationality.title.toLowerCase() != "indian" &&
+      this.OPRegForm.value.foreigner == false
+    ) {
+      this.OPRegForm.controls["foreigner"].setValue(true);
+    }
+  }
   // ON MOFIFY BUTTON PRESS CALL
   registeredPatientDetails(patientDetails: ModifiedPatientDetailModel) {
     let expdate =
@@ -2496,6 +2558,30 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
   }
+
+  doCategoryIconAction(categoryIcon: any) {
+    const data: any = {
+      note: {
+        notes: this.noteRemark,
+      },
+      vip: {
+        notes: this.vip,
+      },
+      hwc: {
+        notes: this.hwcRemark,
+      },
+      ppagerNumber: {
+        bplCardNo: this.ewsDetails.bplCardNo,
+        BPLAddress: this.ewsDetails.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReason,
+        reason: this.hotlistRemark,
+      },
+    };
+    this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+  }
+
   //DIALOGS ---------------------------------------------------------------------------------------
 
   openVipNotes() {
@@ -2545,6 +2631,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
+
               defaultValue: this.noteRemark,
             },
           },
@@ -2649,6 +2736,7 @@ export class OpRegistrationComponent implements OnInit {
       AppointmentSearchDialogComponent,
       {
         maxWidth: "100vw",
+        width: "95vw",
       }
     );
     appointmentSearchDialogref
@@ -2793,30 +2881,36 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log("passport dialog was closed ");
-        if (result == undefined || result.data == undefined) {
-          this.OPRegForm.controls["foreigner"].setValue(false);
-          this.OPRegForm.controls["nationality"].setErrors({ incorrect: true });
-          this.questions[28].customErrorMessage =
-            "foreigner unchecked as passport not entered.";
+        if (this.passportDetails.passportNo != "") {
+          this.OPRegForm.controls["foreigner"].setValue(true);
         } else {
-          this.passportDetails = {
-            Expirydate:
-              this.datepipe.transform(
-                result.data.expiryDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            Issueat: result.data.issuedAt,
-            IssueDate:
-              this.datepipe.transform(
-                result.data.issueDate,
-                "yyyy-MM-ddThh:mm:ss"
-              ) || null,
-            passportNo: result.data.passportNo,
-            HCF: result.data.hcf,
-          };
-          console.log(this.passportDetails);
-          this.OPRegForm.controls["nationality"].setErrors(null);
-          this.questions[28].customErrorMessage = "";
+          if (result == undefined || result.data == undefined) {
+            this.OPRegForm.controls["foreigner"].setValue(false);
+            this.OPRegForm.controls["nationality"].setErrors({
+              incorrect: true,
+            });
+            this.questions[28].customErrorMessage =
+              "foreigner unchecked as passport not entered.";
+          } else {
+            this.passportDetails = {
+              Expirydate:
+                this.datepipe.transform(
+                  result.data.expiryDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              Issueat: result.data.issuedAt,
+              IssueDate:
+                this.datepipe.transform(
+                  result.data.issueDate,
+                  "yyyy-MM-ddThh:mm:ss"
+                ) || null,
+              passportNo: result.data.passportNo,
+              HCF: result.data.hcf,
+            };
+            console.log(this.passportDetails);
+            this.OPRegForm.controls["nationality"].setErrors(null);
+            this.questions[28].customErrorMessage = "";
+          }
         }
       });
   }
@@ -2939,6 +3033,9 @@ export class SimilarPatientDialog {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       firstName: {
         title: "First Name",
@@ -2955,14 +3052,24 @@ export class SimilarPatientDialog {
       address: {
         title: "Address ",
         type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
       },
       age: {
         title: "Age ",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "70px",
+        },
       },
     },
   };

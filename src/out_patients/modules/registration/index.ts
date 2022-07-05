@@ -35,7 +35,7 @@ import { HwcDialogComponent } from "./submodules/op-registration/hwc-dialog/hwc-
 import { SeafarersDialogComponent } from "./submodules/op-registration/seafarers-dialog/seafarers-dialog.component";
 import { ForeignerDialogComponent } from "./submodules/op-registration/foreigner-dialog/foreigner-dialog.component";
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
-import { FormDialogueComponent } from "./submodules/op-registration/form-dialogue/form-dialogue.component";
+import { FormDialogueModule } from "@shared/ui/form-dialogue";
 import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatRadioModule } from "@angular/material/radio";
@@ -71,7 +71,6 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SeafarersDialogComponent,
     ForeignerDialogComponent,
     HotListingApprovalComponent,
-    FormDialogueComponent,
     DMSComponent,
     ModifyDialogComponent,
     SimilarPatientDialog,
@@ -100,6 +99,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     MatProgressSpinnerModule,
     MatRadioModule,
     MatTooltipModule,
+    FormDialogueModule,
   ],
   exports: [],
   providers: [
@@ -111,7 +111,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     PendingChangesGuard,
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { autoFocus: false } },
   ],
-  entryComponents: [AppointmentSearchComponent, FormDialogueComponent],
+  entryComponents: [AppointmentSearchComponent],
   bootstrap: [],
 })
 export class RegistrationModule {}

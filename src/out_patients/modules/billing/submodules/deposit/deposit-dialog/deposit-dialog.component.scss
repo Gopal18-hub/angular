@@ -2,14 +2,14 @@
     min-height: 246px !important;
 }
 
-::ng-deep .mat-tab-label{
-    height:24px !important;
-    opacity: 1 !important;
-}
+// ::ng-deep .mat-tab-label{
+//     height:24px !important;
+//     opacity: 1 !important;
+// }
 
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
-    height:50vh !important;
-}
+// ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
+//     height:50vh !important;
+// }
 // mat-ripple mat-tab-label mat-focus-indicator mat-tab-label-active ng-star-inserted
 
 ::ng-deep mat-radio-group{
