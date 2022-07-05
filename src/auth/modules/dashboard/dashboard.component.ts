@@ -167,6 +167,7 @@ export class DashboardComponent implements OnInit {
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe((formdata: any) => {
+        this.apiProcessing = false;
         console.log(formdata);
         this.searchPatient(formdata.data);
       });

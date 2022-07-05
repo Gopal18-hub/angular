@@ -9,37 +9,37 @@ import {
 } from "@angular/core";
 
 import { FormGroup } from "@angular/forms";
-import { ApiConstants } from "../../../../core/constants/ApiConstants";
-import { CookieService } from "../../../../../shared/services/cookie.service";
-import { HttpService } from "../../../../../shared/services/http.service";
-import { QuestionControlService } from "../../../../../shared/ui/dynamic-forms/service/question-control.service";
-import { PatientitleModel } from "../../../../core/models/patientTitleModel.Model";
-import { SourceOfInfoModel } from "../../../../core/models/sourceOfInfoModel.Model";
-import { AgetypeModel } from "../../../../core/models/ageTypeModel.Model";
-import { IdentityModel } from "../../../../core/models/identityModel.Model";
-import { GenderModel } from "../../../../core/models/genderModel.Model";
-import { NationalityModel } from "../../../../core/models/nationalityModel.Model";
-import { MasterCountryModel } from "../../../../core/models/masterCountryModel.Model";
-import { CityModel } from "../../../../core/models/cityByStateIDModel.Model";
-import { DistrictModel } from "../../../../core/models/districtByStateIDModel.Model";
-import { StateModel } from "../../../../core/models/stateMasterModel.Model";
-import { LocalityModel } from "../../../../core/models/locationMasterModel.Model";
-import { LocalityByPincodeModel } from "../../../../core/models/localityByPincodeModel.Model";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { CookieService } from "@shared/services/cookie.service";
+import { HttpService } from "@shared/services/http.service";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { PatientitleModel } from "@core/models/patientTitleModel.Model";
+import { SourceOfInfoModel } from "@core/models/sourceOfInfoModel.Model";
+import { AgetypeModel } from "@core/models/ageTypeModel.Model";
+import { IdentityModel } from "@core/models/identityModel.Model";
+import { GenderModel } from "@core/models/genderModel.Model";
+import { NationalityModel } from "@core/models/nationalityModel.Model";
+import { MasterCountryModel } from "@core/models/masterCountryModel.Model";
+import { CityModel } from "@core/models/cityByStateIDModel.Model";
+import { DistrictModel } from "@core/models/districtByStateIDModel.Model";
+import { StateModel } from "@core/models/stateMasterModel.Model";
+import { LocalityModel } from "@core/models/locationMasterModel.Model";
+import { LocalityByPincodeModel } from "@core/models/localityByPincodeModel.Model";
 import { PrintLabelDialogComponent } from "./print-label-dialog/print-label-dialog.component";
 import { VipDialogComponent } from "./vip-dialog/vip-dialog.component";
 import { HotListingDialogComponent } from "./hot-listing-dialog/hot-listing-dialog.component";
-import { PatientDetails } from "../../../../core/models/patientDetailsModel.Model";
-import { patientRegistrationModel } from "../../../../core/models/patientRegistrationModel.Model";
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
 import { DatePipe } from "@angular/common";
 import { ForeignerDialogComponent } from "./foreigner-dialog/foreigner-dialog.component";
-import { ModifiedPatientDetailModel } from "../../../../core/models/modifiedPatientDeatailModel.Model";
-import { UpdatepatientModel } from "../../../../core/models/updateopd.Model";
-import { ReportService } from "../../../../../shared/services/report.service";
-import { PatientService } from "../../../../../out_patients/core/services/patient.service";
-import { SearchService } from "../../../../../shared/services/search.service";
-import { hotlistingreasonModel } from "../../../../core/models/hotlistingreason.model";
-import { FormDialogueComponent } from "./form-dialogue/form-dialogue.component";
-import { AddressonLocalityModel } from "../../../../core/models/addressonLocality.Model";
+import { ModifiedPatientDetailModel } from "@core/models/modifiedPatientDeatailModel.Model";
+import { UpdatepatientModel } from "@core/models/updateopd.Model";
+import { ReportService } from "@shared/services/report.service";
+import { PatientService } from "@core/services/patient.service";
+import { SearchService } from "@shared/services/search.service";
+import { hotlistingreasonModel } from "@core/models/hotlistingreason.model";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { AddressonLocalityModel } from "@core/models/addressonLocality.Model";
 import {
   MatDialog,
   MatDialogRef,
@@ -47,18 +47,18 @@ import {
 } from "@angular/material/dialog";
 import { AppointmentSearchDialogComponent } from "../../submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 import { DMSComponent } from "../dms/dms.component";
-import { ModifyDialogComponent } from "../../../../core/modify-dialog/modify-dialog.component";
-import { DMSrefreshModel } from "../../../../core/models/DMSrefresh.Model";
-import { GenernicIdNameModel } from "../../../../core/models/idNameModel.Model";
-import { SimilarSoundPatientResponse } from "../../../../core/models/getsimilarsound.Model";
-import { AddressonCityModel } from "../../../../../out_patients/core/models/addressByCityIDModel.Model";
+import { ModifyDialogComponent } from "@core/modify-dialog/modify-dialog.component";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { GenernicIdNameModel } from "@core/models/idNameModel.Model";
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
+import { AddressonCityModel } from "@core/models/addressByCityIDModel.Model";
 import { Router, ActivatedRoute } from "@angular/router";
-import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { RegistrationDialogueComponent } from "../../../registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { MatInput } from "@angular/material/input";
-import { ComponentCanDeactivate } from "../../../../../shared/services/guards/pending-change-guard.service";
+import { ComponentCanDeactivate } from "@shared/services/guards/pending-change-guard.service";
 import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 import { AnimationPlayer } from "@angular/animations";
 
@@ -109,7 +109,6 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
-  invalidChars: any = ["e", "E"];
 
   passportDetails: {
     passportNo: string;
@@ -234,7 +233,7 @@ export class OpRegistrationComponent implements OnInit {
         onlyKeyPressAlpha: true,
       },
       altLandlineName: {
-        type: "number",
+        type: "tel",
         title: "Alt Contact/Landline",
         pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
         required: false,
@@ -279,6 +278,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Locality",
         required: true,
         options: this.localityList,
+        allowSearchInput: true,
         // required property is dependent on country
       },
       localityTxt: {
@@ -604,13 +604,11 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
+    this.questions[9].elementRef.addEventListener(
+      "focus",
+      this.onageCalculator.bind(this)
+    );
 
-    //ALt contact /Landline NUmber alphabate e prevention
-    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
-      if (this.invalidChars.includes(e.key)) {
-        e.preventDefault();
-      }
-    });
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
       "blur",
@@ -1809,10 +1807,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
-    this.OPRegForm.controls["country"].setValue({
-      title: this.patientDetails?.countryName,
-      value: this.patientDetails?.pcountry,
-    });
+
     this.OPRegForm.controls["nationality"].setValue({
       title: this.patientDetails?.nationalityName,
       value: this.patientDetails?.nationality,
@@ -1928,6 +1923,10 @@ export class OpRegistrationComponent implements OnInit {
 
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
+    this.OPRegForm.controls["country"].setValue({
+      title: this.patientDetails?.countryName,
+      value: this.patientDetails?.pcountry,
+    });
     if (patientDetails?.spouseName != "") {
       // this.OPRegForm.controls["fatherSpouse"].setValue({ title: "Spouse", value: 2 });
       this.OPRegForm.controls["fatherSpouse"].setValue(2);
@@ -2564,6 +2563,20 @@ export class OpRegistrationComponent implements OnInit {
     const data: any = {
       note: {
         notes: this.noteRemark,
+      },
+      vip: {
+        notes: this.vip,
+      },
+      hwc: {
+        notes: this.hwcRemark,
+      },
+      ppagerNumber: {
+        bplCardNo: this.ewsDetails.bplCardNo,
+        BPLAddress: this.ewsDetails.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReason,
+        reason: this.hotlistRemark,
       },
     };
     this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
