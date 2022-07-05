@@ -690,7 +690,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   formProcessing() {
-    //  this.checkForMaxID();
+    this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
@@ -1746,7 +1746,7 @@ export class OpRegistrationComponent implements OnInit {
                 relativeTo: this.route,
               });
               this.flushAllObjects();
-              this.setValuesToOPRegForm(this.patientDetails);
+              // this.setValuesToOPRegForm(this.patientDetails);
               this.OPRegForm.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
@@ -1841,9 +1841,13 @@ export class OpRegistrationComponent implements OnInit {
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
   setValuesToOPRegForm(patientDetails: PatientDetails) {
     this.patientDetails = patientDetails;
-    this.OPRegForm.controls["maxid"].setValue(
-      this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
-    );
+    if (this.patientDetails?.registrationno == 0) {
+      this.patientDetails?.iacode + ".";
+    } else {
+      this.OPRegForm.controls["maxid"].setValue(
+        this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
+      );
+    }
     this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
     this.OPRegForm.controls["mobileNumber"].setValue(
       this.patientDetails?.pphone
@@ -2830,14 +2834,174 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-        this.patientDetails = result.data.added[0] as PatientDetails;
+        let apppatientDetails = result.data.added[0];
         // this.patientDetails = new PatientDetails();
-        // this.patientDetails=new patientRegistrationModel()
-        this.setValuesToOPRegForm(this.patientDetails);
-        console.log("this is patient Detail obj", this.patientDetails);
-        console.log("appointment dialog was closed");
+
+        //CLEARING DATA BEFORE APPOINTMENT SEARCH CALL
+        this.clear();
+
+        //ASSIGNING MAX ID FROM SELECTED ROW OF APPOINTMENT POP UP
+        let maxid =
+          apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+
+        //IF IACODE IS EMPTY THAT MEAN NOT REGIGISTRATION PATIENT
+        if (apppatientDetails.iAcode == "") {
+          //CREATING OBJ FOR SETTING OPPOINTMENT PATIENT VALUES TO FORM
+          let appointmentPatientDetails = new PatientDetails(
+            apppatientDetails.id,
+            0,
+            this.cookie.get("LocationIACode"), //IA CODE PULLING FROM CURRENT LOGGED IN USER ID
+            apppatientDetails.registeredDateTime,
+            apppatientDetails.registeredBy
+              ? apppatientDetails.registeredBy
+              : "",
+            "",
+            apppatientDetails.title,
+            apppatientDetails.firstName,
+            "",
+            apppatientDetails.lastName,
+            "",
+            "",
+            false,
+            this.datepipe.transform(
+              apppatientDetails.dob,
+              "yyyy-MM-ddThh:mm:ss"
+            ) || "1900-01-01T00:00:00",
+            apppatientDetails.sex,
+            11,
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            "",
+            apppatientDetails.email,
+            0,
+            apppatientDetails.age,
+            apppatientDetails.houseNo,
+            "",
+            "",
+            0,
+            0,
+            0,
+            0,
+            0,
+            apppatientDetails.mobileno,
+            apppatientDetails.mobileno,
+            apppatientDetails.email,
+            "",
+            0,
+            0,
+            false,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            0,
+            "",
+            false,
+            false,
+            false,
+            0,
+            "",
+            "",
+            apppatientDetails.billNo != 0 ? true : false,
+            apppatientDetails.amount,
+            0,
+            0,
+            0,
+            "",
+            "",
+            "",
+            0,
+            false,
+            apppatientDetails.isdoborAge,
+            0,
+            "",
+            "",
+            0,
+            false,
+            "",
+            false,
+            "",
+            "",
+            0,
+            0,
+            "",
+            0,
+            0,
+            0,
+            "",
+            "",
+            "",
+            0,
+            !apppatientDetails.isdoborAge,
+            apppatientDetails.locationId,
+            apppatientDetails.locality,
+            0,
+            false,
+            false,
+            false,
+            "",
+            "",
+            "",
+            "",
+            false,
+            "",
+            false,
+            false,
+            "",
+            0,
+            0,
+            "",
+            "",
+            "",
+            false,
+            "",
+            0,
+            "",
+            false,
+            false,
+            0,
+            0,
+            "",
+            "",
+            "",
+            "",
+            false,
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            "",
+            "",
+            apppatientDetails.city,
+            "",
+            apppatientDetails.country,
+            apppatientDetails.state,
+            apppatientDetails.locality,
+            apppatientDetails.nationality,
+            false,
+            "",
+            ""
+          );
+          //SETTING APPOINTMENT DETAIL OBJECT THE OBJ TO THE FORM
+          this.setValuesToOPRegForm(appointmentPatientDetails);
+        } else {
+          //SETTING THE MAX ID FROM APPOINTMENT PATIENT SEARCH
+          this.OPRegForm.value.maxid = maxid;
+
+          //SEARCHING PATIENT BYH MAXID
+          this.getPatientDetailsByMaxId();
+        }
       });
     this.appointmentSearchClicked = false;
+
     // let appointmentSearchDialogref = this.matDialog.open(
     //   AppointmentSearchDialogComponent,
     //   {
