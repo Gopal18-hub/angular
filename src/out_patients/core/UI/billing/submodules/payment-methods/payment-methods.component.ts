@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BillingForm } from '@core/constants/BillingForm';
+import { DatePipe } from '@angular/common';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
   selector: 'payment-methods',
@@ -7,184 +9,29 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
   styleUrls: ['./payment-methods.component.scss']
 })
 export class PaymentMethodsComponent implements OnInit {
-
-  refundFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-         type: "number"
-       },
-      chequeno: {
-        type: "number"
-      },
-      chequeissuedate: {
-        type: "date"
-      },
-      chequebankname: {
-        type: "string"
-      },
-      chequebranchname: {
-        type: "string"
-      },
-      chequeamount: {
-        type: "number"
-      },
-      chequeauth: {
-        type: "string"
-      },
-      creditcardno: {
-        type: "number"
-      },
-      creditholdername: {
-        type: "string"
-      },
-      creditbankno:{
-        type: "number"
-      },
-      creditbatchno:{
-        type: "string"
-      },
-      creditamount: {
-        type: "number"
-      },
-      creditapproval: {
-        type: "number"
-      },
-      creditterminal: {
-        type: "string"
-      },
-      creditacquiring: {
-        type: "string"
-      },
-      demandddno: {
-        type: "string"
-      },
-      demandissuedate: {
-        type: "date"
-      },
-      demandbankname: {
-        type: "string"
-      },
-      demandbranch: {
-        type: "string"
-      },
-      demandamount: {
-        type: "number"
-      },
-      demandauth: {
-        type: "string"
-      },
-      mobilesendermobile: {
-        type: "number"
-      },
-      mobilesendermmid: {
-        type: "number"
-      },
-      mobilesendername: {
-        type: "string"
-      },
-      mobilebankname: {
-        type: "string"
-      },
-      mobilebranchname: {
-        type: "string"
-      },
-      mobilebeneficary: {
-        type: "number"
-      },
-      mobiletransactionamt: {
-        type: "number"
-      },
-      mobiletransactionref: {
-        type: "string"
-      },
-      onlinetransacid: {
-        type: "string"
-      },
-      onlinebookingid: {
-        type: "string"
-      },
-      onlinecardvalidate: {
-        type: "radio",
-        required: false,
-        options: [
-          { title: "Yes", value: "yes" },
-          { title: "No", value: "no" }
-        ]
-      },
-      onlinecontactno: {
-        type: "number"
-      },
-      onlineamount: {
-        type: "number"
-      },
-      paytmamount: {
-        type: "number"
-      },
-      paytmwallet: {
-        type: "string"
-      },
-      paytmsendermobile: {
-        type: "number"
-      },
-      paytmsenername: {
-        type: "string"
-      },
-      paytmotp: {
-        type: "number"
-      },
-      paytmtransacref: {
-        type: "string"
-      },
-      paytmorderid: {
-        type: "string"
-      },
-      upicardno: {
-        type: "number"
-      },
-      upitransactionid: {
-        type: "string"
-      },
-      upibankname: {
-        type: "string"
-      },
-      upiamount : {
-        type: "number"
-      },
-      upibatchno: {
-        type: "string"
-      },
-      upiapproval: {
-        type: "string"
-      },
-      upiterminal: {
-        type: "string"
-      },
-      upiacquiring: {
-        type: "string"
-      },
-      mainradio: {
-        type: "radio",
-        required: false,
-        options: [
-          { title: "Form 60", value: "form60" },
-          { title: "Pan card No.", value: "pancardno" },
-        ]
-      }
-    },
-  };
+  @Input() forrefund !: boolean;
+  @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
+  refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
-  constructor( private formService: QuestionControlService ) { }
+  today: any;
+  forrefundpage:boolean = true;
+  constructor( private formService: QuestionControlService, private datepipe: DatePipe) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.refundFormData.properties,
       {}
     );
+    this.forrefundpage = this.forrefund;
     this.refundform = formResult.form;
+    this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;
+    this.today = new Date();
+    console.log(this.paymentform);
+    this.refundform.controls["chequeissuedate"].setValue(this.today);
+    this.refundform.controls["demandissuedate"].setValue(this.today);
+    console.log(this.forrefundpage);
   }
 
 }

@@ -1,49 +1,77 @@
-.header
-{
-    background-color: #45c0be;
-    color:white;    
+.col-black{
+  color: #000;
 }
-.billSummary
-{
-    background-color:#004084;color:white;
+.col-white{
+  color: #fff;
 }
-.priceBreakup
-{
-    background-color:#45c0be;color:white;
+.back-primary{
+  background-color: #004084;
 }
-ul 
-{
-    list-style-type: none;
+.back-primary-payment-breakup{
+  background-color: #45C0BE;
 }
-.emptyList
-{
-    color:#45c0be;
+.bold{
+  font-weight: bold;
 }
-.emptyBill
-{
-    color:#004084;
+.lighter{
+  font-weight: lighter;
 }
-
-.search-header-menu {
-    width: 28vw;
-
-    max-width: initial !important;
-    margin-left: 5%;
-    margin-top: 3%;
-
-    maxhealth-question {
-      > div {
-        display: flex;
-        //align-items: center;
-        mat-label {
-          width: 65%!important;
-          font-size: 12px;
-          padding-top: 0.5rem;
-        }
-        mat-form-field {
-          width: 35%;          
-          font-size: 12px;
-        }
-      }
-    }
-  }
+.wt-nowrap{
+  white-space: nowrap;
+}
+.pointer{
+  cursor: pointer;
+}
+.secondary{
+  background-color: #45C0BE;
+}
+::ng-deep .mat-form-field-wrapper{
+  padding-bottom: 0 !important;
+}
+.bg-white{
+  background-color: #fff;
+  color: #000;
+}
+.clr-primary{
+  color: #004084;
+}
+.height{
+  height: 63vh;
+}
+::ng-deep mat-radio-group {
+  flex-direction: row !important;
+  justify-content: space-between;
+}
+::ng-deep .mat-radio-button{
+  margin-left: 10px;
+  padding-bottom: 0 !important;
+}
+::ng-deep .mat-tab-label{
+  height: 30px !important;
+  color: #004084 ;
+  opacity: 1 !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
+{
+  height: 50vh !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
+  border-bottom: 0 !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
+  background-color:#004084;
+  opacity: 1;
+  color: white;
+  border-bottom: none !important;
+  border-radius: 5px;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+  border-right: none !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
+  height: 55vh !important;
+}
+::ng-deep .mat-dialog-container{
+  overflow: hidden !important;
+  padding: 10px 24px 24px 24px;
+}
