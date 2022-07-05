@@ -507,10 +507,32 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   checkForModifiedPatientDetail() {
+    this.isPatientdetailModified = false;
     if (this.MaxIDExist) {
       this.isPatientdetailModified = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
     }
     return this.isPatientdetailModified;
+  }
+  checkForModifiedNationality() {
+    this.nationalityChanged = false;
+    if (this.MaxIDExist) {
+      this.nationalityChanged = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
+    }
+    return this.nationalityChanged;
   }
 
   formInit() {
@@ -579,11 +601,26 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
+
+    //ENTER EVENT ON PHONE NUMBER
+    this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+
+        this.onEnterPhoneModify();
+      }
+    });
+
     //chnage event for Mobile Field
     this.questions[2].elementRef.addEventListener(
       "change",
       this.onPhoneModify.bind(this)
     );
+
     //chnage event for FirstName
     this.questions[4].elementRef.addEventListener(
       "change",
@@ -628,10 +665,24 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.getPatientDetailsByMaxId.bind(this)
-    );
+    // this.questions[0].elementRef.addEventListener(
+    //   "blur",
+    //   this.getPatientDetailsByMaxId.bind(this)
+    // );
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+
+        this.getPatientDetailsByMaxId();
+      }
+    });
+
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -868,7 +919,7 @@ export class OpRegistrationComponent implements OnInit {
   flushAllObjects() {
     this.categoryIcons = [];
     this.fatherSpouseOptionList = [] as any;
-
+    this.similarContactPatientList = [] as any;
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -1107,32 +1158,39 @@ export class OpRegistrationComponent implements OnInit {
           (resultData: SimilarSoundPatientResponse[]) => {
             this.similarContactPatientList = resultData;
             console.log(this.similarContactPatientList);
-            if (this.similarContactPatientList.length != 0) {
-              const similarSoundDialogref = this.matDialog.open(
-                SimilarPatientDialog,
-                {
-                  width: "60vw",
-                  height: "80vh",
-                  data: {
-                    searchResults: this.similarContactPatientList,
-                  },
-                }
-              );
-              similarSoundDialogref
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result) => {
-                  if (result) {
-                    console.log(result.data["added"][0].maxid);
-                    let maxID = result.data["added"][0].maxid;
-                    this.OPRegForm.controls["maxid"].setValue(maxID);
-                    this.getPatientDetailsByMaxId();
-                  }
-                  console.log("seafarers dialog was closed");
-                  this.similarContactPatientList = [];
-                });
+            if (this.similarContactPatientList.length == 1) {
+              console.log(this.similarContactPatientList[0]);
+              let maxID = this.similarContactPatientList[0].maxid;
+              this.OPRegForm.controls["maxid"].setValue(maxID);
+              this.getPatientDetailsByMaxId();
             } else {
-              console.log("no data found");
+              if (this.similarContactPatientList.length != 0) {
+                const similarSoundDialogref = this.matDialog.open(
+                  SimilarPatientDialog,
+                  {
+                    width: "60vw",
+                    height: "80vh",
+                    data: {
+                      searchResults: this.similarContactPatientList,
+                    },
+                  }
+                );
+                similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.OPRegForm.controls["maxid"].setValue(maxID);
+                      this.getPatientDetailsByMaxId();
+                    }
+                    console.log("seafarers dialog was closed");
+                    this.similarContactPatientList = [];
+                  });
+              } else {
+                console.log("no data found");
+              }
             }
           },
           (error) => {
@@ -1706,7 +1764,7 @@ export class OpRegistrationComponent implements OnInit {
   onModifyDetail() {
     this.onUpdatePatientDetail();
 
-    if (this.isPatientdetailModified) {
+    if (this.isPatientdetailModified || this.nationalityChanged) {
       this.modifyDialogg();
     }
   }
@@ -1849,13 +1907,34 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
+  similarSoundListPresent(): boolean {
+    return this.similarContactPatientList.length > 0 ? true : false;
+  }
+
+  //CLEARING OLDER PHONE SEARCH
+  onEnterPhoneModify() {
+    this.similarContactPatientList = [] as any;
+    this.onPhoneModify();
+  }
   onPhoneModify() {
     console.log("phone changed");
 
-    if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
-    } else {
-      this.getSimilarPatientDetails();
+    //IF EVENT HAS BEEN NOT HITTED API
+    if (!this.similarSoundListPresent()) {
+      if (this.checkForModifiedPatientDetail()) {
+        this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+      } else {
+        this.getSimilarPatientDetails();
+      }
+      // } else {
+      //   if (this.similarContactPatientList.length == 1) {
+      //     if (this.checkForModifiedPatientDetail()) {
+      //       this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+      //     } else {
+      //       this.getSimilarPatientDetails();
+      //     }
+      //   }
     }
   }
   onTitleModify() {
@@ -1897,6 +1976,7 @@ export class OpRegistrationComponent implements OnInit {
       this.modfiedPatiendDetails.pemail = this.OPRegForm.value.emailId;
     }
   }
+  nationalityChanged: boolean = false;
   onNationalityModify() {
     console.log("country changed");
     if (
@@ -1914,10 +1994,16 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["foreigner"].disable();
       this.OPRegForm.controls["foreigner"].setValue(false);
     }
-
-    if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.nationality =
-        this.OPRegForm.value.nationality.value;
+    if (
+      this.OPRegForm.value.nationality.title !=
+      this.patientDetails.nationalityName
+    ) {
+      if (this.checkForModifiedNationality()) {
+        this.modfiedPatiendDetails.nationality =
+          this.OPRegForm.value.nationality.value;
+      }
+    } else {
+      this.nationalityChanged = false;
     }
   }
 
@@ -2579,7 +2665,13 @@ export class OpRegistrationComponent implements OnInit {
         reason: this.hotlistRemark,
       },
     };
-    this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
   }
 
   //DIALOGS ---------------------------------------------------------------------------------------
@@ -2745,6 +2837,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((result) => {
         console.log(result);
         this.patientDetails = result.data.added[0] as PatientDetails;
+        // this.patientDetails = new PatientDetails();
+        // this.patientDetails=new patientRegistrationModel()
         this.setValuesToOPRegForm(this.patientDetails);
         console.log("this is patient Detail obj", this.patientDetails);
         console.log("appointment dialog was closed");
