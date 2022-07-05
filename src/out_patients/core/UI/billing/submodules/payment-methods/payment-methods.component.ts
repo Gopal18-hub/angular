@@ -9,13 +9,15 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
   styleUrls: ['./payment-methods.component.scss']
 })
 export class PaymentMethodsComponent implements OnInit {
-  @Input() forrefund !: boolean;
+  @Input() fromrefund !: boolean;
+  @Input() fromdeposit!:boolean;
   @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
   refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
   today: any;
   forrefundpage:boolean = true;
+  fordepositpage:boolean = true;
   constructor( private formService: QuestionControlService, private datepipe: DatePipe) { }
 
   ngOnInit(): void {
@@ -23,7 +25,9 @@ export class PaymentMethodsComponent implements OnInit {
       this.refundFormData.properties,
       {}
     );
-    this.forrefundpage = this.forrefund;
+    this.forrefundpage = this.fromrefund;
+    console.log(this.forrefundpage);
+    this.fordepositpage=this.fromrefund;
     this.refundform = formResult.form;
     this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;

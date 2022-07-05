@@ -1,6 +1,6 @@
 <div class="h-full w-full">
     <!------------------------------------FIRST ROW----------------------------------------------------->
-    <div class="h-1/10 w-full flex justify-end">
+    <div class="h-1/10 w-full flex justify-end cursor-pointer">
          <span class="material-icons cursor-pointer" mat-dialog-close>close</span>
     </div>
     <!--------------------------------------SECOND ROW------------------------------------------------------>
@@ -42,7 +42,7 @@
     <!---------------------------------------------FOURTH ROW---------------------------------------------------------->
     <div class=" w-full h-55">
         <!-------------------------------------------mat tab will appear-------------------------------------------->
-        <payment-methods></payment-methods>
+        <payment-methods  [fromrefund]="onDepositpage"></payment-methods>
         <!--------------------------------------------remarks -------------------------------------------->
         <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right" >
             <mat-label  class="ml-4 text-white">Remarks</mat-label>

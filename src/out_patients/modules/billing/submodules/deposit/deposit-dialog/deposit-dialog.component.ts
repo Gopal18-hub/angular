@@ -194,7 +194,7 @@ export class DepositDialogComponent implements OnInit {
   depositForm! :FormGroup;
   questions:any;
   selectedTabvalue!: string;
-  
+  onDepositpage:boolean=true;
   
   constructor(
     private formService: QuestionControlService

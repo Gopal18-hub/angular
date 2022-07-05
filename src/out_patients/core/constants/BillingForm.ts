@@ -12,7 +12,8 @@ export namespace BillingForm {
             type: "number"
           },
           chequeissuedate: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           chequebankname: {
             type: "string"
@@ -54,7 +55,8 @@ export namespace BillingForm {
             type: "string"
           },
           demandissuedate: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           demandbankname: {
             type: "string"
@@ -183,7 +185,8 @@ export namespace BillingForm {
             }]
           },
           dateofapplication: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           applicationno: {
             type: "number"
@@ -222,5 +225,5 @@ export namespace BillingForm {
             type: "string"
           }
         },
-      };
+    };
 }
