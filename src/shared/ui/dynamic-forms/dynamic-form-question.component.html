@@ -459,6 +459,7 @@
             [displayWith]="displayFn"
             (opened)="arrowIcon = 'arrow_drop_up'"
             (closed)="arrowIcon = 'arrow_drop_down'"
+            (optionSelected)="handler($event)"
           >
             <mat-option
               *ngFor="let opt of filteredOptions | async"
@@ -489,7 +490,7 @@
         >
           <input
             matInput
-            placeholder=""
+            placeholder="__/__/____"
             [formControlName]="question.key"
             [type]="'text'"
             [id]="question.key"
@@ -497,7 +498,6 @@
             [readonly]="question.readonly"
             #element
             [matDatepicker]="datepicker"
-            [placeholder]="question.placeholder"
             [max]="question.maximum"
             [min]="question.minimum"
           />

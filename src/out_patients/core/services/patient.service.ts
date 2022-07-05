@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { getmergepatientsearch } from "../models/getmergepatientsearch";
 import { PatientDetails } from "../models/patientDetailsModel.Model";
 import { PatientSearchModel } from "../models/patientSearchModel";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable({
   providedIn: "root",
@@ -31,23 +33,174 @@ export class PatientService {
     "psu/govt": "PSU_icon.svg",
   };
   categoryIconsActions: any = {
-    cghs: {
-      action: "dialog",
-      properties: {},
-    },
-    isCghsverified: {
-      action: "dialog",
-      properties: {},
-    },
-    hotList: "",
+    cghs: {},
+    isCghsverified: {},
     mergeLinked: "",
-    vip: "",
-    note: "",
+    vip: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "VIP Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
+    note: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "Note Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
+    hotlist: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "30vw",
+        data: {
+          title: "Hot Listing",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              hotlistTitle: {
+                type: "autocomplete",
+                title: "Hot Listing",
+                readonly: true,
+                defaultValue: "",
+              },
+              reason: {
+                type: "textarea",
+                title: "Remark",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
+    hotList: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "30vw",
+        data: {
+          title: "Hot Listing",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              hotlistTitle: {
+                type: "autocomplete",
+                title: "Hot Listing",
+                readonly: true,
+                defaultValue: "",
+              },
+              reason: {
+                type: "textarea",
+                title: "Remark",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
     cash: "",
     psu: "",
-    ews: "",
+    ppagerNumber: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "EWS Details",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              bplCardNo: {
+                type: "string",
+                title: "BPL Card No.",
+                readonly: true,
+                defaultValue: "",
+              },
+              BPLAddress: {
+                type: "textarea",
+                title: "Address on card",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
     ins: "",
-    hwc: "",
+    hwc: {
+      action: "dialog",
+      component: FormDialogueComponent,
+      properties: {
+        width: "28vw",
+        data: {
+          title: "HWC Remarks",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              notes: {
+                type: "textarea",
+                title: "",
+                readonly: true,
+                defaultValue: "",
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "",
+        },
+      },
+    },
   };
 
   categoryIconsTooltip: any = {
@@ -132,7 +285,7 @@ export class PatientService {
     },
   };
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   getAllCategoryIcons(
     patientSearchModel: PatientSearchModel[] | getmergepatientsearch[],
@@ -207,6 +360,7 @@ export class PatientService {
           src:
             "assets/patient-categories/" +
             this.pageNumberIcons[patient["ppagerNumber"]],
+          type: e,
         };
         if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
           if (
@@ -221,6 +375,7 @@ export class PatientService {
       } else if (this.categoryIcons[e] && patient[e as keyof PatientDetails]) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
+          type: e,
         };
         if (this.categoryIconsTooltip[e]) {
           if (this.categoryIconsTooltip[e]["type"] == "static") {
@@ -238,5 +393,23 @@ export class PatientService {
     });
 
     return returnIcons;
+  }
+
+  doAction(type: string, data: any) {
+    if (this.categoryIconsActions[type]) {
+      if (this.categoryIconsActions[type].action == "dialog") {
+        if (data) {
+          Object.keys(data).forEach((ele) => {
+            this.categoryIconsActions[type].properties.data.form.properties[
+              ele
+            ].defaultValue = data[ele];
+          });
+        }
+        this.dialog.open(
+          this.categoryIconsActions[type].component,
+          this.categoryIconsActions[type].properties
+        );
+      }
+    }
   }
 }
