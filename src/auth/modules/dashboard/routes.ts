@@ -12,7 +12,7 @@ import { RedirectComponent } from "../../../shared/modules/header/redirect/redir
 const routes: Routes = [
   {
     path: "dashboard",
-    //canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService],
     component: DashboardComponent,
   },
   {
