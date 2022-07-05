@@ -22,34 +22,33 @@
 .secondary{
     background-color: #45C0BE;
 }
-
 ::ng-deep .mat-form-field-wrapper{
     padding-bottom: 0 !important;
 }
-
-// :host ::ng-deep .mat-tab-group {
-//     flex-direction: row;
-//   }
-//   :host ::ng-deep .mat-tab-header {
-//     border-bottom: none;
-//   }
-//   :host ::ng-deep .mat-tab-header-pagination {
-//     display: none !important;
-//   }
-//   :host ::ng-deep .mat-tab-labels {
-//     flex-direction: column;
-//   }
-//   :host ::ng-deep .mat-ink-bar {
-//     height: 100%;
-//     left: 98% !important;
-//   }
-//   :host ::ng-deep .mat-tab-body-wrapper {
-//     flex: 1 1 auto;
-//   }
-
 .bg-white{
     background-color: #fff;
+    color: #000;
+}
+.clr-primary{
+    color: #004084;
 }
 .height{
-    height: 65vh;
+    height: 63vh;
+}
+.bg-grey{
+    background:#F6F6F6;
+}
+.bg-lightgrey{
+    background-color: #D2D0D0;
+}
+::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    justify-content: space-between;
+}
+::ng-deep .mat-radio-button{
+    margin-left: 10px;
+    padding-bottom: 0 !important;
+}
+::ng-deep textarea{
+    min-height: 120px !important;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild ,OnDestroy} from '@angular/core';
 import { opRegApprovalModel } from '../../../../../out_patients/core/models/opregapprovalModel.Model';
 import { environment } from '@environments/environment';
 import { HttpService } from '../../../../../shared/services/http.service';
@@ -13,6 +13,8 @@ import { CookieService } from '../../../../../shared/services/cookie.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MessageDialogService } from '../../../../../shared/ui/message-dialog/message-dialog.service';
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'out-patients-hot-listing-approval',
@@ -92,7 +94,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       age : {
         title: 'Age',
-        type: 'number'
+        type: 'number',
+        disabledSort:true,
       },
       gender : {
         title: 'Gender',
@@ -112,6 +115,10 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'Category',
         type: "image",
         width: 34,
+        style: {
+          width: "220px",
+        },
+        disabledSort:true,
       }
     }
   }
@@ -179,20 +186,38 @@ export class HotListingApprovalComponent implements OnInit {
         title: 'Category',
         type: "image",
         width: 34,
+        style: {
+          width: "220px",
+        },
       }
     }
   }
+
+  private readonly _destroying$ = new Subject<void>();
 
   constructor(private http: HttpService,private hotList: HotListingService,private router: Router,
     private searchService: SearchService, private cookie: CookieService,public datepipe: DatePipe, private messageDialogService:MessageDialogService) { }
 
   ngOnInit(): void {
    // this.today= 
-    this.searchService.searchTrigger.subscribe((formdata: any) => {
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((formdata: any) => {
       this.searchhotlisting(formdata.data);
     });
+    if(this.from == undefined && this.to == undefined)
+    {
+      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-2),"yyyy-MM-dd");
+      this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+    }
+    this.showmain("Hot Listing Approval");
    
   }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
   searchhotlisting(formdata:any) {
     this.today = new Date();
     this.defaultUI = true;
@@ -244,7 +269,9 @@ export class HotListingApprovalComponent implements OnInit {
 
     if (link == "View Pending Request") {  
       this.activeLink2 = link;  
-      this.getophotlistingpending().subscribe((resultData) => {
+      this.getophotlistingpending()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
         resultData = resultData.map((item:any) => {
           item.fullname = item.firstname + ' ' + item.lastName;
           return item;
@@ -274,7 +301,9 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalaccepting = true;
       this.showapprovalreject = false;
       this.enablehotlistbtn = false;
-      this.getophotlistingaccept().subscribe((resultData) => {
+      this.getophotlistingaccept()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
         resultData = resultData.map((item:any) => {
           item.fullname = item.firstname + ' ' + item.lastName;
           return item;
@@ -301,7 +330,9 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalaccepting = false;
       this.showapprovalreject = true;
       this.enablehotlistbtn = false;
-      this.getophotlistingreject().subscribe((resultData) => {
+      this.getophotlistingreject()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
         resultData = resultData.map((item:any) => {
           item.fullname = item.firstname + ' ' + item.lastName;
           return item;
@@ -329,7 +360,9 @@ export class HotListingApprovalComponent implements OnInit {
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
       let userId = Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,1).subscribe((resultdata)=>{
+      this.hotlistingpostapi(this.HotListidList,userId,1)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata)=>{
         console.log(resultdata);
         this.messageDialogService.success("Update Request Approved");
         this.showgrid("View Pending Request");
@@ -347,7 +380,9 @@ export class HotListingApprovalComponent implements OnInit {
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
       let userId = Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,2).subscribe((resultdata)=>{
+      this.hotlistingpostapi(this.HotListidList,userId,2)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata)=>{
         console.log(resultdata);
         this.messageDialogService.success("Update Request Rejected");
         this.showgrid("View Pending Request");
@@ -365,7 +400,9 @@ export class HotListingApprovalComponent implements OnInit {
     this.hotlistingtable.selection.selected.map((s:any)=>{
       this.HotListidList.push({id:s.id})});
       let userId = Number(this.cookie.get('UserId'));
-      this.hotlistingpostapi(this.HotListidList,userId,3).subscribe((resultdata)=>{
+      this.hotlistingpostapi(this.HotListidList,userId,3)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata)=>{
         console.log(resultdata);
         this.messageDialogService.success("Update Request Deleted");
         this.showgrid("View Pending Request");

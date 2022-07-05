@@ -11,13 +11,13 @@
         <div >
         <form  [formGroup]="employeesponsorForm">
             <!------------------------------------------- FIRST ROW------------------------------------------>
-            <div class="firstrow employeeclass">
-                <div class="flex p-2">
-                    <div class="flex w-1/15">
-                        <div>
+            <div class="firstrow max-health-primary-color">
+                <div class="flex w-4/5 pt-3 pb-2">
+                    <!-- <div class="flex w-1/15"> -->
+                        <div class="flex  text-wrap" >
                             <mat-label>Max ID</mat-label>
                         </div>
-                        <div class="ml-3 w-3/5 ">
+                        <div class="ml-3 w-1/10 bg-white">
                             <maxhealth-question
                                 [question]="questions[0]"
                                 [form]="employeesponsorForm"
@@ -26,12 +26,12 @@
                             >
                             </maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex ml-0 w-2/10">
-                        <div class="pl-0">
+                    <!-- </div> -->
+                    <!-- <div class="flex ml-0 w-2/10"> -->
+                        <div class="ml-1 text-wrap">
                             <mat-label>Mobile No</mat-label>
                         </div>
-                        <div class="ml-3 w-3/5">
+                        <div class="ml-3 w-1/15 bg-white">
                             <maxhealth-question
                                 [question]="questions[1]"
                                 [form]="employeesponsorForm"
@@ -40,12 +40,12 @@
                             >
                             </maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex w-3/10">
-                        <div class="w-3/10" style="white-space:nowrap">
+                    <!-- </div> -->
+                    <!-- <div class="flex w-3/10"> -->
+                        <div class="ml-2 text-wrap" >
                             <mat-label >Employee Code</mat-label>
                         </div>
-                        <div class="ml-3 w-1/2 mr-0">
+                        <div class="ml-3 w-1/15 bg-white ">
                             <maxhealth-question
                                 [question]="questions[2]"
                                 [form]="employeesponsorForm"
@@ -54,16 +54,16 @@
                             >
                             </maxhealth-question>
                         </div>
-                    </div>
+                    <!-- </div> -->
 
-                    <div class="flex w-2/10 ml-0">
-                        <div  class="w-2/10">
+                    <!-- <div class="flex w-2/10 ml-0"> -->
+                        <div class="ml-2">
                             <mat-label>Company</mat-label>
                         </div>
                         <div class="ml-4">
                             <a class="text-underline"  (click)="iomClick()">IOM</a>
                         </div>
-                        <div class="ml-3 w-3/5">
+                        <div class="ml-3 w-1/15 bg-white">
                             <maxhealth-question
                                 [question]="questions[3]"
                                 [form]="employeesponsorForm"
@@ -72,12 +72,12 @@
                             >
                             </maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex w-2/10">
+                    <!-- </div> -->
+                    <!-- <div class="flex w-2/10"> -->
                         <div class ="ml-2">
                             <mat-label>Corporate</mat-label>
                         </div>
-                        <div class="ml-3 w-3/5">
+                        <div class="ml-3 w-1/15">
                             <maxhealth-question
                                 [question]="questions[4]"
                                 [form]="employeesponsorForm"
@@ -86,7 +86,7 @@
                             >
                             </maxhealth-question>
                         </div>
-                    </div>
+                    <!-- </div> -->
                 </div>
             </div>
             <!---------------------------------------------SECOND ROW-------------------------------------------------->
@@ -161,7 +161,7 @@
                 <div class="ml-2">
                     <mat-label>From Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 dateinput-class" >
+                <div class="ml-3 w-3/5 bg-white" >
                     <maxhealth-question
                 [question]="questions[6]"
                 [form]="employeesponsorForm"
@@ -175,7 +175,7 @@
                 <div>
                     <mat-label>To Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 dateinput-class" >
+                <div class="ml-3 w-3/5 bg-white" >
                     <maxhealth-question
                     [question]="questions[7]"
                     [form]="employeesponsorForm"
@@ -195,11 +195,11 @@
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
         <div class="h-1/2 mt-2">
-            <maxhealth-table [config]="config1"></maxhealth-table>
+            <maxhealth-table [config]="config1" [data]="data"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
         <div class="h-1/2 mt-2">
-            <maxhealth-table [config]="config2"></maxhealth-table>
+            <maxhealth-table [config]="config2" [data]="data1"></maxhealth-table>
         </div>
         <div class="float-right mt-2 mr-3">
             <button mat-raised-button color="primary" (click)="employeeSave()">Save</button>

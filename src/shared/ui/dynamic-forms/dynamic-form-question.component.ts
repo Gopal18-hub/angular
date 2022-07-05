@@ -7,12 +7,14 @@ import {
   AfterViewInit,
   OnChanges,
   SimpleChanges,
+  OnDestroy,
 } from "@angular/core";
 import { FormGroup, FormArray, FormControl, Validators } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { QuestionBase } from "./interface/question-base";
 import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 
 @Component({
   selector: "maxhealth-question",
@@ -20,7 +22,7 @@ import { map, startWith } from "rxjs/operators";
   styleUrls: ["./dynamic-form.scss"],
 })
 export class DynamicFormQuestionComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
@@ -28,7 +30,7 @@ export class DynamicFormQuestionComponent
   @Input() form: FormGroup = {} as FormGroup;
 
   get isValid() {
-    return this.form.controls[this.question.key].valid;
+    return !this.form.controls[this.question.key].errors?.["required"];
   }
   get isCorrect() {
     return this.form.controls[this.question.key].errors?.["incorrect"];
@@ -44,7 +46,32 @@ export class DynamicFormQuestionComponent
 
   @ViewChild("element") element!: ElementRef;
 
+  @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
+
   filteredOptions!: Observable<any>;
+
+  emailDomains: string[] = [
+    "yahoo.com",
+    "gmail.com",
+    "google.com",
+    "hotmail.com",
+    "me.com",
+    "aol.com",
+    "mac.com",
+    "live.com",
+    "comcast.com",
+    "googlemail.com",
+    "msn.com",
+    "hotmail.co.uk",
+    "yahoo.co.uk",
+    "facebook.com",
+    "verizon.net",
+    "att.net",
+    "gmz.com",
+    "mail.com",
+  ];
+
+  subscription!: Subscription;
 
   constructor(private qcs: QuestionControlService) {}
 
@@ -52,6 +79,12 @@ export class DynamicFormQuestionComponent
 
   compareByValue(f1: any, f2: any) {
     return f1 && f2 && f1 == f2;
+  }
+
+  ngOnDestroy() {
+    if (this.subscription && !this.subscription.closed) {
+      this.subscription.unsubscribe();
+    }
   }
 
   excuteCondition(conditions: any, value: any) {
@@ -87,6 +120,9 @@ export class DynamicFormQuestionComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.element) {
+      this.question.elementRef = this.element.nativeElement;
+    }
     if (
       this.question &&
       this.question.type &&
@@ -148,9 +184,71 @@ export class DynamicFormQuestionComponent
     if (this.element) {
       this.question.elementRef = this.element.nativeElement;
     }
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
+      this._subscribeToClosingActions();
+    }
   }
 
   generateRandomEmail() {
     this.form.controls[this.question.key].setValue("info@maxhealthcare.com");
+  }
+
+  keyPressNumbers(event: any) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Only Numbers 0-9
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  keyPressAlpha(event: any) {
+    // if (!this.question.pattern) {
+    //   this.question.pattern = '/[a-zA-Z]/';
+    // }
+
+    const inp = String.fromCharCode(event.keyCode);
+
+    if (/[a-zA-Z. ]/.test(inp)) {
+      return true;
+    } else {
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  private _subscribeToClosingActions(): void {
+    if (this.subscription && !this.subscription.closed) {
+      this.subscription.unsubscribe();
+    }
+
+    this.subscription = this.trigger.panelClosingActions.subscribe(
+      (e) => {
+        console.log(e);
+        if ((!e || !e.source) && !this.question.allowSearchInput) {
+          const selected = this.question.options
+            .map((option: any) => option.value)
+            .find(
+              (option: any) =>
+                option === this.form.controls[this.question.key].value.value
+            );
+          if (selected == null) {
+            this.form.controls[this.question.key].setValue(null);
+          }
+        }
+      },
+      (err) => this._subscribeToClosingActions(),
+      () => this._subscribeToClosingActions()
+    );
+  }
+
+  handler(event: any): void {
+    this.form.controls[this.question.key].setValue(event.option.value);
   }
 }

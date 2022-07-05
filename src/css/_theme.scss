@@ -87,20 +87,24 @@ mat-form-field {
       // padding-bottom: 1em;
     }
     .mat-form-field-infix {
-      padding: 0.6em 0 !important;
+      padding: 0.6em 0 0.4em 0 !important;
       border-top: 0 !important;
     }
     .mat-form-field-suffix,
     .mat-form-field-prefix {
-      top: 0.5em;
+      top: 0.35em;
     }
   }
 }
 .mat-form-field:not(.mat-form-field-appearance-legacy)
   .mat-form-field-suffix
   .mat-icon-button {
-  width: 1.5em !important;
-  height: 1.5em !important;
+  width: 1.2em !important;
+  height: 1.2em !important;
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+  }
 }
 .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
   padding: 0 !important;
@@ -112,8 +116,8 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 140px);
-  border-radius: 10px 10px 0 0;
+  height: calc(100vh - 130px);
+  border-radius: 10px 10px;
   overflow: hidden;
   .banner {
     background: #004084;
@@ -125,14 +129,19 @@ mat-form-field {
       height: 100%;
       ul {
         li {
-          a.mat-tab-label-active {
-            border-radius: 7px 7px 0px 0px;
-            font-weight: 800;
-            color: #004084;
-            background-color: #fff;
+          a {
             height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
+            &.mat-tab-label-active {
+              border-radius: 7px 7px 0px 0px;
+              font-weight: 800;
+              color: #004084;
+              background-color: #fff;
+            }
+          }
+          &:last-child {
+            margin-right: 0.75rem;
           }
         }
       }
@@ -144,7 +153,7 @@ mat-form-field {
 }
 
 .max-body-wrapper-nobtn {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 130px);
   width: calc(100vw - 2em);
   border-radius: 10px 10px 0 0;
   .banner {
@@ -152,24 +161,31 @@ mat-form-field {
     color: #fff;
     border-radius: 10px 10px 0 0;
     border: 1px solid #004084;
-    height: 3.225rem;
+    height: 2.525rem;
     .mat-tab-links {
       height: 100%;
       ul {
         li {
-          a.mat-tab-label-active {
-            border-radius: 7px 7px 0px 0px;
-            font-weight: 800;
-            color: #004084;
-            background-color: #fff;
-            height: 2.75rem;
+          a {
+            height: 2.05rem;
             opacity: 1;
             font-size: 0.85rem;
+            &.mat-tab-label-active {
+              border-radius: 7px 7px 0px 0px;
+              font-weight: 800;
+              color: #004084;
+              background-color: #fff;
+            }
           }
         }
       }
       .mat-ink-bar {
         display: none;
+      }
+    }
+    .mat-tab-nav-bar {
+      .mat-ink-bar {
+        height: 0;
       }
     }
   }
@@ -246,7 +262,7 @@ mat-form-field {
 }
 .mat-form-field-appearance-outline {
   .mat-select-arrow-wrapper {
-    transform: translateY(10%) !important;
+    transform: translateY(5%) !important;
   }
 }
 
@@ -298,4 +314,53 @@ mat-form-field {
 .mat-tooltip {
   background-color: #fff;
   color: #272727 !important;
+  border: 1px solid #ebe8e8;
+}
+
+.mat-option {
+  &.mat-selected {
+    &:not(.mat-option-multiple):not(.mat-option-disabled) {
+      background-color: #004084;
+      color: #fff;
+    }
+  }
+  &:hover {
+    &:not(.mat-option-disabled) {
+      background-color: #004084;
+      color: #fff;
+    }
+  }
+  &.mat-active {
+    background-color: #004084;
+    color: #fff;
+  }
+}
+
+.mat-datepicker-content {
+  .mat-calendar {
+    zoom: 0.75;
+  }
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
+}
+.mat-select-panel .mat-optgroup-label,
+.mat-select-panel .mat-option {
+  line-height: 2em !important;
+  height: 2em !important; 
+}
+.mat-select-panel{
+  margin-top:17%;
+  margin-left: 10%;
+}
+
+.mat-select-panel.mat-primary.im-select-dropdown{
+  min-width: 100% !important;
+}
+
+.mat-autocomplete-panel .mat-optgroup-label,
+.mat-autocomplete-panel .mat-option{
+  line-height: 1.5em !important;
+  height: 1.5em !important; 
 }

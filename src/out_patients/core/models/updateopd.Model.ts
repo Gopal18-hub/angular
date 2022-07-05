@@ -73,7 +73,7 @@ export class UpdatepatientModel{
     fdpgroup: string;
     hwc: boolean;
     hwcRemarks: string;
-    identityId: number;
+    identityTypeId: number;
     identityTypeNumber: string;
     
 
@@ -152,7 +152,7 @@ vesselName: string,
 fdpgroup: string,
 hwc: boolean,
 hwcRemarks: string,
-identityId: number,
+identityTypeId: number,
 identityTypeNumber: string
 
 
@@ -233,7 +233,7 @@ identityTypeNumber: string
    this.fdpgroup= fdpgroup;
    this.hwc= hwc;
    this.hwcRemarks= hwcRemarks;
-   this.identityId= identityId;
+   this.identityTypeId= identityTypeId;
    this.identityTypeNumber= identityTypeNumber;
       
 }
