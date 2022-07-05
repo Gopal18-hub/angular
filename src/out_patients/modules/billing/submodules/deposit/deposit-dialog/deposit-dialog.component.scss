@@ -10,7 +10,6 @@
 ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
     height:50vh !important;
 }
-// mat-ripple mat-tab-label mat-focus-indicator mat-tab-label-active ng-star-inserted
 
 ::ng-deep mat-radio-group{
     flex-direction: row !important;
@@ -72,4 +71,11 @@
 ::ng-deep .mat-radio-button{
     padding-bottom: 0 !important;
 
+}
+.bg-lightblue{
+    background-color:#45C0BE;
+}
+
+.font-white{
+    color:white;
 }
