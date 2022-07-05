@@ -520,6 +520,20 @@ export class OpRegistrationComponent implements OnInit {
     }
     return this.isPatientdetailModified;
   }
+  checkForModifiedBationality() {
+    this.nationalityChanged = false;
+    if (this.MaxIDExist) {
+      this.nationalityChanged = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
+    }
+    return this.isPatientdetailModified;
+  }
 
   formInit() {
     let formResult: any = this.formService.createForm(
@@ -1750,7 +1764,7 @@ export class OpRegistrationComponent implements OnInit {
   onModifyDetail() {
     this.onUpdatePatientDetail();
 
-    if (this.isPatientdetailModified) {
+    if (this.isPatientdetailModified || this.nationalityChanged) {
       this.modifyDialogg();
     }
   }
@@ -1962,6 +1976,7 @@ export class OpRegistrationComponent implements OnInit {
       this.modfiedPatiendDetails.pemail = this.OPRegForm.value.emailId;
     }
   }
+  nationalityChanged: boolean = false;
   onNationalityModify() {
     console.log("country changed");
     if (
@@ -1983,12 +1998,12 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.nationality.title !=
       this.patientDetails.nationalityName
     ) {
-      if (this.checkForModifiedPatientDetail()) {
+      if (this.checkForModifiedBationality()) {
         this.modfiedPatiendDetails.nationality =
           this.OPRegForm.value.nationality.value;
       }
     } else {
-      this.isPatientdetailModified = false;
+      this.nationalityChanged = false;
     }
   }
 
