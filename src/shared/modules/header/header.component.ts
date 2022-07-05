@@ -44,10 +44,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.router.navigate([], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
     //oidc.user:https://localhost/:hispwa
     let storage = localStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
@@ -78,6 +74,7 @@ export class HeaderComponent implements OnInit {
     }
 
     this.authService.logout().subscribe((response: any) => {
+      console.log("loggedout");
       if (response.postLogoutRedirectUri) {
         window.location = response.postLogoutRedirectUri;
       }
@@ -86,6 +83,7 @@ export class HeaderComponent implements OnInit {
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
       this.authService.startAuthentication();
+      console.log("cleared cookie");
     });
   }
 
