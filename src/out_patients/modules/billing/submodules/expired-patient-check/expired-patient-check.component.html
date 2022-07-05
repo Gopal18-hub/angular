@@ -10,14 +10,14 @@
         <div class="h-full bg-image" >
 
             <!-------------------------------------FIRST ROW------------------------------------------------------>
-        <div class="flex h-2/10 pt-2 bg-row"  >
-            <div class="w-3/4 ">
+        <div class="flex h-2/10 m-2 bg-row p-1"  >
+            <div class="w-3/4 h-full mt-2">
                 <form [formGroup]="expiredpatientForm">
-                    <div class="flex">
+                    <div class="flex h-full ">
                         <div class="ml-2  max-health-primary-color">
                             <mat-label >Max ID</mat-label>
                         </div>  
-                        <div class="ml-2 w-1/10 bg-white">
+                        <div class="ml-3 w-1/10 h-full bg-white">
                             <maxhealth-question
                             [question]="questions[0]"
                             [form]="expiredpatientForm"
@@ -26,10 +26,10 @@
                             (onChange)="onMaxidEnter()">
                             </maxhealth-question>
                         </div>
-                        <div class="ml-2 max-health-primary-color">
+                        <div class="ml-3 max-health-primary-color">
                             <mat-label>Mobile No.</mat-label>
                         </div>
-                        <div class="ml-2 w-1/15">
+                        <div class="ml-3 w-1/15 bg-white">
                             <maxhealth-question
                             [question]="questions[1]"
                             [form]="expiredpatientForm"
@@ -41,7 +41,7 @@
                     </div>
                 </form>
             </div>
-            <div class="w-1/4 ml-6 flex float-right">
+            <div class="w-1/4 h-full ml-6 flex float-right">
                <div >
                     <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
                         <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
@@ -59,7 +59,7 @@
             </div>
         </div>
         <!----------------------------------------SECOND ROW--------------------------------------------------------------->
-        <div class=" flex h-2/10 mt-1 p-3 bg-row">
+        <div class=" flex h-2/10 m-2 p-3 bg-row">
         <div class="w-1/15 max-health-primary-color">
             <mat-label>Name:</mat-label>
             <span></span>
