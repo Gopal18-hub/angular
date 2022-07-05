@@ -9,7 +9,7 @@ import { OpRegApprovalComponent } from "./submodules/op-reg-approval/op-reg-appr
 import { AppointmentSearchComponent } from "./submodules/appointment-search/appointment-search.component";
 import { HotListingApprovalComponent } from "./submodules/hot-listing-approval/hot-listing-approval.component";
 import { PendingChangesGuard } from "../../../shared/services/guards/pending-change-guard.service";
-
+import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 const routes: Routes = [
   {
     path: "registration",
@@ -20,16 +20,34 @@ const routes: Routes = [
         path: "op-registration",
         component: OpRegistrationComponent,
         canDeactivate: [PendingChangesGuard],
+        canActivate: [AuthGuardService],
       },
-      { path: "find-patient", component: FindPatientComponent },
-      { path: "dup-reg-merging", component: DupRegMergingComponent },
+      {
+        path: "find-patient",
+        component: FindPatientComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: "dup-reg-merging",
+        component: DupRegMergingComponent,
+        canActivate: [AuthGuardService],
+      },
       {
         path: "registration-unmerging",
         component: RegistrationUnmergingComponent,
+        canActivate: [AuthGuardService],
       },
-      { path: "op-reg-approval", component: OpRegApprovalComponent },
+      {
+        path: "op-reg-approval",
+        component: OpRegApprovalComponent,
+        canActivate: [AuthGuardService],
+      },
       { path: "appointment-search", component: AppointmentSearchComponent },
-      { path: "hot-listing-approval", component: HotListingApprovalComponent },
+      {
+        path: "hot-listing-approval",
+        component: HotListingApprovalComponent,
+        canActivate: [AuthGuardService],
+      },
     ],
   },
 ];

@@ -257,7 +257,7 @@ export class PatientService {
   pageNumberIconsTooltip: any = {
     Cash: {
       type: "static",
-      value: "Cash",
+      value: "CASH",
     },
     "PSU/Govt": {
       type: "static",
