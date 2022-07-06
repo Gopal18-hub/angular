@@ -41,7 +41,8 @@ export class RefundDialogComponent implements OnInit {
         options: [
           { title: "Yes", value: "yes" },
           { title: "No", value: "no" }
-        ]
+        ],
+        defaultValue: "yes"
       },
       deposithead: {
         type: "autocomplete",
@@ -216,7 +217,8 @@ export class RefundDialogComponent implements OnInit {
         options: [
           { title: "Form 60", value: "form60" },
           { title: "Pan card No.", value: "pancardno" },
-        ]
+        ],
+        defaultValue: "pancardno"
       }
     },
   };
@@ -256,7 +258,7 @@ export class RefundDialogComponent implements OnInit {
         this.refundform.controls["panno"].enable();
       }
     })
-    this.refundform.controls["amount"].valueChanges.subscribe(
+    this.paymentform.controls["amount"].valueChanges.subscribe(
       (res:any)=>{
       if(res > 200000)
       {
