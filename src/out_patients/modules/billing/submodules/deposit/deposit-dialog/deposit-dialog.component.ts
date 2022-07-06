@@ -188,6 +188,8 @@ export class DepositDialogComponent implements OnInit {
   };
 
   depositForm!: FormGroup;
+  servicedepositForm!: FormGroup;
+  paymentForm!: FormGroup;
   questions: any;
   onDepositpage: boolean = true;
 
@@ -202,5 +204,124 @@ export class DepositDialogComponent implements OnInit {
     this.questions = formResult.questions;
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.paymentForm.controls["amount"].valueChanges.subscribe((value) => {
+      console.log(value);
+      if (value > 0) {
+        this.disablechequecontrols();
+        this.disablecreditcardControls();
+        this.disabledemanddraftControls();
+        this.disableinternetpaymentControls();
+        this.disableupiControls();
+      } else {
+        this.enablechequecontrols();
+        this.enablecreditcardControls();
+        this.enabledemanddraftControls();
+        this.enableinternetpaymentControls();
+        this.enableupiControls();
+      }
+    });
+  }
+
+  getServiceDepositform(event: FormGroup) {
+    console.log(event);
+    this.servicedepositForm = event;
+  }
+
+  getpaymentForm(event: FormGroup) {
+    console.log(event);
+    this.paymentForm = event;
+  }
+
+  disablecashControls() {
+    this.paymentForm.controls["amount"].disable();
+  }
+
+  disablechequecontrols() {
+    this.paymentForm.controls["chequeno"].disable();
+    this.paymentForm.controls["chequeissuedate"].disable();
+    this.paymentForm.controls["chequebankname"].disable();
+    this.paymentForm.controls["chequebranchname"].disable();
+    this.paymentForm.controls["chequeamount"].disable();
+    this.paymentForm.controls["chequeauth"].disable();
+  }
+
+  disablecreditcardControls() {
+    this.paymentForm.controls["creditcardno"].disable();
+    this.paymentForm.controls["creditholdername"].disable();
+    this.paymentForm.controls["creditbankno"].disable();
+    this.paymentForm.controls["creditbatchno"].disable();
+    this.paymentForm.controls["creditamount"].disable();
+    this.paymentForm.controls["creditapproval"].disable();
+    this.paymentForm.controls["creditterminal"].disable();
+    this.paymentForm.controls["creditacquiring"].disable();
+  }
+
+  disabledemanddraftControls() {
+    this.paymentForm.controls["demandddno"].disable();
+    this.paymentForm.controls["demandissuedate"].disable();
+    this.paymentForm.controls["demandbankname"].disable();
+    this.paymentForm.controls["demandbranch"].disable();
+    this.paymentForm.controls["demandamount"].disable();
+    this.paymentForm.controls["demandauth"].disable();
+  }
+
+  disableinternetpaymentControls() {}
+
+  disableupiControls() {
+    this.paymentForm.controls["upicardno"].disable();
+    this.paymentForm.controls["upitransactionid"].disable();
+    this.paymentForm.controls["upibankname"].disable();
+    this.paymentForm.controls["upiamount"].disable();
+    this.paymentForm.controls["upibatchno"].disable();
+    this.paymentForm.controls["upiapproval"].disable();
+    this.paymentForm.controls["upiterminal"].disable();
+    this.paymentForm.controls["upiacquiring"].disable();
+  }
+
+  enablecashControls() {
+    this.paymentForm.controls["amount"].enable();
+  }
+
+  enablechequecontrols() {
+    this.paymentForm.controls["chequeno"].enable();
+    this.paymentForm.controls["chequeissuedate"].enable();
+    this.paymentForm.controls["chequebankname"].enable();
+    this.paymentForm.controls["chequebranchname"].enable();
+    this.paymentForm.controls["chequeamount"].enable();
+    this.paymentForm.controls["chequeauth"].enable();
+  }
+
+  enablecreditcardControls() {
+    this.paymentForm.controls["creditcardno"].enable();
+    this.paymentForm.controls["creditholdername"].enable();
+    this.paymentForm.controls["creditbankno"].enable();
+    this.paymentForm.controls["creditbatchno"].enable();
+    this.paymentForm.controls["creditamount"].enable();
+    this.paymentForm.controls["creditapproval"].enable();
+    this.paymentForm.controls["creditterminal"].enable();
+    this.paymentForm.controls["creditacquiring"].enable();
+  }
+
+  enabledemanddraftControls() {
+    this.paymentForm.controls["demandddno"].enable();
+    this.paymentForm.controls["demandissuedate"].enable();
+    this.paymentForm.controls["demandbankname"].enable();
+    this.paymentForm.controls["demandbranch"].enable();
+    this.paymentForm.controls["demandamount"].enable();
+    this.paymentForm.controls["demandauth"].enable();
+  }
+
+  enableinternetpaymentControls() {}
+
+  enableupiControls() {
+    this.paymentForm.controls["upicardno"].enable();
+    this.paymentForm.controls["upitransactionid"].enable();
+    this.paymentForm.controls["upibankname"].enable();
+    this.paymentForm.controls["upiamount"].enable();
+    this.paymentForm.controls["upibatchno"].enable();
+    this.paymentForm.controls["upiapproval"].enable();
+    this.paymentForm.controls["upiterminal"].enable();
+    this.paymentForm.controls["upiacquiring"].enable();
+  }
 }

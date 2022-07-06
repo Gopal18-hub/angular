@@ -6,8 +6,14 @@ type="submit"
 class="mt-5 float-right mr-5 btn"
 (click)="openrefunddialog()"
 > Refund</button>
-
-<div>
-    <button mat-raised-button color="primary" (click)="openDepositdialog()"> Make Deposit</button>
+<div class="flex">
+    <div >
+        <button mat-raised-button color="primary" (click)="openDepositdialog()"> Make Deposit</button>
+    </div>
+    
+    <div class="ml-4">
+        <button mat-raised-button color="primary" (click)="openmakedepositdialog()">Makedepositpopup</button>
+    </div>
 </div>
+
 
