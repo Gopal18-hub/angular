@@ -178,6 +178,7 @@ export class OpRegApprovalComponent implements OnInit {
       uGender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       uMobile: {
         title: "Mobile",
@@ -225,16 +226,18 @@ export class OpRegApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchService.searchTrigger
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((formdata: any) => {
-      this.searchApproval(formdata.data);
-    });
-    if(this.from == undefined && this.to == undefined)
-    {
-      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-2),"yyyy-MM-dd");
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        this.searchApproval(formdata.data);
+      });
+    if (this.from == undefined && this.to == undefined) {
+      this.from = this.datepipe.transform(
+        new Date().setMonth(new Date().getMonth() - 2),
+        "yyyy-MM-dd"
+      );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-     this.showmain("OP Registration Approval");
+    this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata: any) {
@@ -293,71 +296,74 @@ export class OpRegApprovalComponent implements OnInit {
     if (link == "View Pending Request") {
       this.activeLink2 = link;
       this.getopapprovalpending()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          resultData = resultData.map((item: any) => {
-            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
-            return item;
-          });
-          this.showapprovalspinner = false;
-          this.defaultUI = true;
-          this.opApprovalList = resultData as opRegApprovalModel[];
-          this.showapprovalpending = true;
-          this.showapprovalaccepting = false;
-          this.showapprovalreject = false;
-          this.enableapprovebtn = true;
-          // setTimeout(() => {
-          //   this.approvaltable.selection.changed.subscribe((res: any) => {
-          //     console.log(res);
-          //     //this.modifyDialog(res.added[0]);
-          //   });
-          // });
-          console.log(this.opApprovalList);
-        },
-        (error: any) => {
-          this.opApprovalList = [];
-          this.enableapprovebtn = false;
-          this.defaultUI = false;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-          console.log(error);
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            resultData = resultData.map((item: any) => {
+              item.fullname =
+                item.modifiedFirstName + " " + item.modifiedLastName;
+              return item;
+            });
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.opApprovalList = resultData as opRegApprovalModel[];
+            this.showapprovalpending = true;
+            this.showapprovalaccepting = false;
+            this.showapprovalreject = false;
+            this.enableapprovebtn = true;
+            // setTimeout(() => {
+            //   this.approvaltable.selection.changed.subscribe((res: any) => {
+            //     console.log(res);
+            //     //this.modifyDialog(res.added[0]);
+            //   });
+            // });
+            console.log(this.opApprovalList);
+          },
+          (error: any) => {
+            this.opApprovalList = [];
+            this.enableapprovebtn = false;
+            this.defaultUI = false;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+            console.log(error);
+          }
+        );
     } else if (link == "Approved Requests") {
       this.activeLink2 = link;
       this.enableapprovebtn = false;
       this.showapprovalreject = false;
       this.showapprovalpending = false;
       this.getopapprovalaccepted()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          resultData = resultData.map((item: any) => {
-            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
-            return item;
-          });
-          this.showapprovalspinner = false;
-          this.defaultUI = true;
-          this.opApprovalacceptList = resultData as opRegApprovalModel[];
-          this.showapprovalaccepting = true;
-          console.log(this.opApprovalacceptList);
-        },
-        (error) => {
-          this.opApprovalacceptList = [];
-          console.log(error);
-          this.defaultUI = false;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            resultData = resultData.map((item: any) => {
+              item.fullname =
+                item.modifiedFirstName + " " + item.modifiedLastName;
+              return item;
+            });
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.opApprovalacceptList = resultData as opRegApprovalModel[];
+            this.showapprovalaccepting = true;
+            console.log(this.opApprovalacceptList);
+          },
+          (error) => {
+            this.opApprovalacceptList = [];
+            console.log(error);
+            this.defaultUI = false;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
     } else if (link == "Reject Requests") {
       this.activeLink2 = link;
       this.enableapprovebtn = false;
       this.getopapprovalrejected().subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
+            item.fullname =
+              item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
@@ -407,22 +413,22 @@ export class OpRegApprovalComponent implements OnInit {
       0
     );
     this.approvalpostapi(this.approvePostobject)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => {
-        console.log(resultdata);
-        this.messageDialogService.success("Update Request Approved");
-        this.showgrid("View Pending Request");
-        this.ApprovalidList = [];
-      },
-      (error) => {
-        console.log(error);
-        this.ApprovalidList = [];
-        this.defaultUI = true;
-        this.opappprovalmessage = "No records found";
-        this.opapprovalimage = "norecordfound";
-      }
-    );
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultdata) => {
+          console.log(resultdata);
+          this.messageDialogService.success("Update Request Approved");
+          this.showgrid("View Pending Request");
+          this.ApprovalidList = [];
+        },
+        (error) => {
+          console.log(error);
+          this.ApprovalidList = [];
+          this.defaultUI = true;
+          this.opappprovalmessage = "No records found";
+          this.opapprovalimage = "norecordfound";
+        }
+      );
   }
 
   approvalRejectItem() {
@@ -435,21 +441,21 @@ export class OpRegApprovalComponent implements OnInit {
       1
     );
     this.approvalpostapi(this.rejectPostobject)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => {
-        this.messageDialogService.success("Request is deleted");
-        this.showgrid("View Pending Request");
-        this.ApprovalidList = [];
-      },
-      (error) => {
-        console.log(error);
-        this.ApprovalidList = [];
-        this.defaultUI = true;
-        this.opappprovalmessage = "No records found";
-        this.opapprovalimage = "norecordfound";
-      }
-    );
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultdata) => {
+          this.messageDialogService.success("Request is deleted");
+          this.showgrid("View Pending Request");
+          this.ApprovalidList = [];
+        },
+        (error) => {
+          console.log(error);
+          this.ApprovalidList = [];
+          this.defaultUI = true;
+          this.opappprovalmessage = "No records found";
+          this.opapprovalimage = "norecordfound";
+        }
+      );
   }
   approvalpostapi(approvalJSONObject: approveRejectModel[]) {
     return this.http.post(
@@ -494,68 +500,69 @@ export class OpRegApprovalComponent implements OnInit {
       },
     });
 
-    modifyDetailDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
-      console.log(result.data);
-      var resultArr = result.data.split(",");
-      var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
-      console.log(resultArr[1].trim());
-      if (firstvaluekey.startsWith("Accepted")) {
-        if (resultArr[1].split(":")[0].trim() == "id") {
-          this.ApprovalidList.push(resultArr[1].split(":")[1]);
-          this.approvePostobject = new approveRejectModel(
-            this.ApprovalidList,
-            this.userId,
-            0
-          );
-          this.approvalpostapi(this.approvePostobject)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(
-            (resultdata) => {
-              console.log(resultdata);
-              this.messageDialogService.success("Update Request Approved");
-              this.showgrid("View Pending Request");
-              this.ApprovalidList = [];
-            },
-            (error) => {
-              console.log(error);
-              this.ApprovalidList = [];
-              this.defaultUI = true;
-              this.opappprovalmessage = "No records found";
-              this.opapprovalimage = "norecordfound";
-            }
-          );
+    modifyDetailDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        console.log(result.data);
+        var resultArr = result.data.split(",");
+        var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
+        console.log(resultArr[1].trim());
+        if (firstvaluekey.startsWith("Accepted")) {
+          if (resultArr[1].split(":")[0].trim() == "id") {
+            this.ApprovalidList.push(resultArr[1].split(":")[1]);
+            this.approvePostobject = new approveRejectModel(
+              this.ApprovalidList,
+              this.userId,
+              0
+            );
+            this.approvalpostapi(this.approvePostobject)
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(
+                (resultdata) => {
+                  console.log(resultdata);
+                  this.messageDialogService.success("Update Request Approved");
+                  this.showgrid("View Pending Request");
+                  this.ApprovalidList = [];
+                },
+                (error) => {
+                  console.log(error);
+                  this.ApprovalidList = [];
+                  this.defaultUI = true;
+                  this.opappprovalmessage = "No records found";
+                  this.opapprovalimage = "norecordfound";
+                }
+              );
+          }
+        } else if (firstvaluekey.startsWith("reject")) {
+          if (resultArr[1].split(":")[0].trim() == "id") {
+            this.ApprovalidList.push(resultArr[1].split(":")[1]);
+            this.rejectPostobject = new approveRejectModel(
+              this.ApprovalidList,
+              this.userId,
+              1
+            );
+            this.approvalpostapi(this.rejectPostobject)
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(
+                (resultdata) => {
+                  this.messageDialogService.success("Request is Rejected");
+                  this.showgrid("View Pending Request");
+                  this.ApprovalidList = [];
+                },
+                (error) => {
+                  console.log(error);
+                  this.ApprovalidList = [];
+                  this.defaultUI = true;
+                  this.opappprovalmessage = "No records found";
+                  this.opapprovalimage = "norecordfound";
+                }
+              );
+          }
         }
-      } else if (firstvaluekey.startsWith("reject")) {
-        if (resultArr[1].split(":")[0].trim() == "id") {
-          this.ApprovalidList.push(resultArr[1].split(":")[1]);
-          this.rejectPostobject = new approveRejectModel(
-            this.ApprovalidList,
-            this.userId,
-            1
-          );
-          this.approvalpostapi(this.rejectPostobject)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(
-            (resultdata) => {
-              this.messageDialogService.success("Request is Rejected");
-              this.showgrid("View Pending Request");
-              this.ApprovalidList = [];
-            },
-            (error) => {
-              console.log(error);
-              this.ApprovalidList = [];
-              this.defaultUI = true;
-              this.opappprovalmessage = "No records found";
-              this.opapprovalimage = "norecordfound";
-            }
-          );
-        }
-      }
-      // if(resultArr[1] == "id"){
+        // if(resultArr[1] == "id"){
 
-      // }
-    });
+        // }
+      });
   }
 }

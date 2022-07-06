@@ -115,6 +115,7 @@ export class RegistrationUnmergingComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       dob: {
         title: "DOB",
@@ -124,6 +125,7 @@ export class RegistrationUnmergingComponent implements OnInit {
         title: "Address",
         type: "string",
         tooltipColumn: "place",
+        disabledSort: true,
       },
       phone: {
         title: "Phone",
