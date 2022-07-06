@@ -10,7 +10,7 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
 })
 export class PaymentMethodsComponent implements OnInit {
   @Input() fromrefund !: boolean;
-  @Input() fromdeposit!:boolean;
+  @Input() fromdeposit !:boolean;
   @Input() forOPbilling !: boolean;
   @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
   refundFormData =  BillingForm.refundFormData;
