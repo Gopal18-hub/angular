@@ -27,7 +27,8 @@ export class HeaderComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    //await this.permissionService.getPermissionsRoleWise();
     this.modules = MaxModules.getModules();
     this.modules.forEach((element: any) => {
       if (
@@ -85,16 +86,5 @@ export class HeaderComponent implements OnInit {
       this.authService.startAuthentication();
       console.log("cleared cookie");
     });
-  }
-
-  getPermissions() {
-    this.permissionService.getPermissionsRoleWise().subscribe(
-      (response: any) => {
-        console.log(response);
-      },
-      (error: any) => {
-        console.log(error);
-      }
-    );
   }
 }
