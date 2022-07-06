@@ -98,8 +98,12 @@ export class AuthService {
 
   public logout(): any {
     var query = window.location.search;
+    if (!query.includes("?logoutid=")) {
+      query = "";
+    }
     var logoutIdQuery =
       query && query.toLowerCase().indexOf("?logoutid=") == 0 && query;
+
     let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);
     return response;
   }
@@ -127,10 +131,6 @@ export class AuthService {
     } else {
       this.router.navigate(["dashboard"]);
     }
-  }
-
-  public getAccessControls() {
-    return [];
   }
 }
 
