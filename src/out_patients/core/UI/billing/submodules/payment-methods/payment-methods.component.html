@@ -6,8 +6,8 @@
                 </div>
         </div>
         
-        <mat-tab-group class="mt-12" animationDuration="0ms" (selectedTabChange)="onTabChanged($event)">
-            <mat-tab label="Cash">
+        <mat-tab-group class="mt-12" animationDuration="0ms">
+            <mat-tab label="Cash" *ngIf="cash">
                 <div class=" ml-10">
                     <mat-label class="max-health-primary-color font-bold">Cash Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -23,7 +23,7 @@
                     </div>
                 </div> 
             </mat-tab>
-            <mat-tab label="Cheque">
+            <mat-tab label="Cheque" *ngIf="cheque">
                 <div class="ml-10 ">
                     <mat-label class="max-health-primary-color font-bold">Cheque Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="Credit Card" *ngIf="forrefundpage">
+            <mat-tab label="Credit Card" *ngIf="credit">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">Credit Card Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -223,7 +223,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="Demand Draft" *ngIf="forrefundpage">
+            <mat-tab label="Demand Draft" *ngIf="demand">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">Demand Draft Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -306,7 +306,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="Mobile Payment" *ngIf="forrefundpage && !fordepositpage">
+            <mat-tab label="Mobile Payment" *ngIf="mobilepayment">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">Mobile Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -415,7 +415,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="Online Payment" *ngIf="forrefundpage && !fordepositpage">
+            <mat-tab label="Online Payment" *ngIf="onlinepayment">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">Online Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -485,7 +485,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="PayTM" *ngIf="forrefundpage && !fordepositpage">
+            <mat-tab label="PayTM" *ngIf="paytm">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">PayTM Details</mat-label>
                     <div class="flex w-3/4 mt-3">
@@ -592,7 +592,7 @@
                     </div>
                 </div>
             </mat-tab>
-            <mat-tab label="UPI" *ngIf="forrefundpage">
+            <mat-tab label="UPI" *ngIf="upi">
                     <div class="ml-10">
                         <mat-label class="max-health-primary-color font-bold">UPI Details</mat-label>
                         <div class="flex w-3/4 mt-3">
@@ -709,7 +709,7 @@
                         </div>
                     </div>
             </mat-tab>
-            <mat-tab label="Internet Payment" *ngIf="forrefundpage">
+            <mat-tab label="Internet Payment" *ngIf="internetpayment">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-bold">Internet Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">

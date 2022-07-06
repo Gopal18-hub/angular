@@ -2,7 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
-import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
+import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixty.component';
+// import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
@@ -227,7 +228,10 @@ export class RefundDialogComponent implements OnInit {
   onRefundReceiptpage:boolean=true;
   paymentform!: FormGroup;
   today: any;
-  forrefund:boolean = false;
+  config = {
+    cash: true,
+    cheque: true
+  }
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {
    }

@@ -191,6 +191,14 @@ export class DepositDialogComponent implements OnInit {
   questions: any;
   onDepositpage: boolean = true;
   selectedTabvalue!: string;
+  config = {
+    cash: true,
+    cheque: true,
+    credit: true,
+    demand: true,
+    upi: true,
+    internetpayment: true
+  }
   constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {

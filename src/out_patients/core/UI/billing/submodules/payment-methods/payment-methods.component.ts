@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BillingForm } from '@core/constants/BillingForm';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
   selector: 'payment-methods',
@@ -9,15 +8,24 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
   styleUrls: ['./payment-methods.component.scss']
 })
 export class PaymentMethodsComponent implements OnInit {
-  @Input() fromrefund !: boolean;
-  @Input() fromdeposit!:boolean;
+  @Input() config: any;
   @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
+
   refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
   today: any;
-  forrefundpage:boolean = true;
-  fordepositpage:boolean = true;
+
+  cash:boolean = false;
+  cheque:boolean = false;
+  credit:boolean = false;
+  demand:boolean = false;
+  mobilepayment:boolean = false;
+  onlinepayment:boolean = false;
+  paytm:boolean = false;
+  upi:boolean = false;
+  internetpayment: boolean = false;
+
   constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
@@ -25,20 +33,20 @@ export class PaymentMethodsComponent implements OnInit {
       this.refundFormData.properties,
       {}
     );
-    this.forrefundpage = this.fromrefund;
-    this.fordepositpage=this.fromrefund;
     this.refundform = formResult.form;
     this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;
     this.today = new Date();
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
+    this.cash = this.config.cash;
+    this.cheque = this.config.cheque;
+    this.credit = this.config.credit;
+    this.demand = this.config.demand;
+    this.mobilepayment = this.config.mobilepayment;
+    this.onlinepayment = this.config.onlinepayment;
+    this.paytm = this.config.paytm;
+    this.upi = this.config.upi;
+    this.internetpayment = this.config.internetpayment;
   }
-  onTabChanged(event: MatTabChangeEvent){
-    if(event.index == 1)
-    {
-      this.refundform.controls["amount"].setValue('');
-    }
-  }
-
 }
