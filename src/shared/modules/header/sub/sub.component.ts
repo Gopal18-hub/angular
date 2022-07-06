@@ -87,4 +87,12 @@ export class SubComponent implements OnInit {
   goToHome() {
     window.location.href = window.location.origin + "/dashboard";
   }
+
+  applyFilter(val: string) {
+    const data: any = {};
+    Object.keys(this.searchForm.value).forEach((ele) => {
+      data[ele] = val;
+    });
+    this.searchService.searchTrigger.next({ data: data });
+  }
 }

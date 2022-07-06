@@ -30,6 +30,7 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
+          maximum:new Date()
         },
         healthID: {
           type: "string",
@@ -59,6 +60,7 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
+          maximum:new Date()
         },
         email: {
           type: "string",
@@ -89,6 +91,7 @@ export class SearchService {
         maxID: {
           type: "string",
           title: "Max ID",
+          defaultValue: this.cookie.get("LocationIACode") + '.',
         },
         ssn: {
           type: "string",

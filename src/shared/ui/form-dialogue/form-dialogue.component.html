@@ -1,12 +1,14 @@
 <div class="relative">
-  <h2 class="max-health-primary-color">{{ data.title }}</h2>
-
+  <label class="max-health-primary-color font-base font-bolder">{{
+    data.title
+  }}</label>
   <button
     mat-icon-button
     aria-label="close dialog"
     mat-dialog-close
     class="absolute max-dialog-close-icon"
     type="button"
+    (click)="close()"
   >
     <mat-icon>close</mat-icon>
   </button>
@@ -32,7 +34,7 @@
         ></maxhealth-question>
       </div>
     </div>
-    <div class="text-center">
+    <div class="text-center" *ngIf="data.buttonLabel">
       <button
         mat-raised-button
         color="primary"

@@ -1,0 +1,173 @@
+<div class="border-radius-lg border max-table-wrapper">
+  <form [formGroup]="form" autocomplete="off">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      (matSortChange)="announceSortChange($event)"
+      [class.row-click]="config.clickedRows"
+      fixedLayout="true"
+    >
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [aria-label]="checkboxLabel()"
+            color="primary"
+          >
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+            color="primary"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container *ngFor="let col of displayedColumns">
+        <ng-container
+          [matColumnDef]="col"
+          *ngIf="col != 'select' && col != 'actionItems'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [disabled]="config?.columnsInfo[col]?.disabledSort"
+            [style.width]="config?.columnsInfo[col]?.style?.width"
+          >
+            {{ displayColumnsInfo[col].title }}
+          </th>
+          <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
+            <td
+              mat-cell
+              *matCellDef="let element"
+              (click)="columnClickFun(element, col)"
+            >
+              <ng-container
+                *ngIf="displayColumnsInfo[col]?.type"
+                [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+                [ngTemplateOutletContext]="{
+                  $implicit: { output: element[col], config: config, col: col }
+                }"
+              ></ng-container>
+            </td>
+          </ng-container>
+
+          <ng-container *ngIf="config.columnsInfo[col].tooltipColumn">
+            <td
+              mat-cell
+              *matCellDef="let element"
+              matTooltipClass="example-tooltip-red"
+              [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
+              (click)="columnClickFun(element, col)"
+            >
+              <ng-container
+                *ngIf="displayColumnsInfo[col]?.type"
+                [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+                [ngTemplateOutletContext]="{
+                  $implicit: { output: element[col], config: config, col: col }
+                }"
+              ></ng-container>
+            </td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="actionItems">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+          &nbsp;
+        </th>
+        <td mat-cell *matCellDef="let element" class="pl-4">
+          <div class="more-actions cursor-pointer" [matMenuTriggerFor]="menu">
+            <mat-icon>more_horiz</mat-icon>
+          </div>
+          <mat-menu #menu="matMenu" class="table-more-actions">
+            <ng-container *ngFor="let item of config.actionItemList">
+              <ng-container [ngSwitch]="item.actionType">
+                <ng-container *ngSwitchCase="'link'">
+                  <button mat-menu-item [routerLink]="item.routeLink">
+                    {{ item.title }}
+                  </button>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <button mat-menu-item>
+                    {{ item.title }}
+                  </button>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <ng-container *ngIf="config.clickedRows">
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.row-is-clicked]="selection.isSelected(row)"
+        ></tr>
+      </ng-container>
+      <ng-container *ngIf="config.selectBox && !config.clickedRows">
+        <!-- <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="selection.toggle(row)"
+      ></tr> -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </ng-container>
+      <ng-container *ngIf="!config.selectBox && !config.clickedRows">
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </ng-container>
+    </table>
+    <!-- <mat-paginator
+    [pageSizeOptions]="[10, 15, 20]"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements"
+  >
+  </mat-paginator> -->
+  </form>
+</div>
+
+<ng-template #string let-data>
+  <span *ngIf="data?.output">{{ data.output }}</span>
+</ng-template>
+<ng-template #number let-data>
+  <span *ngIf="data?.output">{{ data.output }}</span>
+</ng-template>
+<ng-template #date let-data>
+  <span *ngIf="data?.output">{{
+    data.output | date: data.config.dateformat
+  }}</span>
+</ng-template>
+<ng-template #image let-data>
+  <div *ngIf="data?.output" class="flex">
+    <img
+      [src]="image.src"
+      *ngFor="let image of data.output"
+      [width]="data.config.columnsInfo[data.col]?.width"
+      [height]="data.config.columnsInfo[data.col]?.height"
+      [matTooltip]="image?.tooltip"
+    />
+  </div>
+</ng-template>
+<ng-template #checkbox let-data>
+  <mat-checkbox
+    [checked]="!!data.output"
+    disabled
+    color="primary"
+  ></mat-checkbox>
+</ng-template>
+
+<ng-template #button let-data>
+  <button mat-raised-button (click)="(!!data.output)" disabled></button>
+</ng-template>

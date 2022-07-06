@@ -17,6 +17,7 @@ export const environment = {
   //local envionment urls for testing
   IdentityServerUrl: "https://localhost/",
   IentityServerRedirectUrl: "http://localhost:8100/",
+  clientId: "hispwa",
 };
 
 /*

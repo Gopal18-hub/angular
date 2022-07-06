@@ -8,8 +8,8 @@ export class QuestionBase<T> {
   type: string;
   options: any;
   upload_path: any;
-  minimum: string | number | null;
-  maximum: string | number | null;
+  minimum: any;
+  maximum: any;
   properties: any;
   childQuestions: any;
   multiple: boolean;
@@ -24,6 +24,8 @@ export class QuestionBase<T> {
   customErrorMessage: string;
   placeholder: string;
   pattern: string;
+  onlyKeyPressAlpha: boolean;
+  allowSearchInput: boolean;
 
   constructor(
     options: {
@@ -35,8 +37,8 @@ export class QuestionBase<T> {
       type?: string;
       options?: any;
       upload_path?: any;
-      minimum?: number;
-      maximum?: number;
+      minimum?: any;
+      maximum?: any;
       properties?: any;
       childQuestions?: any;
       defaultValue?: any;
@@ -52,6 +54,8 @@ export class QuestionBase<T> {
       customErrorMessage?: string;
       placeholder?: string;
       pattern?: string;
+      onlyKeyPressAlpha?: boolean;
+      allowSearchInput?: boolean;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -79,5 +83,7 @@ export class QuestionBase<T> {
     this.customErrorMessage = options.customErrorMessage || "";
     this.placeholder = options.placeholder || "";
     this.pattern = options.pattern || "";
+    this.onlyKeyPressAlpha = options.onlyKeyPressAlpha || false;
+    this.allowSearchInput = options.allowSearchInput || false;
   }
 }

@@ -17,25 +17,29 @@
 
 
 
-    .isDisabled {
-        color: currentColor;
-        cursor: not-allowed;
-        pointer-events: none;
-        opacity: 0.5;
-        text-decoration: none;
-    }
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+    text-decoration: none;
+}
 
-    .dateclass{
-       
-        background: #d8d8d8;
-    }
-
-    .dateinput-class{
-        background-color:white;
-    }
-
-    ::ng-deep .mat-form-field-wrapper{
-
-        padding-bottom: 0 !important;
+.dateclass{
     
-    }
+    background: #d8d8d8;
+}
+
+.bg-white{
+    background-color:white;
+}
+
+::ng-deep .mat-form-field-wrapper{
+
+    padding-bottom: 0 !important;
+
+}
+
+.text-wrap{
+    white-space:nowrap;
+}

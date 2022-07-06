@@ -1,0 +1,32 @@
+<div class="h-1/10 mt-3 w-full flex" >
+                <div class="w-1/10">
+                    <mat-label class="max-health-primary-color">Service Type:</mat-label>
+                </div>
+                
+                <div *ngIf="onRefundpage" class="ml-2 w-2/10">
+                    <p></p>
+                </div>
+                <div *ngIf="!onRefundpage" class="ml-2 w-2/10">
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="servicedepositForm"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    ></maxhealth-question>
+                </div>
+                <div class="w-1/10  ml-3">
+                    <mat-label class="max-health-primary-color">Deposit Head:</mat-label>
+                </div>
+               
+                <div *ngIf="onRefundpage" class="ml-2 w-2/10">
+                    <p></p>
+                </div>
+                <div *ngIf="!onRefundpage" class="ml-2 w-2/10">
+                    <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="servicedepositForm"
+                    [questions]="questions[1]"
+                    [index]="1"
+                    ></maxhealth-question>
+                </div>
+ </div>

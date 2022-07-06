@@ -15,6 +15,9 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
 import { RouterModule } from "@angular/router";
+import { MaxTableFormComponent } from "./max-table-form/max-table-form.component";
+
+import { DynamicFormsModule } from "../dynamic-forms";
 
 @NgModule({
   imports: [
@@ -32,9 +35,10 @@ import { RouterModule } from "@angular/router";
     MatTooltipModule,
     MatMenuModule,
     RouterModule,
+    DynamicFormsModule,
   ],
-  exports: [MaxTableComponent],
-  declarations: [MaxTableComponent],
+  exports: [MaxTableComponent, MaxTableFormComponent],
+  declarations: [MaxTableComponent, MaxTableFormComponent],
   providers: [],
 })
 export class MaxHealthTableModule {}

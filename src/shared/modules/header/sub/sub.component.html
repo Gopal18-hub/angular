@@ -91,6 +91,8 @@
         <input
           matInput
           placeholder="Search for Max id/ First name/ Last name/ Phone/ DOB/health/aa"
+          #searchVal
+          (keydown.enter)="applyFilter(searchVal.value)"
         />
         <span matPrefix class="flex mr-3"
           ><mat-icon>search</mat-icon>
@@ -204,7 +206,7 @@
             activePageItem?.globalSearchKey == 'merge'
           "
         >
-          Please enter Name / Phone in combination with DOB as search criteria
+          **Please enter Name / Phone in combination with DOB as search criteria
         </div>
         <div class="flex flex-row-reverse mt-1">
           <button
@@ -226,7 +228,7 @@
           <li
             [matMenuTriggerFor]="menu"
             class="mr-4 cursor-pointer max-health-primary-color"
-            [matMenuTriggerData]="module"
+            [matMenuTriggerData]="{ module: module }"
             [ngClass]="{ active: activeSubModule?.title == module.title }"
           >
             {{ module.title }}
@@ -235,10 +237,12 @@
         <ng-container *ngIf="!module.moreOptions">
           <li
             class="mr-4 cursor-pointer max-health-primary-color"
+            (click)="activeSubModule = module"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
+            [ngClass]="{ active: activeSubModule?.title == module.title }"
           >
             {{ module.title }}
           </li>
@@ -248,14 +252,16 @@
     <mat-menu #menu="matMenu" class="sub-header-menu">
       <ng-template
         matMenuContent
-        let-aliasMenuItems="childrens"
-        let-tenentPath="tenentPath"
+        let-aliasMenuItems="module.childrens"
+        let-tenentPath="module.tenentPath"
+        let-module="module"
       >
         <div class="flex flex-column flex-wrap box">
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
               mat-button
               class="max-health-primary-color"
+              (click)="activeSubModule = module"
               [routerLink]="
                 baseHref == tenentPath
                   ? menuItem.defaultPath
