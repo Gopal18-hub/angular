@@ -110,6 +110,7 @@ export class HttpService {
   ) {
     if (error.status === 401) {
       //window.location.reload();
+      console.log(error);
       this.router.navigate(["login"]);
     } else {
       if (options && !options.showErrorMessage) {

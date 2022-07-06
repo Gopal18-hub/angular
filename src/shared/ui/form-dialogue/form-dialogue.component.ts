@@ -37,4 +37,7 @@ export class FormDialogueComponent implements OnInit, AfterViewInit {
       this.dialogRef.close({ data: this.form.value });
     }
   }
+  close() {
+    this.dialogRef.close();
+  }
 }
