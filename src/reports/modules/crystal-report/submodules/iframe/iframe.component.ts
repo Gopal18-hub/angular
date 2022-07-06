@@ -13,6 +13,8 @@ export class IframeComponent implements OnInit {
   constructor(private san: DomSanitizer) {}
 
   ngOnInit(): void {
-    this.url = this.san.bypassSecurityTrustResourceUrl(CrystalReport.test);
+    this.url = this.san.bypassSecurityTrustResourceUrl(
+      CrystalReport.printOrganDonorForm("test")
+    );
   }
 }
