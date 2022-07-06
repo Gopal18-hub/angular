@@ -1222,9 +1222,9 @@
             "index": "src/reports/src/index.html",
             "main": "src/reports/src/main.ts",
             "polyfills": "src/reports/src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "src/reports/tsconfig.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/reports/src/assets"],
+            "assets": ["src/reports/src/favicon.ico", "src/reports/src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/reports/src/styles.scss"
@@ -1287,10 +1287,10 @@
           "options": {
             "main": "src/reports/test.ts",
             "polyfills": "src/reports/src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
+            "tsConfig": "src/reports/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/reports/src/assets"],
+            "assets": ["src/reports/src/favicon.ico", "src/reports/src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/reports/src/styles.scss"

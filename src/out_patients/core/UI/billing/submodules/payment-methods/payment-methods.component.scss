@@ -30,3 +30,13 @@
     overflow: hidden !important;
     padding: 10px 24px 24px 24px;
 }
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
+    width: auto !important;
+}
+::ng-deep .mat-tab-label{
+    padding: 0 24px !important;
+}
+::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
+    display: flex !important;
+    row-gap: 10px !important;
+}

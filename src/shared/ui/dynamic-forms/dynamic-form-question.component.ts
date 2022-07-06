@@ -230,7 +230,6 @@ export class DynamicFormQuestionComponent
 
     this.subscription = this.trigger.panelClosingActions.subscribe(
       (e) => {
-        console.log(e);
         if ((!e || !e.source) && !this.question.allowSearchInput) {
           const selected = this.question.options
             .map((option: any) => option.value)

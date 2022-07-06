@@ -63,6 +63,33 @@ import { MakedepositDialogComponent } from './submodules/deposit/makedeposit-dia
     DepositDialogComponent,
     Form60Component,
     MakedepositDialogComponent,
+import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
+import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
+import { PatientIdentityInfoComponent } from '@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component';
+@NgModule({
+  declarations: [
+       BillingComponent,
+       BillingComponentPage,
+       DepositComponent,
+       DetailsComponent,
+       OnlineOpBillsComponent,
+       OpOrderRequestComponent,
+       MiscellaneousBillingComponent,
+       InitiateDepositComponent,
+       PaymentModeComponent,
+       RefundDialogComponent,
+       VisitHistoryDialogComponent,
+       DispatchReportComponent,
+       DmgMappingComponent,
+       SelectAtleastOneComponent,
+       MoreThanMonthComponent,
+       ExpiredPatientCheckComponent,
+       SaveexpiredpatientDialogComponent,
+       DeleteexpiredpatientDialogComponent,
+       DepositDialogComponent,
+       Form60Component,
+       PatientIdentityInfoComponent
+       
   ],
   imports: [
     BillingRoutingModule,
