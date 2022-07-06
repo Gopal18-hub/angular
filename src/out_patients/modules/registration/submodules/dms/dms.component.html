@@ -14,12 +14,12 @@
 </div>
     <div class="pt-2">
      
-        <div>
+        <div *ngIf="defaultUI">
             <ng-container>
-                <maxhealth-table [config]="config" [data]="data.searchResults"></maxhealth-table>
+                <maxhealth-table [config]="config" [data]="data.list"></maxhealth-table>
             </ng-container>
         </div>
-        <div  class="flex items-center flex-column mt-12">
+        <div  class="flex items-center flex-column mt-12" *ngIf="!defaultUI">
           <svg xmlns="http://www.w3.org/2000/svg" width="90" height="80" viewBox="0 0 112.471 88.473">
             <g id="Group_543" data-name="Group 543" transform="translate(-495.274 -432.96)">
               <ellipse id="Ellipse_48" data-name="Ellipse 48" cx="8" cy="8.5" rx="8" ry="8.5" transform="translate(495.274 432.96)" fill="#ababab"/>
