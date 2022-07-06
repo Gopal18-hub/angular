@@ -20,11 +20,12 @@ export class getmergepatientsearch {
   pPagerNumber: string;
   note: boolean;
   noteReason: string;
+  notereason: string; //added property to avoid issue while displaying categoryicons
   firstName: string;
   middleName: string;
   lastName: string;
   categoryIcons?: string;
-  fullname?:string;
+  fullname?: string;
   constructor(
     id: number,
     maxid: string,
@@ -46,11 +47,12 @@ export class getmergepatientsearch {
     pPagerNumber: string,
     note: boolean,
     noteReason: string,
+    notereason: string,
     firstName: string,
     middleName: string,
     lastName: string,
     categoryIcons?: string,
-    fullname?:string
+    fullname?: string
   ) {
     this.id = id;
     this.maxid = maxid;
@@ -76,6 +78,7 @@ export class getmergepatientsearch {
     this.middleName = middleName;
     this.lastName = lastName;
     this.categoryIcons = categoryIcons;
-    this.fullname = firstName + ' ' + lastName;
+    this.fullname = firstName + " " + lastName;
+    this.notereason = noteReason; //added property to avoid issue while displaying categoryicons
   }
 }

@@ -115,7 +115,7 @@
         </empty-placeholder>
       </ng-container>
       <ng-container class="w-screen"*ngIf="searchAppPatient">
-        <maxhealth-table
+        <maxhealth-table #patientDetail
           [config]="config"
           [data]="searchResults"
         ></maxhealth-table>

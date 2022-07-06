@@ -7,12 +7,14 @@ import {
   AfterViewInit,
   OnChanges,
   SimpleChanges,
+  OnDestroy,
 } from "@angular/core";
 import { FormGroup, FormArray, FormControl, Validators } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { QuestionBase } from "./interface/question-base";
 import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 
 @Component({
   selector: "maxhealth-question",
@@ -20,7 +22,7 @@ import { map, startWith } from "rxjs/operators";
   styleUrls: ["./dynamic-form.scss"],
 })
 export class DynamicFormQuestionComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   @Input() question: QuestionBase<any> = {} as QuestionBase<any>;
   @Input() questions: QuestionBase<any>[] = [];
@@ -43,6 +45,8 @@ export class DynamicFormQuestionComponent
   arrowIcon = "arrow_drop_down";
 
   @ViewChild("element") element!: ElementRef;
+
+  @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
 
   filteredOptions!: Observable<any>;
 
@@ -67,12 +71,20 @@ export class DynamicFormQuestionComponent
     "mail.com",
   ];
 
+  subscription!: Subscription;
+
   constructor(private qcs: QuestionControlService) {}
 
   compareFn: (f1: any, f2: any) => boolean = this.compareByValue;
 
   compareByValue(f1: any, f2: any) {
     return f1 && f2 && f1 == f2;
+  }
+
+  ngOnDestroy() {
+    if (this.subscription && !this.subscription.closed) {
+      this.subscription.unsubscribe();
+    }
   }
 
   excuteCondition(conditions: any, value: any) {
@@ -108,6 +120,9 @@ export class DynamicFormQuestionComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.element) {
+      this.question.elementRef = this.element.nativeElement;
+    }
     if (
       this.question &&
       this.question.type &&
@@ -122,10 +137,6 @@ export class DynamicFormQuestionComponent
           title ? this._filter(title) : this.question.options.slice()
         )
       );
-    }
-    if (this.element) {
-      console.log(this.element);
-      this.question.elementRef = this.element.nativeElement;
     }
   }
 
@@ -171,8 +182,14 @@ export class DynamicFormQuestionComponent
 
   ngAfterViewInit(): void {
     if (this.element) {
-      console.log(this.element);
       this.question.elementRef = this.element.nativeElement;
+    }
+    if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "autocomplete"
+    ) {
+      this._subscribeToClosingActions();
     }
   }
 
@@ -204,5 +221,33 @@ export class DynamicFormQuestionComponent
       event.preventDefault();
       return false;
     }
+  }
+
+  private _subscribeToClosingActions(): void {
+    if (this.subscription && !this.subscription.closed) {
+      this.subscription.unsubscribe();
+    }
+
+    this.subscription = this.trigger.panelClosingActions.subscribe(
+      (e) => {
+        if ((!e || !e.source) && !this.question.allowSearchInput) {
+          const selected = this.question.options
+            .map((option: any) => option.value)
+            .find(
+              (option: any) =>
+                option === this.form.controls[this.question.key].value.value
+            );
+          if (selected == null) {
+            this.form.controls[this.question.key].setValue(null);
+          }
+        }
+      },
+      (err) => this._subscribeToClosingActions(),
+      () => this._subscribeToClosingActions()
+    );
+  }
+
+  handler(event: any): void {
+    this.form.controls[this.question.key].setValue(event.option.value);
   }
 }

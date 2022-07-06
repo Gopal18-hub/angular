@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   ApiUrl: "",
-  cookieUrl: "http://localhost",
+  cookieUrl: "localhost",
   //dev environment urls
   CommonApiUrl: "http://172.30.0.16:1009/",
   PatientApiUrl: "http://172.30.0.16:1008/",
@@ -17,6 +17,7 @@ export const environment = {
   //local envionment urls for testing
   IdentityServerUrl: "https://localhost/",
   IentityServerRedirectUrl: "http://localhost:8100/",
+  clientId: "hispwa",
 };
 
 /*

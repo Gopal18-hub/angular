@@ -108,6 +108,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       dob: {
         title: "DOB",
@@ -117,6 +118,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         title: "Address",
         type: "string",
         tooltipColumn: "completeAddress",
+        disabledSort: true,
       },
       phone: {
         title: "Phone",
@@ -165,6 +167,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
             this.showspinner = false;
             resultData = resultData.map((item: any) => {
               item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
               return item;
             });
             this.patientList = resultData as PatientSearchModel[];
@@ -214,15 +217,24 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     this.defaultUI = false;
     this.showspinner = true;
     let dateOfBirth;
-    let maxid = formdata["maxID"].split(".")[1];
-    if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
-      this.maxId = "";
-    } else {
-      this.maxId = formdata["maxID"];
-    }
     if (
-      formdata["dob"] != undefined ||
-      formdata["dob"] != null ||
+      formdata["maxID"] != undefined &&
+      formdata["maxID"] != "" &&
+      formdata["maxID"] != null
+    ) {
+      let maxid = formdata["maxID"].split(".")[1];
+      if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
+        this.maxId = "";
+      } else {
+        this.maxId = formdata["maxID"];
+      }
+    } else {
+      this.maxId = "";
+    }
+
+    if (
+      formdata["dob"] != undefined &&
+      formdata["dob"] != null &&
       formdata["dob"] != ""
     ) {
       dateOfBirth = this.datepipe.transform(formdata["dob"], "dd/MM/yyyy");
@@ -230,26 +242,36 @@ export class FindPatientComponent implements OnInit, OnDestroy {
       dateOfBirth = "";
     }
     if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
+      (formdata["name"] == "" ||
+        formdata["name"] == undefined ||
+        formdata["name"] == null) &&
+      (formdata["phone"] == "" ||
+        formdata["phone"] == undefined ||
+        formdata["phone"] == null) &&
+      dateOfBirth == "" &&
       this.maxId == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
+      (formdata["healthID"] == "" ||
+        formdata["healthID"] == undefined ||
+        formdata["healthID"] == null) &&
+      (formdata["adhaar"] == "" ||
+        formdata["adhaar"] == undefined ||
+        formdata["adhaar"] == null)
     ) {
       this.getAllpatients()
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
             this.showspinner = false;
+
+            resultData = resultData.map((item: any) => {
+              item.fullname = item.firstName + " " + item.lastName;
+              item.notereason = item.noteReason;
+              return item;
+            });
             this.patientList = resultData;
             this.patientList = this.patientServie.getAllCategoryIcons(
               this.patientList
             );
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
             this.isAPIProcess = true;
             this.defaultUI = false;
             setTimeout(() => {

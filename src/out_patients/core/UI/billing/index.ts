@@ -11,6 +11,8 @@ import { SharedBillingComponent } from './shared-billing.component';
 import { PaymentMethodsComponent } from "./submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "./submodules/form60/form-sixty.component";
 import { MatButtonModule } from "@angular/material/button";
+import { ServiceDepositComponent } from './submodules/service-deposit/service-deposit.component';
+import { MatTabsModule } from "@angular/material/tabs";
 @NgModule({
   imports: [
     RouterModule,
@@ -22,13 +24,15 @@ import { MatButtonModule } from "@angular/material/button";
     MatInputModule,
     MatFormFieldModule,
     DynamicFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule
   ],
-  exports: [ FormSixtyComponent, PaymentMethodsComponent],
+  exports: [ FormSixtyComponent, PaymentMethodsComponent,ServiceDepositComponent],
   declarations: [
     SharedBillingComponent,
     FormSixtyComponent,
-    PaymentMethodsComponent
+    PaymentMethodsComponent,
+    ServiceDepositComponent
   ],
   providers: [],
 })

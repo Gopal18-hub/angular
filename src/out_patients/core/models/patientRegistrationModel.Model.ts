@@ -66,8 +66,8 @@ export class patientRegistrationModel{
     //unknown default false
     caution: boolean;
     passportNo: string;
-    issueDate: string;
-    expiryDate: string;
+    issueDate: string|null;
+    expiryDate: string|null;
     passportIssuedAt: string;
   
     //unknown default   
@@ -176,8 +176,8 @@ religion:number,
 nationality: number,
 caution: boolean,
 passportNo: string,
-issueDate: string,
-expiryDate: string,
+issueDate: string|null,
+expiryDate: string|null,
 passportIssuedAt: string,
 otherAllergies:string ,
 free: boolean,

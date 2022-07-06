@@ -14,12 +14,13 @@
         [src]="icon['src']"
         [alt]="icon['tooltip']"
         width="45px"
-        class="mt-1"
+        class="mt-1 cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+        (click)="doCategoryIconAction(icon)"
       />
     </div>
   </nav>
   <mat-tab-nav-panel #tabPanel>
-    
     <div
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
     >
@@ -352,7 +353,7 @@
                       [form]="OPRegForm"
                       [questions]="questions[30]"
                       [index]="30"
-                      
+                      [hidden]="!isNSSHLocation"
                     ></maxhealth-question>
                   </div>
                 </div>
@@ -365,7 +366,8 @@
             >
               <mat-card
                 class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color pb-0"
-              >  <!-- (click)="hotlistClick($event)" -->
+              >
+                <!-- (click)="hotlistClick($event)" -->
                 <div class="flex">
                   <div class="w-3/4">
                     <maxhealth-question
@@ -373,23 +375,21 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
-                    
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
-                     <!-- (click)="openVIP($event)" -->
+                    <!-- (click)="openVIP($event)" -->
                     <maxhealth-question
                       [question]="questions[32]"
                       [form]="OPRegForm"
                       [questions]="questions[32]"
                       [index]="32"
-                     
                     ></maxhealth-question>
                   </div>
                 </div>
                 <div class="flex">
                   <div class="w-3/4">
-                      <!-- (click)="NotesClick($event)" -->
+                    <!-- (click)="NotesClick($event)" -->
 
                     <maxhealth-question
                       [question]="questions[33]"
@@ -399,7 +399,7 @@
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
-                      <!-- (click)="hwcClick($event)" -->
+                    <!-- (click)="hwcClick($event)" -->
 
                     <maxhealth-question
                       [question]="questions[34]"
@@ -548,6 +548,7 @@
             color="primary"
             class="w-full font-xs"
             type="button"
+            [disabled]="appointmentSearchClicked"
             (click)="openDialog()"
           >
             Appointment Search
@@ -557,6 +558,7 @@
             color="primary"
             class="w-full"
             type="button"
+            [disabled]="dmsClicked"
             (click)="getPatientDMSDetail()"
           >
             DMS
@@ -654,6 +656,7 @@
             color="primary"
             type="button"
             class="mt-1 mb-2"
+            [disabled]="clearClicked"
             (click)="clear()"
           >
             Clear

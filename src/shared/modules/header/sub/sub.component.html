@@ -91,6 +91,8 @@
         <input
           matInput
           placeholder="Search for Max id/ First name/ Last name/ Phone/ DOB/health/aa"
+          #searchVal
+          (keydown.enter)="applyFilter(searchVal.value)"
         />
         <span matPrefix class="flex mr-3"
           ><mat-icon>search</mat-icon>
