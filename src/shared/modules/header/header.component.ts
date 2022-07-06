@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
         this.activeModule = element;
       }
     });
-    this.setRefreshedToken(); //Set refreshed access token in cookie
+    // this.setRefreshedToken(); //Set refreshed access token in cookie
     this.location = this.cookieService.get("Location");
     this.station = this.cookieService.get("Station");
     this.usrname = this.cookieService.get("Name");
@@ -53,10 +53,9 @@ export class HeaderComponent implements OnInit {
         window.location = response.postLogoutRedirectUri;
       }
       localStorage.clear();
-      this.cookieService.delete("accessToken");
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
-      this.authService.startAuthentication();
+      window.location.href = window.location.origin + "/login";
     });
   }
 
