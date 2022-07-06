@@ -16,6 +16,7 @@ export class HeaderComponent implements OnInit {
   location: string = "";
   station: string = "";
   usrname: string = "";
+  user: string = "";
   activeModule: any;
 
   constructor(
@@ -37,20 +38,44 @@ export class HeaderComponent implements OnInit {
         this.activeModule = element;
       }
     });
-
+    this.setRefreshedToken(); //Set refreshed access token in cookie
     this.location = this.cookieService.get("Location");
     this.station = this.cookieService.get("Station");
     this.usrname = this.cookieService.get("Name");
+    this.user = this.cookieService.get("UserName");
   }
 
   logout() {
+    this.setRefreshedToken(); //Set refreshed access token in cookie
+    this.authService.logout().subscribe((response: any) => {
+      if (response.postLogoutRedirectUri) {
+        window.location = response.postLogoutRedirectUri;
+      }
+      localStorage.clear();
+      this.cookieService.delete("accessToken");
+      this.cookieService.deleteAll();
+      this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.authService.startAuthentication();
+    });
+  }
+
+  getPermissions() {
+    this.setRefreshedToken(); //Set refreshed access token in cookie
+    this.permissionService.getPermissionsRoleWise().subscribe(
+      (response: any) => {
+        console.log(response);
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+  }
+
+  setRefreshedToken() {
     //oidc.user:https://localhost/:hispwa
     let storage = localStorage.getItem(
       "oidc.user:" + environment.IdentityServerUrl + ":" + environment.clientId
     );
-    console.log(storage);
-    console.log(storage?.split(","));
-    console.log(storage?.split(",")[2]);
     let tokenKey;
     let accessToken = "";
     if (storage != null && storage != undefined && storage != "") {
@@ -72,29 +97,5 @@ export class HeaderComponent implements OnInit {
       this.cookieService.delete("accessToken");
       this.cookieService.set("accessToken", accessToken);
     }
-
-    this.authService.logout().subscribe((response: any) => {
-      console.log("loggedout");
-      if (response.postLogoutRedirectUri) {
-        window.location = response.postLogoutRedirectUri;
-      }
-      localStorage.clear();
-      this.cookieService.delete("accessToken");
-      this.cookieService.deleteAll();
-      this.cookieService.deleteAll("/", environment.cookieUrl, true);
-      this.authService.startAuthentication();
-      console.log("cleared cookie");
-    });
-  }
-
-  getPermissions() {
-    this.permissionService.getPermissionsRoleWise().subscribe(
-      (response: any) => {
-        console.log(response);
-      },
-      (error: any) => {
-        console.log(error);
-      }
-    );
   }
 }
