@@ -11,6 +11,7 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
 export class PaymentMethodsComponent implements OnInit {
   @Input() fromrefund !: boolean;
   @Input() fromdeposit!:boolean;
+  @Input() forOPbilling !: boolean;
   @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
   refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
@@ -18,6 +19,7 @@ export class PaymentMethodsComponent implements OnInit {
   today: any;
   forrefundpage:boolean = true;
   fordepositpage:boolean = true;
+  forOPbillingpage:boolean = false;
   constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
@@ -25,8 +27,9 @@ export class PaymentMethodsComponent implements OnInit {
       this.refundFormData.properties,
       {}
     );
-    this.forrefundpage = this.fromrefund;
-    this.fordepositpage=this.fromrefund;
+    this.forrefundpage = this.fromrefund == undefined ? this.forrefundpage : this.fromrefund ;
+    this.fordepositpage= this.fromrefund == undefined ? this.forrefundpage : this.fromrefund ;
+    this.forOPbillingpage = this.forOPbilling == undefined ? this.forOPbillingpage : this.forOPbilling ;
     this.refundform = formResult.form;
     this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;
