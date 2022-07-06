@@ -51,6 +51,7 @@ import { ModifyDialogComponent } from "@core/modify-dialog/modify-dialog.compone
 import { RegistrationDialogueComponent } from "@modules/registration/submodules/op-registration/Registration-dialog/registration-dialogue/registration-dialogue.component";
 import { PendingChangesGuard } from "@shared/services/guards/pending-change-guard.service";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 
 @NgModule({
   declarations: [
@@ -109,6 +110,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SearchService,
     CookieService,
     PendingChangesGuard,
+    AuthGuardService,
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { autoFocus: false } },
   ],
   entryComponents: [AppointmentSearchComponent],

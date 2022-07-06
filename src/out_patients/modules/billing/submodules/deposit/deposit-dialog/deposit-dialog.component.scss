@@ -2,16 +2,6 @@
     min-height: 246px !important;
 }
 
-// ::ng-deep .mat-tab-label{
-//     height:24px !important;
-//     opacity: 1 !important;
-// }
-
-// ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels{
-//     height:50vh !important;
-// }
-// mat-ripple mat-tab-label mat-focus-indicator mat-tab-label-active ng-star-inserted
-
 ::ng-deep mat-radio-group{
     flex-direction: row !important;
     gap: 10px !important;
@@ -51,25 +41,15 @@
 ::ng-deep .mat-dialog-container{
     overflow:hidden !important;
 }
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body-content{
-    height: auto !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels .mat-tab-label:nth-child(8){
-    border-bottom: 0 !important;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-label-active{
-    //avtive background + color
-    background:#004084;
-    color:white;
-    border-bottom:0 !important;
-    border-radius: 5px ;
-}
-::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-header{
-    //right side line
-    border-right: 0 !important;
-}
 
 ::ng-deep .mat-radio-button{
     padding-bottom: 0 !important;
 
+}
+.bg-lightblue{
+    background-color:#45C0BE;
+}
+
+.font-white{
+    color:white;
 }

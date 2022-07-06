@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authStatus: boolean = false;
   public username: string = "";
   Authentication: boolean = true;
+  public name: string = "";
 
   loginFormData = {
     title: "",
@@ -108,6 +109,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   reLoginForm() {
     this.Authentication = true;
+    window.location.reload();
     setTimeout(() => {
       this.questions[0].elementRef.focus();
     }, 1);
@@ -127,21 +129,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
             return { title: s.stationName, value: s.stationid };
           });
 
+          this.questions[2].options = this.locationList.map((l) => {
+            return { title: l.organizationName, value: l.hspLocationId };
+          });
           //changes for UAT defect fix to select station bydefault if only one location
           if (this.locationList.length == 1) {
             this.loginForm.controls["location"].setValue({
               title: this.locationList[0].organizationName,
               value: this.locationList[0].hspLocationId,
             });
-          } else {
-            this.questions[2].options = this.locationList.map((l) => {
-              return { title: l.organizationName, value: l.hspLocationId };
-            });
           }
 
           console.log(this.questions);
 
           this.userId = Number(this.userlocationandstation.userId);
+          this.name = this.userlocationandstation.name;
 
           this.loginForm.controls["location"].valueChanges
             .pipe(takeUntil(this._destroying$))
@@ -206,6 +208,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
               this.authStatus = true;
               this.cookie.set("UserName", this.username);
               this.cookie.set("UserId", this.userId.toString());
+              this.cookie.set("Name", this.name);
               this.cookie.set("LocationIACode", this.locationdetail!.iaCode);
               this.cookie.set(
                 "HSPLocationId",

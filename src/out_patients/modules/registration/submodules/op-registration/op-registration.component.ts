@@ -109,7 +109,6 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
-  invalidChars: any = ["e", "E"];
 
   passportDetails: {
     passportNo: string;
@@ -234,7 +233,7 @@ export class OpRegistrationComponent implements OnInit {
         onlyKeyPressAlpha: true,
       },
       altLandlineName: {
-        type: "number",
+        type: "tel",
         title: "Alt Contact/Landline",
         pattern: "[0-9+]{1}[0-9]{1,2}[0-9 ]{1}[0-9]{7,17}",
         required: false,
@@ -508,10 +507,32 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   checkForModifiedPatientDetail() {
+    this.isPatientdetailModified = false;
     if (this.MaxIDExist) {
       this.isPatientdetailModified = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
     }
     return this.isPatientdetailModified;
+  }
+  checkForModifiedNationality() {
+    this.nationalityChanged = false;
+    if (this.MaxIDExist) {
+      this.nationalityChanged = true;
+
+      // {
+      //   this.isPatientdetailModified = true;
+      // }
+      // else{
+      //   this.isPatientdetailModified = false;
+      // }
+    }
+    return this.nationalityChanged;
   }
 
   formInit() {
@@ -580,11 +601,26 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.getLocalityByPinCode.bind(this)
     );
+
+    //ENTER EVENT ON PHONE NUMBER
+    this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+
+        this.onEnterPhoneModify();
+      }
+    });
+
     //chnage event for Mobile Field
     this.questions[2].elementRef.addEventListener(
       "change",
       this.onPhoneModify.bind(this)
     );
+
     //chnage event for FirstName
     this.questions[4].elementRef.addEventListener(
       "change",
@@ -609,12 +645,7 @@ export class OpRegistrationComponent implements OnInit {
       "focus",
       this.onageCalculator.bind(this)
     );
-    //ALt contact /Landline NUmber alphabate e prevention
-    this.questions[15].elementRef.addEventListener("keydown", (e: any) => {
-      if (this.invalidChars.includes(e.key)) {
-        e.preventDefault();
-      }
-    });
+
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
       "blur",
@@ -634,10 +665,24 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //ON MAXID CHANGE
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.getPatientDetailsByMaxId.bind(this)
-    );
+    // this.questions[0].elementRef.addEventListener(
+    //   "blur",
+    //   this.getPatientDetailsByMaxId.bind(this)
+    // );
+
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+
+        this.getPatientDetailsByMaxId();
+      }
+    });
+
     this.questions[21].elementRef.addEventListener(
       "blur",
       this.getLocalityByPinCode.bind(this)
@@ -645,7 +690,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   formProcessing() {
-    //  this.checkForMaxID();
+    this.checkForMaxID();
 
     // this.registeredPatiendDetails=this.patientDetails as ModifiedPatientDetailModel;
     //  if (this.maxIDChangeCall == false) {
@@ -874,7 +919,7 @@ export class OpRegistrationComponent implements OnInit {
   flushAllObjects() {
     this.categoryIcons = [];
     this.fatherSpouseOptionList = [] as any;
-
+    this.similarContactPatientList = [] as any;
     //CLEARING PASSPORT DETAILS
     this.passportDetails = {
       passportNo: "",
@@ -1113,32 +1158,39 @@ export class OpRegistrationComponent implements OnInit {
           (resultData: SimilarSoundPatientResponse[]) => {
             this.similarContactPatientList = resultData;
             console.log(this.similarContactPatientList);
-            if (this.similarContactPatientList.length != 0) {
-              const similarSoundDialogref = this.matDialog.open(
-                SimilarPatientDialog,
-                {
-                  width: "60vw",
-                  height: "80vh",
-                  data: {
-                    searchResults: this.similarContactPatientList,
-                  },
-                }
-              );
-              similarSoundDialogref
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result) => {
-                  if (result) {
-                    console.log(result.data["added"][0].maxid);
-                    let maxID = result.data["added"][0].maxid;
-                    this.OPRegForm.controls["maxid"].setValue(maxID);
-                    this.getPatientDetailsByMaxId();
-                  }
-                  console.log("seafarers dialog was closed");
-                  this.similarContactPatientList = [];
-                });
+            if (this.similarContactPatientList.length == 1) {
+              console.log(this.similarContactPatientList[0]);
+              let maxID = this.similarContactPatientList[0].maxid;
+              this.OPRegForm.controls["maxid"].setValue(maxID);
+              this.getPatientDetailsByMaxId();
             } else {
-              console.log("no data found");
+              if (this.similarContactPatientList.length != 0) {
+                const similarSoundDialogref = this.matDialog.open(
+                  SimilarPatientDialog,
+                  {
+                    width: "60vw",
+                    height: "80vh",
+                    data: {
+                      searchResults: this.similarContactPatientList,
+                    },
+                  }
+                );
+                similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.OPRegForm.controls["maxid"].setValue(maxID);
+                      this.getPatientDetailsByMaxId();
+                    }
+                    console.log("seafarers dialog was closed");
+                    this.similarContactPatientList = [];
+                  });
+              } else {
+                console.log("no data found");
+              }
             }
           },
           (error) => {
@@ -1694,7 +1746,7 @@ export class OpRegistrationComponent implements OnInit {
                 relativeTo: this.route,
               });
               this.flushAllObjects();
-              this.setValuesToOPRegForm(this.patientDetails);
+              // this.setValuesToOPRegForm(this.patientDetails);
               this.OPRegForm.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
@@ -1712,7 +1764,7 @@ export class OpRegistrationComponent implements OnInit {
   onModifyDetail() {
     this.onUpdatePatientDetail();
 
-    if (this.isPatientdetailModified) {
+    if (this.isPatientdetailModified || this.nationalityChanged) {
       this.modifyDialogg();
     }
   }
@@ -1789,9 +1841,13 @@ export class OpRegistrationComponent implements OnInit {
   //BIND THE REGISTERED PATIENT RESPONSE TO QUESTIONS
   setValuesToOPRegForm(patientDetails: PatientDetails) {
     this.patientDetails = patientDetails;
-    this.OPRegForm.controls["maxid"].setValue(
-      this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
-    );
+    if (this.patientDetails?.registrationno == 0) {
+      this.patientDetails?.iacode + ".";
+    } else {
+      this.OPRegForm.controls["maxid"].setValue(
+        this.patientDetails?.iacode + "." + this.patientDetails?.registrationno
+      );
+    }
     this.OPRegForm.controls["SSN"].setValue(this.patientDetails?.ssn);
     this.OPRegForm.controls["mobileNumber"].setValue(
       this.patientDetails?.pphone
@@ -1855,13 +1911,34 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
+  similarSoundListPresent(): boolean {
+    return this.similarContactPatientList.length > 0 ? true : false;
+  }
+
+  //CLEARING OLDER PHONE SEARCH
+  onEnterPhoneModify() {
+    this.similarContactPatientList = [] as any;
+    this.onPhoneModify();
+  }
   onPhoneModify() {
     console.log("phone changed");
 
-    if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
-    } else {
-      this.getSimilarPatientDetails();
+    //IF EVENT HAS BEEN NOT HITTED API
+    if (!this.similarSoundListPresent()) {
+      if (this.checkForModifiedPatientDetail()) {
+        this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+      } else {
+        this.getSimilarPatientDetails();
+      }
+      // } else {
+      //   if (this.similarContactPatientList.length == 1) {
+      //     if (this.checkForModifiedPatientDetail()) {
+      //       this.modfiedPatiendDetails.pphone = this.OPRegForm.value.mobileNumber;
+      //     } else {
+      //       this.getSimilarPatientDetails();
+      //     }
+      //   }
     }
   }
   onTitleModify() {
@@ -1903,6 +1980,7 @@ export class OpRegistrationComponent implements OnInit {
       this.modfiedPatiendDetails.pemail = this.OPRegForm.value.emailId;
     }
   }
+  nationalityChanged: boolean = false;
   onNationalityModify() {
     console.log("country changed");
     if (
@@ -1920,10 +1998,16 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["foreigner"].disable();
       this.OPRegForm.controls["foreigner"].setValue(false);
     }
-
-    if (this.checkForModifiedPatientDetail()) {
-      this.modfiedPatiendDetails.nationality =
-        this.OPRegForm.value.nationality.value;
+    if (
+      this.OPRegForm.value.nationality.title !=
+      this.patientDetails.nationalityName
+    ) {
+      if (this.checkForModifiedNationality()) {
+        this.modfiedPatiendDetails.nationality =
+          this.OPRegForm.value.nationality.value;
+      }
+    } else {
+      this.nationalityChanged = false;
     }
   }
 
@@ -2570,8 +2654,28 @@ export class OpRegistrationComponent implements OnInit {
       note: {
         notes: this.noteRemark,
       },
+      vip: {
+        notes: this.vip,
+      },
+      hwc: {
+        notes: this.hwcRemark,
+      },
+      ppagerNumber: {
+        bplCardNo: this.ewsDetails.bplCardNo,
+        BPLAddress: this.ewsDetails.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReason,
+        reason: this.hotlistRemark,
+      },
     };
-    this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
   }
 
   //DIALOGS ---------------------------------------------------------------------------------------
@@ -2736,12 +2840,174 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         console.log(result);
-        this.patientDetails = result.data.added[0] as PatientDetails;
-        this.setValuesToOPRegForm(this.patientDetails);
-        console.log("this is patient Detail obj", this.patientDetails);
-        console.log("appointment dialog was closed");
+        let apppatientDetails = result.data.added[0];
+        // this.patientDetails = new PatientDetails();
+
+        //CLEARING DATA BEFORE APPOINTMENT SEARCH CALL
+        this.clear();
+
+        //ASSIGNING MAX ID FROM SELECTED ROW OF APPOINTMENT POP UP
+        let maxid =
+          apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+
+        //IF IACODE IS EMPTY THAT MEAN NOT REGIGISTRATION PATIENT
+        if (apppatientDetails.iAcode == "") {
+          //CREATING OBJ FOR SETTING OPPOINTMENT PATIENT VALUES TO FORM
+          let appointmentPatientDetails = new PatientDetails(
+            apppatientDetails.id,
+            0,
+            this.cookie.get("LocationIACode"), //IA CODE PULLING FROM CURRENT LOGGED IN USER ID
+            apppatientDetails.registeredDateTime,
+            apppatientDetails.registeredBy
+              ? apppatientDetails.registeredBy
+              : "",
+            "",
+            apppatientDetails.title,
+            apppatientDetails.firstName,
+            "",
+            apppatientDetails.lastName,
+            "",
+            "",
+            false,
+            this.datepipe.transform(
+              apppatientDetails.dob,
+              "yyyy-MM-ddThh:mm:ss"
+            ) || "1900-01-01T00:00:00",
+            apppatientDetails.sex,
+            11,
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            "",
+            apppatientDetails.email,
+            0,
+            apppatientDetails.age,
+            apppatientDetails.houseNo,
+            "",
+            "",
+            0,
+            0,
+            0,
+            0,
+            0,
+            apppatientDetails.mobileno,
+            apppatientDetails.mobileno,
+            apppatientDetails.email,
+            "",
+            0,
+            0,
+            false,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            0,
+            "",
+            false,
+            false,
+            false,
+            0,
+            "",
+            "",
+            apppatientDetails.billNo != 0 ? true : false,
+            apppatientDetails.amount,
+            0,
+            0,
+            0,
+            "",
+            "",
+            "",
+            0,
+            false,
+            apppatientDetails.isdoborAge,
+            0,
+            "",
+            "",
+            0,
+            false,
+            "",
+            false,
+            "",
+            "",
+            0,
+            0,
+            "",
+            0,
+            0,
+            0,
+            "",
+            "",
+            "",
+            0,
+            !apppatientDetails.isdoborAge,
+            apppatientDetails.locationId,
+            apppatientDetails.locality,
+            0,
+            false,
+            false,
+            false,
+            "",
+            "",
+            "",
+            "",
+            false,
+            "",
+            false,
+            false,
+            "",
+            0,
+            0,
+            "",
+            "",
+            "",
+            false,
+            "",
+            0,
+            "",
+            false,
+            false,
+            0,
+            0,
+            "",
+            "",
+            "",
+            "",
+            false,
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            "",
+            "",
+            apppatientDetails.city,
+            "",
+            apppatientDetails.country,
+            apppatientDetails.state,
+            apppatientDetails.locality,
+            apppatientDetails.nationality,
+            false,
+            "",
+            ""
+          );
+          //SETTING APPOINTMENT DETAIL OBJECT THE OBJ TO THE FORM
+          this.setValuesToOPRegForm(appointmentPatientDetails);
+        } else {
+          //SETTING THE MAX ID FROM APPOINTMENT PATIENT SEARCH
+          this.OPRegForm.value.maxid = maxid;
+
+          //SEARCHING PATIENT BYH MAXID
+          this.getPatientDetailsByMaxId();
+        }
       });
     this.appointmentSearchClicked = false;
+
     // let appointmentSearchDialogref = this.matDialog.open(
     //   AppointmentSearchDialogComponent,
     //   {
