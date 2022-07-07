@@ -48,8 +48,6 @@ export class IframeComponent implements OnInit, OnDestroy {
           }
         } else {
         }
-
-        console.log(params);
       });
   }
 
