@@ -291,7 +291,7 @@ And we can use any breakpoint prefix, i.e:
 - `.w-full`-> `width: 100%`
 - `.w-screen` -> `width: 100vw`
 - `.w-auto` -> `width: auto`
-
+- `.w-1/20` -> `width: 5%`
 or
 
 - `.sm:w-1/2`

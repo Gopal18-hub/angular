@@ -1,196 +1,169 @@
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-        <ul class="list-unstyled flex items-end">
-          <li class="ml-3">
-            <a mat-tab-link [active]="true">Deposit</a>
-          </li>
-        </ul>           
-      </nav>
- <mat-tab-nav-panel #tabPanel> 
-     <div class="h-full w-full">    
-        <form [formGroup]="depositForm">
-   <!---------------------------------FIRST ROW----------------------------------------------------->
-   <div class="p-1 ml-2 mt-2 mr-2 border-radius-lg flex w-auto bg-deposit">   
-    <div class="w-full pt-2">    
-      <div class="flex">
-      <mat-label class="wt-nowrap">Max ID</mat-label>
-      <div class="ml-3 w-1/10 h-full bg-white">
-      <maxhealth-question
-      [question]="questions[0]"
-      [form]="depositForm"
-      [questions]="questions[0]"
-      [index]="0"
-      >
-      </maxhealth-question>
-      </div>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true">Deposit</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div class="h-full w-full">
+      <form [formGroup]="depositForm">
+        <!---------------------------------FIRST ROW----------------------------------------------------->
+        <div class="p-1 ml-2 mt-2 mr-2 border-radius-lg flex w-auto bg-deposit">
+          <div class="w-full pt-2">
+            <div class="flex">
+              <mat-label class="wt-nowrap">Max ID</mat-label>
+              <div class="ml-3 w-1/10 h-full bg-white">
+                <maxhealth-question [question]="questions[0]" [form]="depositForm" [questions]="questions[0]"
+                  [index]="0">
+                </maxhealth-question>
+              </div>
 
-      <mat-label class="ml-1 wt-nowrap">Mobile No.</mat-label>
-      <div class="ml-3 w-1/10 h-full bg-white">
-      <maxhealth-question
-      [question]="questions[1]"
-      [form]="depositForm"
-      [questions]="questions[1]"
-      [index]="1">
-      </maxhealth-question>
-      </div>
-      
-      <div  class="w-1/6 ml-2">
-        <mat-label>Name:</mat-label>
-        <span></span>
-        </div>
+              <mat-label class="ml-1 wt-nowrap">Mobile No.</mat-label>
+              <div class="ml-3 w-1/10 h-full bg-white">
+                <maxhealth-question [question]="questions[1]" [form]="depositForm" [questions]="questions[1]"
+                  [index]="1">
+                </maxhealth-question>
+              </div>
 
-        <div class="w-1/10">
-        <mat-label>Age:</mat-label>
-        <span></span>
-        </div>  
+              <div class="w-1/6 ml-2">
+                <mat-label>Name:</mat-label>
+                <span></span>
+              </div>
 
-        <div  class="w-1/6">
-        <mat-label>Gender:</mat-label>
-        <span></span>
-         </div>
+              <div class="w-1/10">
+                <mat-label>Age:</mat-label>
+                <span></span>
+              </div>
 
-         <div  class="w-1/6">
-        <mat-label>DOB:</mat-label>
-        <span></span>
-         </div>
+              <div class="w-1/6">
+                <mat-label>Gender:</mat-label>
+                <span></span>
+              </div>
+
+              <div class="w-1/6">
+                <mat-label>DOB:</mat-label>
+                <span></span>
+              </div>
 
 
-         <div  class="w-1/6">
-        <mat-label>Nationality:</mat-label>
-        <span></span>
-         </div>
+              <div class="w-1/6">
+                <mat-label>Nationality:</mat-label>
+                <span></span>
+              </div>
 
-         <div  class="w-1/6">
-        <mat-label>SSN:</mat-label>
-        <span></span>
-         </div>
-   <div>
-    <button mat-raised-button color="primary"  class="w-2/10"> Clear</button>
-   </div>
-</div>
-</div>
-</div>
-
-
- <!---------------------------------SECOND ROW----------------------------------------------------->  
-    <div  class="p-2 ml-2 mt-2 border-radius-lg bg-deposit font-sm font-bold">     
-       <div class="w-full">
-           
-        <div class="float-left">
-            <mat-label>Deposit and Refund Details</mat-label>
-        </div>
-       
-        <div class="float-right w-2/5 mr-3 flex">
-           
-            <button
-            mat-raised-button
-            color="primary"
-            class="w-2/10  ml-2"
-            type="submit"
-            (click)="openinitiatedeposit()"
-          >
-          Initiate Deposit
-          </button>
-            <button
-              mat-raised-button
-              color="primary"
-              class="w-2/10 ml-2"
-              type="button"
-              (click)="openDepositdialog()"
-            >
-            Make Deposit
-            </button>
-            <button
-              mat-raised-button
-              color="primary"
-              class="w-2/10  ml-2"
-              type="submit"
-              (click)="openrefunddialog()"
-            >
-            Refund
-            </button>
-          <button
-            mat-raised-button
-            color="primary"
-            class="w-2/10 ml-2"
-            type="button"
-            
-          >
-         Print Receipt
-          </button>
+              <div class="w-1/6">
+                <mat-label>SSN:</mat-label>
+                <span></span>
+              </div>
+              <div>
+                <button mat-raised-button color="primary" class="w-2/10"> Clear</button>
+              </div>
+            </div>
           </div>
-        
-       </div>
-          <!---------------------------------THIRD ROW----------------------------------------------------->
-     <div class="flex w-full">
-
-  
-          <div class="p-2 border-radius-lg  h-full ml-1 mt-5 bg-white">
-           <div class="mt-2">
-            <mat-label class="ml-3">Total Deposit</mat-label>
-           </div>
-           
-        <div  class="w-9/10 ml-3 bg-thirdrow input1">
-            <maxhealth-question
-            [question]="questions[4]"
-            [form]="depositForm"
-            [questions]="questions[4]"
-            [index]="4">
-            </maxhealth-question>
-            </div>
-            <div class="mt-3">
-                <mat-label class="ml-3">Avalaible Deposit</mat-label>
-            </div>
-            
-            <div  class="w-9/10 ml-3 bg-thirdrow">
-                <maxhealth-question
-                [question]="questions[5]"
-                [form]="depositForm"
-                [questions]="questions[5]"
-                [index]="5">
-                </maxhealth-question>
-                </div>
-                <div class="mt-3">
-                    <mat-label class="ml-3">Total Refund</mat-label>
-                </div>
-           
-            <div  class="w-9/10 ml-3 bg-thirdrow">
-            <maxhealth-question
-            [question]="questions[6]"
-            [form]="depositForm"
-            [questions]="questions[6]"
-            [index]="6">
-            </maxhealth-question>
-            </div>
-            <div  class="mt-6">
-                <mat-label class="ml-3">Remarks</mat-label>
-            </div>
-           
-            <div  class="w-9/10 ml-3 bg-thirdrow">
-                <maxhealth-question
-                [question]="questions[7]"
-                [form]="depositForm"
-                [questions]="questions[7]"
-                [index]="7">
-                </maxhealth-question>
-                </div>
-       </div>
-       
-       <div class="flex  h-full">
-        <ng-container>
-            <maxhealth-table
-              class="w-full h-full"
-              [config]="depositconfig"
-                        
-              #deposittable
-            ></maxhealth-table>
-          </ng-container>
-       </div>
-    </div>
         </div>
 
 
-</form> 
-</div>
- </mat-tab-nav-panel> 
+        <!---------------------------------SECOND ROW----------------------------------------------------->
+        <div class="p-2 ml-2 mt-2 border-radius-lg bg-deposit">
+          <div class="w-full">
+
+            <div class="float-left font-base font-bold">
+              <mat-label>Deposit and Refund Details</mat-label>
+            </div>
+
+            <div class="float-right w-2/5 mr-3 flex">
+
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit"
+                (click)="openinitiatedeposit()">
+                Initiate Deposit
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" (click)="openDepositdialog()">
+                Make Deposit
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" (click)="openrefunddialog()">
+                Refund
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button">
+                Print Receipt
+              </button>
+            </div>
+
+          </div>
+          <!---------------------------------THIRD ROW----------------------------------------------------->
+          <div class="flex w-full">
+
+
+            <div class="p-2 border-radius-lg  h-full ml-1 mt-2 bg-white">
+              <div class="mt-1">
+                <mat-label class="ml-3">Total Deposit</mat-label>
+              </div>
+
+              <div class="w-9/10 ml-3 bg-thirdrow input1">
+                <maxhealth-question [question]="questions[4]" [form]="depositForm" [questions]="questions[4]"
+                  [index]="4">
+                </maxhealth-question>
+              </div>
+              <div class="mt-3">
+                <mat-label class="ml-3">Avalaible Deposit</mat-label>
+              </div>
+
+              <div class="w-9/10 ml-3 bg-thirdrow input1">
+                <maxhealth-question [question]="questions[5]" [form]="depositForm" [questions]="questions[5]"
+                  [index]="5">
+                </maxhealth-question>
+              </div>
+              <div class="mt-3">
+                <mat-label class="ml-3">Total Refund</mat-label>
+              </div>
+
+              <div class="w-9/10 ml-3 bg-thirdrow input1">
+                <maxhealth-question [question]="questions[6]" [form]="depositForm" [questions]="questions[6]"
+                  [index]="6">
+                </maxhealth-question>
+              </div>
+              <div class="mt-6">
+                <mat-label class="ml-3">Remarks</mat-label>
+              </div>
+
+              <div class="w-9/10 ml-3 bg-thirdrow">
+                <maxhealth-question [question]="questions[7]" [form]="depositForm" [questions]="questions[7]"
+                  [index]="7">
+                </maxhealth-question>
+              </div>
+            </div>
+
+            <div class="flex mt-2 ml-3 h-full">
+              <ng-container>
+                <maxhealth-table class="w-full" [config]="depositconfig" #deposittable></maxhealth-table>
+              </ng-container>
+            </div>
+           
+          </div>
+          <div class="flex h-1/6 w-1/2 ml-2">
+            <div class="ml-1 mt-1 clr-primary">
+              <maxhealth-question
+              [question]="questions[9]"
+              [form]="depositForm"
+              [questions]="questions[9]"
+              [index]="9"
+            ></maxhealth-question>
+            </div>
+            <div class="w-1/2 h-full border-radius-lg ml-3 bg-white">
+               
+                <maxhealth-question
+                [question]="questions[8]"
+                [form]="depositForm"
+                [questions]="questions[8]"
+                [index]="8"
+              ></maxhealth-question>
+            </div>
+        </div>
+        </div>
+
+
+      </form>
+    </div>
+  </mat-tab-nav-panel>
 </section>

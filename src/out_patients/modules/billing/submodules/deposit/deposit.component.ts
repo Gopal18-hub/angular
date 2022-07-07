@@ -64,6 +64,17 @@ export class DepositComponent implements OnInit {
         defaultValue: "Write Remarks",
         readonly:true
       },
+      panno: {
+        type: "string"
+      },     
+      mainradio: {
+        type: "radio",
+        required: false,
+        options: [
+          { title: "Form 60", value: "form60" },
+          { title: "Pan card No.", value: "pancardno" },
+        ]
+      },
     }
   }
 
