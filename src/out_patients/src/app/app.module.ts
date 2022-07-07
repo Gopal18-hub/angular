@@ -8,6 +8,9 @@ import { HeaderModule } from "../../../shared/modules/header";
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { PatientHistoryModule } from "@modules/patient-history";
+import { AcdModule } from "@modules/acd";
+import { StaffDeptModule } from "@modules/staff-dept";
+
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
@@ -34,7 +37,9 @@ import { CookieService } from "../../../shared/services/cookie.service";
     //MaxHealthSnackBarModule,
     EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
-    PatientHistoryModule
+    PatientHistoryModule,
+    AcdModule,
+    StaffDeptModule
   
   ],
   providers: [
