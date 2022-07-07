@@ -61,6 +61,7 @@ import { MatInput } from "@angular/material/input";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-change-guard.service";
 import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 import { AnimationPlayer } from "@angular/animations";
+import { TileStyler } from "@angular/material/grid-list/tile-styler";
 
 export interface DialogData {
   expieryDate: Date;
@@ -545,6 +546,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
+    this.fatherSpouseOptionList.push({ title: "-Select-", value: 0 });
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
@@ -581,7 +583,7 @@ export class OpRegistrationComponent implements OnInit {
       title: "India",
       value: 1,
     });
-    this.OPRegForm.controls["foreigner"].disable();
+    // this.OPRegForm.controls["foreigner"].disable(); // commented as UAT requirement change
     this.getStatesByCountry({ title: "India", value: 1 });
     this.getCitiesByCountry({ title: "India", value: 1 });
 
@@ -795,7 +797,14 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[25].required = false;
             this.questions[26].required = false;
             this.questions[21] = { ...this.questions[21] };
-            this.OPRegForm.controls["nationality"].setValue(null);
+            if (!this.OPRegForm.value.nationality.value) {
+              this.OPRegForm.controls["nationality"].setValue(null);
+            } else {
+              this.OPRegForm.controls["nationality"].setValue({
+                title: this.OPRegForm.value.nationality.title,
+                value: this.OPRegForm.value.nationality.value,
+              });
+            }
           }
         }
       });
@@ -870,6 +879,25 @@ export class OpRegistrationComponent implements OnInit {
             if (sex.length) {
               let exists = this.genderList.filter((e) => e.id === sex[0].sex);
               this.OPRegForm.controls["gender"].setValue(exists[0].id);
+            }
+          }
+        }
+      });
+
+    // //on change of Gender Title needs to be dafult for Transgender
+    this.OPRegForm.controls["gender"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          let genderName = this.genderList.filter((g) => g.id === value)[0]
+            .name;
+          if (
+            genderName != "" &&
+            genderName != undefined &&
+            genderName != null
+          ) {
+            if (genderName == "Transgender") {
+              this.OPRegForm.controls["title"].setValue(0);
             }
           }
         }
@@ -955,9 +983,9 @@ export class OpRegistrationComponent implements OnInit {
   checkIndetityValue() {
     let IdenityType = this.OPRegForm.controls["idenityType"].value;
     if (
-      IdenityType != null ||
-      IdenityType != undefined ||
-      IdenityType != "" ||
+      IdenityType != null &&
+      IdenityType != undefined &&
+      IdenityType != "" &&
       IdenityType > 0
     ) {
       let identityTypeName = this.idTypeList.filter(
@@ -976,6 +1004,9 @@ export class OpRegistrationComponent implements OnInit {
           this.passportNo = this.OPRegForm.controls["idenityValue"].value;
         }
       }
+    } else {
+      this.OPRegForm.controls["idenityValue"].setErrors(null);
+      this.questions[17].customErrorMessage = "";
     }
   }
 
@@ -998,8 +1029,8 @@ export class OpRegistrationComponent implements OnInit {
   }
   foreignCLick(event: Event) {
     if (
-      !this.OPRegForm.controls["foreigner"].value &&
-      this.OPRegForm.value.nationality.title.toLowerCase() != "indian"
+      !this.OPRegForm.controls["foreigner"].value
+      //&& this.OPRegForm.value.nationality.title.toLowerCase() != "indian" //removed condition as per UAT requirement change
     ) {
       this.showPassportDetails();
     }
@@ -1032,9 +1063,9 @@ export class OpRegistrationComponent implements OnInit {
   checkFatherSpouseName() {
     let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
     if (
-      FatherSpouse != null ||
-      FatherSpouse != undefined ||
-      FatherSpouse != "" ||
+      FatherSpouse != null &&
+      FatherSpouse != undefined &&
+      FatherSpouse != "" &&
       FatherSpouse > 0
     ) {
       if (
@@ -1051,6 +1082,9 @@ export class OpRegistrationComponent implements OnInit {
         this.questions[13].customErrorMessage =
           "Please enter " + selectedName + " name";
       }
+    } else {
+      this.OPRegForm.controls["fatherSpouseName"].setErrors(null);
+      this.questions[13].customErrorMessage = "";
     }
   }
 
@@ -1062,6 +1096,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.titleList = resultData;
+        this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
         this.questions[3].options = this.titleList.map((l) => {
           return { title: l.name, value: l.name };
         });
@@ -1074,6 +1109,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.sourceOfInfoList = resultData;
+        this.sourceOfInfoList.unshift({ id: 0, name: "-Select-" });
         this.questions[41].options = this.sourceOfInfoList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -1087,6 +1123,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.ageTypeList = resultData;
+        this.ageTypeList.unshift({ id: 0, name: "-Select-" });
         this.questions[10].options = this.ageTypeList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -1101,6 +1138,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.idTypeList = resultData;
+        this.idTypeList.unshift({ id: 0, name: "-Select-" });
         this.questions[16].options = this.idTypeList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -1114,6 +1152,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.genderList = resultData;
+        this.genderList.unshift({ id: 0, name: "-Select-" });
         this.questions[7].options = this.genderList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -1877,7 +1916,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["foreigner"].setValue(
       this.patientDetails?.foreigner
     );
-    this.enableDisableForeignerCheck(this.patientDetails);
+    // this.enableDisableForeignerCheck(this.patientDetails);//// commented as UAT requirement change
     this.OPRegForm.controls["hotlist"].setValue(this.patientDetails?.hotlist);
 
     //PASSPORT DETAILS
@@ -1903,13 +1942,14 @@ export class OpRegistrationComponent implements OnInit {
     this.hotlistRemark = patientDetail.hotlistcomments;
   }
 
-  enableDisableForeignerCheck(patientDetails: PatientDetails) {
-    if (patientDetails.nationalityName.toLowerCase() == "indian") {
-      this.OPRegForm.controls["foreigner"].disable();
-    } else {
-      this.OPRegForm.controls["foreigner"].enable();
-    }
-  }
+  // commented as UAT requirement change
+  // enableDisableForeignerCheck(patientDetails: PatientDetails) {
+  //   if (patientDetails.nationalityName.toLowerCase() == "indian") {
+  //     this.OPRegForm.controls["foreigner"].disable();
+  //   } else {
+  //     this.OPRegForm.controls["foreigner"].enable();
+  //   }
+  // }
 
   //FLAG FOR TRIGGERED EVENT ON PHONE NUMBER
   similarSoundListPresent(): boolean {
@@ -1991,11 +2031,13 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.nationality.title != "" &&
       this.OPRegForm.value.nationality.title != null
     ) {
-      this.OPRegForm.controls["foreigner"].enable();
+      // commented as UAT requirement change
+      // this.OPRegForm.controls["foreigner"].enable();
       this.OPRegForm.controls["foreigner"].setValue(true);
       this.showPassportDetails();
     } else {
-      this.OPRegForm.controls["foreigner"].disable();
+      // commented as UAT requirement change
+      //  this.OPRegForm.controls["foreigner"].disable();
       this.OPRegForm.controls["foreigner"].setValue(false);
     }
     if (
@@ -2445,7 +2487,8 @@ export class OpRegistrationComponent implements OnInit {
 
   checkForForeignerCheckbox() {
     if (
-      this.OPRegForm.value.nationality.title.toLowerCase() != "indian" &&
+      // commented as UAT requirement change
+      // this.OPRegForm.value.nationality.title.toLowerCase() != "indian" &&
       this.OPRegForm.value.foreigner == false
     ) {
       this.OPRegForm.controls["foreigner"].setValue(true);
