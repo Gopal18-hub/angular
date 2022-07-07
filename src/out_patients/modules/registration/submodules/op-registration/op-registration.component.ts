@@ -782,6 +782,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (value != undefined && value != null && value != "" && value > 0) {
           this.validatePatientAge();
+          this.getSimilarpatientlistonagetype();
         }
       });
 
@@ -2675,7 +2676,7 @@ export class OpRegistrationComponent implements OnInit {
   modfiedPatiendDetails!: ModifiedPatientDetailModel;
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
-    this.checkForForeignerCheckbox();
+    //this.checkForForeignerCheckbox();
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -2833,7 +2834,7 @@ export class OpRegistrationComponent implements OnInit {
                   Math.floor(this.timeDiff)
                 );
                 this.OPRegForm.controls["ageType"].setValue(
-                  this.ageTypeList[0].id
+                  this.ageTypeList[1].id
                 );
                 console.log(this.ageTypeList[0].name);
               }
@@ -2842,7 +2843,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[3].id
+                this.ageTypeList[4].id
               );
               console.log(this.ageTypeList[3].name);
             }
@@ -2869,7 +2870,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[4].id
+                this.ageTypeList[5].id
               );
               console.log(this.ageTypeList[4].name);
             }
@@ -2881,7 +2882,93 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
   }
+  similaragetypePatientList: SimilarSoundPatientResponse[] = [];
+  getSimilarpatientlistonagetype(){
+    if((this.OPRegForm.controls["gender"].value != undefined && this.OPRegForm.controls["gender"].value != "" && this.OPRegForm.controls["gender"].value != null ) && 
+    (this.OPRegForm.controls["age"].value != undefined && this.OPRegForm.controls["age"].value != "" && this.OPRegForm.controls["age"].value != null) &&
+    (this.OPRegForm.controls["firstName"].value != undefined && this.OPRegForm.controls["firstName"].value != "" && this.OPRegForm.controls["firstName"].value != null) &&
+    (this.OPRegForm.controls["lastName"].value != undefined && this.OPRegForm.controls["lastName"].value != "" && this.OPRegForm.controls["lastName"].value != null))
+    {     
+       this.matDialog.closeAll();
+        console.log(this.similaragetypePatientList.length);
+        if (!this.MaxIDExist) {
+          this.http
+            .post(ApiConstants.similarSoundPatientDetail, {
+              phone: this.OPRegForm.value.mobileNumber,
+              firstName: this.OPRegForm.value.firstName,
+              lastName: this.OPRegForm.value.lastName,
+              gender: this.OPRegForm.value.gender == 1 ? "Male" : this.OPRegForm.value.gender == 2 ? "Female" : "Transgender",
+              dob:   this.datepipe.transform(
+                this.OPRegForm.value.dob,
+                "yyyy-MM-ddThh:mm:ss"
+              )
+            })
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (resultData: SimilarSoundPatientResponse[]) => {
+                this.similaragetypePatientList = resultData;
+                console.log(this.similaragetypePatientList);                               
+                  if (this.similaragetypePatientList.length != 0) {
+                  
+      const formsubmitdialogref = this.matDialog.open(
+        RegistrationDialogueComponent,
+        {
+          width: "30vw",
+  
+          data: {
+            message1: "Similar sound patient detail exists. Please validate",
+            message2: "",
+            btn1: true,
+            btn2: true,
+            bt1Msg: "Ok",
+            bt2Msg: "Cancel",
+          },
+        }
+      );
 
+      
+      formsubmitdialogref.afterClosed().pipe(takeUntil(this._destroying$))
+                        .subscribe((result) => {
+                          if(result == "Success"){
+                            const similarSoundDialogref = this.matDialog.open(
+                              SimilarPatientDialog,
+                              {
+                                width: "60vw",
+                                height: "80vh",
+                                data: {
+                                  searchResults: this.similaragetypePatientList,
+                                },
+                              }
+                            );
+                            similarSoundDialogref
+                              .afterClosed()
+                              .pipe(takeUntil(this._destroying$))
+                              .subscribe((result) => {
+                                if (result) {
+                                  console.log(result.data["added"][0].maxid);
+                                  let maxID = result.data["added"][0].maxid;
+                                  this.OPRegForm.controls["maxid"].setValue(maxID);
+                                  this.getPatientDetailsByMaxId();
+                                }
+                                console.log("agetype dialog was closed");
+                                this.similaragetypePatientList = [];
+                              });
+                          }else{                            
+                            this.questions[11].elementRef.focus();
+                          }
+                        });
+                  } else {
+                    console.log("no data found");
+                  }               
+              },
+              (error) => {
+                console.log(error);
+                this.messageDialogService.info(error.error);
+              }
+            );
+        }
+      }    
+  }
   validatePatientAge() {
     //need to implement logic for patient who has age < 18 years but DOB not provided.
     // need to mention DOB as mandatory.
@@ -3317,6 +3404,7 @@ export class OpRegistrationComponent implements OnInit {
         console.log(result);
         if (result == "success") {
           this.postModifyCall();
+          this.isPatientdetailModified = false;
         }
       });
   }
