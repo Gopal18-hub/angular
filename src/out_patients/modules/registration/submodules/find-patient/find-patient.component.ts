@@ -108,6 +108,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       dob: {
         title: "DOB",
@@ -117,6 +118,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         title: "Address",
         type: "string",
         tooltipColumn: "completeAddress",
+        disabledSort: true,
       },
       phone: {
         title: "Phone",
