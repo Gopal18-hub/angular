@@ -13,6 +13,7 @@ export const environment = {
   //IentityServerRedirectUrl:'http://172.30.0.16/',
   ReportsApiUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
   BillingApiUrl: "http://172.30.0.16:1007/",
+  ReportsSampleUrl:"http://localhost:55746/MAXHIS/",
 
   //local envionment urls for testing
   IdentityServerUrl: "https://localhost/",
