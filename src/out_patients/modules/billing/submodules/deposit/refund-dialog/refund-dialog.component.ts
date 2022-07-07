@@ -229,8 +229,11 @@ export class RefundDialogComponent implements OnInit {
   paymentform!: FormGroup;
   today: any;
   config = {
-    cash: true,
-    cheque: true
+    paymentmethod: {
+      cash: true,
+      cheque: true
+    },
+    combopayment: false
   }
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {

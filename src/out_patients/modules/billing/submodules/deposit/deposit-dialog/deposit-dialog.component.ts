@@ -192,12 +192,15 @@ export class DepositDialogComponent implements OnInit {
   onDepositpage: boolean = true;
   selectedTabvalue!: string;
   config = {
-    cash: true,
-    cheque: true,
-    credit: true,
-    demand: true,
-    upi: true,
-    internetpayment: true
+    paymentmethod: {
+      cash: true,
+      cheque: true,
+      credit: true,
+      demand: true,
+      upi: true,
+      internetpayment: true,
+    },
+    combopayment: false
   }
   constructor( private formService: QuestionControlService) { }
 
