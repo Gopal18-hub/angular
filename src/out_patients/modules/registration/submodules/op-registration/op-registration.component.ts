@@ -889,17 +889,17 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          // let genderName = this.genderList.filter((g) => g.id === value)[0]
-          //   .name;
-          // if (
-          //   genderName != "" &&
-          //   genderName != undefined &&
-          //   genderName != null
-          // ) {
-          // if (genderName == "Transgender") {
-          this.OPRegForm.controls["title"].setValue(0);
-          // }
-          // }
+          let genderName = this.genderList.filter((g) => g.id === value)[0]
+            .name;
+          if (
+            genderName != "" &&
+            genderName != undefined &&
+            genderName != null
+          ) {
+            if (genderName == "Transgender") {
+              this.OPRegForm.controls["title"].setValue(0);
+            }
+          }
         }
       });
   }
