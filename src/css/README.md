@@ -281,6 +281,7 @@ And we can use any breakpoint prefix, i.e:
 - `.w-1/7` -> `width: 14.28571%`
 - `.w-6/7` -> `width: 85.71428%`
 - `.w-9/10`-> `width: 90%`
+- `.w-7/10`-> `width: 70%`
 - `.w-1/10`-> `width: 10%`
 - `.w-3/10`-> `width: 30%`
 - `.w-2/10`-> `width: 20%`
