@@ -983,9 +983,9 @@ export class OpRegistrationComponent implements OnInit {
   checkIndetityValue() {
     let IdenityType = this.OPRegForm.controls["idenityType"].value;
     if (
-      IdenityType != null ||
-      IdenityType != undefined ||
-      IdenityType != "" ||
+      IdenityType != null &&
+      IdenityType != undefined &&
+      IdenityType != "" &&
       IdenityType > 0
     ) {
       let identityTypeName = this.idTypeList.filter(
@@ -1063,9 +1063,9 @@ export class OpRegistrationComponent implements OnInit {
   checkFatherSpouseName() {
     let FatherSpouse = this.OPRegForm.controls["fatherSpouse"].value;
     if (
-      FatherSpouse != null ||
-      FatherSpouse != undefined ||
-      FatherSpouse != "" ||
+      FatherSpouse != null &&
+      FatherSpouse != undefined &&
+      FatherSpouse != "" &&
       FatherSpouse > 0
     ) {
       if (
