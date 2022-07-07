@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { BillingForm } from '@core/constants/BillingForm';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
 @Component({
   selector: 'payment-methods',
@@ -9,17 +9,13 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
   styleUrls: ['./payment-methods.component.scss']
 })
 export class PaymentMethodsComponent implements OnInit {
-  @Input() fromrefund !: boolean;
-  @Input() fromdeposit !:boolean;
-  @Input() forOPbilling !: boolean;
+  @Input() config: any;
   @Output() paymentform:EventEmitter<FormGroup> = new EventEmitter();
+
   refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
   today: any;
-  forrefundpage:boolean = true;
-  fordepositpage:boolean = true;
-  forOPbillingpage:boolean = false;
   constructor( private formService: QuestionControlService) { }
 
   ngOnInit(): void {
@@ -27,9 +23,6 @@ export class PaymentMethodsComponent implements OnInit {
       this.refundFormData.properties,
       {}
     );
-    this.forrefundpage = this.fromrefund == undefined ? this.forrefundpage : this.fromrefund ;
-    this.fordepositpage= this.fromrefund == undefined ? this.forrefundpage : this.fromrefund ;
-    this.forOPbillingpage = this.forOPbilling == undefined ? this.forOPbillingpage : this.forOPbilling ;
     this.refundform = formResult.form;
     this.paymentform.emit(this.refundform);
     this.questions = formResult.questions;
@@ -37,11 +30,11 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
   }
-  onTabChanged(event: MatTabChangeEvent){
-    if(event.index == 1)
-    {
-      this.refundform.controls["amount"].setValue('');
-    }
-  }
 
+  tabChanged(event:MatTabChangeEvent){
+    console.log(event);
+    this.refundform.reset();
+    this.refundform.controls["chequeissuedate"].setValue(this.today);
+    this.refundform.controls["demandissuedate"].setValue(this.today);
+  }
 }
