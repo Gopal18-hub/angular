@@ -100,6 +100,7 @@ export class DashboardComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       dob: {
         title: "DOB",
@@ -109,6 +110,7 @@ export class DashboardComponent implements OnInit {
         title: "Address",
         type: "string",
         tooltipColumn: "completeAddress",
+        disabledSort: true,
       },
       phone: {
         title: "Phone",
