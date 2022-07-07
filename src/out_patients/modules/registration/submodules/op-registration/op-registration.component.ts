@@ -2609,7 +2609,7 @@ export class OpRegistrationComponent implements OnInit {
                   Math.floor(this.timeDiff)
                 );
                 this.OPRegForm.controls["ageType"].setValue(
-                  this.ageTypeList[0].id
+                  this.ageTypeList[1].id
                 );
                 console.log(this.ageTypeList[0].name);
               }
@@ -2618,7 +2618,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[3].id
+                this.ageTypeList[4].id
               );
               console.log(this.ageTypeList[3].name);
             }
@@ -2645,7 +2645,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[4].id
+                this.ageTypeList[5].id
               );
               console.log(this.ageTypeList[4].name);
             }
