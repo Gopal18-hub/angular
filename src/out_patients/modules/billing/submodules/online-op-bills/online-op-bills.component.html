@@ -1,1 +1,53 @@
-<p>online-op-bills works!</p>
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true">Online Bill Generate</a>
+        </li>
+      </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full w-full">
+            <form [formGroup]="onlineopbillsForm">
+
+        <div class="flex p-2 ml-2  mt-2 mr-2 border-radius-lg bg-grey">
+            <div class="flex w-3/10 h-full bg-lightgrey">
+                <div class="mt-4 ml-2">
+                    <p class="max-health-primary-color wt-nowrap">From Date </p>
+                </div>
+                <div class="w-3/10 mt-3 border-radius-lg h-full ml-2 bg-white clr-primary">
+                    <maxhealth-question
+                      [question]="questions[0]"
+                      [form]="onlineopbillsForm"
+                      [questions]="questions[0]"
+                      [index]="0"
+                    ></maxhealth-question>
+                </div>
+                <div class="mt-4 ml-2">
+                    <p class="max-health-primary-color wt-nowrap">To Date</p>
+                </div>
+                <div class="w-3/10 mt-3 border-radius-lg h-full ml-2 bg-white clr-primary">
+                    <maxhealth-question
+                      [question]="questions[1]"
+                      [form]="onlineopbillsForm"
+                      [questions]="questions[1]"
+                      [index]="1"
+                    ></maxhealth-question>
+                </div>
+                <div class="mt-4 ml-2">
+                    <p class="max-health-primary-color wt-nowrap">Specialisation</p>
+                </div>
+                <div class="w-3/10 mt-3 border-radius-lg h-full ml-2 bg-white clr-primary">
+                    <maxhealth-question
+                      [question]="questions[3]"
+                      [form]="onlineopbillsForm"
+                      [questions]="questions[3]"
+                      [index]="3"
+                    ></maxhealth-question>
+                </div>
+            </div>           
+        </div>
+    </form>
+    </div>
+    </mat-tab-nav-panel>
+</section>
