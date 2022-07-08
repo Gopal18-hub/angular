@@ -2869,14 +2869,17 @@ export class OpRegistrationComponent implements OnInit {
             new Date(Date.now()).getMonth() -
             new Date(this.OPRegForm.value.dob).getMonth();
 
-          if (this.timeDiff <= 0) {
-            this.timeDiff =
-              new Date(Date.now()).getDate() -
-              new Date(this.OPRegForm.value.dob).getDate();
-            if (this.timeDiff <= 0) {
-            } else {
+            var date1 = new Date(Date.now());
+              var date2 = new Date(this.OPRegForm.value.dob);
+              var timedifference = date1.getTime() - date2.getTime();
+
+              var Difference_In_Days = Math.floor(timedifference / (1000 * 3600 * 24));
+
+              if ((this.timeDiff <= 0 || this.timeDiff == 1) && Difference_In_Days < 30 ) {        
+                if (this.timeDiff < 0) {
+                }  else {
               this.OPRegForm.controls["age"].setValue(
-                Math.floor(this.timeDiff)
+                Math.floor(Difference_In_Days)
               );
               this.OPRegForm.controls["ageType"].setValue(
                 this.ageTypeList[0].id
@@ -2932,10 +2935,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["lastName"].value != undefined &&
       this.OPRegForm.controls["lastName"].value != "" &&
       this.OPRegForm.controls["lastName"].value != null
-    ) {
-      this.matDialog.closeAll();
+    ) {      
       console.log(this.similaragetypePatientList.length);
-      if (!this.MaxIDExist) {
+      if (!this.MaxIDExist && !this.maxIDChangeCall) {
+        this.matDialog.closeAll();
         this.http
           .post(ApiConstants.similarSoundPatientDetail, {
             firstName: this.OPRegForm.value.firstName,
