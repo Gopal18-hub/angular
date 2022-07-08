@@ -39,7 +39,10 @@ import { DepositDialogComponent } from "./submodules/deposit/deposit-dialog/depo
 
 import { Form60Component } from "./submodules/deposit/refund-dialog/form60/form60.component";
 import { sharedbillingModule } from "../../../out_patients/core/UI/billing";
-import { MakedepositDialogComponent } from './submodules/deposit/makedeposit-dialog/makedeposit-dialog.component';
+import { MakedepositDialogComponent } from "./submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
+import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
+import { DepositSuccessComponent } from './submodules/deposit/deposit-success/deposit-success.component';
+import { OprefundApprovalComponent } from './submodules/oprefund-approval/oprefund-approval.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -63,33 +66,9 @@ import { MakedepositDialogComponent } from './submodules/deposit/makedeposit-dia
     DepositDialogComponent,
     Form60Component,
     MakedepositDialogComponent,
-import { Form60Component } from './submodules/deposit/refund-dialog/form60/form60.component';
-import { sharedbillingModule } from '../../../out_patients/core/UI/billing';
-import { PatientIdentityInfoComponent } from '@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component';
-@NgModule({
-  declarations: [
-       BillingComponent,
-       BillingComponentPage,
-       DepositComponent,
-       DetailsComponent,
-       OnlineOpBillsComponent,
-       OpOrderRequestComponent,
-       MiscellaneousBillingComponent,
-       InitiateDepositComponent,
-       PaymentModeComponent,
-       RefundDialogComponent,
-       VisitHistoryDialogComponent,
-       DispatchReportComponent,
-       DmgMappingComponent,
-       SelectAtleastOneComponent,
-       MoreThanMonthComponent,
-       ExpiredPatientCheckComponent,
-       SaveexpiredpatientDialogComponent,
-       DeleteexpiredpatientDialogComponent,
-       DepositDialogComponent,
-       Form60Component,
-       PatientIdentityInfoComponent
-       
+    PatientIdentityInfoComponent,
+    DepositSuccessComponent,
+    OprefundApprovalComponent,
   ],
   imports: [
     BillingRoutingModule,

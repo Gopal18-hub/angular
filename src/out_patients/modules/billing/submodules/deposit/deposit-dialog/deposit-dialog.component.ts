@@ -3,6 +3,8 @@ import { FormGroup } from "@angular/forms";
 import { DynamicFormsModule } from "../../../../../../shared/ui/dynamic-forms";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { MatTabGroup } from "@angular/material/tabs";
+import { MatDialog } from "@angular/material/dialog";
+import { DepositSuccessComponent } from "../deposit-success/deposit-success.component";
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -193,7 +195,10 @@ export class DepositDialogComponent implements OnInit {
   questions: any;
   onDepositpage: boolean = true;
   selectedTabvalue!: string;
-  constructor( private formService: QuestionControlService) { }
+  constructor(
+    private formService: QuestionControlService,
+    private matDialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -323,5 +328,12 @@ export class DepositDialogComponent implements OnInit {
     this.paymentForm.controls["upiapproval"].enable();
     this.paymentForm.controls["upiterminal"].enable();
     this.paymentForm.controls["upiacquiring"].enable();
+  }
+
+  openSuccessdeposit() {
+    this.matDialog.open(DepositSuccessComponent, {
+      width: "30vw",
+      height: "30vh",
+    });
   }
 }

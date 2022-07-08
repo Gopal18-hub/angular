@@ -4,7 +4,7 @@
       <rect id="Rectangle_204" data-name="Rectangle 204" width="12.635" height="19.797" fill="#fff"/>
     </clipPath>
   </defs>
-  <g id="Ellipse_29" data-name="Ellipse 29" fill="none" stroke="#45c0be" stroke-width="90">
+  <g id="Ellipse_29" data-name="Ellipse 29" fill="#45c0be" stroke="#45c0be" stroke-width="90">
     <circle cx="55" cy="55" r="55" stroke="none"/>
     <circle cx="55" cy="55" r="10" fill="none"/>
   </g>
