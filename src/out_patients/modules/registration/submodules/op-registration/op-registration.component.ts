@@ -1410,10 +1410,10 @@ export class OpRegistrationComponent implements OnInit {
           value: hotlistvalue[0].value,
         };
 
-        this.hotlistReasondb = {
-          title: this.hotlistReasondb.title,
-          value: hotlistvalue[0].value,
-        };
+        // this.hotlistReasondb = {
+        //   title: this.hotlistReasondb.title,
+        //   value: hotlistvalue[0].value,
+        // };
 
         this.hotlistdialogref = this.matDialog.open(FormDialogueComponent, {
           width: "30vw",
@@ -2836,95 +2836,85 @@ export class OpRegistrationComponent implements OnInit {
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
     // if (!this.MaxIDExist) {
-      if (this.OPRegForm.value.dob == "") {
-        this.OPRegForm.value.age = null;
-        this.OPRegForm.controls["ageType"].setValue(null);
-      }
-      this.timeDiff = 0;
+    if (this.OPRegForm.value.dob == "") {
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.controls["ageType"].setValue(null);
+    }
+    this.timeDiff = 0;
+    if (this.OPRegForm.value.dob) {
+      this.dobFlag = true;
+      this.ageFlag = false;
+    }
+    console.log(this.OPRegForm.value.age);
+
+    if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
+      this.dateNotValid = true;
+      this.OPRegForm.value.age = null;
+      this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+      let element: HTMLElement = document.getElementById(
+        "saveform"
+      ) as HTMLElement;
+    } else {
+      this.dateNotValid = false;
+    }
+    let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+    if (year > 1000) {
       if (this.OPRegForm.value.dob) {
-        this.dobFlag = true;
-        this.ageFlag = false;
-      }
-      console.log(this.OPRegForm.value.age);
-
-      if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
-        this.dateNotValid = true;
-        this.OPRegForm.value.age = null;
-        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-        let element: HTMLElement = document.getElementById(
-          "saveform"
-        ) as HTMLElement;
-      } else {
-        this.dateNotValid = false;
-      }
-      let year = new Date(this.OPRegForm.value.dob).getFullYear();
-
-      if (year > 1000) {
-        if (this.OPRegForm.value.dob) {
+        this.timeDiff =
+          new Date(Date.now()).getFullYear() -
+          new Date(this.OPRegForm.value.dob).getFullYear();
+        if (this.timeDiff <= 0) {
           this.timeDiff =
-            new Date(Date.now()).getFullYear() -
-            new Date(this.OPRegForm.value.dob).getFullYear();
+            new Date(Date.now()).getMonth() -
+            new Date(this.OPRegForm.value.dob).getMonth();
+
           if (this.timeDiff <= 0) {
             this.timeDiff =
-              new Date(Date.now()).getMonth() -
-              new Date(this.OPRegForm.value.dob).getMonth();
-
+              new Date(Date.now()).getDate() -
+              new Date(this.OPRegForm.value.dob).getDate();
             if (this.timeDiff <= 0) {
-              this.timeDiff =
-                new Date(Date.now()).getDate() -
-                new Date(this.OPRegForm.value.dob).getDate();
-              if (this.timeDiff <= 0) {
-              } else {
-                this.OPRegForm.controls["age"].setValue(
-                  Math.floor(this.timeDiff)
-                );
-                this.OPRegForm.controls["ageType"].setValue(
-                  this.ageTypeList[0].id
-                );
-                console.log(this.ageTypeList[0].name);
-              }
             } else {
               this.OPRegForm.controls["age"].setValue(
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[3].id
+                this.ageTypeList[0].id
               );
-              console.log(this.ageTypeList[3].name);
+              console.log(this.ageTypeList[0].name);
             }
           } else {
-            let currentmonth = new Date(Date.now()).getMonth();
-            let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
-            let monthDiff = currentmonth - MonthofDOB;
-            let monthDiff2 = MonthofDOB - currentmonth;
-            if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
-              if (monthDiff < 12 && this.timeDiff == 1) {
-                if (monthDiff <= 0) {
-                  this.OPRegForm.controls["age"].setValue(
-                    12 - MonthofDOB + currentmonth
-                  );
-                } else {
-                  this.OPRegForm.controls["age"].setValue(monthDiff);
-                }
-              }
-              this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[3].id
-              );
-            } else {
-              this.OPRegForm.controls["age"].setValue(
-                Math.floor(this.timeDiff)
-              );
-              this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[4].id
-              );
-              console.log(this.ageTypeList[4].name);
-            }
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+            console.log(this.ageTypeList[3].name);
           }
         } else {
-          this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
-          console.log(this.OPRegForm.controls["ageType"].value);
+          let currentmonth = new Date(Date.now()).getMonth();
+          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+          let monthDiff = currentmonth - MonthofDOB;
+          let monthDiff2 = MonthofDOB - currentmonth;
+          if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
+            if (monthDiff < 12 && this.timeDiff == 1) {
+              if (monthDiff <= 0) {
+                this.OPRegForm.controls["age"].setValue(
+                  12 - MonthofDOB + currentmonth
+                );
+              } else {
+                this.OPRegForm.controls["age"].setValue(monthDiff);
+              }
+            }
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+          } else {
+            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[4].id);
+            console.log(this.ageTypeList[4].name);
+          }
         }
+      } else {
+        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+        console.log(this.OPRegForm.controls["ageType"].value);
       }
+    }
     // }
   }
   similaragetypePatientList: SimilarSoundPatientResponse[] = [];
