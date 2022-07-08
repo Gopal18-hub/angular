@@ -196,9 +196,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "QMS",
-          defaultPath: "",
+          defaultPath: "qms",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,

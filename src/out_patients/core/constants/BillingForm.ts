@@ -16,7 +16,7 @@ export namespace BillingForm {
             maximum: new Date(),
           },
           chequebankname: {
-            type: "string"
+            type: "autocomplete"
           },
           chequebranchname: {
             type: "string"
@@ -59,7 +59,7 @@ export namespace BillingForm {
             maximum: new Date(),
           },
           demandbankname: {
-            type: "string"
+            type: "autocomplete"
           },
           demandbranch: {
             type: "string"
@@ -167,10 +167,36 @@ export namespace BillingForm {
           },
           internetamount: {
               type: "number"
+          },
+	        dueamount: {
+              type: "string"
+          },
+          dueamountauthorisedby: {
+              type: "string"
+          },
+          dueamountduebillremarks: {
+              type: "textarea"
+          },
+          chequevaliditydate:{
+            type: "date",
+            maximum: new Date(),
+          },
+          demandvaliditydate:{
+            type: "date",
+            maximum: new Date(),
+          },
+          mobilewallet:{
+            type: "dropdown"
+          },
+          mobileotp:{
+            type: "string"
+          },
+          mobileorderid:{
+            type: "string"
           }
         },
     };
-
+    
     // Form 60 Form Data
     export const form60FormData = {
         title: "",
