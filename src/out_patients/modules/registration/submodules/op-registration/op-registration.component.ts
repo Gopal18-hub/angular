@@ -474,49 +474,84 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   searchPatient(formdata: any) {
-    let maxid = Number(formdata["maxID"].split(".")[1]);
-    if (maxid <= 0 && maxid == undefined && maxid == null) {
-      formdata["maxID"] = "";
-    }
-    this.http
-      .get(
-        ApiConstants.searchPatientApi(
-          formdata["maxID"],
-          "",
-          formdata["name"],
-          formdata["phone"],
-          formdata["dob"],
-          formdata["adhaar"],
-          formdata["healthID"]
+    let hspId = Number(this.cookie.get("HSPLocationId"));
+    if (formdata["globalSearch"] == 1) {
+      this.http
+        .get(ApiConstants.globalSearchApi(formdata["SearchTerm"], hspId))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            this.router.navigate(["registration", "find-patient"], {
+              queryParams: {
+                globalSearch: formdata["globalSearch"],
+                SearchTerm: formdata["SearchTerm"],
+                hspId: hspId,
+              },
+            });
+          },
+          (error) => {
+            this.router.navigate(["registration", "find-patient"], {
+              queryParams: {
+                globalSearch: formdata["globalSearch"],
+                SearchTerm: formdata["SearchTerm"],
+                hspId: hspId,
+              },
+            });
+          }
+        );
+    } else {
+      let maxid = 0;
+      if (
+        formdata["maxID"] != undefined &&
+        formdata["maxID"] != null &&
+        formdata["maxID"] != ""
+      ) {
+        maxid = Number(formdata["maxID"].split(".")[1]);
+      }
+
+      if (maxid <= 0 && maxid == undefined && maxid == null) {
+        formdata["maxID"] = "";
+      }
+      this.http
+        .get(
+          ApiConstants.searchPatientApi(
+            formdata["maxID"],
+            "",
+            formdata["name"],
+            formdata["phone"],
+            formdata["dob"],
+            formdata["adhaar"],
+            formdata["healthID"]
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          this.router.navigate(["registration", "find-patient"], {
-            queryParams: {
-              maxID: formdata["maxID"],
-              name: formdata["name"],
-              phone: formdata["phone"],
-              dob: formdata["dob"],
-              healthID: formdata["healthID"],
-              adhaar: formdata["adhaar"],
-            },
-          });
-        },
-        (error) => {
-          this.router.navigate(["registration", "find-patient"], {
-            queryParams: {
-              maxID: formdata["maxID"],
-              name: formdata["name"],
-              phone: formdata["phone"],
-              dob: formdata["dob"],
-              healthID: formdata["healthID"],
-              adhaar: formdata["adhaar"],
-            },
-          });
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            this.router.navigate(["registration", "find-patient"], {
+              queryParams: {
+                maxID: formdata["maxID"],
+                name: formdata["name"],
+                phone: formdata["phone"],
+                dob: formdata["dob"],
+                healthID: formdata["healthID"],
+                adhaar: formdata["adhaar"],
+              },
+            });
+          },
+          (error) => {
+            this.router.navigate(["registration", "find-patient"], {
+              queryParams: {
+                maxID: formdata["maxID"],
+                name: formdata["name"],
+                phone: formdata["phone"],
+                dob: formdata["dob"],
+                healthID: formdata["healthID"],
+                adhaar: formdata["adhaar"],
+              },
+            });
+          }
+        );
+    }
   }
 
   checkForModifiedPatientDetail() {
@@ -584,6 +619,7 @@ export class OpRegistrationComponent implements OnInit {
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe((formdata: any) => {
+        console.log(formdata);
         this.searchPatient(formdata.data);
       });
 
@@ -900,7 +936,14 @@ export class OpRegistrationComponent implements OnInit {
         if (!this.maxIDChangeCall && this.countrybasedflow) {
           this.OPRegForm.controls["pincode"].setValue("");
         }
-        this.addressByLocalityID(value);
+        if (
+          value.value > 0 &&
+          value.value != undefined &&
+          value.value != null &&
+          value.value != ""
+        ) {
+          this.addressByLocalityID(value);
+        }
       });
 
     //on change of Title Gender needs to be changed
@@ -1784,7 +1827,8 @@ export class OpRegistrationComponent implements OnInit {
       if (
         locality.value != undefined &&
         locality.value != null &&
-        locality.value != ""
+        locality.value != "" &&
+        locality.value > 0
       ) {
         this.http
           .get(ApiConstants.addressByLocalityID(locality.value))
@@ -2790,7 +2834,7 @@ export class OpRegistrationComponent implements OnInit {
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
-    if (!this.MaxIDExist) {
+    // if (!this.MaxIDExist) {
       if (this.OPRegForm.value.dob == "") {
         this.OPRegForm.value.age = null;
         this.OPRegForm.controls["ageType"].setValue(null);
@@ -2805,7 +2849,7 @@ export class OpRegistrationComponent implements OnInit {
       if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
         this.dateNotValid = true;
         this.OPRegForm.value.age = null;
-        this.OPRegForm.controls["ageType"].setValue(null);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
         let element: HTMLElement = document.getElementById(
           "saveform"
         ) as HTMLElement;
@@ -2834,7 +2878,7 @@ export class OpRegistrationComponent implements OnInit {
                   Math.floor(this.timeDiff)
                 );
                 this.OPRegForm.controls["ageType"].setValue(
-                  this.ageTypeList[1].id
+                  this.ageTypeList[0].id
                 );
                 console.log(this.ageTypeList[0].name);
               }
@@ -2843,7 +2887,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[4].id
+                this.ageTypeList[3].id
               );
               console.log(this.ageTypeList[3].name);
             }
@@ -2870,7 +2914,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[5].id
+                this.ageTypeList[4].id
               );
               console.log(this.ageTypeList[4].name);
             }
@@ -2880,94 +2924,108 @@ export class OpRegistrationComponent implements OnInit {
           console.log(this.OPRegForm.controls["ageType"].value);
         }
       }
-    }
+    // }
   }
   similaragetypePatientList: SimilarSoundPatientResponse[] = [];
-  getSimilarpatientlistonagetype(){
-    if((this.OPRegForm.controls["gender"].value != undefined && this.OPRegForm.controls["gender"].value != "" && this.OPRegForm.controls["gender"].value != null ) && 
-    (this.OPRegForm.controls["age"].value != undefined && this.OPRegForm.controls["age"].value != "" && this.OPRegForm.controls["age"].value != null) &&
-    (this.OPRegForm.controls["firstName"].value != undefined && this.OPRegForm.controls["firstName"].value != "" && this.OPRegForm.controls["firstName"].value != null) &&
-    (this.OPRegForm.controls["lastName"].value != undefined && this.OPRegForm.controls["lastName"].value != "" && this.OPRegForm.controls["lastName"].value != null))
-    {     
-       this.matDialog.closeAll();
-        console.log(this.similaragetypePatientList.length);
-        if (!this.MaxIDExist) {
-          this.http
-            .post(ApiConstants.similarSoundPatientDetail, {
-              phone: this.OPRegForm.value.mobileNumber,
-              firstName: this.OPRegForm.value.firstName,
-              lastName: this.OPRegForm.value.lastName,
-              gender: this.OPRegForm.value.gender == 1 ? "Male" : this.OPRegForm.value.gender == 2 ? "Female" : "Transgender",
-              dob:   this.datepipe.transform(
-                this.OPRegForm.value.dob,
-                "yyyy-MM-ddThh:mm:ss"
-              )
-            })
-            .pipe(takeUntil(this._destroying$))
-            .subscribe(
-              (resultData: SimilarSoundPatientResponse[]) => {
-                this.similaragetypePatientList = resultData;
-                console.log(this.similaragetypePatientList);                               
-                  if (this.similaragetypePatientList.length != 0) {
-                  
-      const formsubmitdialogref = this.matDialog.open(
-        RegistrationDialogueComponent,
-        {
-          width: "30vw",
-  
-          data: {
-            message1: "Similar sound patient detail exists. Please validate",
-            message2: "",
-            btn1: true,
-            btn2: true,
-            bt1Msg: "Ok",
-            bt2Msg: "Cancel",
-          },
-        }
-      );
+  getSimilarpatientlistonagetype() {
+    if (
+      this.OPRegForm.controls["gender"].value != undefined &&
+      this.OPRegForm.controls["gender"].value != "" &&
+      this.OPRegForm.controls["gender"].value != null &&
+      this.OPRegForm.controls["age"].value != undefined &&
+      this.OPRegForm.controls["age"].value != "" &&
+      this.OPRegForm.controls["age"].value != null &&
+      this.OPRegForm.controls["firstName"].value != undefined &&
+      this.OPRegForm.controls["firstName"].value != "" &&
+      this.OPRegForm.controls["firstName"].value != null &&
+      this.OPRegForm.controls["lastName"].value != undefined &&
+      this.OPRegForm.controls["lastName"].value != "" &&
+      this.OPRegForm.controls["lastName"].value != null
+    ) {
+      this.matDialog.closeAll();
+      console.log(this.similaragetypePatientList.length);
+      if (!this.MaxIDExist) {
+        this.http
+          .post(ApiConstants.similarSoundPatientDetail, {
+            firstName: this.OPRegForm.value.firstName,
+            lastName: this.OPRegForm.value.lastName,
+            gender:
+              this.OPRegForm.value.gender == 1
+                ? "Male"
+                : this.OPRegForm.value.gender == 2
+                ? "Female"
+                : "Transgender",
+            dob: this.datepipe.transform(
+              this.OPRegForm.value.dob,
+              "yyyy-MM-ddThh:mm:ss"
+            ),
+          })
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
+            (resultData: SimilarSoundPatientResponse[]) => {
+              this.similaragetypePatientList = resultData;
+              console.log(this.similaragetypePatientList);
+              if (this.similaragetypePatientList.length != 0) {
+                const formsubmitdialogref = this.matDialog.open(
+                  RegistrationDialogueComponent,
+                  {
+                    width: "30vw",
 
-      
-      formsubmitdialogref.afterClosed().pipe(takeUntil(this._destroying$))
+                    data: {
+                      message1:
+                        "Similar sound patient detail exists. Please validate",
+                      message2: "",
+                      btn1: true,
+                      btn2: true,
+                      bt1Msg: "Ok",
+                      bt2Msg: "Cancel",
+                    },
+                  }
+                );
+
+                formsubmitdialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result == "Success") {
+                      const similarSoundDialogref = this.matDialog.open(
+                        SimilarPatientDialog,
+                        {
+                          width: "60vw",
+                          height: "80vh",
+                          data: {
+                            searchResults: this.similaragetypePatientList,
+                          },
+                        }
+                      );
+                      similarSoundDialogref
+                        .afterClosed()
+                        .pipe(takeUntil(this._destroying$))
                         .subscribe((result) => {
-                          if(result == "Success"){
-                            const similarSoundDialogref = this.matDialog.open(
-                              SimilarPatientDialog,
-                              {
-                                width: "60vw",
-                                height: "80vh",
-                                data: {
-                                  searchResults: this.similaragetypePatientList,
-                                },
-                              }
-                            );
-                            similarSoundDialogref
-                              .afterClosed()
-                              .pipe(takeUntil(this._destroying$))
-                              .subscribe((result) => {
-                                if (result) {
-                                  console.log(result.data["added"][0].maxid);
-                                  let maxID = result.data["added"][0].maxid;
-                                  this.OPRegForm.controls["maxid"].setValue(maxID);
-                                  this.getPatientDetailsByMaxId();
-                                }
-                                console.log("agetype dialog was closed");
-                                this.similaragetypePatientList = [];
-                              });
-                          }else{                            
-                            this.questions[11].elementRef.focus();
+                          if (result) {
+                            console.log(result.data["added"][0].maxid);
+                            let maxID = result.data["added"][0].maxid;
+                            this.OPRegForm.controls["maxid"].setValue(maxID);
+                            this.getPatientDetailsByMaxId();
                           }
+                          console.log("agetype dialog was closed");
+                          this.similaragetypePatientList = [];
                         });
-                  } else {
-                    console.log("no data found");
-                  }               
-              },
-              (error) => {
-                console.log(error);
-                this.messageDialogService.info(error.error);
+                    } else {
+                      this.questions[11].elementRef.focus();
+                    }
+                  });
+              } else {
+                console.log("no data found");
               }
-            );
-        }
-      }    
+            },
+            (error) => {
+              console.log(error);
+              this.messageDialogService.info(error.error);
+            }
+          );
+      }
+    }
   }
   validatePatientAge() {
     //need to implement logic for patient who has age < 18 years but DOB not provided.
