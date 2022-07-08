@@ -1,1 +1,127 @@
-sd
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+    <!-- <nav mat-tab-nav-bar class="banner">
+        <ul class="list-unstyled flex items-end">
+            <li class="ml-3">
+                <a class="ml-3" mat-tab-link [active]="true">Investigation Orders</a>
+            </li>
+        </ul>
+    </nav> -->
+
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+        <ul class="list-unstyled flex items-end w-full">
+          <li class="ml-3" *ngFor="let link of link1">
+            <a
+              mat-tab-link
+              class="cursor-pointer"
+              [active]="activeLink1 == link ? true : false"
+              (click)="showmain(link)"
+            >
+              {{ link }}</a
+            >
+          </li>
+         
+        </ul>
+      </nav>
+
+    <mat-tab-nav-panel #tabPanel>
+        <div class="h-full">
+            <div class="flex h-2/10 m-2 bg-row p-1">
+                <div class="w-3/4">
+                    <form [formGroup]="investigationForm">
+                        <div class="firstrow max-health-primary-color">
+                            <div class="flex w-4/5 pt-3 pb-2">
+                                <div class="flex dateclass align-items-center border-radius-lg p-1 mr-12">
+                                    <div class="flex">
+                                        <div class="ml-2">
+                                            <mat-label>From Date</mat-label>
+                                        </div>
+                                        <div class="ml-3 w-3/5 bg-white">
+                                            <maxhealth-question [question]="questions[0]" [form]="investigationForm"
+                                                [questions]="questions[0]" [index]="0">
+                                            </maxhealth-question>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div>
+                                            <mat-label>To Date</mat-label>
+                                        </div>
+                                        <div class="ml-3 w-3/5 bg-white">
+                                            <maxhealth-question [question]="questions[1]" [form]="investigationForm"
+                                                [questions]="questions[1]" [index]="1">
+                                            </maxhealth-question>
+                                        </div>
+                                    </div>
+                                </div>                               
+                                <div class="ml-3 bg-white">
+                                    <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                        [questions]="questions[2]" [index]="2">
+                                    </maxhealth-question>
+                                </div>                               
+                                <div class="ml-3 w-1/15 bg-white ">
+                                    <maxhealth-question [question]="questions[3]" [form]="investigationForm"
+                                        [questions]="questions[3]" [index]="3">
+                                    </maxhealth-question>
+
+                                </div>
+                                <div class="ml-3 text-wrap">
+                                    <mat-label> Order Status</mat-label>
+                                </div>
+                                <div class="ml-3 w-1/15 bg-white ">
+                                    <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                        [questions]="questions[2]" [index]="2">
+                                    </maxhealth-question>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="w-1/4 flex float-right">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+                            <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
+                                <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4"
+                                    transform="translate(-12883 23266)" fill="#fff" />
+                                <g id="Group_1383" data-name="Group 1383" transform="translate(-14630.995 22990.941)">
+                                    <path id="Path_296" data-name="Path 296"
+                                        d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
+                                        transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58" />
+                                    <path id="Path_297" data-name="Path 297"
+                                        d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
+                                        transform="translate(1754.018 279.288)" fill="#002b58" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" class="float-right">Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="h-1/2">
+                <div class="pl-3 pt-3 employeeclass font-bold font-base">
+                    <mat-label>Order List</mat-label>
+                </div>
+                <div class="h-1/2 mt-2">
+                    <maxhealth-table [config]="config1" [data]="data"></maxhealth-table>
+                </div>
+                <div class="pl-3 pt-3 employeeclass font-bold font-base">
+                    <mat-label>Order Details</mat-label>
+                </div>
+                <div class="h-1/2 mt-2" *ngIf="isShowInvestigation">
+                    <maxhealth-table [config]="config2" [data]="data1"></maxhealth-table>
+                </div>
+                 <!-- Medical orders -->
+                <div class="h-1/2 mt-2" *ngIf="isShowMedical">
+                    <maxhealth-table [config]="config3" [data]="data2"></maxhealth-table>
+                </div>
+                <div class="float-right mt-2 mr-3">
+                    <button mat-raised-button color="primary">Clear</button>
+                </div>
+            </div>
+           
+            
+        </div>
+    </mat-tab-nav-panel>
+</section>

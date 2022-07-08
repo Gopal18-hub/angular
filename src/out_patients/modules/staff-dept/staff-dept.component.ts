@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
-import { CookieService } from'../../../shared/services/cookie.service';
-import { DatePipe } from '@angular/common';
 import { __values } from 'tslib';
 
 @Component({
@@ -13,7 +10,7 @@ import { __values } from 'tslib';
 })
 export class StaffDeptComponent implements OnInit {
   orgList=["id","1","name","Max HealthCare"]
-  investigatorformData={
+  staffFormData={
     title: "",
     type: "object",
     properties:{
@@ -126,18 +123,19 @@ export class StaffDeptComponent implements OnInit {
      
     ]
 
-  constructor(private dialog:MatDialog,
-    private formService: QuestionControlService,
-    private cookie: CookieService) { }
+  constructor(private formService: QuestionControlService) { }
 
   ngOnInit(): void {
-
     let formResult: any = this.formService.createForm(
-      this.investigatorformData.properties,
+      this.staffFormData.properties,
       {}
     );
     this.staffForm = formResult.form;
     this.questions = formResult.questions;
+  }
+  showmain(link:any)
+  {
+    
   }
 
 }
