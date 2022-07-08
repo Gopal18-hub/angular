@@ -993,6 +993,7 @@ export class OpRegistrationComponent implements OnInit {
               this.OPRegForm.controls["title"].setValue(0);
             }
           }
+          this.onGenderModify();
         }
       });
   }
