@@ -58,7 +58,7 @@ export namespace BillingForm {
         maximum: new Date(),
       },
       demandbankname: {
-        type: "autocomplete",
+        type: "string",
       },
       demandbranch: {
         type: "string",
