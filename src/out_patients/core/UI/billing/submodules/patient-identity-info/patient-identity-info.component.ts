@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
-
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { FormSixtyComponent } from "../form60/form-sixty.component";
 @Component({
   selector: "patient-identity-info",
   templateUrl: "./patient-identity-info.component.html",
@@ -50,5 +50,21 @@ export class PatientIdentityInfoComponent implements OnInit {
     );
     this.patientidentityform = formResult.form;
     this.questions = formResult.questions;
+  }
+
+  ngAfterViewInit(): void {
+    this.patientidentityform.controls["mainradio"].valueChanges.subscribe(
+      (value: any) => {
+        if (value == "form60") {
+          this.matdialog.open(FormSixtyComponent, {
+            width: "50vw",
+            height: "98vh",
+          });
+          this.patientidentityform.controls["panno"].disable();
+        } else {
+          this.patientidentityform.controls["panno"].enable();
+        }
+      }
+    );
   }
 }
