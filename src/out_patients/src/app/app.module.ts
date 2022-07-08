@@ -8,10 +8,8 @@ import { HeaderModule } from "../../../shared/modules/header";
 import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { PatientHistoryModule } from "@modules/patient-history";
-import { AcdModule } from "@modules/acd";
-import { StaffDeptModule } from "@modules/staff-dept";
-
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
+import { QmsModule } from "@modules/qms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
@@ -38,9 +36,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
     EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
     PatientHistoryModule,
-    AcdModule,
-    StaffDeptModule
-  
+    QmsModule
   ],
   providers: [
     DatePipe,
