@@ -2790,7 +2790,7 @@ export class OpRegistrationComponent implements OnInit {
 
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
-    if (!this.MaxIDExist) {
+    // if (!this.MaxIDExist) {
       if (this.OPRegForm.value.dob == "") {
         this.OPRegForm.value.age = null;
         this.OPRegForm.controls["ageType"].setValue(null);
@@ -2805,7 +2805,7 @@ export class OpRegistrationComponent implements OnInit {
       if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
         this.dateNotValid = true;
         this.OPRegForm.value.age = null;
-        this.OPRegForm.controls["ageType"].setValue(null);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
         let element: HTMLElement = document.getElementById(
           "saveform"
         ) as HTMLElement;
@@ -2834,7 +2834,7 @@ export class OpRegistrationComponent implements OnInit {
                   Math.floor(this.timeDiff)
                 );
                 this.OPRegForm.controls["ageType"].setValue(
-                  this.ageTypeList[1].id
+                  this.ageTypeList[0].id
                 );
                 console.log(this.ageTypeList[0].name);
               }
@@ -2843,7 +2843,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[4].id
+                this.ageTypeList[3].id
               );
               console.log(this.ageTypeList[3].name);
             }
@@ -2870,7 +2870,7 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(this.timeDiff)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[5].id
+                this.ageTypeList[4].id
               );
               console.log(this.ageTypeList[4].name);
             }
@@ -2880,7 +2880,7 @@ export class OpRegistrationComponent implements OnInit {
           console.log(this.OPRegForm.controls["ageType"].value);
         }
       }
-    }
+    // }
   }
   similaragetypePatientList: SimilarSoundPatientResponse[] = [];
   getSimilarpatientlistonagetype(){
