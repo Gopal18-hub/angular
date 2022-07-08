@@ -3,50 +3,25 @@
     <div class="h-1/10 w-full flex justify-end">
          <span class="material-icons cursor-pointer" mat-dialog-close>close</span>
     </div>
+    
     <!--------------------------------------SECOND ROW------------------------------------------------------>
     <div class="h-2/10 w-full pt-1  mt-1 flex align-items-center bg-lightblue">
         <p class="font-medium font-white">Deposit Receipt</p>
     </div>
+
     <!------------------------------------------THIRD ROW---------------------------------------------------->
-    <!-- <div class="h-1/10 mt-3 w-full" >
-        <div class="w-1/2 float-left" >
-            <div class="float-left flex">
-                <mat-label class="max-health-primary-color">Service Type</mat-label>
-                <div class="ml-4">
-                    <maxhealth-question
-                    [question]="questions[0]"
-                    [form]="depositForm"
-                    [questions]="questions[0]"
-                    [index]="0"
-                    ></maxhealth-question>
-                </div>
-            </div>
-        </div>
-        <div class="w-1/2 float-right" >
-            <div class="float-right flex">
-                <mat-label class="max-health-primary-color">Deposit Head</mat-label>
-                <div class="ml-4">
-                <maxhealth-question
-                [question]="questions[1]"
-                [form]="depositForm"
-                [questions]="questions[1]"
-                [index]="1"
-                ></maxhealth-question>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <max-service-deposit (eventemitter)="getServiceDepositform($event)">
         
     </max-service-deposit>
+
     <!---------------------------------------------FOURTH ROW---------------------------------------------------------->
     <div class=" w-full h-60">
         <!-------------------------------------------mat tab will appear-------------------------------------------->
-        <payment-methods (paymentform)="getpaymentForm($event)" [fromrefund]="onDepositpage"></payment-methods>
+        <payment-methods (paymentform)="getpaymentForm($event)" [config]="config"></payment-methods>
         <!--------------------------------------------remarks -------------------------------------------->
-        <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right" >
+        <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right border-radius-md" >
             <mat-label  class="ml-4 text-white">Remarks</mat-label>
-            <div class="h-90 border-radius-lg bg-white border-none">
+            <div class="h-90 border-radius-lg bg-white border-none textarea-length">
                 <maxhealth-question
                 [question]="questions[49]"
                 [form]="depositForm"
@@ -58,65 +33,13 @@
     </div>
 
     <!-----------------------------------------------FIFTH ROW------------------------------------------------------------------>
-    <div class="h-1/10 mt-4 p-3 bg-lightgray" >
-        <div class="flex p-1">
-            <div class="w-1/2 bg-gray float-left flex align-items-center border-radius-md ">
-                <div class="flex  ml-3" >
-                    <mat-label class="max-health-primary-color">Mobile No</mat-label>
-                <div class="ml-4 w-1/4">
-                    <maxhealth-question
-                    [question]="questions[50]"
-                    [form]="depositForm"
-                    [questions]="questions[50]"
-                    [index]="50"
-                    ></maxhealth-question>
-                    </div>
-                <mat-label class="max-health-primary-color ml-3">Email ID</mat-label>
-                <div class="ml-4 w-1/4 ml-3">
-                    <maxhealth-question
-                    [question]="questions[51]"
-                    [form]="depositForm"
-                    [questions]="questions[51]"
-                    [index]="51"
-                    ></maxhealth-question>
-                    </div>
-                </div>  
-            </div>
-            <div class="w-1/10">
-                
-            </div>
-            <div class="w-1/2 bg-gray p-1 float-right border-radius-md">
-                <div class="flex align-items-center ">
-                    <div class="ml-4 w-1/2  max-health-primary-color">
-                        <maxhealth-question
-                        [question]="questions[52]"
-                        [form]="depositForm"
-                        [questions]="questions[52]"
-                        [index]="52"
-                        ></maxhealth-question>
-                   </div>
-                   <div class="ml-2 w-1/2  max-health-primary-color">
-                    <maxhealth-question
-                    [question]="questions[53]"
-                    [form]="depositForm"
-                    [questions]="questions[53]"
-                    [index]="53"
-                    ></maxhealth-question>
-               </div>
-                </div>
-                
-            </div>
-           
-            
-        </div>
-    </div>
+    <patient-identity-info></patient-identity-info>
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
     <div class="h-1/10 mt-1 float-right">
-        <button mat-raised-button color="primary">Submit</button>
+        <button mat-raised-button color="primary" (click)="openSuccessdeposit()">Submit</button>
         <button mat-raised-button color="primary" class="ml-6">Print Receipt</button>
         <button mat-raised-button color="primary"  class="ml-6">Clear</button>
-
     </div>
 </div>
 
