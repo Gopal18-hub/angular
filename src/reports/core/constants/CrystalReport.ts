@@ -44,4 +44,57 @@ export namespace CrystalReport {
   export const OnlinePaymentDetailReport = (params: any) => {
     return environment.ReportsSampleUrl + `/MIS/OnlinePaymentDetailReport`;
   };
+
+  export const CreateOPVisitSlipReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/CreateOPVisitSlip`;
+  };
+  export const ConsumabaleEntryDetailsReport = (params: any) => {
+    return (
+      environment.ReportsSampleUrl +
+      `/Billing/OTBilling/ConsumabaleEntryDetails`
+    );
+  };
+  export const GeneralOPDReport = (params: any) => {
+    return environment.ReportsSampleUrl + `  /Out_Patient/GeneralOPDReport`;
+  };
+  export const HappyFamilyPlanAllocationReport = (params: any) => {
+    return (
+      environment.ReportsSampleUrl + `/Out_Patient/HappyFamilyPlanAllocation`
+    );
+  };
+  export const HappyFamilyPlanUtilizationReport = (params: any) => {
+    return (
+      environment.ReportsSampleUrl +
+      `/Out_Patient/HappyFamilyPlanUtilizationReport`
+    );
+  };
+  export const VisitingOTBillingReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/Billing/VisitingOTBilling`;
+  };
+
+  export const PlanLedgerReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/Marketing/PlanLedger`;
+  };
+  export const PlanSummaryReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/Marketing/PlanSummary`;
+  };
+  export const DoctorSheduleReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/FrontOfficeReports/DoctorShedule`;
+  };
+
+  export const CRPExpiredPatientDetailReport = (params: any) => {
+    return (
+      environment.ReportsSampleUrl +
+      `/FrontOfficeReports/CRPExpiredPatientDetail`
+    );
+  };
+  export const CROPItemPriceModifiedReport = (params: any) => {
+    return environment.ReportsSampleUrl + `/MIS/CROPItemPriceModified`;
+  };
+  export const OpenScrollReportReports = (params: any) => {
+    return environment.ReportsSampleUrl + `/MIS/OpenScrollReport`;
+  };
+  export const ServiceTaxReportDataReports = (params: any) => {
+    return environment.ReportsSampleUrl + `/MIS/ServiceTaxReportData`;
+  };
 }
