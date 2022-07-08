@@ -224,6 +224,7 @@ export class PaymentModeComponent implements OnInit {
     },
   };
   questions: any;
+  OPBillingtab:boolean=true;
 
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {
