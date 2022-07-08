@@ -20,3 +20,12 @@
 .wt-nowrap{
     white-space: nowrap;
 }
+.clr-primary{
+    color: #004084;
+}
+::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}

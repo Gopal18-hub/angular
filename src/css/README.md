@@ -316,6 +316,7 @@ or
 - `.h-full` -> `height: 100%`
 - `.h-screen` -> `height: 100vh`
 - `.h-auto` -> `height: auto`
+- `.h-9/10`-> `height: 90%`
 
 or
 
