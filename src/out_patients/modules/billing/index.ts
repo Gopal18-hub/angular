@@ -43,6 +43,7 @@ import { MakedepositDialogComponent } from "./submodules/deposit/makedeposit-dia
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
 import { DepositSuccessComponent } from './submodules/deposit/deposit-success/deposit-success.component';
 import { OprefundApprovalComponent } from './submodules/oprefund-approval/oprefund-approval.component';
+import { DmgDialogComponent } from './submodules/dmg-mapping/dmg-dialog/dmg-dialog.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -69,6 +70,7 @@ import { OprefundApprovalComponent } from './submodules/oprefund-approval/oprefu
     PatientIdentityInfoComponent,
     DepositSuccessComponent,
     OprefundApprovalComponent,
+    DmgDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
