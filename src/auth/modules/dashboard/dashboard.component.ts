@@ -9,6 +9,7 @@ import { DatePipe } from "@angular/common";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { LookupService } from "../../../out_patients/core/services/lookup.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -136,7 +137,8 @@ export class DashboardComponent implements OnInit {
     private patientServie: PatientService,
     private searchService: SearchService,
     private datepipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private lookupService: LookupService
   ) {}
 
   ngOnInit(): void {
@@ -168,10 +170,10 @@ export class DashboardComponent implements OnInit {
       });
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
-      .subscribe((formdata: any) => {
+      .subscribe(async (formdata: any) => {
         this.apiProcessing = false;
         console.log(formdata);
-        this.searchPatient(formdata.data);
+        await this.loadGrid(formdata);
       });
   }
 
@@ -180,160 +182,42 @@ export class DashboardComponent implements OnInit {
     this._destroying$.complete();
   }
 
+  async loadGrid(formdata: any): Promise<any> {
+    this.apiProcessing = false;
+    this.defaultUI = false;
+    const lookupdata = await this.lookupService.searchPatient(formdata);
+    if (lookupdata == null || lookupdata == undefined) {
+      this.patientList = [];
+      this.defaultUI = true;
+      this.showspinner = false;
+      this.findpatientmessage = "No records found";
+      this.findpatientimage = "norecordfound";
+    } else {
+      const resultData = lookupdata.map((item: any) => {
+        item.fullname = item.firstName + " " + item.lastName;
+        item.notereason = item.noteReason;
+        return item;
+      });
+      this.patientList = resultData;
+      this.patientList = this.patientServie.getAllCategoryIcons(
+        this.patientList
+      );
+      this.apiProcessing = true;
+      this.showspinner = false;
+      this.defaultUI = false;
+      setTimeout(() => {
+        this.table.selection.changed
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            console.log(res);
+            this.router.navigate(["registration", "op-registration"], {
+              queryParams: { maxId: res.added[0].maxid },
+            });
+          });
+      });
+    }
+  }
   getAllpatients() {
     return this.http.getExternal(ApiConstants.searchPatientDefault);
-  }
-
-  searchPatient(formdata: any) {
-    this.defaultUI = false;
-    this.showspinner = true;
-    let dateOfBirth;
-    if (
-      formdata["maxID"] != undefined &&
-      formdata["maxID"] != "" &&
-      formdata["maxID"] != null
-    ) {
-      let maxid = formdata["maxID"].split(".")[1];
-      if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
-        this.maxId = "";
-      } else {
-        this.maxId = formdata["maxID"];
-      }
-    } else {
-      this.maxId = "";
-    }
-
-    if (
-      formdata["dob"] != undefined &&
-      formdata["dob"] != null &&
-      formdata["dob"] != ""
-    ) {
-      dateOfBirth = this.datepipe.transform(formdata["dob"], "dd/MM/yyyy");
-    } else {
-      dateOfBirth = "";
-    }
-    if (
-      (formdata["name"] == "" ||
-        formdata["name"] == undefined ||
-        formdata["name"] == null) &&
-      (formdata["phone"] == "" ||
-        formdata["phone"] == undefined ||
-        formdata["phone"] == null) &&
-      dateOfBirth == "" &&
-      this.maxId == "" &&
-      (formdata["healthID"] == "" ||
-        formdata["healthID"] == undefined ||
-        formdata["healthID"] == null) &&
-      (formdata["adhaar"] == "" ||
-        formdata["adhaar"] == undefined ||
-        formdata["adhaar"] == null)
-    ) {
-      this.getAllpatients()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            this.patientList = resultData;
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              item.notereason = item.noteReason;
-              return item;
-            });
-            this.apiProcessing = true;
-            this.defaultUI = false;
-            setTimeout(() => {
-              this.table.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-            console.log(this.patientList);
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    } else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] != "" &&
-      this.maxId == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      this.patientList = [];
-      this.showspinner = false;
-      this.defaultUI = true;
-      this.findpatientimage = "placeholder";
-      this.findpatientmessage =
-        "Please enter Name / Phone in combination with DOB as search criteria";
-    } else {
-      this.name = formdata["name"];
-      this.mobile = formdata["phone"];
-      this.dob = dateOfBirth || "";
-      this.aadhaarId = formdata["adhaar"];
-      this.healthId = formdata["healthID"];
-      this.getAllpatientsBySearch()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            this.patientList = [];
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
-            this.patientList = resultData;
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-
-            this.apiProcessing = true;
-            setTimeout(() => {
-              this.table.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-            console.log(this.patientList);
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.showspinner = false;
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    }
-  }
-  getAllpatientsBySearch() {
-    return this.http.get(
-      ApiConstants.searchPatientApi(
-        this.maxId,
-        "",
-        this.name,
-        this.mobile,
-        this.dob,
-        this.aadhaarId,
-        this.healthId
-      )
-    );
   }
 }
