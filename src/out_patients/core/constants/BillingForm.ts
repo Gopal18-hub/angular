@@ -256,4 +256,21 @@ export namespace BillingForm {
       },
     },
   };
+
+  //service deposit form data
+  export const servicedepositFormData = {
+    type: "object",
+
+    title: "",
+
+    properties: {
+      servicetype: {
+        type: "autocomplete",
+      },
+
+      deposithead: {
+        type: "autocomplete",
+      },
+    },
+  };
 }
