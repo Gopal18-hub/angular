@@ -23,7 +23,7 @@
                             [form]="expiredpatientForm"
                             [questions]="questions[0]"
                             [index]="0"
-                            (onChange)="onMaxidEnter()">
+                            >
                             </maxhealth-question>
                         </div>
                         <div class="ml-3 max-health-primary-color">
@@ -42,19 +42,8 @@
                 </form>
             </div>
             <div class="w-1/4 h-full ml-6 flex float-right">
-               <!-- <div >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
-                        <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                        <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4" transform="translate(-12883 23266)" fill="#fff"/>
-                        <g id="Group_1383" data-name="Group 1383" transform="translate(-14630.995 22990.941)">
-                            <path id="Path_296" data-name="Path 296" d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z" transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58"/>
-                            <path id="Path_297" data-name="Path 297" d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z" transform="translate(1754.018 279.288)" fill="#002b58"/>
-                        </g>
-                        </g>
-                    </svg>
-                </div> -->
                 <div>          
-                    <button mat-raised-button  color="primary"  class="float-right btn">
+                    <button mat-raised-button  color="primary"  class="float-right btn" (click)="onMaxidSearch()">
                         <div >
                             <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
                                 <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
@@ -71,29 +60,29 @@
         </div>
         <!----------------------------------------SECOND ROW--------------------------------------------------------------->
         <div class=" flex h-2/10 m-2 p-3 bg-row">
-        <div class="w-1/15 max-health-primary-color">
-            <mat-label>Name:</mat-label>
-            <span></span>
+        <div class="w-1/15">
+            <mat-label class="max-health-primary-color">Name:</mat-label>
+            <span class="ml-1">{{name}}</span>
         </div>
-        <div class="w-1/10 max-health-primary-color">
-            <mat-label>Age:</mat-label>
-            <span></span>
+        <div class="w-1/10">
+            <mat-label class="max-health-primary-color">Age:</mat-label>
+            <span class="ml-1">{{age}}</span>
         </div>
-        <div class="w-1/15 max-health-primary-color">
-            <mat-label>Gender:</mat-label>
-            <span></span>
+        <div class="w-1/15">
+            <mat-label class="max-health-primary-color">Gender:</mat-label>
+            <span class="ml-1">{{gender}}</span>
         </div>
-        <div class="w-1/15 max-health-primary-color">
-            <mat-label>DOB:</mat-label>
-            <span></span>
+        <div class="w-1/15">
+            <mat-label class="max-health-primary-color">DOB:</mat-label>
+            <span class="ml-1">{{dob}}</span>
         </div>
-        <div class="w-1/15 max-health-primary-color">
-            <mat-label>Nationality:</mat-label>
-            <span></span>
+        <div class="w-1/15">
+            <mat-label class="max-health-primary-color">Nationality:</mat-label>
+            <span class="ml-1">{{nationality}}</span>
         </div>
-        <div class="w-1/15 max-health-primary-color">
-            <mat-label>SSN:</mat-label>
-            <span></span>
+        <div class="w-1/15">
+            <mat-label class="max-health-primary-color">SSN:</mat-label>
+            <span class="ml-1">{{ssn}}</span>
         </div>
         </div>
         <!-------------------------------------------THIRD ROW------------------------------------------------------------------>

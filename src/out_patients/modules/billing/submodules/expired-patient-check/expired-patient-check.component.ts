@@ -9,6 +9,8 @@ import { dateInputsHaveChanged } from "@angular/material/datepicker/datepicker-i
 import { Subject, takeUntil } from "rxjs";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { GetExpiredPatientDetailModel } from "../../../../../out_patients/core/models/getexpiredpatientdetailModel.Model";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "out-patients-expired-patient-check",
@@ -34,7 +36,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
           },
         ],
       },
-      dateInput: {
+      expiryDate: {
         type: "date",
       },
       remarks: {
@@ -43,6 +45,13 @@ export class ExpiredPatientCheckComponent implements OnInit {
     },
   };
 
+  name!: string;
+  age!: number;
+  gender!: string;
+  dob!: any;
+  nationality!: string;
+  ssn!: string;
+  expiredPatientDetail!: GetExpiredPatientDetailModel[];
   expiredpatientForm!: FormGroup;
   questions: any;
   disableButton: boolean = true;
@@ -53,7 +62,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
     private formService: QuestionControlService,
     private messagedialogservice: MessageDialogService,
     private dialog: MatDialog,
-    private http: HttpService
+    private http: HttpService,
+    private datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +73,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
     );
     this.expiredpatientForm = formResult.form;
     this.questions = formResult.questions;
-    this.expiredpatientForm.controls["dateInput"].setValue(this.todayDate);
+    this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
   }
 
   ngOnDestroy(): void {
@@ -74,38 +84,57 @@ export class ExpiredPatientCheckComponent implements OnInit {
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
         // Cancel the default action, if needed
-
         event.preventDefault();
-
-        this.onMaxidEnter();
+        this.onMaxidSearch();
       }
     });
   }
 
-  onMaxidEnter() {
+  onMaxidSearch() {
     console.log("inside on maxidenter");
     console.log(this.expiredpatientForm.value.maxid);
     let regnumber = Number(this.expiredpatientForm.value.maxid.split(".")[1]);
     let iacode = this.expiredpatientForm.value.maxid.split(".")[0];
+    console.log(regnumber);
+    console.log(iacode);
     this.http
-      .get(ApiConstants.expiredpatientdetail)
-      .pipe(takeUntil(this._destroying$))
+      .get(ApiConstants.expiredpatientdetail(regnumber, iacode))
       .subscribe((data) => {
         console.log(data);
+        this.expiredPatientDetail = data;
+        if (this.expiredPatientDetail.length != 0) {
+          console.log(this.expiredPatientDetail);
+          console.log(
+            this.datepipe.transform(
+              this.expiredPatientDetail[0].dateofBirth,
+              "dd/MM/yyyy"
+            )
+          );
+          this.dob = this.datepipe.transform(
+            this.expiredPatientDetail[0].dateofBirth,
+            "dd/MM/yyyy"
+          );
+          this.ssn = this.expiredPatientDetail[0].ssn;
+          this.expiredpatientForm.controls["expiryDate"].setValue(
+            this.expiredPatientDetail[0].expiryDate
+          );
+          this.expiredpatientForm.controls["remarks"].setValue(
+            this.expiredPatientDetail[0].remarks
+          );
+          this.disableButton = false;
+        } else {
+          this.clearValues();
+        }
       });
+  }
 
-    // if (
-    //   this.expiredpatientForm.value.maxid != null ||
-    //   this.expiredpatientForm.value.maxid != undefined
-    // ) {
-    //   console.log("inside if maxid method");
-    //   this.disableButton = false;
-    // } else {
-    //   this.disableButton = true;
-    // }
+  clearValues() {
+    this.ssn = "";
+    this.dob = null;
+    this.expiredpatientForm.reset();
+    this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
   }
 
   saveExpiredpatient() {
@@ -126,9 +155,16 @@ export class ExpiredPatientCheckComponent implements OnInit {
   }
 
   deleteExpiredpatient() {
-    this.dialog.open(DeleteexpiredpatientDialogComponent, {
+    let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
       width: "25vw",
       height: "30vh",
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log("The dialog was closed");
+      console.log(result);
+      if (result == true) {
+      }
     });
   }
 }
