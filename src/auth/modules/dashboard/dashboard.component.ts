@@ -193,28 +193,41 @@ export class DashboardComponent implements OnInit {
       this.findpatientmessage = "No records found";
       this.findpatientimage = "norecordfound";
     } else {
-      const resultData = lookupdata.map((item: any) => {
-        item.fullname = item.firstName + " " + item.lastName;
-        item.notereason = item.noteReason;
-        return item;
-      });
-      this.patientList = resultData;
-      this.patientList = this.patientServie.getAllCategoryIcons(
-        this.patientList
-      );
-      this.apiProcessing = true;
-      this.showspinner = false;
-      this.defaultUI = false;
-      setTimeout(() => {
-        this.table.selection.changed
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((res: any) => {
-            console.log(res);
-            this.router.navigate(["registration", "op-registration"], {
-              queryParams: { maxId: res.added[0].maxid },
+      if (
+        !formdata.data["name"] &&
+        !formdata.data["phone"] &&
+        formdata.data["dob"]
+      ) {
+        this.patientList = [];
+        this.defaultUI = true;
+        this.showspinner = false;
+        this.findpatientmessage =
+          "Please enter Name / Phone in combination with DOB as search criteria";
+        this.findpatientimage = "placeholder";
+      } else {
+        const resultData = lookupdata.map((item: any) => {
+          item.fullname = item.firstName + " " + item.lastName;
+          item.notereason = item.noteReason;
+          return item;
+        });
+        this.patientList = resultData;
+        this.patientList = this.patientServie.getAllCategoryIcons(
+          this.patientList
+        );
+        this.apiProcessing = true;
+        this.showspinner = false;
+        this.defaultUI = false;
+        setTimeout(() => {
+          this.table.selection.changed
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              console.log(res);
+              this.router.navigate(["registration", "op-registration"], {
+                queryParams: { maxId: res.added[0].maxid },
+              });
             });
-          });
-      });
+        });
+      }
     }
   }
   getAllpatients() {
