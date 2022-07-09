@@ -34,37 +34,43 @@ export class LookupService {
         return resultData[0];
       }
     } else {
-      let maxid = 0;
-      if (formdata.data["maxID"]) {
-        maxid = Number(formdata.data["maxID"].split(".")[1]);
-      }
-      if (maxid <= 0 && maxid == undefined && maxid == null) {
-        formdata["maxID"] = "";
-      }
-      this.http
-        .get(
-          ApiConstants.searchPatientApi(
-            formdata.data["maxID"],
-            "",
-            formdata.data["name"],
-            formdata.data["phone"],
-            formdata.data["dob"],
-            formdata.data["adhaar"],
-            formdata.data["healthID"]
-          )
-        )
-        .subscribe(
-          (resultData) => {
-            this.router.navigate(["registration", "find-patient"], {
-              queryParams: formdata.data,
-            });
-          },
-          (error) => {
-            this.router.navigate(["registration", "find-patient"], {
-              queryParams: formdata.data,
-            });
+      const searchData: any = this.removeEmpty(formdata.data);
+      if (Object.keys(searchData).length > 0) {
+        if ("maxID" in searchData) {
+          let maxid = 0;
+          if (searchData["maxID"]) {
+            maxid = Number(searchData["maxID"].split(".")[1]);
           }
+          if (!maxid) {
+            searchData["maxID"] = "";
+          }
+        }
+        let url = ApiConstants.searchPatientApi(
+          searchData["maxID"] ? searchData["maxID"] : "",
+          "",
+          searchData["name"] ? searchData["name"] : "",
+          searchData["phone"] ? searchData["phone"] : "",
+          searchData["dob"] ? searchData["dob"] : "",
+          searchData["adhaar"] ? searchData["adhaar"] : "",
+          searchData["healthID"] ? searchData["healthID"] : ""
         );
+        const resultData = await this.http.get(url).toPromise();
+        if (resultData.length > 1) {
+          this.router.navigate([this.routes[this.router.url]], {
+            queryParams: formdata.data,
+          });
+        } else {
+          return resultData[0];
+        }
+      } else {
+        this.router.navigate([this.routes[this.router.url]], {
+          queryParams: formdata.data,
+        });
+      }
     }
+  }
+
+  removeEmpty(obj: any) {
+    return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v));
   }
 }
