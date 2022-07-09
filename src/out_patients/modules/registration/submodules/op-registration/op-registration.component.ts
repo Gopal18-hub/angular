@@ -541,12 +541,10 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
         console.log(formdata);
-        let lookupdata = await this.lookupService.searchPatient(formdata.data);
-        if (lookupdata != undefined && lookupdata != null) {
-          if (lookupdata["maxId"]) {
-            this.OPRegForm.value.maxid = lookupdata["maxId"];
-            this.getPatientDetailsByMaxId();
-          }
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        if (lookupdata && "maxid" in lookupdata) {
+          this.OPRegForm.value.maxid = lookupdata["maxid"];
+          this.getPatientDetailsByMaxId();
         }
       });
 

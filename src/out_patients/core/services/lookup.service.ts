@@ -11,7 +11,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class LookupService {
   routes: any = {
-    "registration/op-registration": "registration/find-patient",
+    "/registration/op-registration": "/registration/find-patient",
   };
   constructor(
     private cookie: CookieService,
@@ -22,69 +22,46 @@ export class LookupService {
 
   async searchPatient(formdata: any): Promise<any> {
     let hspId = Number(this.cookie.get("HSPLocationId"));
-    if (formdata["globalSearch"] == 1) {
-      await this.http
-        .get(ApiConstants.globalSearchApi(formdata["SearchTerm"], hspId))
-        .subscribe(
-          (resultData) => {
-            if (resultData.length > 1) {
-              this.router.navigateByUrl(this.routes[this.router.url]);
-            } else {
-              return resultData[0];
-            }
-          },
-          (error) => {
-            this.messageDialogService.error(error.error);
-          }
-        );
+    if (formdata.data["globalSearch"] == 1) {
+      const resultData = await this.http
+        .get(ApiConstants.globalSearchApi(formdata.data["SearchTerm"], hspId))
+        .toPromise();
+      if (resultData.length > 1) {
+        this.router.navigate([this.routes[this.router.url]], {
+          queryParams: formdata.searchFormData,
+        });
+      } else {
+        return resultData[0];
+      }
     } else {
       let maxid = 0;
-      if (
-        formdata["maxID"] != undefined &&
-        formdata["maxID"] != null &&
-        formdata["maxID"] != ""
-      ) {
-        maxid = Number(formdata["maxID"].split(".")[1]);
+      if (formdata.data["maxID"]) {
+        maxid = Number(formdata.data["maxID"].split(".")[1]);
       }
-
       if (maxid <= 0 && maxid == undefined && maxid == null) {
         formdata["maxID"] = "";
       }
       this.http
         .get(
           ApiConstants.searchPatientApi(
-            formdata["maxID"],
+            formdata.data["maxID"],
             "",
-            formdata["name"],
-            formdata["phone"],
-            formdata["dob"],
-            formdata["adhaar"],
-            formdata["healthID"]
+            formdata.data["name"],
+            formdata.data["phone"],
+            formdata.data["dob"],
+            formdata.data["adhaar"],
+            formdata.data["healthID"]
           )
         )
         .subscribe(
           (resultData) => {
             this.router.navigate(["registration", "find-patient"], {
-              queryParams: {
-                maxID: formdata["maxID"],
-                name: formdata["name"],
-                phone: formdata["phone"],
-                dob: formdata["dob"],
-                healthID: formdata["healthID"],
-                adhaar: formdata["adhaar"],
-              },
+              queryParams: formdata.data,
             });
           },
           (error) => {
             this.router.navigate(["registration", "find-patient"], {
-              queryParams: {
-                maxID: formdata["maxID"],
-                name: formdata["name"],
-                phone: formdata["phone"],
-                dob: formdata["dob"],
-                healthID: formdata["healthID"],
-                adhaar: formdata["adhaar"],
-              },
+              queryParams: formdata.data,
             });
           }
         );
