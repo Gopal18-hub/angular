@@ -542,9 +542,11 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(async (formdata: any) => {
         console.log(formdata);
         const lookupdata = await this.lookupService.searchPatient(formdata);
-        if (lookupdata && "maxid" in lookupdata) {
-          this.OPRegForm.value.maxid = lookupdata["maxid"];
-          this.getPatientDetailsByMaxId();
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.OPRegForm.value.maxid = lookupdata[0]["maxid"];
+            this.getPatientDetailsByMaxId();
+          }
         }
       });
 

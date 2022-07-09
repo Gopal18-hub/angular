@@ -27,11 +27,15 @@ export class LookupService {
         .get(ApiConstants.globalSearchApi(formdata.data["SearchTerm"], hspId))
         .toPromise();
       if (resultData.length > 1) {
-        this.router.navigate([this.routes[this.router.url]], {
-          queryParams: formdata.searchFormData,
-        });
+        if (this.routes[this.router.url]) {
+          this.router.navigate([this.routes[this.router.url]], {
+            queryParams: formdata.searchFormData,
+          });
+        } else {
+          return resultData;
+        }
       } else {
-        return resultData[0];
+        return resultData;
       }
     } else {
       const searchData: any = this.removeEmpty(formdata.data);
@@ -56,16 +60,24 @@ export class LookupService {
         );
         const resultData = await this.http.get(url).toPromise();
         if (resultData.length > 1) {
+          if (this.routes[this.router.url]) {
+            this.router.navigate([this.routes[this.router.url]], {
+              queryParams: formdata.data,
+            });
+          } else {
+            return resultData;
+          }
+        } else {
+          return resultData;
+        }
+      } else {
+        if (this.routes[this.router.url]) {
           this.router.navigate([this.routes[this.router.url]], {
             queryParams: formdata.data,
           });
         } else {
-          return resultData[0];
+          return [];
         }
-      } else {
-        this.router.navigate([this.routes[this.router.url]], {
-          queryParams: formdata.data,
-        });
       }
     }
   }
