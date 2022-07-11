@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-oprefund-approval",
@@ -68,7 +69,10 @@ export class OprefundApprovalComponent implements OnInit {
       },
     },
   };
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private dialogservice: MessageDialogService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -95,5 +99,13 @@ export class OprefundApprovalComponent implements OnInit {
     } else {
       this.activeLink2 = link;
     }
+  }
+
+  oprefundApprove() {
+    this.dialogservice.success("Update request Approved");
+  }
+
+  oprefundReject() {
+    this.dialogservice.success("Update Rejected");
   }
 }

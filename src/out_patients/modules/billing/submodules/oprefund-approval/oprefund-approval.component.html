@@ -11,7 +11,7 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel>
-          <div class="display-block">
+          <div class="h-4/5">
             <ng-container>
                 <maxhealth-table
                 [config]="oprefundConfig"
@@ -20,6 +20,10 @@
           </div> 
         
     </mat-tab-nav-panel>
+    <div class="h-1/5 float-right m-2">
+      <button mat-raised-button color="primary"  class="mr-8" click="oprefundApprove()">Approve</button>
+      <button mat-raised-button color="primary" (click)="oprefundReject()">Reject</button>
+    </div>
 </section>
 <!-- (click)="showmain(link)"
 (click)="showgrid(link)" -->
