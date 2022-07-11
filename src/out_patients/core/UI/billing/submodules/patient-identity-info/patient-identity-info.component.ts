@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { FormSixtyComponent } from "../form60/form-sixty.component";
+import { FormSixtyComponent } from '../form60/form-sixty.component';
 @Component({
   selector: "patient-identity-info",
   templateUrl: "./patient-identity-info.component.html",
