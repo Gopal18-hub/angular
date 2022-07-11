@@ -32,7 +32,7 @@ export class LookupService {
         if (resultData.length > 1) {
           if (this.routes[this.router.url]) {
             this.router.navigate([this.routes[this.router.url]], {
-              queryParams: formdata.searchFormData,
+              queryParams: formdata.data,
             });
           } else {
             return resultData;
