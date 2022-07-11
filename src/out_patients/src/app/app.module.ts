@@ -20,7 +20,8 @@ import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
-
+import { AcdModule } from "@modules/acd";
+import { StaffDeptModule } from "@modules/staff-dept";
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +37,9 @@ import { CookieService } from "../../../shared/services/cookie.service";
     EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
     PatientHistoryModule,
-    QmsModule
+    QmsModule,
+    AcdModule,
+    StaffDeptModule
   ],
   providers: [
     DatePipe,

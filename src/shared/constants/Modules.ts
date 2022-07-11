@@ -142,8 +142,8 @@ export namespace MaxModules {
             {
               id: 218,
               title: "OP Refund Approval",
-              defaultPath: "/out-patient-billing/",
-              globalSearchKey: "global",
+              defaultPath: "/out-patient-billing/op-refund-approval",
+              globalSearchKey: "opapproval",
             },
             {
               id: 219,
@@ -175,9 +175,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "ACD",
-          defaultPath: "",
+          defaultPath: "acd",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
@@ -203,9 +203,9 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Staff Dependents",
-          defaultPath: "",
+          defaultPath: "staff-dept",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
