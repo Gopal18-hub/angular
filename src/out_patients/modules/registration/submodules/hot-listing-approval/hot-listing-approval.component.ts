@@ -22,7 +22,7 @@ import { takeUntil } from "rxjs/operators";
   styleUrls: ["./hot-listing-approval.component.scss"],
 })
 export class HotListingApprovalComponent implements OnInit {
-  link1 = [
+ link1 = [
     "OP Registration Approval",
     "Hot Listing Approval",
     "OP Refund Approval",
@@ -192,6 +192,7 @@ export class HotListingApprovalComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       hotListing_Header: {
         title: "Hotlisting Reason",
@@ -279,7 +280,6 @@ export class HotListingApprovalComponent implements OnInit {
         ? this.showgrid(this.activeLink2)
         : this.showgrid("View Pending Request");
     } else if (link == "OP Refund Approval") {
-      this.router.navigate(["out-patient-billing", "op-refund-approval"]);
     }
   }
   showgrid(link: any) {
