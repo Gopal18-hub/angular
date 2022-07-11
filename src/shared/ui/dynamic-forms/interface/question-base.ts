@@ -26,6 +26,7 @@ export class QuestionBase<T> {
   pattern: string;
   onlyKeyPressAlpha: boolean;
   allowSearchInput: boolean;
+  emptySelect: boolean;
 
   constructor(
     options: {
@@ -56,6 +57,7 @@ export class QuestionBase<T> {
       pattern?: string;
       onlyKeyPressAlpha?: boolean;
       allowSearchInput?: boolean;
+      emptySelect?: boolean;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -85,5 +87,6 @@ export class QuestionBase<T> {
     this.pattern = options.pattern || "";
     this.onlyKeyPressAlpha = options.onlyKeyPressAlpha || false;
     this.allowSearchInput = options.allowSearchInput || false;
+    this.emptySelect = options.emptySelect || false;
   }
 }
