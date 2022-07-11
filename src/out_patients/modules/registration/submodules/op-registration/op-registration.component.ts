@@ -2016,7 +2016,7 @@ export class OpRegistrationComponent implements OnInit {
       passportdetailspresent = false;
     }
 
-    if (passportdetailspresent) {
+    if (passportdetailspresent || this.isPatientdetailModified) {
       this.onUpdatePatientDetail();
 
       if (this.isPatientdetailModified || this.nationalityChanged) {
