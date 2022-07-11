@@ -386,6 +386,9 @@
             #element
             disableOptionCentering
           >
+            <ng-container *ngIf="question.emptySelect">
+              <mat-option>Select</mat-option>
+            </ng-container>
             <ng-container *ngFor="let opt of question.options">
               <mat-option [value]="opt.value" [disabled]="opt?.disabled">
                 {{ opt.title }}
