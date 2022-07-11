@@ -80,7 +80,7 @@ mat-form-field {
   font-size: 14px;
   &.mat-form-field-appearance-outline {
     .mat-form-field-outline {
-      color: rgba(0, 0, 0);
+      color: #5A5A5A;//rgba(0, 0, 0); //UAT Defect fix
     }
     .mat-form-field-wrapper {
       margin: 0 !important;
