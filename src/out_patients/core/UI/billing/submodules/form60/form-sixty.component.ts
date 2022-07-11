@@ -61,4 +61,8 @@ export class FormSixtyComponent implements OnInit {
       }
     })
   }
+  clear()
+  {
+    this.form60form.reset();
+  }
 }

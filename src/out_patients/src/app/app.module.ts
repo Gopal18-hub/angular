@@ -9,6 +9,7 @@ import { BillingModule } from "@modules/billing";
 import { RegistrationModule } from "@modules/registration";
 import { PatientHistoryModule } from "@modules/patient-history";
 import { EmployeeSponsorTaggingModule } from "@modules/employee-sponsor-tagging";
+import { QmsModule } from "@modules/qms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MaxHealthMessageDialogModule } from "../../../shared/ui/message-dialog";
 import { TokenInterceptor } from "../../../shared/services/interceptors/token.interceptor";
@@ -19,7 +20,8 @@ import { HttpService } from "../../../shared/services/http.service";
 import { MessageDialogService } from "../../../shared/ui/message-dialog/message-dialog.service";
 import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
-
+import { AcdModule } from "@modules/acd";
+import { StaffDeptModule } from "@modules/staff-dept";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,8 +36,10 @@ import { CookieService } from "../../../shared/services/cookie.service";
     //MaxHealthSnackBarModule,
     EmployeeSponsorTaggingModule,
     MaxHealthMessageDialogModule,
-    PatientHistoryModule
-  
+    PatientHistoryModule,
+    QmsModule,
+    AcdModule,
+    StaffDeptModule
   ],
   providers: [
     DatePipe,

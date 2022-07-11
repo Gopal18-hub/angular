@@ -41,6 +41,9 @@
 .bg-lightgrey{
     background-color: #D2D0D0;
 }
+.bg-btn{
+    background-color: #C8C8C8;
+}
 ::ng-deep mat-radio-group {
     flex-direction: row !important;
     justify-content: space-between;
@@ -49,6 +52,6 @@
     margin-left: 10px;
     padding-bottom: 0 !important;
 }
-::ng-deep textarea{
+::ng-deep .ta textarea{
     min-height: 120px !important;
 }

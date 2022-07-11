@@ -1,51 +1,24 @@
 <section>
+    <!-- Cross Icon -->
     <div class="flex justify-content-end">
-        <mat-icon mat-dialog-close>close</mat-icon>
+        <mat-icon mat-dialog-close class="cursor-pointer">close</mat-icon>
     </div>
+
     <!-- Blue Banner -->
     <div class="header w-full mt-1 p-2 border-radius-md secondary">
         <mat-label class="col-white">Refund Receipt</mat-label>
     </div>
 
     <!-- Service Type -->
-    <!-- <div class="flex mt-2">
-        <div class="flex">
-            <div>
-                <mat-label class="max-health-primary-color bold">Service Type:</mat-label>
-            </div>
-            <div class="w-1/5 ml-3">
-                <maxhealth-question
-                [question]="questions[0]"
-                [form]="refundform"
-                [questions]="questions[0]"
-                [index]="0"
-                ></maxhealth-question>
-            </div>
-            <div class="ml-7">
-                <mat-label class="max-health-primary-color bold">Deposit Head:</mat-label>
-            </div>
-            <div class="w-1/5 ml-3">
-                <maxhealth-question
-                [question]="questions[7]"
-                [form]="refundform"
-                [questions]="questions[7]"
-                [index]="7"
-                ></maxhealth-question>
-            </div>
-        </div>
-    </div> -->
-    <max-service-deposit
-    [refundPage]="onRefundReceiptpage">      
-    </max-service-deposit>
+    <max-service-deposit [refundPage]="onRefundReceiptpage"></max-service-deposit>
+
     <!-- Payment Methods -->
     <div class="w-full height"> 
-        <!-- <div class="w-2/3 h-full float-left maxhealth-vertical-tab">
-            <mat-label class="max-health-primary-color font-bold font-base absolute mt-3">Payment Methods</mat-label>
-            <payment-methods></payment-methods>
-        </div> -->
 
-        <payment-methods [forrefund]="forrefund" (paymentform)="paymentformevent($event)"></payment-methods>
+        <!-- payment Methods left  -->
+        <payment-methods [config]="config" (paymentform)="paymentformevent($event)"></payment-methods>
 
+        <!-- payment Methods right -->
         <div class="w-1/3 h-full float-right ">
             <div class="w-full h-full back-primary p-2 col-white">
                 <mat-label class="font-base">Refund Summary</mat-label>
@@ -70,7 +43,7 @@
                 </div>
                 <div class="mt-1">
                     <mat-label class="font-base">Remarks</mat-label>
-                    <div class="h-full bg-white border-radius-lg mt-1">
+                    <div class="h-full bg-white border-radius-lg mt-1 ta">
                         <maxhealth-question
                         [question]="questions[4]"
                         [form]="refundform"
@@ -104,7 +77,7 @@
                         <button
                             mat-raised-button
                             type="submit" 
-                            class="w-full btn">
+                            class="w-full btn bg-btn">
                             Send OTP
                         </button>
                 </div>
@@ -112,52 +85,12 @@
         </div>
     </div>
 
-
-    <div class="flex p-2 h-full bg-grey">
-        <div class="flex w-3/5 h-full bg-lightgrey">
-            <div class="mt-4 ml-2">
-                <p class="max-health-primary-color wt-nowrap">Mobile No. </p>
-            </div>
-            <div class="w-1/3 mt-3 border-radius-lg h-full ml-2 bg-white clr-primary">
-                <maxhealth-question
-                  [question]="questions[10]"
-                  [form]="refundform"
-                  [questions]="questions[10]"
-                  [index]="10"
-                ></maxhealth-question>
-            </div>
-            <div class="mt-4 ml-2">
-                <p class="max-health-primary-color wt-nowrap">Email ID. </p>
-            </div>
-            <div class="w-1/3 mt-3 border-radius-lg h-full ml-2 bg-white clr-primary">
-                <maxhealth-question
-                  [question]="questions[11]"
-                  [form]="refundform"
-                  [questions]="questions[11]"
-                  [index]="11"
-                ></maxhealth-question>
-            </div>
-        </div>
-        <div class="flex h-full w-2/5 ml-2 align-items-center" style="background-color: #D2D0D0;">
-            <div class="ml-1 mt-1 clr-primary">
-                <maxhealth-question
-                  [question]="questions[61]"
-                  [form]="refundform"
-                  [questions]="questions[61]"
-                  [index]="61"
-                ></maxhealth-question>
-            </div>
-            <div class="w-1/3 h-full border-radius-lg ml-3 bg-white">
-                <maxhealth-question
-                  [question]="questions[13]"
-                  [form]="refundform"
-                  [questions]="questions[13]"
-                  [index]="13"
-                ></maxhealth-question>
-            </div>
-        </div>
+    <!-- Footer Part -->
+    <div class="mt-2">
+        <patient-identity-info></patient-identity-info>
     </div>
-
+    
+    <!-- button -->
     <div class="flex float-right mb-5">
         <div class="mr-4">
             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Submit</button>

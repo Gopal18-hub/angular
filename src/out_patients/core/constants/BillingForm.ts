@@ -12,10 +12,11 @@ export namespace BillingForm {
             type: "number"
           },
           chequeissuedate: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           chequebankname: {
-            type: "string"
+            type: "autocomplete"
           },
           chequebranchname: {
             type: "string"
@@ -54,10 +55,11 @@ export namespace BillingForm {
             type: "string"
           },
           demandissuedate: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           demandbankname: {
-            type: "string"
+            type: "autocomplete"
           },
           demandbranch: {
             type: "string"
@@ -157,17 +159,44 @@ export namespace BillingForm {
           upiacquiring: {
             type: "string"
           },
-          mainradio: {
-            type: "radio",
-            required: false,
-            options: [
-              { title: "Form 60", value: "form60" },
-              { title: "Pan card No.", value: "pancardno" },
-            ]
+          internetmobile: {
+              type: "number"
+          },
+          internetemail: {
+              type: "string"
+          },
+          internetamount: {
+              type: "number"
+          },
+	        dueamount: {
+              type: "string"
+          },
+          dueamountauthorisedby: {
+              type: "string"
+          },
+          dueamountduebillremarks: {
+              type: "textarea"
+          },
+          chequevaliditydate:{
+            type: "date",
+            maximum: new Date(),
+          },
+          demandvaliditydate:{
+            type: "date",
+            maximum: new Date(),
+          },
+          mobilewallet:{
+            type: "dropdown"
+          },
+          mobileotp:{
+            type: "string"
+          },
+          mobileorderid:{
+            type: "string"
           }
         },
     };
-
+    
     // Form 60 Form Data
     export const form60FormData = {
         title: "",
@@ -183,7 +212,8 @@ export namespace BillingForm {
             }]
           },
           dateofapplication: {
-            type: "date"
+            type: "date",
+            maximum: new Date(),
           },
           applicationno: {
             type: "number"
@@ -222,5 +252,5 @@ export namespace BillingForm {
             type: "string"
           }
         },
-      };
+    };
 }

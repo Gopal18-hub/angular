@@ -1,0 +1,55 @@
+
+.col-black{
+    color: #000;
+}
+.col-white{
+    color: #fff;
+}
+.back-primary{
+    background-color: #004084;
+}
+.bold{
+    font-weight: bold;
+}
+.lighter{
+    font-weight: lighter;
+}
+.wt-nowrap{
+    white-space: nowrap;
+}
+.pointer{
+    cursor: pointer;
+}
+.secondary{
+    background-color: #45C0BE;
+}
+::ng-deep .mat-form-field-wrapper{
+    padding-bottom: 0 !important;
+}
+.bg-white{
+    background-color: #fff;
+    color: #000;
+}
+.clr-primary{
+    color: #004084;
+}
+.height{
+    height: 63vh;
+}
+.bg-grey{
+    background:#F6F6F6;
+}
+.bg-lightgrey{
+    background-color: #D2D0D0;
+}
+::ng-deep mat-radio-group {
+    flex-direction: row !important;
+    justify-content: space-between;
+}
+::ng-deep .mat-radio-button{
+    margin-left: 10px;
+    padding-bottom: 0 !important;
+}
+::ng-deep textarea{
+    min-height: 120px !important;
+}

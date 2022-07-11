@@ -2,7 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
-import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
+import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixty.component';
+// import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
@@ -41,7 +42,8 @@ export class RefundDialogComponent implements OnInit {
         options: [
           { title: "Yes", value: "yes" },
           { title: "No", value: "no" }
-        ]
+        ],
+        defaultValue: "yes"
       },
       deposithead: {
         type: "autocomplete",
@@ -216,7 +218,8 @@ export class RefundDialogComponent implements OnInit {
         options: [
           { title: "Form 60", value: "form60" },
           { title: "Pan card No.", value: "pancardno" },
-        ]
+        ],
+        defaultValue: "pancardno"
       }
     },
   };
@@ -225,7 +228,13 @@ export class RefundDialogComponent implements OnInit {
   onRefundReceiptpage:boolean=true;
   paymentform!: FormGroup;
   today: any;
-  forrefund:boolean = false;
+  config = {
+    paymentmethod: {
+      cash: true,
+      cheque: true
+    },
+    combopayment: false
+  }
   constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
   private matdialog: MatDialog) {
    }
@@ -256,7 +265,7 @@ export class RefundDialogComponent implements OnInit {
         this.refundform.controls["panno"].enable();
       }
     })
-    this.refundform.controls["amount"].valueChanges.subscribe(
+    this.paymentform.controls["amount"].valueChanges.subscribe(
       (res:any)=>{
       if(res > 200000)
       {

@@ -132,10 +132,6 @@ export class AuthService {
       this.router.navigate(["dashboard"]);
     }
   }
-
-  public getAccessControls() {
-    return [];
-  }
 }
 
 export function getClientSettings(): UserManagerSettings {

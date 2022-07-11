@@ -1,12 +1,9 @@
 import { environment } from "@environments/environment";
 
-
 export namespace ApiConstants {
   //PATIENT AGE RESPONSE TYPE ageTypeModel[]
   export const ageTypeLookUp =
     environment.CommonApiUrl + "api/lookup/agetypelookup/0";
-
-    
 
   //PATIENT GENDER RESPONSE TYPE genderModel[]
   export const genderLookUp =
@@ -27,32 +24,37 @@ export namespace ApiConstants {
   //PATIENT TITLE MR/MRS etc.. RESPOSE TYPE sourceOfInfoModel[] NEED TO CANCATINATE $hspLocation/0 IN ENDPOINT
   export const titleLookUp = (hspLocationid: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/titlelookup/"+`${hspLocationid}`+"/0"
+      environment.CommonApiUrl +
+      "api/lookup/titlelookup/" +
+      `${hspLocationid}` +
+      "/0"
     );
   };
-  export const hotlistMasterDataLookUp=  environment.CommonApiUrl +'api/lookup/hotlistingreasonlookup/0';
-     
-  
+  export const hotlistMasterDataLookUp =
+    environment.CommonApiUrl + "api/lookup/hotlistingreasonlookup/0";
 
   //OPERATOR WORKING STATION LOCATION, RESPOSE TYPE stationModel NEED TO CANCATINATE $hspLocation IN ENDPOINT
   export const stationLookup = (hspLocationid: number) => {
-    environment.CommonApiUrl + "api/lookup/stationlookup/0/"+`${hspLocationid}`;
+    environment.CommonApiUrl +
+      "api/lookup/stationlookup/0/" +
+      `${hspLocationid}`;
   };
 
   //PATIENT LOCALITY ON THE INPUT OF PINCODE, RESPONSE TYPE localityByPincode, NEED TO CONCATINATE PINCODE IN ENDPOINT
   export const localityLookUp = (pincode: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/getlocalityonpincode/"+`${pincode}`
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonpincode/" +
+      `${pincode}`
     );
   };
 
-   //PATIENT HCF MASTER MODEL FOR PASSPORT
-   export const hcfLookUp = (hspLocation: number) => {
+  //PATIENT HCF MASTER MODEL FOR PASSPORT
+  export const hcfLookUp = (hspLocation: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/hcflookup/"+hspLocation+"?0"
+      environment.CommonApiUrl + "api/lookup/hcflookup/" + hspLocation + "?0"
     );
   };
-  
 
   //PATIENT master LOCALITY RESPONSE TYPE localityMasterModel
   export const localityMasterData =
@@ -64,7 +66,7 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS STATE BY COUNTRY ID, RESPONSE type stateModel[]
   export const stateByCountryId = (countryId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getstate/"+`${countryId}`;
+    return environment.CommonApiUrl + "api/lookup/getstate/" + `${countryId}`;
   };
 
   //PATIENT ADDRESS STATE BY COUNTRY ID, RESPONSE type stateMasterModel
@@ -73,21 +75,20 @@ export namespace ApiConstants {
 
   //PATIENT ADDRESS CITY BY STATE ID, RESPONSE type commonCityTypeModel[]
   export const cityByStateID = (stateId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getcity/"+`${stateId}`;
+    return environment.CommonApiUrl + "api/lookup/getcity/" + `${stateId}`;
   };
 
   //PATIENT ADDRESS ocality BY City ID, RESPONSE type commonCityTypeModel[]
   export const localityBycityID = (cityId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getlocality/"+`${cityId}`;
+    return environment.CommonApiUrl + "api/lookup/getlocality/" + `${cityId}`;
   };
 
   //PATIENT ADDRESS CITY MASTER MODEL, RESPONSE type commonCityTypeModel[]
-  export const cityMasterData =
-    environment.CommonApiUrl + "api/lookup/getcity";
+  export const cityMasterData = environment.CommonApiUrl + "api/lookup/getcity";
 
   //PATIENT ADDRESS DISTRICT BY STATE ID, RESPONSE type commonDisttModel[]
   export const districtBystateID = (stateId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getdistrict/"+`${stateId}`;
+    return environment.CommonApiUrl + "api/lookup/getdistrict/" + `${stateId}`;
   };
 
   //PATIENT ADDRESS DISTRICT BY STATE ID, RESPONSE type commonDisttModel[]
@@ -98,14 +99,15 @@ export namespace ApiConstants {
   export const addressByCityID = (cityID: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getlocalitydistrictstatebycity/"+`${cityID}`
+      "api/lookup/getlocalitydistrictstatebycity/" +
+      `${cityID}`
     );
   };
 
   //PATIENT CITY DETAILS BY COUNTYID, RESPONSE type commonCityTypeModel[]
   export const CityDetail = (countryId: number) => {
     return (
-      environment.CommonApiUrl + "api/lookup/getcitybycountry/"+`${countryId}`
+      environment.CommonApiUrl + "api/lookup/getcitybycountry/" + `${countryId}`
     );
   };
 
@@ -113,7 +115,8 @@ export namespace ApiConstants {
   export const onlineserviceList = (hspLocationID: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getlistofallonlineservice/"+`${hspLocationID}`
+      "api/lookup/getlistofallonlineservice/" +
+      `${hspLocationID}`
     );
   };
 
@@ -125,7 +128,8 @@ export namespace ApiConstants {
   export const addressByLocalityID = (locationid: number) => {
     return (
       environment.CommonApiUrl +
-      "api/lookup/getcitydistrictstatecountryonlocality/"+`${locationid}`
+      "api/lookup/getcitydistrictstatecountryonlocality/" +
+      `${locationid}`
     );
   };
 
@@ -137,7 +141,10 @@ export namespace ApiConstants {
   export const patientDetails = (registrationno: number, iacode: string) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientbymaxid/"+registrationno+"/"+iacode
+      "api/patient/getpatientbymaxid/" +
+      registrationno +
+      "/" +
+      iacode
     );
   };
 
@@ -154,129 +161,261 @@ export namespace ApiConstants {
     firstName: string,
     lastname: string,
     middleName: string,
-       hotlistingcomment: string,
+    hotlistingcomment: string,
     type: string,
     userid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/patienthotlisting/"+maxId+"/"+hotlistingHeader+"/"+locationid+"?firstName="+firstName+"&middleName="+middleName+"&lastName="+lastname+"&hotlistingComment="+hotlistingcomment+"&type="+type+"&userId="+userid
+      "api/patient/patienthotlisting/" +
+      maxId +
+      "/" +
+      hotlistingHeader +
+      "/" +
+      locationid +
+      "?firstName=" +
+      firstName +
+      "&middleName=" +
+      middleName +
+      "&lastName=" +
+      lastname +
+      "&hotlistingComment=" +
+      hotlistingcomment +
+      "&type=" +
+      type +
+      "&userId=" +
+      userid
     );
   };
 
-
-  //appointment patient search 
-  export const appointmentPatientDetail = (phoneNo: string, name: string,lastname:string,datevalidation:number,fromdate:string,todate:string,bookingNo:string) => {
+  //appointment patient search
+  export const appointmentPatientDetail = (
+    phoneNo: string,
+    name: string,
+    lastname: string,
+    datevalidation: number,
+    fromdate: string,
+    todate: string,
+    bookingNo: string
+  ) => {
     return (
-      environment.PatientApiUrl +"api/patient/getappointmentpatientssearch?phone=" + phoneNo +"&fname=" +
-        name +
-        "&lname=" +lastname+
-        "" +
-        "&IsDateRange=" +
-         datevalidation+
-        "&fromDate=" +
-        fromdate +
-        "&ToDate=" +
-        todate +
-        "&SearchFrom=" +1+
-                "&BookingNo=" +
-                bookingNo);
-    }
+      environment.PatientApiUrl +
+      "api/patient/getappointmentpatientssearch?phone=" +
+      phoneNo +
+      "&fname=" +
+      name +
+      "&lname=" +
+      lastname +
+      "" +
+      "&IsDateRange=" +
+      datevalidation +
+      "&fromDate=" +
+      fromdate +
+      "&ToDate=" +
+      todate +
+      "&SearchFrom=" +
+      1 +
+      "&BookingNo=" +
+      bookingNo
+    );
+  };
 
   //FOR FETCHING THE DMS DETAILS FOR PATIENT RESPONSE TYPE PatientDMSDetailModel
   export const PatientDMSDetail = (IaCode: string, RegistrationNo: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientdmsrefresh/"+IaCode+'/'+RegistrationNo
+      "api/patient/getpatientdmsrefresh/" +
+      IaCode +
+      "/" +
+      RegistrationNo
     );
   };
 
-  //POST CALL TO UPDATE THE PATIENT DETAIL, BODY TYPE patientRegistrationModel 
+  //POST CALL TO UPDATE THE PATIENT DETAIL, BODY TYPE patientRegistrationModel
   export const updatePatientDetail =
     environment.PatientApiUrl + "api/patient/updateopdpatientdetails";
 
- //POST CALL TO MODIFY THE PATIENT DETAIL, BODY TYPE patientRegistrationModel 
+  //POST CALL TO MODIFY THE PATIENT DETAIL, BODY TYPE patientRegistrationModel
   export const modifyPatientDetail =
-  environment.PatientApiUrl + "api/patient/modifyopdpatient";
+    environment.PatientApiUrl + "api/patient/modifyopdpatient";
 
-  //POST CALL FOR THE LIST OF SIMILAR PATIENT DETAIL, BODY TYPE SimilarSoundPatientDetails 
+  //POST CALL FOR THE LIST OF SIMILAR PATIENT DETAIL, BODY TYPE SimilarSoundPatientDetails
   export const similarSoundPatientDetail =
-  environment.PatientApiUrl +"api/patient/getsimilarsoundpatient";
+    environment.PatientApiUrl + "api/patient/getsimilarsoundpatient";
 
-  //Find Patient API Call 
-  export const searchPatientApiDefault= environment.PatientApiUrl+'api/patient/getallpatientssearch';
+  //Find Patient API Call
+  export const searchPatientApiDefault =
+    environment.PatientApiUrl + "api/patient/getallpatientssearch";
 
   //PATIENT TITLE MR/MRS etc.. RESPOSE TYPE sourceOfInfoModel[] NEED TO CANCATINATE $hspLocation/0 IN ENDPOINT
-  export const searchPatientApi = (maxId?: string,
-    SSN?:string,
-    Name?:string,
-    PhoneNumber?:string,
-    DOB?:string,
-    AadhaarId?:string,
-    HealthId?:string
-    ) => {
+  export const searchPatientApi = (
+    maxId?: string,
+    SSN?: string,
+    Name?: string,
+    PhoneNumber?: string,
+    DOB?: string,
+    AadhaarId?: string,
+    HealthId?: string
+  ) => {
     return (
-      environment.PatientApiUrl + 'api/patient/getallpatientssearch?MaxId='+maxId+'&SSN='+SSN+'&Name='+Name+'&PhoneNumber='+PhoneNumber+'&DOB='+DOB+'&AadhaarId='+AadhaarId+'&HealthId='+HealthId
+      environment.PatientApiUrl +
+      "api/patient/getallpatientssearch?MaxId=" +
+      maxId +
+      "&SSN=" +
+      SSN +
+      "&Name=" +
+      Name +
+      "&PhoneNumber=" +
+      PhoneNumber +
+      "&DOB=" +
+      DOB +
+      "&AadhaarId=" +
+      AadhaarId +
+      "&HealthId=" +
+      HealthId
     );
   };
 
-  export const mergePatientApi= (ActivePatientId:number, userId:number)=>
-  {
+  export const globalSearchApi = (value: string, hspId: Number) => {
     return (
-      environment.PatientApiUrl + 'api/patient/patientmerging/'+ActivePatientId+'/'+userId
+      environment.PatientApiUrl +
+      "api/patient/getglobalsearch/" +
+      `${value}` +
+      "/" +
+      `${hspId}`
     );
   };
 
-  export const mergePatientSearchApi= (MaxId:string, SSN:string)=>
-  {
+  export const mergePatientApi = (ActivePatientId: number, userId: number) => {
     return (
-      environment.PatientApiUrl + 'api/patient/getmergepatientsearch?MaxId='+MaxId+'&SSN='+SSN
+      environment.PatientApiUrl +
+      "api/patient/patientmerging/" +
+      ActivePatientId +
+      "/" +
+      userId
     );
   };
 
-  export const unmergePatientAPi = (userId:number)=>
-  {
+  export const mergePatientSearchApi = (MaxId: string, SSN: string) => {
     return (
-      environment.PatientApiUrl + 'api/patient/patientunmerging/'+userId
+      environment.PatientApiUrl +
+      "api/patient/getmergepatientsearch?MaxId=" +
+      MaxId +
+      "&SSN=" +
+      SSN
     );
   };
 
-  export const approvalpostapproveApi =   environment.PatientApiUrl + 'api/patient/approverejectopregrequests';
-    
-  export const hotlistingpostapproveApi= (UserId:number, flag:number)=>
-  {
-    return (
-      environment.PatientApiUrl + 'api/patient/approvedrejectdeletehotlisting/'+UserId+'/'+flag
-    );
-  };
-  export const opapprovalpending = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(
-      environment.PatientApiUrl + 'api/patient/getopregistrationpendingrequests/'+fromdate+'/' + todate + '/' + hspLocationid
-    );   
-  };
-  
-  export const opapprovalaccepted = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(   environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 1
-    );   
-  };
-  export const opapprovalrejected = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(    environment.PatientApiUrl + 'api/patient/getopregapproverejectrequests/'+fromdate+'/' + todate + '/' + hspLocationid + '/' + 2
-       );   
-      };
-  export const ophotlistingpending = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(    environment.PatientApiUrl + 'api/patient/getpendinghotlist/'+fromdate+'/' + todate + '/' + hspLocationid
-      );   
-  };
-  export const ophotlistingaccept = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(     environment.PatientApiUrl + 'api/patient/getapprovedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
-       );   
-  };
-  
-  export const ophotlistingreject = (fromdate:string, todate:string, hspLocationid:number) => {
-    return(     environment.PatientApiUrl + 'api/patient/getrejectedhotlist/'+fromdate+'/' + todate + '/' + hspLocationid
-      );   
+  export const unmergePatientAPi = (userId: number) => {
+    return environment.PatientApiUrl + "api/patient/patientunmerging/" + userId;
   };
 
-     
-  
+  export const approvalpostapproveApi =
+    environment.PatientApiUrl + "api/patient/approverejectopregrequests";
+
+  export const hotlistingpostapproveApi = (UserId: number, flag: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/approvedrejectdeletehotlisting/" +
+      UserId +
+      "/" +
+      flag
+    );
+  };
+  export const opapprovalpending = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getopregistrationpendingrequests/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid
+    );
+  };
+
+  export const opapprovalaccepted = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getopregapproverejectrequests/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid +
+      "/" +
+      1
+    );
+  };
+  export const opapprovalrejected = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getopregapproverejectrequests/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid +
+      "/" +
+      2
+    );
+  };
+  export const ophotlistingpending = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpendinghotlist/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid
+    );
+  };
+  export const ophotlistingaccept = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getapprovedhotlist/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid
+    );
+  };
+
+  export const ophotlistingreject = (
+    fromdate: string,
+    todate: string,
+    hspLocationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getrejectedhotlist/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      hspLocationid
+    );
+  };
 }
