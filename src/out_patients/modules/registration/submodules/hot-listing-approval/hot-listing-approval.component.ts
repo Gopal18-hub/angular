@@ -26,7 +26,7 @@ export class HotListingApprovalComponent implements OnInit {
     "OP Registration Approval",
     "Hot Listing Approval",
     "OP Refund Approval",
-  ]; //, 'OP Refund Approval'
+  ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[1];
   activeLink2 = this.link2[0];
