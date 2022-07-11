@@ -15,7 +15,7 @@ const routes: Routes = [
       },
       {
         path: "iframe/:reportName",
-        component: PopupComponent,
+        component: IframeComponent,
       },
     ],
   },

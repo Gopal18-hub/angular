@@ -182,6 +182,7 @@ export class OpRegApprovalComponent implements OnInit {
       uGender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       uMobile: {
         title: "Mobile",

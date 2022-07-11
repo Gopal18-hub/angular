@@ -1,15 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { CrystalReport } from "@core/constants/CrystalReport";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: 'reports-iframe',
-  templateUrl: './iframe.component.html',
-  styleUrls: ['./iframe.component.scss']
+  selector: "reports-iframe",
+  templateUrl: "./iframe.component.html",
+  styleUrls: ["./iframe.component.scss"],
 })
-export class IframeComponent implements OnInit {
+export class IframeComponent implements OnInit, OnDestroy {
+  url: any = "";
 
-  constructor() { }
+  private readonly _destroying$ = new Subject<void>();
+
+  constructor(
+    private san: DomSanitizer,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.route.params
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((params: any) => {
+        if (
+          params.reportName &&
+          CrystalReport[params.reportName as keyof typeof CrystalReport]
+        ) {
+          if (
+            typeof CrystalReport[
+              params.reportName as keyof typeof CrystalReport
+            ] == "string"
+          ) {
+            let url =
+              CrystalReport[
+                params.reportName as keyof typeof CrystalReport
+              ].toString();
+            this.url = this.san.bypassSecurityTrustResourceUrl(url);
+          } else {
+            let func: Function = <Function>(
+              CrystalReport[params.reportName as keyof typeof CrystalReport]
+            );
+            let url: string = func(this.route.snapshot.queryParams).toString();
+            this.url = this.san.bypassSecurityTrustResourceUrl(url);
+          }
+        } else {
+        }
+      });
   }
 
+  ngOnDestroy(): void {}
 }

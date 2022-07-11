@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   ApiUrl: "",
-  cookieUrl: "http://localhost",
+  cookieUrl: "localhost",
   //dev environment urls
   CommonApiUrl: "http://172.30.0.16:1009/",
   PatientApiUrl: "http://172.30.0.16:1008/",
@@ -13,6 +13,7 @@ export const environment = {
   //IentityServerRedirectUrl:'http://172.30.0.16/',
   ReportsApiUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
   BillingApiUrl: "http://172.30.0.16:1007/",
+  ReportsSampleUrl:"http://localhost:55746/MAXHIS/",
 
   //local envionment urls for testing
   IdentityServerUrl: "https://localhost/",

@@ -19,4 +19,15 @@ export class RegistrationDialogueComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  btn1Functionlity(){
+    if(this.data.bt1Msg == "Ok"){
+      this.dialogRef.close("Success");
+    }
+  }
+
+  btn2Functionlity(){
+    if(this.data.bt2Msg == "Cancel"){
+      this.dialogRef.close();
+    }
+  }
 }
