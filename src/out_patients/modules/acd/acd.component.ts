@@ -16,6 +16,8 @@ export class AcdComponent implements OnInit {
   activeLink1 = this.link1[0];
   isShowInvestigation :boolean = true;
   isShowMedical : boolean = false;
+  isBtnDisable : boolean = true;
+  isBtnDisableClear : boolean = true;
   orgList=["id","1","name","Max HealthCare"]
   investigationFormData={
     title: "",
@@ -39,6 +41,18 @@ export class AcdComponent implements OnInit {
       },
       status:{
         type:"string",
+      },
+      denyorder:{
+        type:"dropdown",
+      },
+      remarks:{
+        type:"string",
+      },
+      checkbox:{
+        type:"checkbox",
+        options:[{
+          title:""
+        }]
       }
     }
   }
@@ -337,6 +351,11 @@ export class AcdComponent implements OnInit {
     );
     this.investigationForm = formResult.form;
     this.questions = formResult.questions;
+    let todaydate=new Date();
+    this.investigationForm.controls["fromdate"].setValue(todaydate);
+    
+    this.investigationForm.controls["todate"].setValue(todaydate);
+   
 
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
@@ -353,14 +372,28 @@ export class AcdComponent implements OnInit {
     this.activeLink1 = this.link1[0]
     this.isShowInvestigation= true;
     this.isShowMedical= false;
+    this.isBtnDisableClear = true;
     }
     else if(link == "Medical Orders")
     {
       this.isShowInvestigation= false;
       this.isShowMedical= true;
+      this.isBtnDisableClear = false;
       this.activeLink1 = this.link1[1]
     }
   }
-
+  tabChanged(event:any)
+  {
+  if(event=="Investigation Orders")
+  {
+    this.isShowInvestigation= true;
+    this.isShowMedical= false;
+  }
+  else if(event == "Medical Orders")
+  {
+    this.isShowInvestigation= false;
+    this.isShowMedical= true;
+  }
+}
 
 }
