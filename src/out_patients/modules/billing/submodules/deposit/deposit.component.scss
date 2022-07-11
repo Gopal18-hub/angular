@@ -4,13 +4,14 @@
 }
 .bg-thirdrow{
     background-color: #ECECEC;     
-   
+    color: rgba(0, 0, 0, 0.87);
 }
 ::ng-deep .input1 .mat-form-field-infix{
     text-align: right !important;  
 }
 .bg-white{
     background-color:white;
+    color: rgba(0, 0, 0, 0.87);
 }
 ::ng-deep .mat-form-field-wrapper{
 
@@ -23,9 +24,12 @@
 .clr-primary{
     color: #004084;
 }
-::ng-deep mat-radio-group {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
+
+.depositradiobutton {
+    ::ng-deep .mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
 }
