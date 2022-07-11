@@ -5,6 +5,13 @@ import { MessageDialogService } from '../../../../../shared/ui/message-dialog/me
 import { SelectAtleastOneComponent } from './select-atleast-one/select-atleast-one.component';
 import { MoreThanMonthComponent } from './more-than-month/more-than-month.component';
 import { MatDialog } from '@angular/material/dialog';
+import { billedLocationModel } from '@core/models/billedLocationModel.Model';
+import { dispatchReportListModel } from '@core/models/dispatchReportListModel.Model';
+import { ApiConstants } from '@core/constants/ApiConstants';
+import { HttpService } from "@shared/services/http.service";
+import { takeUntil } from "rxjs/operators";
+import { Subject, Observable } from "rxjs";
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'out-patients-dispatch-report',
   templateUrl: './dispatch-report.component.html',
@@ -12,16 +19,17 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class DispatchReportComponent implements OnInit {
 
+  public billedlocation: billedLocationModel[] = [];
+  public dispatchreport:dispatchReportListModel[] =[]
   config: any = {
-    actionItems: true,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     displayedColumns: [
       "sno",
-      "testname",
-      "datetime",
-      "patientname",
-      "maxid",
+      "itemName",
+      "orderdatetime",
+      "ptnName",
+      "billno",
       "receiveddatetime",
       "dispatcheddatetime",
       "dispatchplace",
@@ -32,21 +40,21 @@ export class DispatchReportComponent implements OnInit {
         title: "S.No",
         type: "number",
       },
-      testname: {
+      itemName: {
         title: "Test Name",
         type: "string",
       },
-      datetime: {
+      orderdatetime: {
         title: "Date Time",
         type: "date",
       },
-      patientname: {
+      ptnName: {
         title: "Patient Name",
         type: "string",
       },
-      maxid: {
+      billno: {
         title: "Max ID",
-        type: "number",
+        type: "string",
       },
       receiveddatetime: {
         title: "Received Date Time",
@@ -73,6 +81,8 @@ export class DispatchReportComponent implements OnInit {
     properties: {
       billedlocation: {
         type: "autocomplete",
+        options: this.billedlocation,
+        allowSearchInput: true
       },
       checkbox1: {
         type: "checkbox",
@@ -90,16 +100,17 @@ export class DispatchReportComponent implements OnInit {
         type: "radio",
         required: false,
         options: [
-          { title: "OPD", value: "opd" },
-          { title: "Pre-Adt", value: "pre-adt" },
-          { title: "Triage", value: "triage" }
+          { title: "OPD", value: 1 },
+          { title: "Pre-Adt", value: 2 },
+          { title: "Triage", value: 3 }
         ]
       },
     },
   };
   dispatchhistoryform!: FormGroup;
   questions: any;
-  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private matdialog: MatDialog) { }
+  private readonly _destroying$ = new Subject<void>();
+  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private matdialog: MatDialog, private http: HttpService, private datepipe: DatePipe) { }
   today: any;
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -108,33 +119,26 @@ export class DispatchReportComponent implements OnInit {
     );
     this.dispatchhistoryform = formResult.form;
     this.questions = formResult.questions;
-    // this.dispatchhistoryform.controls["fromdate"].disable();
-    // this.dispatchhistoryform.controls["todate"].disable();
     this.today = new Date();
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
+    this.getBilledLocation();
   }
   ngAfterViewInit(): void{
     
   }
-  // enabledate()
-  // {
-  //   this.dispatchhistoryform.controls["checkbox1"].valueChanges.subscribe( value=> {
-  //     if(value == true)
-  //     {
-  //       console.log(this.dispatchhistoryform.controls["checkbox1"]);
-  //       this.dispatchhistoryform.controls["fromdate"].enable();
-  //       this.dispatchhistoryform.controls["todate"].enable();
-  //     }
-  //     else
-  //     {
-  //       this.dispatchhistoryform.controls["fromdate"].disable();
-  //       this.dispatchhistoryform.controls["todate"].disable();
-  //     }
-  //   });
-    
-  //   console.log(this.dispatchhistoryform.controls["checkbox1"]);
-  // }
+  getBilledLocation() {
+    this.http
+      .get(ApiConstants.locationname)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: any) => {
+        this.billedlocation = resultData;
+        console.log(this.billedlocation);
+        this.questions[0].options = this.billedlocation.map((l) => {
+          return { title: l.address3, value: l.hspLocationId };
+        });
+      });
+  }
   dispatchreportsearch()
   {
     console.log(this.dispatchhistoryform.value);
@@ -151,18 +155,32 @@ export class DispatchReportComponent implements OnInit {
     {
       this.matdialog.open(SelectAtleastOneComponent, {width: "35vw", height: "35vh"});
     }
-    else if(dif_in_days > 31)
-    {
-      this.matdialog.open(MoreThanMonthComponent, {width: "30vw", height:"30vh"});
-      // this.msgdialog.error("Can not process requests for more than one month (31 Days), Please select the dates accordingly.");
-    }
-    
+    // else if(dif_in_days > 31)
+    // {
+    //   this.matdialog.open(MoreThanMonthComponent, {width: "30vw", height:"30vh"});
+    //   this.msgdialog.error("Can not process requests for more than one month (31 Days), Please select the dates accordingly.");
+    // }
+    this.http.get(ApiConstants.getdispatchreport(this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
+    this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"), 
+    this.dispatchhistoryform.value.billedlocation.value,
+    this.dispatchhistoryform.value.radio)).subscribe((resultdata:any)=>{
+      console.log(resultdata);
+      this.dispatchreport = resultdata.dispatchlist;
+      console.log(resultdata.dispatchlist.length);
+      for(var i = 0; i < resultdata.dispatchlist.length; i++)
+      {
+        this.dispatchreport[i].sno = i + 1;
+        console.log(this.dispatchreport[i].sno);
+      }
+      console.log(this.dispatchreport);
+    });
   }
   clear()
   {
     this.dispatchhistoryform.reset();
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
+    this.dispatchreport = [];
   }
   savedialog()
   {

@@ -277,6 +277,18 @@ export namespace ApiConstants {
       );   
   };
 
-     
-  
+  export const locationname =
+  environment.PatientApiUrl + "api/patient/getlocationname";
+ 
+  export const getdispatchreport = (fromdate:any, todate:any, locationid:number, reptype:number) => {
+    return ( environment.PatientApiUrl + "api/patient/getdataforreportdispatch/"+fromdate+'/'+todate+'/'+locationid +'/'+reptype);
+  }
+
+  export const getarecounter = (HsplocationId: number) => {
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getareacounterdetails/"+ HsplocationId);
+  }
+
+  export const gettransactiontype = 
+  environment.BillingApiUrl + "api/outpatientbilling/getpatienthistorytransactiontype";
+
 }

@@ -84,15 +84,16 @@
                 <div>
                     <mat-label class="max-health-primary-color font-bold">List of all investigation (OPD)</mat-label>
                 </div>
-                <div class="h-9/10 mt-5">
+                <div class="h-full mt-5">
                     <maxhealth-table
                     [config]="config"
+                    [data]="dispatchreport"
                     ></maxhealth-table>
                 </div>
             </div>
 
             <!-- Button -->
-            <div class="flex h-1/5 float-right align-items-center">
+            <div class="flex h-1/5 float-right align-items-center mt-6">
                 <div class="mr-4">
                     <button mat-raised-button color="primary" type="submit">Export</button>
                 </div>
