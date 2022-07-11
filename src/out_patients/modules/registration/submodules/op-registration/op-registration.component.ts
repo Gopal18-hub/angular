@@ -230,6 +230,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "dropdown",
         options: this.fatherSpouseOptionList,
         required: false,
+        defaultValue: "0",
       },
       fatherSpouseName: {
         type: "string",
@@ -256,6 +257,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Identity",
         options: this.idTypeList,
         required: false,
+        defaultValue: "0",
       },
       idenityValue: {
         type: "string",
@@ -409,6 +411,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Source of Info about Max Healthcare",
         required: false,
         options: this.sourceOfInfoList,
+        defaultValue: "0",
       },
     },
   };
@@ -558,6 +561,10 @@ export class OpRegistrationComponent implements OnInit {
       title: "India",
       value: 1,
     });
+
+    this.OPRegForm.controls["fatherSpouse"].setValue("-Select-");
+
+    this.OPRegForm.controls["idenityType"].setValue("-Select-");
     // this.OPRegForm.controls["foreigner"].disable(); // commented as UAT requirement change
     this.getStatesByCountry({ title: "India", value: 1 });
     this.getCitiesByCountry({ title: "India", value: 1 });
@@ -2300,6 +2307,9 @@ export class OpRegistrationComponent implements OnInit {
           patientDetails?.fathersname
         );
         this.OPRegForm.controls["fatherSpouse"].setValue(1);
+      } else {
+        this.OPRegForm.controls["fatherSpouseName"].setValue("");
+        this.OPRegForm.controls["fatherSpouse"].setValue(0);
       }
     }
 
