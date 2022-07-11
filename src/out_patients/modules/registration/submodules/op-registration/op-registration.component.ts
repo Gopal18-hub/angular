@@ -230,7 +230,8 @@ export class OpRegistrationComponent implements OnInit {
         type: "dropdown",
         options: this.fatherSpouseOptionList,
         required: false,
-        defaultValue: "0",
+        emptySelect: true,
+        placeholder: "Select",
       },
       fatherSpouseName: {
         type: "string",
@@ -257,7 +258,8 @@ export class OpRegistrationComponent implements OnInit {
         title: "Identity",
         options: this.idTypeList,
         required: false,
-        defaultValue: "0",
+        emptySelect: true,
+        placeholder: "Select",
       },
       idenityValue: {
         type: "string",
@@ -411,7 +413,8 @@ export class OpRegistrationComponent implements OnInit {
         title: "Source of Info about Max Healthcare",
         required: false,
         options: this.sourceOfInfoList,
-        defaultValue: "0",
+        emptySelect: true,
+        placeholder: "Select",
       },
     },
   };
@@ -517,7 +520,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
-    this.fatherSpouseOptionList.push({ title: "-Select-", value: 0 });
+    // this.fatherSpouseOptionList.push({ title: "-Select-", value: 0 });
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
     this.fatherSpouseOptionList.push({ title: "Spouse", value: 2 });
 
@@ -562,9 +565,9 @@ export class OpRegistrationComponent implements OnInit {
       value: 1,
     });
 
-    this.OPRegForm.controls["fatherSpouse"].setValue("-Select-");
+    //this.OPRegForm.controls["fatherSpouse"].setValue("-Select-");
 
-    this.OPRegForm.controls["idenityType"].setValue("-Select-");
+    //this.OPRegForm.controls["idenityType"].setValue("-Select-");
     // this.OPRegForm.controls["foreigner"].disable(); // commented as UAT requirement change
     this.getStatesByCountry({ title: "India", value: 1 });
     this.getCitiesByCountry({ title: "India", value: 1 });
@@ -808,6 +811,7 @@ export class OpRegistrationComponent implements OnInit {
         ) {
           this.getDistricyListByState(value);
           this.getCityListByState(value);
+          this.countrybasedflow = true;
         }
       });
 
@@ -1139,7 +1143,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.sourceOfInfoList = resultData;
-        this.sourceOfInfoList.unshift({ id: 0, name: "-Select-" });
+        //  this.sourceOfInfoList.unshift({ id: 0, name: "-Select-" });
         this.questions[41].options = this.sourceOfInfoList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -1168,7 +1172,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.idTypeList = resultData;
-        this.idTypeList.unshift({ id: 0, name: "-Select-" });
+        //  this.idTypeList.unshift({ id: 0, name: "-Select-" });
         this.questions[16].options = this.idTypeList.map((l) => {
           return { title: l.name, value: l.id };
         });
