@@ -811,7 +811,9 @@ export class OpRegistrationComponent implements OnInit {
         ) {
           this.getDistricyListByState(value);
           this.getCityListByState(value);
-          this.countrybasedflow = true;
+          if (!this.OPRegForm.controls["locality"].value) {
+            this.countrybasedflow = true;
+          }
         }
       });
 
@@ -966,12 +968,13 @@ export class OpRegistrationComponent implements OnInit {
       queryParams: {},
       relativeTo: this.route,
     });
+    this.flushAllObjects();
     this.formInit();
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
     }, 10);
-    this.flushAllObjects();
+
     //this.checkForMaxID();
     this.clearClicked = false;
   }
@@ -1823,6 +1826,10 @@ export class OpRegistrationComponent implements OnInit {
           // this.countrybasedflow = true;
           this.pincodebasedflow = false;
           this.OPRegForm.controls["pincode"].setValue(pincode);
+          this.questions[24].readonly = true;
+          this.questions[25].readonly = true;
+          this.questions[26].readonly = true;
+          this.questions[27].readonly = true;
           this.countrybasedflow = false;
           this.citybasedflow = false;
         }
