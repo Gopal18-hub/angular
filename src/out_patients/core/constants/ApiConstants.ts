@@ -276,6 +276,16 @@ export namespace ApiConstants {
     );
   };
 
+  export const globalSearchApi = (value: string, hspId: Number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getglobalsearch/" +
+      `${value}` +
+      "/" +
+      `${hspId}`
+    );
+  };
+
   export const mergePatientApi = (ActivePatientId: number, userId: number) => {
     return (
       environment.PatientApiUrl +
