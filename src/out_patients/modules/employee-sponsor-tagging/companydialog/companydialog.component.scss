@@ -1,3 +1,11 @@
 .company-class{
     color:#004084;
 }
+
+::ng-deep .textarea-height textarea{
+    min-height:340px !important ;
+}
+
+.bg-gray{
+    color:gray;
+}
