@@ -18,7 +18,30 @@ export class OprefundApprovalComponent implements OnInit {
   activeLink2 = this.link2[0];
 
   oprefundConfig: any = {
+    actionItems: true,
     selectBox: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     displayedColumns: [
       "maxid",
       "ssn",
@@ -100,6 +123,20 @@ export class OprefundApprovalComponent implements OnInit {
       this.activeLink2 = link;
     }
   }
+
+  data: any[] = [
+    {
+      maxid: "BLKH.789456",
+      ssn: "789456",
+      name: "mehak",
+      billno: "blc5600152",
+      billdatetime: "99/99/9999-24:51",
+      servicename: "investigation",
+      itemname: "hcv antibody",
+      refundamount: "1500.00",
+      requestedby: "Ekta sharmae",
+    },
+  ];
 
   oprefundApprove() {
     this.dialogservice.success("Update request Approved");

@@ -273,7 +273,7 @@ export class OpRegApprovalComponent implements OnInit {
         : this.showgrid("View Pending Request");
     } else if (link == "Hot Listing Approval") {
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == "Op Refund Approval") {
+    } else if (link == "OP Refund Approval") {
       this.router.navigate(["out-patient-billing", "op-refund-approval"]);
     }
   }
