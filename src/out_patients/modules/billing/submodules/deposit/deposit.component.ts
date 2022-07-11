@@ -7,6 +7,7 @@ import { QuestionControlService } from '@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixty.component';
 
 @Component({
   selector: 'out-patients-deposit',
@@ -184,6 +185,18 @@ export class DepositComponent implements OnInit {
 
   openinitiatedeposit(){
     this.router.navigate(["out-patient-billing", "initiate-deposit"]);
+  }
+  ngAfterViewInit(): void{
+    this.depositForm.controls["mainradio"].valueChanges.subscribe((value:any)=>{
+      if(value == "form60")
+      {
+        this.matDialog.open(FormSixtyComponent, {width: "50vw", height: "98vh"});
+        this.depositForm.controls["panno"].disable();
+      }
+      else{
+        this.depositForm.controls["panno"].enable();
+      }
+    });
   }
 
 }

@@ -59,92 +59,110 @@
                 <!------------------------------------------SECOND ROW----------------------------------------->
                 <div class="flex p-2 mt-3 ml-2 max-health-primary-color">
                     <div class="flex w-full">
-                        <div class="w-1/20">
-                            <mat-label>Select Patient</mat-label>
+                        <div class="flex w-1/5">
+                            <div>
+                                <mat-label>Select Patient</mat-label>
+                            </div>
+
+                            <div class="ml-2 w-3/5 bg-white">
+                                <maxhealth-question [question]="questions[2]" [form]="initiatedepositForm"
+                                    [questions]="questions[2]" [index]="2">
+                                </maxhealth-question>
+                            </div>
                         </div>
 
-                        <div class="w-1/10 ml-2 h-full bg-white">
-                            <maxhealth-question [question]="questions[2]" [form]="initiatedepositForm"
-                                [questions]="questions[2]" [index]="2">
-                            </maxhealth-question>
-                        </div>
 
                         <div class="w-1/7 ml-2">
                             <mat-label>Max ID:</mat-label>
                             <span></span>
                         </div>
-                        <div class="w-1/6 ml-2">
+                        <div class="w-1/5 ml-2">
                             <mat-label>Patient Name:</mat-label>
                             <span></span>
                         </div>
-                        <div class="w-1/20 ml-3">
-                            <mat-label>Email ID</mat-label>
+
+                        <div class="flex w-1/4 ml-2">
+                            <div>
+                                <mat-label>Email ID</mat-label>
+                            </div>
+
+                            <div class="ml-2 w-3/4 bg-white">
+                                <maxhealth-question [question]="questions[3]" [form]="initiatedepositForm"
+                                    [questions]="questions[3]" [index]="3">
+                                </maxhealth-question>
+                            </div>
                         </div>
 
-                        <div class="ml-3 w-1/6 h-full bg-white">
-                            <maxhealth-question [question]="questions[3]" [form]="initiatedepositForm"
-                                [questions]="questions[3]" [index]="3">
-                            </maxhealth-question>
-                        </div>
-                        <div class="w-1/20 ml-8">
-                            <mat-label>Mobile Number</mat-label>
-                        </div>
+                        <div class="flex w-1/5">
+                            <div>
+                                <mat-label>Mobile Number</mat-label>
+                            </div>
 
-                        <div class="ml-10 float-right-full bg-white">
-                            <maxhealth-question [question]="questions[4]" [form]="initiatedepositForm"
-                                [questions]="questions[4]" [index]="4">
-                            </maxhealth-question>
+                            <div class="ml-2 float-right w-5/9 bg-white">
+                                <maxhealth-question [question]="questions[4]" [form]="initiatedepositForm"
+                                    [questions]="questions[4]" [index]="4">
+                                </maxhealth-question>
+                            </div>
                         </div>
-
                     </div>
                 </div>
                 <!-----------------------------------------THIRD ROW------------------------------------------------------------->
                 <div class="flex p-2 mt-3 ml-2 max-health-primary-color">
                     <div class="flex w-full">
-                        <div class="w-1/20">
-                            <mat-label>Deposit Type</mat-label>
+                        <div class="flex w-1/5">
+                            <div>
+                                <mat-label>Deposit Type</mat-label>
+                            </div>
+
+                            <div class="w-3/5 ml-3 bg-white">
+                                <maxhealth-question [question]="questions[5]" [form]="initiatedepositForm"
+                                    [questions]="questions[5]" [index]="5">
+                                </maxhealth-question>
+                            </div>
                         </div>
 
-                        <div class="w-1/10 ml-2 h-full bg-white">
-                            <maxhealth-question [question]="questions[5]" [form]="initiatedepositForm"
-                                [questions]="questions[5]" [index]="5">
-                            </maxhealth-question>
-                        </div>
-                        <div class="w-1/20 ml-3">
-                            <mat-label>Deposit Amount</mat-label>
+                        <div class="flex w-3/10 ml-2">
+                            <div>
+                                <mat-label>Deposit Amount</mat-label>
+                            </div>
+
+                            <div class="w-3/5 ml-2 bg-white">
+                                <maxhealth-question [question]="questions[6]" [form]="initiatedepositForm"
+                                    [questions]="questions[6]" [index]="6">
+                                </maxhealth-question>
+                            </div>
                         </div>
 
-                        <div class="w-1/6 ml-2 h-full bg-white">
-                            <maxhealth-question [question]="questions[6]" [form]="initiatedepositForm"
-                                [questions]="questions[6]" [index]="6">
-                            </maxhealth-question>
-                        </div>
                         <div class="mx-10">&nbsp;</div>
+                        
+                        <div class="mx-7">&nbsp;</div>
+                        <div class="w-5/9 float-right flex">
+                            <div>
+                                <mat-label>Remarks</mat-label>
+                            </div>
 
-                        <div class="w-1/20 ml-4">
-                            <mat-label>Remarks</mat-label>
+                            <div class="w-6/7 ml-4 bg-white">
+                                <maxhealth-question [question]="questions[7]" [form]="initiatedepositForm"
+                                    [questions]="questions[7]" [index]="7">
+                                </maxhealth-question>
+                            </div>
                         </div>
 
-                        <div class="w-1/45 ml-2 h-full bg-white">
-                            <maxhealth-question [question]="questions[7]" [form]="initiatedepositForm"
-                                [questions]="questions[7]" [index]="7">
-                            </maxhealth-question>
-                        </div>
                     </div>
                 </div>
 
-               <!------------------------------------------FOURTH ROW--------------------------------------------------------------------->
-               <div class="mt-10">&nbsp;</div>
-               <div class="mt-10">&nbsp;</div>
+                <!------------------------------------------FOURTH ROW--------------------------------------------------------------------->
+                <div class="mt-10">&nbsp;</div>
+                <div class="mt-10">&nbsp;</div>
 
-               <div class="float-right mt-3">
-        <button mat-raised-button color="primary" class="mr-8">
-            Save
-        </button>
-        <button mat-raised-button color="primary" class="mr-3">
-            Clear
-        </button>
-    </div>
+                <div class="float-right mt-3">
+                    <button mat-raised-button color="primary" class="mr-8">
+                        Save
+                    </button>
+                    <button mat-raised-button color="primary" class="mr-3">
+                        Clear
+                    </button>
+                </div>
 
             </form>
 
