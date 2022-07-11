@@ -1592,6 +1592,10 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
       }
 
+      if (this.OPRegForm.value.locality) {
+        this.OPRegForm.controls["locality"].setValue("");
+      }
+
       if (
         this.OPRegForm.value.state.value != undefined &&
         this.OPRegForm.value.state.value != null &&
