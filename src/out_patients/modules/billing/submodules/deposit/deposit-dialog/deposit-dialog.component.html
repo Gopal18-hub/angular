@@ -14,7 +14,7 @@
     <!---------------------------------------------FOURTH ROW---------------------------------------------------------->
     <div class=" w-full h-55">
         <!-------------------------------------------mat tab will appear-------------------------------------------->
-        <payment-methods (paymentform)="getpaymentForm($event)" [fromrefund]="onDepositpage"></payment-methods>
+       <payment-methods [config]="config"></payment-methods>
         <!--------------------------------------------remarks -------------------------------------------->
         <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right" >
             <mat-label  class="ml-4 text-white">Remarks</mat-label>
