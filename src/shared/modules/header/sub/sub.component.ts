@@ -90,9 +90,10 @@ export class SubComponent implements OnInit {
 
   applyFilter(val: string) {
     const data: any = { globalSearch: 1, SearchTerm: val };
-    // Object.keys(this.searchForm.value).forEach((ele) => {
-    //   data[ele] = val;
-    // });
-    this.searchService.searchTrigger.next({ data: data });
+    const searchFormData: any = {};
+    Object.keys(this.searchForm.value).forEach((ele) => {
+      searchFormData[ele] = val;
+    });
+    this.searchService.searchTrigger.next({ data: data, searchFormData });
   }
 }
