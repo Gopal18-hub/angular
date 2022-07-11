@@ -317,6 +317,7 @@ or
 - `.h-screen` -> `height: 100vh`
 - `.h-auto` -> `height: auto`
 - `.h-9/10`-> `height: 90%`
+- `.h-7/10`-> `width: 70%`
 
 or
 

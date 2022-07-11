@@ -8,7 +8,7 @@
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <div class="h-full w-full">
-      <form [formGroup]="onlineopbillsForm">
+      <form [formGroup]="onlineopbillsForm" class="h-full w-full">
            <!---------------------------------FIRST ROW----------------------------------------------------->
              
         <div class="flex p-2 ml-2  mt-2 mr-2 border-radius-lg bg-grey">
@@ -69,14 +69,14 @@
         </div>
    <!---------------------------------SECOND ROW----------------------------------------------------->
   
-   <div class="flex px-3 pt-3 pb-1 w-full h-full display-block">
+   <div class="px-3 pt-3 pb-1 w-full h-7/10">
     <ng-container>
       <maxhealth-table  [config]="onlineopbillsconfig" #onlineopbillstable></maxhealth-table>
     </ng-container>
   </div>
  <!------------------------------------------THIRD ROW--------------------------------------------------------------------->
 
- <div class="float-right mt-3">
+ <div class="float-right mt-1">
      <button mat-raised-button color="primary" class="mr-8">
          Print
      </button>
