@@ -14,39 +14,34 @@ const routes: Routes = [
   {
     path: "registration",
     component: RegistrationComponent,
+    canActivate: [AuthGuardService],
     children: [
       { path: "", component: OpRegistrationComponent },
       {
         path: "op-registration",
         component: OpRegistrationComponent,
         canDeactivate: [PendingChangesGuard],
-        // canActivate: [AuthGuardService],
       },
       {
         path: "find-patient",
         component: FindPatientComponent,
-        // canActivate: [AuthGuardService],
       },
       {
         path: "dup-reg-merging",
         component: DupRegMergingComponent,
-        //  canActivate: [AuthGuardService],
       },
       {
         path: "registration-unmerging",
         component: RegistrationUnmergingComponent,
-        // canActivate: [AuthGuardService],
       },
       {
         path: "op-reg-approval",
         component: OpRegApprovalComponent,
-        //  canActivate: [AuthGuardService],
       },
       { path: "appointment-search", component: AppointmentSearchComponent },
       {
         path: "hot-listing-approval",
         component: HotListingApprovalComponent,
-        //  canActivate: [AuthGuardService],
       },
     ],
   },
