@@ -2685,7 +2685,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
-      if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+      // if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+      //   return this.OPRegForm.value.fatherSpouseName;
+      // }
+      if (this.OPRegForm.controls["fatherSpouse"].value == 1) {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2697,7 +2700,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
-      if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
+      // if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
+      //   return this.OPRegForm.value.fatherSpouseName;
+      // }
+      if (this.OPRegForm.controls["fatherSpouse"].value == 2) {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
