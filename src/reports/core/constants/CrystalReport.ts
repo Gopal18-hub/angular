@@ -37,9 +37,7 @@ export namespace CrystalReport {
     );
   };
 
-  export const DailyCollectionReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/MIS/DailyCollectionReport`;
-  };
+  export const DailyCollectionReport = `${environment.ReportsSampleUrl}/MIS/DailyCollectionReport`;
 
   export const OnlinePaymentDetailReport = (params: any) => {
     return environment.ReportsSampleUrl + `/MIS/OnlinePaymentDetailReport`;
@@ -143,36 +141,59 @@ export namespace CrystalReport {
       `/MIS/ServiceTaxReportData?${params.fromdate}${params.todate}${params.CmbLocation}${params.user}`
     );
   };
-  export const refundReport= (params: any) =>{
-
-    return environment.ReportsSampleUrl + `/Billing/refundreport?refundBill=${params.refundBill}&locationID=${params.locationID}`;
+  export const refundReport = (params: any) => {
+    return (
+      environment.ReportsSampleUrl +
+      `/Billing/refundreport?refundBill=${params.refundBill}&locationID=${params.locationID}`
+    );
   };
 
   export const rptRefund = (params: any) => {
-    return environment.ReportsSampleUrl + `/Refund/rpt_refund?receiptno=${params.receiptno}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/Refund/rpt_refund?receiptno=${params.receiptno}&locationID=${params.locationID}`
+    );
   };
 
   export const depositReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/Deposits/rpt_deposit?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/Deposits/rpt_deposit?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`
+    );
   };
 
   export const surgeryDetailsReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/SurgeryDetails/rptSurgeryDetails?refundBill=${params.refundBill}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/SurgeryDetails/rptSurgeryDetails?refundBill=${params.refundBill}&locationID=${params.locationID}`
+    );
   };
 
   export const equipmentReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${params.EquipFromDate}&EquipToDate=${params.EquipToDate}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${params.EquipFromDate}&EquipToDate=${params.EquipToDate}&locationID=${params.locationID}`
+    );
   };
 
   export const freeOutPatientReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/FreeOutPatientReport/FreeOutPatientReport?FromDate=${params.FromDate}&ToDate=${params.ToDate}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/FreeOutPatientReport/FreeOutPatientReport?FromDate=${params.FromDate}&ToDate=${params.ToDate}&locationID=${params.locationID}`
+    );
   };
 
   export const miscellaneousBillReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/MiscellaneousBillReport/MiscellaneousBillReport?FromDate=${params.FromDate}&ToDate=${params.ToDate}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/MiscellaneousBillReport/MiscellaneousBillReport?FromDate=${params.FromDate}&ToDate=${params.ToDate}&locationID=${params.locationID}`
+    );
   };
 
   export const opBillRegisterReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/OP%20Bill%20Register/OPBillRegister?FromDate=${params.FromDate}&ToDate=${params.ToDate}&sortBy=${params.sortBy}&locationID=${params.locationID}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/OP%20Bill%20Register/OPBillRegister?FromDate=${params.FromDate}&ToDate=${params.ToDate}&sortBy=${params.sortBy}&locationID=${params.locationID}`
+    );
   };
 }

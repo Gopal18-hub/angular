@@ -2790,24 +2790,27 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    if (btnname == "PrintLabel") {
-      this.reportService.getOPRegistrationPrintLabel(
-        this.OPRegForm.value.maxid
-      );
-      {
-        console.log("success");
-      }
-    } else if (btnname == "PrintForm") {
-      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid);
-      {
-        console.log("success");
-      }
-    } else if (btnname == "PrintOD") {
-      this.reportService.getOPRegistrationOrganDonorForm(
-        this.OPRegForm.value.maxid
-      );
-      console.log("success");
-    }
+    this.reportService.openWindow(btnname, btnname, {
+      maxId: this.OPRegForm.value.maxid,
+    });
+    // if (btnname == "PrintLabel") {
+    //   this.reportService.getOPRegistrationPrintLabel(
+    //     this.OPRegForm.value.maxid
+    //   );
+    //   {
+    //     console.log("success");
+    //   }
+    // } else if (btnname == "PrintForm") {
+    //   this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid);
+    //   {
+    //     console.log("success");
+    //   }
+    // } else if (btnname == "PrintOD") {
+    //   this.reportService.getOPRegistrationOrganDonorForm(
+    //     this.OPRegForm.value.maxid
+    //   );
+    //   console.log("success");
+    // }
   }
 
   //for Date of birth and age calculation
