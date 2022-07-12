@@ -154,55 +154,59 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (value) => {
-        this.isAPIProcess = false;
-        const lookupdata = await this.loadGrid(value);
-        if (lookupdata) this.processingQueryParams = true;
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {
+          this.isAPIProcess = false;
+          const lookupdata = await this.loadGrid(value);
+          this.processingQueryParams = true;
+        } else {
+          this.getAllpatients()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (resultData) => {
+                this.showspinner = false;
+                this.defaultUI = false;
+                resultData = resultData.map((item: any) => {
+                  item.fullname = item.firstName + " " + item.lastName;
+                  item.notereason = item.noteReason;
+                  return item;
+                });
+                this.patientList = resultData as PatientSearchModel[];
+                this.patientList = this.patientServie.getAllCategoryIcons(
+                  this.patientList
+                );
+
+                this.isAPIProcess = true;
+                console.log(this.patientList);
+                setTimeout(() => {
+                  this.tableRows.selection.changed
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((res: any) => {
+                      console.log(res);
+                      this.router.navigate(
+                        ["registration", "op-registration"],
+                        {
+                          queryParams: { maxId: res.added[0].maxid },
+                        }
+                      );
+                    });
+                });
+              },
+              (error) => {
+                console.log(error);
+                this.patientList = [];
+                this.showspinner = false;
+                this.defaultUI = true;
+                this.findpatientmessage = "No records found";
+                this.findpatientimage = "norecordfound";
+              }
+            );
+        }
       });
   }
 
   ngOnInit(): void {
     //this.defaultUI = false;
-
-    if (!this.processingQueryParams) {
-      this.getAllpatients()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              item.notereason = item.noteReason;
-              return item;
-            });
-            this.patientList = resultData as PatientSearchModel[];
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-
-            this.isAPIProcess = true;
-            console.log(this.patientList);
-            setTimeout(() => {
-              this.tableRows.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.showspinner = false;
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    }
-
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
@@ -214,52 +218,68 @@ export class FindPatientComponent implements OnInit, OnDestroy {
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
     this.defaultUI = false;
-    const lookupdata = await this.lookupService.searchPatient(formdata);
-    if (lookupdata == null || lookupdata == undefined) {
-      this.patientList = [];
-      this.defaultUI = true;
-      this.showspinner = false;
-      this.findpatientmessage = "No records found";
-      this.findpatientimage = "norecordfound";
-    } else {
-      if (
-        !formdata.data["name"] &&
-        !formdata.data["phone"] &&
-        formdata.data["dob"]
-      ) {
+    if (formdata.data) {
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
         this.patientList = [];
         this.defaultUI = true;
         this.showspinner = false;
-        this.findpatientmessage =
-          "Please enter Name / Phone in combination with DOB as search criteria";
-        this.findpatientimage = "placeholder";
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
       } else {
-        const resultData = lookupdata.map((item: any) => {
-          item.fullname = item.firstName + " " + item.lastName;
-          item.notereason = item.noteReason;
-          return item;
-        });
-        this.patientList = resultData;
-        this.patientList = this.patientServie.getAllCategoryIcons(
-          this.patientList
-        );
-        this.isAPIProcess = true;
+        if (
+          !formdata.data["name"] &&
+          !formdata.data["phone"] &&
+          formdata.data["dob"]
+        ) {
+          this.patientList = [];
+          this.defaultUI = true;
+          this.showspinner = false;
+          this.findpatientmessage =
+            "Please enter Name / Phone in combination with DOB as search criteria";
+          this.findpatientimage = "placeholder";
+        } else {
+          this.processLookupData(lookupdata);
+        }
+      }
+    } else {
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+        this.patientList = [];
+        this.defaultUI = true;
         this.showspinner = false;
-        this.defaultUI = false;
-        setTimeout(() => {
-          this.tableRows.selection.changed
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((res: any) => {
-              console.log(res);
-              this.router.navigate(["registration", "op-registration"], {
-                queryParams: { maxId: res.added[0].maxid },
-              });
-            });
-        });
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
+      } else {
+        this.processLookupData(lookupdata);
       }
     }
   }
 
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      return item;
+    });
+    this.patientList = resultData;
+    this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+    this.isAPIProcess = true;
+    this.showspinner = false;
+    this.defaultUI = false;
+    setTimeout(() => {
+      this.tableRows.selection.changed
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          console.log(res);
+          this.router.navigate(["registration", "op-registration"], {
+            queryParams: { maxId: res.added[0].maxid },
+          });
+        });
+    });
+  }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();

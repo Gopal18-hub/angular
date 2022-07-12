@@ -1,5 +1,5 @@
-::ng-deep textarea{
-    min-height: 246px !important;
+::ng-deep .textarea-length textarea{
+    min-height: 290px !important;
 }
 
 ::ng-deep mat-radio-group{
@@ -32,8 +32,8 @@
 .bg-gray{
     background-color:#D2D0D0;
 }
-.h-55{
-    height:55%;
+.h-60{
+    height:60%;
 }
 .h-90{
     height:90%;

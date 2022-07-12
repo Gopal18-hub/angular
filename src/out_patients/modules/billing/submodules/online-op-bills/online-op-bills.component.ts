@@ -37,75 +37,49 @@ export class OnlineOpBillsComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     displayedColumns: [
-      "deposittype",
-      "receiptno",
-      "datetime",
-      "deposit",
-      "usedop",
-      "usedip",
-      "refund",
-      "balance",
-      "taxpercentage",
-      "totaltaxvalue",
-      "deposithead",
-      "servicetype",
-      "operatornameid",    
+      "billno",
+      "appointmentdatetime",
+      "doctorname",
+      "specialisation",
+      "patientname",
+      "mobilenumber",
+      "email",
+      "printtobill"        
     ],
     columnsInfo: {
-      deposittype: {
-        title: "Deposit Type",
+      billno: {
+        title: "Bill No.",
         type: "string",
       },
-      receiptno: {
-        title: "Receipt No.",
-        type: "number",
-      },
-      datetime: {
-        title: "Date & Time",
+      appointmentdatetime: {
+        title: "Appointment Date/Time",
         type: "date",
       },
-      deposit: {
-        title: "Deposit",
-        type: "string",
-        tooltipColumn: "modifiedPtnName",
-      },
-      usedop: {
-        title: "Used(OP)",
+      doctorname: {
+        title: "Doctor Name",
         type: "string",
       },
-      usedip: {
-        title: "Used(IP)",
+      specialisation: {
+        title: "Specialisation",
+        type: "string",       
+      },
+      patientname: {
+        title: "Patient Name",
+        type: "string",
+      },
+      mobilenumber: {
+        title: "Mobile Number",
         type: "number",
       },
-      refund: {
-        title: "Refund",
+      email: {
+        title: "Email",
         type: "string",
         tooltipColumn: "uEmail",
       },
-      balance: {
-        title: "Balance",
+      printtobill: {
+        title: "Print to Bill",
         type: "string",
-      },
-      taxpercentage: {
-        title: "Tax %",
-        type: "checkbox",
-      },
-      totaltaxvalue: {
-        title: "Total Tax Value",
-        type: "number",
-      },
-      deposithead: {
-        title: "Deposit Head",
-        type: "string",
-      },
-      servicetype: {
-        title: "Service Type",
-        type: "string",
-      },
-      operatornameid: {
-        title: "Operator Name & ID",
-        type: "string",
-      },
+      },     
     },
   };
 

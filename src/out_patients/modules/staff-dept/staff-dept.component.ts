@@ -109,6 +109,42 @@ export class StaffDeptComponent implements OnInit {
         gender:"Male",
         doj:"06/11/2022"    
       },
+      {
+        sno:"2",
+        organisation:"Max healthcare",
+        empCode:"B015330",
+        empName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        doj:"06/11/2022"    
+      },
+      {
+        sno:"3",
+        organisation:"Max healthcare",
+        empCode:"B015330",
+        empName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        doj:"06/11/2022"    
+      },
+      {
+        sno:"4",
+        organisation:"Max healthcare",
+        empCode:"B015330",
+        empName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        doj:"06/11/2022"    
+      },
+      {
+        sno:"5",
+        organisation:"Max healthcare",
+        empCode:"B015330",
+        empName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        doj:"06/11/2022"    
+      },
      
     ]
     data1:any[]=[
@@ -120,6 +156,38 @@ export class StaffDeptComponent implements OnInit {
         gender:"Male",
         relationship:"Owner"    
       },
+      {
+        
+        empCode:"B015330",
+        dependantName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        relationship:"Owner"    
+      },
+      {
+        
+        empCode:"B015330",
+        dependantName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        relationship:"Owner"    
+      },
+      {
+        
+        empCode:"B015330",
+        dependantName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        relationship:"Owner"    
+      },
+      {
+        
+        empCode:"B015330",
+        dependantName:"Mr.Amit kumar",
+        dob:"05/11/2000",
+        gender:"Male",
+        relationship:"Owner"    
+      }
      
     ]
 

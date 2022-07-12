@@ -73,6 +73,8 @@ export class DynamicFormQuestionComponent
 
   subscription!: Subscription;
 
+  dateMask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
+
   constructor(private qcs: QuestionControlService) {}
 
   compareFn: (f1: any, f2: any) => boolean = this.compareByValue;
