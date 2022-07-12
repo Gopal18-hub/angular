@@ -178,8 +178,8 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z]{1}[A-Za-z. '']+",
-        onlyKeyPressAlpha: true,
+        pattern: "^[A-Za-z]{1}[0-9A-Za-z. '']+",
+        //onlyKeyPressAlpha: true,
       },
       middleName: {
         type: "string",
