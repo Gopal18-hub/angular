@@ -20,7 +20,7 @@ import { ɵgetDOM as getDOM } from "@angular/platform-browser";
 import { createTextMaskInputElement } from "text-mask-core/dist/textMaskCore";
 
 export class TextMaskConfig {
-  mask:
+  mask?:
     | Array<string | RegExp>
     | ((raw: string) => Array<string | RegExp>)
     | false;
@@ -73,7 +73,7 @@ export class MaskedInputDirective implements ControlValueAccessor, OnChanges {
   onTouched = () => {};
 
   private textMaskInputElement: any;
-  private inputElement: HTMLInputElement;
+  private inputElement!: HTMLInputElement;
 
   /** Whether the user is creating a composition string (IME events). */
   private _composing = false;
@@ -124,7 +124,7 @@ export class MaskedInputDirective implements ControlValueAccessor, OnChanges {
     );
   }
 
-  _handleInput(value) {
+  _handleInput(value: any) {
     if (!this._compositionMode || (this._compositionMode && !this._composing)) {
       this._setupMask();
 
@@ -166,9 +166,3 @@ export class MaskedInputDirective implements ControlValueAccessor, OnChanges {
     this._compositionMode && this._handleInput(value);
   }
 }
-
-@NgModule({
-  declarations: [MaskedInputDirective],
-  exports: [MaskedInputDirective],
-})
-export class TextMaskModule {}
