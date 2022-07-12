@@ -74,20 +74,34 @@
                         <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()">Show</button>
                     </div>
                     <div class="mr-4">
-                        <button mat-raised-button color="primary" type="submit">Pending Reports</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="pendingreportsearch()" [disabled]="pendingbtn">Pending Reports</button>
                     </div>
                 </div>
                 
             </div>
             <!-- Table -->
-            <div class="mt-3 h-3/5">
-                <div>
-                    <mat-label class="max-health-primary-color font-bold">List of all investigation (OPD)</mat-label>
+            <div class="mt-3 h-3/5" *ngIf="show">
+                <div class="ml-2">
+                    <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-5">
                     <maxhealth-table
                     [config]="config"
                     [data]="dispatchreport"
+                    #showtable
+                    ></maxhealth-table>
+                </div>
+            </div>
+
+            <div class="mt-3 h-3/5" *ngIf="pendingreport">
+                <div class="ml-2">
+                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
+                </div>
+                <div class="h-full mt-5">
+                    <maxhealth-table
+                    [config]="config"
+                    [data]="dispatchreport"
+                    #pendingtable
                     ></maxhealth-table>
                 </div>
             </div>
@@ -95,13 +109,13 @@
             <!-- Button -->
             <div class="flex h-1/5 float-right align-items-center mt-6">
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit">Export</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="exportbtn">Export</button>
                 </div>
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" (click)="savedialog()">Save</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
                 </div>
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit">Print</button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="printbtn">Print</button>
                 </div>
                 <div class="mr-4">
                     <button mat-raised-button color="primary" (click)="clear()" type="submit">Clear</button>

@@ -324,6 +324,13 @@ export namespace ApiConstants {
   export const gettransactiontype = 
   environment.BillingApiUrl + "api/outpatientbilling/getpatienthistorytransactiontype";
 
+  export const getregisteredpatientdetails = (IACode: string, RegistrationNo: number) => {
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getregisteredpatientdetail/"+IACode+'/'+RegistrationNo);
+  }
+
+  export const dispatchreportsave =
+  environment.PatientApiUrl + "api/patient/reportdispatchsave"
+
   export const approvalpostapproveApi =
     environment.PatientApiUrl + "api/patient/approverejectopregrequests";
 

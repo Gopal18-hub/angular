@@ -118,6 +118,7 @@
                 <maxhealth-table
                 [config]="config"
                 [data]="data"
+                (columnClick)="printrow($event)"
                 #table
                 ></maxhealth-table>
             </div>
@@ -127,7 +128,7 @@
                 <div class="mr-4">
                     <button mat-raised-button color="primary" type="submit" (click)="printdialog()">Print</button>
                 </div>
-                <div class="mr-4">
+                <div class="">
                     <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
                 </div>
             </div>

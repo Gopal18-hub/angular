@@ -8,6 +8,7 @@ import { MessageDialogService } from '../../../shared/ui/message-dialog/message-
 import { HttpService } from '@shared/services/http.service';
 import { DatePipe } from '@angular/common';
 import { getpatienthistorytransactiontypeModel } from '@core/models/getpatienthistorytransactiontypeModel.Model';
+import { getRegisteredPatientDetailsModel } from '@core/models/getRegisteredPatientDetailsModel.Model';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -15,7 +16,7 @@ import { getpatienthistorytransactiontypeModel } from '@core/models/getpatienthi
 })
 export class PatientHistoryComponent implements OnInit {
 
-  public patientDetails!: PatientDetails;
+  public patientDetails: getRegisteredPatientDetailsModel[] = [];
   public transactiontype: getpatienthistorytransactiontypeModel[] = [];
   patienthistoryFormData = {
     title: "",
@@ -46,6 +47,8 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
+    clickedRows: true,
+    // clickSelection: "single",
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
@@ -166,11 +169,10 @@ export class PatientHistoryComponent implements OnInit {
   dob:any;
   nationality:any;
   ssn:any;
-  @ViewChild("table") tableRows: any
+  @ViewChild("table") tableRows: any;
   constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private http: HttpService, private datepipe: DatePipe) { }
   today: any;
   fromdate: any;
-
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.patienthistoryFormData.properties,
@@ -190,7 +192,7 @@ export class PatientHistoryComponent implements OnInit {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.getPatientDetailsByMaxId();
+        this.getPatientDetails();
       }
     });
   }
@@ -211,7 +213,8 @@ export class PatientHistoryComponent implements OnInit {
     console.log(this.patienthistoryform.value);
   }
   printdialog()
-  {    
+  {  
+    console.log(this.tableRows.selection.selected);  
     this.msgdialog.success("Printing Successfull");
   }
   clear()
@@ -228,26 +231,41 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
+    this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
+    this.questions[0].readonly = false;
   }
-  getPatientDetailsByMaxId()
+  getPatientDetails()
   {
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
     if(regnumber != 0)
     {
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
-        .get(ApiConstants.patientDetails(regnumber, iacode))
-        .subscribe((resultData: PatientDetails) => {
+        .get(ApiConstants.getregisteredpatientdetails(iacode, regnumber))
+        .subscribe((resultData: getRegisteredPatientDetailsModel[]) => {
             this.patientDetails = resultData;
-            console.log(this.patientDetails);
-            this.pname = this.patientDetails.firstname;
-            this.age = this.patientDetails.age;
-            this.gender = this.patientDetails.sex;
-            this.dob = this.datepipe.transform(this.patientDetails.dateOfBirth, "dd-MM-YYYY");
-            this.nationality = this.patientDetails.nationalityName;
-            this.ssn = this.patientDetails.ssn;
-            this.patienthistoryform.controls["mobile"].setValue(this.patientDetails.pphone);
-          })
-        }
+            console.log(this.patientDetails[0]);
+            this.pname = this.patientDetails[0].firstName +" "+this.patientDetails[0].lastName;
+            this.age = this.patientDetails[0].age +" "+this.patientDetails[0].ageTypeName;
+            this.gender = this.patientDetails[0].genderName;
+            this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd-MM-YYYY");
+            this.nationality = this.patientDetails[0].lastName;
+            this.ssn = this.patientDetails[0].ssn;
+            this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);
+            this.questions[0].readonly = true;
+          },
+          (error)=>{
+            console.log(error);
+            this.clear();
+          }
+          )
+    }
+  }
+
+  printrow(event:any){
+    if(event.column == "printhistory"){
+      console.log(event.row);
+      this.printdialog();
+    }
   }
 }
