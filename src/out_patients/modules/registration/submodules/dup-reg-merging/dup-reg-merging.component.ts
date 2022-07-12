@@ -22,6 +22,8 @@ import { MessageDialogService } from "../../../../../shared/ui/message-dialog/me
 import { DatePipe } from "@angular/common";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { LookupService } from "@core/services/lookup.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-dup-reg-merging",
@@ -62,7 +64,9 @@ export class DupRegMergingComponent implements OnInit {
     private patientServie: PatientService,
     private searchService: SearchService,
     private messageDialogService: MessageDialogService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private lookupService: LookupService,
+    private router: Router
   ) {}
 
   config: any = {
@@ -161,8 +165,8 @@ export class DupRegMergingComponent implements OnInit {
   ngOnInit(): void {
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
-      .subscribe((formdata: any) => {
-        this.searchPatient(formdata.data);
+      .subscribe(async (formdata: any) => {
+        await this.loadGrid(formdata);
       });
   }
 
@@ -204,83 +208,65 @@ export class DupRegMergingComponent implements OnInit {
       });
   }
 
-  searchPatient(formdata: any) {
+  async loadGrid(formdata: any): Promise<any> {
+    this.isAPIProcess = false;
     this.defaultUI = false;
-    let dateOfBirth;
-
-    if (
-      formdata["dob"] != undefined ||
-      formdata["dob"] != null ||
-      formdata["dob"] != ""
-    ) {
-      dateOfBirth = this.datepipe.transform(formdata["dob"], "dd/MM/yyyy");
-    } else {
-      dateOfBirth = "";
-    }
-    // if (formdata['name'] == '' && formdata['phone'] == ''
-    // && formdata['dob'] == '' && formdata['email'] == '')
-    // {
-    //   return;
-    // }
-    // else
-    if (
-      (formdata["name"] == "" ||
-        formdata["name"] == undefined ||
-        formdata["name"] == null) &&
-      (formdata["phone"] == "" ||
-        formdata["phone"] == undefined ||
-        formdata["phone"] == null) &&
-      dateOfBirth != "" &&
-      (formdata["email"] == "" ||
-        formdata["email"] == undefined ||
-        formdata["email"] == null)
-    ) {
-      this.showmergespinner = false;
+    const lookupdata = await this.lookupService.searchPatient(formdata);
+    if (lookupdata == null || lookupdata == undefined) {
+      this.results = [];
       this.defaultUI = true;
-      this.mergingmessage =
-        "Please enter Name / Phone in combination with DOB as search criteria";
-      this.mergeicon = "placeholder";
-    }
-
-    this.patientList = [];
-    this.name = formdata["name"];
-    this.mobile = formdata["phone"];
-    this.email = formdata["email"];
-    this.dob = dateOfBirth || "";
-
-    this.getAllpatientsBySearch()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          this.showmergespinner = false;
-          resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
-            item.notereason = item.noteReason;
-            return item;
-          });
-          this.results = resultData;
-          this.results = this.patientServie.getAllCategoryIcons(this.results);
-          this.isAPIProcess = true;
-
-          setTimeout(() => {
-            this.tableRows.selection.changed
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                if (this.tableRows.selection.selected.length > 1) {
-                  this.mergebuttonDisabled = false;
-                } else {
-                  this.mergebuttonDisabled = true;
-                }
-              });
-          });
-        },
-        (error: any) => {
-          this.defaultUI = true;
-          this.showmergespinner = false;
-          this.mergingmessage = "No records found";
-          this.mergeicon = "norecordfound";
+      this.showmergespinner = false;
+      this.mergingmessage = "No records found";
+      this.mergeicon = "norecordfound";
+    } else {
+      if (
+        !formdata.data["name"] &&
+        !formdata.data["phone"] &&
+        formdata.data["dob"]
+      ) {
+        this.results = [];
+        this.defaultUI = true;
+        this.showmergespinner = false;
+        this.mergingmessage =
+          "Please enter Name / Phone in combination with DOB as search criteria";
+        this.mergeicon = "placeholder";
+      } else {
+        this.name = formdata.data["name"];
+        this.mobile = formdata.data["phone"];
+        this.email = formdata.data["email"];
+        let dateOfBirth;
+        if (formdata.data["dob"]) {
+          dateOfBirth = this.datepipe.transform(
+            formdata.data["dob"],
+            "dd/MM/yyyy"
+          );
+        } else {
+          dateOfBirth = "";
         }
-      );
+
+        const resultData = lookupdata.map((item: any) => {
+          item.fullname = item.firstName + " " + item.lastName;
+          item.notereason = item.noteReason;
+          return item;
+        });
+        this.results = resultData;
+        this.results = this.patientServie.getAllCategoryIcons(this.results);
+        this.isAPIProcess = true;
+        this.showmergespinner = false;
+        this.defaultUI = false;
+        setTimeout(() => {
+          this.tableRows.selection.changed
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (this.tableRows.selection.selected.length > 1) {
+                this.mergebuttonDisabled = false;
+              } else {
+                this.mergebuttonDisabled = true;
+              }
+            });
+        });
+      }
+    }
   }
 
   getAllpatientsBySearch() {

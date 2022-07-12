@@ -1,15 +1,17 @@
 <section>
-
-    <div class="float-right">
-        <span class="material-icons" style="cursor:pointer" mat-dialog-close (click)="insideclick()" >close</span>
+    <div>
+        <div>
+        <mat-label class="max-health-primary-color">Company IOM</mat-label>
+        <span class="material-icons float-right" mat-dialog-close>close</span>
+        </div>
+        <div class="textarea-height shadow-1">
+        <maxhealth-question
+        [question]="questions[0]"
+        [form]="companyiomForm"
+        [questions]="questions[0]"
+        [index]="0">
+        </maxhealth-question>
     </div>
-    <div class="mt-6">
-        <p class="company-class">Please select company first</p>
-    </div>
-    <div class="mt-12">
-        <button class="w-1/7 " mat-raised-button  mat-dialog-close>
-            OK
-        </button>
     </div>
    
     
