@@ -418,4 +418,28 @@ export namespace ApiConstants {
       hspLocationid
     );
   };
+
+  export const expiredpatientdetail = (
+    registrationno: number,
+    iacode: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getexpiredpatientdetails/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
+
+  export const deleteexpiredpatientdetail = (
+    registrationno: number,
+    iacode: string,
+    operatorid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+    );
+  };
 }

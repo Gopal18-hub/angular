@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
+import { BillingForm } from "@core/constants/BillingForm";
 
 @Component({
   selector: "max-service-deposit",
@@ -9,22 +10,14 @@ import { QuestionControlService } from "../../../../../../shared/ui/dynamic-form
 })
 export class ServiceDepositComponent implements OnInit {
   @Input() refundPage!: boolean;
-  servicedepositformData = {
-    type: "object",
-    title: "",
-    properties: {
-      servicetype: {
-        type: "autocomplete",
-      },
-      deposithead: {
-        type: "autocomplete",
-      },
-    },
-  };
-
+  @Output() eventemitter: EventEmitter<FormGroup> =
+    new EventEmitter<FormGroup>();
+  servicedepositformData = BillingForm.servicedepositFormData;
   servicedepositForm!: FormGroup;
   questions: any;
   onRefundpage: boolean = false;
+  servicetype: string = "Service Type";
+  deposithead: string = "Deposit Head";
 
   constructor(private formService: QuestionControlService) {}
 
@@ -37,5 +30,6 @@ export class ServiceDepositComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.onRefundpage = this.refundPage;
+    this.eventemitter.emit(this.servicedepositForm);
   }
 }

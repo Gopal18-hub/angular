@@ -24,3 +24,13 @@
     padding-bottom: 0 !important;
 
 }
+.btn{
+    padding: 1px;
+}
+::ng-deep .btn .mat-button-wrapper{
+    display: flex;
+    gap: 15px;
+    div{
+        display: flex;
+    }
+}

@@ -19,6 +19,8 @@ export const environment = {
   IdentityServerUrl: "https://localhost/",
   IentityServerRedirectUrl: "http://localhost:8100/",
   clientId: "hispwa",
+
+
 };
 
 /*
