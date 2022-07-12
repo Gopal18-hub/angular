@@ -811,7 +811,9 @@ export class OpRegistrationComponent implements OnInit {
         ) {
           this.getDistricyListByState(value);
           this.getCityListByState(value);
-          this.countrybasedflow = true;
+          if (!this.OPRegForm.controls["locality"].value) {
+            this.countrybasedflow = true;
+          }
         }
       });
 
@@ -966,12 +968,13 @@ export class OpRegistrationComponent implements OnInit {
       queryParams: {},
       relativeTo: this.route,
     });
+    this.flushAllObjects();
     this.formInit();
     this.formProcessingFlag = false;
     setTimeout(() => {
       this.formProcessing();
     }, 10);
-    this.flushAllObjects();
+
     //this.checkForMaxID();
     this.clearClicked = false;
   }
@@ -1823,6 +1826,10 @@ export class OpRegistrationComponent implements OnInit {
           // this.countrybasedflow = true;
           this.pincodebasedflow = false;
           this.OPRegForm.controls["pincode"].setValue(pincode);
+          this.questions[24].readonly = true;
+          this.questions[25].readonly = true;
+          this.questions[26].readonly = true;
+          this.questions[27].readonly = true;
           this.countrybasedflow = false;
           this.citybasedflow = false;
         }
@@ -2678,7 +2685,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
-      if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+      // if (this.OPRegForm.controls["fatherSpouse"].value == "Father") {
+      //   return this.OPRegForm.value.fatherSpouseName;
+      // }
+      if (this.OPRegForm.controls["fatherSpouse"].value == 1) {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2690,7 +2700,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["fatherSpouse"].value != undefined &&
       this.OPRegForm.controls["fatherSpouse"].value != ""
     ) {
-      if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
+      // if (this.OPRegForm.controls["fatherSpouse"].value != "Father") {
+      //   return this.OPRegForm.value.fatherSpouseName;
+      // }
+      if (this.OPRegForm.controls["fatherSpouse"].value == 2) {
         return this.OPRegForm.value.fatherSpouseName;
       }
     }
@@ -2783,24 +2796,27 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    if (btnname == "PrintLabel") {
-      this.reportService.getOPRegistrationPrintLabel(
-        this.OPRegForm.value.maxid
-      );
-      {
-        console.log("success");
-      }
-    } else if (btnname == "PrintForm") {
-      this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid);
-      {
-        console.log("success");
-      }
-    } else if (btnname == "PrintOD") {
-      this.reportService.getOPRegistrationOrganDonorForm(
-        this.OPRegForm.value.maxid
-      );
-      console.log("success");
-    }
+    this.reportService.openWindow(btnname, btnname, {
+      maxId: this.OPRegForm.value.maxid,
+    });
+    // if (btnname == "PrintLabel") {
+    //   this.reportService.getOPRegistrationPrintLabel(
+    //     this.OPRegForm.value.maxid
+    //   );
+    //   {
+    //     console.log("success");
+    //   }
+    // } else if (btnname == "PrintForm") {
+    //   this.reportService.getOPRegistrationForm(this.OPRegForm.value.maxid);
+    //   {
+    //     console.log("success");
+    //   }
+    // } else if (btnname == "PrintOD") {
+    //   this.reportService.getOPRegistrationOrganDonorForm(
+    //     this.OPRegForm.value.maxid
+    //   );
+    //   console.log("success");
+    // }
   }
 
   //for Date of birth and age calculation
