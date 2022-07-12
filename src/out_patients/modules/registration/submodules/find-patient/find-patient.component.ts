@@ -165,6 +165,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
             .subscribe(
               (resultData) => {
                 this.showspinner = false;
+                this.defaultUI = false;
                 resultData = resultData.map((item: any) => {
                   item.fullname = item.firstName + " " + item.lastName;
                   item.notereason = item.noteReason;
