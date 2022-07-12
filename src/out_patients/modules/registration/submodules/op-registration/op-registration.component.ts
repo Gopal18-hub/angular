@@ -178,7 +178,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "First Name",
         required: true,
-        pattern: "^[A-Za-z]{1}[0-9A-Za-z. '']+",
+        pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
         //onlyKeyPressAlpha: true,
       },
       middleName: {
@@ -192,7 +192,7 @@ export class OpRegistrationComponent implements OnInit {
         type: "string",
         title: "Last Name",
         required: true,
-        pattern: "[A-Za-z. '']{1,32}",
+        pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
         onlyKeyPressAlpha: true,
       },
       gender: {
@@ -208,7 +208,7 @@ export class OpRegistrationComponent implements OnInit {
         maximum: new Date(),
       },
       age: {
-        type: "number",
+        type: "string",
         title: "Age",
         required: true,
         pattern: "[0-9]{1,3}",
@@ -911,7 +911,11 @@ export class OpRegistrationComponent implements OnInit {
             let sex = this.titleList.filter((e) => e.name === value);
             if (sex.length) {
               let exists = this.genderList.filter((e) => e.id === sex[0].sex);
-              this.OPRegForm.controls["gender"].setValue(exists[0].id);
+              if (exists.length) {
+                this.OPRegForm.controls["gender"].setValue(exists[0].id);
+              } else {
+                this.OPRegForm.controls["gender"].setValue(0);
+              }
             }
           }
         }
@@ -3101,6 +3105,7 @@ export class OpRegistrationComponent implements OnInit {
               title: "",
               required: true,
               defaultValue: this.vip,
+              pattern: "^S*$",
             },
           },
         },
@@ -3114,7 +3119,11 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((result) => {
         if (result != "" && result != undefined) {
           this.vip = result.data.VipNotes;
+        } else {
+          this.vip = "";
+          this.OPRegForm.controls["vip"].setValue(false);
         }
+
         console.log("openVipNotes dialog was closed");
       });
   }
@@ -3133,8 +3142,8 @@ export class OpRegistrationComponent implements OnInit {
               type: "textarea",
               title: "",
               required: true,
-
               defaultValue: this.noteRemark,
+              pattern: "^[0-9A-Za-z]+",
             },
           },
         },
@@ -3149,6 +3158,9 @@ export class OpRegistrationComponent implements OnInit {
         console.log(result);
         if (result != "" && result != undefined) {
           this.noteRemark = result.data.notes;
+        } else {
+          this.noteRemark = "";
+          this.OPRegForm.controls["note"].setValue(false);
         }
         console.log("notes dialog was closed");
       });
@@ -3169,12 +3181,14 @@ export class OpRegistrationComponent implements OnInit {
               title: "BPL Card No.",
               required: true,
               defaultValue: this.ewsDetails.bplCardNo,
+              pattern: "^[0-9A-Za-z]+",
             },
             BPLAddress: {
               type: "textarea",
               title: "Address on card",
               required: true,
               defaultValue: this.ewsDetails.bplCardAddress,
+              pattern: "^[0-9A-Za-z]+",
             },
           },
         },
@@ -3215,6 +3229,7 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
+              pattern: "^[0-9A-Za-z]+",
             },
           },
         },
@@ -3227,6 +3242,9 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((result) => {
         if (result != "" && result != undefined) {
           this.hwcRemark = result.data.HWCRemark;
+        } else {
+          this.hwcRemark = "";
+          this.OPRegForm.controls["hwc"].setValue(false);
         }
         console.log("HWC dialog was closed");
       });
