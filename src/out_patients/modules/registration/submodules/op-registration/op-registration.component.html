@@ -25,7 +25,7 @@
       class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
     >
       <div class="w-6/7 flex h-full">
-        <form [formGroup]="OPRegForm" class="mt-1 mb-0">
+        <form [formGroup]="OPRegForm" class="mt-1 mb-0" autocomplete="off">
           <div class="flex flex-wrap">
             <div class="w-1/3 flex">
               <div class="font-xs mr-4 w-1/3">
@@ -528,7 +528,7 @@
                     class="w-1/45"
                     type="submit"
                     [disabled]="!MaxIDExist"
-                    (click)="openReportModal('PrintOD')"
+                    (click)="openReportModal('printOrganDonorForm')"
                   >
                     Print OD
                   </button>
@@ -558,7 +558,7 @@
             color="primary"
             class="w-full"
             type="button"
-            [disabled]="dmsClicked"
+            [disabled]="!MaxIDExist"
             (click)="getPatientDMSDetail()"
           >
             DMS
@@ -667,7 +667,7 @@
             type="button"
             class="mt-1"
             [disabled]="!MaxIDExist"
-            (click)="openReportModal('PrintForm')"
+            (click)="openReportModal('PrintFormReport')"
           >
             Print Form
           </button>

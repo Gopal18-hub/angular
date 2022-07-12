@@ -22,7 +22,11 @@ import { takeUntil } from "rxjs/operators";
   styleUrls: ["./hot-listing-approval.component.scss"],
 })
 export class HotListingApprovalComponent implements OnInit {
-  link1 = ["OP Registration Approval", "Hot Listing Approval"]; //, 'OP Refund Approval'
+ link1 = [
+    "OP Registration Approval",
+    "Hot Listing Approval",
+    "OP Refund Approval",
+  ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[1];
   activeLink2 = this.link2[0];

@@ -142,8 +142,8 @@ export namespace MaxModules {
             {
               id: 218,
               title: "OP Refund Approval",
-              defaultPath: "/out-patient-billing/",
-              globalSearchKey: "global",
+              defaultPath: "/out-patient-billing/op-refund-approval",
+              globalSearchKey: "opapproval",
             },
             {
               id: 219,
