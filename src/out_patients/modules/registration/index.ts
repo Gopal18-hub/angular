@@ -17,6 +17,7 @@ import { MatInputModule } from "@angular/material/input";
 import {
   MatDialogModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogConfig,
 } from "@angular/material/dialog";
 import { MatTabsModule } from "@angular/material/tabs";
 import { CommonModule } from "@angular/common";
@@ -111,7 +112,10 @@ import { AuthGuardService } from "../../../shared/services/guards/auth-guard.ser
     CookieService,
     PendingChangesGuard,
     AuthGuardService,
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { autoFocus: false } },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: { ...new MatDialogConfig(), autoFocus: false },
+    },
   ],
   entryComponents: [AppointmentSearchComponent],
   bootstrap: [],
