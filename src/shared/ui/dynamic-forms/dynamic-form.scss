@@ -30,3 +30,7 @@ mat-label.mat-form-field-required-marker {
     margin-left: 0.2em;
   }
 }
+
+::ng-deep .max-select-overlay-panel {
+  transform: translate(-8px, 22px) !important;
+}

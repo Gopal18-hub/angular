@@ -42,15 +42,16 @@
       height: 1.925rem;
       align-self: flex-end;
       border-radius: 5px 5px 0 0;
-      padding: 0 0.2em;
+      padding: 0 0.4rem;
       white-space: nowrap;
-      font-size: 0.8rem;
+      font-size: 1rem;
       &:first-child {
         margin-left: 3em;
       }
       &.active {
         background-color: #fff;
         color: #45c0be;
+        font-weight: 600;
       }
     }
   }
