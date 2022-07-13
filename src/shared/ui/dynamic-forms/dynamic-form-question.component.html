@@ -36,6 +36,7 @@
               [maxlength]="question.maximum"
               #element
               (keypress)="keyPressAlpha($event)"
+              autocomplete="off"
             />
           </ng-container>
 
@@ -54,6 +55,7 @@
               [minlength]="question.minimum"
               [maxlength]="question.maximum"
               #element
+              autocomplete="off"
             />
           </ng-container>
 
@@ -135,6 +137,7 @@
             [placeholder]="question.placeholder"
             [pattern]="question.pattern"
             #element
+            autocomplete="off"
           />
           <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>
@@ -183,6 +186,7 @@
             [pattern]="question.pattern"
             #element
             (keypress)="keyPressNumbers($event)"
+            autocomplete="off"
           />
           <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>
@@ -255,6 +259,7 @@
             [pattern]="question.pattern"
             #element
             list="defaultEmails"
+            autocomplete="off"
           />
           <datalist
             id="defaultEmails"
