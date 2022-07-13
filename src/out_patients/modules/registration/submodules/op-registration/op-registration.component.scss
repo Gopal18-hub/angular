@@ -11,6 +11,7 @@
     form {
       ::ng-deep mat-label {
         color: var(--primary-color);
+        font-weight: 600;
       }
       .change-password {
         color: var(--primary-color);
