@@ -10,8 +10,8 @@
     "tslint": "tslint -c tslint.json --project ./tsconfig.json",
     "stylelint": "stylelint \"src/**/*.+(css|scss)\" --config .stylelintrc.json",
     "lint": "yarn -s tslint && yarn -s stylelint",
-    "reports-dev-watch": "ng build reports --watch --configuration development",
-    "reports-dev-run": "http-server dist/reports/ -p 4205"
+    "reports-dev-run": "ng serve reports --serve-path reports --port 4205",
+    "auth-dev-run": "ng serve reports --serve-path reports --port 4205"
   },
   "private": true,
   "dependencies": {
