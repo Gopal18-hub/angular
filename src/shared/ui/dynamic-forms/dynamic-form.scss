@@ -5,6 +5,9 @@
     }
   }
 }
+mat-label {
+  font-weight: 600;
+}
 .full-width {
   width: 100%;
 }
@@ -28,5 +31,15 @@ mat-label.mat-form-field-required-marker {
     content: "*";
     color: red;
     margin-left: 0.2em;
+  }
+}
+
+.mat-select-panel.mat-primary.im-select-dropdown {
+  min-width: calc(100% + 12px) !important;
+}
+::ng-deep .max-select-overlay-panel {
+  transform: translate(-8px, 22px) !important;
+  &[style*="bottom"] {
+    transform: translate(-8px, -24px) !important;
   }
 }
