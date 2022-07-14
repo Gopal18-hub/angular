@@ -62,3 +62,12 @@
 .height-max-content {
   height: max-content;
 }
+
+.fourth-column {
+  > :first-child {
+    height: 10rem;
+  }
+  > :nth-child(2) {
+    height: 12.5rem;
+  }
+}

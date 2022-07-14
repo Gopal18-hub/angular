@@ -1,5 +1,5 @@
 <section
-  class="ml-4 shadow-1 mr-4 max-body-wrapper"
+  class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto"
   *ngIf="!formProcessingFlag"
 >
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
@@ -22,7 +22,7 @@
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <div
-      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg"
+      class="shadow-2 flex h-full w-full opd-reg-wrapper-box px-4 py-0 border-radius-xxlg pb-2"
     >
       <div class="w-6/7 flex h-full">
         <form [formGroup]="OPRegForm" class="mt-1 mb-0" autocomplete="off">
@@ -539,7 +539,7 @@
           </div>
         </form>
       </div>
-      <div class="w-1/7 flex flex-column">
+      <div class="w-1/7 flex flex-column fourth-column">
         <div
           class="mt-2 px-4 py-4 h-3/10 flex flex-column justify-between hash-background"
         >

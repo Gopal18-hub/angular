@@ -766,10 +766,12 @@ export class OpRegistrationComponent implements OnInit {
         if (value) {
           //this.OPRegForm.controls["dob"].setValue(value);
           // this.onageCalculator();
-          this.questions[9].readonly = true;
+          //this.questions[9].disabled = true;
+          this.OPRegForm.controls["age"].disable();
           this.questions[10].disabled = true;
         } else {
-          this.questions[9].readonly = false;
+          //this.questions[9].disabled = false;
+          this.OPRegForm.controls["age"].enable();
           this.questions[10].disabled = false;
           this.OPRegForm.controls["age"].setValue("");
           this.OPRegForm.controls["ageType"].setValue(0);
