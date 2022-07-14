@@ -5,13 +5,13 @@ export namespace CrystalReport {
     "https://MaxHIS-Reports-sit.maxhealthcare.in/PrintOrganDonorForm?BHTN.230538";
 
   export const PrintOrganDonorForm = (params: any) => {
-    return `https://MaxHIS-Reports-sit.maxhealthcare.in/PrintOrganDonorForm?${params.maxId}`;
+    return environment.crystalReportBaseUrl + `PrintOrganDonorForm?${params.maxId}`;
   };
   export const PrintLabel = (params: any) => {
-    return `https://MaxHIS-Reports-sit.maxhealthcare.in/PrintLabel?${params.maxId}`;
+    return environment.crystalReportBaseUrl + `PrintLabel?${params.maxId}`;
   };
   export const PrintFormReport = (params: any) => {
-    return `https://MaxHIS-Reports-sit.maxhealthcare.in/PrintFormReport?${params.maxId}`;
+    return environment.crystalReportBaseUrl + `PrintFormReport?${params.maxId}`;
   };
   export const billingreport = (params: any) => {
     return (
