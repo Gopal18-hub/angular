@@ -178,7 +178,7 @@ export class PatientHistoryComponent implements OnInit {
   findpathismessage: string | undefined;
   patienthistorytable: boolean = false;
   defaultUI: boolean = true;
-  printbtn:boolean = true;
+  printbtn:boolean = false;
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("stationId"));
@@ -254,13 +254,19 @@ export class PatientHistoryComponent implements OnInit {
           if(resultdata.length == 0)
           {
             console.log("empty");
+            this.defaultUI = false;
+            this.patienthistorytable = true;
+            this.patienthistorylist = this.data;
             // this.patienthistorytable = false;
             // this.defaultUI = true;
             // this.findpathismessage = "No records found";
             // this.findpathisimage = "norecordfound";
           }
           else{
-            this.patienthistorylist = resultdata;
+            this.defaultUI = false;
+            this.patienthistorytable = true;
+            this.patienthistorylist = this.data;
+            // this.patienthistorylist = resultdata;
           }
         },
         (error)=>{
@@ -296,7 +302,8 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
     this.questions[0].readonly = false;
-    this.defaultUI = false;
+    this.patienthistorytable = false;
+    this.defaultUI = true;
     this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.patientDetails = [];
   }
@@ -341,16 +348,16 @@ export class PatientHistoryComponent implements OnInit {
       this.printdialog();
     }
   }
-  ngDoCheck()
-  { 
-    setTimeout(() => {
-      if(this.tableRows.selection.selected.length > 0){
-        this.printbtn = false;
-      }
-      else
-      {
-        this.printbtn = true;
-      }
-    }, 100);
-  }
+  // ngDoCheck()
+  // { 
+  //   setTimeout(() => {
+  //     if(this.tableRows.selection.selected.length > 0){
+  //       this.printbtn = false;
+  //     }
+  //     else
+  //     {
+  //       this.printbtn = true;
+  //     }
+  //   }, 100);
+  // }
 }
