@@ -2556,14 +2556,66 @@ export class OpRegistrationComponent implements OnInit {
     ));
   }
 
+  // validationerror:boolean=false;
   //WORKING ON THE BELOW FUNCTION
   patientSubmitDetails: patientRegistrationModel | undefined;
   // registationFormSubmit()
   // {}
   registationFormSubmit() {
-    this.postForm();
+    if (!this.validateForm()) {
+      //validateForm return boolean variable if validation error present or not
+      this.postForm();
+    }
   }
 
+  validateForm(): boolean {
+    let validationerror = false;
+    if (!validationerror) {
+      if (this.OPRegForm.value.note) {
+        if (this.noteRemark.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter note reason");
+        } else {
+          validationerror = false;
+        }
+      }
+    }
+
+    if (!validationerror) {
+      if (this.OPRegForm.value.hwc) {
+        if (this.hwcRemark.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter hwc remark");
+        } else {
+          validationerror = false;
+        }
+      }
+    }
+
+    if (!validationerror) {
+      if (this.OPRegForm.value.vip) {
+        if (this.vip.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter vip reason");
+        } else {
+          validationerror = false;
+        }
+      }
+    }
+
+    if (!validationerror) {
+      if (this.OPRegForm.value.ews) {
+        if (this.vip.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter vip reason");
+        } else {
+          validationerror = false;
+        }
+      }
+    }
+
+    return validationerror;
+  }
   getPatientSubmitRequestBody(): patientRegistrationModel {
     console.log(this.OPRegForm.controls["title"].value);
     let iacode = this.cookie.get("LocationIACode");
