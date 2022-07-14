@@ -3554,6 +3554,9 @@ export class OpRegistrationComponent implements OnInit {
               options: hcfMasterList,
             },
           },
+          layout: {
+            hcf: "w-full",
+          },
         },
         layout: "double",
         buttonLabel: "Save",

@@ -10,7 +10,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { MatSelectModule } from "@angular/material/select";
+import { MatSelectModule, MAT_SELECT_CONFIG } from "@angular/material/select";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
@@ -20,6 +20,7 @@ import { OptionGroupComponent } from "./partials/option-group/option-group.compo
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MaskedInputDirective } from "../../utilities/directives/mask.directive";
 
 @NgModule({
   imports: [
@@ -39,8 +40,18 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
     MatDatepickerModule,
     MatCheckboxModule,
   ],
-  exports: [DynamicFormQuestionComponent],
-  declarations: [DynamicFormQuestionComponent, OptionGroupComponent],
-  providers: [QuestionControlService],
+  exports: [DynamicFormQuestionComponent, MaskedInputDirective],
+  declarations: [
+    DynamicFormQuestionComponent,
+    OptionGroupComponent,
+    MaskedInputDirective,
+  ],
+  providers: [
+    QuestionControlService,
+    {
+      provide: MAT_SELECT_CONFIG,
+      useValue: { overlayPanelClass: "max-select-overlay-panel" },
+    },
+  ],
 })
 export class DynamicFormsModule {}
