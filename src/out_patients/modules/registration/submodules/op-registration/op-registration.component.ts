@@ -2989,10 +2989,10 @@ export class OpRegistrationComponent implements OnInit {
   onageCalculator() {
     console.log(this.OPRegForm.value.dob);
     // if (!this.MaxIDExist) {
-    if (this.OPRegForm.value.dob == "") {
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(null);
-    }
+    //if (this.OPRegForm.value.dob == "") {
+    //this.OPRegForm.value.age = null;
+    //this.OPRegForm.controls["ageType"].setValue(null);
+    // }
     this.timeDiff = 0;
     if (this.OPRegForm.value.dob) {
       this.dobFlag = true;
