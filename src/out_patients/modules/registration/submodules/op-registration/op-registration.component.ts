@@ -766,10 +766,12 @@ export class OpRegistrationComponent implements OnInit {
           //this.OPRegForm.controls["dob"].setValue(value);
           // this.onageCalculator();
           this.questions[9].readonly = true;
-          this.questions[10].disable();
+          this.questions[10].disabled = true;
         } else {
           this.questions[9].readonly = false;
-          this.questions[10].enable();
+          this.questions[10].disabled = false;
+          this.OPRegForm.controls["age"].setValue("");
+          this.OPRegForm.controls["ageType"].setValue(0);
         }
       });
 
@@ -777,7 +779,11 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          this.questions[8].disabled = true;
+          if (!this.OPRegForm.value.dob) {
+            this.questions[8].disabled = true;
+          } else {
+            this.questions[8].disabled = false;
+          }
         } else {
           this.questions[8].disabled = false;
         }
@@ -3191,7 +3197,7 @@ export class OpRegistrationComponent implements OnInit {
           this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
           this.questions[8].customErrorMessage =
             "DOB is required, Age is less than 18 Years";
-          this.questions[8].readonly = false;
+          this.questions[8].disabled = false;
           this.OPRegForm.controls["dob"].markAsTouched();
         }
       } else if (
