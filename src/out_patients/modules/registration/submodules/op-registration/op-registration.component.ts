@@ -740,21 +740,21 @@ export class OpRegistrationComponent implements OnInit {
 
     // });
 
-    this.OPRegForm.controls["dob"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value != undefined && value != null && value != "" && value > 0) {
-          //this.OPRegForm.controls["dob"].setValue(value);
-          this.onageCalculator();
-        }
-      });
+    // this.OPRegForm.controls["dob"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((value: any) => {
+    //     if (value) {
+    //       //this.OPRegForm.controls["dob"].setValue(value);
+    //       this.onageCalculator();
+    //     }
+    //   });
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value != undefined && value != null && value != "" && value > 0) {
-          this.validatePatientAge();
+          this.validatePatientAge(value);
           this.getSimilarpatientlistonagetype();
         }
       });
@@ -2138,11 +2138,11 @@ export class OpRegistrationComponent implements OnInit {
       this.patientDetails?.middleName
     );
     this.OPRegForm.controls["gender"].setValue(this.patientDetails?.sex);
-    if (this.patientDetails?.dob) {
-      this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
-    } else {
-      this.OPRegForm.controls["dob"].setValue("");
-    }
+    //if (this.patientDetails?.dob) {
+    this.OPRegForm.controls["dob"].setValue(this.patientDetails?.dateOfBirth);
+    // } else {
+    //   this.OPRegForm.controls["dob"].setValue("");
+    // }
     this.OPRegForm.controls["age"].setValue(this.patientDetails?.age);
     this.OPRegForm.controls["ageType"].setValue(this.patientDetails?.agetype);
     this.OPRegForm.controls["emailId"].setValue(this.patientDetails?.pemail);
@@ -2876,6 +2876,7 @@ export class OpRegistrationComponent implements OnInit {
             timedifference / (1000 * 3600 * 24)
           );
 
+          Difference_In_Days = Difference_In_Days == 0 ? 1 : Difference_In_Days;
           if (
             (this.timeDiff <= 0 || this.timeDiff == 1) &&
             Difference_In_Days < 30
@@ -2886,14 +2887,14 @@ export class OpRegistrationComponent implements OnInit {
                 Math.floor(Difference_In_Days)
               );
               this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[0].id
+                this.ageTypeList[2].id
               );
-              console.log(this.ageTypeList[0].name);
+              console.log(this.ageTypeList[2].name);
             }
           } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-            console.log(this.ageTypeList[3].name);
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+            console.log(this.ageTypeList[1].name);
           }
         } else {
           let currentmonth = new Date(Date.now()).getMonth();
@@ -2910,11 +2911,11 @@ export class OpRegistrationComponent implements OnInit {
                 this.OPRegForm.controls["age"].setValue(monthDiff);
               }
             }
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
           } else {
             this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[4].id);
-            console.log(this.ageTypeList[4].name);
+            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
+            console.log(this.ageTypeList[0].name);
           }
         }
       } else {
@@ -3025,7 +3026,7 @@ export class OpRegistrationComponent implements OnInit {
       }
     }
   }
-  validatePatientAge() {
+  validatePatientAge(agetype: any) {
     //need to implement logic for patient who has age < 18 years but DOB not provided.
     // need to mention DOB as mandatory.
     if (
@@ -3033,12 +3034,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.age != undefined ||
       this.OPRegForm.value.age != ""
     ) {
-      if (
-        this.OPRegForm.value.age > 0 &&
-        this.OPRegForm.value.age < 18 &&
-        (this.OPRegForm.controls["ageType"].value != null ||
-          this.OPRegForm.controls["ageType"].value != undefined)
-      ) {
+      if (agetype != 1 || (agetype == 1 && this.OPRegForm.value.age < 18)) {
         if (
           this.OPRegForm.value.dob == null ||
           this.OPRegForm.value.dob == undefined ||
@@ -3051,7 +3047,8 @@ export class OpRegistrationComponent implements OnInit {
         }
       } else if (
         this.OPRegForm.controls["ageType"].value == 1 &&
-        this.OPRegForm.value.age >= 18
+        this.OPRegForm.value.age >= 18 &&
+        agetype == 1
       ) {
         this.OPRegForm.controls["dob"].setErrors(null);
         this.questions[8].customErrorMessage = "";
@@ -3105,7 +3102,6 @@ export class OpRegistrationComponent implements OnInit {
               title: "",
               required: true,
               defaultValue: this.vip,
-              pattern: "^S*$",
             },
           },
         },
@@ -3143,7 +3139,6 @@ export class OpRegistrationComponent implements OnInit {
               title: "",
               required: true,
               defaultValue: this.noteRemark,
-              pattern: "^[0-9A-Za-z]+",
             },
           },
         },
@@ -3229,7 +3224,6 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
-              pattern: "^[0-9A-Za-z]+",
             },
           },
         },
