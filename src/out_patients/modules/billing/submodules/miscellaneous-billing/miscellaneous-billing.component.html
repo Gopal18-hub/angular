@@ -1,1 +1,289 @@
-<p>miscellaneous-billing works!</p>
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-2">
+        <a mat-tab-link [active]="true">Miscellaneous Billing</a>
+      </li>
+    </ul>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <div class="h-full w-full">
+      <form [formGroup]="miscForm">
+        <!---------------------------------FIRST ROW----------------------------------------------------->
+        <div class="pl-1 pt-0 ml-2 mt-2 mr-2 border-radius-lg flex w-auto bg-deposit">
+            <div class="w-full">
+          <div class="w-full pt-2">
+            <div class="flex">
+              <mat-label class="wt-nowrap">Max ID</mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[0]"
+                  [form]="miscForm"
+                  [questions]="questions[0]"
+                  [index]="0"
+                >
+                </maxhealth-question>
+              </div>
+
+              <mat-label class="ml-1 wt-nowrap">SSN</mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[1]"
+                  [form]="miscForm"
+                  [questions]="questions[1]"
+                  [index]="1"
+                >
+                </maxhealth-question>
+              </div>
+
+              <mat-label class="ml-1 wt-nowrap">Mobile No</mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[2]"
+                  [form]="miscForm"
+                  [questions]="questions[2]"
+                  [index]="2"
+                >
+                </maxhealth-question>
+              </div>
+
+              <mat-label class="ml-1 wt-nowrap">Booking ID</mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[3]"
+                  [form]="miscForm"
+                  [questions]="questions[3]"
+                  [index]="3"
+                >
+                </maxhealth-question>
+              </div>
+              <mat-label class="ml-1 wt-nowrap"
+                >Company<span><a> IOM</a></span></mat-label
+              >
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[2]"
+                  [form]="miscForm"
+                  [questions]="questions[2]"
+                  [index]="2"
+                >
+                </maxhealth-question>
+              </div>
+              <mat-label class="ml-1 wt-nowrap">Corporate</mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[4]"
+                  [form]="miscForm"
+                  [questions]="questions[4]"
+                  [index]="4"
+                >
+                </maxhealth-question>
+              </div>
+              <mat-label class="ml-1 wt-nowrap">Narration </mat-label>
+              <div class="ml-2 wt-mid h-full bg-white">
+                <maxhealth-question
+                  [question]="questions[5]"
+                  [form]="miscForm"
+                  [questions]="questions[5]"
+                  [index]="5"
+                >
+                </maxhealth-question>
+              </div>
+              <div class="ml-2 w-3/10 h-full">
+                <maxhealth-question
+                  [question]="questions[6]"
+                  [form]="miscForm"
+                  [questions]="questions[6]"
+                  [index]="6"
+                >
+                </maxhealth-question>
+              </div>
+
+              
+              
+            </div>
+          </div></div>
+        </div>
+
+        <!---------------------------------SECOND ROW----------------------------------------------------->
+
+        <div class="p-1 ml-2 mt-1 mr-2 border-radius-lg flex w-auto bg-deposit">
+         <div class="w-full">
+          <div class="h-2/5 wt-nowrap font-bold">
+            
+                 <div class="float-left pt-2">
+                <mat-label class="ml-2 mr-2 wt-nowrap" >Name:</mat-label>
+                Mr. Anwar ali
+              
+                <mat-label class="ml-5 mr-2 wt-nowrap">Age: </mat-label>             
+                <mat-label>  29 years</mat-label>             
+             
+                <mat-label class="ml-5 mr-2 wt-nowrap">Gender: </mat-label>               
+                  <mat-label>Male</mat-label>               
+             
+                <mat-label class="ml-5 mr-2 wt-nowrap">DOB: </mat-label>               
+                <mat-label>12/12/2022</mat-label>              
+             
+                <mat-label class="ml-5 mr-2 wt-nowrap">Nationality: </mat-label>             
+                <mat-label> Indian</mat-label>
+             
+                <mat-label class="ml-5 mr-2 wt-nowrap">SSN: </mat-label>                       
+                <mat-label> 00022202355</mat-label> 
+                </div>
+               
+            
+             <div class="flex mt-0 float-right">
+                <button
+                mat-raised-button
+                color="primary"
+                class="w-1/20"
+                type="submit"
+              >
+              DMS
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                class="w-1/20 ml-2"
+                type="button"
+              >
+               Visit History
+              </button>
+            </div>    
+            </div>
+            
+        </div>    
+        </div>      
+              
+       </form>  
+        
+        
+        <!---------------------------------Third BLOCK----------------------------------------------------->
+        <div class="p-1 mt-1 mr-2 ml-2 border-radius-lg bg-billdetails">
+        
+                <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="mb-0 h-white-banner text-center font-base font-bold">        
+                    <ul class="list-unstyled flex items-end font-base font-bold w-full">
+                       <li class="ml-0 mr-1 bg-white border-radius-lg font-base font-bold"  *ngFor="let link of linkList">
+                         <a mat-tab-link class="cursor-pointer pb-4 font-base font-bold"  [active]="activeLink == link ? true : false" > {{link}}</a>
+                       </li>
+                       
+                     </ul>            
+                 </nav>
+                 <div class="bg-white h-service border-radius-lg mt-0">
+                    <div class="mt-0 mr-2 border-radius-lg flex w-auto">
+                        <form [formGroup]="miscServBillForm">
+                            <div class="flex w-full mt-0">
+                                <div class="ml-2 w-1/10 h-full">
+                                    <maxhealth-question
+                                      [question]="question[0]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[0]"
+                                      [index]="0"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+                                  <div class="ml-2  w-1/15 h-full">
+                                    <maxhealth-question
+                                      [question]="question[1]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[1]"
+                                      [index]="1"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+
+                                <!-- TARRIC PRICE BLOCK -->
+                                  <div class="ml-2   w-1/20 h-full">
+                                    <maxhealth-question
+                                      [question]="question[2]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[2]"
+                                      [index]="2"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+
+                                  <!-- QTY BLOCK -->
+                                  <div class="ml-2  w-1/20 h-full">
+                                    <maxhealth-question
+                                      [question]="question[3]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[3]"
+                                      [index]="3"
+                                    >
+                                    </maxhealth-question>
+                                  </div> 
+                                  <!-- REQUIRED AMOUNT BLOCK -->
+                                  <div class="ml-2  w-1/20 h-full">
+                                    <maxhealth-question
+                                      [question]="question[4]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[4]"
+                                      [index]="4"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+
+                                  <!-- PROCEDURE DOCTOR BLOCK-->
+                                  <div class="ml-2 w-1/15 h-full">
+                                    <maxhealth-question
+                                      [question]="question[5]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[5]"
+                                      [index]="5"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+
+                                  <!-- REMARK BLOCK -->
+                                  <div class="ml-2 w-1/15 h-full">
+                                    <maxhealth-question
+                                      [question]="question[6]"
+                                      [form]="miscServBillForm"
+                                      [questions]="question[6]"
+                                      [index]="6"
+                                    >
+                                    </maxhealth-question>
+                                  </div>
+                                  <div class="float-right">
+                                    <button
+                                    mat-raised-button
+                                    color="primary"
+                                    class="flex w-1/20 mt-3 float-right ml-2"
+                                    type="button"
+                                  >
+                                  Add
+                                  </button>
+                                </div> 
+                            </div>
+                          
+                        </form>
+                        </div>
+                <div class="h-1/2 ml-2 mr-1">
+ 
+                    <ng-container class="w-screen ">
+                        <maxhealth-table class="" #serviceselectedList
+                          [config]="config"
+                          [data]="serviceselectedList"
+                        ></maxhealth-table>
+                      </ng-container>
+                   
+                <!-- </div> -->
+            </div> 
+                    </div>
+            </div>
+
+            <div class="flex mt-1 mr-3 float-right">
+                <button
+                mat-raised-button
+                color="primary"
+                class="w-1/20 "
+                type="submit"
+              >
+              Clear
+              </button>
+        </div>
+        </div>
+    
+  </mat-tab-nav-panel>
+</section>

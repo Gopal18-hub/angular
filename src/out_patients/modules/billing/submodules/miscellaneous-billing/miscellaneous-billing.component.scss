@@ -1,0 +1,46 @@
+.bg-deposit{
+    background-color: #F6F6F6;
+    color:#004084;
+}
+form {
+    ::ng-deep mat-label {
+      color: var(--primary-color);
+    }
+    .change-password {
+      color: var(--primary-color);
+    }
+  }
+.bg-thirdrow{
+    background-color: #ECECEC;     
+   
+}
+::ng-deep .input1 .mat-form-field-infix{
+    text-align: right !important;  
+}
+.bg-white{
+    background-color:white;
+}
+::ng-deep .mat-form-field-wrapper{
+
+    padding-bottom: 0 !important;
+
+}
+.wt-nowrap{
+    white-space: nowrap;
+}
+.wt-mid{
+  width:7%  
+}
+.h-white-banner
+{
+ height: 9%;   
+}
+.bg-billdetails{
+    background-color:#45C0BE; 
+    height: 65%;
+}
+.h-service
+{
+    height: 90%;
+    border-radius: 0% 10px 10px 10px;
+}
