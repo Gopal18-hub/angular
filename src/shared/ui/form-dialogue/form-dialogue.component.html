@@ -19,7 +19,7 @@
     >
       <div
         *ngFor="let question of questions; let i = index"
-        class="mb-1"
+        class="mb-1 {{ data.form?.layout && data.form?.layout[question.key] }}"
         [ngClass]="{
           'hidden display-none': question.type == 'hidden',
           'w-1/45': data.layout == 'double',
