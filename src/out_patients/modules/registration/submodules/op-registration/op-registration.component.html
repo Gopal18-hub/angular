@@ -365,7 +365,7 @@
               class="opd-reg-wrapper-box-check flex justify-between flex-wrap w-1/4"
             >
               <mat-card
-                class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color pb-0"
+                class="w-full opd-reg-wrapper-box-checboxcontainer flex flex-wrap max-health-primary-color height-max-content"
               >
                 <!-- (click)="hotlistClick($event)" -->
                 <div class="flex">
@@ -453,10 +453,8 @@
             </div>
             <div class="mx-3">&nbsp;</div>
 
-            <div class="opd-reg-wrapper-box-radio flex flex-wrap w-1/3">
-              <mat-card
-                class="w-full opd-reg-wrapper-box-checboxcontainer pb-0"
-              >
+            <div class="opd-reg-wrapper-box-radio flex flex-column w-1/3">
+              <mat-card class="w-full opd-reg-wrapper-box-checboxcontainer">
                 <h3 class="max-health-primary-color">Payment Mode</h3>
                 <!-- CASH RADIO BUTTON -->
                 <div class="flex flex-wrap">
@@ -489,7 +487,7 @@
 
               <!-- SAVE MODIFY BUTTON -->
               <div class="flex w-full justify-between flex-wrap flex-column">
-                <div class="flex justify-between mb-0">
+                <div class="flex justify-between mb-3 mt-0">
                   <button
                     mat-raised-button
                     color="primary"
