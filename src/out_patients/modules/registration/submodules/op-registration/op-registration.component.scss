@@ -11,6 +11,7 @@
     form {
       ::ng-deep mat-label {
         color: var(--primary-color);
+        font-weight: 600;
       }
       .change-password {
         color: var(--primary-color);
@@ -24,6 +25,8 @@
     }
     &-checboxcontainer {
       background-color: #f6f6f6;
+      font-weight: 600;
+      box-shadow: none;
       > * {
         margin-bottom: 0.5em;
       }
