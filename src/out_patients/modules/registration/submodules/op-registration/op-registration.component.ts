@@ -2075,6 +2075,11 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.value.nationality.title == "Indian"
       ) {
         passportdetailspresent = true;
+      } else if (
+        this.OPRegForm.value.foreigner &&
+        this.passportDetails.passportNo != ""
+      ) {
+        passportdetailspresent = true;
       } else {
         passportdetailspresent = false;
       }
@@ -2625,6 +2630,16 @@ export class OpRegistrationComponent implements OnInit {
     if (!validationerror) {
       if (!this.OPRegForm.controls["title"].value) {
         this.messageDialogService.error("Please enter title");
+      }
+    }
+    if (!validationerror) {
+      if (!this.OPRegForm.controls["gender"].value) {
+        this.messageDialogService.error("Please enter gender");
+      }
+    }
+    if (!validationerror) {
+      if (!this.OPRegForm.controls["email"].value) {
+        this.messageDialogService.error("Please enter email");
       }
     }
     if (!validationerror) {
