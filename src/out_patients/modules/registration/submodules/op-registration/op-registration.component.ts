@@ -63,6 +63,7 @@ import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 import { AnimationPlayer } from "@angular/animations";
 import { TileStyler } from "@angular/material/grid-list/tile-styler";
 import { LookupService } from "@core/services/lookup.service";
+import * as moment from "moment";
 
 export interface DialogData {
   expieryDate: Date;
@@ -3609,7 +3610,7 @@ export class OpRegistrationComponent implements OnInit {
 
     const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
       width: "30vw",
-      height: "96vh",
+      //height: "96vh",
       data: {
         patientDetails: this.patientDetails,
         modifiedDetails: this.modfiedPatiendDetailsForPopUp,
