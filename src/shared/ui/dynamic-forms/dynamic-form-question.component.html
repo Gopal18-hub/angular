@@ -37,6 +37,8 @@
               #element
               (keypress)="keyPressAlpha($event)"
               autocomplete="off"
+              class="{{ question.customClasses }}"
+              [disabled]="question.disabled"
             />
           </ng-container>
 
@@ -56,6 +58,8 @@
               [maxlength]="question.maximum"
               #element
               autocomplete="off"
+              class="{{ question.customClasses }}"
+              [disabled]="question.disabled"
             />
           </ng-container>
 
@@ -187,6 +191,8 @@
             #element
             (keypress)="keyPressNumbers($event)"
             autocomplete="off"
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
           />
           <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>
@@ -228,6 +234,8 @@
             [value]="question.value"
             [placeholder]="question.placeholder"
             #element
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
           ></textarea>
           <mat-error *ngIf="!isValid">
             {{ question.label }} is <strong>required</strong>
@@ -260,6 +268,8 @@
             #element
             list="defaultEmails"
             autocomplete="off"
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
           />
           <datalist
             id="defaultEmails"
@@ -390,6 +400,8 @@
             [placeholder]="question.placeholder"
             #element
             disableOptionCentering
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
           >
             <ng-container *ngIf="question.emptySelect">
               <mat-option>Select</mat-option>
@@ -460,6 +472,8 @@
             [matAutocomplete]="auto"
             [placeholder]="question.placeholder"
             #element
+            class="{{ question.customClasses }}"
+            [disabled]="question.disabled"
           />
           <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
           <mat-autocomplete
@@ -508,6 +522,7 @@
             [matDatepicker]="datepicker"
             [max]="question.maximum"
             [min]="question.minimum"
+            [disabled]="question.disabled"
           />
           <mat-datepicker-toggle
             matSuffix

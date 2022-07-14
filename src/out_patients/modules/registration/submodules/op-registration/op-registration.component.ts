@@ -772,9 +772,9 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          this.questions[8].readonly = true;
+          this.questions[8].disabled = true;
         } else {
-          this.questions[8].readonly = false;
+          this.questions[8].disabled = false;
         }
       });
 
