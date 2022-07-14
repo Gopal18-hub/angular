@@ -58,12 +58,13 @@
       width: 100%;
       li {
         white-space: nowrap;
-        font-size: 0.8rem;
+        font-size: 0.875rem;
         &.active {
           background: var(--primary-color);
           color: #fff;
           border-radius: 5px;
           padding: 0.35rem;
+          font-weight: 500;
         }
       }
     }
