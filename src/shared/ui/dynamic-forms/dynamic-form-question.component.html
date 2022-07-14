@@ -20,47 +20,95 @@
           appearance="outline"
           floatLabel="never"
         >
-          <ng-container *ngIf="question.onlyKeyPressAlpha">
-            <input
-              matInput
-              placeholder=""
-              [formControlName]="question.key"
-              [type]="question.type"
-              [id]="question.key"
-              [required]="question.required"
-              [readonly]="question.readonly"
-              [value]="question.value"
-              [placeholder]="question.placeholder"
-              [pattern]="question.pattern"
-              [minlength]="question.minimum"
-              [maxlength]="question.maximum"
-              #element
-              (keypress)="keyPressAlpha($event)"
-              autocomplete="off"
-              class="{{ question.customClasses }}"
-              [disabled]="question.disabled"
-            />
-          </ng-container>
+          <ng-container *ngIf="question.capitalizeText">
+            <ng-container *ngIf="question.onlyKeyPressAlpha">
+              <input
+                matInput
+                placeholder=""
+                [formControlName]="question.key"
+                [type]="question.type"
+                [id]="question.key"
+                [required]="question.required"
+                [readonly]="question.readonly"
+                [value]="question.value"
+                [placeholder]="question.placeholder"
+                [pattern]="question.pattern"
+                [minlength]="question.minimum"
+                [maxlength]="question.maximum"
+                #element
+                (keypress)="keyPressAlpha($event)"
+                autocomplete="off"
+                class="{{ question.customClasses }}"
+                [disabled]="question.disabled"
+                oninput="this.value = this.value.toCapitalize()"
+              />
+            </ng-container>
 
-          <ng-container *ngIf="!question.onlyKeyPressAlpha">
-            <input
-              matInput
-              placeholder=""
-              [formControlName]="question.key"
-              [type]="question.type"
-              [id]="question.key"
-              [required]="question.required"
-              [readonly]="question.readonly"
-              [value]="question.value"
-              [placeholder]="question.placeholder"
-              [pattern]="question.pattern"
-              [minlength]="question.minimum"
-              [maxlength]="question.maximum"
-              #element
-              autocomplete="off"
-              class="{{ question.customClasses }}"
-              [disabled]="question.disabled"
-            />
+            <ng-container *ngIf="!question.onlyKeyPressAlpha">
+              <input
+                matInput
+                placeholder=""
+                [formControlName]="question.key"
+                [type]="question.type"
+                [id]="question.key"
+                [required]="question.required"
+                [readonly]="question.readonly"
+                [value]="question.value"
+                [placeholder]="question.placeholder"
+                [pattern]="question.pattern"
+                [minlength]="question.minimum"
+                [maxlength]="question.maximum"
+                #element
+                autocomplete="off"
+                [disabled]="question.disabled"
+                class="{{ question.customClasses }}"
+                oninput="this.value = this.value.toCapitalize()"
+              />
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!question.capitalizeText">
+            <ng-container *ngIf="question.onlyKeyPressAlpha">
+              <input
+                matInput
+                placeholder=""
+                [formControlName]="question.key"
+                [type]="question.type"
+                [id]="question.key"
+                [required]="question.required"
+                [readonly]="question.readonly"
+                [value]="question.value"
+                [placeholder]="question.placeholder"
+                [pattern]="question.pattern"
+                [minlength]="question.minimum"
+                [maxlength]="question.maximum"
+                #element
+                (keypress)="keyPressAlpha($event)"
+                autocomplete="off"
+                class="{{ question.customClasses }}"
+                [disabled]="question.disabled"
+              />
+            </ng-container>
+
+            <ng-container *ngIf="!question.onlyKeyPressAlpha">
+              <input
+                matInput
+                placeholder=""
+                [formControlName]="question.key"
+                [type]="question.type"
+                [id]="question.key"
+                [required]="question.required"
+                [readonly]="question.readonly"
+                [value]="question.value"
+                [placeholder]="question.placeholder"
+                [pattern]="question.pattern"
+                [minlength]="question.minimum"
+                [maxlength]="question.maximum"
+                #element
+                autocomplete="off"
+                [disabled]="question.disabled"
+                class="{{ question.customClasses }}"
+              />
+            </ng-container>
           </ng-container>
 
           <mat-error *ngIf="!isValid && !isCorrect">
