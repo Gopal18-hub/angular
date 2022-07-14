@@ -1,20 +1,21 @@
 export class getRegisteredPatientDetailsModel{
-    title?: string;
-    firstName?: string;
-    middleName?: string;
-    lastName?: string;
-    genderId?: number;
-    genderName?: string;
-    dob?: boolean;
-    dateOfBirth?: string;
-    age?: number;
-    agetype?: number;
-    ageTypeName?: string;
+    title: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    genderId: number;
+    genderName: string;
+    dob: boolean;
+    dateOfBirth: string;
+    age: number;
+    agetype: number;
+    ageTypeName: string;
     landlineno: any;
     mobileNo: any;
-    pemail?: string;
-    id?: number;
-    ssn?: string;
+    pemail: string;
+    id: number;
+    ssn: string;
+    nationality: string;
 
     constructor(
         title: string,
@@ -32,7 +33,8 @@ export class getRegisteredPatientDetailsModel{
         mobileNo: any,
         pemail: string,
         id: number,
-        ssn: string
+        ssn: string,
+        nationality: string
     ){
         this.title = title;
         this.firstName = firstName;
@@ -50,5 +52,6 @@ export class getRegisteredPatientDetailsModel{
         this.pemail = pemail;
         this.id = id;
         this.ssn = ssn;
+        this.nationality = nationality;
     }
 }
