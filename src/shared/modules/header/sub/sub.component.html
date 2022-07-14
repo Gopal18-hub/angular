@@ -227,7 +227,7 @@
         <ng-container *ngIf="module.moreOptions">
           <li
             [matMenuTriggerFor]="menu"
-            class="mr-4 cursor-pointer max-health-primary-color"
+            class="mr-2 cursor-pointer max-health-primary-color"
             [matMenuTriggerData]="{ module: module }"
             [ngClass]="{ active: activeSubModule?.title == module.title }"
           >
@@ -236,7 +236,7 @@
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
           <li
-            class="mr-4 cursor-pointer max-health-primary-color"
+            class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
             [routerLink]="module.defaultPath"
             routerLinkActive="active-link"
