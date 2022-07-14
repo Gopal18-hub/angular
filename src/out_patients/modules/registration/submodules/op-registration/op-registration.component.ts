@@ -409,7 +409,7 @@ export class OpRegistrationComponent implements OnInit {
         defaultValue: "cash",
       },
       sourceOfInput: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Source of Info about Max Healthcare",
         required: false,
         options: this.sourceOfInfoList,
@@ -3555,7 +3555,7 @@ export class OpRegistrationComponent implements OnInit {
             },
           },
           layout: {
-            hcf: "w-full",
+            hcf: "w-full-alt",
           },
         },
         layout: "double",
