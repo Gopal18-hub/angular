@@ -1872,6 +1872,9 @@ export class OpRegistrationComponent implements OnInit {
           this.countrybasedflow = false;
           this.citybasedflow = false;
           this.pincodebasedflow = false;
+          this.questions[24].readonly = false;
+          this.questions[25].readonly = false;
+          this.questions[26].readonly = false;
         }
       }
     }
@@ -2397,6 +2400,10 @@ export class OpRegistrationComponent implements OnInit {
       value: patientDetails?.locality,
     });
 
+    this.questions[24].readonly = true;
+    this.questions[25].readonly = true;
+    this.questions[26].readonly = true;
+
     //FOR CHECKBOX
     this.OPRegForm.controls["vip"].setValue(patientDetails?.vip);
     //FOR VIP NOTES
@@ -2604,6 +2611,11 @@ export class OpRegistrationComponent implements OnInit {
 
   validateForm(): boolean {
     let validationerror = false;
+    if (!validationerror) {
+      if (!this.OPRegForm.controls["title"].value) {
+        this.messageDialogService.error("Please enter title");
+      }
+    }
     if (!validationerror) {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
