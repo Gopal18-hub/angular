@@ -965,7 +965,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["gender"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (value) {
+        if (value && !this.maxIDChangeCall) {
           let genderName = this.genderList.filter((g) => g.id === value)[0]
             .name;
           if (
@@ -2065,21 +2065,17 @@ export class OpRegistrationComponent implements OnInit {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
-        this.OPRegForm.value.nationality.title != "Indian" &&
         this.OPRegForm.value.foreigner &&
         this.passportDetails.passportNo != ""
       ) {
         passportdetailspresent = true;
-      } else if (
-        this.nationalityChanged &&
-        this.OPRegForm.value.nationality.title == "Indian"
-      ) {
+      } else if (this.nationalityChanged) {
         passportdetailspresent = true;
       } else if (
         this.OPRegForm.value.foreigner &&
         this.passportDetails.passportNo != ""
       ) {
-        passportdetailspresent = true;
+        this.isPatientdetailModified = true;
       } else {
         passportdetailspresent = false;
       }
@@ -2629,17 +2625,26 @@ export class OpRegistrationComponent implements OnInit {
     let validationerror = false;
     if (!validationerror) {
       if (!this.OPRegForm.controls["title"].value) {
+        validationerror = true;
         this.messageDialogService.error("Please enter title");
+      } else {
+        validationerror = false;
       }
     }
     if (!validationerror) {
       if (!this.OPRegForm.controls["gender"].value) {
+        validationerror = true;
         this.messageDialogService.error("Please enter gender");
+      } else {
+        validationerror = false;
       }
     }
     if (!validationerror) {
-      if (!this.OPRegForm.controls["email"].value) {
+      if (!this.OPRegForm.controls["emailId"].value) {
+        validationerror = true;
         this.messageDialogService.error("Please enter email");
+      } else {
+        validationerror = false;
       }
     }
     if (!validationerror) {
@@ -2900,16 +2905,16 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.emailId,
       this.OPRegForm.value.nationality.value,
       this.OPRegForm.value.foreigner || false,
-      this.patientDetails.passportNo,
+      this.passportDetails.passportNo,
       this.datepipe.transform(
-        this.patientDetails.issueDate,
+        this.passportDetails.IssueDate,
         "yyyy-MM-ddThh:mm:ss"
       ) || null,
       this.datepipe.transform(
-        this.patientDetails.expiryDate,
+        this.passportDetails.Expirydate,
         "yyyy-MM-ddThh:mm:ss"
       ) || null,
-      this.patientDetails.passportIssuedAt,
+      this.passportDetails.Issueat,
       Number(this.cookie.get("UserId")),
       Number(this.cookie.get("HSPLocationId")),
       false,
