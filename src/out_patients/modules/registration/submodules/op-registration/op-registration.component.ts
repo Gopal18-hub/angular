@@ -180,6 +180,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
         pattern: "^[A-Za-z0-9]{1}[0-9A-Za-z '']+",
         //onlyKeyPressAlpha: true,
+        capitalizeText: true,
       },
       middleName: {
         type: "string",
@@ -187,6 +188,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
         pattern: "[A-Za-z. '']{1,32}",
         onlyKeyPressAlpha: true,
+        capitalizeText: true,
       },
       lastName: {
         type: "string",
@@ -194,6 +196,7 @@ export class OpRegistrationComponent implements OnInit {
         required: true,
         pattern: "^[a-zA-Z '']*.?[a-zA-Z '']*$",
         onlyKeyPressAlpha: true,
+        capitalizeText: true,
       },
       gender: {
         type: "dropdown",
@@ -239,6 +242,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
         pattern: "^[A-Za-z]{1}[A-Za-z. '']{1,32}",
         onlyKeyPressAlpha: true,
+        capitalizeText: true,
       },
       motherName: {
         type: "string",
@@ -246,6 +250,7 @@ export class OpRegistrationComponent implements OnInit {
         required: false,
         pattern: "^[A-Za-z]{1}[A-Za-z. '']{1,32}",
         onlyKeyPressAlpha: true,
+        capitalizeText: true,
       },
       altLandlineName: {
         type: "tel",
