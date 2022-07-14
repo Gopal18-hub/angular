@@ -11,10 +11,9 @@
         <div >
         <form  [formGroup]="employeesponsorForm">
             <!------------------------------------------- FIRST ROW------------------------------------------>
-            <div class="bg-lightgray max-health-primary-color">
+            <div class="bg-lightgray">
                 <div class="flex w-4/5 p-2">
-                    <!-- <div class="flex w-1/15"> -->
-                        <div class="text-wrap" >
+                        <div class="text-wrap max-health-primary-color font-bold" >
                             <mat-label>Max ID</mat-label>
                         </div>
                         <div class="ml-3 w-1/10 bg-white">
@@ -26,9 +25,7 @@
                             >
                             </maxhealth-question>
                         </div>
-                    <!-- </div> -->
-                    <!-- <div class="flex ml-0 w-2/10"> -->
-                        <div class="ml-2 text-wrap">
+                        <div class="ml-2 text-wrap max-health-primary-color font-bold">
                             <mat-label>Mobile No</mat-label>
                         </div>
                         <div class="ml-3 w-1/15 bg-white">
@@ -40,9 +37,7 @@
                             >
                             </maxhealth-question>
                         </div>
-                    <!-- </div> -->
-                    <!-- <div class="flex w-3/10"> -->
-                        <div class="ml-2 text-wrap" >
+                        <div class="ml-3 text-wrap max-health-primary-color font-bold" >
                             <mat-label >Employee Code</mat-label>
                         </div>
                         <div class="ml-3 w-1/15 bg-white ">
@@ -54,14 +49,11 @@
                             >
                             </maxhealth-question>
                         </div>
-                    <!-- </div> -->
-
-                    <!-- <div class="flex w-2/10 ml-0"> -->
-                        <div class="ml-2">
+                        <div class="ml-2 max-health-primary-color font-bold">
                             <mat-label>Company</mat-label>
                         </div>
-                        <div class="ml-4">
-                            <a class="text-underline"  (click)="iomClick()">IOM</a>
+                        <div class="ml-1">
+                            <a class="text-underline color-blue"  (click)="iomClick()" >IOM</a>
                         </div>
                         <div class="ml-3 w-1/15 bg-white">
                             <maxhealth-question
@@ -72,9 +64,7 @@
                             >
                             </maxhealth-question>
                         </div>
-                    <!-- </div> -->
-                    <!-- <div class="flex w-2/10"> -->
-                        <div class ="ml-2">
+                        <div class ="ml-2 max-health-primary-color font-bold">
                             <mat-label>Corporate</mat-label>
                         </div>
                         <div class="ml-3 w-1/15">
@@ -86,82 +76,76 @@
                             >
                             </maxhealth-question>
                         </div>
-                    <!-- </div> -->
                 </div>
             </div>
             <!---------------------------------------------SECOND ROW-------------------------------------------------->
        </form>
      </div>
-     <div class="bg-lightgray employeeclass mt-1">
-        <div class="flex  p-2 align-items-center">
-            <div class="flex w-1/10">
-                <div class="w-1/2">
+     <div class="bg-lightgray  mt-1">
+        <div class="flex  p-2 align-items-center text-wrap">
+            <div class="flex w-1/15">
+                <div class="max-health-primary-color font-bold" >
                     <mat-label>Name:</mat-label>
                 </div>
-                <div  class="ml-3 w-1/2">
-                <span >{{name}}</span>
+                <div  class="ml-3">
+                <span >dipu  jeyaprakash</span>
                 </div>
             </div>
-            <div class="flex ml-6 ">
-                <div class="w-1/2">
+            <div class="flex ml-2 w-8">
+                <div class="max-health-primary-color font-bold">
                     <mat-label>Age:</mat-label>
                 </div>
-                <div class="ml-3 w-1/2">
-                <span></span>
+                <div class="ml-3">
+                <span>17 years</span>
                 </div>
             </div>
-            <div class="flex ml-6 w-1/10 ">
-                <div class="w-1/2">
+            <div class="flex ml-2 w-1/10 ">
+                <div class="max-health-primary-color font-bold" >
                     <mat-label>Gender:</mat-label>
                 </div>
-                <div class="ml-3 w-1/2">
-                    <span></span>
+                <div class="ml-3">
+                    <span>Female</span>
                 </div>
             </div>
-            <div class="flex ml-6 w-1/10">
-                <div class="w-1/4">
+            <div class="flex ml-2 w-12">
+                <div class="max-health-primary-color font-bold" >
                     <mat-label>DOB:</mat-label>
                 </div>
-                <div class="ml-3 w-3/4">
-                <span></span>
+                <div class="ml-3">
+                <span>12-12-2022</span>
                 </div>
             </div>
-            <div class="flex ml-6 w-1/10">
-                <div class="1/2">
+            <div class="flex ml-2 w-1/15">
+                <div class="max-health-primary-color font-bold">
                     <mat-label>Nationality:</mat-label>
                 </div>
-                <div class="ml-3 w-1/2">
-                    <span></span>
+                <div class="ml-3 text-wrap overflow-hidden" >
+                    <span title="Former Yugoslav Republic of Serbia and M">Former Yugoslav Republic of Serbia and M</span>
                 </div>
             </div>
-            <div class="flex ml-6 w-1/10">
-                <div class="w-1/4">
+            <div class="flex ml-2 w-1/15">
+                <div class="max-health-primary-color font-bold">
                     <mat-label>SSN:</mat-label>
                 </div>
-                <div class="ml-3 w-3/4">
-                    <span></span>
+                <div class="ml-3">
+                    <span>909090909</span>
                 </div>
             </div>
-            <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-12" >
-            <div class="flex">
-                <maxhealth-question
-                [question]="questions[5]"
-                [form]="employeesponsorForm"
-                [questions]="questions[5]"
-                [index]="5"
-                (click)="oncheckboxClick($event)"
-                >
-                </maxhealth-question>
-                <!-- <div class="ml-3 w-3/5">
-                    <span></span>
-                </div> -->
-            </div>
-        
-                <div class="flex align-items-center">
+            <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-1/3" >
                 <div class="ml-2">
+                    <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="employeesponsorForm"
+                    [questions]="questions[5]"
+                    [index]="5"
+                    (click)="oncheckboxClick($event)"
+                    >
+                    </maxhealth-question>
+                </div>
+                <div class="ml-2 text-wrap">
                     <mat-label>From Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 bg-white border-radius-lg" >
+                <div class="ml-3 w-1/4 bg-white border-radius-md" >
                     <maxhealth-question
                 [question]="questions[6]"
                 [form]="employeesponsorForm"
@@ -170,12 +154,10 @@
                 >
                 </maxhealth-question>
                 </div>
-            </div>
-            <div class="flex align-items-center">
-                <div>
+                <div class="text-wrap ml-6">
                     <mat-label>To Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 bg-white border-radius-lg" >
+                <div class="ml-2 w-1/4 bg-white border-radius-md" >
                     <maxhealth-question
                     [question]="questions[7]"
                     [form]="employeesponsorForm"
@@ -185,7 +167,7 @@
                     </maxhealth-question>
                 </div>
             </div>
-            </div>
+
             
         </div>
     </div>

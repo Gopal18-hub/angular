@@ -2,7 +2,7 @@
     <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">        
          <ul class="list-unstyled flex items-end w-full">
             <li class="ml-3"  *ngFor="let link of link1">
-              <a mat-tab-link class="cursor-pointer"  [active]="activeLink1 == link ? true : false" (click)="showmain(link)"> {{link}}</a>
+              <a mat-tab-link class="cursor-pointer"  [active]="activeLink1 == link ? true : false" (click)="showmain(link)"> {{link.value}}</a>
             </li>
             <li class="maxhealth-spacer"></li>
             <li class="ml-3 float-right" *ngFor="let link of link2">

@@ -442,4 +442,39 @@ export namespace ApiConstants {
       "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
     );
   };
+
+  //POST CALL TO SAVE THE EXPIRED PATIENT DETAIL, BODY TYPE saveexpiredpatientmodel
+
+  export const saveexpiredpatientdetail =
+    environment.PatientApiUrl + "api/patient/saveexpiredpatientdetails";
+
+  //GET CALL FOR COMPANY DROPDOWN
+  export const getcompanyandpatientsponsordata =
+    environment.PatientApiUrl +
+    "api/patient/getcompanyandpatientsponsordata/69/9923";
+
+  //GET CALL ON ENTER OF MAXID
+  export const getpatientsponsordataonmaxid = (
+    iacode: string,
+    regno: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientsponsordataonmaxid/" +
+      iacode +
+      "/" +
+      regno +
+      "/69/9923"
+    );
+  };
+
+  //GET CALL ON ENTER OF EMPLOYEE CODE
+  export const getEmployeeStaffDependantDetails =
+    environment.PatientApiUrl +
+    "api/patient/getemptagscreenstaffdependentdetails/m015836";
+
+  //GET CALL ON ENTER OF EMPLOYEE CODE
+  export const getpatientcompanysponsoronempcode =
+    environment.PatientApiUrl +
+    "api/patient/getpatientcompanysponsoronempcode/N002661/69/9923";
 }

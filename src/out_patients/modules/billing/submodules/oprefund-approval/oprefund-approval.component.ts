@@ -9,9 +9,9 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class OprefundApprovalComponent implements OnInit {
   link1 = [
-    "OP Registration Approval",
-    "Hot Listing Approval",
-    "OP Refund Approval",
+    { value: "OP Registration Approval", id: 1 },
+    { value: "Hot Listing Approval", id: 2 },
+    { value: "OP Refund Approval", id: 3 },
   ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[2];
@@ -101,12 +101,11 @@ export class OprefundApprovalComponent implements OnInit {
 
   showmain(link: any) {
     console.log(link);
-    if (link == "OP Registration Approval") {
+    if (link.id == 1) {
       this.router.navigate(["registration", "op-reg-approval"]);
-    } else if (link == "Hot Listing Approval") {
+    } else if (link == 2) {
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == "OP Refund Approval") {
-      // this.router.navigate(["out-patient-billing", "op-refund=approval"]);
+    } else if (link == 3) {
       this.activeLink1 = link;
       this.activeLink2 != ""
         ? this.showgrid(this.activeLink2)

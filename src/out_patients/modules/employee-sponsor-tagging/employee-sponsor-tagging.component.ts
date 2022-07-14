@@ -9,6 +9,9 @@ import { CookieService } from "../../../shared/services/cookie.service";
 import { DatePipe } from "@angular/common";
 import { __values } from "tslib";
 import { CompanydialogComponent } from "./companydialog/companydialog.component";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { HttpService } from "@shared/services/http.service";
+import { GetPatientSponsorDataModel } from "../../../out_patients/core/models/getPatientSponsorData.Model";
 
 @Component({
   selector: "out-patients-employee-sponsor-tagging",
@@ -16,6 +19,12 @@ import { CompanydialogComponent } from "./companydialog/companydialog.component"
   styleUrls: ["./employee-sponsor-tagging.component.scss"],
 })
 export class EmployeeSponsorTaggingComponent implements OnInit {
+  name: any;
+  employeesponsorForm!: FormGroup;
+  questions: any;
+  patientSponsorData!: GetPatientSponsorDataModel;
+  companySponsorData!: GetPatientSponsorDataModel;
+  iomdisable: boolean = true;
   employeesponsorformData = {
     title: "",
     type: "object",
@@ -32,6 +41,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       company: {
         type: "autocomplete",
+        options: this.patientSponsorData,
       },
       corporate: {
         type: "autocomplete",
@@ -54,16 +64,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     },
   };
 
-  name: any;
-  employeesponsorForm!: FormGroup;
-
-  questions: any;
-
   constructor(
     private dialog: MatDialog,
     private formService: QuestionControlService,
     private cookie: CookieService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private http: HttpService
   ) {}
 
   ngOnInit(): void {
@@ -85,6 +91,25 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.employeesponsorForm.controls["todate"].disable();
     //disable corporate dropdown
     this.employeesponsorForm.controls["corporate"].disable();
+
+    this.http
+      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .subscribe((data) => {
+        console.log(data);
+        this.companySponsorData = data as GetPatientSponsorDataModel;
+        this.questions[3].options =
+          this.companySponsorData.objPatientSponsorFlag.map((a) => {
+            return { title: a.name, value: a.id };
+          });
+      });
+  }
+  ngAfterViewInit() {
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.onMaxidEnter();
+      }
+    });
   }
 
   config1: any = {
@@ -152,10 +177,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     },
   };
   config2: any = {
-    actionItems: true,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
-    // dependantName : {
     displayedColumns: [
       "slno",
       "companyname",
@@ -206,6 +229,27 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     employeesponsorform.mobileNo = 834738387;
     console.log(employeesponsorform.fromDate);
     console.log(employeesponsorform.mobileNo);
+  }
+  onMaxidEnter() {
+    let iacode = this.employeesponsorForm.controls["maxId"].value.split(".")[0];
+    let regno = this.employeesponsorForm.controls["maxId"].value.split(".")[1];
+    this.http
+      .get(ApiConstants.getpatientsponsordataonmaxid(iacode, regno))
+      .subscribe((data) => {
+        console.log(data);
+        this.patientSponsorData = data as GetPatientSponsorDataModel;
+        console.log(this.patientSponsorData);
+        this.questions[0].value =
+          this.patientSponsorData.objPatientSponsorData[0].iacode +
+          "." +
+          this.patientSponsorData.objPatientSponsorData[0].registrationNo;
+        this.questions[2].value =
+          this.patientSponsorData.objPatientSponsorData[0].empcode;
+        this.employeesponsorForm.controls["company"].setValue({
+          title: this.patientSponsorData.objPatientSponsorData[0].company,
+          value: this.patientSponsorData.objPatientSponsorData[0].companyId,
+        });
+      });
   }
 
   //SAVE DIALOG
