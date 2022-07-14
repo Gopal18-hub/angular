@@ -15,6 +15,7 @@ import { QuestionBase } from "./interface/question-base";
 import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import "../../utilities/String-Extentions";
 
 @Component({
   selector: "maxhealth-question",
@@ -72,6 +73,8 @@ export class DynamicFormQuestionComponent
   ];
 
   subscription!: Subscription;
+
+  dateMask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 
   constructor(private qcs: QuestionControlService) {}
 
