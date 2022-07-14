@@ -90,7 +90,7 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   lastUpdatedBy: string = "";
-  currentTime: Date = new Date();
+  currentTime: string = new Date().toLocaleString();
   localityList: LocalityModel[] = [];
   localitybyCityList: LocalityModel[] = [];
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
