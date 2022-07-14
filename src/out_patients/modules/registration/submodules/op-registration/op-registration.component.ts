@@ -89,6 +89,8 @@ export class OpRegistrationComponent implements OnInit {
   countryList: MasterCountryModel[] = [];
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
+  lastUpdatedBy: string = "";
+  currentTime: Date = new Date();
   localityList: LocalityModel[] = [];
   localitybyCityList: LocalityModel[] = [];
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
@@ -461,7 +463,7 @@ export class OpRegistrationComponent implements OnInit {
   bool: boolean | undefined;
   ngOnInit(): void {
     this.bool = true;
-
+    this.lastUpdatedBy = this.cookie.get("UserName");
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -708,7 +710,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openVipNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.vip = "";
         }
       });
@@ -718,7 +720,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.seafarersDetailsdialog();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.seafarerDetails.FDPGroup = "";
           this.seafarerDetails.HKID = "";
           this.seafarerDetails.Vesselname = "";
@@ -731,7 +733,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.noteRemark = "";
         }
       });
@@ -740,7 +742,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openHWCNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.hwcRemark = "";
         }
       });
