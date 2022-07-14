@@ -690,6 +690,9 @@ export class OpRegistrationComponent implements OnInit {
           if (this.maxIDChangeCall == false) {
             this.openEWSDialogue();
           }
+        } else {
+          this.ewsDetails.bplCardAddress = "";
+          this.ewsDetails.bplCardNo = "";
         }
       });
     // }
@@ -699,6 +702,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openVipNotes();
+        } else if (!value) {
+          this.vip = "";
         }
       });
 
@@ -707,6 +712,11 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.seafarersDetailsdialog();
+        } else if (!value) {
+          this.seafarerDetails.FDPGroup = "";
+          this.seafarerDetails.HKID = "";
+          this.seafarerDetails.Vesselname = "";
+          this.seafarerDetails.rank = "";
         }
       });
 
@@ -715,6 +725,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openNotes();
+        } else if (!value) {
+          this.noteRemark = "";
         }
       });
     this.OPRegForm.controls["hwc"].valueChanges
@@ -722,6 +734,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openHWCNotes();
+        } else if (!value) {
+          this.hwcRemark = "";
         }
       });
     this.OPRegForm.controls["hotlist"].valueChanges
@@ -740,14 +754,29 @@ export class OpRegistrationComponent implements OnInit {
 
     // });
 
-    // this.OPRegForm.controls["dob"].valueChanges
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value: any) => {
-    //     if (value) {
-    //       //this.OPRegForm.controls["dob"].setValue(value);
-    //       this.onageCalculator();
-    //     }
-    //   });
+    this.OPRegForm.controls["dob"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          //this.OPRegForm.controls["dob"].setValue(value);
+          // this.onageCalculator();
+          this.questions[9].readonly = true;
+          this.questions[10].disable();
+        } else {
+          this.questions[9].readonly = false;
+          this.questions[10].enable();
+        }
+      });
+
+    this.OPRegForm.controls["age"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.questions[8].readonly = true;
+        } else {
+          this.questions[8].readonly = false;
+        }
+      });
 
     //on value chnae event of age Type
     this.OPRegForm.controls["ageType"].valueChanges
@@ -2018,31 +2047,33 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   onModifyDetail() {
-    let passportdetailspresent = false;
-    if (
-      this.nationalityChanged &&
-      this.OPRegForm.value.nationality.title != "Indian" &&
-      this.OPRegForm.value.foreigner &&
-      this.passportDetails.passportNo != ""
-    ) {
-      passportdetailspresent = true;
-    } else if (
-      this.nationalityChanged &&
-      this.OPRegForm.value.nationality.title == "Indian"
-    ) {
-      passportdetailspresent = true;
-    } else {
-      passportdetailspresent = false;
-    }
-
-    if (passportdetailspresent || this.isPatientdetailModified) {
-      this.onUpdatePatientDetail();
-
-      if (this.isPatientdetailModified || this.nationalityChanged) {
-        this.modifyDialogg();
+    if (!this.validateForm()) {
+      let passportdetailspresent = false;
+      if (
+        this.nationalityChanged &&
+        this.OPRegForm.value.nationality.title != "Indian" &&
+        this.OPRegForm.value.foreigner &&
+        this.passportDetails.passportNo != ""
+      ) {
+        passportdetailspresent = true;
+      } else if (
+        this.nationalityChanged &&
+        this.OPRegForm.value.nationality.title == "Indian"
+      ) {
+        passportdetailspresent = true;
+      } else {
+        passportdetailspresent = false;
       }
-    } else {
-      this.onUpdatePatientDetail();
+
+      if (passportdetailspresent || this.isPatientdetailModified) {
+        this.onUpdatePatientDetail();
+
+        if (this.isPatientdetailModified || this.nationalityChanged) {
+          this.modifyDialogg();
+        }
+      } else {
+        this.onUpdatePatientDetail();
+      }
     }
   }
 
@@ -2305,6 +2336,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  isOrganDonor: boolean = false;
   //BINDING UPDATE RELATED DETAILS FROM UPDATE ENDPOINT CALL
   populateUpdatePatientDetail(patientDetails: PatientDetails) {
     this.OPRegForm.controls["country"].setValue({
@@ -2387,6 +2419,8 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["organdonor"].setValue(
       patientDetails?.isOrganDonor
     );
+
+    this.isOrganDonor = patientDetails?.isOrganDonor;
 
     //FOR CHECKBOX
     this.OPRegForm.controls["otAdvanceExclude"].setValue(
@@ -2574,10 +2608,13 @@ export class OpRegistrationComponent implements OnInit {
       if (this.OPRegForm.value.note) {
         if (this.noteRemark.trim() == "") {
           validationerror = true;
+          this.noteRemark = "";
           this.messageDialogService.error("Please enter note reason");
         } else {
           validationerror = false;
         }
+      } else {
+        this.noteRemark = "";
       }
     }
 
@@ -2585,10 +2622,13 @@ export class OpRegistrationComponent implements OnInit {
       if (this.OPRegForm.value.hwc) {
         if (this.hwcRemark.trim() == "") {
           validationerror = true;
+          this.hwcRemark = "";
           this.messageDialogService.error("Please enter hwc remark");
         } else {
           validationerror = false;
         }
+      } else {
+        this.hwcRemark = "";
       }
     }
 
@@ -2596,21 +2636,60 @@ export class OpRegistrationComponent implements OnInit {
       if (this.OPRegForm.value.vip) {
         if (this.vip.trim() == "") {
           validationerror = true;
+          this.vip = "";
           this.messageDialogService.error("Please enter vip reason");
         } else {
           validationerror = false;
         }
+      } else {
+        this.vip = "";
       }
     }
 
     if (!validationerror) {
-      if (this.OPRegForm.value.ews) {
-        if (this.vip.trim() == "") {
+      if (this.OPRegForm.value.paymentMethod.toLowerCase().trim() == "ews") {
+        if (this.ewsDetails.bplCardNo.trim() == "") {
           validationerror = true;
-          this.messageDialogService.error("Please enter vip reason");
+          this.messageDialogService.error(
+            "Please enter BplCardNo for EWS Payment Method"
+          );
+        } else if (this.ewsDetails.bplCardAddress.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error(
+            "Please enter BplCardAddress for EWS Payment Method"
+          );
         } else {
           validationerror = false;
         }
+      } else {
+        this.ewsDetails.bplCardNo = "";
+        this.ewsDetails.bplCardAddress = "";
+      }
+    }
+
+    if (!validationerror) {
+      if (this.OPRegForm.controls["fatherSpouse"].value) {
+        if (this.OPRegForm.value.fatherSpouseName.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter Father/Spouse Name");
+        } else {
+          validationerror = false;
+        }
+      } else {
+        this.OPRegForm.value.fatherSpouseName = "";
+      }
+    }
+
+    if (!validationerror) {
+      if (this.OPRegForm.controls["idenityType"].value) {
+        if (this.OPRegForm.value.idenityValue.trim() == "") {
+          validationerror = true;
+          this.messageDialogService.error("Please enter Indentity Number");
+        } else {
+          validationerror = false;
+        }
+      } else {
+        this.OPRegForm.value.idenityValue = "";
       }
     }
 
@@ -3095,6 +3174,7 @@ export class OpRegistrationComponent implements OnInit {
           this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
           this.questions[8].customErrorMessage =
             "DOB is required, Age is less than 18 Years";
+          this.questions[8].readonly = false;
           this.OPRegForm.controls["dob"].markAsTouched();
         }
       } else if (
@@ -3249,8 +3329,8 @@ export class OpRegistrationComponent implements OnInit {
         console.log("HWC dialog was closed");
         if (result != "" && result != undefined) {
           this.ewsDetails = {
-            bplCardNo: result.data.BPLAddress,
-            bplCardAddress: result.data.bplCardNo,
+            bplCardNo: result.data.bplCardNo,
+            bplCardAddress: result.data.BPLAddress,
           };
         } else {
           this.OPRegForm.controls["paymentMethod"].setErrors({
@@ -3699,12 +3779,31 @@ export class OpRegistrationComponent implements OnInit {
         .subscribe((result) => {
           console.log("seafarers dialog was closed");
           if (result != "" && result != undefined) {
-            this.seafarerDetails = {
-              HKID: result.data.hkID,
-              Vesselname: result.data.vesselName,
-              rank: result.data.rank,
-              FDPGroup: result.data.fdpGroup,
-            };
+            if (
+              result.data.hkID.trim() == "" &&
+              result.data.vesselName.trim() == "" &&
+              result.data.rank.trim() == "" &&
+              result.data.fdpGroup.trim() == ""
+            ) {
+              this.seafarerDetails.FDPGroup = "";
+              this.seafarerDetails.HKID = "";
+              this.seafarerDetails.Vesselname = "";
+              this.seafarerDetails.rank = "";
+              this.OPRegForm.controls["seafarers"].setValue(false);
+            } else {
+              this.seafarerDetails = {
+                HKID: result.data.hkID,
+                Vesselname: result.data.vesselName,
+                rank: result.data.rank,
+                FDPGroup: result.data.fdpGroup,
+              };
+            }
+          } else {
+            this.seafarerDetails.FDPGroup = "";
+            this.seafarerDetails.HKID = "";
+            this.seafarerDetails.Vesselname = "";
+            this.seafarerDetails.rank = "";
+            this.OPRegForm.controls["seafarers"].setValue(false);
           }
           this.seafarersDetailDialogref = null;
         });
