@@ -3,6 +3,7 @@
     color:#004084;
 }
 form {
+    
     ::ng-deep mat-label {
       color: var(--primary-color);
     }
@@ -10,12 +11,13 @@ form {
       color: var(--primary-color);
     }
   }
-.bg-thirdrow{
-    background-color: #ECECEC;     
-   
-}
 ::ng-deep .input1 .mat-form-field-infix{
     text-align: right !important;  
+}
+.btn-md{
+ 
+    height:81%;
+      
 }
 .bg-white{
     background-color:white;
@@ -36,11 +38,43 @@ form {
  height: 9%;   
 }
 .bg-billdetails{
+    
+    height: 66.2%;
     background-color:#45C0BE; 
-    height: 65%;
+}
+.bg-blue
+{
+   
+    background-color: #BFE8E7;
 }
 .h-service
 {
     height: 90%;
     border-radius: 0% 10px 10px 10px;
+}
+// .h-9/20
+.h-table
+{
+    height: 55%;
+}
+.w-table
+{
+    width: 82.2%;
+}
+.bg-paymet
+{
+    width: 68%;
+    height: 10%;
+}
+.icon-more
+{
+    
+ 
+        background-color:#D2D0D0;
+        border-radius: 4px;
+        color: black;
+        margin-left: 1px;
+        height: 22.9px;
+
+   
 }

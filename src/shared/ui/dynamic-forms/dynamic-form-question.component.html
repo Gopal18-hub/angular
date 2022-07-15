@@ -522,6 +522,7 @@
             #element
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
+            autocomplete="off"
           />
           <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
           <mat-autocomplete
@@ -571,6 +572,7 @@
             [max]="question.maximum"
             [min]="question.minimum"
             [disabled]="question.disabled"
+            autocomplete="off"
           />
           <mat-datepicker-toggle
             matSuffix

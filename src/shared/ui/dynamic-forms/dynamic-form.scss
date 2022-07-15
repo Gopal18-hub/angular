@@ -43,3 +43,16 @@ mat-label.mat-form-field-required-marker {
     transform: translate(-8px, -24px) !important;
   }
 }
+.mat-error {
+  font-weight: bolder;
+  &::before {
+    content: "\e002";
+    font-family: "Material Icons";
+    padding-left: 0.2rem;
+    padding-right: 0.1rem;
+    padding-top: 0.6666666667em;
+    font-weight: 400;
+    position: relative;
+    top: 1px;
+  }
+}

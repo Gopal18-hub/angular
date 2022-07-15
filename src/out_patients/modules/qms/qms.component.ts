@@ -64,7 +64,7 @@ export class QmsComponent implements OnInit {
     this.qmsform.reset();
   }
   getarea(){
-    this.http.get(ApiConstants.getarecounter(7)).subscribe((resultdata: any)=>{
+    this.http.get(ApiConstants.getarecounter(this.hspId)).subscribe((resultdata: any)=>{
       console.log(resultdata);
       this.area = resultdata.areaData;
       this.questions[0].options = this.area.map((l) =>{
@@ -73,7 +73,7 @@ export class QmsComponent implements OnInit {
     })
   }
   getcounter(){
-    this.http.get(ApiConstants.getarecounter(7)).subscribe((resultdata: any)=>{
+    this.http.get(ApiConstants.getarecounter(this.hspId)).subscribe((resultdata: any)=>{
       console.log(resultdata);
       this.counter = resultdata.areaWithCounterData;
       this.questions[1].options = this.counter.map((l) =>{
