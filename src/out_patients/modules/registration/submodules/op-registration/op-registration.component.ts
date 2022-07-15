@@ -2489,9 +2489,18 @@ export class OpRegistrationComponent implements OnInit {
     this.setValuesToSeaFarer(patientDetails);
 
     //SOURCE OF INFO DROPDOWN
-    this.OPRegForm.controls["sourceOfInput"].setValue(
-      patientDetails?.sourceofinfo
+    this.setSourceOfInforValues(patientDetails);
+  }
+
+  //SETTING THE RESPONSE TO ID AND VALUE FOR DROP DOWN
+  setSourceOfInforValues(patientDetails: PatientDetails) {
+    let sourceofinfo = this.sourceOfInfoList.filter(
+      (e) => e.id === patientDetails?.sourceofinfo
     );
+    this.OPRegForm.controls["sourceOfInput"].setValue({
+      title: sourceofinfo[0].name,
+      value: sourceofinfo[0].id,
+    });
   }
 
   //FOR ASSIGNING SEAFARER DETAILS TO POP UP

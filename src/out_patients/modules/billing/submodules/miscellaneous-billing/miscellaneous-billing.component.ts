@@ -17,7 +17,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private router: Router
   ) {}
 
-  // @ViewChild("miscFormData") deposittable: any;
+  @ViewChild("selectedServices") selectedServicesTable: any;
   linkList = ["Bill", "Credit Details"];
   activeLink = this.linkList[1];
 
@@ -103,95 +103,211 @@ export class MiscellaneousBillingComponent implements OnInit {
         required: false,
         options: [{ title: "Self" }],
       },
+      referralDoctor: {
+        type: "dropdown",
+        required: true,
+        title: "Referral Doctor",
+      },
+      interactionDetails: {
+        type: "dropdown",
+        required: true,
+        title: "Interaction Details",
+      },
+      billAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      availDiscCheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Avail Plan Disc ( - )" }],
+      },
+      availDisc: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      discAmtCheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: " Discount  Amount  (  -  ) " }],
+      },
+      discAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      dipositAmtcheck: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Deposit Amount ( - )" }],
+      },
+
+      dipositAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      patientDisc: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      compDisc: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      planAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      coupon: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      coPay: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      credLimit: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      gstTax: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      amtPayByPatient: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      amtPayByComp: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      paymentMode: {
+        type: "radio",
+        required: true,
+        options: [
+          { title: "Cash", value: "cash" },
+          { title: "Credit", value: "credit" },
+        ],
+        defaultValue: "cash",
+      },
     },
   };
 
   config: any = {
     selectBox: false,
-    clickedRows: true,
+    clickedRows: false,
     clickSelection: "single",
     displayedColumns: [
       "Sno",
       "ServiceType",
       "ItemDescription",
       "ItemforModify",
-      "TarrifPrice",
+      "TariffPrice",
       "Qty",
       "Price",
       "DoctorName",
-      "Disc%",
-      "Disc. Amount",
-      "Total Amount",
-      "GST%",
+      "Disc",
+      "DiscAmount",
+      "TotalAmount",
+      "GST",
     ],
     columnsInfo: {
       Sno: {
-        title: "Id",
+        title: "S.No.",
         type: "string",
-        style: {
-          width: "120px",
-        },
       },
       ServiceType: {
-        title: "Id",
+        title: "Service Type",
         type: "string",
         style: {
           width: "120px",
         },
       },
       ItemDescription: {
-        title: "Id",
+        title: "Item Description",
         type: "string",
         style: {
-          width: "120px",
+          width: "180px",
         },
       },
       ItemforModify: {
-        title: "Id",
+        title: "Item For Modify",
         type: "string",
         style: {
           width: "120px",
         },
       },
-      TarrifPrice: {
-        title: "Id",
+      TariffPrice: {
+        title: "Tariff Price",
         type: "string",
-        style: {
-          width: "120px",
-        },
       },
       Qty: {
-        title: "Id",
+        title: "Qty",
         type: "string",
-        style: {
-          width: "120px",
-        },
       },
       Price: {
-        title: "Id",
+        title: "Price",
         type: "string",
-        style: {
-          width: "120px",
-        },
       },
       DoctorName: {
-        title: "Id",
+        title: "Doctor Name",
         type: "string",
         style: {
           width: "120px",
         },
       },
       Disc: {
-        title: "Id",
+        title: "Disc%",
+        type: "string",
+      },
+      DiscAmount: {
+        title: "Disc. Amount",
         type: "string",
         style: {
           width: "120px",
         },
       },
+      TotalAmount: {
+        title: "Total Amount",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      GST: {
+        title: "GST%",
+        type: "string",
+      },
     },
   };
 
-  serviceselectedList: any;
+  serviceselectedList: [] = [] as any;
   miscForm!: FormGroup;
   miscServBillForm!: FormGroup;
   questions: any;
