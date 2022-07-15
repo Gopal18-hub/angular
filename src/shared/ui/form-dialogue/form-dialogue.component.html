@@ -1,5 +1,5 @@
 <div class="relative">
-  <label class="max-health-primary-color font-base font-bolder">{{
+  <label class="max-health-primary-color font-base font-bold">{{
     data.title
   }}</label>
   <button
@@ -12,14 +12,19 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-  <form (ngSubmit)="submit()" [formGroup]="form" class="mt-4 mb-6">
+  <form
+    (ngSubmit)="submit()"
+    [formGroup]="form"
+    class="mt-4 mb-6"
+    autocomplete="off"
+  >
     <div
       class="flex justify-between flex-wrap"
       [ngClass]="{ 'form-column': data.layout == 'single' }"
     >
       <div
         *ngFor="let question of questions; let i = index"
-        class="mb-1"
+        class="mb-1 {{ data.form?.layout && data.form?.layout[question.key] }}"
         [ngClass]="{
           'hidden display-none': question.type == 'hidden',
           'w-1/45': data.layout == 'double',

@@ -15,6 +15,7 @@ import { QuestionBase } from "./interface/question-base";
 import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import "../../utilities/String-Extentions";
 
 @Component({
   selector: "maxhealth-question",
@@ -53,22 +54,23 @@ export class DynamicFormQuestionComponent
   emailDomains: string[] = [
     "yahoo.com",
     "gmail.com",
-    "google.com",
+    //"google.com",
     "hotmail.com",
-    "me.com",
-    "aol.com",
-    "mac.com",
-    "live.com",
-    "comcast.com",
-    "googlemail.com",
-    "msn.com",
-    "hotmail.co.uk",
-    "yahoo.co.uk",
-    "facebook.com",
-    "verizon.net",
-    "att.net",
-    "gmz.com",
-    "mail.com",
+    "maxhealthcare.com",
+    // "me.com",
+    // "aol.com",
+    // "mac.com",
+    // "live.com",
+    // "comcast.com",
+    // "googlemail.com",
+    // "msn.com",
+    // "hotmail.co.uk",
+    // "yahoo.co.uk",
+    // "facebook.com",
+    // "verizon.net",
+    // "att.net",
+    // "gmz.com",
+    // "mail.com",
   ];
 
   subscription!: Subscription;

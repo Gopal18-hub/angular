@@ -45,8 +45,8 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject: any;
   rejectPostobject: any;
-  hsplocationId: any = this.cookie.get("HSPLocationId");
-  userId: number = Number(this.cookie.get("UserId"));
+  hsplocationId: any =  this.cookie.get("HSPLocationId");
+  userId: number =  Number(this.cookie.get("UserId"));
   enableapprovebtn: boolean = false;
 
   showapprovalpending: boolean = false;
@@ -94,6 +94,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -165,6 +168,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -309,6 +315,8 @@ export class OpRegApprovalComponent implements OnInit {
                 item.modifiedFirstName + " " + item.modifiedLastName;
               return item;
             });
+            
+            resultData = resultData.filter((l: { operatorID: number; }) => l.operatorID != this.userId);
             this.showapprovalspinner = false;
             this.defaultUI = true;
             this.opApprovalList = resultData as opRegApprovalModel[];
@@ -316,12 +324,13 @@ export class OpRegApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.showapprovalreject = false;
             this.enableapprovebtn = true;
-            // setTimeout(() => {
-            //   this.approvaltable.selection.changed.subscribe((res: any) => {
-            //     console.log(res);
-            //     //this.modifyDialog(res.added[0]);
-            //   });
-            // });
+
+            if(this.opApprovalList.length == 0){
+              this.enableapprovebtn = false;
+              this.defaultUI = false;
+              this.opappprovalmessage = "No records found";
+              this.opapprovalimage = "norecordfound";
+            }
             console.log(this.opApprovalList);
           },
           (error: any) => {
