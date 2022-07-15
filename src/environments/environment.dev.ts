@@ -12,4 +12,5 @@ export const environment = {
   reportTenantUrl:
     "https://maxhis-dev.maxhealthcare.in/reports/crystal-report/popup/",
   ReportsSampleUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
+  crystalReportBaseUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
 };
