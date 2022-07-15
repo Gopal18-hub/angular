@@ -442,4 +442,19 @@ export namespace ApiConstants {
       "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
     );
   };
+
+  export const getstaffdependentsearchtype = () => {
+    return environment.BillingApiUrl + "api/outpatientbilling/getstaffdependentsearchtype";
+  };
+
+  export const getstaffdependentdetails = (
+    EmployeeCode: string,
+    EmployeeName: string,
+    SrcType: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getstaffdependentdetails/"+EmployeeCode+"/"+EmployeeName+"/"+SrcType
+    );
+  };
 }
