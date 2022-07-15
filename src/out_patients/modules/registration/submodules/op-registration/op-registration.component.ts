@@ -611,10 +611,22 @@ export class OpRegistrationComponent implements OnInit {
       }
     });
 
-    //chnage event for Mobile Field
+    //tab event for Mobile Field
+    this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
+      // If the user presses the "TAB" key on the keyboard
+
+      if (event.key === "Tab") {
+        // Cancel the default action, if needed
+
+        // event.preventDefault();
+
+        this.onPhoneModify();
+      }
+    });
+
     this.questions[2].elementRef.addEventListener(
       "change",
-      this.onPhoneModify.bind(this)
+      this.resetPhoneFlag.bind(this)
     );
 
     //chnage event for FirstName
@@ -2246,14 +2258,20 @@ export class OpRegistrationComponent implements OnInit {
     return this.similarContactPatientList.length > 0 ? true : false;
   }
 
+  resetPhoneFlag() {
+    this.phoneNumberFlag = false;
+  }
+
+  phoneNumberFlag: boolean = false;
   //CLEARING OLDER PHONE SEARCH
   onEnterPhoneModify() {
     this.similarContactPatientList = [] as any;
     this.onPhoneModify();
+    this.phoneNumberFlag = true;
   }
   onPhoneModify() {
     console.log("phone changed");
-    if (!this.maxIDChangeCall) {
+    if (!this.maxIDChangeCall && !this.phoneNumberFlag) {
       //IF EVENT HAS BEEN NOT HITTED API
       if (!this.similarSoundListPresent()) {
         if (this.checkForModifiedPatientDetail()) {
