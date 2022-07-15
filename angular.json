@@ -1302,19 +1302,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "reports:build:production"
+              "browserTarget": "auth:build:production"
             },
             "uat": {
-              "browserTarget": "reports:build:uat"
+              "browserTarget": "auth:build:uat"
             },
             "sit": {
-              "browserTarget": "reports:build:sit"
+              "browserTarget": "auth:build:sit"
             },
             "dev": {
-              "browserTarget": "reports:build:dev"
+              "browserTarget": "auth:build:dev"
             },
             "development": {
-              "browserTarget": "reports:build:development"
+              "browserTarget": "auth:build:development"
             }
           },
           "defaultConfiguration": "development"
