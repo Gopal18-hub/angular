@@ -525,6 +525,7 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     this.maxIDChangeCall = false;
+    this.isOrganDonor = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
@@ -648,10 +649,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
-    this.questions[9].elementRef.addEventListener(
-      "focus",
-      this.onageCalculator.bind(this)
-    );
+    // this.questions[9].elementRef.addEventListener(
+    //   "focus",
+    //   this.onageCalculator.bind(this)
+    // );
 
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
@@ -778,8 +779,7 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          //this.OPRegForm.controls["dob"].setValue(value);
-          // this.onageCalculator();
+          this.onageCalculator(value);
           //this.questions[9].disabled = true;
           this.OPRegForm.controls["age"].disable();
           this.questions[10].disabled = true;
@@ -3051,99 +3051,126 @@ export class OpRegistrationComponent implements OnInit {
   dobFlag: boolean = false;
   ageFlag: boolean = false;
 
-  onageCalculator() {
-    console.log(this.OPRegForm.value.dob);
-    // if (!this.MaxIDExist) {
-    //if (this.OPRegForm.value.dob == "") {
-    //this.OPRegForm.value.age = null;
-    //this.OPRegForm.controls["ageType"].setValue(null);
-    // }
-    this.timeDiff = 0;
-    if (this.OPRegForm.value.dob) {
-      this.dobFlag = true;
-      this.ageFlag = false;
+  onageCalculator(ageDOB = "") {
+    if (!ageDOB) {
+      ageDOB = this.OPRegForm.value.dob;
     }
-    console.log(this.OPRegForm.value.age);
-
-    if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
-      this.dateNotValid = true;
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-      let element: HTMLElement = document.getElementById(
-        "saveform"
-      ) as HTMLElement;
-    } else {
-      this.dateNotValid = false;
-    }
-    let year = new Date(this.OPRegForm.value.dob).getFullYear();
-
-    if (year > 1000) {
-      if (this.OPRegForm.value.dob) {
-        this.timeDiff =
-          new Date(Date.now()).getFullYear() -
-          new Date(this.OPRegForm.value.dob).getFullYear();
-        if (this.timeDiff <= 0) {
-          this.timeDiff =
-            new Date(Date.now()).getMonth() -
-            new Date(this.OPRegForm.value.dob).getMonth();
-
-          var date1 = new Date(Date.now());
-          var date2 = new Date(this.OPRegForm.value.dob);
-          var timedifference = date1.getTime() - date2.getTime();
-
-          var Difference_In_Days = Math.floor(
-            timedifference / (1000 * 3600 * 24)
-          );
-
-          Difference_In_Days = Difference_In_Days == 0 ? 1 : Difference_In_Days;
-          if (
-            (this.timeDiff <= 0 || this.timeDiff == 1) &&
-            Difference_In_Days < 30
-          ) {
-            if (this.timeDiff < 0) {
-            } else {
-              this.OPRegForm.controls["age"].setValue(
-                Math.floor(Difference_In_Days)
-              );
-              this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[2].id
-              );
-              console.log(this.ageTypeList[2].name);
-            }
-          } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
-            console.log(this.ageTypeList[1].name);
-          }
-        } else {
-          let currentmonth = new Date(Date.now()).getMonth();
-          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
-          let monthDiff = currentmonth - MonthofDOB;
-          let monthDiff2 = MonthofDOB - currentmonth;
-          if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
-            if (monthDiff < 12 && this.timeDiff == 1) {
-              if (monthDiff <= 0) {
-                this.OPRegForm.controls["age"].setValue(
-                  12 - MonthofDOB + currentmonth
-                );
-              } else {
-                this.OPRegForm.controls["age"].setValue(monthDiff);
-              }
-            }
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
-          } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
-            console.log(this.ageTypeList[0].name);
-          }
-        }
-      } else {
-        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
-        console.log(this.OPRegForm.controls["ageType"].value);
+    if (ageDOB) {
+      const dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+      if (diffYears > 0) {
+        this.OPRegForm.controls["age"].setValue(diffYears);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
+      } else if (diffMonths > 0) {
+        this.OPRegForm.controls["age"].setValue(diffMonths);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+      } else if (diffDays > 0) {
+        this.OPRegForm.controls["age"].setValue(diffDays);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
     }
-    // }
   }
+
+  // onageCalculator() {
+  //   console.log(this.OPRegForm.value.dob);
+  //   // if (!this.MaxIDExist) {
+  //   //if (this.OPRegForm.value.dob == "") {
+  //   //this.OPRegForm.value.age = null;
+  //   //this.OPRegForm.controls["ageType"].setValue(null);
+  //   // }
+  //   this.timeDiff = 0;
+  //   if (this.OPRegForm.value.dob) {
+  //     this.dobFlag = true;
+  //     this.ageFlag = false;
+  //   }
+  //   console.log(this.OPRegForm.value.age);
+
+  //   if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
+  //     this.dateNotValid = true;
+  //     this.OPRegForm.value.age = null;
+  //     this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+  //     let element: HTMLElement = document.getElementById(
+  //       "saveform"
+  //     ) as HTMLElement;
+  //   } else {
+  //     this.dateNotValid = false;
+  //   }
+  //   let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+  //   if (year > 1000) {
+  //     if (this.OPRegForm.value.dob) {
+  //       this.timeDiff =
+  //         new Date(Date.now()).getFullYear() -
+  //         new Date(this.OPRegForm.value.dob).getFullYear();
+  //       if (this.timeDiff <= 0) {
+  //         this.timeDiff =
+  //           new Date(Date.now()).getMonth() -
+  //           new Date(this.OPRegForm.value.dob).getMonth();
+
+  //         var date1 = new Date(Date.now());
+  //         var date2 = new Date(this.OPRegForm.value.dob);
+  //         var timedifference = date1.getTime() - date2.getTime();
+
+  //         var Difference_In_Days = Math.floor(
+  //           timedifference / (1000 * 3600 * 24)
+  //         );
+
+  //         Difference_In_Days = Difference_In_Days == 0 ? 1 : Difference_In_Days;
+  //         if (
+  //           (this.timeDiff <= 0 || this.timeDiff == 1) &&
+  //           Difference_In_Days < 30
+  //         ) {
+  //           if (this.timeDiff < 0) {
+  //           } else {
+  //             this.OPRegForm.controls["age"].setValue(
+  //               Math.floor(Difference_In_Days)
+  //             );
+  //             this.OPRegForm.controls["ageType"].setValue(
+  //               this.ageTypeList[2].id
+  //             );
+  //             console.log(this.ageTypeList[2].name);
+  //           }
+  //         } else {
+  //           this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+  //           console.log(this.ageTypeList[1].name);
+  //         }
+  //       } else {
+  //         let currentmonth = new Date(Date.now()).getMonth();
+  //         let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+  //         let monthDiff = currentmonth - MonthofDOB;
+  //         let monthDiff2 = MonthofDOB - currentmonth;
+  //         if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
+  //           if (monthDiff < 12 && this.timeDiff == 1) {
+  //             if (monthDiff <= 0) {
+  //               this.OPRegForm.controls["age"].setValue(
+  //                 12 - MonthofDOB + currentmonth
+  //               );
+  //             } else {
+  //               this.OPRegForm.controls["age"].setValue(monthDiff);
+  //             }
+  //           }
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+  //         } else {
+  //           this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
+  //           console.log(this.ageTypeList[0].name);
+  //         }
+  //       }
+  //     } else {
+  //       this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+  //       console.log(this.OPRegForm.controls["ageType"].value);
+  //     }
+  //   }
+  //   // }
+  // }
+
   similaragetypePatientList: SimilarSoundPatientResponse[] = [];
   getSimilarpatientlistonagetype() {
     if (

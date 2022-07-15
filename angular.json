@@ -1304,6 +1304,15 @@
             "production": {
               "browserTarget": "auth:build:production"
             },
+            "uat": {
+              "browserTarget": "auth:build:uat"
+            },
+            "sit": {
+              "browserTarget": "auth:build:sit"
+            },
+            "dev": {
+              "browserTarget": "auth:build:dev"
+            },
             "development": {
               "browserTarget": "auth:build:development"
             }

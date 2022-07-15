@@ -11,4 +11,6 @@ export const environment = {
   BillingApiUrl: "http://172.30.0.16:1007/",
   reportTenantUrl:
     "https://maxhis-uat.maxhealthcare.in/reports/crystal-report/popup/",
+  ReportsSampleUrl: "https://MaxHIS-Reports-uat.maxhealthcare.in/",
+  crystalReportBaseUrl: "https://MaxHIS-Reports-UAT.maxhealthcare.in/",
 };
