@@ -328,6 +328,10 @@ export namespace ApiConstants {
     return ( environment.BillingApiUrl + "api/outpatientbilling/getregisteredpatientdetail/"+IACode+'/'+RegistrationNo);
   }
 
+  export const getpatienthistory = (FromDate:any, ToDate:any, IACode: string, RegistrationNo: number, HSPLocationId: number, StationId: number) => {
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getpatienthistory/"+FromDate+'/'+ToDate+'/'+IACode+'/'+RegistrationNo+'/'+HSPLocationId+'/'+StationId);
+  }
+
   export const dispatchreportsave =
   environment.PatientApiUrl + "api/patient/reportdispatchsave"
 

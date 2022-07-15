@@ -12,7 +12,12 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-  <form (ngSubmit)="submit()" [formGroup]="form" class="mt-4 mb-6">
+  <form
+    (ngSubmit)="submit()"
+    [formGroup]="form"
+    class="mt-4 mb-6"
+    autocomplete="off"
+  >
     <div
       class="flex justify-between flex-wrap"
       [ngClass]="{ 'form-column': data.layout == 'single' }"
