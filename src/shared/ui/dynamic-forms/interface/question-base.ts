@@ -27,6 +27,9 @@ export class QuestionBase<T> {
   onlyKeyPressAlpha: boolean;
   allowSearchInput: boolean;
   emptySelect: boolean;
+  capitalizeText: boolean;
+  customClasses: string;
+  disabled: boolean;
 
   constructor(
     options: {
@@ -58,6 +61,9 @@ export class QuestionBase<T> {
       onlyKeyPressAlpha?: boolean;
       allowSearchInput?: boolean;
       emptySelect?: boolean;
+      capitalizeText?: boolean;
+      customClasses?: string;
+      disabled?: boolean;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -88,5 +94,11 @@ export class QuestionBase<T> {
     this.onlyKeyPressAlpha = options.onlyKeyPressAlpha || false;
     this.allowSearchInput = options.allowSearchInput || false;
     this.emptySelect = options.emptySelect || false;
+    this.capitalizeText = options.capitalizeText || false;
+    this.customClasses = options.customClasses || "";
+    if (this.capitalizeText) {
+      this.customClasses += " text-capitalize";
+    }
+    this.disabled = options.disabled || false;
   }
 }

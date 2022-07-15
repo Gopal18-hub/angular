@@ -179,10 +179,10 @@ mat-form-field {
     }
     .mat-form-field-wrapper {
       margin: 0 !important;
-      // padding-bottom: 1em;
+      padding-bottom: 0.8rem;
     }
     .mat-form-field-infix {
-      padding: 0.6em 0 0.4em 0 !important;
+      padding: 0.4rem 0 0.3rem 0 !important;
       border-top: 0 !important;
     }
     .mat-form-field-suffix,
@@ -211,7 +211,7 @@ mat-form-field {
 }
 
 .max-body-wrapper {
-  height: calc(100vh - 10rem);
+  height: calc(100vh - 8.75rem);
   border-radius: 10px 10px;
   overflow: hidden;
   .banner {
@@ -448,4 +448,15 @@ input[type="number"]::-webkit-inner-spin-button {
 .mat-autocomplete-panel .mat-option {
   line-height: 1.5em !important;
   height: 1.5em !important;
+}
+
+.w-full-alt {
+  width: 100%;
+}
+
+.cdk-global-scrollblock {
+  overflow-y: auto;
+}
+.mat-select-value {
+  color: #000;
 }

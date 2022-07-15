@@ -10,6 +10,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { LookupService } from "../../../out_patients/core/services/lookup.service";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "auth-dashboard",
@@ -138,7 +139,8 @@ export class DashboardComponent implements OnInit {
     private searchService: SearchService,
     private datepipe: DatePipe,
     private router: Router,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -231,6 +233,7 @@ export class DashboardComponent implements OnInit {
     }
   }
   getAllpatients() {
-    return this.http.getExternal(ApiConstants.searchPatientDefault);
+    let hpId = Number(this.cookieService.get("HSPLocationId"));
+    return this.http.getExternal(ApiConstants.searchPatientDefault(hpId));
   }
 }

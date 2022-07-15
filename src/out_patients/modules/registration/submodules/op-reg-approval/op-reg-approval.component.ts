@@ -94,6 +94,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -165,6 +168,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
