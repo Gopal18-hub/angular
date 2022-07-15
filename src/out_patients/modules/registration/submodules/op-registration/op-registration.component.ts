@@ -1452,14 +1452,16 @@ export class OpRegistrationComponent implements OnInit {
             (result: any) => {
               console.log("The dialog was closed");
               console.log(result);
-              this.hotlistReason = result.data.hotlistTitle.title;
-              this.hotlistRemark = result.data.reason;
-              this.postHotlistComment(
-                this.hotlistReason.title,
-                this.hotlistRemark
-              );
-              console.log(this.hotlistReason, this.hotlistRemark);
-              // this.postHotlistComment();
+              if (result) {
+                this.hotlistReason = result.data.hotlistTitle;
+                this.hotlistRemark = result.data.reason;
+                this.postHotlistComment(
+                  this.hotlistReason.title,
+                  this.hotlistRemark
+                );
+                console.log(this.hotlistReason.title, this.hotlistRemark);
+                // this.postHotlistComment();
+              }
             },
             (error: { error: string }) => {
               console.log(error);
@@ -1471,7 +1473,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   hotlistReason!: { title: string; value: number };
-  hotlistReasondb!: { title: string; value: number };
+  hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
   hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
@@ -2242,6 +2244,10 @@ export class OpRegistrationComponent implements OnInit {
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
+    if (patientDetail.hotlist) {
+      this.hotlistReasondb.title = patientDetail.hotlistreason;
+      this.hotlistRemarkdb = patientDetail.hotlistcomments;
+    }
   }
 
   // commented as UAT requirement change
@@ -2511,13 +2517,18 @@ export class OpRegistrationComponent implements OnInit {
 
   //SETTING THE RESPONSE TO ID AND VALUE FOR DROP DOWN
   setSourceOfInforValues(patientDetails: PatientDetails) {
-    let sourceofinfo = this.sourceOfInfoList.filter(
-      (e) => e.id === patientDetails?.sourceofinfo
-    );
-    if (sourceofinfo.length > 0) {
+    if (patientDetails?.sourceofinfo != 0) {
+      let sourceofinfo = this.sourceOfInfoList.filter(
+        (e) => e.id === patientDetails?.sourceofinfo
+      );
       this.OPRegForm.controls["sourceOfInput"].setValue({
         title: sourceofinfo[0].name,
         value: sourceofinfo[0].id,
+      });
+    } else {
+      this.OPRegForm.controls["sourceOfInput"].setValue({
+        title: "",
+        value: 0,
       });
     }
   }
@@ -3207,7 +3218,7 @@ export class OpRegistrationComponent implements OnInit {
 
                     data: {
                       message1:
-                        "Similar sound patient detail exists. Please validate",
+                        "Similar patient detail exists. Please validate",
                       message2: "",
                       btn1: true,
                       btn2: true,
