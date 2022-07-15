@@ -77,8 +77,10 @@
                     </div>
                 </div>
                 <div class="w-2/5">
-                    <div class="mr-2 float-right">
-                        <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="patienthistorysearch()">Search</button>
+                    <div class="mr-2 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" class="mt-1 btn" (click)="patienthistorysearch()">
+                            Search
+                        </button>
                     </div>
                 </div>
             </div>
@@ -87,51 +89,62 @@
             <div class="w-full flex mt-1 border-radius-md p-2 bg-secondary">
                 <div class="flex w-3/4">
                     <div class="w-1/4">
-                        <mat-label class="max-health-primary-color">Patient Name:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">Patient Name:</mat-label>
                         <span class="ml-2">{{pname}}</span>
                     </div>
                     <div class="w-1/6">
-                        <mat-label class="max-health-primary-color">Age:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">Age:</mat-label>
                         <span class="ml-2">{{age}}</span>
                     </div>
                     <div class="w-1/6">
-                        <mat-label class="max-health-primary-color">Gender:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">Gender:</mat-label>
                         <span class="ml-2">{{gender}}</span>
                     </div>
                     <div class="w-1/6">
-                        <mat-label class="max-health-primary-color">DOB:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">DOB:</mat-label>
                         <span class="ml-2">{{dob}}</span>
                     </div >
                     <div class="w-1/6">
-                        <mat-label class="max-health-primary-color">Nationality:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">Nationality:</mat-label>
                         <span class="ml-2">{{nationality}}</span>
                     </div>
                     <div class="w-1/6">
-                        <mat-label class="max-health-primary-color">SSN:</mat-label>
+                        <mat-label class="max-health-primary-color font-bold">SSN:</mat-label>
                         <span class="ml-2">{{ssn}}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Table -->
-            <div class="mt-3 h-3/5">
-                <maxhealth-table
-                [config]="config"
-                [data]="data"
-                (columnClick)="printrow($event)"
-                #table
-                ></maxhealth-table>
-            </div>
 
-            <!-- Button -->
-            <div class="flex float-right mt-4">
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" (click)="printdialog()">Print</button>
+                <div class="mt-3 h-3/5" *ngIf="patienthistorytable">
+                    <maxhealth-table
+                    [config]="config"
+                    [data]="patienthistorylist"
+                    (columnClick)="printrow($event)"
+                    #table
+                    ></maxhealth-table>
                 </div>
-                <div class="">
-                    <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
+    
+                <div class="mt-3 h-3/5" *ngIf="defaultUI">
+                    <empty-placeholder
+                      [icon]="findpathisimage"
+                      [message]="findpathismessage"
+                    >
+                    </empty-placeholder>
                 </div>
-            </div>
+
+                <!-- Button -->
+                <div class="flex float-right mt-4">
+                    <div class="mr-4">
+                        <button mat-raised-button color="primary" type="submit" [disabled]="printbtn" (click)="printdialog()">Print</button>
+                    </div>
+                    <div class="">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
+                    </div>
+                </div>
+
+            
         </div>
     </mat-tab-nav-panel>
    
