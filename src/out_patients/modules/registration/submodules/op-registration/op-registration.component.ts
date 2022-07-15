@@ -525,6 +525,7 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     this.maxIDChangeCall = false;
+    this.isOrganDonor = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
