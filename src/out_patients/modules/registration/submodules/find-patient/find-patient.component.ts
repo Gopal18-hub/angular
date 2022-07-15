@@ -286,6 +286,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
   }
 
   getAllpatients() {
-    return this.http.get(ApiConstants.searchPatientApiDefault);
+    let hspId = Number(this.cookie.get("HSPLocationId"));
+    return this.http.get(ApiConstants.searchPatientApiDefault(hspId));
   }
 }
