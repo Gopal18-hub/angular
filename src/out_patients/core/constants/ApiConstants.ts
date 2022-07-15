@@ -310,6 +310,27 @@ export namespace ApiConstants {
     return environment.PatientApiUrl + "api/patient/patientunmerging/" + userId;
   };
 
+  export const locationname =
+  environment.PatientApiUrl + "api/patient/getlocationname";
+ 
+  export const getdispatchreport = (fromdate:any, todate:any, locationid:number, reptype:number) => {
+    return ( environment.PatientApiUrl + "api/patient/getdataforreportdispatch/"+fromdate+'/'+todate+'/'+locationid +'/'+reptype);
+  }
+
+  export const getarecounter = (HsplocationId: number) => {
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getareacounterdetails/"+ HsplocationId);
+  }
+
+  export const gettransactiontype = 
+  environment.BillingApiUrl + "api/outpatientbilling/getpatienthistorytransactiontype";
+
+  export const getregisteredpatientdetails = (IACode: string, RegistrationNo: number) => {
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getregisteredpatientdetail/"+IACode+'/'+RegistrationNo);
+  }
+
+  export const dispatchreportsave =
+  environment.PatientApiUrl + "api/patient/reportdispatchsave"
+
   export const approvalpostapproveApi =
     environment.PatientApiUrl + "api/patient/approverejectopregrequests";
 

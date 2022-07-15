@@ -11,10 +11,10 @@
         <div >
         <form  [formGroup]="employeesponsorForm">
             <!------------------------------------------- FIRST ROW------------------------------------------>
-            <div class="firstrow max-health-primary-color">
-                <div class="flex w-4/5 pt-3 pb-2">
+            <div class="bg-lightgray max-health-primary-color">
+                <div class="flex w-4/5 p-2">
                     <!-- <div class="flex w-1/15"> -->
-                        <div class="flex  text-wrap" >
+                        <div class="text-wrap" >
                             <mat-label>Max ID</mat-label>
                         </div>
                         <div class="ml-3 w-1/10 bg-white">
@@ -28,7 +28,7 @@
                         </div>
                     <!-- </div> -->
                     <!-- <div class="flex ml-0 w-2/10"> -->
-                        <div class="ml-1 text-wrap">
+                        <div class="ml-2 text-wrap">
                             <mat-label>Mobile No</mat-label>
                         </div>
                         <div class="ml-3 w-1/15 bg-white">
@@ -92,8 +92,8 @@
             <!---------------------------------------------SECOND ROW-------------------------------------------------->
        </form>
      </div>
-     <div class="firstrow employeeclass mt-1">
-        <div class="first_main flex  p-2 align-items-center">
+     <div class="bg-lightgray employeeclass mt-1">
+        <div class="flex  p-2 align-items-center">
             <div class="flex w-1/10">
                 <div class="w-1/2">
                     <mat-label>Name:</mat-label>
@@ -142,7 +142,7 @@
                     <span></span>
                 </div>
             </div>
-            <div class="flex dateclass align-items-center border-radius-lg p-1 mr-12" >
+            <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-12" >
             <div class="flex">
                 <maxhealth-question
                 [question]="questions[5]"
@@ -161,7 +161,7 @@
                 <div class="ml-2">
                     <mat-label>From Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 bg-white" >
+                <div class="ml-3 w-3/5 bg-white border-radius-lg" >
                     <maxhealth-question
                 [question]="questions[6]"
                 [form]="employeesponsorForm"
@@ -175,7 +175,7 @@
                 <div>
                     <mat-label>To Date</mat-label>
                 </div>
-                <div class="ml-3 w-3/5 bg-white" >
+                <div class="ml-3 w-3/5 bg-white border-radius-lg" >
                     <maxhealth-question
                     [question]="questions[7]"
                     [form]="employeesponsorForm"
@@ -190,7 +190,7 @@
         </div>
     </div>
      <div class="h-1/2">
-        <div class="pl-3 pt-3 employeeclass font-bold font-base">
+        <div class="pl-2 pt-3 employeeclass font-bold font-base">
             <mat-label>Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->

@@ -30,7 +30,11 @@ import { takeUntil } from "rxjs/operators";
   styleUrls: ["./op-reg-approval.component.scss"],
 })
 export class OpRegApprovalComponent implements OnInit {
-  link1 = ["OP Registration Approval", "Hot Listing Approval"]; //, 'OP Refund Approval'
+  link1 = [
+    "OP Registration Approval",
+    "Hot Listing Approval",
+    "OP Refund Approval",
+  ]; //, 'OP Refund Approval'
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[0];
   activeLink2 = this.link2[0];
@@ -41,8 +45,8 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject: any;
   rejectPostobject: any;
-  hsplocationId: any = this.cookie.get("HSPLocationId");
-  userId: number = Number(this.cookie.get("UserId"));
+  hsplocationId: any =  this.cookie.get("HSPLocationId");
+  userId: number =  Number(this.cookie.get("UserId"));
   enableapprovebtn: boolean = false;
 
   showapprovalpending: boolean = false;
@@ -90,6 +94,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -161,6 +168,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -270,6 +280,7 @@ export class OpRegApprovalComponent implements OnInit {
     } else if (link == "Hot Listing Approval") {
       this.router.navigate(["registration", "hot-listing-approval"]);
     } else if (link == "Op Refund Approval") {
+      this.router.navigate(["out-patient-billing", "op-refund-approval"]);
     }
   }
   showgrid(link: any) {
@@ -304,6 +315,8 @@ export class OpRegApprovalComponent implements OnInit {
                 item.modifiedFirstName + " " + item.modifiedLastName;
               return item;
             });
+            
+            resultData = resultData.filter((l: { operatorID: number; }) => l.operatorID != this.userId);
             this.showapprovalspinner = false;
             this.defaultUI = true;
             this.opApprovalList = resultData as opRegApprovalModel[];
@@ -311,12 +324,13 @@ export class OpRegApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.showapprovalreject = false;
             this.enableapprovebtn = true;
-            // setTimeout(() => {
-            //   this.approvaltable.selection.changed.subscribe((res: any) => {
-            //     console.log(res);
-            //     //this.modifyDialog(res.added[0]);
-            //   });
-            // });
+
+            if(this.opApprovalList.length == 0){
+              this.enableapprovebtn = false;
+              this.defaultUI = false;
+              this.opappprovalmessage = "No records found";
+              this.opapprovalimage = "norecordfound";
+            }
             console.log(this.opApprovalList);
           },
           (error: any) => {
