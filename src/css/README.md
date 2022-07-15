@@ -293,7 +293,7 @@ And we can use any breakpoint prefix, i.e:
 - `.w-screen` -> `width: 100vw`
 - `.w-auto` -> `width: auto`
 - `.w-1/20` -> `width: 5%`
-or
+  or
 
 - `.sm:w-1/2`
 - `.md:w-3/4`
@@ -346,6 +346,7 @@ Setting font-weight:
 - `.font-light` //300
 - `.font-normal` //400
 - `.font-medium` //500
+- `.font-semi-bold` //600
 - `.font-bold` //700
 - `.font-bolder` //800
 
