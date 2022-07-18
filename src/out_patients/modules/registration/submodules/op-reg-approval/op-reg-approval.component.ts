@@ -247,7 +247,7 @@ export class OpRegApprovalComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain("OP Registration Approval");   
   }
 
   searchApproval(formdata: any) {
@@ -298,11 +298,7 @@ export class OpRegApprovalComponent implements OnInit {
     ) {
       this.defaultUI = false;
       this.showapprovalspinner = false;
-      // this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
-      // this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');
-      // this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
-      // this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');
-    }
+ }
 
     if (link == "View Pending Request") {
       this.activeLink2 = link;
@@ -316,7 +312,6 @@ export class OpRegApprovalComponent implements OnInit {
               return item;
             });
             
-            resultData = resultData.filter((l: { operatorID: number; }) => l.operatorID != this.userId);
             this.showapprovalspinner = false;
             this.defaultUI = true;
             this.opApprovalList = resultData as opRegApprovalModel[];
@@ -331,7 +326,7 @@ export class OpRegApprovalComponent implements OnInit {
               this.opappprovalmessage = "No records found";
               this.opapprovalimage = "norecordfound";
             }
-            console.log(this.opApprovalList);
+               
           },
           (error: any) => {
             this.opApprovalList = [];
@@ -399,8 +394,9 @@ export class OpRegApprovalComponent implements OnInit {
     }
   }
   approvalPendingColumnClick($event: any) {
-    this.modifyDialog($event.row);
+    this.modifyDialog($event.row);   
   }
+
   getopapprovalpending() {
     return this.http.get(
       ApiConstants.opapprovalpending(this.from, this.to, this.hsplocationId)
@@ -417,59 +413,83 @@ export class OpRegApprovalComponent implements OnInit {
     );
   }
 
+  createduserapprovelist: any=[];
   approvalApproveItem() {
+    this.createduserapprovelist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
+      this.createduserapprovelist.push({operatorID:s.operatorID, fullname: s.fullname, maxid: s.maxid});
     });
-    this.approvePostobject = new approveRejectModel(
-      this.ApprovalidList,
-      this.userId,
-      0
-    );
-    this.approvalpostapi(this.approvePostobject)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata) => {
-          console.log(resultdata);
-          this.messageDialogService.success("Update Request Approved");
-          this.showgrid("View Pending Request");
-          this.ApprovalidList = [];
-        },
-        (error) => {
-          console.log(error);
-          this.ApprovalidList = [];
-          this.defaultUI = true;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-        }
+    this.createduserapprovelist = this.createduserapprovelist.filter((l: { operatorID: number; }) => l.operatorID == this.userId);
+     
+    if(this.createduserapprovelist.length > 0){
+     var MaxId = this.createduserapprovelist.map((data:any) => data.maxid);
+     this.messageDialogService.error("Max ID: "+ MaxId +" requested by you for Approval/Rejection cannot be processed.");
+    }else{
+      this.approvePostobject = new approveRejectModel(
+        this.ApprovalidList,
+        this.userId,
+        0
       );
+      this.approvalpostapi(this.approvePostobject)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            this.messageDialogService.success("Update Request Approved");
+            this.showgrid("View Pending Request");
+            this.ApprovalidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.ApprovalidList = [];
+            this.defaultUI = true;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
+    }
+    
   }
 
+  createduserrejectlist: any=[];
   approvalRejectItem() {
+    this.createduserrejectlist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
+      this.createduserrejectlist.push({operatorID:s.operatorID, fullname: s.fullname, maxid: s.maxid});
     });
-    this.rejectPostobject = new approveRejectModel(
-      this.ApprovalidList,
-      this.userId,
-      1
-    );
-    this.approvalpostapi(this.rejectPostobject)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata) => {
-          this.messageDialogService.success("Request is deleted");
-          this.showgrid("View Pending Request");
-          this.ApprovalidList = [];
-        },
-        (error) => {
-          console.log(error);
-          this.ApprovalidList = [];
-          this.defaultUI = true;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-        }
+
+    this.createduserrejectlist = this.createduserrejectlist.filter((l: { operatorID: number; }) => l.operatorID == this.userId);
+     
+    if(this.createduserrejectlist.length > 0){
+     var MaxId = this.createduserrejectlist.map((data:any) => data.maxid);
+     this.messageDialogService.error("Max ID: "+ MaxId +" requested by you for Approval/Rejection cannot be processed.");
+    }else{
+      this.rejectPostobject = new approveRejectModel(
+        this.ApprovalidList,
+        this.userId,
+        1
       );
+      this.approvalpostapi(this.rejectPostobject)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            this.messageDialogService.success("Request is deleted");
+            this.showgrid("View Pending Request");
+            this.ApprovalidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.ApprovalidList = [];
+            this.defaultUI = true;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
+    }
+
+ 
   }
   approvalpostapi(approvalJSONObject: approveRejectModel[]) {
     return this.http.post(

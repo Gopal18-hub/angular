@@ -224,9 +224,12 @@ export class DashboardComponent implements OnInit {
             .pipe(takeUntil(this._destroying$))
             .subscribe((res: any) => {
               console.log(res);
-              this.router.navigate(["registration", "op-registration"], {
-                queryParams: { maxId: res.added[0].maxid },
-              });
+              this.router.navigate(
+                ["out-patients", "registration", "op-registration"],
+                {
+                  queryParams: { maxId: res.added[0].maxid },
+                }
+              );
             });
         });
       }
