@@ -2588,7 +2588,7 @@ export class OpRegistrationComponent implements OnInit {
       0,
       "",
       this.OPRegForm.controls["ageType"].value,
-      Number(this.OPRegForm.value.age),
+      Number(this.OPRegForm.controls["age"].value),
       this.OPRegForm.value.address,
       "",
       "",
