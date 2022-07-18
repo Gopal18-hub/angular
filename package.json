@@ -27,6 +27,7 @@
     "@angular/router": "~13.3.0",
     "@material/menu": "^14.0.0",
     "babel-polyfill": "^6.26.0",
+    "moment": "^2.29.4",
     "oidc-client": "^1.11.5",
     "rxjs": "~7.5.0",
     "text-mask-core": "^5.1.2",

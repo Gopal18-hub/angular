@@ -63,6 +63,7 @@ import { AnyCatcher } from "rxjs/internal/AnyCatcher";
 import { AnimationPlayer } from "@angular/animations";
 import { TileStyler } from "@angular/material/grid-list/tile-styler";
 import { LookupService } from "@core/services/lookup.service";
+import * as moment from "moment";
 
 export interface DialogData {
   expieryDate: Date;
@@ -88,6 +89,8 @@ export class OpRegistrationComponent implements OnInit {
   countryList: MasterCountryModel[] = [];
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
   localityList: LocalityModel[] = [];
   localitybyCityList: LocalityModel[] = [];
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
@@ -460,7 +463,7 @@ export class OpRegistrationComponent implements OnInit {
   bool: boolean | undefined;
   ngOnInit(): void {
     this.bool = true;
-
+    this.lastUpdatedBy = this.cookie.get("UserName");
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -522,6 +525,7 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     this.maxIDChangeCall = false;
+    this.isOrganDonor = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
 
@@ -607,10 +611,22 @@ export class OpRegistrationComponent implements OnInit {
       }
     });
 
-    //chnage event for Mobile Field
+    //tab event for Mobile Field
+    this.questions[2].elementRef.addEventListener("keydown", (event: any) => {
+      // If the user presses the "TAB" key on the keyboard
+
+      if (event.key === "Tab") {
+        // Cancel the default action, if needed
+
+        // event.preventDefault();
+
+        this.onPhoneModify();
+      }
+    });
+
     this.questions[2].elementRef.addEventListener(
       "change",
-      this.onPhoneModify.bind(this)
+      this.resetPhoneFlag.bind(this)
     );
 
     //chnage event for FirstName
@@ -633,10 +649,10 @@ export class OpRegistrationComponent implements OnInit {
       "blur",
       this.onageCalculator.bind(this)
     );
-    this.questions[9].elementRef.addEventListener(
-      "focus",
-      this.onageCalculator.bind(this)
-    );
+    // this.questions[9].elementRef.addEventListener(
+    //   "focus",
+    //   this.onageCalculator.bind(this)
+    // );
 
     //IdenityType value change
     this.questions[17].elementRef.addEventListener(
@@ -707,7 +723,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openVipNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.vip = "";
         }
       });
@@ -717,7 +733,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.seafarersDetailsdialog();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.seafarerDetails.FDPGroup = "";
           this.seafarerDetails.HKID = "";
           this.seafarerDetails.Vesselname = "";
@@ -730,7 +746,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.noteRemark = "";
         }
       });
@@ -739,7 +755,7 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe((value: any) => {
         if (this.maxIDChangeCall == false && value) {
           this.openHWCNotes();
-        } else if (!value) {
+        } else if (!value && !this.MaxIDExist) {
           this.hwcRemark = "";
         }
       });
@@ -763,12 +779,13 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          //this.OPRegForm.controls["dob"].setValue(value);
-          // this.onageCalculator();
-          this.questions[9].readonly = true;
+          this.onageCalculator(value);
+          //this.questions[9].disabled = true;
+          this.OPRegForm.controls["age"].disable();
           this.questions[10].disabled = true;
         } else {
-          this.questions[9].readonly = false;
+          //this.questions[9].disabled = false;
+          this.OPRegForm.controls["age"].enable();
           this.questions[10].disabled = false;
           this.OPRegForm.controls["age"].setValue("");
           this.OPRegForm.controls["ageType"].setValue(0);
@@ -965,7 +982,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["gender"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (value) {
+        if (value && !this.maxIDChangeCall) {
           let genderName = this.genderList.filter((g) => g.id === value)[0]
             .name;
           if (
@@ -1435,14 +1452,16 @@ export class OpRegistrationComponent implements OnInit {
             (result: any) => {
               console.log("The dialog was closed");
               console.log(result);
-              this.hotlistReason = result.data.hotlistTitle.title;
-              this.hotlistRemark = result.data.reason;
-              this.postHotlistComment(
-                this.hotlistReason.title,
-                this.hotlistRemark
-              );
-              console.log(this.hotlistReason, this.hotlistRemark);
-              // this.postHotlistComment();
+              if (result) {
+                this.hotlistReason = result.data.hotlistTitle;
+                this.hotlistRemark = result.data.reason;
+                this.postHotlistComment(
+                  this.hotlistReason.title,
+                  this.hotlistRemark
+                );
+                console.log(this.hotlistReason.title, this.hotlistRemark);
+                // this.postHotlistComment();
+              }
             },
             (error: { error: string }) => {
               console.log(error);
@@ -1454,7 +1473,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   hotlistReason!: { title: string; value: number };
-  hotlistReasondb!: { title: string; value: number };
+  hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
   hotlistdialogref: any;
   openHotListDialog() {
     this.gethotlistMasterData();
@@ -2065,16 +2084,17 @@ export class OpRegistrationComponent implements OnInit {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
-        this.OPRegForm.value.nationality.title != "Indian" &&
         this.OPRegForm.value.foreigner &&
         this.passportDetails.passportNo != ""
       ) {
         passportdetailspresent = true;
-      } else if (
-        this.nationalityChanged &&
-        this.OPRegForm.value.nationality.title == "Indian"
-      ) {
+      } else if (this.nationalityChanged) {
         passportdetailspresent = true;
+      } else if (
+        this.OPRegForm.value.foreigner &&
+        this.passportDetails.passportNo != ""
+      ) {
+        this.isPatientdetailModified = true;
       } else {
         passportdetailspresent = false;
       }
@@ -2224,6 +2244,10 @@ export class OpRegistrationComponent implements OnInit {
     this.hotlistReason.title = patientDetail.hotlistreason;
 
     this.hotlistRemark = patientDetail.hotlistcomments;
+    if (patientDetail.hotlist) {
+      this.hotlistReasondb.title = patientDetail.hotlistreason;
+      this.hotlistRemarkdb = patientDetail.hotlistcomments;
+    }
   }
 
   // commented as UAT requirement change
@@ -2240,14 +2264,20 @@ export class OpRegistrationComponent implements OnInit {
     return this.similarContactPatientList.length > 0 ? true : false;
   }
 
+  resetPhoneFlag() {
+    this.phoneNumberFlag = false;
+  }
+
+  phoneNumberFlag: boolean = false;
   //CLEARING OLDER PHONE SEARCH
   onEnterPhoneModify() {
     this.similarContactPatientList = [] as any;
     this.onPhoneModify();
+    this.phoneNumberFlag = true;
   }
   onPhoneModify() {
     console.log("phone changed");
-    if (!this.maxIDChangeCall) {
+    if (!this.maxIDChangeCall && !this.phoneNumberFlag) {
       //IF EVENT HAS BEEN NOT HITTED API
       if (!this.similarSoundListPresent()) {
         if (this.checkForModifiedPatientDetail()) {
@@ -2482,9 +2512,25 @@ export class OpRegistrationComponent implements OnInit {
     this.setValuesToSeaFarer(patientDetails);
 
     //SOURCE OF INFO DROPDOWN
-    this.OPRegForm.controls["sourceOfInput"].setValue(
-      patientDetails?.sourceofinfo
-    );
+    this.setSourceOfInforValues(patientDetails);
+  }
+
+  //SETTING THE RESPONSE TO ID AND VALUE FOR DROP DOWN
+  setSourceOfInforValues(patientDetails: PatientDetails) {
+    if (patientDetails?.sourceofinfo != 0) {
+      let sourceofinfo = this.sourceOfInfoList.filter(
+        (e) => e.id === patientDetails?.sourceofinfo
+      );
+      this.OPRegForm.controls["sourceOfInput"].setValue({
+        title: sourceofinfo[0].name,
+        value: sourceofinfo[0].id,
+      });
+    } else {
+      this.OPRegForm.controls["sourceOfInput"].setValue({
+        title: "",
+        value: 0,
+      });
+    }
   }
 
   //FOR ASSIGNING SEAFARER DETAILS TO POP UP
@@ -2542,7 +2588,7 @@ export class OpRegistrationComponent implements OnInit {
       0,
       "",
       this.OPRegForm.controls["ageType"].value,
-      this.OPRegForm.value.age,
+      Number(this.OPRegForm.value.age),
       this.OPRegForm.value.address,
       "",
       "",
@@ -2624,7 +2670,26 @@ export class OpRegistrationComponent implements OnInit {
     let validationerror = false;
     if (!validationerror) {
       if (!this.OPRegForm.controls["title"].value) {
+        validationerror = true;
         this.messageDialogService.error("Please enter title");
+      } else {
+        validationerror = false;
+      }
+    }
+    if (!validationerror) {
+      if (!this.OPRegForm.controls["gender"].value) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter gender");
+      } else {
+        validationerror = false;
+      }
+    }
+    if (!validationerror) {
+      if (!this.OPRegForm.controls["emailId"].value) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter email");
+      } else {
+        validationerror = false;
       }
     }
     if (!validationerror) {
@@ -2754,7 +2819,7 @@ export class OpRegistrationComponent implements OnInit {
       "",
       "",
       this.OPRegForm.controls["ageType"].value,
-      this.OPRegForm.value.age,
+      Number(this.OPRegForm.value.age),
       this.OPRegForm.value.address,
       "",
       "",
@@ -2790,7 +2855,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
         : "",
-      this.OPRegForm.controls["sourceOfInput"].value || 0,
+      this.OPRegForm.value.sourceOfInput.value || 0,
       false,
       this.OPRegForm.value.SSN,
       "1900-01-01T00:00:00",
@@ -2885,16 +2950,16 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.emailId,
       this.OPRegForm.value.nationality.value,
       this.OPRegForm.value.foreigner || false,
-      this.patientDetails.passportNo,
+      this.passportDetails.passportNo,
       this.datepipe.transform(
-        this.patientDetails.issueDate,
+        this.passportDetails.IssueDate,
         "yyyy-MM-ddThh:mm:ss"
       ) || null,
       this.datepipe.transform(
-        this.patientDetails.expiryDate,
+        this.passportDetails.Expirydate,
         "yyyy-MM-ddThh:mm:ss"
       ) || null,
-      this.patientDetails.passportIssuedAt,
+      this.passportDetails.Issueat,
       Number(this.cookie.get("UserId")),
       Number(this.cookie.get("HSPLocationId")),
       false,
@@ -2986,99 +3051,126 @@ export class OpRegistrationComponent implements OnInit {
   dobFlag: boolean = false;
   ageFlag: boolean = false;
 
-  onageCalculator() {
-    console.log(this.OPRegForm.value.dob);
-    // if (!this.MaxIDExist) {
-    if (this.OPRegForm.value.dob == "") {
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(null);
+  onageCalculator(ageDOB = "") {
+    if (!ageDOB) {
+      ageDOB = this.OPRegForm.value.dob;
     }
-    this.timeDiff = 0;
-    if (this.OPRegForm.value.dob) {
-      this.dobFlag = true;
-      this.ageFlag = false;
-    }
-    console.log(this.OPRegForm.value.age);
-
-    if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
-      this.dateNotValid = true;
-      this.OPRegForm.value.age = null;
-      this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
-      let element: HTMLElement = document.getElementById(
-        "saveform"
-      ) as HTMLElement;
-    } else {
-      this.dateNotValid = false;
-    }
-    let year = new Date(this.OPRegForm.value.dob).getFullYear();
-
-    if (year > 1000) {
-      if (this.OPRegForm.value.dob) {
-        this.timeDiff =
-          new Date(Date.now()).getFullYear() -
-          new Date(this.OPRegForm.value.dob).getFullYear();
-        if (this.timeDiff <= 0) {
-          this.timeDiff =
-            new Date(Date.now()).getMonth() -
-            new Date(this.OPRegForm.value.dob).getMonth();
-
-          var date1 = new Date(Date.now());
-          var date2 = new Date(this.OPRegForm.value.dob);
-          var timedifference = date1.getTime() - date2.getTime();
-
-          var Difference_In_Days = Math.floor(
-            timedifference / (1000 * 3600 * 24)
-          );
-
-          Difference_In_Days = Difference_In_Days == 0 ? 1 : Difference_In_Days;
-          if (
-            (this.timeDiff <= 0 || this.timeDiff == 1) &&
-            Difference_In_Days < 30
-          ) {
-            if (this.timeDiff < 0) {
-            } else {
-              this.OPRegForm.controls["age"].setValue(
-                Math.floor(Difference_In_Days)
-              );
-              this.OPRegForm.controls["ageType"].setValue(
-                this.ageTypeList[2].id
-              );
-              console.log(this.ageTypeList[2].name);
-            }
-          } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
-            console.log(this.ageTypeList[1].name);
-          }
-        } else {
-          let currentmonth = new Date(Date.now()).getMonth();
-          let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
-          let monthDiff = currentmonth - MonthofDOB;
-          let monthDiff2 = MonthofDOB - currentmonth;
-          if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
-            if (monthDiff < 12 && this.timeDiff == 1) {
-              if (monthDiff <= 0) {
-                this.OPRegForm.controls["age"].setValue(
-                  12 - MonthofDOB + currentmonth
-                );
-              } else {
-                this.OPRegForm.controls["age"].setValue(monthDiff);
-              }
-            }
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
-          } else {
-            this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
-            this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
-            console.log(this.ageTypeList[0].name);
-          }
-        }
-      } else {
-        this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
-        console.log(this.OPRegForm.controls["ageType"].value);
+    if (ageDOB) {
+      const dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+      if (diffYears > 0) {
+        this.OPRegForm.controls["age"].setValue(diffYears);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
+      } else if (diffMonths > 0) {
+        this.OPRegForm.controls["age"].setValue(diffMonths);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+      } else if (diffDays > 0) {
+        this.OPRegForm.controls["age"].setValue(diffDays);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
     }
-    // }
   }
+
+  // onageCalculator() {
+  //   console.log(this.OPRegForm.value.dob);
+  //   // if (!this.MaxIDExist) {
+  //   //if (this.OPRegForm.value.dob == "") {
+  //   //this.OPRegForm.value.age = null;
+  //   //this.OPRegForm.controls["ageType"].setValue(null);
+  //   // }
+  //   this.timeDiff = 0;
+  //   if (this.OPRegForm.value.dob) {
+  //     this.dobFlag = true;
+  //     this.ageFlag = false;
+  //   }
+  //   console.log(this.OPRegForm.value.age);
+
+  //   if (new Date(this.OPRegForm.value.dob) > new Date(Date.now())) {
+  //     this.dateNotValid = true;
+  //     this.OPRegForm.value.age = null;
+  //     this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[3].id);
+  //     let element: HTMLElement = document.getElementById(
+  //       "saveform"
+  //     ) as HTMLElement;
+  //   } else {
+  //     this.dateNotValid = false;
+  //   }
+  //   let year = new Date(this.OPRegForm.value.dob).getFullYear();
+
+  //   if (year > 1000) {
+  //     if (this.OPRegForm.value.dob) {
+  //       this.timeDiff =
+  //         new Date(Date.now()).getFullYear() -
+  //         new Date(this.OPRegForm.value.dob).getFullYear();
+  //       if (this.timeDiff <= 0) {
+  //         this.timeDiff =
+  //           new Date(Date.now()).getMonth() -
+  //           new Date(this.OPRegForm.value.dob).getMonth();
+
+  //         var date1 = new Date(Date.now());
+  //         var date2 = new Date(this.OPRegForm.value.dob);
+  //         var timedifference = date1.getTime() - date2.getTime();
+
+  //         var Difference_In_Days = Math.floor(
+  //           timedifference / (1000 * 3600 * 24)
+  //         );
+
+  //         Difference_In_Days = Difference_In_Days == 0 ? 1 : Difference_In_Days;
+  //         if (
+  //           (this.timeDiff <= 0 || this.timeDiff == 1) &&
+  //           Difference_In_Days < 30
+  //         ) {
+  //           if (this.timeDiff < 0) {
+  //           } else {
+  //             this.OPRegForm.controls["age"].setValue(
+  //               Math.floor(Difference_In_Days)
+  //             );
+  //             this.OPRegForm.controls["ageType"].setValue(
+  //               this.ageTypeList[2].id
+  //             );
+  //             console.log(this.ageTypeList[2].name);
+  //           }
+  //         } else {
+  //           this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+  //           console.log(this.ageTypeList[1].name);
+  //         }
+  //       } else {
+  //         let currentmonth = new Date(Date.now()).getMonth();
+  //         let MonthofDOB = new Date(this.OPRegForm.value.dob).getMonth();
+  //         let monthDiff = currentmonth - MonthofDOB;
+  //         let monthDiff2 = MonthofDOB - currentmonth;
+  //         if (monthDiff <= 1 && monthDiff2 >= 1 && this.timeDiff == 1) {
+  //           if (monthDiff < 12 && this.timeDiff == 1) {
+  //             if (monthDiff <= 0) {
+  //               this.OPRegForm.controls["age"].setValue(
+  //                 12 - MonthofDOB + currentmonth
+  //               );
+  //             } else {
+  //               this.OPRegForm.controls["age"].setValue(monthDiff);
+  //             }
+  //           }
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
+  //         } else {
+  //           this.OPRegForm.controls["age"].setValue(Math.floor(this.timeDiff));
+  //           this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
+  //           console.log(this.ageTypeList[0].name);
+  //         }
+  //       }
+  //     } else {
+  //       this.OPRegForm.controls["age"].setValue(this.OPRegForm.value.age);
+  //       console.log(this.OPRegForm.controls["ageType"].value);
+  //     }
+  //   }
+  //   // }
+  // }
+
   similaragetypePatientList: SimilarSoundPatientResponse[] = [];
   getSimilarpatientlistonagetype() {
     if (
@@ -3126,7 +3218,7 @@ export class OpRegistrationComponent implements OnInit {
 
                     data: {
                       message1:
-                        "Similar sound patient detail exists. Please validate",
+                        "Similar patient detail exists. Please validate",
                       message2: "",
                       btn1: true,
                       btn2: true,
@@ -3609,7 +3701,7 @@ export class OpRegistrationComponent implements OnInit {
 
     const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
       width: "30vw",
-      height: "96vh",
+      //height: "96vh",
       data: {
         patientDetails: this.patientDetails,
         modifiedDetails: this.modfiedPatiendDetailsForPopUp,

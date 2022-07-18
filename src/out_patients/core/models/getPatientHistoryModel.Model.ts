@@ -1,23 +1,23 @@
 export class getPatientHistoryModel{
-    billId?: number;
-    billNo?: string;
-    billType?: string;
-    billDate?: string;
-    ipNo?: string;
-    admDateTime?: string;
-    dischargeDateTime?: string;
-    billAmount?: string;
-    discountAmount?: string;
-    receiptAmt?: string;
-    refundAmount?: string;
-    balanceAmt?: string;
-    companyName?: string;
-    operatorName?: string;
-    printEnable?: number;
-    allowSeparateBillFlag?: string;
-    creditlimit?: number;
-    ptnStatus?: string;
-    companyId?: number;
+    billId: number;
+    billNo: string;
+    billType: string;
+    billDate: string;
+    ipNo: string;
+    admDateTime: string;
+    dischargeDateTime: string;
+    billAmount: string;
+    discountAmount: string;
+    receiptAmt: string;
+    refundAmount: string;
+    balanceAmt: string;
+    companyName: string;
+    operatorName: string;
+    printEnable: number;
+    allowSeparateBillFlag: string;
+    creditlimit: number;
+    ptnStatus: string;
+    companyId: number;
     
     constructor(
         billId: number,
