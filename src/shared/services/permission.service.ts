@@ -59,6 +59,13 @@ export class PermissionService {
     definedModules = definedModules.filter((masterModule: any) => {
       return this.masterModules.includes(masterModule.id);
     });
+    definedModules.forEach((masterModule: any) => {
+      masterModule.childrens.forEach((children: any) => {
+        children.childrens = children.childrens.filter((feature: any) => {
+          return this.features.includes(feature.id);
+        });
+      });
+    });
     return definedModules;
   }
 
