@@ -2621,7 +2621,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
         : "",
-      this.OPRegForm.controls["sourceOfInput"].value || 0,
+      this.OPRegForm.value.sourceOfInput.value || 0,
       false,
       false, //data clean flag
       false, //isavailregcard
