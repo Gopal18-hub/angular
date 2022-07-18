@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    //await this.permissionService.getPermissionsRoleWise();
+    await this.permissionService.getPermissionsRoleWise();
     this.modules = MaxModules.getModules();
     this.modules.forEach((element: any) => {
       if (
