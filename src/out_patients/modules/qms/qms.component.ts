@@ -66,7 +66,7 @@ export class QmsComponent implements OnInit {
     this.qmsform.reset();
   }
   getarea(){
-    this.http.get(ApiConstants.getarecounter(12))
+    this.http.get(ApiConstants.getarecounter(this.hspId))
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata: any)=>{
       console.log(resultdata);
@@ -77,7 +77,7 @@ export class QmsComponent implements OnInit {
     })
   }
   getcounter(){
-    this.http.get(ApiConstants.getarecounter(12))
+    this.http.get(ApiConstants.getarecounter(this.hspId))
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata: any)=>{
       console.log(resultdata);
