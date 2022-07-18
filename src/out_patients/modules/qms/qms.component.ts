@@ -7,6 +7,7 @@ import { getAreaCounterDetailsModel } from '@core/models/getAreaCounterDetailsMo
 import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from '@core/constants/ApiConstants';
 import { Title } from '@angular/platform-browser';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'out-patients-qms',
   templateUrl: './qms.component.html',
@@ -34,6 +35,7 @@ export class QmsComponent implements OnInit {
   qmsform!: FormGroup;
   questions: any;
   hspId: any;
+  private readonly _destroying$ = new Subject<void>();
   constructor(
     private formService: QuestionControlService, 
     private matdialog: MessageDialogService, 
@@ -49,22 +51,24 @@ export class QmsComponent implements OnInit {
     this.questions = formResult.questions;
     this.qmsform.controls["area"].value;
     this.hspId= Number(this.cookie.get("HSPLocationId"));
-    console.log(this.hspId);
     this.getarea();
     this.getcounter();
   }
   okbtn()
   {
-   
-    this.matdialog.success( this.questions[0].options.title + ", " + this.questions[1].options.title + " Selected successfully");
-    // this.clear();
+    console.log(this.qmsform);
+    var area = this.area.find(e => e.areaId == this.qmsform.controls["area"].value);
+    var counter = this.counter.find(e => e.counterId == this.qmsform.controls["counter"].value);
+    this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
   }
   clear()
   {
     this.qmsform.reset();
   }
   getarea(){
-    this.http.get(ApiConstants.getarecounter(this.hspId)).subscribe((resultdata: any)=>{
+    this.http.get(ApiConstants.getarecounter(12))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata: any)=>{
       console.log(resultdata);
       this.area = resultdata.areaData;
       this.questions[0].options = this.area.map((l) =>{
@@ -73,7 +77,9 @@ export class QmsComponent implements OnInit {
     })
   }
   getcounter(){
-    this.http.get(ApiConstants.getarecounter(this.hspId)).subscribe((resultdata: any)=>{
+    this.http.get(ApiConstants.getarecounter(12))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata: any)=>{
       console.log(resultdata);
       this.counter = resultdata.areaWithCounterData;
       this.questions[1].options = this.counter.map((l) =>{

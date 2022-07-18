@@ -18,6 +18,7 @@ export class getPatientHistoryModel{
     creditlimit: number;
     ptnStatus: string;
     companyId: number;
+    printIcon?: any;
     
     constructor(
         billId: number,
@@ -38,7 +39,8 @@ export class getPatientHistoryModel{
         allowSeparateBillFlag: string,
         creditlimit: number,
         ptnStatus: string,
-        companyId: number,)
+        companyId: number,
+        printIcon: any)
     {
         this.billId = billId;
         this.billNo = billNo;
@@ -59,5 +61,6 @@ export class getPatientHistoryModel{
         this.creditlimit = creditlimit;
         this.ptnStatus = ptnStatus;
         this.companyId = companyId;
+        this.printIcon = printIcon;
     }
 }

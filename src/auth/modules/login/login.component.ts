@@ -219,6 +219,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.locationdetail!.organizationName
               );
               this.cookie.set("Station", this.stationdetail!.stationName);
+              this.cookie.set("StationId",this.stationdetail!.stationid.toString());
               window.location = data["redirectUrl"];
               this.Authentication = true;
             } else if (status == "InvalidUser") {

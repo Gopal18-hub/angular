@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex justify-center mt-2">
                     <div class="">
-                        <button mat-raised-button color="primary" type="submit" (click)="okbtn()">Ok</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="okbtn()" [disabled]="!qmsform.valid">Ok</button>
                     </div>
                     <div class="ml-12">
                         <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>

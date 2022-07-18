@@ -26,7 +26,7 @@ export class DispatchReportComponent implements OnInit {
   public obj: objdispatchsave[] = [];
   config: any = {
     clickedRows: true,
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/YYYY HH:mm:ss.sss",
     selectBox: true,
     displayedColumns: [
       "sno",
