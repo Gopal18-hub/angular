@@ -235,6 +235,7 @@ export namespace MaxModules {
       id: 32,
       defaultPath: "",
       childrens: [],
+      type: "module",
     },
     {
       title: "In-Patients",
@@ -259,10 +260,11 @@ export namespace MaxModules {
       id: 34,
       defaultPath: "",
       childrens: [],
+      type: "module",
     },
     {
       title: "Physicians",
-      id: 15,
+      id: 5,
       defaultPath: "",
       childrens: [],
     },
@@ -277,6 +279,7 @@ export namespace MaxModules {
       id: 42,
       defaultPath: "",
       childrens: [],
+      type: "module",
     },
     {
       title: "Donate Blood",
