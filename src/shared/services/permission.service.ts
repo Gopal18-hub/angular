@@ -51,7 +51,6 @@ export class PermissionService {
         true;
     });
     this.manipulatedAccessControls = temp;
-    console.log(this.manipulatedAccessControls);
   }
 
   public getMasterModules() {
