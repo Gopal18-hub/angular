@@ -497,6 +497,11 @@
                     type="submit"
                     [disabled]="!OPRegForm.valid || MaxIDExist"
                     (click)="registationFormSubmit()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="60"
+                    actionId="140"
                   >
                     Save
                   </button>
@@ -507,6 +512,11 @@
                     type="button"
                     [disabled]="!MaxIDExist"
                     (click)="onModifyDetail()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="60"
+                    actionId="141"
                   >
                     Modify
                   </button>

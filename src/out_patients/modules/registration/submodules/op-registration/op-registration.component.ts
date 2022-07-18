@@ -2588,7 +2588,7 @@ export class OpRegistrationComponent implements OnInit {
       0,
       "",
       this.OPRegForm.controls["ageType"].value,
-      Number(this.OPRegForm.value.age),
+      Number(this.OPRegForm.controls["age"].value),
       this.OPRegForm.value.address,
       "",
       "",
@@ -2621,7 +2621,7 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality.title
         : "",
-      this.OPRegForm.controls["sourceOfInput"].value || 0,
+      this.OPRegForm.value.sourceOfInput.value || 0,
       false,
       false, //data clean flag
       false, //isavailregcard
