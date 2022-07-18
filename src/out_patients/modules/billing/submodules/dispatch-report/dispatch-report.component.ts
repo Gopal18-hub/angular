@@ -23,6 +23,7 @@ export class DispatchReportComponent implements OnInit {
   public billedlocation: billedLocationModel[] = [];
   public dispatchreport: dispatchReportListModel[] = [];
   public dispatchreportsave: dispatchReportSaveModel[] = [];
+  public obj: objdispatchsave[] = [];
   config: any = {
     clickedRows: true,
     dateformat: "dd/MM/yyyy",
@@ -243,8 +244,9 @@ export class DispatchReportComponent implements OnInit {
   }
   //as of now using hardcode value for test purpose
   getdispatchrequestbody(): dispatchReportSaveModel{
-    return (this.dispatchreportsave[0] = new dispatchReportSaveModel(
-     new objdispatchsave(
+  
+    return ( this.dispatchreportsave[0] = new dispatchReportSaveModel(
+      this.obj[0] = new objdispatchsave(
         "222",
         "Jitu Testing ",
         "2022-06-27",
