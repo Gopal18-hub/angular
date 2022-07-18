@@ -76,10 +76,10 @@
 
 ::ng-deep {
   .sub-header-menu {
-    max-width: 48vw;
+    width: 48vw;
     //height: vh;
     overflow: hidden;
-   // max-width: initial !important;
+    max-width: initial !important;
     .mat-menu-content {
       height: 100%;
       .box {

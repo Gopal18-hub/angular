@@ -1129,6 +1129,14 @@ export class OpRegistrationComponent implements OnInit {
       !this.OPRegForm.controls["foreigner"].value
       //&& this.OPRegForm.value.nationality.title.toLowerCase() != "indian" //removed condition as per UAT requirement change
     ) {
+      if (this.OPRegForm.controls["idenityType"].value) {
+        let identityTypeName = this.idTypeList.filter(
+          (i) => i.id === this.OPRegForm.controls["idenityType"].value
+        )[0].name;
+        if (identityTypeName == "Passport") {
+          this.passportDetails.passportNo = this.OPRegForm.value.idenityValue;
+        }
+      }
       this.showPassportDetails();
     }
   }
@@ -2079,8 +2087,9 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  onModifyDetail() {
-    if (!this.validateForm()) {
+  async onModifyDetail() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
@@ -3590,6 +3599,7 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
+              pattern: "^S*$",
             },
           },
         },
