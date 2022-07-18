@@ -1200,7 +1200,7 @@
               "src/auth/src/styles.scss"
             ],
             "scripts": []
-          },
+          },          
           "configurations": {
             "production": {
               "budgets": [
@@ -1223,6 +1223,70 @@
               ],
               "outputHashing": "all"
             },
+            "uat": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kb",
+                  "maximumError": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.uat.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "sit": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kb",
+                  "maximumError": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.sit.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+
+            "dev": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kb",
+                  "maximumError": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -1239,6 +1303,15 @@
           "configurations": {
             "production": {
               "browserTarget": "auth:build:production"
+            },
+            "uat": {
+              "browserTarget": "auth:build:uat"
+            },
+            "sit": {
+              "browserTarget": "auth:build:sit"
+            },
+            "dev": {
+              "browserTarget": "auth:build:dev"
             },
             "development": {
               "browserTarget": "auth:build:development"
