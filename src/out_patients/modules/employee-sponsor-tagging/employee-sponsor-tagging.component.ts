@@ -11,7 +11,7 @@ import { __values } from "tslib";
 import { CompanydialogComponent } from "./companydialog/companydialog.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
-import { GetPatientSponsorDataInterface } from "../../../out_patients/core/models/getPatientSponsorData.Model";
+import { GetPatientSponsorDataModel } from "../../../out_patients/core/models/getPatientSponsorData.Model";
 import { EmployeeDependantDetails } from "../../../out_patients/core/types/employeesponsor/employeeDependantDetails.Model";
 import { GetPatientCompanySponsorOnEmpcode } from "../../../out_patients/core/types/employeesponsor/getPatientCompanySponsoronEmpcode.Model";
 import { SaveDeleteEmployeeSponsorRequest } from "../../core/models/savedeleteEmployeeSponsorRequest.Model";
@@ -25,8 +25,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   name: any;
   employeesponsorForm!: FormGroup;
   questions: any;
-  patientSponsorData!: GetPatientSponsorDataInterface;
-  companySponsorData!: GetPatientSponsorDataInterface;
+  patientSponsorData!: GetPatientSponsorDataModel;
+  companySponsorData!: GetPatientSponsorDataModel;
   iomdisable: boolean = true;
   iommessage!: string;
   employeeDependantDetailList: EmployeeDependantDetails[] = [];
@@ -205,7 +205,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .get(ApiConstants.getcompanyandpatientsponsordata)
       .subscribe((data) => {
         console.log(data);
-        this.companySponsorData = data as GetPatientSponsorDataInterface;
+        this.companySponsorData = data as GetPatientSponsorDataModel;
         this.questions[3].options =
           this.companySponsorData.objPatientSponsorFlag.map((a) => {
             return { title: a.name, value: a.id, iomvalidity: a.iomValidity };
@@ -258,7 +258,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .get(ApiConstants.getpatientsponsordataonmaxid(iacode, regno))
       .subscribe((data) => {
         console.log(data);
-        this.patientSponsorData = data as GetPatientSponsorDataInterface;
+        this.patientSponsorData = data as GetPatientSponsorDataModel;
         console.log(this.patientSponsorData);
         this.questions[0].value =
           this.patientSponsorData.objPatientSponsorData[0].iacode +
