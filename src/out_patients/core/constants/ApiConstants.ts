@@ -244,8 +244,13 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/getsimilarsoundpatient";
 
   //Find Patient API Call
-  export const searchPatientApiDefault =
-    environment.PatientApiUrl + "api/patient/getallpatientssearch";
+  export const searchPatientApiDefault = (HsplocationId: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getallpatientssearch?HsplocationId=" +
+      `${HsplocationId}`
+    );
+  };
 
   //PATIENT TITLE MR/MRS etc.. RESPOSE TYPE sourceOfInfoModel[] NEED TO CANCATINATE $hspLocation/0 IN ENDPOINT
   export const searchPatientApi = (
@@ -354,6 +359,31 @@ export namespace ApiConstants {
       IACode +
       "/" +
       RegistrationNo
+    );
+  };
+
+  export const getpatienthistory = (
+    FromDate: any,
+    ToDate: any,
+    IACode: string,
+    RegistrationNo: number,
+    HSPLocationId: number,
+    StationId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpatienthistory/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      IACode +
+      "/" +
+      RegistrationNo +
+      "/" +
+      HSPLocationId +
+      "/" +
+      StationId
     );
   };
 
@@ -492,55 +522,4 @@ export namespace ApiConstants {
       "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
     );
   };
-
-  //POST CALL TO SAVE THE EXPIRED PATIENT DETAIL, BODY TYPE saveexpiredpatientmodel
-
-  export const saveexpiredpatientdetail =
-    environment.PatientApiUrl + "api/patient/saveexpiredpatientdetails";
-
-  //GET CALL FOR COMPANY DROPDOWN
-  export const getcompanyandpatientsponsordata =
-    environment.PatientApiUrl +
-    "api/patient/getcompanyandpatientsponsordata/69/9923";
-
-  //GET CALL ON ENTER OF MAXID
-  export const getpatientsponsordataonmaxid = (
-    iacode: string,
-    regno: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getpatientsponsordataonmaxid/" +
-      iacode +
-      "/" +
-      regno +
-      "/69/9923"
-    );
-  };
-
-  //GET CALL ON ENTER OF EMPLOYEE CODE
-  export const getEmployeeStaffDependantDetails = (employeecode: string) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getemptagscreenstaffdependentdetails/" +
-      employeecode
-    );
-  };
-
-  //GET CALL ON ENTER OF EMPLOYEE CODE
-  export const getpatientcompanysponsoronempcode = (
-    employeecode: string
-    //  locationid: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getpatientcompanysponsoronempcode/" +
-      employeecode +
-      "/69/9923"
-    );
-  };
-
-  //POST CALL ON SAVE EMPLOYEE SPONSOR
-  export const saveEmployeeSponsorData =
-    environment.PatientApiUrl + "api/patient/savepatientsponsorcompany";
 }
