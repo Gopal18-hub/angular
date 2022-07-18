@@ -23,14 +23,15 @@ import { takeUntil } from "rxjs/operators";
 })
 export class HotListingApprovalComponent implements OnInit {
   link1 = [
-    { value: "OP Registration Approval", id: 1 },
-    { value: "Hot Listing Approval", id: 2 },
-    { value: "OP Refund Approval", id: 3 },
+    "OP Registration Approval",
+    "Hot Listing Approval",
+    "OP Refund Approval",
   ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[1];
   activeLink2 = this.link2[0];
   @ViewChild("hotlistingtable") hotlistingtable: any;
+  @ViewChild("approvaTable") approvaTable: any;
 
   HotListidList: any = [];
   opApprovalHotList: opRegHotlistModel[] = [];
@@ -42,6 +43,7 @@ export class HotListingApprovalComponent implements OnInit {
   showapprovalreject: boolean = false;
   defaultUI: boolean = false;
   enablehotlistbtn: boolean = false;
+  enableDeletebtn: boolean = false;
   showhotlistingspinner: boolean = true;
   from: any;
   to: any;
@@ -94,6 +96,9 @@ export class HotListingApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -135,7 +140,90 @@ export class HotListingApprovalComponent implements OnInit {
     },
   };
 
-  hotlistingapproveorrejectconfig: any = {
+  hotlistingapproveconfig: any = {
+    actionItems: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        // actionType: "link",
+        // routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
+    dateformat: "dd/MM/yyyy",
+    selectBox: true,
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "fullname",
+      "age",
+      "gender",
+      "hotListing_Header",
+      "hotListing_Comment",
+      "categoryIcons",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      ssn: {
+        title: "SSN",
+        type: "number",
+      },
+      fullname: {
+        title: "Name",
+        type: "string",
+        tooltipColumn: "patientName",
+      },
+      age: {
+        title: "Age",
+        type: "number",
+      },
+      gender: {
+        title: "Gender",
+        type: "string",
+        disabledSort: true,
+      },
+      hotListing_Header: {
+        title: "Hotlisting Reason",
+        type: "string",
+        tooltipColumn: "hotListing_Header",
+      },
+      hotListing_Comment: {
+        title: "Remarks",
+        type: "string",
+        tooltipColumn: "hotListing_Comment",
+      },
+      categoryIcons: {
+        title: "Category",
+        type: "image",
+        width: 34,
+        style: {
+          width: "220px",
+        },
+      },
+    },
+  };
+
+  hotlistingrejectconfig: any = {
     actionItems: true,
     actionItemList: [
       {
@@ -175,6 +263,9 @@ export class HotListingApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -272,15 +363,14 @@ export class HotListingApprovalComponent implements OnInit {
   indirectlink: any;
   showmain(link: any) {
     console.log(link);
-    if (link.id == 1) {
+    if (link == "OP Registration Approval") {
       this.router.navigate(["registration", "op-reg-approval"]);
-    } else if (link.id == 2) {
+    } else if (link == "Hot Listing Approval") {
       this.activeLink1 = link;
       this.activeLink2 != ""
         ? this.showgrid(this.activeLink2)
         : this.showgrid("View Pending Request");
-    } else if (link.id == 3) {
-      this.router.navigate(["out-patient-billing", "op-refund-approval"]);
+    } else if (link == "OP Refund Approval") {
     }
   }
   showgrid(link: any) {
@@ -321,6 +411,7 @@ export class HotListingApprovalComponent implements OnInit {
             );
 
             this.enablehotlistbtn = true;
+            this.enableDeletebtn = false;
             this.showapprovalpending = true;
             this.showapprovalaccepting = false;
             this.showapprovalreject = false;
@@ -328,6 +419,7 @@ export class HotListingApprovalComponent implements OnInit {
           },
           (error) => {
             this.enablehotlistbtn = false;
+            this.enableDeletebtn = false;
             this.showapprovalpending = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
@@ -341,6 +433,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalaccepting = true;
       this.showapprovalreject = false;
       this.enablehotlistbtn = false;
+      this.enableDeletebtn = true;
       this.getophotlistingaccept()
         .pipe(takeUntil(this._destroying$))
         .subscribe(
@@ -350,6 +443,7 @@ export class HotListingApprovalComponent implements OnInit {
               return item;
             });
             this.defaultUI = true;
+
             this.showhotlistingspinner = false;
             this.opApprovalHotlistacceptList =
               resultData as opRegHotlistModel[];
@@ -361,6 +455,7 @@ export class HotListingApprovalComponent implements OnInit {
           },
           (error) => {
             this.enablehotlistbtn = false;
+            this.enableDeletebtn = false;
             this.showapprovalaccepting = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
@@ -374,6 +469,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.showapprovalaccepting = false;
       this.showapprovalreject = true;
       this.enablehotlistbtn = false;
+      this.enableDeletebtn = false;
       this.getophotlistingreject()
         .pipe(takeUntil(this._destroying$))
         .subscribe(
@@ -394,6 +490,7 @@ export class HotListingApprovalComponent implements OnInit {
           },
           (error) => {
             this.enablehotlistbtn = false;
+            this.enableDeletebtn = false;
             this.showapprovalreject = false;
             this.defaultUI = false;
             this.hotlistingmessage = "No records found";
@@ -453,7 +550,7 @@ export class HotListingApprovalComponent implements OnInit {
   }
 
   hotlistDeleteItem() {
-    this.hotlistingtable.selection.selected.map((s: any) => {
+    this.approvaTable.selection.selected.map((s: any) => {
       this.HotListidList.push({ id: s.id });
     });
     let userId = Number(this.cookie.get("UserId"));
