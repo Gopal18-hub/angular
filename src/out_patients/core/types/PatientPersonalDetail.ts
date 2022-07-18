@@ -55,3 +55,9 @@ export interface PatientPersonalDetails{
       agetypename:string;
     
   }
+
+  export interface  DepositType{
+    id?: number;
+    advanceType?: string;
+    isSecurityDeposit?:number
+  };
