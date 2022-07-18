@@ -56,5 +56,18 @@
   }
 }
 .wc-35-6 {
-  width: 35.666%;
+  width: 34.666%;
+}
+
+.height-max-content {
+  height: max-content;
+}
+
+.fourth-column {
+  > :first-child {
+    height: 10rem !important;
+  }
+  > :nth-child(2) {
+    height: 12.5rem !important;
+  }
 }

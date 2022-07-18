@@ -15,6 +15,7 @@ export const environment = {
   BillingApiUrl: "http://172.30.0.16:1007/",
   ReportsSampleUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",
   reportTenantUrl: "http://localhost:4205/reports/crystal-report/popup/",
+  crystalReportBaseUrl: "https://MaxHIS-Reports-sit.maxhealthcare.in/",
 
   //local envionment urls for testing
   IdentityServerUrl: "https://localhost/",

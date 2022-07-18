@@ -14,6 +14,11 @@
     padding-bottom: 0 !important;
 }
 ::ng-deep .max-table-wrapper table{
-    width: auto !important;
     white-space: nowrap !important;
+}
+::ng-deep .mat-table-fixed-layout{
+    table-layout: auto !important;
+}
+.w-27{
+    width: 27%;
 }
