@@ -311,25 +311,54 @@ export namespace ApiConstants {
   };
 
   export const locationname =
-  environment.PatientApiUrl + "api/patient/getlocationname";
- 
-  export const getdispatchreport = (fromdate:any, todate:any, locationid:number, reptype:number) => {
-    return ( environment.PatientApiUrl + "api/patient/getdataforreportdispatch/"+fromdate+'/'+todate+'/'+locationid +'/'+reptype);
-  }
+    environment.PatientApiUrl + "api/patient/getlocationname";
+
+  export const getdispatchreport = (
+    fromdate: any,
+    todate: any,
+    locationid: number,
+    reptype: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getdataforreportdispatch/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      locationid +
+      "/" +
+      reptype
+    );
+  };
 
   export const getarecounter = (HsplocationId: number) => {
-    return ( environment.BillingApiUrl + "api/outpatientbilling/getareacounterdetails/"+ HsplocationId);
-  }
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getareacounterdetails/" +
+      HsplocationId
+    );
+  };
 
-  export const gettransactiontype = 
-  environment.BillingApiUrl + "api/outpatientbilling/getpatienthistorytransactiontype";
+  export const gettransactiontype =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getpatienthistorytransactiontype";
 
-  export const getregisteredpatientdetails = (IACode: string, RegistrationNo: number) => {
-    return ( environment.BillingApiUrl + "api/outpatientbilling/getregisteredpatientdetail/"+IACode+'/'+RegistrationNo);
-  }
+  export const getregisteredpatientdetails = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregisteredpatientdetail/" +
+      IACode +
+      "/" +
+      RegistrationNo
+    );
+  };
 
   export const dispatchreportsave =
-  environment.PatientApiUrl + "api/patient/reportdispatchsave"
+    environment.PatientApiUrl + "api/patient/reportdispatchsave";
 
   export const approvalpostapproveApi =
     environment.PatientApiUrl + "api/patient/approverejectopregrequests";
@@ -490,12 +519,28 @@ export namespace ApiConstants {
   };
 
   //GET CALL ON ENTER OF EMPLOYEE CODE
-  export const getEmployeeStaffDependantDetails =
-    environment.PatientApiUrl +
-    "api/patient/getemptagscreenstaffdependentdetails/m015836";
+  export const getEmployeeStaffDependantDetails = (employeecode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getemptagscreenstaffdependentdetails/" +
+      employeecode
+    );
+  };
 
   //GET CALL ON ENTER OF EMPLOYEE CODE
-  export const getpatientcompanysponsoronempcode =
-    environment.PatientApiUrl +
-    "api/patient/getpatientcompanysponsoronempcode/N002661/69/9923";
+  export const getpatientcompanysponsoronempcode = (
+    employeecode: string
+    //  locationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientcompanysponsoronempcode/" +
+      employeecode +
+      "/69/9923"
+    );
+  };
+
+  //POST CALL ON SAVE EMPLOYEE SPONSOR
+  export const saveEmployeeSponsorData =
+    environment.PatientApiUrl + "api/patient/savepatientsponsorcompany";
 }
