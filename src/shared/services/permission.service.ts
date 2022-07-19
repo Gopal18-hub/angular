@@ -57,7 +57,12 @@ export class PermissionService {
   checkModules() {
     let definedModules = MaxModules.getModules();
     definedModules = definedModules.filter((masterModule: any) => {
-      return this.masterModules.includes(masterModule.id);
+      return (
+        this.masterModules.includes(masterModule.id) ||
+        ("type" in masterModule &&
+          this.modules.includes(masterModule.id) &&
+          masterModule.type == "module")
+      );
     });
     definedModules.forEach((masterModule: any) => {
       masterModule.childrens.forEach((children: any) => {
