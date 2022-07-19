@@ -34,7 +34,9 @@ export class SubComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchFormData = this.searchService.searchFormData;
-
+    if (!this.submodules) {
+      this.submodules = [];
+    }
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&
