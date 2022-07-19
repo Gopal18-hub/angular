@@ -236,7 +236,7 @@
                   [question]="questions[19]"
                   [form]="OPRegForm"
                   [questions]="questions[19]"
-                  [index]="19"
+                  [index]="19"                
                 ></maxhealth-question>
               </div>
             </div>
@@ -497,6 +497,11 @@
                     type="submit"
                     [disabled]="!OPRegForm.valid || MaxIDExist"
                     (click)="registationFormSubmit()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="60"
+                    actionId="140"
                   >
                     Save
                   </button>
@@ -507,6 +512,11 @@
                     type="button"
                     [disabled]="!MaxIDExist"
                     (click)="onModifyDetail()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="60"
+                    actionId="141"
                   >
                     Modify
                   </button>
@@ -568,6 +578,7 @@
             color="primary"
             class="w-full"
             type="button"
+            disabled
           >
             Verify Health ID
           </button>

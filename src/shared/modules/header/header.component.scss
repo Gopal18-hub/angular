@@ -24,6 +24,7 @@
     }
   }
   .main-modules {
+    min-width:calc(100vw - 180px);
     clip-path: polygon(
       0 0,
       30px 50%,
