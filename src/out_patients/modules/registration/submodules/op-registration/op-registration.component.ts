@@ -2377,8 +2377,10 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       // commented as UAT requirement change
       // this.OPRegForm.controls["foreigner"].enable();
-      this.OPRegForm.controls["foreigner"].setValue(true);
-      this.showPassportDetails();
+      if (!this.OPRegForm.value.foreigner) {
+        this.OPRegForm.controls["foreigner"].setValue(true);
+        this.showPassportDetails();
+      }
     } else {
       // commented as UAT requirement change
       //  this.OPRegForm.controls["foreigner"].disable();
