@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
 
   async ngOnInit() {
     await this.permissionService.getPermissionsRoleWise();
-    this.modules = MaxModules.getModules();
+    this.modules = this.permissionService.checkModules();
     this.modules.forEach((element: any) => {
       if (
         element.defaultPath == this.baseHref ||

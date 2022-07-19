@@ -3,6 +3,7 @@ import { HttpRequest } from "@angular/common/http";
 import { CookieService } from "./cookie.service";
 import { HttpService } from "./http.service";
 import { ApiConstants } from "../constants/ApiConstants";
+import { MaxModules } from "../constants/Modules";
 
 @Injectable({
   providedIn: "root",
@@ -51,6 +52,26 @@ export class PermissionService {
         true;
     });
     this.manipulatedAccessControls = temp;
+  }
+
+  checkModules() {
+    let definedModules = MaxModules.getModules();
+    definedModules = definedModules.filter((masterModule: any) => {
+      return (
+        this.masterModules.includes(masterModule.id) ||
+        ("type" in masterModule &&
+          this.modules.includes(masterModule.id) &&
+          masterModule.type == "module")
+      );
+    });
+    definedModules.forEach((masterModule: any) => {
+      masterModule.childrens.forEach((children: any) => {
+        children.childrens = children.childrens.filter((feature: any) => {
+          return this.features.includes(feature.id);
+        });
+      });
+    });
+    return definedModules;
   }
 
   public getMasterModules() {
