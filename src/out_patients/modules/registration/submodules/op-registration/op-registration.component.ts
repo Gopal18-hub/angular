@@ -911,6 +911,8 @@ export class OpRegistrationComponent implements OnInit {
           ) {
             this.citybasedflow = true;
             this.clearAddressOnCityChange();
+            this.questions[25].readonly = false;
+            this.questions[26].readonly = false;
             this.getAddressByCity(value);
           } else {
             if (this.countrybasedflow) {
@@ -1435,7 +1437,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "object",
               properties: {
                 hotlistTitle: {
-                  type: "autocomplete",
+                  type: "dropdown",
                   title: "Hot Listing",
                   required: true,
                   defaultValue: this.hotlistReason,
@@ -1985,6 +1987,8 @@ export class OpRegistrationComponent implements OnInit {
             title: this.addressByCity[0].districtName,
             value: this.addressByCity[0].districtId,
           });
+          this.questions[25].readonly = true;
+          this.questions[26].readonly = true;
           this.getLocalityByCity(city);
         });
     }
@@ -3186,6 +3190,8 @@ export class OpRegistrationComponent implements OnInit {
     if (ageDOB) {
       const dobRef = moment(ageDOB);
       if (!dobRef.isValid()) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+        this.questions[8].customErrorMessage = "DOB is invalid";
         return;
       }
       const today = moment();
@@ -3202,6 +3208,8 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["age"].setValue(diffDays);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
+      this.OPRegForm.controls["dob"].setErrors(null);
+      this.questions[8].customErrorMessage = "";
     }
   }
 
