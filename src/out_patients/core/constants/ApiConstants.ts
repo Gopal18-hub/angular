@@ -345,6 +345,9 @@ export namespace ApiConstants {
     );
   };
 
+  export const enablecounter =
+   environment.BillingApiUrl + "api/outpatientbilling/enablecounter";
+
   export const gettransactiontype =
     environment.BillingApiUrl +
     "api/outpatientbilling/getpatienthistorytransactiontype";

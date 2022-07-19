@@ -1,5 +1,5 @@
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper" style="background-color:white">
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner justify-between">
         <ul class="list-unstyled flex items-end">
             <li class="ml-3">
                 <a class="ml-3" mat-tab-link [active]="true">QMS</a> 
@@ -10,13 +10,13 @@
     <Section class="h-full w-full flex justify-center items-center bg-image">
         <div class="h-1/2 w-2/5 border-radius border-radius-xlg bg-white">
             <div class="pt-3 pb-3 border-xlg text-center" style="background-color: #DAE9F8;">
-                <mat-label class="max-health-primary-color font-bold">Counter Selection</mat-label>
+                <mat-label class="max-health-primary-color font-bold font-base">Counter Selection</mat-label>
             </div>
             <div>
                 <div class="flex flex-column justify-center items-center">
                     <div class="flex w-full mt-8">
                         <div class="w-2/5 text-right">
-                            <mat-label class="mr-10 max-health-primary-color">Area</mat-label>
+                            <mat-label class="mr-28 max-health-primary-color font-semi-bold">Area <span class="mandatory">*</span></mat-label>
                         </div>
                         <div>
                             <maxhealth-question
@@ -28,9 +28,9 @@
                             </maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex w-full mt-3">
+                    <div class="flex w-full mt-5">
                         <div class="w-2/5 text-right">
-                            <mat-label class="mr-10 max-health-primary-color">Counter</mat-label>
+                            <mat-label class="mr-5 max-health-primary-color font-semi-bold">Counter <span class="mandatory">*</span></mat-label>
                         </div>
                         <div>
                             <maxhealth-question
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-center mt-2">
+                <div class="flex justify-center mt-4">
                     <div class="">
                         <button mat-raised-button color="primary" type="submit" (click)="okbtn()" [disabled]="!qmsform.valid">Ok</button>
                     </div>
