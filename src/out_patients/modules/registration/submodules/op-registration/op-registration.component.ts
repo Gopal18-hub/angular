@@ -3171,6 +3171,9 @@ export class OpRegistrationComponent implements OnInit {
   ageFlag: boolean = false;
 
   onageCalculator(ageDOB = "") {
+    if (this.ageTypeList.length == 0) {
+      return;
+    }
     if (!ageDOB) {
       ageDOB = this.OPRegForm.value.dob;
     }
