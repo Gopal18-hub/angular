@@ -297,8 +297,8 @@ export class OpRegistrationComponent implements OnInit {
         title: "Pincode",
         // required property is dependent on country
         required: true,
-        minimum: 5,
-        maximum: 6,
+        // minimum: 5,
+        // maximum: 6,
       },
       locality: {
         type: "autocomplete",
@@ -1673,6 +1673,11 @@ export class OpRegistrationComponent implements OnInit {
             this.questions[22] = { ...this.questions[22] };
           });
       } else {
+        this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
+        this.questions[21].customErrorMessage = "PinCode is Invalid";
+      }
+    } else {
+      if (this.OPRegForm.value.country.value == 1) {
         this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
         this.questions[21].customErrorMessage = "PinCode is Invalid";
       }
