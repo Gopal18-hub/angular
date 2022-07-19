@@ -40,6 +40,8 @@ export class ModifyDialogComponent implements OnInit {
     );
     this.OPUpdateForm = formResult.form;
     this.questions = formResult.questions;
+    this.OPUpdateForm.controls["foreigner"].disable();
+    this.OPUpdateForm.controls["modifiedForeigner"].disable();
   }
 
   updateregistrationFormData = {

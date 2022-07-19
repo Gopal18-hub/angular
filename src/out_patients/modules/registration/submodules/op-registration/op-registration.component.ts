@@ -3195,10 +3195,8 @@ export class OpRegistrationComponent implements OnInit {
       ageDOB = this.OPRegForm.value.dob;
     }
     if (ageDOB) {
-      const dobRef = moment(ageDOB);
+      let dobRef = moment(ageDOB);
       if (!dobRef.isValid()) {
-        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
-        this.questions[8].customErrorMessage = "DOB is invalid";
         return;
       }
       const today = moment();
@@ -3206,6 +3204,13 @@ export class OpRegistrationComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffYears > 0) {
+        if (diffYears > 122) {
+          this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+          this.questions[8].customErrorMessage = "DOB is invalid";
+          this.OPRegForm.controls["age"].setValue("");
+          this.OPRegForm.controls["ageType"].setValue(0);
+          return;
+        }
         this.OPRegForm.controls["age"].setValue(diffYears);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
       } else if (diffMonths > 0) {
@@ -3213,6 +3218,15 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
       } else if (diffDays > 0) {
         this.OPRegForm.controls["age"].setValue(diffDays);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+        this.questions[8].customErrorMessage = "DOB is invalid";
+        this.OPRegForm.controls["age"].setValue("");
+        this.OPRegForm.controls["ageType"].setValue(0);
+        return;
+      } else if (diffDays == 0) {
+        this.OPRegForm.controls["age"].setValue(diffDays + 1);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
       this.OPRegForm.controls["dob"].setErrors(null);
