@@ -556,6 +556,10 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
         console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
         const lookupdata = await this.lookupService.searchPatient(formdata);
         if (lookupdata.length == 1) {
           if (lookupdata[0] && "maxid" in lookupdata[0]) {
@@ -911,6 +915,8 @@ export class OpRegistrationComponent implements OnInit {
           ) {
             this.citybasedflow = true;
             this.clearAddressOnCityChange();
+            this.questions[25].readonly = false;
+            this.questions[26].readonly = false;
             this.getAddressByCity(value);
           } else {
             if (this.countrybasedflow) {
@@ -1129,6 +1135,14 @@ export class OpRegistrationComponent implements OnInit {
       !this.OPRegForm.controls["foreigner"].value
       //&& this.OPRegForm.value.nationality.title.toLowerCase() != "indian" //removed condition as per UAT requirement change
     ) {
+      if (this.OPRegForm.controls["idenityType"].value) {
+        let identityTypeName = this.idTypeList.filter(
+          (i) => i.id === this.OPRegForm.controls["idenityType"].value
+        )[0].name;
+        if (identityTypeName == "Passport") {
+          this.passportDetails.passportNo = this.OPRegForm.value.idenityValue;
+        }
+      }
       this.showPassportDetails();
     }
   }
@@ -1427,7 +1441,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "object",
               properties: {
                 hotlistTitle: {
-                  type: "autocomplete",
+                  type: "dropdown",
                   title: "Hot Listing",
                   required: true,
                   defaultValue: this.hotlistReason,
@@ -1977,6 +1991,8 @@ export class OpRegistrationComponent implements OnInit {
             title: this.addressByCity[0].districtName,
             value: this.addressByCity[0].districtId,
           });
+          this.questions[25].readonly = true;
+          this.questions[26].readonly = true;
           this.getLocalityByCity(city);
         });
     }
@@ -2079,8 +2095,9 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  onModifyDetail() {
-    if (!this.validateForm()) {
+  async onModifyDetail() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
@@ -2588,7 +2605,7 @@ export class OpRegistrationComponent implements OnInit {
       0,
       "",
       this.OPRegForm.controls["ageType"].value,
-      Number(this.OPRegForm.value.age),
+      Number(this.OPRegForm.controls["age"].value),
       this.OPRegForm.value.address,
       "",
       "",
@@ -2659,15 +2676,65 @@ export class OpRegistrationComponent implements OnInit {
   patientSubmitDetails: patientRegistrationModel | undefined;
   // registationFormSubmit()
   // {}
-  registationFormSubmit() {
-    if (!this.validateForm()) {
+  async registationFormSubmit() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
       this.postForm();
     }
   }
 
-  validateForm(): boolean {
+  async validateForm(): Promise<boolean> {
     let validationerror = false;
+    if (!validationerror) {
+      if (this.OPRegForm.value.mobileNumber) {
+        if (!this.MaxIDExist && !this.maxIDChangeCall) {
+          const resultData = await this.http
+            .post(ApiConstants.similarSoundPatientDetail, {
+              phone: this.OPRegForm.value.mobileNumber,
+            })
+            .toPromise();
+          if (resultData) {
+            if (resultData.length != 0) {
+              validationerror = true;
+              const formsubmitdialogref = this.matDialog.open(
+                RegistrationDialogueComponent,
+                {
+                  width: "30vw",
+
+                  data: {
+                    message1:
+                      "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                    message2: "",
+                    btn1: true,
+                    btn2: true,
+                    bt1Msg: "Ok",
+                    bt2Msg: "Cancel",
+                  },
+                }
+              );
+
+              const result = await formsubmitdialogref
+                .afterClosed()
+                .toPromise();
+              if (result == "Success") {
+                validationerror = false;
+              } else {
+                validationerror = true;
+              }
+            } else {
+              validationerror = false;
+            }
+          }
+        } else {
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+        this.messageDialogService.error("Please enter Mobile Number");
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["title"].value) {
         validationerror = true;
@@ -2676,6 +2743,25 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
+    if (!validationerror) {
+      if (!this.OPRegForm.value.firstName) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter First Name");
+      } else {
+        validationerror = false;
+      }
+    }
+
+    if (!validationerror) {
+      if (!this.OPRegForm.value.lastName) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter Last Name");
+      } else {
+        validationerror = false;
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["gender"].value) {
         validationerror = true;
@@ -2684,6 +2770,56 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
+    if (!validationerror) {
+      if (!this.MaxIDExist && !this.maxIDChangeCall) {
+        const resultData = await this.http
+          .post(ApiConstants.similarSoundPatientDetail, {
+            firstName: this.OPRegForm.value.firstName,
+            lastName: this.OPRegForm.value.lastName,
+            gender:
+              this.OPRegForm.value.gender == 1
+                ? "Male"
+                : this.OPRegForm.value.gender == 2
+                ? "Female"
+                : "Transgender",
+          })
+          .toPromise();
+        if (resultData) {
+          if (resultData.length != 0) {
+            validationerror = true;
+            const formsubmitdialogref = this.matDialog.open(
+              RegistrationDialogueComponent,
+              {
+                width: "30vw",
+
+                data: {
+                  message1:
+                    "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                  message2: "",
+                  btn1: true,
+                  btn2: true,
+                  bt1Msg: "Ok",
+                  bt2Msg: "Cancel",
+                },
+              }
+            );
+
+            const result = await formsubmitdialogref.afterClosed().toPromise();
+            if (result == "Success") {
+              validationerror = false;
+            } else {
+              validationerror = true;
+            }
+          } else {
+            validationerror = false;
+          }
+        }
+      } else {
+        validationerror = false;
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["emailId"].value) {
         validationerror = true;
@@ -3052,12 +3188,17 @@ export class OpRegistrationComponent implements OnInit {
   ageFlag: boolean = false;
 
   onageCalculator(ageDOB = "") {
+    if (this.ageTypeList.length == 0) {
+      return;
+    }
     if (!ageDOB) {
       ageDOB = this.OPRegForm.value.dob;
     }
     if (ageDOB) {
       const dobRef = moment(ageDOB);
       if (!dobRef.isValid()) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+        this.questions[8].customErrorMessage = "DOB is invalid";
         return;
       }
       const today = moment();
@@ -3074,6 +3215,8 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["age"].setValue(diffDays);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
+      this.OPRegForm.controls["dob"].setErrors(null);
+      this.questions[8].customErrorMessage = "";
     }
   }
 
@@ -3471,6 +3614,7 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
+              pattern: "^S*$",
             },
           },
         },
