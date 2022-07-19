@@ -911,6 +911,8 @@ export class OpRegistrationComponent implements OnInit {
           ) {
             this.citybasedflow = true;
             this.clearAddressOnCityChange();
+            this.questions[25].readonly = false;
+            this.questions[26].readonly = false;
             this.getAddressByCity(value);
           } else {
             if (this.countrybasedflow) {
@@ -1129,6 +1131,14 @@ export class OpRegistrationComponent implements OnInit {
       !this.OPRegForm.controls["foreigner"].value
       //&& this.OPRegForm.value.nationality.title.toLowerCase() != "indian" //removed condition as per UAT requirement change
     ) {
+      if (this.OPRegForm.controls["idenityType"].value) {
+        let identityTypeName = this.idTypeList.filter(
+          (i) => i.id === this.OPRegForm.controls["idenityType"].value
+        )[0].name;
+        if (identityTypeName == "Passport") {
+          this.passportDetails.passportNo = this.OPRegForm.value.idenityValue;
+        }
+      }
       this.showPassportDetails();
     }
   }
@@ -1427,7 +1437,7 @@ export class OpRegistrationComponent implements OnInit {
               type: "object",
               properties: {
                 hotlistTitle: {
-                  type: "autocomplete",
+                  type: "dropdown",
                   title: "Hot Listing",
                   required: true,
                   defaultValue: this.hotlistReason,
@@ -1977,6 +1987,8 @@ export class OpRegistrationComponent implements OnInit {
             title: this.addressByCity[0].districtName,
             value: this.addressByCity[0].districtId,
           });
+          this.questions[25].readonly = true;
+          this.questions[26].readonly = true;
           this.getLocalityByCity(city);
         });
     }
@@ -2079,8 +2091,9 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  onModifyDetail() {
-    if (!this.validateForm()) {
+  async onModifyDetail() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
@@ -3180,6 +3193,8 @@ export class OpRegistrationComponent implements OnInit {
     if (ageDOB) {
       const dobRef = moment(ageDOB);
       if (!dobRef.isValid()) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+        this.questions[8].customErrorMessage = "DOB is invalid";
         return;
       }
       const today = moment();
@@ -3196,6 +3211,8 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["age"].setValue(diffDays);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
+      this.OPRegForm.controls["dob"].setErrors(null);
+      this.questions[8].customErrorMessage = "";
     }
   }
 
@@ -3593,6 +3610,7 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
+              pattern: "^S*$",
             },
           },
         },
