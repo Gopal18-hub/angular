@@ -32,7 +32,7 @@ export class FormDialogueComponent implements OnInit, AfterViewInit {
     if (this.questions[0].type == "autocomplete") {
       setTimeout(() => {
         this.questions[0].elementRef.focus();
-      }, 100);
+      }, 200);
     } else {
       this.questions[0].elementRef.focus();
     }
