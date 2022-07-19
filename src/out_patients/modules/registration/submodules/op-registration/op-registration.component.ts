@@ -556,6 +556,10 @@ export class OpRegistrationComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
         console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
         const lookupdata = await this.lookupService.searchPatient(formdata);
         if (lookupdata.length == 1) {
           if (lookupdata[0] && "maxid" in lookupdata[0]) {
