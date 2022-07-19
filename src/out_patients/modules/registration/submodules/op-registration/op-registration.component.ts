@@ -297,6 +297,8 @@ export class OpRegistrationComponent implements OnInit {
         title: "Pincode",
         // required property is dependent on country
         required: true,
+        minimum: 5,
+        maximum: 6,
       },
       locality: {
         type: "autocomplete",
@@ -528,6 +530,9 @@ export class OpRegistrationComponent implements OnInit {
     this.isOrganDonor = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+
+    //as ABDM integration not completed so disabling HealthID Textbox
+    this.OPRegForm.controls["healthId"].disable();
 
     // this.fatherSpouseOptionList.push({ title: "-Select-", value: 0 });
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
@@ -1631,22 +1636,46 @@ export class OpRegistrationComponent implements OnInit {
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
+    let isvalidpincode = false;
     if (
       this.OPRegForm.value.pincode != undefined &&
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
-      this.countrybasedflow = false;
-      this.http
-        .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((resultData: any) => {
-          this.localityListByPin = resultData;
-          this.questions[22].options = this.localityListByPin.map((l) => {
-            return { title: l.name, value: l.id };
+      if (this.OPRegForm.value.country.value == 1) {
+        if (this.OPRegForm.value.pincode.length == 6) {
+          isvalidpincode = true;
+        } else {
+          isvalidpincode = false;
+        }
+      } else {
+        if (
+          this.OPRegForm.value.pincode.length == 5 ||
+          this.OPRegForm.value.pincode.length == 4
+        ) {
+          isvalidpincode = true;
+        } else {
+          isvalidpincode = false;
+        }
+      }
+      if (isvalidpincode) {
+        this.countrybasedflow = false;
+        this.OPRegForm.controls["pincode"].setErrors(null);
+        this.questions[21].customErrorMessage = "";
+        this.http
+          .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((resultData: any) => {
+            this.localityListByPin = resultData;
+            this.questions[22].options = this.localityListByPin.map((l) => {
+              return { title: l.name, value: l.id };
+            });
+            this.questions[22] = { ...this.questions[22] };
           });
-          this.questions[22] = { ...this.questions[22] };
-        });
+      } else {
+        this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
+        this.questions[21].customErrorMessage = "PinCode is Invalid";
+      }
     }
   }
 
