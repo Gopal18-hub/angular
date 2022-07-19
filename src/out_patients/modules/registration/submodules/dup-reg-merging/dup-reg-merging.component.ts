@@ -41,6 +41,7 @@ export class DupRegMergingComponent implements OnInit {
   healthId = "";
   aadhaarId = "";
   mobile = "";
+  globalSearchTerm: any;
   defaultUI: boolean = true;
   showmergespinner: boolean = true;
   mergeicon: string = "placeholder";
@@ -182,28 +183,32 @@ export class DupRegMergingComponent implements OnInit {
     matdialogref
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
+      .subscribe(async (result) => {
         var resultArr = result.split(",");
         if (resultArr[0] == "success") {
           this.messageDialogService.success(
             "Max ID has been mapped with " + resultArr[1]
           );
 
-          this.getAllpatientsBySearch()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((resultData) => {
-              resultData = resultData.map((item: any) => {
-                item.fullname = item.firstName + " " + item.lastName;
-                return item;
+          if (this.globalSearchTerm) {
+            await this.loadGrid(this.globalSearchTerm);
+          } else {
+            this.getAllpatientsBySearch()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((resultData) => {
+                resultData = resultData.map((item: any) => {
+                  item.fullname = item.firstName + " " + item.lastName;
+                  return item;
+                });
+                this.results = resultData;
+                this.results = this.patientServie.getAllCategoryIcons(
+                  this.results
+                );
+                this.isAPIProcess = true;
+                this.mergebuttonDisabled = true;
+                this.tableRows.selection.clear();
               });
-              this.results = resultData;
-              this.results = this.patientServie.getAllCategoryIcons(
-                this.results
-              );
-              this.isAPIProcess = true;
-              this.mergebuttonDisabled = true;
-              this.tableRows.selection.clear();
-            });
+          }
         }
       });
   }
@@ -211,62 +216,76 @@ export class DupRegMergingComponent implements OnInit {
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
     this.defaultUI = false;
-    const lookupdata = await this.lookupService.searchPatient(formdata);
-    if (lookupdata == null || lookupdata == undefined) {
-      this.results = [];
-      this.defaultUI = true;
-      this.showmergespinner = false;
-      this.mergingmessage = "No records found";
-      this.mergeicon = "norecordfound";
-    } else {
-      if (
-        !formdata.data["name"] &&
-        !formdata.data["phone"] &&
-        formdata.data["dob"]
-      ) {
-        this.results = [];
-        this.defaultUI = true;
-        this.showmergespinner = false;
-        this.mergingmessage =
-          "Please enter Name / Phone in combination with DOB as search criteria";
-        this.mergeicon = "placeholder";
+    if (formdata.data) {
+      if (formdata.data["globalSearch"] == 1) {
+        this.globalSearchTerm = formdata;
       } else {
         this.name = formdata.data["name"];
         this.mobile = formdata.data["phone"];
         this.email = formdata.data["email"];
-        let dateOfBirth;
-        if (formdata.data["dob"]) {
-          dateOfBirth = this.datepipe.transform(
-            formdata.data["dob"],
-            "dd/MM/yyyy"
-          );
-        } else {
-          dateOfBirth = "";
-        }
-
-        const resultData = lookupdata.map((item: any) => {
-          item.fullname = item.firstName + " " + item.lastName;
-          item.notereason = item.noteReason;
-          return item;
-        });
-        this.results = resultData;
-        this.results = this.patientServie.getAllCategoryIcons(this.results);
-        this.isAPIProcess = true;
+      }
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
+        this.results = [];
+        this.defaultUI = true;
         this.showmergespinner = false;
-        this.defaultUI = false;
-        setTimeout(() => {
-          this.tableRows.selection.changed
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((res: any) => {
-              if (this.tableRows.selection.selected.length > 1) {
-                this.mergebuttonDisabled = false;
-              } else {
-                this.mergebuttonDisabled = true;
-              }
-            });
-        });
+        this.mergingmessage = "No records found";
+        this.mergeicon = "norecordfound";
+      } else {
+        if (
+          !formdata.data["name"] &&
+          !formdata.data["phone"] &&
+          formdata.data["dob"]
+        ) {
+          this.results = [];
+          this.defaultUI = true;
+          this.showmergespinner = false;
+          this.mergingmessage =
+            "Please enter Name / Phone in combination with DOB as search criteria";
+          this.mergeicon = "placeholder";
+        } else {
+          this.processLookupData(lookupdata);
+        }
+      }
+    } else {
+      this.globalSearchTerm = { data: formdata };
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+        this.results = [];
+        this.defaultUI = true;
+        this.showmergespinner = false;
+        this.mergingmessage = "No records found";
+        this.mergeicon = "norecordfound";
+      } else {
+        this.processLookupData(lookupdata);
       }
     }
+  }
+
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      return item;
+    });
+    this.results = resultData;
+    this.results = this.patientServie.getAllCategoryIcons(this.results);
+    this.isAPIProcess = true;
+    this.showmergespinner = false;
+    this.defaultUI = false;
+    setTimeout(() => {
+      this.tableRows.selection.changed
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          if (this.tableRows.selection.selected.length > 1) {
+            this.mergebuttonDisabled = false;
+          } else {
+            this.mergebuttonDisabled = true;
+          }
+        });
+    });
   }
 
   getAllpatientsBySearch() {

@@ -1129,6 +1129,14 @@ export class OpRegistrationComponent implements OnInit {
       !this.OPRegForm.controls["foreigner"].value
       //&& this.OPRegForm.value.nationality.title.toLowerCase() != "indian" //removed condition as per UAT requirement change
     ) {
+      if (this.OPRegForm.controls["idenityType"].value) {
+        let identityTypeName = this.idTypeList.filter(
+          (i) => i.id === this.OPRegForm.controls["idenityType"].value
+        )[0].name;
+        if (identityTypeName == "Passport") {
+          this.passportDetails.passportNo = this.OPRegForm.value.idenityValue;
+        }
+      }
       this.showPassportDetails();
     }
   }
@@ -2079,8 +2087,9 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
-  onModifyDetail() {
-    if (!this.validateForm()) {
+  async onModifyDetail() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       let passportdetailspresent = false;
       if (
         this.nationalityChanged &&
@@ -2659,15 +2668,65 @@ export class OpRegistrationComponent implements OnInit {
   patientSubmitDetails: patientRegistrationModel | undefined;
   // registationFormSubmit()
   // {}
-  registationFormSubmit() {
-    if (!this.validateForm()) {
+  async registationFormSubmit() {
+    let isFormValid = await this.validateForm();
+    if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
       this.postForm();
     }
   }
 
-  validateForm(): boolean {
+  async validateForm(): Promise<boolean> {
     let validationerror = false;
+    if (!validationerror) {
+      if (this.OPRegForm.value.mobileNumber) {
+        if (!this.MaxIDExist && !this.maxIDChangeCall) {
+          const resultData = await this.http
+            .post(ApiConstants.similarSoundPatientDetail, {
+              phone: this.OPRegForm.value.mobileNumber,
+            })
+            .toPromise();
+          if (resultData) {
+            if (resultData.length != 0) {
+              validationerror = true;
+              const formsubmitdialogref = this.matDialog.open(
+                RegistrationDialogueComponent,
+                {
+                  width: "30vw",
+
+                  data: {
+                    message1:
+                      "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                    message2: "",
+                    btn1: true,
+                    btn2: true,
+                    bt1Msg: "Ok",
+                    bt2Msg: "Cancel",
+                  },
+                }
+              );
+
+              const result = await formsubmitdialogref
+                .afterClosed()
+                .toPromise();
+              if (result == "Success") {
+                validationerror = false;
+              } else {
+                validationerror = true;
+              }
+            } else {
+              validationerror = false;
+            }
+          }
+        } else {
+          validationerror = false;
+        }
+      } else {
+        validationerror = true;
+        this.messageDialogService.error("Please enter Mobile Number");
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["title"].value) {
         validationerror = true;
@@ -2676,6 +2735,25 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
+    if (!validationerror) {
+      if (!this.OPRegForm.value.firstName) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter First Name");
+      } else {
+        validationerror = false;
+      }
+    }
+
+    if (!validationerror) {
+      if (!this.OPRegForm.value.lastName) {
+        validationerror = true;
+        this.messageDialogService.error("Please enter Last Name");
+      } else {
+        validationerror = false;
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["gender"].value) {
         validationerror = true;
@@ -2684,6 +2762,56 @@ export class OpRegistrationComponent implements OnInit {
         validationerror = false;
       }
     }
+
+    if (!validationerror) {
+      if (!this.MaxIDExist && !this.maxIDChangeCall) {
+        const resultData = await this.http
+          .post(ApiConstants.similarSoundPatientDetail, {
+            firstName: this.OPRegForm.value.firstName,
+            lastName: this.OPRegForm.value.lastName,
+            gender:
+              this.OPRegForm.value.gender == 1
+                ? "Male"
+                : this.OPRegForm.value.gender == 2
+                ? "Female"
+                : "Transgender",
+          })
+          .toPromise();
+        if (resultData) {
+          if (resultData.length != 0) {
+            validationerror = true;
+            const formsubmitdialogref = this.matDialog.open(
+              RegistrationDialogueComponent,
+              {
+                width: "30vw",
+
+                data: {
+                  message1:
+                    "Similar patient detail with Mobile Number exists.Do you want to proceed?",
+                  message2: "",
+                  btn1: true,
+                  btn2: true,
+                  bt1Msg: "Ok",
+                  bt2Msg: "Cancel",
+                },
+              }
+            );
+
+            const result = await formsubmitdialogref.afterClosed().toPromise();
+            if (result == "Success") {
+              validationerror = false;
+            } else {
+              validationerror = true;
+            }
+          } else {
+            validationerror = false;
+          }
+        }
+      } else {
+        validationerror = false;
+      }
+    }
+
     if (!validationerror) {
       if (!this.OPRegForm.controls["emailId"].value) {
         validationerror = true;
@@ -3471,6 +3599,7 @@ export class OpRegistrationComponent implements OnInit {
               //title: "HWC Remarks",
               required: true,
               defaultValue: this.hwcRemark,
+              pattern: "^S*$",
             },
           },
         },

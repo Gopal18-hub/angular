@@ -45,8 +45,8 @@ export class OpRegApprovalComponent implements OnInit {
 
   approvePostobject: any;
   rejectPostobject: any;
-  hsplocationId: any =  this.cookie.get("HSPLocationId");
-  userId: number =  Number(this.cookie.get("UserId"));
+  hsplocationId: any = this.cookie.get("HSPLocationId");
+  userId: number = Number(this.cookie.get("UserId"));
   enableapprovebtn: boolean = false;
 
   showapprovalpending: boolean = false;
@@ -247,7 +247,7 @@ export class OpRegApprovalComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");   
+    this.showmain("OP Registration Approval");
   }
 
   searchApproval(formdata: any) {
@@ -298,7 +298,7 @@ export class OpRegApprovalComponent implements OnInit {
     ) {
       this.defaultUI = false;
       this.showapprovalspinner = false;
- }
+    }
 
     if (link == "View Pending Request") {
       this.activeLink2 = link;
@@ -311,7 +311,7 @@ export class OpRegApprovalComponent implements OnInit {
                 item.modifiedFirstName + " " + item.modifiedLastName;
               return item;
             });
-            
+
             this.showapprovalspinner = false;
             this.defaultUI = true;
             this.opApprovalList = resultData as opRegApprovalModel[];
@@ -320,13 +320,12 @@ export class OpRegApprovalComponent implements OnInit {
             this.showapprovalreject = false;
             this.enableapprovebtn = true;
 
-            if(this.opApprovalList.length == 0){
+            if (this.opApprovalList.length == 0) {
               this.enableapprovebtn = false;
               this.defaultUI = false;
               this.opappprovalmessage = "No records found";
               this.opapprovalimage = "norecordfound";
             }
-               
           },
           (error: any) => {
             this.opApprovalList = [];
@@ -394,7 +393,7 @@ export class OpRegApprovalComponent implements OnInit {
     }
   }
   approvalPendingColumnClick($event: any) {
-    this.modifyDialog($event.row);   
+    this.modifyDialog($event.row);
   }
 
   getopapprovalpending() {
@@ -413,19 +412,29 @@ export class OpRegApprovalComponent implements OnInit {
     );
   }
 
-  createduserapprovelist: any=[];
+  createduserapprovelist: any = [];
   approvalApproveItem() {
     this.createduserapprovelist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
-      this.createduserapprovelist.push({operatorID:s.operatorID, fullname: s.fullname, maxid: s.maxid});
+      this.createduserapprovelist.push({
+        operatorID: s.operatorID,
+        fullname: s.fullname,
+        maxid: s.maxid,
+      });
     });
-    this.createduserapprovelist = this.createduserapprovelist.filter((l: { operatorID: number; }) => l.operatorID == this.userId);
-     
-    if(this.createduserapprovelist.length > 0){
-     var MaxId = this.createduserapprovelist.map((data:any) => data.maxid);
-     this.messageDialogService.error("Max ID: "+ MaxId +" requested by you for Approval/Rejection cannot be processed.");
-    }else{
+    this.createduserapprovelist = this.createduserapprovelist.filter(
+      (l: { operatorID: number }) => l.operatorID == this.userId
+    );
+
+    if (this.createduserapprovelist.length > 0) {
+      var MaxId = this.createduserapprovelist.map((data: any) => data.maxid);
+      this.messageDialogService.error(
+        "Max ID: " +
+          MaxId +
+          " requested by you for Approval/Rejection cannot be processed."
+      );
+    } else {
       this.approvePostobject = new approveRejectModel(
         this.ApprovalidList,
         this.userId,
@@ -449,23 +458,32 @@ export class OpRegApprovalComponent implements OnInit {
           }
         );
     }
-    
   }
 
-  createduserrejectlist: any=[];
+  createduserrejectlist: any = [];
   approvalRejectItem() {
     this.createduserrejectlist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
-      this.createduserrejectlist.push({operatorID:s.operatorID, fullname: s.fullname, maxid: s.maxid});
+      this.createduserrejectlist.push({
+        operatorID: s.operatorID,
+        fullname: s.fullname,
+        maxid: s.maxid,
+      });
     });
 
-    this.createduserrejectlist = this.createduserrejectlist.filter((l: { operatorID: number; }) => l.operatorID == this.userId);
-     
-    if(this.createduserrejectlist.length > 0){
-     var MaxId = this.createduserrejectlist.map((data:any) => data.maxid);
-     this.messageDialogService.error("Max ID: "+ MaxId +" requested by you for Approval/Rejection cannot be processed.");
-    }else{
+    this.createduserrejectlist = this.createduserrejectlist.filter(
+      (l: { operatorID: number }) => l.operatorID == this.userId
+    );
+
+    if (this.createduserrejectlist.length > 0) {
+      var MaxId = this.createduserrejectlist.map((data: any) => data.maxid);
+      this.messageDialogService.error(
+        "Max ID: " +
+          MaxId +
+          " requested by you for Approval/Rejection cannot be processed."
+      );
+    } else {
       this.rejectPostobject = new approveRejectModel(
         this.ApprovalidList,
         this.userId,
@@ -488,8 +506,6 @@ export class OpRegApprovalComponent implements OnInit {
           }
         );
     }
-
- 
   }
   approvalpostapi(approvalJSONObject: approveRejectModel[]) {
     return this.http.post(
@@ -501,102 +517,113 @@ export class OpRegApprovalComponent implements OnInit {
   modifyDialog(modfiedapprovalPatiendDetailsForPopUp: OpdpendingrequestModel) {
     this.patientDetails = [];
     this.modfiedPatiendDetails = [];
-    this.patientDetails.push({
-      firstname: modfiedapprovalPatiendDetailsForPopUp.firstName,
-      middleName: modfiedapprovalPatiendDetailsForPopUp.middleName,
-      lastName: modfiedapprovalPatiendDetailsForPopUp.lastName,
-      sexName: modfiedapprovalPatiendDetailsForPopUp.gender,
-      pemail: modfiedapprovalPatiendDetailsForPopUp.email,
-      pphone: modfiedapprovalPatiendDetailsForPopUp.mobile,
-      nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
-      foreigner: modfiedapprovalPatiendDetailsForPopUp.foreigner,
-      id: modfiedapprovalPatiendDetailsForPopUp.id,
-    });
-
-    this.modfiedPatiendDetails.push({
-      firstname: modfiedapprovalPatiendDetailsForPopUp.modifiedFirstName,
-      middleName: modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
-      lastName: modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
-      title: modfiedapprovalPatiendDetailsForPopUp.uGender,
-      pemail: modfiedapprovalPatiendDetailsForPopUp.uEmail,
-      pphone: modfiedapprovalPatiendDetailsForPopUp.uMobile,
-      nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,
-      foreigner: modfiedapprovalPatiendDetailsForPopUp.uForeigner,
-    });
-
-    const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
-      width: "30vw",
-      height: "96vh",
-      data: {
-        patientDetails: this.patientDetails[0],
-        modifiedDetails: this.modfiedPatiendDetails[0],
-        submitButton: true,
-      },
-    });
-
-    modifyDetailDialogref
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        console.log(result.data);
-        var resultArr = result.data.split(",");
-        var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
-        console.log(resultArr[1].trim());
-        if (firstvaluekey.startsWith("Accepted")) {
-          if (resultArr[1].split(":")[0].trim() == "id") {
-            this.ApprovalidList.push(resultArr[1].split(":")[1]);
-            this.approvePostobject = new approveRejectModel(
-              this.ApprovalidList,
-              this.userId,
-              0
-            );
-            this.approvalpostapi(this.approvePostobject)
-              .pipe(takeUntil(this._destroying$))
-              .subscribe(
-                (resultdata) => {
-                  console.log(resultdata);
-                  this.messageDialogService.success("Update Request Approved");
-                  this.showgrid("View Pending Request");
-                  this.ApprovalidList = [];
-                },
-                (error) => {
-                  console.log(error);
-                  this.ApprovalidList = [];
-                  this.defaultUI = true;
-                  this.opappprovalmessage = "No records found";
-                  this.opapprovalimage = "norecordfound";
-                }
-              );
-          }
-        } else if (firstvaluekey.startsWith("reject")) {
-          if (resultArr[1].split(":")[0].trim() == "id") {
-            this.ApprovalidList.push(resultArr[1].split(":")[1]);
-            this.rejectPostobject = new approveRejectModel(
-              this.ApprovalidList,
-              this.userId,
-              1
-            );
-            this.approvalpostapi(this.rejectPostobject)
-              .pipe(takeUntil(this._destroying$))
-              .subscribe(
-                (resultdata) => {
-                  this.messageDialogService.success("Request is Rejected");
-                  this.showgrid("View Pending Request");
-                  this.ApprovalidList = [];
-                },
-                (error) => {
-                  console.log(error);
-                  this.ApprovalidList = [];
-                  this.defaultUI = true;
-                  this.opappprovalmessage = "No records found";
-                  this.opapprovalimage = "norecordfound";
-                }
-              );
-          }
-        }
-        // if(resultArr[1] == "id"){
-
-        // }
+    if (modfiedapprovalPatiendDetailsForPopUp.operatorID == this.userId) {
+      var MaxId = modfiedapprovalPatiendDetailsForPopUp.maxid;
+      this.messageDialogService.error(
+        "Max ID: " +
+          MaxId +
+          " requested by you for Approval/Rejection cannot be processed."
+      );
+    } else {
+      this.patientDetails.push({
+        firstname: modfiedapprovalPatiendDetailsForPopUp.firstName,
+        middleName: modfiedapprovalPatiendDetailsForPopUp.middleName,
+        lastName: modfiedapprovalPatiendDetailsForPopUp.lastName,
+        sexName: modfiedapprovalPatiendDetailsForPopUp.gender,
+        pemail: modfiedapprovalPatiendDetailsForPopUp.email,
+        pphone: modfiedapprovalPatiendDetailsForPopUp.mobile,
+        nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
+        foreigner: modfiedapprovalPatiendDetailsForPopUp.foreigner,
+        id: modfiedapprovalPatiendDetailsForPopUp.id,
       });
+
+      this.modfiedPatiendDetails.push({
+        firstname: modfiedapprovalPatiendDetailsForPopUp.modifiedFirstName,
+        middleName: modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
+        lastName: modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
+        title: modfiedapprovalPatiendDetailsForPopUp.uGender,
+        pemail: modfiedapprovalPatiendDetailsForPopUp.uEmail,
+        pphone: modfiedapprovalPatiendDetailsForPopUp.uMobile,
+        nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,
+        foreigner: modfiedapprovalPatiendDetailsForPopUp.uForeigner,
+      });
+
+      const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
+        width: "30vw",
+        height: "96vh",
+        data: {
+          patientDetails: this.patientDetails[0],
+          modifiedDetails: this.modfiedPatiendDetails[0],
+          submitButton: true,
+        },
+      });
+
+      modifyDetailDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          console.log(result.data);
+          var resultArr = result.data.split(",");
+          var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
+          console.log(resultArr[1].trim());
+          if (firstvaluekey.startsWith("Accepted")) {
+            if (resultArr[1].split(":")[0].trim() == "id") {
+              this.ApprovalidList.push(resultArr[1].split(":")[1]);
+              this.approvePostobject = new approveRejectModel(
+                this.ApprovalidList,
+                this.userId,
+                0
+              );
+              this.approvalpostapi(this.approvePostobject)
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  (resultdata) => {
+                    console.log(resultdata);
+                    this.messageDialogService.success(
+                      "Update Request Approved"
+                    );
+                    this.showgrid("View Pending Request");
+                    this.ApprovalidList = [];
+                  },
+                  (error) => {
+                    console.log(error);
+                    this.ApprovalidList = [];
+                    this.defaultUI = true;
+                    this.opappprovalmessage = "No records found";
+                    this.opapprovalimage = "norecordfound";
+                  }
+                );
+            }
+          } else if (firstvaluekey.startsWith("reject")) {
+            if (resultArr[1].split(":")[0].trim() == "id") {
+              this.ApprovalidList.push(resultArr[1].split(":")[1]);
+              this.rejectPostobject = new approveRejectModel(
+                this.ApprovalidList,
+                this.userId,
+                1
+              );
+              this.approvalpostapi(this.rejectPostobject)
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  (resultdata) => {
+                    this.messageDialogService.success("Request is Rejected");
+                    this.showgrid("View Pending Request");
+                    this.ApprovalidList = [];
+                  },
+                  (error) => {
+                    console.log(error);
+                    this.ApprovalidList = [];
+                    this.defaultUI = true;
+                    this.opappprovalmessage = "No records found";
+                    this.opapprovalimage = "norecordfound";
+                  }
+                );
+            }
+          }
+          // if(resultArr[1] == "id"){
+
+          // }
+        });
+    }
   }
 }
