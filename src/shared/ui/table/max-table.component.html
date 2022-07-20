@@ -125,6 +125,18 @@
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </ng-container>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td
+        class="mat-cell"
+        [attr.colspan]="displayedColumns.length"
+        [attr.rowspan]="'10'"
+      >
+        <div class="flex align-items-center justify-center">
+          <p>No Data Available</p>
+        </div>
+      </td>
+    </tr>
   </table>
   <!-- <mat-paginator
     [pageSizeOptions]="[10, 15, 20]"
