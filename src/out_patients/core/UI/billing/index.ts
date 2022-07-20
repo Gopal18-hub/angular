@@ -8,11 +8,13 @@ import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { DynamicFormsModule } from "../../../../shared/ui/dynamic-forms";
 import { SharedBillingComponent } from "./shared-billing.component";
+import { MaxHealthTableModule } from "@shared/ui/table";
 import { PaymentMethodsComponent } from "./submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "./submodules/form60/form-sixty.component";
 import { MatButtonModule } from "@angular/material/button";
 import { ServiceDepositComponent } from "./submodules/service-deposit/service-deposit.component";
 import { MatTabsModule } from "@angular/material/tabs";
+import { VisitHistoryComponent } from './submodules/visit-history/visit-history.component';
 @NgModule({
   imports: [
     RouterModule,
@@ -26,6 +28,7 @@ import { MatTabsModule } from "@angular/material/tabs";
     DynamicFormsModule,
     MatButtonModule,
     MatTabsModule,
+    MaxHealthTableModule
   ],
   exports: [
     FormSixtyComponent,
@@ -37,6 +40,7 @@ import { MatTabsModule } from "@angular/material/tabs";
     FormSixtyComponent,
     PaymentMethodsComponent,
     ServiceDepositComponent,
+    VisitHistoryComponent,
   ],
   providers: [],
 })
