@@ -13,49 +13,49 @@
         <div class="p-1 ml-2 mt-2 mr-2 border-radius-lg flex w-auto bg-deposit">
           <div class="w-full pt-2">
             <div class="flex">
-              <mat-label class="wt-nowrap">Max ID</mat-label>
+              <mat-label class="wt-nowrap  font-bold">Max ID</mat-label>
               <div class="ml-3 w-1/10 h-full bg-white">
                 <maxhealth-question [question]="questions[0]" [form]="depositForm" [questions]="questions[0]"
                   [index]="0">
                 </maxhealth-question>
               </div>
 
-              <mat-label class="ml-1 wt-nowrap">Mobile No.</mat-label>
+              <mat-label class="ml-1 wt-nowrap  font-bold">Mobile No.</mat-label>
               <div class="ml-3 w-1/10 h-full bg-white">
                 <maxhealth-question [question]="questions[1]" [form]="depositForm" [questions]="questions[1]"
                   [index]="1">
                 </maxhealth-question>
               </div>
 
-              <div class="w-1/6 ml-2">
-                <mat-label>Name:</mat-label>
-                <span></span>
+              <div class="w-1/6 ml-1 wt-nowrap">
+                <mat-label class="font-bold">Name:</mat-label>
+                <span class="bg-black ml-1">{{name}}</span>
               </div>
 
-              <div class="w-1/10">
-                <mat-label>Age:</mat-label>
-                <span></span>
+              <div class="w-1/10 ml-2 wt-nowrap">
+                <mat-label class="font-bold">Age:</mat-label>
+                <span class="bg-black ml-1">{{age}}</span>
+              </div>
+
+              <div class="w-1/6 ml-2 wt-nowrap">
+                <mat-label class="font-bold">Gender:</mat-label>
+                <span class="bg-black ml-1">{{gender}}</span>
+              </div>
+
+              <div class="w-1/7">
+                <mat-label class="font-bold">DOB:</mat-label>
+                <span class="bg-black ml-1">{{dob | date: 'dd/MM/yyyy'}}</span>
+              </div>
+
+
+              <div class="w-1/6">
+                <mat-label class="font-bold">Nationality:</mat-label>
+                <span class="bg-black ml-1">{{nationality}}</span>
               </div>
 
               <div class="w-1/6">
-                <mat-label>Gender:</mat-label>
-                <span></span>
-              </div>
-
-              <div class="w-1/6">
-                <mat-label>DOB:</mat-label>
-                <span></span>
-              </div>
-
-
-              <div class="w-1/6">
-                <mat-label>Nationality:</mat-label>
-                <span></span>
-              </div>
-
-              <div class="w-1/6">
-                <mat-label>SSN:</mat-label>
-                <span></span>
+                <mat-label class="font-bold">SSN:</mat-label>
+                <span class="bg-black ml-1">{{ssn}}</span>
               </div>
               <div>
                 <button mat-raised-button color="primary" class="w-2/10"> Clear</button>
@@ -79,13 +79,13 @@
                 (click)="openinitiatedeposit()">
                 Initiate Deposit
               </button>
-              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" (click)="openDepositdialog()">
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button"  [disabled]="!MaxIDExist" (click)="openDepositdialog()">
                 Make Deposit
               </button>
-              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" (click)="openrefunddialog()">
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit"  [disabled]="!MaxIDRefundExist" (click)="openrefunddialog()">
                 Refund
               </button>
-              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button">
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button"  [disabled]="!MaxIDExist">
                 Print Receipt
               </button>
             </div>
@@ -95,9 +95,9 @@
           <div class="flex w-full">
 
 
-            <div class="p-2 border-radius-lg  h-full ml-1 mt-2 bg-deposit">
+            <div class="p-2 border-radius-lg  h-full ml-1 mt-2 bg-thirdrow-white">
               <div class="mt-1">
-                <mat-label class="ml-3">Total Deposit</mat-label>
+                <mat-label class="ml-3 font-bold">Total Deposit</mat-label>
               </div>
 
               <div class="w-9/10 ml-3 bg-thirdrow input1">
@@ -106,7 +106,7 @@
                 </maxhealth-question>
               </div>
               <div class="mt-3">
-                <mat-label class="ml-3">Avalaible Deposit</mat-label>
+                <mat-label class="ml-3 font-bold">Avalaible Deposit</mat-label>
               </div>
 
               <div class="w-9/10 ml-3 bg-thirdrow input1">
@@ -115,7 +115,7 @@
                 </maxhealth-question>
               </div>
               <div class="mt-3">
-                <mat-label class="ml-3">Total Refund</mat-label>
+                <mat-label class="ml-3 font-bold">Total Refund</mat-label>
               </div>
 
               <div class="w-9/10 ml-3 bg-thirdrow input1">
@@ -124,7 +124,7 @@
                 </maxhealth-question>
               </div>
               <div class="mt-6">
-                <mat-label class="ml-3">Remarks</mat-label>
+                <mat-label class="ml-3 font-bold">Remarks</mat-label>
               </div>
 
               <div class="w-9/10 ml-3 bg-thirdrow">
@@ -137,7 +137,7 @@
             <div class="mt-2 ml-3">
               <div class="h-9/10">
                 <ng-container>
-                  <maxhealth-table class="w-full" [config]="depositconfig" #deposittable></maxhealth-table>
+                  <maxhealth-table class="w-full" [config]="depositconfig" [data]="depoistList" #deposittable></maxhealth-table>
                 </ng-container>
               </div>
               

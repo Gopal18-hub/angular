@@ -6,7 +6,8 @@ export namespace BillingForm {
         type: "object",
         properties: {
           amount: {
-             type: "number"
+             type: "number",
+             defaultValue: "0.00"
            },
           chequeno: {
             type: "number"

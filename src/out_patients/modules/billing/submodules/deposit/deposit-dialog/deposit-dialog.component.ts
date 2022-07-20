@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit,Inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { DynamicFormsModule } from "../../../../../../shared/ui/dynamic-forms";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { MatTabGroup } from "@angular/material/tabs";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -10,12 +11,13 @@ import { MatTabGroup } from "@angular/material/tabs";
   styleUrls: ["./deposit-dialog.component.scss"],
 })
 export class DepositDialogComponent implements OnInit {
-  depositformData = {
+
+  makedepositdialogformData = {
     type: "object",
     title: "",
     properties: {
       servicetype: {
-        type: "autocomplete",
+        type: "autocomplete",        
       },
       deposithead: {
         type: "autocomplete",
@@ -186,8 +188,11 @@ export class DepositDialogComponent implements OnInit {
       },
     },
   };
+  
+  depositdialogtypeList:any=[];
+  patientIdentityInfo:any=[];
 
-  depositForm!: FormGroup;
+  makedepositdialogForm!: FormGroup;
   questions: any;
   onDepositpage: boolean = true;
   selectedTabvalue!: string;
@@ -202,16 +207,25 @@ export class DepositDialogComponent implements OnInit {
     },
     combopayment: false
   }
-  constructor( private formService: QuestionControlService) { }
+  constructor( private formService: QuestionControlService, 
+    @Inject(MAT_DIALOG_DATA) public data : {servicetype:any, deposittype:any, patientinfo: any},
+    private dialogRef: MatDialogRef<DepositDialogComponent>,
+    public matDialog: MatDialog) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
-      this.depositformData.properties,
+      this.makedepositdialogformData.properties,
       {}
     );
-    this.depositForm = formResult.form;
+    this.makedepositdialogForm = formResult.form;
     this.questions = formResult.questions;
+    this.depositdialogtypeList = {
+          servicetypeList : this.data.servicetype,
+          deposittypeList : this.data.deposittype
+        };
+    this.patientIdentityInfo = this.data.patientinfo;
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+  } 
 }
