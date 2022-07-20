@@ -345,6 +345,9 @@ export namespace ApiConstants {
     );
   };
 
+  export const enablecounter =
+   environment.BillingApiUrl + "api/outpatientbilling/enablecounter";
+
   export const gettransactiontype =
     environment.BillingApiUrl +
     "api/outpatientbilling/getpatienthistorytransactiontype";
@@ -520,6 +523,21 @@ export namespace ApiConstants {
     return (
       environment.PatientApiUrl +
       "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+    );
+  };
+
+  export const getstaffdependentsearchtype = () => {
+    return environment.BillingApiUrl + "api/outpatientbilling/getstaffdependentsearchtype";
+  };
+
+  export const getstaffdependentdetails = (
+    EmployeeCode: string,
+    EmployeeName: string,
+    SrcType: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getstaffdependentdetails/"+EmployeeCode+"/"+EmployeeName+"/"+SrcType
     );
   };
 }

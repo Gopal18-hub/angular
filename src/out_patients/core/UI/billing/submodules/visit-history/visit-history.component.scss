@@ -1,0 +1,16 @@
+.table{
+    ::ng-deep .max-table-wrapper{
+        border: 0px;
+        table{
+            white-space: nowrap !important;
+            table-layout: auto !important;
+        }
+    }
+    
+}
+.table{
+    border: none;
+}
+.h-85{
+    height: 85%;
+}

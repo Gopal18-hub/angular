@@ -22,3 +22,12 @@
 .w-27{
     width: 27%;
 }
+::ng-deep table tbody tr td:nth-child(14) div{ 
+    margin-left: 30px;
+}
+::ng-deep table tbody tr:hover{
+    table tbody tr td:nth-child(14) div img{
+        background-color: white;
+    }
+    
+}
