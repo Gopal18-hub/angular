@@ -297,6 +297,8 @@ export class OpRegistrationComponent implements OnInit {
         title: "Pincode",
         // required property is dependent on country
         required: true,
+        // minimum: 5,
+        // maximum: 6,
       },
       locality: {
         type: "autocomplete",
@@ -528,6 +530,9 @@ export class OpRegistrationComponent implements OnInit {
     this.isOrganDonor = false;
     this.OPRegForm = formResult.form;
     this.questions = formResult.questions;
+
+    //as ABDM integration not completed so disabling HealthID Textbox
+    this.OPRegForm.controls["healthId"].disable();
 
     // this.fatherSpouseOptionList.push({ title: "-Select-", value: 0 });
     this.fatherSpouseOptionList.push({ title: "Father", value: 1 });
@@ -802,6 +807,20 @@ export class OpRegistrationComponent implements OnInit {
         if (value) {
           if (!this.OPRegForm.value.dob) {
             this.questions[8].disabled = true;
+            if (this.OPRegForm.controls["ageType"].value == 1 && value >= 18) {
+              this.OPRegForm.controls["dob"].setErrors(null);
+              this.questions[8].customErrorMessage = "";
+            } else {
+              if (this.OPRegForm.controls["ageType"].value) {
+                if (value < 18) {
+                  this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+                  this.questions[8].customErrorMessage =
+                    "DOB is required, Age is less than 18 Years";
+                  this.questions[8].disabled = false;
+                  this.OPRegForm.controls["dob"].markAsTouched();
+                }
+              }
+            }
           } else {
             this.questions[8].disabled = false;
           }
@@ -1631,22 +1650,51 @@ export class OpRegistrationComponent implements OnInit {
   localityListByPin: LocalityByPincodeModel[] = [];
   //LOCALITY LIST FOR PINCODE
   getLocalityByPinCode() {
+    let isvalidpincode = false;
     if (
       this.OPRegForm.value.pincode != undefined &&
       this.OPRegForm.value.pincode > 0 &&
       this.OPRegForm.value.pincode != null
     ) {
-      this.countrybasedflow = false;
-      this.http
-        .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((resultData: any) => {
-          this.localityListByPin = resultData;
-          this.questions[22].options = this.localityListByPin.map((l) => {
-            return { title: l.name, value: l.id };
+      if (this.OPRegForm.value.country.value == 1) {
+        if (this.OPRegForm.value.pincode.length == 6) {
+          isvalidpincode = true;
+        } else {
+          isvalidpincode = false;
+        }
+      } else {
+        if (
+          this.OPRegForm.value.pincode.length == 5 ||
+          this.OPRegForm.value.pincode.length == 4
+        ) {
+          isvalidpincode = true;
+        } else {
+          isvalidpincode = false;
+        }
+      }
+      if (isvalidpincode) {
+        this.countrybasedflow = false;
+        this.OPRegForm.controls["pincode"].setErrors(null);
+        this.questions[21].customErrorMessage = "";
+        this.http
+          .get(ApiConstants.localityLookUp(this.OPRegForm.value.pincode))
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((resultData: any) => {
+            this.localityListByPin = resultData;
+            this.questions[22].options = this.localityListByPin.map((l) => {
+              return { title: l.name, value: l.id };
+            });
+            this.questions[22] = { ...this.questions[22] };
           });
-          this.questions[22] = { ...this.questions[22] };
-        });
+      } else {
+        this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
+        this.questions[21].customErrorMessage = "PinCode is Invalid";
+      }
+    } else {
+      if (this.OPRegForm.value.country.value == 1) {
+        this.OPRegForm.controls["pincode"].setErrors({ incorrect: true });
+        this.questions[21].customErrorMessage = "PinCode is Invalid";
+      }
     }
   }
 
@@ -2377,8 +2425,10 @@ export class OpRegistrationComponent implements OnInit {
     ) {
       // commented as UAT requirement change
       // this.OPRegForm.controls["foreigner"].enable();
-      this.OPRegForm.controls["foreigner"].setValue(true);
-      this.showPassportDetails();
+      if (!this.OPRegForm.value.foreigner) {
+        this.OPRegForm.controls["foreigner"].setValue(true);
+        this.showPassportDetails();
+      }
     } else {
       // commented as UAT requirement change
       //  this.OPRegForm.controls["foreigner"].disable();
@@ -3195,10 +3245,8 @@ export class OpRegistrationComponent implements OnInit {
       ageDOB = this.OPRegForm.value.dob;
     }
     if (ageDOB) {
-      const dobRef = moment(ageDOB);
+      let dobRef = moment(ageDOB);
       if (!dobRef.isValid()) {
-        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
-        this.questions[8].customErrorMessage = "DOB is invalid";
         return;
       }
       const today = moment();
@@ -3206,6 +3254,13 @@ export class OpRegistrationComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffYears > 0) {
+        if (diffYears > 122) {
+          this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+          this.questions[8].customErrorMessage = "DOB is invalid";
+          this.OPRegForm.controls["age"].setValue("");
+          this.OPRegForm.controls["ageType"].setValue(0);
+          return;
+        }
         this.OPRegForm.controls["age"].setValue(diffYears);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[0].id);
       } else if (diffMonths > 0) {
@@ -3213,6 +3268,15 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[1].id);
       } else if (diffDays > 0) {
         this.OPRegForm.controls["age"].setValue(diffDays);
+        this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+        this.questions[8].customErrorMessage = "DOB is invalid";
+        this.OPRegForm.controls["age"].setValue("");
+        this.OPRegForm.controls["ageType"].setValue(0);
+        return;
+      } else if (diffDays == 0) {
+        this.OPRegForm.controls["age"].setValue(diffDays + 1);
         this.OPRegForm.controls["ageType"].setValue(this.ageTypeList[2].id);
       }
       this.OPRegForm.controls["dob"].setErrors(null);
