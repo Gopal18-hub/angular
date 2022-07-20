@@ -69,7 +69,7 @@ export class PatientHistoryComponent implements OnInit {
       "balanceamt",
       "company",
       "operatorname",
-      "printhistory",
+      "printIcon",
     ],
     columnsInfo: {
       billno: {
@@ -122,16 +122,14 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "operatorname"
       },
-      printhistory: {
+      printIcon: {
         title: "Print History",
         type: "image",
-        width: 34,
-        style:{
+        width: 25,
+        style: {
           width: "100px",
-          height: "100px",
-          src: "assets/roundtick",
         },
-        disabledSort:true,
+        disabledSort: true,
       },
     },
   };
@@ -167,6 +165,7 @@ export class PatientHistoryComponent implements OnInit {
       refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: ''
     }
   ]
+
   pname:any;
   age:any;
   gender:any;
@@ -178,7 +177,7 @@ export class PatientHistoryComponent implements OnInit {
   findpathismessage: string | undefined;
   patienthistorytable: boolean = false;
   defaultUI: boolean = true;
-  printbtn:boolean = false;
+  printbtn:boolean = true;
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("stationId"));
@@ -220,7 +219,9 @@ export class PatientHistoryComponent implements OnInit {
   }
   gettransactiontype()
   {
-    this.http.get(ApiConstants.gettransactiontype).subscribe((resultdata: any)=>{
+    this.http.get(ApiConstants.gettransactiontype)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata: any)=>{
       this.transactiontype = resultdata;
       console.log(this.transactiontype);
       this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
@@ -229,90 +230,13 @@ export class PatientHistoryComponent implements OnInit {
       })
     })
   }
-
-  patienthistorysearch()
-  {
-    if(this.patienthistoryform.value.maxid == '' || this.patienthistoryform.value.maxid == undefined || this.patienthistoryform.value.maxid == this.cookie.get("LocationIACode") + "." || this.patientDetails.length == 0)
-    {
-      this.msgdialog.info("Please Enter SSN/MAX ID");
-    }
-    else if(this.patientDetails.length == 1)
-    {
-      console.log(this.patienthistoryform.value);
-      let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
-      let iacode = this.patienthistoryform.value.maxid.split(".")[0];
-      if(regnumber != 0){
-        this.http.get(ApiConstants.getpatienthistory(
-          this.datepipe.transform(this.patienthistoryform.value.fromdate, "YYYY-MM-dd"),
-          this.datepipe.transform(this.patienthistoryform.value.todate, "YYYY-MM-dd"),
-          iacode,
-          regnumber,
-          this.hsplocationId,
-          this.stationId
-        )).subscribe((resultdata:any)=>{
-          console.log(resultdata);
-          if(resultdata.length == 0)
-          {
-            console.log("empty");
-            this.defaultUI = false;
-            this.patienthistorytable = true;
-            this.patienthistorylist = this.data;
-            // this.patienthistorytable = false;
-            // this.defaultUI = true;
-            // this.findpathismessage = "No records found";
-            // this.findpathisimage = "norecordfound";
-          }
-          else{
-            this.defaultUI = false;
-            this.patienthistorytable = true;
-            this.patienthistorylist = this.data;
-            // this.patienthistorylist = resultdata;
-          }
-        },
-        (error)=>{
-          console.log(error);
-          // this.patienthistorytable = false;
-          // this.defaultUI = true;
-          // this.findpathismessage = "No records found";
-          // this.findpathisimage = "norecordfound";
-        }
-        )
-      }
-    }
-    
-  }
-  printdialog()
-  {  
-    console.log(this.tableRows.selection.selected);  
-    this.msgdialog.success("Printing Successfull");
-  }
-  clear()
-  {
-    this.patienthistoryform.reset();
-    this.pname = '';
-    this.age = '';
-    this.gender = '';
-    this.dob = '';
-    this.nationality = '';
-    this.ssn = '';
-    this.today = new Date();
-    this.patienthistoryform.controls["todate"].setValue(this.today);
-    this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
-    this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
-    this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
-    this.questions[0].readonly = false;
-    this.patienthistorytable = false;
-    this.defaultUI = true;
-    this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
-    this.patientDetails = [];
-  }
   getPatientDetails()
   {
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
         .get(ApiConstants.getregisteredpatientdetails(iacode, regnumber))
+        .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: getRegisteredPatientDetailsModel[]) => {
             console.log(resultData);
             if(resultData.length == 0)
@@ -340,24 +264,121 @@ export class PatientHistoryComponent implements OnInit {
         );
   }
 
+  patienthistorysearch()
+  {
+    if(this.patienthistoryform.value.maxid == '' || this.patienthistoryform.value.maxid == undefined || this.patienthistoryform.value.maxid == this.cookie.get("LocationIACode") + "." || this.patientDetails.length == 0)
+    {
+      this.msgdialog.info("Please Enter SSN/MAX ID");
+    }
+    else if(this.patientDetails.length == 1)
+    {
+      console.log(this.patienthistoryform.value);
+      let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
+      let iacode = this.patienthistoryform.value.maxid.split(".")[0];
+      if(regnumber != 0){
+        this.http.get(ApiConstants.getpatienthistory(
+          this.datepipe.transform(this.patienthistoryform.value.fromdate, "YYYY-MM-dd"),
+          this.datepipe.transform(this.patienthistoryform.value.todate, "YYYY-MM-dd"),
+          iacode,
+          regnumber,
+          this.hsplocationId,
+          this.stationId
+        ))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultdata:any)=>{
+          console.log(resultdata);
+          if(resultdata.length == 0)
+          {
+            console.log("empty");
+            this.defaultUI = false;
+            this.patienthistorytable = true;
+            this.patienthistorylist = this.data;
+            this.patienthistorylist = this.setimage(this.patienthistorylist); 
+            this.printbtn = false;
+            // this.patienthistorytable = false;
+            // this.defaultUI = true;
+            // this.findpathismessage = "No records found";
+            // this.findpathisimage = "norecordfound";
+          }
+          else{
+            this.defaultUI = false;
+            this.patienthistorytable = true;
+            this.patienthistorylist = this.data;
+            this.printbtn = false;
+            // this.patienthistorylist = resultdata;
+          }
+        },
+        (error)=>{
+          console.log(error);
+          // this.patienthistorytable = false;
+          // this.defaultUI = true;
+          // this.findpathismessage = "No records found";
+          // this.findpathisimage = "norecordfound";
+        }
+        )
+      }
+    }
+    
+  }
+  printdialog()
+  {  
+    console.log(this.tableRows.selection.selected);  
+    if(this.tableRows.selection.selected.length > 0)
+    {
+      this.msgdialog.success("Printing Successfull");
+    }
+  }
+  clear()
+  {
+    this.patienthistoryform.reset();
+    this.pname = '';
+    this.age = '';
+    this.gender = '';
+    this.dob = '';
+    this.nationality = '';
+    this.ssn = '';
+    this.today = new Date();
+    this.patienthistoryform.controls["todate"].setValue(this.today);
+    this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
+    this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
+    this.questions[0].readonly = false;
+    this.patienthistorytable = false;
+    this.defaultUI = true;
+    this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
+    this.patientDetails = [];
+    this.printbtn = true;
+  }
+  
+
   printrow(event:any){
     console.log(event);
     console.log(this.tableRows.selection.selected.length);
-    if(event.column == "printhistory"){
+    if(event.column == "printIcon" || this.tableRows.selection.selected.length > 0){
       console.log(event.row.billno);
-      this.printdialog();
+      this.msgdialog.success("Printing Successfull");
     }
   }
-  // ngDoCheck()
-  // { 
-  //   setTimeout(() => {
-  //     if(this.tableRows.selection.selected.length > 0){
-  //       this.printbtn = false;
-  //     }
-  //     else
-  //     {
-  //       this.printbtn = true;
-  //     }
-  //   }, 100);
-  // }
+
+  setimage(patienthsitory: getPatientHistoryModel[],
+    model: any = getPatientHistoryModel)
+  {
+    patienthsitory.forEach((e) => {
+      e.printIcon = this.getimage();
+    });
+    return  patienthsitory as typeof model;
+  }
+
+  getimage()
+  {
+    let returnicon: any = [];
+    var tempPager: any = {
+      src:
+        "assets/print_Icon.svg"
+    };
+    returnicon.push(tempPager);
+
+    return returnicon;
+  }
 }

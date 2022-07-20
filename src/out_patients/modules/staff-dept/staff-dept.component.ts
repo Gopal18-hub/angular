@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup} from '@angular/forms';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
 import { __values } from 'tslib';
+import { HttpService } from '@shared/services/http.service';
+import { ApiConstants } from '../../../out_patients/core/constants/ApiConstants';
+import { StaffDependentTypeModel } from "@core/models/staffDependentTypeModel.Model";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -9,6 +14,10 @@ import { __values } from 'tslib';
   styleUrls: ['./staff-dept.component.scss']
 })
 export class StaffDeptComponent implements OnInit {
+  public staffDependentTypeList: StaffDependentTypeModel[] = [];
+  staffDetails : any;
+  staffDeptDetails : any;
+  private readonly _destroying$ = new Subject<void>();
   orgList=["id","1","name","Max HealthCare"]
   staffFormData={
     title: "",
@@ -16,7 +25,7 @@ export class StaffDeptComponent implements OnInit {
     properties:{
       organisation:{
         type: "dropdown",              
-        options: this.orgList,     
+        options: this.staffDependentTypeList,     
       },     
       employeeCode:{
         type:"string",
@@ -33,19 +42,19 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['sno','organisation', 'empCode', 'empName','dob','gender','doj'],
+    displayedColumns: ['sno','groupCompanyName', 'empCode', 'empName','dob','gender','doj'],
     columnsInfo: {
       sno: {
         title: 'S.No',
         type: 'number'
       },
-      organisation : {
+      groupCompanyName : {
         title: 'Name of Organisation',
         type: 'string'
       },
       empCode : {
         title: 'Employee Code',
-        type: 'number'
+        type: 'string'
       },
      
       empName : {
@@ -191,7 +200,7 @@ export class StaffDeptComponent implements OnInit {
      
     ]
 
-  constructor(private formService: QuestionControlService) { }
+  constructor(private formService: QuestionControlService,private http: HttpService,) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -200,10 +209,42 @@ export class StaffDeptComponent implements OnInit {
     );
     this.staffForm = formResult.form;
     this.questions = formResult.questions;
+     //Search Type Dropdown
+     this.http.get(ApiConstants.getstaffdependentsearchtype())
+     .pipe(takeUntil(this._destroying$))
+     .subscribe((res :any)=>
+     {   
+      this.staffDependentTypeList= res;      
+      this.questions[0].options = this.staffDependentTypeList.map((l) => {
+        return { title: l.name, value: l.id };
+      });    
+     });
   }
   showmain(link:any)
   {
     
+  }
+  search()
+  {
+     //Search Type Dropdown
+     this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.employeeCode,this.staffForm.value.employeeName,this.staffForm.value.organisation))
+     .pipe(takeUntil(this._destroying$))
+     .subscribe((res :any)=>
+     {  
+      this.staffDetails = res.dtsStaffDependentDetails1; 
+      this.staffDeptDetails = res.dtsStaffDependentDetails;
+      //this.staffDeptDetails = res.
+      // resultData = resultData.map((item: any) => {
+      //   item.fullname = item.firstName + " " + item.lastName;
+      //   return item;
+      // });
+     
+     });
+    
+  }
+  staffColumnClick(event:any)
+  {
+    console.log(event.row,"column");
   }
 
 }
