@@ -154,7 +154,7 @@ export function getClientSettings(): UserManagerSettings {
     automaticSilentRenew: true,
     includeIdTokenInSilentRenew: true,
     revokeAccessTokenOnSignout: true,
-    accessTokenExpiringNotificationTime: 1200,
+    accessTokenExpiringNotificationTime: 60,
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,

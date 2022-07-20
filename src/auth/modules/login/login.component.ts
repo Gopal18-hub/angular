@@ -68,7 +68,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private adauth: ADAuthService,
     private cookie: CookieService,
     private authService: AuthService
-  ) {}
+  ) {
+    const query = window.location.search.substring(1);
+    const pathname = window.location.pathname;
+
+    if (query == null || query == "") {
+      if (window.location.href == window.origin + "/" || pathname == "/login")
+        this.authService.startAuthentication();
+    }
+  }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
