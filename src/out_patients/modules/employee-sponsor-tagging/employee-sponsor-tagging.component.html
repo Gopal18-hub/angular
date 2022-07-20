@@ -12,11 +12,11 @@
         <form  [formGroup]="employeesponsorForm">
             <!------------------------------------------- FIRST ROW------------------------------------------>
             <div class="bg-lightgray">
-                <div class="flex w-4/5 p-2">
+                <div class="flex w-4/5 p-3 input-padding">
                         <div class="text-wrap max-health-primary-color font-bold" >
                             <mat-label>Max ID</mat-label>
                         </div>
-                        <div class="ml-3 w-1/10 bg-white">
+                        <div class="ml-3 w-12 bg-white">
                             <maxhealth-question
                                 [question]="questions[0]"
                                 [form]="employeesponsorForm"
@@ -53,8 +53,9 @@
                             <mat-label>Company</mat-label>
                         </div>
                         <div class="ml-1">
-                            <a class="text-underline color-blue"  (click)="iomClick()" >IOM</a>
+                            <a class="text-underline color-blue"  (click)="iomClick()" [ngClass]="{disableiomclass:disableIOM}" >IOM</a>
                         </div>
+                        <span class="iom-message">{{iommessage}}</span>
                         <div class="ml-3 w-1/15 bg-white">
                             <maxhealth-question
                                 [question]="questions[3]"
@@ -82,13 +83,13 @@
        </form>
      </div>
      <div class="bg-lightgray  mt-1">
-        <div class="flex  p-2 align-items-center text-wrap">
+        <div class="flex  p-3 align-items-center text-wrap input-padding">
             <div class="flex w-1/15">
                 <div class="max-health-primary-color font-bold" >
                     <mat-label>Name:</mat-label>
                 </div>
                 <div  class="ml-3">
-                <span >dipu  jeyaprakash</span>
+                <span >{{name}}</span>
                 </div>
             </div>
             <div class="flex ml-2 w-8">
@@ -96,7 +97,7 @@
                     <mat-label>Age:</mat-label>
                 </div>
                 <div class="ml-3">
-                <span>17 years</span>
+                <span>{{age}}</span>
                 </div>
             </div>
             <div class="flex ml-2 w-1/10 ">
@@ -104,7 +105,7 @@
                     <mat-label>Gender:</mat-label>
                 </div>
                 <div class="ml-3">
-                    <span>Female</span>
+                    <span>{{gender}}</span>
                 </div>
             </div>
             <div class="flex ml-2 w-12">
@@ -112,7 +113,7 @@
                     <mat-label>DOB:</mat-label>
                 </div>
                 <div class="ml-3">
-                <span>12-12-2022</span>
+                <span>{{dob}}</span>
                 </div>
             </div>
             <div class="flex ml-2 w-1/15">
@@ -120,7 +121,7 @@
                     <mat-label>Nationality:</mat-label>
                 </div>
                 <div class="ml-3 text-wrap overflow-hidden" >
-                    <span title="Former Yugoslav Republic of Serbia and M">Former Yugoslav Republic of Serbia and M</span>
+                    <span title="Former Yugoslav Republic of Serbia and M">{{nationality}}</span>
                 </div>
             </div>
             <div class="flex ml-2 w-1/15">
@@ -128,7 +129,7 @@
                     <mat-label>SSN:</mat-label>
                 </div>
                 <div class="ml-3">
-                    <span>909090909</span>
+                    <span>{{ssn}}</span>
                 </div>
             </div>
             <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-1/3" >
@@ -173,20 +174,20 @@
     </div>
      <div class="h-1/2">
         <div class="pl-2 pt-3 employeeclass font-bold font-base">
-            <mat-label>Employee Dependent Details</mat-label>
+            <mat-label class="max-health-primary-color">Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
-        <div class="h-1/2 mt-2">
+        <div class="h-1/2 mt-2 whitespace-nowrap">
             <maxhealth-table [config]="config1" [data]="employeeDependantDetailList"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
         <div class="h-1/2 mt-2">
-            <maxhealth-table [config]="config2" [data]="data1"></maxhealth-table>
+            <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
         <div class="float-right mt-2 mr-3">
-            <button mat-raised-button color="primary" (click)="employeeSave()">Save</button>
-            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()">Delete</button>
-            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();clearTabledata()">Clear</button>
+            <button mat-raised-button color="primary" (click)="employeeSave()" [disabled]="disableButton" >Save</button>
+            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete">Delete</button>
+            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()">Clear</button>
         </div>
     </div>
         
@@ -195,3 +196,4 @@
     
     </mat-tab-nav-panel>
 </section>
+<!-- [disabled]="disableButton"> -->

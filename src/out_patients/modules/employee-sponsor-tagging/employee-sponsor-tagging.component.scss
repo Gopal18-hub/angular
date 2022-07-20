@@ -12,10 +12,16 @@
 }
 
 //REMOVE PADDING FOR INPUT CONTROLS
-::ng-deep .mat-form-field-wrapper{
+// ::ng-deep .input .mat-form-field-wrapper{
 
-    padding-bottom: 0 !important;
+//     padding-bottom: 0 !important;
 
+// }
+
+.input-padding{
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
 }
 
 .text-wrap{
@@ -33,6 +39,21 @@
 }
 
 //DISPLAY TABLE HEADERS IN A SINGLE LINE
-::ng-deep .max-table-wrapper table{
+::ng-deep .whitespace-nowrap .mat-sort-header-content{
     white-space:nowrap;
+}
+
+.iom-message{
+    position:absolute;
+    margin-left: 58%;
+    top: 25%;
+    color:red;
+
+}
+.disableiomclass{
+color: currentColor;
+cursor: not-allowed;
+pointer-events: none;
+opacity: 0.5;
+//text-decoration: none;
 }
