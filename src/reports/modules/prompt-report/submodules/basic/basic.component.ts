@@ -32,7 +32,8 @@ export class BasicComponent implements OnInit {
           FormReport[params.reportName as keyof typeof FormReport]
         ) {
           let formResult: any = this.formService.createForm(
-            FormReport[params.reportName].filterForm.properties,
+            FormReport[params.reportName as keyof typeof FormReport].filterForm
+              .properties,
             {}
           );
           this.formGroup = formResult.form;

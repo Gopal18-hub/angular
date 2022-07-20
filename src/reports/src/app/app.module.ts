@@ -6,6 +6,8 @@ import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { CrystalReportModule } from "../../modules/crystal-report";
+import { PromptReportModule } from "../../modules/prompt-report";
+import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,7 +15,9 @@ import { CrystalReportModule } from "../../modules/crystal-report";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MaxHealthMessageDialogModule,
     CrystalReportModule,
+    PromptReportModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
