@@ -26,7 +26,7 @@ export class DispatchReportComponent implements OnInit {
   public obj: objdispatchsave[] = [];
   config: any = {
     clickedRows: true,
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/YYYY HH:mm:ss.ss",
     selectBox: true,
     displayedColumns: [
       "sno",
@@ -107,7 +107,8 @@ export class DispatchReportComponent implements OnInit {
           { title: "OPD", value: 1 },
           { title: "Pre-Adt", value: 2 },
           { title: "Triage", value: 3 }
-        ]
+        ],
+        defaultValue: 1,
       },
     },
   };

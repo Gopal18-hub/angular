@@ -9,16 +9,39 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class OprefundApprovalComponent implements OnInit {
   link1 = [
-    "OP Registration Approval",
-    "Hot Listing Approval",
-    "OP Refund Approval",
+    { value: "OP Registration Approval", id: 1 },
+    { value: "Hot Listing Approval", id: 2 },
+    { value: "OP Refund Approval", id: 3 },
   ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[2];
   activeLink2 = this.link2[0];
 
   oprefundConfig: any = {
+    actionItems: true,
     selectBox: true,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
     displayedColumns: [
       "maxid",
       "ssn",
@@ -78,12 +101,11 @@ export class OprefundApprovalComponent implements OnInit {
 
   showmain(link: any) {
     console.log(link);
-    if (link == "OP Registration Approval") {
+    if (link.id == 1) {
       this.router.navigate(["registration", "op-reg-approval"]);
-    } else if (link == "Hot Listing Approval") {
+    } else if (link == 2) {
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == "OP Refund Approval") {
-      // this.router.navigate(["out-patient-billing", "op-refund=approval"]);
+    } else if (link == 3) {
       this.activeLink1 = link;
       this.activeLink2 != ""
         ? this.showgrid(this.activeLink2)
@@ -100,6 +122,20 @@ export class OprefundApprovalComponent implements OnInit {
       this.activeLink2 = link;
     }
   }
+
+  data: any[] = [
+    {
+      maxid: "BLKH.789456",
+      ssn: "789456",
+      name: "mehak",
+      billno: "blc5600152",
+      billdatetime: "99/99/9999-24:51",
+      servicename: "investigation",
+      itemname: "hcv antibody",
+      refundamount: "1500.00",
+      requestedby: "Ekta sharmae",
+    },
+  ];
 
   oprefundApprove() {
     this.dialogservice.success("Update request Approved");
