@@ -1,12 +1,12 @@
 <div class="flex w-full">
-  <div class="w-1/6 services-tab border-radius-xlg my-3">
+  <div class="w-1/8 services-tab border-radius-xlg my-3">
     <div
       class="flex flex-column align-items-center justify-between h-full py-2"
     >
       <ng-container *ngFor="let tab of tabs">
         <button
           mat-raised-button
-          class="font-sm w-3/4 max-health-primary-color border-radius-xlg"
+          class="font-sm w-6/7 max-health-primary-color border-radius-xlg mat-elevation-z0"
           type="button"
           (click)="tabChange(tab)"
           [ngClass]="{ active: activeTab?.id == tab.id }"
@@ -16,7 +16,7 @@
       </ng-container>
     </div>
   </div>
-  <div class="w-5/6 p-3 flex">
+  <div class="w-7/8 p-2 flex">
     <ng-template [cdkPortalOutlet]="selectedComponent"></ng-template>
   </div>
 </div>

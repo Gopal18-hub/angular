@@ -15,7 +15,9 @@ import { ComponentPortal } from "@angular/cdk/portal";
   styleUrls: ["./services.component.scss"],
 })
 export class ServicesComponent implements OnInit {
-  selectedComponent!: ComponentPortal<any>;
+  selectedComponent: ComponentPortal<any> = new ComponentPortal(
+    ConsultationsComponent
+  );
   tabs: any = [
     {
       id: 1,
