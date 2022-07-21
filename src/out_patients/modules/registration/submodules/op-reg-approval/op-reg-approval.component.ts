@@ -247,7 +247,7 @@ export class OpRegApprovalComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   searchApproval(formdata: any) {
@@ -268,7 +268,7 @@ export class OpRegApprovalComponent implements OnInit {
       this.to = formdata["to"];
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   showmain(link: any) {

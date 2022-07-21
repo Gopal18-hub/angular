@@ -2138,7 +2138,10 @@ export class OpRegistrationComponent implements OnInit {
         this.passportDetails.passportNo != ""
       ) {
         passportdetailspresent = true;
-      } else if (this.nationalityChanged) {
+      } else if (
+        this.nationalityChanged &&
+        this.OPRegForm.value.country.value == 1
+      ) {
         passportdetailspresent = true;
       } else if (
         this.OPRegForm.value.foreigner &&
@@ -4003,6 +4006,22 @@ export class OpRegistrationComponent implements OnInit {
         console.log("passport dialog was closed ");
         if (this.passportDetails.passportNo != "") {
           this.OPRegForm.controls["foreigner"].setValue(true);
+          this.passportDetails = {
+            Expirydate:
+              this.datepipe.transform(
+                result.data.expiryDate,
+                "yyyy-MM-ddThh:mm:ss"
+              ) || null,
+            Issueat: result.data.issuedAt,
+            IssueDate:
+              this.datepipe.transform(
+                result.data.issueDate,
+                "yyyy-MM-ddThh:mm:ss"
+              ) || null,
+            passportNo: result.data.passportNo,
+            HCF: result.data.hcf,
+          };
+          console.log(this.passportDetails);
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
