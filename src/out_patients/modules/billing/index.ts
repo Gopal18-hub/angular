@@ -18,6 +18,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
+import { PortalModule } from "@angular/cdk/portal";
 
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
@@ -41,9 +42,21 @@ import { Form60Component } from "./submodules/deposit/refund-dialog/form60/form6
 import { sharedbillingModule } from "../../../out_patients/core/UI/billing";
 import { MakedepositDialogComponent } from "./submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
-import { DepositSuccessComponent } from './submodules/deposit/deposit-success/deposit-success.component';
-import { OprefundApprovalComponent } from './submodules/oprefund-approval/oprefund-approval.component';
-import { DmgDialogComponent } from './submodules/dmg-mapping/dmg-dialog/dmg-dialog.component';
+import { DepositSuccessComponent } from "./submodules/deposit/deposit-success/deposit-success.component";
+import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefund-approval.component";
+import { DmgDialogComponent } from "./submodules/dmg-mapping/dmg-dialog/dmg-dialog.component";
+
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
+import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
+import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
+import { ConsultationsComponent } from "./submodules/billing/submodules/services/submodules/consultations/consultations.component";
+import { InvestigationsComponent } from "./submodules/billing/submodules/services/submodules/investigations/investigations.component";
+import { HealthCheckupsComponent } from "./submodules/billing/submodules/services/submodules/health-checkups/health-checkups.component";
+import { ProcedureOtherComponent } from "./submodules/billing/submodules/services/submodules/procedure-other/procedure-other.component";
+import { OrderSetComponent } from "./submodules/billing/submodules/services/submodules/order-set/order-set.component";
+import { ConsumablesComponent } from "./submodules/billing/submodules/services/submodules/consumables/consumables.component";
+
 @NgModule({
   declarations: [
     BillingComponent,
@@ -71,6 +84,15 @@ import { DmgDialogComponent } from './submodules/dmg-mapping/dmg-dialog/dmg-dial
     DepositSuccessComponent,
     OprefundApprovalComponent,
     DmgDialogComponent,
+    ServicesComponent,
+    CreditDetailsComponent,
+    BillComponent,
+    ConsultationsComponent,
+    InvestigationsComponent,
+    HealthCheckupsComponent,
+    ProcedureOtherComponent,
+    OrderSetComponent,
+    ConsumablesComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -90,8 +112,9 @@ import { DmgDialogComponent } from './submodules/dmg-mapping/dmg-dialog/dmg-dial
     MatListModule,
     MatIconModule,
     MaxHealthTableModule,
-
+    MatTooltipModule,
     sharedbillingModule,
+    PortalModule,
   ],
   exports: [],
   providers: [],
