@@ -59,7 +59,7 @@ export namespace MaxModules {
               globalSearchKey: "opapproval",
             },
             {
-              id: 117,
+              id: 597,
               title: "Hot Listing Approval",
               defaultPath: "/registration/hot-listing-approval",
               globalSearchKey: "opapproval",
