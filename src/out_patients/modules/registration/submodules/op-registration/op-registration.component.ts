@@ -1766,34 +1766,19 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.questions[21].customErrorMessage = "";
 
-      if (
-        this.OPRegForm.value.city.value != undefined &&
-        this.OPRegForm.value.city.value != null &&
-        this.OPRegForm.value.city.value != ""
-      ) {
+      if (this.OPRegForm.value.city) {
         this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
       }
 
-      if (
-        this.OPRegForm.value.locality.value != undefined &&
-        this.OPRegForm.value.locality.value != null &&
-        this.OPRegForm.value.locality.value != ""
-      ) {
+      if (this.OPRegForm.value.locality) {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
       }
 
-      if (
-        this.OPRegForm.value.state.value != undefined &&
-        this.OPRegForm.value.state.value != null &&
-        this.OPRegForm.value.state.value != ""
-      ) {
+      if (this.OPRegForm.value.state) {
         this.OPRegForm.controls["state"].setValue({ title: "", value: 0 });
       }
-      if (
-        this.OPRegForm.value.district.value != undefined &&
-        this.OPRegForm.value.district.value != null &&
-        this.OPRegForm.value.district.value != ""
-      ) {
+
+      if (this.OPRegForm.value.district) {
         this.OPRegForm.controls["district"].setValue({ title: "", value: 0 });
       }
     }
