@@ -61,7 +61,7 @@ export class OnlineOpBillsComponent implements OnInit {
       },
       specialisation: {
         title: "Specialisation",
-        type: "string",       
+        type: "autocomplete",       
       },
       patientname: {
         title: "Patient Name",
@@ -85,6 +85,7 @@ export class OnlineOpBillsComponent implements OnInit {
 
   onlineopbillsForm !: FormGroup;
   questions:any;
+  MaxIDExist: boolean = false;
   
   private readonly _destroying$ = new Subject<void>();
 

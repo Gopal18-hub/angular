@@ -228,4 +228,10 @@ export class DepositDialogComponent implements OnInit {
 
   ngAfterViewInit() {
   } 
+  addNewDepositItem(event:any){
+
+  }
+  savedeposit(){
+
+  }
 }

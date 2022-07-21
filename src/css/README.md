@@ -293,6 +293,8 @@ And we can use any breakpoint prefix, i.e:
 - `.w-screen` -> `width: 100vw`
 - `.w-auto` -> `width: auto`
 - `.w-1/20` -> `width: 5%`
+- `.w-9/100` -> `width: 9%`
+- `.w-9/50` -> `width: 18%`
   or
 
 - `.sm:w-1/2`

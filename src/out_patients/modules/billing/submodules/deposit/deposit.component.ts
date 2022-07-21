@@ -176,8 +176,8 @@ export class DepositComponent implements OnInit {
 
   depositForm !: FormGroup;
   questions: any;
-  patientDepositDetails: any;
-  patientpersonaldetails: any;
+  patientDepositDetails: any = [];
+  patientpersonaldetails: any = [];
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
@@ -206,6 +206,7 @@ export class DepositComponent implements OnInit {
       }
     });
   }
+
   openDepositdialog() {
     const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
       width: '70vw', height: '98vh', data: {
@@ -225,10 +226,10 @@ export class DepositComponent implements OnInit {
       });
   }
 
-
   openinitiatedeposit() {
     this.router.navigate(["out-patient-billing", "initiate-deposit"]);
   }
+
   ngAfterViewInit(): void {
     this.depositForm.controls["mainradio"].valueChanges.subscribe((value: any) => {
       if (value == "form60") {
@@ -303,6 +304,7 @@ export class DepositComponent implements OnInit {
     }
 
   }
+
   getDepositType() {
     this.http
       .get(ApiConstants.getadvancetype(this.hspLocationid))
@@ -341,6 +343,15 @@ export class DepositComponent implements OnInit {
       .subscribe((resultData: any) => {
         this.depoistList = resultData;
       });
+  }
+
+  clear(){
+    this.questions.reset();
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+    this.patientDepositDetails = [];
+    this.patientpersonaldetails = [];
+    this.MaxIDExist = false;
   }
 }
 export const CheckPatientDetails = {

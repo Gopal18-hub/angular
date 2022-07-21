@@ -36,6 +36,18 @@
         flex-direction: row !important;
         flex-wrap: wrap;
         justify-content: space-between;
-        gap: 11px;
+        gap: 10px;
+    }
+}
+
+.clearcss {
+::ng-deep .mat-raised-button{
+    min-width: 100px !important;
+}
+}
+
+.deposit-matnav{
+    ::ng-deep .mat-tab-link{
+        min-width: 0px;
     }
 }

@@ -9,7 +9,7 @@
         <mat-tab-group class="mt-12" animationDuration="0ms" (selectedTabChange)="config.combopayment?false:tabChanged($event)">
             <mat-tab label="Cash" *ngIf="config.paymentmethod.cash">
                 <div class=" ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Cash Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Cash Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <mat-label class="max-health-primary-color">Amount:</mat-label>
                         <div class="w-1/2 ml-3">
@@ -25,7 +25,7 @@
             </mat-tab>
             <mat-tab label="Cheque" *ngIf="config.paymentmethod.cheque">
                 <div class="ml-10 ">
-                    <mat-label class="max-health-primary-color font-bold">Cheque Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Cheque Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-3/10">
                             <mat-label class="max-health-primary-color">Cheque No.</mat-label>
@@ -108,7 +108,7 @@
             </mat-tab>
             <mat-tab label="Credit Card" *ngIf="config.paymentmethod.credit">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Credit Card Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Credit Card Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-2/5">
                             <mat-label class="max-health-primary-color">Card No.</mat-label>
@@ -225,7 +225,7 @@
             </mat-tab>
             <mat-tab label="Demand Draft" *ngIf="config.paymentmethod.demand">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Demand Draft Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Demand Draft Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-3/10">
                             <mat-label class="max-health-primary-color">DD No.</mat-label>
@@ -308,7 +308,7 @@
             </mat-tab>
             <mat-tab label="Mobile Payment" *ngIf="config.paymentmethod.mobilepayment">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Mobile Payment Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Mobile Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-1/2">
                             <mat-label class="max-health-primary-color">Sender Mobile</mat-label>
@@ -417,7 +417,7 @@
             </mat-tab>
             <mat-tab label="Online Payment" *ngIf="config.paymentmethod.onlinepayment">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Online Payment Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Online Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-3/10">
                             <mat-label class="max-health-primary-color">Transaction ID</mat-label>
@@ -487,7 +487,7 @@
             </mat-tab>
             <mat-tab label="PayTM" *ngIf="config.paymentmethod.paytm">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">PayTM Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">PayTM Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-1/2">
                             <mat-label class="max-health-primary-color">Amount</mat-label>
@@ -594,7 +594,7 @@
             </mat-tab>
             <mat-tab label="UPI" *ngIf="config.paymentmethod.upi">
                     <div class="ml-10">
-                        <mat-label class="max-health-primary-color font-bold">UPI Details</mat-label>
+                        <mat-label class="max-health-primary-color font-base font-bold">UPI Details</mat-label>
                         <div class="flex w-3/4 mt-3">
                             <div class="w-1/3">
                                 <mat-label class="max-health-primary-color">Card No.</mat-label>
@@ -711,7 +711,7 @@
             </mat-tab>
             <mat-tab label="Internet Payment" *ngIf="config.paymentmethod.internetpayment">
                 <div class="ml-10">
-                    <mat-label class="max-health-primary-color font-bold">Internet Payment Details</mat-label>
+                    <mat-label class="max-health-primary-color font-base font-bold">Internet Payment Details</mat-label>
                     <div class="flex w-3/4 mt-3">
                         <div class="w-1/3">
                             <mat-label class="max-health-primary-color">Mobile No.</mat-label>
