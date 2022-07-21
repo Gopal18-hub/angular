@@ -22,7 +22,16 @@
     margin-left: 15px;
     padding-bottom: 0 !important;
 }
-::ng-deep .max-table-wrapper table{
-    width: -webkit-fill-available !important;
-    white-space: nowrap;
+// ::ng-deep .max-table-wrapper table{
+//     // width: -webkit-fill-available !important;
+//     white-space: nowrap;
+// }
+// ::ng-deep .max-table-wrapper table{
+//     white-space: nowrap !important;
+// }
+::ng-deep .mat-table-fixed-layout{
+    table-layout: auto !important;
+}
+::ng-deep .mat-table thead{
+    white-space: nowrap !important;
 }
