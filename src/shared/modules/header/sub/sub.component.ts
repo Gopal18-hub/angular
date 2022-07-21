@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from "@angular/core";
+import { Component, OnInit, Input, Inject, ViewChild } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -11,6 +11,8 @@ import { APP_BASE_HREF } from "@angular/common";
   styleUrls: ["./sub.component.scss"],
 })
 export class SubComponent implements OnInit {
+  @ViewChild("searchVal") globalSearchInputBox: any;
+
   @Input() submodules: any = [];
 
   @Input() module: any;
@@ -84,6 +86,9 @@ export class SubComponent implements OnInit {
 
   searchSubmit() {
     this.searchService.searchTrigger.next({ data: this.searchForm.value });
+    setTimeout(() => {
+      this.searchForm.reset();
+    }, 800);
   }
 
   goToHome() {
@@ -97,5 +102,8 @@ export class SubComponent implements OnInit {
       searchFormData[ele] = val;
     });
     this.searchService.searchTrigger.next({ data: data, searchFormData });
+    setTimeout(() => {
+      this.globalSearchInputBox.nativeElement.value = "";
+    }, 800);
   }
 }

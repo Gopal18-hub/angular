@@ -53,13 +53,13 @@ export namespace MaxModules {
               globalSearchKey: "global",
             },
             {
-              id: 116,
+              id: 595,
               title: "OP Patient Reg Approval List",
               defaultPath: "/registration/op-reg-approval",
               globalSearchKey: "opapproval",
             },
             {
-              id: 117,
+              id: 597,
               title: "Hot Listing Approval",
               defaultPath: "/registration/hot-listing-approval",
               globalSearchKey: "opapproval",
