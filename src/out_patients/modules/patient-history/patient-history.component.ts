@@ -177,8 +177,8 @@ export class PatientHistoryComponent implements OnInit {
   findpathismessage: string | undefined;
   patienthistorytable: boolean = false;
   defaultUI: boolean = true;
-  printbtn:boolean = true;
-
+  printbtn: boolean = true;
+  searchbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("stationId"));
   @ViewChild("table") tableRows: any;
@@ -241,12 +241,14 @@ export class PatientHistoryComponent implements OnInit {
             console.log(resultData);
             if(resultData.length == 0)
             {
+              // this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+              // this.questions[0].customErrorMessage = "Registration number does not exist";
               this.msgdialog.info("Registration number does not exist");
             }
             else
             {
               this.patientDetails = resultData;
-              this.pname = this.patientDetails[0].title +" "+ this.patientDetails[0].firstName +" "+this.patientDetails[0].lastName;
+              this.pname = this.patientDetails[0].firstName +" "+ this.patientDetails[0].middleName +" "+this.patientDetails[0].lastName;
               this.age = this.patientDetails[0].age +" "+this.patientDetails[0].ageTypeName;
               this.gender = this.patientDetails[0].genderName;
               this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd-MM-YYYY");
@@ -254,6 +256,7 @@ export class PatientHistoryComponent implements OnInit {
               this.ssn = this.patientDetails[0].ssn;
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);
               this.questions[0].readonly = true;
+              this.searchbtn = false;
               this.patienthistorysearch();
             }  
           },
@@ -266,11 +269,7 @@ export class PatientHistoryComponent implements OnInit {
 
   patienthistorysearch()
   {
-    if(this.patienthistoryform.value.maxid == '' || this.patienthistoryform.value.maxid == undefined || this.patienthistoryform.value.maxid == this.cookie.get("LocationIACode") + "." || this.patientDetails.length == 0)
-    {
-      this.msgdialog.info("Please Enter SSN/MAX ID");
-    }
-    else if(this.patientDetails.length == 1)
+    if(this.patientDetails.length == 1)
     {
       console.log(this.patienthistoryform.value);
       let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
@@ -349,6 +348,7 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.patientDetails = [];
     this.printbtn = true;
+    this.searchbtn = true;
   }
   
 

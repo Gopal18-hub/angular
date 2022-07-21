@@ -225,6 +225,7 @@ export class DispatchReportComponent implements OnInit {
     this.exportbtn = true;
     this.printbtn = true;
     this.title = '';
+    this.dispatchhistoryform.controls["radio"].setValue(1);
     this.dispatchhistoryform.controls["billedlocation"].setValue({
       title: this.billedlocation[0].address3,
       value: this.billedlocation[0].hspLocationId

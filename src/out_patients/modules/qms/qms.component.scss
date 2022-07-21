@@ -19,3 +19,18 @@
 .mandatory{
     color: red;
 }
+.label{
+    ::ng-deep  mat-label{
+        display: none;
+    }
+}
+
+.wt-banner{
+    ::ng-deep .mat-tab-link{
+        min-width: auto !important;
+    }
+}
+
+.w-35{
+    width: 35%;
+}
