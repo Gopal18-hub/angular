@@ -6,7 +6,7 @@
       </li>
     </ul>
   </nav>
-  <mat-tab-nav-panel #tabPanel>
+  <mat-tab-nav-panel #tabPanel class="justify-center">
     <div class="h-full w-full">
       <form [formGroup]="miscForm" class="miscForm">
         <!---------------------------------FIRST ROW----------------------------------------------------->
@@ -48,17 +48,18 @@
               </div>
 
               <mat-label class="ml-1 wt-nowrap">Booking ID</mat-label>
-              <div class="ml-1 wt-mid h-full bg-white">
+              <div class="ml-1 wt-mid bg-white">
                 <maxhealth-question
                   [question]="questions[3]"
                   [form]="miscForm"
+                  
                   [questions]="questions[3]"
                   [index]="3"
                 >
                 </maxhealth-question>
               </div>
               <mat-label class="ml-1 wt-nowrap"
-                >Company<span><a> IOM</a></span></mat-label
+                >Company<span class="txt-blue"><a> IOM</a></span></mat-label
               >
               <div class="ml-1 wt-mid h-full bg-white">
                 <maxhealth-question
@@ -109,34 +110,41 @@
 
         <div class="ml-2 mt-1 mr-2 border-radius-lg flex w-auto bg-deposit">
          <div class="w-full">
-          <div class="h-1/6 wt-nowrap">
+          <div class=" wt-nowrap ">
             
-                 <div class="float-left pt-3">
-                <mat-label class="ml-2 mr-2 wt-nowrap" >Name:</mat-label>
-                <mat-label class="patient-lbl">{{patientName}}</mat-label>
-              
-                <mat-label class="ml-5 mr-2 wt-nowrap">Age: </mat-label>             
+                 <div class="float-left  w-3/5">
+                   <div class="float-left mr-1 pt-1 w-1/6">
+                <mat-label class="ml-2 mr-1 wt-nowrap " >Name:</mat-label>
+                <mat-label class="patient-lbl ">{{patientName}}</mat-label>
+              </div>
+              <div class="float-left pt-1 wt-mid">
+                <mat-label class="mr-1 wt-nowrap">Age: </mat-label>             
                 <mat-label class="patient-lbl">{{age}}</mat-label>            
-             
-                <mat-label class="ml-5 mr-2 wt-nowrap">Gender: </mat-label>               
+              </div>
+              <div class="float-left pt-1 mr-1 w-1/6">
+                <mat-label class="ml-5 mr-1 wt-nowrap">Gender: </mat-label>               
                   <mat-label class="patient-lbl">{{gender}}</mat-label>               
-             
-                <mat-label class="ml-5 mr-2 wt-nowrap">DOB: </mat-label>               
-                <mat-label class="patient-lbl" >{{dob}}</mat-label>              
-             
-                <mat-label class="ml-5 mr-2 wt-nowrap">Nationality: </mat-label>             
+                </div>
+                <div class="float-left pt-1 mr-1 w-1/6">
+                <mat-label class="ml-5 mr-1 wt-nowrap">DOB: </mat-label>               
+                <mat-label class="patient-lbl" >{{dob}}</mat-label>
+                          
+              </div>
+              <div class="float-left pt-1 mr-1 w-1/6">   
+                <mat-label class="ml-5 mr-1 wt-nowrap">Nationality: </mat-label>             
                 <mat-label class="patient-lbl"> {{country}}</mat-label>
-             
-                <mat-label class="ml-5 mr-2 wt-nowrap">SSN: </mat-label>                       
+              </div>
+              <div class="float-left pt-1 mr-1 w-1/6">
+                <mat-label class="ml-5 mr-1 wt-nowrap">SSN: </mat-label>                       
                 <mat-label class="patient-lbl"> {{ssn}}</mat-label> 
                 </div>
-               
+               </div>
             
              <div class="flex mt-0  float-right">
                 <button
                 mat-raised-button
                 color="primary"
-                class="w-1/20 btn-md"
+                class="w-1/20 h-btn"
                 type="submit"
               >
               DMS
@@ -144,7 +152,7 @@
               <button
                 mat-raised-button
                 color="primary"
-                class="w-1/20 ml-2 btn-md"
+                class="w-1/20 ml-2 h-btn"
                 type="button"
               >
                Visit History
@@ -443,7 +451,7 @@
           <div class="ml-2 mb-2 h-full">
             <div class="flex">
     
-                <mat-label class="wt-nowrap   mr-5">Plan Amt ( - )</mat-label>
+                <mat-label class="wt-nowrap mr-5">Plan Amt ( - )</mat-label>
 
               
             <maxhealth-question
@@ -521,7 +529,7 @@
                       [question]="question[23]"
                       [form]="miscServBillForm"
                       [questions]="question[23]"
-                      class="w-7/10 ml-7"
+                      class="w-4/5 ml-7"
                       [index]="23"
                     >
                     </maxhealth-question>

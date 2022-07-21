@@ -58,13 +58,21 @@
 }
 .bg-billdetails{
     
-    height: 66.2%;
+    height: 68%;
     background-color:#45C0BE; 
 }
 .bg-blue
 {
    
     background-color: #BFE8E7;
+}
+.txt-blue
+{
+   
+   color: #45C0BE;
+   font-style: italic;
+   text-decoration: underline;
+   font-weight:bold;
 }
 .h-service
 {
@@ -74,7 +82,7 @@
 // .h-9/20
 .h-table
 {
-    height: 45%;
+    height: 50%;
 }
 
 .bg-paymet
@@ -138,4 +146,7 @@ padding: 0%;
         width: 2vh;
     
     }
+}
+.h-btn{
+    height: 32.0312px;
 }
