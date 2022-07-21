@@ -8,20 +8,20 @@
         <p class="font-medium font-white">Deposit Receipt</p>
     </div>
     <!------------------------------------------THIRD ROW---------------------------------------------------->
-    <max-service-deposit [data]="depositdialogtypeList">
+    <max-service-deposit>
         
     </max-service-deposit>
     <!---------------------------------------------FOURTH ROW---------------------------------------------------------->
     <div class=" w-full h-60">
         <!-------------------------------------------mat tab will appear-------------------------------------------->
-       <payment-methods [config]="config"></payment-methods>
+        <payment-methods [config]="config"></payment-methods>
         <!--------------------------------------------remarks -------------------------------------------->
         <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right border-radius-md" >
             <mat-label  class="ml-4 text-white">Remarks</mat-label>
             <div class="h-90 border-radius-lg bg-white border-none textarea-length">
                 <maxhealth-question
                 [question]="questions[49]"
-                [form]="makedepositdialogForm"
+                [form]="depositForm"
                 [questions]="questions[49]"
                 [index]="49"
                 ></maxhealth-question>
@@ -30,22 +30,13 @@
     </div>
 
     <!-----------------------------------------------FIFTH ROW------------------------------------------------------------------>
-   <div class="mt-6">
-    <patient-identity-info [data]="patientIdentityInfo">
-                
-    </patient-identity-info>
-
-   </div>
-       
-            
-   
+    <patient-identity-info></patient-identity-info>
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
     <div class="h-1/10 mt-4 float-right">
-        <button mat-raised-button color="primary">Submit</button>
+        <button mat-raised-button color="primary" >Submit</button>
         <button mat-raised-button color="primary" class="ml-6">Print Receipt</button>
         <button mat-raised-button color="primary"  class="ml-6">Clear</button>
-
     </div>
 </div>
 
