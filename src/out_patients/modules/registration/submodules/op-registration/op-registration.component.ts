@@ -807,6 +807,20 @@ export class OpRegistrationComponent implements OnInit {
         if (value) {
           if (!this.OPRegForm.value.dob) {
             this.questions[8].disabled = true;
+            if (this.OPRegForm.controls["ageType"].value == 1 && value >= 18) {
+              this.OPRegForm.controls["dob"].setErrors(null);
+              this.questions[8].customErrorMessage = "";
+            } else {
+              if (this.OPRegForm.controls["ageType"].value) {
+                if (value < 18) {
+                  this.OPRegForm.controls["dob"].setErrors({ incorrect: true });
+                  this.questions[8].customErrorMessage =
+                    "DOB is required, Age is less than 18 Years";
+                  this.questions[8].disabled = false;
+                  this.OPRegForm.controls["dob"].markAsTouched();
+                }
+              }
+            }
           } else {
             this.questions[8].disabled = false;
           }

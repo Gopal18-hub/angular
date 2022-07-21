@@ -6,7 +6,6 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { AuthCallbackComponent } from "../../../auth/modules/openid/auth-callback/auth-callback.component";
-import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 
 const routes: Routes = [
   {
