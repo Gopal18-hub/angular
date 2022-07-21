@@ -10,27 +10,45 @@
 .bg-grey{
     background-color: #D8D8D8;
 }
-::ng-deep .mat-form-field-wrapper{
-    padding-bottom: 0 !important;
-}
-::ng-deep .max-table-wrapper table{
-    white-space: nowrap !important;
-}
-::ng-deep .mat-table-fixed-layout{
-    table-layout: auto !important;
+.h-65{
+    height: 65%;
 }
 .w-27{
     width: 27%;
 }
-::ng-deep table tbody tr td:nth-child(14) div{ 
-    margin-left: 30px;
+.w-14{
+    width: 14.122%;
 }
-::ng-deep table tbody tr:hover{
-    table tbody tr td:nth-child(14) div img{
-        background-color: white;
-    }  
+.w-12{
+    width: 12%;
+}
+.text-overflow{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.h-65{
-    height: 65%;
+.patient-history-wrapper{
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep .max-table-wrapper{
+        border: 1px solid #707070;
+        table{
+            white-space: nowrap !important;
+            tbody tr td:nth-child(14) div{ 
+                margin-left: 30px;
+            }
+            tbody tr:hover td:nth-child(14){
+                div img{
+                    filter:  brightness(0) invert(1);
+                }
+            }
+        }
+        .mat-table-fixed-layout{
+            table-layout: auto !important;
+        }
+    }   
 }
+
+

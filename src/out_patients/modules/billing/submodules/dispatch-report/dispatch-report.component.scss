@@ -10,31 +10,29 @@
 .wt-nowrap{
     white-space: nowrap;
 }
-::ng-deep .mat-form-field-wrapper{
-    padding-bottom: 0 !important;
-}
-::ng-deep mat-radio-group {
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-::ng-deep .mat-radio-button{
-    margin-left: 15px;
-    padding-bottom: 0 !important;
-}
-// ::ng-deep .max-table-wrapper table{
-//     // width: -webkit-fill-available !important;
-//     white-space: nowrap;
-// }
-// ::ng-deep .max-table-wrapper table{
-//     white-space: nowrap !important;
-// }
-::ng-deep .mat-table-fixed-layout{
-    table-layout: auto !important;
-}
-::ng-deep .mat-table thead{
-    white-space: nowrap !important;
-}
 .h-68{
     height: 68%;
 }
+.dispatch-body-wrapper{
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap:15px;
+        .mat-radio-button{
+            padding-bottom: 0 !important;
+            padding-top: 0 !important;
+        }
+    }
+    ::ng-deep .mat-table-fixed-layout{
+        table-layout: auto !important;
+    }
+    ::ng-deep .mat-table thead{
+        white-space: nowrap !important;
+    }
+}
+
+

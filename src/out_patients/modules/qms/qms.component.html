@@ -1,15 +1,15 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper" style="background-color:white">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel qms-body-wrapper">
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner justify-between">
         <ul class="list-unstyled flex items-end">
-            <li class="ml-3 wt-banner">
-                <a class="" mat-tab-link [active]="true">QMS</a> 
+            <li class="ml-3">
+                <a mat-tab-link [active]="true">QMS</a> 
             </li>
         </ul>
     </nav>
     <mat-tab-nav-panel #tabPanel>
     <Section class="h-full w-full flex justify-center items-center bg-image">
         <div class="h-1/2 w-35 border-radius border-radius-xlg bg-white">
-            <div class="pt-3 pb-3 border-xlg text-center" style="background-color: #DAE9F8;">
+            <div class="pt-3 pb-3 border-xlg text-center bg-top">
                 <mat-label class="max-health-primary-color font-bold font-base">Counter Selection</mat-label>
             </div>
             <div>
@@ -48,7 +48,7 @@
                         <button mat-raised-button color="primary" type="submit" (click)="okbtn()" [disabled]="!qmsform.valid">Ok</button>
                     </div>
                     <div class="">
-                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="clearbtn">Clear</button>
                     </div>
                 </div>
             </div>

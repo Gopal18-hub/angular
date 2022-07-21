@@ -43,6 +43,7 @@ export class QmsComponent implements OnInit {
   questions: any;
   hspId: any;
   userId: any;
+  clearbtn: boolean = true;
   private readonly _destroying$ = new Subject<void>();
   constructor(
     private formService: QuestionControlService, 
@@ -65,9 +66,10 @@ export class QmsComponent implements OnInit {
     this.qmsform.controls["area"].setErrors({required: true});
     this.questions[0].customErrorMessage = "Area Required";
   }
-  ngAfterViewInit(): void{
-    
+  ngAfterViewInit(): void
+  {
     this.qmsform.controls["area"].valueChanges.subscribe((value)=>{
+      this.clearbtn = false;
       this.qmsform.controls["counter"].enable();
       this.counter = this.areacounter.filter( e => {
         return e.areaId == value;
@@ -99,6 +101,7 @@ export class QmsComponent implements OnInit {
   {
     this.qmsform.reset();
     this.qmsform.controls["counter"].disable();
+    this.clearbtn = true;
   }
   getarea(){
     this.http.get(ApiConstants.getarecounter(18))

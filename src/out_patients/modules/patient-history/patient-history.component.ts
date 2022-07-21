@@ -1,4 +1,3 @@
-import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApiConstants } from '@core/constants/ApiConstants';
@@ -179,6 +178,7 @@ export class PatientHistoryComponent implements OnInit {
   defaultUI: boolean = true;
   printbtn: boolean = true;
   searchbtn: boolean = true;
+  clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("stationId"));
   @ViewChild("table") tableRows: any;
@@ -192,9 +192,6 @@ export class PatientHistoryComponent implements OnInit {
   today: any;
   fromdate: any;
   ngOnInit(): void {
-    this.patienthistorylist = this.data;
-    this.findpathismessage = "Enter MAX ID";
-    this.findpathisimage = "placeholder";
     let formResult: any = this.formService.createForm(
       this.patienthistoryFormData.properties,
       {}
@@ -216,6 +213,9 @@ export class PatientHistoryComponent implements OnInit {
         this.getPatientDetails();
       }
     });
+    this.patienthistoryform.controls["maxid"].valueChanges.subscribe(value=>{
+      this.clearbtn = false;
+    })
   }
   gettransactiontype()
   {
@@ -349,6 +349,8 @@ export class PatientHistoryComponent implements OnInit {
     this.patientDetails = [];
     this.printbtn = true;
     this.searchbtn = true;
+    this.clearbtn = true;
+    this.patienthistorylist = [];
   }
   
 
@@ -378,7 +380,6 @@ export class PatientHistoryComponent implements OnInit {
         "assets/print_Icon.svg"
     };
     returnicon.push(tempPager);
-
     return returnicon;
   }
 }
