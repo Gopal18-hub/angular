@@ -2,8 +2,11 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { PatientDetail } from "@core/models/patientDetailModel.Model";
+import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "out-patients-miscellaneous-billing",
@@ -14,7 +17,8 @@ export class MiscellaneousBillingComponent implements OnInit {
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
-    private router: Router
+    private router: Router,
+    private http: HttpService
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
@@ -306,7 +310,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       },
     },
   };
-
+  patientDetails!: PatientDetail;
   serviceselectedList: [] = [] as any;
   miscForm!: FormGroup;
   miscServBillForm!: FormGroup;
@@ -327,5 +331,91 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions = formResult.questions;
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+  }
+
+  ngAfterViewInit(): void {
+    this.formEvents();
+  }
+
+  formEvents() {
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+        console.log("event triggered");
+        this.getPatientDetailsByMaxId();
+      }
+    });
+  }
+  getPatientDetailsByMaxId() {
+    let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
+
+    //HANDLING IF MAX ID IS NOT PRESENT
+    if (regNumber != 0) {
+      let iacode = this.miscForm.value.maxid.split(".")[0];
+      this.http
+        .get(ApiConstants.patientDetails(regNumber, iacode))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: PatientDetail) => {
+            // this.clear();
+            // this.flushAllObjects();
+            this.patientDetails = resultData;
+            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            //   this.patientDetails
+            // );
+            // this.MaxIDExist = true;
+            // console.log(this.categoryIcons);
+            // this.checkForMaxID();
+            //RESOPONSE DATA BINDING WITH CONTROLS
+
+            this.setValuesToMiscForm(this.patientDetails);
+
+            //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+          },
+          (error) => {
+            if (error.error == "Patient Not found") {
+              // this.messageDialogService.info(error.error);
+              // this.router.navigate([], {
+              //   queryParams: {},
+              //   relativeTo: this.route,
+              // });
+              // this.flushAllObjects();
+              // this.setValuesTo miscForm(this.patientDetails);
+              this.miscForm.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
+              this.miscForm.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+            }
+            // this.clear();
+
+            // this.maxIDChangeCall = false;
+          }
+        );
+    }
+  }
+
+  patientName!: string;
+  age!: string;
+  gender!: string;
+  dob!: string;
+  country!: string;
+  ssn!: string;
+
+  //SETTING THE VALUES TO PATIENT DETAIL
+  setValuesToMiscForm(patientDetails: PatientDetail) {
+    this.miscForm.controls["mobileNo"].setValue(patientDetails.pphone);
+    this.patientName = patientDetails.firstname + " " + patientDetails.lastName;
+    this.ssn = patientDetails.ssn;
+    this.age = patientDetails.age + patientDetails.ageTypeName;
+    this.gender = patientDetails.sexName;
+    this.country = patientDetails.countryName;
+    this.ssn = patientDetails.ssn;
+    this.dob = patientDetails.dateOfBirth;
   }
 }
