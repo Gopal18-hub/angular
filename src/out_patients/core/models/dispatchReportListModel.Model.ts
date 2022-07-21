@@ -2,14 +2,14 @@ export class dispatchReportListModel{
     sno?: number;
     balance: any;
     billno: any;
-    flag?: number;
-    itemName?: string;
-    itemid?: number;
-    operatorid?: number;
-    orderId?: number;
+    flag: number;
+    itemName: string;
+    itemid: number;
+    operatorid: number;
+    orderId: number;
     orderdatetime: any;
     patType: any;
-    ptnName?: string;
+    ptnName: string;
     
     constructor(sno: number, balance: any, billno: any, flag: number, itemName: string, itemid: number, operatorid: number, orderId: number, orderdatetime: any, patType: any, ptnName: string)
     {

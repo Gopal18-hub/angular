@@ -1,0 +1,21 @@
+<div class="flex w-full h-full">
+  <div class="w-1/6 services-tab">
+    <div
+      class="flex flex-column border-radius-xlg align-items-center justify-center"
+    >
+      <ng-container *ngFor="let tab of tabs">
+        <button
+          mat-raised-button
+          class="font-sm my-4 w-3/4 max-health-primary-color"
+          type="button"
+          (click)="tabChange(tab)"
+        >
+          {{ tab.title }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="">
+    <ng-template [cdkPortalOutlet]="selectedComponent"></ng-template>
+  </div>
+</div>
