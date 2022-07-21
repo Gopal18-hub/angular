@@ -24,8 +24,8 @@ export class ReportService {
       url: `${environment.reportTenantUrl}${reportEntity}${params}`,
       x: "center",
       y: "center",
-      width: "930px",
-      height: "50%",
+      width: "1100px",
+      height: "85%",
     });
   }
 

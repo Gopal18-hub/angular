@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { Component, NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { BillingComponent } from "./billing.component";
@@ -15,12 +15,25 @@ import { DmgMappingComponent } from "./submodules/dmg-mapping/dmg-mapping.compon
 import { ExpiredPatientCheckComponent } from "./submodules/expired-patient-check/expired-patient-check.component";
 import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefund-approval.component";
 
+import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
+import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
+import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
+
 const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
     children: [
-      { path: "", component: BillingComponentPage },
+      {
+        path: "",
+        component: BillingComponentPage,
+        children: [
+          { path: "", component: ServicesComponent },
+          { path: "services", component: ServicesComponent },
+          { path: "bill", component: BillComponent },
+          { path: "credit-details", component: CreditDetailsComponent },
+        ],
+      },
       { path: "deposit", component: DepositComponent },
       { path: "details", component: DetailsComponent },
       { path: "online-op-bill", component: OnlineOpBillsComponent },

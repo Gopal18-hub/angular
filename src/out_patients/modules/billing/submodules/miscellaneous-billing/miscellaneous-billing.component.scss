@@ -2,36 +2,55 @@
     background-color: #F6F6F6;
     color:#004084;
 }
-form {
+.miscForm {
     
     ::ng-deep mat-label {
       color: var(--primary-color);
+      font-weight: 600;
     }
     .change-password {
       color: var(--primary-color);
     }
+    ::ng-deep .input1 .mat-form-field-infix{
+        text-align: right !important;  
+    }
+    ::ng-deep .mat-input-element 
+    {
+        color: black;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+
+        padding-bottom: 0 !important;
+        padding: 0 !important;
+    
+    }
+    ::ng-deep .patient-lbl
+  {
+    color: black;
   }
-::ng-deep .input1 .mat-form-field-infix{
-    text-align: right !important;  
-}
+  }
+
+  
+
+  .w-7
+  {
+      width: 7.9%;
+  }
+
 .btn-md{
  
-    height:81%;
+    height: 89%;
       
 }
 .bg-white{
     background-color:white;
 }
-::ng-deep .mat-form-field-wrapper{
 
-    padding-bottom: 0 !important;
-
-}
 .wt-nowrap{
     white-space: nowrap;
 }
 .wt-mid{
-  width:7%  
+    width: 9.5%;  
 }
 .h-white-banner
 {
@@ -55,20 +74,16 @@ form {
 // .h-9/20
 .h-table
 {
-    height: 55%;
+    height: 45%;
 }
-.w-table
-{
-    width: 82.2%;
-}
+
 .bg-paymet
 {
-    width: 68%;
+    width: 87.6%;
     height: 10%;
 }
 .icon-more
-{
-    
+{   
  
         background-color:#D2D0D0;
         border-radius: 4px;
@@ -77,4 +92,50 @@ form {
         height: 22.9px;
 
    
+}
+.grid-container
+{
+    ::ng-deep .mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2px;
+        height: 0.1vh;
+        padding: 0px;
+        // margin-top: 1px;
+        //  margin-bottom: 10px;
+    }
+    ::ng-deep .mat-radio-outer-circle 
+    {
+        height: 16px;
+        width: 16px;
+    }
+    ::ng-deep .mat-radio-inner-circle
+    {
+        height: 15px;
+        width: 15px;
+    }
+    ::ng-deep .mat-radio-button
+    {
+padding: 0%;
+    }
+}
+
+.w-6{
+    width: 7%;
+}
+
+.w-12
+{
+    width: 12%;
+}
+
+.bg-deposit{
+    ::ng-deep .mat-checkbox-inner-container
+    {
+        margin: 2px 1px 1px 1px;
+        height: 2vh;
+        width: 2vh;
+    
+    }
 }
