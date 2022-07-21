@@ -31,10 +31,10 @@ import { takeUntil } from "rxjs/operators";
 })
 export class OpRegApprovalComponent implements OnInit {
   link1 = [
-    "OP Registration Approval",
-    "Hot Listing Approval",
-    "OP Refund Approval",
-  ]; //, 'OP Refund Approval'
+    { value: "OP Registration Approval", id: 1 },
+    { value: "Hot Listing Approval", id: 2 },
+    { value: "OP Refund Approval", id: 3 },
+  ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[0];
   activeLink2 = this.link2[0];
@@ -273,13 +273,13 @@ export class OpRegApprovalComponent implements OnInit {
 
   showmain(link: any) {
     console.log(link);
-    if (link == "OP Registration Approval") {
+    if (link.id == 1) {
       this.activeLink2 != ""
         ? this.showgrid(this.activeLink2)
         : this.showgrid("View Pending Request");
-    } else if (link == "Hot Listing Approval") {
+    } else if (link.id == 2) {
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == "Op Refund Approval") {
+    } else if (link.id == 3) {
       this.router.navigate(["out-patient-billing", "op-refund-approval"]);
     }
   }
