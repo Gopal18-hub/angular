@@ -74,47 +74,83 @@ export class PatientHistoryComponent implements OnInit {
       billno: {
         title: "Bill.No",
         type: "string",
+        tooltipColumn: "billno",
+        style: {
+          width: '5rem'
+        }
       },
       type: {
         title: "Type",
         type: "string",
+        tooltipColumn: "type",
+        style: {
+          width: '4rem'
+        }
       },
       billdate: {
         title: "Bill Date",
         type: "date",
+        tooltipColumn: "billdate",
+        style: {
+          width: '5rem'
+        }
       },
       ipno: {
         title: "IP No.",
         type: "number",
+        style: {
+          width: '4rem'
+        }
       },
       admdischargedate: {
         title: "Adm/Discharge Date",
         type: "date",
+        style: {
+          width: '10rem'
+        }
       },
       billamt: {
         title: "Bill Amt",
         type: "number",
+        style: {
+          width: '5rem'
+        }
       },
       discountamt: {
         title: "Discount Amt",
         type: "number",
+        style: {
+          width: '7rem'
+        }
       },
       receiptamt: {
         title: "Receipt Amt",
         type: "number",
+        style: {
+          width: '7rem'
+        }
       },
       refundamt: {
         title: "Refund Amt",
         type: "number",
+        style: {
+          width: '6.5rem'
+        }
       },
       balanceamt: {
         title: "Balance Amt",
         type: "number",
+        style: {
+          width: '6.5rem'
+        }
       },
       company: {
         title: "Company",
         type: "string",
-        tooltipColumn: "company"
+        tooltipColumn: "company",
+        style: {
+          width: '5rem'
+        }
       },
       operatorname: {
         title: "Operator Name",
@@ -178,7 +214,6 @@ export class PatientHistoryComponent implements OnInit {
   defaultUI: boolean = true;
   printbtn: boolean = true;
   searchbtn: boolean = true;
-  clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("stationId"));
   @ViewChild("table") tableRows: any;
@@ -213,9 +248,20 @@ export class PatientHistoryComponent implements OnInit {
         this.getPatientDetails();
       }
     });
-    this.patienthistoryform.controls["maxid"].valueChanges.subscribe(value=>{
-      this.clearbtn = false;
-    })
+  }
+  ngDoCheck()
+  {
+    if(this.patienthistorylist.length > 0)
+    {
+      if(this.tableRows.selection.selected.length > 0)
+      {
+        this.printbtn = false;
+      }
+      else
+      {
+        this.printbtn = true;
+      }
+    }
   }
   gettransactiontype()
   {
@@ -293,7 +339,7 @@ export class PatientHistoryComponent implements OnInit {
             this.patienthistorytable = true;
             this.patienthistorylist = this.data;
             this.patienthistorylist = this.setimage(this.patienthistorylist); 
-            this.printbtn = false;
+            // this.printbtn = false;
             // this.patienthistorytable = false;
             // this.defaultUI = true;
             // this.findpathismessage = "No records found";
@@ -349,7 +395,6 @@ export class PatientHistoryComponent implements OnInit {
     this.patientDetails = [];
     this.printbtn = true;
     this.searchbtn = true;
-    this.clearbtn = true;
     this.patienthistorylist = [];
   }
   

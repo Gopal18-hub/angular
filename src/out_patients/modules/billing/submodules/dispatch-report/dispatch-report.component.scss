@@ -27,9 +27,12 @@
             padding-top: 0 !important;
         }
     }
-    ::ng-deep .mat-table-fixed-layout{
-        table-layout: auto !important;
+    ::ng-deep .max-table-wrapper{
+        border: 1px solid #707070;
     }
+    // ::ng-deep .mat-table-fixed-layout{
+    //     table-layout: auto !important;
+    // }
     ::ng-deep .mat-table thead{
         white-space: nowrap !important;
     }

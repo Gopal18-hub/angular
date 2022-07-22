@@ -27,7 +27,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.lens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+}
 .patient-history-wrapper{
     ::ng-deep .mat-form-field-wrapper{
         padding-bottom: 0 !important;
@@ -45,10 +51,15 @@
                 }
             }
         }
-        .mat-table-fixed-layout{
-            table-layout: auto !important;
-        }
-    }   
+        // .mat-table-fixed-layout{
+        //     table-layout: auto !important;
+        // }
+    }
+    // .btn{
+    //     ::ng-deep .mat-button-wrapper{
+    //         margin-left: 25px;
+    //     }
+    // }   
 }
 
 

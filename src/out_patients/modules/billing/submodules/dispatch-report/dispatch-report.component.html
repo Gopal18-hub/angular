@@ -109,7 +109,7 @@
                     <button mat-raised-button color="primary" type="submit" [disabled]="printbtn">Print</button>
                 </div>
                 <div class="">
-                    <button mat-raised-button color="primary" (click)="clear()" type="submit">Clear</button>
+                    <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
                 </div>
             </div>
         </div>
