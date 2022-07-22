@@ -6,7 +6,7 @@
             </li>
             <li class="maxhealth-spacer"></li>
             <li class="ml-3 float-right" *ngFor="let link of link2">
-                <button mat-raised-button color="primary"  [ngClass]="{'activebutton': activeLink2 == link}" class="subbutton_class" (click)="showgrid(link)" > {{link.value}}</button>
+                <button mat-raised-button color="primary"  [ngClass]="{'activebutton': activeLink2 == link}" (click)="showgrid(link)"  class="subbtn-class"> {{link.value}}</button>
               </li>
           </ul>            
       </nav>

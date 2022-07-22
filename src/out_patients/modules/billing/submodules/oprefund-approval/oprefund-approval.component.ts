@@ -106,11 +106,13 @@ export class OprefundApprovalComponent implements OnInit {
 
   showmain(link: any) {
     console.log(link);
-    if (link.id == 1) {
+    if (link.id == "1") {
+      console.log("id 1");
       this.router.navigate(["registration", "op-reg-approval"]);
-    } else if (link == 2) {
+    } else if (link.id == "2") {
+      console.log("id 2");
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == 3) {
+    } else if (link.id == "3") {
       this.activeLink1 = link;
       this.activeLink2.id != null
         ? this.showgrid(this.activeLink2)
