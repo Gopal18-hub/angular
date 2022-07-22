@@ -515,7 +515,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
-                    [disabled]="!MaxIDExist"
+                    [disabled]="!OPRegForm.valid || !MaxIDExist"
                     (click)="onModifyDetail()"
                     accessControl
                     masterModule = "2"
