@@ -332,7 +332,7 @@ export class HotListingApprovalComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-    this.showmain("Hot Listing Approval");
+    this.showmain(this.link1[1]);
   }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
@@ -356,7 +356,7 @@ export class HotListingApprovalComponent implements OnInit {
       this.to = formdata["to"];
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
     }
-    this.showmain("Hot Listing Approval");
+    this.showmain(this.link1[1]);
   }
 
   hsplocationId: any = this.cookie.get("HSPLocationId");
