@@ -184,10 +184,10 @@
         <div class="h-53 mt-2">
             <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
-        <div class="float-right mt-6">
-            <button mat-raised-button color="primary" (click)="employeeSave()" [disabled]="disableButton" >Save</button>
-            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete">Delete</button>
-            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()" [disabled]="disableClear">Clear</button>
+        <div class="float-right mt-4">
+            <button mat-raised-button color="primary" (click)="employeeSave()" [disabled]="disableButton"class="mr-8" >Save</button>
+            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete" class="mr-6" >Delete</button>
+            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()" [disabled]="disableClear" >Clear</button>
         </div>
     </div>
         
