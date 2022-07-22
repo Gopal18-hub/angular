@@ -1,12 +1,15 @@
-.services-tab {
-  background-color: #45c0be;
+.services-container-wrapper {
   height: calc(100vh - 22rem);
-  button {
-    background-color: #bfe8e7;
-    height: 32px;
-    line-height: 32px;
-    &.active {
-      background-color: #fff;
+  .services-tab {
+    background-color: #45c0be;
+    height: max-content;
+    button {
+      background-color: #bfe8e7;
+      height: 32px;
+      line-height: 32px;
+      &.active {
+        background-color: #fff;
+      }
     }
   }
 }
