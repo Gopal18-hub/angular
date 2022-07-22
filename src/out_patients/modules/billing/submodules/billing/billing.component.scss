@@ -1,5 +1,11 @@
 .billing-page-wrapper {
   background-color: #fff;
+  .second-row-action-items {
+    button {
+      height: 1.875rem;
+      line-height: 1.875rem;
+    }
+  }
   .bg-secondary {
     background-color: #f6f6f6;
   }
