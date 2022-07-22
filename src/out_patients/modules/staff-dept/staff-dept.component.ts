@@ -55,12 +55,15 @@ export class StaffDeptComponent implements OnInit {
         title: 'Name of Organisation',
         type: 'string',
         style: {
-          width: "150px",
+          width: "170px",
         },
       },
       empCode : {
         title: 'Employee Code',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "150px",
+        },
       },
      
       empName : {
