@@ -17,6 +17,8 @@ export class BasicComponent implements OnInit {
   formGroup!: FormGroup;
   questions: any;
 
+  reportConfig: any;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -31,9 +33,10 @@ export class BasicComponent implements OnInit {
           params.reportName &&
           FormReport[params.reportName as keyof typeof FormReport]
         ) {
+          this.reportConfig =
+            FormReport[params.reportName as keyof typeof FormReport];
           let formResult: any = this.formService.createForm(
-            FormReport[params.reportName as keyof typeof FormReport].filterForm
-              .properties,
+            this.reportConfig.filterForm.properties,
             {}
           );
           this.formGroup = formResult.form;
@@ -41,5 +44,9 @@ export class BasicComponent implements OnInit {
         } else {
         }
       });
+  }
+  submit() {
+    if (this.formGroup.valid) {
+    }
   }
 }
