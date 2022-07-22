@@ -187,6 +187,7 @@
               [routerLink]="link.path"
               routerLinkActive
               #rla="routerLinkActive"
+              (click)="activeLink = link"
               [active]="rla.isActive || activeLink.path == link.path"
             >
               {{ link.title }}
