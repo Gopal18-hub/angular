@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "../../../../shared/services/auth.service";
 import * as Oidc from "oidc-client";
 import { CookieService } from "../../../../shared/services/cookie.service";
+import { environment } from "@environments/environment";
 
 @Component({
   selector: "auth-auth-callback",
@@ -28,6 +29,9 @@ export class AuthCallbackComponent implements OnInit {
       })
       .catch((e) => {
         console.log(e);
+        this.cookie.deleteAll();
+        this.cookie.deleteAll("/", environment.cookieUrl, true);
+        this.router.navigate(["login"]);
       });
   }
 }

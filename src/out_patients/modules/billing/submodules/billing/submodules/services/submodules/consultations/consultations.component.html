@@ -1,29 +1,31 @@
-<div class="flex flex-column">
+<div class="flex flex-column h-full">
   <div class="flex justify-between w-full">
     <form
       [formGroup]="formGroup"
       autocomplete="off"
-      class="w-1/2 flex align-items-center"
+      class="w-2/3 flex align-items-center"
     >
-      <div class="w-1/2 flex">
-        <mat-label class="max-health-primary-color mr-2">Max ID</mat-label>
+      <div class="flex">
+        <mat-label class="max-health-primary-color mr-2"
+          >Specialisation</mat-label
+        >
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-full"
+          class="w-3/5"
         >
         </maxhealth-question>
       </div>
-      <div class="w-1/2 flex">
-        <mat-label class="max-health-primary-color mr-2">Max ID</mat-label>
+      <div class="flex">
+        <mat-label class="max-health-primary-color mr-2">Doctor Name</mat-label>
         <maxhealth-question
           [question]="questions[1]"
           [form]="formGroup"
           [questions]="questions[1]"
           [index]="1"
-          class="w-full"
+          class="w-3/5"
         >
         </maxhealth-question>
       </div>
@@ -47,7 +49,7 @@
       </button>
     </div>
   </div>
-  <div>
+  <div class="mt-2 h-full">
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
 </div>

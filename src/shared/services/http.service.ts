@@ -12,6 +12,7 @@ import { MaxHealthStorage } from "./storage";
 
 import { MessageDialogService } from "../ui/message-dialog/message-dialog.service";
 import { Router } from "@angular/router";
+import { CookieService } from "./cookie.service";
 
 class Options {
   showErrorMessage?: boolean = false;
@@ -25,7 +26,8 @@ export class HttpService {
   constructor(
     private http: HttpClient,
     private messageDialog: MessageDialogService,
-    private router: Router
+    private router: Router,
+    private cookieService: CookieService
   ) {}
 
   /** GET data from the server */
@@ -111,6 +113,9 @@ export class HttpService {
     if (error.status === 401) {
       //window.location.reload();
       console.log(error);
+      localStorage.clear();
+      this.cookieService.deleteAll();
+      this.cookieService.deleteAll("/", environment.cookieUrl, true);
       this.router.navigate(["login"]);
     } else {
       if (options && !options.showErrorMessage) {
