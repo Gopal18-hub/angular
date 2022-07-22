@@ -41,6 +41,10 @@ const routes: Routes = [
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
+        children: [
+          { path: "credit-details", component: CreditDetailsComponent },
+          { path: "bill", component: BillComponent },
+        ],
       },
       { path: "initiate-deposit", component: InitiateDepositComponent },
       { path: "op-refund-approval", component: OprefundApprovalComponent },

@@ -3,11 +3,15 @@ import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
-import { PatientDetail } from "@core/models/patientDetailModel.Model";
+import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
+import { PatientDetail } from "@core/types/patientDetailModel.Interface";
+import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
 
+import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
+import { GstComponent } from "./billing/gst/gst.component";
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -18,12 +22,22 @@ export class MiscellaneousBillingComponent implements OnInit {
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
-    private http: HttpService
+    private http: HttpService,
+    private cookie: CookieService
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
-  linkList = ["Bill", "Credit Details"];
-  activeLink = this.linkList[1];
+  linkList = [
+    {
+      title: "Bill",
+      path: "bill",
+    },
+    {
+      title: "Credit Details",
+      path: "credit-details",
+    },
+  ];
+  activeLink = this.linkList[0];
 
   miscFormData = {
     type: "object",
@@ -31,6 +45,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     properties: {
       maxid: {
         type: "string",
+        defaultValue: this.cookie.get("LocationIACode") + ".",
       },
 
       mobileNo: {
@@ -310,7 +325,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       },
     },
   };
-  patientDetails!: PatientDetail;
+  patientDetails!: Registrationdetails;
   serviceselectedList: [] = [] as any;
   miscForm!: FormGroup;
   miscServBillForm!: FormGroup;
@@ -358,10 +373,16 @@ export class MiscellaneousBillingComponent implements OnInit {
     if (regNumber != 0) {
       let iacode = this.miscForm.value.maxid.split(".")[0];
       this.http
-        .get(ApiConstants.patientDetails(regNumber, iacode))
+        .get(
+          ApiConstants.getregisteredpatientdetailsForBilling(
+            iacode,
+            regNumber,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (resultData: PatientDetail) => {
+          (resultData: Registrationdetails) => {
             // this.clear();
             // this.flushAllObjects();
             this.patientDetails = resultData;
@@ -408,14 +429,15 @@ export class MiscellaneousBillingComponent implements OnInit {
   ssn!: string;
 
   //SETTING THE VALUES TO PATIENT DETAIL
-  setValuesToMiscForm(patientDetails: PatientDetail) {
-    this.miscForm.controls["mobileNo"].setValue(patientDetails.pphone);
-    this.patientName = patientDetails.firstname + " " + patientDetails.lastName;
-    this.ssn = patientDetails.ssn;
-    this.age = patientDetails.age + patientDetails.ageTypeName;
-    this.gender = patientDetails.sexName;
-    this.country = patientDetails.countryName;
-    this.ssn = patientDetails.ssn;
-    this.dob = patientDetails.dateOfBirth;
+  setValuesToMiscForm(pDetails: Registrationdetails) {
+    let patientDetails = pDetails.dsPersonalDetails.dsPersonalDetails1;
+    // this.miscForm.controls["mobileNo"].setValue(patientDetails.pphone);
+    // this.patientName = patientDetails.firstname + " " + patientDetails.lastName;
+    // this.ssn = patientDetails.ssn;
+    // this.age = patientDetails.age + patientDetails.ageTypeName;
+    // this.gender = patientDetails.sexName;
+    // this.country = patientDetails.countryName;
+    // this.ssn = patientDetails.ssn;
+    // this.dob = patientDetails.dateOfBirth;
   }
 }
