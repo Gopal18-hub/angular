@@ -375,6 +375,11 @@
                       [form]="OPRegForm"
                       [questions]="questions[31]"
                       [index]="31"
+                      accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="597"
+                    actionId="1555"
                     ></maxhealth-question>
                   </div>
                   <div class="w-2/5">
@@ -510,7 +515,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
-                    [disabled]="!MaxIDExist"
+                    [disabled]="!OPRegForm.valid || !MaxIDExist"
                     (click)="onModifyDetail()"
                     accessControl
                     masterModule = "2"
