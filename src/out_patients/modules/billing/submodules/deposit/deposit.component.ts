@@ -11,8 +11,8 @@ import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixt
 import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { CookieService } from "@shared/services/cookie.service";
-import { PatientPersonalDetails } from "@core/types/PatientPersonalDetail";
-import { PatientDepositDetails } from "@core/types/PatientDepositDetail";
+import { PatientPersonalDetailInterface } from "@core/types/PatientPersonalDetail.Interface";
+import { PatientDepositDetailInterface } from "@core/types/PatientDepositDetail.Interface";
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdepositdetailModel.Model";
 
@@ -99,6 +99,7 @@ export class DepositComponent implements OnInit {
       "receiptno",
       "datetime",
       "deposit",
+      "paymenttype",
       "usedop",
       "usedip",
       "refund",
@@ -108,62 +109,117 @@ export class DepositComponent implements OnInit {
       "deposithead",
       "servicetype",
       "operatornameid",
+      "remarks"
     ],
     columnsInfo: {
       deposittype: {
-        title: "Deposit Type",
+        title: "Deposit/Refund",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       receiptno: {
         title: "Receipt No.",
         type: "number",
+        style: {
+          width: "6rem",
+        },
       },
       datetime: {
         title: "Date & Time",
         type: "date",
+        style: {
+          width: "6rem",
+        },
       },
       deposit: {
         title: "Deposit",
         type: "string",
         tooltipColumn: "modifiedPtnName",
+        style: {
+          width: "5rem",
+        },
+      },
+      paymenttype: {
+        title: "Payment Type",
+        type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       usedop: {
         title: "Used(OP)",
         type: "string",
+        style: {
+          width: "5rem",
+        },
       },
       usedip: {
         title: "Used(IP)",
         type: "number",
+        style: {
+          width: "5rem",
+        },
       },
       refund: {
         title: "Refund",
         type: "string",
         tooltipColumn: "uEmail",
+        style: {
+          width: "5rem",
+        },
       },
       balance: {
         title: "Balance",
         type: "string",
+        style: {
+          width: "5rem",
+        },
       },
       taxpercentage: {
         title: "Tax %",
         type: "checkbox",
+        style: {
+          width: "3.5rem",
+        },
       },
       totaltaxvalue: {
         title: "Total Tax Value",
         type: "number",
+        style: {
+          width: "7rem",
+        },
       },
       deposithead: {
         title: "Deposit Head",
         type: "string",
+        style: {
+          width: "6.7rem",
+        },
       },
       servicetype: {
         title: "Service Type",
         type: "string",
+        style: {
+          width: "6.8rem",
+        },
       },
       operatornameid: {
         title: "Operator Name & ID",
         type: "string",
+        style: {
+          width: "10rem",
+        },
       },
+      remarks: {
+        title: "Remarks",
+        type: "string",
+        style: {
+          width: "7rem",
+        },
+      },
+     
     },
   };
 
@@ -272,7 +328,7 @@ export class DepositComponent implements OnInit {
         .get(ApiConstants.getpatientpersonaldetails(this.regNumber, this.iacode))
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (resultData: PatientPersonalDetails) => {
+          (resultData: PatientPersonalDetailInterface) => {
             this.patientpersonaldetails = resultData.getPATIENTDETAILS;
             this.patientservicetype = resultData.getServiceType;
 

@@ -1,4 +1,4 @@
-export interface PatientDepositDetails{
+export interface PatientDepositDetailInterface{
     id?: number;
     amount?: number;
     balanceamount?: number;

@@ -50,6 +50,9 @@ export class OnlineOpBillsComponent implements OnInit {
       billno: {
         title: "Bill No.",
         type: "string",
+         style: {
+          width: "70px",
+        },
       },
       appointmentdatetime: {
         title: "Appointment Date/Time",

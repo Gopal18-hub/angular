@@ -1,5 +1,5 @@
-export interface PatientPersonalDetails{
-  getPATIENTDETAILS: DepositPatientDetails[];
+export interface PatientPersonalDetailInterface{
+  getPATIENTDETAILS: DepositPatientDetailInterface[];
   getServiceType: ServiceType[];   
   }
   
@@ -8,7 +8,7 @@ export interface PatientPersonalDetails{
     name?: string;
   }
 
-  export interface DepositPatientDetails{    
+  export interface DepositPatientDetailInterface{    
       registrationno: number;
       iacode: string;
       regdatetime: string;

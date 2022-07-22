@@ -19,7 +19,27 @@
 }
 
 .serachcss{
-    ::ng-deep .mat-raised-button{
-        min-width: 100px !important;
-    }
+    position: relative !important;    
 }
+
+.iconcss{
+    ::ng-deep{
+        position: absolute !important;
+        padding-top: 1% !important;
+        padding-left: 1% !important;       
+        border-radius: 4px !important;
+        left:1px !important;
+    }
+  
+}
+
+.iconcss{
+    ::ng-deep{
+        position: absolute !important;
+        padding: 1px !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+  
+}
+

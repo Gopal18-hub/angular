@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { BillingForm } from "@core/constants/BillingForm";
-import { DepositType, ServiceType } from "@core/types/PatientPersonalDetail";
+import { DepositType, ServiceType } from "@core/types/PatientPersonalDetail.Interface";
 import { CookieService } from "@shared/services/cookie.service";
 
 @Component({

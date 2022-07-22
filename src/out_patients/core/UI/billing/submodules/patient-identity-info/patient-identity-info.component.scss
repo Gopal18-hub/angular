@@ -39,13 +39,14 @@
     background:#F6F6F6;
 }
 .bg-lightgrey{
-    background-color: #D2D0D0;
+    background-color: #D2D0D0; 
 }
 
 .patientidentityradiobutton{
     ::ng-deep mat-radio-group {
         flex-direction: row !important;
         justify-content: space-between;
+        gap:10px;
     }
     ::ng-deep .mat-radio-button{
         margin-left: 10px;
