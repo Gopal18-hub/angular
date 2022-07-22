@@ -20,8 +20,8 @@ export class ServiceDepositComponent implements OnInit {
   servicedepositForm!: FormGroup;
   questions: any;
   onRefundpage: boolean = false;
-  servicetype: string = "Service Type";
-  deposithead: string = "Deposit Head";
+  servicetype: string = "Selected Service Type";
+  deposithead: string = "Selected Deposit Head";
   isNSSHLocation: boolean = false;
 
   servicetypeList: ServiceType[] = [];

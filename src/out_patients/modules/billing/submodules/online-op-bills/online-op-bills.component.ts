@@ -99,6 +99,9 @@ export class OnlineOpBillsComponent implements OnInit {
     );
     this.onlineopbillsForm=formResult.form;
     this.questions=formResult.questions;
+    let todaydate = new Date();
+    this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
+    this.onlineopbillsForm.controls["todate"].setValue(todaydate);
   }
 
 }

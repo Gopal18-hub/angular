@@ -1,33 +1,41 @@
-.bg-deposit{
+.bg-deposit {
     background-color: #F6F6F6;
-    color:#004084;
+    color: #004084;
 }
-.bg-thirdrow{
-    background-color: #ECECEC;     
+
+.bg-thirdrow {
+    background-color: #ECECEC;
     color: rgba(0, 0, 0, 0.87);
 }
-::ng-deep .input1 .mat-form-field-infix{
-    text-align: right !important;  
+
+::ng-deep .input1 .mat-form-field-infix {
+    text-align: right !important;
 }
-.bg-white{
-    background-color:white;
+
+.bg-white {
+    background-color: white;
     color: rgba(0, 0, 0, 0.87);
 }
-.bg-thirdrow-white{
-    background-color:white;    
+
+.bg-thirdrow-white {
+    background-color: white;
 }
-.bg-black{
+
+.bg-black {
     color: rgba(0, 0, 0, 0.87);
 }
-::ng-deep .mat-form-field-wrapper{
+
+::ng-deep .mat-form-field-wrapper {
 
     padding-bottom: 0 !important;
 
 }
-.wt-nowrap{
+
+.wt-nowrap {
     white-space: nowrap;
 }
-.clr-primary{
+
+.clr-primary {
     color: #004084;
 }
 
@@ -41,35 +49,30 @@
 }
 
 .clearcss {
-::ng-deep .mat-raised-button{
-    min-width: 100px !important;
-}
+    ::ng-deep .mat-raised-button {
+        min-width: 100px !important;
+    }
 }
 
-.deposit-matnav{
-    ::ng-deep .mat-tab-link{
+.deposit-matnav {
+    ::ng-deep .mat-tab-link {
         min-width: 0px;
     }
 }
 
-.deposittable{
-   // ::ng-deep .max-table-wrapper{
-                 
-        // table{
-            
-        //     overflow-x: scroll !important;
-        //     border: 1px #707070 !important; 
-     
-        // }
-   // }
-    ::ng-deep .max-table-wrapper{
-                 
-        width: 100% !important;
-            
-            overflow-x: scroll !important;
-           // border: 15px #707070 !important; 
-     
-        
+.deposittable {
+    ::ng-deep .max-table-wrapper {
+        width: 85% !important;
+        overflow-x: scroll !important;
+        border: 1px solid #707070 !important;
+        //border-radius: 0.75rem;
     }
-    
+
+    ::ng-deep .scrollbar-auto {
+        scrollbar-width: auto;
+        background-color: lightgreen;
+        height: 150px;
+        width: 200px;
+    }
 }
+
