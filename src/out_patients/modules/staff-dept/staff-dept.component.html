@@ -8,74 +8,73 @@
     </nav>
 
     <mat-tab-nav-panel>
-        <div class="h-full m-1">
+        <div class="h-full w-full">
             <!-- <div class="flex h-2/10 m-2 bg-row p-1"  > -->
-            <div>
+            
                 <form [formGroup]="staffForm">
                     <!------------------------------------------- FIRST ROW------------------------------------------>
-                   <div class="bg-lightgray flex">
-                    <div class="flex p-1 input-padding">
-                            <div class="text-wrap max-health-primary-color font-bold ml-2">
-                                <mat-label>Organisation</mat-label>
-                            </div>
-                            <div class="ml-2 w-1/15 bg-white">
+                   <div class="bg-lightgray flex justify-between border-radius-lg p-1 mt-2 ml-2 mr-2 bg-dept">
+                    <div class="w-full pt-2 flex ">
+
+                            <div class="flex w-3/10">
+                                <mat-label class="ml-2">Organisation</mat-label>
+                            
+                            <div class="w-2/3 ml-4">
                                 <maxhealth-question [question]="questions[0]" [form]="staffForm"
                                     [questions]="questions[0]" [index]="0">
                                 </maxhealth-question>
-                            </div>
-                            <div class="ml-2 text-wrap max-health-primary-color font-bold">
-                                <mat-label>Employee Code</mat-label>
-                            </div>
-                            <div class="ml-1 w-1/10 bg-white">
-                                <maxhealth-question [question]="questions[1]" [form]="staffForm"
-                                    [questions]="questions[1]" [index]="1">
-                                </maxhealth-question>
-                            </div>
-                            <div class="ml-2 text-wrap max-health-primary-color font-bold">
-                                <mat-label> OR</mat-label> 
-                                <mat-label class="ml-8">Employee Name</mat-label>
-                            </div>
-                            <div class="ml-1 mr-11 w-1/10 bg-white ">
-                                <maxhealth-question [question]="questions[2]" [form]="staffForm"
-                                    [questions]="questions[2]" [index]="2">
-                                </maxhealth-question>
-
-                            </div> 
-                            <!-- <div class="ml-3 float-right">          
-                                <button mat-raised-button  color="primary" (click)="search()">Search</button>
-                            </div>      -->
-                                     
-                                      
-                    </div>                 
-                            
-                    <div class="float-right w-1/10 mt-1 flex">
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
-                                <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                                    <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4"
-                                        transform="translate(-12883 23266)" fill="#fff" />
-                                    <g id="Group_1383" data-name="Group 1383"
-                                        transform="translate(-14630.995 22990.941)">
-                                        <path id="Path_296" data-name="Path 296"
-                                            d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
-                                            transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58" />
-                                        <path id="Path_297" data-name="Path 297"
-                                            d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
-                                            transform="translate(1754.018 279.288)" fill="#002b58" />
-                                    </g>
+                           </div>
+                        </div> 
+                        <div class="flex w-2/10">
+                            <mat-label class="ml-3">Employee Code</mat-label>
+                        
+                        <div class="w-1/2 ml-2">
+                            <maxhealth-question [question]="questions[1]" [form]="staffForm"
+                                [questions]="questions[1]" [index]="1">
+                            </maxhealth-question>
+                       </div>
+                    </div>  
+                    <div class="flex w-2/5">
+                        <mat-label class="ml-2">OR</mat-label>
+                        <mat-label class="ml-2">Employee Name</mat-label>
+                    
+                    <div class="w-1/3 ml-4">
+                        <maxhealth-question [question]="questions[2]" [form]="staffForm"
+                            [questions]="questions[2]" [index]="2">
+                        </maxhealth-question>
+                   </div>
+                </div> 
+                <div class="flex float-right mr-2 w-1/10 ">           
+                    <div class="serachcss">
+                      <button mat-raised-button color="primary">                  
+                        <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 35 35">
+                            <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
+                                <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4"
+                                    transform="translate(-12883 23266)" fill="#fff" />
+                                <g id="Group_1383" data-name="Group 1383"
+                                    transform="translate(-14630.995 22990.941)">
+                                    <path id="Path_296" data-name="Path 296"
+                                        d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
+                                        transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58" />
+                                    <path id="Path_297" data-name="Path 297"
+                                        d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
+                                        transform="translate(1754.018 279.288)" fill="#002b58" />
                                 </g>
-                            </svg>
-                        </div>
-                        <div class="ml-0">
-                            <button mat-raised-button color="primary">
-                                Search
-                            </button>
-                        </div>
+                            </g>
+                        </svg>
+                     <span class="ml-6 font-base">
+                      Search
+                     </span>
+                         
+                      </button>
+                  </div>
+                </div>
+                                           
                     </div>
                 </div>
-                    <!---------------------------------------------SECOND ROW-------------------------------------------------->
+                    
                 </form>
-            </div>
+           
            
              <!-- </div> -->
              <div class="h-1/2">
@@ -91,8 +90,8 @@
                 <div class="h-1/2 mt-2  pl-2 pr-2">
                     <maxhealth-table [config]="config2" [data]="staffDeptDetails"></maxhealth-table>
                 </div>
-                <div class="float-right mt-10 mr-3">
-                    <button mat-raised-button color="primary" class="ml-3"(click)="this.staffForm.reset();">Clear</button>
+                <div class="float-right mt-6 mr-3">
+                    <button mat-raised-button color="primary" class="ml-3 "(click)="this.staffForm.reset();">Clear</button>
                 </div>
             </div>
         </div>
