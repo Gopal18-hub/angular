@@ -2,7 +2,7 @@ import { PatientDetail } from "./patientDetailModel.Interface";
 
 export interface Registrationdetails {
   dsPersonalDetails: {
-    dsPersonalDetails1: dtPersonalDetails1[];
+    dtPersonalDetails1: PatientDetail[];
     dtPersonalDetails2: [];
     dtPersonalDetails3: dtPersonalDetails3[];
     dtPersonalDetails4: dtPersonalDetails4[];
@@ -20,9 +20,6 @@ export interface dtPatientPastDetails {
   data: number;
 }
 
-export interface dtPersonalDetails1 {
-  PatientDetail: PatientDetail[];
-}
 export interface dtPersonalDetails3 {
   accountno: string;
   otp: string;

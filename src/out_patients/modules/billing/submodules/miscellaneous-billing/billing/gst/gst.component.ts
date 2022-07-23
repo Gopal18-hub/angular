@@ -7,7 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
   styleUrls: ["./gst.component.scss"],
 })
 export class GstComponent implements OnInit {
-  @ViewChild("patientDetail") tableRows: any;
+  @ViewChild("dillDetails") tableRows: any;
   constructor(
     private dialogRef: MatDialogRef<GstComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -19,16 +19,15 @@ export class GstComponent implements OnInit {
     // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
+    console.log(this.data.searchResults);
     // this.getMaxID();
   }
 
   config: any = {
     selectBox: false,
-    clickedRows: true,
-    clickSelection: "single",
-    displayedColumns: ["services", "percentage", "value"],
+    displayedColumns: ["service", "percentage", "value"],
     columnsInfo: {
-      services: {
+      service: {
         title: "Services",
         type: "string",
         style: {

@@ -1,29 +1,30 @@
-
+<div class="gst-dialog">
 <div class="relative max-health-primary-color">
     <button
       mat-icon-button
       aria-label="close dialog"
       mat-dialog-close
-      class="absolute max-dialog-close-icon"
+      class="absolute pt-1 max-dialog-close-icon "
       type="button"
     >
       <mat-icon>close</mat-icon>
     </button>
-<h2 mat-dialog-title>GST Tax</h2>
+<h3 mat-dialog-title class="mb-1">GST Tax</h3>
 <div mat-dialog-content>   
     <div class="overflow-x-none ">     
         <div class="relative table-height">
             <ng-container >
-                <maxhealth-table #patientDetail [config]="config" [data]="data.gstDetails" 
+                <maxhealth-table #dillDetails [config]="config" [data]="data.gstDetails" 
                 ></maxhealth-table>
             </ng-container>
         </div>
-        <mat-label class="wt-nowrap">Sac Code</mat-label>
+        <mat-label class="wt-nowrap mt-1">Sac Code</mat-label>
         <div class="ml-1 wt-mid h-full bg-white">
           
           <input type="string" matInput placeholder="">
         </div>
     </div>
    
+</div>
 </div>
 </div>
