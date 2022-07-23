@@ -43,7 +43,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "credit-details", component: CreditDetailsComponent },
-          { path: "bill", component: BillComponent },
+          { path: "bill", component: MiscellaneousBillingComponent },
         ],
       },
       { path: "initiate-deposit", component: InitiateDepositComponent },
