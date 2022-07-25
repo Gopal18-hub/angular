@@ -1025,6 +1025,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[2].elementRef.focus();
     this.formProcessing();
     this.formEvents();
   }
@@ -1557,7 +1558,7 @@ export class OpRegistrationComponent implements OnInit {
           // }
           else {
             this.messageDialogService.success(
-              "You Have Successfully Added Host List for MAX ID - " +
+              "Hotlisting request submitted for approval for MAX ID - " +
                 this.patientDetails.iacode +
                 "." +
                 this.patientDetails.registrationno
