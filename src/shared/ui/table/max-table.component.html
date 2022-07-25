@@ -1,4 +1,4 @@
-<div class="border-radius-lg border max-table-wrapper">
+<div class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
   <table
     mat-table
     [dataSource]="dataSource"
@@ -52,8 +52,8 @@
             (click)="columnClickFun(element, col)"
           >
             <ng-container
-              *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+              *ngIf="displayColumnsInfo[col].type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
@@ -70,8 +70,8 @@
             (click)="columnClickFun(element, col)"
           >
             <ng-container
-              *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+              *ngIf="displayColumnsInfo[col].type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
                 $implicit: { output: element[col], config: config, col: col }
               }"
