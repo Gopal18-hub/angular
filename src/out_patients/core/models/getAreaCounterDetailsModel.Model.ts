@@ -1,13 +1,21 @@
 export class getAreaCounterDetailsModel{
-    areaId?: number;
-    areaName?: string;
-    counterId?: number;
-    counterName?: string
+    areaData: areaData;
+    areaWithCounterData: areaWithCounterData;
 
-    constructor(areaId:number, areaName:string, counterId: number, counterName: string){
-        this.areaId = areaId;
-        this.areaName = areaName;
-        this.counterId = counterId;
-        this.counterName = counterName;
+    constructor(areaData: areaData, areaWithCounterData: areaWithCounterData)
+    {
+        this.areaData = areaData;
+        this.areaWithCounterData = areaWithCounterData;
     }
+}
+interface areaData{
+    areaId: number;
+    areaName: string;
+}
+
+interface areaWithCounterData{
+    areaId: number;
+    areaName: string;
+    counterId: number;
+    counterName: string;
 }

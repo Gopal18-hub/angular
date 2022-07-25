@@ -15,7 +15,7 @@ import { Subject } from "rxjs";
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
-  staffDetails : any;
+  staffDetails : any =[];
   staffDeptDetails : any;
   private readonly _destroying$ = new Subject<void>();
   orgList=["id","1","name","Max HealthCare"]
@@ -42,19 +42,28 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['sno','groupCompanyName', 'empCode', 'empName','dob','gender','doj'],
+    displayedColumns: ['enterBy','groupCompanyName', 'empCode', 'empName','dob','gender','doj'],
     columnsInfo: {
-      sno: {
+      enterBy: {
         title: 'S.No',
-        type: 'number'
+        type: 'number',
+        style: {
+          width: "70px",
+        },
       },
       groupCompanyName : {
         title: 'Name of Organisation',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "170px",
+        },
       },
       empCode : {
         title: 'Employee Code',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "150px",
+        },
       },
      
       empName : {
@@ -108,98 +117,7 @@ export class StaffDeptComponent implements OnInit {
     }
  
     }
-    data:any[]=[
-      {
-        sno:"1",
-        organisation:"Max healthcare",
-        empCode:"B015330",
-        empName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        doj:"06/11/2022"    
-      },
-      {
-        sno:"2",
-        organisation:"Max healthcare",
-        empCode:"B015330",
-        empName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        doj:"06/11/2022"    
-      },
-      {
-        sno:"3",
-        organisation:"Max healthcare",
-        empCode:"B015330",
-        empName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        doj:"06/11/2022"    
-      },
-      {
-        sno:"4",
-        organisation:"Max healthcare",
-        empCode:"B015330",
-        empName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        doj:"06/11/2022"    
-      },
-      {
-        sno:"5",
-        organisation:"Max healthcare",
-        empCode:"B015330",
-        empName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        doj:"06/11/2022"    
-      },
-     
-    ]
-    data1:any[]=[
-      {
-        
-        empCode:"B015330",
-        dependantName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        relationship:"Owner"    
-      },
-      {
-        
-        empCode:"B015330",
-        dependantName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        relationship:"Owner"    
-      },
-      {
-        
-        empCode:"B015330",
-        dependantName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        relationship:"Owner"    
-      },
-      {
-        
-        empCode:"B015330",
-        dependantName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        relationship:"Owner"    
-      },
-      {
-        
-        empCode:"B015330",
-        dependantName:"Mr.Amit kumar",
-        dob:"05/11/2000",
-        gender:"Male",
-        relationship:"Owner"    
-      }
-     
-    ]
-
+   
   constructor(private formService: QuestionControlService,private http: HttpService,) { }
 
   ngOnInit(): void {
@@ -220,10 +138,6 @@ export class StaffDeptComponent implements OnInit {
       });    
      });
   }
-  showmain(link:any)
-  {
-    
-  }
   search()
   {
      //Search Type Dropdown
@@ -231,15 +145,21 @@ export class StaffDeptComponent implements OnInit {
      .pipe(takeUntil(this._destroying$))
      .subscribe((res :any)=>
      {  
-      this.staffDetails = res.dtsStaffDependentDetails1; 
-      this.staffDeptDetails = res.dtsStaffDependentDetails;
+      if(res)
+      if(res.dtsStaffDependentDetails[0].relationship =="Self")
+      {
+       
+        this.staffDetails.push(res.dtsStaffDependentDetails[0]);
+        if(this.staffDetails)
+        this.staffDeptDetails = res.dtsStaffDependentDetails;
+      }
+      });
+     // this.staffDetails = res.dtsStaffDependentDetails1; 
+    
       //this.staffDeptDetails = res.
-      // resultData = resultData.map((item: any) => {
-      //   item.fullname = item.firstName + " " + item.lastName;
-      //   return item;
-      // });
+      console.log(this.staffDetails,"res.dtsStaffDependentDetails[0].relationship")
      
-     });
+     //});
     
   }
   staffColumnClick(event:any)

@@ -17,18 +17,21 @@ import { qmsEnableCounterModel } from '@core/models/qmsEnableCounterModel.Model'
 export class QmsComponent implements OnInit {
   public area: getAreaCounterDetailsModel[] = [];
   public counter: getAreaCounterDetailsModel[] = [];
+  public areacounter: any[] = [];
   public enableCounter!: qmsEnableCounterModel;
   qmsFormData = {
     title: "",
     type: "object",
     properties: {
       area: {
+        title: "Area",
         type: "dropdown",
         required: true,
         options: this.area,
         placeholder: "Select"
       },
       counter: {
+        title: "Counter",
         type: "dropdown",
         required: true,
         options: this.counter,
@@ -40,6 +43,7 @@ export class QmsComponent implements OnInit {
   questions: any;
   hspId: any;
   userId: any;
+  clearbtn: boolean = true;
   private readonly _destroying$ = new Subject<void>();
   constructor(
     private formService: QuestionControlService, 
@@ -58,25 +62,37 @@ export class QmsComponent implements OnInit {
     this.hspId = Number(this.cookie.get("HSPLocationId"));
     this.userId = Number(this.cookie.get("UserId"));
     this.getarea();
-    this.getcounter();
+    this.qmsform.controls["counter"].disable();
+    this.qmsform.controls["area"].setErrors({required: true});
+    this.questions[0].customErrorMessage = "Area Required";
   }
-  
+  ngAfterViewInit(): void
+  {
+    this.qmsform.controls["area"].valueChanges.subscribe((value)=>{
+      this.clearbtn = false;
+      this.qmsform.controls["counter"].enable();
+      this.counter = this.areacounter.filter( e => {
+        return e.areaId == value;
+      })
+      this.questions[1].options = this.counter.map((l:any) =>{
+        return { title: l.counterName, value: l.counterId}
+      });
+    })
+  }
   okbtn()
   {
     this.http.post(ApiConstants.enablecounter, this.getqmsrequestbody())
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata: any) => {
-      console.log(resultdata);
-      var area = this.area.find(e => e.areaId == this.qmsform.controls["area"].value);
-      var counter = this.counter.find(e => e.counterId == this.qmsform.controls["counter"].value);
+      var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
+      var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
       this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
     },
     error => {
-      console.log(error.error.text);
       if(error.error.text == "Record Saved Successfully")
       {
-        var area = this.area.find(e => e.areaId == this.qmsform.controls["area"].value);
-        var counter = this.counter.find(e => e.counterId == this.qmsform.controls["counter"].value);
+        var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
+        var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
         this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
       }
     })
@@ -84,29 +100,22 @@ export class QmsComponent implements OnInit {
   clear()
   {
     this.qmsform.reset();
+    this.qmsform.controls["counter"].disable();
+    this.clearbtn = true;
   }
   getarea(){
-    this.http.get(ApiConstants.getarecounter(7))
+    this.http.get(ApiConstants.getarecounter(18))
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata: any)=>{
       console.log(resultdata);
+      this.areacounter = resultdata.areaWithCounterData;
       this.area = resultdata.areaData;
-      this.questions[0].options = this.area.map((l) =>{
+      this.questions[0].options = resultdata.areaData.map((l:any) =>{
         return { title: l.areaName, value: l.areaId}
       });
     });
   }
-  getcounter(){
-    this.http.get(ApiConstants.getarecounter(7))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultdata: any)=>{
-      console.log(resultdata);
-      this.counter = resultdata.areaWithCounterData;
-      this.questions[1].options = this.counter.map((l) =>{
-        return { title: l.counterName, value: l.counterId}
-      });
-    });
-  }
+
   getqmsrequestbody(): qmsEnableCounterModel{
     return (this.enableCounter = new qmsEnableCounterModel(
       7,
