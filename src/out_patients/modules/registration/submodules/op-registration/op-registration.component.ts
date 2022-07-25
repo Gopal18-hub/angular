@@ -1025,6 +1025,7 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[2].elementRef.focus();
     this.formProcessing();
     this.formEvents();
   }
@@ -1557,7 +1558,7 @@ export class OpRegistrationComponent implements OnInit {
           // }
           else {
             this.messageDialogService.success(
-              "You Have Successfully Added Host List for MAX ID - " +
+              "Hotlisting request submitted for approval for MAX ID - " +
                 this.patientDetails.iacode +
                 "." +
                 this.patientDetails.registrationno
@@ -1766,34 +1767,19 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.controls["pincode"].setErrors(null);
       this.questions[21].customErrorMessage = "";
 
-      if (
-        this.OPRegForm.value.city.value != undefined &&
-        this.OPRegForm.value.city.value != null &&
-        this.OPRegForm.value.city.value != ""
-      ) {
+      if (this.OPRegForm.value.city) {
         this.OPRegForm.controls["city"].setValue({ title: "", value: 0 });
       }
 
-      if (
-        this.OPRegForm.value.locality.value != undefined &&
-        this.OPRegForm.value.locality.value != null &&
-        this.OPRegForm.value.locality.value != ""
-      ) {
+      if (this.OPRegForm.value.locality) {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
       }
 
-      if (
-        this.OPRegForm.value.state.value != undefined &&
-        this.OPRegForm.value.state.value != null &&
-        this.OPRegForm.value.state.value != ""
-      ) {
+      if (this.OPRegForm.value.state) {
         this.OPRegForm.controls["state"].setValue({ title: "", value: 0 });
       }
-      if (
-        this.OPRegForm.value.district.value != undefined &&
-        this.OPRegForm.value.district.value != null &&
-        this.OPRegForm.value.district.value != ""
-      ) {
+
+      if (this.OPRegForm.value.district) {
         this.OPRegForm.controls["district"].setValue({ title: "", value: 0 });
       }
     }
@@ -2153,7 +2139,10 @@ export class OpRegistrationComponent implements OnInit {
         this.passportDetails.passportNo != ""
       ) {
         passportdetailspresent = true;
-      } else if (this.nationalityChanged) {
+      } else if (
+        this.nationalityChanged &&
+        this.OPRegForm.value.country.value == 1
+      ) {
         passportdetailspresent = true;
       } else if (
         this.OPRegForm.value.foreigner &&
@@ -4018,6 +4007,22 @@ export class OpRegistrationComponent implements OnInit {
         console.log("passport dialog was closed ");
         if (this.passportDetails.passportNo != "") {
           this.OPRegForm.controls["foreigner"].setValue(true);
+          this.passportDetails = {
+            Expirydate:
+              this.datepipe.transform(
+                result.data.expiryDate,
+                "yyyy-MM-ddThh:mm:ss"
+              ) || null,
+            Issueat: result.data.issuedAt,
+            IssueDate:
+              this.datepipe.transform(
+                result.data.issueDate,
+                "yyyy-MM-ddThh:mm:ss"
+              ) || null,
+            passportNo: result.data.passportNo,
+            HCF: result.data.hcf,
+          };
+          console.log(this.passportDetails);
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
