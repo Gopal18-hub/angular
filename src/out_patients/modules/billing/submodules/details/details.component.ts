@@ -14,6 +14,6 @@ export class DetailsComponent implements OnInit {
   }
   openhistory()
   {
-    this.matDialog.open(VisitHistoryComponent, { width: "70%", height: "50%"});
+    this.matDialog.open(VisitHistoryComponent, { width: "70%", height: "34.81%"});
   }
 }
