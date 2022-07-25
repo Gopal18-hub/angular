@@ -28,7 +28,7 @@ export class PermissionService {
     console.log(roles);
 
     let response = await this.http
-      .get(ApiConstants.getPermissions(roles))
+      .get(ApiConstants.getPermissions(this.cookieService.get("role")))
       .toPromise();
     let temp: any = {};
     if (response) {
