@@ -163,6 +163,8 @@ export class OpRegApprovalComponent implements OnInit {
       "usmsRecNo",
       "operatorName",
       "insertdatetime",
+      "approvalDoneBy",
+      "approvedDate",
     ],
     columnsInfo: {
       maxid: {
@@ -219,6 +221,14 @@ export class OpRegApprovalComponent implements OnInit {
         title: "Requested Date",
         type: "date",
       },
+      approvalDoneBy: {
+        title: "Approved By",
+        type: "string",
+      },
+      approvedDate: {
+        title: "Approved Date",
+        type: "date",
+      },
     },
   };
 
@@ -247,7 +257,7 @@ export class OpRegApprovalComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   searchApproval(formdata: any) {
@@ -268,7 +278,7 @@ export class OpRegApprovalComponent implements OnInit {
       this.to = formdata["to"];
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   showmain(link: any) {

@@ -8,7 +8,7 @@ export interface PatientDetail {
   title: string;
   firstname: string;
   middleName: string;
-  lastName: string;
+  lastname: string;
   mothersMaidenName: string;
   fathersname: string;
   isFatherHusband: boolean;
