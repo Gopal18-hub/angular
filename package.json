@@ -11,7 +11,7 @@
     "stylelint": "stylelint \"src/**/*.+(css|scss)\" --config .stylelintrc.json",
     "lint": "yarn -s tslint && yarn -s stylelint",
     "reports-dev-run": "ng serve reports --serve-path reports --port 4205",
-    "auth-dev-run": "ng serve reports --serve-path reports --port 4205"
+    "auth-dev-run": "ng serve auth --port 8100"
   },
   "private": true,
   "dependencies": {
