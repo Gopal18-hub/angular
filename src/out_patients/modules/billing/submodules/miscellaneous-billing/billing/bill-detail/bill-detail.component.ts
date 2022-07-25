@@ -299,6 +299,7 @@ export class BillDetailComponent implements OnInit {
   openGSTDialog() {
     this.matDialog.open(GstComponent, {
       width: "24vw",
+      height: "56vh",
 
       data: {
         gstDetails: this.gst,
