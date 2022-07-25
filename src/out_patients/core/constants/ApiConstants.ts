@@ -352,6 +352,23 @@ export namespace ApiConstants {
     environment.BillingApiUrl +
     "api/outpatientbilling/getpatienthistorytransactiontype";
 
+  //TO GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME
+  export const getregisteredpatientdetailsForBilling = (
+    IACode: string,
+    RegistrationNo: number,
+    location: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregistrationdetails/" +
+      RegistrationNo +
+      "/" +
+      IACode +
+      "/" +
+      location
+    );
+  };
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -617,4 +634,8 @@ export namespace ApiConstants {
       mobilenumber
     );
   };
+
+  //FOR SIMILAR DETAIL BILLING DETAILS
+  export const getsimilarsoundopbilling =
+    environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
 }

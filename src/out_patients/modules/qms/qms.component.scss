@@ -10,6 +10,9 @@
 .bg-white{
     background-color: #fff;
 }
+.bg-top{
+    background-color: #DAE9F8;
+}
 .border-radius{
     border: 1px solid #707070;
 }
@@ -18,4 +21,15 @@
 }
 .mandatory{
     color: red;
+}
+.qms-body-wrapper{
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
+    ::ng-deep .mat-tab-link{
+        min-width: auto !important;
+    }
+}
+.w-35{
+    width: 35%;
 }
