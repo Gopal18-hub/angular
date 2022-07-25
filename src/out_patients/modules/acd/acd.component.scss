@@ -1,7 +1,26 @@
-// .employeclass{
-//     color: #45c0be;
-//     font:Proxima Nova;
-// }
+.bg-dept{
+    background-color: #F6F6F6;
+    color:#004084;
+}
+
+.iconcss {
+    ::ng-deep {
+        position: absolute !important;
+        padding: 1px !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+}
+::ng-deep .dateW{
+    
+    width: 27% !important;
+}
+.serachcss{
+    ::ng-deep .max-table-wrapper{
+        border-radius: 0.75rem;
+        border: 1px solid #707070 !important;
+    }
+}
 .dateclass{    
     background: #d8d8d8;
 }
