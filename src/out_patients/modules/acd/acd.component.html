@@ -7,263 +7,290 @@
         </ul>
     </nav>
 
-    <!-- <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner">
-        <ul class="list-unstyled flex items-end w-full">
-          <li class="ml-3" *ngFor="let link of link1">
-            <a
-              mat-tab-link
-              class="cursor-pointer"
-              [active]="activeLink1 == link ? true : false"
-              (click)="showmain(link)"
-            >
-              {{ link }}</a
-            >
-          </li>
-         
-        </ul>
-      </nav> -->
-
-
-      <mat-tab-group animationDuration="0ms" (selectedTabChange)="tabChanged($event)">
+    <mat-tab-group animationDuration="0ms" (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Investigation Orders">
-            <div class="h-full">                              
-                        <form [formGroup]="investigationForm">                      
-                                <div class="flex pt-1 m-2 align-items-center dateclass">
-                                    <div class="flex dateclass ml-2 w-3/10"> 
-                                        <div>
-                                            <maxhealth-question
-                                            [question]="questions[8]"
-                                            [form]="investigationForm"
-                                            [questions]="questions[8]"
-                                            [index]="8"
-                                            
-                                            >
-                                            </maxhealth-question>
-                                            <!-- <div class="ml-3 w-3/5">
-                                                <span></span>
-                                            </div> -->
-                                        </div>                                  
-                                            <div class="ml-2">
-                                                <mat-label>From Date</mat-label>
-                                            </div>
-                                            <div class="ml-2 w-1/5">
-                                                <maxhealth-question [question]="questions[0]" [form]="investigationForm"
-                                                    [questions]="questions[0]" [index]="0">
-                                                </maxhealth-question>
-                                            </div>                                   
-                                            <div class="ml-2">
-                                                <mat-label>To Date</mat-label>
-                                            </div>
-                                            <div class="ml-2 w-1/5">
-                                                <maxhealth-question [question]="questions[1]" [form]="investigationForm"
-                                                    [questions]="questions[1]" [index]="1">
-                                                </maxhealth-question>
-                                            </div>
-                                       
-                                    </div>
-                                   
-                                        <div class="ml-2">
-                                            <maxhealth-question [question]="questions[2]" [form]="investigationForm"
-                                                [questions]="questions[2]" [index]="2">
-                                            </maxhealth-question>
-                                        </div>                               
-                                        <div class="ml-2 w-1/5" >
-                                            <maxhealth-question [question]="questions[3]" [form]="investigationForm"
-                                                [questions]="questions[3]" [index]="3">
-                                            </maxhealth-question>
-                                        </div>
-                                        <div class="ml-2">
-                                            <mat-label class="flex-nowrap  align-items-center w-1/10"> Order Status</mat-label>
-                                        </div>
-                                        <div class="ml-2 w-1/5">
-                                            <maxhealth-question [question]="questions[2]" [form]="investigationForm"
-                                                [questions]="questions[2]" [index]="2">
-                                            </maxhealth-question>
-                                        </div>
-                                        <div class="w-1/5 flex float-right">
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
-                                                    <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                                                        <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4"
-                                                            transform="translate(-12883 23266)" fill="#fff" />
-                                                        <g id="Group_1383" data-name="Group 1383" transform="translate(-14630.995 22990.941)">
-                                                            <path id="Path_296" data-name="Path 296"
-                                                                d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
-                                                                transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58" />
-                                                            <path id="Path_297" data-name="Path 297"
-                                                                d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
-                                                                transform="translate(1754.018 279.288)" fill="#002b58" />
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <button mat-raised-button color="primary" class="float-right">Search</button>
-                                            </div>
-                                        </div>  
-                                
+            <div class="h-full w-full">
+                <form [formGroup]="investigationForm">
+                    <!------------------------------------------- FIRST ROW------------------------------------------>
+                    <div class="bg-lightgray flex justify-between border-radius-lg p-1 mt-2 ml-2 mr-2 bg-dept">
+                        <div class="w-full flex ">
+                            <div class="flex w-3/10 h-full bg-darkgray border-radius-lg">
+                                <div class="ml-2 mt-2">
+                                    <maxhealth-question
+                                    [question]="questions[8]"
+                                    [form]="investigationForm"
+                                    [questions]="questions[8]"
+                                    [index]="8"
+                                    
+                                    >
+                                    </maxhealth-question>
+                                   </div>
+                                <div class="mt-3 ml-2">
+                                    <p class="max-health-primary-color wt-nowrap">From Date </p>
+                                </div>
+                                <div class="dateW mt-2 border-radius-lg h-full ml-2 clr-primary">
+                                    <maxhealth-question [question]="questions[0]" [form]="investigationForm"
+                                        [questions]="questions[0]" [index]="0"></maxhealth-question>
+                                </div>
+                                <div class="mt-3 ml-2">
+                                    <p class="max-health-primary-color wt-nowrap">To Date</p>
+                                </div>
+                                <div class="dateW mt-2 border-radius-lg h-full ml-2 clr-primary">
+                                    <maxhealth-question [question]="questions[1]" [form]="investigationForm"
+                                        [questions]="questions[1]" [index]="1"></maxhealth-question>
+                                </div>
                             </div>
-                        </form>                
-                <div class="h-1/3">
-                    <div class="pl-3 font-bold font-base">
-                        <mat-label>Order List</mat-label>
+                            <div class="flex w-2/10 mt-2 ml-4">
+                                <div class="w-5/9">
+                                    <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                        [questions]="questions[2]" [index]="2">
+                                    </maxhealth-question>
+                                </div>
+                                <div class="w-2/3">
+                                    <maxhealth-question [question]="questions[3]" [form]="investigationForm"
+                                        [questions]="questions[3]" [index]="3">
+                                    </maxhealth-question>
+                                </div>
+                            </div>
+                            <div class="flex w-1/20 "></div>
+                                <div class="flex w-3/10">
+                                    <mat-label class="ml-2 mt-2">Order Status</mat-label>
+
+                                    <div class="ml-2 w-1/3 mt-2">
+                                        <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                            [questions]="questions[2]" [index]="2">
+                                        </maxhealth-question>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex w-1/10">
+                                    <div class="serachcss">
+                                        <button mat-raised-button color="primary">
+                                            <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35"
+                                                height="38" viewBox="0 0 35 35">
+                                                <g id="Group_2152" data-name="Group 2152"
+                                                    transform="translate(12883 -23266)">
+                                                    <rect id="Rectangle_496" data-name="Rectangle 496" width="39"
+                                                        height="39" rx="4" transform="translate(-12883 23266)"
+                                                        fill="#fff" />
+                                                    <g id="Group_1383" data-name="Group 1383"
+                                                        transform="translate(-14630.995 22990.941)">
+                                                        <path id="Path_296" data-name="Path 296"
+                                                            d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
+                                                            transform="translate(1768.724 298.227) rotate(-39)"
+                                                            fill="#002b58" />
+                                                        <path id="Path_297" data-name="Path 297"
+                                                            d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
+                                                            transform="translate(1754.018 279.288)" fill="#002b58" />
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                            <span class="ml-6 font-base">
+                                                Search
+                                            </span>
+
+                                        </button>
+                                    </div>
+                                </div>
+                            
+                        </div>
                     </div>
-                    <div class="h-1/3 mt-2">
+                </form>
+                <div class="h-1/2">
+                    <div class="pl-2 employeeclass font-bold font-base mt-1">
+                        <mat-label class="max-health-primary-color">Order List</mat-label>
+                    </div>
+                    <div class="h-1/4 ml-2 mr-2">
                         <maxhealth-table [config]="config1" [data]="data"></maxhealth-table>
                     </div>
-                    <div class="pl-3 pt-1 font-bold font-base">
-                        <mat-label>Order Details</mat-label>
-                        <mat-label class="employeclass"> SKDD.543278 / ALPIKA SINGH /9837866912</mat-label>
+                    <div class="pl-2 employeeclass font-bold font-base mt-1">
+                        <mat-label class="max-health-primary-color">Order Details</mat-label>
                     </div>
-                    
-                    <div class="h-1/3 mt-2" >
+                    <div class="h-1/4 ml-2 mr-2">
                         <maxhealth-table [config]="config2" [data]="data1"></maxhealth-table>
                     </div>
-                    
-                    <!-- <div class="float-right mt-2 mr-3">
-                        <button mat-raised-button color="primary">Clear</button>
-                    </div> -->
-                    <div class="pl-1 pr-1 mr-1 flex border-radius-lg h-1">
-                        <div class="dateclass flex w-3/10 m-2 h-1/5">
-                        <button mat-raised-button color="primary" [disabled]="isBtnDisable">Deny Order</button>
-                        <maxhealth-question class="pl-2 pt-2 w-2/10" [question]="questions[6]" [form]="investigationForm" [questions]="questions[6]"
-                            [index]="6">
-                        </maxhealth-question>
-    
-                        <mat-label class="pl-2 pt-3">Remarks</mat-label>
-                        <maxhealth-question class="pl-2 pt-2 w-3/10" [question]="questions[7]" [form]="investigationForm" [questions]="questions[7]"
-                            [index]="7">
-                        </maxhealth-question>
-                        </div>
-                        <div class="m-2">
-                        <button *ngIf="isShowMedical" mat-raised-button color="primary" class="ml-2">Pharmacy Token</button>
-                        <mat-label *ngIf="isShowMedical" class="employeclass font-2xl mt-3 ml-2">27</mat-label>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Create Bill</button>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Cancel Denial</button>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Save</button>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisableClear">Clear</button>
-                        </div>
+                    <div class="h-1/4 pl-2  mt-4">
+                        <div class="flex">
+                            <div class="bg-lightgray w-2/5 border-radius-lg flex ">
+                            <div class="flex ml-2">
+                                <button mat-raised-button color="primary" [disabled]="isBtnDisable">Deny Order</button>
+                            </div>
+                            <div class="flex">
+                                <maxhealth-question class="w-3/10  ml-2" [question]="questions[6]" [form]="investigationForm" 
+                                [questions]="questions[6]"
+                                [index]="6">
+                            </maxhealth-question>
+                                <mat-label class="max-health-primary-color font-bold pt-1 ml-2">Remarks</mat-label>
+                                <maxhealth-question class="w-1/3  ml-2" [question]="questions[7]" [form]="investigationForm" [questions]="questions[7]"
+                                    [index]="7">
+                                </maxhealth-question>
+                            </div>
+                            </div>
+                            <div class="w-3/10 flex ml-4">                               
+                                    <button mat-raised-button color="primary"  [disabled]="isBtnDisable">Cancel Denial</button>                              
+                               
+                            </div>
+                            <div class="w-3/10 flex mr-4 ">
+                            <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Create Bill</button>
+                            
+                            
+                            <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Save</button>
+                            
+                                <button mat-raised-button color="primary" class="ml-2 " >Clear</button>
+                           
+                            </div>
+
+                        </div> <!-- <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisable">Create Bill</button>
+                            
+                            
+                            <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisable">Save</button>
+                            <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisableClear">Clear</button> -->
                     </div>
-                </div>            
+                </div>
             </div>
         </mat-tab>
         <mat-tab label="Medical Orders">
-            <div class="h-full">
-                <div>                
-                        <form [formGroup]="investigationForm">                      
-                                <div class="flex m-2 align-items-center dateclass">
-                                    <div class="flex dateclass ml-2 p-1 w-3/10"> 
-                                        <div>
-                                            <maxhealth-question
-                                            [question]="questions[8]"
-                                            [form]="investigationForm"
-                                            [questions]="questions[8]"
-                                            [index]="8"
-                                            >
-                                            </maxhealth-question>                                           
-                                        </div>                                  
-                                            <div class="ml-2">
-                                                <mat-label>From Date</mat-label>
-                                            </div>
-                                            <div class="ml-2 w-1/5">
-                                                <maxhealth-question [question]="questions[0]" [form]="investigationForm"
-                                                    [questions]="questions[0]" [index]="0">
-                                                </maxhealth-question>
-                                            </div>                                   
-                                            <div class="ml-2">
-                                                <mat-label>To Date</mat-label>
-                                            </div>
-                                            <div class="ml-2 w-1/5">
-                                                <maxhealth-question [question]="questions[1]" [form]="investigationForm"
-                                                    [questions]="questions[1]" [index]="1">
-                                                </maxhealth-question>
-                                            </div>
-                                       
-                                    </div>
-                                   
-                                        <div class="ml-2">
-                                            <maxhealth-question [question]="questions[2]" [form]="investigationForm"
-                                                [questions]="questions[2]" [index]="2">
-                                            </maxhealth-question>
-                                        </div>                               
-                                        <div class="ml-2 w-1/5" >
-                                            <maxhealth-question [question]="questions[3]" [form]="investigationForm"
-                                                [questions]="questions[3]" [index]="3">
-                                            </maxhealth-question>
-                                        </div>
-                                        <div class="ml-2">
-                                            <mat-label class="flex-nowrap  align-items-center w-1/10"> Order Status</mat-label>
-                                        </div>
-                                        <div class="ml-2 w-1/5">
-                                            <maxhealth-question [question]="questions[2]" [form]="investigationForm"
-                                                [questions]="questions[2]" [index]="2">
-                                            </maxhealth-question>
-                                        </div>
-                                        <div class="w-1/5 flex float-right">
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
-                                                    <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                                                        <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="39" rx="4"
-                                                            transform="translate(-12883 23266)" fill="#fff" />
-                                                        <g id="Group_1383" data-name="Group 1383" transform="translate(-14630.995 22990.941)">
-                                                            <path id="Path_296" data-name="Path 296"
-                                                                d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
-                                                                transform="translate(1768.724 298.227) rotate(-39)" fill="#002b58" />
-                                                            <path id="Path_297" data-name="Path 297"
-                                                                d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
-                                                                transform="translate(1754.018 279.288)" fill="#002b58" />
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <button mat-raised-button color="primary" class="float-right">Search</button>
-                                            </div>
-                                        </div>  
-                                
+            <div class="h-full w-full">
+                <form [formGroup]="investigationForm">
+                    <!------------------------------------------- FIRST ROW------------------------------------------>
+                    <div class="bg-lightgray flex justify-between border-radius-lg p-1 mt-2 ml-2 mr-2 bg-dept">
+                        <div class="w-full flex ">
+                            <div class="flex w-3/10 h-full bg-darkgray border-radius-lg">
+                                <div class="ml-2 mt-2">
+                                    <maxhealth-question
+                                    [question]="questions[8]"
+                                    [form]="investigationForm"
+                                    [questions]="questions[8]"
+                                    [index]="8"
+                                    
+                                    >
+                                    </maxhealth-question>
+                                   </div>
+                                <div class="mt-3 ml-2">
+                                    <p class="max-health-primary-color wt-nowrap">From Date </p>
+                                </div>
+                                <div class="dateW mt-2 border-radius-lg h-full ml-2 clr-primary">
+                                    <maxhealth-question [question]="questions[0]" [form]="investigationForm"
+                                        [questions]="questions[0]" [index]="0"></maxhealth-question>
+                                </div>
+                                <div class="mt-3 ml-2">
+                                    <p class="max-health-primary-color wt-nowrap">To Date</p>
+                                </div>
+                                <div class="dateW mt-2 border-radius-lg h-full ml-2 clr-primary">
+                                    <maxhealth-question [question]="questions[1]" [form]="investigationForm"
+                                        [questions]="questions[1]" [index]="1"></maxhealth-question>
+                                </div>
                             </div>
-                        </form>                
-                    
-                </div>
-                <div class="h-1/3">
-                    <div class="pl-3  font-bold font-base">
-                        <mat-label>Order List</mat-label>
+                            <div class="flex w-2/10 mt-2 ml-4">
+                                <div class="w-5/9">
+                                    <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                        [questions]="questions[2]" [index]="2">
+                                    </maxhealth-question>
+                                </div>
+                                <div class="w-2/3">
+                                    <maxhealth-question [question]="questions[3]" [form]="investigationForm"
+                                        [questions]="questions[3]" [index]="3">
+                                    </maxhealth-question>
+                                </div>
+                            </div>
+                            <div class="flex w-1/20 mr-3"></div>
+                                <div class="flex w-3/10">
+                                    <mat-label class="ml-2 mt-2">Order Status</mat-label>
+
+                                    <div class="ml-2 w-1/3 mt-2">
+                                        <maxhealth-question [question]="questions[2]" [form]="investigationForm"
+                                            [questions]="questions[2]" [index]="2">
+                                        </maxhealth-question>
+                                    </div>
+                                </div>
+                                <div class="flex  w-1/10 ">
+                                    <div class="serachcss">
+                                        <button mat-raised-button color="primary">
+                                            <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35"
+                                                height="38" viewBox="0 0 35 35">
+                                                <g id="Group_2152" data-name="Group 2152"
+                                                    transform="translate(12883 -23266)">
+                                                    <rect id="Rectangle_496" data-name="Rectangle 496" width="39"
+                                                        height="39" rx="4" transform="translate(-12883 23266)"
+                                                        fill="#fff" />
+                                                    <g id="Group_1383" data-name="Group 1383"
+                                                        transform="translate(-14630.995 22990.941)">
+                                                        <path id="Path_296" data-name="Path 296"
+                                                            d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
+                                                            transform="translate(1768.724 298.227) rotate(-39)"
+                                                            fill="#002b58" />
+                                                        <path id="Path_297" data-name="Path 297"
+                                                            d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
+                                                            transform="translate(1754.018 279.288)" fill="#002b58" />
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                            <span class="ml-6 font-base">
+                                                Search
+                                            </span>
+
+                                        </button>
+                                    </div>
+                                </div>
+                            
+                        </div>
                     </div>
-                    <div class="h-1/3 mt-2">
+                </form>
+                <div class="h-1/2">
+                    <div class="pl-2 employeeclass font-bold font-base mt-1">
+                        <mat-label class="max-health-primary-color">Order List</mat-label>
+                    </div>
+                    <div class="h-1/4 ml-2 mr-2">
                         <maxhealth-table [config]="config1" [data]="data"></maxhealth-table>
                     </div>
-                    <div class="pl-3 pt-3  font-bold font-base">
-                        <mat-label>Order Details</mat-label>
-                        <mat-label class="employeclass"> SKDD.543278 / ALPIKA SINGH /9837866912</mat-label>
-                    </div>                    
-                    <div class="h-1/3 mt-2">
-                        <maxhealth-table-form [config]="config3" [data]="data2"></maxhealth-table-form>
-                    </div>                   
-                    <div class="pl-1 pr-1 mr-1 flex border-radius-lg h-1">
-                        <div class="dateclass flex w-3/10 m-2 h-1/5">
-                        <button mat-raised-button color="primary" [disabled]="isBtnDisable">Deny Order</button>
-                        <maxhealth-question class="pl-2 pt-2 w-2/10" [question]="questions[6]" [form]="investigationForm" [questions]="questions[6]"
-                            [index]="6">
-                        </maxhealth-question>
-    
-                        <mat-label class="pl-2 pt-3">Remarks</mat-label>
-                        <maxhealth-question class="pl-2 pt-2 w-3/10" [question]="questions[7]" [form]="investigationForm" [questions]="questions[7]"
-                            [index]="7">
-                        </maxhealth-question>
-                        </div>
-                        <div class="m-2">
-                        <button mat-raised-button color="primary" class="ml-2">Pharmacy Token</button>
-                        <mat-label  class="employeclass font-2xl mt-3 ml-2">27</mat-label>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Create Bill</button>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Cancel Denial</button>
-                        <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Save</button>
-                        <button mat-raised-button color="primary" class="ml-2" >Clear</button>
-                        </div>
+                    <div class="pl-2 employeeclass font-bold font-base mt-1">
+                        <mat-label class="max-health-primary-color">Order Details</mat-label>
                     </div>
-                </div>            
+                    <div class="h-1/4 ml-2 mr-2">
+                        <maxhealth-table [config]="config2" [data]="data1"></maxhealth-table>
+                    </div>
+                    <div class="h-1/4 pl-2  mt-4">
+                        <div class="flex">
+                            <div class="bg-lightgray w-2/5 border-radius-lg flex ">
+                            <div class="flex ml-2">
+                                <button mat-raised-button color="primary" [disabled]="isBtnDisable">Deny Order</button>
+                            </div>
+                            <div class="flex">
+                                <maxhealth-question class="w-3/10  ml-2" [question]="questions[6]" [form]="investigationForm" 
+                                [questions]="questions[6]"
+                                [index]="6">
+                            </maxhealth-question>
+                                <mat-label class="max-health-primary-color font-bold pt-1 ml-2">Remarks</mat-label>
+                                <maxhealth-question class="w-1/3  ml-2" [question]="questions[7]" [form]="investigationForm" [questions]="questions[7]"
+                                    [index]="7">
+                                </maxhealth-question>
+                            </div>
+                            </div>
+                            <div class="w-2/10 flex ml-4">                               
+                                    <button mat-raised-button color="primary"  >Pharmacy Token</button>                              
+                               
+                            </div>
+                            <div class="w-2/5 flex mr-4 ">
+                            <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Create Bill</button>
+                            <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Cancel Denial</button>
+                            
+                            
+                            <button mat-raised-button color="primary" class="ml-2" [disabled]="isBtnDisable">Save</button>
+                            
+                                <button mat-raised-button color="primary" class="ml-2 " >Clear</button>
+                           
+                            </div>
+
+                        </div> <!-- <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisable">Create Bill</button>
+                            
+                            
+                            <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisable">Save</button>
+                            <button mat-raised-button color="primary" class="ml-12" [disabled]="isBtnDisableClear">Clear</button> -->
+                    </div>
+                </div>
             </div>
         </mat-tab>
-        </mat-tab-group>
+    </mat-tab-group>
 
-   
+
 </section>
