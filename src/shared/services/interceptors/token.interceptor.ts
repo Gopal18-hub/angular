@@ -84,12 +84,7 @@ export class TokenInterceptor implements HttpInterceptor {
         sharedCacheResponse = cachedResponse;
 
         // If there is a response in cache, put the date in header so the api won't send the data again
-        if (
-          cachedResponse &&
-          cachedResponse.body &&
-          request.method == "GET" &&
-          !request.url.includes("Logout")
-        ) {
+        if (cachedResponse && cachedResponse.body && request.method == "GET") {
           // const headers = new HttpHeaders({
           //   "if-last-modified-since": cachedResponse.lastModified,
           // });
@@ -106,11 +101,7 @@ export class TokenInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
           // Save the response in cache
           tap((event) => {
-            if (
-              event instanceof HttpResponse &&
-              request.method == "GET" &&
-              !request.url.includes("Logout")
-            ) {
+            if (event instanceof HttpResponse && request.method == "GET") {
               const body = event.body;
 
               // Save everything in cache
@@ -124,11 +115,7 @@ export class TokenInterceptor implements HttpInterceptor {
           // If any error occurs and a response in cache is available, return it.
           catchError((err, caught) => {
             // Require better logic but for the example, on error, return value cached
-            if (
-              err instanceof HttpErrorResponse &&
-              request.method == "GET" &&
-              !request.url.includes("Logout")
-            ) {
+            if (err instanceof HttpErrorResponse && request.method == "GET") {
               const response: HttpResponse<any> = new HttpResponse({
                 status: 200,
                 body: sharedCacheResponse?.body,
