@@ -28,29 +28,28 @@ export class PermissionService {
     console.log(roles);
 
     let response = await this.http
-      .post(ApiConstants.getPermissions, {
-        Id: userId,
-        RoleIds: roles,
-        Permissions: null,
-      })
+      .get(ApiConstants.getPermissions(roles))
       .toPromise();
     let temp: any = {};
-    response.permissions.forEach((ele: any) => {
-      if (!temp[ele.masterModuleId]) {
-        temp[ele.masterModuleId] = {};
-        this.masterModules.push(ele.masterModuleId);
-      }
-      if (!temp[ele.masterModuleId][ele.moduleId]) {
-        this.modules.push(ele.moduleId);
-        temp[ele.masterModuleId][ele.moduleId] = {};
-      }
-      if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
-        temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
-        this.features.push(ele.featureId);
-      }
-      temp[ele.masterModuleId][ele.moduleId][ele.featureId][ele.functionId] =
-        true;
-    });
+    if (response) {
+      response.permissions.forEach((ele: any) => {
+        if (!temp[ele.masterModuleId]) {
+          temp[ele.masterModuleId] = {};
+          this.masterModules.push(ele.masterModuleId);
+        }
+        if (!temp[ele.masterModuleId][ele.moduleId]) {
+          this.modules.push(ele.moduleId);
+          temp[ele.masterModuleId][ele.moduleId] = {};
+        }
+        if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
+          temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
+          this.features.push(ele.featureId);
+        }
+        temp[ele.masterModuleId][ele.moduleId][ele.featureId][ele.functionId] =
+          true;
+      });
+    }
+
     this.manipulatedAccessControls = temp;
   }
 
