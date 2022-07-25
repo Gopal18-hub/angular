@@ -9,6 +9,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
 @NgModule({
     declarations: [
     
@@ -23,7 +24,8 @@ import { MatIconModule } from "@angular/material/icon";
         MatButtonModule,
         MaxHealthTableModule,
         EmptyPlaceholderModule,
-        MatIconModule
+        MatIconModule,
+        MatTooltipModule
     ],
     exports: [],
     providers: [

@@ -26,6 +26,7 @@ export class DispatchReportComponent implements OnInit {
   public obj: objdispatchsave[] = [];
   config: any = {
     clickedRows: true,
+    actionItems: false,
     dateformat: "dd/MM/YYYY HH:mm:ss.ss",
     selectBox: true,
     displayedColumns: [
@@ -43,34 +44,61 @@ export class DispatchReportComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "4rem"
+        }
       },
       itemName: {
         title: "Test Name",
         type: "string",
+        tooltipColumn: "itemName",
+        style: {
+          width: "8rem"
+        }
       },
       orderdatetime: {
         title: "Date Time",
         type: "date",
+        tooltipColumn: "orderdatetime",
+        style: {
+          width: "8rem"
+        }
       },
       ptnName: {
         title: "Patient Name",
         type: "string",
+        tooltipColumn: "ptnName",
+        style: {
+          width: "10rem"
+        }
       },
       billno: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "7rem"
+        }
       },
       receiveddatetime: {
         title: "Received Date Time",
         type: "date",
+        style: {
+          width: "11rem"
+        }
       },
       dispatcheddatetime: {
         title: "Dispatched Date Time",
         type: "date",
+        style: {
+          width: "11rem"
+        }
       },
       dispatchplace: {
         title: "Dispatch Place",
         type: "string",
+        style: {
+          width: "1-rem"
+        }
       },
       remarks: {
         title: "Remarks",
@@ -86,7 +114,8 @@ export class DispatchReportComponent implements OnInit {
       billedlocation: {
         type: "autocomplete",
         options: this.billedlocation,
-        allowSearchInput: true
+        placeholder: "Select",
+        required: true,
       },
       checkbox1: {
         type: "checkbox",
@@ -225,6 +254,7 @@ export class DispatchReportComponent implements OnInit {
     this.exportbtn = true;
     this.printbtn = true;
     this.title = '';
+    this.dispatchhistoryform.controls["radio"].setValue(1);
     this.dispatchhistoryform.controls["billedlocation"].setValue({
       title: this.billedlocation[0].address3,
       value: this.billedlocation[0].hspLocationId
