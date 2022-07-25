@@ -352,6 +352,23 @@ export namespace ApiConstants {
     environment.BillingApiUrl +
     "api/outpatientbilling/getpatienthistorytransactiontype";
 
+  //TO GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME
+  export const getregisteredpatientdetailsForBilling = (
+    IACode: string,
+    RegistrationNo: number,
+    location: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregistrationdetails/" +
+      RegistrationNo +
+      "/" +
+      IACode +
+      "/" +
+      location
+    );
+  };
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -618,51 +635,7 @@ export namespace ApiConstants {
     );
   };
 
-
-export const getpatientpersonaldetails = (
-  registrationno: number, iacode?: string
-) => {
-  return (
-    environment.PatientApiUrl +
-    "api/patient/getpatientpersonaldetails/" + registrationno
-    + "/" +
-    iacode
-  );
-
-};
-
-export const getpatientdetailsfordeposit = (
-  registrationno: number, iacode?: string
-) => {
-  return (
-    environment.PatientApiUrl +
-    "api/patient/getpatientdetailsfordeposit/" + registrationno
-    + "/" +
-    iacode
-  );
-
-};
-
-export const getadvancetype = (
-  hspLocationid: number
-) => {
-  return (
-    environment.PatientApiUrl +
-    "api/patient/getadvancetype/" + hspLocationid
-
-  );
-
-};
-
-export const getpatientpreviousdepositdetails = (
-  registrationno: number, iacode?: string
-) => {
-  return (
-    environment.PatientApiUrl +
-    "api/patient/getpatientpreviousdepositdetails/" + registrationno
-    + "/" +
-    iacode
-
-  );
-};
+  //FOR SIMILAR DETAIL BILLING DETAILS
+  export const getsimilarsoundopbilling =
+    environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
 }
