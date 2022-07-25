@@ -70,6 +70,7 @@ export class DmgMappingComponent implements OnInit {
   dmgMappingForm!: FormGroup;
   questions: any;
   disablebutton: boolean = true;
+  disableClear: boolean = true;
   constructor(
     private formService: QuestionControlService,
     private messagedialogservice: MessageDialogService,

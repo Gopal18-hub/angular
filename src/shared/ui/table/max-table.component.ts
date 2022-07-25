@@ -42,6 +42,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
 
+  initiateTable: boolean = false;
+
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
   ngOnInit(): void {
@@ -60,6 +62,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
+    this.initiateTable = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -139,12 +142,12 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     }`;
   }
 
-  getTemplate(type: string) {
-    if (type == "string") return this.stringTemplate;
-    else if (type == "number") return this.numberTemplate;
-    else if (type == "date") return this.dateTemplate;
-    else if (type == "image") return this.imageTemplate;
-    else if (type == "checkbox") return this.checkboxTemplate;
+  getTemplate(col: any) {
+    if (col.type == "string") return this.stringTemplate;
+    else if (col.type == "number") return this.numberTemplate;
+    else if (col.type == "date") return this.dateTemplate;
+    else if (col.type == "image") return this.imageTemplate;
+    else if (col.type == "checkbox") return this.checkboxTemplate;
     else return this.stringTemplate;
   }
 
