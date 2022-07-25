@@ -1,0 +1,26 @@
+.gst-dialog{
+
+    ::ng-deep mat-label {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+  ::ng-deep .mat-dialog-container
+  {
+      padding: 1% !important;
+      margin: 0px;
+  }
+  ::ng-deep .mat-dialog-title
+  {
+  }
+}
+::ng-deep .mat-dialog-container
+{
+    padding: 3% 2.4% 2.4% 2.4% !important;
+    
+    margin: 0px;
+}
+.max-dialog-close-icon
+{
+right: 0.5px;
+
+}

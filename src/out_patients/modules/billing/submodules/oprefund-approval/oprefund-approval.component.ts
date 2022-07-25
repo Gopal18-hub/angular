@@ -13,7 +13,12 @@ export class OprefundApprovalComponent implements OnInit {
     { value: "Hot Listing Approval", id: 2 },
     { value: "OP Refund Approval", id: 3 },
   ];
-  link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
+  link2 = [
+    { value: "View Pending Request", id: 1 },
+    { value: "Approved Requests", id: 2 },
+    { value: "Reject Requests", id: 3 },
+  ];
+  //link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[2];
   activeLink2 = this.link2[0];
 
@@ -101,22 +106,24 @@ export class OprefundApprovalComponent implements OnInit {
 
   showmain(link: any) {
     console.log(link);
-    if (link.id == 1) {
+    if (link.id == "1") {
+      console.log("id 1");
       this.router.navigate(["registration", "op-reg-approval"]);
-    } else if (link == 2) {
+    } else if (link.id == "2") {
+      console.log("id 2");
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == 3) {
+    } else if (link.id == "3") {
       this.activeLink1 = link;
-      this.activeLink2 != ""
+      this.activeLink2.id != null
         ? this.showgrid(this.activeLink2)
         : this.showgrid("View Pending Request");
     }
   }
   showgrid(link: any) {
     console.log(link);
-    if (link == "View Pending Request") {
+    if (link.id == 1) {
       this.activeLink2 = link;
-    } else if (link == "Approved Requests") {
+    } else if (link.value == 2) {
       this.activeLink2 = link;
     } else {
       this.activeLink2 = link;

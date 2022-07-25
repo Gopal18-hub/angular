@@ -66,6 +66,10 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}/Out_Patient/HappyFamilyPlanUtilizationReport?MemberShipNo=${params.MemberShipNo}`;
   };
 
+  export const GeneralOPDReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}/Out_Patient/GeneralOPDReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=${params.locationID}`;
+  };
+
   export const VisitingOTBillingReport = (params: any) => {
     return `${environment.ReportsSampleUrl}/Billing/VisitingOTBilling?Opbillid=${params.Opbillid}&LocationId=${params.LocationId}&flag=${params.flag}`;
   };
@@ -77,9 +81,11 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}/Marketing/PlanSummary?FromDate=${params.FromDate}&TodDate=${params.TodDate}`;
   };
   export const DoctorSheduleReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID=${params.DocID}&location=${params.location}&Rd_Special=${params.Rd_Special}`;
+  };
+  export const DoctorSheduleReportBySpecilialisation = (params: any) => {
     return `${environment.ReportsSampleUrl}/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID=${params.DocID}&location=${params.location}&Rd_Special=${params.Rd_Special}&Cmb_Special=${params.Cmb_Special}&specialisationID=${params.specialisationID}`;
   };
-
   export const CRPExpiredPatientDetailReport = (params: any) => {
     return `${environment.ReportsSampleUrl}/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&user=${params.user}`;
   };

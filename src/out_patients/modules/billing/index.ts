@@ -56,6 +56,8 @@ import { HealthCheckupsComponent } from "./submodules/billing/submodules/service
 import { ProcedureOtherComponent } from "./submodules/billing/submodules/services/submodules/procedure-other/procedure-other.component";
 import { OrderSetComponent } from "./submodules/billing/submodules/services/submodules/order-set/order-set.component";
 import { ConsumablesComponent } from "./submodules/billing/submodules/services/submodules/consumables/consumables.component";
+import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
+import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 
 @NgModule({
   declarations: [
@@ -63,6 +65,7 @@ import { ConsumablesComponent } from "./submodules/billing/submodules/services/s
     BillingComponentPage,
     DepositComponent,
     DetailsComponent,
+    GstComponent,
     OnlineOpBillsComponent,
     OpOrderRequestComponent,
     MiscellaneousBillingComponent,
@@ -93,6 +96,7 @@ import { ConsumablesComponent } from "./submodules/billing/submodules/services/s
     ProcedureOtherComponent,
     OrderSetComponent,
     ConsumablesComponent,
+    BillDetailComponent,
   ],
   imports: [
     BillingRoutingModule,

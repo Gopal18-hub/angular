@@ -1,0 +1,471 @@
+<div class="bg-white h-service border-radius-lg mt-0">
+    <div class="mt-0 mr-1 border-radius-lg flex w-auto">
+        <form [formGroup]="miscServBillForm " class="w-full miscForm">
+            <div class="flex w-full mt-0">
+                <div class="ml-1 w-1/6 h-full">
+                    <maxhealth-question
+                      [question]="question[0]"
+                      [form]="miscServBillForm"
+                      [questions]="question[0]"
+                      [index]="0"
+                    >
+                    </maxhealth-question>
+                 
+                  </div>
+                  <!-- <div class="ml-0 w-1/20 h-full">
+                    <maxhealth-question
+                    [question]="question[7]"
+                    [form]="miscServBillForm"
+                    [questions]="question[7]"
+                    [index]="7"
+                  >
+                  </maxhealth-question>
+                  </div> -->
+                  <div class="ml-1  w-1/6 h-full">
+                    <maxhealth-question
+                      [question]="question[1]"
+                      [form]="miscServBillForm"
+                      [questions]="question[1]"
+                      [index]="1"
+                    >
+                    </maxhealth-question>
+                  </div>
+
+                <!-- TARRIF PRICE BLOCK -->
+                  <div class="ml-1 w-6 h-full">
+                    <maxhealth-question
+                      [question]="question[2]"
+                      [form]="miscServBillForm"
+                      [questions]="question[2]"
+                      [index]="2"
+                    >
+                    </maxhealth-question>
+                  </div>
+
+                  <!-- QTY BLOCK -->
+                  <div class="ml-1  w-6 h-full">
+                    <maxhealth-question
+                      [question]="question[3]"
+                      [form]="miscServBillForm"
+                      [questions]="question[3]"
+                      [index]="3"
+                    >
+                    </maxhealth-question>
+                  </div> 
+                  <!-- REQUIRED AMOUNT BLOCK -->
+                  <div class="ml-1  w-6 h-full">
+                    <maxhealth-question
+                      [question]="question[4]"
+                      [form]="miscServBillForm"
+                      [questions]="question[4]"
+                      [index]="4"
+                    >
+                    </maxhealth-question>
+                  </div>
+
+                  <!-- PROCEDURE DOCTOR BLOCK-->
+                  <div class="ml-1 w-1/6 h-full">
+                    <maxhealth-question
+                      [question]="question[5]"
+                      [form]="miscServBillForm"
+                      [questions]="question[5]"
+                      [index]="5"
+                    >
+                    </maxhealth-question>
+                  </div>
+
+                  <!-- REMARK BLOCK -->
+                  <div class="ml-1 w-1/6 h-full">
+                    <maxhealth-question
+                      [question]="question[6]"
+                      [form]="miscServBillForm"
+                      [questions]="question[6]"
+                      [index]="6"
+                    >
+                    </maxhealth-question>
+                  </div>
+                  <div class="float-right w-2 ">
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="flex  mt-3 h-2/3 float-right ml-1"
+                    type="button"
+                  >
+                  Add
+                  </button>
+                </div>
+            </div>
+<!-- ---------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------TABLE BLOCK----------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------- -->
+
+<div class="h-table ml-1">
+<!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" -->
+<ng-container class="w-full">
+<maxhealth-table class=" " #selectedServices
+[config]="config"
+
+></maxhealth-table>
+</ng-container>
+
+
+</div>
+<div class="flex w-full justify-between  flex-wrap flex-column ml-1 m-pannel ">
+<div class="flex">
+<div class="justify-between mb-4 w-12 h-full bg-blue border-radius-lg  float-left">
+
+<div class="ml-1 mb-4 mt-2 mr-2 w-auto h-full">
+<maxhealth-question
+[question]="question[8]"
+[form]="miscServBillForm"
+[questions]="question[8]"
+[index]="8"
+>
+</maxhealth-question>
+</div>
+<div class="ml-1 mr-2 mb-4 w-auto h-full">
+<maxhealth-question
+[question]="question[9]"
+[form]="miscServBillForm"
+[questions]="question[9]"
+[index]="9"
+>
+</maxhealth-question>
+</div>
+</div>
+<!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
+<div class="bg-deposit bg-paymet h-full   border-radius-lg">
+<div class="flex-column w-1/4 flex justify-between h-1/5 float-left">
+
+<div class="ml-1 mb-2 mt-1 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap mr-10">Bill Amount</mat-label>
+<maxhealth-question
+[question]="question[10]"
+[form]="miscServBillForm"
+[questions]="question[10]"
+class="w-1/45 ml-9"
+[index]="10"
+>
+
+</maxhealth-question>
+</div>
+
+</div>
+<div class="ml-1 mb-1 h-full">
+<div class="flex">
+<!------------------------------------------- AVAIL DISC CHECKBOX ---------------------------------------->
+<maxhealth-question
+[question]="question[11]"
+[form]="miscServBillForm"
+[questions]="question[11]"
+
+[index]="11"
+>
+</maxhealth-question>
+<!------------------------------------------- AVAIL DISC INPUT ---------------------------------------->
+
+<maxhealth-question
+[question]="question[12]"
+[form]="miscServBillForm"
+[questions]="question[12]"
+class="w-1/45 ml-5"
+[index]="12"
+>
+</maxhealth-question>
+</div>
+</div>
+<div class="ml-1 mb-1 h-full">
+<div class="flex">
+<!------------------------------------------- DISCOUNT AMOUNT CHECKBOX ---------------------------------------->
+
+<maxhealth-question
+[question]="question[13]"
+[form]="miscServBillForm"
+[questions]="question[13]"
+class="mr-1"
+[index]="13"
+>
+</maxhealth-question>
+<!------------------------------------------- DISCOUNT AMOUNT INPUT ---------------------------------------->
+
+<div class="w-1/45 flex">
+<maxhealth-question
+  [question]="question[14]"
+  [form]="miscServBillForm"
+  [questions]="question[14]"
+  class="w-4/5"
+  [index]="14"
+>
+</maxhealth-question>
+<div class=" text-center">
+<!-- <button
+    mat-raised-button
+    color="bg-deposit"
+    class="p-2"
+                 >
+  &#8230;
+  </button> -->
+  <mat-icon class="icon-more pt-2 pb-0 font-xs ">more_horiz</mat-icon>
+</div>
+</div>
+</div>
+</div>
+<div class="ml-1 h-full">
+<div class="flex">
+<!------------------------------------------- DIPO AMOUNT CHECKBOX ---------------------------------------->
+
+<maxhealth-question
+[question]="question[15]"
+[form]="miscServBillForm"
+[questions]="question[15]"
+[index]="15"
+>
+<!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
+
+</maxhealth-question>
+<maxhealth-question
+[question]="question[16]"
+[form]="miscServBillForm"
+[questions]="question[16]"
+class="w-1/45  ml-2"
+[index]="16"
+>
+</maxhealth-question>
+</div>
+</div>
+</div>
+
+<div class="flex-column w-1/5 h-1/5 justify-between float-left">
+
+<div class="flex flex-column">
+<div class="ml-2 mb-2 mt-1 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap   mr-5">Patient Disc.</mat-label>
+<maxhealth-question
+[question]="question[17]"
+[form]="miscServBillForm"
+[questions]="question[17]"
+class="w-5/9"
+[index]="17"
+>
+
+</maxhealth-question>
+</div>
+
+</div>
+<div class="ml-2 mb-2 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap mr-1">Company Disc.</mat-label>
+
+
+<maxhealth-question
+[question]="question[18]"
+[form]="miscServBillForm"
+[questions]="question[18]"
+class="w-5/9 "
+[index]="18"
+>
+</maxhealth-question>
+</div>
+</div>
+<div class="ml-2 mb-2 h-full">
+<div class="flex">
+
+<mat-label class="wt-nowrap mr-5">Plan Amt ( - )</mat-label>
+
+
+<maxhealth-question
+[question]="question[19]"
+[form]="miscServBillForm"
+[questions]="question[19]"
+class="w-5/9"
+[index]="19"
+>
+</maxhealth-question>
+
+
+</div>
+</div>
+<div class="ml-2 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap mr-12"> Coupon</mat-label>
+
+
+
+<maxhealth-question
+[question]="question[20]"
+[form]="miscServBillForm"
+[questions]="question[20]"
+class="w-5/9 "
+[index]="20"
+>
+</maxhealth-question>
+</div>
+</div>
+</div>
+
+</div>
+<div class="flex-column w-1/5 h-1/4 flex border-radius-lg justify-between float-left">
+
+<div class="flex flex-column">
+<div class="ml-2 mb-2 mt-1 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap   mr-2">Co-Payment %</mat-label>
+<maxhealth-question
+[question]="question[21]"
+[form]="miscServBillForm"
+[questions]="question[21]"
+class="w-1/45 "
+[index]="21"
+>
+
+</maxhealth-question>
+</div>
+
+</div>
+<div class="ml-2 mt-4 mb-2 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap mr-7">Credit Limit</mat-label>
+
+
+<maxhealth-question
+[question]="question[22]"
+[form]="miscServBillForm"
+[questions]="question[22]"
+class="w-1/45 "
+[index]="22"
+>
+</maxhealth-question>
+</div>
+</div>
+<div class="ml-2 mt-4 mb-1 h-full">
+<div class="flex">
+
+<mat-label class="wt-nowrap   mr-5">GST Tax</mat-label>
+
+
+<div class="w-1/45 flex">
+    <maxhealth-question
+      [question]="question[23]"
+      [form]="miscServBillForm"
+      [questions]="question[23]"
+      class="w-4/5 ml-7"
+      [index]="23"
+    >
+    </maxhealth-question>
+  <div class=" text-center">
+    <!-- <button
+        mat-raised-button
+        color="bg-deposit"
+        class="p-2"
+                     >
+      &#8230;
+      </button> -->
+      <mat-icon class="icon-more pt-2 pb-0 font-xs " (click)="openGSTDialog()">more_horiz</mat-icon>
+  </div>
+    </div>
+  
+
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+<div class="bg-deposit flex-column w-1/3 h-1/5 flex  justify-between float-left">
+
+<div class="flex w-full flex-column">
+<div class="mb-2 mt-1 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap   mr-5 mt-1">Amt. Paid by Patient</mat-label>
+<div class="flex w-1/45 ">
+<maxhealth-question
+[question]="question[24]"
+[form]="miscServBillForm"
+[questions]="question[24]"
+class="w-7/10 mt-1 mr-1"
+[index]="24"
+>
+
+</maxhealth-question>
+<button
+mat-raised-button
+color="primary"
+class="w-1/15 btn-md"
+type="submit"
+>
+Make Bill
+</button>
+</div>
+</div>
+
+</div>
+<div class=" mb-2 h-full">
+<div class="flex">
+<mat-label class="wt-nowrap mr-1 mt-1">Amt. Paid by Company</mat-label>
+
+<div class="flex w-1/45 ">
+<maxhealth-question
+[question]="question[25]"
+[form]="miscServBillForm"
+[questions]="question[25]"
+class="w-7/10 mt-1 mr-1 "
+[index]="25"
+>
+</maxhealth-question>
+<button
+mat-raised-button
+color="primary"
+class="w-1/15 btn-md  "
+type="submit"
+>
+Print Bill
+</button>
+</div>
+</div>
+</div>
+<div class="mb-1 h-1/20">
+<div class="flex border-radius-lg  bg-blue p-1 ">
+<mat-label class="wt-nowrap mr-2 ml-2 inline h-1/full   ">Bill Type</mat-label>
+
+      <div class=" grid-container w-1/2 ">
+    <maxhealth-question
+      [question]="question[26]"
+      [form]="miscServBillForm"
+      [questions]="question[26]"
+      class="h-1/20 mb-5"
+      [index]="26"
+    >
+    </maxhealth-question>
+ 
+    </div>
+  
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+</div>                    
+        </form>
+        </div>
+
+
+    </div>
+<!-- </div> -->
+
+
+<!-- </div> -->
