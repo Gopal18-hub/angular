@@ -31,10 +31,11 @@ export class AcdComponent implements OnInit {
       },
       organisation:{
         type: "dropdown",              
-        options: this.orgList,     
+        options: this.orgList,  
+        placeholder: "Select",   
       },     
       employeeCode:{
-        type:"string",
+        type:"BLKH.",
       },
       employeeName:{
         type:"string",
