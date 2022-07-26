@@ -172,6 +172,12 @@
   ></mat-checkbox>
 </ng-template>
 
+<ng-template #input let-data>
+  <mat-form-field appearance="fill">
+    <input matInput type="text" [(ngModel)]="data.output" />
+  </mat-form-field>
+</ng-template>
+
 <ng-template #button let-data>
   <button mat-raised-button (click)="(!!data.output)" disabled></button>
 </ng-template>
