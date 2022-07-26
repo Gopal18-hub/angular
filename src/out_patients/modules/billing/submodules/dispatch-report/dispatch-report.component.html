@@ -14,7 +14,7 @@
                     <div class="w-2/5 ml-1">
                         <mat-label class="max-health-primary-color font-semi-bold">Billed Location</mat-label>
                     </div>
-                    <div class="w-3/5 bg-white border-radius-md">
+                    <div class="w-3/5 bg-white border-radius-md label">
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="dispatchhistoryform"
@@ -28,7 +28,7 @@
                     <div class="w-auto  wt-nowrap ml-3">
                         <mat-label class="max-health-primary-color font-semi-bold">From Date</mat-label>
                     </div>
-                    <div class="ml-1 w-3/10 bg-white border-radius-md">
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label">
                         <maxhealth-question
                         [question]="questions[2]"
                         [form]="dispatchhistoryform"
@@ -39,7 +39,7 @@
                     <div class="w-auto wt-nowrap ml-3">
                         <mat-label class="max-health-primary-color font-semi-bold">To Date</mat-label>
                     </div>
-                    <div class="w-3/10 ml-1 bg-white border-radius-md">
+                    <div class="w-3/10 ml-1 bg-white border-radius-md label">
                         <maxhealth-question
                         [question]="questions[3]"
                         [form]="dispatchhistoryform"
@@ -62,7 +62,7 @@
                 <!-- buttons -->
                 <div class="float-right flex w-1/5 mr-5">
                     <div class="mr-4">
-                        <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()">Show</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()" [disabled]="!dispatchhistoryform.valid">Show</button>
                     </div>
                     <div class="mr-4">
                         <button mat-raised-button color="primary" type="submit" (click)="pendingreportsearch()" [disabled]="pendingbtn">Pending Reports</button>
@@ -76,11 +76,11 @@
                     <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-1">
-                    <maxhealth-table
+                    <maxhealth-table-form
                     [config]="config"
                     [data]="dispatchreport"
                     #showtable
-                    ></maxhealth-table>
+                    ></maxhealth-table-form>
                 </div>
             </div>
 
@@ -89,11 +89,11 @@
                     <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-1">
-                    <maxhealth-table
+                    <maxhealth-table-form
                     [config]="config"
                     [data]="dispatchreport"
                     #pendingtable
-                    ></maxhealth-table>
+                    ></maxhealth-table-form>
                 </div>
             </div>
 
