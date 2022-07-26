@@ -163,6 +163,8 @@ export class OpRegApprovalComponent implements OnInit {
       "usmsRecNo",
       "operatorName",
       "insertdatetime",
+      "approvalDoneBy",
+      "approvedDate",
     ],
     columnsInfo: {
       maxid: {
@@ -217,6 +219,14 @@ export class OpRegApprovalComponent implements OnInit {
       },
       insertdatetime: {
         title: "Requested Date",
+        type: "date",
+      },
+      approvalDoneBy: {
+        title: "Approved By",
+        type: "string",
+      },
+      approvedDate: {
+        title: "Approved Date",
         type: "date",
       },
     },

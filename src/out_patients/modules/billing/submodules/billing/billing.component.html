@@ -1,203 +1,204 @@
 <section class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto op-billing-wrapper">
-  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
-    <ul class="list-unstyled flex items-end">
-      <li class="ml-3">
-        <a mat-tab-link [active]="true"> Out Patient Billing</a>
-      </li>
-    </ul>
-    <div class="maxhealth-spacer"></div>
-    <div *ngFor="let icon of categoryIcons" class="flex">
-      <img
-        [src]="icon['src']"
-        [alt]="icon['tooltip']"
-        width="45px"
-        class="mt-1 cursor-pointer"
-        [matTooltip]="icon['tooltip']"
-        (click)="doCategoryIconAction(icon)"
-      />
-    </div>
-  </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <div
-      class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 billing-page-wrapper"
-    >
-      <!-- First Row -->
-      <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
-        <form
-          [formGroup]="formGroup"
-          autocomplete="off"
-          class="w-full flex align-items-center"
-        >
-          <mat-label class="max-health-primary-color mr-2">Max ID</mat-label>
-          <div class="w-1/10 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[0]"
-              [form]="formGroup"
-              [questions]="questions[0]"
-              [index]="0"
-            >
-            </maxhealth-question>
-          </div>
-          <mat-label class="max-health-primary-color mr-2"
-            >Mobile No.</mat-label
-          >
-          <div class="bg-white w-1/10 mr-2">
-            <maxhealth-question
-              [question]="questions[1]"
-              [form]="formGroup"
-              [questions]="questions[1]"
-              [index]="1"
-            >
-            </maxhealth-question>
-          </div>
-          <mat-label class="max-health-primary-color mr-2"
-            >Booking ID</mat-label
-          >
-          <div class="w-1/10 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[2]"
-              [form]="formGroup"
-              [questions]="questions[2]"
-              [index]="2"
-            >
-            </maxhealth-question>
-          </div>
-          <mat-label class="max-health-primary-color mr-2"
-            >Company <i>IOM</i></mat-label
-          >
-          <div class="w-1/10 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[3]"
-              [form]="formGroup"
-              [questions]="questions[3]"
-              [index]="3"
-            >
-            </maxhealth-question>
-          </div>
-          <mat-label class="max-health-primary-color mr-2">Corporate</mat-label>
-          <div class="w-1/10 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[4]"
-              [form]="formGroup"
-              [questions]="questions[4]"
-              [index]="4"
-            >
-            </maxhealth-question>
-          </div>
-
-          <mat-label class="max-health-primary-color mr-2">Narration</mat-label>
-          <div class="w-1/10 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[5]"
-              [form]="formGroup"
-              [questions]="questions[5]"
-              [index]="5"
-            >
-            </maxhealth-question>
-          </div>
-
-          <div>
-            <maxhealth-question
-              [question]="questions[6]"
-              [form]="formGroup"
-              [questions]="questions[6]"
-              [index]="6"
-            >
-            </maxhealth-question>
-          </div>
-        </form>
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-3">
+          <a mat-tab-link [active]="true"> Out Patient Billing</a>
+        </li>
+      </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="mt-1 cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+          (click)="doCategoryIconAction(icon)"
+        />
       </div>
-
-      <!-- Second Row -->
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
       <div
-        class="w-full flex mt-1 border-radius-xlg p-2 bg-secondary"
-        *ngIf="patient"
+        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 billing-page-wrapper"
       >
-        <div class="flex w-3/4 align-items-center">
-          <div class="w-1/4">
-            <mat-label class="max-health-primary-color font-bold"
-              >Name:</mat-label
+        <!-- First Row -->
+        <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
+          <form
+            [formGroup]="formGroup"
+            autocomplete="off"
+            class="w-full flex align-items-center"
+          >
+            <mat-label class="max-health-primary-color mr-2">Max ID</mat-label>
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[0]"
+                [form]="formGroup"
+                [questions]="questions[0]"
+                [index]="0"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-2"
+              >Mobile No.</mat-label
             >
-            <span class="ml-2"></span>
+            <div class="bg-white w-1/10 mr-2">
+              <maxhealth-question
+                [question]="questions[1]"
+                [form]="formGroup"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-2"
+              >Booking ID</mat-label
+            >
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[2]"
+                [form]="formGroup"
+                [questions]="questions[2]"
+                [index]="2"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-2"
+              >Company <i>IOM</i></mat-label
+            >
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[3]"
+                [form]="formGroup"
+                [questions]="questions[3]"
+                [index]="3"
+              >
+              </maxhealth-question>
+            </div>
+            <mat-label class="max-health-primary-color mr-2">Corporate</mat-label>
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[4]"
+                [form]="formGroup"
+                [questions]="questions[4]"
+                [index]="4"
+              >
+              </maxhealth-question>
+            </div>
+  
+            <mat-label class="max-health-primary-color mr-2">Narration</mat-label>
+            <div class="w-1/10 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[5]"
+                [form]="formGroup"
+                [questions]="questions[5]"
+                [index]="5"
+              >
+              </maxhealth-question>
+            </div>
+  
+            <div>
+              <maxhealth-question
+                [question]="questions[6]"
+                [form]="formGroup"
+                [questions]="questions[6]"
+                [index]="6"
+              >
+              </maxhealth-question>
+            </div>
+          </form>
+        </div>
+  
+        <!-- Second Row -->
+        <div
+          class="w-full flex mt-1 border-radius-xlg p-2 bg-secondary"
+          *ngIf="patient"
+        >
+          <div class="flex w-3/4 align-items-center">
+            <div class="w-1/4">
+              <mat-label class="max-health-primary-color font-bold"
+                >Name:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
+            <div class="w-1/6">
+              <mat-label class="max-health-primary-color font-bold"
+                >Age:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
+            <div class="w-1/6">
+              <mat-label class="max-health-primary-color font-bold"
+                >Gender:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
+            <div class="w-1/6">
+              <mat-label class="max-health-primary-color font-bold"
+                >DOB:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
+            <div class="w-1/6">
+              <mat-label class="max-health-primary-color font-bold"
+                >Nationality:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
+            <div class="w-1/6">
+              <mat-label class="max-health-primary-color font-bold"
+                >SSN:</mat-label
+              >
+              <span class="ml-2"></span>
+            </div>
           </div>
-          <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Age:</mat-label
+          <div class="flex second-row-action-items">
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm"
+              type="button"
             >
-            <span class="ml-2"></span>
-          </div>
-          <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Gender:</mat-label
+              Appointment Search
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2"
+              type="button"
             >
-            <span class="ml-2"></span>
-          </div>
-          <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >DOB:</mat-label
+              DMS
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2"
+              type="button"
             >
-            <span class="ml-2"></span>
-          </div>
-          <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Nationality:</mat-label
-            >
-            <span class="ml-2"></span>
-          </div>
-          <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >SSN:</mat-label
-            >
-            <span class="ml-2"></span>
+              Visit History
+            </button>
           </div>
         </div>
-        <div class="flex second-row-action-items">
-          <button
-            mat-raised-button
-            color="primary"
-            class="font-sm"
-            type="button"
-          >
-            Appointment Search
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            class="font-sm ml-2"
-            type="button"
-          >
-            DMS
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            class="font-sm ml-2"
-            type="button"
-          >
-            Visit History
-          </button>
+        <div *ngIf="patient">
+          <div class="mt-2">
+            <nav mat-tab-nav-bar>
+              <a
+                mat-tab-link
+                *ngFor="let link of links"
+                [routerLink]="link.path"
+                routerLinkActive
+                #rla="routerLinkActive"
+                (click)="activeLink = link"
+                [active]="rla.isActive || activeLink.path == link.path"
+              >
+                {{ link.title }}
+              </a>
+            </nav>
+            <div class="overflow-y-auto display-block billing-panel-wrapper">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
         </div>
       </div>
-      <div *ngIf="patient">
-        <div class="mt-2">
-          <nav mat-tab-nav-bar>
-            <a
-              mat-tab-link
-              *ngFor="let link of links"
-              [routerLink]="link.path"
-              routerLinkActive
-              #rla="routerLinkActive"
-              (click)="activeLink = link"
-              [active]="rla.isActive || activeLink.path == link.path"
-            >
-              {{ link.title }}
-            </a>
-          </nav>
-          <div class="overflow-y-auto display-block billing-panel-wrapper">
-            <router-outlet></router-outlet>
-          </div>
-        </div>
-      </div>
-    </div>
-  </mat-tab-nav-panel>
-</section>
+    </mat-tab-nav-panel>
+  </section>
+  
