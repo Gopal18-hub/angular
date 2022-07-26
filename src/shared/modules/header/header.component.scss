@@ -55,8 +55,11 @@
       }
     }
   }
+}
+.floating-menu {
+  z-index: 20;
   .main-modules {
-    min-width: calc(100vw - 180px);
+    min-width: calc(100vw);
     clip-path: polygon(
       0 0,
       30px 50%,
