@@ -6,8 +6,12 @@ import { CookieService } from "./cookie.service";
   providedIn: "root",
 })
 export class SearchService {
-  constructor(private cookie: CookieService) { }
+  constructor(private cookie: CookieService) {}
   searchTrigger = new Subject<any>();
+
+  activePageTrigger = new Subject<any>();
+
+  activePage: any;
 
   searchFormData: any = {
     global: {
@@ -17,7 +21,7 @@ export class SearchService {
         maxID: {
           type: "string",
           title: "Max ID",
-          defaultValue: this.cookie.get("LocationIACode") + '.',
+          defaultValue: this.cookie.get("LocationIACode") + ".",
         },
         phone: {
           type: "string",
@@ -30,17 +34,17 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
-          maximum:new Date()
+          maximum: new Date(),
         },
         healthID: {
           type: "string",
           title: "Health ID",
-          readonly:true,
+          readonly: true,
         },
         adhaar: {
           type: "string",
           title: "Aadhaar",
-          readonly:true,
+          readonly: true,
         },
       },
     },
@@ -60,7 +64,7 @@ export class SearchService {
         dob: {
           type: "date",
           title: "DOB",
-          maximum:new Date()
+          maximum: new Date(),
         },
         email: {
           type: "string",
@@ -91,7 +95,7 @@ export class SearchService {
         maxID: {
           type: "string",
           title: "Max ID",
-          defaultValue: this.cookie.get("LocationIACode") + '.',
+          defaultValue: this.cookie.get("LocationIACode") + ".",
         },
         ssn: {
           type: "string",
@@ -100,4 +104,12 @@ export class SearchService {
       },
     },
   };
+
+  setActivePage(activePage: any) {
+    this.activePage = activePage;
+    this.activePageTrigger.next({ activePage: activePage });
+  }
+  getActivePage() {
+    return this.activePage;
+  }
 }

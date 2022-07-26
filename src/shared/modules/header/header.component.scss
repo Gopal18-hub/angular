@@ -4,11 +4,44 @@
   display: block;
 }
 .header-wrapper {
-  height: 4.188rem;
+  height: 3.588rem;
   background-color: white;
   border-radius: 0 0 0 1rem;
+  ::ng-deep mat-form-field {
+    width: 100%;
+    font-size: 14px;
+    background: #fff;
+    border-radius: 0.5em;
+    .mat-form-field-wrapper {
+      margin: 0;
+      padding: 0;
+      .mat-form-field-flex {
+        padding: 0.35em 1em;
+      }
+      input {
+        font-size: 12px;
+        width: 96%;
+      }
+      .mat-form-field-outline-start,
+      .mat-form-field-outline-end {
+        border: none;
+      }
+      .mat-form-field-prefix {
+        color: #afafaf;
+      }
+      .mat-form-field-suffix {
+        top: 0.4em;
+      }
+    }
+    .search-pointer-trigger {
+      .mat-menu-trigger {
+        position: absolute;
+        left: 136px;
+        top: 1em;
+      }
+    }
+  }
   .right-section {
-    height: 4.088rem;
     align-items: flex-end;
     justify-content: space-between;
     .logout-button {
@@ -17,14 +50,13 @@
       margin-right: 1.5em;
     }
     .user-info {
-      height: 2.1rem;
       svg {
         width: 80%;
       }
     }
   }
   .main-modules {
-    min-width:calc(100vw - 180px);
+    min-width: calc(100vw - 180px);
     clip-path: polygon(
       0 0,
       30px 50%,

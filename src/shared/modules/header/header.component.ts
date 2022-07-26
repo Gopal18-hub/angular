@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MaxModules } from "../../constants/Modules";
 import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
@@ -6,6 +6,10 @@ import { CookieService } from "../../services/cookie.service";
 import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { FormGroup } from "@angular/forms";
+import { SearchService } from "../../services/search.service";
+import { QuestionControlService } from "../../ui/dynamic-forms/service/question-control.service";
+
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -19,16 +23,32 @@ export class HeaderComponent implements OnInit {
   user: string = "";
   activeModule: any;
 
+  searchFormData: any;
+
+  searchForm!: FormGroup;
+
+  questions: any;
+
+  @ViewChild("searchVal") globalSearchInputBox: any;
+
+  activePageItem: any;
+
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,
     private authService: AuthService,
     private cookieService: CookieService,
     private permissionService: PermissionService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private searchService: SearchService,
+    private formService: QuestionControlService
   ) {}
 
   async ngOnInit() {
+    this.searchFormData = this.searchService.searchFormData;
+    this.searchService.activePageTrigger.subscribe((data) => {
+      this.activePageItem = data.activePage;
+    });
     await this.permissionService.getPermissionsRoleWise();
     this.modules = this.permissionService.checkModules();
     this.modules.forEach((element: any) => {
@@ -90,5 +110,37 @@ export class HeaderComponent implements OnInit {
       this.cookieService.delete("accessToken");
       this.cookieService.set("accessToken", accessToken);
     }
+  }
+
+  reInitiateSearch(type: string) {
+    let formResult: any = this.formService.createForm(
+      this.searchFormData[type].properties,
+      {}
+    );
+    this.searchForm = formResult.form;
+    this.questions = formResult.questions;
+  }
+
+  searchSubmit() {
+    this.searchService.searchTrigger.next({ data: this.searchForm.value });
+    setTimeout(() => {
+      this.searchForm.reset();
+    }, 800);
+  }
+
+  goToHome() {
+    window.location.href = window.location.origin + "/dashboard";
+  }
+
+  applyFilter(val: string) {
+    const data: any = { globalSearch: 1, SearchTerm: val };
+    const searchFormData: any = {};
+    Object.keys(this.searchForm.value).forEach((ele) => {
+      searchFormData[ele] = val;
+    });
+    this.searchService.searchTrigger.next({ data: data, searchFormData });
+    setTimeout(() => {
+      this.globalSearchInputBox.nativeElement.value = "";
+    }, 800);
   }
 }
