@@ -56,7 +56,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   disableIOM: boolean = true;
   validmaxid: boolean = false;
   validEmployeecode: boolean = false;
-  disableDelete: boolean = true;
+  disableDelete: boolean = false;
   disableClear: boolean = true;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
@@ -107,6 +107,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
+    clickSelection: "single",
     displayedColumns: [
       "groupCompany",
       "empCode",
@@ -337,7 +338,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 console.log(company.id);
                 console.log(companyobject.value);
                 company.id == companyobject.value;
-                this.iommessage = "IOM Validity:" + company.iomValidity;
+                this.iommessage =
+                  "IOM Validity:" +
+                  this.datepipe.transform(company.iomValidity, "dd-MM-yyyy");
               }
             );
             this.disableIOM = false;
@@ -395,6 +398,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       //this.employeesponsorForm.value.company.value
     ) {
       this.disableButton = false;
+    } else {
+      this.disableButton = true;
     }
     console.log(this.disableButton);
   }
@@ -459,11 +464,26 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             this.nationality =
               this.patientSponsorData.objPatientDemographicData[0].nationality;
             this.ssn = this.patientSponsorData.objPatientDemographicData[0].ssn;
+
             //Assign tabledata
+            // data.objEmployeeDependentData.push({
+            //   slno: data.objEmployeeDependentData.length,
+            // });
+            console.log(data);
             this.employeeDependantDetailList =
               this.patientSponsorData.objEmployeeDependentData;
+
             this.updatedTableList =
               this.patientSponsorData.objPatientSponsorDataAuditTrail;
+            for (
+              let i = 0;
+              i <
+              this.patientSponsorData.objPatientSponsorDataAuditTrail.length;
+              i++
+            ) {
+              this.updatedTableList[i].slno = i + 1;
+            }
+            console.log(this.updatedTableList);
           } else {
             this.validmaxid = false;
             this.dialogService.info("Max ID doesn't exist");
@@ -572,6 +592,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     dialogRef.afterClosed().subscribe((value) => {
       console.log(value);
       if (value == true) {
+        console.log(this.savedeleteEmployeeObject);
         console.log("inside value =true");
         this.http
           .post(
@@ -584,6 +605,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               this.updatedTableList =
                 data as SaveDeleteEmployeeSponsorResponse[];
               console.log(this.updatedTableList);
+              this.dialogService.success("Saved Successfully");
             },
             (error) => {
               console.log(error.error);
@@ -597,6 +619,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             }
           );
       }
+      console.log(this.getSaveDeleteEmployeeObj());
     });
   }
 
@@ -629,6 +652,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   getSaveDeleteEmployeeObj(): SaveDeleteEmployeeSponsorRequest {
     let iacode = this.employeesponsorForm.controls["maxId"].value.split(".")[0];
     let regno = this.employeesponsorForm.controls["maxId"].value.split(".")[1];
+    let validfrom = this.datepipe.transform(
+      this.employeesponsorForm.controls["fromdate"].value,
+      "yyyy-MM-ddThh:mm:ss"
+    );
+    let validto = this.datepipe.transform(
+      this.employeesponsorForm.controls["todate"].value,
+      "yyyy-MM-ddThh:mm:ss"
+    );
     if (this.updatedTableList.length == 0 && this.onDelete == false) {
       this.flag = 1;
     } else if (this.updatedTableList.length > 0 && this.onDelete == false) {
@@ -653,11 +684,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.employeesponsorForm.controls["employeeCode"].value,
         0, //relation needs to be added
         "string", //reamrks editable field need to be added
-        "2022-07-12T11:29:30.085Z", //valid from
-        "2022-07-12T11:29:30.085Z", //valid to
+        validfrom, //valid from
+        validto, //valid to
         0
       ));
   }
+  // "2022-07-12T11:29:30.085Z"
 
   oncheckboxClick(event: any) {
     console.log(event);
@@ -695,6 +727,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.disableIOM = true;
     this.iommessage = "";
     this.disableButton = true;
+    this.name = "";
+    this.age = "";
+    this.gender = "";
+    this.dob = "";
+    this.nationality = "";
+    this.ssn = "";
   }
 
   //HARD CODED DATA FOR EMPLOYEE DEPENDANT TABLE
