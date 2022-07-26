@@ -6,6 +6,7 @@ import { CookieService } from "../../services/cookie.service";
 import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { DbService } from "../../services/db.service";
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -25,7 +26,8 @@ export class HeaderComponent implements OnInit {
     private cookieService: CookieService,
     private permissionService: PermissionService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dbService: DbService
   ) {}
 
   async ngOnInit() {
@@ -55,6 +57,7 @@ export class HeaderComponent implements OnInit {
       localStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.dbService.cachedResponses.clear();
       window.location.href = window.location.origin + "/login";
     });
   }
