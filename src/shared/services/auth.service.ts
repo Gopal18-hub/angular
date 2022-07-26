@@ -104,7 +104,7 @@ export class AuthService {
     var logoutIdQuery =
       query && query.toLowerCase().indexOf("?logoutid=") == 0 && query;
 
-    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);
+    let response = this.http.post(ApiConstants.logout + logoutIdQuery, null);
     return response;
   }
 
