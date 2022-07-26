@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Inject, ViewChild } from "@angular/core";
-import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
-import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
-import { SearchService } from "../../../services/search.service";
 import { APP_BASE_HREF } from "@angular/common";
+import { SearchService } from "../../../services/search.service";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -11,8 +9,6 @@ import { APP_BASE_HREF } from "@angular/common";
   styleUrls: ["./sub.component.scss"],
 })
 export class SubComponent implements OnInit {
-  @ViewChild("searchVal") globalSearchInputBox: any;
-
   @Input() submodules: any = [];
 
   @Input() module: any;
@@ -21,21 +17,13 @@ export class SubComponent implements OnInit {
 
   activePageItem: any;
 
-  searchFormData: any;
-
-  searchForm!: FormGroup;
-
-  questions: any;
-
   constructor(
     @Inject(APP_BASE_HREF) public baseHref: string,
-    private formService: QuestionControlService,
     private router: Router,
     private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
-    this.searchFormData = this.searchService.searchFormData;
     if (!this.submodules) {
       this.submodules = [];
     }
@@ -52,22 +40,14 @@ export class SubComponent implements OnInit {
             ) {
               this.activeSubModule = element;
               this.activePageItem = ch;
-              this.reInitiateSearch(this.activePageItem.globalSearchKey);
+              this.searchService.setActivePage(this.activePageItem);
+              //this.reInitiateSearch(this.activePageItem.globalSearchKey);
             }
           });
         }
       }
     });
-    if (!this.activePageItem) this.reInitiateSearch("global");
-  }
-
-  reInitiateSearch(type: string) {
-    let formResult: any = this.formService.createForm(
-      this.searchFormData[type].properties,
-      {}
-    );
-    this.searchForm = formResult.form;
-    this.questions = formResult.questions;
+    //if (!this.activePageItem) this.reInitiateSearch("global");
   }
 
   onRouterLinkActive($event: any, imodule: any) {
@@ -80,30 +60,7 @@ export class SubComponent implements OnInit {
     console.log(mentItem);
     if ($event) {
       this.activePageItem = mentItem;
-      this.reInitiateSearch(this.activePageItem.globalSearchKey);
+      //this.reInitiateSearch(this.activePageItem.globalSearchKey);
     }
-  }
-
-  searchSubmit() {
-    this.searchService.searchTrigger.next({ data: this.searchForm.value });
-    setTimeout(() => {
-      this.searchForm.reset();
-    }, 800);
-  }
-
-  goToHome() {
-    window.location.href = window.location.origin + "/dashboard";
-  }
-
-  applyFilter(val: string) {
-    const data: any = { globalSearch: 1, SearchTerm: val };
-    const searchFormData: any = {};
-    Object.keys(this.searchForm.value).forEach((ele) => {
-      searchFormData[ele] = val;
-    });
-    this.searchService.searchTrigger.next({ data: data, searchFormData });
-    setTimeout(() => {
-      this.globalSearchInputBox.nativeElement.value = "";
-    }, 800);
   }
 }
