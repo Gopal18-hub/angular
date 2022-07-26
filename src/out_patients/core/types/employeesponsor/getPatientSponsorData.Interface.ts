@@ -61,4 +61,5 @@ interface objPatientSponsorDataAuditTrailInterface {
   remark: string;
   validfrom: string;
   validto: string;
+  slno: number;
 }
