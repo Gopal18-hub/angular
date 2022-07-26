@@ -620,7 +620,7 @@ export namespace ApiConstants {
   //GET CALL ON IOM HYPERLINK
   export const getopcompanyiomlocationwise =
     environment.PatientApiUrl +
-    "api/patient/getopcompanyiomlocationwise/69/3161";
+    "api/patient/getopcompanyiomlocationwise/69/31614";
   //http://172.30.0.16:1008/api/patient/getopcompanyiomlocationwise/69/3161
 
   export const getCorporate =

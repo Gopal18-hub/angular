@@ -173,22 +173,22 @@
             
         </div>
     </div>
-     <div class="h-1/2 mt-2">
+     <div class="h-1/2 mt-1">
         <div class="pl-2  employeeclass font-semi-bold font-base">
             <mat-label class="max-health-primary-color">Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
-        <div class="h-53 mt-2 whitespace-nowrap">
+        <div class="h-57 mt-2 whitespace-nowrap">
             <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
-        <div class="h-53 mt-2">
+        <div class="h-57 mt-2">
             <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
-        <div class="float-right mt-4">
+        <div class="float-right mt-2">
             <button mat-raised-button color="primary" (click)="employeeSave()" [disabled]="disableButton"class="mr-8" >Save</button>
             <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete" class="mr-6" >Delete</button>
-            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
+            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()" [disabled]="disableClear"   >Clear</button>
         </div>
     </div>
         
@@ -197,5 +197,9 @@
     
     </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between max-health-primary-color ">
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }} on {{ currentTime }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>
 <!-- [disabled]="disableButton"> -->
 <!-- [disabled]="disableClear" -->

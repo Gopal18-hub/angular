@@ -109,6 +109,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
     console.log(iacode);
     this.http
       .get(ApiConstants.expiredpatientdetail(regnumber, iacode))
+      .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
         this.expiredPatientDetail = data;
@@ -169,6 +170,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
           this.saveApimessage = resultdata;
           if (this.saveApimessage.toString() == "Saved Successfully") {
             this.messagedialogservice.success("Data Saved");
+            this.clearData();
+            //this.expiredpatientForm.controls["checkbox"].setValue(false);
           }
         });
     }
@@ -218,5 +221,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
       if (result == true) {
       }
     });
+  }
+
+  clearData() {
+    this.name = "";
   }
 }
