@@ -60,7 +60,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   disableClear: boolean = true;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
-  @ViewChild("table") tableRows: any;
+  @ViewChild("empdependanttable") employeeDependanttable: any;
   employeesponsorformData = {
     title: "",
     type: "object",
@@ -119,7 +119,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       "doj",
       "age",
       "relationship",
-      "remarks",
+      "remark",
     ],
     columnsInfo: {
       groupCompany: {
@@ -192,9 +192,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           width: "8rem",
         },
       },
-      remarks: {
+      remark: {
         title: "Remarks",
-        type: "string",
+        type: "input",
       },
     },
   };
@@ -356,24 +356,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         }
       }
     );
-    // this.employeesponsorForm.controls["maxId"].valueChanges.subscribe(
-    //   (value) => {
-    //     this.enableDelete();
-    //     this.enableSave();
-    //   }
-    // );
-
-    setTimeout(() => {
-      this.tableRows.selection.changed
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          if (this.tableRows.selection.selected.length > 0) {
-            // this.mergebuttonDisabled = false;
-          } else {
-            // this.mergebuttonDisabled = true;
-          }
-        });
-    });
   }
   disabled(employeesponsorform: any) {
     if (employeesponsorform.maxId) {
@@ -584,6 +566,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   //SAVE DIALOG
   employeeSave() {
+    console.log(this.employeeDependanttable);
+    return;
     console.log("inside save");
     let dialogRef = this.dialog.open(SavedialogComponent, {
       width: "25vw",
