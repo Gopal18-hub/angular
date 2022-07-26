@@ -2,18 +2,32 @@
     background-color: #F6F6F6;
     color:#004084;
 }
-.miscForm {
+
+
+.bill-service-wrapper
+{
+    ::ng-deep .mat-tab-link
+    {
+        min-width: auto;
+        font-weight: 600 !important;
+    }
     
-    ::ng-deep mat-label {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-    .change-password {
-      color: var(--primary-color);
-    }
+}
+
+.BServiceForm {   
+    
+   
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
+    ::ng-deep mat-label{
+        color: var(--primary-color);
+        font-weight: 600 !important;
+      }
+      ::ng-deep mat-tab-link
+      {
+        font-weight: 600 !important;
+      }
     ::ng-deep .mat-input-element 
     {
         color: black;
@@ -34,7 +48,20 @@
        color: var(--primary-color);
     font-weight: 600;
   }
+
+ 
   }
+  .max-body-wrapper{
+  ::ng-deep .mat-form-field-wrapper
+  {
+    padding-bottom: 0.42rem;  
+    
+  }
+  ::ng-deep mat-label{
+    color: var(--primary-color);
+    font-weight: 600 !important;
+  }
+}
 
   .h-white-banner
   {
@@ -83,7 +110,38 @@
 .btn-md{
  
     height: 89%;
+    width: 9.5rem;
+    // ::ng-deep .mat-input-element{
+    //     height: 1.7rem
+    // }
       
+}
+.div-otp
+{
+    ::ng-deep .mat-form-field-wrapper
+    {
+      padding-bottom: 0;  
+      
+    } 
+}
+.input-otp
+{
+        width: 9.5rem;
+    height: 100%;
+    margin-top: 23px;
+    margin-bottom: 0px;
+    padding: 0px;
+    // ::ng-deep .mat-form-field-wrapper
+    // {
+    //     margin-top: 10px;
+    //   padding-bottom: 0;  
+      
+    // } 
+}
+.btn-otp
+{
+    height: 75%;
+    width: 9.5rem;
 }
 .bg-white{
     background-color:white;
@@ -93,7 +151,14 @@
     white-space: nowrap;
 }
 .wt-mid{
-    width: 8.5%;  
+    width: 10.5%;  
+}
+.bg-deposit
+{
+    ::ng-deep .bg-darkgray
+    {
+        padding: 1px;
+    }
 }
 .h-white-banner
 {
@@ -101,13 +166,18 @@
 }
 .bg-billdetails{
     
-    height: 70%;
+    height: 76%;
     background-color:#45C0BE; 
 }
 .bg-blue
 {
    
     background-color: #BFE8E7;
+}
+.btn-blue
+{
+background-color: #45C0BE;
+
 }
 .txt-blue
 {   
@@ -118,7 +188,7 @@
 }
 .h-service
 {
-    height: 92%;
+    height: 60%;
     border-radius: 0% 0.5rem 0.5rem 0.5rem;
     margin-left: 0.3%;
     margin-right: 0.3%;
@@ -202,6 +272,13 @@ padding: 0%;
         min-width: 6rem !important;
     }
 }
+
+// .bg-darkgray
+// {​​​
+//     background: #d8d8d8;
+
+//     }
+
 .w-12
 {
     width: 12%;
@@ -224,3 +301,33 @@ padding: 0%;
 {
 margin-top: 0.19rem;
 }
+
+.lens-icon{
+
+    position: absolute;
+
+    left: 2px;
+
+    top: 2px;
+
+    height: 90%;
+
+    width: 25%;
+
+}
+
+.bg-darkgray{
+    
+    background: #d8d8d8;
+}
+.checkbox-bottom{
+    ::ng-deep mat-checkbox label span{
+        margin-bottom:2px;
+    }
+}
+.w-31{
+    width:80%
+}
+.w-27{
+    width:27%;
+    }

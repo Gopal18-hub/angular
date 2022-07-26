@@ -28,72 +28,121 @@ export class DetailsComponent implements OnInit {
   @ViewChild("selectedServices") selectedServicesTable: any;
   linkList = [
     {
-      title: "Bill",
-      path: "bill",
+      title: "Services",
+      path: "services",
     },
     {
-      title: "Credit Details",
-      path: "credit-details",
+      title: "Partial/Gen. Credit Bill Settlement",
+      path: "cred-bill-settlement",
+    },
+    {
+      title: " Refund After Bill",
+      // path: "credit-details",
+    },
+    {
+      title: " Refund Credit",
+      // path: "",
     },
   ];
   activeLink = this.linkList[0];
 
-  miscFormData = {
+  BDetailFormData = {
     type: "object",
     title: "",
     properties: {
+      billNo: {
+        type: "string",
+      },
       maxid: {
         type: "string",
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
-
       mobileNo: {
         type: "tel",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
-      bookingId: {
-        type: "string",
+      billDate: {
+        type: "date",
         // title: "SSN",
       },
-      company: {
-        type: "autocomplete",
-        // title: "SSN",
-      },
-      corporate: {
-        type: "autocomplete",
-        // title: "SSN",
-      },
-      narration: {
-        type: "string",
-        // title: "SSN",
-      },
-
-      b2bInvoiceType: {
+      datevalidation: {
         type: "checkbox",
-        options: [
-          {
-            title: "B2B Invoice Type",
-          },
-        ],
+        required: false,
+        options: [{ title: "" }],
+        defaultValue: 0,
+      },
+      fromDate: { type: "date", required: false },
+      toDate: { type: "date", required: false },
+      billAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      dipositrAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      discAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      discAftBill: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      refundAmt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      authBy: {
+        type: "string",
+        required: false,
+        readonly: true,
+      },
+      reason: {
+        type: "string",
+        required: false,
+        readonly: true,
+      },
+      paymentMode: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
+      },
+      otpTxt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
       },
     },
   };
 
   patientDetails!: Registrationdetails;
   serviceselectedList: [] = [] as any;
-  miscForm!: FormGroup;
-  miscServBillForm!: FormGroup;
+  BServiceForm!: FormGroup;
+
   questions: any;
-  question: any;
+
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
-      this.miscFormData.properties,
+      this.BDetailFormData.properties,
       {}
     );
 
-    this.miscForm = formResult.form;
+    this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
   }
 
