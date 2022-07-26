@@ -1,18 +1,52 @@
 .submodule-wrapper {
-  // height: 3.525em;
-  // align-items: center;
-  // &-left {
-  //   width: 39vw;
-  //   height: 2.625em;
-  //   .home-icon {
-  //     svg {
-  //       width: 42px;
-  //       height: 42px;
-  //     }
-  //   }
-  // }
+  height: 3.525em;
+  align-items: center;
+  &-left {
+    width: 39vw;
+    height: 2.625em;
+    .home-icon {
+      svg {
+        width: 42px;
+        height: 42px;
+      }
+    }
+    ::ng-deep mat-form-field {
+      width: 90%;
+      font-size: 14px;
+      background: #fff;
+      border-radius: 0.5em;
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+        .mat-form-field-flex {
+          padding: 0.35em 1em;
+        }
+        input {
+          font-size: 12px;
+          width: 96%;
+        }
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-end {
+          border: none;
+        }
+        .mat-form-field-prefix {
+          color: #afafaf;
+        }
+        .mat-form-field-suffix {
+          top: 0.4em;
+        }
+      }
+      .search-pointer-trigger {
+        .mat-menu-trigger {
+          position: absolute;
+          left: 136px;
+          top: 1em;
+        }
+      }
+    }
+  }
   &-right {
-    width: 100vw;
+    width: 67.5vw;
     background-color: #fff;
     padding: 0 1em;
     border-radius: 0 0 0 1em;
