@@ -56,8 +56,26 @@
     }
   }
 }
+.menu-opened-down {
+  top: 3.5rem;
+}
+.menu-opened-up {
+  top: 5.625rem;
+  z-index: 9999 !important;
+  &.more-sub-menu {
+    top: 8.5rem;
+  }
+}
+.main-menu-trigger {
+  font-size: 1rem;
+  line-height: 0.5rem;
+  border-radius: 0 0 13px 13px;
+  background-color: #fff;
+  height: 24px;
+  width: 40px;
+}
 .floating-menu {
-  z-index: 20;
+  z-index: 9;
   .main-modules {
     min-width: calc(100vw);
     clip-path: polygon(

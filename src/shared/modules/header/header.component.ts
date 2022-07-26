@@ -9,8 +9,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { FormGroup } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
 import { QuestionControlService } from "../../ui/dynamic-forms/service/question-control.service";
-
+import { ConnectionPositionPair } from "@angular/cdk/overlay";
 import { DbService } from "../../services/db.service";
+
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -33,6 +34,23 @@ export class HeaderComponent implements OnInit {
   @ViewChild("searchVal") globalSearchInputBox: any;
 
   activePageItem: any;
+
+  isOpen = false;
+
+  public menuPosition = [
+    new ConnectionPositionPair(
+      {
+        originX: "start",
+        originY: "top",
+      },
+      {
+        overlayX: "start",
+        overlayY: "bottom",
+      },
+      0,
+      57
+    ),
+  ];
 
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,
