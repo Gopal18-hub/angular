@@ -23,7 +23,6 @@ export class TokenInterceptor implements HttpInterceptor {
   private getCachedResponse(url: string): Observable<IHttpCacheResponse> {
     const cachedResponsePromise: Promise<IHttpCacheResponse> =
       this.db.getCacheResponse(url);
-    console.log(cachedResponsePromise);
     return from(cachedResponsePromise);
   }
 
@@ -76,6 +75,8 @@ export class TokenInterceptor implements HttpInterceptor {
     // Used to be accessible from the whole chain of observers
     let sharedCacheResponse: IHttpCacheResponse | null = null;
 
+    console.log(request);
+
     return this.getCachedResponse(request.url).pipe(
       // Modify request headers if there is already something in cache
       mergeMap((cachedResponse: IHttpCacheResponse) => {
@@ -83,7 +84,7 @@ export class TokenInterceptor implements HttpInterceptor {
         sharedCacheResponse = cachedResponse;
 
         // If there is a response in cache, put the date in header so the api won't send the data again
-        if (cachedResponse && cachedResponse.body) {
+        if (cachedResponse && cachedResponse.body && request.method == "GET") {
           // const headers = new HttpHeaders({
           //   "if-last-modified-since": cachedResponse.lastModified,
           // });
@@ -100,7 +101,7 @@ export class TokenInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
           // Save the response in cache
           tap((event) => {
-            if (event instanceof HttpResponse) {
+            if (event instanceof HttpResponse && request.method == "GET") {
               const body = event.body;
 
               // Save everything in cache
@@ -114,7 +115,7 @@ export class TokenInterceptor implements HttpInterceptor {
           // If any error occurs and a response in cache is available, return it.
           catchError((err, caught) => {
             // Require better logic but for the example, on error, return value cached
-            if (err instanceof HttpErrorResponse) {
+            if (err instanceof HttpErrorResponse && request.method == "GET") {
               const response: HttpResponse<any> = new HttpResponse({
                 status: 200,
                 body: sharedCacheResponse?.body,
