@@ -10,6 +10,7 @@ import { FormGroup } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
 import { QuestionControlService } from "../../ui/dynamic-forms/service/question-control.service";
 
+import { DbService } from "../../services/db.service";
 @Component({
   selector: "maxhealth-header",
   templateUrl: "./header.component.html",
@@ -41,7 +42,8 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private searchService: SearchService,
-    private formService: QuestionControlService
+    private formService: QuestionControlService,
+    private dbService: DbService
   ) {}
 
   async ngOnInit() {
@@ -75,6 +77,7 @@ export class HeaderComponent implements OnInit {
       localStorage.clear();
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
+      this.dbService.cachedResponses.clear();
       window.location.href = window.location.origin + "/login";
     });
   }
