@@ -132,4 +132,10 @@ export namespace CrystalReport {
   export const opBillRegisterReport = (params: any) => {
     return `${environment.ReportsSampleUrl}/OP%20Bill%20Register/OPBillRegister?FromDate=${params.FromDate}&ToDate=${params.ToDate}&sortBy=${params.sortBy}&locationID=${params.locationID}`;
   };
+  export const CashScrollReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}`;
+  };
+  export const SummaryReportForUtilisationReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
+  };
 }
