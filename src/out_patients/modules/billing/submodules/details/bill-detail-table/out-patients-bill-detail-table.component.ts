@@ -5,15 +5,16 @@ import { Router } from "@angular/router";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+
 import { Subject } from "rxjs";
-import { GstComponent } from "../gst/gst.component";
+import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
 
 @Component({
-  selector: "out-patients-bill-detail",
-  templateUrl: "./bill-detail.component.html",
-  styleUrls: ["./bill-detail.component.scss"],
+  selector: "out-patients-bill-detail-table",
+  templateUrl: "./out-patients-bill-detail-table.component.html",
+  styleUrls: ["./out-patients-bill-detail-table.component.scss"],
 })
-export class BillDetailComponent implements OnInit {
+export class BillDetailTableComponent implements OnInit {
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -191,16 +192,10 @@ export class BillDetailComponent implements OnInit {
     displayedColumns: [
       "Sno",
       "ServiceType",
-      "ItemDescription",
-      "ItemforModify",
-      "TariffPrice",
-      "Qty",
-      "Price",
-      "DoctorName",
-      "Disc",
+      "ItemName",
+      "BilledAmount",
       "DiscAmount",
-      "TotalAmount",
-      "GST",
+      "Refund",
     ],
     columnsInfo: {
       Sno: {
@@ -208,65 +203,24 @@ export class BillDetailComponent implements OnInit {
         type: "string",
       },
       ServiceType: {
-        title: "Service Type",
-        type: "string",
-        style: {
-          width: "120px",
-        },
-      },
-      ItemDescription: {
-        title: "Item Description",
-        type: "string",
-        style: {
-          width: "180px",
-        },
-      },
-      ItemforModify: {
-        title: "Item For Modify",
-        type: "string",
-        style: {
-          width: "120px",
-        },
-      },
-      TariffPrice: {
-        title: "Tariff Price",
+        title: "Service Name",
         type: "string",
       },
-      Qty: {
-        title: "Qty",
+      ItemName: {
+        title: "Item Name",
         type: "string",
       },
-      Price: {
-        title: "Price",
+      BilledAmount: {
+        title: "Billed Amount",
         type: "string",
       },
-      DoctorName: {
-        title: "Doctor Name",
-        type: "string",
-        style: {
-          width: "120px",
-        },
-      },
-      Disc: {
-        title: "Disc%",
-        type: "string",
-      },
+
       DiscAmount: {
-        title: "Disc. Amount",
+        title: "Discount Amount",
         type: "string",
-        style: {
-          width: "120px",
-        },
       },
-      TotalAmount: {
-        title: "Total Amount",
-        type: "string",
-        style: {
-          width: "120px",
-        },
-      },
-      GST: {
-        title: "GST%",
+      Refund: {
+        title: "Refund",
         type: "string",
       },
     },
