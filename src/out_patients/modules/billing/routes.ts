@@ -42,12 +42,15 @@ const routes: Routes = [
         path: "details",
         component: DetailsComponent,
         children: [
-          // { path: "credit-details", component: CreditDetailsComponent },
           {
-            path: "credit-bill-settlement",
+            path: "cred-bill-settlement",
             component: PartialCredBillComponent,
           },
           { path: "services", component: BillDetailTableComponent },
+          {
+            path: "refund-after-bill",
+            component: BillDetailTableComponent,
+          },
         ],
       },
       { path: "online-op-bill", component: OnlineOpBillsComponent },

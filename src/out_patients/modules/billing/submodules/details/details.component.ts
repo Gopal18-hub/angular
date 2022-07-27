@@ -37,7 +37,7 @@ export class DetailsComponent implements OnInit {
     },
     {
       title: " Refund After Bill",
-      // path: "credit-details",
+      path: "refund-after-bill",
     },
     {
       title: " Refund Credit",

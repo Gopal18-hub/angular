@@ -23,83 +23,44 @@ export class PartialCredBillComponent implements OnInit {
     private cookie: CookieService
   ) {}
 
-  miscBillData = {
+  BDetailFormData = {
     type: "object",
     title: "",
     properties: {
-      serviceType: {
-        type: "dropdown",
-        title: "Service Type",
-        required: true,
-      },
-      item: {
-        type: "dropdown",
-        title: "Item",
-        required: true,
-      },
-      tffPrice: {
+      billNo: {
         type: "string",
-        title: "Tarrif Price",
-        required: true,
       },
-      qty: {
+      maxid: {
         type: "string",
-        title: "Qty",
-        maximum: 9,
-        minimum: 1,
-        required: true,
+        defaultValue: this.cookie.get("LocationIACode") + ".",
       },
-      reqAmt: {
-        type: "string",
-        title: "Req. Amt.",
-        minimum: 1,
-        required: true,
+      mobileNo: {
+        type: "tel",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
-      pDoc: {
-        type: "dropdown",
-        title: "Procedure Doctor",
+      billDate: {
+        type: "date",
+        // title: "SSN",
       },
-      remark: {
-        type: "dropdown",
-        title: "Remarks",
-        required: true,
-      },
-      self: {
+      datevalidation: {
         type: "checkbox",
         required: false,
-        options: [{ title: "Self" }],
+        options: [{ title: "" }],
+        defaultValue: 0,
       },
-      referralDoctor: {
-        type: "dropdown",
-        required: true,
-        title: "Referral Doctor",
-      },
-      interactionDetails: {
-        type: "dropdown",
-        required: true,
-        title: "Interaction Details",
-      },
+      fromDate: { type: "date", required: false },
+      toDate: { type: "date", required: false },
       billAmt: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
-      availDiscCheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "Avail Plan Disc ( - )" }],
-      },
-      availDisc: {
+      dipositrAmt: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
-      },
-      discAmtCheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: " Discount  Amount  (  -  ) " }],
       },
       discAmt: {
         type: "number",
@@ -107,80 +68,46 @@ export class PartialCredBillComponent implements OnInit {
         defaultValue: 0.0,
         readonly: true,
       },
-      dipositAmtcheck: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "Deposit Amount ( - )" }],
-      },
-
-      dipositAmt: {
+      discAftBill: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
-      patientDisc: {
+      refundAmt: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
-      compDisc: {
-        type: "number",
+      companyDue: {
+        type: "string",
         required: false,
-        defaultValue: 0.0,
         readonly: true,
       },
-      planAmt: {
-        type: "number",
+      patienDue: {
+        type: "string",
         required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      coupon: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      coPay: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      credLimit: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      gstTax: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      amtPayByPatient: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      amtPayByComp: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
         readonly: true,
       },
       paymentMode: {
         type: "radio",
-        required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
+          {
+            title: "Patient Due",
+            value: "patientDue",
+          },
+          {
+            title: "Company Due",
+            value: "companyDue",
+          },
         ],
-        defaultValue: "cash",
+      },
+      otpTxt: {
+        type: "number",
+        required: false,
+        defaultValue: 0.0,
+        readonly: true,
       },
     },
   };
@@ -228,19 +155,19 @@ export class PartialCredBillComponent implements OnInit {
 
   serviceselectedList: [] = [] as any;
 
-  miscServBillForm!: FormGroup;
+  BServiceForm!: FormGroup;
 
-  question: any;
+  questions: any;
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
-      this.miscBillData.properties,
+      this.BDetailFormData.properties,
       {}
     );
 
-    this.miscServBillForm = serviceFormResult.form;
-    this.question = serviceFormResult.questions;
+    this.BServiceForm = serviceFormResult.form;
+    this.questions = serviceFormResult.questions;
   }
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },

@@ -376,17 +376,18 @@
                 <div class="flex-column flex border-radius-lg justify-between ">
                 
                 <div class="flex  flex-column">
-                <div class="pr-1 float-right div-otp justify-end flex mt-1 pt-1 h-full">
+                <div class="pr-2 float-right div-otp justify-end flex mt-1 pt-1 h-full">
                  
-                <div class="flex justify-start align-items-center">
+                 <div class="flex justify-start align-items-center"> 
                   <button
                   mat-raised-button
                   color="primary" 
-                  class="btn-otp btn-blue  mr-1"
+                  class="btn-otp btn-blue mr-1"
                   type="submit"
                   >
                  Send OTP
                   </button>
+                  </div>
                   <maxhealth-question
                   [question]="questions[15]"
                   [form]="BServiceForm"
@@ -395,21 +396,21 @@
                   [index]="15"
                   >
                   </maxhealth-question>
-                </div>
+                <!-- </div> -->
                
                 <div class="flex">
                 <button
                   mat-raised-button
                   color="primary"
-                  class="btn-otp btn-blue pl-2 mt-1 pb-1"
+                  class="btn-otp btn-blue pl-2 mt-1"
                   type="submit"
                   >
                   Send OTP to Manager
                   </button>
                 </div>
                 </div>
-                <div class="ml-2 mt-1 h-full">
-                <div class="flex">
+                <div class="ml-2 h-full">
+                <div class="flex justify-end pr-2">
                   <div class="flex mr-1">
                   <button
                   mat-raised-button
@@ -468,7 +469,7 @@
                 </div>
                 </div>
                 <div class="ml-2 h-full">
-                  <div class="flex">
+                  <div class="flex justify-end pr-1">
                     <div class="flex mr-1 align-items-center">
                     <button
                     mat-raised-button
