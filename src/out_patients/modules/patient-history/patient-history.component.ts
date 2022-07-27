@@ -84,7 +84,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "type",
         style: {
-          width: '4rem'
+          width: '6rem'
         }
       },
       billdate: {
@@ -113,7 +113,7 @@ export class PatientHistoryComponent implements OnInit {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '5rem'
+          width: '4rem'
         }
       },
       discountamt: {
@@ -127,14 +127,14 @@ export class PatientHistoryComponent implements OnInit {
         title: "Receipt Amt",
         type: "number",
         style: {
-          width: '7rem'
+          width: '6rem'
         }
       },
       refundamt: {
         title: "Refund Amt",
         type: "number",
         style: {
-          width: '6.5rem'
+          width: '6rem'
         }
       },
       balanceamt: {
@@ -187,7 +187,7 @@ export class PatientHistoryComponent implements OnInit {
     { billno: 'BLDP24925', type: 'Er Refund', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
     refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: ''
     },
-    { billno: 'BLDP24926', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
+    { billno: 'BLDP24926', type: 'Deposit Refund', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
       refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: ''
     },
     { billno: 'BLDP24927', type: 'Deposit', billdate: '05/11/2022', ipno: '1234', admdischargedate: '05/11/2022', billamt: '150.00', discountamt: '0.00', receiptamt: '1000.00',
@@ -208,14 +208,11 @@ export class PatientHistoryComponent implements OnInit {
   nationality:any;
   ssn:any;
 
-  findpathisimage: string | undefined;
-  findpathismessage: string | undefined;
-  patienthistorytable: boolean = false;
-  defaultUI: boolean = true;
   printbtn: boolean = true;
   searchbtn: boolean = true;
+
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("stationId"));
+  StationId:any = Number(this.cookie.get("StationId"));
   @ViewChild("table") tableRows: any;
   private readonly _destroying$ = new Subject<void>();
   constructor( 
@@ -327,7 +324,7 @@ export class PatientHistoryComponent implements OnInit {
           iacode,
           regnumber,
           this.hsplocationId,
-          this.stationId
+          this.StationId
         ))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultdata:any)=>{
@@ -335,19 +332,10 @@ export class PatientHistoryComponent implements OnInit {
           if(resultdata.length == 0)
           {
             console.log("empty");
-            this.defaultUI = false;
-            this.patienthistorytable = true;
             this.patienthistorylist = this.data;
             this.patienthistorylist = this.setimage(this.patienthistorylist); 
-            // this.printbtn = false;
-            // this.patienthistorytable = false;
-            // this.defaultUI = true;
-            // this.findpathismessage = "No records found";
-            // this.findpathisimage = "norecordfound";
           }
           else{
-            this.defaultUI = false;
-            this.patienthistorytable = true;
             this.patienthistorylist = this.data;
             this.printbtn = false;
             // this.patienthistorylist = resultdata;
@@ -355,10 +343,6 @@ export class PatientHistoryComponent implements OnInit {
         },
         (error)=>{
           console.log(error);
-          // this.patienthistorytable = false;
-          // this.defaultUI = true;
-          // this.findpathismessage = "No records found";
-          // this.findpathisimage = "norecordfound";
         }
         )
       }
@@ -389,8 +373,6 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
     this.questions[0].readonly = false;
-    this.patienthistorytable = false;
-    this.defaultUI = true;
     this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.patientDetails = [];
     this.printbtn = true;
