@@ -50,11 +50,11 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
-    clickedRows: true,
+    clickedRows: false,
     // clickSelection: "single",
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: true,
+    selectBox: false,
     displayedColumns: [
       "billno",
       "type",
@@ -76,7 +76,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billno",
         style: {
-          width: '5rem'
+          width: '7rem'
         }
       },
       type: {
@@ -349,14 +349,7 @@ export class PatientHistoryComponent implements OnInit {
     }
     
   }
-  printdialog()
-  {  
-    console.log(this.tableRows.selection.selected);  
-    if(this.tableRows.selection.selected.length > 0)
-    {
-      this.msgdialog.success("Printing Successfull");
-    }
-  }
+
   clear()
   {
     this.patienthistoryform.reset();
@@ -384,7 +377,7 @@ export class PatientHistoryComponent implements OnInit {
   printrow(event:any){
     console.log(event);
     console.log(this.tableRows.selection.selected.length);
-    if(event.column == "printIcon" || this.tableRows.selection.selected.length > 0){
+    if(event.column == "printIcon"){
       console.log(event.row.billno);
       this.msgdialog.success("Printing Successfull");
     }

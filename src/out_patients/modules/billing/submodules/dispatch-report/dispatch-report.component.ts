@@ -24,18 +24,18 @@ export class DispatchReportComponent implements OnInit {
 
   public billedlocation: billedLocationModel[] = [];
   // public dispatchreport: dispatchReportListModel[] = [];
-  public dispatchreportsave: dispatchReportSaveModel[] = [];
+  // public dispatchreport: dispatchReportListModel[] = [];
+  public dispatchreportsave: dispatchReportSaveModel = new dispatchReportSaveModel();
   public obj: objdispatchsave[] = [];
 
-  public dispatchreport!: dispatchReportList;
-
+  public dispatchreport: dispatchReportList = {dispatchlist:[], dispatchDatalist:[]};
   config: any = {
     clickedRows: true,
     actionItems: false,
     dateformat: "dd/MM/YYYY HH:mm:ss.ss",
     selectBox: true,
     displayedColumns: [
-      "sno",
+      "sNo",
       "itemName",
       "orderdatetime",
       "ptnName",
@@ -46,7 +46,7 @@ export class DispatchReportComponent implements OnInit {
       "remarks"
     ],
     columnsInfo: {
-      sno: {
+      sNo: {
         title: "S.No",
         type: "number",
         style: {
@@ -86,28 +86,28 @@ export class DispatchReportComponent implements OnInit {
       },
       receiveddatetime: {
         title: "Received Date Time",
-        type: "date",
+        type: "input",
         style: {
           width: "11rem"
         }
       },
       dispatcheddatetime: {
         title: "Dispatched Date Time",
-        type: "date",
+        type: "input",
         style: {
           width: "11rem"
         }
       },
       dispatchplace: {
         title: "Dispatch Place",
-        type: "string",
+        type: "input",
         style: {
           width: "1-rem"
         }
       },
       remarks: {
         title: "Remarks",
-        type: "string"
+        type: "input"
       }
     },
   };
@@ -152,28 +152,6 @@ export class DispatchReportComponent implements OnInit {
     },
   };
 
-  tableFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      receiveddatetime: {
-        title: "Received Date Time",
-        type: "date"
-      },
-      dispatcheddatetime: {
-        title: "Dispatched Date Time",
-        type: "date"
-      },
-      dispatchplace: {
-        title: "Dispatch Place",
-        type: "autocomplete",
-      },
-      remarks: {
-        title: "Remarks",
-        type: "string",
-      }
-    },
-  };
   dispatchhistoryform!: FormGroup;
   questions: any;
   title: any;
@@ -187,7 +165,10 @@ export class DispatchReportComponent implements OnInit {
   @ViewChild("showtable") tableRows: any; 
 
   private readonly _destroying$ = new Subject<void>();
-  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private matdialog: MatDialog, private http: HttpService, private datepipe: DatePipe) { }
+  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private matdialog: MatDialog, private http: HttpService, private datepipe: DatePipe) 
+  {
+
+  }
   today: any;
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -202,7 +183,9 @@ export class DispatchReportComponent implements OnInit {
     this.getBilledLocation();
   }
   ngAfterViewInit(): void{
-    
+    this.dispatchhistoryform.controls["radio"].valueChanges.subscribe(value=>{
+      this.dispatchreport = {dispatchlist:[], dispatchDatalist:[]};
+    })
   }
   getBilledLocation() {
     this.http
@@ -258,7 +241,7 @@ export class DispatchReportComponent implements OnInit {
         console.log(resultdata);
         this.dispatchreport = resultdata;
         console.log(resultdata.dispatchlist.length);
-        for(var i = 0; i < resultdata.dispatchlist.length; i++)
+        for(var i = 0; i < this.dispatchreport.dispatchlist.length; i++)
         {
           this.dispatchreport.dispatchlist[i].sNo = i + 1;
           console.log(this.dispatchreport.dispatchlist[i].sNo);
@@ -305,41 +288,72 @@ export class DispatchReportComponent implements OnInit {
   }
   savedialog()
   {
-    console.log(this.dispatchreportsave);
+    // console.log(this.dispatchreportsave);
+    console.log(this.tableRows);
     console.log(this.tableRows.selection.selected);
     console.log(this.tableRows.selection.selected.length);
-    console.log(this.tableRows.selection.selected[0]);
+    console.log(this.tableRows.selection.selected[0].sNo);
+    // console.log(this.dispatchreportsave);
+    debugger;
+    this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
+    this.tableRows.selection.selected.forEach((e:any) => {
+      console.log(e);
+      
+      this.dispatchreportsave.objDtSaveReport.push(
+        {
+          slNo: '222',
+          testName:'test',
+          patientName:'name',
+          billNo: '3222',
+          billid: '2222',
+          remarks: 'string',
+          dispatchDateTime: '2022-06-27',
+          dispatchPlace: 'delhi',
+          recievedDateTime: '2022-06-27',
+          operatorid: "9923",
+          repType:  "1",
+          datetime: "2022-06-27",
+          chk: true,
+          balance: '4343',
+          itemid: "22",
+        })
+        this.dispatchreportsave.operatorid = "9923";
+      });
+      console.log(this.dispatchreportsave);
     console.log(this.dispatchreportsave);
-    this.msgdialog.success("Data Saved Succesully");
-    console.log(this.getdispatchrequestbody());
-    this.http.post(ApiConstants.dispatchreportsave, this.getdispatchrequestbody()).subscribe((res:any)=>{
+    this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
       console.log(res);
+      if(res == 1)
+      {
+        this.msgdialog.success("Data Saved Succesully");
+      }
     })
   }
   //as of now using hardcode value for test purpose
-  getdispatchrequestbody(): dispatchReportSaveModel{
-  
-    return ( this.dispatchreportsave[0] = new dispatchReportSaveModel(
-      this.obj[0] = new objdispatchsave(
-        "222",
-        "Jitu Testing ",
-        "2022-06-27",
-        "KAKARAN Singh",
-        "3222",
-        "2022-06-27",
-        "Delhi .",
-        "New Delhi .",
-        true,
-        "2222",
-        "22",
-        "22",
-        "2022-06-27",
-        "4343",
-        "1"
-      ),
-      444
-    ));
-  }
+  // getdispatchrequestbody(): dispatchReportSaveModel{
+  //   return ( this.dispatchreportsave = new dispatchReportSaveModel(
+  //     [
+  //       {
+  //         'slNo': '222',
+  //         'testName': 'test',
+  //         'datetime': '2022-06-27',
+  //         'patientName': 'test',
+  //         'billNo': '3222',
+  //         'dispatchDateTime': '2022-06-27',
+  //         'dispatchPlace': 'string',
+  //         'remarks': 'string',
+  //         'chk': true,
+  //         'billid': '2222',
+  //         'operatorid': '1',
+  //         'itemid': '22',
+  //         'recievedDateTime': '2022-06-27',
+  //         'balance': '4343',
+  //         'repType': '1'
+  //       }
+  //     ],
+  //     9923,
+  //   ));
+  // }
 
 
 }

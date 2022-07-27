@@ -89,12 +89,13 @@ export class QmsComponent implements OnInit {
       this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
     },
     error => {
-      if(error.error.text == "Record Saved Successfully")
-      {
-        var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
-        var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
-        this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
-      }
+      console.log(error);
+      // if(error.error.text == "Record Saved Successfully")
+      // {
+      //   var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
+      //   var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
+      //   this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
+      // }
     })
   }
   clear()

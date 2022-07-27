@@ -76,11 +76,11 @@
                     <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-1">
-                    <maxhealth-table-form
+                    <maxhealth-table
                     [config]="config"
-                    [data]="dispatchreport"
+                    [data]="dispatchreport?.dispatchlist"
                     #showtable
-                    ></maxhealth-table-form>
+                    ></maxhealth-table>
                 </div>
             </div>
 
@@ -89,11 +89,11 @@
                     <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-1">
-                    <maxhealth-table-form
+                    <maxhealth-table
                     [config]="config"
-                    [data]="dispatchreport"
+                    [data]="dispatchreport?.dispatchlist"
                     #pendingtable
-                    ></maxhealth-table-form>
+                    ></maxhealth-table>
                 </div>
             </div>
 
