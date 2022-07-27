@@ -55,7 +55,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection = new SelectionModel<any>(false, []);
     }
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
@@ -72,7 +80,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
