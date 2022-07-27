@@ -15,6 +15,8 @@ import { DbService } from "../db.service";
 import { mergeMap, tap, catchError } from "rxjs/operators";
 import { Observable, of, throwError, from } from "rxjs";
 
+const AllowInDB = ["MaxPermission/getpermissionmatrixrolewise"];
+
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   constructor(public auth: AuthService, private db: DbService) {}
@@ -83,48 +85,65 @@ export class TokenInterceptor implements HttpInterceptor {
         // Keep reference so we do not have to fetch it again later
         sharedCacheResponse = cachedResponse;
 
+        const exist = AllowInDB.find((uri) => {
+          return request.url.match(uri);
+        });
+
         // If there is a response in cache, put the date in header so the api won't send the data again
-        if (cachedResponse && cachedResponse.body && request.method == "GET") {
+        if (
+          cachedResponse &&
+          cachedResponse.body &&
+          request.method == "GET" &&
+          exist
+        ) {
           // const headers = new HttpHeaders({
           //   "if-last-modified-since": cachedResponse.lastModified,
           // });
 
           // // Update headers
           // request = request.clone({ headers });
-
+          //this.processNext(request, next, sharedCacheResponse);
           const response: HttpResponse<any> = new HttpResponse({
             status: 200,
             body: sharedCacheResponse?.body,
           });
           return of(response);
         }
-        return next.handle(request).pipe(
-          // Save the response in cache
-          tap((event) => {
-            if (event instanceof HttpResponse && request.method == "GET") {
-              const body = event.body;
+        return this.processNext(request, next, sharedCacheResponse);
+      })
+    );
+  }
 
-              // Save everything in cache
-              this.db.putCacheResponse({
-                url: request.url,
-                body: body,
-                lastModified: event.headers.get("last-modified"),
-              });
-            }
-          }),
-          // If any error occurs and a response in cache is available, return it.
-          catchError((err, caught) => {
-            // Require better logic but for the example, on error, return value cached
-            if (err instanceof HttpErrorResponse && request.method == "GET") {
-              const response: HttpResponse<any> = new HttpResponse({
-                status: 200,
-                body: sharedCacheResponse?.body,
-              });
-              return of(response);
-            }
-            return throwError(err);
-          })
-        );
+  processNext(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+    sharedCacheResponse: IHttpCacheResponse | null
+  ) {
+    return next.handle(request).pipe(
+      // Save the response in cache
+      tap((event) => {
+        if (event instanceof HttpResponse && request.method == "GET") {
+          const body = event.body;
+
+          // Save everything in cache
+          this.db.putCacheResponse({
+            url: request.url,
+            body: body,
+            lastModified: event.headers.get("last-modified"),
+          });
+        }
+      }),
+      // If any error occurs and a response in cache is available, return it.
+      catchError((err, caught) => {
+        // Require better logic but for the example, on error, return value cached
+        if (err instanceof HttpErrorResponse && request.method == "GET") {
+          const response: HttpResponse<any> = new HttpResponse({
+            status: 200,
+            body: sharedCacheResponse?.body,
+          });
+          return of(response);
+        }
+        return throwError(err);
       })
     );
   }
