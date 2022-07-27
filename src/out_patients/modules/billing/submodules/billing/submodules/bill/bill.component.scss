@@ -8,4 +8,12 @@
   .bg-deposit {
     background-color: #f6f6f6;
   }
+  ::ng-deep {
+    mat-radio-group {
+      flex-direction: row;
+      mat-radio-button {
+        margin-right: 1.5rem;
+      }
+    }
+  }
 }
