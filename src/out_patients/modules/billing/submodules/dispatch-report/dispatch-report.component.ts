@@ -40,8 +40,8 @@ export class DispatchReportComponent implements OnInit {
       "orderdatetime",
       "ptnName",
       "billno",
-      "receiveddatetime",
-      "dispatcheddatetime",
+      "receive_date",
+      "r_dispatchdate",
       "dispatchplace",
       "remarks"
     ],
@@ -74,35 +74,35 @@ export class DispatchReportComponent implements OnInit {
         type: "string",
         tooltipColumn: "ptnName",
         style: {
-          width: "10rem"
+          width: "8rem"
         }
       },
       billno: {
         title: "Max ID",
         type: "string",
         style: {
-          width: "7rem"
+          width: "6rem"
         }
       },
-      receiveddatetime: {
+      receive_date: {
         title: "Received Date Time",
         type: "input",
         style: {
           width: "11rem"
         }
       },
-      dispatcheddatetime: {
+      r_dispatchdate: {
         title: "Dispatched Date Time",
         type: "input",
         style: {
-          width: "11rem"
+          width: "12rem"
         }
       },
       dispatchplace: {
         title: "Dispatch Place",
         type: "input",
         style: {
-          width: "1-rem"
+          width: "11rem"
         }
       },
       remarks: {
@@ -301,23 +301,23 @@ export class DispatchReportComponent implements OnInit {
       
       this.dispatchreportsave.objDtSaveReport.push(
         {
-          slNo: '222',
-          testName:'test',
-          patientName:'name',
-          billNo: '3222',
-          billid: '2222',
-          remarks: 'string',
-          dispatchDateTime: '2022-06-27',
-          dispatchPlace: 'delhi',
-          recievedDateTime: '2022-06-27',
-          operatorid: "9923",
+          slNo: e.sNo.toString,
+          testName:e.itemName,
+          patientName:e.ptnName,
+          billNo: e.billno,
+          billid: e.billid.toString,
+          remarks: e.remarks,
+          dispatchDateTime: e.r_dispatchdate,
+          dispatchPlace: e.dispatchplace,
+          recievedDateTime: e.receive_date,
+          operatorid: e.operatorid.toString,
           repType:  "1",
-          datetime: "2022-06-27",
+          datetime: e.orderdatetime,
           chk: true,
-          balance: '4343',
-          itemid: "22",
+          balance: e.balance,
+          itemid: e.itemid.toString,
         })
-        this.dispatchreportsave.operatorid = "9923";
+        this.dispatchreportsave.operatorid = e.operatorid.toString;
       });
       console.log(this.dispatchreportsave);
     console.log(this.dispatchreportsave);
