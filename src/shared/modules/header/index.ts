@@ -15,6 +15,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { RedirectComponent } from "./redirect/redirect.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @NgModule({
   declarations: [HeaderComponent, SubComponent, RedirectComponent],
@@ -33,6 +34,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatDividerModule,
     DynamicFormsModule,
     MatProgressSpinnerModule,
+    OverlayModule,
   ],
   exports: [HeaderComponent, SubComponent],
   providers: [],

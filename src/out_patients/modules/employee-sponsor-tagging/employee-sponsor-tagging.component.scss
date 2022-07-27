@@ -31,6 +31,9 @@
 .w-12{
     width:12%;
 }
+.w-11{
+    width:11%;
+}
 .w-8{
     width:9%
 }
@@ -45,7 +48,7 @@
 
 .iom-message{
     position: absolute;
-    margin-left: 50%;
+    margin-left: 53%;
     top: 24.5%;
     color: red;
 
@@ -82,8 +85,12 @@ opacity: 0.5;
 
 //second row custom class
 .ml-3-23{
-    margin-left:3.23%
+    margin-left:1%
 }
+.ml-1-5{
+    margin-left:1.5%
+}
+
 .ml-0-64{
     margin-left:0.70%;
 }
@@ -98,7 +105,7 @@ margin-left:0.35%;
 }
 
 //checkbix
-.checkbox-bottom{
+.checkbox-bottom-margin{
     ::ng-deep mat-checkbox label span{
         margin-bottom:2px;
     }

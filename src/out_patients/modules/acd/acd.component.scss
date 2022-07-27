@@ -11,9 +11,11 @@
         left: 1px !important;
     }
 }
-::ng-deep .dateW{
-    
+::ng-deep .dateW{    
     width: 27% !important;
+}
+::ng-deep .tableh{    
+    height: 45% !important;
 }
 .serachcss{
     ::ng-deep .max-table-wrapper{
