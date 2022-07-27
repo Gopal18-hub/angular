@@ -119,6 +119,8 @@
 .h-service
 {
     height: 92%;
+    // height: -webkit-fill-available;
+
     border-radius: 0% 0.5rem 0.5rem 0.5rem;
     margin-left: 0.3%;
     margin-right: 0.3%;
@@ -127,7 +129,8 @@
 // .h-9/20
 .h-table
 {
-    height: 54%;
+    // height: 54%;
+    height: -webkit-fill-available;
 }
 
 .bg-paymet
