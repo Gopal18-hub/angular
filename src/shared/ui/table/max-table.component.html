@@ -182,7 +182,22 @@
   ></mat-checkbox>
 </ng-template>
 
+<ng-template #checkboxActive let-data>
+  <mat-checkbox [checked]="!!data.output" color="primary"></mat-checkbox>
+</ng-template>
+
 <ng-template #input let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+    />
+  </mat-form-field>
+</ng-template>
+
+<ng-template #inputDate let-data>
   <mat-form-field appearance="outline" floatLabel="never">
     <input
       matInput

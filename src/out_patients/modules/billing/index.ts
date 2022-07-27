@@ -14,12 +14,10 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatDividerModule } from "@angular/material/divider";
-
 import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
 import { PortalModule } from "@angular/cdk/portal";
-
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
@@ -58,10 +56,12 @@ import { OrderSetComponent } from "./submodules/billing/submodules/services/subm
 import { ConsumablesComponent } from "./submodules/billing/submodules/services/submodules/consumables/consumables.component";
 import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
-
+import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
+import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
 @NgModule({
   declarations: [
     BillingComponent,
+    BillDetailTableComponent,
     BillingComponentPage,
     DepositComponent,
     DetailsComponent,
@@ -97,6 +97,7 @@ import { GstComponent } from "../billing/submodules/miscellaneous-billing/billin
     OrderSetComponent,
     ConsumablesComponent,
     BillDetailComponent,
+    PartialCredBillComponent,
   ],
   imports: [
     BillingRoutingModule,
