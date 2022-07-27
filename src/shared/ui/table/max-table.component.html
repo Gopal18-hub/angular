@@ -55,7 +55,12 @@
               *ngIf="displayColumnsInfo[col].type"
               [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
-                $implicit: { output: element[col], config: config, col: col }
+                $implicit: {
+                  output: element[col],
+                  config: config,
+                  col: col,
+                  element: element
+                }
               }"
             ></ng-container>
           </td>
@@ -73,7 +78,12 @@
               *ngIf="displayColumnsInfo[col].type"
               [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
-                $implicit: { output: element[col], config: config, col: col }
+                $implicit: {
+                  output: element[col],
+                  config: config,
+                  col: col,
+                  element: element
+                }
               }"
             ></ng-container>
           </td>
@@ -170,6 +180,17 @@
     disabled
     color="primary"
   ></mat-checkbox>
+</ng-template>
+
+<ng-template #input let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+    />
+  </mat-form-field>
 </ng-template>
 
 <ng-template #button let-data>
