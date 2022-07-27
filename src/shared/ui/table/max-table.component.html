@@ -182,6 +182,10 @@
   ></mat-checkbox>
 </ng-template>
 
+<ng-template #checkboxActive let-data>
+  <mat-checkbox [checked]="!!data.output" color="primary"></mat-checkbox>
+</ng-template>
+
 <ng-template #input let-data>
   <mat-form-field appearance="outline" floatLabel="never">
     <input
@@ -190,6 +194,22 @@
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
     />
+  </mat-form-field>
+</ng-template>
+
+<ng-template #inputDate let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
   </mat-form-field>
 </ng-template>
 

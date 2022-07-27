@@ -1,2 +1,555 @@
-<p>details works!</p>
-<button mat-raised-button color="primary" type="submit" class="mt-1 float-right mr-5" (click)="openhistory()">Visit History</button>
+<section class="ml-4 shadow-1  align-items-center mr-4 max-body-wrapper  whitePanel">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner bill-service-wrapper">
+      <ul class="list-unstyled flex items-end">
+        <li class="ml-2">
+          <a mat-tab-link [active]="true">Bill Details</a>
+        </li>
+      </ul>
+    </nav>
+    <mat-tab-nav-panel #tabPanel class="h-full">
+      <div class="h-full w-full">
+        <form [formGroup]="BServiceForm" class="BServiceForm">
+          <!---------------------------------FIRST ROW----------------------------------------------------->
+          <div class=" pt-0 ml-2 mt-1  border-radius-lg mr-2 flex bg-deposit">
+          <div class="  pl-1 w-5/9 flex ">
+              <div class="w-full">
+            <div class="w-full flex pt-2">
+              <div class="flex ml-2 ">
+                <mat-label class="wt-nowrap">Bill No</mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="BServiceForm"
+                    [questions]="questions[0]"
+                    [index]="0"
+                  >
+                  </maxhealth-question>
+                </div>
+  
+               
+  
+                <mat-label class="ml-4 wt-nowrap">Max ID</mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="BServiceForm"
+                    [questions]="questions[1]"
+                    [index]="1"
+                  >
+                  </maxhealth-question>
+                </div>
+  
+                <mat-label class="ml-4 wt-nowrap">Mobile No.</mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[2]"
+                    [form]="BServiceForm"
+                    
+                    [questions]="questions[2]"
+                    [index]="2"
+                  >
+                  </maxhealth-question>
+                </div>
+                <mat-label class="ml-4 wt-nowrap"
+                  >Bill Date
+                
+                </mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[3]"
+                    [form]="BServiceForm"
+                    [questions]="questions[3]"
+                    [index]="3"
+                  >
+                  </maxhealth-question>
+                </div>
+                <!-- <mat-label class="ml-4 wt-nowrap">Corporate</mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[4]"
+                    [form]="BServiceForm"
+                    [questions]="questions[4]"
+                    [index]="4"
+                  >
+                  </maxhealth-question>
+                </div>
+                <mat-label class="ml-4 wt-nowrap">Narration </mat-label>
+                <div class="ml-1 wt-mid h-full bg-white">
+                  <maxhealth-question
+                    [question]="questions[5]"
+                    [form]="BServiceForm"
+                    [questions]="questions[5]"
+                    [index]="5"
+                  >
+                  </maxhealth-question>
+                </div>
+                <div class="ml-2 w-3/10 h-full">
+                  <maxhealth-question
+                    [question]="questions[6]"
+                    [form]="BServiceForm"
+                    class="txt-blue"
+                    [questions]="questions[6]"
+                    [index]="6"
+                  >
+                  </maxhealth-question>
+                </div>
+   -->
+  
+              </div>
+              
+            </div>
+        </div>
+          </div>
+          <div class="pl-1 pt-0 ml-2 mr-2 border-radius-lg flex  w-2/5">
+            <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-4  w-31" >
+                <!--    (click)="oncheckboxClick($event)" -->
+             <div class="ml-2 checkbox-bottom">
+                 <maxhealth-question
+                 [question]="questions[4]"
+                 [form]="BServiceForm"
+                 [questions]="questions[4]"
+                 [index]="4"
+              
+                 >
+                 </maxhealth-question>
+             </div>
+             <div class="ml-2 text-wrap">
+                 <mat-label>From Date</mat-label>
+             </div>
+             <div class="ml-2 w-27 bg-white border-radius-md" >
+                 <maxhealth-question
+             [question]="questions[5]"
+             [form]="BServiceForm"
+             [questions]="questions[5]"
+             [index]="5"
+             >
+             </maxhealth-question>
+             </div>
+             <div class="text-wrap ml-4">
+                 <mat-label>To Date</mat-label>
+             </div>
+             <div class="ml-2 w-27 bg-white border-radius-md" >
+                 <maxhealth-question
+                 [question]="questions[6]"
+                 [form]="BServiceForm"
+                 [questions]="questions[6]"
+                 [index]="6"
+                 >
+                 </maxhealth-question>
+             </div>
+         </div>
+         <div class="float-right w-1/10 flex">
+             <div class="ml-0" >
+             <button mat-raised-button color="primary" type="submit" >
+                 <img src="assets/lens.svg" class="lens-icon">
+         <!-- <span class="p-0 m"> -->
+                 Search
+                <!-- </span> -->
+             </button>
+              </div>
+         </div>
+          </div>
+        </div>
+          <!---------------------------------SECOND ROW----------------------------------------------------->
+  
+          <div class="ml-2 m-pannel mr-2 mt-1 border-radius-lg flex flex-column items-center w-auto bg-deposit">
+           <div class="w-full ">
+            <div class=" wt-nowrap ">
+              
+                   <div class="float-left mt-1 w-3/5">
+                     <div class="float-left mr-1 p-1 w-2/10">
+                  <mat-label class="ml-2 mr-1 wt-nowrap " >Name:</mat-label>
+                  <mat-label class="patient-lbl ">{{patientName}}</mat-label>
+                </div>
+                <div class="float-left pt-1 wt-mid">
+                  <mat-label class="mr-1 wt-nowrap">Age: </mat-label>             
+                  <mat-label class="patient-lbl">{{age}}</mat-label>            
+                </div>
+                <div class="float-left pt-1 mr-1 w-1/6">
+                  <mat-label class="ml-5 mr-1 wt-nowrap">Gender: </mat-label>               
+                    <mat-label class="patient-lbl">{{gender}}</mat-label>               
+                  </div>
+                  <div class="float-left pt-1 mr-1 w-1/6">
+                  <mat-label class="ml-5 mr-1 wt-nowrap">DOB: </mat-label>               
+                  <mat-label class="patient-lbl" >{{dob}}</mat-label>
+                            
+                </div>
+                <div class="float-left pt-1 mr-1 w-1/6">   
+                  <mat-label class="ml-5 mr-1 wt-nowrap">Nationality: </mat-label>             
+                  <mat-label class="patient-lbl"> {{country}}</mat-label>
+                </div>
+                <div class="float-left pt-1 mr-1 w-1/6">
+                  <mat-label class="ml-5 mr-1 wt-nowrap">Operator: </mat-label>                       
+                  <mat-label class="patient-lbl"> {{ssn}}</mat-label> 
+                  </div>
+                 </div>
+              
+               <div class="flex mt-0  float-right">
+                  <button
+                  mat-raised-button
+                  color="primary"
+                  class="w-1/20 h-btn"
+                  type="submit"
+                >
+                DMS
+                </button>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="w-1/20 ml-2 h-btn"
+                  type="button"
+                  (click)="openhistory()"
+                >
+                 Visit History
+                </button>
+              </div>    
+              </div>
+              
+          </div>    
+          </div>      
+                
+         </form>  
+          
+          
+          <!---------------------------------Third BLOCK----------------------------------------------------->
+          <div class="pb-2 pr-1 pl-1 m-pannel h-white-banner mr-1 ml-1 border-radius-lg bg-billdetails">
+            <nav mat-tab-nav-bar class="h-white-banner " >
+              <a
+              class="h-white-banner p-0 ml-0 mt-0"
+                mat-tab-link
+                *ngFor="let link of linkList"
+                [routerLink]="link.path"
+                routerLinkActive
+                #rla="routerLinkActive"
+                (click)="activeLink = link"
+                [active]="rla.isActive || activeLink.path == link.path"
+              >
+                {{ link.title }}
+              </a>
+            </nav>
+            <div class="bg-white h-service border-radius-lg  display-block billing-panel-wrapper">
+              <router-outlet></router-outlet>
+              <div class="flex w-full justify-between  flex-wrap flex-column m-pannel ">
+                <div class="flex pb-0 mb-0">
+                
+                <!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
+                <div class="bg-deposit w-full h-full  mt-0 border-radius-lg m-pannel">
+                <div class="flex-column w-1/5 flex justify-between h-1/5 float-left">
+                
+                <div class="ml-1 mt-1 h-full">
+                <div class="flex">
+                <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
+                <maxhealth-question
+                [question]="questions[7]"
+                [form]="BServiceForm"
+                [questions]="questions[7]"
+                class="w-1/45 ml-4"
+                [index]="7"
+                >
+                
+                </maxhealth-question>
+                </div>
+                
+                </div>
+                <div class="ml-1  h-full">
+                <div class="flex">
+                
+                <!------------------------------------------- AVAIL DISC INPUT ---------------------------------------->
+                <mat-label class="wt-nowrap mr-2">Deposit Amount ( - )</mat-label>
+                <maxhealth-question
+                [question]="questions[8]"
+                [form]="BServiceForm"
+                [questions]="questions[8]"
+                class="w-1/45 ml-1"
+                [index]="8"
+                >
+                </maxhealth-question>
+                </div>
+                </div>
+                <div class="ml-1  h-full">
+                <div class="flex">
+                
+                <mat-label class="wt-nowrap mr-2">Discount Amount ( - )</mat-label>
+                
+                <maxhealth-question
+                  [question]="questions[9]"
+                  [form]="BServiceForm"
+                  [questions]="questions[9]"
+                  class="w-1/45"
+                  [index]="9"
+                >
+                </maxhealth-question>
+                
+                
+                
+                </div>
+                </div>
+                <div class="ml-1 h-full">
+                <div class="flex">
+                
+                <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
+                
+                
+                <mat-label class="wt-nowrap mr-2">Discount after Bill ( - )</mat-label>
+                <maxhealth-question
+                [question]="questions[10]"
+                [form]="BServiceForm"
+                [questions]="questions[10]"
+                class="w-1/45 "
+                [index]="10"
+                >
+                </maxhealth-question>
+                </div>
+                </div>
+                </div>
+                
+                <div class="flex-column w-1/5 h-1/5 justify-between float-left">
+                
+                <div class="flex flex-column">
+                <div class="ml-2 mt-1 h-full">
+                <div class="flex">
+                <mat-label class="wt-nowrap   mr-1">Refund Amount</mat-label>
+                <maxhealth-question
+                [question]="questions[11]"
+                [form]="BServiceForm"
+                [questions]="questions[11]"
+                class="w-5/9"
+                [index]="11"
+                >
+                
+                </maxhealth-question>
+                </div>
+                
+                </div>
+                <div class="ml-2  h-full">
+                <div class="flex">
+                <mat-label class="wt-nowrap mr-3">Authorised By</mat-label>
+                
+                
+                <maxhealth-question
+                [question]="questions[12]"
+                [form]="BServiceForm"
+                [questions]="questions[12]"
+                class="w-5/9 "
+                [index]="12"
+                >
+                </maxhealth-question>
+                </div>
+                </div>
+                <div class="ml-2 h-full">
+                <div class="flex">
+                
+                <mat-label class="wt-nowrap mr-12">Reason</mat-label>
+                
+                
+                <maxhealth-question
+                [question]="questions[13]"
+                [form]="BServiceForm"
+                [questions]="questions[13]"
+                class="w-5/9 ml-2"
+                [index]="13"
+                >
+                </maxhealth-question>
+                
+                
+                </div>
+                </div>
+                <div class="ml-2 h-full">
+                <div class="flex">
+                <mat-label class="wt-nowrap mr-2">Payment Mode</mat-label>
+                
+                
+                
+                <maxhealth-question
+                [question]="questions[14]"
+                [form]="BServiceForm"
+                [questions]="questions[14]"
+                class="w-5/9 "
+                [index]="14"
+                >
+                </maxhealth-question>
+                </div>
+                </div>
+                </div>
+                
+                </div>
+                <div class="flex-column flex border-radius-lg justify-between ">
+                
+                <div class="flex  flex-column">
+                <div class="pr-2 float-right div-otp justify-end flex mt-1 pt-1 h-full">
+                 
+                 <div class="flex justify-start align-items-center"> 
+                  <button
+                  mat-raised-button
+                  color="primary" 
+                  class="btn-otp btn-blue mr-1"
+                  type="submit"
+                  >
+                 Send OTP
+                  </button>
+                  </div>
+                  <maxhealth-question
+                  [question]="questions[15]"
+                  [form]="BServiceForm"
+                  [questions]="questions[13]"
+                  class="input-otp mr-1"
+                  [index]="15"
+                  >
+                  </maxhealth-question>
+                <!-- </div> -->
+               
+                <div class="flex">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="btn-otp btn-blue pl-2 mt-1"
+                  type="submit"
+                  >
+                  Send OTP to Manager
+                  </button>
+                </div>
+                </div>
+                <div class="ml-2 h-full">
+                <div class="flex justify-end pr-2">
+                  <div class="flex mr-1">
+                  <button
+                  mat-raised-button
+                  color="primary"
+                  class="btn-md"
+                  type="submit"
+                  >
+                 Refund Bill
+                  </button>
+                  </div>
+                  <div class="flex mr-1">
+                
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class=" btn-md"
+                    type="submit"
+                    >
+                    Send for Approval
+                    </button>
+                  </div>
+                  <div class="flex mr-1">
+                
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn-md"
+                    type="submit"
+                    >
+                    Print Bill
+                    </button>
+                  </div>
+                  <div class="flex mr-1">
+                
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn-md"
+                    type="submit"
+                    >
+                    Print Refund Receipt
+                    </button>
+                  </div>
+                  <div class="flex">
+                
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn-md"
+                    type="submit"
+                    >
+                    Resend bill on Email
+                    </button>
+                  </div>
+                
+                </div>
+                </div>
+                <div class="ml-2 h-full">
+                  <div class="flex justify-end pr-1">
+                    <div class="flex mr-1 align-items-center">
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn-md"
+                    type="submit"
+                    >
+                    Consumable Print
+                    </button>
+                    </div>
+                    <div class="flex mr-1 ">
+                  
+                      <button
+                      mat-raised-button
+                      color="primary"
+                      class="btn-md"
+                      type="submit"
+                      >
+                      Php Track Sheet
+                      </button>
+                    </div>
+                    <div class="flex mr-1 ">
+                  
+                      <button
+                      mat-raised-button
+                      color="primary"
+                      class="btn-md"
+                      type="submit"
+                      >
+                      OP Prescription
+                      </button>
+                    </div>
+                    <div class="flex mr-1 ">
+                  
+                      <button
+                      mat-raised-button
+                      color="primary"
+                      class="btn-md"
+                      type="submit"
+                      >
+                      Doxper Print
+                      </button>
+                    </div>
+                    <div class="flex mr-1 ">
+                  
+                      <button
+                      mat-raised-button
+                      color="primary"
+                      class="btn-md"
+                      type="submit"
+                      >
+                      Clear
+                      </button>
+                    </div>
+                  
+                  </div>
+                  </div>
+                  
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>                    
+                       
+            </div>
+                 
+                   
+              </div>
+             
+              <!-- <div class="flex  h-1/20 mr-3 float-right">
+                <button
+                mat-raised-button
+                color="primary"
+                class="w-1/20  h-1/10"
+                type="submit"
+                >
+                Clear
+                </button>
+                </div> -->
+                </div>
+      
+    </mat-tab-nav-panel>
+  </section>
