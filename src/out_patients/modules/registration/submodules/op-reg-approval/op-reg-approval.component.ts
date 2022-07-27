@@ -147,7 +147,7 @@ export class OpRegApprovalComponent implements OnInit {
     },
   };
 
-  approveorrejectconfig: any = {
+  approveconfig: any = {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -227,6 +227,91 @@ export class OpRegApprovalComponent implements OnInit {
       },
       approvedDate: {
         title: "Approved Date",
+        type: "date",
+      },
+    },
+  };
+
+  rejectconfig: any = {
+    dateformat: "dd/MM/yyyy",
+    selectBox: false,
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "mTitle",
+      "fullname",
+      "uGender",
+      "uMobile",
+      "uEmail",
+      "unationality",
+      "uForeigner",
+      "usmsRecNo",
+      "operatorName",
+      "insertdatetime",
+      "approvalDoneBy",
+      "approvedDate",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      ssn: {
+        title: "SSN",
+        type: "number",
+      },
+      mTitle: {
+        title: "Title",
+        type: "string",
+      },
+      fullname: {
+        title: "Patient Name",
+        type: "string",
+        tooltipColumn: "fullname",
+      },
+      uGender: {
+        title: "Gender",
+        type: "string",
+        disabledSort: true,
+      },
+      uMobile: {
+        title: "Mobile",
+        type: "number",
+      },
+      uEmail: {
+        title: "Email",
+        type: "string",
+        tooltipColumn: "email",
+      },
+      unationality: {
+        title: "Nationality",
+        type: "string",
+      },
+      uForeigner: {
+        title: "Foreigner",
+        type: "checkbox",
+      },
+      usmsRecNo: {
+        title: "SMS Receiving Number",
+        type: "number",
+      },
+      operatorName: {
+        title: "Requested By",
+        type: "string",
+      },
+      insertdatetime: {
+        title: "Requested Date",
+        type: "date",
+      },
+      approvalDoneBy: {
+        title: "Rejected By",
+        type: "string",
+      },
+      approvedDate: {
+        title: "Rejected Date",
         type: "date",
       },
     },
