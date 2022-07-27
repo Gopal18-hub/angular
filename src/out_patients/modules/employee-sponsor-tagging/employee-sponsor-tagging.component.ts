@@ -60,6 +60,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   disableDelete: boolean = true;
   disableClear: boolean = true;
   lastUpdatedBy: string = "";
+  dependantRemarks: string = "";
   currentTime: string = new Date().toLocaleString();
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
@@ -108,10 +109,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   config1: any = {
     actionItems: false,
-    dateformat: "dd/MM/yyyy hh:mm:ss ",
-    selectBox: true,
+    dateformat: "dd/MM/yyyy",
+
+    //selectBox: true,
     // selectCheckBoxPosition: 10,
-    clickSelection: "single",
+    //clickSelection: "single",
     displayedColumns: [
       "groupCompany",
       "empCode",
@@ -123,7 +125,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       "doj",
       "age",
       "relationship",
-      // "active",
+      "flag",
       "remark",
     ],
     columnsInfo: {
@@ -131,7 +133,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "Group Company",
         type: "string",
         style: {
-          width: "9rem",
+          width: "11rem",
         },
       },
       empCode: {
@@ -197,10 +199,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           width: "8rem",
         },
       },
-      // active: {
-      //   title: "Active",
-      //   type: "checkbox",
-      // },
+      flag: {
+        title: "Active",
+        type: "checkbox_active",
+        style: {
+          width: "5rem",
+        },
+      },
       remark: {
         title: "Remarks",
         type: "input",
@@ -208,7 +213,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     },
   };
   config2: any = {
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/yyyy  hh:mm:ss ",
     selectBox: true,
     readonly: true,
     displayedColumns: [
@@ -272,7 +277,19 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     private datepipe: DatePipe,
     private http: HttpService,
     private dialogService: MessageDialogService
-  ) {}
+  ) {
+    // setTimeout(() => {
+    //   this.employeeDependanttable.selection.selected
+    //     .pipe(takeUntil(this._destroying$))
+    //     .subscribe((res: any) => {
+    //       console.log(this.employeeDependanttable.selection);
+    //       console.log(res);
+    //       console.log(res.added[0]);
+    //       this.dependantRemarks = res.added[0].remark;
+    //       console.log(this.dependantRemarks);
+    //     });
+    // });
+  }
 
   ngOnInit(): void {
     console.log(this.cookie.get("LocationIACode"));
@@ -605,6 +622,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             console.log(data);
             this.employeeDependantDetailList =
               data as EmployeeDependantDetails[];
+            // this.employeesponsorForm.controls["employeeCode"].disable();
             console.log(this.employeeDependantDetailList);
           } else {
             this.dialogService.info("Employee code does not exist");
@@ -631,8 +649,19 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   //SAVE DIALOG
   employeeSave() {
+    // this.employeeDependanttable.selection.selected
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((res: any) => {
+    //     console.log(this.employeeDependanttable.selection);
+    //     console.log(res);
+    //     console.log(res.added[0]);
+    //     this.dependantRemarks = res.added[0].remark;
+    //     console.log(this.dependantRemarks);
+    //   });
     console.log(this.employeeDependanttable);
-    // console.log(this.employeeDependanttable.selection.selected[0].relationship);
+    // this.employeeDependanttable.config.columnsInfo.remark.disable();
+    //console.log(this.employeeDependanttable);
+    console.log(this.employeeDependanttable.selection.selected[0].relationship);
     //  return;
     console.log("inside save");
     let dialogRef = this.dialog.open(SavedialogComponent, {
@@ -731,25 +760,37 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       this.onDelete = false;
     }
     console.log(this.flag);
-    return (this.savedeleteEmployeeObject =
-      new SaveDeleteEmployeeSponsorRequest(
-        this.flag,
-        this.employeesponsorForm.value.company.value,
-        0,
-        regno,
-        iacode,
-        69,
-        9923,
-        0, //corporate id
-        true,
-        0,
-        this.employeesponsorForm.controls["employeeCode"].value,
-        0, //relation
-        "string", //reamrks editable field need to be added . this.employeeDependanttable.selection.selected[0].remark
-        validfrom, //valid from
-        validto, //valid to
-        0
-      ));
+    // setTimeout(() => {
+    // this.employeeDependanttable.selection.changed
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((res: any) => {
+    //     console.log(res);
+    // this.router.navigate(
+    //   ["registration", "op-registration"],
+    //   {
+    //     queryParams: { maxId: res.added[0].maxid },
+    //   }
+    // );
+    //});
+    // });
+    return new SaveDeleteEmployeeSponsorRequest(
+      this.flag,
+      this.employeesponsorForm.value.company.value,
+      0,
+      regno,
+      iacode,
+      69,
+      9923,
+      0, //corporate id
+      true,
+      0,
+      this.employeesponsorForm.controls["employeeCode"].value,
+      0, //relation
+      this.dependantRemarks, //reamrks editable field need to be added . this.employeeDependanttable.selection.selected[0].remark
+      validfrom, //valid from
+      validto, //valid to
+      0
+    );
   }
   // "2022-07-12T11:29:30.085Z"
 
@@ -768,6 +809,10 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       }
     );
   }
+  checkboxClick(event: any) {
+    console.log(event);
+    // if(event.row.flag == 0)
+  }
 
   iomClick() {
     console.log("inside iomclick");
@@ -784,6 +829,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     let todaydate = new Date();
     this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
     this.employeesponsorForm.controls["todate"].setValue(todaydate);
+    this.employeesponsorForm.controls["employeeCode"].enable();
     this.employeeDependantDetailList = [];
     this.updatedTableList = [];
     this.iommessage = "";
