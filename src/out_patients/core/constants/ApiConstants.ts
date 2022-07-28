@@ -388,7 +388,8 @@ export namespace ApiConstants {
     IACode: string,
     RegistrationNo: number,
     HSPLocationId: number,
-    StationId: number
+    StationId: number,
+    TransactionType : string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -403,7 +404,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId
+      StationId + 
+      "/" +
+      TransactionType 
     );
   };
 

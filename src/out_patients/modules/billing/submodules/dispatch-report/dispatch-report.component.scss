@@ -39,6 +39,11 @@
     ::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper{
         margin-top: 1.375rem !important;
     }
+    .table{
+        ::ng-deep .mat-form-field{
+            display: block !important;
+        }
+    }
     .label{
         ::ng-deep mat-label{
             display: none !important;
