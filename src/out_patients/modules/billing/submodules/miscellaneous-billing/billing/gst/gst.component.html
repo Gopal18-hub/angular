@@ -1,5 +1,5 @@
 <div class="gst-dialog">
-<div class="relative max-health-primary-color">
+<div class="relative w-9 max-health-primary-color">
     <button
       mat-icon-button
       aria-label="close dialog"
@@ -18,11 +18,20 @@
                 ></maxhealth-table>
             </ng-container>
         </div>
-        <mat-label class="wt-nowrap mt-1">Sac Code</mat-label>
-        <div class="ml-1 wt-mid h-full bg-white">
+        <div class="flex pt-2">
+        <mat-label class="wt-nowrap mt-1 w-1/4 mr-2">Sac Code</mat-label>
+        <div class="ml-1 wt-mid h-full w-3/4 mt-1 bg-white">
           
-          <input type="string" matInput placeholder="">
+          <input
+          matInput
+          placeholder="0.00"         
+          type="number"         
+           autocomplete="off"
+           class="border-solid input border-radius-md"
+        
+        />
         </div>
+      </div>
     </div>
    
 </div>

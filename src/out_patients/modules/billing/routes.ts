@@ -18,6 +18,9 @@ import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefu
 import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
 import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
+import { BillDetailComponent } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
+import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
+import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
 
 const routes: Routes = [
   {
@@ -35,7 +38,21 @@ const routes: Routes = [
         ],
       },
       { path: "deposit", component: DepositComponent },
-      { path: "details", component: DetailsComponent },
+      {
+        path: "details",
+        component: DetailsComponent,
+        children: [
+          {
+            path: "cred-bill-settlement",
+            component: PartialCredBillComponent,
+          },
+          { path: "services", component: BillDetailTableComponent },
+          {
+            path: "refund-after-bill",
+            component: BillDetailTableComponent,
+          },
+        ],
+      },
       { path: "online-op-bill", component: OnlineOpBillsComponent },
       { path: "op-order-request", component: OpOrderRequestComponent },
       {
@@ -43,7 +60,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "credit-details", component: CreditDetailsComponent },
-          { path: "bill", component: MiscellaneousBillingComponent },
+          { path: "bill", component: BillDetailComponent },
         ],
       },
       { path: "initiate-deposit", component: InitiateDepositComponent },

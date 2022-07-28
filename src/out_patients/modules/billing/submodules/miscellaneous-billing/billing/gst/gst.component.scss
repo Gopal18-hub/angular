@@ -15,7 +15,7 @@
 }
 ::ng-deep .mat-dialog-container
 {
-    padding: 3% 2.4% 2.4% 2.4% !important;
+    padding: 2% 4% 0% 8% !important;
     
     margin: 0px;
 }
@@ -23,4 +23,12 @@
 {
 right: 0.5px;
 
+}
+.w-9
+{
+width: 95%;
+}
+.input
+{
+    border: 1px solid black;
 }
