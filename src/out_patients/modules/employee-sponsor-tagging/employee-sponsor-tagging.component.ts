@@ -72,10 +72,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       maxId: {
         type: "string",
         defaultValue: this.cookie.get("LocationIACode") + ".",
-        pattern: "^[a-zA-Z0-9.]$",
+        //pattern: "^[a-zA-Z0-9.]$",
       },
       mobileNo: {
-        type: "number",
+        type: "tel",
+        title: "Mobile Number",
+        //required: true,
+        pattern: "^[1-9]{1}[0-9]{9}",
+        // type: "number",
         // pattern: "^[1-9]{1}[0-9]{9}",
         // maximum: "10",
       },
@@ -233,47 +237,50 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "Sl.no",
         type: "string",
         style: {
-          width: "5rem",
+          width: "3rem",
         },
       },
       company: {
         title: "Company Name",
         type: "string",
         style: {
-          width: "11rem",
+          width: "5rem",
         },
       },
       addedDateTime: {
         title: "Added Date & Time",
         type: "string",
         style: {
-          width: "12rem",
+          width: "5rem",
         },
       },
       addedBy: {
         title: "Added By",
         type: "string",
         style: {
-          width: "8rem",
+          width: "4.5rem",
         },
       },
       updatedDateTime: {
         title: "Updated Date",
         type: "string",
         style: {
-          width: "10rem",
+          width: "5rem",
         },
       },
       updatedBy: {
         title: "Updated By",
         type: "string",
-        // style: {
-        //   width: "8rem",
-        // },
+        style: {
+          width: "4rem",
+        },
       },
       flag: {
         title: "Active",
         type: "checkbox",
+        style: {
+          width: "5rem",
+        },
       },
     },
   };
@@ -454,99 +461,108 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .subscribe(
         (data) => {
           console.log(data);
-          if (data.objPatientDemographicData.length > 0) {
-            this.validmaxid = true;
-            this.enableSave();
-            this.enableDelete();
-            this.disableClear = false;
-            this.patientSponsorData = data as GetPatientSponsorDataInterface;
-            console.log(this.patientSponsorData);
-            if (
-              this.patientSponsorData.objPatientDemographicData[0].complayId !=
-              null
-            ) {
-            }
-            let companydetails = this.companySponsorData.filter((a) => {
-              return (
+          if (data != null) {
+            if (data.objPatientDemographicData.length > 0) {
+              this.validmaxid = true;
+              this.enableSave();
+              this.enableDelete();
+              this.disableClear = false;
+              this.patientSponsorData = data as GetPatientSponsorDataInterface;
+              console.log(this.patientSponsorData);
+              if (
                 this.patientSponsorData.objPatientDemographicData[0]
-                  .complayId == a.id
-              );
-            });
-            console.log(companydetails);
-            console.log(this.companySponsorData);
-            console.log(
-              this.patientSponsorData.objPatientDemographicData[0].complayId
-            );
-
-            let maxid =
-              this.patientSponsorData.objPatientDemographicData[0].iacode +
-              "." +
-              this.patientSponsorData.objPatientDemographicData[0]
-                .registrationNo;
-            console.log(this.questions[0].value);
-            this.employeesponsorForm.controls["maxId"].setValue(maxid);
-            console.log(this.employeesponsorForm.controls["maxId"].value);
-            this.questions[1].value =
-              this.patientSponsorData.objPatientDemographicData[0].mobileNo;
-            this.questions[2].value =
-              this.patientSponsorData.objPatientDemographicData[0].empCode;
-            if (companydetails[0] != undefined) {
-              this.employeesponsorForm.controls["company"].setValue({
-                title: companydetails[0].name,
-                value:
+                  .complayId != null
+              ) {
+              }
+              let companydetails = this.companySponsorData.filter((a) => {
+                return (
                   this.patientSponsorData.objPatientDemographicData[0]
-                    .complayId,
+                    .complayId == a.id
+                );
               });
+              console.log(companydetails);
+              console.log(this.companySponsorData);
+              console.log(
+                this.patientSponsorData.objPatientDemographicData[0].complayId
+              );
+
+              let maxid =
+                this.patientSponsorData.objPatientDemographicData[0].iacode +
+                "." +
+                this.patientSponsorData.objPatientDemographicData[0]
+                  .registrationNo;
+              console.log(this.questions[0].value);
+              this.employeesponsorForm.controls["maxId"].setValue(maxid);
+              console.log(this.employeesponsorForm.controls["maxId"].value);
+              this.questions[1].value =
+                this.patientSponsorData.objPatientDemographicData[0].mobileNo;
+              this.questions[2].value =
+                this.patientSponsorData.objPatientDemographicData[0].empCode;
+              if (companydetails[0] != undefined) {
+                this.employeesponsorForm.controls["company"].setValue({
+                  title: companydetails[0].name,
+                  value:
+                    this.patientSponsorData.objPatientDemographicData[0]
+                      .complayId,
+                });
+              }
+
+              //this.questions[3].value=companyObject.title;
+
+              this.questions[6].value =
+                this.patientSponsorData.objPatientDemographicData[0].validfrom;
+              this.questions[7].value =
+                this.patientSponsorData.objPatientDemographicData[0].validto;
+              //Assign Second row values
+              this.name =
+                this.patientSponsorData.objPatientDemographicData[0].ptnName;
+              this.age =
+                this.patientSponsorData.objPatientDemographicData[0].ageWithName;
+              this.gender =
+                this.patientSponsorData.objPatientDemographicData[0].sexname;
+              this.dob = this.datepipe.transform(
+                this.patientSponsorData.objPatientDemographicData[0]
+                  .dateOfBirth,
+                "dd/MM/yyyy"
+              );
+              this.nationality =
+                this.patientSponsorData.objPatientDemographicData[0].nationality;
+              this.ssn =
+                this.patientSponsorData.objPatientDemographicData[0].ssn;
+
+              //Assign tabledata
+              // data.objEmployeeDependentData.push({
+              //   slno: data.objEmployeeDependentData.length,
+              // });
+              console.log(data);
+              this.employeeDependantDetailList =
+                this.patientSponsorData.objEmployeeDependentData;
+
+              this.updatedTableList =
+                this.patientSponsorData.objPatientSponsorDataAuditTrail;
+              for (
+                let i = 0;
+                i <
+                this.patientSponsorData.objPatientSponsorDataAuditTrail.length;
+                i++
+              ) {
+                this.updatedTableList[i].slno = i + 1;
+              }
+              console.log(this.updatedTableList);
+            } else {
+              this.validmaxid = false;
+              this.disableClear = true;
+              this.employeesponsorForm.controls["maxId"].setErrors({
+                incorrect: true,
+              });
+              this.questions[0].customErrorMessage = "Invalid Maxid";
+              //this.dialogService.info("Max ID doesn't exist");
             }
-
-            //this.questions[3].value=companyObject.title;
-
-            this.questions[6].value =
-              this.patientSponsorData.objPatientDemographicData[0].validfrom;
-            this.questions[7].value =
-              this.patientSponsorData.objPatientDemographicData[0].validto;
-            //Assign Second row values
-            this.name =
-              this.patientSponsorData.objPatientDemographicData[0].ptnName;
-            this.age =
-              this.patientSponsorData.objPatientDemographicData[0].ageWithName;
-            this.gender =
-              this.patientSponsorData.objPatientDemographicData[0].sexname;
-            this.dob = this.datepipe.transform(
-              this.patientSponsorData.objPatientDemographicData[0].dateOfBirth,
-              "dd/MM/yyyy"
-            );
-            this.nationality =
-              this.patientSponsorData.objPatientDemographicData[0].nationality;
-            this.ssn = this.patientSponsorData.objPatientDemographicData[0].ssn;
-
-            //Assign tabledata
-            // data.objEmployeeDependentData.push({
-            //   slno: data.objEmployeeDependentData.length,
-            // });
-            console.log(data);
-            this.employeeDependantDetailList =
-              this.patientSponsorData.objEmployeeDependentData;
-
-            this.updatedTableList =
-              this.patientSponsorData.objPatientSponsorDataAuditTrail;
-            for (
-              let i = 0;
-              i <
-              this.patientSponsorData.objPatientSponsorDataAuditTrail.length;
-              i++
-            ) {
-              this.updatedTableList[i].slno = i + 1;
-            }
-            console.log(this.updatedTableList);
           } else {
-            this.validmaxid = false;
-            this.disableClear = true;
             this.employeesponsorForm.controls["maxId"].setErrors({
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid Maxid";
-            //this.dialogService.info("Max ID doesn't exist");
           }
         },
         (error) => {
@@ -555,7 +571,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             error.status == 404 ||
             (error.error == null && error.statusText == "Not Found")
           ) {
-            this.dialogService.info("Please enter  valid max ID");
+            this.employeesponsorForm.controls["maxId"].setErrors({
+              incorrect: true,
+            });
+            this.questions[0].customErrorMessage = "Invalid Maxid";
+            //this.dialogService.info("Please enter  valid max ID");
           } else if (error.title == "One or more validation errors occurred.") {
             this.dialogService.info("One or more validation errors occurred.");
           } else if (

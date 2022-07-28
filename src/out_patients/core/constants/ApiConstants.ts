@@ -639,10 +639,26 @@ export namespace ApiConstants {
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
 
-  export const getpatientdetailsdmg =
-    environment.PatientApiUrl +
-    "api/patient/getpatientpersonaldetailsdmg/1113603/NSSH";
+  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpersonaldetailsdmg/" +
+      regno +
+      "/" +
+      iacode
+    );
+  };
 
   export const savepatientdmg =
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
+
+  //OP REFUND APPROVAL
+  //172.30.0.16:1007/api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69
+  //http://172.30.0.16:1007/api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69
+  export const getpendingoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
+  export const getapprovedoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
 }

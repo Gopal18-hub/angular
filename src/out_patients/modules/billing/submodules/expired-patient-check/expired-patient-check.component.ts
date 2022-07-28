@@ -9,7 +9,7 @@ import { dateInputsHaveChanged } from "@angular/material/datepicker/datepicker-i
 import { Subject, takeUntil } from "rxjs";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
-import { GetExpiredPatientDetailModel } from "../../../../../out_patients/core/models/getexpiredpatientdetailModel.Model";
+import { GetExpiredPatientDetailInterface } from "../../../../core/types/expiredPatient/getExpiredpatient.Interface";
 import { DatePipe } from "@angular/common";
 import { SaveExpiredPatientModel } from "../../../../../out_patients/core/models/saveexpiredpatient.Model";
 
@@ -28,6 +28,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
       },
       mobileno: {
         type: "number",
+        title: "Mobile Number",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
         type: "checkbox",
@@ -53,7 +55,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
   dateofbirth: any;
   nationality!: string;
   ssn!: string;
-  expiredPatientDetail!: GetExpiredPatientDetailModel[];
+  expiredPatientDetail!: GetExpiredPatientDetailInterface[];
   expiredpatientForm!: FormGroup;
   questions: any;
   disableButton: boolean = true;
@@ -110,33 +112,46 @@ export class ExpiredPatientCheckComponent implements OnInit {
     this.http
       .get(ApiConstants.expiredpatientdetail(regnumber, iacode))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        this.expiredPatientDetail = data;
-        if (this.expiredPatientDetail.length != 0) {
-          console.log(this.expiredPatientDetail);
-          console.log(
-            this.datepipe.transform(
-              this.expiredPatientDetail[0].dateofBirth,
-              "dd/MM/yyyy"
-            )
-          );
-          this.dob = this.datepipe.transform(
-            this.expiredPatientDetail[0].dateofBirth,
-            "dd/MM/yyyy"
-          );
-          this.ssn = this.expiredPatientDetail[0].ssn;
-          this.expiredpatientForm.controls["expiryDate"].setValue(
-            this.expiredPatientDetail[0].expiryDate
-          );
-          this.expiredpatientForm.controls["remarks"].setValue(
-            this.expiredPatientDetail[0].remarks
-          );
-          this.disableButton = false;
-        } else {
-          this.clearValues();
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.expiredPatientDetail =
+            data as GetExpiredPatientDetailInterface[];
+          if (this.expiredPatientDetail != null) {
+            if (this.expiredPatientDetail.length != 0) {
+              console.log(this.expiredPatientDetail);
+              console.log(
+                this.datepipe.transform(
+                  this.expiredPatientDetail[0].dateofBirth,
+                  "dd/MM/yyyy"
+                )
+              );
+              this.dob = this.datepipe.transform(
+                this.expiredPatientDetail[0].dateofBirth,
+                "dd/MM/yyyy"
+              );
+              this.ssn = this.expiredPatientDetail[0].ssn;
+              this.expiredpatientForm.controls["expiryDate"].setValue(
+                this.expiredPatientDetail[0].expiryDate
+              );
+              this.expiredpatientForm.controls["remarks"].setValue(
+                this.expiredPatientDetail[0].remarks
+              );
+              this.disableButton = false;
+            } else {
+              //this.clearValues();
+            }
+          } else {
+            this.expiredpatientForm.controls["maxid"].setErrors({
+              incorrect: true,
+            });
+            this.questions[0].customErrorMessage("Invalid Maxid");
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      });
+      );
   }
 
   clearValues() {
@@ -219,6 +234,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
       console.log("The dialog was closed");
       console.log(result);
       if (result == true) {
+        //  this.http
       }
     });
   }

@@ -69,3 +69,14 @@
 .h-63{
     height:63%
 }
+.mt-error{
+    ::ng-deep .mat-error{
+        margin-top:8%;
+    }
+    
+}
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}

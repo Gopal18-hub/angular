@@ -35,6 +35,8 @@ export class DmgMappingComponent implements OnInit {
       },
       mobileno: {
         type: "number",
+        title: "Mobile Number",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       breast: {
         type: "checkbox",
@@ -121,6 +123,8 @@ export class DmgMappingComponent implements OnInit {
   }
 
   onMaxidEnter() {
+    let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
+    let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
     // if (
     //   this.dmgMappingForm.value.maxid !== null ||
     //   this.dmgMappingForm.value.maxid
@@ -130,14 +134,21 @@ export class DmgMappingComponent implements OnInit {
     //   this.disablebutton = true;
     // }
     this.http
-      .get(ApiConstants.getpatientdetailsdmg)
+      .get(ApiConstants.getpatientdetailsdmg(regno, iacode))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((value) => {
-        console.log(value);
-        this.dmgPatientDetails = value as PatientDetailsDmgInterface;
-        console.log(this.dmgPatientDetails);
-        this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
-        this.name = this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+      .subscribe((data) => {
+        console.log(data);
+        if (data != null) {
+          this.dmgPatientDetails = data as PatientDetailsDmgInterface;
+          console.log(this.dmgPatientDetails);
+          this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
+          this.name = this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+        } else {
+          this.dmgMappingForm.controls["maxid"].setErrors({
+            incorrect: true,
+          });
+          this.questions[0].customErrorMessage = "Invalid Maxid";
+        }
       });
   }
   dmgsave() {
