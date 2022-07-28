@@ -149,6 +149,16 @@
               >
                Visit History
               </button>
+              <!-- <div class="flex  h-1/20 mr-3 float-right"> -->
+                <button
+                mat-raised-button
+                color="primary"
+                class="w-1/20 ml-2  h-btn"
+                type="submit"
+                >
+                Clear
+                </button>
+                <!-- </div> -->
             </div>    
             </div>
             
@@ -160,6 +170,8 @@
         
         <!---------------------------------Third BLOCK----------------------------------------------------->
         <div class="pb-2 pr-1 pl-1 m-pannel h-white-banner mr-1 ml-1 border-radius-lg bg-billdetails">
+
+          <!-- -------------------------------------------------  NAV BAR---------------------------------------------------------- -->
           <nav mat-tab-nav-bar class="h-white-banner " >
             <a
             class="h-white-banner p-0 ml-0 mt-0"
@@ -176,21 +188,10 @@
           </nav>
           <div class="bg-white h-service border-radius-lg  display-block billing-panel-wrapper">
             <router-outlet></router-outlet>
-          </div>
-              
-                 
-            </div>
-
-            <div class="flex  h-1/20 mr-3 float-right">
-              <button
-              mat-raised-button
-              color="primary"
-              class="w-1/20  h-1/10"
-              type="submit"
-              >
-              Clear
-              </button>
-              </div>
+          </div> 
+         </div>
+       <!-- ---------------------------------------------------------- BOTTOM CLEAR BUTTON ---------------------------------------------------->
+          
               </div>
     
   </mat-tab-nav-panel>

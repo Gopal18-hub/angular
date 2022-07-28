@@ -81,7 +81,7 @@ export class BillDetailComponent implements OnInit {
       billAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       availDiscCheck: {
@@ -92,7 +92,7 @@ export class BillDetailComponent implements OnInit {
       availDisc: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       discAmtCheck: {
@@ -103,7 +103,7 @@ export class BillDetailComponent implements OnInit {
       discAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       dipositAmtcheck: {
@@ -115,61 +115,61 @@ export class BillDetailComponent implements OnInit {
       dipositAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       patientDisc: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       compDisc: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       planAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       coupon: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       coPay: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       credLimit: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       gstTax: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByPatient: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByComp: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       paymentMode: {

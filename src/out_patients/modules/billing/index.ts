@@ -57,7 +57,7 @@ import { ConsumablesComponent } from "./submodules/billing/submodules/services/s
 import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
-import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
+import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 @NgModule({
   declarations: [
     BillingComponent,
