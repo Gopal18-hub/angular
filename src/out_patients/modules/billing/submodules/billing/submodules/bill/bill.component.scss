@@ -18,6 +18,11 @@
     background-color: #f6f6f6;
   }
   ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
+      }
+    }
     mat-radio-group {
       flex-direction: row;
       mat-radio-button {
