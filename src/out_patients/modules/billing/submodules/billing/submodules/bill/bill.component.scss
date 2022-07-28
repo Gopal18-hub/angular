@@ -3,13 +3,16 @@
     width: 12%;
   }
   .w-86 {
-    width: 86%;
+    width: 87.25%;
   }
   .w-26 {
     width: 26%;
   }
   .h-55 {
     height: 55%;
+  }
+  .w-44 {
+    width: 44%;
   }
   .bg-blue {
     background-color: #bfe8e7;
@@ -21,6 +24,10 @@
     .sub-bill-form {
       mat-form-field {
         background-color: #fff;
+      }
+      button {
+        height: 26px;
+        line-height: 26px;
       }
     }
     mat-radio-group {

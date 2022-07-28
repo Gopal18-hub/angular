@@ -2,7 +2,7 @@
   <div class="mt-2 w-full sub-bill-ovrall-table h-55">
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
-  <div class="h-55 mt-1">
+  <div class="h-55 mt-1 mb-1">
     <form [formGroup]="formGroup" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
         <div class="w-12 h-full bg-blue border-radius-lg flex flex-column mr-2">
@@ -243,75 +243,67 @@
               </div>
             </div>
           </div>
-          <div class="bg-deposit flex-column w-3/10 flex justify-between">
-            <div>
-              <div class="flex">
-                <mat-label class="wt-nowrap mr-5 mt-1"
-                  >Amt. Paid by Patient</mat-label
+          <div class="bg-deposit flex-column w-44 flex justify-between">
+            <div class="flex">
+              <mat-label class="mr-6 mt-1">Amt. Paid by Patient</mat-label>
+              <div class="flex w-1/45">
+                <maxhealth-question
+                  [question]="question[16]"
+                  [form]="formGroup"
+                  [questions]="question[16]"
+                  class="w-7/10 mt-1 mr-1"
+                  [index]="16"
                 >
-                <div class="flex w-1/45">
-                  <maxhealth-question
-                    [question]="question[16]"
-                    [form]="formGroup"
-                    [questions]="question[16]"
-                    class="w-7/10 mt-1 mr-1"
-                    [index]="16"
-                  >
-                  </maxhealth-question>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    class="w-1/15 btn-md"
-                    type="submit"
-                  >
-                    Make Bill
-                  </button>
-                </div>
+                </maxhealth-question>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="btn-md min-width-initial"
+                  type="submit"
+                >
+                  Make Bill
+                </button>
               </div>
             </div>
-            <div>
-              <div class="flex">
-                <mat-label class="wt-nowrap mr-2 mt-1"
-                  >Amt. Paid by Company</mat-label
-                >
-
-                <div class="flex w-1/45">
-                  <maxhealth-question
-                    [question]="question[17]"
-                    [form]="formGroup"
-                    [questions]="question[17]"
-                    class="w-7/10 mt-1 mr-1"
-                    [index]="17"
-                  >
-                  </maxhealth-question>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    class="w-1/15 btn-md"
-                    type="submit"
-                  >
-                    Print Bill
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div
-                class="flex border-radius-lg bg-blue px-1 py-0 align-items-center"
+            <div class="flex">
+              <mat-label class="wt-nowrap mr-2 mt-1"
+                >Amt. Paid by Company</mat-label
               >
-                <mat-label class="wt-nowrap mr-6 ml-2 inline h-1/full"
-                  >Bill Type</mat-label
+
+              <div class="flex w-1/45">
+                <maxhealth-question
+                  [question]="question[17]"
+                  [form]="formGroup"
+                  [questions]="question[17]"
+                  class="w-7/10 mt-1 mr-1"
+                  [index]="17"
                 >
-                <div class="grid-container w-1/2">
-                  <maxhealth-question
-                    [question]="question[18]"
-                    [form]="formGroup"
-                    [questions]="question[18]"
-                    class="h-1/20 mb-5"
-                    [index]="18"
-                  >
-                  </maxhealth-question>
-                </div>
+                </maxhealth-question>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  class="btn-md min-width-initial"
+                  type="submit"
+                >
+                  Print Bill
+                </button>
+              </div>
+            </div>
+            <div
+              class="flex border-radius-lg bg-blue px-1 py-0 align-items-center"
+            >
+              <mat-label class="wt-nowrap mr-6 ml-2 inline h-1/full"
+                >Bill Type</mat-label
+              >
+              <div class="grid-container w-1/2">
+                <maxhealth-question
+                  [question]="question[18]"
+                  [form]="formGroup"
+                  [questions]="question[18]"
+                  class="h-1/20 mb-5"
+                  [index]="18"
+                >
+                </maxhealth-question>
               </div>
             </div>
           </div>
