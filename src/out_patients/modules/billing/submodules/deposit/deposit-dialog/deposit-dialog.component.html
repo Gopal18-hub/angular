@@ -20,10 +20,10 @@
             <mat-label  class="mb-2 font-base text-white">Remarks</mat-label>
             <div class="h-90 mt-2 border-radius-lg bg-white border-none textarea-length">
                 <maxhealth-question
-                [question]="questions[49]"
+                [question]="questions[0]"
                 [form]="makedepositdialogForm"
-                [questions]="questions[49]"
-                [index]="49"
+                [questions]="questions[0]"
+                [index]="0"
                 ></maxhealth-question>
             </div>
         </div>
@@ -42,7 +42,7 @@
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
     <div class="h-1/10 mt-4 float-right">
-        <button mat-raised-button color="primary">Submit</button>
+        <button mat-raised-button color="primary" (click)="savedialogpayment()">Submit</button>
         <button mat-raised-button color="primary"  class="ml-3">Clear</button>
 
     </div>

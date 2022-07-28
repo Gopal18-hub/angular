@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, EventEmitter,Input,Output, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
@@ -57,7 +57,8 @@ export class PatientIdentityInfoComponent implements OnInit {
     this.patientidentityform.controls["email"].setValue(this.data.emailId);
   }
 
-  ngAfterViewInit(): void{
+  ngAfterViewInit(): void
+  {
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
       {
@@ -69,5 +70,6 @@ export class PatientIdentityInfoComponent implements OnInit {
       }
     });
   }
+
 
 }

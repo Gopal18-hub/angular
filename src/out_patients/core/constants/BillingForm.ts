@@ -5,7 +5,7 @@ export namespace BillingForm {
         title: "",
         type: "object",
         properties: {
-          amount: {
+          cashamount: {
              type: "number",
              defaultValue: "0.00"
            },
@@ -23,7 +23,8 @@ export namespace BillingForm {
             type: "string"
           },
           chequeamount: {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           chequeauth: {
             type: "string"
@@ -41,7 +42,8 @@ export namespace BillingForm {
             type: "string"
           },
           creditamount: {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           creditapproval: {
             type: "number"
@@ -62,11 +64,12 @@ export namespace BillingForm {
           demandbankname: {
             type: "autocomplete"
           },
-          demandbranch: {
+          demandbranchname: {
             type: "string"
           },
           demandamount: {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           demandauth: {
             type: "string"
@@ -113,10 +116,12 @@ export namespace BillingForm {
             type: "number"
           },
           onlineamount: {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           paytmamount: {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           paytmwallet: {
             type: "string"
@@ -146,7 +151,8 @@ export namespace BillingForm {
             type: "string"
           },
           upiamount : {
-            type: "number"
+            type: "number",
+            defaultValue: "0.00"
           },
           upibatchno: {
             type: "string"
@@ -167,10 +173,12 @@ export namespace BillingForm {
               type: "string"
           },
           internetamount: {
-              type: "number"
+              type: "number",
+              defaultValue: "0.00"
           },
 	        dueamount: {
-              type: "string"
+              type: "string",
+              defaultValue: "0.00"
           },
           dueamountauthorisedby: {
               type: "string"

@@ -260,7 +260,8 @@ export namespace ApiConstants {
     PhoneNumber?: string,
     DOB?: string,
     AadhaarId?: string,
-    HealthId?: string
+    HealthId?: string,
+    HsplocationId?: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -277,7 +278,9 @@ export namespace ApiConstants {
       "&AadhaarId=" +
       AadhaarId +
       "&HealthId=" +
-      HealthId
+      HealthId +
+      "&HsplocationId=" +
+      HsplocationId
     );
   };
 
@@ -629,8 +632,7 @@ export namespace ApiConstants {
   export const getSimilarPatientonMobilenumber = (mobilenumber: string) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getallpatientssearch" +
-      "?PhoneNumber=" +
+      "api/patient/getallpatientssearch" +"?PhoneNumber=" +
       mobilenumber
     );
   };
@@ -638,4 +640,143 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+
+    export const getpatientpersonaldetails = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientpersonaldetails/" + registrationno
+        + "/" +
+        iacode
+      );
+    
+    };
+    
+    export const getpatientdetailsfordeposit = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientdetailsfordeposit/" + registrationno
+        + "/" +
+        iacode
+      );
+    
+    };
+    
+    export const getadvancetype = (
+      hspLocationid: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getadvancetype/" + hspLocationid
+    
+      );
+    
+    };
+    
+    export const getpatientpreviousdepositdetails = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientpreviousdepositdetails/" + registrationno
+        + "/" +
+        iacode
+    
+      );
+    };
+    
+
+  export const SavePatientsDepositDetailsGST = environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientsdepositdetailsgst" ;
+    export const  savepatientrefunddetails= environment.PatientApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
+
+  export const getshowadvancetype = (
+    hspLocationid: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getisshowadvancetype/" + hspLocationid       
+      );
+    };
+
+  export const getcreditcard =  environment.PatientApiUrl + "api/patient/getcreditcard" ;
+
+  export const getcashlimitwithlocationsmsdetailsoflocation = (
+      HospitalLocationID: number
+      ) => {
+        return (
+          environment.PatientApiUrl +
+          "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" + HospitalLocationID       
+        );
+      };
+  
+  export const getform60masterdata =  environment.PatientApiUrl + "api/patient/getform60masterdata" ;
+
+  export const getdatafordepositreport = (
+    ReceiptNo: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getdatafordepositreport/" + ReceiptNo       
+      );
+    };
+
+  export const getsixinchopreportflag = (
+      HospitalLocationID: number
+      ) => {
+        return (
+          environment.PatientApiUrl +
+          "api/patient/getsixinchopreportflag/" + HospitalLocationID       
+        );
+      };  
+
+  export const saveform60patientdata = environment.PatientApiUrl + "api/patient/saveform60patientdata" ;
+  export const savedonationrefundrequest = environment.PatientApiUrl + "api/patient/savedonationrefundrequest";
+  export const savepaymentdetailslog = environment.PatientApiUrl + "api/patient/savepaymentdetailslog";
+  export const sendotpoprefund   = environment.PatientApiUrl + "api/patient/sendotpoprefund";
+
+  export const getpreviousupidetailsforrecheck = (
+    iacode: string,
+    registrationno: number,
+    terminalID: string,
+    TransactionID: string,
+    module: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/patient/getpreviousupidetailsforrecheck/" +
+      iacode +
+      "/" +
+      registrationno
+      +
+      "/" +
+      terminalID+
+      "/" +
+      TransactionID
+      +
+      "/" +
+      module
+    );
+  };
+
+  export const getpatientrefundpopupdetails = (
+    ReceiptNo: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientrefundpopupdetails/" + ReceiptNo       
+      );
+    };
+
+  export const getdataforrefundreport = (
+    ReceiptNo: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getdataforrefundreport/" + ReceiptNo       
+      );
+    };
+    
 }

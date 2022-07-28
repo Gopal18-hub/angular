@@ -15,7 +15,6 @@ export class ServiceDepositComponent implements OnInit {
   @Input() refundPage!: boolean;
   @Input() data!: any;
 
-  @Output() eventemitter: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   servicedepositformData = BillingForm.servicedepositFormData;
   servicedepositForm!: FormGroup;
   questions: any;
@@ -39,7 +38,6 @@ export class ServiceDepositComponent implements OnInit {
     this.isNSSHLocation = true; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
 
     this.onRefundpage = this.refundPage;
-    this.eventemitter.emit(this.servicedepositForm);
     this.servicetypeList = this.data.servicetypeList;
     this.deposittypeList = this.data.deposittypeList;
 
@@ -50,12 +48,12 @@ export class ServiceDepositComponent implements OnInit {
     this.questions[1].options = this.deposittypeList.map((l) => {
       return { title: l.advanceType, value: l.id };
     });
+   
   }
-  ngAfterViewInit(): void {
+  ngAfterViewInit(): void{
     this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });
     this.servicedepositForm.controls["servicetype"].setValue({ title: "Medical services @0.000", value: 1781 });
   }
-
 }
 
 

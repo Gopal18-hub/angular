@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild , Inject} from '@angular/core';
 import { RefundDialogComponent } from './refund-dialog/refund-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA,} from "@angular/material/dialog";
 import { DepositDialogComponent } from './deposit-dialog/deposit-dialog.component';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
@@ -15,6 +15,8 @@ import { PatientPersonalDetailInterface } from "@core/types/PatientPersonalDetai
 import { PatientDepositDetailInterface } from "@core/types/PatientDepositDetail.Interface";
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdepositdetailModel.Model";
+import { MakedepositDialogComponent } from './makedeposit-dialog/makedeposit-dialog.component';
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -84,7 +86,7 @@ export class DepositComponent implements OnInit {
           { title: "Form 60", value: "form60" },
           { title: "Pan card No.", value: "pancardno" },
         ],
-        defaultValue: "pancardno",
+        //defaultValue: "pancardno",
       },
     }
   }
@@ -92,27 +94,27 @@ export class DepositComponent implements OnInit {
   depositconfig: any = {
     clickedRows: true,
     clickSelection: "multiple",
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
     displayedColumns: [
-      "deposittype",
+      "amtType",
       "receiptno",
-      "datetime",
+      "dateTime",
       "deposit",
-      "paymenttype",
-      "usedop",
-      "usedip",
+      "paymentType",
+      "usedOP",
+      "usedIP",
       "refund",
       "balance",
-      "taxpercentage",
-      "totaltaxvalue",
-      "deposithead",
-      "servicetype",
-      "operatornameid",
+      "gst",
+      "gstValue",
+      "advanceType",
+      "serviceTypeName",
+      "operatorName",
       "remarks"
     ],
     columnsInfo: {
-      deposittype: {
+      amtType: {
         title: "Deposit/Refund",
         type: "string",
         style: {
@@ -126,11 +128,11 @@ export class DepositComponent implements OnInit {
           width: "6rem",
         },
       },
-      datetime: {
+      dateTime: {
         title: "Date & Time",
         type: "date",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       deposit: {
@@ -141,21 +143,21 @@ export class DepositComponent implements OnInit {
           width: "5rem",
         },
       },
-      paymenttype: {
+      paymentType: {
         title: "Payment Type",
         type: "string",
         style: {
           width: "7rem",
         },
       },
-      usedop: {
+      usedOP: {
         title: "Used(OP)",
         type: "string",
         style: {
           width: "5rem",
         },
       },
-      usedip: {
+      usedIP: {
         title: "Used(IP)",
         type: "number",
         style: {
@@ -177,35 +179,35 @@ export class DepositComponent implements OnInit {
           width: "5rem",
         },
       },
-      taxpercentage: {
+      gst: {
         title: "Tax %",
-        type: "checkbox",
+        type: "number",
         style: {
           width: "3.5rem",
         },
       },
-      totaltaxvalue: {
+      gstValue: {
         title: "Total Tax Value",
         type: "number",
         style: {
           width: "7rem",
         },
       },
-      deposithead: {
+      advanceType: {
         title: "Deposit Head",
         type: "string",
         style: {
           width: "6.7rem",
         },
       },
-      servicetype: {
+      serviceTypeName: {
         title: "Service Type",
         type: "string",
         style: {
           width: "6.8rem",
         },
       },
-      operatornameid: {
+      operatorName: {
         title: "Operator Name & ID",
         type: "string",
         style: {
@@ -233,15 +235,16 @@ export class DepositComponent implements OnInit {
   depositForm !: FormGroup;
   questions: any;
   patientDepositDetails: any = [];
+  patientRefundDetails: any = [];
   patientpersonaldetails: any = [];
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
   hspLocationid: any = 69;// Number(this.cookie.get("HSPLocationId"));
-  depoistList: PatientPreviousDepositDetail[] = [];
+  depoistList: any = [];
   MaxIDExist: boolean = false;
-  MaxIDRefundExist: boolean = false;
+  MaxIDdepositExist: boolean = false;
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -251,35 +254,63 @@ export class DepositComponent implements OnInit {
     );
     this.depositForm = formResult.form;
     this.questions = formResult.questions;   
+    this.depositForm.controls["panno"].disable();
+    this.depositForm.controls["mainradio"].disable();
+
     }
   openrefunddialog() {
-    this.matDialog.open(RefundDialogComponent, {
+  const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
       width: "70vw",
       height: "98vh",
-      data: {
-        Mobile: 9898989898,
-        Mail: "mail@gmail.com"
+      data: {       
+        patientinfo: {
+          emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
+        
+        },
+        clickedrowdepositdetails : this.patientRefundDetails
       }
     });
+
+    RefundDialog.afterClosed()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((result) => {
+      
+    })
   }
 
   openDepositdialog() {
-    const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-      width: '70vw', height: '98vh', data: {
-        servicetype: this.patientservicetype, deposittype: this.patientdeposittype,
-        patientinfo: {
-          emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
-          panno : this.patientpersonaldetails[0]?.paNno
-        }
-      
+    const MakeDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
+      width: '33vw', height: '40vh', data: {    
       },
     });
 
-    DepositDialogref.afterClosed()
+    MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        console.log("Deposit Dialog closed");
-      });
+        if (result == "Success")  
+         {
+          const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
+            width: '70vw', height: '98vh', data: {
+              servicetype: this.patientservicetype, deposittype: this.patientdeposittype,
+              patientinfo: {
+                emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
+                panno : this.patientpersonaldetails[0]?.paNno, registrationno: this.regNumber, iacode:this.iacode
+              }
+            
+            },
+          });
+      
+          DepositDialogref.afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if(result == "Success"){
+                this.getPatientPreviousDepositDetails();
+                console.log("Deposit Dialog closed");
+              }
+             
+            });
+        }
+      });  
   }
 
   openinitiatedeposit() {
@@ -344,6 +375,7 @@ export class DepositComponent implements OnInit {
               this.dob = this.patientpersonaldetails[0]?.dateOfBirth;
               this.nationality = this.patientpersonaldetails[0]?.nationalityName;
               this.ssn = this.patientpersonaldetails[0]?.ssn;
+
               this.depositForm.controls["panno"].setValue(this.patientpersonaldetails[0]?.paNno);
             }
           },
@@ -384,9 +416,11 @@ export class DepositComponent implements OnInit {
           }
           else if (resultData == CheckPatientDetails.NoDeposit) {
             this.getPatientDetailsByMaxId();
+            this.getPatientPreviousDepositDetails();
           }
           else if (resultData == CheckPatientDetails.HaveDeposit) {
             this.getPatientDetailsByMaxId();
+            this.getPatientPreviousDepositDetails();
           }
 
         });
@@ -396,9 +430,14 @@ export class DepositComponent implements OnInit {
     this.http
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: any) => {
+      .subscribe((resultData: PatientPreviousDepositDetail[]) => {
         this.depoistList = resultData;
-      });
+        console.log(this.depoistList);
+      },
+      (error) => {
+       console.log(error);
+      }
+      );
   }
 
   clear(){
@@ -409,6 +448,14 @@ export class DepositComponent implements OnInit {
     this.patientpersonaldetails = [];
     this.MaxIDExist = false;
   }
+
+  setvaluestodepositform(){
+
+  }
+  depositColumnClick($event: any){
+    this.MaxIDdepositExist = true;
+    this.patientRefundDetails = $event.row;
+  }
 }
 export const CheckPatientDetails = {
   PatientNotReg: 0,
@@ -416,4 +463,5 @@ export const CheckPatientDetails = {
   HaveDeposit: 2,
   NoDeposit: 3
 };
+
 

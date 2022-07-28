@@ -34,10 +34,10 @@
                     <mat-label class="font-base">Payable Name</mat-label>
                     <div class="bg-white border-radius-md mt-1">
                         <maxhealth-question
-                        [question]="questions[8]"
+                        [question]="questions[0]"
                         [form]="refundform"
-                        [questions]="questions[8]"
-                        [index]="8"
+                        [questions]="questions[0]"
+                        [index]="0"
                         ></maxhealth-question>
                     </div>
                 </div>
@@ -45,10 +45,10 @@
                     <mat-label class="font-base">Remarks</mat-label>
                     <div class="h-full bg-white border-radius-lg mt-1 ta">
                         <maxhealth-question
-                        [question]="questions[4]"
+                        [question]="questions[1]"
                         [form]="refundform"
-                        [questions]="questions[4]"
-                        [index]="4"
+                        [questions]="questions[1]"
+                        [index]="1"
                         ></maxhealth-question>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
 
     <!-- Footer Part -->
     <div class="">
-        <patient-identity-info></patient-identity-info>
+        <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
     </div>
 
     <!-- button -->
