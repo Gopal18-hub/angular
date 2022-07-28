@@ -72,9 +72,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       maxId: {
         type: "string",
         defaultValue: this.cookie.get("LocationIACode") + ".",
+        pattern: "^[a-zA-Z0-9.]$",
       },
       mobileNo: {
         type: "number",
+        // pattern: "^[1-9]{1}[0-9]{9}",
+        // maximum: "10",
       },
       employeeCode: {
         type: "string",
@@ -214,7 +217,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   };
   config2: any = {
     dateformat: "dd/MM/yyyy  hh:mm:ss ",
-    selectBox: true,
+    //selectBox: true,
     readonly: true,
     displayedColumns: [
       "slno",
@@ -223,6 +226,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       "addedBy",
       "updatedDateTime",
       "updatedBy",
+      "flag",
     ],
     columnsInfo: {
       slno: {
@@ -266,6 +270,10 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         // style: {
         //   width: "8rem",
         // },
+      },
+      flag: {
+        title: "Active",
+        type: "checkbox",
       },
     },
   };
@@ -534,7 +542,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           } else {
             this.validmaxid = false;
             this.disableClear = true;
-            this.dialogService.info("Max ID doesn't exist");
+            this.employeesponsorForm.controls["maxId"].setErrors({
+              incorrect: true,
+            });
+            this.questions[0].customErrorMessage = "Invalid Maxid";
+            //this.dialogService.info("Max ID doesn't exist");
           }
         },
         (error) => {
@@ -566,38 +578,50 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        this.similarPatientlist = data as PatientSearchModel[];
-        console.log(this.similarPatientlist);
-        if (this.similarPatientlist.length > 0) {
-          const similarPatientDialogref = this.dialog.open(
-            SimilarPatientDialog,
-            {
-              width: "60vw",
-              height: "80vh",
-              data: {
-                searchResults: this.similarPatientlist,
-              },
-            }
-          );
-          similarPatientDialogref
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
-              if (result) {
-                console.log(result.data["added"][0].maxid);
-                let maxID = result.data["added"][0].maxid;
-                this.onMaxidEnter(maxID);
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.similarPatientlist = data as PatientSearchModel[];
+          console.log(this.similarPatientlist);
+          if (this.similarPatientlist != null) {
+            if (this.similarPatientlist.length > 0) {
+              const similarPatientDialogref = this.dialog.open(
+                SimilarPatientDialog,
+                {
+                  width: "60vw",
+                  height: "80vh",
+                  data: {
+                    searchResults: this.similarPatientlist,
+                  },
+                }
+              );
+              similarPatientDialogref
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  (result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.onMaxidEnter(maxID);
 
-                //this.employeesponsorForm.controls["maxId"].setValue(maxID);
-                //this.getPatientDetailsByMaxId();
-              }
-              console.log("seafarers dialog was closed");
-              //this.similarContactPatientList = [];
-            });
+                      //this.employeesponsorForm.controls["maxId"].setValue(maxID);
+                      //this.getPatientDetailsByMaxId();
+                    }
+
+                    //this.similarContactPatientList = [];
+                  },
+                  (error) => {
+                    console.log(error);
+                  }
+                );
+            }
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      });
+      );
   }
   onEmployeecodeEnter() {
     this.http
@@ -625,7 +649,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             // this.employeesponsorForm.controls["employeeCode"].disable();
             console.log(this.employeeDependantDetailList);
           } else {
-            this.dialogService.info("Employee code does not exist");
+            this.employeesponsorForm.controls["employeeCode"].setErrors({
+              incorrect: true,
+            });
+            this.questions[2].customErrorMessage = "Invalid Employee code";
+            //this.dialogService.info("Employee code does not exist");
           }
         }
       });

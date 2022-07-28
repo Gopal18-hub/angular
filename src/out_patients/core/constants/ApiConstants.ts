@@ -638,4 +638,11 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+
+  export const getpatientdetailsdmg =
+    environment.PatientApiUrl +
+    "api/patient/getpatientpersonaldetailsdmg/1113603/NSSH";
+
+  export const savepatientdmg =
+    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 }

@@ -110,3 +110,11 @@ margin-left:0.35%;
         margin-bottom:2px;
     }
 }
+
+.mt-error{
+    ::ng-deep .mat-error{
+        margin-top:8%;
+        white-space:nowrap;
+    }
+}
+
