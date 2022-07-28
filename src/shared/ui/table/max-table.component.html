@@ -201,10 +201,15 @@
   <mat-form-field appearance="outline" floatLabel="never">
     <input
       matInput
-      type="text"
+      placeholder="__/__/____"
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
     />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
   </mat-form-field>
 </ng-template>
 

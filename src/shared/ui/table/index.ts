@@ -20,6 +20,8 @@ import { MaxTableFormComponent } from "./max-table-form/max-table-form.component
 import { DynamicFormsModule } from "../dynamic-forms";
 
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
 
 @NgModule({
   imports: [
@@ -39,6 +41,8 @@ import { MatFormFieldModule } from "@angular/material/form-field";
     RouterModule,
     DynamicFormsModule,
     MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports: [MaxTableComponent, MaxTableFormComponent],
   declarations: [MaxTableComponent, MaxTableFormComponent],
