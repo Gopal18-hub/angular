@@ -41,6 +41,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
+  @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
+  @ViewChild("input") inputboxTemplate!: TemplateRef<any>;
+  @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
@@ -54,7 +57,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection = new SelectionModel<any>(false, []);
     }
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
@@ -71,7 +82,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
@@ -148,6 +167,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "image") return this.imageTemplate;
     else if (col.type == "checkbox") return this.checkboxTemplate;
+    else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
+    else if (col.type == "input") return this.inputboxTemplate;
+    else if (col.type == "input_date") return this.inputboxDateTemplate;
     else return this.stringTemplate;
   }
 

@@ -1,0 +1,239 @@
+<div class="bg-white h-full border-radius-lg mt-0">
+    <div class="mt-0 mr-1 border-radius-lg credit-wrapper flex w-auto">
+        <form [formGroup]="BServiceForm " class="w-full ">
+
+
+<div class="mx-content m-1">
+
+<ng-container class="w-full">
+
+    <!-- FIRST COLUMN BILL DETAILS -->
+    <div class="flex-column w-1/5 flex justify-between  float-left">
+                
+        <div class="ml-1 mt-1 mb-3 h-full">
+        <div class="flex">
+        <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
+        <maxhealth-question
+        [question]="questions[7]"
+        [form]="BServiceForm"
+        [questions]="questions[7]"
+        class="w-1/45 ml-4"
+        [index]="7"
+        >
+        
+        </maxhealth-question>
+        </div>
+        
+        </div>
+        <div class="ml-1 mb-3  h-full">
+        <div class="flex">
+        
+        <!------------------------------------------- AVAIL DISC INPUT ---------------------------------------->
+        <mat-label class="wt-nowrap mr-2">Deposit Amount ( - )</mat-label>
+        <maxhealth-question
+        [question]="questions[8]"
+        [form]="BServiceForm"
+        [questions]="questions[8]"
+        class="w-1/45 ml-1"
+        [index]="8"
+        >
+        </maxhealth-question>
+        </div>
+        </div>
+        <div class="ml-1 mb-3 h-full">
+        <div class="flex">
+        
+        <mat-label class="wt-nowrap mr-2">Discount Amount ( - )</mat-label>
+        
+        <maxhealth-question
+          [question]="questions[9]"
+          [form]="BServiceForm"
+          [questions]="questions[9]"
+          class="w-1/45"
+          [index]="9"
+        >
+        </maxhealth-question>
+        
+        
+        
+        </div>
+        </div>
+        <div class="ml-1  h-full">
+        <div class="flex">
+        
+        <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
+        
+        
+        <mat-label class="wt-nowrap mr-6">Pre Paid Amount</mat-label>
+        <maxhealth-question
+        [question]="questions[10]"
+        [form]="BServiceForm"
+        [questions]="questions[10]"
+        class="w-1/45 ml-2"
+        [index]="10"
+        >
+        </maxhealth-question>
+        </div>
+        </div>
+        </div>
+      
+          <!-- SECOND COLUMN BILL DETAILS -->
+        <div class="flex-column w-1/5 ml-4 justify-between float-left">
+    
+        <div class="flex flex-column">
+        <div class="ml-2 mt-1 mb-3 h-full">
+        <div class="flex">
+        <mat-label class="wt-nowrap   mr-6">Plan Discount</mat-label>
+        <maxhealth-question
+        [question]="questions[11]"
+        [form]="BServiceForm"
+        [questions]="questions[11]"
+        class="w-5/9"
+        [index]="11"
+        >
+        
+        </maxhealth-question>
+        </div>
+        
+        </div>
+        <div class="ml-2  h-full">
+        <div class="flex">
+        <mat-label class="wt-nowrap mr-8">Plan Amount</mat-label>
+        
+        
+        <maxhealth-question
+        [question]="questions[12]"
+        [form]="BServiceForm"
+        [questions]="questions[12]"
+        class="w-5/9 "
+        [index]="12"
+        >
+        </maxhealth-question>
+        </div>
+        </div>
+       
+        <div class="ml-1 h-full ">
+        <div class="flex radio-payment">
+        <maxhealth-question
+        [question]="questions[14]"
+        [form]="BServiceForm"
+        [questions]="questions[14]"
+        class=""
+        [index]="14"
+        >
+       
+        </maxhealth-question>
+
+        <div class="flex-column w-1/45 mt-3 ml-1">
+        <maxhealth-question
+        [question]="questions[12]"
+        [form]="BServiceForm"
+        [questions]="questions[12]"
+        class="w-5/9"
+        [index]="12"
+        >
+       
+        </maxhealth-question>
+        <div class="mt-3">
+        <maxhealth-question
+        [question]="questions[12]"
+        [form]="BServiceForm"
+        [questions]="questions[12]"
+        class="w-5/9"
+        [index]="12"
+        >
+    
+        </maxhealth-question>
+    </div>
+    </div>
+        </div>
+        </div>
+        </div>
+        
+        </div>
+        <div class="flex-column w-1/15 ml-4 mt-0 pt-0 payment-mode justify-between pl-2 border-radius-lg float-left">
+            <div class="w-full flex mb-1 ">
+                Payment Mode
+           </div>
+            <div class="w-full flex mb-1">
+                <div class="w-3/4">
+                    Cash
+                </div>
+                <div class="w-1/2">
+                    0.00
+                </div>
+            </div>
+            <div class="w-full flex mb-1">
+                <div class="w-3/4">
+                    Cheque
+                </div>
+                <div class="w-1/2">
+                    0.00
+                </div>
+            </div>
+            <div class="w-full flex mb-1">
+                <div class="w-3/4">
+                    Credit Card
+                </div>
+                <div class="w-1/2">
+                    0.00
+                </div>
+            </div>
+            <div class="w-full flex mb-1">
+                <div class="w-3/4">
+                    Demand Draft
+                </div>
+                <div class="w-1/2">
+                    0.00
+                </div>
+            </div>
+            <div class="w-full flex  mb-1">
+                <div class="w-4/5">
+                    Online Payment
+                </div>
+                                <div class="w-1/2">
+                    <span>0.00</span>
+                  
+                </div>
+            </div>
+        </div>
+       
+</ng-container>
+
+
+</div>
+<div class="pr-1 flex justify-end  mt-1 pt-1 h-full">
+                 
+    <div class="flex align-items-center"> 
+     <button
+     mat-raised-button
+     color="primary" 
+     class="mr-1"
+     type="submit"
+     >
+     Make Receipt
+     </button>
+     </div>
+   
+   <!-- </div> -->
+  
+   <div class="flex align-items-center">
+   <button
+     mat-raised-button
+     color="primary"
+     class=""
+     type="submit"
+     >
+     Print Receipt
+     </button>
+   </div>
+   </div> 
+ </form>
+        </div>
+
+
+    </div>
+<!-- </div> -->
+
+
+<!-- </div> -->

@@ -12,8 +12,8 @@ export class SaveDeleteEmployeeSponsorRequest {
   empcode: string;
   relation: number;
   remark: string;
-  validfrom: string;
-  vaildto: string;
+  validfrom: any;
+  vaildto: any;
   isdate: number;
   constructor(
     flag: number,
@@ -29,8 +29,8 @@ export class SaveDeleteEmployeeSponsorRequest {
     empcode: string,
     relation: number,
     remark: string,
-    validfrom: string,
-    vaildto: string,
+    validfrom: any,
+    vaildto: any,
     isdate: number
   ) {
     this.flag = flag;

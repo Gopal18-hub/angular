@@ -128,6 +128,7 @@ export class BillComponent implements OnInit {
         options: [
           { title: "Cash", value: "cash" },
           { title: "Credit", value: "credit" },
+          { title: "Gen. OPD", value: "Gen OPD" },
         ],
         defaultValue: "cash",
       },

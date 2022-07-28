@@ -110,7 +110,7 @@
 
       <!-- Second Row -->
       <div
-        class="w-full flex mt-1 border-radius-xlg p-2 bg-secondary"
+        class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
         *ngIf="patient"
       >
         <div class="flex w-3/4 align-items-center">
@@ -163,7 +163,7 @@
           <button
             mat-raised-button
             color="primary"
-            class="font-sm ml-2"
+            class="font-sm ml-2 min-width-initial"
             type="button"
           >
             DMS
@@ -171,10 +171,18 @@
           <button
             mat-raised-button
             color="primary"
-            class="font-sm ml-2"
+            class="font-sm ml-2 min-width-initial"
             type="button"
           >
             Visit History
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="font-sm ml-2 min-width-initial"
+            type="button"
+          >
+            Clear
           </button>
         </div>
       </div>
