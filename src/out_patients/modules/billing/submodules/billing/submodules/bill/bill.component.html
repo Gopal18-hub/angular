@@ -1,5 +1,5 @@
 <div class="flex flex-column h-full sub-bill-overall">
-  <div class="my-4 w-full sub-bill-ovrall-table h-3/5">
+  <div class="mt-2 w-full sub-bill-ovrall-table h-55">
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
   <div class="h-2/5">
@@ -26,8 +26,10 @@
           </div>
         </div>
         <!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
-        <div class="bg-deposit bg-paymet h-full border-radius-lg px-2 flex">
-          <div class="flex-column w-1/4 flex justify-between">
+        <div
+          class="bg-deposit bg-paymet h-full border-radius-lg px-0 flex w-88"
+        >
+          <div class="flex-column w-26 flex justify-between">
             <div class="ml-2 mb-2 mt-1 h-full">
               <div class="flex">
                 <mat-label class="wt-nowrap mr-10">Bill Amount</mat-label>
@@ -125,7 +127,7 @@
             </div>
           </div>
 
-          <div class="flex-column w-1/5 justify-between">
+          <div class="flex-column w-1/5 flex justify-between">
             <div class="flex flex-column">
               <div class="ml-2 mb-2 mt-1 h-full">
                 <div class="flex">
