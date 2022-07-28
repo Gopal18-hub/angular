@@ -27,7 +27,8 @@
         
     ::ng-deep .patient-lbl
   {
-    color: black;
+    color: #5A5A5A;
+    opacity: 1
   }
   ::ng-deep .mat-checkbox-label
   {
@@ -95,6 +96,11 @@
 .wt-mid{
     width: 8.5%;  
 }
+
+.w-11
+{
+    width:11%;
+}
 .h-white-banner
 {
  height: 8%;   
@@ -115,7 +121,15 @@
    font-style: italic;
    text-decoration: underline;
    font-weight:550;
+
+   ::ng-deep .mat-checkbox-label
+   {
+    text-decoration: underline;
+    margin-left: 0.3rem;
+   }
 }
+
+
 .h-service
 {
     height: 92%;

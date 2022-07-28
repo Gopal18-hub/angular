@@ -5,7 +5,9 @@
 .miscForm {
     
     ::ng-deep mat-label {
-      color: var(--primary-color);
+    //   color: var(--primary-color);
+    color: #333333;
+    opacity: 1;
       font-weight: 600;
     }
     .change-password {
@@ -31,7 +33,9 @@
   }
   ::ng-deep .mat-checkbox-label
   {
-       color: var(--primary-color);
+    //    color: var(--primary-color);
+    color: #333333;
+    opacity: 1;
     font-weight: 600;
   }
   }

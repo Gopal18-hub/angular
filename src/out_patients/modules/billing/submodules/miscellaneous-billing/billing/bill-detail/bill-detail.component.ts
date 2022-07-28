@@ -116,7 +116,7 @@ export class BillDetailComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        readonly: true,
+        readonly: false,
       },
       patientDisc: {
         type: "number",
