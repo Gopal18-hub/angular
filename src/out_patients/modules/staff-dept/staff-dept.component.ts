@@ -15,8 +15,10 @@ import { Subject } from "rxjs";
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
-  staffDetails : any =[];
+  staffDetails : any ;
+  staffDetail: any=[];
   staffDeptDetails : any;
+  selectedCode : any;
   private readonly _destroying$ = new Subject<void>();
   orgList=["id","1","name","Max HealthCare"]
   staffFormData={
@@ -25,7 +27,8 @@ export class StaffDeptComponent implements OnInit {
     properties:{
       organisation:{
         type: "dropdown",              
-        options: this.staffDependentTypeList,     
+        options: this.staffDependentTypeList, 
+        placeholder: "Select",    
       },     
       employeeCode:{
         type:"string",
@@ -138,33 +141,55 @@ export class StaffDeptComponent implements OnInit {
       });    
      });
   }
-  search()
+  staffColumnClick(event:any)
   {
-     //Search Type Dropdown
-     this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.employeeCode,this.staffForm.value.employeeName,this.staffForm.value.organisation))
+    this.selectedCode = event.row.empCode;
+    console.log(this.selectedCode,"column");    
+     this.http.get(ApiConstants.getstaffdependentdetails(1,this.selectedCode,""))
      .pipe(takeUntil(this._destroying$))
      .subscribe((res :any)=>
      {  
-      if(res)
-      if(res.dtsStaffDependentDetails[0].relationship =="Self")
-      {
-       
-        this.staffDetails.push(res.dtsStaffDependentDetails[0]);
-        if(this.staffDetails)
-        this.staffDeptDetails = res.dtsStaffDependentDetails;
-      }
-      });
-     // this.staffDetails = res.dtsStaffDependentDetails1; 
-    
-      //this.staffDeptDetails = res.
-      console.log(this.staffDetails,"res.dtsStaffDependentDetails[0].relationship")
-     
-     //});
-    
-  }
-  staffColumnClick(event:any)
-  {
-    console.log(event.row,"column");
+      this.staffDeptDetails = res.dtsStaffDependentDetails
+     })
   }
 
+  search()
+  {
+    
+     //Search Type Dropdown
+     //this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,this.staffForm.value.employeeCode,this.staffForm.value.employeeName))
+     this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
+     //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
+     .pipe(takeUntil(this._destroying$))
+     .subscribe((res :any)=>
+     {  
+      if(res)      
+      this.staffDeptDetails=[];
+    
+    this.staffDetails=[];
+      res.dtsStaffDependentDetails.forEach((e:any) => {
+        if(e.relationship === "Self")
+        {        
+          this.staffDetail.push(e);
+        }
+      });
+      console.log(this.staffDetail.length,"staffDetail")
+      if(this.staffDetail.length > 1)
+      {
+        this.staffDetails=res.dtsStaffDependentDetails;
+      }
+      else{
+        this.staffDeptDetails = res.dtsStaffDependentDetails;
+        if(res.dtsStaffDependentDetails[0].relationship == "Self")
+             this.staffDetail.push(res.dtsStaffDependentDetails[0]);
+             this.staffDetails = this.staffDetail;
+             this.staffDetail=[];
+             console.log(this.staffDetail,"SD");
+             console.log(this.staffDetails,"SDS");
+      }
+      });
+    
+    
+  }
+ 
 }
