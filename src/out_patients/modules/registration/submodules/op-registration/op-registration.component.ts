@@ -1464,7 +1464,7 @@ export class OpRegistrationComponent implements OnInit {
                   type: "dropdown",
                   title: "Hot Listing",
                   required: true,
-                  defaultValue: this.hotlistReason,
+                  //  defaultValue: this.hotlistReason,
                   options: this.hotlistDialogList,
                 },
                 reason: {
