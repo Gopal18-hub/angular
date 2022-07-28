@@ -2,7 +2,7 @@ export class getPatientHistoryModel{
     billId: number;
     billNo: string;
     billType: string;
-    billDate: string;
+    billDate: any;
     ipNo: string;
     admDateTime: string;
     dischargeDateTime: string;
@@ -24,7 +24,7 @@ export class getPatientHistoryModel{
         billId: number,
         billNo: string,
         billType: string,
-        billDate: string,
+        billDate: any,
         ipNo: string,
         admDateTime: string,
         dischargeDateTime: string,
