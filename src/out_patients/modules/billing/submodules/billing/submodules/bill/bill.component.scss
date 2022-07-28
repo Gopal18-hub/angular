@@ -17,6 +17,9 @@
   .bg-blue {
     background-color: #bfe8e7;
   }
+  .print-button {
+    background-color: #5a5a5a;
+  }
   .bg-deposit {
     background-color: #f6f6f6;
   }
@@ -32,8 +35,9 @@
     }
     mat-radio-group {
       flex-direction: row;
+      width: 100%;
       mat-radio-button {
-        margin-right: 1.5rem;
+        margin-right: 1.2rem;
       }
     }
   }
