@@ -7,6 +7,7 @@ import { ApiConstants } from '../../../out_patients/core/constants/ApiConstants'
 import { StaffDependentTypeModel } from "@core/models/staffDependentTypeModel.Model";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -51,27 +52,30 @@ export class StaffDeptComponent implements OnInit {
         title: 'S.No',
         type: 'number',
         style: {
-          width: "70px",
+          width: "100px",
         },
       },
       groupCompanyName : {
         title: 'Name of Organisation',
         type: 'string',
         style: {
-          width: "170px",
+          width: "300px",
         },
       },
       empCode : {
         title: 'Employee Code',
         type: 'string',
         style: {
-          width: "150px",
+          width: "250px",
         },
       },
      
       empName : {
         title: 'Employee Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "300px",
+        },
       },
      
       dob : {
@@ -98,7 +102,10 @@ export class StaffDeptComponent implements OnInit {
     columnsInfo: {
       empCode : {
         title: 'Employee Code',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "240px",
+        },
       },
       dependantName : {
         title: 'Dependent Name',
@@ -121,7 +128,7 @@ export class StaffDeptComponent implements OnInit {
  
     }
    
-  constructor(private formService: QuestionControlService,private http: HttpService,) { }
+  constructor(private formService: QuestionControlService,private http: HttpService,private messageDialogService: MessageDialogService,) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -143,8 +150,8 @@ export class StaffDeptComponent implements OnInit {
   }
   staffColumnClick(event:any)
   {
-    this.selectedCode = event.row.empCode;
-    console.log(this.selectedCode,"column");    
+    this.staffDeptDetails = [];
+    this.selectedCode = event.row.empCode;      
      this.http.get(ApiConstants.getstaffdependentdetails(1,this.selectedCode,""))
      .pipe(takeUntil(this._destroying$))
      .subscribe((res :any)=>
@@ -156,38 +163,48 @@ export class StaffDeptComponent implements OnInit {
   search()
   {
     
-     //Search Type Dropdown
-     //this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,this.staffForm.value.employeeCode,this.staffForm.value.employeeName))
-     this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
-     //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
-     .pipe(takeUntil(this._destroying$))
-     .subscribe((res :any)=>
-     {  
-      if(res)      
-      this.staffDeptDetails=[];
-    
-    this.staffDetails=[];
-      res.dtsStaffDependentDetails.forEach((e:any) => {
-        if(e.relationship === "Self")
-        {        
-          this.staffDetail.push(e);
-        }
-      });
-      console.log(this.staffDetail.length,"staffDetail")
-      if(this.staffDetail.length > 1)
+    if(this.staffForm.value.organisation === "")
+    {
+      this.messageDialogService.info("Select Search Type");
+    }
+    else if(this.staffForm.value.employeeCode === "" && this.staffForm.value.employeeName === "")
+    {
+      this.messageDialogService.info("At least one information is required to search.");
+    }
+    else
+    {
+      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,this.staffForm.value.employeeCode,this.staffForm.value.employeeName))
+      //this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
+      //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res :any)=>
+      {  
+       if(res)      
+       this.staffDeptDetails=[];     
+       this.staffDetails=[];
+       res.dtsStaffDependentDetails.forEach((e:any) => {
+         if(e.relationship === "Self")
+         {        
+           this.staffDetail.push(e);
+         }
+       });       
+      if(this.staffDetail.length === 0)
       {
-        this.staffDetails=res.dtsStaffDependentDetails;
-      }
-      else{
-        this.staffDeptDetails = res.dtsStaffDependentDetails;
-        if(res.dtsStaffDependentDetails[0].relationship == "Self")
-             this.staffDetail.push(res.dtsStaffDependentDetails[0]);
-             this.staffDetails = this.staffDetail;
-             this.staffDetail=[];
-             console.log(this.staffDetail,"SD");
-             console.log(this.staffDetails,"SDS");
-      }
-      });
+        this.messageDialogService.info("No Records Founds.");
+      }      
+       else if(this.staffDetail.length > 1)
+       {
+         this.staffDetails=res.dtsStaffDependentDetails;
+       }       
+       else{
+         this.staffDeptDetails = res.dtsStaffDependentDetails;
+         if(res.dtsStaffDependentDetails[0].relationship == "Self")
+              this.staffDetail.push(res.dtsStaffDependentDetails[0]);
+              this.staffDetails = this.staffDetail;
+              this.staffDetail=[];              
+       }
+       });
+    }   
     
     
   }
