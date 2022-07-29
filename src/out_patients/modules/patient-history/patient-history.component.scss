@@ -45,6 +45,7 @@
             tbody tr td:nth-last-child(1) div{ 
                 display: flex;
                 justify-content: center;
+                cursor: pointer;
             }
             tbody tr:hover td:nth-last-child(1){
                 div img{

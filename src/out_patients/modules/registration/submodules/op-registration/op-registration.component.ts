@@ -230,7 +230,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Email id",
         required: true,
         pattern:
-          "^[A-Za-z0-9._%+-]{1}[A-Za-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$",
+          "^[A-Za-z0-9._%+-]{1}[A-Za-z0-9._%+-]+@(([a-zA-Z-0-9]+\\.+[a-zA-Z]{2,4}))$",
       },
       fatherSpouse: {
         type: "dropdown",
@@ -1464,7 +1464,7 @@ export class OpRegistrationComponent implements OnInit {
                   type: "dropdown",
                   title: "Hot Listing",
                   required: true,
-                  defaultValue: this.hotlistReason,
+                  //  defaultValue: this.hotlistReason,
                   options: this.hotlistDialogList,
                 },
                 reason: {
@@ -1487,7 +1487,10 @@ export class OpRegistrationComponent implements OnInit {
               console.log("The dialog was closed");
               console.log(result);
               if (result) {
-                this.hotlistReason = result.data.hotlistTitle;
+                let reason = this.hotlistDialogList.filter(
+                  (e) => e.value === result.data.hotlistTitle
+                );
+                this.hotlistReason = reason[0];
                 this.hotlistRemark = result.data.reason;
                 this.postHotlistComment(
                   this.hotlistReason.title,
@@ -1495,6 +1498,8 @@ export class OpRegistrationComponent implements OnInit {
                 );
                 console.log(this.hotlistReason.title, this.hotlistRemark);
                 // this.postHotlistComment();
+              } else {
+                this.OPRegForm.controls["hotlist"].setValue(false);
               }
             },
             (error: { error: string }) => {
@@ -1539,31 +1544,37 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: any) => {
           console.log(resultData);
-          // this.questions[24].options = this.cityList.map((l) => {
-          //   return { title: l.cityName, value: l.id };
+          if (resultData == "Hotlisting request submitted for approval") {
+            this.messageDialogService.success(resultData);
+          } else {
+            this.messageDialogService.info(resultData);
+          }
         },
         (error) => {
           console.log(error);
-          if (
-            !(
-              error.error.text ==
-              "You Have Successfully Added Host List Comment."
-            )
-          ) {
-            this.messageDialogService.info(error.error.text);
-          }
-          // else
-          // {
-          //   You have already added a host list comment against this Max ID
+          this.messageDialogService.error(error.error.text);
+          // if (
+          //   !(
+          //     error.error.text ==
+          //     "Hotlisting request submitted for approval"
+          //   )
+          // ) {
+          //   this.messageDialogService.success(
+          //     "Hotlisting request submitted for approval"
+          //   );
           // }
-          else {
-            this.messageDialogService.success(
-              "Hotlisting request submitted for approval for MAX ID - " +
-                this.patientDetails.iacode +
-                "." +
-                this.patientDetails.registrationno
-            );
-          }
+          // // else
+          // // {
+          // //   You have already added a host list comment against this Max ID
+          // // }
+          // else {
+          //   this.messageDialogService.success(
+          //     "Hotlisting request submitted for approval for MAX ID - " +
+          //       this.patientDetails.iacode +
+          //       "." +
+          //       this.patientDetails.registrationno
+          //   );
+          // }
         }
       );
   }
@@ -4117,7 +4128,7 @@ export class OpRegistrationComponent implements OnInit {
               this.seafarerDetails.HKID = "";
               this.seafarerDetails.Vesselname = "";
               this.seafarerDetails.rank = "";
-              this.OPRegForm.controls["seafarers"].setValue(false);
+              this.OPRegForm.controls["seaFarer"].setValue(false);
             } else {
               this.seafarerDetails = {
                 HKID: result.data.hkID,
@@ -4131,7 +4142,7 @@ export class OpRegistrationComponent implements OnInit {
             this.seafarerDetails.HKID = "";
             this.seafarerDetails.Vesselname = "";
             this.seafarerDetails.rank = "";
-            this.OPRegForm.controls["seafarers"].setValue(false);
+            this.OPRegForm.controls["seaFarer"].setValue(false);
           }
           this.seafarersDetailDialogref = null;
         });
