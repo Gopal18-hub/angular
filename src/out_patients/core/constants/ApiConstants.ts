@@ -133,6 +133,14 @@ export namespace ApiConstants {
     );
   };
 
+  export const getlocalityByName = (localityName: string) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonsearch/" +
+      `${localityName}`
+    );
+  };
+
   /* ----------------------------------------------------------------------------------------------------------
     ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
     ----------------------------------------------------------------------------------------------------------*/
@@ -389,7 +397,7 @@ export namespace ApiConstants {
     RegistrationNo: number,
     HSPLocationId: number,
     StationId: number,
-    TransactionType : string
+    TransactionType: string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -404,9 +412,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId + 
+      StationId +
       "/" +
-      TransactionType 
+      TransactionType
     );
   };
 
@@ -557,12 +565,15 @@ export namespace ApiConstants {
     SrcType: number,
     EmployeeCode?: string,
     EmployeeName?: string
-    
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/getstaffdependentdetails/"+SrcType+"?EmployeeCode="+EmployeeCode+"&EmployeeName="+EmployeeName
-         
+      "api/outpatientbilling/getstaffdependentdetails/" +
+      SrcType +
+      "?EmployeeCode=" +
+      EmployeeCode +
+      "&EmployeeName=" +
+      EmployeeName
     );
   };
 
@@ -638,6 +649,4 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
-
- 
 }
