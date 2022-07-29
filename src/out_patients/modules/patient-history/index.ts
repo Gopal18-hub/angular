@@ -10,10 +10,12 @@ import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
 @NgModule({
     declarations: [
     
-    PatientHistoryComponent
+    PatientHistoryComponent,
+          SimilarDetailsPopupComponent
   ],
     imports: [
         CommonModule,

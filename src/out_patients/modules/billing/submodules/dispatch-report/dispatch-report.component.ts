@@ -15,6 +15,7 @@ import { HttpService } from "@shared/services/http.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject, Observable } from "rxjs";
 import { DatePipe } from '@angular/common';
+import { CookieService } from '@shared/services/cookie.service';
 @Component({
   selector: 'out-patients-dispatch-report',
   templateUrl: './dispatch-report.component.html',
@@ -28,7 +29,9 @@ export class DispatchReportComponent implements OnInit {
   public dispatchreportsave: dispatchReportSaveModel = new dispatchReportSaveModel();
   public obj: objdispatchsave[] = [];
 
-  public dispatchreport: dispatchReportList = {dispatchlist:[], dispatchDatalist:[]};
+  public dispatchreport: dispatchReportList = {dispatchlist:[]};
+  public dispatchreportpending: dispatchReportList = {dispatchlist:[]}
+
   config: any = {
     clickedRows: true,
     actionItems: false,
@@ -42,7 +45,7 @@ export class DispatchReportComponent implements OnInit {
       "billno",
       "receive_date",
       "r_dispatchdate",
-      "dispatchplace",
+      "r_collection_location",
       "remarks"
     ],
     columnsInfo: {
@@ -50,7 +53,7 @@ export class DispatchReportComponent implements OnInit {
         title: "S.No",
         type: "number",
         style: {
-          width: "4rem"
+          width: "3rem"
         }
       },
       itemName: {
@@ -86,19 +89,19 @@ export class DispatchReportComponent implements OnInit {
       },
       receive_date: {
         title: "Received Date Time",
-        type: "input",
+        type: "input_date",
         style: {
           width: "11rem"
         }
       },
       r_dispatchdate: {
         title: "Dispatched Date Time",
-        type: "input",
+        type: "input_date",
         style: {
           width: "12rem"
         }
       },
-      dispatchplace: {
+      r_collection_location: {
         title: "Dispatch Place",
         type: "input",
         style: {
@@ -161,11 +164,17 @@ export class DispatchReportComponent implements OnInit {
   exportbtn: boolean = true;
   savebtn: boolean = true;
   printbtn: boolean = true;
-
+  userId:any;
   @ViewChild("showtable") tableRows: any; 
 
   private readonly _destroying$ = new Subject<void>();
-  constructor( private formService: QuestionControlService, private msgdialog: MessageDialogService, private matdialog: MatDialog, private http: HttpService, private datepipe: DatePipe) 
+  constructor( 
+    private formService: QuestionControlService, 
+    private msgdialog: MessageDialogService, 
+    private matdialog: MatDialog, 
+    private http: HttpService, 
+    private datepipe: DatePipe,
+    private cookie:CookieService) 
   {
 
   }
@@ -178,13 +187,14 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform = formResult.form;
     this.questions = formResult.questions;
     this.today = new Date();
+    this.userId = Number(this.cookie.get("UserId"));
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
     this.getBilledLocation();
   }
   ngAfterViewInit(): void{
     this.dispatchhistoryform.controls["radio"].valueChanges.subscribe(value=>{
-      this.dispatchreport = {dispatchlist:[], dispatchDatalist:[]};
+      this.dispatchreport = {dispatchlist:[]};
     })
   }
   getBilledLocation() {
@@ -208,7 +218,7 @@ export class DispatchReportComponent implements OnInit {
   {
     this.show = true;
     this.pendingreport = false;
-
+    this.title = "("+this.questions[4].options[this.dispatchhistoryform.value.radio - 1].title+")";
     console.log(this.dispatchhistoryform.value);
     if(this.dispatchhistoryform.value.billedlocation == '' ||
       this.dispatchhistoryform.value.billedlocation == undefined || 
@@ -233,39 +243,81 @@ export class DispatchReportComponent implements OnInit {
       }
       else
       {
-        this.title = "("+this.questions[4].options[this.dispatchhistoryform.value.radio - 1].title+")";
-        this.http.get(ApiConstants.getdispatchreport(this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
-        this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"), 
-        this.dispatchhistoryform.value.billedlocation.value,
-        this.dispatchhistoryform.value.radio)).subscribe((resultdata:any)=>{
-        console.log(resultdata);
-        this.dispatchreport = resultdata;
-        console.log(resultdata.dispatchlist.length);
-        for(var i = 0; i < this.dispatchreport.dispatchlist.length; i++)
-        {
-          this.dispatchreport.dispatchlist[i].sNo = i + 1;
-          console.log(this.dispatchreport.dispatchlist[i].sNo);
-        }
-        console.log(this.dispatchreport);
+        // this.title = "("+this.questions[4].options[this.dispatchhistoryform.value.radio - 1].title+")";
+        // this.http.get(ApiConstants.getdispatchreport(this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
+        // this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"), 
+        // this.dispatchhistoryform.value.billedlocation.value,
+        // this.dispatchhistoryform.value.radio)).subscribe((resultdata:any)=>{
+        // console.log(resultdata);
+        // this.dispatchreport = resultdata;
+        // console.log(resultdata.dispatchlist.length);
+        // for(var i = 0; i < this.dispatchreport.dispatchlist.length; i++)
+        // {
+        //   this.dispatchreport.dispatchlist[i].sNo = i + 1;
+        //   console.log(this.dispatchreport.dispatchlist[i].sNo);
+        // }
+        // console.log(this.dispatchreportpending.dispatchlist);
+        // console.log(this.dispatchreport);
+        this.getDispatchReport();
         this.pendingbtn = false;
         this.savebtn = false;
         this.exportbtn = false;
         this.printbtn = true;
-      },
-      (error)=>{
-        console.log(error.error);
-      }
-      );
+        
+      // },
+      // (error)=>{
+      //   console.log(error.error);
+      // }
+      // );
       }
     }
   }
   pendingreportsearch()
   {
+    this.title = "("+this.questions[4].options[this.dispatchhistoryform.value.radio - 1].title+")";
     this.show = false;
+    this.getDispatchReport(); 
     this.pendingreport = true;
     this.savebtn = true;
     this.exportbtn = false;
-    this.printbtn = false;
+    this.printbtn = false; 
+  }
+
+getDispatchReport(){
+    this.dispatchreport = {} as dispatchReportList;
+    this.http.get(ApiConstants.getdispatchreport(this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
+    this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"), 
+    this.dispatchhistoryform.value.billedlocation.value,
+    this.dispatchhistoryform.value.radio)).subscribe((resultdata:any)=>{
+      console.log(resultdata);
+      this.dispatchreport = resultdata;
+      console.log(resultdata.dispatchlist.length);
+      for(var i = 0; i < this.dispatchreport.dispatchlist.length; i++)
+      {
+        this.dispatchreport.dispatchlist[i].sNo = i + 1;
+        console.log(this.dispatchreport.dispatchlist[i].sNo);
+      }
+      debugger
+      if(this.pendingreport == true && this.show == false)
+      {
+        this.dispatchreport.dispatchlist = this.dispatchreport.dispatchlist.filter((e:any)=>{
+          return e.flag == 0;
+        });
+        console.log(this.dispatchreport.dispatchlist);
+      }
+      else if(this.pendingreport == false && this.show == true)
+      {
+        this.dispatchreport.dispatchlist = this.dispatchreport.dispatchlist.filter((e:any)=>{
+          return e.flag >= 0;
+        });
+        console.log(this.dispatchreport.dispatchlist);
+      }      
+      },
+      (error)=>{
+        console.log(error.error);
+      }
+      );
+
   }
   clear()
   {
@@ -297,27 +349,27 @@ export class DispatchReportComponent implements OnInit {
     debugger;
     this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
     this.tableRows.selection.selected.forEach((e:any) => {
-      console.log(e);
+      console.log(e.itemid.toString());
       
       this.dispatchreportsave.objDtSaveReport.push(
         {
-          slNo: e.sNo.toString,
+          slNo: e.sNo.toString(),
           testName:e.itemName,
           patientName:e.ptnName,
           billNo: e.billno,
-          billid: e.billid.toString,
+          billid: e.billid.toString(),
           remarks: e.remarks,
           dispatchDateTime: e.r_dispatchdate,
-          dispatchPlace: e.dispatchplace,
+          dispatchPlace: e.r_collection_location,
           recievedDateTime: e.receive_date,
-          operatorid: e.operatorid.toString,
-          repType:  "1",
+          operatorid: e.operatorid.toString(),
+          repType: e.patType,
           datetime: e.orderdatetime,
           chk: true,
           balance: e.balance,
-          itemid: e.itemid.toString,
+          itemid: e.itemid.toString(),
         })
-        this.dispatchreportsave.operatorid = e.operatorid.toString;
+        this.dispatchreportsave.operatorid = this.userId;
       });
       console.log(this.dispatchreportsave);
     console.log(this.dispatchreportsave);

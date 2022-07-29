@@ -9,8 +9,17 @@ import { CookieService } from '@shared/services/cookie.service';
 import { getpatienthistorytransactiontypeModel } from '@core/models/getpatienthistorytransactiontypeModel.Model';
 import { getRegisteredPatientDetailsModel } from '@core/models/getRegisteredPatientDetailsModel.Model';
 import { getPatientHistoryModel } from '@core/models/getPatientHistoryModel.Model';
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { Subject, takeUntil } from 'rxjs';
 import { ReportService } from '@shared/services/report.service';
+
+import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -21,7 +30,7 @@ export class PatientHistoryComponent implements OnInit {
   public patientDetails: getRegisteredPatientDetailsModel[] = [];
   public transactiontype: getpatienthistorytransactiontypeModel[] = [];
   public patienthistorylist: getPatientHistoryModel[] = [];
-  
+  similarContactPatientList: SimilarSoundPatientResponse[] = [];
   patienthistoryFormData = {
     title: "",
     type: "object",
@@ -31,8 +40,9 @@ export class PatientHistoryComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "number",
-        readonly: true
+        title:"Mobile No",
+        type: "tel",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
         type: "date",
@@ -94,7 +104,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billDate",
         style: {
-          width: '5rem'
+          width: '5.5rem'
         }
       },
       ipNo: {
@@ -108,14 +118,14 @@ export class PatientHistoryComponent implements OnInit {
         title: "Adm/Discharge Date",
         type: "date",
         style: {
-          width: '10rem'
+          width: '9rem'
         }
       },
       billAmount: {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '4rem'
+          width: '5rem'
         }
       },
       discountAmount: {
@@ -157,7 +167,10 @@ export class PatientHistoryComponent implements OnInit {
       operatorName: {
         title: "Operator Name",
         type: "string",
-        tooltipColumn: "operatorName"
+        tooltipColumn: "operatorName",
+        style: {
+          width: '7rem'
+        }
       },
       printIcon: {
         title: "Print History",
@@ -222,6 +235,7 @@ export class PatientHistoryComponent implements OnInit {
     private http: HttpService, 
     private datepipe: DatePipe,
     private cookie: CookieService,
+    public matDialog: MatDialog,
     private reportService:ReportService) { }
   today: any;
   fromdate: any;
@@ -246,6 +260,13 @@ export class PatientHistoryComponent implements OnInit {
         this.getPatientDetails();
       }
     });
+    this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
+      console.log(event);
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        this.mobilechange();
+      }
+    });
   }
 
   gettransactiontype()
@@ -261,6 +282,67 @@ export class PatientHistoryComponent implements OnInit {
       })
     })
   }
+  
+  mobilechange()
+  {
+    console.log('mobile changed');
+    this.matDialog.closeAll();
+    console.log(this.similarContactPatientList.length);
+      this.http
+        .post(ApiConstants.similarSoundPatientDetail, {
+          phone: this.patienthistoryform.value.mobile,
+        })
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: SimilarSoundPatientResponse[]) => {
+            this.similarContactPatientList = resultData;
+            console.log(this.similarContactPatientList);
+            if (this.similarContactPatientList.length == 1) {
+              console.log(this.similarContactPatientList[0]);
+              let maxID = this.similarContactPatientList[0].maxid;
+              this.patienthistoryform.controls["maxid"].setValue(maxID);
+              this.getPatientDetails();
+            } else {
+              if (this.similarContactPatientList.length != 0) {
+                // let dialogRef = this.matDialog.open(SimilarDetailsPopupComponent, {width: "30vw", height: "30vh"});
+                // dialogRef.afterClosed().subscribe(result=>{
+                //   console.log(result);
+                // })
+                const similarSoundDialogref = this.matDialog.open(
+                  SimilarPatientDialog,
+                  {
+                    width: "60vw",
+                    height: "65vh",
+                    data: {
+                      searchResults: this.similarContactPatientList,
+                    },
+                  }
+                );
+                similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.patienthistoryform.controls["maxid"].setValue(maxID);
+                      this.getPatientDetails();
+                    }
+                    this.similarContactPatientList = [];
+                  });
+              } else {
+                this.patienthistoryform.controls["mobile"].setErrors({incorrect: true});
+                this.questions[1].customErrorMessage = "Invalid Mobile No";
+                console.log("no data found");
+              }
+            }
+          },
+          (error) => {
+            console.log(error);
+            this.msgdialog.info(error.error);
+          }
+        );
+  }
   getPatientDetails()
   {
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
@@ -272,9 +354,9 @@ export class PatientHistoryComponent implements OnInit {
             console.log(resultData);
             if(resultData.length == 0)
             {
-              // this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
-              // this.questions[0].customErrorMessage = "Registration number does not exist";
-              this.msgdialog.info("Registration number does not exist");
+              this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+              this.questions[0].customErrorMessage = "Invalid MaxID";
+              // this.msgdialog.info("Registration number does not exist");
             }
             else
             {
@@ -322,6 +404,13 @@ export class PatientHistoryComponent implements OnInit {
           {
             console.log('data');
             this.patienthistorylist = resultdata;
+            // this.patienthistorylist.forEach(e=>{
+            //   e.billAmount = parseInt(e.balanceAmt).toFixed(2);
+            //   e.discountAmount = parseInt(e.discountAmount).toFixed(2);
+            //   e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
+            //   e.refundAmount = parseInt(e.refundAmount).toFixed(2);
+            //   e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+            // })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);
           }
@@ -367,19 +456,25 @@ export class PatientHistoryComponent implements OnInit {
     if(event.column == "printIcon"){
       console.log(event.row.billType);
       this.billno = event.row.billNo;
-      if(event.row.billType == 'Deposit')
+      if(event.row.billType == 'Deposit' || event.row.billType == 'Donation')
       {
         this.openReportModal('depositReport');
       }
-      else if(event.row.billType == 'Deposit')
+      else if(event.row.billType == 'Deposit Refund')
       {
         this.openReportModal('rptRefund');
       }
-      else if(event.row.billType == 'OPD')
+      else if(event.row.billType == 'OPD' || event.row.billType == 'OPD Bill')
       {
         this.openReportModal('billingreport');
-      } 
-      // this.msgdialog.success("Printing Successfull");
+      }
+      else if(event.row.billType == 'Op Refund') 
+      {
+        this.openReportModal('refundReport ');
+      }
+      else{
+        this.msgdialog.success("Unable to Print. Working on other transaction type(s) !!!");
+      }
     }
   }
 

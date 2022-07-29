@@ -641,4 +641,8 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+
+  export const getpatientvisithistory = (IACode: string, RegistrationNo: number) =>{
+    return ( environment.BillingApiUrl + "api/outpatientbilling/getoppatientvisithistory/"+IACode+"/"+RegistrationNo);
+  }
 }
