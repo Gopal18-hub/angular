@@ -213,6 +213,25 @@
   </mat-form-field>
 </ng-template>
 
+<ng-template #dropdown let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <mat-select
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [panelClass]="'im-select-dropdown'"
+      disableOptionCentering
+    >
+      <ng-container
+        *ngFor="let opt of data.config.columnsInfo[data.col].options"
+      >
+        <mat-option [value]="opt.value">
+          {{ opt.title }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+</ng-template>
+
 <ng-template #button let-data>
   <button mat-raised-button (click)="(!!data.output)" disabled></button>
 </ng-template>

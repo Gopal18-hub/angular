@@ -44,6 +44,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
   @ViewChild("input") inputboxTemplate!: TemplateRef<any>;
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
+  @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
@@ -170,6 +171,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
     else if (col.type == "input") return this.inputboxTemplate;
     else if (col.type == "input_date") return this.inputboxDateTemplate;
+    else if (col.type == "dropdown") return this.dropdownTemplate;
     else return this.stringTemplate;
   }
 
