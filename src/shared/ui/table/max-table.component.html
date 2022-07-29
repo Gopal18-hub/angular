@@ -197,6 +197,34 @@
   </mat-form-field>
 </ng-template>
 
+<ng-template #textarea let-data>
+  <div
+    (click)="data.isOpen = !data.isOpen"
+    cdkOverlayOrigin
+    #trigger="cdkOverlayOrigin"
+    class="cursor-pointer"
+  >
+    {{ data.output }}
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="data.isOpen"
+  >
+    <mat-form-field appearance="outline" floatLabel="never">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="5"
+        [(ngModel)]="data.element[data.col]"
+        [value]="data.element[data.col]"
+      ></textarea>
+    </mat-form-field>
+  </ng-template>
+</ng-template>
+
 <ng-template #inputDate let-data>
   <mat-form-field appearance="outline" floatLabel="never">
     <input
@@ -217,19 +245,6 @@
   <mat-form-field appearance="outline" floatLabel="never">
     <input
       matInput
-      placeholder="__/__/____"
-      [(ngModel)]="data.element[data.col]"
-      [value]="data.element[data.col]"
-      [type]="'text'"
-      [matDatepicker]="datepicker"
-      autocomplete="off"
-    />
-    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
-    <mat-datepicker #datepicker> </mat-datepicker>
-  </mat-form-field>
-
-  <mat-form-field>
-    <input
       placeholder="__/__/____"
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
