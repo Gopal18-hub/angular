@@ -23,6 +23,12 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatSelectModule } from "@angular/material/select";
+import {
+  NgxMatDatetimePickerModule,
+  NgxMatNativeDateModule,
+} from "@angular-material-components/datetime-picker";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { TextFieldModule } from "@angular/cdk/text-field";
 
 @NgModule({
   imports: [
@@ -45,6 +51,10 @@ import { MatSelectModule } from "@angular/material/select";
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    NgxMatDatetimePickerModule,
+    OverlayModule,
+    TextFieldModule,
+    NgxMatNativeDateModule,
   ],
   exports: [MaxTableComponent, MaxTableFormComponent],
   declarations: [MaxTableComponent, MaxTableFormComponent],
