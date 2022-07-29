@@ -122,4 +122,16 @@ margin-left:0.35%;
         display:none;
     }
 }
+// .input-width{
+//     ::ng-deep mat-form-field{
+//         width:105%
+//     }
+// }
 
+.input-width{
+    ::ng-deep mat-form-field .mat-form-field-wrapper{
+        padding-top:0.2rem !important;
+        padding-bottom:0.2rem !important;
+        width:70%
+    }
+}

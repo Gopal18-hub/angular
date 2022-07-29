@@ -140,14 +140,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "Group Company",
         type: "string",
         style: {
-          width: "11rem",
+          width: "10rem",
         },
       },
       empCode: {
         title: "EMP Code",
         type: "number",
         style: {
-          width: "7rem",
+          width: "6rem",
         },
       },
       dob: {
@@ -182,7 +182,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "Gender",
         type: "string",
         style: {
-          width: "6rem",
+          width: "5rem",
         },
       },
       doj: {
@@ -203,7 +203,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "Relationship",
         type: "string",
         style: {
-          width: "8rem",
+          width: "7rem",
         },
       },
       flag: {
@@ -624,12 +624,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                       console.log(result.data["added"][0].maxid);
                       let maxID = result.data["added"][0].maxid;
                       this.onMaxidEnter(maxID);
-
-                      //this.employeesponsorForm.controls["maxId"].setValue(maxID);
-                      //this.getPatientDetailsByMaxId();
                     }
-
-                    //this.similarContactPatientList = [];
                   },
                   (error) => {
                     console.log(error);
@@ -709,7 +704,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(this.employeeDependanttable);
     // this.employeeDependanttable.config.columnsInfo.remark.disable();
     //console.log(this.employeeDependanttable);
-    console.log(this.employeeDependanttable.selection.selected[0].relationship);
+    //  console.log(this.employeeDependanttable.selection.selected[0].relationship);
     //  return;
     console.log("inside save");
     let dialogRef = this.dialog.open(SavedialogComponent, {
@@ -808,19 +803,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       this.onDelete = false;
     }
     console.log(this.flag);
-    // setTimeout(() => {
-    // this.employeeDependanttable.selection.changed
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((res: any) => {
-    //     console.log(res);
-    // this.router.navigate(
-    //   ["registration", "op-registration"],
-    //   {
-    //     queryParams: { maxId: res.added[0].maxid },
-    //   }
-    // );
-    //});
-    // });
     return new SaveDeleteEmployeeSponsorRequest(
       this.flag,
       this.employeesponsorForm.value.company.value,
@@ -891,6 +873,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.disableButton = true;
     this.disableDelete = true;
     this.disableClear = true;
+    this.employeesponsorForm.controls["maxId"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
   }
 
   //HARD CODED DATA FOR EMPLOYEE DEPENDANT TABLE

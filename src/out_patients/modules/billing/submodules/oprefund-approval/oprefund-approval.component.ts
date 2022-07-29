@@ -1,6 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject, takeUntil } from "rxjs";
+import { DatePipe } from "@angular/common";
+import { SearchService } from "../../../../../shared/services/search.service";
 
 @Component({
   selector: "out-patients-oprefund-approval",
@@ -8,6 +13,12 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
   styleUrls: ["./oprefund-approval.component.scss"],
 })
 export class OprefundApprovalComponent implements OnInit {
+  private readonly _destroying$ = new Subject<void>();
+  from: any;
+  to: any;
+  today = new Date();
+  defaultUI: boolean = false;
+  showapprovalspinner: boolean = true;
   link1 = [
     { value: "OP Registration Approval", id: 1 },
     { value: "Hot Listing Approval", id: 2 },
@@ -99,10 +110,45 @@ export class OprefundApprovalComponent implements OnInit {
   };
   constructor(
     private router: Router,
-    private dialogservice: MessageDialogService
+    private dialogservice: MessageDialogService,
+    private http: HttpService,
+    private datepipe: DatePipe,
+    private searchService: SearchService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.searchService.searchTrigger
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((formdata: any) => {
+    //     this.searchhotlisting(formdata.data);
+    //   });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        this.searchOpRefundapproval(formdata.data);
+      });
+  }
+
+  searchOpRefundapproval(formdata: any) {
+    this.defaultUI = true;
+    this.showapprovalspinner = true;
+    this.today = new Date();
+    if (formdata["from"] == "" || formdata["to"] == "") {
+      this.from =
+        formdata["from"] != ""
+          ? formdata["from"]
+          : this.today.setDate(this.today.getDate() - 23);
+      this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
+      this.to = formdata["to"] != "" ? formdata["to"] : new Date();
+      this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
+    } else {
+      this.from = formdata["from"];
+      this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
+      this.to = formdata["to"];
+      this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
+    }
+    this.showmain(this.link1[0]);
+  }
 
   showmain(link: any) {
     console.log(link);
@@ -123,12 +169,26 @@ export class OprefundApprovalComponent implements OnInit {
     console.log(link);
     if (link.id == 1) {
       this.activeLink2 = link;
-    } else if (link.value == 2) {
+      this.http
+        .get(ApiConstants.getpendingoprefundapproval)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+        });
+    } else if (link.id == 2) {
       this.activeLink2 = link;
+      this.http
+        .get(ApiConstants.getapprovedoprefundapproval)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+        });
     } else {
       this.activeLink2 = link;
     }
   }
+  getoprefundApproval() {}
+  getoprefundPending() {}
 
   data: any[] = [
     {
