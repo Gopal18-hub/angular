@@ -389,7 +389,7 @@ export namespace ApiConstants {
     RegistrationNo: number,
     HSPLocationId: number,
     StationId: number,
-    TransactionType : string
+    TransactionType: string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -557,12 +557,15 @@ export namespace ApiConstants {
     SrcType: number,
     EmployeeCode?: string,
     EmployeeName?: string
-    
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/getstaffdependentdetails/"+SrcType+"?EmployeeCode="+EmployeeCode+"&EmployeeName="+EmployeeName
-         
+      "api/outpatientbilling/getstaffdependentdetails/" +
+      SrcType +
+      "?EmployeeCode=" +
+      EmployeeCode +
+      "&EmployeeName=" +
+      EmployeeName
     );
   };
 
