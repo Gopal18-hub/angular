@@ -554,18 +554,15 @@ export namespace ApiConstants {
   };
 
   export const getstaffdependentdetails = (
-    EmployeeCode: string,
-    EmployeeName: string,
-    SrcType: number
+    SrcType: number,
+    EmployeeCode?: string,
+    EmployeeName?: string
+    
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/getstaffdependentdetails/" +
-      EmployeeCode +
-      "/" +
-      EmployeeName +
-      "/" +
-      SrcType
+      "api/outpatientbilling/getstaffdependentdetails/"+SrcType+"?EmployeeCode="+EmployeeCode+"&EmployeeName="+EmployeeName
+         
     );
   };
 
@@ -645,4 +642,5 @@ export namespace ApiConstants {
   export const getpatientvisithistory = (IACode: string, RegistrationNo: number) =>{
     return ( environment.BillingApiUrl + "api/outpatientbilling/getoppatientvisithistory/"+IACode+"/"+RegistrationNo);
   }
+ 
 }

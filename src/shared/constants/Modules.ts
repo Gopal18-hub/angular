@@ -316,6 +316,7 @@ export namespace MaxModules {
       id: 5,
       defaultPath: "",
       childrens: [],
+      type: "module",
     },
     {
       title: "MIS reports",

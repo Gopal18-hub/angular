@@ -112,7 +112,11 @@
                   [matMenuTriggerFor]="menu"
                   [matMenuTriggerData]="{ module: module }"
                   class="mr-2 cursor-pointer"
-                  [ngClass]="{ active: activeModule?.id == module.id }"
+                  [ngClass]="{
+                    active: activeModule?.id == module.id,
+                    disabled: module.disabled
+                  }"
+                  [attr.disabled]="module.disabled"
                 >
                   {{ module.title }}
                 </li>
@@ -120,7 +124,11 @@
               <ng-container *ngIf="!module.moreOptions">
                 <li
                   class="mr-2 cursor-pointer"
-                  [ngClass]="{ active: activeModule?.id == module.id }"
+                  [ngClass]="{
+                    active: activeModule?.id == module.id,
+                    disabled: module.disabled
+                  }"
+                  [attr.disabled]="module.disabled"
                 >
                   {{ module.title }}
                 </li>
