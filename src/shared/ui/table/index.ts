@@ -23,6 +23,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatSelectModule } from "@angular/material/select";
+import { NgxMatDatetimePickerModule } from "@angular-material-components/datetime-picker";
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { MatSelectModule } from "@angular/material/select";
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    NgxMatDatetimePickerModule,
   ],
   exports: [MaxTableComponent, MaxTableFormComponent],
   declarations: [MaxTableComponent, MaxTableFormComponent],

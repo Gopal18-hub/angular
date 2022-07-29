@@ -213,6 +213,38 @@
   </mat-form-field>
 </ng-template>
 
+<ng-template #inputDateTime let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [ngxMatDatetimePicker]="picker"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(picker)"
+    ></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [enableMeridian]="true">
+    </ngx-mat-datetime-picker>
+  </mat-form-field>
+</ng-template>
+
 <ng-template #dropdown let-data>
   <mat-form-field appearance="outline" floatLabel="never">
     <mat-select

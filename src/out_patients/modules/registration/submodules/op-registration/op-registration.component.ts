@@ -1498,6 +1498,8 @@ export class OpRegistrationComponent implements OnInit {
                 );
                 console.log(this.hotlistReason.title, this.hotlistRemark);
                 // this.postHotlistComment();
+              } else {
+                this.OPRegForm.controls["hotlist"].setValue(false);
               }
             },
             (error: { error: string }) => {
