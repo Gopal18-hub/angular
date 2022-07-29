@@ -917,35 +917,37 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["city"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (value.value > 0) {
-          if (
-            (this.OPRegForm.value.locality.value == undefined ||
-              this.OPRegForm.value.locality.value == null ||
-              this.OPRegForm.value.locality.value <= 0 ||
-              this.OPRegForm.value.locality.value == "") &&
-            (this.OPRegForm.value.pincode == undefined ||
-              this.OPRegForm.value.pincode == null ||
-              this.OPRegForm.value.pincode <= 0 ||
-              this.OPRegForm.value.pincode == "") &&
-            (this.OPRegForm.value.state.value == undefined ||
-              this.OPRegForm.value.state.value == null ||
-              this.OPRegForm.value.state.value == "" ||
-              this.OPRegForm.value.state.value <= 0)
-          ) {
-            this.citybasedflow = true;
-            this.clearAddressOnCityChange();
-            this.questions[25].readonly = false;
-            this.questions[26].readonly = false;
-            this.getAddressByCity(value);
-          } else {
-            if (this.countrybasedflow) {
-              this.citybasedflow = false;
-              // this.getCityListByState(this.OPRegForm.value.state);
-              this.getLocalityByCity(value);
-            } else if (!this.pincodebasedflow) {
+        if (value) {
+          if (value.value > 0) {
+            if (
+              (this.OPRegForm.value.locality.value == undefined ||
+                this.OPRegForm.value.locality.value == null ||
+                this.OPRegForm.value.locality.value <= 0 ||
+                this.OPRegForm.value.locality.value == "") &&
+              (this.OPRegForm.value.pincode == undefined ||
+                this.OPRegForm.value.pincode == null ||
+                this.OPRegForm.value.pincode <= 0 ||
+                this.OPRegForm.value.pincode == "") &&
+              (this.OPRegForm.value.state.value == undefined ||
+                this.OPRegForm.value.state.value == null ||
+                this.OPRegForm.value.state.value == "" ||
+                this.OPRegForm.value.state.value <= 0)
+            ) {
               this.citybasedflow = true;
-              //this.clearAddressOnCityChange();
-              this.getLocalityByCity(value);
+              this.clearAddressOnCityChange();
+              this.questions[25].readonly = false;
+              this.questions[26].readonly = false;
+              this.getAddressByCity(value);
+            } else {
+              if (this.countrybasedflow) {
+                this.citybasedflow = false;
+                // this.getCityListByState(this.OPRegForm.value.state);
+                this.getLocalityByCity(value);
+              } else if (!this.pincodebasedflow) {
+                this.citybasedflow = true;
+                //this.clearAddressOnCityChange();
+                this.getLocalityByCity(value);
+              }
             }
           }
         }
@@ -954,11 +956,49 @@ export class OpRegistrationComponent implements OnInit {
     //locality chnage event
     this.OPRegForm.controls["locality"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
+      .subscribe(async (value: any) => {
         if (!this.maxIDChangeCall && this.countrybasedflow) {
           this.OPRegForm.controls["pincode"].setValue("");
         }
         if (
+          (this.OPRegForm.value.pincode == "" ||
+            this.OPRegForm.value.pincode == undefined ||
+            this.OPRegForm.value.pincode == null) &&
+          (this.OPRegForm.value.city.value == undefined ||
+            this.OPRegForm.value.city.value == "" ||
+            this.OPRegForm.value.city.value == null)
+        ) {
+          if (!value.value) {
+            if (value.length >= 3) {
+              this.localitybyCityList = await this.http
+                .get(ApiConstants.getlocalityByName(value))
+                .toPromise();
+              if (this.localitybyCityList) {
+                if (this.localitybyCityList.length > 0) {
+                  this.questions[22].options = this.localitybyCityList.map(
+                    (l: any) => {
+                      return { title: l.localityName, value: l.id };
+                    }
+                  );
+                }
+              }
+            }
+          }
+
+          if (this.localitybyCityList) {
+            if (value.value && this.localitybyCityList.length > 0) {
+              let pincode = this.localitybyCityList.filter(
+                (l) => l.id === value.value
+              )[0].pincode;
+
+              this.OPRegForm.controls["pincode"].setValue(pincode);
+              this.pincodebasedflow = true;
+              this.countrybasedflow = false;
+              this.citybasedflow = false;
+              this.addressByLocalityID(value);
+            }
+          }
+        } else if (
           value.value > 0 &&
           value.value != undefined &&
           value.value != null &&
@@ -1617,6 +1657,7 @@ export class OpRegistrationComponent implements OnInit {
         this.questions[24].options = this.cityList.map((l) => {
           return { title: l.cityName, value: l.id };
         });
+        this.questions[24] = { ...this.questions[24] };
       });
   }
 
@@ -1630,6 +1671,7 @@ export class OpRegistrationComponent implements OnInit {
         this.questions[25].options = this.disttList.map((l) => {
           return { title: l.districtName, value: l.id };
         });
+        this.questions[25] = { ...this.questions[25] };
       });
   }
 
@@ -1643,6 +1685,7 @@ export class OpRegistrationComponent implements OnInit {
         this.questions[26].options = this.stateList.map((l) => {
           return { title: l.stateName, value: l.id };
         });
+        this.questions[26] = { ...this.questions[26] };
       });
   }
 
@@ -1758,11 +1801,8 @@ export class OpRegistrationComponent implements OnInit {
 
       this.getCitiesByCountry({ title: "India", value: 1 });
       this.getStatesByCountry({ title: "India", value: 1 });
-
-      // this.OPRegForm.controls["country"].setValue({
-      //   title: "India",
-      //   value: 1,
-      // });
+      this.localitybyCityList = [];
+      this.getLocalityList();
     }
   }
 
@@ -1784,6 +1824,7 @@ export class OpRegistrationComponent implements OnInit {
 
       if (this.OPRegForm.value.locality) {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
+        this.getLocalityList();
       }
 
       if (this.OPRegForm.value.state) {
@@ -1880,11 +1921,13 @@ export class OpRegistrationComponent implements OnInit {
       ) {
         this.OPRegForm.controls["locality"].setValue({ title: "", value: 0 });
       }
+      this.getLocalityList();
     }
   }
 
   //fetch Address based on locality or set pincode on selection of locality
   countrybasedflow: boolean = false;
+  localitybasedflow: boolean = false;
   AddressonLocalityModellst!: AddressonLocalityModel;
   addressByLocalityID(locality: any) {
     if (
@@ -2503,10 +2546,22 @@ export class OpRegistrationComponent implements OnInit {
       title: patientDetails?.city,
       value: patientDetails?.pcity,
     });
-    this.OPRegForm.controls["locality"].setValue({
-      title: patientDetails?.localityName,
-      value: patientDetails?.locality,
-    });
+    if (patientDetails?.locality == 0) {
+      if (
+        patientDetails?.otherlocality != "" ||
+        patientDetails?.otherlocality != undefined
+      ) {
+        this.OPRegForm.controls["locality"].setValue({
+          title: patientDetails?.otherlocality,
+          value: 0,
+        });
+      }
+    } else {
+      this.OPRegForm.controls["locality"].setValue({
+        title: patientDetails?.localityName,
+        value: patientDetails?.locality,
+      });
+    }
 
     this.questions[24].readonly = true;
     this.questions[25].readonly = true;
