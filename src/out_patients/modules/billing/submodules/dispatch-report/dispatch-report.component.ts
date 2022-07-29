@@ -103,7 +103,11 @@ export class DispatchReportComponent implements OnInit {
       },
       r_collection_location: {
         title: "Dispatch Place",
-        type: "input",
+        type: "dropdown",
+        options: {
+          title: "",
+          value: this.billedlocation,
+        },
         style: {
           width: "11rem"
         }
@@ -298,6 +302,9 @@ getDispatchReport(){
         console.log(this.dispatchreport.dispatchlist[i].sNo);
       }
       debugger
+      this.tableRows.config.columnsInfo.r_collection_location.options = this.billedlocation.map((l) => {
+        return { title: l.address3, value: l.hspLocationId };
+      });
       if(this.pendingreport == true && this.show == false)
       {
         this.dispatchreport.dispatchlist = this.dispatchreport.dispatchlist.filter((e:any)=>{
@@ -341,12 +348,13 @@ getDispatchReport(){
   savedialog()
   {
     // console.log(this.dispatchreportsave);
-    console.log(this.tableRows);
+    console.log(this.tableRows.config.columnsInfo.r_collection_location);
     console.log(this.tableRows.selection.selected);
     console.log(this.tableRows.selection.selected.length);
     console.log(this.tableRows.selection.selected[0].sNo);
     // console.log(this.dispatchreportsave);
     debugger;
+    // if(this.tableRows.config.columnsInfo)
     this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
     this.tableRows.selection.selected.forEach((e:any) => {
       console.log(e.itemid.toString());
@@ -360,7 +368,7 @@ getDispatchReport(){
           billid: e.billid.toString(),
           remarks: e.remarks,
           dispatchDateTime: e.r_dispatchdate,
-          dispatchPlace: e.r_collection_location,
+          dispatchPlace: e.r_collection_location.toString(),
           recievedDateTime: e.receive_date,
           operatorid: e.operatorid.toString(),
           repType: e.patType,
