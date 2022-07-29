@@ -212,16 +212,18 @@
     [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="data.isOpen"
   >
-    <mat-form-field appearance="outline" floatLabel="never">
-      <textarea
-        matInput
-        cdkTextareaAutosize
-        #autosize="cdkTextareaAutosize"
-        cdkAutosizeMinRows="5"
-        [(ngModel)]="data.element[data.col]"
-        [value]="data.element[data.col]"
-      ></textarea>
-    </mat-form-field>
+    <div class="editable-textarea">
+      <mat-form-field appearance="outline" floatLabel="never">
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="5"
+          [(ngModel)]="data.element[data.col]"
+          [value]="data.element[data.col]"
+        ></textarea>
+      </mat-form-field>
+    </div>
   </ng-template>
 </ng-template>
 
