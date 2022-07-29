@@ -15,14 +15,14 @@ export class objdispatchsave{
     datetime: string;
     patientName: string;
     billNo: string;
-    dispatchDateTime: string;
+    dispatchDateTime: any;
     dispatchPlace: string;
     remarks: string;
     chk: boolean;
     billid: string;
     operatorid: string;
     itemid: string;
-    recievedDateTime: string;
+    recievedDateTime: any;
     balance: string;
     repType: string;
 

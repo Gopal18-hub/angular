@@ -78,13 +78,15 @@
                 <div class="ml-1" *ngIf="pendingreport">
                     <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
                 </div>
-                <div class="h-full mt-1 table">
-                    <maxhealth-table
-                    [config]="config"
-                    [data]="dispatchreport.dispatchlist"
-                    #showtable
-                    ></maxhealth-table>
-                </div>
+                <ng-container *ngIf="reporttable">
+                    <div class="h-full mt-1 table">
+                        <maxhealth-table
+                        [config]="config"
+                        [data]="dispatchreport.dispatchlist"
+                        #showtable
+                        ></maxhealth-table>
+                    </div>
+                </ng-container>
             </div>
 
             <!-- <div class="mt-1 h-68" *ngIf="pendingreport">
