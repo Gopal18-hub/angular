@@ -214,11 +214,7 @@
 </ng-template>
 
 <ng-template #dropdown let-data>
-  <mat-form-field
-    class="full-width clearfix clear"
-    appearance="outline"
-    floatLabel="never"
-  >
+  <mat-form-field appearance="outline" floatLabel="never">
     <mat-select
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
