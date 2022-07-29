@@ -89,14 +89,14 @@ export class DispatchReportComponent implements OnInit {
       },
       receive_date: {
         title: "Received Date Time",
-        type: "input_date",
+        type: "input_datetime",
         style: {
           width: "11rem"
         }
       },
       r_dispatchdate: {
         title: "Dispatched Date Time",
-        type: "input_date",
+        type: "input_datetime",
         style: {
           width: "12rem"
         }
@@ -347,6 +347,53 @@ getDispatchReport(){
   }
   savedialog()
   {
+    console.log(this.tableRows);
+    console.log( this.tableRows.config.columnsInfo);
+    if(this.tableRows.selection.selected.length > 0)
+    {
+      this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
+      this.tableRows.selection.selected.forEach((e:any) => {
+      console.log(e.itemid.toString());
+      if( (e.r_collection_location == null || e.r_collection_location == undefined) ||
+          (e.r_dispatchdate == null || e.r_dispatchdate == undefined) ||
+          (e.receive_date == null || e.receive_date == undefined)
+      )
+      {
+        this.msgdialog.error("You have Not Selected Proper Data");
+      }
+      else
+      {
+        this.dispatchreportsave.objDtSaveReport.push(
+          {
+            slNo: e.sNo.toString(),
+            testName:e.itemName,
+            patientName:e.ptnName,
+            billNo: e.billno,
+            billid: e.billid.toString(),
+            remarks: e.remarks,
+            dispatchDateTime: e.r_dispatchdate,
+            dispatchPlace: e.r_collection_location.toString(),
+            recievedDateTime: e.receive_date,
+            operatorid: e.operatorid.toString(),
+            repType: e.patType,
+            datetime: e.orderdatetime,
+            chk: true,
+            balance: e.balance,
+            itemid: e.itemid.toString(),
+          })
+          this.dispatchreportsave.operatorid = this.userId;
+          this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
+            console.log(res);
+            if(res == 1)
+            {
+              this.msgdialog.success("Data Saved Succesully");
+            }
+          })
+        }
+      });
+      
+
+    }
     // console.log(this.dispatchreportsave);
     console.log(this.tableRows.config.columnsInfo.r_collection_location);
     console.log(this.tableRows.selection.selected);
@@ -355,39 +402,10 @@ getDispatchReport(){
     // console.log(this.dispatchreportsave);
     debugger;
     // if(this.tableRows.config.columnsInfo)
-    this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
-    this.tableRows.selection.selected.forEach((e:any) => {
-      console.log(e.itemid.toString());
-      
-      this.dispatchreportsave.objDtSaveReport.push(
-        {
-          slNo: e.sNo.toString(),
-          testName:e.itemName,
-          patientName:e.ptnName,
-          billNo: e.billno,
-          billid: e.billid.toString(),
-          remarks: e.remarks,
-          dispatchDateTime: e.r_dispatchdate,
-          dispatchPlace: e.r_collection_location.toString(),
-          recievedDateTime: e.receive_date,
-          operatorid: e.operatorid.toString(),
-          repType: e.patType,
-          datetime: e.orderdatetime,
-          chk: true,
-          balance: e.balance,
-          itemid: e.itemid.toString(),
-        })
-        this.dispatchreportsave.operatorid = this.userId;
-      });
+    
       console.log(this.dispatchreportsave);
     console.log(this.dispatchreportsave);
-    this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
-      console.log(res);
-      if(res == 1)
-      {
-        this.msgdialog.success("Data Saved Succesully");
-      }
-    })
+    
   }
   //as of now using hardcode value for test purpose
   // getdispatchrequestbody(): dispatchReportSaveModel{
