@@ -133,6 +133,14 @@ export namespace ApiConstants {
     );
   };
 
+  export const getlocalityByName = (localityName: string) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonsearch/" +
+      `${localityName}`
+    );
+  };
+
   /* ----------------------------------------------------------------------------------------------------------
     ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
     ----------------------------------------------------------------------------------------------------------*/
@@ -404,9 +412,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId + 
+      StationId +
       "/" +
-      TransactionType 
+      TransactionType
     );
   };
 
@@ -641,9 +649,4 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
-
-  export const getpatientvisithistory = (IACode: string, RegistrationNo: number) =>{
-    return ( environment.BillingApiUrl + "api/outpatientbilling/getoppatientvisithistory/"+IACode+"/"+RegistrationNo);
-  }
- 
 }
