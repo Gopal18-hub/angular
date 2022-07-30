@@ -46,14 +46,13 @@ export namespace FormReport {
     ],
   };
 
-
   // export const expiredPatientReport = {
   //   reportName: "Selection Criteria",
   //   filterForm: {
   //     title: "",
   //     type: "object",
   //     properties: {
-        
+
   //       fromDate: {
   //         type: "date",
   //         title: "From Date",
@@ -95,8 +94,41 @@ export namespace FormReport {
   //   ],
   // };
 
-
-  // export const opConsultationReport = {
+  export const opConsultationReport = {
+    reportName: "Selection Criteria",
+    filterForm: {
+      title: "",
+      type: "object",
+      properties: {
+        fromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        toDate: {
+          type: "date",
+          title: "To Date",
+        },
+        location: {
+          type: "dropdown",
+          placeholder: "---All Location---",
+          title: "Location",
+        },
+      },
+    },
+    form: {
+      layout: {
+        equipmentName: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Perform Query",
+        },
+        {
+          label: "Clear",
+        },
+      ],
+    },
+  };
   export const DoctorSheduleReport = {
     reportName: "Doctors",
     filterForm: {
@@ -285,7 +317,7 @@ export namespace FormReport {
       ],
     },
   };
-  export const DetailedHappyFamilyPlanUtilizationReport = {
+  export const SummaryReportForUtilisationReport = {
     reportName: "Detailed Happy Family Utilization Report Summary",
     filterForm: {
       title: "",
@@ -319,7 +351,6 @@ export namespace FormReport {
       title: "",
       type: "object",
       properties: {
-        
         fromDate: {
           type: "date",
           title: "From Date",
@@ -342,14 +373,15 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
-        equipmentName: "w-full",
-      },
-      {
-        label: "Perform Query",
-      },
-      {
-        label: "Clear",
-      },]
+          equipmentName: "w-full",
+        },
+        {
+          label: "Preview",
+        },
+        {
+          label: "Clear",
+        },
+      ],
     },
 
     layout: "single",
@@ -365,12 +397,12 @@ export namespace FormReport {
   };
 
   // export const onlineDepositReport = {
-    
+
   //   filterForm: {
   //     title: "",
   //     type: "object",
   //     properties: {
-        
+
   //       fromDate: {
   //         type: "date",
   //         title: "From Date",
@@ -387,8 +419,6 @@ export namespace FormReport {
   //     },
   //   },
 
-
-
   //   form: {
   //     layout: {
   //       location: "w-full",
@@ -403,7 +433,7 @@ export namespace FormReport {
   //       {
   //         label: "Clear",
   //       },
-        
+
   //     ],
   //   },
 
@@ -437,7 +467,7 @@ export namespace FormReport {
   //     "initdepdatetime",
   //     "initdepResponsetime",
   //     "payOrpayCheck",
-  //     "payRefNo",    
+  //     "payRefNo",
   //     "payBankRefNo",
   //     "HisUpdateDatetime",
   //     "HisDepositID",
@@ -459,7 +489,7 @@ export namespace FormReport {
   //     depositType: {
   //       title: "Deposit Type",
   //       type: "string",
-        
+
   //     },
   //     amount: {
   //       title: "Amount",
@@ -472,7 +502,7 @@ export namespace FormReport {
   //     depositStatus: {
   //       title: "Deposit Status",
   //       type: "string",
-        
+
   //     },
   //     date: {
   //       title: "Date",
@@ -482,7 +512,7 @@ export namespace FormReport {
   //       title: "Deposit Source",
   //       type: "string",
   //     },
-      
+
   //     initdepdatetime: {
   //       title: "Init Dep Date Time",
   //       type: "date",
@@ -518,8 +548,3 @@ export namespace FormReport {
   //   },
   // }
 }
-
-
-
-
-
