@@ -12,6 +12,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { GetExpiredPatientDetailInterface } from "../../../../core/types/expiredPatient/getExpiredpatient.Interface";
 import { DatePipe } from "@angular/common";
 import { SaveExpiredPatientModel } from "../../../../../out_patients/core/models/saveexpiredpatient.Model";
+import { CookieService } from "../../../../../shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-expired-patient-check",
@@ -25,6 +26,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
     properties: {
       maxid: {
         type: "string",
+        defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobileno: {
         type: "number",
@@ -49,9 +51,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
   };
 
   name!: string;
-  age!: number;
+  age!: string;
   gender!: string;
-  dob: any;
+  dob!: any;
   dateofbirth: any;
   nationality!: string;
   ssn!: string;
@@ -59,19 +61,22 @@ export class ExpiredPatientCheckComponent implements OnInit {
   expiredpatientForm!: FormGroup;
   questions: any;
   disableButton: boolean = true;
+  disableClear: boolean = true;
   todayDate = new Date();
   private readonly _destroying$ = new Subject<void>();
   saveApimessage!: string;
   iacode!: string;
   regno!: number;
   checkboxValue!: number;
+  validmaxid!: boolean;
 
   constructor(
     private formService: QuestionControlService,
     private messagedialogservice: MessageDialogService,
     private dialog: MatDialog,
     private http: HttpService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -103,14 +108,15 @@ export class ExpiredPatientCheckComponent implements OnInit {
   }
 
   onMaxidSearch() {
+    this.regno = Number(this.expiredpatientForm.value.maxid.split(".")[1]);
+    this.iacode = this.expiredpatientForm.value.maxid.split(".")[0];
     console.log("inside on maxidenter");
     console.log(this.expiredpatientForm.value.maxid);
-    let regnumber = Number(this.expiredpatientForm.value.maxid.split(".")[1]);
-    let iacode = this.expiredpatientForm.value.maxid.split(".")[0];
-    console.log(regnumber);
-    console.log(iacode);
+
+    // console.log(regno);
+    // console.log(iacode);
     this.http
-      .get(ApiConstants.expiredpatientdetail(regnumber, iacode))
+      .get(ApiConstants.expiredpatientdetail(this.regno, this.iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data) => {
@@ -120,6 +126,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
           if (this.expiredPatientDetail != null) {
             if (this.expiredPatientDetail.length != 0) {
               console.log(this.expiredPatientDetail);
+              this.validmaxid = true;
+              this.disableClear = false;
+              this.enableSavedeleteControl();
               console.log(
                 this.datepipe.transform(
                   this.expiredPatientDetail[0].dateofBirth,
@@ -137,8 +146,13 @@ export class ExpiredPatientCheckComponent implements OnInit {
               this.expiredpatientForm.controls["remarks"].setValue(
                 this.expiredPatientDetail[0].remarks
               );
-              this.disableButton = false;
             } else {
+              this.validmaxid = false;
+              this.disableClear = false;
+              this.expiredpatientForm.controls["maxid"].setErrors({
+                incorrect: true,
+              });
+              this.questions[0].customErrorMessage = "Maxid does not exist";
               //this.clearValues();
             }
           } else {
@@ -154,12 +168,12 @@ export class ExpiredPatientCheckComponent implements OnInit {
       );
   }
 
-  clearValues() {
-    this.ssn = "";
-    this.dob = null;
-    this.expiredpatientForm.reset();
-    this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
-  }
+  // clearValues() {
+  //   this.ssn = "";
+  //   this.dob = null;
+  //   this.expiredpatientForm.reset();
+  //   this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
+  // }
 
   saveExpiredpatient() {
     console.log(this.expiredpatientForm.value);
@@ -180,15 +194,25 @@ export class ExpiredPatientCheckComponent implements OnInit {
           this.getExpiredpatientDetailObj()
         )
         .pipe(takeUntil(this._destroying$))
-        .subscribe((resultdata) => {
-          console.log(resultdata);
-          this.saveApimessage = resultdata;
-          if (this.saveApimessage.toString() == "Saved Successfully") {
-            this.messagedialogservice.success("Data Saved");
-            this.clearData();
-            //this.expiredpatientForm.controls["checkbox"].setValue(false);
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            this.saveApimessage = resultdata;
+            if (this.saveApimessage.toString() == "Saved Successfully") {
+              this.messagedialogservice.success("Data Saved");
+              this.clearData();
+              //this.expiredpatientForm.controls["checkbox"].setValue(false);
+            }
+          },
+          (HttpErrorResponse) => {
+            console.log(HttpErrorResponse);
+            if (HttpErrorResponse.error.text == "Saved Successfully") {
+              console.log("inside error success message");
+              this.messagedialogservice.success("Data Saved");
+              this.clearData();
+            }
           }
-        });
+        );
     }
   }
   saveExpiredPatientObject!: SaveExpiredPatientModel;
@@ -211,14 +235,18 @@ export class ExpiredPatientCheckComponent implements OnInit {
       ""
     ));
   }
-
+  checked = false;
   getCheckboxValue() {
     this.expiredpatientForm.controls["checkbox"].valueChanges.subscribe(
       (value) => {
         console.log(value);
+        console.log(this.expiredpatientForm.controls["checkbox"].value);
         if (value == true) {
+          this.checked = true;
           this.checkboxValue = 1;
+          this.enableSavedeleteControl();
         } else {
+          this.checked = false;
           this.checkboxValue = 0;
         }
       }
@@ -234,12 +262,38 @@ export class ExpiredPatientCheckComponent implements OnInit {
       console.log("The dialog was closed");
       console.log(result);
       if (result == true) {
-        //  this.http
+        this.http
+          .get(ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode))
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((data) => {
+            console.log(data);
+            this.messagedialogservice.success("Deleted Successfully");
+            this.clearData();
+          });
       }
     });
   }
 
+  enableSavedeleteControl() {
+    if (this.validmaxid && this.checked) {
+      this.disableButton = false;
+    } else {
+      this.disableButton = true;
+    }
+  }
   clearData() {
     this.name = "";
+    this.age = "";
+    this.ssn = "";
+    this.gender = "";
+    this.nationality = "";
+    this.dob = "";
+    this.disableButton = true;
+    this.disableClear = true;
+    this.expiredpatientForm.reset();
+    this.expiredpatientForm.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
+    this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
   }
 }

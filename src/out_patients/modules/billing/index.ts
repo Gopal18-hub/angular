@@ -17,6 +17,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 import { PortalModule } from "@angular/cdk/portal";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
@@ -112,6 +113,7 @@ import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-se
     DynamicFormsModule,
     MatTabsModule,
     MatRadioModule,
+    MatCheckboxModule,
     BrowserModule,
     CommonModule,
     MatListModule,

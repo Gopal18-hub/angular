@@ -534,12 +534,17 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string,
-    operatorid: number
+    iacode: string
+    // operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+      "api/patient/deleteexpiredpatientsdetails/" +
+      registrationno +
+      "/" +
+      iacode +
+      "/" +
+      3456
     );
   };
 
@@ -645,7 +650,9 @@ export namespace ApiConstants {
       "api/patient/getpatientpersonaldetailsdmg/" +
       regno +
       "/" +
-      iacode
+      iacode +
+      "/" +
+      7
     );
   };
 

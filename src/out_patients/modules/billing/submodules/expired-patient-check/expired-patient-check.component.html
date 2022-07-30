@@ -43,7 +43,7 @@
             </div>
             <div class="w-1/4 ">
                 <div class=" float-right mr-2">          
-                     <button mat-raised-button color="primary" type="submit"  >
+                     <button mat-raised-button color="primary" type="submit"  (click)="onMaxidSearch()">
 
                             <img src="assets/lens.svg" class="lens-icon">
 
@@ -57,33 +57,33 @@
         <div class=" flex h-2/10 mt-1 p-3 bg-row border-radius-lg">
         <div  class="w-1/7">
             <mat-label  class="font-semi-bold max-health-primary-color">Name:</mat-label>
-            <span></span>
+            <span class="ml-2">{{name}}</span>
             </div>
     
             <div class="w-1/10">
             <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
-            <span></span>
+            <span class="ml-2">{{age}}</span>
             </div>  
     
             <div  class="w-1/10">
             <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
-            <span></span>
+            <span class="ml-2">{{gender}}</span>
              </div>
     
              <div  class="w-12">
             <mat-label  class="font-semi-bold max-health-primary-color ">DOB:</mat-label>
-            <span></span>
+            <span class="ml-2">{{dob}}</span>
              </div>
     
     
              <div  class="w-12">
             <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
-            <span></span>
+            <span class="ml-2">{{nationality}}</span>
              </div>
     
              <div  class="w-1/6">
             <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
-            <span></span>
+            <span class="ml-2">{{ssn}}</span>
              </div>
     
         </div>
@@ -148,7 +148,7 @@
                 <button mat-raised-button color="primary" class="ml-6" [disabled]="disableButton" (click)="deleteExpiredpatient()">Delete</button>
            </div>
            <div>
-            <button mat-raised-button color="primary"class="ml-6" [disabled]="disableButton">Clear</button>
+            <button mat-raised-button color="primary"class="ml-6" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()">Clear</button>
             </div>
         </div>
         </div> 

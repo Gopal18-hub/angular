@@ -24,6 +24,7 @@ export class DmgMappingComponent implements OnInit {
   dob: string = "";
   nationality: string = "";
   ssn: string = "";
+  showCheckboxgrid: boolean = false;
   dmgPatientDetails!: PatientDetailsDmgInterface;
   dmgMappingformData = {
     title: "",
@@ -38,46 +39,53 @@ export class DmgMappingComponent implements OnInit {
         title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
-      breast: {
-        type: "checkbox",
-        options: [{ title: "Breast" }],
-      },
-      headandneck: {
-        type: "checkbox",
-        options: [{ title: "Head & Neck" }],
-      },
-      gastro: {
-        type: "checkbox",
-        options: [{ title: "Gastrointestinal" }],
-      },
-      neuro: {
-        type: "checkbox",
-        options: [{ title: "Neuro" }],
-      },
-      thoracic: {
-        type: "checkbox",
-        options: [{ title: "Thoracic" }],
-      },
-      urology: {
-        type: "checkbox",
-        options: [{ title: "Urology" }],
-      },
-      gynae: {
-        type: "checkbox",
-        options: [{ title: "Gynae" }],
-      },
-      muscluoskeletal: {
-        type: "checkbox",
-        options: [{ title: "Muscluoskeletal" }],
-      },
-      pediatric: {
-        type: "checkbox",
-        options: [{ title: "Pediatric" }],
-      },
-      hemathologyandbmt: {
-        type: "checkbox",
-        options: [{ title: "Hemathology and BMT" }],
-      },
+      // breast: {
+      //   type: "checkbox",
+      //   options: [{ title: "Breast" }],
+      // },
+      // headandneck: {
+      //   type: "checkbox",
+      //   options: [{ title: "Head & Neck" }],
+      // },
+      // gastro: {
+      //   type: "checkbox",
+      //   options: [{ title: "Gastrointestinal" }],
+      // },
+      // neuro: {
+      //   type: "checkbox",
+      //   options: [{ title: "Neuro" }],
+      // },
+      // thoracic: {
+      //   type: "checkbox",
+      //   options: [{ title: "Thoracic" }],
+      // },
+      // urology: {
+      //   type: "checkbox",
+      //   options: [{ title: "Urology" }],
+      // },
+      // gynae: {
+      //   type: "checkbox",
+      //   options: [{ title: "Gynae" }],
+      // },
+      // muscluoskeletal: {
+      //   type: "checkbox",
+      //   options: [{ title: "Muscluoskeletal" }],
+      // },
+      // pediatric: {
+      //   type: "checkbox",
+      //   options: [{ title: "Pediatric" }],
+      // },
+      // hemathologyandbmt: {
+      //   type: "checkbox",
+      //   options: [{ title: "Hemathology and BMT" }],
+      // },
+      // docName: {
+      //   type: "checkbox",
+      //   options: {
+      //     title: "",
+      //     value: "",
+      //   },
+      // },
     },
   };
 
@@ -122,6 +130,7 @@ export class DmgMappingComponent implements OnInit {
     });
   }
 
+  checkboxList: any = [];
   onMaxidEnter() {
     let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
     let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
@@ -139,10 +148,29 @@ export class DmgMappingComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         if (data != null) {
+          this.showCheckboxgrid = true;
           this.dmgPatientDetails = data as PatientDetailsDmgInterface;
           console.log(this.dmgPatientDetails);
+          // this.dmgPatientDetails =  this.dmgPatientDetails.map((item: any) => {
+          //   item.fullname =
+          //     item.modifiedFirstName + " " + item.modifiedLastName;
+          //   return item;
+
+          // this.dmgPatientDetails.dmgMappingDataDT.forEach((e: any) => {
+          //   this.checkboxList.push(e);
+          //   console.log(this.checkboxList);
+          //   // if(e.isChecked === 1)
+
+          //   // {
+
+          //   //   this.staffDetail.push(e);
+
+          //   // }
+          // });
           this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
           this.name = this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+
+          // Assign checkbox grid here
         } else {
           this.dmgMappingForm.controls["maxid"].setErrors({
             incorrect: true,

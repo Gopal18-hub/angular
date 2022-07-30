@@ -82,13 +82,33 @@
          </div>
     </div>
     <!-----------------------------------------THIRD ROW------------------------------------------------------------->
-    <div class="border-radius-lg border-dmgtable mt-2 h-63" >
+    <div class="border-radius-lg border-dmgtable mt-2 h-63"  >
         <div class="p-1 border-tableheader">
             <p class="ml-2 mt-2">Disease Management Groups-Organ(DMG)</p>
         </div>
-        <div class="ml-5 mt-1 mb-2">
-            <!-- <form [formGroup]="dmgMappingForm">
-                <maxhealth-question
+        <div class="ml-5 mt-1 mb-2 h-50"  *ngIf="showCheckboxgrid" style="overflow:scroll">
+
+            <!-- <ng-container *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT">
+                <mat-checkbox [(ngModel)]="diseasegroup.isChecked">
+               {{diseasegroup.docName}}</mat-checkbox>
+                </ng-container> -->
+                <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT" >
+                    <mat-checkbox [checked]="diseasegroup.isChecked == 1 ?true:false">
+                    {{diseasegroup.docName}}
+                    </mat-checkbox>
+                 </div>
+            <!-- <form [formGroup]="dmgMappingForm"> -->
+                <!-- <ng-container *ngFor="let checkbox of checkboxList">
+                    {{checkbox.docName}} -->
+                    <!-- <maxhealth-question
+                    [question]=checkbox.docName
+                    [form]="dmgMappingForm"
+                    [questions]=checkbox.docName
+                    [index]=checkbox.id
+                    >    
+                    </maxhealth-question> -->
+                <!-- </ng-container> -->
+                <!-- <maxhealth-question
                 [question]="questions[2]"
                 [form]="dmgMappingForm"
                 [questions]="questions[2]"
@@ -157,9 +177,9 @@
                 [questions]="questions[11]"
                 [index]="11"
                 >    
-                </maxhealth-question>
+                </maxhealth-question> -->
                 
-            </form> -->
+            <!-- </form> -->
         </div>
     </div>
     <!------------------------------------------FOURTH ROW--------------------------------------------------------------------->
