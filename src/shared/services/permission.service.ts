@@ -54,19 +54,25 @@ export class PermissionService {
   }
 
   checkModules() {
-    let definedModules = MaxModules.getModules();
-    definedModules = definedModules.filter((masterModule: any) => {
-      return (
-        this.masterModules.includes(masterModule.id) ||
-        ("type" in masterModule &&
-          this.modules.includes(masterModule.id) &&
-          masterModule.type == "module")
-      );
+    let definedModules: any = MaxModules.getModules();
+    definedModules.forEach((masterModule: any, index: number) => {
+      if (
+        !(
+          this.masterModules.includes(masterModule.id) ||
+          ("type" in masterModule &&
+            this.modules.includes(masterModule.id) &&
+            masterModule.type == "module")
+        )
+      ) {
+        definedModules[index].disabled = true;
+      }
     });
-    definedModules.forEach((masterModule: any) => {
-      masterModule.childrens.forEach((children: any) => {
-        children.childrens = children.childrens.filter((feature: any) => {
-          return this.features.includes(feature.id);
+    definedModules.forEach((masterModule: any, index: number) => {
+      masterModule.childrens.forEach((children: any, j: number) => {
+        children.childrens.forEach((feature: any, c: number) => {
+          if (!this.features.includes(feature.id)) {
+            definedModules[index].childrens[j].childrens[c].disabled = true;
+          }
         });
       });
     });
