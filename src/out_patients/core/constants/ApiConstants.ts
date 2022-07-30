@@ -649,4 +649,16 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+  // ACD 
+  export const geteprescriptdrugorders = (
+    FromDate: any,
+    ToDate: any,
+    LocationID: number,
+    Status : number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/geteprescriptdrugorders/"+FromDate+"/"+ToDate+"/"+LocationID+"/"+Status
+    );
+  };
 }

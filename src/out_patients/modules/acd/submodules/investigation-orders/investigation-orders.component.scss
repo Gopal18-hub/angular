@@ -1,0 +1,155 @@
+.sub-bill-overall {
+    .w-12 {
+      width: 12%;
+    }
+    .w-86 {
+      width: 87.25%;
+    }
+    .w-26 {
+      width: 26%;
+    }
+    .h-30vh {
+      height: 30vh;
+    }
+    .h-22vh {
+      height: 22vh;
+    }
+    .w-44 {
+      width: 44%;
+    }
+    .bg-blue {
+      background-color: #bfe8e7;
+    }
+    .print-button {
+      background-color: #5a5a5a;
+    }
+    .bg-deposit {
+      background-color: #f6f6f6;
+    }
+    ::ng-deep {
+      .sub-bill-form {
+        mat-form-field {
+          background-color: #fff;
+        }
+        button {
+          height: 26px;
+          line-height: 26px;
+        }
+      }
+      mat-radio-group {
+        flex-direction: row;
+        width: 100%;
+        mat-radio-button {
+          margin-right: 1.2rem;
+        }
+      }
+    }
+  }
+
+
+  
+
+.bg-dept{
+  background-color: #F6F6F6;
+  color:#004084;
+}
+
+.iconcss {
+  ::ng-deep {
+      position: absolute !important;
+      padding: 1px !important;
+      border-radius: 4px !important;
+      left: 1px !important;
+  }
+}
+::ng-deep .dateW{    
+  width: 27% !important;
+}
+::ng-deep .tableh{    
+  height: 42% !important;
+}
+.iconcss {
+  ::ng-deep {
+      position: absolute !important;
+      padding: 1px !important;
+      border-radius: 4px !important;
+      left: 1px !important;
+  }
+}
+.clearcss {
+
+  ::ng-deep .mat-raised-button {
+
+      min-height: 50%!important;
+
+  }
+
+}
+.serachcss{
+  ::ng-deep .max-table-wrapper{        
+      border-radius: 0.75rem;
+      border: solid #707070 !important;
+  }
+}
+.dateclass{    
+  background: #d8d8d8;
+}
+.bg-lightgray{
+  background :#ECECEC; 
+   
+}
+.bg-darkgray{
+  
+  background: #d8d8d8;
+}
+
+.bg-white{
+  background-color:white;
+}
+
+//REMOVE PADDING FOR INPUT CONTROLS
+// ::ng-deep .input .mat-form-field-wrapper{
+
+//     padding-bottom: 0 !important;
+
+// }
+
+.input-padding{
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+      padding-bottom: 0rem !important;  
+  }
+}
+
+.text-wrap{
+  white-space:nowrap;
+}
+
+.w-12{
+  width:12%;
+}
+.w-8{
+  width:9%
+}
+.color-blue{
+  color:#45C0BE;
+}
+
+//DISPLAY TABLE HEADERS IN A SINGLE LINE
+::ng-deep .whitespace-nowrap .mat-sort-header-content{
+  white-space:nowrap;
+}
+
+.iom-message{
+  position:absolute;
+  margin-left: 58%;
+  top: 25%;
+  color:red;
+
+}
+.disableiomclass{
+color: currentColor;
+cursor: not-allowed;
+pointer-events: none;
+opacity: 0.5;
+//text-decoration: none;
+}
