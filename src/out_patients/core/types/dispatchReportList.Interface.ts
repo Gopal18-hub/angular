@@ -14,7 +14,11 @@ export interface dispatchlist{
     flag: number;
     balance: string;
     patType: string;
-    billid: number
+    billid: number;
+    receiveddatetime: any;
+    dispatcheddatetime?: any;
+    dispatchplace?: any;
+    remarks?: any;
 }
 
 export interface dispatchDatalist{
