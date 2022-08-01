@@ -653,4 +653,17 @@ export namespace ApiConstants {
   export const getMasterMiscDetail =
     environment.BillingApiUrl +
     "api/outpatientbilling/getmasterdataformiscellaneous";
+
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo
+    );
+  };
 }

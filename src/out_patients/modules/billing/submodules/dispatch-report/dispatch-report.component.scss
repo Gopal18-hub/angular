@@ -42,6 +42,9 @@
     .table{
         ::ng-deep .mat-form-field{
             display: block !important;
+            background-color: #fff;
+            color: #000;
+            border-radius: 6px;
         }
     }
     .label{
