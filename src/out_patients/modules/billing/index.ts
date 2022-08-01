@@ -60,7 +60,6 @@ import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
-import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -125,7 +124,6 @@ import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
     MatTooltipModule,
     sharedbillingModule,
     PortalModule,
-    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [],
