@@ -20,8 +20,8 @@ import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-d
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
 import { BillDetailComponent } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
-import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
-import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
+import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
+
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -71,7 +71,6 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-      {path: "post-discharge-follow-up-billing", component: PostDischargeFollowUpBillingComponent}
     ],
   },
   {
@@ -94,7 +93,6 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-      {path: "post-discharge-follow-up-billing", component: PostDischargeFollowUpBillingComponent}
     ],
   },
 ];
