@@ -173,7 +173,10 @@ export class StaffDeptComponent implements OnInit {
     }
     else
     {
-      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,this.staffForm.value.employeeCode,this.staffForm.value.employeeName))
+      var employeeCode = String(this.staffForm.value.employeeCode.trim());
+      var employeeName = String(this.staffForm.value.employeeName.trim());
+      
+      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,employeeCode,employeeName))
       //this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
       //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
       .pipe(takeUntil(this._destroying$))
