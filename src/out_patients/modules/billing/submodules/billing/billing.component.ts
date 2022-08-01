@@ -4,7 +4,13 @@ import { PaymentModeComponent } from "./payment-mode/payment-mode.component";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { Subject, takeUntil } from "rxjs";
+import { DatePipe } from "@angular/common";
+import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
+import { ActivatedRoute } from "@angular/router";
+import { AppointmentSearchDialogComponent } from "../../../registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -64,11 +70,28 @@ export class BillingComponent implements OnInit {
 
   categoryIcons: any;
 
-  patient: boolean = true;
+  patient: boolean = false;
+
+  patientName!: string;
+  age!: string;
+  gender!: string;
+  dob!: string;
+  country!: string;
+  ssn!: string;
+
+  private readonly _destroying$ = new Subject<void>();
+
+  patientDetails!: Registrationdetails;
+
+  apiProcessing: boolean = false;
 
   constructor(
+    public matDialog: MatDialog,
+    private formService: QuestionControlService,
+    private http: HttpService,
     private cookie: CookieService,
-    private formService: QuestionControlService
+    private datepipe: DatePipe,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +101,108 @@ export class BillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.route.queryParams.subscribe((params: any) => {
+      if (params.maxId) {
+        this.formGroup.controls["maxid"].setValue(params.maxId);
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getPatientDetailsByMaxId();
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.formEvents();
+  }
+
+  formEvents() {
+    //ON MAXID CHANGE
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      // If the user presses the "Enter" key on the keyboard
+
+      if (event.key === "Enter") {
+        // Cancel the default action, if needed
+
+        event.preventDefault();
+        console.log("event triggered");
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getPatientDetailsByMaxId();
+      }
+    });
+  }
+  getPatientDetailsByMaxId() {
+    let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
+
+    //HANDLING IF MAX ID IS NOT PRESENT
+    if (regNumber != 0) {
+      let iacode = this.formGroup.value.maxid.split(".")[0];
+      this.http
+        .get(
+          ApiConstants.getregisteredpatientdetailsForBilling(
+            iacode,
+            regNumber,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: Registrationdetails) => {
+            console.log(resultData);
+            // this.clear();
+            // this.flushAllObjects();
+            this.patientDetails = resultData;
+            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            //   this.patientDetails
+            // );
+            // this.MaxIDExist = true;
+            // console.log(this.categoryIcons);
+            // this.checkForMaxID();
+            //RESOPONSE DATA BINDING WITH CONTROLS
+
+            this.setValuesToMiscForm(this.patientDetails);
+
+            //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+          },
+          (error) => {
+            if (error.error == "Patient Not found") {
+              this.formGroup.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
+              this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+            }
+            this.apiProcessing = false;
+          }
+        );
+    } else {
+      this.apiProcessing = false;
+      this.patient = false;
+    }
+  }
+
+  setValuesToMiscForm(pDetails: Registrationdetails) {
+    let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    console.log(patientDetails.pCellNo);
+    this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
+    this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
+    this.ssn = patientDetails.ssn;
+    this.age = patientDetails.age + " " + patientDetails.ageTypeName;
+    this.gender = patientDetails.sexName;
+    this.country = patientDetails.nationalityName;
+    this.ssn = patientDetails.ssn;
+    this.dob =
+      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
+    this.patient = true;
+    this.apiProcessing = false;
   }
 
   doCategoryIconAction(icon: any) {}
+
+  appointmentSearch() {
+    this.matDialog.open(AppointmentSearchDialogComponent, {
+      maxWidth: "100vw",
+      width: "98vw",
+    });
+  }
 }
