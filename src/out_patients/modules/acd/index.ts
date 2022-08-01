@@ -18,10 +18,11 @@ import { MatButtonModule } from '@angular/material/button';
 // import { DynamicFormQuestionComponent } from '../../../shared/ui/dynamic-forms/dynamic-form-question.component';
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { InvestigationOrdersComponent } from './submodules/investigation-orders/investigation-orders.component';
+import { MedicineOrdersComponent } from './submodules/medicine-orders/medicine-orders.component';
 
 @NgModule({
-    declarations: [AcdComponent
+    declarations: [AcdComponent, InvestigationOrdersComponent, MedicineOrdersComponent
     ],
     imports: [
       AcdRoutingModule,

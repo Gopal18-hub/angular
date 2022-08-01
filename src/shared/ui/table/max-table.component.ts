@@ -209,11 +209,20 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   exportAsExcel() {
+    const excelName = this.config.tableName
+      ? this.config.tableName + ".xlsx"
+      : "filename.xlsx";
+    const headers: any = [];
+    this.displayedColumns.forEach((col) => {
+      if (col != "select" && col != "actionItems") {
+        headers.push(this.displayColumnsInfo[col].title);
+      }
+    });
     const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data, {
-      header: this.displayedColumns,
+      header: headers,
     });
     const workBook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workBook, workSheet, "SheetName");
-    XLSX.writeFile(workBook, "filename.xlsx");
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Result");
+    XLSX.writeFile(workBook, excelName);
   }
 }
