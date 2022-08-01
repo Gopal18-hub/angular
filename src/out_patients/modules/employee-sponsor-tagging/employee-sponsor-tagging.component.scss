@@ -64,8 +64,8 @@ opacity: 0.5;
 .p-1-5{
     padding:0.35rem;
 }
-.h-53{
-    height:53%;
+.h-57{
+    height:57%;
 }
 .font-wrapper{
     white-space: nowrap;
@@ -108,5 +108,30 @@ margin-left:0.35%;
 .checkbox-bottom-margin{
     ::ng-deep mat-checkbox label span{
         margin-bottom:2px;
+    }
+}
+
+.mt-error{
+    ::ng-deep .mat-error{
+        margin-top:8%;
+       // white-space:nowrap;
+    }
+}
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}
+// .input-width{
+//     ::ng-deep mat-form-field{
+//         width:105%
+//     }
+// }
+
+.input-width{
+    ::ng-deep mat-form-field .mat-form-field-wrapper{
+        padding-top:0.2rem !important;
+        padding-bottom:0.2rem !important;
+        width:70%
     }
 }
