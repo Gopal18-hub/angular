@@ -9,6 +9,7 @@ import { DatePipe } from "@angular/common";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "out-patients-billing",
@@ -89,7 +90,8 @@ export class BillingComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -99,6 +101,14 @@ export class BillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.route.queryParams.subscribe((params: any) => {
+      if (params.maxId) {
+        this.formGroup.controls["maxid"].setValue(params.maxId);
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getPatientDetailsByMaxId();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -165,6 +175,9 @@ export class BillingComponent implements OnInit {
             this.apiProcessing = false;
           }
         );
+    } else {
+      this.apiProcessing = false;
+      this.patient = false;
     }
   }
 
@@ -174,7 +187,7 @@ export class BillingComponent implements OnInit {
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
-    this.age = patientDetails.age + patientDetails.ageTypeName;
+    this.age = patientDetails.age + " " + patientDetails.ageTypeName;
     this.gender = patientDetails.sexName;
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
