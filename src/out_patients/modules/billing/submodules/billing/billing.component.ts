@@ -161,8 +161,8 @@ export class BillingComponent implements OnInit {
               );
               this.formGroup.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
-              this.apiProcessing = false;
             }
+            this.apiProcessing = false;
           }
         );
     }
@@ -179,7 +179,7 @@ export class BillingComponent implements OnInit {
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =
-      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd/MM/yyyy");
+      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
   }
