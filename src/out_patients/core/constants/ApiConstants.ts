@@ -701,7 +701,7 @@ export namespace ApiConstants {
     
 
   export const SavePatientsDepositDetailsGST = environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientsdepositdetailsgst" ;
-    export const  savepatientrefunddetails= environment.PatientApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
+    export const  savepatientrefunddetails= environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
 
   export const getshowadvancetype = (
     hspLocationid: number
