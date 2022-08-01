@@ -202,7 +202,7 @@ export class BillingComponent implements OnInit {
   appointmentSearch() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
       maxWidth: "100vw",
-      width: "95vw",
+      width: "98vw",
     });
   }
 }
