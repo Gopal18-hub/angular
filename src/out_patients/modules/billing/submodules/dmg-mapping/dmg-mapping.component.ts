@@ -11,6 +11,8 @@ import { HttpService } from "@shared/services/http.service";
 import { Subject, takeUntil } from "rxjs";
 import { SaveDmgpatientModel } from "../../../../core/models/savedmgpatient.Model";
 import { PatientDetailsDmgInterface } from "../../../../../out_patients/core/types/dmgMapping/patientDetailsDmg.Interface";
+import { PatientService } from "@core/services/patient.service";
+import { DatePipe } from "@angular/common";
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -21,10 +23,13 @@ export class DmgMappingComponent implements OnInit {
   name: string = "";
   age: string = "";
   gender: string = "";
-  dob: string = "";
+  dob: any;
   nationality: string = "";
   ssn: string = "";
   showCheckboxgrid: boolean = false;
+  previouselected!: number;
+  categoryIcons: [] = [];
+
   dmgPatientDetails!: PatientDetailsDmgInterface;
   dmgMappingformData = {
     title: "",
@@ -100,7 +105,9 @@ export class DmgMappingComponent implements OnInit {
     private domsanitizer: DomSanitizer,
     private cookie: CookieService,
     private zone: NgZone,
-    private http: HttpService
+    private http: HttpService,
+    private patientService: PatientService,
+    private datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -129,7 +136,8 @@ export class DmgMappingComponent implements OnInit {
       }
     });
   }
-
+  isdmgselected!: number;
+  docId!: number;
   checkboxList: any = [];
   onMaxidEnter() {
     let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
@@ -151,24 +159,32 @@ export class DmgMappingComponent implements OnInit {
           this.showCheckboxgrid = true;
           this.dmgPatientDetails = data as PatientDetailsDmgInterface;
           console.log(this.dmgPatientDetails);
-          // this.dmgPatientDetails =  this.dmgPatientDetails.map((item: any) => {
-          //   item.fullname =
-          //     item.modifiedFirstName + " " + item.modifiedLastName;
-          //   return item;
-
-          // this.dmgPatientDetails.dmgMappingDataDT.forEach((e: any) => {
-          //   this.checkboxList.push(e);
-          //   console.log(this.checkboxList);
-          //   // if(e.isChecked === 1)
-
-          //   // {
-
-          //   //   this.staffDetail.push(e);
-
-          //   // }
-          // });
+          this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
+            if (item.isChecked == 1) {
+              this.isdmgselected = index;
+              this.docId = this.dmgPatientDetails.dmgMappingDataDT[index].docId;
+              console.log(this.docId);
+              //  this.selected = index;
+              this.dmgPatientDetails.dmgMappingDataDT[index].isDmgChecked =
+                index;
+              console.log(
+                this.dmgPatientDetails.dmgMappingDataDT[index].isDmgChecked
+              );
+              // console.log(this.selected);
+            } else {
+              this.isdmgselected = -1;
+            }
+          });
           this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
           this.name = this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+          this.age = this.dmgPatientDetails.dmgPatientDetailDT[0].age;
+          this.gender = this.dmgPatientDetails.dmgPatientDetailDT[0].gender;
+          this.nationality =
+            this.dmgPatientDetails.dmgPatientDetailDT[0].nationality;
+          this.dob = this.datepipe.transform(
+            this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
+            "dd/MM/yyyy"
+          );
 
           // Assign checkbox grid here
         } else {
@@ -179,19 +195,63 @@ export class DmgMappingComponent implements OnInit {
         }
       });
   }
+  iacode!: string;
+  regno!: number;
   dmgsave() {
-    // this.http
-    //   .post(ApiConstants.savepatientdmg, this.getSaveDmgObject())
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value) => {
-    //     console.log(value);
-    //   });
-    // this.messagedialogservice.success("DMG mapped to this patient");
+    this.http
+      .post(ApiConstants.savepatientdmg, this.getSaveDmgObject())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (value) => {
+          console.log(value);
+        },
+        (httperrorResponse) => {
+          if (httperrorResponse.error.text == "Saved Successfully") {
+            this.messagedialogservice.success("DMG mapped to this patient");
+            this.showCheckboxgrid = false;
+            this.categoryIcons = [];
+          }
+        }
+      );
   }
 
-  // getSaveDmgObject(): SaveDmgpatientModel {
-  //   return new SaveDmgpatientModel{
-
-  //   }
-  // }
+  getSaveDmgObject(): SaveDmgpatientModel {
+    this.iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
+    this.regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
+    return new SaveDmgpatientModel(
+      0,
+      0,
+      this.docId,
+      "",
+      this.regno,
+      this.iacode,
+      9923,
+      7,
+      ""
+    );
+  }
+  // 0,0,this.docId,"",this.regno,this.iacode,9923,7,""
+  onChange(group: any, index: number, value: number) {
+    console.log(this.previouselected);
+    console.log(value);
+    if (this.isdmgselected != -1) {
+      if (this.isdmgselected != index) {
+        this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
+        this.docId = value;
+        console.log(this.dmgPatientDetails.dmgMappingDataDT[index].isChecked);
+        this.dmgPatientDetails.dmgMappingDataDT[
+          this.isdmgselected
+        ].isChecked = 0;
+      } else {
+        this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
+      }
+    } else {
+      this.dmgPatientDetails.dmgMappingDataDT.forEach((item, i) => {
+        this.dmgPatientDetails.dmgMappingDataDT[i].isChecked = 0;
+      });
+      this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
+      this.docId = value;
+    }
+    console.log(this.docId);
+  }
 }

@@ -6,7 +6,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { SearchService } from "../../../../../shared/services/search.service";
-
+import { OprefundPendingInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
+import { OpRefundApprovalListInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -19,6 +20,10 @@ export class OprefundApprovalComponent implements OnInit {
   today = new Date();
   defaultUI: boolean = false;
   showapprovalspinner: boolean = true;
+  hotlistingmessage: string = "Please search From Date and To Date ";
+  hotlistingicon: string = "placeholder";
+  oprefundPendingList!: OprefundPendingInterface;
+  oprefundApprovedList!: OpRefundApprovalListInterface;
   link1 = [
     { value: "OP Registration Approval", id: 1 },
     { value: "Hot Listing Approval", id: 2 },
@@ -174,6 +179,10 @@ export class OprefundApprovalComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
+          if (data != null) {
+            this.oprefundPendingList = data as OprefundPendingInterface;
+            console.log(this.oprefundPendingList);
+          }
         });
     } else if (link.id == 2) {
       this.activeLink2 = link;
@@ -182,6 +191,10 @@ export class OprefundApprovalComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
+          if (data != null) {
+            this.oprefundApprovedList = data as OpRefundApprovalListInterface;
+            console.log(this.oprefundApprovedList);
+          }
         });
     } else {
       this.activeLink2 = link;

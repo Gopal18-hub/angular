@@ -2,7 +2,7 @@ export interface PatientDetailsDmgInterface {
   dmgPatientDetailDT: dmgMappingDataDTInterface[];
   dmgMappingDataDT: dmgMappingDataDT[];
 }
-interface dmgMappingDataDTInterface {
+export interface dmgMappingDataDTInterface {
   maxId: string;
   patientName: string;
   ssn: string;
@@ -25,5 +25,5 @@ interface dmgMappingDataDT {
   specialization: string;
   otherGroupDoc: string;
   id: number;
-  isDmgChecked?: boolean;
+  isDmgChecked?: number;
 }

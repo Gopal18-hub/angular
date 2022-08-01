@@ -13,7 +13,10 @@ import { GetExpiredPatientDetailInterface } from "../../../../core/types/expired
 import { DatePipe } from "@angular/common";
 import { SaveExpiredPatientModel } from "../../../../../out_patients/core/models/saveexpiredpatient.Model";
 import { CookieService } from "../../../../../shared/services/cookie.service";
-
+interface deleteexpiredResponse {
+  success: boolean;
+  message: string;
+}
 @Component({
   selector: "out-patients-expired-patient-check",
   templateUrl: "./expired-patient-check.component.html",
@@ -252,6 +255,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
       }
     );
   }
+  deleteExpiredpatientResponse!: deleteexpiredResponse;
   deleteExpiredpatient() {
     let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
       width: "25vw",
@@ -263,11 +267,17 @@ export class ExpiredPatientCheckComponent implements OnInit {
       console.log(result);
       if (result == true) {
         this.http
-          .get(ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode))
+          .post(
+            ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
+            null
+          )
           .pipe(takeUntil(this._destroying$))
           .subscribe((data) => {
             console.log(data);
-            this.messagedialogservice.success("Deleted Successfully");
+            this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
+            this.messagedialogservice.success(
+              this.deleteExpiredpatientResponse.message
+            );
             this.clearData();
           });
       }

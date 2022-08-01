@@ -18,6 +18,7 @@ import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSelectModule } from "@angular/material/select";
 import { PortalModule } from "@angular/cdk/portal";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
@@ -59,6 +60,7 @@ import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
+import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -114,6 +116,7 @@ import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-se
     MatTabsModule,
     MatRadioModule,
     MatCheckboxModule,
+    MatSelectModule,
     BrowserModule,
     CommonModule,
     MatListModule,
@@ -122,6 +125,7 @@ import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-se
     MatTooltipModule,
     sharedbillingModule,
     PortalModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [],

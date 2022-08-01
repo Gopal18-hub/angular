@@ -5,7 +5,19 @@
                 <a class="ml-3" mat-tab-link [active]="true">DMG Mapping</a> 
             </li>
         </ul>
+        <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="mt-1 cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+       
+      />
+    </div>
     </nav>
+    <!-- (click)="doCategoryIconAction(icon)" -->
     <mat-tab-nav-panel #tabPanel>
         <div class="p-2 h-full">
         <!---------------------------------FIRST ROW----------------------------------------------------->
@@ -39,7 +51,7 @@
          </div>
         <div class="float-right w-1/10 flex">
             <div class="ml-0" >
-            <button mat-raised-button color="primary" type="submit" >
+            <button mat-raised-button color="primary" type="submit" (click)="onMaxidEnter()" >
                 <img src="assets/lens.svg" class="lens-icon">
 
                 Search
@@ -52,28 +64,28 @@
     <div class="flex w-full bg-dmg border-radius-xlg p-3  mt-1">
         <div  class="w-1/7">
         <mat-label  class="font-semi-bold max-health-primary-color">Name:</mat-label>
-        <span></span>
+        <span class="ml-2">{{name}}</span>
         </div>
 
         <div class="w-1/10">
         <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
-        <span>{{age}}</span>
+        <span class="ml-2"> {{age}}</span>
         </div>  
 
         <div  class="w-1/10">
         <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
-        <span>{{gender}}</span>
+        <span class="ml-2">{{gender}}</span>
          </div>
 
          <div  class="w-12">
         <mat-label  class="font-semi-bold max-health-primary-color">DOB:</mat-label>
-        <span>{{dob}}</span>
+        <span class="ml-2">{{dob}}</span>
          </div>
 
 
          <div  class="w-12">
         <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
-        <span>{{nationality}}</span>
+        <span class="ml-2">{{nationality}}</span>
          </div>
 
          <div  class="w-1/6">
@@ -92,11 +104,32 @@
                 <mat-checkbox [(ngModel)]="diseasegroup.isChecked">
                {{diseasegroup.docName}}</mat-checkbox>
                 </ng-container> -->
-                <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT" >
-                    <mat-checkbox [checked]="diseasegroup.isChecked == 1 ?true:false">
-                    {{diseasegroup.docName}}
+                <!-- <mat-form-field> -->
+                    <!-- <mat-select > -->
+                <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT;let i=index"  >
+                    <mat-checkbox  [(ngModel)]=" dmgPatientDetails.dmgMappingDataDT[i].isChecked" 
+                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId);" 
+                    value="dmgPatientDetails.dmgMappingDataDT[i].docId">
+                    {{diseasegroup.docName}} 
                     </mat-checkbox>
-                 </div>
+                </div>
+                <!-- <mat-selection-list #dmggroup>
+                    <mat-list-option *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT" class="checkbox-mr">
+                      {{diseasegroup.docName}}
+                    </mat-list-option>
+                  </mat-selection-list> -->
+        <!-- </mat-select> -->
+    <!-- </mat-form-field> -->
+    <!-- [(ngModel)]="diseasegroup.isChecked" -->
+                 <!-- diseasegroup.isChecked == 1 ?true:false -->
+
+                 <!-- <mat-form-field>
+                    <mat-select placeholder="Toppings">
+                        <mat-option *ngFor="let topping of toppingList; let i =index" [value]="topping">
+                            <mat-checkbox [checked]="selected === i" (change)="onChange(topping);selected = i"> {{topping}}</mat-checkbox>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
             <!-- <form [formGroup]="dmgMappingForm"> -->
                 <!-- <ng-container *ngFor="let checkbox of checkboxList">
                     {{checkbox.docName}} -->
