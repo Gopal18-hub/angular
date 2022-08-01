@@ -107,6 +107,25 @@ export class FormSixtyComponent implements OnInit {
   else if(!this.form60form.value.appliedforpan  && this.form60form.value.otherthanagriculturalincome == ""){
     this.messageDialogService.error("Please enter other than agriculturer income");
   }
+  else if(this.questions[6].options.value == 0 || this.questions[6].options.title == ""){
+    this.messageDialogService.error("Please select ID proof");
+  }
+  else if(this.form60form.value.iddocidentityno = "" || this.form60form.value.idnameofauthority == ""){
+    this.messageDialogService.error("Please select ID proof number/name of authority");
+  }
+  else if(this.questions[10].options.value == 0 || this.questions[10].options.title == ""){
+    this.messageDialogService.error("Please select Address proof");
+  }
+  else if(this.form60form.value.addressdocidentityno == "" || this.form60form.value.addressnameofauthority == ""){
+    this.messageDialogService.error("Please select address proof number/name of authority");
+  }
+
+  if(this.form60form.value.agriculturalincome == ""){
+    this.form60form.value.agriculturalincome = "0";
+  }
+  if(this.form60form.value.otherthanagriculturalincome == ""){
+    this.form60form.value.otherthanagriculturalincome = "0";
+  }
   }
 
   clearform60(){

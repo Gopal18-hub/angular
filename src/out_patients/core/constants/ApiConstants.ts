@@ -685,4 +685,64 @@ export namespace ApiConstants {
   export const getapprovedoprefundapproval =
     environment.BillingApiUrl +
     "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
+  
+  export const SavePatientsDepositDetailsGST = environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientsdepositdetailsgst" ;
+  export const sendotpoprefund   = environment.PatientApiUrl + "api/patient/sendotpoprefund";
+  export const  savepatientrefunddetails= environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
+
+  export const getcashlimitwithlocationsmsdetailsoflocation = (
+    HospitalLocationID: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" + HospitalLocationID       
+      );
+    };
+
+  export const getadvancetype = (
+      hspLocationid: number
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getadvancetype/" + hspLocationid
+    
+      );
+    
+    };
+  
+  export const getpatientpreviousdepositdetails = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientpreviousdepositdetails/" + registrationno
+        + "/" +
+        iacode
+    
+      );
+    };
+    
+  export const getpatientdetailsfordeposit = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientdetailsfordeposit/" + registrationno
+        + "/" +
+        iacode
+      );
+    
+    };
+
+  export const getpatientpersonaldetails = (
+      registrationno: number, iacode?: string
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getpatientpersonaldetails/" + registrationno
+        + "/" +
+        iacode
+      );
+    
+    };
 }
