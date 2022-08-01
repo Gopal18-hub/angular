@@ -5,8 +5,10 @@ import { Router } from "@angular/router";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../gst/gst.component";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { MiscMasterDataModel } from "@core/types/miscMasterDataModel.Interface";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -288,6 +290,15 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
   }
+
+  ngAfterViewInit(): void {
+    this.formEvents();
+  }
+
+  formEvents() {
+    this.getMasterMiscDetail();
+  }
+
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },
     { service: "SGST", percentage: 0.0, value: 0.0 },
@@ -305,5 +316,19 @@ export class BillDetailComponent implements OnInit {
         gstDetails: this.gst,
       },
     });
+  }
+
+  miscMasterDataList!: MiscMasterDataModel;
+  getMasterMiscDetail() {
+    this.http
+      .get(ApiConstants.getMasterMiscDetail)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.miscMasterDataList = data as MiscMasterDataModel;
+        // this.questions[2].options = this.complanyList.map((a) => {
+        //   return { title: a.name, value: a.id };
+        // });
+      });
   }
 }
