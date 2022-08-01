@@ -16,7 +16,7 @@
                         <div class="text-wrap max-health-primary-color font-semi-bold" >
                             <mat-label>Max ID</mat-label>
                         </div>
-                        <div class="ml-0-27 w-12 bg-white">
+                        <div class="ml-0-27 w-12 bg-white mt-error">
                             <maxhealth-question
                                 [question]="questions[0]"
                                 [form]="employeesponsorForm"
@@ -28,7 +28,7 @@
                         <div class="ml-1-34 text-wrap max-health-primary-color font-semi-bold">
                             <mat-label>Mobile No</mat-label>
                         </div>
-                        <div class="ml-0-27 w-12 bg-white">
+                        <div class="ml-0-27 w-12 bg-white default-label-none mt-error" >
                             <maxhealth-question
                                 [question]="questions[1]"
                                 [form]="employeesponsorForm"
@@ -40,7 +40,7 @@
                         <div class="ml-1-34 text-wrap max-health-primary-color font-semi-bold" >
                             <mat-label >Employee Code</mat-label>
                         </div>
-                        <div class="ml-0-21 w-12 bg-white ">
+                        <div class="ml-0-21 w-12 bg-white mt-error">
                             <maxhealth-question
                                 [question]="questions[2]"
                                 [form]="employeesponsorForm"
@@ -86,52 +86,28 @@
      <div class="bg-lightgray border-radius-xlg mt-1 w-full">
         <div class="flex  ml-1 p-1-5 align-items-center input-padding  w-full">
             <div class="w-1/15  font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold" > -->
                     <mat-label  class="max-health-primary-color font-semi-bold">Name:</mat-label>
-                <!-- </div> -->
-                <!-- <div  class="ml-3 w-full font-wrapper"> -->
                 <span class="ml-2" >{{name}}</span>
-                <!-- </div> -->
             </div>
             <div class="ml-3-23 w-8 font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold"> -->
                     <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
-                <!-- </div> -->
-                <!-- <div class="ml-3"> -->
                 <span class=" ml-2 ">{{age}}</span>
-                <!-- </div> -->
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold" > -->
                     <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
-                <!-- </div>
-                <div class="ml-3"> -->
                     <span class=" ml-2 ">{{gender}}</span>
-                <!-- </div> -->
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold" > -->
                     <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
-                <!-- </div>
-                <div class="ml-3"> -->
-                <span class=" ml-2 ">{{dob}}</span>
-                <!-- </div> -->
+                <span class=" ml-2 " title="{{dob}}">{{dob}}</span>
             </div>
             <div class="ml-6 w-1/15 font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold"> -->
                     <mat-label class="max-health-primary-color font-semi-bold">Nationality:</mat-label>
-                <!-- </div>
-                <div class="ml-3 text-wrap overflow-hidden" > -->
-                    <span class=" ml-2 ">{{nationality}}</span>
-                <!-- </div> -->
+                    <span class=" ml-2 "title="{{nationality}}">{{nationality}}</span>
             </div>
             <div class="ml-3-23 w-1/15 font-wrapper">
-                <!-- <div class="max-health-primary-color font-semi-bold"> -->
                     <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
-                <!-- </div>
-                <div class="ml-3"> -->
                     <span class=" ml-2 ">{{ssn}}</span>
-                <!-- </div> -->
             </div>
             <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-31" >
                 <div class="ml-2 checkbox-bottom-margin">
@@ -173,20 +149,20 @@
             
         </div>
     </div>
-     <div class="h-1/2 mt-2">
+     <div class="h-1/2 mt-1">
         <div class="pl-2  employeeclass font-semi-bold font-base">
             <mat-label class="max-health-primary-color">Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
-        <div class="h-53 mt-2 whitespace-nowrap">
-            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable></maxhealth-table>
+        <div class="h-57 mt-2 whitespace-nowrap">
+            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable (columnClick)="checkboxClick($event)" class="input-width"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
-        <div class="h-53 mt-2">
+        <div class="h-57 mt-2">
             <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
-        <div class="float-right mt-4">
-            <button mat-raised-button color="primary" (click)="employeeSave()" [disabled]="disableButton"class="mr-8" >Save</button>
+        <div class="float-right mt-2">
+            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8" >Save</button>
             <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete" class="mr-6" >Delete</button>
             <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
         </div>
@@ -197,5 +173,9 @@
     
     </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between max-health-primary-color ">
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }} on {{ currentTime }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>
 <!-- [disabled]="disableButton"> -->
 <!-- [disabled]="disableClear" -->

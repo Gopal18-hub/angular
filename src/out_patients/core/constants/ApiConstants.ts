@@ -650,9 +650,39 @@ export namespace ApiConstants {
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
 
-    export const getpatientvisithistory = (IACode: string, RegistrationNo: number) =>{
-      return ( environment.BillingApiUrl + "api/outpatientbilling/getoppatientvisithistory/"+IACode+"/"+RegistrationNo);
-    }
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo
+    );
+  };
+
+  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpersonaldetailsdmg/" +
+      regno +
+      "/" +
+      iacode +
+      "/" +
+      7
+    );
+  };
+
+  export const savepatientdmg =
+    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
+
+  //OP REFUND APPROVAL
+  export const getpendingoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
+  export const getapprovedoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
 }
-
-
