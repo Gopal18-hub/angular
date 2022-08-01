@@ -210,7 +210,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   exportAsExcel() {
     const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data, {
-      header: ["dataprop1", "dataprop2"],
+      header: this.displayedColumns,
     });
     const workBook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, workSheet, "SheetName");
