@@ -122,6 +122,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         [class.row-is-clicked]="selection.isSelected(row)"
+        class="{{ rowClass(row) }}"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.selectBox && !config.clickedRows">

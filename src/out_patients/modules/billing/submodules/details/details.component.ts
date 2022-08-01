@@ -226,6 +226,11 @@ export class DetailsComponent implements OnInit {
   country!: string;
   ssn!: string;
   openhistory() {
-    this.matDialog.open(VisitHistoryComponent, { width: "70%", height: "50%" });
+    this.matDialog.open(VisitHistoryComponent, 
+      { width: "70%", 
+        height: "50%",
+        data:{
+          maxid: this.BServiceForm.value.maxid
+        } });
   }
 }
