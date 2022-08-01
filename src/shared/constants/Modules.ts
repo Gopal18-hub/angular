@@ -182,7 +182,8 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Patient History",
-          defaultPath: "patient-history",
+          tenentPath: "/patient-history",
+          defaultPath: "",
           childrens: [],
           moreOptions: false,
         },
