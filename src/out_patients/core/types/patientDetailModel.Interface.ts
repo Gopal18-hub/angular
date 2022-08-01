@@ -135,4 +135,5 @@ export interface PatientDetail {
   hotlist: boolean;
   hotlistcomments: string;
   hotlistreason: string;
+  pCellNo?: string;
 }
