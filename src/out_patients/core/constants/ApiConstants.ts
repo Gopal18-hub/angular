@@ -545,17 +545,12 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string
-    // operatorid: number
+    iacode: string,
+    operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/deleteexpiredpatientsdetails/" +
-      registrationno +
-      "/" +
-      iacode +
-      "/" +
-      3456
+      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
     );
   };
 
@@ -636,7 +631,7 @@ export namespace ApiConstants {
   //GET CALL ON IOM HYPERLINK
   export const getopcompanyiomlocationwise =
     environment.PatientApiUrl +
-    "api/patient/getopcompanyiomlocationwise/69/31614";
+    "api/patient/getopcompanyiomlocationwise/69/3161";
   //http://172.30.0.16:1008/api/patient/getopcompanyiomlocationwise/69/3161
 
   export const getCorporate =
@@ -655,28 +650,16 @@ export namespace ApiConstants {
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
 
-  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
     return (
-      environment.PatientApiUrl +
-      "api/patient/getpatientpersonaldetailsdmg/" +
-      regno +
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
       "/" +
-      iacode +
-      "/" +
-      7
+      RegistrationNo
     );
   };
-
-  export const savepatientdmg =
-    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
-
-  //OP REFUND APPROVAL
-  //172.30.0.16:1007/api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69
-  //http://172.30.0.16:1007/api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69
-  export const getpendingoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
-  export const getapprovedoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
 }
