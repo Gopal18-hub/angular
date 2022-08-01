@@ -61,6 +61,7 @@ import { GstComponent } from "../billing/submodules/miscellaneous-billing/billin
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -126,6 +127,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     sharedbillingModule,
     PortalModule,
     MatProgressSpinnerModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [],
