@@ -5,7 +5,7 @@
         <div class="bg-lightgray flex justify-between border-radius-md mt-1 align-items-center">
             
                 <div class="flex w-3/10 bg-darkgray border-radius-md m-1">
-                    <div class="ml-2">
+                    <div class="ml-2 h-full bg-white">
                         <maxhealth-question [question]="questions[8]" [form]="investigationForm"
                             [questions]="questions[8]" [index]="8">
                         </maxhealth-question>
@@ -26,12 +26,12 @@
                     </div>
                 </div>
                 <div class="flex w-2/10 ml-4">
-                    <div class="w-5/9">
+                    <div class="w-5/9 h-full bg-white">
                         <maxhealth-question [question]="questions[2]" [form]="investigationForm"
                             [questions]="questions[2]" [index]="2">
                         </maxhealth-question>
                     </div>
-                    <div class="w-2/3">
+                    <div class="w-2/3 h-full bg-white">
                         <maxhealth-question [question]="questions[3]" [form]="investigationForm"
                             [questions]="questions[3]" [index]="3">
                         </maxhealth-question>
@@ -41,7 +41,7 @@
                 <div class="flex w-2/5">
                     <mat-label class="ml-4 font-semi-bold max-health-primary-color">Order Status</mat-label>
 
-                    <div class="ml-2 w-1/3">
+                    <div class="ml-2 w-1/3 h-full bg-white">
                         <maxhealth-question [question]="questions[2]" [form]="investigationForm"
                             [questions]="questions[2]" [index]="2">
                         </maxhealth-question>
@@ -100,12 +100,12 @@
                     <div class="w-1/5">
                         <button mat-raised-button color="primary" [disabled]="isBtnDisable">Deny Order</button>
                     </div>
-                    <div  class="w-1/3 ml-2 mt-1">
+                    <div  class="w-1/3 ml-2 mt-1 h-full bg-white">
                         <maxhealth-question [question]="questions[2]"
                         [form]="investigationForm" [questions]="questions[2]" [index]="2"></maxhealth-question>                     
                     </div>
                     <mat-label class="max-health-primary-color font-bold ml-2 mt-1">Remarks</mat-label> 
-                    <div  class="w-1/3 ml-2 mt-1">
+                    <div  class="w-1/3 ml-2 mt-1 h-full bg-white">
                         
                         <maxhealth-question [question]="questions[6]"
                         [form]="investigationForm" [questions]="questions[6]" [index]="6"></maxhealth-question> 
@@ -116,7 +116,7 @@
                         <button mat-raised-button color="primary" [disabled]="isBtnDisable">Cancel Denial</button>
                     </div>
                 </div>
-                <div class="flex w-1/3 ml-4">
+                <div class="flex ml-4">
                     <div class="w-1/2">
                         <button mat-raised-button color="primary" [disabled]="isBtnDisable">Create Bill</button>
                     </div>
