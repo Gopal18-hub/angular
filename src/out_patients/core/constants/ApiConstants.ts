@@ -685,4 +685,9 @@ export namespace ApiConstants {
   export const getapprovedoprefundapproval =
     environment.BillingApiUrl +
     "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
+
+  export const sendotpoprefund   = environment.PatientApiUrl + "api/patient/sendotpoprefund";
+  export const getform60masterdata =  environment.PatientApiUrl + "api/patient/getform60masterdata" ;
+
+
 }
