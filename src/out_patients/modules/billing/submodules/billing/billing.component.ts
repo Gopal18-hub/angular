@@ -82,6 +82,8 @@ export class BillingComponent implements OnInit {
 
   patientDetails!: Registrationdetails;
 
+  apiProcessing: boolean = false;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -113,6 +115,8 @@ export class BillingComponent implements OnInit {
 
         event.preventDefault();
         console.log("event triggered");
+        this.apiProcessing = true;
+        this.patient = false;
         this.getPatientDetailsByMaxId();
       }
     });
@@ -152,22 +156,13 @@ export class BillingComponent implements OnInit {
           },
           (error) => {
             if (error.error == "Patient Not found") {
-              // this.messageDialogService.info(error.error);
-              // this.router.navigate([], {
-              //   queryParams: {},
-              //   relativeTo: this.route,
-              // });
-              // this.flushAllObjects();
-              // this.setValuesTo miscForm(this.patientDetails);
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
               this.formGroup.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.apiProcessing = false;
             }
-            // this.clear();
-
-            // this.maxIDChangeCall = false;
           }
         );
     }
@@ -186,6 +181,7 @@ export class BillingComponent implements OnInit {
     this.dob =
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd/MM/yyyy");
     this.patient = true;
+    this.apiProcessing = false;
   }
 
   doCategoryIconAction(icon: any) {}
