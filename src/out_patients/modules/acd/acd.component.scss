@@ -1,87 +1,71 @@
-.bg-dept{
-    background-color: #F6F6F6;
-    color:#004084;
-}
-
-.iconcss {
+    .billing-page-wrapper {
+    background-color: #fff;
+    .width-8 {
+      width: 9%;
+    }
+    .second-row-action-items {
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+    }
+    .bg-secondary {
+      background-color: #f6f6f6;
+    }
+    .bg-white {
+      background-color: #fff;
+    }
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+    }
     ::ng-deep {
-        position: absolute !important;
-        padding: 1px !important;
-        border-radius: 4px !important;
-        left: 1px !important;
+      .min-width-initial {
+        min-width: initial !important;
+      }
+      button {
+        height: 1.875rem;
+        line-height: 1.875rem;
+      }
+  
+      .mat-tab-header {
+        border-bottom: none;
+      }
+      .mat-tab-links {
+        background-color: #45c0be;
+        border-radius: 13px 13px 0 0;
+        border: 4px solid #45c0be;
+        border-bottom: 0;
+        a {
+          color: #fff;
+          background-color: #bfe8e7;
+          border-radius: 13px 13px 0 0;
+          margin-right: 4px;
+          color: #08504f;
+          opacity: 1;
+          &.mat-tab-link {
+            height: 26px;
+          }
+          &.mat-tab-label-active {
+            background-color: #fff;
+            color: #08504f;
+            font-weight: 600;
+          }
+        }
+      }
+      .mat-ink-bar {
+        display: none;
+      }
     }
-}
-::ng-deep .dateW{    
-    width: 27% !important;
-}
-::ng-deep .tableh{    
-    height: 45% !important;
-}
-.serachcss{
-    ::ng-deep .max-table-wrapper{
-        border-radius: 0.75rem;
-        border: 1px solid #707070 !important;
+    .billing-panel-wrapper {
+      border: 4px solid #45c0be;
+      border-top: 0;
+      border-radius: 0 0 13px 13px;
+      padding: 0 0.75rem;
+      height: calc(113vh - 310px);
     }
-}
-.dateclass{    
-    background: #d8d8d8;
-}
-.bg-lightgray{
-    background :#ECECEC; 
-     
-}
-.bg-darkgray{
-    
-    background: #d8d8d8;
-}
+  }
+  
 
-.bg-white{
-    background-color:white;
-}
-
-//REMOVE PADDING FOR INPUT CONTROLS
-// ::ng-deep .input .mat-form-field-wrapper{
-
-//     padding-bottom: 0 !important;
-
-// }
-
-.input-padding{
-    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
-        padding-bottom: 0rem !important;  
-    }
-}
-
-.text-wrap{
-    white-space:nowrap;
-}
-
-.w-12{
-    width:12%;
-}
-.w-8{
-    width:9%
-}
-.color-blue{
-    color:#45C0BE;
-}
-
-//DISPLAY TABLE HEADERS IN A SINGLE LINE
-::ng-deep .whitespace-nowrap .mat-sort-header-content{
-    white-space:nowrap;
-}
-
-.iom-message{
-    position:absolute;
-    margin-left: 58%;
-    top: 25%;
-    color:red;
-
-}
-.disableiomclass{
-color: currentColor;
-cursor: not-allowed;
-pointer-events: none;
-opacity: 0.5;
-//text-decoration: none;
-}
