@@ -15,7 +15,7 @@ import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-de
     declarations: [
     
     PatientHistoryComponent,
-          SimilarDetailsPopupComponent
+    SimilarDetailsPopupComponent
   ],
     imports: [
         CommonModule,
