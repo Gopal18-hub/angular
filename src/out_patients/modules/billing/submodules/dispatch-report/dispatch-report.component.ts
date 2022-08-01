@@ -112,7 +112,7 @@ export class DispatchReportComponent implements OnInit {
       },
       remarks: {
         title: "Remarks",
-        type: "input"
+        type: "input",
       }
     },
   };
@@ -241,7 +241,7 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / ( 1000 * 3600 *24);
-      if(dif_in_days > 310000000)
+      if(dif_in_days > 31)
       {
       this.matdialog.open(MoreThanMonthComponent, {width: "30vw", height:"30vh"});
       }
