@@ -1,5 +1,5 @@
 <div class="flex w-full services-container-wrapper">
-  <div class="w-1/8 services-tab border-radius-xlg my-3">
+  <div class="w-1/7 services-tab border-radius-xlg my-3">
     <div class="flex flex-column align-items-center h-auto py-2 mb-2">
       <ng-container *ngFor="let tab of tabs">
         <button
@@ -14,7 +14,7 @@
       </ng-container>
     </div>
   </div>
-  <div class="w-7/8 p-2 flex">
+  <div class="w-6/7 p-2 flex">
     <ng-template [cdkPortalOutlet]="selectedComponent"></ng-template>
   </div>
 </div>
