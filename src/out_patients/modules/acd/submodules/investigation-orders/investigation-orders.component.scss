@@ -54,23 +54,8 @@
 }
 ::ng-deep tr.Denied{
   background-color: #FFCAA7 !important;
-}
+}  
 
-  
-
-.bg-dept{
-  background-color: #F6F6F6;
-  color:#004084;
-}
-
-.iconcss {
-  ::ng-deep {
-      position: absolute !important;
-      padding: 1px !important;
-      border-radius: 4px !important;
-      left: 1px !important;
-  }
-}
 ::ng-deep .dateW{    
   width: 27% !important;
 }
@@ -88,19 +73,12 @@
       left: 1px !important;
   }
 }
-.clearcss {
 
-  ::ng-deep .mat-raised-button {
-
-      min-height: 50%!important;
-
-  }
-
-}
 .serachcss{
   ::ng-deep .max-table-wrapper{        
       border-radius: 0.75rem;
       border: solid #707070 !important;
+      height: 60%
   }
 }
 .dateclass{    
@@ -118,51 +96,4 @@
 .bg-white{
   background-color:white;
   color: rgba(0, 0, 0, 0.87);
-}
-
-//REMOVE PADDING FOR INPUT CONTROLS
-// ::ng-deep .input .mat-form-field-wrapper{
-
-//     padding-bottom: 0 !important;
-
-// }
-
-.input-padding{
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
-      padding-bottom: 0rem !important;  
-  }
-}
-
-.text-wrap{
-  white-space:nowrap;
-}
-
-.w-12{
-  width:12%;
-}
-.w-8{
-  width:9%
-}
-.color-blue{
-  color:#45C0BE;
-}
-
-//DISPLAY TABLE HEADERS IN A SINGLE LINE
-::ng-deep .whitespace-nowrap .mat-sort-header-content{
-  white-space:nowrap;
-}
-
-.iom-message{
-  position:absolute;
-  margin-left: 58%;
-  top: 25%;
-  color:red;
-
-}
-.disableiomclass{
-color: currentColor;
-cursor: not-allowed;
-pointer-events: none;
-opacity: 0.5;
-//text-decoration: none;
 }

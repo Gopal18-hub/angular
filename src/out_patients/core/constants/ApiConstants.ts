@@ -650,6 +650,20 @@ export namespace ApiConstants {
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
   // ACD 
+  export const getediganosticacd = (
+    FromDate: any,
+    ToDate: any,
+    status:number,
+    orderid:number,
+    regno:number,
+    iacode:string,
+    Locationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacd/"+FromDate+"/"+ToDate+"/"+status+"/"+orderid+"/"+regno+"/"+iacode+"?Locationid="+Locationid
+    );
+  };
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
@@ -659,6 +673,28 @@ export namespace ApiConstants {
     return (
       environment.PatientApiUrl +
       "api/patient/geteprescriptdrugorders/"+FromDate+"/"+ToDate+"/"+LocationID+"/"+Status
+    );
+  };
+  export const getphysicianorderdetailep = (
+    registrationNo: any,
+    aiCode: string,
+    locid: number,
+    orderid : number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getphysicianorderdetailep/"+registrationNo+"/"+aiCode+"/"+locid+"/"+orderid
+    );
+  };
+  //Modify ACD order with Remarks 
+  export const modifyphysicianorderdetail = (
+    token: string,
+    Userid: number
+   
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/modifyphysicianorderdetail/?token="+token+"?Userid="+Userid
     );
   };
 }

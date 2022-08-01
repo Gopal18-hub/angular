@@ -87,7 +87,7 @@ export class InvestigationOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['orderId','maxid', 'ptnName', 'docName','deptName','visitDate','mobileNo','mrpValue','channel','','paymentMode'],
+    displayedColumns: ['orderid','maxid', 'patientname', 'docname','dept','visitdate','mobile','amnt','channel','billno','status'],
     rowLayout:{dynamic:{rowClass:"row['status']"}},
     clickedRows:true,
     clickSelection : "single",
@@ -316,7 +316,7 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res :any)=>
       {  
         console.log(res,"resACD")
-        this.investigationDetails = res.objOrderDetails;
+        this.investigationDetails = res;
   } )  
 } 
 
