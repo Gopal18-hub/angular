@@ -117,18 +117,9 @@ export class DmgMappingComponent implements OnInit {
     );
     this.dmgMappingForm = formResult.form;
     this.questions = formResult.questions;
-    //  this.maticonregistry.addSvgIcon('searchlens',
-    //  this.domsanitizer.bypassSecurityTrustResourceUrl('E:\Clone_105300_newFramework\HIS-ANGULAR.reginabegum.mohamed.abdulla\src\out_patients\src\assets\lens.svg')
-    //  );
   }
 
   ngAfterViewInit() {
-    // this.zone.run(() => {
-    //   this.questions[0].elementRef.addEventListener(
-    //     "change",
-    //     this.onMaxidEnter.bind(this)
-    //   );
-    // });
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
