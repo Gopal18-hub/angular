@@ -4,10 +4,10 @@ export interface EmployeeDependantDetails {
   groupCompanyName: string;
   empCode: string;
   empName: string;
-  doj: any;
+  doj: string;
   dependentName: string;
   relationship1: string;
-  dob: any;
+  dob: string;
   gender: string;
   location: string;
   empStatus: string;

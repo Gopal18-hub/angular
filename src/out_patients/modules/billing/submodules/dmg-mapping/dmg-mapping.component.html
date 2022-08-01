@@ -5,16 +5,28 @@
                 <a class="ml-3" mat-tab-link [active]="true">DMG Mapping</a> 
             </li>
         </ul>
+        <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="mt-1 cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+       
+      />
+    </div>
     </nav>
+    <!-- (click)="doCategoryIconAction(icon)" -->
     <mat-tab-nav-panel #tabPanel>
-        <div class="p-2">
+        <div class="p-2 h-full">
         <!---------------------------------FIRST ROW----------------------------------------------------->
       <div class=" flex align-items-center w-full bg-dmg border-radius-xlg p-1">
           <div class="w-9/10 ml-2 ">
         <form [formGroup]="dmgMappingForm">
           <div class="flex">
-            <mat-label class="font-semi-bold">Max ID</mat-label>
-            <div class="ml-0-27 w-1/10 bg-white">
+            <mat-label class="font-semi-bold max-health-primary-color">Max ID</mat-label>
+            <div class="ml-0-27 w-1/10 bg-white mt-error">
             <maxhealth-question
             [question]="questions[0]"
             [form]="dmgMappingForm"
@@ -24,8 +36,8 @@
             </maxhealth-question>
             </div>
 
-            <mat-label class="ml-1-34 font-semi-bold">Mobile No.</mat-label>
-            <div class="ml-0-27 w-1/10 bg-white">
+            <mat-label class="ml-1-34 font-semi-bold max-health-primary-color">Mobile No.</mat-label>
+            <div class="ml-0-27 w-1/10 bg-white default-label-none mt-error">
             <maxhealth-question
             [question]="questions[1]"
             [form]="dmgMappingForm"
@@ -39,7 +51,7 @@
          </div>
         <div class="float-right w-1/10 flex">
             <div class="ml-0" >
-            <button mat-raised-button color="primary" type="submit" >
+            <button mat-raised-button color="primary" type="submit" (click)="onMaxidEnter()" >
                 <img src="assets/lens.svg" class="lens-icon">
 
                 Search
@@ -51,44 +63,78 @@
     <!------------------------------------------SECOND ROW----------------------------------------->
     <div class="flex w-full bg-dmg border-radius-xlg p-3  mt-1">
         <div  class="w-1/7">
-        <mat-label  class="font-semi-bold">Name:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">Name:</mat-label>
+        <span class="ml-2">{{name}}</span>
         </div>
 
         <div class="w-1/10">
-        <mat-label  class="font-semi-bold">Age:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
+        <span class="ml-2"> {{age}}</span>
         </div>  
 
         <div  class="w-1/10">
-        <mat-label  class="font-semi-bold">Gender:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
+        <span class="ml-2">{{gender}}</span>
          </div>
 
          <div  class="w-12">
-        <mat-label  class="font-semi-bold">DOB:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">DOB:</mat-label>
+        <span class="ml-2">{{dob}}</span>
          </div>
 
 
          <div  class="w-12">
-        <mat-label  class="font-semi-bold">Nationality:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
+        <span class="ml-2">{{nationality}}</span>
          </div>
 
          <div  class="w-1/6">
-        <mat-label  class="font-semi-bold">SSN:</mat-label>
-        <span></span>
+        <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
+        <span class="ml-2">{{ssn}}</span>
          </div>
     </div>
     <!-----------------------------------------THIRD ROW------------------------------------------------------------->
-    <div class="border-radius-lg border-dmgtable mt-2" >
+    <div class="border-radius-lg border-dmgtable mt-2 h-63"  >
         <div class="p-1 border-tableheader">
             <p class="ml-2 mt-2">Disease Management Groups-Organ(DMG)</p>
         </div>
-        <div class="ml-5 mt-1 mb-2">
-            <form [formGroup]="dmgMappingForm">
-                <maxhealth-question
+        <div class="ml-5 mt-1 mb-2 h-50"  *ngIf="showCheckboxgrid" style="overflow:scroll">
+
+            <!-- <ng-container *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT">
+                <mat-checkbox [(ngModel)]="diseasegroup.isChecked">
+               {{diseasegroup.docName}}</mat-checkbox>
+                </ng-container> -->
+                <!-- <mat-form-field> -->
+                    <!-- <mat-select > -->
+                <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT;let i=index"  >
+                    <mat-checkbox  [(ngModel)]=" dmgPatientDetails.dmgMappingDataDT[i].isChecked" 
+                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId);" 
+                    value="dmgPatientDetails.dmgMappingDataDT[i].docId">
+                    {{diseasegroup.docName}} 
+                    </mat-checkbox>
+                </div>
+    <!-- [(ngModel)]="diseasegroup.isChecked" -->
+                 <!-- diseasegroup.isChecked == 1 ?true:false -->
+
+                 <!-- <mat-form-field>
+                    <mat-select placeholder="Toppings">
+                        <mat-option *ngFor="let topping of toppingList; let i =index" [value]="topping">
+                            <mat-checkbox [checked]="selected === i" (change)="onChange(topping);selected = i"> {{topping}}</mat-checkbox>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+            <!-- <form [formGroup]="dmgMappingForm"> -->
+                <!-- <ng-container *ngFor="let checkbox of checkboxList">
+                    {{checkbox.docName}} -->
+                    <!-- <maxhealth-question
+                    [question]=checkbox.docName
+                    [form]="dmgMappingForm"
+                    [questions]=checkbox.docName
+                    [index]=checkbox.id
+                    >    
+                    </maxhealth-question> -->
+                <!-- </ng-container> -->
+                <!-- <maxhealth-question
                 [question]="questions[2]"
                 [form]="dmgMappingForm"
                 [questions]="questions[2]"
@@ -157,17 +203,17 @@
                 [questions]="questions[11]"
                 [index]="11"
                 >    
-                </maxhealth-question>
+                </maxhealth-question> -->
                 
-            </form>
+            <!-- </form> -->
         </div>
     </div>
     <!------------------------------------------FOURTH ROW--------------------------------------------------------------------->
     <div class="float-right mt-2">
-        <button mat-raised-button color="primary" class="mr-8" (click)="dmgsave()" [disabled]="disablebutton">
+        <button mat-raised-button color="primary" class="mr-8" (click)="dmgsave()" >
             Save
         </button>
-        <button mat-raised-button color="primary" class="mr-1" [disabled]="disablebutton">
+        <button mat-raised-button color="primary" class="mr-1" >
             Clear
         </button>
     </div>
@@ -177,3 +223,4 @@
     
     </mat-tab-nav-panel>
 </section> 
+<!-- [disabled]="disablebutton" -->

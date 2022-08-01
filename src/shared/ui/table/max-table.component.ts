@@ -18,6 +18,7 @@ import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { take } from "rxjs/operators";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: "maxhealth-table",
@@ -205,5 +206,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       return eval(this.config.rowLayout.dynamic.rowClass);
     }
+  }
+
+  exportAsExcel() {
+    const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data, {
+      header: this.displayedColumns,
+    });
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "SheetName");
+    XLSX.writeFile(workBook, "filename.xlsx");
   }
 }

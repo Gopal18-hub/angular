@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ApiConstants } from '@core/constants/ApiConstants';
+import { HttpService } from '@shared/services/http.service';
+import { getPatientVisitHistory } from '@core/types/getPatientVisitHistory.Interface';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'out-patients-visit-history',
   templateUrl: './visit-history.component.html',
   styleUrls: ['./visit-history.component.scss']
 })
+
 export class VisitHistoryComponent implements OnInit {
 
   config: any = {
@@ -12,33 +17,33 @@ export class VisitHistoryComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
-      "visitdate",
-      "lastbillno",
-      "lastpaymentmode",
-      "lastcompanybilled",
-      "doctorname",
+      "visitDate",
+      "billNo",
+      "paymentMode",
+      "companyName",
+      "doctorName",
       "days",
-      "consultationtype",
+      "consultationType",
       "amount"
     ],
     columnsInfo: {
-      visitdate: {
+      visitDate: {
         title: "Visit Date",
         type: "string",
       },
-      lastbillno: {
+      billNo: {
         title: "Last Bill No.",
         type: "number",
       },
-      lastpaymentmode: {
+      paymentMode: {
         title: "Last Payment Mode",
         type: "string",
       },
-      lastcompanybilled: {
+      companyName: {
         title: "Last Company Billed",
         type: "string",
       },
-      doctorname: {
+      doctorName: {
         title: "Doctor Name",
         type: "string",
       },
@@ -46,7 +51,7 @@ export class VisitHistoryComponent implements OnInit {
         title: "Days",
         type: "number",
       },
-      consultationtype: {
+      consultationType: {
         title: "Consultation Type",
         type: "string",
       },
@@ -56,7 +61,7 @@ export class VisitHistoryComponent implements OnInit {
       }
     },
   };
-  data: any[] = [
+  data1: any[] = [
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"},
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"},
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"},
@@ -65,9 +70,31 @@ export class VisitHistoryComponent implements OnInit {
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"},
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"}
   ]
-  constructor() { }
-
-  ngOnInit(): void {
+  maxId:any;
+  iacode:any;
+  regnumber:any;
+  public visithistorylist: getPatientVisitHistory[] = [];
+  private readonly _destroying$ = new Subject<void>();
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {maxid: any}, private http: HttpService) { 
+    this.maxId = data.maxid;
   }
 
+  ngOnInit(): void {
+    const id = this.maxId.split('.');
+    this.iacode = id[0];
+    this.regnumber = id[1];
+    this.getvisithistory(this.iacode, this.regnumber);
+  }
+  getvisithistory(iacode:any, regnumber:any)
+  {
+    this.http.get(ApiConstants.getpatientvisithistory(iacode, regnumber))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata)=>{
+      console.log(resultdata);
+      this.visithistorylist = resultdata;
+    },
+    (error)=>{
+      console.log(error);
+    })
+  }
 }
