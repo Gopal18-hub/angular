@@ -8,9 +8,9 @@
       color: var(--primary-color);
       font-weight: 600;
     }
-    .change-password {
-      color: var(--primary-color);
-    }
+    // .change-password {
+    //   color: var(--primary-color);
+    // }
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
@@ -27,7 +27,8 @@
         
     ::ng-deep .patient-lbl
   {
-    color: black;
+    color: #5A5A5A;
+    opacity: 1
   }
   ::ng-deep .mat-checkbox-label
   {
@@ -95,13 +96,18 @@
 .wt-mid{
     width: 8.5%;  
 }
+
+.w-11
+{
+    width:11%;
+}
 .h-white-banner
 {
  height: 8%;   
 }
 .bg-billdetails{
     
-    height: 70%;
+    height: 76%;
     background-color:#45C0BE; 
 }
 .bg-blue
@@ -115,10 +121,20 @@
    font-style: italic;
    text-decoration: underline;
    font-weight:550;
+
+   ::ng-deep .mat-checkbox-label
+   {
+    text-decoration: underline;
+    margin-left: 0.3rem;
+   }
 }
+
+
 .h-service
 {
     height: 92%;
+    // height: -webkit-fill-available;
+
     border-radius: 0% 0.5rem 0.5rem 0.5rem;
     margin-left: 0.3%;
     margin-right: 0.3%;
@@ -127,7 +143,8 @@
 // .h-9/20
 .h-table
 {
-    height: 54%;
+    // height: 54%;
+    height: -webkit-fill-available;
 }
 
 .bg-paymet

@@ -89,6 +89,7 @@ export class QmsComponent implements OnInit {
       this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
     },
     error => {
+      console.log(error);
       if(error.error.text == "Record Saved Successfully")
       {
         var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
@@ -104,7 +105,7 @@ export class QmsComponent implements OnInit {
     this.clearbtn = true;
   }
   getarea(){
-    this.http.get(ApiConstants.getarecounter(18))
+    this.http.get(ApiConstants.getarecounter(this.hspId))
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata: any)=>{
       console.log(resultdata);
@@ -118,10 +119,10 @@ export class QmsComponent implements OnInit {
 
   getqmsrequestbody(): qmsEnableCounterModel{
     return (this.enableCounter = new qmsEnableCounterModel(
-      7,
+      this.hspId,
       this.qmsform.value.area,
       this.qmsform.value.counter,
-      9923,
+      this.userId,
       1
     ))
   }

@@ -9,7 +9,17 @@ import { CookieService } from '@shared/services/cookie.service';
 import { getpatienthistorytransactiontypeModel } from '@core/models/getpatienthistorytransactiontypeModel.Model';
 import { getRegisteredPatientDetailsModel } from '@core/models/getRegisteredPatientDetailsModel.Model';
 import { getPatientHistoryModel } from '@core/models/getPatientHistoryModel.Model';
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { Subject, takeUntil } from 'rxjs';
+import { ReportService } from '@shared/services/report.service';
+
+import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -20,6 +30,7 @@ export class PatientHistoryComponent implements OnInit {
   public patientDetails: getRegisteredPatientDetailsModel[] = [];
   public transactiontype: getpatienthistorytransactiontypeModel[] = [];
   public patienthistorylist: getPatientHistoryModel[] = [];
+  similarContactPatientList: SimilarSoundPatientResponse[] = [];
   patienthistoryFormData = {
     title: "",
     type: "object",
@@ -29,8 +40,9 @@ export class PatientHistoryComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "number",
-        readonly: true
+        title:"Mobile No",
+        type: "tel",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
         type: "date",
@@ -50,112 +62,115 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
-    clickedRows: true,
+    clickedRows: false,
     // clickSelection: "single",
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: true,
+    selectBox: false,
     displayedColumns: [
-      "billno",
-      "type",
-      "billdate",
-      "ipno",
-      "admdischargedate",
-      "billamt",
-      "discountamt",
-      "receiptamt",
-      "refundamt",
-      "balanceamt",
-      "company",
-      "operatorname",
+      "billNo",
+      "billType",
+      "billDate",
+      "ipNo",
+      "admDateTime",
+      "billAmount",
+      "discountAmount",
+      "receiptAmt",
+      "refundAmount",
+      "balanceAmt",
+      "companyName",
+      "operatorName",
       "printIcon",
     ],
     columnsInfo: {
-      billno: {
+      billNo: {
         title: "Bill.No",
         type: "string",
-        tooltipColumn: "billno",
+        tooltipColumn: "billNo",
         style: {
-          width: '5rem'
+          width: '7rem'
         }
       },
-      type: {
+      billType: {
         title: "Type",
         type: "string",
-        tooltipColumn: "type",
+        tooltipColumn: "billType",
         style: {
           width: '6rem'
         }
       },
-      billdate: {
+      billDate: {
         title: "Bill Date",
-        type: "date",
-        tooltipColumn: "billdate",
+        type: "string",
+        tooltipColumn: "billDate",
         style: {
-          width: '5rem'
+          width: '5.5rem'
         }
       },
-      ipno: {
+      ipNo: {
         title: "IP No.",
         type: "number",
         style: {
           width: '4rem'
         }
       },
-      admdischargedate: {
+      admDateTime: {
         title: "Adm/Discharge Date",
         type: "date",
         style: {
-          width: '10rem'
+          width: '9rem'
         }
       },
-      billamt: {
+      billAmount: {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '4rem'
+          width: '5rem'
         }
       },
-      discountamt: {
+      discountAmount: {
         title: "Discount Amt",
         type: "number",
         style: {
           width: '7rem'
         }
       },
-      receiptamt: {
+      receiptAmt: {
         title: "Receipt Amt",
         type: "number",
         style: {
           width: '6rem'
         }
       },
-      refundamt: {
+      refundAmount: {
         title: "Refund Amt",
         type: "number",
         style: {
           width: '6rem'
         }
       },
-      balanceamt: {
+      balanceAmt: {
         title: "Balance Amt",
         type: "number",
         style: {
           width: '6.5rem'
         }
       },
-      company: {
+      companyName: {
         title: "Company",
         type: "string",
-        tooltipColumn: "company",
+        tooltipColumn: "companyName",
         style: {
           width: '5rem'
         }
       },
-      operatorname: {
+      operatorName: {
         title: "Operator Name",
         type: "string",
-        tooltipColumn: "operatorname"
+        tooltipColumn: "operatorName",
+        style: {
+          width: '7rem'
+        }
       },
       printIcon: {
         title: "Print History",
@@ -200,7 +215,6 @@ export class PatientHistoryComponent implements OnInit {
       refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: ''
     }
   ]
-
   pname:any;
   age:any;
   gender:any;
@@ -208,9 +222,9 @@ export class PatientHistoryComponent implements OnInit {
   nationality:any;
   ssn:any;
 
-  printbtn: boolean = true;
-  searchbtn: boolean = true;
+  billno: any;
 
+  searchbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
   @ViewChild("table") tableRows: any;
@@ -220,7 +234,9 @@ export class PatientHistoryComponent implements OnInit {
     private msgdialog: MessageDialogService, 
     private http: HttpService, 
     private datepipe: DatePipe,
-    private cookie: CookieService) { }
+    private cookie: CookieService,
+    public matDialog: MatDialog,
+    private reportService:ReportService) { }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -236,7 +252,6 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.gettransactiontype();
-    console.log(this.data);
   }
   ngAfterViewInit(): void{
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -245,21 +260,15 @@ export class PatientHistoryComponent implements OnInit {
         this.getPatientDetails();
       }
     });
-  }
-  ngDoCheck()
-  {
-    if(this.patienthistorylist.length > 0)
-    {
-      if(this.tableRows.selection.selected.length > 0)
-      {
-        this.printbtn = false;
+    this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
+      console.log(event);
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        this.mobilechange();
       }
-      else
-      {
-        this.printbtn = true;
-      }
-    }
+    });
   }
+
   gettransactiontype()
   {
     this.http.get(ApiConstants.gettransactiontype)
@@ -273,6 +282,67 @@ export class PatientHistoryComponent implements OnInit {
       })
     })
   }
+  
+  mobilechange()
+  {
+    console.log('mobile changed');
+    this.matDialog.closeAll();
+    console.log(this.similarContactPatientList.length);
+      this.http
+        .post(ApiConstants.similarSoundPatientDetail, {
+          phone: this.patienthistoryform.value.mobile,
+        })
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: SimilarSoundPatientResponse[]) => {
+            this.similarContactPatientList = resultData;
+            console.log(this.similarContactPatientList);
+            if (this.similarContactPatientList.length == 1) {
+              console.log(this.similarContactPatientList[0]);
+              let maxID = this.similarContactPatientList[0].maxid;
+              this.patienthistoryform.controls["maxid"].setValue(maxID);
+              this.getPatientDetails();
+            } else {
+              if (this.similarContactPatientList.length != 0) {
+                // let dialogRef = this.matDialog.open(SimilarDetailsPopupComponent, {width: "30vw", height: "30vh"});
+                // dialogRef.afterClosed().subscribe(result=>{
+                //   console.log(result);
+                // })
+                const similarSoundDialogref = this.matDialog.open(
+                  SimilarPatientDialog,
+                  {
+                    width: "60vw",
+                    height: "65vh",
+                    data: {
+                      searchResults: this.similarContactPatientList,
+                    },
+                  }
+                );
+                similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.patienthistoryform.controls["maxid"].setValue(maxID);
+                      this.getPatientDetails();
+                    }
+                    this.similarContactPatientList = [];
+                  });
+              } else {
+                this.patienthistoryform.controls["mobile"].setErrors({incorrect: true});
+                this.questions[1].customErrorMessage = "Invalid Mobile No";
+                console.log("no data found");
+              }
+            }
+          },
+          (error) => {
+            console.log(error);
+            this.msgdialog.info(error.error);
+          }
+        );
+  }
   getPatientDetails()
   {
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
@@ -284,9 +354,9 @@ export class PatientHistoryComponent implements OnInit {
             console.log(resultData);
             if(resultData.length == 0)
             {
-              // this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
-              // this.questions[0].customErrorMessage = "Registration number does not exist";
-              this.msgdialog.info("Registration number does not exist");
+              this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+              this.questions[0].customErrorMessage = "Invalid MaxID";
+              // this.msgdialog.info("Registration number does not exist");
             }
             else
             {
@@ -324,21 +394,29 @@ export class PatientHistoryComponent implements OnInit {
           iacode,
           regnumber,
           this.hsplocationId,
-          this.StationId
+          this.StationId,
+          this.patienthistoryform.value.transactiontype
         ))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultdata:any)=>{
           console.log(resultdata);
-          if(resultdata.length == 0)
+          if(resultdata.length > 0)
           {
-            console.log("empty");
-            this.patienthistorylist = this.data;
-            this.patienthistorylist = this.setimage(this.patienthistorylist); 
+            console.log('data');
+            this.patienthistorylist = resultdata;
+            // this.patienthistorylist.forEach(e=>{
+            //   e.billAmount = parseInt(e.balanceAmt).toFixed(2);
+            //   e.discountAmount = parseInt(e.discountAmount).toFixed(2);
+            //   e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
+            //   e.refundAmount = parseInt(e.refundAmount).toFixed(2);
+            //   e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+            // })
+            this.patienthistorylist = this.setimage(this.patienthistorylist);
+            console.log(this.patienthistorylist);
           }
           else{
-            this.patienthistorylist = this.data;
-            this.printbtn = false;
-            // this.patienthistorylist = resultdata;
+            console.log("empty");
+            this.patienthistorylist = [];
           }
         },
         (error)=>{
@@ -349,14 +427,7 @@ export class PatientHistoryComponent implements OnInit {
     }
     
   }
-  printdialog()
-  {  
-    console.log(this.tableRows.selection.selected);  
-    if(this.tableRows.selection.selected.length > 0)
-    {
-      this.msgdialog.success("Printing Successfull");
-    }
-  }
+
   clear()
   {
     this.patienthistoryform.reset();
@@ -375,7 +446,6 @@ export class PatientHistoryComponent implements OnInit {
     this.questions[0].readonly = false;
     this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.patientDetails = [];
-    this.printbtn = true;
     this.searchbtn = true;
     this.patienthistorylist = [];
   }
@@ -383,11 +453,36 @@ export class PatientHistoryComponent implements OnInit {
 
   printrow(event:any){
     console.log(event);
-    console.log(this.tableRows.selection.selected.length);
-    if(event.column == "printIcon" || this.tableRows.selection.selected.length > 0){
-      console.log(event.row.billno);
-      this.msgdialog.success("Printing Successfull");
+    if(event.column == "printIcon"){
+      console.log(event.row.billType);
+      this.billno = event.row.billNo;
+      if(event.row.billType == 'Deposit' || event.row.billType == 'Donation')
+      {
+        this.openReportModal('depositReport');
+      }
+      else if(event.row.billType == 'Deposit Refund')
+      {
+        this.openReportModal('rptRefund');
+      }
+      else if(event.row.billType == 'OPD' || event.row.billType == 'OPD Bill')
+      {
+        this.openReportModal('billingreport');
+      }
+      else if(event.row.billType == 'Op Refund') 
+      {
+        this.openReportModal('refundReport ');
+      }
+      else{
+        this.msgdialog.success("Unable to Print. Working on other transaction type(s) !!!");
+      }
     }
+  }
+
+  openReportModal(btnname: string) {
+    this.reportService.openWindow(btnname, btnname, {
+      receiptnumber: this.billno,
+      locationID: this.hsplocationId
+    });
   }
 
   setimage(patienthsitory: getPatientHistoryModel[],

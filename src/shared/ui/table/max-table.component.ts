@@ -9,12 +9,16 @@ import {
   TemplateRef,
   Output,
   EventEmitter,
+  NgZone,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { CdkTextareaAutosize } from "@angular/cdk/text-field";
+import { take } from "rxjs/operators";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: "maxhealth-table",
@@ -41,11 +45,25 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
+  @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
   @ViewChild("input") inputboxTemplate!: TemplateRef<any>;
+  @ViewChild("textarea") textareaTemplate!: TemplateRef<any>;
+  @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
+  @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
+  @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
-  constructor(private _liveAnnouncer: LiveAnnouncer) {}
+  @ViewChild("autosize") autosize!: CdkTextareaAutosize;
+
+  triggerResize() {
+    // Wait for changes to be applied, then trigger textarea resize.
+    this._ngZone.onStable
+      .pipe(take(1))
+      .subscribe(() => this.autosize.resizeToFitContent(true));
+  }
+
+  constructor(private _liveAnnouncer: LiveAnnouncer, private _ngZone: NgZone) {}
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<any>(this.data);
@@ -165,7 +183,12 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "image") return this.imageTemplate;
     else if (col.type == "checkbox") return this.checkboxTemplate;
+    else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
     else if (col.type == "input") return this.inputboxTemplate;
+    else if (col.type == "textarea") return this.textareaTemplate;
+    else if (col.type == "input_date") return this.inputboxDateTemplate;
+    else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
+    else if (col.type == "dropdown") return this.dropdownTemplate;
     else return this.stringTemplate;
   }
 
@@ -173,5 +196,33 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
     this.selection.toggle(element);
+  }
+
+  rowClass(row: any) {
+    if (
+      this.config.rowLayout &&
+      this.config.rowLayout.dynamic &&
+      this.config.rowLayout.dynamic.rowClass
+    ) {
+      return eval(this.config.rowLayout.dynamic.rowClass);
+    }
+  }
+
+  exportAsExcel() {
+    const excelName = this.config.tableName
+      ? this.config.tableName + ".xlsx"
+      : "filename.xlsx";
+    const headers: any = [];
+    this.displayedColumns.forEach((col) => {
+      if (col != "select" && col != "actionItems") {
+        headers.push(this.displayColumnsInfo[col].title);
+      }
+    });
+    const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data, {
+      header: headers,
+    });
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Result");
+    XLSX.writeFile(workBook, excelName);
   }
 }

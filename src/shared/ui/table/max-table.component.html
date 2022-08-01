@@ -122,6 +122,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         [class.row-is-clicked]="selection.isSelected(row)"
+        class="{{ rowClass(row) }}"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.selectBox && !config.clickedRows">
@@ -182,6 +183,14 @@
   ></mat-checkbox>
 </ng-template>
 
+<ng-template #checkboxActive let-data>
+  <mat-checkbox
+    [checked]="!!data.output"
+    color="primary"
+    [(ngModel)]="data.element[data.col]"
+  ></mat-checkbox>
+</ng-template>
+
 <ng-template #input let-data>
   <mat-form-field appearance="outline" floatLabel="never">
     <input
@@ -190,6 +199,90 @@
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
     />
+  </mat-form-field>
+</ng-template>
+
+<ng-template #textarea let-data>
+  <div
+    (click)="data.isOpen = !data.isOpen"
+    cdkOverlayOrigin
+    #trigger="cdkOverlayOrigin"
+    class="cursor-pointer"
+  >
+    {{ data.output }}
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="data.isOpen"
+  >
+    <div class="editable-textarea">
+      <mat-form-field appearance="outline" floatLabel="never">
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="5"
+          [(ngModel)]="data.element[data.col]"
+          [value]="data.element[data.col]"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #inputDate let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #inputDateTime let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [ngxMatDatetimePicker]="picker"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(picker)"
+    ></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [enableMeridian]="true">
+    </ngx-mat-datetime-picker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #dropdown let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <mat-select
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [panelClass]="'im-select-dropdown'"
+      disableOptionCentering
+    >
+      <ng-container
+        *ngFor="let opt of data.config.columnsInfo[data.col].options"
+      >
+        <mat-option [value]="opt.value">
+          {{ opt.title }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
   </mat-form-field>
 </ng-template>
 

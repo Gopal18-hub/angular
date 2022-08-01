@@ -38,6 +38,12 @@
     ::ng-deep .mat-form-field-wrapper{
         padding-bottom: 0 !important;
     }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper{
+        margin-top: 18px !important;
+    }
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
     ::ng-deep .max-table-wrapper{
         border: 1px solid #707070;
         table{
@@ -45,16 +51,31 @@
             tbody tr td:nth-last-child(1) div{ 
                 display: flex;
                 justify-content: center;
+                cursor: pointer;
+                img{
+                    width: 20px !important;
+                }
             }
             tbody tr:hover td:nth-last-child(1){
                 div img{
                     filter:  brightness(0) invert(1);
                 }
             }
+
+            tbody tr td:nth-child(6),
+            tbody tr td:nth-child(7),
+            tbody tr td:nth-child(8),
+            tbody tr td:nth-child(9),
+            tbody tr td:nth-child(10)
+            {
+                text-align: right !important;
+                padding-right: 30px !important
+            }
         }
         // .mat-table-fixed-layout{
         //     table-layout: auto !important;
         // }
+
     }
     // .btn{
     //     ::ng-deep .mat-button-wrapper{

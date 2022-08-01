@@ -55,3 +55,9 @@
 ::ng-deep .ta textarea{
     min-height: 120px !important;
 }
+
+.otptextcnt{
+    ::ng-deep .mat-form-field{
+        line-height: 2 !important;
+    }
+}

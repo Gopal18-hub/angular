@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, EventEmitter,Input,Output, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
@@ -9,21 +9,23 @@ import { FormSixtyComponent } from '../form60/form-sixty.component';
   styleUrls: ['./patient-identity-info.component.scss']
 })
 export class PatientIdentityInfoComponent implements OnInit {
+  @Input() data!: any;
 
   patientidentityformData = {
     title: "",
     type: "object",
     properties: {
-      mobielno: {
+      mobileno: {
         type: "number",
         readonly: "true"
       },
-      mail: {
+      email: {
         type: "string",
         readonly: "true"
       },      
       panno: {
-        type: "string"
+        type: "string",
+        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$"
       },     
       mainradio: {
         type: "radio",
@@ -31,14 +33,15 @@ export class PatientIdentityInfoComponent implements OnInit {
         options: [
           { title: "Form 60", value: "form60" },
           { title: "Pan card No.", value: "pancardno" },
-        ]
+        ],
+        defaultValue: "pancardno",
       }
     },
   }
   patientidentityform!: FormGroup;
   questions: any;
 
-  constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
+  constructor( private formService: QuestionControlService, 
   private matdialog: MatDialog) {
    }
 
@@ -50,9 +53,13 @@ export class PatientIdentityInfoComponent implements OnInit {
     );
     this.patientidentityform = formResult.form;
     this.questions = formResult.questions;
+    this.patientidentityform.controls["panno"].setValue(this.data.panno);
+    this.patientidentityform.controls["mobileno"].setValue(this.data.mobileno);
+    this.patientidentityform.controls["email"].setValue(this.data.emailId);
   }
 
-  ngAfterViewInit(): void{
+  ngAfterViewInit(): void
+  {
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
       {
@@ -64,5 +71,6 @@ export class PatientIdentityInfoComponent implements OnInit {
       }
     });
   }
+
 
 }

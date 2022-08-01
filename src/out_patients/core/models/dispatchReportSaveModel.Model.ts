@@ -1,30 +1,30 @@
 export class dispatchReportSaveModel{
-    objDtSaveReport: objdispatchsave;
-    operatorid: any;
+    public objDtSaveReport!: objdispatchsave[];
+    public operatorid: any;
 
-    constructor(objDtSaveReport:objdispatchsave, operatorid:any)
+    constructor()
     {
-        this.objDtSaveReport = objDtSaveReport;
-        this.operatorid = operatorid;
+        //this.objDtSaveReport = objDtSaveReport;
+        //this.operatorid = operatorid;
     }    
 }
 
 export class objdispatchsave{
-    slNo?: string;
-    testName?: string;
-    datetime?: string;
-    patientName?: string;
-    billNo?: string;
-    dispatchDateTime?: string;
-    dispatchPlace?: string;
-    remarks?: string;
-    chk?: boolean;
-    billid?: string;
-    operatorid?: string;
-    itemid?: string;
-    recievedDateTime?: string;
-    balance?: string;
-    repType?: string;
+    slNo: string;
+    testName: string;
+    datetime: string;
+    patientName: string;
+    billNo: string;
+    dispatchDateTime: any;
+    dispatchPlace: string;
+    remarks: string;
+    chk: boolean;
+    billid: string;
+    operatorid: string;
+    itemid: string;
+    recievedDateTime: any;
+    balance: string;
+    repType: string;
 
     constructor(
         slNo: string,

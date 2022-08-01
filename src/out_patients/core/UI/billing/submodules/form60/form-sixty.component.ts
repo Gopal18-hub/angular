@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog,  MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BillingForm } from '@core/constants/BillingForm';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
+import { HttpService } from '@shared/services/http.service';
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { getform60masterdataInterface } from  "@core/types/FormSixty.Interface";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: 'out-patients-form-sixty',
@@ -14,7 +21,10 @@ export class FormSixtyComponent implements OnInit {
   form60form!: FormGroup;
   questions: any;
   today: any;
-  constructor( private formService: QuestionControlService) { }
+  constructor( private formService: QuestionControlService,private http: HttpService,
+    private matdialog: MatDialog, private messageDialogService: MessageDialogService) { }
+  
+  private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -27,6 +37,10 @@ export class FormSixtyComponent implements OnInit {
     this.form60form.controls["dateofapplication"].setValue(this.today);
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
+    this.getForm60DocumentType();
+    this.form60form.controls["iddocumenttype"].setValue({ title: "<--Select-->", value: 0 });
+    this.form60form.controls["addressdocumenttype"].setValue({ title: "<--Select-->", value: 0 });
+
   }
 
   ngAfterViewInit(): void{
@@ -59,10 +73,43 @@ export class FormSixtyComponent implements OnInit {
         this.form60form.controls["addressdocidentityno"].setValue('');
         this.form60form.controls["addressnameofauthority"].setValue('');
       }
-    })
+    });
+ 
   }
-  clear()
-  {
+
+  getForm60DocumentType(){
+    this.http
+    .get(ApiConstants.getform60masterdata)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: getform60masterdataInterface) => {
+      console.log(resultData);
+
+      let formsixtylistPOI : any = resultData.getForm60MasterDataPOI1;
+      let formsixtylistPOA : any = resultData.getForm60MasterDataPOA1;
+      this.questions[6].options = formsixtylistPOI.map((l:any) => {
+        return { title: l.docName, value: l.id };
+      });
+  
+      this.questions[10].options = formsixtylistPOA.map((l:any) => {
+        return { title: l.docName, value: l.id };
+      });
+    
+    });
+  }
+
+  saveform60(){
+  if(this.form60form.value.appliedforpan && this.form60form.value.applicationno == ""){
+    this.messageDialogService.error("Please enter PAN Application Number");
+  }
+  else if(!this.form60form.value.appliedforpan  && this.form60form.value.agriculturalincome == ""){
+    this.messageDialogService.error("Please enter agriculturer income");
+  }
+  else if(!this.form60form.value.appliedforpan  && this.form60form.value.otherthanagriculturalincome == ""){
+    this.messageDialogService.error("Please enter other than agriculturer income");
+  }
+  }
+
+  clearform60(){
     this.form60form.reset();
   }
 }

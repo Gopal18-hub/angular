@@ -15,7 +15,10 @@ import { DbService } from "../db.service";
 import { mergeMap, tap, catchError } from "rxjs/operators";
 import { Observable, of, throwError, from } from "rxjs";
 
-const AllowInDB = ["MaxPermission/getpermissionmatrixrolewise"];
+const AllowInDB = [
+  "MaxPermission/getpermissionmatrixrolewise",
+  "lookup/getlocality",
+];
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -65,6 +68,7 @@ export class TokenInterceptor implements HttpInterceptor {
       request.url.includes("patientunmerging") ||
       request.url.includes("patientmerging") ||
       request.url.includes("approvedrejectdeletehotlisting") ||
+      request.url.includes("patienthotlisting") ||
       request.url.includes("modifyopdpatient")
     ) {
       request = request.clone({

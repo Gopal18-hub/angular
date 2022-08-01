@@ -133,6 +133,14 @@ export namespace ApiConstants {
     );
   };
 
+  export const getlocalityByName = (localityName: string) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonsearch/" +
+      `${localityName}`
+    );
+  };
+
   /* ----------------------------------------------------------------------------------------------------------
     ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
     ----------------------------------------------------------------------------------------------------------*/
@@ -388,7 +396,8 @@ export namespace ApiConstants {
     IACode: string,
     RegistrationNo: number,
     HSPLocationId: number,
-    StationId: number
+    StationId: number,
+    TransactionType: string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -403,7 +412,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId
+      StationId +
+      "/" +
+      TransactionType
     );
   };
 
@@ -534,8 +545,8 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string,
-    operatorid: number
+    iacode: string
+    //    operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -551,18 +562,18 @@ export namespace ApiConstants {
   };
 
   export const getstaffdependentdetails = (
-    EmployeeCode: string,
-    EmployeeName: string,
-    SrcType: number
+    SrcType: number,
+    EmployeeCode?: string,
+    EmployeeName?: string
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getstaffdependentdetails/" +
+      SrcType +
+      "?EmployeeCode=" +
       EmployeeCode +
-      "/" +
-      EmployeeName +
-      "/" +
-      SrcType
+      "&EmployeeName=" +
+      EmployeeName
     );
   };
 
@@ -638,4 +649,40 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo
+    );
+  };
+
+  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpersonaldetailsdmg/" +
+      regno +
+      "/" +
+      iacode +
+      "/" +
+      7
+    );
+  };
+
+  export const savepatientdmg =
+    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
+
+  //OP REFUND APPROVAL
+  export const getpendingoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
+  export const getapprovedoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
 }

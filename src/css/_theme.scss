@@ -175,7 +175,7 @@ mat-form-field {
   font-size: 14px;
   &.mat-form-field-appearance-outline {
     .mat-form-field-outline {
-      color: #5a5a5a; //rgba(0, 0, 0); //UAT Defect fix
+      color: #ababab; //rgba(0, 0, 0); //UAT Defect fix
     }
     .mat-form-field-wrapper {
       margin: 0 !important;
@@ -456,4 +456,9 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .mat-select-value {
   color: #000;
+}
+
+.disabled {
+  pointer-events: none; //This makes it not clickable
+  opacity: 0.8;
 }
