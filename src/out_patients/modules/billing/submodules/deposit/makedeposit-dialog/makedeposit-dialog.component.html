@@ -14,10 +14,10 @@
         <mat-icon [svgIcon]="'rupeeicon'" class="rupeeicon-class"></mat-icon>
     </div>
     <div class="w-full h-1/10 text-center font-base font-bold ">
-        <p class="max-health-primary-color">Do you want to make Deposits?</p> 
+        <p class="max-health-primary-color">{{data.message}}</p> 
     </div>
     <div class="flex w-full h-1/10 justify-content-center font-base makedepositbtn ">
-        <button mat-raised-button class="yesbtncss" (click)="makedepositclosebtn()" mat-dialog-close>Yes</button>
-        <button mat-raised-button color="primary" mat-dialog-close class="ml-4">No</button>
+        <button mat-raised-button  color="primary" (click)="makedepositclosebtn()" mat-dialog-close>Yes</button>
+        <button mat-raised-button class="yesbtncss ml-4" mat-dialog-close>No</button>
     </div>
 </div>

@@ -12,7 +12,6 @@ import { CookieService } from "@shared/services/cookie.service";
 })
 export class ServiceDepositComponent implements OnInit {
 
-  @Input() refundPage!: boolean;
   @Input() data!: any;
 
   servicedepositformData = BillingForm.servicedepositFormData;
@@ -37,17 +36,24 @@ export class ServiceDepositComponent implements OnInit {
     this.questions = formResult.questions;
     this.isNSSHLocation = true; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
 
-    this.onRefundpage = this.refundPage;
-    this.servicetypeList = this.data.servicetypeList;
-    this.deposittypeList = this.data.deposittypeList;
-
-    this.questions[0].options = this.servicetypeList.map((l) => {
-      return { title: l.name, value: l.id };
-    });
-
-    this.questions[1].options = this.deposittypeList.map((l) => {
-      return { title: l.advanceType, value: l.id };
-    });
+    if(this.data.type == "Deposit")
+    {
+      this.servicetypeList = this.data.servicetypeList;
+      this.deposittypeList = this.data.deposittypeList;  
+      this.questions[0].options = this.servicetypeList.map((l) => {
+        return { title: l.name, value: l.id };
+      });
+  
+      this.questions[1].options = this.deposittypeList.map((l) => {
+        return { title: l.advanceType, value: l.id };
+      });
+    }
+    else if(this.data.type == "Refund")
+    {
+      this.onRefundpage = this.data.refundreceiptpage;
+      this.servicetype = this.data.selectedservicedeposittype.serviceTypeName;
+      this.deposithead = this.data.selectedservicedeposittype.advanceType;      
+    }
    
   }
   ngAfterViewInit(): void{

@@ -24,7 +24,8 @@ export class PatientIdentityInfoComponent implements OnInit {
         readonly: "true"
       },      
       panno: {
-        type: "string"
+        type: "string",
+        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$"
       },     
       mainradio: {
         type: "radio",

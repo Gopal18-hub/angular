@@ -83,6 +83,7 @@ export class DepositDialogComponent implements OnInit {
     this.makedepositdialogForm = formResult.form;
     this.questions = formResult.questions;
     this.depositdialogtypeList = {
+      type: "Deposit",
           servicetypeList : this.data.servicetype,
           deposittypeList : this.data.deposittype
         };
@@ -188,7 +189,7 @@ export class DepositDialogComponent implements OnInit {
       this.PaymentTypedepositamount,
       this.stationId,
       this.hsplocationId,
-      "59386",
+      String(this.operatorID),
       this.makedepositdialogForm.value.remarksText,
       0,
       this.PaymentType,

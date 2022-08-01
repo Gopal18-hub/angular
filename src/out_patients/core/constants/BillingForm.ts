@@ -17,7 +17,7 @@ export namespace BillingForm {
             maximum: new Date(),
           },
           chequebankname: {
-            type: "autocomplete"
+            type: "string"
           },
           chequebranchname: {
             type: "string"
@@ -213,6 +213,7 @@ export namespace BillingForm {
         properties: {
           aadharno: {
             type: "number",
+           // pattern: "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$"
           },
           appliedforpan: {
             type: "checkbox",

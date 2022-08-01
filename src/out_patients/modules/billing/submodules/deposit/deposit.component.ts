@@ -17,6 +17,7 @@ import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.s
 import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdepositdetailModel.Model";
 import { MakedepositDialogComponent } from './makedeposit-dialog/makedeposit-dialog.component';
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
+import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -97,7 +98,7 @@ export class DepositComponent implements OnInit {
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
     displayedColumns: [
-      "amtType",
+      "depositRefund",
       "receiptno",
       "dateTime",
       "deposit",
@@ -114,7 +115,7 @@ export class DepositComponent implements OnInit {
       "remarks"
     ],
     columnsInfo: {
-      amtType: {
+      depositRefund: {
         title: "Deposit/Refund",
         type: "string",
         style: {
@@ -140,7 +141,7 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       paymentType: {
@@ -169,21 +170,21 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "uEmail",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       balance: {
         title: "Balance",
         type: "string",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       gst: {
         title: "Tax %",
         type: "number",
         style: {
-          width: "3.5rem",
+          width: "3.7rem",
         },
       },
       gstValue: {
@@ -197,14 +198,14 @@ export class DepositComponent implements OnInit {
         title: "Deposit Head",
         type: "string",
         style: {
-          width: "6.7rem",
+          width: "7rem",
         },
       },
       serviceTypeName: {
         title: "Service Type",
         type: "string",
         style: {
-          width: "6.8rem",
+          width: "7rem",
         },
       },
       operatorName: {
@@ -237,6 +238,7 @@ export class DepositComponent implements OnInit {
   patientDepositDetails: any = [];
   patientRefundDetails: any = [];
   patientpersonaldetails: any = [];
+  depositcashlimitationdetails: any=[];
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
@@ -245,6 +247,9 @@ export class DepositComponent implements OnInit {
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
+  totaldeposit: number = 0;
+  totalrefund: number = 0;
+  avalaibleamount: number = 0;
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -265,7 +270,7 @@ export class DepositComponent implements OnInit {
       data: {       
         patientinfo: {
           emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
-        
+         
         },
         clickedrowdepositdetails : this.patientRefundDetails
       }
@@ -274,13 +279,18 @@ export class DepositComponent implements OnInit {
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
-      
-    })
+      if(result == "Success"){
+        this.getPatientPreviousDepositDetails();
+        console.log("Refund Dialog closed");
+      }
+      this.MaxIDdepositExist = false;
+    });
   }
 
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
       width: '33vw', height: '40vh', data: {    
+        message: "Do you want to make Deposits?",
       },
     });
 
@@ -305,6 +315,7 @@ export class DepositComponent implements OnInit {
             .subscribe((result) => {
               if(result == "Success"){
                 this.getPatientPreviousDepositDetails();
+
                 console.log("Deposit Dialog closed");
               }
              
@@ -342,6 +353,7 @@ export class DepositComponent implements OnInit {
           if ((this.iacode == "" || this.iacode != "0") && this.regNumber != 0) {
             this.getDepositType();
             this.getPatientDetailsForDeposit();
+            this.getdepositcashlimit();
           } else {
             this.depositForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
@@ -393,6 +405,15 @@ export class DepositComponent implements OnInit {
 
   }
 
+  getdepositcashlimit(){
+    this.http
+    .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hspLocationid))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
+      this.depositcashlimitationdetails = resultData;
+    });
+  }
+
   getDepositType() {
     this.http
       .get(ApiConstants.getadvancetype(this.hspLocationid))
@@ -432,7 +453,14 @@ export class DepositComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientPreviousDepositDetail[]) => {
         this.depoistList = resultData;
-        console.log(this.depoistList);
+       
+        this.totaldeposit = resultData.map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
+        this.totalrefund = resultData.map(t => t.refund).reduce((acc, value) => acc + value, 0);   
+        this.avalaibleamount = this.totaldeposit - this.totalrefund;
+        this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit);
+        this.depositForm.controls["totalrefund"].setValue(this.totalrefund);
+        this.depositForm.controls["avalaibledeposit"].setValue(this.avalaibleamount);
+
       },
       (error) => {
        console.log(error);
@@ -453,7 +481,9 @@ export class DepositComponent implements OnInit {
 
   }
   depositColumnClick($event: any){
-    this.MaxIDdepositExist = true;
+    if($event.row.depositRefund == "Deposit"){
+      this.MaxIDdepositExist = true;
+    }
     this.patientRefundDetails = $event.row;
   }
 }

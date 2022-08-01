@@ -10,7 +10,7 @@
     </div>
 
     <!-- Service Type -->
-    <max-service-deposit [refundPage]="onRefundReceiptpage"></max-service-deposit>
+    <max-service-deposit [data]="servicedeposittype"></max-service-deposit>
 
     <!-- Payment Methods -->
     <div class="w-full height"> 
@@ -24,12 +24,8 @@
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-1">
                     <mat-label>Available Amount</mat-label>
-                    <mat-label class="float-right">7500.00</mat-label>
-                </div>
-                <div class="mt-1">
-                    <mat-label>Refund Deposit</mat-label>
-                    <mat-label class="float-right">0.00</mat-label>
-                </div>
+                    <mat-label class="float-right">{{avalaiblemaount}}</mat-label>
+                </div>              
                 <div class="mt-1">
                     <mat-label class="font-base">Payable Name</mat-label>
                     <div class="bg-white border-radius-md mt-1">
@@ -57,28 +53,31 @@
                         <button
                             mat-raised-button
                             type="submit" 
-                            class="btn secondary col-white">
-                            Send OTP
+                            class="btn secondary col-white" 
+                            (click)="sendotpclick()" [disabled]="otpsenttomobile">
+                          {{ SendOTP }}
                         </button>
+                        
                     </div>
-                    <div class="w-1/2 mt-1 border-radius-lg h-full bg-white">
+                    
+                    <div class="w-1/2  border-radius-lg h-full bg-white otptextcnt">
                         <maxhealth-question
-                        [question]="questions[9]"
+                        [question]="questions[4]"
                         [form]="refundform"
-                        [questions]="questions[9]"
-                        [index]="9"
+                        [questions]="questions[4]"
+                        [index]="4"
                         ></maxhealth-question>
                     </div>
                 </div>
-                <div class="mt-1">
-                    <mat-label>OTP will be sent to Reg. Mob. No. </mat-label>
+                <div class="mt-1 wt-nowrap">
+                    <mat-label>OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
                 </div>
-                <div class="w-full mt-1">
+                <div class="w-full mt-2">
                         <button
                             mat-raised-button
                             type="submit" 
-                            class="w-full btn bg-btn">
-                            Send OTP to Manager
+                            class="w-full btn bg-btn" (click)="resendotpclick()" [disabled]="!otpresenttomobile">
+                            {{ResendOTP}}
                         </button>
                 </div>
             </div>
@@ -93,7 +92,7 @@
     <!-- button -->
     <div class="flex float-right mb-5">
         <div class="mr-3">
-            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Submit</button>
+            <button mat-raised-button color="primary" type="submit" (click)="saverefunddialog()" class="mt-1 btn">Submit</button>
         </div>
        
         <div class="">
