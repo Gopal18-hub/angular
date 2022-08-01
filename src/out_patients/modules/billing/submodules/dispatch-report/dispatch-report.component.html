@@ -105,13 +105,13 @@
             <!-- Button -->
             <div class="flex h-1/5 float-right align-items-center">
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" [disabled]="exportbtn">Export</button>
+                    <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
                 </div>
                 <div class="mr-4">
                     <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
                 </div>
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" [disabled]="printbtn">Print</button>
+                    <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
                 </div>
                 <div class="">
                     <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
