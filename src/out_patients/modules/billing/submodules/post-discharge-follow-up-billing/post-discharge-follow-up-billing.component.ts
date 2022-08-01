@@ -11,16 +11,16 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   links = [
     {
       title: "Services",
-      path: "billing/services",
+      path: "services",
     },
     {
       title: "Bill",
       path: "bill",
     },
-    {
-      title: "Credit Details",
-      path: "credit-details",
-    },
+    // {
+    //   title: "Credit Details",
+    //   path: "credit-details",
+    // },
   ];
   activeLink = this.links[0];
 
@@ -34,7 +34,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       },
       mobile: {
         type: "number",
-        readonly: true,
+        readonly: false,
       },
       bookingId: {
         type: "string",
