@@ -24,8 +24,6 @@ import { ReportService } from '@shared/services/report.service';
 export class DispatchReportComponent implements OnInit {
 
   public billedlocation: billedLocationModel[] = [];
-  // public dispatchreport: dispatchReportListModel[] = [];
-  // public dispatchreport: dispatchReportListModel[] = [];
   public dispatchreportsave: dispatchReportSaveModel = new dispatchReportSaveModel();
   public obj: objdispatchsave[] = [];
 
@@ -243,7 +241,7 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / ( 1000 * 3600 *24);
-      if(dif_in_days > 3100000000)
+      if(dif_in_days > 310000000)
       {
       this.matdialog.open(MoreThanMonthComponent, {width: "30vw", height:"30vh"});
       }
@@ -347,6 +345,11 @@ getDispatchReport(){
       {
         this.msgdialog.error("You have Not Selected Proper Data");
       }
+      else if(  (e.r_dispatchdate == null || e.r_dispatchdate == undefined) ||
+                (e.receive_date == null || e.receive_date == undefined))
+      {
+        this.msgdialog.error("You have Not Selected Proper Data");
+      }
       else if(e.receive_date == null || e.receive_date == undefined)
       {
         this.dispatchreportsave.objDtSaveReport.push(
@@ -405,6 +408,10 @@ getDispatchReport(){
               this.msgdialog.success("Data Saved Succesully");
               this.getDispatchReport();
             }
+          },
+          error => {
+            console.log(error);
+            this.msgdialog.error("You have Not Selected Proper Data");
           })
         }
       });
