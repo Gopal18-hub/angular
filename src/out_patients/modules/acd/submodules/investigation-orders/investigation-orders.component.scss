@@ -46,6 +46,15 @@
     }
   }
 
+::ng-deep tr.Billed{
+  background-color: #9FF1AC !important;
+}
+::ng-deep tr.Partial{
+  background-color: #F9FCA6 !important;
+}
+::ng-deep tr.Denied{
+  background-color: #FFCAA7 !important;
+}
 
   
 
@@ -64,6 +73,9 @@
 }
 ::ng-deep .dateW{    
   width: 27% !important;
+}
+::ng-deep .btnW{    
+  width: 27.5% !important;
 }
 ::ng-deep .tableh{    
   height: 42% !important;

@@ -33,31 +33,6 @@ export class InvestigationOrdersComponent implements OnInit {
     title: "",
     type: "object",
     properties:{
-      fromdate:{
-        type:"date",
-      },
-      todate:{
-        type:"date",
-      },
-      organisation:{
-        type: "dropdown",                       
-        placeholder: "Select",   
-      },     
-      employeeCode:{
-        type:"BLKH.",
-      },
-      employeeName:{
-        type:"string",
-      },
-      status:{
-        type:"string",
-      },
-      denyorder:{
-        type:"dropdown",
-      },
-      remarks:{
-        type:"string",
-      },
       datecheckbox: {
         type: "checkbox",
         options: [
@@ -66,13 +41,56 @@ export class InvestigationOrdersComponent implements OnInit {
           },
         ],
       },
+      fromdate:{
+        type:"date",
+      },
+      todate:{
+        type:"date",
+      },
+      maxid:{
+        type: "dropdown",                       
+        placeholder: "Select",  
+        options: [
+          {title: "MaxId",value:"maxId"  },
+          {title: "Patient Name",value:"patientName"  },
+          {title: "Doctor Name",value:"doctorName"  },
+          {title: "Mobile Number",value:"mobile"  }
+        ], 
+       
+      },     
+      input:{
+        type:"string",
+        placehokder:"BLKH.",
+      },
+     
+      status:{
+        type:"dropdown",
+        placeholder:"Select",
+        options: [
+          {title: "All",value:"all"  },
+          {title: "Billed",value:"billed"  },
+          {title: "Unbilled",value:"unbilled"  },
+          {title: "Partially billed",value:"partial"  },
+          {title: "Denied",value:"denied"  },
+        ], 
+      },
+      denyorder:{
+        type:"dropdown",
+      },
+      remarks:{
+        type:"string",
+      }
+    
     }
   }
-  config1: any  = {
+  investigationConfig: any  = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['orderid','maxid', 'patientname', 'docname','dept','visitdate','mobile','amnt','channel','billno','status'],
+    displayedColumns: ['orderId','maxid', 'ptnName', 'docName','deptName','visitDate','mobileNo','mrpValue','channel','','paymentMode'],
+    rowLayout:{dynamic:{rowClass:"row['status']"}},
+    clickedRows:true,
+    clickSelection : "single",
     columnsInfo: {
       orderid: {
         title: 'Order Id',
@@ -182,7 +200,7 @@ export class InvestigationOrdersComponent implements OnInit {
         amnt:"1000.00",
         channel:"Cash",
         billno:"" , 
-        status:"Unbilled"
+        status:"Billed"
       },
       { 
         orderid:"7984778",
@@ -195,7 +213,7 @@ export class InvestigationOrdersComponent implements OnInit {
         amnt:"1000.00",
         channel:"Cash",
         billno:"" , 
-        status:"Unbilled"
+        status:"Billed"
       },
       { 
         orderid:"7984778",
@@ -208,7 +226,7 @@ export class InvestigationOrdersComponent implements OnInit {
         amnt:"1000.00",
         channel:"Cash",
         billno:"" , 
-        status:"Unbilled"
+        status:"Partial"
       },
       { 
         orderid:"7984778",
@@ -221,7 +239,7 @@ export class InvestigationOrdersComponent implements OnInit {
         amnt:"1000.00",
         channel:"Cash",
         billno:"" , 
-        status:"Unbilled"
+        status:"Denied"
       }
      
     ]
@@ -298,7 +316,7 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res :any)=>
       {  
         console.log(res,"resACD")
-        this.investigationDetails = res;
+        this.investigationDetails = res.objOrderDetails;
   } )  
 } 
 
