@@ -196,4 +196,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.config.selectBox && this.config.clickedRows) return;
     this.selection.toggle(element);
   }
+
+  rowClass(row: any) {
+    if (
+      this.config.rowLayout &&
+      this.config.rowLayout.dynamic &&
+      this.config.rowLayout.dynamic.rowClass
+    ) {
+      return eval(this.config.rowLayout.dynamic.rowClass);
+    }
+  }
 }
