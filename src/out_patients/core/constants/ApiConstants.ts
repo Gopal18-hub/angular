@@ -545,8 +545,8 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string,
-    operatorid: number
+    iacode: string
+    //    operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
