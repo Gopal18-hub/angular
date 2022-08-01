@@ -59,6 +59,7 @@ import { GstComponent } from "../billing/submodules/miscellaneous-billing/billin
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { PostDischargeFollowUpBillingComponent } from './submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +101,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     ConsumablesComponent,
     BillDetailComponent,
     PartialCredBillComponent,
+    PostDischargeFollowUpBillingComponent
   ],
   imports: [
     BillingRoutingModule,
