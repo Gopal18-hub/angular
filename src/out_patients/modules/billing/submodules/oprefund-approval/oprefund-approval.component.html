@@ -11,14 +11,24 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel>
-        <div class=" h-full p-3">
-           <div class="h-4/5">
-            <ng-container *ngIf="defaultUI">
-                <maxhealth-table
+        <div class=" h-full p-3" >
+           <div class="h-4/5" *ngIf="defaultUI">
+            <ng-container *ngIf="isPendingList"  >
+                <maxhealth-table #oprefundpending
                 [config]="oprefundConfig"
-                [data]="data"
+                [data]="oprefundPendingList"
                 ></maxhealth-table>
             </ng-container>
+            <ng-container *ngIf="isApprovedList"  >
+              <maxhealth-table #oprefundapproved
+              [config]="oprefundConfig"
+              [data]="oprefundApprovedList"
+              ></maxhealth-table>
+          </ng-container>
+            <!-- <div class="h-full" *ngIf="!defaultUI">
+              <empty-placeholder [icon]="oprefundicon" [message]="oprefundmessage">
+              </empty-placeholder> 
+              </div> -->
           </div> 
           <div class="h-1/5 float-right mt-6">
             <button mat-raised-button color="primary"  class="mr-8" (click)="oprefundApprove()">Approve</button>
@@ -26,11 +36,6 @@
           </div>
         </div>  
         
-        <div class="w-full h-full" *ngIf="!defaultUI">
-          <empty-placeholder [icon]="hotlistingicon" [message]="hotlistingmessage">
-         
-          </empty-placeholder>
-           
-                 </div>
+  
     </mat-tab-nav-panel>
 </section>

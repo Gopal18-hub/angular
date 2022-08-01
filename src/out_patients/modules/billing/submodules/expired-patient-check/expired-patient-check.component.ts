@@ -131,13 +131,26 @@ export class ExpiredPatientCheckComponent implements OnInit {
               console.log(this.expiredPatientDetail);
               this.validmaxid = true;
               this.disableClear = false;
-              this.enableSavedeleteControl();
+              this.disableButton = false;
+              //this.enableSavedeleteControl();
               console.log(
                 this.datepipe.transform(
                   this.expiredPatientDetail[0].dateofBirth,
                   "dd/MM/yyyy"
                 )
               );
+              // this.expiredpatientForm.controls["name"].setValue(
+              //   this.expiredPatientDetail[0].flagexpired
+              // );
+              // this.expiredpatientForm.controls["age"].setValue(
+              //   this.expiredPatientDetail[0].flagexpired
+              // );
+              // this.expiredpatientForm.controls["gender"].setValue(
+              //   this.expiredPatientDetail[0].flagexpired
+              // );
+              // this.expiredpatientForm.controls["nationality"].setValue(
+              //   this.expiredPatientDetail[0].flagexpired
+              // );
               this.dob = this.datepipe.transform(
                 this.expiredPatientDetail[0].dateofBirth,
                 "dd/MM/yyyy"
@@ -149,6 +162,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
               this.expiredpatientForm.controls["remarks"].setValue(
                 this.expiredPatientDetail[0].remarks
               );
+              this.expiredpatientForm.controls["checkbox"].setValue(
+                this.expiredPatientDetail[0].flagexpired
+              );
             } else {
               this.validmaxid = false;
               this.disableClear = false;
@@ -159,6 +175,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
               //this.clearValues();
             }
           } else {
+            this.disableButton = true;
             this.expiredpatientForm.controls["maxid"].setErrors({
               incorrect: true,
             });
@@ -180,11 +197,11 @@ export class ExpiredPatientCheckComponent implements OnInit {
 
   saveExpiredpatient() {
     console.log(this.expiredpatientForm.value);
-    this.expiredpatientForm.controls["checkbox"].valueChanges.subscribe(
-      (value) => {
-        console.log(value);
-      }
-    );
+    // this.expiredpatientForm.controls["checkbox"].valueChanges.subscribe(
+    //   (value) => {
+    //     console.log(value);
+    //   }
+    // );
     if (this.expiredpatientForm.value.checkbox == false) {
       this.dialog.open(SaveexpiredpatientDialogComponent, {
         width: "25vw",
@@ -257,35 +274,42 @@ export class ExpiredPatientCheckComponent implements OnInit {
   }
   deleteExpiredpatientResponse!: deleteexpiredResponse;
   deleteExpiredpatient() {
-    let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
-      width: "25vw",
-      height: "30vh",
-    });
+    if (this.expiredpatientForm.value.checkbox == false) {
+      this.dialog.open(SaveexpiredpatientDialogComponent, {
+        width: "25vw",
+        height: "30vh",
+      });
+    } else {
+      let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
+        width: "25vw",
+        height: "30vh",
+      });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log("The dialog was closed");
-      console.log(result);
-      if (result == true) {
-        this.http
-          .post(
-            ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
-            null
-          )
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((data) => {
-            console.log(data);
-            this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
-            this.messagedialogservice.success(
-              this.deleteExpiredpatientResponse.message
-            );
-            this.clearData();
-          });
-      }
-    });
+      dialogRef.afterClosed().subscribe((result) => {
+        console.log("The dialog was closed");
+        console.log(result);
+        if (result == true) {
+          this.http
+            .post(
+              ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
+              null
+            )
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((data) => {
+              console.log(data);
+              this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
+              this.messagedialogservice.success(
+                this.deleteExpiredpatientResponse.message
+              );
+              this.clearData();
+            });
+        }
+      });
+    }
   }
 
   enableSavedeleteControl() {
-    if (this.validmaxid && this.checked) {
+    if (this.validmaxid) {
       this.disableButton = false;
     } else {
       this.disableButton = true;

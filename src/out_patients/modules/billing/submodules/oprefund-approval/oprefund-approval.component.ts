@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { HttpService } from "@shared/services/http.service";
@@ -8,6 +8,7 @@ import { DatePipe } from "@angular/common";
 import { SearchService } from "../../../../../shared/services/search.service";
 import { OprefundPendingInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
 import { OpRefundApprovalListInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
+import { FormControl, FormGroup } from "@angular/forms";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -20,10 +21,18 @@ export class OprefundApprovalComponent implements OnInit {
   today = new Date();
   defaultUI: boolean = false;
   showapprovalspinner: boolean = true;
-  hotlistingmessage: string = "Please search From Date and To Date ";
-  hotlistingicon: string = "placeholder";
-  oprefundPendingList!: OprefundPendingInterface;
+  isPendingList: boolean = false;
+  isApprovedList: boolean = false;
+  oprefundmessage: string = "Please search From Date and To Date ";
+  oprefundicon: string = "placeholder";
+  oprefundPendingList!: OpRefundApprovalListInterface;
   oprefundApprovedList!: OpRefundApprovalListInterface;
+  oprefundapprovalpageForm = new FormGroup({
+    from: new FormControl(""),
+    to: new FormControl(""),
+  });
+  @ViewChild("oprefundpending") OprefundPending: any;
+  @ViewChild("oprefundapproved") OprefundApproved: any;
   link1 = [
     { value: "OP Registration Approval", id: 1 },
     { value: "Hot Listing Approval", id: 2 },
@@ -66,12 +75,12 @@ export class OprefundApprovalComponent implements OnInit {
     displayedColumns: [
       "maxid",
       "ssn",
-      "name",
-      "billno",
-      "billdatetime",
-      "servicename",
-      "itemname",
-      "refundamount",
+      "ptnName",
+      "billNo",
+      "billDatetime",
+      "serviceName",
+      "itemName",
+      "refundAmt",
       "requestedby",
     ],
     columnsInfo: {
@@ -83,27 +92,27 @@ export class OprefundApprovalComponent implements OnInit {
         title: "SSN",
         type: "string",
       },
-      name: {
+      ptnName: {
         title: "Name",
         type: "string",
       },
-      billno: {
+      billNo: {
         title: "Bill No",
         type: "string",
       },
-      billdatetime: {
+      billDatetime: {
         title: "Bill Date/Time",
         type: "string",
       },
-      servicename: {
+      serviceName: {
         title: "Service Name",
         type: "string",
       },
-      itemname: {
+      itemName: {
         title: "Item Name",
         type: "string",
       },
-      refundamount: {
+      refundAmt: {
         title: "Refund Amount",
         type: "string",
       },
@@ -122,6 +131,7 @@ export class OprefundApprovalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    debugger;
     // this.searchService.searchTrigger
     //   .pipe(takeUntil(this._destroying$))
     //   .subscribe((formdata: any) => {
@@ -132,17 +142,26 @@ export class OprefundApprovalComponent implements OnInit {
       .subscribe((formdata: any) => {
         this.searchOpRefundapproval(formdata.data);
       });
+    if (this.from == undefined && this.to == undefined) {
+      this.from = this.datepipe.transform(
+        new Date().setMonth(new Date().getMonth() - 8),
+        "yyyy-MM-dd"
+      );
+      this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+    }
+    this.showmain(this.link1[2]);
   }
 
   searchOpRefundapproval(formdata: any) {
-    this.defaultUI = true;
+    console.log("inside searchopreu=fundapproval method");
+    // this.defaultUI = true;
     this.showapprovalspinner = true;
     this.today = new Date();
     if (formdata["from"] == "" || formdata["to"] == "") {
       this.from =
         formdata["from"] != ""
           ? formdata["from"]
-          : this.today.setDate(this.today.getDate() - 23);
+          : this.today.setDate(this.today.getDate() - 180);
       this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
       this.to = formdata["to"] != "" ? formdata["to"] : new Date();
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
@@ -152,7 +171,7 @@ export class OprefundApprovalComponent implements OnInit {
       this.to = formdata["to"];
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
     }
-    this.showmain(this.link1[0]);
+    this.showmain(this.link1[2]);
   }
 
   showmain(link: any) {
@@ -175,24 +194,35 @@ export class OprefundApprovalComponent implements OnInit {
     if (link.id == 1) {
       this.activeLink2 = link;
       this.http
-        .get(ApiConstants.getpendingoprefundapproval)
+        .get(ApiConstants.getpendingoprefundapproval(this.from, this.to))
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
           if (data != null) {
-            this.oprefundPendingList = data as OprefundPendingInterface;
+            this.oprefundPendingList =
+              data.opRefundApprovalList as OpRefundApprovalListInterface;
+            //this.oprefundApprovedList = {} as OpRefundApprovalListInterface;
+            this.showapprovalspinner = true;
+            this.defaultUI = true;
+            this.isPendingList = true;
+            this.isApprovedList = false;
             console.log(this.oprefundPendingList);
           }
         });
     } else if (link.id == 2) {
       this.activeLink2 = link;
       this.http
-        .get(ApiConstants.getapprovedoprefundapproval)
+        .get(ApiConstants.getapprovedoprefundapproval(this.from, this.to))
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
           if (data != null) {
             this.oprefundApprovedList = data as OpRefundApprovalListInterface;
+            // this.oprefundPendingList = [];
+            this.showapprovalspinner = true;
+            this.defaultUI = true;
+            this.isApprovedList = true;
+            this.isPendingList = false;
             console.log(this.oprefundApprovedList);
           }
         });

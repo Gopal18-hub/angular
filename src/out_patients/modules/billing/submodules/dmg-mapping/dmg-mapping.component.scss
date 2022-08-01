@@ -84,8 +84,16 @@
     }
 }
 
-.checkbox-mr{
-    ::ng-deep mat-pseudo-checkbox{
-        margin-right:100%
+.overflow-y-scroll{
+    overflow-y: scroll;
+    ::ng-deep ::-webkit-scrollbar-thumb {
+        background-color: #35b6b4;
+        border-radius: 0 0 4px 0;
     }
 }
+.font-wrapper{
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+

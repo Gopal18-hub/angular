@@ -4,6 +4,7 @@ import { PatientDetails } from "../models/patientDetailsModel.Model";
 import { PatientSearchModel } from "../models/patientSearchModel";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { MatDialog } from "@angular/material/dialog";
+import { dmgMappingDataDTInterface } from "../types/dmgMapping/patientDetailsDmg.Interface";
 
 @Injectable({
   providedIn: "root",
@@ -297,7 +298,12 @@ export class PatientService {
     return patientSearchModel as typeof model;
   }
 
-  getCategoryIcons(patient: PatientSearchModel | getmergepatientsearch) {
+  getCategoryIcons(
+    patient:
+      | PatientSearchModel
+      | getmergepatientsearch
+      | dmgMappingDataDTInterface
+  ) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
       if (
@@ -321,7 +327,13 @@ export class PatientService {
         returnIcons.push(tempPager);
       } else if (
         this.categoryIcons[e] &&
-        patient[e as keyof (PatientSearchModel | getmergepatientsearch)]
+        patient[
+          e as keyof (
+            | PatientSearchModel
+            | getmergepatientsearch
+            | dmgMappingDataDTInterface
+          )
+        ]
       ) {
         let temp: any = {
           src: "assets/patient-categories/" + this.categoryIcons[e],
@@ -337,6 +349,7 @@ export class PatientService {
                   | PatientSearchModel
                   | getmergepatientsearch
                   | PatientDetails
+                  | dmgMappingDataDTInterface
                 )
               ];
           }

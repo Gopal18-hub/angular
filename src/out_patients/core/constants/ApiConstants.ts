@@ -550,7 +550,12 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+      "api/patient/deleteexpiredpatientsdetails/" +
+      registrationno +
+      "/" +
+      iacode +
+      "/" +
+      3456
     );
   };
 
@@ -679,10 +684,27 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 
   //OP REFUND APPROVAL
-  export const getpendingoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
-  export const getapprovedoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
+  export const getpendingoprefundapproval = (fromdate: any, todate: any) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallpendingoprefundapprovalrequest/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      7
+    );
+  };
+
+  export const getapprovedoprefundapproval = (fromdate: any, todate: any) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallapprovedoprefundapprovalrequest/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      7
+    );
+  };
 }

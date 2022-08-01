@@ -13,6 +13,7 @@ import { SaveDmgpatientModel } from "../../../../core/models/savedmgpatient.Mode
 import { PatientDetailsDmgInterface } from "../../../../../out_patients/core/types/dmgMapping/patientDetailsDmg.Interface";
 import { PatientService } from "@core/services/patient.service";
 import { DatePipe } from "@angular/common";
+
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -96,7 +97,7 @@ export class DmgMappingComponent implements OnInit {
 
   dmgMappingForm!: FormGroup;
   questions: any;
-  //disablebutton: boolean = true;
+  disablebutton: boolean = true;
   disableClear: boolean = true;
   constructor(
     private formService: QuestionControlService,
@@ -130,6 +131,7 @@ export class DmgMappingComponent implements OnInit {
   isdmgselected!: number;
   docId!: number;
   checkboxList: any = [];
+  diseasegroupnamelist: any = [];
   onMaxidEnter() {
     let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
     let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
@@ -148,6 +150,9 @@ export class DmgMappingComponent implements OnInit {
         console.log(data);
         if (data != null) {
           this.showCheckboxgrid = true;
+          this.disablebutton = false;
+          this.disableClear = false;
+          this.clearPatientdata();
           this.dmgPatientDetails = data as PatientDetailsDmgInterface;
           console.log(this.dmgPatientDetails);
           this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
@@ -155,13 +160,12 @@ export class DmgMappingComponent implements OnInit {
               this.isdmgselected = index;
               this.docId = this.dmgPatientDetails.dmgMappingDataDT[index].docId;
               console.log(this.docId);
-              //  this.selected = index;
-              this.dmgPatientDetails.dmgMappingDataDT[index].isDmgChecked =
-                index;
-              console.log(
-                this.dmgPatientDetails.dmgMappingDataDT[index].isDmgChecked
-              );
-              // console.log(this.selected);
+
+              this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
+                this.dmgPatientDetails.dmgMappingDataDT[index].docName =
+                  item.docName.split(".")[1];
+              });
+              console.log(this.diseasegroupnamelist);
             } else {
               this.isdmgselected = -1;
             }
@@ -176,9 +180,15 @@ export class DmgMappingComponent implements OnInit {
             this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
             "dd/MM/yyyy"
           );
+          this.categoryIcons = this.patientService.getCategoryIcons(
+            this.dmgPatientDetails.dmgPatientDetailDT[0]
+          );
+          console.log(this.categoryIcons);
 
           // Assign checkbox grid here
         } else {
+          this.disablebutton = true;
+          this.disableClear = true;
           this.dmgMappingForm.controls["maxid"].setErrors({
             incorrect: true,
           });
@@ -244,5 +254,24 @@ export class DmgMappingComponent implements OnInit {
       this.docId = value;
     }
     console.log(this.docId);
+  }
+
+  clearPatientdata() {
+    this.ssn = "";
+    this.name = "";
+    this.age = "";
+    this.gender = "";
+    this.nationality = "";
+    this.dob = "";
+    this.categoryIcons = [];
+  }
+  clearData() {
+    this.clearPatientdata();
+    this.disablebutton = true;
+    this.disableClear = true;
+    this.showCheckboxgrid = false;
+    this.dmgMappingForm.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
   }
 }
