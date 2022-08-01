@@ -311,13 +311,13 @@ export class InvestigationOrdersComponent implements OnInit {
 
   search()
   {
-    this.http.get(ApiConstants.geteprescriptdrugorders("2020-01-01","2020-04-04",7,0))    
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res :any)=>
-      {  
-        console.log(res,"resACD")
-        this.investigationDetails = res;
-  } )  
+  //   this.http.get(ApiConstants.geteprescriptdrugorders("2020-01-01","2020-04-04",7,0))    
+  //     .pipe(takeUntil(this._destroying$))
+  //     .subscribe((res :any)=>
+  //     {  
+  //       console.log(res,"resACD")
+  //       this.investigationDetails = res;
+  // } )  
 } 
 
 }

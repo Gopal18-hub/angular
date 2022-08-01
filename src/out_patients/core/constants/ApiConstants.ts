@@ -545,8 +545,8 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string,
-    operatorid: number
+    iacode: string
+    //    operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -649,52 +649,40 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
-  // ACD 
-  export const getediganosticacd = (
-    FromDate: any,
-    ToDate: any,
-    status:number,
-    orderid:number,
-    regno:number,
-    iacode:string,
-    Locationid: number
+
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
   ) => {
     return (
-      environment.PatientApiUrl +
-      "api/patient/getediganosticacd/"+FromDate+"/"+ToDate+"/"+status+"/"+orderid+"/"+regno+"/"+iacode+"?Locationid="+Locationid
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo
     );
   };
-  export const geteprescriptdrugorders = (
-    FromDate: any,
-    ToDate: any,
-    LocationID: number,
-    Status : number
-  ) => {
+
+  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/geteprescriptdrugorders/"+FromDate+"/"+ToDate+"/"+LocationID+"/"+Status
+      "api/patient/getpatientpersonaldetailsdmg/" +
+      regno +
+      "/" +
+      iacode +
+      "/" +
+      7
     );
   };
-  export const getphysicianorderdetailep = (
-    registrationNo: any,
-    aiCode: string,
-    locid: number,
-    orderid : number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getphysicianorderdetailep/"+registrationNo+"/"+aiCode+"/"+locid+"/"+orderid
-    );
-  };
-  //Modify ACD order with Remarks 
-  export const modifyphysicianorderdetail = (
-    token: string,
-    Userid: number
-   
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/modifyphysicianorderdetail/?token="+token+"?Userid="+Userid
-    );
-  };
+
+  export const savepatientdmg =
+    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
+
+  //OP REFUND APPROVAL
+  export const getpendingoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
+  export const getapprovedoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
 }
