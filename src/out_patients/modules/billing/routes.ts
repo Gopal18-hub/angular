@@ -20,7 +20,7 @@ import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-d
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
 import { BillDetailComponent } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
-import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
+import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 
 const routes: Routes = [
   {

@@ -17,6 +17,8 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSelectModule } from "@angular/material/select";
 import { PortalModule } from "@angular/cdk/portal";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
@@ -57,9 +59,9 @@ import { ConsumablesComponent } from "./submodules/billing/submodules/services/s
 import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
-import { PartialCredBillComponent } from "./submodules/details/part-cred-bill-settlement/part-cred-bill-settlement.component";
+import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-
+import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -114,6 +116,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     DynamicFormsModule,
     MatTabsModule,
     MatRadioModule,
+    MatCheckboxModule,
+    MatSelectModule,
     BrowserModule,
     CommonModule,
     MatListModule,
@@ -123,6 +127,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     sharedbillingModule,
     PortalModule,
     MatProgressSpinnerModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [],
