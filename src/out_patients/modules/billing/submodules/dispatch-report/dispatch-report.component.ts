@@ -15,6 +15,7 @@ import { takeUntil } from "rxjs/operators";
 import { Subject, Observable } from "rxjs";
 import { DatePipe } from '@angular/common';
 import { CookieService } from '@shared/services/cookie.service';
+import { ReportService } from '@shared/services/report.service';
 @Component({
   selector: 'out-patients-dispatch-report',
   templateUrl: './dispatch-report.component.html',
@@ -178,7 +179,8 @@ export class DispatchReportComponent implements OnInit {
     private matdialog: MatDialog, 
     private http: HttpService, 
     private datepipe: DatePipe,
-    private cookie:CookieService) 
+    private cookie:CookieService,
+    private reportService: ReportService) 
   {
 
   }
@@ -241,7 +243,7 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / ( 1000 * 3600 *24);
-      if(dif_in_days > 31)
+      if(dif_in_days > 3100000000)
       {
       this.matdialog.open(MoreThanMonthComponent, {width: "30vw", height:"30vh"});
       }
@@ -407,5 +409,22 @@ getDispatchReport(){
         }
       });
     }
+  }
+
+  export()
+  {
+    this.tableRows.exportAsExcel();
+  }
+  print()
+  {
+    this.openReportModal('DispatchReport');
+  }
+  openReportModal(btnname: string) {
+    this.reportService.openWindow(btnname, btnname, {
+      fromdate: this.dispatchhistoryform.controls["fromdate"].value,
+      todate: this.dispatchhistoryform.controls["todate"].value,
+      locationid: this.dispatchhistoryform.controls["billedlocation"].value,
+      RepType: this.dispatchhistoryform.controls["radio"].value,
+    });
   }
 }
