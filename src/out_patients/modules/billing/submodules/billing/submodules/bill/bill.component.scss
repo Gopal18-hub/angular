@@ -2,17 +2,45 @@
   .w-12 {
     width: 12%;
   }
+  .w-86 {
+    width: 87.25%;
+  }
+  .w-26 {
+    width: 26%;
+  }
+  .h-30vh {
+    height: 30vh;
+  }
+  .h-22vh {
+    height: 22vh;
+  }
+  .w-44 {
+    width: 44%;
+  }
   .bg-blue {
     background-color: #bfe8e7;
+  }
+  .print-button {
+    background-color: #5a5a5a;
   }
   .bg-deposit {
     background-color: #f6f6f6;
   }
   ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
+      }
+      button {
+        height: 26px;
+        line-height: 26px;
+      }
+    }
     mat-radio-group {
       flex-direction: row;
+      width: 100%;
       mat-radio-button {
-        margin-right: 1.5rem;
+        margin-right: 1.2rem;
       }
     }
   }

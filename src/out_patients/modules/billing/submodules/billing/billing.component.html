@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto op-billing-wrapper">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper op-billing-wrapper">
   <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
     <ul class="list-unstyled flex items-end">
       <li class="ml-3">
@@ -28,7 +28,7 @@
           autocomplete="off"
           class="w-full flex align-items-center"
         >
-          <mat-label class="max-health-primary-color mr-2">Max ID</mat-label>
+          <mat-label class="max-health-primary-color mr-1">Max ID</mat-label>
           <div class="w-1/10 bg-white mr-2">
             <maxhealth-question
               [question]="questions[0]"
@@ -38,7 +38,7 @@
             >
             </maxhealth-question>
           </div>
-          <mat-label class="max-health-primary-color mr-2"
+          <mat-label class="max-health-primary-color mr-1"
             >Mobile No.</mat-label
           >
           <div class="bg-white w-1/10 mr-2">
@@ -50,10 +50,10 @@
             >
             </maxhealth-question>
           </div>
-          <mat-label class="max-health-primary-color mr-2"
+          <mat-label class="max-health-primary-color mr-1"
             >Booking ID</mat-label
           >
-          <div class="w-1/10 bg-white mr-2">
+          <div class="width-8 bg-white mr-2">
             <maxhealth-question
               [question]="questions[2]"
               [form]="formGroup"
@@ -62,10 +62,10 @@
             >
             </maxhealth-question>
           </div>
-          <mat-label class="max-health-primary-color mr-2"
+          <mat-label class="max-health-primary-color mr-1"
             >Company <i>IOM</i></mat-label
           >
-          <div class="w-1/10 bg-white mr-2">
+          <div class="width-8 bg-white mr-2">
             <maxhealth-question
               [question]="questions[3]"
               [form]="formGroup"
@@ -74,8 +74,8 @@
             >
             </maxhealth-question>
           </div>
-          <mat-label class="max-health-primary-color mr-2">Corporate</mat-label>
-          <div class="w-1/10 bg-white mr-2">
+          <mat-label class="max-health-primary-color mr-1">Corporate</mat-label>
+          <div class="width-8 bg-white mr-2">
             <maxhealth-question
               [question]="questions[4]"
               [form]="formGroup"
@@ -85,8 +85,8 @@
             </maxhealth-question>
           </div>
 
-          <mat-label class="max-health-primary-color mr-2">Narration</mat-label>
-          <div class="w-1/10 bg-white mr-2">
+          <mat-label class="max-health-primary-color mr-1">Narration</mat-label>
+          <div class="width-8 bg-white mr-2">
             <maxhealth-question
               [question]="questions[5]"
               [form]="formGroup"
@@ -96,7 +96,7 @@
             </maxhealth-question>
           </div>
 
-          <div>
+          <div class="ml-2">
             <maxhealth-question
               [question]="questions[6]"
               [form]="formGroup"
@@ -108,6 +108,13 @@
         </form>
       </div>
 
+      <div
+        *ngIf="apiProcessing"
+        class="flex align-items-center justify-center h-full"
+      >
+        <mat-spinner strokeWidth="3"></mat-spinner>
+      </div>
+
       <!-- Second Row -->
       <div
         class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
@@ -115,38 +122,38 @@
       >
         <div class="flex w-3/4 align-items-center">
           <div class="w-1/4">
-            <mat-label class="max-health-primary-color font-bold"
-              >Name:</mat-label
+            <mat-label class="max-health-primary-color"
+              >Name: <strong>{{ patientName }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
           <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Age:</mat-label
+            <mat-label class="max-health-primary-color"
+              >Age: <strong>{{ age }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
           <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Gender:</mat-label
+            <mat-label class="max-health-primary-color"
+              >Gender: <strong>{{ gender }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
           <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >DOB:</mat-label
+            <mat-label class="max-health-primary-color"
+              >DOB: <strong>{{ dob }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
           <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >Nationality:</mat-label
+            <mat-label class="max-health-primary-color"
+              >Nationality: <strong>{{ country }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
           <div class="w-1/6">
-            <mat-label class="max-health-primary-color font-bold"
-              >SSN:</mat-label
+            <mat-label class="max-health-primary-color"
+              >SSN: <strong>{{ ssn }}</strong></mat-label
             >
             <span class="ml-2"></span>
           </div>
@@ -157,6 +164,7 @@
             color="primary"
             class="font-sm"
             type="button"
+            (click)="appointmentSearch()"
           >
             Appointment Search
           </button>

@@ -10,6 +10,7 @@ import { getpatienthistorytransactiontypeModel } from '@core/models/getpatienthi
 import { getRegisteredPatientDetailsModel } from '@core/models/getRegisteredPatientDetailsModel.Model';
 import { getPatientHistoryModel } from '@core/models/getPatientHistoryModel.Model';
 import { Subject, takeUntil } from 'rxjs';
+import { ReportService } from '@shared/services/report.service';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -20,6 +21,7 @@ export class PatientHistoryComponent implements OnInit {
   public patientDetails: getRegisteredPatientDetailsModel[] = [];
   public transactiontype: getpatienthistorytransactiontypeModel[] = [];
   public patienthistorylist: getPatientHistoryModel[] = [];
+  
   patienthistoryFormData = {
     title: "",
     type: "object",
@@ -50,112 +52,112 @@ export class PatientHistoryComponent implements OnInit {
   questions: any;
 
   config: any = {
-    clickedRows: true,
+    clickedRows: false,
     // clickSelection: "single",
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: true,
+    selectBox: false,
     displayedColumns: [
-      "billno",
-      "type",
-      "billdate",
-      "ipno",
-      "admdischargedate",
-      "billamt",
-      "discountamt",
-      "receiptamt",
-      "refundamt",
-      "balanceamt",
-      "company",
-      "operatorname",
+      "billNo",
+      "billType",
+      "billDate",
+      "ipNo",
+      "admDateTime",
+      "billAmount",
+      "discountAmount",
+      "receiptAmt",
+      "refundAmount",
+      "balanceAmt",
+      "companyName",
+      "operatorName",
       "printIcon",
     ],
     columnsInfo: {
-      billno: {
+      billNo: {
         title: "Bill.No",
         type: "string",
-        tooltipColumn: "billno",
+        tooltipColumn: "billNo",
         style: {
-          width: '5rem'
+          width: '7rem'
         }
       },
-      type: {
+      billType: {
         title: "Type",
         type: "string",
-        tooltipColumn: "type",
+        tooltipColumn: "billType",
         style: {
           width: '6rem'
         }
       },
-      billdate: {
+      billDate: {
         title: "Bill Date",
-        type: "date",
-        tooltipColumn: "billdate",
+        type: "string",
+        tooltipColumn: "billDate",
         style: {
           width: '5rem'
         }
       },
-      ipno: {
+      ipNo: {
         title: "IP No.",
         type: "number",
         style: {
           width: '4rem'
         }
       },
-      admdischargedate: {
+      admDateTime: {
         title: "Adm/Discharge Date",
         type: "date",
         style: {
           width: '10rem'
         }
       },
-      billamt: {
+      billAmount: {
         title: "Bill Amt",
         type: "number",
         style: {
           width: '4rem'
         }
       },
-      discountamt: {
+      discountAmount: {
         title: "Discount Amt",
         type: "number",
         style: {
           width: '7rem'
         }
       },
-      receiptamt: {
+      receiptAmt: {
         title: "Receipt Amt",
         type: "number",
         style: {
           width: '6rem'
         }
       },
-      refundamt: {
+      refundAmount: {
         title: "Refund Amt",
         type: "number",
         style: {
           width: '6rem'
         }
       },
-      balanceamt: {
+      balanceAmt: {
         title: "Balance Amt",
         type: "number",
         style: {
           width: '6.5rem'
         }
       },
-      company: {
+      companyName: {
         title: "Company",
         type: "string",
-        tooltipColumn: "company",
+        tooltipColumn: "companyName",
         style: {
           width: '5rem'
         }
       },
-      operatorname: {
+      operatorName: {
         title: "Operator Name",
         type: "string",
-        tooltipColumn: "operatorname"
+        tooltipColumn: "operatorName"
       },
       printIcon: {
         title: "Print History",
@@ -200,7 +202,6 @@ export class PatientHistoryComponent implements OnInit {
       refundamt: '0.0', balanceamt: '10000.00', company: 'DGEHS-NABH (BLK)', operatorname: 'Sanjeev Singh (EMP001)', printhistory: ''
     }
   ]
-
   pname:any;
   age:any;
   gender:any;
@@ -208,9 +209,9 @@ export class PatientHistoryComponent implements OnInit {
   nationality:any;
   ssn:any;
 
-  printbtn: boolean = true;
-  searchbtn: boolean = true;
+  billno: any;
 
+  searchbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
   @ViewChild("table") tableRows: any;
@@ -220,7 +221,8 @@ export class PatientHistoryComponent implements OnInit {
     private msgdialog: MessageDialogService, 
     private http: HttpService, 
     private datepipe: DatePipe,
-    private cookie: CookieService) { }
+    private cookie: CookieService,
+    private reportService:ReportService) { }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -236,7 +238,6 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.gettransactiontype();
-    console.log(this.data);
   }
   ngAfterViewInit(): void{
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -246,20 +247,7 @@ export class PatientHistoryComponent implements OnInit {
       }
     });
   }
-  ngDoCheck()
-  {
-    if(this.patienthistorylist.length > 0)
-    {
-      if(this.tableRows.selection.selected.length > 0)
-      {
-        this.printbtn = false;
-      }
-      else
-      {
-        this.printbtn = true;
-      }
-    }
-  }
+
   gettransactiontype()
   {
     this.http.get(ApiConstants.gettransactiontype)
@@ -324,21 +312,22 @@ export class PatientHistoryComponent implements OnInit {
           iacode,
           regnumber,
           this.hsplocationId,
-          this.StationId
+          this.StationId,
+          this.patienthistoryform.value.transactiontype
         ))
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultdata:any)=>{
           console.log(resultdata);
-          if(resultdata.length == 0)
+          if(resultdata.length > 0)
           {
-            console.log("empty");
-            this.patienthistorylist = this.data;
-            this.patienthistorylist = this.setimage(this.patienthistorylist); 
+            console.log('data');
+            this.patienthistorylist = resultdata;
+            this.patienthistorylist = this.setimage(this.patienthistorylist);
+            console.log(this.patienthistorylist);
           }
           else{
-            this.patienthistorylist = this.data;
-            this.printbtn = false;
-            // this.patienthistorylist = resultdata;
+            console.log("empty");
+            this.patienthistorylist = [];
           }
         },
         (error)=>{
@@ -349,14 +338,7 @@ export class PatientHistoryComponent implements OnInit {
     }
     
   }
-  printdialog()
-  {  
-    console.log(this.tableRows.selection.selected);  
-    if(this.tableRows.selection.selected.length > 0)
-    {
-      this.msgdialog.success("Printing Successfull");
-    }
-  }
+
   clear()
   {
     this.patienthistoryform.reset();
@@ -375,7 +357,6 @@ export class PatientHistoryComponent implements OnInit {
     this.questions[0].readonly = false;
     this.patienthistoryform.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.patientDetails = [];
-    this.printbtn = true;
     this.searchbtn = true;
     this.patienthistorylist = [];
   }
@@ -383,11 +364,30 @@ export class PatientHistoryComponent implements OnInit {
 
   printrow(event:any){
     console.log(event);
-    console.log(this.tableRows.selection.selected.length);
-    if(event.column == "printIcon" || this.tableRows.selection.selected.length > 0){
-      console.log(event.row.billno);
-      this.msgdialog.success("Printing Successfull");
+    if(event.column == "printIcon"){
+      console.log(event.row.billType);
+      this.billno = event.row.billNo;
+      if(event.row.billType == 'Deposit')
+      {
+        this.openReportModal('depositReport');
+      }
+      else if(event.row.billType == 'Deposit')
+      {
+        this.openReportModal('rptRefund');
+      }
+      else if(event.row.billType == 'OPD')
+      {
+        this.openReportModal('billingreport');
+      } 
+      // this.msgdialog.success("Printing Successfull");
     }
+  }
+
+  openReportModal(btnname: string) {
+    this.reportService.openWindow(btnname, btnname, {
+      receiptnumber: this.billno,
+      locationID: this.hsplocationId
+    });
   }
 
   setimage(patienthsitory: getPatientHistoryModel[],

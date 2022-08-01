@@ -133,6 +133,14 @@ export namespace ApiConstants {
     );
   };
 
+  export const getlocalityByName = (localityName: string) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonsearch/" +
+      `${localityName}`
+    );
+  };
+
   /* ----------------------------------------------------------------------------------------------------------
     ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
     ----------------------------------------------------------------------------------------------------------*/
@@ -391,7 +399,8 @@ export namespace ApiConstants {
     IACode: string,
     RegistrationNo: number,
     HSPLocationId: number,
-    StationId: number
+    StationId: number,
+    TransactionType: string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -406,7 +415,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId
+      StationId +
+      "/" +
+      TransactionType
     );
   };
 
@@ -554,18 +565,18 @@ export namespace ApiConstants {
   };
 
   export const getstaffdependentdetails = (
-    EmployeeCode: string,
-    EmployeeName: string,
-    SrcType: number
+    SrcType: number,
+    EmployeeCode?: string,
+    EmployeeName?: string
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getstaffdependentdetails/" +
+      SrcType +
+      "?EmployeeCode=" +
       EmployeeCode +
-      "/" +
-      EmployeeName +
-      "/" +
-      SrcType
+      "&EmployeeName=" +
+      EmployeeName
     );
   };
 
