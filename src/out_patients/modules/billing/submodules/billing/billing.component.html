@@ -173,8 +173,10 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            (click)="dms()"
+            [disabled]="dmsProcessing"
           >
-            DMS
+            {{ dmsProcessing ? "..." : "DMS" }}
           </button>
           <button
             mat-raised-button
@@ -189,6 +191,7 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            (click)="clear()"
           >
             Clear
           </button>
