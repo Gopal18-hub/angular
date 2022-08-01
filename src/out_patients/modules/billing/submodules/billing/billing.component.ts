@@ -10,7 +10,7 @@ import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { ActivatedRoute } from "@angular/router";
-
+import { AppointmentSearchDialogComponent } from "../../../registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -198,4 +198,11 @@ export class BillingComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
+
+  appointmentSearch() {
+    this.matDialog.open(AppointmentSearchDialogComponent, {
+      maxWidth: "100vw",
+      width: "95vw",
+    });
+  }
 }
