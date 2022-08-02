@@ -8,6 +8,7 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 
+
 @Component({
   selector: 'out-patients-investigation-orders',
   templateUrl: './investigation-orders.component.html',
@@ -35,11 +36,7 @@ export class InvestigationOrdersComponent implements OnInit {
     properties:{
       datecheckbox: {
         type: "checkbox",
-        options: [
-          {
-            title: "",
-          },
-        ],
+        options:[{title:"",value:""}]
       },
       fromdate:{
         type:"date",
@@ -55,8 +52,7 @@ export class InvestigationOrdersComponent implements OnInit {
           {title: "Patient Name",value:"patientName"  },
           {title: "Doctor Name",value:"doctorName"  },
           {title: "Mobile Number",value:"mobile"  }
-        ], 
-       
+        ],       
       },     
       input:{
         type:"string",
@@ -76,6 +72,17 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       denyorder:{
         type:"dropdown",
+        placeholder:"Select",
+        options: [
+          {title: "Others",value:"others"  },
+          {title: "Price Issue",value:"price"  },
+          {title: "PSU Patient",value:"psu"  },
+          {title: "After Medication",value:"aftermed"  },
+          {title: "Before next review",value:"befreview"  },
+          {title: "Show Future Date",value:"future"  },
+          {title: "At the time of admission",value:"timeofadmission"  },
+          {title: "Machine not functional",value:"machine"  },
+        ], 
       },
       remarks:{
         type:"string",
@@ -87,12 +94,12 @@ export class InvestigationOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['orderid','maxid', 'patientname', 'docname','dept','visitdate','mobile','amnt','channel','billno','status'],
+    displayedColumns: ['orderId','maxid', 'ptnName', 'docName','deptName','visitDate','mobileNo','amnt','channel','billNo','status'],
     rowLayout:{dynamic:{rowClass:"row['status']"}},
     clickedRows:true,
     clickSelection : "single",
     columnsInfo: {
-      orderid: {
+      orderId: {
         title: 'Order Id',
         type: 'string'
       },
@@ -100,23 +107,23 @@ export class InvestigationOrdersComponent implements OnInit {
         title: 'Max Id',
         type: 'string'
       },
-      patientname : {
+      ptnName : {
         title: 'Patient Name',
         type: 'string'
       },     
-      docname : {
+      docName : {
         title: 'Doctor Name',
         type: 'string'
       },     
-      dept : {
+      deptName : {
         title: 'Department',
         type: 'string'
       },
-      visitdate : {
+      visitDate : {
         title: 'Visit Date',
         type: 'date'
       },
-      mobile : {
+      mobileNo : {
         title: 'Mobile No.',
         type: 'string'
       },
@@ -128,7 +135,7 @@ export class InvestigationOrdersComponent implements OnInit {
         title: 'Channel',
         type: 'string'
       },
-      billno : {
+      billNo : {
         title: 'Bill No.',
         type: 'string'
       },
@@ -311,13 +318,33 @@ export class InvestigationOrdersComponent implements OnInit {
 
   search()
   {
-  //   this.http.get(ApiConstants.geteprescriptdrugorders("2020-01-01","2020-04-04",7,0))    
+    //Deny order lists
+    this.http.get(ApiConstants.getediganosticacd("2020-12-11","2020-12-11",0,0,799041,"SKDD",7)) 
+    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res :any)=>
+      {  
+        console.log(res,"getediganosticacd")
+        this.investigationDetails = res.objACDDenialReasons;
+  } )  
+      //Main Grid
+  //     this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11","2020-12-11",7,0)) 
+  //   //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
   //     .pipe(takeUntil(this._destroying$))
   //     .subscribe((res :any)=>
   //     {  
-  //       console.log(res,"resACD")
-  //       this.investigationDetails = res;
-  // } )  
+  //       console.log(res,"geteprescriptdrugorders")
+        
+  // } ) 
+  //
+//   this.http.get(ApiConstants.getphysicianorderdetailep(123123,"SKDD",7,0)) 
+//   //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+//     .pipe(takeUntil(this._destroying$))
+//     .subscribe((res :any)=>
+//     {  
+//       console.log(res,"GetPhysicianOrderDetailEP")
+      
+// } )   
 } 
 
 }
