@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
+import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { PatientDetail } from "@core/types/patientDetailModel.Interface";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
@@ -29,6 +30,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
+
   linkList = [
     {
       title: "Bill",
@@ -41,6 +43,8 @@ export class MiscellaneousBillingComponent implements OnInit {
   ];
   activeLink = this.linkList[0];
 
+  complanyList!: GetCompanyDataInterface[];
+  coorporateList: { id: number; name: string }[] = [] as any;
   miscFormData = {
     type: "object",
     title: "",
@@ -54,16 +58,16 @@ export class MiscellaneousBillingComponent implements OnInit {
         type: "tel",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
-      bookingId: {
-        type: "string",
-        // title: "SSN",
-      },
+      //
+
       company: {
         type: "autocomplete",
+        options: this.complanyList,
         // title: "SSN",
       },
       corporate: {
         type: "autocomplete",
+        options: this.coorporateList,
         // title: "SSN",
       },
       narration: {
@@ -117,6 +121,8 @@ export class MiscellaneousBillingComponent implements OnInit {
         this.getPatientDetailsByMaxId();
       }
     });
+    this.getAllCompany();
+    this.getAllCorporate();
   }
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
@@ -183,14 +189,40 @@ export class MiscellaneousBillingComponent implements OnInit {
   //SETTING THE VALUES TO PATIENT DETAIL
   setValuesToMiscForm(pDetails: Registrationdetails) {
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    this.miscForm.controls["mobileNo"].setValue(patientDetails.pphone);
+    this.miscForm.controls["mobileNo"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + patientDetails.ageTypeName;
-    this.gender = patientDetails.sexName;
+    this.gender = patientDetails.genderName;
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd/MM/yyyy");
+  }
+
+  getAllCompany() {
+    this.http
+      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.complanyList = data as GetCompanyDataInterface[];
+        this.questions[2].options = this.complanyList.map((a) => {
+          return { title: a.name, value: a.id };
+        });
+      });
+  }
+
+  getAllCorporate() {
+    this.http
+      .get(ApiConstants.getCorporate)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: { id: number; name: string }[]) => {
+        this.coorporateList = resultData;
+        // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
+        this.questions[3].options = this.coorporateList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
   }
 }

@@ -18,6 +18,7 @@ import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { CdkTextareaAutosize } from "@angular/cdk/text-field";
 import { take } from "rxjs/operators";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: "maxhealth-table",
@@ -205,5 +206,37 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       return eval(this.config.rowLayout.dynamic.rowClass);
     }
+  }
+
+  exportAsExcel() {
+    const excelName = this.config.tableName
+      ? this.config.tableName + ".xlsx"
+      : "filename.xlsx";
+    const headers: any = [];
+    const tempColumns: any = [];
+    const data: any = [];
+    this.displayedColumns.forEach((col) => {
+      if (col != "select" && col != "actionItems") {
+        headers.push(this.displayColumnsInfo[col].title);
+        tempColumns.push(col);
+      }
+    });
+    this.dataSource.data.forEach((item: any) => {
+      const temp: any = {};
+      tempColumns.forEach((col: any) => {
+        temp[col] = item[col];
+      });
+      data.push(temp);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, [headers]);
+    const workSheet = XLSX.utils.sheet_add_json(ws, data, {
+      origin: "A2",
+      skipHeader: true,
+      header: tempColumns,
+    });
+    XLSX.utils.book_append_sheet(wb, ws, "Result");
+    XLSX.writeFile(wb, excelName);
   }
 }

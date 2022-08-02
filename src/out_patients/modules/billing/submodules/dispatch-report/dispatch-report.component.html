@@ -71,42 +71,47 @@
                 
             </div>
             <!-- Table -->
-            <div class="mt-1 h-68" *ngIf="show">
-                <div class="ml-1">
+            <div class="mt-1 h-68">
+                <div class="ml-1" *ngIf="show">
                     <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
+                </div>
+                <div class="ml-1" *ngIf="pendingreport">
+                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
+                </div>
+                <ng-container *ngIf="reporttable">
+                    <div class="h-full mt-1 table">
+                        <maxhealth-table
+                        [config]="config"
+                        [data]="dispatchreport.dispatchlist"
+                        #showtable
+                        ></maxhealth-table>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- <div class="mt-1 h-68" *ngIf="pendingreport">
+                <div class="ml-1">
+                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
                 </div>
                 <div class="h-full mt-1 table">
                     <maxhealth-table
                     [config]="config"
-                    [data]="dispatchreport?.dispatchlist"
-                    #showtable
-                    ></maxhealth-table>
-                </div>
-            </div>
-
-            <div class="mt-1 h-68" *ngIf="pendingreport">
-                <div class="ml-1">
-                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
-                </div>
-                <div class="h-full mt-1">
-                    <maxhealth-table
-                    [config]="config"
-                    [data]="dispatchreport?.dispatchlist"
+                    [data]="dispatchreportpending.dispatchlist"
                     #pendingtable
                     ></maxhealth-table>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Button -->
             <div class="flex h-1/5 float-right align-items-center">
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" [disabled]="exportbtn">Export</button>
+                    <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
                 </div>
                 <div class="mr-4">
                     <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
                 </div>
                 <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" [disabled]="printbtn">Print</button>
+                    <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
                 </div>
                 <div class="">
                     <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>

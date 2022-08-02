@@ -32,4 +32,11 @@ export class CompanydialogComponent implements OnInit {
     this.companyiomForm = formResult.form;
     this.questions = formResult.questions;
   }
+
+  datasource: any = {
+    from: "Renu kakka",
+    Company: "BMW",
+    Subject: "Renewal tie up",
+  };
+  // this.mattabledata = new MatTableDataSource(this.datasource);
 }

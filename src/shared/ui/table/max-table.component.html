@@ -157,7 +157,7 @@
   <span *ngIf="data?.output">{{ data.output }}</span>
 </ng-template>
 <ng-template #number let-data>
-  <span *ngIf="data?.output">{{ data.output }}</span>
+  <span>{{ data?.output }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
@@ -184,7 +184,11 @@
 </ng-template>
 
 <ng-template #checkboxActive let-data>
-  <mat-checkbox [checked]="!!data.output" color="primary"></mat-checkbox>
+  <mat-checkbox
+    [checked]="!!data.output"
+    color="primary"
+    [(ngModel)]="data.element[data.col]"
+  ></mat-checkbox>
 </ng-template>
 
 <ng-template #input let-data>
