@@ -1,0 +1,8 @@
+.consultation-wrapper{
+    ::ng-deep .max-table-wrapper{
+        border: 1px solid #707070;
+    }
+    ::ng-deep .mat-table thead{
+        white-space: nowrap !important;
+    }
+}
