@@ -707,4 +707,8 @@ export namespace ApiConstants {
       7
     );
   };
+
+  export const oprefundapprovereject =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/oprefundapprovalrequestsave";
 }

@@ -9,6 +9,7 @@ import { SearchService } from "../../../../../shared/services/search.service";
 import { OprefundPendingInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
 import { OpRefundApprovalListInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
 import { FormControl, FormGroup } from "@angular/forms";
+import { SaveOprefundApprovalModel } from "../../../../core/models/saveOprefundapproval.Model";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -230,8 +231,6 @@ export class OprefundApprovalComponent implements OnInit {
       this.activeLink2 = link;
     }
   }
-  getoprefundApproval() {}
-  getoprefundPending() {}
 
   data: any[] = [
     {
@@ -246,12 +245,51 @@ export class OprefundApprovalComponent implements OnInit {
       requestedby: "Ekta sharmae",
     },
   ];
-
+  approvalList: any = [];
   oprefundApprove() {
-    this.dialogservice.success("Update request Approved");
+    let iacode = this.OprefundPending.selection.selected.maxid.split(".")[0];
+    let regno = this.OprefundPending.selection.selected.maxId.split(".")[1];
+    console.log(this.OprefundPending.selection.selected);
+    this.approvalList.push({
+      recordId: this.OprefundPending.selection.selected.id,
+      flag: 0,
+      hostName: "HostNameTest",
+      risReason: "",
+      serviceId: 0,
+      testStatus: 0,
+      iacode: iacode,
+      registrationNo: regno,
+      billNo: this.OprefundPending.selection.selected.billNo,
+      itemName: this.OprefundPending.selection.selected.itemName,
+    });
+    console.log(this.approvalList);
+    //this.http.post(ApiConstants.oprefundapprovereject,getapproverejectobject())
+
+    //this.dialogservice.success("Update request Approved");
+    // "opRefundApprovalData": [
+    //     {
+    //       "recordId": 737832,
+    //       "flag": 0,
+    //       "hostName": "HostNameTest",
+    //       "risReason": "",
+    //       "serviceId": 0,
+    //       "testStatus": 0,
+    //       "iacode": "skdd",
+    //       "registrationNo": 891742,
+    //       "billNo": "SKCS36436143",
+    //       "itemName": "Amit Bansal"
+    //     }
+    //   ],
+    //   "operatorId": 9923,
+    //   "locationId": 7
+    // }
   }
+  //getapproverejectobject():SaveOprefundApprovalModel{
+
+  // return new (this.approvalList,9923,7);
+  //}
 
   oprefundReject() {
-    this.dialogservice.success("Update Rejected");
+    //this.dialogservice.success("Update Rejected");
   }
 }
