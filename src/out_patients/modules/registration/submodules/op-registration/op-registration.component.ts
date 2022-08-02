@@ -2238,14 +2238,20 @@ export class OpRegistrationComponent implements OnInit {
           if (this.OPRegForm.value.maxid) {
             this.getPatientDetailsByMaxId();
           } // this.setValuesToOPRegForm(resultData);
-          if (resultData == "Your request has been processed successfully") {
-            this.showRegisteredId("Modified request went for approval");
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Your request has been processed successfully"
+            ) {
+              this.showRegisteredId("Modified request went for approval");
+            }
+          } else {
+            this.messageDialogService.info(resultData["message"]);
           }
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.info(error.error);
+          this.messageDialogService.error(error.error);
         }
       );
   }
