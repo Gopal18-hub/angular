@@ -1606,37 +1606,22 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: any) => {
           console.log(resultData);
-          if (resultData == "Hotlisting request submitted for approval") {
-            this.messageDialogService.success(resultData);
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Hotlisting request submitted for approval"
+            ) {
+              this.messageDialogService.success(resultData["message"]);
+            } else {
+              this.messageDialogService.info(resultData["message"]);
+            }
           } else {
-            this.messageDialogService.info(resultData);
+            this.messageDialogService.error(resultData["message"]);
           }
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.error(error.error.text);
-          // if (
-          //   !(
-          //     error.error.text ==
-          //     "Hotlisting request submitted for approval"
-          //   )
-          // ) {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval"
-          //   );
-          // }
-          // // else
-          // // {
-          // //   You have already added a host list comment against this Max ID
-          // // }
-          // else {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval for MAX ID - " +
-          //       this.patientDetails.iacode +
-          //       "." +
-          //       this.patientDetails.registrationno
-          //   );
-          // }
+          this.messageDialogService.error(error.error[0].error.text);
         }
       );
   }
