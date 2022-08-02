@@ -685,64 +685,53 @@ export namespace ApiConstants {
   export const getapprovedoprefundapproval =
     environment.BillingApiUrl +
     "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
-  
-  export const SavePatientsDepositDetailsGST = environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientsdepositdetailsgst" ;
-  export const sendotpoprefund   = environment.PatientApiUrl + "api/patient/sendotpoprefund";
-  export const  savepatientrefunddetails= environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
 
-  export const getcashlimitwithlocationsmsdetailsoflocation = (
-    HospitalLocationID: number
-    ) => {
-      return (
-        environment.PatientApiUrl +
-        "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" + HospitalLocationID       
-      );
-    };
-
-  export const getadvancetype = (
-      hspLocationid: number
-    ) => {
-      return (
-        environment.PatientApiUrl +
-        "api/patient/getadvancetype/" + hspLocationid
-    
-      );
-    
-    };
-  
-  export const getpatientpreviousdepositdetails = (
-      registrationno: number, iacode?: string
-    ) => {
-      return (
-        environment.PatientApiUrl +
-        "api/patient/getpatientpreviousdepositdetails/" + registrationno
-        + "/" +
-        iacode
-    
-      );
-    };
-    
-  export const getpatientdetailsfordeposit = (
-      registrationno: number, iacode?: string
-    ) => {
-      return (
-        environment.PatientApiUrl +
-        "api/patient/getpatientdetailsfordeposit/" + registrationno
-        + "/" +
-        iacode
-      );
-    
-    };
-
-  export const getpatientpersonaldetails = (
-      registrationno: number, iacode?: string
-    ) => {
-      return (
-        environment.PatientApiUrl +
-        "api/patient/getpatientpersonaldetails/" + registrationno
-        + "/" +
-        iacode
-      );
-    
-    };
+  //ACD
+  export const getediganosticacd = (
+    FromDate: any,
+    ToDate: any,
+    status:number,
+    orderid:number,
+    regno:number,
+    iacode:string,
+    Locationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacd/"+FromDate+"/"+ToDate+"/"+status+"/"+orderid+"/"+regno+"/"+iacode+"?Locationid="+Locationid
+    );
+  };
+  export const geteprescriptdrugorders = (
+    FromDate: any,
+    ToDate: any,
+    LocationID: number,
+    Status : number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/geteprescriptdrugorders/"+FromDate+"/"+ToDate+"/"+LocationID+"/"+Status
+    );
+  };
+  export const getphysicianorderdetailep = (
+    registrationNo: any,
+    aiCode: string,
+    locid: number,
+    orderid : number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getphysicianorderdetailep/"+registrationNo+"/"+aiCode+"/"+locid+"/"+orderid
+    );
+  };
+  //Modify ACD order with Remarks 
+  export const modifyphysicianorderdetail = (
+    token: string,
+    Userid: number
+   
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/modifyphysicianorderdetail/?token="+token+"?Userid="+Userid
+    );
+  };
 }
