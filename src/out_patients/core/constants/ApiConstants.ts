@@ -690,124 +690,157 @@ export namespace ApiConstants {
   export const getediganosticacd = (
     FromDate: any,
     ToDate: any,
-    status:number,
-    orderid:number,
-    regno:number,
-    iacode:string,
+    status: number,
+    orderid: number,
+    regno: number,
+    iacode: string,
     Locationid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getediganosticacd/"+FromDate+"/"+ToDate+"/"+status+"/"+orderid+"/"+regno+"/"+iacode+"?Locationid="+Locationid
+      "api/patient/getediganosticacd/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      status +
+      "/" +
+      orderid +
+      "/" +
+      regno +
+      "/" +
+      iacode +
+      "?Locationid=" +
+      Locationid
     );
   };
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
     LocationID: number,
-    Status : number
+    Status: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/geteprescriptdrugorders/"+FromDate+"/"+ToDate+"/"+LocationID+"/"+Status
+      "api/patient/geteprescriptdrugorders/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      LocationID +
+      "/" +
+      Status
     );
   };
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
     locid: number,
-    orderid : number
+    orderid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getphysicianorderdetailep/"+registrationNo+"/"+aiCode+"/"+locid+"/"+orderid
+      "api/patient/getphysicianorderdetailep/" +
+      registrationNo +
+      "/" +
+      aiCode +
+      "/" +
+      locid +
+      "/" +
+      orderid
     );
   };
-  //Modify ACD order with Remarks 
-  export const modifyphysicianorderdetail = (
-    token: string,
-    Userid: number
-   
-  ) => {
+  //Modify ACD order with Remarks
+  export const modifyphysicianorderdetail = (token: string, Userid: number) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/modifyphysicianorderdetail/?token="+token+"?Userid="+Userid
+      "api/patient/modifyphysicianorderdetail/?token=" +
+      token +
+      "?Userid=" +
+      Userid
     );
   };
 
   export const getpatientpersonaldetails = (
-    registrationno: number, iacode?: string
+    registrationno: number,
+    iacode?: string
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientpersonaldetails/" + registrationno
-      + "/" +
+      "api/patient/getpatientpersonaldetails/" +
+      registrationno +
+      "/" +
       iacode
     );
-  
   };
 
   export const getpatientdetailsfordeposit = (
-    registrationno: number, iacode?: string
+    registrationno: number,
+    iacode?: string
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientdetailsfordeposit/" + registrationno
-      + "/" +
+      "api/patient/getpatientdetailsfordeposit/" +
+      registrationno +
+      "/" +
       iacode
     );
-  
   };
 
-  export const getadvancetype = (
-    hspLocationid: number
-  ) => {
+  export const getadvancetype = (hspLocationid: number) => {
     return (
-      environment.PatientApiUrl +
-      "api/patient/getadvancetype/" + hspLocationid
-  
+      environment.PatientApiUrl + "api/patient/getadvancetype/" + hspLocationid
     );
-  
   };
 
   export const getpatientpreviousdepositdetails = (
-    registrationno: number, iacode?: string
+    registrationno: number,
+    iacode?: string
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientpreviousdepositdetails/" + registrationno
-      + "/" +
+      "api/patient/getpatientpreviousdepositdetails/" +
+      registrationno +
+      "/" +
       iacode
-  
     );
   };
-  export const SavePatientsDepositDetailsGST = environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientsdepositdetailsgst" ;
-  export const  savepatientrefunddetails= environment.OutPatientBillingApiUrl + "api/outpatientbilling/savepatientrefunddetails" ;
+  export const SavePatientsDepositDetailsGST =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savepatientsdepositdetailsgst";
+  export const savepatientrefunddetails =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savepatientrefunddetails";
 
-export const getshowadvancetype = (
-  hspLocationid: number
+  export const getshowadvancetype = (hspLocationid: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getisshowadvancetype/" +
+      hspLocationid
+    );
+  };
+
+  export const getcreditcard =
+    environment.PatientApiUrl + "api/patient/getcreditcard";
+
+  export const getcashlimitwithlocationsmsdetailsoflocation = (
+    HospitalLocationID: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getisshowadvancetype/" + hspLocationid       
+      "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" +
+      HospitalLocationID
     );
   };
 
-export const getcreditcard =  environment.PatientApiUrl + "api/patient/getcreditcard" ;
-
-export const getcashlimitwithlocationsmsdetailsoflocation = (
-  HospitalLocationID: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" + HospitalLocationID       
-    );
-  };
-
-export const getform60masterdata =  environment.PatientApiUrl + "api/patient/getform60masterdata" ;
-export const saveform60patientdata = environment.PatientApiUrl + "api/patient/saveform60patientdata" ;
-export const savedonationrefundrequest = environment.PatientApiUrl + "api/patient/savedonationrefundrequest";
-export const savepaymentdetailslog = environment.PatientApiUrl + "api/patient/savepaymentdetailslog";
-export const sendotpoprefund   = environment.PatientApiUrl + "api/patient/sendotpoprefund";
-
+  export const getform60masterdata =
+    environment.PatientApiUrl + "api/patient/getform60masterdata";
+  export const saveform60patientdata =
+    environment.PatientApiUrl + "api/patient/saveform60patientdata";
+  export const savedonationrefundrequest =
+    environment.PatientApiUrl + "api/patient/savedonationrefundrequest";
+  export const savepaymentdetailslog =
+    environment.PatientApiUrl + "api/patient/savepaymentdetailslog";
+  export const sendotpoprefund =
+    environment.PatientApiUrl + "api/patient/sendotpoprefund";
 }
