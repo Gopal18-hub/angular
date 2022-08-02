@@ -50,6 +50,9 @@ export class OnlineOpBillsComponent implements OnInit {
       billno: {
         title: "Bill No.",
         type: "string",
+         style: {
+          width: "70px",
+        },
       },
       appointmentdatetime: {
         title: "Appointment Date/Time",
@@ -61,7 +64,7 @@ export class OnlineOpBillsComponent implements OnInit {
       },
       specialisation: {
         title: "Specialisation",
-        type: "string",       
+        type: "autocomplete",       
       },
       patientname: {
         title: "Patient Name",
@@ -85,6 +88,7 @@ export class OnlineOpBillsComponent implements OnInit {
 
   onlineopbillsForm !: FormGroup;
   questions:any;
+  MaxIDExist: boolean = false;
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -95,6 +99,9 @@ export class OnlineOpBillsComponent implements OnInit {
     );
     this.onlineopbillsForm=formResult.form;
     this.questions=formResult.questions;
+    let todaydate = new Date();
+    this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
+    this.onlineopbillsForm.controls["todate"].setValue(todaydate);
   }
 
 }

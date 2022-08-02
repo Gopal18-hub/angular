@@ -561,7 +561,7 @@ export class HotListingApprovalComponent implements OnInit {
         (resultdata) => {
           console.log(resultdata);
           this.messageDialogService.success("Update Request Deleted");
-          this.showgrid("View Pending Request");
+          this.showgrid("Approved Requests");
           this.HotListidList = [];
         },
         (error) => {

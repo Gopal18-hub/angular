@@ -17,6 +17,8 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RefundDialogComponent } from "./submodules/deposit/refund-dialog/refund-dialog.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSelectModule } from "@angular/material/select";
 import { PortalModule } from "@angular/cdk/portal";
 import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
@@ -59,6 +61,12 @@ import { GstComponent } from "../billing/submodules/miscellaneous-billing/billin
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
+import { PostDischargeFollowUpBillingComponent } from '../billing/submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component';
+import { PostDischargeBillComponent } from './submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component';
+import { PostDischargeServicesComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component';
+import { PostDischargeCreditDetailsComponent } from './submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component';
+import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component'
 @NgModule({
   declarations: [
     BillingComponent,
@@ -99,6 +107,11 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     ConsumablesComponent,
     BillDetailComponent,
     PartialCredBillComponent,
+    PostDischargeFollowUpBillingComponent,
+    PostDischargeBillComponent,
+    PostDischargeServicesComponent,
+    PostDischargeCreditDetailsComponent,
+    PostDischargeConsultationsComponent
   ],
   imports: [
     BillingRoutingModule,
@@ -113,6 +126,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     DynamicFormsModule,
     MatTabsModule,
     MatRadioModule,
+    MatCheckboxModule,
+    MatSelectModule,
     BrowserModule,
     CommonModule,
     MatListModule,
@@ -122,6 +137,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     sharedbillingModule,
     PortalModule,
     MatProgressSpinnerModule,
+    EmptyPlaceholderModule,
   ],
   exports: [],
   providers: [],

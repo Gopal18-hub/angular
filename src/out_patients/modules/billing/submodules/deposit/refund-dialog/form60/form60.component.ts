@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../../../../../shared/ui/dynamic-forms/service/question-control.service';
+import { HttpService } from '@shared/services/http.service';
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { getform60masterdataInterface } from  "@core/types/FormSixty.Interface";
+
 @Component({
   selector: 'out-patients-form60',
   templateUrl: './form60.component.html',
@@ -14,6 +20,7 @@ export class Form60Component implements OnInit {
     properties: {
       aadharno: {
         type: "number",
+        pattern: "^[2-9]{1}[0-9]{3}\s[0-9]{4}\s[0-9]{4}$"
       },
       appliedforpan: {
         type: "checkbox",
@@ -66,7 +73,9 @@ export class Form60Component implements OnInit {
   questions: any;
   today: any;
 
-  constructor(private formService: QuestionControlService) { }
+  private readonly _destroying$ = new Subject<void>();
+
+  constructor(private formService: QuestionControlService,private http: HttpService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -79,6 +88,7 @@ export class Form60Component implements OnInit {
     this.form60form.controls["dateofapplication"].setValue(this.today);
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
+    this.getForm60DocumentType();
   }
 
   ngAfterViewInit(): void{
@@ -111,7 +121,31 @@ export class Form60Component implements OnInit {
         this.form60form.controls["addressdocidentityno"].setValue('');
         this.form60form.controls["addressnameofauthority"].setValue('');
       }
-    })
+    });
+  
   }
 
+  getForm60DocumentType(){
+    this.http
+    .get(ApiConstants.getform60masterdata)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: getform60masterdataInterface) => {
+      console.log(resultData);
+      // this.questions[6].options = resultData.getForm60MasterDataPOI1.map((l) => {
+      //   return { title: l.docName, value: l.id };
+      // });
+  
+      // this.questions[10].options = resultData.getForm60MasterDataPOA1.map((l) => {
+      //   return { title: l.docName, value: l.id };
+      // });
+    });
+  }
+
+  saveform60(){
+
+  }
+
+  clearform60(){
+
+  }
 }
