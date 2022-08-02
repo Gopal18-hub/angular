@@ -23,7 +23,7 @@ export namespace CrystalReport {
   };
 
   export const DispatchReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/Dispatch_Report/DispatchReport`;
+    return environment.ReportsSampleUrl + `/Dispatch_Report/DispatchReport?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&RepType=${params.RepType}`;
   };
 
   export const DiabeticPlanMainReport = (params: any) => {
@@ -138,4 +138,5 @@ export namespace CrystalReport {
   export const SummaryReportForUtilisationReport = (params: any) => {
     return `${environment.ReportsSampleUrl}/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
   };
+
 }

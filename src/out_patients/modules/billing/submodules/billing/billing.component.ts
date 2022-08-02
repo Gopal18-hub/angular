@@ -11,6 +11,10 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { ActivatedRoute } from "@angular/router";
 import { AppointmentSearchDialogComponent } from "../../../registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
+import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
+import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -85,6 +89,11 @@ export class BillingComponent implements OnInit {
 
   apiProcessing: boolean = false;
 
+  complanyList!: GetCompanyDataInterface[];
+  coorporateList: { id: number; name: string }[] = [] as any;
+
+  dmsProcessing: boolean = false;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -95,6 +104,8 @@ export class BillingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getAllCompany();
+    this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -182,7 +193,7 @@ export class BillingComponent implements OnInit {
   }
 
   setValuesToMiscForm(pDetails: Registrationdetails) {
-    let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
@@ -204,5 +215,63 @@ export class BillingComponent implements OnInit {
       maxWidth: "100vw",
       width: "98vw",
     });
+  }
+  dms() {
+    if (this.dmsProcessing) return;
+    this.dmsProcessing = true;
+    const patientDetails =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    this.http
+      .get(
+        ApiConstants.PatientDMSDetail(
+          patientDetails.iacode,
+          patientDetails.registrationno
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: DMSrefreshModel[]) => {
+        this.matDialog.open(DMSComponent, {
+          width: "100vw",
+          data: {
+            list: resultData,
+            maxid: patientDetails.iacode + "." + patientDetails.registrationno,
+            firstName: patientDetails.firstname,
+            lastName: patientDetails.lastname,
+          },
+        });
+        this.dmsProcessing = false;
+      });
+  }
+
+  clear() {
+    this.apiProcessing = false;
+    this.patient = false;
+    this.formGroup.reset();
+  }
+
+  getAllCompany() {
+    this.http
+      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.complanyList = data as GetCompanyDataInterface[];
+        this.questions[2].options = this.complanyList.map((a) => {
+          return { title: a.name, value: a.id };
+        });
+      });
+  }
+
+  getAllCorporate() {
+    this.http
+      .get(ApiConstants.getCorporate)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: { id: number; name: string }[]) => {
+        this.coorporateList = resultData;
+        // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
+        this.questions[3].options = this.coorporateList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
   }
 }

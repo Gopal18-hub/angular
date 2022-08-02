@@ -53,3 +53,9 @@
 .font-white{
     color:white;
 }
+.textarea-length{
+::ng-deep textarea{
+
+    min-height: 294px !important;
+}
+}

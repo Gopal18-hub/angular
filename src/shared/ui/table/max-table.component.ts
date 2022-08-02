@@ -209,11 +209,34 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   exportAsExcel() {
-    const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data, {
-      header: this.displayedColumns,
+    const excelName = this.config.tableName
+      ? this.config.tableName + ".xlsx"
+      : "filename.xlsx";
+    const headers: any = [];
+    const tempColumns: any = [];
+    const data: any = [];
+    this.displayedColumns.forEach((col) => {
+      if (col != "select" && col != "actionItems") {
+        headers.push(this.displayColumnsInfo[col].title);
+        tempColumns.push(col);
+      }
     });
-    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workBook, workSheet, "SheetName");
-    XLSX.writeFile(workBook, "filename.xlsx");
+    this.dataSource.data.forEach((item: any) => {
+      const temp: any = {};
+      tempColumns.forEach((col: any) => {
+        temp[col] = item[col];
+      });
+      data.push(temp);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, [headers]);
+    const workSheet = XLSX.utils.sheet_add_json(ws, data, {
+      origin: "A2",
+      skipHeader: true,
+      header: tempColumns,
+    });
+    XLSX.utils.book_append_sheet(wb, ws, "Result");
+    XLSX.writeFile(wb, excelName);
   }
 }
