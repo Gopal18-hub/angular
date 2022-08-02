@@ -9,6 +9,10 @@ import { Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../gst/gst.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { MiscMasterDataModel } from "@core/types/miscMasterDataModel.Interface";
+import { objMiscBillingConfigurationList } from "@core/types/miscMasterDataModel.Interface";
+import { objMiscBillingRemarksList } from "@core/types/miscMasterDataModel.Interface";
+import { objMiscDoctorsList } from "@core/types/miscMasterDataModel.Interface";
+import { ServiceTypeItemModel } from "@core/types/billingServiceItemModel.Interface";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -16,6 +20,11 @@ import { MiscMasterDataModel } from "@core/types/miscMasterDataModel.Interface";
   styleUrls: ["./bill-detail.component.scss"],
 })
 export class BillDetailComponent implements OnInit {
+  doctorList!: objMiscDoctorsList[];
+  // serviceList!: objMiscBillingConfigurationList;
+  remarkList!: objMiscBillingRemarksList[];
+  serviceItemsList!: ServiceTypeItemModel[];
+  serviceList!: { title: string; value: number }[];
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -29,14 +38,16 @@ export class BillDetailComponent implements OnInit {
     title: "",
     properties: {
       serviceType: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Service Type",
+        options: this.serviceList,
         required: true,
       },
       item: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Item",
         required: true,
+        options: this.serviceItemsList,
       },
       tffPrice: {
         type: "string",
@@ -57,13 +68,15 @@ export class BillDetailComponent implements OnInit {
         required: true,
       },
       pDoc: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Procedure Doctor",
+        options: this.doctorList,
       },
       remark: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Remarks",
         required: true,
+        options: this.remarkList,
       },
       self: {
         type: "checkbox",
@@ -274,11 +287,12 @@ export class BillDetailComponent implements OnInit {
     },
   };
 
-  serviceselectedList: [] = [] as any;
+  serviceselectedList!: any[];
 
   miscServBillForm!: FormGroup;
-
-  question: any;
+  serviceID!: number;
+  location!: number;
+  questions: any;
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -288,15 +302,45 @@ export class BillDetailComponent implements OnInit {
     );
 
     this.miscServBillForm = serviceFormResult.form;
-    this.question = serviceFormResult.questions;
+    this.questions = serviceFormResult.questions;
   }
 
+  addService() {
+    this.serviceselectedList.push({
+      Sno: 0,
+      ServiceType: "eee",
+      ItemDescription: "weee",
+      ItemforModify: "dndj",
+      TariffPrice: 1,
+      Qty: 1,
+      Price: 1,
+      DoctorName: "abc",
+      Disc: 1,
+      DiscAmount: 1,
+      TotalAmount: 1,
+      GST: 0,
+    });
+  }
+  // .elementRef.addEventListener(
+  //   "blur",
+  //   this.setServiceItemList.bind(this)
+  // );
   ngAfterViewInit(): void {
     this.formEvents();
   }
 
   formEvents() {
     this.getMasterMiscDetail();
+
+    // this.miscServBillForm.controls["serviceType"].statusChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((value: any) => {
+    //     this.setServiceItemList();
+    //   });
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.setServiceItemList.bind(this)
+    );
   }
 
   gst: { service: string; percentage: number; value: number }[] = [
@@ -317,8 +361,19 @@ export class BillDetailComponent implements OnInit {
       },
     });
   }
-
+  serviceName!: string;
+  setServiceItemList() {
+    console.log("setServiceItemList");
+    console.log(this.miscServBillForm.value.serviceType.title);
+    if (this.miscServBillForm.value.serviceType) {
+      this.serviceID = this.miscServBillForm.value.serviceType.value;
+      this.serviceName = this.miscServBillForm.value.serviceType.title;
+      this.location = Number(this.cookie.get("HSPLocationId"));
+      this.getServiceItemBySerivceID();
+    }
+  }
   miscMasterDataList!: MiscMasterDataModel;
+
   getMasterMiscDetail() {
     this.http
       .get(ApiConstants.getMasterMiscDetail)
@@ -326,9 +381,33 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.miscMasterDataList = data as MiscMasterDataModel;
-        // this.questions[2].options = this.complanyList.map((a) => {
-        //   return { title: a.name, value: a.id };
-        // });
+        this.questions[0].options =
+          this.miscMasterDataList.objMiscBillingConfigurationList.map((a) => {
+            return { title: a.name, value: a.serviceid };
+          });
+        this.questions[5].options =
+          this.miscMasterDataList.objMiscDoctorsList.map((a) => {
+            return { title: a.name, value: a.id };
+          });
+        this.questions[6].options =
+          this.miscMasterDataList.objMiscBillingRemarksList.map((a) => {
+            return { title: a.name, value: a.id };
+          });
+      });
+  }
+
+  getServiceItemBySerivceID() {
+    this.http
+      .get(
+        ApiConstants.getServiceitemsByServiceID(this.serviceID, this.location)
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.serviceItemsList = data as ServiceTypeItemModel[];
+        this.questions[1].options = this.serviceItemsList.map((a) => {
+          return { title: a.itemname, value: a.itemId };
+        });
       });
   }
 }

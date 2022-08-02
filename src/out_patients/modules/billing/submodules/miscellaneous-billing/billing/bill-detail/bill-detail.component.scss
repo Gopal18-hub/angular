@@ -100,9 +100,15 @@
 // .h-9/20
 .h-table
 {
-    height: 68%;
+    height: 100% !important;
+    //  max-height: 57% !important;
+     box-sizing: unset;
+    // min-height: 67% !important;
+  
 }
-
+.fixtable{
+    height: 25.4vh !important;
+}
 .bg-paymet
 {
     width: 88.6%;

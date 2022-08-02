@@ -188,7 +188,7 @@ export class BillingComponent implements OnInit {
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + " " + patientDetails.ageTypeName;
-    this.gender = patientDetails.sexName;
+    this.gender = patientDetails.genderName;
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =

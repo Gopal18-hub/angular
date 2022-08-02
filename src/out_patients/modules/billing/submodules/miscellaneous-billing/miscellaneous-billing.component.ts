@@ -132,7 +132,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       let iacode = this.miscForm.value.maxid.split(".")[0];
       this.http
         .get(
-          ApiConstants.getregisteredpatientdetailsForBilling(
+          ApiConstants.getregisteredpatientdetailsForMisc(
             iacode,
             regNumber,
             Number(this.cookie.get("HSPLocationId"))

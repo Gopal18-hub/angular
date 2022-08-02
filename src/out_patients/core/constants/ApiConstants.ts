@@ -377,6 +377,23 @@ export namespace ApiConstants {
     );
   };
 
+  // GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME FOR MISC BILLING
+  export const getregisteredpatientdetailsForMisc = (
+    IACode: string,
+    RegistrationNo: number,
+    location: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregistrationdetailsformiscellenaous/" +
+      RegistrationNo +
+      "/" +
+      IACode +
+      "/" +
+      location
+    );
+  };
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -387,6 +404,20 @@ export namespace ApiConstants {
       IACode +
       "/" +
       RegistrationNo
+    );
+  };
+
+  //172.30.0.16:1007/api/outpatientbilling/getallserviceitems/99/67
+  export const getServiceitemsByServiceID = (
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallserviceitems/" +
+      serviceID +
+      "/" +
+      locationID
     );
   };
 
