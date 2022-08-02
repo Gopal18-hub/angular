@@ -4,13 +4,30 @@
       font-weight: 500;
     }
     .width-8 {
-      width: 9%;
+      width: 8%;
+    }
+    .width-9 {
+        width: 9%;
+      }
+    .w-11{
+        width: 11%;
+    }
+    .w-12{
+        width: 12%;
+    }
+    .w-13{
+        width: 13%;
     }
     .second-row-action-items {
       button {
         height: 1.875rem;
         line-height: 1.875rem;
       }
+    }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .bg-secondary {
       background-color: #f6f6f6;

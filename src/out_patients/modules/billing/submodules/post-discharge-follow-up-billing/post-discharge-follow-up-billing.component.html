@@ -29,7 +29,7 @@
             class="w-full flex align-items-center"
           >
             <mat-label class="max-health-primary-color mr-1 font-semi-bold">Max ID</mat-label>
-            <div class="w-1/10 bg-white mr-2">
+            <div class="width-9 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[0]"
                 [form]="formGroup"
@@ -41,7 +41,7 @@
             <mat-label class="max-health-primary-color mr-1 font-semi-bold"
               >Mobile No.</mat-label
             >
-            <div class="bg-white w-1/10 mr-2">
+            <div class="bg-white width-8 mr-2">
               <maxhealth-question
                 [question]="questions[1]"
                 [form]="formGroup"
@@ -65,7 +65,7 @@
             <mat-label class="max-health-primary-color mr-1 font-semi-bold"
               >Company <i class="font-medium">IOM</i></mat-label
             >
-            <div class="width-8 bg-white mr-2">
+            <div class="w-11 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[3]"
                 [form]="formGroup"
@@ -75,7 +75,7 @@
               </maxhealth-question>
             </div>
             <mat-label class="max-health-primary-color mr-1 font-semi-bold">Corporate</mat-label>
-            <div class="width-8 bg-white mr-2">
+            <div class="w-11 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[4]"
                 [form]="formGroup"
@@ -108,35 +108,41 @@
           </form>
         </div>
   
+        <div
+        *ngIf="apiProcessing"
+        class="flex align-items-center justify-center h-full"
+        >
+        <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
         <!-- Second Row -->
         <div
           class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
           *ngIf="patient"
         >
           <div class="flex w-3/4 align-items-center">
-            <div class="w-1/4">
+            <div class="w-1/5 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">Name:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ patientName }}</span>
             </div>
-            <div class="w-1/6">
+            <div class="w-12 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ age }}</span>
             </div>
-            <div class="w-1/6">
+            <div class="w-1/7 ml-2 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ gender }}</span>
             </div>
-            <div class="w-1/6">
+            <div class="w-13 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ dob }}</span>
             </div>
-            <div class="w-1/6">
+            <div class="w-1/15 ml-2 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">Nationality:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ country }}</span>
             </div>
-            <div class="w-1/6">
+            <div class="w-1/6 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
-              <span class="ml-2"></span>
+              <span class="ml-2">{{ ssn }}</span>
             </div>
           </div>
           <div class="flex second-row-action-items">
@@ -145,6 +151,7 @@
               color="primary"
               class="font-sm"
               type="button"
+              (click)="appointment_popup()"
             >
               Appointment Search
             </button>
@@ -153,14 +160,17 @@
               color="primary"
               class="font-sm ml-2 min-width-initial"
               type="button"
+              (click)="dms()"
+              [disabled]="dmsProcessing"
             >
-              DMS
+            {{ dmsProcessing ? "..." : "DMS" }}
             </button>
             <button
               mat-raised-button
               color="primary"
               class="font-sm ml-2 min-width-initial"
               type="button"
+              (click)="visit_history()"
             >
               Visit History
             </button>
@@ -169,6 +179,7 @@
               color="primary"
               class="font-sm ml-2 min-width-initial"
               type="button"
+              (click)="clear()"
             >
               Clear
             </button>

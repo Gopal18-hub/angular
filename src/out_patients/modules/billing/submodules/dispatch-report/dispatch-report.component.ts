@@ -31,6 +31,7 @@ export class DispatchReportComponent implements OnInit {
   public dispatchreportpending: dispatchReportList = {dispatchlist:[]}
 
   config: any = {
+    tableName: "Dispatch_Report",
     clickedRows: true,
     actionItems: false,
     dateformat: "dd/MM/YYYY HH:mm:ss.ss",
