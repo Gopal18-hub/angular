@@ -21,7 +21,10 @@ import { BillComponent } from "./submodules/billing/submodules/bill/bill.compone
 import { BillDetailComponent } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
-
+import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
+import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
+import { PostDischargeServicesComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component";
+import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -71,6 +74,16 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
+      { 
+        path: "post-discharge-follow-up-billing", 
+        component: PostDischargeFollowUpBillingComponent,
+        children: [
+          { path: "", component: ServicesComponent},
+          { path: "bill", component: PostDischargeBillComponent},
+          { path: "services", component: PostDischargeServicesComponent},
+          { path: "credit-details", component: PostDischargeCreditDetailsComponent}
+        ]
+      }
     ],
   },
   {
@@ -93,6 +106,7 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
+      { path: "post-discharge-follow-up-billing", component: PostDischargeFollowUpBillingComponent}
     ],
   },
 ];
