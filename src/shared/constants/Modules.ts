@@ -182,8 +182,8 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Patient History",
-          tenentPath: "/patient-history",
-          defaultPath: "",
+          tenentPath: "/out-patients",
+          defaultPath: "/patient-history",
           childrens: [],
           moreOptions: false,
         },
@@ -197,7 +197,8 @@ export namespace MaxModules {
         {
           id: -1,
           title: "QMS",
-          defaultPath: "qms",
+          tenentPath: "/out-patients",
+          defaultPath: "/qms",
           childrens: [],
           moreOptions: false,
         },

@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { MatDialog } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import { DepositDialogComponent } from "../deposit-dialog/deposit-dialog.component";
 
 @Component({
@@ -13,7 +17,9 @@ export class MakedepositDialogComponent implements OnInit {
   constructor(
     private maticonregistry: MatIconRegistry,
     private domsanitizer: DomSanitizer,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private dialogRef: MatDialogRef<MakedepositDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { message: String;}, 
   ) {}
 
   ngOnInit(): void {
@@ -23,10 +29,7 @@ export class MakedepositDialogComponent implements OnInit {
     );
   }
 
-  openDepositreceipt() {
-    this.matDialog.open(DepositDialogComponent, {
-      width: "70vw",
-      height: "98vh",
-    });
+  makedepositclosebtn() {
+    this.dialogRef.close("Success");
   }
 }
