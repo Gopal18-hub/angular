@@ -8,7 +8,8 @@ export const environment = {
   cookieUrl: "localhost",
   //dev environment urls
   CommonApiUrl: "http://172.30.0.16:1009/",
-  PatientApiUrl: "http://172.30.0.16:1008/",
+  //PatientApiUrl: "http://172.30.0.16:1008/",
+  PatientApiUrl: "http://localhost:7002/",
   //IdentityServerUrl: 'https://MaxHIS-Idsrv-dev.maxhealthcare.in/',
   //IentityServerRedirectUrl:'http://172.30.0.16/',
   ReportsApiUrl: "https://MaxHIS-Reports-dev.maxhealthcare.in/",

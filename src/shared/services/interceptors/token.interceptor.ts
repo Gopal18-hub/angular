@@ -68,7 +68,7 @@ export class TokenInterceptor implements HttpInterceptor {
       request.url.includes("patientunmerging") ||
       request.url.includes("patientmerging") ||
       request.url.includes("approvedrejectdeletehotlisting") ||
-      request.url.includes("patienthotlisting") ||
+      // request.url.includes("patienthotlisting") ||
       request.url.includes("modifyopdpatient")
     ) {
       request = request.clone({

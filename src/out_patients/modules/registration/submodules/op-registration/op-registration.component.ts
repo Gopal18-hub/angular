@@ -1564,21 +1564,43 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   postHotlistComment(title: string, remark: string) {
-    let maxid =
+    let maxId =
       this.patientDetails.iacode + "." + this.patientDetails.registrationno;
+    let firstName = this.patientDetails.firstname;
+    let middleName = this.patientDetails.middleName;
+    let lastName = this.patientDetails.lastName;
+    let type = "";
+    let userId = Number(this.cookie.get("UserId"));
+    let locationId = Number(this.cookie.get("HSPLocationId"));
+    let hotlistingHeader = title;
+    let hotlistingComment = remark;
     this.http
-      .get(
-        ApiConstants.hotlistedPatient(
-          maxid,
-          title,
-          this.cookie.get("HSPLocationId"),
-          this.patientDetails.firstname,
-          this.patientDetails.lastName,
-          this.patientDetails.middleName,
-          remark,
-          "",
-          Number(this.cookie.get("UserId"))
-        )
+      // .get(
+      //   ApiConstants.hotlistedPatient(
+      //     maxid,
+      //     title,
+      //     this.cookie.get("HSPLocationId"),
+      //     this.patientDetails.firstname,
+      //     this.patientDetails.lastName,
+      //     this.patientDetails.middleName,
+      //     remark,
+      //     "",
+      //     Number(this.cookie.get("UserId"))
+      //   )
+      // )
+      .post(
+        ApiConstants.hotlistedPatient,
+        JSON.stringify({
+          maxId,
+          firstName,
+          middleName,
+          lastName,
+          hotlistingHeader,
+          hotlistingComment,
+          type,
+          locationId,
+          userId,
+        })
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
