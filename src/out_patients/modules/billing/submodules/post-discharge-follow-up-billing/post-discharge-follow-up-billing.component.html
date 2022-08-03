@@ -63,7 +63,7 @@
               </maxhealth-question>
             </div>
             <mat-label class="max-health-primary-color mr-1 font-semi-bold"
-              >Company <i class="font-medium">IOM</i></mat-label
+              >Company <u class="clr-blue"><i class="clr-blue">IOM</i></u></mat-label
             >
             <div class="w-11 bg-white mr-2">
               <maxhealth-question
@@ -96,7 +96,7 @@
               </maxhealth-question>
             </div>
   
-            <div class="ml-2">
+            <div class="ml-2 clr-blue">
               <maxhealth-question
                 [question]="questions[6]"
                 [form]="formGroup"
@@ -108,16 +108,15 @@
           </form>
         </div>
   
-        <div
+        <!-- <div
         *ngIf="apiProcessing"
         class="flex align-items-center justify-center h-full"
         >
         <mat-spinner strokeWidth="3"></mat-spinner>
-        </div>
+        </div> -->
         <!-- Second Row -->
         <div
           class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
-          *ngIf="patient"
         >
           <div class="flex w-3/4 align-items-center">
             <div class="w-1/5 text-overflow">
@@ -153,7 +152,7 @@
               type="button"
               (click)="appointment_popup()"
             >
-              Appointment Search
+              Appt Search
             </button>
             <button
               mat-raised-button
@@ -186,7 +185,7 @@
             </button>
           </div>
         </div>
-        <div *ngIf="patient">
+        <div>
           <div class="mt-2">
             <nav mat-tab-nav-bar>
               <a
