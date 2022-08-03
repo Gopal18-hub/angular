@@ -54,11 +54,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "autocomplete",
+        type: "dropdown",
         options: [],
       },
       corporate: {
-        type: "autocomplete",
+        type: "dropdown",
         options: [],
       },
       narration: {
@@ -157,6 +157,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
             // this.clear();
             // this.flushAllObjects();
             this.patientDetails = resultData;
+            console.log(this.patientDetails);
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
             // );

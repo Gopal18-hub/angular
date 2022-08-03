@@ -79,7 +79,7 @@
                 <div class="w-2/5">
                     <div class="mr-2 float-right btn">
                         <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="searchbtn" (click)="patienthistorysearch()">
-                            <!-- <img src="assets/lens.svg" class="lens-icon"> -->
+                            <img src="assets/lens.svg" class="lens-icon" [ngClass]="{disableclass:searchbtn}">
                             Search
                         </button>
                     </div>
@@ -115,8 +115,8 @@
                     </div>
                 </div>
                 <div class="w-2/5">
-                    <div class="mr-2 float-right btn">
-                        <button mat-raised-button color="primary" type="submit" class="btn" (click)="clear()" [disabled]="!patienthistoryform.dirty">
+                    <div class="mr-2 float-right">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="!patienthistoryform.dirty">
                             <!-- <img src="assets/lens.svg" class="lens-icon"> -->
                             Clear
                         </button>
