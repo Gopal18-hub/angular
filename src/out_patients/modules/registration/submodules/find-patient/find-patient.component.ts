@@ -18,6 +18,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { LookupService } from "@core/services/lookup.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "find-patient",
@@ -149,7 +150,8 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private datepipe: DatePipe,
     private cookie: CookieService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private messageDialogService: MessageDialogService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -240,6 +242,45 @@ export class FindPatientComponent implements OnInit, OnDestroy {
           this.findpatientimage = "placeholder";
         } else {
           this.processLookupData(lookupdata);
+          if (formdata.data["globalSearch"] == 1) {
+            if (formdata.data["SearchTerm"]) {
+              if (formdata.data["SearchTerm"].includes(".")) {
+                let iacode = formdata.data["SearchTerm"].split(".")[0];
+                let regino = formdata.data["SearchTerm"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            if (formdata.data["maxID"]) {
+              if (formdata.data["maxID"].includes(".")) {
+                let iacode = formdata.data["maxID"].split(".")[0];
+                let regino = formdata.data["maxID"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     } else {
