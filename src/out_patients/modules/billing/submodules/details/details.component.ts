@@ -109,12 +109,12 @@ export class DetailsComponent implements OnInit {
         readonly: true,
       },
       reason: {
-        type: "string",
+        type: "dropdown",
         required: false,
         readonly: true,
       },
       paymentMode: {
-        type: "number",
+        type: "dropdown",
         required: false,
         defaultValue: 0.0,
         readonly: true,
@@ -226,11 +226,12 @@ export class DetailsComponent implements OnInit {
   country!: string;
   ssn!: string;
   openhistory() {
-    this.matDialog.open(VisitHistoryComponent, 
-      { width: "70%", 
-        height: "50%",
-        data:{
-          maxid: this.BServiceForm.value.maxid
-        } });
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.BServiceForm.value.maxid,
+      },
+    });
   }
 }

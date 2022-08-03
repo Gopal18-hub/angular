@@ -433,6 +433,23 @@ export namespace ApiConstants {
       locationID
     );
   };
+
+  export const getDipositedAmountByMaxID = (
+    iacode: string,
+    regNo: number,
+    hspId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdepositdetails/" +
+      iacode +
+      "/" +
+      regNo +
+      "/" +
+      hspId
+    );
+  };
+
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   export const getregisteredpatientdetails = (

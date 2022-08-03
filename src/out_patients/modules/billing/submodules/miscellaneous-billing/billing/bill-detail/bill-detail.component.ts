@@ -330,10 +330,6 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["reqAmt"].setValue("");
   }
   addService() {
-    this.miscServBillForm.controls["serviceType"].setValue({
-      title: "",
-      value: 0,
-    });
     this.count = this.serviceselectedList.length + 1;
     let ServiceType = this.serviceName;
     let present = false;
@@ -343,33 +339,45 @@ export class BillDetailComponent implements OnInit {
         console.log("same service");
       }
     });
-    if (present == false) {
-      this.serviceselectedList.push({
-        Sno: this.count,
-        ServiceType: this.serviceName,
-        ItemDescription: this.miscServBillForm.value.item.title,
-        ItemforModify: this.miscServBillForm.value.item.title,
-        TariffPrice: this.miscServBillForm.value.tffPrice,
-        Qty: this.miscServBillForm.value.qty,
-        Price: this.miscServBillForm.value.tffPrice,
-        DoctorName: this.miscServBillForm.value.pDoc.title,
-        Disc: 1,
-        DiscAmount: 1,
-        TotalAmount:
-          this.miscServBillForm.value.tffPrice *
-          this.miscServBillForm.value.qty,
-        GST: 0,
-      });
+    if (!present) {
+      this.pushDataToServiceTable();
+      this.serviceselectedList = [...this.serviceselectedList];
     }
+
+    this.calculateTotalAmount();
+    this.clearSelectedService();
+  }
+  pushDataToServiceTable() {
+    this.serviceselectedList.push({
+      Sno: this.count,
+      ServiceType: this.serviceName,
+      ItemDescription: this.miscServBillForm.value.item.title,
+      ItemforModify: this.miscServBillForm.value.item.title,
+      TariffPrice: this.miscServBillForm.value.tffPrice,
+      Qty: this.miscServBillForm.value.qty,
+      Price: this.miscServBillForm.value.tffPrice,
+      DoctorName: this.miscServBillForm.value.pDoc.title,
+      Disc: 1,
+      DiscAmount: 1,
+      TotalAmount:
+        this.miscServBillForm.value.tffPrice * this.miscServBillForm.value.qty,
+      GST: 0,
+    });
+  }
+  clearSelectedService() {
+    this.miscServBillForm.controls["serviceType"].setValue({
+      title: "",
+      value: 0,
+    });
+  }
+
+  calculateTotalAmount() {
     this.TotalAmount = 0;
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount += element.TotalAmount;
     });
     this.miscServBillForm.controls["billAmt"].setValue(this.TotalAmount);
-
-    console.log(this.TotalAmount + 0.0);
   }
-
   ngAfterViewInit(): void {
     this.formEvents();
   }
@@ -377,15 +385,20 @@ export class BillDetailComponent implements OnInit {
   formEvents() {
     this.getMasterMiscDetail();
 
-    // this.miscServBillForm.controls["serviceType"].statusChanges
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value: any) => {
-    //     this.setServiceItemList();
-    //   })
-    this.questions[0].elementRef.addEventListener(
-      "change",
-      this.setServiceItemList.bind(this)
-    );
+    this.miscServBillForm.controls["serviceType"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        console.log(value);
+        if (value.value) {
+          this.serviceID = value.value;
+          this.serviceName = value.title;
+        }
+        this.setServiceItemList();
+      });
+    // this.questions[0].elementRef.addEventListener(
+    //   "change",
+    //   this.setServiceItemList.bind(this)
+    // );
     this.questions[1].elementRef.addEventListener(
       "blur",
       this.getTarrifPrice.bind(this)
@@ -413,6 +426,7 @@ export class BillDetailComponent implements OnInit {
   serviceName!: string;
   setServiceItemList() {
     console.log("setServiceItemList");
+
     this.clearDraftedService();
     console.log(this.miscServBillForm.value.serviceType.title);
     if (this.miscServBillForm.value.serviceType) {
@@ -483,5 +497,13 @@ export class BillDetailComponent implements OnInit {
           );
         });
     }
+  }
+  filterList(list: any[], control: any): any {
+    // this.genderList.filter(
+    //   (g) => g.id === this.OPRegForm.controls[control"].value
+    // )[0].name;
+    list.filter(function (item) {
+      return item.name === control.value;
+    });
   }
 }
