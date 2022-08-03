@@ -377,6 +377,7 @@ export namespace ApiConstants {
     );
   };
 
+  // ====================================================================MISC API=================================================================
   // GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME FOR MISC BILLING
   export const getregisteredpatientdetailsForMisc = (
     IACode: string,
@@ -394,6 +395,44 @@ export namespace ApiConstants {
     );
   };
 
+  export const getMasterMiscDetail =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getmasterdataformiscellaneous";
+
+  export const getServiceitemsByServiceID = (
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallserviceitems/" +
+      serviceID +
+      "/" +
+      locationID
+    );
+  };
+
+  export const getTarrifByServiceID = (
+    priority: 1,
+    itemID: number,
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      priority +
+      "/" +
+      itemID +
+      "/" +
+      serviceID +
+      "?" +
+      "Hsplocationid=" +
+      locationID
+    );
+  };
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -408,18 +447,6 @@ export namespace ApiConstants {
   };
 
   //172.30.0.16:1007/api/outpatientbilling/getallserviceitems/99/67
-  export const getServiceitemsByServiceID = (
-    serviceID: number,
-    locationID: number
-  ) => {
-    return (
-      environment.BillingApiUrl +
-      "api/outpatientbilling/getallserviceitems/" +
-      serviceID +
-      "/" +
-      locationID
-    );
-  };
 
   export const getpatienthistory = (
     FromDate: any,
@@ -680,10 +707,6 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
-
-  export const getMasterMiscDetail =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getmasterdataformiscellaneous";
 
   export const getpatientvisithistory = (
     IACode: string,

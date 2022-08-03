@@ -13,6 +13,7 @@ import { objMiscBillingConfigurationList } from "@core/types/miscMasterDataModel
 import { objMiscBillingRemarksList } from "@core/types/miscMasterDataModel.Interface";
 import { objMiscDoctorsList } from "@core/types/miscMasterDataModel.Interface";
 import { ServiceTypeItemModel } from "@core/types/billingServiceItemModel.Interface";
+import { TarrifPriceModel } from "@core/types/triffPriceModel.Interface";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -50,19 +51,20 @@ export class BillDetailComponent implements OnInit {
         options: this.serviceItemsList,
       },
       tffPrice: {
-        type: "string",
+        type: "number",
         title: "Tarrif Price",
         required: true,
+        readonly: true,
       },
       qty: {
-        type: "string",
+        type: "number",
         title: "Qty",
         maximum: 9,
         minimum: 1,
         required: true,
       },
       reqAmt: {
-        type: "string",
+        type: "number",
         title: "Req. Amt.",
         minimum: 1,
         required: true,
@@ -220,7 +222,7 @@ export class BillDetailComponent implements OnInit {
     columnsInfo: {
       Sno: {
         title: "S.No.",
-        type: "string",
+        type: "number",
       },
       ServiceType: {
         title: "Service Type",
@@ -245,7 +247,10 @@ export class BillDetailComponent implements OnInit {
       },
       TariffPrice: {
         title: "Tariff Price",
-        type: "string",
+        type: "number",
+        style: {
+          width: "90px",
+        },
       },
       Qty: {
         title: "Qty",
@@ -287,7 +292,7 @@ export class BillDetailComponent implements OnInit {
     },
   };
 
-  serviceselectedList!: any[];
+  serviceselectedList: any[] = [];
 
   miscServBillForm!: FormGroup;
   serviceID!: number;
@@ -304,27 +309,67 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm = serviceFormResult.form;
     this.questions = serviceFormResult.questions;
   }
-
-  addService() {
-    this.serviceselectedList.push({
-      Sno: 0,
-      ServiceType: "eee",
-      ItemDescription: "weee",
-      ItemforModify: "dndj",
-      TariffPrice: 1,
-      Qty: 1,
-      Price: 1,
-      DoctorName: "abc",
-      Disc: 1,
-      DiscAmount: 1,
-      TotalAmount: 1,
-      GST: 0,
+  count!: number;
+  TotalAmount!: number;
+  clearDraftedService() {
+    this.miscServBillForm.controls["item"].setValue({
+      title: "",
+      value: 0,
     });
+    this.miscServBillForm.controls["qty"].setValue("");
+    this.miscServBillForm.controls["tffPrice"].setValue("");
+    this.miscServBillForm.controls["pDoc"].setValue({
+      title: "",
+      value: 0,
+    });
+    this.miscServBillForm.controls["remark"].setValue({
+      title: "",
+      value: 0,
+    });
+
+    this.miscServBillForm.controls["reqAmt"].setValue("");
   }
-  // .elementRef.addEventListener(
-  //   "blur",
-  //   this.setServiceItemList.bind(this)
-  // );
+  addService() {
+    this.miscServBillForm.controls["serviceType"].setValue({
+      title: "",
+      value: 0,
+    });
+    this.count = this.serviceselectedList.length + 1;
+    let ServiceType = this.serviceName;
+    let present = false;
+    this.serviceselectedList.forEach((element) => {
+      if (ServiceType == element.ServiceType) {
+        present = true;
+        console.log("same service");
+      }
+    });
+    if (present == false) {
+      this.serviceselectedList.push({
+        Sno: this.count,
+        ServiceType: this.serviceName,
+        ItemDescription: this.miscServBillForm.value.item.title,
+        ItemforModify: this.miscServBillForm.value.item.title,
+        TariffPrice: this.miscServBillForm.value.tffPrice,
+        Qty: this.miscServBillForm.value.qty,
+        Price: this.miscServBillForm.value.tffPrice,
+        DoctorName: this.miscServBillForm.value.pDoc.title,
+        Disc: 1,
+        DiscAmount: 1,
+        TotalAmount:
+          this.miscServBillForm.value.tffPrice *
+          this.miscServBillForm.value.qty,
+        GST: 0,
+      });
+    }
+    this.TotalAmount = 0;
+    this.serviceselectedList.forEach((element) => {
+      this.TotalAmount += element.TotalAmount;
+    });
+    this.miscServBillForm.controls["billAmt"].setValue(this.TotalAmount);
+
+    console.log(this.TotalAmount + 0.0);
+  }
+
   ngAfterViewInit(): void {
     this.formEvents();
   }
@@ -336,10 +381,14 @@ export class BillDetailComponent implements OnInit {
     //   .pipe(takeUntil(this._destroying$))
     //   .subscribe((value: any) => {
     //     this.setServiceItemList();
-    //   });
+    //   })
     this.questions[0].elementRef.addEventListener(
-      "blur",
+      "change",
       this.setServiceItemList.bind(this)
+    );
+    this.questions[1].elementRef.addEventListener(
+      "blur",
+      this.getTarrifPrice.bind(this)
     );
   }
 
@@ -364,6 +413,7 @@ export class BillDetailComponent implements OnInit {
   serviceName!: string;
   setServiceItemList() {
     console.log("setServiceItemList");
+    this.clearDraftedService();
     console.log(this.miscServBillForm.value.serviceType.title);
     if (this.miscServBillForm.value.serviceType) {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
@@ -409,5 +459,29 @@ export class BillDetailComponent implements OnInit {
           return { title: a.itemname, value: a.itemId };
         });
       });
+  }
+
+  itemID!: number;
+  terrifDetail!: TarrifPriceModel;
+  getTarrifPrice() {
+    if (this.miscServBillForm.value.item.value) {
+      this.http
+        .get(
+          ApiConstants.getTarrifByServiceID(
+            1,
+            this.miscServBillForm.value.item.value,
+            this.serviceID,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+          this.terrifDetail = data as TarrifPriceModel;
+          this.miscServBillForm.controls["tffPrice"].setValue(
+            this.terrifDetail.amount
+          );
+        });
+    }
   }
 }
