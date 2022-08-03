@@ -91,7 +91,7 @@ export class VisitHistoryComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata)=>{
       console.log(resultdata);
-      this.visithistorylist = resultdata;
+        this.visithistorylist = resultdata;
     },
     (error)=>{
       console.log(error);
