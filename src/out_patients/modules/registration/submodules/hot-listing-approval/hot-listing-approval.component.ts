@@ -512,7 +512,12 @@ export class HotListingApprovalComponent implements OnInit {
       .subscribe(
         (resultdata) => {
           console.log(resultdata);
-          this.messageDialogService.success("Update Request Approved");
+          if (resultdata["success"]) {
+            this.messageDialogService.success(resultdata["message"]);
+          } else {
+            this.messageDialogService.info(resultdata["message"]);
+          }
+
           this.showgrid("View Pending Request");
           this.HotListidList = [];
         },

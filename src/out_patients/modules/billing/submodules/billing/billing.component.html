@@ -116,10 +116,7 @@
       </div>
 
       <!-- Second Row -->
-      <div
-        class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
-        *ngIf="patient"
-      >
+      <div class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary">
         <div class="flex w-3/4 align-items-center">
           <div class="w-1/4">
             <mat-label class="max-health-primary-color"
@@ -162,11 +159,11 @@
           <button
             mat-raised-button
             color="primary"
-            class="font-sm"
+            class="font-sm min-width-initial"
             type="button"
             (click)="appointmentSearch()"
           >
-            Appointment Search
+            Appt Search
           </button>
           <button
             mat-raised-button
@@ -197,7 +194,7 @@
           </button>
         </div>
       </div>
-      <div *ngIf="patient">
+      <div>
         <div class="mt-2">
           <nav mat-tab-nav-bar>
             <a
