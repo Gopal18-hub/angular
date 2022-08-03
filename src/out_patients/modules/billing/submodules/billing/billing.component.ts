@@ -14,6 +14,7 @@ import { AppointmentSearchDialogComponent } from "../../../registration/submodul
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { BillingApiConstants } from "./BillingApiConstant";
 
 @Component({
   selector: "out-patients-billing",
@@ -149,6 +150,10 @@ export class BillingComponent implements OnInit {
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       this.http
+        .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultData: Registrationdetails) => {});
+      this.http
         .get(
           ApiConstants.getregisteredpatientdetailsForBilling(
             iacode,
@@ -247,6 +252,12 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
+    this.patientName = "";
+    this.ssn = "";
+    this.dob = "";
+    this.country = "";
+    this.gender = "";
+    this.age = "";
   }
 
   getAllCompany() {
