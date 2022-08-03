@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper h-auto op-billing-wrapper">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper op-billing-wrapper">
     <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
       <ul class="list-unstyled flex items-end">
         <li class="ml-3">
@@ -19,7 +19,7 @@
     </nav>
     <mat-tab-nav-panel #tabPanel>
       <div
-        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 billing-page-wrapper"
+        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 post-billing-page-wrapper"
       >
         <!-- First Row -->
         <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
@@ -171,6 +171,7 @@
               class="font-sm ml-2 min-width-initial"
               type="button"
               (click)="visit_history()"
+              [disabled]="visithistorybtn"
             >
               Visit History
             </button>

@@ -249,10 +249,6 @@ export class DispatchReportComponent implements OnInit {
       else
       {
         this.getDispatchReport();
-        this.pendingbtn = false;
-        this.savebtn = false;
-        this.exportbtn = false;
-        this.printbtn = true;
       }
     }
   }
@@ -279,6 +275,8 @@ getDispatchReport(){
     this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"), 
     this.dispatchhistoryform.value.billedlocation.value,
     this.dispatchhistoryform.value.radio)).subscribe((resultdata:any)=>{
+      if(resultdata.dispatchlist.length > 0)
+      {  
       console.log(resultdata);
       this.dispatchreport = resultdata;
       console.log(resultdata.dispatchlist.length);
@@ -299,10 +297,21 @@ getDispatchReport(){
       }
       else if(this.pendingreport == false && this.show == true)
       {
+        this.pendingbtn = false;
+        this.savebtn = false;
+        this.exportbtn = false;
+        this.printbtn = true;
         this.dispatchreport.dispatchlist = this.dispatchreport.dispatchlist.filter((e:any)=>{
           return e.flag >= 0;
         });
         console.log(this.dispatchreport.dispatchlist);
+      }
+      }
+      else{
+        this.pendingbtn = true;
+        this.savebtn = true;
+        this.exportbtn = true;
+        this.printbtn = true;
       }      
       },
       (error)=>{
@@ -332,8 +341,10 @@ getDispatchReport(){
   }
   savedialog()
   {
+    var flag = 0;
     console.log(this.tableRows);
     console.log( this.tableRows.config.columnsInfo);
+    console.log(this.tableRows.selection.selected);
     if(this.tableRows.selection.selected.length > 0)
     {
       this.dispatchreportsave.objDtSaveReport = [] as Array<objdispatchsave>;
@@ -345,11 +356,13 @@ getDispatchReport(){
       )
       {
         this.msgdialog.error("You have Not Selected Proper Data");
+        flag++;
       }
       else if(  (e.r_dispatchdate == null || e.r_dispatchdate == undefined) ||
                 (e.receive_date == null || e.receive_date == undefined))
       {
         this.msgdialog.error("You have Not Selected Proper Data");
+        flag++;
       }
       else if(e.receive_date == null || e.receive_date == undefined)
       {
@@ -372,14 +385,14 @@ getDispatchReport(){
             itemid: e.itemid.toString(),
           })
           this.dispatchreportsave.operatorid = this.userId;
-          this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
-            console.log(res);
-            if(res == 1)
-            {
-              this.msgdialog.success("Data Saved Succesully");
-              this.getDispatchReport();
-            }
-          })
+          // this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
+          //   console.log(res);
+          //   if(res > 1)
+          //   {
+          //     this.msgdialog.success("Data Saved Succesully");
+          //     this.getDispatchReport();
+          //   }
+          // })
       }
       else
       {
@@ -402,25 +415,31 @@ getDispatchReport(){
             itemid: e.itemid.toString(),
           })
           this.dispatchreportsave.operatorid = this.userId;
-          this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
-            console.log(res);
-            if(res == 1)
-            {
-              this.msgdialog.success("Data Saved Succesully");
-              this.getDispatchReport();
-            }
-          },
-          error => {
-            console.log(error);
-            this.msgdialog.error("You have Not Selected Proper Data");
-          })
         }
       });
     }
+    if(this.dispatchreportsave.objDtSaveReport.length > 0 && flag == 0)
+    {
+      console.log(this.dispatchreportsave.objDtSaveReport.length);
+      this.http.post(ApiConstants.dispatchreportsave, this.dispatchreportsave).subscribe((res:any)=>{
+        console.log(res);
+        if(res == 1)
+        {
+          this.msgdialog.success("Data Saved Succesully");
+          this.getDispatchReport();
+        }
+      },
+      error => {
+        console.log(error);
+        this.msgdialog.error("You have Not Selected Proper Data");
+      })
+    }
+    console.log(this.dispatchreportsave.objDtSaveReport);
   }
 
   export()
   {
+    console.log(this.tableRows);
     this.tableRows.exportAsExcel();
   }
   print()

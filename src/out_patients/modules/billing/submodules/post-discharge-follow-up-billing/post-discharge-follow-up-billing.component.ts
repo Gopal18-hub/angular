@@ -46,7 +46,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       },
       mobile: {
         type: "number",
-        readonly: false,
+        readonly: true,
       },
       bookingId: {
         type: "string",
@@ -79,6 +79,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   country!: string;
   ssn!: string;
   dmsProcessing: boolean = false;
+  visithistorybtn: boolean = false;
   private readonly _destroying$ = new Subject<void>();
   patientDetails!: Registrationdetails;
   apiProcessing: boolean = false;
