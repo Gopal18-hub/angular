@@ -64,20 +64,7 @@ export class TokenInterceptor implements HttpInterceptor {
         });
       }
     }
-    if (
-      request.url.includes("patientunmerging") ||
-      request.url.includes("patientmerging") ||
-      request.url.includes("approvedrejectdeletehotlisting") ||
-      request.url.includes("patienthotlisting") ||
-      request.url.includes("modifyopdpatient")
-    ) {
-      request = request.clone({
-        setHeaders: {
-          "Content-Type": "application/json",
-        },
-        responseType: "text",
-      });
-    }
+
     // Used to be accessible from the whole chain of observers
     let sharedCacheResponse: IHttpCacheResponse | null = null;
 

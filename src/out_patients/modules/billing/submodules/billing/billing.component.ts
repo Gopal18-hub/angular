@@ -74,7 +74,7 @@ export class BillingComponent implements OnInit {
 
   categoryIcons: any;
 
-  patient: boolean = false;
+  patient: boolean = true;
 
   patientName!: string;
   age!: string;
