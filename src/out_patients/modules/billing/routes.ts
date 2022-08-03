@@ -82,7 +82,7 @@ const routes: Routes = [
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
         children: [
-          { path: "", component: ServicesComponent },
+          { path: "", component: PostDischargeServicesComponent },
           { path: "bill", component: PostDischargeBillComponent },
           { path: "services", component: PostDischargeServicesComponent },
           {

@@ -93,3 +93,17 @@
 .editable-textarea {
   background-color: #fff;
 }
+
+tr.child-detail-row {
+  height: 0 !important;
+}
+::ng-deep .child-element-detail {
+  table {
+    thead {
+      display: none;
+    }
+    .mat-column-select {
+      width: 60px !important;
+    }
+  }
+}

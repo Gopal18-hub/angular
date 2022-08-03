@@ -99,22 +99,13 @@
       format("woff");
 }
 
-// @font-face {
-//   font-family: "proxima";
-//   src: local("proxima"),
-//     url("./font/proxima/Mark Simonson - Proxima Nova.otf") format("truetype");
-// }
-// @font-face {
-//   font-family: "ProximaRegular";
-//   src: local("proxima"),
-//     url(./font/proxima/ProximaNovaThin.otf) format("truetype");
-// }
-
-// @font-face {
-//   font-family: "ProximaMedium";
-//   src: local("proxima"),
-//     url(./font/proxima/ProximaNovaMedium.otf) format("truetype");
-// }
+@font-face {
+  font-display: swap;
+  font-family: Proxima Nova;
+  font-style: normal;
+  font-weight: 500;
+  src: url("./font/proxima/ProximaNovaMedium.otf") format("truetype");
+}
 
 @import "~@angular/material/theming";
 @include mat-core();
