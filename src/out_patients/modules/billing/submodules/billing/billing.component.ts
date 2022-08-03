@@ -252,6 +252,12 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
+    this.patientName = "";
+    this.ssn = "";
+    this.dob = "";
+    this.country = "";
+    this.gender = "";
+    this.age = "";
   }
 
   getAllCompany() {
