@@ -171,7 +171,7 @@
             class="font-sm ml-2 min-width-initial"
             type="button"
             (click)="dms()"
-            [disabled]="dmsProcessing"
+            [disabled]="dmsProcessing || !patient"
           >
             {{ dmsProcessing ? "..." : "DMS" }}
           </button>
@@ -180,6 +180,7 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            [disabled]="!patient"
           >
             Visit History
           </button>
@@ -188,13 +189,14 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            [disabled]="!patient"
             (click)="clear()"
           >
             Clear
           </button>
         </div>
       </div>
-      <div>
+      <div [class.isDisabled]="!patient">
         <div class="mt-2">
           <nav mat-tab-nav-bar>
             <a
