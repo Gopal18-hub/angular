@@ -189,26 +189,28 @@ export class DupRegMergingComponent implements OnInit {
           this.messageDialogService.success(
             "Max ID has been mapped with " + resultArr[1]
           );
+        } else {
+          this.messageDialogService.info(resultArr[1]);
+        }
 
-          if (this.globalSearchTerm) {
-            await this.loadGrid(this.globalSearchTerm);
-          } else {
-            this.getAllpatientsBySearch()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((resultData) => {
-                resultData = resultData.map((item: any) => {
-                  item.fullname = item.firstName + " " + item.lastName;
-                  return item;
-                });
-                this.results = resultData;
-                this.results = this.patientServie.getAllCategoryIcons(
-                  this.results
-                );
-                this.isAPIProcess = true;
-                this.mergebuttonDisabled = true;
-                this.tableRows.selection.clear();
+        if (this.globalSearchTerm) {
+          await this.loadGrid(this.globalSearchTerm);
+        } else {
+          this.getAllpatientsBySearch()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((resultData) => {
+              resultData = resultData.map((item: any) => {
+                item.fullname = item.firstName + " " + item.lastName;
+                return item;
               });
-          }
+              this.results = resultData;
+              this.results = this.patientServie.getAllCategoryIcons(
+                this.results
+              );
+              this.isAPIProcess = true;
+              this.mergebuttonDisabled = true;
+              this.tableRows.selection.clear();
+            });
         }
       });
   }

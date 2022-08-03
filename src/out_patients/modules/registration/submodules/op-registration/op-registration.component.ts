@@ -1564,57 +1564,64 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   postHotlistComment(title: string, remark: string) {
-    let maxid =
+    let maxId =
       this.patientDetails.iacode + "." + this.patientDetails.registrationno;
+    let firstName = this.patientDetails.firstname;
+    let middleName = this.patientDetails.middleName;
+    let lastName = this.patientDetails.lastName;
+    let type = "";
+    let userId = Number(this.cookie.get("UserId"));
+    let locationId = Number(this.cookie.get("HSPLocationId"));
+    let hotlistingHeader = title;
+    let hotlistingComment = remark;
     this.http
-      .get(
-        ApiConstants.hotlistedPatient(
-          maxid,
-          title,
-          this.cookie.get("HSPLocationId"),
-          this.patientDetails.firstname,
-          this.patientDetails.lastName,
-          this.patientDetails.middleName,
-          remark,
-          "",
-          Number(this.cookie.get("UserId"))
-        )
+      // .get(
+      //   ApiConstants.hotlistedPatient(
+      //     maxid,
+      //     title,
+      //     this.cookie.get("HSPLocationId"),
+      //     this.patientDetails.firstname,
+      //     this.patientDetails.lastName,
+      //     this.patientDetails.middleName,
+      //     remark,
+      //     "",
+      //     Number(this.cookie.get("UserId"))
+      //   )
+      // )
+      .post(
+        ApiConstants.hotlistedPatient,
+        JSON.stringify({
+          maxId,
+          firstName,
+          middleName,
+          lastName,
+          hotlistingHeader,
+          hotlistingComment,
+          type,
+          locationId,
+          userId,
+        })
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: any) => {
           console.log(resultData);
-          if (resultData == "Hotlisting request submitted for approval") {
-            this.messageDialogService.success(resultData);
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Hotlisting request submitted for approval"
+            ) {
+              this.messageDialogService.success(resultData["message"]);
+            } else {
+              this.messageDialogService.info(resultData["message"]);
+            }
           } else {
-            this.messageDialogService.info(resultData);
+            this.messageDialogService.error(resultData["message"]);
           }
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.error(error.error.text);
-          // if (
-          //   !(
-          //     error.error.text ==
-          //     "Hotlisting request submitted for approval"
-          //   )
-          // ) {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval"
-          //   );
-          // }
-          // // else
-          // // {
-          // //   You have already added a host list comment against this Max ID
-          // // }
-          // else {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval for MAX ID - " +
-          //       this.patientDetails.iacode +
-          //       "." +
-          //       this.patientDetails.registrationno
-          //   );
-          // }
+          this.messageDialogService.error(error.error[0].error.text);
         }
       );
   }
@@ -2231,14 +2238,20 @@ export class OpRegistrationComponent implements OnInit {
           if (this.OPRegForm.value.maxid) {
             this.getPatientDetailsByMaxId();
           } // this.setValuesToOPRegForm(resultData);
-          if (resultData == "Your request has been processed successfully") {
-            this.showRegisteredId("Modified request went for approval");
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Your request has been processed successfully"
+            ) {
+              this.showRegisteredId("Modified request went for approval");
+            }
+          } else {
+            this.messageDialogService.info(resultData["message"]);
           }
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.info(error.error);
+          this.messageDialogService.error(error.error);
         }
       );
   }
