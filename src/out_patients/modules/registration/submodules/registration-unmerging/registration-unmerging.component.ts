@@ -178,13 +178,16 @@ export class RegistrationUnmergingComponent implements OnInit {
       .subscribe(
         (resultdata) => {
           console.log(resultdata);
-
-          this.unMergeresponse = resultdata;
+          if (resultdata["success"]) {
+            this.messageDialogService.success(resultdata["message"]);
+          } else {
+            this.messageDialogService.success(resultdata["message"]);
+          }
+          this.unMergeresponse = resultdata["message"];
           // this.openModal('unmerge-modal-1');
           this.unmergebuttonDisabled = true;
           this.unmergingList = [];
           this.unMergePostModel = [];
-          this.messageDialogService.success(resultdata);
         },
         (error) => {
           console.log(error);
