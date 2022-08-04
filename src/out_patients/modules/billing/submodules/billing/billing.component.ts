@@ -15,6 +15,7 @@ import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanyd
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
+import { PaydueComponent } from "./prompts/paydue/paydue.component";
 
 @Component({
   selector: "out-patients-billing",
@@ -164,19 +165,14 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            console.log(resultData);
-            // this.clear();
-            // this.flushAllObjects();
             this.patientDetails = resultData;
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
             // );
-            // this.MaxIDExist = true;
             // console.log(this.categoryIcons);
-            // this.checkForMaxID();
-            //RESOPONSE DATA BINDING WITH CONTROLS
+            this.setValuesToForm(this.patientDetails);
 
-            this.setValuesToMiscForm(this.patientDetails);
+            this.payDueCheck(resultData.dtPatientPastDetails);
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
@@ -197,7 +193,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-  setValuesToMiscForm(pDetails: Registrationdetails) {
+  setValuesToForm(pDetails: Registrationdetails) {
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
@@ -214,6 +210,21 @@ export class BillingComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
+
+  payDueCheck(dtPatientPastDetails: any) {
+    if (
+      dtPatientPastDetails[4] &&
+      dtPatientPastDetails[4].id > 0 &&
+      dtPatientPastDetails[4].data > 0
+    ) {
+      this.matDialog.open(PaydueComponent, {
+        width: "30vw",
+        data: {
+          dueAmount: dtPatientPastDetails[4].data,
+        },
+      });
+    }
+  }
 
   appointmentSearch() {
     this.matDialog.open(AppointmentSearchDialogComponent, {

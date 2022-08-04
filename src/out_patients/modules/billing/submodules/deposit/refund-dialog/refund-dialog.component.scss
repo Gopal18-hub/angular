@@ -65,3 +65,8 @@
 ::ng-deep .refundheight{
     height: 5vh !important;
 }
+.payabletextbox{
+::ng-deep .mat-form-field{
+line-height: 1.25 !important;
+}
+}

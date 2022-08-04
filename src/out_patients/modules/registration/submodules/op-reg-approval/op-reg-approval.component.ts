@@ -119,6 +119,7 @@ export class OpRegApprovalComponent implements OnInit {
       dateOfBirth: {
         title: "DOB",
         type: "date",
+        tooltipColumn: "uDateOfBirth",
       },
       uMobile: {
         title: "Mobile",
