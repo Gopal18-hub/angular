@@ -4,6 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: 'out-patients-initiate-deposit',
@@ -12,7 +14,7 @@ import { takeUntil } from "rxjs/operators";
 })
 export class InitiateDepositComponent implements OnInit {
 
-  constructor(public matDialog: MatDialog, private formService:QuestionControlService) { }
+  constructor(public matDialog: MatDialog, private formService:QuestionControlService, private cookie: CookieService) { }
   
   
   initiatedepositformdata = {
@@ -48,6 +50,9 @@ export class InitiateDepositComponent implements OnInit {
   initiatedepositForm !: FormGroup;
   questions:any;
   
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
+  
   private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -55,6 +60,8 @@ export class InitiateDepositComponent implements OnInit {
     );
     this.initiatedepositForm=formResult.form;
     this.questions=formResult.questions;
+    
+    this.lastUpdatedBy = this.cookie.get("UserName"); 
   }
 
 }

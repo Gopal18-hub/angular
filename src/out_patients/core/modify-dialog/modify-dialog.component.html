@@ -103,8 +103,8 @@
           [form]="OPUpdateForm"
           [questions]="questions[8]"
           [index]="8"
-        ></maxhealth-question>
-      </div>
+        ></maxhealth-question>       
+      </div>      
       <div class="w-1/45">
         <maxhealth-question
           [question]="questions[9]"
@@ -113,10 +113,13 @@
           [index]="9"
           [ngClass]="{
             dataModified:
-              data.patientDetails.pemail != data.modifiedDetails.pemail
+              data.patientDetails.dateOfBirth != data.modifiedDetails.dateOfBirth ||
+              data.patientDetails.age != data.modifiedDetails.age || 
+              data.patientDetails.ageTypeName != data.modifiedDetails.ageTypeName
           }"
-        ></maxhealth-question>
-      </div>
+        ></maxhealth-question>        
+      </div>      
+     
       <div class="w-1/45">
         <maxhealth-question
           [question]="questions[10]"
@@ -124,7 +127,7 @@
           [questions]="questions[10]"
           [index]="10"
         ></maxhealth-question>
-      </div>
+      </div>      
       <div class="w-1/45">
         <maxhealth-question
           [question]="questions[11]"
@@ -133,7 +136,7 @@
           [index]="11"
           [ngClass]="{
             dataModified:
-              data.patientDetails.pphone != data.modifiedDetails.pphone
+              data.patientDetails.pemail != data.modifiedDetails.pemail
           }"
         ></maxhealth-question>
       </div>
@@ -153,8 +156,7 @@
           [index]="13"
           [ngClass]="{
             dataModified:
-              data.patientDetails.nationalityName !=
-              data.modifiedDetails.nationality
+              data.patientDetails.pphone != data.modifiedDetails.pphone
           }"
         ></maxhealth-question>
       </div>
@@ -172,6 +174,27 @@
           [form]="OPUpdateForm"
           [questions]="questions[15]"
           [index]="15"
+          [ngClass]="{
+            dataModified:
+              data.patientDetails.nationalityName !=
+              data.modifiedDetails.nationality
+          }"
+        ></maxhealth-question>
+      </div>
+      <div class="w-1/45">
+        <maxhealth-question
+          [question]="questions[16]"
+          [form]="OPUpdateForm"
+          [questions]="questions[16]"
+          [index]="16"
+        ></maxhealth-question>
+      </div>
+      <div class="w-1/45">
+        <maxhealth-question
+          [question]="questions[17]"
+          [form]="OPUpdateForm"
+          [questions]="questions[17]"
+          [index]="17"
           [ngClass]="{
             dataModified:
               data.patientDetails.foreigner != data.modifiedDetails.foreigner
