@@ -566,10 +566,19 @@ export class OpRegistrationComponent implements OnInit {
           relativeTo: this.route,
         });
         const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata[0]);
         if (lookupdata.length == 1) {
           if (lookupdata[0] && "maxid" in lookupdata[0]) {
             this.OPRegForm.value.maxid = lookupdata[0]["maxid"];
             this.getPatientDetailsByMaxId();
+            // if (lookupdata[0]["mergeLinked"]) {
+            //   this.messageDialogService.info(
+            //     "Max Id :" +
+            //       lookupdata[0]["maxid"] +
+            //       " merged with these " +
+            //       lookupdata[0]["mergeLinked"]
+            //   );
+            // }
           }
         }
       });
@@ -792,6 +801,14 @@ export class OpRegistrationComponent implements OnInit {
           //this.questions[9].disabled = true;
           this.OPRegForm.controls["age"].disable();
           this.questions[10].disabled = true;
+          if (!this.maxIDChangeCall) {
+            if (this.checkForModifiedPatientDetail()) {
+              this.modfiedPatiendDetails.dateOfBirth =
+                this.OPRegForm.value.dateOfBirth;
+              this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+              this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+            }
+          }
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -821,6 +838,15 @@ export class OpRegistrationComponent implements OnInit {
                 }
               }
             }
+            if (!this.maxIDChangeCall) {
+              if (this.checkForModifiedPatientDetail()) {
+                this.modfiedPatiendDetails.dateOfBirth =
+                  this.OPRegForm.value.dateOfBirth;
+                this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+                this.modfiedPatiendDetails.agetype =
+                  this.OPRegForm.value.ageType;
+              }
+            }
           } else {
             this.questions[8].disabled = false;
           }
@@ -836,6 +862,14 @@ export class OpRegistrationComponent implements OnInit {
         if (value != undefined && value != null && value != "" && value > 0) {
           this.validatePatientAge(value);
           this.getSimilarpatientlistonagetype();
+          if (!this.maxIDChangeCall) {
+            if (this.checkForModifiedPatientDetail()) {
+              this.modfiedPatiendDetails.dateOfBirth =
+                this.OPRegForm.value.dateOfBirth;
+              this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+              this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+            }
+          }
         }
       });
 
@@ -3191,6 +3225,9 @@ export class OpRegistrationComponent implements OnInit {
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
     //this.checkForForeignerCheckbox();
+    let ageTypeName = this.ageTypeList.filter(
+      (a) => a.id === this.OPRegForm.value.ageType
+    )[0].name;
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -3220,7 +3257,14 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.mobileNumber,
       false,
       "",
-      ""
+      "",
+      this.datepipe.transform(
+        this.OPRegForm.value.dob,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || null,
+      this.OPRegForm.controls["age"].value,
+      this.OPRegForm.value.ageType,
+      ageTypeName
     ));
   }
 
@@ -3242,6 +3286,7 @@ export class OpRegistrationComponent implements OnInit {
             "yyyy-MM-ddThh:mm:ss"
           )
         : "1900-01-01T00:00:00";
+
     this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       patientDetails.registrationno,
       patientDetails.iacode,
@@ -3268,7 +3313,14 @@ export class OpRegistrationComponent implements OnInit {
       patientDetails.pphone,
       false,
       "",
-      ""
+      "",
+      this.datepipe.transform(
+        patientDetails.dateOfBirth,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || null,
+      patientDetails.age,
+      patientDetails.agetype,
+      patientDetails.ageTypeName
     );
   }
 
