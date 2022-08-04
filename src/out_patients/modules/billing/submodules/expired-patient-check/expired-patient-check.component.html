@@ -5,13 +5,24 @@
                 <a class="ml-3" mat-tab-link [active]="true">Expired Patient Check</a> 
             </li>
         </ul>
+        <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="mt-1 cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+       
+      />
+    </div>
     </nav>
     <mat-tab-nav-panel #tabPanel>
         <div class="h-full bg-image p-2" >
 
             <!-------------------------------------FIRST ROW------------------------------------------------------>
-        <div class="flex h-2/10  bg-row p-1 border-radius-lg"  >
-            <div class="w-3/4 h-full mt-2">
+        <div class="flex align-items-center h-2/10  bg-row  border-radius-lg p-1"  >
+            <div class="w-3/4 h-full ">
                 <form [formGroup]="expiredpatientForm">
                     <div class="flex h-full ">
                         <div class="ml-2  max-health-primary-color">
@@ -43,47 +54,47 @@
             </div>
             <div class="w-1/4 ">
                 <div class=" float-right mr-2">          
-                     <button mat-raised-button color="primary" type="submit"  (click)="onMaxidSearch()">
+                     <button mat-raised-button color="primary" type="submit"  (click)="onMaxidSearch(expiredpatientForm.value.maxid)" class="button-height">
 
                             <img src="assets/lens.svg" class="lens-icon">
 
-                            Search
+                            <span class="text-position">  Search</span>
 
                         </button>
                 </div>
             </div>
         </div>
         <!----------------------------------------SECOND ROW--------------------------------------------------------------->
-        <div class=" flex h-2/10 mt-1 p-3 bg-row border-radius-lg">
-        <div  class="w-1/7">
+        <div class=" flex align-items-center h-2/10 mt-1 p-0-6 bg-row border-radius-lg">
+        <div  class="w-1/7  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">Name:</mat-label>
-            <span class="ml-2">{{name}}</span>
+            <span class="ml-2" title="{{name}}">{{name}}</span>
             </div>
     
-            <div class="w-1/10">
+            <div class="w-1/10  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
-            <span class="ml-2">{{age}}</span>
+            <span class="ml-2" title="{{age}}">{{age}}</span>
             </div>  
     
-            <div  class="w-1/10">
+            <div  class="w-1/10  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
-            <span class="ml-2">{{gender}}</span>
+            <span class="ml-2" title="{{gender}}">{{gender}}</span>
              </div>
     
-             <div  class="w-12">
+             <div  class="w-12  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color ">DOB:</mat-label>
-            <span class="ml-2">{{dob}}</span>
+            <span class="ml-2" title="{{dob}}">{{dob}}</span>
              </div>
     
     
-             <div  class="w-12">
+             <div  class="w-12  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
-            <span class="ml-2">{{nationality}}</span>
+            <span class="ml-2" title="{{nationality}}">{{nationality}}</span>
              </div>
     
-             <div  class="w-1/6">
+             <div  class="w-1/6  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
-            <span class="ml-2">{{ssn}}</span>
+            <span class="ml-2" title="{{ssn}}">{{ssn}}</span>
              </div>
     
         </div>
@@ -109,13 +120,15 @@
                         <mat-label class="max-health-primary-color font-semi-bold">Date of Expiry Intimation</mat-label>
                     </div>
                     <div class=" w-3/10">
-                        <maxhealth-question
-                        [question]="questions[3]"
-                        [form]="expiredpatientForm"
-                        [questions]="questions[3]"
-                        [index]="3"
-                        >
-                        </maxhealth-question>
+                        <div class="w-3/5">
+                            <maxhealth-question
+                            [question]="questions[3]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[3]"
+                            [index]="3"
+                            >
+                            </maxhealth-question>
+                        </div>
                     </div>
                 </div>
                 <div class="flex w-full ml-8 h-3/5">
@@ -123,13 +136,16 @@
                         <mat-label class="max-health-primary-color font-semi-bold">Remarks</mat-label>
                         <span class="asterisk-color">*</span>
                     </div>
-                    <div class="w-1/2 ml-8">
-                        <maxhealth-question
-                        [question]="questions[4]"
-                        [form]="expiredpatientForm"
-                        [questions]="questions[4]"
-                        [index]="4"
-                        ></maxhealth-question>
+                    <div class="w-1/2 ml-8 text-scrollbar" >
+                        <!-- <div class="w-137"> -->
+                            <maxhealth-question
+                            [question]="questions[4]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[4]"
+                            [index]="4"
+                            ></maxhealth-question>
+                        <!-- </div> -->
+                      
                     </div>
                 </div>
 
@@ -139,7 +155,7 @@
             </div> -->
         </div>
         <!-----------------------------------------FOURTH ROW------------------------------------------------------------------------->
-        <div class="float-right flex mt-6p h-1/10">
+        <div class="float-right flex mt-6p h-1/10 button-height">
             <div>
                  <button mat-raised-button color="primary" (click)="saveExpiredpatient()"
                  [disabled]="disableButton">Save</button>
@@ -152,5 +168,10 @@
             </div>
         </div>
         </div> 
-    </mat-tab-nav-panel>   
+    </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between max-health-primary-color ">
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>        
    

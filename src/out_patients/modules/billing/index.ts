@@ -66,7 +66,14 @@ import { PostDischargeFollowUpBillingComponent } from '../billing/submodules/pos
 import { PostDischargeBillComponent } from './submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component';
 import { PostDischargeServicesComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component';
 import { PostDischargeCreditDetailsComponent } from './submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component';
-import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component'
+import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component';
+import { PaydueComponent } from './submodules/billing/prompts/paydue/paydue.component';
+import { InvestigationWarningComponent } from './submodules/billing/prompts/investigation-warning/investigation-warning.component';
+import { UnbilledInvestigationComponent } from './submodules/billing/prompts/unbilled-investigation/unbilled-investigation.component';
+import { HealthCheckupWarningComponent } from './submodules/billing/prompts/health-checkup-warning/health-checkup-warning.component';
+import { ConsumableDetailsComponent } from './submodules/billing/prompts/consumable-details/consumable-details.component';
+import { ReferalDoctorWarningComponent } from './submodules/billing/prompts/referal-doctor-warning/referal-doctor-warning.component';
+import { PackageDoctorModificationComponent } from './submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component'
 @NgModule({
   declarations: [
     BillingComponent,
@@ -111,7 +118,14 @@ import { PostDischargeConsultationsComponent } from './submodules/post-discharge
     PostDischargeBillComponent,
     PostDischargeServicesComponent,
     PostDischargeCreditDetailsComponent,
-    PostDischargeConsultationsComponent
+    PostDischargeConsultationsComponent,
+    PaydueComponent,
+    InvestigationWarningComponent,
+    UnbilledInvestigationComponent,
+    HealthCheckupWarningComponent,
+    ConsumableDetailsComponent,
+    ReferalDoctorWarningComponent,
+    PackageDoctorModificationComponent
   ],
   imports: [
     BillingRoutingModule,
