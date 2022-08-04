@@ -12,8 +12,10 @@ import { DMSComponent } from '@modules/registration/submodules/dms/dms.component
 import { Registrationdetails } from '@core/types/registeredPatientDetial.Interface';
 import { DMSrefreshModel } from '@core/models/DMSrefresh.Model';
 import { GetCompanyDataInterface } from '@core/types/employeesponsor/getCompanydata.Interface';
+import { PatientService } from '@core/services/patient.service';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { PatientDetails } from '@core/models/patientDetailsModel.Model';
 @Component({
   selector: 'out-patients-post-discharge-follow-up-billing',
   templateUrl: './post-discharge-follow-up-billing.component.html',
@@ -52,11 +54,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "autocomplete",
+        type: "dropdown",
         options: [],
       },
       corporate: {
-        type: "autocomplete",
+        type: "dropdown",
         options: [],
       },
       narration: {
@@ -93,7 +95,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     private matdialog: MatDialog,
     private http: HttpService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private patientService: PatientService
   ) { }
 
   ngOnInit(): void {
@@ -154,6 +157,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
             // this.clear();
             // this.flushAllObjects();
             this.patientDetails = resultData;
+            console.log(this.patientDetails);
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
             // );
@@ -246,6 +250,12 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.patient = false;
     this.formGroup.reset();
     this.formGroup.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
+    this.patientName = '';
+    this.ssn = '';
+    this.age = '';
+    this.gender = '';
+    this.country = '';
+    this.dob = '';
   }
 
   getAllCompany() {
