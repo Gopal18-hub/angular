@@ -248,9 +248,10 @@
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
           <li
+            
             class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
-            [routerLink]="module.defaultPath"
+            [routerLink]="module.tenentPath+module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
