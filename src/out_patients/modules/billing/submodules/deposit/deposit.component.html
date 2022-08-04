@@ -58,7 +58,7 @@
                 <span class="bg-black ml-1">{{ssn}}</span>
               </div>
               <div class="clearcss mr-1">
-                <button mat-raised-button color="primary" (click)="clear()"> Clear</button>
+                <button mat-raised-button color="primary" (click)="clearDepositpage()"> Clear</button>
               </div>
             </div>
           </div>
@@ -164,3 +164,7 @@
     </div>
   </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between mx-5 max-health-primary-color">
+  <p>Last Update By: {{ lastUpdatedBy }}</p>
+  <P> Date: {{ currentTime }} </P>
+</div>

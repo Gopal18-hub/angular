@@ -219,4 +219,10 @@ export class DepositDialogComponent implements OnInit {
       ""
     ));
   }
+
+  clearsiblingcomponents:boolean = false;
+  cleardepositdialog(){
+    this.clearsiblingcomponents = true;
+    this.makedepositdialogForm.reset();
+  }
 }
