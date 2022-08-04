@@ -5,6 +5,7 @@ import {
   FormArray,
   Validators,
   AbstractControl,
+  ValidatorFn,
 } from "@angular/forms";
 import { QuestionBase } from "../interface/question-base";
 import { DropdownQuestion } from "../types/question-dropdown";
@@ -101,6 +102,9 @@ export class QuestionControlService {
     if (question.required) {
       conditions.push(Validators.required);
     }
+    if (question.type == "textarea") {
+      conditions.push(this.NoWhitespaceValidator());
+    }
     if (question.minimum) {
       if (question.multiple) {
         conditions.push(this.minLengthArray(question.minimum));
@@ -143,6 +147,16 @@ export class QuestionControlService {
       if (c.value.length >= min) return { minLengthArray: { valid: true } };
 
       return { minLengthArray: { valid: false } };
+    };
+  }
+
+  NoWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): any => {
+      if (control.value && control.value != "") {
+        let trimedvalue = control.value.replace(/\s/g, "");
+        if (trimedvalue.length == 0) return { spaceError: { valid: false } };
+        return null;
+      }
     };
   }
 
