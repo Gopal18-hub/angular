@@ -17,6 +17,7 @@ import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
 import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
+import { HealthCheckupWarningComponent } from "./prompts/health-checkup-warning/health-checkup-warning.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -210,6 +211,13 @@ export class BillingComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
+
+  healthCheckupWarning() {
+    this.matDialog.open(HealthCheckupWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+  }
 
   investigationCheck() {
     this.matDialog.open(InvestigationWarningComponent, {
