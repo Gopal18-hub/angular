@@ -20,6 +20,11 @@
     {
         color: black;
     }
+    ::ng-deep .mat-form-field
+    {
+        background-color: white;
+        border-radius: 6px;
+    }
     ::ng-deep .mat-form-field-wrapper{
 
         padding-bottom: 0 !important;
@@ -107,7 +112,7 @@
   
 }
 .fixtable{
-    height: 25.3vh !important;margin-bottom: 4px;
+    height: 25.3vh !important;margin-bottom: px;
 }
 .bg-paymet
 {
