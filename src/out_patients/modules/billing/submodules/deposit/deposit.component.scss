@@ -17,6 +17,9 @@
 .bg-white {
     background-color: white;
     color: rgba(0, 0, 0, 0.87);
+    ::ng-deep .mat-error{
+        margin-top: 10% !important;
+    }
 }
 
 .bg-thirdrow-white {

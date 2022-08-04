@@ -4,6 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { CookieService } from "@shared/services/cookie.service";
 
 
 @Component({
@@ -13,8 +15,11 @@ import { takeUntil } from "rxjs/operators";
 })
 export class OnlineOpBillsComponent implements OnInit {
 
-  constructor(public matDialog: MatDialog, private formService:QuestionControlService) { }
+  constructor(public matDialog: MatDialog, private formService:QuestionControlService, private cookie: CookieService) { }
   
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
+
   @ViewChild("onlineopbillstable") onlineopbillstable: any;
   onlineopbillsformdata = {
     type:"object",
@@ -102,6 +107,8 @@ export class OnlineOpBillsComponent implements OnInit {
     let todaydate = new Date();
     this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
     this.onlineopbillsForm.controls["todate"].setValue(todaydate);
+    
+    this.lastUpdatedBy = this.cookie.get("UserName"); 
   }
 
 }

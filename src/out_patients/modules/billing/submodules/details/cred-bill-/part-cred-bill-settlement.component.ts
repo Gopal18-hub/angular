@@ -96,7 +96,6 @@ export class PartialCredBillComponent implements OnInit {
           {
             title: "Patient Due",
             value: "patientDue",
-            defaultValue: true,
           },
           {
             title: "Company Due",

@@ -5,8 +5,7 @@
 .credit-wrapper {
     
     ::ng-deep mat-label {
-    //   color: var(--primary-color);
-    color: #333333;
+      color: var(--primary-color);
       font-weight: 600;
     }
     .change-password {
@@ -104,7 +103,7 @@ width: 18%;
 }
 .mx-content
 {
-    height: 63%;
+    height: 81%;
 }
 
 
@@ -151,7 +150,6 @@ margin-top: 0.19rem;
     {
         height: 16px;
         width: 16px;
-        // border: #004084;
     }
     ::ng-deep .mat-radio-inner-circle
     {
@@ -166,8 +164,7 @@ padding: 0%;
     ::ng-deep .mat-radio-label
     {
         margin-top: 12%;
-            //   color: var(--primary-color);
-            color: #333333;
+              color: var(--primary-color);
         font-weight: 600;
         width: fit-content;
     }
@@ -178,33 +175,9 @@ padding: 0%;
     }
     ::ng-deep .mat-radio-label-content
     {
-        // padding-left: 1px;
-        padding-bottom: 2px
+        padding-left: 1px;
+        padding-bottom: 1px
       
-    }
-    ::ng-deep .mat-radio-outer-circle 
-    {
-        // height: 16px;
-        // width: 16px;
-        // border-color: #004084;
-        height: 14px;
-        width: 14px;
-              border: 1px solid #004084;
-    }
-    ::ng-deep .mat-radio-inner-circle
-    {
-        height: 15px;
-        width: 15px;
-    }
-    ::ng-deep .mat-radio-label-content
-    {
-        padding-left: 0.0px;
-        padding-bottom: 2px;
-        margin-bottom: 3px;
-    }
-    ::ng-deep .mat-radio-button
-    {
-padding: 0%;
     }
 
 }

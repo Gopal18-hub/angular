@@ -33,7 +33,7 @@
     color: #004084;
 }
 .height{
-    height: 62vh;
+    height: 60.5vh;
 }
 .bg-grey{
     background:#F6F6F6;
@@ -60,4 +60,8 @@
     ::ng-deep .mat-form-field{
         line-height: 2 !important;
     }
+}
+
+::ng-deep .refundheight{
+    height: 5vh !important;
 }

@@ -13,7 +13,7 @@
       </li>
       <li class="maxhealth-spacer"></li>
       <li class="ml-3" *ngFor="let link of link2">
-        <a
+        <!-- <a
           mat-tab-link
           class="cursor-pointer"
           [active]="activeLink2 == link ? true : false"
@@ -21,7 +21,10 @@
         >
           {{ link }}</a
         >
-      </li>
+      </li> -->
+
+      <button mat-raised-button color="primary"  [ngClass]="{'activebutton': activeLink2 == link}" (click)="showgrid(link)"  class="subbtn-class"> {{link}}</button>
+    </li>
     </ul>
   </nav>
   <mat-tab-nav-panel #tabPanel>

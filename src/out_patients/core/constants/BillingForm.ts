@@ -7,7 +7,7 @@ export namespace BillingForm {
         properties: {
           cashamount: {
              type: "number",
-             defaultValue: "0.00"
+             defaultValue: "0.00",
            },
           chequeno: {
             type: "number"
@@ -235,10 +235,10 @@ export namespace BillingForm {
             type: "string"
           },
           iddocumenttype: {
-            type: "autocomplete"
+            type: "dropdown"
           },
           iddocidentityno: {
-            type: "number"
+            type: "string"
           },
           idnameofauthority: {
             type: "string"
@@ -250,10 +250,10 @@ export namespace BillingForm {
             }]
           },
           addressdocumenttype: {
-            type: "autocomplete"
+            type: "dropdown"
           },
           addressdocidentityno: {
-            type: "number"
+            type: "string"
           },
           addressnameofauthority: {
             type: "string"
