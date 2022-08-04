@@ -262,10 +262,16 @@ export class PatientHistoryComponent implements OnInit {
         
       }
     });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      console.log(event);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.mobilechange();
+      }
+    });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
       console.log(event);
-      if (event.key === "Enter" || event.key === "Tab") {
-        event.preventDefault();
+      if (event.key === "Tab") {
         this.mobilechange();
       }
     });
