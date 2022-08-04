@@ -72,6 +72,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   };
   formGroup!: FormGroup;
   questions: any;
+  userName: string = '';
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
   categoryIcons: any;
   patient: boolean = false;
   patientName!: string;
@@ -108,6 +111,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.userName = this.cookie.get("Name");
+    this.lastUpdatedBy = this.cookie.get("UserName");
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
