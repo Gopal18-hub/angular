@@ -15,6 +15,20 @@ import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatMenuModule } from "@angular/material/menu";
 import { RouterModule } from "@angular/router";
+import { MaxTableFormComponent } from "./max-table-form/max-table-form.component";
+
+import { DynamicFormsModule } from "../dynamic-forms";
+
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { MatSelectModule } from "@angular/material/select";
+import {
+  NgxMatDatetimePickerModule,
+  NgxMatNativeDateModule,
+} from "@angular-material-components/datetime-picker";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { TextFieldModule } from "@angular/cdk/text-field";
 
 @NgModule({
   imports: [
@@ -32,9 +46,18 @@ import { RouterModule } from "@angular/router";
     MatTooltipModule,
     MatMenuModule,
     RouterModule,
+    DynamicFormsModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    NgxMatDatetimePickerModule,
+    OverlayModule,
+    TextFieldModule,
+    NgxMatNativeDateModule,
   ],
-  exports: [MaxTableComponent],
-  declarations: [MaxTableComponent],
+  exports: [MaxTableComponent, MaxTableFormComponent],
+  declarations: [MaxTableComponent, MaxTableFormComponent],
   providers: [],
 })
 export class MaxHealthTableModule {}

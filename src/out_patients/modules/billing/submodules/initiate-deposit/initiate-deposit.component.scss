@@ -1,0 +1,47 @@
+.bg-initiatedeposit {
+    background-color: #F6F6F6;
+    color: #004084;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+::ng-deep .mat-form-field-wrapper {
+
+    padding-bottom: 0 !important;
+
+}
+
+.wt-nowrap {
+    white-space: nowrap;
+}
+
+.serachcss {
+    position: relative !important;
+}
+
+.iconcss {
+    ::ng-deep {
+        position: absolute !important;
+        padding-top: 1% !important;
+        padding-left: 1% !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+
+}
+
+.initiatedeposit-matnav {
+    ::ng-deep .mat-tab-link {
+        min-width: 0px !important;
+    }
+}
+
+.initiatelens-icon {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+}

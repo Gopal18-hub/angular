@@ -1,0 +1,50 @@
+.bg-grey {
+    background: #F6F6F6;
+}
+
+.bg-lightgrey {
+    background-color: #D2D0D0;
+}
+
+.clr-primary {
+    color: #004084;
+}
+
+.bg-white {
+    background-color: #fff;
+    color: #000;
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+.serachcss {
+    position: relative !important;
+}
+
+.iconcss {
+    ::ng-deep {
+        position: absolute !important;
+        padding: 1px !important;
+        border-radius: 4px !important;
+        left: 1px !important;
+    }
+
+}
+
+.onlineoptable{
+    ::ng-deep .max-table-wrapper{
+        border-radius: 0.75rem;
+        border: 1px solid #707070 !important;
+    }
+}
+
+.onlineoplens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+}
+   

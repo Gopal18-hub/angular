@@ -8,12 +8,12 @@
           [active]="activeLink1 == link ? true : false"
           (click)="showmain(link)"
         >
-          {{ link }}</a
+          {{ link.value }}</a
         >
       </li>
       <li class="maxhealth-spacer"></li>
       <li class="ml-3" *ngFor="let link of link2">
-        <a
+        <!-- <a
           mat-tab-link
           class="cursor-pointer"
           [active]="activeLink2 == link ? true : false"
@@ -21,7 +21,10 @@
         >
           {{ link }}</a
         >
-      </li>
+      </li> -->
+
+      <button mat-raised-button color="primary"  [ngClass]="{'activebutton': activeLink2 == link}" (click)="showgrid(link)"  class="subbtn-class"> {{link}}</button>
+    </li>
     </ul>
   </nav>
   <mat-tab-nav-panel #tabPanel>
@@ -47,14 +50,14 @@
         <ng-container *ngIf="showapprovalaccepting">
           <maxhealth-table
             class="w-full h-full"
-            [config]="approveorrejectconfig"
+            [config]="approveconfig"
             [data]="opApprovalacceptList"
           ></maxhealth-table>
         </ng-container>
         <ng-container *ngIf="showapprovalreject">
           <maxhealth-table
             class="w-full h-full"
-            [config]="approveorrejectconfig"
+            [config]="rejectconfig"
             [data]="opApprovalrejectList"
           ></maxhealth-table>
         </ng-container>
@@ -67,6 +70,11 @@
           type="submit"
           *ngIf="opApprovalList && enableapprovebtn"
           (click)="approvalApproveItem()"
+          accessControl
+          masterModule = "2"
+          moduleId="7"
+          featureId="595"
+          actionId="1552"
         >
           Approve
         </button>
@@ -77,6 +85,11 @@
           type="submit"
           *ngIf="opApprovalList && enableapprovebtn"
           (click)="approvalRejectItem()"
+          accessControl
+          masterModule = "2"
+          moduleId="7"
+          featureId="595"
+          actionId="1552"
         >
           Reject
         </button>

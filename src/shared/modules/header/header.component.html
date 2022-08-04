@@ -7,7 +7,7 @@
           location
         }}</span>
         <span class="mr-6 font-sm max-health-primary-color">{{ station }}</span>
-        <span class="mr-1 font-sm">Welcome {{ usrname }}</span>
+        <span class="mr-1 font-sm">Welcome {{ usrname }}({{ user }})</span>
 
         <span class="mr-6"
           ><svg
@@ -102,25 +102,33 @@
           </svg>
         </button>
       </div>
-
+<!--   [matMenuTriggerFor]="menu"
+                  [matMenuTriggerData]="{ module: module }"-->
       <div>
         <ul class="flex flex-row list-unstyled main-modules items-center">
           <ng-container *ngFor="let module of modules">
             <ng-container *ngIf="!module.dontShow">
               <ng-container *ngIf="module.moreOptions">
-                <li
-                  [matMenuTriggerFor]="menu"
-                  [matMenuTriggerData]="{ module: module }"
-                  class="mr-4 cursor-pointer"
-                  [ngClass]="{ active: activeModule?.id == module.id }"
+                <li                
+                  class="mr-2 cursor-pointer"
+                  [ngClass]="{
+                    active: activeModule?.id == module.id,
+                    disabled: module.disabled
+                  }"
+                  [attr.disabled]="module.disabled"
+                  (click)="activeModule = module"
                 >
                   {{ module.title }}
                 </li>
               </ng-container>
               <ng-container *ngIf="!module.moreOptions">
                 <li
-                  class="mr-4 cursor-pointer"
-                  [ngClass]="{ active: activeModule?.id == module.id }"
+                  class="mr-2 cursor-pointer"
+                  [ngClass]="{
+                    active: activeModule?.id == module.id,
+                    disabled: module.disabled
+                  }"
+                  [attr.disabled]="module.disabled"
                 >
                   {{ module.title }}
                 </li>
@@ -128,7 +136,7 @@
             </ng-container>
           </ng-container>
         </ul>
-        <mat-menu #menu="matMenu" class="header-menu">
+        <!-- <mat-menu #menu="matMenu" class="header-menu">
           <ng-template matMenuContent let-module="module">
             <div class="flex flex-rows w-full h-full p-4">
               <div class="flex flex-column w-1/2 border-right items-start">
@@ -163,7 +171,7 @@
               </div>
             </div>
           </ng-template>
-        </mat-menu>
+        </mat-menu> -->
       </div>
     </div>
   </div>

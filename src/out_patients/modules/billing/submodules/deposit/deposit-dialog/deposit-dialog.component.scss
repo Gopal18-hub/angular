@@ -1,0 +1,62 @@
+::ng-deep .textarea-length textarea{
+    min-height: 294px !important;
+}
+
+::ng-deep mat-radio-group{
+    flex-direction: row !important;
+    gap: 10px !important;
+}
+
+::ng-deep .mat-form-field-wrapper{
+
+    padding-bottom: 0 !important;
+
+}
+
+.bg-white{
+    background-color: white;
+}
+
+.text-white{
+    color:white;
+}
+
+.bg-blue{
+    background-color: #004084;
+}
+
+.bg-lightgray{
+    background-color:#F6F6F6;
+}
+
+.bg-gray{
+    background-color:#D2D0D0;
+}
+.h-60{
+    height:60%;
+}
+.h-90{
+    height:90%;
+}
+::ng-deep .mat-dialog-container{
+    overflow:hidden !important;
+}
+
+::ng-deep .mat-radio-button{
+    padding-bottom: 0 !important;
+
+}
+.bg-lightblue{
+    background-color:#45C0BE;
+    height: 5vh !important;
+}
+
+.font-white{
+    color:white;
+}
+.textarea-length{
+::ng-deep textarea{
+
+    min-height: 294px !important;
+}
+}

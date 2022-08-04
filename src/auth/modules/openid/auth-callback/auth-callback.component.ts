@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "../../../../shared/services/auth.service";
 import * as Oidc from "oidc-client";
 import { CookieService } from "../../../../shared/services/cookie.service";
-
+import { environment } from "@environments/environment";
 
 @Component({
   selector: "auth-auth-callback",
@@ -11,9 +11,11 @@ import { CookieService } from "../../../../shared/services/cookie.service";
   styleUrls: ["./auth-callback.component.scss"],
 })
 export class AuthCallbackComponent implements OnInit {
-  constructor(private router: Router,
-     private auth: AuthService,
-     private cookie:CookieService) {}
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private cookie: CookieService
+  ) {}
 
   ngOnInit(): void {
     this.auth
@@ -21,12 +23,15 @@ export class AuthCallbackComponent implements OnInit {
       .then((user) => {
         // console.log(user.access_token);
         // this.auth.setToken(user.access_token);
-        this.cookie.set('accessToken',user.access_token);        
+        this.cookie.set("accessToken", user.access_token);
         this.cookie.set("role", user.profile["role"]);
+        this.router.navigate(["dashboard"]);
       })
       .catch((e) => {
         console.log(e);
+        this.cookie.deleteAll();
+        this.cookie.deleteAll("/", environment.cookieUrl, true);
+        this.router.navigate(["login"]);
       });
-    this.router.navigate(["dashboard"]);
   }
 }

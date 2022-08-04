@@ -30,7 +30,11 @@ import { takeUntil } from "rxjs/operators";
   styleUrls: ["./op-reg-approval.component.scss"],
 })
 export class OpRegApprovalComponent implements OnInit {
-  link1 = ["OP Registration Approval", "Hot Listing Approval"]; //, 'OP Refund Approval'
+  link1 = [
+    { value: "OP Registration Approval", id: 1 },
+    { value: "Hot Listing Approval", id: 2 },
+    { value: "OP Refund Approval", id: 3 },
+  ];
   link2 = ["View Pending Request", "Approved Requests", "Reject Requests"];
   activeLink1 = this.link1[0];
   activeLink2 = this.link2[0];
@@ -78,6 +82,7 @@ export class OpRegApprovalComponent implements OnInit {
       "title",
       "fullname",
       "gender",
+      "dateOfBirth",
       "uMobile",
       "uEmail",
       "unationality",
@@ -90,6 +95,9 @@ export class OpRegApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -98,6 +106,9 @@ export class OpRegApprovalComponent implements OnInit {
       title: {
         title: "Title",
         type: "string",
+        style: {
+          width: "50px",
+        },
       },
       fullname: {
         title: "Patient Name",
@@ -107,6 +118,11 @@ export class OpRegApprovalComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+      },
+      dateOfBirth: {
+        title: "DOB",
+        type: "date",
+        tooltipColumn: "uDateOfBirth",
       },
       uMobile: {
         title: "Mobile",
@@ -124,6 +140,10 @@ export class OpRegApprovalComponent implements OnInit {
       uForeigner: {
         title: "Foreigner",
         type: "checkbox",
+        disabledSort: true,
+        style: {
+          width: "60px",
+        },
       },
       usmsRecNo: {
         title: "SMS Receiving Number",
@@ -136,11 +156,12 @@ export class OpRegApprovalComponent implements OnInit {
       insertdatetime: {
         title: "Requested Date",
         type: "date",
+        tooltipColumn: "insertdatetime",
       },
     },
   };
 
-  approveorrejectconfig: any = {
+  approveconfig: any = {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -149,6 +170,7 @@ export class OpRegApprovalComponent implements OnInit {
       "mTitle",
       "fullname",
       "uGender",
+      "uDateOfBirth",
       "uMobile",
       "uEmail",
       "unationality",
@@ -156,11 +178,16 @@ export class OpRegApprovalComponent implements OnInit {
       "usmsRecNo",
       "operatorName",
       "insertdatetime",
+      "approvalDoneBy",
+      "approvedDate",
     ],
     columnsInfo: {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       ssn: {
         title: "SSN",
@@ -173,11 +200,16 @@ export class OpRegApprovalComponent implements OnInit {
       fullname: {
         title: "Patient Name",
         type: "string",
-        tooltipColumn: "modifiedPtnName",
+        tooltipColumn: "fullname",
       },
       uGender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
+      },
+      uDateOfBirth: {
+        title: "DOB",
+        type: "date",
       },
       uMobile: {
         title: "Mobile",
@@ -186,7 +218,7 @@ export class OpRegApprovalComponent implements OnInit {
       uEmail: {
         title: "Email",
         type: "string",
-        tooltipColumn: "uEmail",
+        tooltipColumn: "email",
       },
       unationality: {
         title: "Nationality",
@@ -207,6 +239,108 @@ export class OpRegApprovalComponent implements OnInit {
       insertdatetime: {
         title: "Requested Date",
         type: "date",
+        tooltipColumn: "insertdatetime",
+      },
+      approvalDoneBy: {
+        title: "Approved By",
+        type: "string",
+      },
+      approvedDate: {
+        title: "Approved Date",
+        type: "date",
+        tooltipColumn: "approvedDate",
+      },
+    },
+  };
+
+  rejectconfig: any = {
+    dateformat: "dd/MM/yyyy",
+    selectBox: false,
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "mTitle",
+      "fullname",
+      "uGender",
+      "uDateOfBirth",
+      "uMobile",
+      "uEmail",
+      "unationality",
+      "uForeigner",
+      "usmsRecNo",
+      "operatorName",
+      "insertdatetime",
+      "approvalDoneBy",
+      "approvedDate",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      ssn: {
+        title: "SSN",
+        type: "number",
+      },
+      mTitle: {
+        title: "Title",
+        type: "string",
+      },
+      fullname: {
+        title: "Patient Name",
+        type: "string",
+        tooltipColumn: "fullname",
+      },
+      uGender: {
+        title: "Gender",
+        type: "string",
+        disabledSort: true,
+      },
+      uDateOfBirth: {
+        title: "DOB",
+        type: "date",
+      },
+      uMobile: {
+        title: "Mobile",
+        type: "number",
+      },
+      uEmail: {
+        title: "Email",
+        type: "string",
+        tooltipColumn: "email",
+      },
+      unationality: {
+        title: "Nationality",
+        type: "string",
+      },
+      uForeigner: {
+        title: "Foreigner",
+        type: "checkbox",
+      },
+      usmsRecNo: {
+        title: "SMS Receiving Number",
+        type: "number",
+      },
+      operatorName: {
+        title: "Requested By",
+        type: "string",
+      },
+      insertdatetime: {
+        title: "Requested Date",
+        type: "date",
+        tooltipColumn: "insertdatetime",
+      },
+      approvalDoneBy: {
+        title: "Rejected By",
+        type: "string",
+      },
+      approvedDate: {
+        title: "Rejected Date",
+        type: "date",
+        tooltipColumn: "approvedDate",
       },
     },
   };
@@ -225,16 +359,18 @@ export class OpRegApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchService.searchTrigger
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((formdata: any) => {
-      this.searchApproval(formdata.data);
-    });
-    if(this.from == undefined && this.to == undefined)
-    {
-      this.from = this.datepipe.transform(new Date().setMonth(new Date().getMonth()-1),"dd/MM/yyyy");
-      this.to = this.datepipe.transform(new Date(),"dd/MM/yyyy");
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((formdata: any) => {
+        this.searchApproval(formdata.data);
+      });
+    if (this.from == undefined && this.to == undefined) {
+      this.from = this.datepipe.transform(
+        new Date().setMonth(new Date().getMonth() - 2),
+        "yyyy-MM-dd"
+      );
+      this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-     this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   searchApproval(formdata: any) {
@@ -255,18 +391,19 @@ export class OpRegApprovalComponent implements OnInit {
       this.to = formdata["to"];
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
     }
-    this.showmain("OP Registration Approval");
+    this.showmain(this.link1[0]);
   }
 
   showmain(link: any) {
     console.log(link);
-    if (link == "OP Registration Approval") {
+    if (link.id == 1) {
       this.activeLink2 != ""
         ? this.showgrid(this.activeLink2)
         : this.showgrid("View Pending Request");
-    } else if (link == "Hot Listing Approval") {
+    } else if (link.id == 2) {
       this.router.navigate(["registration", "hot-listing-approval"]);
-    } else if (link == "Op Refund Approval") {
+    } else if (link.id == 3) {
+      this.router.navigate(["out-patient-billing", "op-refund-approval"]);
     }
   }
   showgrid(link: any) {
@@ -284,80 +421,81 @@ export class OpRegApprovalComponent implements OnInit {
     ) {
       this.defaultUI = false;
       this.showapprovalspinner = false;
-      // this.to = (this.to == "" || this.to == undefined) ?  this.today : this.to;
-      // this.to = this.datepipe.transform(this.to, 'yyyy-MM-dd');
-      // this.from = (this.from == "" || this.from == undefined) ? this.today.setDate( this.today.getDate() - 30 ) : this.from;
-      // this.from = this.datepipe.transform(this.from, 'yyyy-MM-dd');
     }
 
     if (link == "View Pending Request") {
       this.activeLink2 = link;
       this.getopapprovalpending()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          resultData = resultData.map((item: any) => {
-            item.fullname = item.modifiedFirstName + " " + item.modifiedLastName;
-            return item;
-          });
-          this.showapprovalspinner = false;
-          this.defaultUI = true;
-          this.opApprovalList = resultData as opRegApprovalModel[];
-          this.showapprovalpending = true;
-          this.showapprovalaccepting = false;
-          this.showapprovalreject = false;
-          this.enableapprovebtn = true;
-          // setTimeout(() => {
-          //   this.approvaltable.selection.changed.subscribe((res: any) => {
-          //     console.log(res);
-          //     //this.modifyDialog(res.added[0]);
-          //   });
-          // });
-          console.log(this.opApprovalList);
-        },
-        (error: any) => {
-          this.opApprovalList = [];
-          this.enableapprovebtn = false;
-          this.defaultUI = false;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-          console.log(error);
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            resultData = resultData.map((item: any) => {
+              item.fullname =
+                item.modifiedFirstName + " " + item.modifiedLastName;
+              return item;
+            });
+
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.opApprovalList = resultData as opRegApprovalModel[];
+            this.showapprovalpending = true;
+            this.showapprovalaccepting = false;
+            this.showapprovalreject = false;
+            this.enableapprovebtn = true;
+
+            if (this.opApprovalList.length == 0) {
+              this.enableapprovebtn = false;
+              this.defaultUI = false;
+              this.opappprovalmessage = "No records found";
+              this.opapprovalimage = "norecordfound";
+            }
+          },
+          (error: any) => {
+            this.opApprovalList = [];
+            this.enableapprovebtn = false;
+            this.defaultUI = false;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+            console.log(error);
+          }
+        );
     } else if (link == "Approved Requests") {
       this.activeLink2 = link;
       this.enableapprovebtn = false;
       this.showapprovalreject = false;
       this.showapprovalpending = false;
       this.getopapprovalaccepted()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
-            return item;
-          });
-          this.showapprovalspinner = false;
-          this.defaultUI = true;
-          this.opApprovalacceptList = resultData as opRegApprovalModel[];
-          this.showapprovalaccepting = true;
-          console.log(this.opApprovalacceptList);
-        },
-        (error) => {
-          this.opApprovalacceptList = [];
-          console.log(error);
-          this.defaultUI = false;
-          this.opappprovalmessage = "No records found";
-          this.opapprovalimage = "norecordfound";
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            resultData = resultData.map((item: any) => {
+              item.fullname =
+                item.modifiedFirstName + " " + item.modifiedLastName;
+
+              return item;
+            });
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.opApprovalacceptList = resultData as opRegApprovalModel[];
+            this.showapprovalaccepting = true;
+            console.log(this.opApprovalacceptList);
+          },
+          (error) => {
+            this.opApprovalacceptList = [];
+            console.log(error);
+            this.defaultUI = false;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
     } else if (link == "Reject Requests") {
       this.activeLink2 = link;
       this.enableapprovebtn = false;
       this.getopapprovalrejected().subscribe(
         (resultData) => {
           resultData = resultData.map((item: any) => {
-            item.fullname = item.firstName + " " + item.lastName;
+            item.fullname =
+              item.modifiedFirstName + " " + item.modifiedLastName;
             return item;
           });
           this.showapprovalspinner = false;
@@ -381,6 +519,7 @@ export class OpRegApprovalComponent implements OnInit {
   approvalPendingColumnClick($event: any) {
     this.modifyDialog($event.row);
   }
+
   getopapprovalpending() {
     return this.http.get(
       ApiConstants.opapprovalpending(this.from, this.to, this.hsplocationId)
@@ -397,59 +536,110 @@ export class OpRegApprovalComponent implements OnInit {
     );
   }
 
+  createduserapprovelist: any = [];
   approvalApproveItem() {
+    this.createduserapprovelist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
+      this.createduserapprovelist.push({
+        operatorID: s.operatorID,
+        fullname: s.fullname,
+        maxid: s.maxid,
+      });
     });
-    this.approvePostobject = new approveRejectModel(
-      this.ApprovalidList,
-      this.userId,
-      0
+    this.createduserapprovelist = this.createduserapprovelist.filter(
+      (l: { operatorID: number }) => l.operatorID == this.userId
     );
-    this.approvalpostapi(this.approvePostobject)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => {
-        console.log(resultdata);
-        this.messageDialogService.success("Update Request Approved");
-        this.showgrid("View Pending Request");
-        this.ApprovalidList = [];
-      },
-      (error) => {
-        console.log(error);
-        this.ApprovalidList = [];
-        this.defaultUI = true;
-        this.opappprovalmessage = "No records found";
-        this.opapprovalimage = "norecordfound";
-      }
-    );
+
+    if (this.createduserapprovelist.length > 0) {
+      var MaxId = this.createduserapprovelist.map((data: any) => data.maxid);
+      this.messageDialogService.error(
+        "You are not allowed to approve/reject request generated by youself." +
+          "Max ID: " +
+          MaxId
+      );
+    } else {
+      this.approvePostobject = new approveRejectModel(
+        this.ApprovalidList,
+        this.userId,
+        0
+      );
+      this.approvalpostapi(this.approvePostobject)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            console.log(resultdata);
+            if (resultdata["success"]) {
+              this.messageDialogService.success("Update Request Approved");
+            } else {
+              this.messageDialogService.info(resultdata["message"]);
+            }
+
+            this.showgrid("View Pending Request");
+            this.ApprovalidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.ApprovalidList = [];
+            this.defaultUI = true;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
+    }
   }
 
+  createduserrejectlist: any = [];
   approvalRejectItem() {
+    this.createduserrejectlist = [];
     this.approvaltable.selection.selected.map((s: any) => {
       this.ApprovalidList.push(s.id);
+      this.createduserrejectlist.push({
+        operatorID: s.operatorID,
+        fullname: s.fullname,
+        maxid: s.maxid,
+      });
     });
-    this.rejectPostobject = new approveRejectModel(
-      this.ApprovalidList,
-      this.userId,
-      1
+
+    this.createduserrejectlist = this.createduserrejectlist.filter(
+      (l: { operatorID: number }) => l.operatorID == this.userId
     );
-    this.approvalpostapi(this.rejectPostobject)
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(
-      (resultdata) => {
-        this.messageDialogService.success("Request is deleted");
-        this.showgrid("View Pending Request");
-        this.ApprovalidList = [];
-      },
-      (error) => {
-        console.log(error);
-        this.ApprovalidList = [];
-        this.defaultUI = true;
-        this.opappprovalmessage = "No records found";
-        this.opapprovalimage = "norecordfound";
-      }
-    );
+
+    if (this.createduserrejectlist.length > 0) {
+      var MaxId = this.createduserrejectlist.map((data: any) => data.maxid);
+      this.messageDialogService.error(
+        "You are not allowed to approve/reject request generated by youself." +
+          "Max ID: " +
+          MaxId
+      );
+    } else {
+      this.rejectPostobject = new approveRejectModel(
+        this.ApprovalidList,
+        this.userId,
+        1
+      );
+      this.approvalpostapi(this.rejectPostobject)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => {
+            if (resultdata["success"]) {
+              this.messageDialogService.success("Request is deleted");
+            } else {
+              this.messageDialogService.info(resultdata["message"]);
+            }
+
+            this.showgrid("View Pending Request");
+            this.ApprovalidList = [];
+          },
+          (error) => {
+            console.log(error);
+            this.ApprovalidList = [];
+            this.defaultUI = true;
+            this.opappprovalmessage = "No records found";
+            this.opapprovalimage = "norecordfound";
+          }
+        );
+    }
   }
   approvalpostapi(approvalJSONObject: approveRejectModel[]) {
     return this.http.post(
@@ -461,101 +651,126 @@ export class OpRegApprovalComponent implements OnInit {
   modifyDialog(modfiedapprovalPatiendDetailsForPopUp: OpdpendingrequestModel) {
     this.patientDetails = [];
     this.modfiedPatiendDetails = [];
-    this.patientDetails.push({
-      firstname: modfiedapprovalPatiendDetailsForPopUp.firstName,
-      middleName: modfiedapprovalPatiendDetailsForPopUp.middleName,
-      lastName: modfiedapprovalPatiendDetailsForPopUp.lastName,
-      sexName: modfiedapprovalPatiendDetailsForPopUp.gender,
-      pemail: modfiedapprovalPatiendDetailsForPopUp.email,
-      pphone: modfiedapprovalPatiendDetailsForPopUp.mobile,
-      nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
-      foreigner: modfiedapprovalPatiendDetailsForPopUp.foreigner,
-      id: modfiedapprovalPatiendDetailsForPopUp.id,
-    });
+    if (modfiedapprovalPatiendDetailsForPopUp.operatorID == this.userId) {
+      var MaxId = modfiedapprovalPatiendDetailsForPopUp.maxid;
+      this.messageDialogService.error(
+        "You are not allowed to approve/reject request generated by youself." +
+          "Max ID: " +
+          MaxId
+      );
+    } else {
+      this.patientDetails.push({
+        firstname: modfiedapprovalPatiendDetailsForPopUp.firstName,
+        middleName: modfiedapprovalPatiendDetailsForPopUp.middleName,
+        lastName: modfiedapprovalPatiendDetailsForPopUp.lastName,
+        sexName: modfiedapprovalPatiendDetailsForPopUp.gender,
+        dateOfBirth: modfiedapprovalPatiendDetailsForPopUp.dateOfBirth,
+        age: modfiedapprovalPatiendDetailsForPopUp.age,
+        ageTypeName: modfiedapprovalPatiendDetailsForPopUp.ageType,
+        pemail: modfiedapprovalPatiendDetailsForPopUp.email,
+        pphone: modfiedapprovalPatiendDetailsForPopUp.mobile,
+        nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
+        foreigner: modfiedapprovalPatiendDetailsForPopUp.foreigner,
+        id: modfiedapprovalPatiendDetailsForPopUp.id,
+      });
 
-    this.modfiedPatiendDetails.push({
-      firstname: modfiedapprovalPatiendDetailsForPopUp.modifiedFirstName,
-      middleName: modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
-      lastName: modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
-      title: modfiedapprovalPatiendDetailsForPopUp.uGender,
-      pemail: modfiedapprovalPatiendDetailsForPopUp.uEmail,
-      pphone: modfiedapprovalPatiendDetailsForPopUp.uMobile,
-      nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,
-      foreigner: modfiedapprovalPatiendDetailsForPopUp.uForeigner,
-    });
+      this.modfiedPatiendDetails.push({
+        firstname: modfiedapprovalPatiendDetailsForPopUp.modifiedFirstName,
+        middleName: modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
+        lastName: modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
+        title: modfiedapprovalPatiendDetailsForPopUp.uGender,
+        dateOfBirth: modfiedapprovalPatiendDetailsForPopUp.uDateOfBirth,
+        age: modfiedapprovalPatiendDetailsForPopUp.uAge,
+        ageTypeName: modfiedapprovalPatiendDetailsForPopUp.uAgeType,
+        pemail: modfiedapprovalPatiendDetailsForPopUp.uEmail,
+        pphone: modfiedapprovalPatiendDetailsForPopUp.uMobile,
+        nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,
+        foreigner: modfiedapprovalPatiendDetailsForPopUp.uForeigner,
+      });
 
-    const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
-      width: "30vw",
-      height: "96vh",
-      data: {
-        patientDetails: this.patientDetails[0],
-        modifiedDetails: this.modfiedPatiendDetails[0],
-        submitButton: true,
-      },
-    });
+      const modifyDetailDialogref = this.matDialog.open(ModifyDialogComponent, {
+        width: "30vw",
+        height: "96vh",
+        data: {
+          patientDetails: this.patientDetails[0],
+          modifiedDetails: this.modfiedPatiendDetails[0],
+          submitButton: true,
+        },
+      });
 
-    modifyDetailDialogref.afterClosed()
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
-      console.log(result.data);
-      var resultArr = result.data.split(",");
-      var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
-      console.log(resultArr[1].trim());
-      if (firstvaluekey.startsWith("Accepted")) {
-        if (resultArr[1].split(":")[0].trim() == "id") {
-          this.ApprovalidList.push(resultArr[1].split(":")[1]);
-          this.approvePostobject = new approveRejectModel(
-            this.ApprovalidList,
-            this.userId,
-            0
-          );
-          this.approvalpostapi(this.approvePostobject)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(
-            (resultdata) => {
-              console.log(resultdata);
-              this.messageDialogService.success("Update Request Approved");
-              this.showgrid("View Pending Request");
-              this.ApprovalidList = [];
-            },
-            (error) => {
-              console.log(error);
-              this.ApprovalidList = [];
-              this.defaultUI = true;
-              this.opappprovalmessage = "No records found";
-              this.opapprovalimage = "norecordfound";
+      modifyDetailDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          console.log(result.data);
+          var resultArr = result.data.split(",");
+          var firstvaluekey = String(resultArr[0].split(":")[0]).trim();
+          console.log(resultArr[1].trim());
+          if (firstvaluekey.startsWith("Accepted")) {
+            if (resultArr[1].split(":")[0].trim() == "id") {
+              this.ApprovalidList.push(resultArr[1].split(":")[1]);
+              this.approvePostobject = new approveRejectModel(
+                this.ApprovalidList,
+                this.userId,
+                0
+              );
+              this.approvalpostapi(this.approvePostobject)
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  (resultdata) => {
+                    console.log(resultdata);
+                    if (resultdata["success"]) {
+                      this.messageDialogService.success(
+                        "Update Request Approved"
+                      );
+                    } else {
+                      this.messageDialogService.info(resultdata["message"]);
+                    }
+
+                    this.showgrid("View Pending Request");
+                    this.ApprovalidList = [];
+                  },
+                  (error) => {
+                    console.log(error);
+                    this.ApprovalidList = [];
+                    this.defaultUI = true;
+                    this.opappprovalmessage = "No records found";
+                    this.opapprovalimage = "norecordfound";
+                  }
+                );
             }
-          );
-        }
-      } else if (firstvaluekey.startsWith("reject")) {
-        if (resultArr[1].split(":")[0].trim() == "id") {
-          this.ApprovalidList.push(resultArr[1].split(":")[1]);
-          this.rejectPostobject = new approveRejectModel(
-            this.ApprovalidList,
-            this.userId,
-            1
-          );
-          this.approvalpostapi(this.rejectPostobject)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe(
-            (resultdata) => {
-              this.messageDialogService.success("Request is Rejected");
-              this.showgrid("View Pending Request");
-              this.ApprovalidList = [];
-            },
-            (error) => {
-              console.log(error);
-              this.ApprovalidList = [];
-              this.defaultUI = true;
-              this.opappprovalmessage = "No records found";
-              this.opapprovalimage = "norecordfound";
-            }
-          );
-        }
-      }
-      // if(resultArr[1] == "id"){
+          } else if (firstvaluekey.startsWith("reject")) {
+            if (resultArr[1].split(":")[0].trim() == "id") {
+              this.ApprovalidList.push(resultArr[1].split(":")[1]);
+              this.rejectPostobject = new approveRejectModel(
+                this.ApprovalidList,
+                this.userId,
+                1
+              );
+              this.approvalpostapi(this.rejectPostobject)
+                .pipe(takeUntil(this._destroying$))
+                .subscribe(
+                  (resultdata) => {
+                    if (resultdata["success"]) {
+                      this.messageDialogService.success("Request is Rejected");
+                    } else {
+                      this.messageDialogService.info(resultdata["message"]);
+                    }
 
-      // }
-    });
+                    this.showgrid("View Pending Request");
+                    this.ApprovalidList = [];
+                  },
+                  (error) => {
+                    console.log(error);
+                    this.ApprovalidList = [];
+                    this.defaultUI = true;
+                    this.opappprovalmessage = "No records found";
+                    this.opapprovalimage = "norecordfound";
+                  }
+                );
+            }
+          }
+        });
+    }
   }
 }

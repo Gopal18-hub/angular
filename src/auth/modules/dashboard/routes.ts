@@ -5,15 +5,16 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from "@angular/router";
-import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
+
 import { DashboardComponent } from "./dashboard.component";
 import { RedirectComponent } from "../../../shared/modules/header/redirect/redirect.component";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 
 const routes: Routes = [
   {
     path: "dashboard",
-    //canActivate: [AuthGuardService],
     component: DashboardComponent,
+    canActivate: [AuthGuardService],
   },
   {
     path: "**",

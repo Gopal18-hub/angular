@@ -1,0 +1,86 @@
+.bg-deposit {
+    background-color: #F6F6F6;
+    color: #004084;
+}
+
+.bg-thirdrow {
+    background-color: #ECECEC;
+    color: rgba(0, 0, 0, 0.87);
+}
+.input1{
+    ::ng-deep  .mat-form-field-infix {
+        text-align: right !important;
+    }
+}
+
+
+.bg-white {
+    background-color: white;
+    color: rgba(0, 0, 0, 0.87);
+    ::ng-deep .mat-error{
+        margin-top: 10% !important;
+    }
+}
+
+.bg-thirdrow-white {
+    background-color: white;
+}
+
+.bg-black {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+::ng-deep .mat-form-field-wrapper {
+
+    padding-bottom: 0 !important;
+
+}
+
+.wt-nowrap {
+    white-space: nowrap;
+}
+
+.clr-primary {
+    color: #004084;
+}
+
+.depositradiobutton {
+    ::ng-deep .mat-radio-group {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+}
+
+.clearcss {
+    ::ng-deep .mat-raised-button {
+        min-width: 100px !important;
+    }
+}
+
+.deposit-matnav {
+    ::ng-deep .mat-tab-link {
+        min-width: 0px;
+    }
+}
+
+.deposittable {
+    ::ng-deep .max-table-wrapper {
+        width: 80% !important;
+        overflow-x: scroll !important;
+        border: 1px solid #707070 !important;
+        //border-radius: 0.75rem;
+    }
+}
+.text-overflow{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.deposittablewidth{
+    height: 81% !important;
+}
+
+
+

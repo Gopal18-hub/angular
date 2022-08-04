@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from "@angular/core";
+import { Component, OnInit, Input, Inject, ViewChild } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -11,6 +11,8 @@ import { APP_BASE_HREF } from "@angular/common";
   styleUrls: ["./sub.component.scss"],
 })
 export class SubComponent implements OnInit {
+  @ViewChild("searchVal") globalSearchInputBox: any;
+
   @Input() submodules: any = [];
 
   @Input() module: any;
@@ -34,7 +36,9 @@ export class SubComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchFormData = this.searchService.searchFormData;
-
+    if (!this.submodules) {
+      this.submodules = [];
+    }
     this.submodules.forEach((element: any) => {
       if (
         element.defaultPath &&
@@ -82,9 +86,24 @@ export class SubComponent implements OnInit {
 
   searchSubmit() {
     this.searchService.searchTrigger.next({ data: this.searchForm.value });
+    setTimeout(() => {
+      this.searchForm.reset();
+    }, 800);
   }
 
   goToHome() {
     window.location.href = window.location.origin + "/dashboard";
+  }
+
+  applyFilter(val: string) {
+    const data: any = { globalSearch: 1, SearchTerm: val };
+    const searchFormData: any = {};
+    Object.keys(this.searchForm.value).forEach((ele) => {
+      searchFormData[ele] = val;
+    });
+    this.searchService.searchTrigger.next({ data: data, searchFormData });
+    setTimeout(() => {
+      this.globalSearchInputBox.nativeElement.value = "";
+    }, 800);
   }
 }

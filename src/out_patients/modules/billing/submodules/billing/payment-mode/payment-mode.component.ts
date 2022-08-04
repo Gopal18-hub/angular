@@ -1,405 +1,279 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormSixtyComponent } from '../../../../../core/UI/billing/submodules/form60/form-sixty.component';
+
 @Component({
   selector: 'out-patients-payment-mode',
   templateUrl: './payment-mode.component.html',
   styleUrls: ['./payment-mode.component.scss']
 })
 export class PaymentModeComponent implements OnInit {
-  //Cash
-  cashForm!: FormGroup;
-  cashFormData = {
+  //Payment Mode
+  paymentmodeForm!: FormGroup;
+
+  paymentmodeFormData = {
     title: "",
     type: "object",
     properties: {
-      amount: {
+      servicetype: {
+        type: "autocomplete",
+      },
+      text: {
+        type: "string"
+      },
+      form60: {
+        type: "checkbox",
+        options: [{
+          title: ''
+        }]
+      },
+       payable_name: {
+         type: "string",
+       },
+       remarks: {
+         type: "textarea",
+       },
+       amount: {
+         type: "number"
+       },
+       cardvalidate: {
+        type: "radio",
+        required: false,
+        options: [
+          { title: "Yes", value: "yes" },
+          { title: "No", value: "no" }
+        ]
+      },
+      deposithead: {
+        type: "autocomplete",
+      },
+      refunddeposit: {
+        type: "string",
+      },
+      otpmobile: {
+        type: "number"
+      },
+      mobielno: {
         type: "number",
-        title: "Amount",
-        required: true,
+        readonly: "true"
+      },
+      mail: {
+        type: "string",
+        readonly: "true"
+      },
+      pancheck: {
+        type: "checkbox",
+        options: [{
+          title: ''
+        }]
+      },
+      panno: {
+        type: "string"
+      },
+      chequeno: {
+        type: "number"
+      },
+      chequeissuedate: {
+        type: "date"
+      },
+      chequebankname: {
+        type: "string"
+      },
+      chequebranchname: {
+        type: "string"
+      },
+      chequeamount: {
+        type: "number"
+      },
+      chequeauth: {
+        type: "string"
+      },
+      creditcardno: {
+        type: "number"
+      },
+      creditholdername: {
+        type: "string"
+      },
+      creditbankno:{
+        type: "number"
+      },
+      creditbatchno:{
+        type: "string"
+      },
+      creditamount: {
+        type: "number"
+      },
+      creditapproval: {
+        type: "number"
+      },
+      creditterminal: {
+        type: "string"
+      },
+      creditacquiring: {
+        type: "string"
+      },
+      demandddno: {
+        type: "string"
+      },
+      demandissuedate: {
+        type: "date"
+      },
+      demandbankname: {
+        type: "string"
+      },
+      demandbranch: {
+        type: "string"
+      },
+      demandamount: {
+        type: "number"
+      },
+      demandauth: {
+        type: "string"
+      },
+      mobilesendermobile: {
+        type: "number"
+      },
+      mobilesendermmid: {
+        type: "number"
+      },
+      mobilesendername: {
+        type: "string"
+      },
+      mobilebankname: {
+        type: "string"
+      },
+      mobilebranchname: {
+        type: "string"
+      },
+      mobilebeneficary: {
+        type: "number"
+      },
+      mobiletransactionamt: {
+        type: "number"
+      },
+      mobiletransactionref: {
+        type: "string"
+      },
+      onlinetransacid: {
+        type: "string"
+      },
+      onlinebookingid: {
+        type: "string"
+      },
+      onlinecontactno: {
+        type: "number"
+      },
+      onlineamount: {
+        type: "number"
+      },
+      paytmamount: {
+        type: "number"
+      },
+      paytmwallet: {
+        type: "string"
+      },
+      paytmsendermobile: {
+        type: "number"
+      },
+      paytmsenername: {
+        type: "string"
+      },
+      paytmotp: {
+        type: "number"
+      },
+      paytmtransacref: {
+        type: "string"
+      },
+      paytmorderid: {
+        type: "string"
+      },
+      upicardno: {
+        type: "number"
+      },
+      upitransactionid: {
+        type: "string"
+      },
+      upibankname: {
+        type: "string"
+      },
+      upiamount : {
+        type: "number"
+      },
+      upibatchno: {
+        type: "string"
+      },
+      upiapproval: {
+        type: "string"
+      },
+      upiterminal: {
+        type: "string"
+      },
+      upiacquiring: {
+        type: "string"
+      },
+      mainradio: {
+        type: "radio",
+        required: false,
+        options: [
+          { title: "Form 60", value: "form60" },
+          { title: "Pan card No.", value: "pancardno" },
+        ]
       }
     },
   };
-  isShowCash: boolean = true;
   questions: any;
-  //cheque
-  chequeForm!: FormGroup;
-  chequeFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      neft: {
-        type: "number",
-        title: "Cheque/NEFT No.",
-        required: true,
-      },
-      issueDate: {
-        type: "date",
-        title: "Issue Date",
-        required: true,
-      },
-      validity: {
-        type: "date",
-        title: "Validity",
-        required: true,
-      },
-      bank: {
-        type: "string",
-        title: "Bank Name",
-        required: true,
-      },
-      branch: {
-        type: "string",
-        title: "Branch Name",
-        required: true,
-      },
-    },
-  };
-  isShowCheque: boolean = false;
-  chequeQuestions: any;
-  //Credit Card
-  cCardForm!: FormGroup;
-  cCardFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      no: {
-        type: "number",
-        title: "Card No.",
-        required: true,
-      },
-      holder: {
-        type: "string",
-        title: "Card Holder Name",
-        required: true,
-      },
-      bank: {
-        type: "string",
-        title: "Bank Name",
-        required: true,
-      },
-      branch: {
-        type: "string",
-        title: "Branch Name",
-        required: true,
-      },
-      approvalCode: {
-        type: "string",
-        title: "Approval Code",
-        required: true,
-      },
-      terminalId: {
-        type: "string",
-        title: "Terminal ID",
-        required: true,
-      },
-      acqBank: {
-        type: "string",
-        title: "Acquiring Bank",
-        required: true,
-      },
-    },
-  };
-  isShowcCard: boolean = false;
-  cCardQuestions: any;
-  //Draft
-  draftForm!: FormGroup;
-  draftFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      neft: {
-        type: "number",
-        title: "Cheque/NEFT No.",
-        required: true,
-      },
-      issueDate: {
-        type: "date",
-        title: "Issue Date",
-        required: true,
-      },
-      validity: {
-        type: "date",
-        title: "Validity",
-        required: true,
-      },
-      bank: {
-        type: "string",
-        title: "Bank Name",
-        required: true,
-      },
-      branch: {
-        type: "string",
-        title: "Branch Name",
-        required: true,
-      },
-    },
-  };
-  isShowDraft: boolean = false;
-  draftQuestions: any;
-  //Mobile
-  mobileForm!: FormGroup;
-  mobileFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      wallet: {
-        type: "number",
-        title: "Wallet",
-        required: true,
-      },
-      mobile: {
-        type: "string",
-        title: "Sender Mobile No.",
-        required: true,
-      },
-      otp: {
-        type: "string",
-        title: "OTP",
-        required: true,
-      },
-      transRef: {
-        type: "string",
-        title: "Transaction Reference",
-        required: true,
-      },
-      orderId: {
-        type: "string",
-        title: "Order ID",
-        required: true,
-      },
-    },
-  };
-  isShowMobile: boolean = false;
-  mobileQuestions: any;
-  //Online
-  onlineForm!: FormGroup;
-  onlineFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      transId: {
-        type: "number",
-        title: "Transaction ID",
-        required: true,
-      },
-      bookId: {
-        type: "number",
-        title: "Booking ID",
-        required: true,
-      },
-      valid: {
-        type: "string",
-        title: "Card Validation",
-        required: true,
-      },
-      contact: {
-        type: "string",
-        title: "Contact No.",
-        required: true,
-      },
-      amount: {
-        type: "string",
-        title: "Online Paid Amount",
-        required: true,
-      },     
-    },
-  };
-  isShowOnline: boolean = false;
-  onlineQuestions: any;
-  //UPI
-  upiForm!: FormGroup;
-  upiFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      cardNo: {
-        type: "number",
-        title: "Card No.",
-        required: true,
-      },
-      transId: {
-        type: "string",
-        title: "Transaction ID",
-        required: true,
-      },
-      bank: {
-        type: "string",
-        title: "Bank Name",
-        required: true,
-      },
-      batch: {
-        type: "string",
-        title: "Batch No.",
-        required: true,
-      },
-      appCode: {
-        type: "string",
-        title: "Approval Code",
-        required: true,
-      },
-      terminalId: {
-        type: "string",
-        title: "Terminal ID",
-        required: true,
-      },
-      acqBank: {
-        type: "string",
-        title: "Acquiring Bank",
-        required: true,
-      },
-    },
-  };
-  isShowUpi: boolean = false;
-  upiQuestions: any;
-  //Due
-  dueForm!: FormGroup;
-  dueFormData = {
-    title: "",
-    type: "object",
-    properties: {
-      amount: {
-        type: "number",
-        title: "Amount",
-        required: true,
-      },
-      authorise: {
-        type: "number",
-        title: "Authorised By",
-        required: true,
-      },
-      remarks: {
-        type: "string",
-        title: "Due Bill Remarks",
-        required: true,
-      },
-      
-    },
-  };
-  isShowDue: boolean = false;
-  dueQuestions: any;
-  constructor(private formService: QuestionControlService,) { }
+  OPBillingtab:boolean=true;
+
+  constructor( private formService: QuestionControlService, @Inject(MAT_DIALOG_DATA) private data: any, 
+  private matdialog: MatDialog) {
+   }
+
 
   ngOnInit(): void {
-    let cashformResult: any = this.formService.createForm(
-      this.cashFormData.properties,
+    let formResult: any = this.formService.createForm(
+      this.paymentmodeFormData.properties,
       {}
     );
-    this.cashForm = cashformResult.form;
-    this.questions = cashformResult.questions;
-    //Cheque
-    let chequeformResult: any = this.formService.createForm(
-      this.chequeFormData.properties,
-      {}
-    );
-    this.chequeForm = chequeformResult.form;
-    this.chequeQuestions = chequeformResult.questions;
-    //Credit Card
-    let cCardformResult: any = this.formService.createForm(
-      this.cCardFormData.properties,
-      {}
-    );
-    this.cCardForm = cCardformResult.form;
-    this.cCardQuestions = cCardformResult.questions;
-    //Draft
-    let draftformResult: any = this.formService.createForm(
-      this.draftFormData.properties,
-      {}
-    );
-    this.draftForm = draftformResult.form;
-    this.draftQuestions = draftformResult.questions;
-    //Mobile
-    let mobileformResult: any = this.formService.createForm(
-      this.mobileFormData.properties,
-      {}
-    );
-    this.mobileForm = mobileformResult.form;
-    this.mobileQuestions = mobileformResult.questions;
-    //Online
-    let onlineformResult: any = this.formService.createForm(
-      this.onlineFormData.properties,
-      {}
-    );
-    this.onlineForm = onlineformResult.form;
-    this.onlineQuestions = onlineformResult.questions;
-    //UPI
-    let upiformResult: any = this.formService.createForm(
-      this.upiFormData.properties,
-      {}
-    );
-    this.upiForm = upiformResult.form;
-    this.upiQuestions = upiformResult.questions;
-    //Due
-    let dueformResult: any = this.formService.createForm(
-      this.dueFormData.properties,
-      {}
-    );
-    this.dueForm = dueformResult.form;
-    this.dueQuestions = dueformResult.questions;
-
+    this.paymentmodeForm = formResult.form;
+    this.questions = formResult.questions;
+    console.log(this.data);
+    this.paymentmodeForm.controls["mobielno"].setValue(this.data.Mobile);
+    this.paymentmodeForm.controls["mail"].setValue(this.data.Mail);
+    this.paymentmodeForm.controls["panno"].disable();
+    this.paymentmodeForm.controls["mainradio"].disable();
   }
- 
-  tabChanged(tabChangeEvent: MatTabChangeEvent):void {
-    this.isShowCash = false;
-    this.isShowCheque = false;
-    this.isShowcCard = false;
-    this.isShowDraft = false;
-    this.isShowMobile = false;
-    this.isShowOnline = false;
-    this.isShowUpi = false;
-    this.isShowDue = false;
-
-
-    if (tabChangeEvent.tab.textLabel === 'Cash') {
-      this.isShowCash = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Cheque') {
-      this.isShowCheque = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Credit Card') {
-      this.isShowcCard = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Demand Draft') {
-      this.isShowDraft = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Mobile Payment') {
-      this.isShowMobile = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Online Payment') {
-      this.isShowOnline = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'UPI') {
-      this.isShowUpi = true;
-    }
-    else if (tabChangeEvent.tab.textLabel === 'Due Amount') {
-      this.isShowDue = true;
-    }
-
+  ngAfterViewInit(): void{
+    this.paymentmodeForm.controls["mainradio"].valueChanges.subscribe((value:any)=>{
+      if(value == "form60")
+      {
+        this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh"});
+        this.paymentmodeForm.controls["panno"].disable();
+      }
+      else{
+        this.paymentmodeForm.controls["panno"].enable();
+      }
+    })
+    this.paymentmodeForm.controls["amount"].valueChanges.subscribe(
+      (res:any)=>{
+      if(res > 200000)
+      {
+        console.log("200000");
+        this.paymentmodeForm.controls["panno"].enable();
+        this.paymentmodeForm.controls["mainradio"].enable();
+      }
+      else{
+        this.paymentmodeForm.controls["panno"].disable();
+        this.paymentmodeForm.controls["mainradio"].disable();
+        this.paymentmodeForm.controls["mainradio"].reset();
+      }
+    });
+  }
+  clear()
+  {
+    this.paymentmodeForm.reset();
+    this.paymentmodeForm.controls["mobielno"].setValue(this.data.Mobile);
+    this.paymentmodeForm.controls["mail"].setValue(this.data.Mail);
   }
 }

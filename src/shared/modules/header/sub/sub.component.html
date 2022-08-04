@@ -91,6 +91,8 @@
         <input
           matInput
           placeholder="Search for Max id/ First name/ Last name/ Phone/ DOB/health/aa"
+          #searchVal
+          (keydown.enter)="applyFilter(searchVal.value)"
         />
         <span matPrefix class="flex mr-3"
           ><mat-icon>search</mat-icon>
@@ -225,18 +227,33 @@
         <ng-container *ngIf="module.moreOptions">
           <li
             [matMenuTriggerFor]="menu"
-            class="mr-4 cursor-pointer max-health-primary-color"
-            [matMenuTriggerData]="{ module: module }"
+            #subMenuTrigger="matMenuTrigger"
+            class="mr-2 cursor-pointer max-health-primary-color"
+            [matMenuTriggerData]="{
+              module: module,
+              subMenuTrigger: subMenuTrigger
+            }"
             [ngClass]="{ active: activeSubModule?.title == module.title }"
+            (mouseover)="subMenuTrigger.openMenu()"
+            (click)="activeSubModule = module"           
+            routerLinkActive="active-link"
+            (isActiveChange)="
+              onRouterLinkActive($event, module);
+              onPageRouterLinkActive($event, module.childrens[0])
+            "
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             {{ module.title }}
           </li>
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
           <li
-            class="mr-4 cursor-pointer max-health-primary-color"
+            
+            class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
-            [routerLink]="module.defaultPath"
+            [routerLink]=" baseHref == module.tenentPath
+            ? module.defaultPath
+            : module.tenentPath + module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
@@ -253,8 +270,12 @@
         let-aliasMenuItems="module.childrens"
         let-tenentPath="module.tenentPath"
         let-module="module"
+        let-subMenuTrigger="subMenuTrigger"
       >
-        <div class="flex flex-column flex-wrap box">
+        <div
+          class="flex flex-column flex-wrap box"
+          (mouseleave)="subMenuTrigger.closeMenu()"
+        >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
               mat-button

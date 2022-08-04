@@ -281,6 +281,7 @@ And we can use any breakpoint prefix, i.e:
 - `.w-1/7` -> `width: 14.28571%`
 - `.w-6/7` -> `width: 85.71428%`
 - `.w-9/10`-> `width: 90%`
+- `.w-7/10`-> `width: 70%`
 - `.w-1/10`-> `width: 10%`
 - `.w-3/10`-> `width: 30%`
 - `.w-2/10`-> `width: 20%`
@@ -291,8 +292,12 @@ And we can use any breakpoint prefix, i.e:
 - `.w-full`-> `width: 100%`
 - `.w-screen` -> `width: 100vw`
 - `.w-auto` -> `width: auto`
-
-or
+- `.w-1/20` -> `width: 5%`
+- `.w-9/100` -> `width: 9%`
+- `.w-9/50` -> `width: 18%`
+- `.w-7/8` -> `width: 87.5%`
+- `.w-7/20` -> `width: 35%`
+  or
 
 - `.sm:w-1/2`
 - `.md:w-3/4`
@@ -315,6 +320,8 @@ or
 - `.h-full` -> `height: 100%`
 - `.h-screen` -> `height: 100vh`
 - `.h-auto` -> `height: auto`
+- `.h-9/10`-> `height: 90%`
+- `.h-7/10`-> `width: 70%`
 
 or
 
@@ -343,6 +350,7 @@ Setting font-weight:
 - `.font-light` //300
 - `.font-normal` //400
 - `.font-medium` //500
+- `.font-semi-bold` //600
 - `.font-bold` //700
 - `.font-bolder` //800
 

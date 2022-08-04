@@ -98,9 +98,13 @@ export class AuthService {
 
   public logout(): any {
     var query = window.location.search;
+    if (!query.includes("?logoutid=")) {
+      query = "";
+    }
     var logoutIdQuery =
       query && query.toLowerCase().indexOf("?logoutid=") == 0 && query;
-    let response = this.http.getExternal(ApiConstants.logout + logoutIdQuery);
+
+    let response = this.http.post(ApiConstants.logout + logoutIdQuery, null);
     return response;
   }
 
@@ -128,10 +132,6 @@ export class AuthService {
       this.router.navigate(["dashboard"]);
     }
   }
-
-  public getAccessControls() {
-    return [];
-  }
 }
 
 export function getClientSettings(): UserManagerSettings {
@@ -154,7 +154,7 @@ export function getClientSettings(): UserManagerSettings {
     automaticSilentRenew: true,
     includeIdTokenInSilentRenew: true,
     revokeAccessTokenOnSignout: true,
-    accessTokenExpiringNotificationTime: 1200,
+    accessTokenExpiringNotificationTime: 60,
     silent_redirect_uri:
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,

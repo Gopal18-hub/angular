@@ -1,4 +1,4 @@
-<div class="border-radius-lg border max-table-wrapper">
+<div class="border-radius-lg border max-table-wrapper" *ngIf="initiateTable">
   <table
     mat-table
     [dataSource]="dataSource"
@@ -6,6 +6,7 @@
     (matSortChange)="announceSortChange($event)"
     [class.row-click]="config.clickedRows"
     fixedLayout="true"
+    multiTemplateDataRows
   >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -20,6 +21,29 @@
         </mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let row">
+        <ng-container
+          *ngIf="
+            config?.groupby?.parentcolumn &&
+            childrensData[row[config.groupby.parentcolumn]]
+          "
+        >
+          <button
+            mat-icon-button
+            aria-label="expand row"
+            (click)="
+              expandedElement = expandedElement === row ? null : row;
+              $event.stopPropagation()
+            "
+          >
+            <mat-icon *ngIf="expandedElement !== row"
+              >keyboard_arrow_down</mat-icon
+            >
+            <mat-icon *ngIf="expandedElement === row"
+              >keyboard_arrow_up</mat-icon
+            >
+          </button>
+        </ng-container>
+
         <mat-checkbox
           (click)="$event.stopPropagation()"
           (change)="$event ? selection.toggle(row) : null"
@@ -45,23 +69,28 @@
         >
           {{ displayColumnsInfo[col].title }}
         </th>
-        <ng-container *ngIf="!config.columnsInfo[col].tooltipColumn">
+        <ng-container *ngIf="!config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
             *matCellDef="let element"
             (click)="columnClickFun(element, col)"
           >
             <ng-container
-              *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+              *ngIf="displayColumnsInfo[col].type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
-                $implicit: { output: element[col], config: config, col: col }
+                $implicit: {
+                  output: element[col],
+                  config: config,
+                  col: col,
+                  element: element
+                }
               }"
             ></ng-container>
           </td>
         </ng-container>
 
-        <ng-container *ngIf="config.columnsInfo[col].tooltipColumn">
+        <ng-container *ngIf="config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
             *matCellDef="let element"
@@ -70,14 +99,36 @@
             (click)="columnClickFun(element, col)"
           >
             <ng-container
-              *ngIf="displayColumnsInfo[col]?.type"
-              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col]?.type)"
+              *ngIf="displayColumnsInfo[col].type"
+              [ngTemplateOutlet]="getTemplate(displayColumnsInfo[col])"
               [ngTemplateOutletContext]="{
-                $implicit: { output: element[col], config: config, col: col }
+                $implicit: {
+                  output: element[col],
+                  config: config,
+                  col: col,
+                  element: element
+                }
               }"
             ></ng-container>
           </td>
         </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="config?.removeRow">
+      <ng-container matColumnDef="maxRemoveRow">
+        <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
+          &nbsp;
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="pl-4">
+          <button mat-icon-button color="accent" (click)="removeRow(i)">
+            <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+              <path
+                d="m16.5 33.6 7.5-7.5 7.5 7.5 2.1-2.1-7.5-7.5 7.5-7.5-2.1-2.1-7.5 7.5-7.5-7.5-2.1 2.1 7.5 7.5-7.5 7.5ZM24 44q-4.1 0-7.75-1.575-3.65-1.575-6.375-4.3-2.725-2.725-4.3-6.375Q4 28.1 4 24q0-4.15 1.575-7.8 1.575-3.65 4.3-6.35 2.725-2.7 6.375-4.275Q19.9 4 24 4q4.15 0 7.8 1.575 3.65 1.575 6.35 4.275 2.7 2.7 4.275 6.35Q44 19.85 44 24q0 4.1-1.575 7.75-1.575 3.65-4.275 6.375t-6.35 4.3Q28.15 44 24 44Zm0-3q7.1 0 12.05-4.975Q41 31.05 41 24q0-7.1-4.95-12.05Q31.1 7 24 7q-7.05 0-12.025 4.95Q7 16.9 7 24q0 7.05 4.975 12.025Q16.95 41 24 41Zm0-17Z"
+              />
+            </svg>
+          </button>
+        </td>
       </ng-container>
     </ng-container>
 
@@ -106,12 +157,40 @@
       </td>
     </ng-container>
 
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container *ngIf="config?.groupby">
+      <ng-container matColumnDef="expandedDetail">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [attr.colspan]="displayedColumns.length"
+        >
+          <div
+            class="child-element-detail"
+            [@detailExpand]="
+              element == expandedElement ? 'expanded' : 'collapsed'
+            "
+          >
+            <ng-container
+              *ngIf="childrensData[element[config.groupby.parentcolumn]]"
+            >
+              <maxhealth-table
+                [config]="childTableConfig"
+                [data]="childrensData[element[config.groupby.parentcolumn]]"
+              ></maxhealth-table>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <ng-container *ngIf="config.clickedRows">
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         [class.row-is-clicked]="selection.isSelected(row)"
+        class="{{ rowClass(row) }}"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.selectBox && !config.clickedRows">
@@ -125,6 +204,21 @@
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </ng-container>
+    <ng-container *ngIf="config.groupby">
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        class="child-detail-row"
+      ></tr>
+    </ng-container>
+
+    <tr class="mat-row" *matNoDataRow [attr.rowspan]="'10'">
+      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+        <div class="flex align-items-center justify-center">
+          <p>No Data Available</p>
+        </div>
+      </td>
+    </tr>
   </table>
   <!-- <mat-paginator
     [pageSizeOptions]="[10, 15, 20]"
@@ -138,7 +232,7 @@
   <span *ngIf="data?.output">{{ data.output }}</span>
 </ng-template>
 <ng-template #number let-data>
-  <span *ngIf="data?.output">{{ data.output }}</span>
+  <span>{{ data?.output }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
@@ -162,6 +256,109 @@
     disabled
     color="primary"
   ></mat-checkbox>
+</ng-template>
+
+<ng-template #checkboxActive let-data>
+  <mat-checkbox
+    [checked]="!!data.output"
+    color="primary"
+    [(ngModel)]="data.element[data.col]"
+  ></mat-checkbox>
+</ng-template>
+
+<ng-template #input let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+    />
+  </mat-form-field>
+</ng-template>
+
+<ng-template #textarea let-data>
+  <div
+    (click)="data.isOpen = !data.isOpen"
+    cdkOverlayOrigin
+    #trigger="cdkOverlayOrigin"
+    class="cursor-pointer"
+  >
+    {{ data.output }}
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="data.isOpen"
+  >
+    <div class="editable-textarea">
+      <mat-form-field appearance="outline" floatLabel="never">
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="5"
+          [(ngModel)]="data.element[data.col]"
+          [value]="data.element[data.col]"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #inputDate let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [matDatepicker]="datepicker"
+      autocomplete="off"
+    />
+    <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker> </mat-datepicker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #inputDateTime let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <input
+      matInput
+      placeholder="__/__/____"
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [type]="'text'"
+      [ngxMatDatetimePicker]="picker"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(picker)"
+    ></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [enableMeridian]="true">
+    </ngx-mat-datetime-picker>
+  </mat-form-field>
+</ng-template>
+
+<ng-template #dropdown let-data>
+  <mat-form-field appearance="outline" floatLabel="never">
+    <mat-select
+      [(ngModel)]="data.element[data.col]"
+      [value]="data.element[data.col]"
+      [panelClass]="'im-select-dropdown'"
+      disableOptionCentering
+    >
+      <ng-container
+        *ngFor="let opt of data.config.columnsInfo[data.col].options"
+      >
+        <mat-option [value]="opt.value">
+          {{ opt.title }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
 </ng-template>
 
 <ng-template #button let-data>

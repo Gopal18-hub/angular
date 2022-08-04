@@ -16,6 +16,9 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { CookieService } from "@shared/services/cookie.service";
+import { LookupService } from "@core/services/lookup.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "find-patient",
@@ -108,6 +111,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
       gender: {
         title: "Gender",
         type: "string",
+        disabledSort: true,
       },
       dob: {
         title: "DOB",
@@ -117,6 +121,7 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         title: "Address",
         type: "string",
         tooltipColumn: "completeAddress",
+        disabledSort: true,
       },
       phone: {
         title: "Phone",
@@ -143,210 +148,186 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private cookie: CookieService,
+    private lookupService: LookupService,
+    private messageDialogService: MessageDialogService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
-      .subscribe((value) => {
-        this.isAPIProcess = false;
-        this.searchPatient(value);
-        this.processingQueryParams = true;
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {
+          this.isAPIProcess = false;
+          const lookupdata = await this.loadGrid(value);
+          this.processingQueryParams = true;
+        } else {
+          this.getAllpatients()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (resultData) => {
+                this.showspinner = false;
+                this.defaultUI = false;
+                resultData = resultData.map((item: any) => {
+                  item.fullname = item.firstName + " " + item.lastName;
+                  item.notereason = item.noteReason;
+                  return item;
+                });
+                this.patientList = resultData as PatientSearchModel[];
+                this.patientList = this.patientServie.getAllCategoryIcons(
+                  this.patientList
+                );
+
+                this.isAPIProcess = true;
+                console.log(this.patientList);
+                setTimeout(() => {
+                  this.tableRows.selection.changed
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((res: any) => {
+                      console.log(res);
+                      this.router.navigate(
+                        ["registration", "op-registration"],
+                        {
+                          queryParams: { maxId: res.added[0].maxid },
+                        }
+                      );
+                    });
+                });
+              },
+              (error) => {
+                console.log(error);
+                this.patientList = [];
+                this.showspinner = false;
+                this.defaultUI = true;
+                this.findpatientmessage = "No records found";
+                this.findpatientimage = "norecordfound";
+              }
+            );
+        }
       });
   }
 
   ngOnInit(): void {
     //this.defaultUI = false;
-
-    if (!this.processingQueryParams) {
-      this.getAllpatients()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
-            this.patientList = resultData as PatientSearchModel[];
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-
-            this.isAPIProcess = true;
-            console.log(this.patientList);
-            setTimeout(() => {
-              this.tableRows.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.showspinner = false;
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    }
-
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
-      .subscribe((formdata: any) => {
+      .subscribe(async (formdata: any) => {
         console.log(formdata);
-        this.isAPIProcess = false;
-        this.searchPatient(formdata.data);
+        await this.loadGrid(formdata);
       });
   }
 
+  async loadGrid(formdata: any): Promise<any> {
+    this.isAPIProcess = false;
+    this.defaultUI = false;
+    if (formdata.data) {
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
+        this.patientList = [];
+        this.defaultUI = true;
+        this.showspinner = false;
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
+      } else {
+        if (
+          !formdata.data["name"] &&
+          !formdata.data["phone"] &&
+          formdata.data["dob"]
+        ) {
+          this.patientList = [];
+          this.defaultUI = true;
+          this.showspinner = false;
+          this.findpatientmessage =
+            "Please enter Name / Phone in combination with DOB as search criteria";
+          this.findpatientimage = "placeholder";
+        } else {
+          this.processLookupData(lookupdata);
+          if (formdata.data["globalSearch"] == 1) {
+            if (formdata.data["SearchTerm"]) {
+              if (formdata.data["SearchTerm"].includes(".")) {
+                let iacode = formdata.data["SearchTerm"].split(".")[0];
+                let regino = formdata.data["SearchTerm"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            if (formdata.data["maxID"]) {
+              if (formdata.data["maxID"].includes(".")) {
+                let iacode = formdata.data["maxID"].split(".")[0];
+                let regino = formdata.data["maxID"].split(".")[1];
+                if (regino && iacode) {
+                  if (!Number.isNaN(Number(regino)) && iacode.length >= 4) {
+                    if (lookupdata[0]["mergeLinked"]) {
+                      this.messageDialogService.info(
+                        "Max Id :" +
+                          lookupdata[0]["maxid"] +
+                          " merged with these " +
+                          lookupdata[0]["mergeLinked"]
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } else {
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+        this.patientList = [];
+        this.defaultUI = true;
+        this.showspinner = false;
+        this.findpatientmessage = "No records found";
+        this.findpatientimage = "norecordfound";
+      } else {
+        this.processLookupData(lookupdata);
+      }
+    }
+  }
+
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      return item;
+    });
+    this.patientList = resultData;
+    this.patientList = this.patientServie.getAllCategoryIcons(this.patientList);
+    this.isAPIProcess = true;
+    this.showspinner = false;
+    this.defaultUI = false;
+    setTimeout(() => {
+      this.tableRows.selection.changed
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          console.log(res);
+          this.router.navigate(["registration", "op-registration"], {
+            queryParams: { maxId: res.added[0].maxid },
+          });
+        });
+    });
+  }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
   }
 
-  searchPatient(formdata: any) {
-    this.defaultUI = false;
-    this.showspinner = true;
-    let dateOfBirth;
-    let maxid = formdata["maxID"].split(".")[1];
-    if (maxid <= 0 || maxid == undefined || maxid == null || maxid == "") {
-      this.maxId = "";
-    } else {
-      this.maxId = formdata["maxID"];
-    }
-    if (
-      formdata["dob"] != undefined ||
-      formdata["dob"] != null ||
-      formdata["dob"] != ""
-    ) {
-      dateOfBirth = this.datepipe.transform(formdata["dob"], "dd/MM/yyyy");
-    } else {
-      dateOfBirth = "";
-    }
-    if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] == "" &&
-      this.maxId == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      this.getAllpatients()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            this.patientList = resultData;
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
-            this.isAPIProcess = true;
-            this.defaultUI = false;
-            setTimeout(() => {
-              this.tableRows.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-            console.log(this.patientList);
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    } else if (
-      formdata["name"] == "" &&
-      formdata["phone"] == "" &&
-      formdata["dob"] != "" &&
-      this.maxId == "" &&
-      formdata["healthID"] == "" &&
-      formdata["adhaar"] == ""
-    ) {
-      this.patientList = [];
-      this.showspinner = false;
-      this.defaultUI = true;
-      this.findpatientimage = "placeholder";
-      this.findpatientmessage =
-        "Please enter Name / Phone in combination with DOB as search criteria";
-    } else {
-      this.name = formdata["name"];
-      this.mobile = formdata["phone"];
-      this.dob = dateOfBirth || "";
-      this.aadhaarId = formdata["adhaar"];
-      this.healthId = formdata["healthID"];
-      this.getAllpatientsBySearch()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {
-            this.showspinner = false;
-            this.patientList = [];
-            resultData = resultData.map((item: any) => {
-              item.fullname = item.firstName + " " + item.lastName;
-              return item;
-            });
-            this.patientList = resultData;
-            this.patientList = this.patientServie.getAllCategoryIcons(
-              this.patientList
-            );
-
-            this.isAPIProcess = true;
-            setTimeout(() => {
-              this.tableRows.selection.changed
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((res: any) => {
-                  console.log(res);
-                  this.router.navigate(["registration", "op-registration"], {
-                    queryParams: { maxId: res.added[0].maxid },
-                  });
-                });
-            });
-            console.log(this.patientList);
-          },
-          (error) => {
-            console.log(error);
-            this.patientList = [];
-            this.showspinner = false;
-            this.defaultUI = true;
-            this.findpatientmessage = "No records found";
-            this.findpatientimage = "norecordfound";
-          }
-        );
-    }
-  }
-
   getAllpatients() {
-    return this.http.get(ApiConstants.searchPatientApiDefault);
-  }
-
-  getAllpatientsBySearch() {
-    return this.http.get(
-      ApiConstants.searchPatientApi(
-        this.maxId,
-        "",
-        this.name,
-        this.mobile,
-        this.dob,
-        this.aadhaarId,
-        this.healthId
-      )
-    );
+    let hspId = Number(this.cookie.get("HSPLocationId"));
+    return this.http.get(ApiConstants.searchPatientApiDefault(hspId));
   }
 }

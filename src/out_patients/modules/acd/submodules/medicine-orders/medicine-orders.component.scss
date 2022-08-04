@@ -1,0 +1,109 @@
+.sub-bill-overall {
+  .w-12 {
+    width: 12%;
+  }
+  .w-86 {
+    width: 87.25%;
+  }
+  .w-26 {
+    width: 26%;
+  }
+  .h-30vh {
+    height: 30vh;
+  }
+  .h-22vh {
+    height: 22vh;
+  }
+  .w-44 {
+    width: 44%;
+  }
+  .bg-blue {
+    background-color: #bfe8e7;
+  }
+  .print-button {
+    background-color: #5a5a5a;
+  }
+  .bg-deposit {
+    background-color: #f6f6f6;
+  }
+  ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
+      }
+      button {
+        height: 26px;
+        line-height: 26px;
+      }
+    }
+    mat-radio-group {
+      flex-direction: row;
+      width: 100%;
+      mat-radio-button {
+        margin-right: 1.2rem;
+      }
+    }
+  }
+}
+
+::ng-deep tr.Billed{
+background-color: #9FF1AC !important;
+}
+::ng-deep tr.Partial{
+background-color: #F9FCA6 !important;
+}
+::ng-deep tr.Denied{
+background-color: #FFCAA7 !important;
+}  
+::ng-deep td mat-form-field .mat-form-field-wrapper{
+width:175% !important
+}
+::ng-deep .dateW{    
+width: 27% !important;
+}
+::ng-deep .btnW{    
+width: 28% !important;
+}
+::ng-deep .denyBtn{
+width: 22% !important;
+}
+::ng-deep .tableh{    
+height: 42% !important;
+}
+
+.iconcss {
+::ng-deep {
+    position: absolute !important;
+    padding: 1px !important;
+    border-radius: 4px !important;
+    left: 1px !important;
+}
+}
+
+.tokentxt
+{
+  color: #00B2A9;
+}
+
+.serachcss{
+::ng-deep .max-table-wrapper{        
+    border-radius: 0.75rem;
+    border: solid #707070 !important;
+   
+}
+}
+
+
+.bg-lightgray{
+background :#ECECEC; 
+ 
+}
+.bg-darkgray{
+
+background: #d8d8d8;
+}
+
+.bg-white{
+background-color:white;
+color: rgba(0, 0, 0, 0.87);
+}
