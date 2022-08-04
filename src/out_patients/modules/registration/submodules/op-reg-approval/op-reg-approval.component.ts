@@ -82,6 +82,7 @@ export class OpRegApprovalComponent implements OnInit {
       "title",
       "fullname",
       "gender",
+      "dateOfBirth",
       "uMobile",
       "uEmail",
       "unationality",
@@ -114,6 +115,11 @@ export class OpRegApprovalComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+      },
+      dateOfBirth: {
+        title: "DOB",
+        type: "date",
+        tooltipColumn: "uDateOfBirth",
       },
       uMobile: {
         title: "Mobile",
@@ -156,6 +162,7 @@ export class OpRegApprovalComponent implements OnInit {
       "mTitle",
       "fullname",
       "uGender",
+      "uDateOfBirth",
       "uMobile",
       "uEmail",
       "unationality",
@@ -191,6 +198,10 @@ export class OpRegApprovalComponent implements OnInit {
         title: "Gender",
         type: "string",
         disabledSort: true,
+      },
+      uDateOfBirth: {
+        title: "DOB",
+        type: "date",
       },
       uMobile: {
         title: "Mobile",
@@ -241,6 +252,7 @@ export class OpRegApprovalComponent implements OnInit {
       "mTitle",
       "fullname",
       "uGender",
+      "uDateOfBirth",
       "uMobile",
       "uEmail",
       "unationality",
@@ -276,6 +288,10 @@ export class OpRegApprovalComponent implements OnInit {
         title: "Gender",
         type: "string",
         disabledSort: true,
+      },
+      uDateOfBirth: {
+        title: "DOB",
+        type: "date",
       },
       uMobile: {
         title: "Mobile",
@@ -635,6 +651,9 @@ export class OpRegApprovalComponent implements OnInit {
         middleName: modfiedapprovalPatiendDetailsForPopUp.middleName,
         lastName: modfiedapprovalPatiendDetailsForPopUp.lastName,
         sexName: modfiedapprovalPatiendDetailsForPopUp.gender,
+        dateOfBirth: modfiedapprovalPatiendDetailsForPopUp.dateOfBirth,
+        age: modfiedapprovalPatiendDetailsForPopUp.age,
+        ageTypeName: modfiedapprovalPatiendDetailsForPopUp.ageType,
         pemail: modfiedapprovalPatiendDetailsForPopUp.email,
         pphone: modfiedapprovalPatiendDetailsForPopUp.mobile,
         nationalityName: modfiedapprovalPatiendDetailsForPopUp.nationality,
@@ -647,6 +666,9 @@ export class OpRegApprovalComponent implements OnInit {
         middleName: modfiedapprovalPatiendDetailsForPopUp.modifiedMiddleName,
         lastName: modfiedapprovalPatiendDetailsForPopUp.modifiedLastName,
         title: modfiedapprovalPatiendDetailsForPopUp.uGender,
+        dateOfBirth: modfiedapprovalPatiendDetailsForPopUp.uDateOfBirth,
+        age: modfiedapprovalPatiendDetailsForPopUp.uAge,
+        ageTypeName: modfiedapprovalPatiendDetailsForPopUp.uAgeType,
         pemail: modfiedapprovalPatiendDetailsForPopUp.uEmail,
         pphone: modfiedapprovalPatiendDetailsForPopUp.uMobile,
         nationality: modfiedapprovalPatiendDetailsForPopUp.unationality,

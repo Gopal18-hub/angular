@@ -11,6 +11,7 @@ import { EmptyPlaceholderModule } from "@shared/ui/empty-placeholder";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 @NgModule({
     declarations: [
     
@@ -27,7 +28,8 @@ import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-de
         MaxHealthTableModule,
         EmptyPlaceholderModule,
         MatIconModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatProgressSpinnerModule
     ],
     exports: [],
     providers: [

@@ -1,6 +1,6 @@
 <div class="h-1/10 mt-2 w-full flex" >
     <div class="flex w-2/3"  *ngIf="!onRefundpage">
-        <mat-label class="max-health-primary-color font-base font-semi-bold">Service Type:</mat-label>
+        <mat-label class="max-health-primary-color font-base font-medium">Service Type:</mat-label>
         <div class="ml-2 w-3/4">
             <maxhealth-question
             [question]="questions[0]"
@@ -12,7 +12,7 @@
     </div>
 
     <div class="flex w-9/10 "  *ngIf="onRefundpage">
-        <mat-label class="max-health-primary-color  font-base font-semi-bold">Service Type:</mat-label>
+        <mat-label class="max-health-primary-color  font-base font-medium">Service Type:</mat-label>
         <div *ngIf="onRefundpage" class="ml-2 w-4/5 wt-nowrap">
             <p>{{servicetype}}</p>
         </div>
@@ -21,7 +21,7 @@
  
     
     <div class="flex ml-2 w-2/5"  *ngIf="!onRefundpage && isNSSHLocation">
-        <mat-label class="max-health-primary-color font-base font-semi-bold">Deposit Head:</mat-label>
+        <mat-label class="max-health-primary-color font-base font-medium">Deposit Head:</mat-label>
         <div class="ml-2 w-2/3">
             <maxhealth-question
             [question]="questions[1]"
@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="flex ml-2 w-2/5 "  *ngIf="onRefundpage">
-        <mat-label class="max-health-primary-color  font-base font-semi-bold">Deposit Head:</mat-label>
+        <mat-label class="max-health-primary-color  font-base font-medium">Deposit Head:</mat-label>
         <div class="ml-2 wt-nowrap w-3/5">
         <p>{{deposithead}}</p>
     </div>

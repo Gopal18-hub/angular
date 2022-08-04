@@ -13,6 +13,7 @@ import { CookieService } from "@shared/services/cookie.service";
 export class ServiceDepositComponent implements OnInit {
 
   @Input() data!: any;
+  @Input() clearsibilingcomponent : boolean = false;
 
   servicedepositformData = BillingForm.servicedepositFormData;
   servicedepositForm!: FormGroup;
@@ -36,6 +37,11 @@ export class ServiceDepositComponent implements OnInit {
     this.questions = formResult.questions;
     this.isNSSHLocation = true; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
 
+    if(this.clearsibilingcomponent){
+        this.servicedepositForm.reset();
+    }
+    else
+    {
     if(this.data.type == "Deposit")
     {
       this.servicetypeList = this.data.servicetypeList;
@@ -53,8 +59,8 @@ export class ServiceDepositComponent implements OnInit {
       this.onRefundpage = this.data.refundreceiptpage;
       this.servicetype = this.data.selectedservicedeposittype.serviceTypeName;
       this.deposithead = this.data.selectedservicedeposittype.advanceType;      
-    }
-   
+    }   
+   }
   }
   ngAfterViewInit(): void{
     this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });

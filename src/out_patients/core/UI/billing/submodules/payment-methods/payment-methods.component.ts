@@ -5,6 +5,7 @@ import { BillingForm } from '@core/constants/BillingForm';
 import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { QuestionControlService } from '../../../../../../shared/ui/dynamic-forms/service/question-control.service';
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: 'payment-methods',
@@ -13,12 +14,13 @@ import { QuestionControlService } from '../../../../../../shared/ui/dynamic-form
 })
 export class PaymentMethodsComponent implements OnInit {
   @Input() config: any;
+  @Input() clearsibilingcomponent : boolean = false;
 
   refundFormData =  BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
   today: any;
-  constructor( private formService: QuestionControlService) { }
+  constructor( private formService: QuestionControlService, private depositservice: DepositService) { }
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -33,17 +35,26 @@ export class PaymentMethodsComponent implements OnInit {
     this.today = new Date();
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
+    if(this.clearsibilingcomponent){
+        this.refundform.reset();
+    }
   }
 
   PaymentMethodcashdeposit:any=[];
   tabChanged(event:MatTabChangeEvent){
     console.log(event);
     this.refundform.controls["chequeissuedate"].setValue(this.today);
-    this.refundform.controls["demandissuedate"].setValue(this.today);    
+    this.refundform.controls["demandissuedate"].setValue(this.today); 
+    this.depositservice.setFormList(this.refundform.value);
   }
 
   ngAfterViewInit(): void {
     this.Disablecreditfields();
+    this.questions[0].elementRef.addEventListener(
+      "blur",
+      this.tabChanged.bind(this)
+    );
+
   }
 
   Enablecreditfields(){
@@ -65,4 +76,5 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["creditacquiring"].disable();
     this.refundform.controls["creditterminal"].disable();
   }
+
 }
