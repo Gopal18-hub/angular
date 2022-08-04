@@ -14,7 +14,7 @@
     border-radius: 0.5rem 0.5rem 0 0;
     background-color: #DAE9F8;
     color:#004084;
-    font-weight:bold;
+    font-weight:600;
 
 }
 
@@ -67,7 +67,7 @@
     width:12%;
 }
 .h-63{
-    height:63%
+    height:65%
 }
 .h-50{
     height:84%;
@@ -84,8 +84,28 @@
     }
 }
 
-.checkbox-mr{
-    ::ng-deep mat-pseudo-checkbox{
-        margin-right:100%
+.overflow-y-scroll{
+    overflow-y: scroll;
+    ::ng-deep ::-webkit-scrollbar-thumb {
+        background-color: #35b6b4;
+        border-radius: 0 0 4px 0;
     }
 }
+.font-wrapper{
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.text-position{
+    position:relative;
+    bottom:5px;
+  
+}
+.button-height{
+ //   ::ng-deep button{
+        height:4.95vh;
+  //  }
+}
+
+

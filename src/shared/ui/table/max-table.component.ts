@@ -106,8 +106,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.data = this.data.filter((item: any) => {
         return !item[this.config.groupby.childcolumn];
       });
-      console.log(this.data);
-      console.log(this.childrensData);
     }
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
@@ -182,6 +180,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       !this.displayedColumns.includes("actionItems")
     ) {
       this.displayedColumns.push("actionItems");
+    }
+
+    if (this.config.removeRow) {
+      this.displayedColumns.push("maxRemoveRow");
     }
   }
 
@@ -279,7 +281,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     const tempColumns: any = [];
     const data: any = [];
     this.displayedColumns.forEach((col) => {
-      if (col != "select" && col != "actionItems") {
+      if (col != "select" && col != "actionItems" && col != "maxRemoveRow") {
         headers.push(this.displayColumnsInfo[col].title);
         tempColumns.push(col);
       }
@@ -327,5 +329,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     });
     XLSX.utils.book_append_sheet(wb, ws, "Result");
     XLSX.writeFile(wb, excelName);
+  }
+
+  removeRow(index: number) {
+    this.dataSource = this.dataSource.splice(index, 1);
   }
 }

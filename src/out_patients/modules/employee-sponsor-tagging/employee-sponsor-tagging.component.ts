@@ -62,6 +62,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   lastUpdatedBy: string = "";
   dependantRemarks: string = "";
   currentTime: string = new Date().toLocaleString();
+  userId: any;
+  hsplocationId: any;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -117,7 +119,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   config1: any = {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-
+    clickedRows: false,
     //selectBox: true,
     // selectCheckBoxPosition: 10,
     //clickSelection: "single",
@@ -309,6 +311,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.cookie.get("LocationIACode"));
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.userId = Number(this.cookie.get("UserId"));
+    this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     let formResult: any = this.formService.createForm(
       this.employeesponsorformData.properties,
       {}
@@ -464,6 +468,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           if (data != null) {
             if (data.objPatientDemographicData.length > 0) {
               this.validmaxid = true;
+              this.cleardata();
               this.enableSave();
               this.enableDelete();
               this.disableClear = false;
@@ -701,7 +706,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //     this.dependantRemarks = res.added[0].remark;
     //     console.log(this.dependantRemarks);
     //   });
-    console.log(this.employeeDependanttable);
+    console.log(this.employeeDependanttable.selection.selected);
     // this.employeeDependanttable.config.columnsInfo.remark.disable();
     //console.log(this.employeeDependanttable);
     //  console.log(this.employeeDependanttable.selection.selected[0].relationship);
@@ -810,7 +815,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       regno,
       iacode,
       69,
-      9923,
+      this.userId,
       0, //corporate id
       true,
       0,
