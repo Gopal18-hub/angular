@@ -41,7 +41,7 @@ export class PatientHistoryComponent implements OnInit {
       },
       mobile: {
         title:"Mobile No",
-        type: "tel",
+        type: "number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
@@ -362,7 +362,15 @@ export class PatientHistoryComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: getRegisteredPatientDetailsModel[]) => {
             console.log(resultData);
-            if(resultData.length == 0)
+            if(resultData == null)
+            {
+              this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+              this.questions[0].customErrorMessage = "Invalid MaxID";
+              // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
+            }
+            else if(resultData.length == 0)
             {
               this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
               this.questions[0].customErrorMessage = "Invalid MaxID";
@@ -389,7 +397,11 @@ export class PatientHistoryComponent implements OnInit {
           },
           (error)=>{
             console.log(error);
+            this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+            this.questions[0].customErrorMessage = "Invalid MaxID";
             this.msgdialog.info("Registration number does not exist");
+            this.apiProcessing = false;
+            this.showtable = true;
           }
         );
   }
@@ -469,6 +481,8 @@ export class PatientHistoryComponent implements OnInit {
     this.patientDetails = [];
     this.searchbtn = true;
     this.patienthistorylist = [];
+    this.apiProcessing = false;
+    this.showtable = true;
   }
   
 
