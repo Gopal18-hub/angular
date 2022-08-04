@@ -38,7 +38,8 @@ export class InvestigationOrdersComponent implements OnInit {
     properties: {
       datecheckbox: {
         type: "checkbox",
-        options: [{ title: "", value: "" }]
+        options: [{ title: "", value: "" }],
+        
       },
       fromdate: {
         type: "date",
@@ -93,7 +94,7 @@ export class InvestigationOrdersComponent implements OnInit {
 
     }
   }
-  investigationConfig: any = {
+  invListConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
@@ -104,31 +105,52 @@ export class InvestigationOrdersComponent implements OnInit {
     columnsInfo: {
       orderId: {
         title: 'Order Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "115px",
+        },
       },
       maxid: {
         title: 'Max Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "105px",
+        },
       },
       ptnName: {
         title: 'Patient Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "135px",
+        },
       },
       docName: {
         title: 'Doctor Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "165px",
+        },
       },
       deptName: {
         title: 'Department',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "135px",
+        },
       },
       visitDate: {
         title: 'Visit Date',
-        type: 'date'
+        type: 'date',
+        style: {
+          width: "85px",
+        },
       },
       mobileNo: {
         title: 'Mobile No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "105px",
+        },
       },
       amnt: {
         title: 'Amount',
@@ -140,17 +162,23 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       billNo: {
         title: 'Bill No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "130px",
+        },
       },
       status: {
         title: 'Order Status',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "125px",
+        },
       }
 
     }
 
   }
-  config2: any = {
+  invDetailsConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
@@ -158,27 +186,45 @@ export class InvestigationOrdersComponent implements OnInit {
     columnsInfo: {
       testname: {
         title: 'Test Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "18%",
+        },
       },
       doctorname: {
         title: 'Doctor Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "15%",
+        },
       },
       priority: {
         title: 'Priority',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
       visitdatetime: {
         title: 'Visit Date & Time',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "14%",
+        },
       },
       specialization: {
         title: 'Specialization',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "10%",
+        },
       },
       remarks: {
         title: 'ACD Remarks',
-        type: 'input'
+        type: 'input',
+        style: {
+          width: "35%",
+        },
       },
 
     }
