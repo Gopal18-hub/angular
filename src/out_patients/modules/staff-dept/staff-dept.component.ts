@@ -159,7 +159,11 @@ export class StaffDeptComponent implements OnInit {
       this.staffDeptDetails = res.dtsStaffDependentDetails
      })
   }
-
+clear()
+{
+  this.staffDeptDetails=[];
+  this.staffDetails=[];
+}
   search()
   {
     

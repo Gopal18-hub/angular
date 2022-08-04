@@ -12,6 +12,10 @@
     }
 }
 
+::ng-deep .searchbtn
+{
+    min-width:110px
+}
 .serachcss{
     ::ng-deep .max-table-wrapper{        
         border-radius: 0.75rem;
