@@ -162,40 +162,42 @@ export namespace ApiConstants {
 
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
-  export const hotlistedPatient = (
-    maxId: string,
-    hotlistingHeader: string,
-    locationid: string,
-    firstName: string,
-    lastname: string,
-    middleName: string,
-    hotlistingcomment: string,
-    type: string,
-    userid: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/patienthotlisting/" +
-      maxId +
-      "/" +
-      hotlistingHeader +
-      "/" +
-      locationid +
-      "?firstName=" +
-      firstName +
-      "&middleName=" +
-      middleName +
-      "&lastName=" +
-      lastname +
-      "&hotlistingComment=" +
-      hotlistingcomment +
-      "&type=" +
-      type +
-      "&userId=" +
-      userid
-    );
-  };
+  // export const hotlistedPatient = (
+  //   maxId: string,
+  //   hotlistingHeader: string,
+  //   locationid: string,
+  //   firstName: string,
+  //   lastname: string,
+  //   middleName: string,
+  //   hotlistingcomment: string,
+  //   type: string,
+  //   userid: number
+  // ) => {
+  //   return (
+  //     environment.PatientApiUrl +
+  //     "api/patient/patienthotlisting/" +
+  //     maxId +
+  //     "/" +
+  //     hotlistingHeader +
+  //     "/" +
+  //     locationid +
+  //     "?firstName=" +
+  //     firstName +
+  //     "&middleName=" +
+  //     middleName +
+  //     "&lastName=" +
+  //     lastname +
+  //     "&hotlistingComment=" +
+  //     hotlistingcomment +
+  //     "&type=" +
+  //     type +
+  //     "&userId=" +
+  //     userid
+  //   );
+  // };
 
+  export const hotlistedPatient =
+    environment.PatientApiUrl + "api/patient/patienthotlisting";
   //appointment patient search
   export const appointmentPatientDetail = (
     phoneNo: string,
@@ -806,10 +808,10 @@ export namespace ApiConstants {
     );
   };
   export const SavePatientsDepositDetailsGST =
-    environment.OutPatientBillingApiUrl +
+    environment.BillingApiUrl +
     "api/outpatientbilling/savepatientsdepositdetailsgst";
   export const savepatientrefunddetails =
-    environment.OutPatientBillingApiUrl +
+    environment.BillingApiUrl +
     "api/outpatientbilling/savepatientrefunddetails";
 
   export const getshowadvancetype = (hspLocationid: number) => {
