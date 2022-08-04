@@ -88,7 +88,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billNo",
         style: {
-          width: '7rem'
+          width: '6.5rem'
         }
       },
       billType: {
@@ -104,7 +104,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billDate",
         style: {
-          width: '5.5rem'
+          width: '5rem'
         }
       },
       ipNo: {
@@ -115,17 +115,17 @@ export class PatientHistoryComponent implements OnInit {
         }
       },
       admDateTime: {
-        title: "Adm/Discharge Date",
+        title: "Adm/Dis Date",
         type: "date",
         style: {
-          width: '9rem'
+          width: '7rem'
         }
       },
       billAmount: {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '5rem'
+          width: '6rem'
         }
       },
       discountAmount: {
@@ -169,7 +169,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "operatorName",
         style: {
-          width: '7rem'
+          width: '7.5rem'
         }
       },
       printIcon: {
@@ -177,7 +177,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "image",
         width: 25,
         style: {
-          width: "100px",
+          width: "5.5rem",
         },
         disabledSort: true,
       },
@@ -409,13 +409,13 @@ export class PatientHistoryComponent implements OnInit {
           {
             console.log('data');
             this.patienthistorylist = resultdata;
-            this.patienthistorylist.forEach(e=>{
-              e.billAmount = parseInt(e.balanceAmt).toFixed(2);
-              e.discountAmount = parseInt(e.discountAmount).toFixed(2);
-              e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
-              e.refundAmount = parseInt(e.refundAmount).toFixed(2);
-              e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
-            })
+            // this.patienthistorylist.forEach(e=>{
+            //   e.billAmount = parseInt(e.balanceAmt).toFixed(2);
+            //   e.discountAmount = parseInt(e.discountAmount).toFixed(2);
+            //   e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
+            //   e.refundAmount = parseInt(e.refundAmount).toFixed(2);
+            //   e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+            // })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);
             this.apiProcessing = false;
