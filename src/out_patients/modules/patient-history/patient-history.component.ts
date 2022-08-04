@@ -361,6 +361,8 @@ export class PatientHistoryComponent implements OnInit {
               this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
               this.questions[0].customErrorMessage = "Invalid MaxID";
               // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
             }
             else
             {
@@ -374,6 +376,8 @@ export class PatientHistoryComponent implements OnInit {
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);
               this.questions[0].readonly = true;
               this.searchbtn = false;
+              this.apiProcessing = false;
+              this.showtable = true;
               this.patienthistorysearch();
             }  
           },
