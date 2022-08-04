@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="flex w-1/20"></div>
-                        <div class="flex flex-column ">
+                        <div class="flex">
                             <div class="serachcss">
                                 <button mat-raised-button color="primary" (click)="search()" class="searchbtn">
                                     <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35" height="38"
@@ -63,11 +63,16 @@
                                             </g>
                                         </g>
                                     </svg>
-                                    <span class="ml-7 mb-4 font-base">
+                                    <span class="ml-7 mb-5">
                                         Search
                                     </span>
 
                                 </button>
+                                
+                            </div>
+                            <div class="float-right flex clearbtn">
+                                <button mat-raised-button color="primary" class="ml-3 "
+                                    (click)="this.staffForm.reset();clear()">Clear</button>
                             </div>
                         </div>
 
@@ -83,16 +88,13 @@
                     </maxhealth-table>
                 </div>
                 <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
-                <div class="pl-2 pt-3 employeeclass font-bold font-base">
+                <div class="pl-2 pt-3 employeeclass font-semi-bold font-base">
                     <mat-label class="max-health-primary-color">Employee Dependent Detail</mat-label>
                 </div>
                 <div class="gridh mt-2">
                     <maxhealth-table [config]="config2" [data]="staffDeptDetails"></maxhealth-table>
                 </div>
-                <div class="float-right mt-3">
-                    <button mat-raised-button color="primary" class="ml-3 "
-                        (click)="this.staffForm.reset();clear()">Clear</button>
-                </div>
+               
             </div>
         </div>
     </mat-tab-nav-panel>

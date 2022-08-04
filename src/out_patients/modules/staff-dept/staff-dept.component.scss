@@ -22,8 +22,12 @@
         border: solid #707070 !important;
     }
 }
+::ng-deep .clearbtn
+{
+    height:81% !important
+}
 ::ng-deep .gridh{    
-    height: 62% !important;
+    height: 72% !important;
 }
 
 .employeeclass{
