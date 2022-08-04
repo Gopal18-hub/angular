@@ -46,9 +46,9 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any = 69; //Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 13647; // Number(this.cookie.get("stationId"));
-  operatorID:any = 59386; //  Number(this.cookie.get("UserId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("stationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -218,5 +218,11 @@ export class DepositDialogComponent implements OnInit {
       "",     
       ""
     ));
+  }
+
+  clearsiblingcomponents:boolean = false;
+  cleardepositdialog(){
+    this.clearsiblingcomponents = true;
+    this.makedepositdialogForm.reset();
   }
 }

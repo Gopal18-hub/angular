@@ -88,7 +88,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billNo",
         style: {
-          width: '7rem'
+          width: '6.5rem'
         }
       },
       billType: {
@@ -104,7 +104,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "billDate",
         style: {
-          width: '5.5rem'
+          width: '5rem'
         }
       },
       ipNo: {
@@ -115,17 +115,17 @@ export class PatientHistoryComponent implements OnInit {
         }
       },
       admDateTime: {
-        title: "Adm/Discharge Date",
+        title: "Adm/Dis Date",
         type: "date",
         style: {
-          width: '9rem'
+          width: '7rem'
         }
       },
       billAmount: {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '5rem'
+          width: '6rem'
         }
       },
       discountAmount: {
@@ -169,7 +169,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "string",
         tooltipColumn: "operatorName",
         style: {
-          width: '7rem'
+          width: '7.5rem'
         }
       },
       printIcon: {
@@ -177,7 +177,7 @@ export class PatientHistoryComponent implements OnInit {
         type: "image",
         width: 25,
         style: {
-          width: "100px",
+          width: "5.5rem",
         },
         disabledSort: true,
       },
@@ -223,7 +223,8 @@ export class PatientHistoryComponent implements OnInit {
   ssn:any;
 
   billno: any;
-
+  showtable: boolean = true;
+  apiProcessing: boolean = false;
   searchbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
@@ -258,6 +259,7 @@ export class PatientHistoryComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         this.getPatientDetails();
+        
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
@@ -345,6 +347,8 @@ export class PatientHistoryComponent implements OnInit {
   }
   getPatientDetails()
   {
+    this.apiProcessing = true;
+    this.showtable = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
@@ -382,6 +386,8 @@ export class PatientHistoryComponent implements OnInit {
 
   patienthistorysearch()
   {
+    this.apiProcessing = true;
+    this.showtable = false;
     if(this.patientDetails.length == 1)
     {
       console.log(this.patienthistoryform.value);
@@ -413,19 +419,24 @@ export class PatientHistoryComponent implements OnInit {
             // })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);
+            this.apiProcessing = false;
+            this.showtable = true;
           }
           else{
             console.log("empty");
             this.patienthistorylist = [];
+            this.apiProcessing = false;
+            this.showtable = true;
           }
         },
         (error)=>{
           console.log(error);
+          this.apiProcessing = false;
+          this.showtable = true;
         }
         )
       }
     }
-    
   }
 
   clear()
@@ -470,7 +481,7 @@ export class PatientHistoryComponent implements OnInit {
       }
       else if(event.row.billType == 'Op Refund') 
       {
-        this.openReportModal('refundReport ');
+        this.openReportModal('refundReport');
       }
       else{
         this.msgdialog.success("Unable to Print. Working on other transaction type(s) !!!");
@@ -479,10 +490,34 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
-      receiptnumber: this.billno,
-      locationID: this.hsplocationId
-    });
+    if(btnname == 'depositReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptnumber: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'rptRefund')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptno: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'billingreport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        opbillid: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'refundReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        refundBill: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
   }
 
   setimage(patienthsitory: getPatientHistoryModel[],
