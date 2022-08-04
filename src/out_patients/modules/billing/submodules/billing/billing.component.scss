@@ -1,5 +1,9 @@
 .billing-page-wrapper {
   background-color: #fff;
+  .isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
   mat-label {
     font-weight: 500;
   }
