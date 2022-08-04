@@ -227,9 +227,21 @@
         <ng-container *ngIf="module.moreOptions">
           <li
             [matMenuTriggerFor]="menu"
+            #subMenuTrigger="matMenuTrigger"
             class="mr-2 cursor-pointer max-health-primary-color"
-            [matMenuTriggerData]="{ module: module }"
+            [matMenuTriggerData]="{
+              module: module,
+              subMenuTrigger: subMenuTrigger
+            }"
             [ngClass]="{ active: activeSubModule?.title == module.title }"
+            (mouseover)="subMenuTrigger.openMenu()"
+            (click)="activeSubModule = module"           
+            routerLinkActive="active-link"
+            (isActiveChange)="
+              onRouterLinkActive($event, module);
+              onPageRouterLinkActive($event, module.childrens[0])
+            "
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             {{ module.title }}
           </li>
@@ -255,11 +267,14 @@
         let-aliasMenuItems="module.childrens"
         let-tenentPath="module.tenentPath"
         let-module="module"
+        let-subMenuTrigger="subMenuTrigger"
       >
-        <div class="flex flex-column flex-wrap box">
+        <div
+          class="flex flex-column flex-wrap box"
+          (mouseleave)="subMenuTrigger.closeMenu()"
+        >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
-              [disabled]="menuItem.disabled"
               mat-button
               class="max-health-primary-color"
               (click)="activeSubModule = module"
