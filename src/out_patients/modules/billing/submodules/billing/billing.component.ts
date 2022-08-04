@@ -16,7 +16,8 @@ import { DMSComponent } from "../../../registration/submodules/dms/dms.component
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
-
+import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
+import { HealthCheckupWarningComponent } from "./prompts/health-checkup-warning/health-checkup-warning.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -129,15 +130,9 @@ export class BillingComponent implements OnInit {
   }
 
   formEvents() {
-    //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
@@ -147,7 +142,6 @@ export class BillingComponent implements OnInit {
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       this.http
@@ -207,9 +201,26 @@ export class BillingComponent implements OnInit {
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
+    this.questions[0].readonly = true;
+    this.questions[1].readonly = true;
+    this.questions[2].readonly = true;
   }
 
   doCategoryIconAction(icon: any) {}
+
+  healthCheckupWarning() {
+    this.matDialog.open(HealthCheckupWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+  }
+
+  investigationCheck() {
+    this.matDialog.open(InvestigationWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+  }
 
   payDueCheck(dtPatientPastDetails: any) {
     if (
