@@ -4068,9 +4068,7 @@ export class OpRegistrationComponent implements OnInit {
     let maxYear;
     if (this.passportDetails.passportNo != "") {
     } else {
-      minExpDate = new Date(
-        new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
-      );
+      minExpDate = new Date();
       maxYear = new Date(
         new Date(Date.now()).setFullYear(
           new Date(Date.now()).getFullYear() + 15
