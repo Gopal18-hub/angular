@@ -259,6 +259,7 @@ export class PatientHistoryComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         this.getPatientDetails();
+        
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
@@ -480,7 +481,7 @@ export class PatientHistoryComponent implements OnInit {
       }
       else if(event.row.billType == 'Op Refund') 
       {
-        this.openReportModal('refundReport ');
+        this.openReportModal('refundReport');
       }
       else{
         this.msgdialog.success("Unable to Print. Working on other transaction type(s) !!!");
@@ -489,10 +490,34 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
-      receiptnumber: this.billno,
-      locationID: this.hsplocationId
-    });
+    if(btnname == 'depositReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptnumber: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'rptRefund')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptno: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'billingreport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        opbillid: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'refundReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        refundBill: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
   }
 
   setimage(patienthsitory: getPatientHistoryModel[],
