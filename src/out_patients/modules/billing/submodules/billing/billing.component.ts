@@ -130,15 +130,9 @@ export class BillingComponent implements OnInit {
   }
 
   formEvents() {
-    //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
@@ -148,7 +142,6 @@ export class BillingComponent implements OnInit {
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       this.http
@@ -208,6 +201,9 @@ export class BillingComponent implements OnInit {
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
+    this.questions[0].readonly = true;
+    this.questions[1].readonly = true;
+    this.questions[2].readonly = true;
   }
 
   doCategoryIconAction(icon: any) {}
