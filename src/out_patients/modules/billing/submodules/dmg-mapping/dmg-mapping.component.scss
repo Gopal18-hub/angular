@@ -1,6 +1,6 @@
 .bg-dmg{
     background-color: #F6F6F6;
-    color:#004084;
+    
 }
 
 ::ng-deep .mat-form-field-wrapper{
@@ -65,4 +65,27 @@
 }
 .w-12{
     width:12%;
+}
+.h-63{
+    height:63%
+}
+.h-50{
+    height:84%;
+}
+.mt-error{
+    ::ng-deep .mat-error{
+        margin-top:8%;
+    }
+    
+}
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}
+
+.checkbox-mr{
+    ::ng-deep mat-pseudo-checkbox{
+        margin-right:100%
+    }
 }

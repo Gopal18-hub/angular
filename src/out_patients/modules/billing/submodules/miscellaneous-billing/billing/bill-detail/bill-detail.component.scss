@@ -5,7 +5,9 @@
 .miscForm {
     
     ::ng-deep mat-label {
-      color: var(--primary-color);
+    //   color: var(--primary-color);
+    color: #333333;
+    opacity: 1;
       font-weight: 600;
     }
     .change-password {
@@ -31,13 +33,22 @@
   }
   ::ng-deep .mat-checkbox-label
   {
-       color: var(--primary-color);
+    //    color: var(--primary-color);
+    color: #333333;
+    opacity: 1;
     font-weight: 600;
   }
   }
 
-//   
+//  
+.w-fit{
+    width: -webkit-fill-available;
+} 
 
+.w-79
+{
+    width: 79%;
+}
   .w-7
   {
       width: 7.9%;
@@ -64,7 +75,7 @@
 }
 .bg-billdetails{
     
-    height: 70%;
+    height: 76%;
     background-color:#45C0BE; 
 }
 .bg-blue
@@ -89,13 +100,16 @@
 // .h-9/20
 .h-table
 {
-    height: 54%;
+    height: 68%;
 }
 
 .bg-paymet
 {
-    width: 87.6%;
+    width: 88.6%;
     height: 10%;
+}
+.payment-width{
+width: 34.9%;
 }
 .icon-more
 {   
@@ -185,4 +199,15 @@ padding: 0%;
 .m-pannel
 {
 margin-top: 0.19rem;
+}
+// .mr-07
+// {
+//     margin-left: 0.6rem;
+
+// }
+.text-align-right
+{
+ ::ng-deep .mat-input-element
+ {  text-align: right;
+ }
 }

@@ -133,6 +133,14 @@ export namespace ApiConstants {
     );
   };
 
+  export const getlocalityByName = (localityName: string) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getlocalityonsearch/" +
+      `${localityName}`
+    );
+  };
+
   /* ----------------------------------------------------------------------------------------------------------
     ------------------------------PatientApiUrl ENDPOINTS-------------------------------------------------- 
     ----------------------------------------------------------------------------------------------------------*/
@@ -154,40 +162,42 @@ export namespace ApiConstants {
 
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
-  export const hotlistedPatient = (
-    maxId: string,
-    hotlistingHeader: string,
-    locationid: string,
-    firstName: string,
-    lastname: string,
-    middleName: string,
-    hotlistingcomment: string,
-    type: string,
-    userid: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/patienthotlisting/" +
-      maxId +
-      "/" +
-      hotlistingHeader +
-      "/" +
-      locationid +
-      "?firstName=" +
-      firstName +
-      "&middleName=" +
-      middleName +
-      "&lastName=" +
-      lastname +
-      "&hotlistingComment=" +
-      hotlistingcomment +
-      "&type=" +
-      type +
-      "&userId=" +
-      userid
-    );
-  };
+  // export const hotlistedPatient = (
+  //   maxId: string,
+  //   hotlistingHeader: string,
+  //   locationid: string,
+  //   firstName: string,
+  //   lastname: string,
+  //   middleName: string,
+  //   hotlistingcomment: string,
+  //   type: string,
+  //   userid: number
+  // ) => {
+  //   return (
+  //     environment.PatientApiUrl +
+  //     "api/patient/patienthotlisting/" +
+  //     maxId +
+  //     "/" +
+  //     hotlistingHeader +
+  //     "/" +
+  //     locationid +
+  //     "?firstName=" +
+  //     firstName +
+  //     "&middleName=" +
+  //     middleName +
+  //     "&lastName=" +
+  //     lastname +
+  //     "&hotlistingComment=" +
+  //     hotlistingcomment +
+  //     "&type=" +
+  //     type +
+  //     "&userId=" +
+  //     userid
+  //   );
+  // };
 
+  export const hotlistedPatient =
+    environment.PatientApiUrl + "api/patient/patienthotlisting";
   //appointment patient search
   export const appointmentPatientDetail = (
     phoneNo: string,
@@ -388,7 +398,8 @@ export namespace ApiConstants {
     IACode: string,
     RegistrationNo: number,
     HSPLocationId: number,
-    StationId: number
+    StationId: number,
+    TransactionType: string
   ) => {
     return (
       environment.BillingApiUrl +
@@ -403,7 +414,9 @@ export namespace ApiConstants {
       "/" +
       HSPLocationId +
       "/" +
-      StationId
+      StationId +
+      "/" +
+      TransactionType
     );
   };
 
@@ -534,8 +547,8 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string,
-    operatorid: number
+    iacode: string
+    //    operatorid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -551,18 +564,18 @@ export namespace ApiConstants {
   };
 
   export const getstaffdependentdetails = (
-    EmployeeCode: string,
-    EmployeeName: string,
-    SrcType: number
+    SrcType: number,
+    EmployeeCode?: string,
+    EmployeeName?: string
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getstaffdependentdetails/" +
+      SrcType +
+      "?EmployeeCode=" +
       EmployeeCode +
-      "/" +
-      EmployeeName +
-      "/" +
-      SrcType
+      "&EmployeeName=" +
+      EmployeeName
     );
   };
 
@@ -638,4 +651,198 @@ export namespace ApiConstants {
   //FOR SIMILAR DETAIL BILLING DETAILS
   export const getsimilarsoundopbilling =
     environment.CommonApiUrl + "api/outpatientbilling/getsimilarsoundopbilling";
+
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo
+    );
+  };
+
+  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpersonaldetailsdmg/" +
+      regno +
+      "/" +
+      iacode +
+      "/" +
+      7
+    );
+  };
+
+  export const savepatientdmg =
+    environment.PatientApiUrl + "api/patient/savedmgwithpatient";
+
+  //OP REFUND APPROVAL
+  export const getpendingoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
+  export const getapprovedoprefundapproval =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
+
+  //ACD
+  export const getediganosticacd = (
+    FromDate: any,
+    ToDate: any,
+    status: number,
+    orderid: number,
+    regno: number,
+    iacode: string,
+    Locationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacd/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      status +
+      "/" +
+      orderid +
+      "/" +
+      regno +
+      "/" +
+      iacode +
+      "?Locationid=" +
+      Locationid
+    );
+  };
+  export const geteprescriptdrugorders = (
+    FromDate: any,
+    ToDate: any,
+    LocationID: number,
+    Status: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/geteprescriptdrugorders/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      LocationID +
+      "/" +
+      Status
+    );
+  };
+  export const getphysicianorderdetailep = (
+    registrationNo: any,
+    aiCode: string,
+    locid: number,
+    orderid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getphysicianorderdetailep/" +
+      registrationNo +
+      "/" +
+      aiCode +
+      "/" +
+      locid +
+      "/" +
+      orderid
+    );
+  };
+  //Modify ACD order with Remarks
+  export const modifyphysicianorderdetail = (token: string, Userid: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/modifyphysicianorderdetail/?token=" +
+      token +
+      "?Userid=" +
+      Userid
+    );
+  };
+
+  export const getpatientpersonaldetails = (
+    registrationno: number,
+    iacode?: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpersonaldetails/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
+
+  export const getpatientdetailsfordeposit = (
+    registrationno: number,
+    iacode?: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientdetailsfordeposit/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
+
+  export const getadvancetype = (hspLocationid: number) => {
+    return (
+      environment.PatientApiUrl + "api/patient/getadvancetype/" + hspLocationid
+    );
+  };
+
+  export const getpatientpreviousdepositdetails = (
+    registrationno: number,
+    iacode?: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientpreviousdepositdetails/" +
+      registrationno +
+      "/" +
+      iacode
+    );
+  };
+  export const SavePatientsDepositDetailsGST =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savepatientsdepositdetailsgst";
+  export const savepatientrefunddetails =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savepatientrefunddetails";
+
+  export const getshowadvancetype = (hspLocationid: number) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getisshowadvancetype/" +
+      hspLocationid
+    );
+  };
+
+  export const getcreditcard =
+    environment.PatientApiUrl + "api/patient/getcreditcard";
+
+  export const getcashlimitwithlocationsmsdetailsoflocation = (
+    HospitalLocationID: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getcashlimitwithlocationsmsdetailsoflocation/" +
+      HospitalLocationID
+    );
+  };
+
+  export const getform60masterdata =
+    environment.PatientApiUrl + "api/patient/getform60masterdata";
+  export const saveform60patientdata =
+    environment.PatientApiUrl + "api/patient/saveform60patientdata";
+  export const savedonationrefundrequest =
+    environment.PatientApiUrl + "api/patient/savedonationrefundrequest";
+  export const savepaymentdetailslog =
+    environment.PatientApiUrl + "api/patient/savepaymentdetailslog";
+  export const sendotpoprefund =
+    environment.PatientApiUrl + "api/patient/sendotpoprefund";
 }

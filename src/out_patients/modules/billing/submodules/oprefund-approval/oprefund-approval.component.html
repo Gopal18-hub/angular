@@ -13,7 +13,7 @@
       <mat-tab-nav-panel #tabPanel>
         <div class=" h-full p-3">
            <div class="h-4/5">
-            <ng-container>
+            <ng-container *ngIf="defaultUI">
                 <maxhealth-table
                 [config]="oprefundConfig"
                 [data]="data"
@@ -24,6 +24,13 @@
             <button mat-raised-button color="primary"  class="mr-8" (click)="oprefundApprove()">Approve</button>
             <button mat-raised-button color="primary" (click)="oprefundReject()">Reject</button>
           </div>
-        </div>   
+        </div>  
+        
+        <div class="w-full h-full" *ngIf="!defaultUI">
+          <empty-placeholder [icon]="hotlistingicon" [message]="hotlistingmessage">
+         
+          </empty-placeholder>
+           
+                 </div>
     </mat-tab-nav-panel>
 </section>

@@ -65,3 +65,14 @@
 .mt-6p{
     margin-top:6%;
 }
+.mt-error{
+    ::ng-deep .mat-error{
+        margin-top:8%;
+    }
+    
+}
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}

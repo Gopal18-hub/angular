@@ -9,17 +9,39 @@ import {
   TemplateRef,
   Output,
   EventEmitter,
+  NgZone,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort, Sort } from "@angular/material/sort";
 import { LiveAnnouncer } from "@angular/cdk/a11y";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { CdkTextareaAutosize } from "@angular/cdk/text-field";
+import { take } from "rxjs/operators";
+import * as XLSX from "xlsx";
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from "@angular/animations";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "maxhealth-table",
   templateUrl: "./max-table.component.html",
   styleUrls: ["./max-table.component.scss"],
+  animations: [
+    trigger("detailExpand", [
+      state("collapsed", style({ height: "0px", minHeight: "0" })),
+      state("expanded", style({ height: "*" })),
+      transition(
+        "expanded <=> collapsed",
+        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
+      ),
+    ]),
+  ],
 })
 export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() config: any;
@@ -41,12 +63,52 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
+  @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
+  @ViewChild("input") inputboxTemplate!: TemplateRef<any>;
+  @ViewChild("textarea") textareaTemplate!: TemplateRef<any>;
+  @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
+  @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
+  @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
 
   initiateTable: boolean = false;
 
-  constructor(private _liveAnnouncer: LiveAnnouncer) {}
+  @ViewChild("autosize") autosize!: CdkTextareaAutosize;
+
+  triggerResize() {
+    // Wait for changes to be applied, then trigger textarea resize.
+    this._ngZone.onStable
+      .pipe(take(1))
+      .subscribe(() => this.autosize.resizeToFitContent(true));
+  }
+
+  childrensData: any = {};
+
+  expandedElement: any | null;
+
+  childTableConfig: any = {};
+
+  constructor(
+    private _liveAnnouncer: LiveAnnouncer,
+    private _ngZone: NgZone,
+    private datepipe: DatePipe
+  ) {}
 
   ngOnInit(): void {
+    if (this.config.groupby) {
+      this.data.forEach((item: any) => {
+        if (item[this.config.groupby.childcolumn]) {
+          if (!this.childrensData[item[this.config.groupby.childcolumn]]) {
+            this.childrensData[item[this.config.groupby.childcolumn]] = [];
+          }
+          this.childrensData[item[this.config.groupby.childcolumn]].push(item);
+        }
+      });
+      this.data = this.data.filter((item: any) => {
+        return !item[this.config.groupby.childcolumn];
+      });
+      console.log(this.data);
+      console.log(this.childrensData);
+    }
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
@@ -54,7 +116,15 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection = new SelectionModel<any>(false, []);
     }
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
@@ -66,12 +136,40 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.config.groupby) {
+      this.data.forEach((item: any) => {
+        if (item[this.config.groupby.childcolumn]) {
+          if (!this.childrensData[item[this.config.groupby.childcolumn]]) {
+            this.childrensData[item[this.config.groupby.childcolumn]] = [];
+          }
+          this.childrensData[item[this.config.groupby.childcolumn]].push(item);
+        }
+      });
+      this.data = this.data.filter((item: any) => {
+        return !item[this.config.groupby.childcolumn];
+      });
+      if (Object.keys(this.childrensData).length > 0) {
+        this.childTableConfig = { ...this.config };
+        delete this.childTableConfig.groupby;
+      }
+      console.log(this.config);
+      console.log(this.childTableConfig);
+    }
+
     this.dataSource = new MatTableDataSource<any>(this.data);
     if (this.sort) this.dataSource.sort = this.sort;
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
-      this.displayedColumns.unshift("select");
+      if (this.config.selectCheckBoxPosition) {
+        this.displayedColumns.splice(
+          this.config.selectCheckBoxPosition,
+          0,
+          "select"
+        );
+      } else {
+        this.displayedColumns.unshift("select");
+      }
     }
     if (
       this.config.actionItems &&
@@ -148,6 +246,12 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "image") return this.imageTemplate;
     else if (col.type == "checkbox") return this.checkboxTemplate;
+    else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
+    else if (col.type == "input") return this.inputboxTemplate;
+    else if (col.type == "textarea") return this.textareaTemplate;
+    else if (col.type == "input_date") return this.inputboxDateTemplate;
+    else if (col.type == "input_datetime") return this.inputboxDateTimeTemplate;
+    else if (col.type == "dropdown") return this.dropdownTemplate;
     else return this.stringTemplate;
   }
 
@@ -155,5 +259,73 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
     this.selection.toggle(element);
+  }
+
+  rowClass(row: any) {
+    if (
+      this.config.rowLayout &&
+      this.config.rowLayout.dynamic &&
+      this.config.rowLayout.dynamic.rowClass
+    ) {
+      return eval(this.config.rowLayout.dynamic.rowClass);
+    }
+  }
+
+  exportAsExcel() {
+    const excelName = this.config.tableName
+      ? this.config.tableName + ".xlsx"
+      : "filename.xlsx";
+    const headers: any = [];
+    const tempColumns: any = [];
+    const data: any = [];
+    this.displayedColumns.forEach((col) => {
+      if (col != "select" && col != "actionItems") {
+        headers.push(this.displayColumnsInfo[col].title);
+        tempColumns.push(col);
+      }
+    });
+    this.dataSource.data.forEach((item: any) => {
+      const temp: any = {};
+      tempColumns.forEach((col: any) => {
+        if (this.displayColumnsInfo[col].type == "dropdown") {
+          if (this.displayColumnsInfo[col].options.length > 0) {
+            const exist: any = this.displayColumnsInfo[col].options.find(
+              (op: any) => {
+                return op.value == item[col];
+              }
+            );
+            if (exist) {
+              temp[col] = exist.title;
+            } else {
+              temp[col] = item[col];
+            }
+          } else {
+            temp[col] = item[col];
+          }
+        } else if (
+          ["input_datetime", "date", "input_date"].includes(
+            this.displayColumnsInfo[col].type
+          )
+        ) {
+          temp[col] = this.datepipe.transform(
+            item[col],
+            this.config.dateformat
+          );
+        } else {
+          temp[col] = item[col];
+        }
+      });
+      data.push(temp);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, [headers]);
+    const workSheet = XLSX.utils.sheet_add_json(ws, data, {
+      origin: "A2",
+      skipHeader: true,
+      header: tempColumns,
+    });
+    XLSX.utils.book_append_sheet(wb, ws, "Result");
+    XLSX.writeFile(wb, excelName);
   }
 }

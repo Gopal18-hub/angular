@@ -1,4 +1,3 @@
-
 .col-black{
     color: #000;
 }
@@ -40,16 +39,21 @@
     background:#F6F6F6;
 }
 .bg-lightgrey{
-    background-color: #D2D0D0;
+    background-color: #D2D0D0; 
 }
-::ng-deep mat-radio-group {
-    flex-direction: row !important;
-    justify-content: space-between;
+
+.patientidentityradiobutton{
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        justify-content: space-between;
+        gap:10px;
+    }
+    ::ng-deep .mat-radio-button{
+        margin-left: 10px;
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep textarea{
+        min-height: 120px !important;
+    }
 }
-::ng-deep .mat-radio-button{
-    margin-left: 10px;
-    padding-bottom: 0 !important;
-}
-::ng-deep textarea{
-    min-height: 120px !important;
-}
+

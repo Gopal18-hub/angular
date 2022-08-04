@@ -99,22 +99,13 @@
       format("woff");
 }
 
-// @font-face {
-//   font-family: "proxima";
-//   src: local("proxima"),
-//     url("./font/proxima/Mark Simonson - Proxima Nova.otf") format("truetype");
-// }
-// @font-face {
-//   font-family: "ProximaRegular";
-//   src: local("proxima"),
-//     url(./font/proxima/ProximaNovaThin.otf) format("truetype");
-// }
-
-// @font-face {
-//   font-family: "ProximaMedium";
-//   src: local("proxima"),
-//     url(./font/proxima/ProximaNovaMedium.otf) format("truetype");
-// }
+@font-face {
+  font-display: swap;
+  font-family: Proxima Nova;
+  font-style: normal;
+  font-weight: 500;
+  src: url("./font/proxima/ProximaNovaMedium.otf") format("truetype");
+}
 
 @import "~@angular/material/theming";
 @include mat-core();
@@ -175,7 +166,7 @@ mat-form-field {
   font-size: 14px;
   &.mat-form-field-appearance-outline {
     .mat-form-field-outline {
-      color: #5a5a5a; //rgba(0, 0, 0); //UAT Defect fix
+      color: #ababab; //rgba(0, 0, 0); //UAT Defect fix
     }
     .mat-form-field-wrapper {
       margin: 0 !important;
@@ -456,4 +447,9 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .mat-select-value {
   color: #000;
+}
+
+.disabled {
+  pointer-events: none; //This makes it not clickable
+  opacity: 0.8;
 }

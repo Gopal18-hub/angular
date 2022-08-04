@@ -7,6 +7,7 @@ import { ApiConstants } from '../../../out_patients/core/constants/ApiConstants'
 import { StaffDependentTypeModel } from "@core/models/staffDependentTypeModel.Model";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -15,8 +16,10 @@ import { Subject } from "rxjs";
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
-  staffDetails : any =[];
+  staffDetails : any ;
+  staffDetail: any=[];
   staffDeptDetails : any;
+  selectedCode : any;
   private readonly _destroying$ = new Subject<void>();
   orgList=["id","1","name","Max HealthCare"]
   staffFormData={
@@ -25,7 +28,8 @@ export class StaffDeptComponent implements OnInit {
     properties:{
       organisation:{
         type: "dropdown",              
-        options: this.staffDependentTypeList,     
+        options: this.staffDependentTypeList, 
+        placeholder: "Select",    
       },     
       employeeCode:{
         type:"string",
@@ -48,27 +52,30 @@ export class StaffDeptComponent implements OnInit {
         title: 'S.No',
         type: 'number',
         style: {
-          width: "70px",
+          width: "100px",
         },
       },
       groupCompanyName : {
         title: 'Name of Organisation',
         type: 'string',
         style: {
-          width: "170px",
+          width: "300px",
         },
       },
       empCode : {
         title: 'Employee Code',
         type: 'string',
         style: {
-          width: "150px",
+          width: "250px",
         },
       },
      
       empName : {
         title: 'Employee Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "300px",
+        },
       },
      
       dob : {
@@ -95,7 +102,10 @@ export class StaffDeptComponent implements OnInit {
     columnsInfo: {
       empCode : {
         title: 'Employee Code',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "240px",
+        },
       },
       dependantName : {
         title: 'Dependent Name',
@@ -118,7 +128,7 @@ export class StaffDeptComponent implements OnInit {
  
     }
    
-  constructor(private formService: QuestionControlService,private http: HttpService,) { }
+  constructor(private formService: QuestionControlService,private http: HttpService,private messageDialogService: MessageDialogService,) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -138,33 +148,68 @@ export class StaffDeptComponent implements OnInit {
       });    
      });
   }
-  search()
+  staffColumnClick(event:any)
   {
-     //Search Type Dropdown
-     this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.employeeCode,this.staffForm.value.employeeName,this.staffForm.value.organisation))
+    this.staffDeptDetails = [];
+    this.selectedCode = event.row.empCode;      
+     this.http.get(ApiConstants.getstaffdependentdetails(1,this.selectedCode,""))
      .pipe(takeUntil(this._destroying$))
      .subscribe((res :any)=>
      {  
-      if(res)
-      if(res.dtsStaffDependentDetails[0].relationship =="Self")
-      {
-       
-        this.staffDetails.push(res.dtsStaffDependentDetails[0]);
-        if(this.staffDetails)
-        this.staffDeptDetails = res.dtsStaffDependentDetails;
-      }
-      });
-     // this.staffDetails = res.dtsStaffDependentDetails1; 
-    
-      //this.staffDeptDetails = res.
-      console.log(this.staffDetails,"res.dtsStaffDependentDetails[0].relationship")
-     
-     //});
-    
-  }
-  staffColumnClick(event:any)
-  {
-    console.log(event.row,"column");
+      this.staffDeptDetails = res.dtsStaffDependentDetails
+     })
   }
 
+  search()
+  {
+    
+    if(this.staffForm.value.organisation === "")
+    {
+      this.messageDialogService.info("Select Search Type");
+    }
+    else if(this.staffForm.value.employeeCode === "" && this.staffForm.value.employeeName === "")
+    {
+      this.messageDialogService.info("At least one information is required to search.");
+    }
+    else
+    {
+      var employeeCode = String(this.staffForm.value.employeeCode.trim());
+      var employeeName = String(this.staffForm.value.employeeName.trim());
+      
+      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,employeeCode,employeeName))
+      //this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
+      //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res :any)=>
+      {  
+       if(res)      
+       this.staffDeptDetails=[];     
+       this.staffDetails=[];
+       res.dtsStaffDependentDetails.forEach((e:any) => {
+         if(e.relationship === "Self")
+         {        
+           this.staffDetail.push(e);
+         }
+       });       
+      if(this.staffDetail.length === 0)
+      {
+        this.messageDialogService.info("No Records Founds.");
+      }      
+       else if(this.staffDetail.length > 1)
+       {
+         this.staffDetails=res.dtsStaffDependentDetails;
+       }       
+       else{
+         this.staffDeptDetails = res.dtsStaffDependentDetails;
+         if(res.dtsStaffDependentDetails[0].relationship == "Self")
+              this.staffDetail.push(res.dtsStaffDependentDetails[0]);
+              this.staffDetails = this.staffDetail;
+              this.staffDetail=[];              
+       }
+       });
+    }   
+    
+    
+  }
+ 
 }

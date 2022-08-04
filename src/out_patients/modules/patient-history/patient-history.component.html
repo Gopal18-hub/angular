@@ -26,7 +26,7 @@
                     <div class="ml-7">
                         <mat-label class="max-health-primary-color font-semi-bold">Mobile No.</mat-label>
                     </div>
-                    <div class="ml-1 w-3/10 bg-white border-radius-md">
+                    <div class="ml-1 w-3/10 bg-white border-radius-md label">
                         <maxhealth-question
                             [question]="questions[1]"
                             [form]="patienthistoryform"
@@ -87,25 +87,25 @@
             </div>
 
             <!-- Second Row -->
-            <div class="w-full flex mt-1 border-radius-xlg p-2 bg-secondary">
-                <div class="flex w-3/4">
-                    <div class="w-2/10 text-overflow">
+            <div class="w-full flex mt-1 border-radius-xlg p-1 bg-secondary">
+                <div class="flex w-3/4 align-items-center">
+                    <div class="w-1/3 text-overflow">
                         <mat-label class="max-health-primary-color font-bold">Patient Name:</mat-label>
                         <span matTooltip="{{pname}}" class="ml-2">{{pname}}</span>
                     </div>
-                    <div class="w-1/10 ml-5 text-overflow">
+                    <div class="w-1/15 ml-5 text-overflow">
                         <mat-label class="max-health-primary-color font-bold">Age:</mat-label>
                         <span matTooltip="{{age}}" class="ml-2">{{age}}</span>
                     </div>
-                    <div class="w-12 ml-5 text-overflow">
+                    <div class="w-1/15 ml-5 text-overflow">
                         <mat-label class="max-health-primary-color font-bold">Gender:</mat-label>
                         <span matTooltip="{{gender}}" class="ml-2">{{gender}}</span>
                     </div>
-                    <div class="w-12 ml-5 text-overflow">
+                    <div class="w-1/6 ml-5 text-overflow">
                         <mat-label class="max-health-primary-color font-bold">DOB:</mat-label>
                         <span matTooltip="{{dob}}" class="ml-2">{{dob}}</span>
                     </div >
-                    <div class="w-1/6 ml-7 text-overflow">
+                    <div class="w-2/10 ml-7 text-overflow">
                         <mat-label class="max-health-primary-color font-bold">Nationality:</mat-label>
                         <span matTooltip="{{nationality}}" class="ml-2">{{nationality}}</span>
                     </div>
@@ -114,10 +114,18 @@
                         <span matTooltip="{{ssn}}" class="ml-2">{{ssn}}</span>
                     </div>
                 </div>
+                <div class="w-2/5">
+                    <div class="mr-2 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" class="btn" (click)="clear()" [disabled]="!patienthistoryform.dirty">
+                            <!-- <img src="assets/lens.svg" class="lens-icon"> -->
+                            Clear
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Table -->
-            <div class="mt-2 h-3/5">
+            <div class="mt-2 h-7/10">
                 <maxhealth-table
                 [config]="config"
                 [data]="patienthistorylist"
@@ -127,14 +135,14 @@
             </div>
 
             <!-- Button -->
-            <div class="flex float-right mt-5">
+            <!-- <div class="flex float-right mt-5">
                 <div class="mr-4">
                     <button mat-raised-button color="primary" type="submit" [disabled]="printbtn" (click)="printdialog()">Print</button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="!patienthistoryform.dirty">Clear</button>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </mat-tab-nav-panel>

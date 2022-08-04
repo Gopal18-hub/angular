@@ -28,46 +28,51 @@ export class PermissionService {
     console.log(roles);
 
     let response = await this.http
-      .post(ApiConstants.getPermissions, {
-        Id: userId,
-        RoleIds: roles,
-        Permissions: null,
-      })
+      .get(ApiConstants.getPermissions(this.cookieService.get("role")))
       .toPromise();
     let temp: any = {};
-    response.permissions.forEach((ele: any) => {
-      if (!temp[ele.masterModuleId]) {
-        temp[ele.masterModuleId] = {};
-        this.masterModules.push(ele.masterModuleId);
-      }
-      if (!temp[ele.masterModuleId][ele.moduleId]) {
-        this.modules.push(ele.moduleId);
-        temp[ele.masterModuleId][ele.moduleId] = {};
-      }
-      if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
-        temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
-        this.features.push(ele.featureId);
-      }
-      temp[ele.masterModuleId][ele.moduleId][ele.featureId][ele.functionId] =
-        true;
-    });
+    if (response) {
+      response.permissions.forEach((ele: any) => {
+        if (!temp[ele.masterModuleId]) {
+          temp[ele.masterModuleId] = {};
+          this.masterModules.push(ele.masterModuleId);
+        }
+        if (!temp[ele.masterModuleId][ele.moduleId]) {
+          this.modules.push(ele.moduleId);
+          temp[ele.masterModuleId][ele.moduleId] = {};
+        }
+        if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
+          temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
+          this.features.push(ele.featureId);
+        }
+        temp[ele.masterModuleId][ele.moduleId][ele.featureId][ele.functionId] =
+          true;
+      });
+    }
+
     this.manipulatedAccessControls = temp;
   }
 
   checkModules() {
-    let definedModules = MaxModules.getModules();
-    definedModules = definedModules.filter((masterModule: any) => {
-      return (
-        this.masterModules.includes(masterModule.id) ||
-        ("type" in masterModule &&
-          this.modules.includes(masterModule.id) &&
-          masterModule.type == "module")
-      );
+    let definedModules: any = MaxModules.getModules();
+    definedModules.forEach((masterModule: any, index: number) => {
+      if (
+        !(
+          this.masterModules.includes(masterModule.id) ||
+          ("type" in masterModule &&
+            this.modules.includes(masterModule.id) &&
+            masterModule.type == "module")
+        )
+      ) {
+        definedModules[index].disabled = true;
+      }
     });
-    definedModules.forEach((masterModule: any) => {
-      masterModule.childrens.forEach((children: any) => {
-        children.childrens = children.childrens.filter((feature: any) => {
-          return this.features.includes(feature.id);
+    definedModules.forEach((masterModule: any, index: number) => {
+      masterModule.childrens.forEach((children: any, j: number) => {
+        children.childrens.forEach((feature: any, c: number) => {
+          if (!this.features.includes(feature.id)) {
+            definedModules[index].childrens[j].childrens[c].disabled = true;
+          }
         });
       });
     });

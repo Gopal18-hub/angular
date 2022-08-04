@@ -40,3 +40,8 @@
     display: flex !important;
     row-gap: 10px !important;
 }
+.input1{
+    ::ng-deep  .mat-form-field-infix {
+        text-align: right !important;
+    }
+}
