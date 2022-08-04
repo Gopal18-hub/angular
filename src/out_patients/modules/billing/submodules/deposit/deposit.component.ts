@@ -245,7 +245,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any = 69;// Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -262,7 +262,8 @@ export class DepositComponent implements OnInit {
     this.depositForm = formResult.form;
     this.questions = formResult.questions;  
     this.lastUpdatedBy = this.cookie.get("UserName"); 
-
+    this.depositForm.controls["panno"].disable();
+    this.depositForm.controls["mainradio"].disable();
     }
   openrefunddialog() {
   const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
