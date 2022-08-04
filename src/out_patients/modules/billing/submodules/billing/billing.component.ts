@@ -232,6 +232,7 @@ export class BillingComponent implements OnInit {
         width: "30vw",
         data: {
           dueAmount: dtPatientPastDetails[4].data,
+          maxId: this.formGroup.value.maxid,
         },
       });
     }

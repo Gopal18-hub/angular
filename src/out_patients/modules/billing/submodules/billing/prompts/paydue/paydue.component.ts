@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { registerLocaleData } from "@angular/common";
 import enIN from "@angular/common/locales/en-IN";
+import { Router } from "@angular/router";
 
 registerLocaleData(enIN);
 
@@ -13,12 +14,24 @@ registerLocaleData(enIN);
 export class PaydueComponent implements OnInit {
   skipReason = "";
 
-  skipReasonsList: any = [];
+  skipReasonsList: any = [
+    {
+      title: "Patient will be paying in next visit",
+      value: "Patient will be paying in next visit",
+    },
+  ];
 
   constructor(
     public dialogRef: MatDialogRef<PaydueComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}
+
+  paynow() {
+    this.router.navigate(["details"], {
+      queryParams: { maxId: this.data.maxId },
+    });
+  }
 }

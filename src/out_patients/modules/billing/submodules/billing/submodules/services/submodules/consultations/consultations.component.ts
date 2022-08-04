@@ -16,10 +16,10 @@ export class ConsultationsComponent implements OnInit {
     type: "object",
     properties: {
       specialization: {
-        type: "dropdown",
+        type: "autocomplete",
       },
       doctorName: {
-        type: "dropdown",
+        type: "autocomplete",
       },
     },
   };
@@ -34,47 +34,37 @@ export class ConsultationsComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
-      "qty",
-      "credit",
-      "cash",
-      "disc",
+      "sno",
+      "doctorName",
+      "type",
+      "scheduleSlot",
+      "bookingDate",
+      "price",
     ],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
+      sno: {
+        title: "S.No.",
+        type: "number",
+      },
+      doctorName: {
+        title: "Docotr Name",
         type: "string",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
+      type: {
+        title: "Type",
         type: "string",
       },
-      precaution: {
-        title: "Precaution",
+      scheduleSlot: {
+        title: "Schedule Slot",
         type: "string",
       },
-      procedure: {
-        title: "Procedure Doctor",
-        type: "string",
+      bookingDate: {
+        title: "Booking Date",
+        type: "date",
       },
-      qty: {
-        title: "Qty / Type",
-        type: "string",
-      },
-      credit: {
-        title: "Credit",
-        type: "string",
-      },
-      cash: {
-        title: "Cash",
-        type: "string",
-      },
-      disc: {
-        title: "Disc %",
-        type: "string",
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
@@ -100,6 +90,11 @@ export class ConsultationsComponent implements OnInit {
         return { title: r.name, value: r.id };
       });
     });
+    this.formGroup.controls["specialization"].valueChanges.subscribe(
+      (val: any) => {
+        this.getdoctorlistonSpecializationClinic(val.value);
+      }
+    );
   }
 
   getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
@@ -113,7 +108,7 @@ export class ConsultationsComponent implements OnInit {
       )
       .subscribe((res) => {
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return { title: r.doctorName, value: r.doctorId };
         });
       });
   }

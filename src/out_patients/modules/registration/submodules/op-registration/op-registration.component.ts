@@ -1043,9 +1043,14 @@ export class OpRegistrationComponent implements OnInit {
           this.OPRegForm.controls["locality"].setErrors(null);
           this.questions[22].customErrorMessage = "";
           this.addressByLocalityID(value);
-        } else if (value.trim() == "") {
-          this.OPRegForm.controls["locality"].setErrors({ incorrect: true });
-          this.questions[22].customErrorMessage = "locality is required";
+        } else if (!value.value) {
+          if (value.trim() == "") {
+            this.OPRegForm.controls["locality"].setErrors({ incorrect: true });
+            this.questions[22].customErrorMessage = "locality is required";
+          } else {
+            this.OPRegForm.controls["locality"].setErrors(null);
+            this.questions[22].customErrorMessage = "";
+          }
         }
       });
 
