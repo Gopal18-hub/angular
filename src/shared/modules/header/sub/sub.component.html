@@ -251,7 +251,9 @@
             
             class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
-            [routerLink]="module.tenentPath+module.defaultPath"
+            [routerLink]=" baseHref == module.tenentPath
+            ? module.defaultPath
+            : module.tenentPath + module.defaultPath"
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
