@@ -45,7 +45,7 @@
                         <div class="flex w-1/20"></div>
                         <div class="flex flex-column ">
                             <div class="serachcss">
-                                <button mat-raised-button color="primary" (click)="search()">
+                                <button mat-raised-button color="primary" (click)="search()" class="searchbtn">
                                     <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35" height="38"
                                         viewBox="0 0 35 35">
                                         <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
@@ -84,14 +84,14 @@
                 </div>
                 <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
                 <div class="pl-2 pt-3 employeeclass font-bold font-base">
-                    <mat-label class="max-health-primary-color">Employee Dependent Details</mat-label>
+                    <mat-label class="max-health-primary-color">Employee Dependent Detail</mat-label>
                 </div>
                 <div class="gridh mt-2">
                     <maxhealth-table [config]="config2" [data]="staffDeptDetails"></maxhealth-table>
                 </div>
                 <div class="float-right mt-3">
                     <button mat-raised-button color="primary" class="ml-3 "
-                        (click)="this.staffForm.reset();">Clear</button>
+                        (click)="this.staffForm.reset();clear()">Clear</button>
                 </div>
             </div>
         </div>
