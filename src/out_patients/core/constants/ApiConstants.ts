@@ -379,6 +379,79 @@ export namespace ApiConstants {
     );
   };
 
+  // ====================================================================MISC API=================================================================
+  // GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME FOR MISC BILLING
+  export const getregisteredpatientdetailsForMisc = (
+    IACode: string,
+    RegistrationNo: number,
+    location: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregistrationdetailsformiscellenaous/" +
+      RegistrationNo +
+      "/" +
+      IACode +
+      "/" +
+      location
+    );
+  };
+
+  export const getMasterMiscDetail =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getmasterdataformiscellaneous";
+
+  export const getServiceitemsByServiceID = (
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallserviceitems/" +
+      serviceID +
+      "/" +
+      locationID
+    );
+  };
+
+  export const getTarrifByServiceID = (
+    priority: 1,
+    itemID: number,
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      priority +
+      "/" +
+      itemID +
+      "/" +
+      serviceID +
+      "?" +
+      "Hsplocationid=" +
+      locationID
+    );
+  };
+
+  export const getDipositedAmountByMaxID = (
+    iacode: string,
+    regNo: number,
+    hspId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdepositdetails/" +
+      iacode +
+      "/" +
+      regNo +
+      "/" +
+      hspId
+    );
+  };
+
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -391,6 +464,8 @@ export namespace ApiConstants {
       RegistrationNo
     );
   };
+
+  //172.30.0.16:1007/api/outpatientbilling/getallserviceitems/99/67
 
   export const getpatienthistory = (
     FromDate: any,
@@ -654,14 +729,20 @@ export namespace ApiConstants {
 
   export const getpatientvisithistory = (
     IACode: string,
-    RegistrationNo: number
+    RegistrationNo: number,
+    LocationId: number,
+    DoctorId: number
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getoppatientvisithistory/" +
       IACode +
       "/" +
-      RegistrationNo
+      RegistrationNo +
+      "/" +
+      LocationId + 
+      "?" +
+      DoctorId
     );
   };
 

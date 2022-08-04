@@ -5,8 +5,8 @@
     </div>
 
     <!-- Blue Banner -->
-    <div class="header w-full mt-1 p-2 border-radius-md secondary">
-        <mat-label class="font-lg col-white">Refund Receipt</mat-label>
+    <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
+        <mat-label class="font-lg col-white ml-2">Refund Receipt</mat-label>
     </div>
 
     <!-- Service Type -->
@@ -26,9 +26,9 @@
                     <mat-label>Available Amount</mat-label>
                     <mat-label class="float-right">{{avalaiblemaount}}</mat-label>
                 </div>              
-                <div class="mt-1">
+                <div class="mt-2">
                     <mat-label class="font-base">Payable Name</mat-label>
-                    <div class="bg-white border-radius-md mt-1">
+                    <div class="bg-white border-radius-md mt-1 payabletextbox">
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="refundform"
