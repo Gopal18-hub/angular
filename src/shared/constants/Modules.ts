@@ -192,7 +192,7 @@ export namespace MaxModules {
           title: "Configure",
           defaultPath: "",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
@@ -289,7 +289,7 @@ export namespace MaxModules {
           title: "MIME",
           defaultPath: "",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
       ],
     },

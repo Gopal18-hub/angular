@@ -1,10 +1,26 @@
-.billing-page-wrapper {
+.post-billing-page-wrapper {
     background-color: #fff;
+    .isDisabled {
+        pointer-events: none;
+        opacity: 0.7;
+      }
     mat-label {
       font-weight: 500;
     }
     .width-8 {
-      width: 9%;
+      width: 8%;
+    }
+    .width-9 {
+        width: 9%;
+      }
+    .w-11{
+        width: 11%;
+    }
+    .w-12{
+        width: 12%;
+    }
+    .w-13{
+        width: 13%;
     }
     .second-row-action-items {
       button {
@@ -12,11 +28,19 @@
         line-height: 1.875rem;
       }
     }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     .bg-secondary {
       background-color: #f6f6f6;
     }
     .bg-white {
       background-color: #fff;
+    }
+    .clr-blue{
+        color: #00B2A9;
     }
     ::ng-deep mat-form-field {
       .mat-form-field-wrapper {
@@ -32,9 +56,15 @@
         height: 1.875rem;
         line-height: 1.875rem;
       }
-  
+      .mat-raised-button{
+          min-width: auto !important;
+          padding: 0 10px;
+      }
       .mat-tab-header {
         border-bottom: none;
+      }
+      .mat-checkbox-layout .mat-checkbox-label{
+        color: #00B2A9;
       }
       .mat-tab-links {
         background-color: #45c0be;

@@ -25,8 +25,8 @@ export class PostDischargeServicesComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  tabChange(tab: any) {
-    this.activeTab = tab;
-    this.selectedComponent = new ComponentPortal(tab.component);
-  }
+  // tabChange(tab: any) {
+  //   this.activeTab = tab;
+  //   this.selectedComponent = new ComponentPortal(tab.component);
+  // }
 }

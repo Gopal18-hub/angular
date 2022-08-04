@@ -46,6 +46,10 @@ const routes: Routes = [
         component: DetailsComponent,
         children: [
           {
+            path: "",
+            component: BillDetailTableComponent,
+          },
+          {
             path: "cred-bill-settlement",
             component: PartialCredBillComponent,
           },
@@ -74,16 +78,19 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-      { 
-        path: "post-discharge-follow-up-billing", 
+      {
+        path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
         children: [
-          { path: "", component: ServicesComponent},
-          { path: "bill", component: PostDischargeBillComponent},
-          { path: "services", component: PostDischargeServicesComponent},
-          { path: "credit-details", component: PostDischargeCreditDetailsComponent}
-        ]
-      }
+          { path: "", component: PostDischargeServicesComponent },
+          { path: "bill", component: PostDischargeBillComponent },
+          { path: "services", component: PostDischargeServicesComponent },
+          {
+            path: "credit-details",
+            component: PostDischargeCreditDetailsComponent,
+          },
+        ],
+      },
     ],
   },
   {
@@ -106,7 +113,10 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-      { path: "post-discharge-follow-up-billing", component: PostDischargeFollowUpBillingComponent}
+      {
+        path: "post-discharge-follow-up-billing",
+        component: PostDischargeFollowUpBillingComponent,
+      },
     ],
   },
 ];

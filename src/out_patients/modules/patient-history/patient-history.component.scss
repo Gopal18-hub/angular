@@ -77,11 +77,17 @@
         // }
 
     }
-    // .btn{
-    //     ::ng-deep .mat-button-wrapper{
-    //         margin-left: 25px;
-    //     }
-    // }   
+    .btn{
+        ::ng-deep .mat-button-wrapper{
+            margin-left: 25px;
+        }
+    } 
+    .disableclass{
+        color: currentColor;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.2;
+    }  
 }
 
 

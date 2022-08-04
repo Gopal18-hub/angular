@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BillingApiConstants } from '@modules/billing/submodules/billing/BillingApiConstant';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
-
+import { HttpService } from '@shared/services/http.service';
 @Component({
   selector: 'out-patients-post-discharge-consultations',
   templateUrl: './post-discharge-consultations.component.html',
@@ -84,7 +85,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
       }
     },
   };
-  constructor(private formService: QuestionControlService) { }
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpService
+    ) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -93,6 +97,41 @@ export class PostDischargeConsultationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.formGroup.controls["doctorName"].disable();
+    this.getSpecialization();
+  }
+  ngAfterViewInit(): void
+  {
+    this.formGroup.controls["specialization"].valueChanges.subscribe(res => {
+      console.log(res);
+      this.formGroup.controls["doctorName"].enable();
+      this.getdoctorlistonSpecializationClinic(res);
+    })
+  }
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      console.log(res);
+      this.questions[0].options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          1
+        )
+      )
+      .subscribe((res) => {
+        console.log(res);
+        this.questions[1].options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+      });
   }
 
 }
