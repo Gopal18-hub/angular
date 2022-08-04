@@ -69,9 +69,9 @@ export class RefundDialogComponent implements OnInit {
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
-  hsplocationId:any = 69; //Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 13647; // Number(this.cookie.get("stationId"));
-  operatorID:any = 59386; //  Number(this.cookie.get("UserId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("stationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
@@ -113,17 +113,7 @@ export class RefundDialogComponent implements OnInit {
     this.mobileno = this.data.patientinfo.mobileno;
     console.log('inside refund page');
   }
-  ngAfterViewInit(): void{
-    this.refundform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
-      if(value == "form60")
-      {
-        this.matDialog.open(FormSixtyComponent, {width: "50vw", height: "98vh"});
-        this.refundform.controls["panno"].disable();
-      }
-      else{
-        this.refundform.controls["panno"].enable();
-      }
-    })
+  ngAfterViewInit(): void{   
     this.paymentform.controls["amount"].valueChanges.subscribe(
       (res:any)=>{
       if(res > 200000)
@@ -194,13 +184,14 @@ export class RefundDialogComponent implements OnInit {
         this.messageDialogService.error("Refund Amount must not be Zero");
         this.validationexists = true;
       }
-       if(this.PaymentTypedepositamount > this.avalaiblemaount){
+       if(Number(this.PaymentTypedepositamount) > Number(this.avalaiblemaount)){
         this.messageDialogService.error("Refund Amount must be less then available amount");
         this.validationexists = true;
       }
-      if(this.refundform.value.otp == ""){
+      if(this.refundform.value.otp == ""){ 
+        this.questions[4].elementRef.focus();       
         this.messageDialogService.error("Enter OTP");
-        this.questions[0].elementRef.focus();
+       
         this.validationexists = true;
       }
     }
@@ -220,7 +211,7 @@ export class RefundDialogComponent implements OnInit {
           (resultData) => {
             this.matDialog.closeAll();
             this.dialogRef.close("Success");
-            this.messageDialogService.success("Deposit Has Been Successfully Save");
+            this.messageDialogService.success("Refund has been done Successfully");
           
           },
           (error) => {
@@ -298,11 +289,13 @@ this.http
 
   }
   resendotpclick(){
+    this.refundform.controls["otp"].setValue("");
     this.flagto_set_btnname = 1;
     this.RefundcashMode=[];
     this.RefundcashMode = this.paymentdepositcashMode.refundform.value;
     this.ResendOTP = "Resend OTP To Manager";
     this.otpresenttomobile = false;
+    this.otpsenttomobile = true;
     if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
     {
        this.messageDialogService.error("Refund Amount must be less then available amount");
