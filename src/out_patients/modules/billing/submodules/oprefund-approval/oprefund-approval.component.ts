@@ -11,6 +11,8 @@ import { OpRefundApprovalListInterface } from "../../../../../out_patients/core/
 import { FormControl, FormGroup } from "@angular/forms";
 import { SaveOprefundApprovalModel } from "../../../../core/models/saveOprefundapproval.Model";
 import { CookieService } from "@shared/services/cookie.service";
+import { OprefundDialogComponent } from "./oprefund-dialog/oprefund-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -103,6 +105,7 @@ export class OprefundApprovalComponent implements OnInit {
       ptnName: {
         title: "Name",
         type: "string",
+        tootltipColumn: "ptnName",
       },
       billNo: {
         title: "Bill No",
@@ -111,6 +114,7 @@ export class OprefundApprovalComponent implements OnInit {
       billDatetime: {
         title: "Bill Date/Time",
         type: "string",
+        tooltipColumn: "billDatetime",
       },
       serviceName: {
         title: "Service Name",
@@ -119,6 +123,7 @@ export class OprefundApprovalComponent implements OnInit {
       itemName: {
         title: "Item Name",
         type: "string",
+        tooltipColumn: "itemName",
       },
       refundAmt: {
         title: "Refund Amount",
@@ -211,10 +216,12 @@ export class OprefundApprovalComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private searchService: SearchService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    //obj= new ActiveXObject("wscript.network");
     this.userId = Number(this.cookie.get("UserId"));
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     this.searchService.searchTrigger
@@ -316,9 +323,10 @@ export class OprefundApprovalComponent implements OnInit {
             console.log(this.oprefundPendingList);
           } else {
             // this.oprefundicon=
+            console.log("no records found");
+            this.defaultUI = false;
             this.oprefundmessage = "No records found";
             this.showapprovalspinner = false;
-            this.defaultUI = false;
             this.isPendingList = false;
             this.isApprovedList = false;
             this.isRejectedList = false;
@@ -343,6 +351,7 @@ export class OprefundApprovalComponent implements OnInit {
             this.isRejectedList = false;
             console.log(this.oprefundApprovedList);
           } else {
+            console.log("no records found");
             this.showapprovalspinner = false;
             this.oprefundmessage = "No records found";
             this.defaultUI = false;
@@ -371,9 +380,10 @@ export class OprefundApprovalComponent implements OnInit {
             this.isPendingList = false;
             console.log(this.oprefundApprovedList);
           } else {
+            console.log("no records found");
             this.showapprovalspinner = false;
-            this.oprefundmessage = "No records found";
             this.defaultUI = false;
+            this.oprefundmessage = "No records found";
             this.isRejectedList = false;
             this.isApprovedList = false;
             this.isPendingList = false;
@@ -383,15 +393,28 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   onApprove() {
+    this.pendingObject(0, this.activeLink2);
+
     console.log(this.OprefundPending.selection.selected);
-    this.pendingObject(0);
+
     //this.dialogservice.success("Update request Approved");
   }
   rejectList: any = [];
-  onReject() {
+  onReject(link: any) {
+    // if (this.pendingList.length == 0 || this.approvedList.length == 0) {
+    //   console.log("inside list null");
+    //   this.dialog.open(OprefundDialogComponent, {
+    //     width: "25vw",
+    //     height: "30vh",
+    //   });
+    // } else {
+    //   this.pendingObject(1);
+    //   this.approvedObject();
+    // }
     //console.log(this.OprefundApproved.selection.selected);
-    this.pendingObject(1);
-    this.approvedObject();
+
+    this.pendingObject(1, this.activeLink2);
+    this.approvedObject(this.activeLink2);
   }
   getpendingoprefundobject(): SaveOprefundApprovalModel {
     return new SaveOprefundApprovalModel(
@@ -408,7 +431,7 @@ export class OprefundApprovalComponent implements OnInit {
     );
   }
   flag!: number;
-  pendingObject(value: number) {
+  pendingObject(value: number, activelink: any) {
     if (this.OprefundPending != undefined) {
       this.OprefundPending.selection.selected.forEach((a: any, index: any) => {
         let iacode = a.maxid.split(".")[0];
@@ -432,31 +455,43 @@ export class OprefundApprovalComponent implements OnInit {
         });
         console.log(this.pendingList);
       });
-      this.http
-        .post(
-          ApiConstants.oprefundapprovereject,
-          this.getpendingoprefundobject()
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (data) => {
-            console.log(data);
-            if (data == "Records Successfully Done!") {
-              this.getoprefundPending();
-            }
-          },
-          (httperrorResponse) => {
-            if (httperrorResponse.error.text == "Records Successfully Done!") {
-              this.pendingList = [];
-              this.defaultUI = false;
-              this.getoprefundPending();
-              this.dialogservice.success("Update Request Approved");
-            }
-          }
-        );
+      if (activelink.id == 1) {
+        if (this.pendingList.length == 0) {
+          console.log("inside list null");
+          this.dialog.open(OprefundDialogComponent, {
+            width: "25vw",
+            height: "30vh",
+          });
+        } else {
+          this.http
+            .post(
+              ApiConstants.oprefundapprovereject,
+              this.getpendingoprefundobject()
+            )
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (data) => {
+                console.log(data);
+                if (data == "Records Successfully Done!") {
+                  this.getoprefundPending();
+                }
+              },
+              (httperrorResponse) => {
+                if (
+                  httperrorResponse.error.text == "Records Successfully Done!"
+                ) {
+                  this.pendingList = [];
+                  this.defaultUI = false;
+                  this.getoprefundPending();
+                  this.dialogservice.success("Update Request Approved");
+                }
+              }
+            );
+        }
+      }
     }
   }
-  approvedObject() {
+  approvedObject(activelink: any) {
     this.OprefundApproved.selection.selected.forEach((a: any, index: any) => {
       let iacode = a.maxid.split(".")[0];
       let regno = a.maxid.split(".")[1];
@@ -474,28 +509,43 @@ export class OprefundApprovalComponent implements OnInit {
       });
       console.log(this.approvedList);
     });
-    this.http
-      .post(ApiConstants.oprefundapprovereject, this.getapproveoprefundobject())
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (data) => {
-          console.log(data);
-          if (data == "Records Successfully Done!") {
-            this.getoprefundApproved();
-            console.log("subscrfibeyy data");
-          }
-        },
-        (httperrorResponse) => {
-          console.log(httperrorResponse);
-          if (httperrorResponse.error.text == "Records Successfully Done!") {
-            console.log("inside error");
-            this.approvedList = [];
-            this.defaultUI = false;
+    if (activelink.id == 2) {
+      if (this.approvedList.length == 0) {
+        console.log("inside list null");
+        this.dialog.open(OprefundDialogComponent, {
+          width: "25vw",
+          height: "30vh",
+        });
+      } else {
+        this.http
+          .post(
+            ApiConstants.oprefundapprovereject,
+            this.getapproveoprefundobject()
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
+            (data) => {
+              console.log(data);
+              if (data == "Records Successfully Done!") {
+                this.getoprefundApproved();
+                console.log("subscrfibeyy data");
+              }
+            },
+            (httperrorResponse) => {
+              console.log(httperrorResponse);
+              if (
+                httperrorResponse.error.text == "Records Successfully Done!"
+              ) {
+                console.log("inside error");
+                this.approvedList = [];
+                this.defaultUI = false;
 
-            this.getoprefundApproved();
-            this.dialogservice.success("Update Rejected");
-          }
-        }
-      );
+                this.getoprefundApproved();
+                this.dialogservice.success("Update Rejected");
+              }
+            }
+          );
+      }
+    }
   }
 }

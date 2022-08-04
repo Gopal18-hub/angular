@@ -119,7 +119,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   config1: any = {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-
+    clickedRows: false,
     //selectBox: true,
     // selectCheckBoxPosition: 10,
     //clickSelection: "single",
@@ -468,6 +468,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           if (data != null) {
             if (data.objPatientDemographicData.length > 0) {
               this.validmaxid = true;
+              this.cleardata();
               this.enableSave();
               this.enableDelete();
               this.disableClear = false;
@@ -705,7 +706,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //     this.dependantRemarks = res.added[0].remark;
     //     console.log(this.dependantRemarks);
     //   });
-    console.log(this.employeeDependanttable);
+    console.log(this.employeeDependanttable.selection.selected);
     // this.employeeDependanttable.config.columnsInfo.remark.disable();
     //console.log(this.employeeDependanttable);
     //  console.log(this.employeeDependanttable.selection.selected[0].relationship);
@@ -814,7 +815,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       regno,
       iacode,
       69,
-      9923,
+      this.userId,
       0, //corporate id
       true,
       0,

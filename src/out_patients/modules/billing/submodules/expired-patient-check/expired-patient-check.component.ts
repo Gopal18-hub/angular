@@ -25,6 +25,8 @@ interface deleteexpiredResponse {
   styleUrls: ["./expired-patient-check.component.scss"],
 })
 export class ExpiredPatientCheckComponent implements OnInit {
+  lastUpdatedBy: string = this.cookie.get("UserName");
+  currentTime: string = new Date().toLocaleString();
   expiredpatientformdata = {
     type: "object",
     title: "",

@@ -120,13 +120,15 @@
                         <mat-label class="max-health-primary-color font-semi-bold">Date of Expiry Intimation</mat-label>
                     </div>
                     <div class=" w-3/10">
-                        <maxhealth-question
-                        [question]="questions[3]"
-                        [form]="expiredpatientForm"
-                        [questions]="questions[3]"
-                        [index]="3"
-                        >
-                        </maxhealth-question>
+                        <div class="w-3/5">
+                            <maxhealth-question
+                            [question]="questions[3]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[3]"
+                            [index]="3"
+                            >
+                            </maxhealth-question>
+                        </div>
                     </div>
                 </div>
                 <div class="flex w-full ml-8 h-3/5">
@@ -135,12 +137,15 @@
                         <span class="asterisk-color">*</span>
                     </div>
                     <div class="w-1/2 ml-8 text-scrollbar" >
-                        <maxhealth-question
-                        [question]="questions[4]"
-                        [form]="expiredpatientForm"
-                        [questions]="questions[4]"
-                        [index]="4"
-                        ></maxhealth-question>
+                        <!-- <div class="w-137"> -->
+                            <maxhealth-question
+                            [question]="questions[4]"
+                            [form]="expiredpatientForm"
+                            [questions]="questions[4]"
+                            [index]="4"
+                            ></maxhealth-question>
+                        <!-- </div> -->
+                      
                     </div>
                 </div>
 
@@ -163,5 +168,10 @@
             </div>
         </div>
         </div> 
-    </mat-tab-nav-panel>   
+    </mat-tab-nav-panel>
+</section>
+<div class="flex justify-between max-health-primary-color ">
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }}</p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>        
    

@@ -31,6 +31,8 @@ export class DmgMappingComponent implements OnInit {
   showCheckboxgrid: boolean = false;
   previouselected!: number;
   categoryIcons: [] = [];
+  lastUpdatedBy: string = this.cookie.get("UserName");
+  currentTime: string = new Date().toLocaleString();
 
   dmgPatientDetails!: PatientDetailsDmgInterface;
   dmgMappingformData = {
@@ -114,6 +116,8 @@ export class DmgMappingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    //this.lastUpdatedBy = this.cookie.get("UserName");
+    // this.userId = Number(this.cookie.get("UserId"));
     let formResult: any = this.formService.createForm(
       this.dmgMappingformData.properties,
       {}

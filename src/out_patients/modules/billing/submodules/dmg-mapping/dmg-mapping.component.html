@@ -96,7 +96,7 @@
     <!-----------------------------------------THIRD ROW------------------------------------------------------------->
     <div class="border-radius-lg border-dmgtable mt-3 h-63"  >
         <div class="p-1 border-tableheader">
-            <p class="ml-2  mb-1">Disease Management Groups-Organ(DMG)</p>
+            <p class="ml-2  mb-1">Disease Management Groups - Organ (DMG)</p>
         </div>
         <div class="ml-5  mb-2 h-50 overflow-y-scroll"  *ngIf="showCheckboxgrid" >
 
@@ -223,4 +223,8 @@
     
     </mat-tab-nav-panel>
 </section> 
+<div class="flex justify-between max-health-primary-color ">
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }} </p>
+    <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
+</div>
 <!-- [disabled]="disablebutton" -->
