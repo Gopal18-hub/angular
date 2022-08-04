@@ -242,7 +242,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       { width: "70%", 
         height: "50%",
         data:{
-          maxid: this.formGroup.value.maxid
+          maxid: this.formGroup.value.maxid,
+          docid: '',
         } });
   }
   clear() {

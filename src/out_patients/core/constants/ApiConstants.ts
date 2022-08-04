@@ -654,14 +654,20 @@ export namespace ApiConstants {
 
   export const getpatientvisithistory = (
     IACode: string,
-    RegistrationNo: number
+    RegistrationNo: number,
+    LocationId: number,
+    DoctorId: number
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getoppatientvisithistory/" +
       IACode +
       "/" +
-      RegistrationNo
+      RegistrationNo +
+      "/" +
+      LocationId + 
+      "?" +
+      DoctorId
     );
   };
 
