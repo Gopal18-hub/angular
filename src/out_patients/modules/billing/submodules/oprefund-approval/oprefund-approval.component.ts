@@ -10,6 +10,7 @@ import { OprefundPendingInterface } from "../../../../../out_patients/core/types
 import { OpRefundApprovalListInterface } from "../../../../../out_patients/core/types/opRefundapproval/opRefundpendinglist.Interface";
 import { FormControl, FormGroup } from "@angular/forms";
 import { SaveOprefundApprovalModel } from "../../../../core/models/saveOprefundapproval.Model";
+import { CookieService } from "@shared/services/cookie.service";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -21,13 +22,19 @@ export class OprefundApprovalComponent implements OnInit {
   to: any;
   today = new Date();
   defaultUI: boolean = false;
-  showapprovalspinner: boolean = true;
+  userId: any;
+  hsplocationId: any;
+  showapprovalspinner: boolean = false;
   isPendingList: boolean = false;
   isApprovedList: boolean = false;
+  isRejectedList: boolean = false;
   oprefundmessage: string = "Please search From Date and To Date ";
   oprefundicon: string = "placeholder";
-  oprefundPendingList!: OpRefundApprovalListInterface;
-  oprefundApprovedList!: OpRefundApprovalListInterface;
+  pendingList: any = [];
+  approvedList: any = [];
+  oprefundPendingList: OpRefundApprovalListInterface[] = [];
+  oprefundApprovedList: OpRefundApprovalListInterface[] = [];
+  oprefundRejectedList: OpRefundApprovalListInterface[] = [];
   oprefundapprovalpageForm = new FormGroup({
     from: new FormControl(""),
     to: new FormControl(""),
@@ -123,21 +130,93 @@ export class OprefundApprovalComponent implements OnInit {
       },
     },
   };
+  oprefundrejectConfig: any = {
+    actionItems: true,
+    selectBox: false,
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "ptnName",
+      "billNo",
+      "billDatetime",
+      "serviceName",
+      "itemName",
+      "refundAmt",
+      "requestedby",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max Id",
+        type: "string",
+      },
+      ssn: {
+        title: "SSN",
+        type: "string",
+      },
+      ptnName: {
+        title: "Name",
+        type: "string",
+      },
+      billNo: {
+        title: "Bill No",
+        type: "string",
+      },
+      billDatetime: {
+        title: "Bill Date/Time",
+        type: "string",
+      },
+      serviceName: {
+        title: "Service Name",
+        type: "string",
+      },
+      itemName: {
+        title: "Item Name",
+        type: "string",
+      },
+      refundAmt: {
+        title: "Refund Amount",
+        type: "string",
+      },
+      requestedby: {
+        title: "Requested By",
+        type: "string",
+      },
+    },
+  };
   constructor(
     private router: Router,
     private dialogservice: MessageDialogService,
     private http: HttpService,
     private datepipe: DatePipe,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
-    debugger;
-    // this.searchService.searchTrigger
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((formdata: any) => {
-    //     this.searchhotlisting(formdata.data);
-    //   });
+    this.userId = Number(this.cookie.get("UserId"));
+    this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe((formdata: any) => {
@@ -145,12 +224,24 @@ export class OprefundApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 8),
+        new Date().setMonth(new Date().getMonth() - 2),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.showmain(this.link1[2]);
+  }
+  ngAfterViewInit(): void {
+    // if (this.OprefundPending != undefined) {
+    //   console.log(this.OprefundPending.selection.changed);
+    // }
+    // setTimeout(() => {
+    //   this.OprefundPending.selection.changed
+    //     .pipe(takeUntil(this._destroying$))
+    //     .subscribe((res: any) => {
+    //       console.log(res);
+    //     });
+    // });
   }
 
   searchOpRefundapproval(formdata: any) {
@@ -162,7 +253,7 @@ export class OprefundApprovalComponent implements OnInit {
       this.from =
         formdata["from"] != ""
           ? formdata["from"]
-          : this.today.setDate(this.today.getDate() - 180);
+          : this.today.setDate(this.today.getDate() - 30);
       this.from = this.datepipe.transform(this.from, "yyyy-MM-dd");
       this.to = formdata["to"] != "" ? formdata["to"] : new Date();
       this.to = this.datepipe.transform(this.to, "yyyy-MM-dd");
@@ -194,102 +285,217 @@ export class OprefundApprovalComponent implements OnInit {
     console.log(link);
     if (link.id == 1) {
       this.activeLink2 = link;
-      this.http
-        .get(ApiConstants.getpendingoprefundapproval(this.from, this.to))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((data) => {
-          console.log(data);
-          if (data != null) {
-            this.oprefundPendingList =
-              data.opRefundApprovalList as OpRefundApprovalListInterface;
-            //this.oprefundApprovedList = {} as OpRefundApprovalListInterface;
-            this.showapprovalspinner = true;
-            this.defaultUI = true;
-            this.isPendingList = true;
-            this.isApprovedList = false;
-            console.log(this.oprefundPendingList);
-          }
-        });
+      this.getoprefundPending();
     } else if (link.id == 2) {
       this.activeLink2 = link;
-      this.http
-        .get(ApiConstants.getapprovedoprefundapproval(this.from, this.to))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((data) => {
-          console.log(data);
-          if (data != null) {
-            this.oprefundApprovedList = data as OpRefundApprovalListInterface;
-            // this.oprefundPendingList = [];
-            this.showapprovalspinner = true;
-            this.defaultUI = true;
-            this.isApprovedList = true;
-            this.isPendingList = false;
-            console.log(this.oprefundApprovedList);
-          }
-        });
+      this.getoprefundApproved();
     } else {
+      this.isApprovedList = false;
+      this.isPendingList = false;
       this.activeLink2 = link;
+      this.getoprefundRejected();
     }
   }
 
-  data: any[] = [
-    {
-      maxid: "BLKH.789456",
-      ssn: "789456",
-      name: "mehak",
-      billno: "blc5600152",
-      billdatetime: "99/99/9999-24:51",
-      servicename: "investigation",
-      itemname: "hcv antibody",
-      refundamount: "1500.00",
-      requestedby: "Ekta sharmae",
-    },
-  ];
-  approvalList: any = [];
-  oprefundApprove() {
-    let iacode = this.OprefundPending.selection.selected.maxid.split(".")[0];
-    let regno = this.OprefundPending.selection.selected.maxId.split(".")[1];
-    console.log(this.OprefundPending.selection.selected);
-    this.approvalList.push({
-      recordId: this.OprefundPending.selection.selected.id,
-      flag: 0,
-      hostName: "HostNameTest",
-      risReason: "",
-      serviceId: 0,
-      testStatus: 0,
-      iacode: iacode,
-      registrationNo: regno,
-      billNo: this.OprefundPending.selection.selected.billNo,
-      itemName: this.OprefundPending.selection.selected.itemName,
-    });
-    console.log(this.approvalList);
-    //this.http.post(ApiConstants.oprefundapprovereject,getapproverejectobject())
-
-    //this.dialogservice.success("Update request Approved");
-    // "opRefundApprovalData": [
-    //     {
-    //       "recordId": 737832,
-    //       "flag": 0,
-    //       "hostName": "HostNameTest",
-    //       "risReason": "",
-    //       "serviceId": 0,
-    //       "testStatus": 0,
-    //       "iacode": "skdd",
-    //       "registrationNo": 891742,
-    //       "billNo": "SKCS36436143",
-    //       "itemName": "Amit Bansal"
-    //     }
-    //   ],
-    //   "operatorId": 9923,
-    //   "locationId": 7
-    // }
+  getoprefundPending() {
+    this.http
+      .get(ApiConstants.getpendingoprefundapproval(this.from, this.to))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        if (data != null) {
+          this.oprefundPendingList =
+            data.opRefundApprovalList as OpRefundApprovalListInterface[];
+          //this.oprefundApprovedList = {} as OpRefundApprovalListInterface;
+          if (this.oprefundPendingList.length > 0) {
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.isPendingList = true;
+            this.isApprovedList = false;
+            this.isRejectedList = false;
+            console.log(this.oprefundPendingList);
+          } else {
+            // this.oprefundicon=
+            this.oprefundmessage = "No records found";
+            this.showapprovalspinner = false;
+            this.defaultUI = false;
+            this.isPendingList = false;
+            this.isApprovedList = false;
+            this.isRejectedList = false;
+          }
+        }
+      });
   }
-  //getapproverejectobject():SaveOprefundApprovalModel{
+  getoprefundApproved() {
+    this.http
+      .get(ApiConstants.getapprovedoprefundapproval(this.from, this.to))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        if (data != null) {
+          this.oprefundApprovedList = data as OpRefundApprovalListInterface[];
+          // this.oprefundPendingList = [];
+          if (this.oprefundApprovedList.length > 0) {
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.isApprovedList = true;
+            this.isPendingList = false;
+            this.isRejectedList = false;
+            console.log(this.oprefundApprovedList);
+          } else {
+            this.showapprovalspinner = false;
+            this.oprefundmessage = "No records found";
+            this.defaultUI = false;
+            this.isApprovedList = false;
+            this.isPendingList = false;
+            this.isRejectedList = false;
+          }
+        }
+      });
+  }
 
-  // return new (this.approvalList,9923,7);
-  //}
+  getoprefundRejected() {
+    this.http
+      .get(ApiConstants.getrejectedoprefundapproval(this.from, this.to))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        if (data != null) {
+          this.oprefundRejectedList = data as OpRefundApprovalListInterface[];
+          // this.oprefundPendingList = [];
+          if (this.oprefundRejectedList.length > 0) {
+            this.showapprovalspinner = false;
+            this.defaultUI = true;
+            this.isRejectedList = true;
+            this.isApprovedList = false;
+            this.isPendingList = false;
+            console.log(this.oprefundApprovedList);
+          } else {
+            this.showapprovalspinner = false;
+            this.oprefundmessage = "No records found";
+            this.defaultUI = false;
+            this.isRejectedList = false;
+            this.isApprovedList = false;
+            this.isPendingList = false;
+          }
+        }
+      });
+  }
 
-  oprefundReject() {
-    //this.dialogservice.success("Update Rejected");
+  onApprove() {
+    console.log(this.OprefundPending.selection.selected);
+    this.pendingObject(0);
+    //this.dialogservice.success("Update request Approved");
+  }
+  rejectList: any = [];
+  onReject() {
+    //console.log(this.OprefundApproved.selection.selected);
+    this.pendingObject(1);
+    this.approvedObject();
+  }
+  getpendingoprefundobject(): SaveOprefundApprovalModel {
+    return new SaveOprefundApprovalModel(
+      this.pendingList,
+      this.userId,
+      this.hsplocationId
+    );
+  }
+  getapproveoprefundobject(): SaveOprefundApprovalModel {
+    return new SaveOprefundApprovalModel(
+      this.approvedList,
+      this.userId,
+      this.hsplocationId
+    );
+  }
+  flag!: number;
+  pendingObject(value: number) {
+    if (this.OprefundPending != undefined) {
+      this.OprefundPending.selection.selected.forEach((a: any, index: any) => {
+        let iacode = a.maxid.split(".")[0];
+        let regno = a.maxid.split(".")[1];
+        if (value == 0) {
+          this.flag = 0;
+        } else {
+          this.flag = 1;
+        }
+        this.pendingList.push({
+          recordId: a.id,
+          flag: this.flag,
+          hostName: "HostNameTest",
+          risReason: "",
+          serviceId: 0,
+          testStatus: 0,
+          iacode: iacode,
+          registrationNo: regno,
+          billNo: a.billNo,
+          itemName: a.itemName,
+        });
+        console.log(this.pendingList);
+      });
+      this.http
+        .post(
+          ApiConstants.oprefundapprovereject,
+          this.getpendingoprefundobject()
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (data) => {
+            console.log(data);
+            if (data == "Records Successfully Done!") {
+              this.getoprefundPending();
+            }
+          },
+          (httperrorResponse) => {
+            if (httperrorResponse.error.text == "Records Successfully Done!") {
+              this.pendingList = [];
+              this.defaultUI = false;
+              this.getoprefundPending();
+              this.dialogservice.success("Update Request Approved");
+            }
+          }
+        );
+    }
+  }
+  approvedObject() {
+    this.OprefundApproved.selection.selected.forEach((a: any, index: any) => {
+      let iacode = a.maxid.split(".")[0];
+      let regno = a.maxid.split(".")[1];
+      this.approvedList.push({
+        recordId: a.id,
+        flag: 1,
+        hostName: "HostNameTest",
+        risReason: "",
+        serviceId: 0,
+        testStatus: 0,
+        iacode: iacode,
+        registrationNo: regno,
+        billNo: a.billNo,
+        itemName: a.itemName,
+      });
+      console.log(this.approvedList);
+    });
+    this.http
+      .post(ApiConstants.oprefundapprovereject, this.getapproveoprefundobject())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (data) => {
+          console.log(data);
+          if (data == "Records Successfully Done!") {
+            this.getoprefundApproved();
+            console.log("subscrfibeyy data");
+          }
+        },
+        (httperrorResponse) => {
+          console.log(httperrorResponse);
+          if (httperrorResponse.error.text == "Records Successfully Done!") {
+            console.log("inside error");
+            this.approvedList = [];
+            this.defaultUI = false;
+
+            this.getoprefundApproved();
+            this.dialogservice.success("Update Rejected");
+          }
+        }
+      );
   }
 }

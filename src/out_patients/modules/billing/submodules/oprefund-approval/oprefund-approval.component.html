@@ -11,9 +11,17 @@
           </ul>            
       </nav>
       <mat-tab-nav-panel #tabPanel>
-        <div class=" h-full p-3" >
-           <div class="h-4/5" *ngIf="defaultUI">
-            <ng-container *ngIf="isPendingList"  >
+        <mat-progress-spinner
+        mode="indeterminate"
+        value="25"
+        diameter="60"
+        *ngIf="defaultUI && showapprovalspinner"
+        class="spinner"
+      >
+      </mat-progress-spinner>
+        <div class=" h-full p-3 " *ngIf="defaultUI" >
+           <div class="h-4/5" >
+            <ng-container *ngIf=" isPendingList"  >
                 <maxhealth-table #oprefundpending
                 [config]="oprefundConfig"
                 [data]="oprefundPendingList"
@@ -25,17 +33,24 @@
               [data]="oprefundApprovedList"
               ></maxhealth-table>
           </ng-container>
-            <!-- <div class="h-full" *ngIf="!defaultUI">
-              <empty-placeholder [icon]="oprefundicon" [message]="oprefundmessage">
-              </empty-placeholder> 
-              </div> -->
+          <ng-container *ngIf="isRejectedList"  >
+            <maxhealth-table #oprefundapproved
+            [config]="oprefundrejectConfig"
+            [data]="oprefundRejectedList"
+            ></maxhealth-table>
+        </ng-container>
           </div> 
           <div class="h-1/5 float-right mt-6">
-            <button mat-raised-button color="primary"  class="mr-8" (click)="oprefundApprove()">Approve</button>
-            <button mat-raised-button color="primary" (click)="oprefundReject()">Reject</button>
-          </div>
-        </div>  
+            <button mat-raised-button color="primary"  class="mr-8" (click)="onApprove()" *ngIf="isPendingList">Approve</button>
+            <button mat-raised-button color="primary" *ngIf="isPendingList || isApprovedList"  (click)="onReject()">Reject</button>
+          </div>  
+        </div> 
+        <div class="h-full" *ngIf="!defaultUI">
+          <empty-placeholder [icon]="oprefundicon" [message]="oprefundmessage">
+          </empty-placeholder> 
+          </div> 
         
   
     </mat-tab-nav-panel>
 </section>
+<!-- (click)="oprefundReject()" -->

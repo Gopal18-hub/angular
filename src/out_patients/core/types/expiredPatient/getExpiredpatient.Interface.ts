@@ -7,4 +7,12 @@ export interface GetExpiredPatientDetailInterface {
   expiryDate: string;
   ssn: string;
   dob: number;
+  nationality: string;
+  hotList: boolean;
+  vip: boolean;
+  od: boolean;
+  cghs: boolean;
+  pPagerNumber: string;
+  note: boolean;
+  noteReason: string;
 }

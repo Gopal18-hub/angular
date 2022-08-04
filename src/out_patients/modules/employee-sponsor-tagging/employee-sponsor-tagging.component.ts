@@ -62,6 +62,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   lastUpdatedBy: string = "";
   dependantRemarks: string = "";
   currentTime: string = new Date().toLocaleString();
+  userId: any;
+  hsplocationId: any;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -309,6 +311,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.cookie.get("LocationIACode"));
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.userId = Number(this.cookie.get("UserId"));
+    this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     let formResult: any = this.formService.createForm(
       this.employeesponsorformData.properties,
       {}

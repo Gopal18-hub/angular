@@ -66,7 +66,8 @@ import { PostDischargeFollowUpBillingComponent } from '../billing/submodules/pos
 import { PostDischargeBillComponent } from './submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component';
 import { PostDischargeServicesComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component';
 import { PostDischargeCreditDetailsComponent } from './submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component';
-import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component'
+import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component';
+import { OprefundDialogComponent } from './submodules/oprefund-approval/oprefund-dialog/oprefund-dialog.component'
 @NgModule({
   declarations: [
     BillingComponent,
@@ -111,7 +112,8 @@ import { PostDischargeConsultationsComponent } from './submodules/post-discharge
     PostDischargeBillComponent,
     PostDischargeServicesComponent,
     PostDischargeCreditDetailsComponent,
-    PostDischargeConsultationsComponent
+    PostDischargeConsultationsComponent,
+    OprefundDialogComponent
   ],
   imports: [
     BillingRoutingModule,

@@ -5,6 +5,7 @@ import { PatientSearchModel } from "../models/patientSearchModel";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { MatDialog } from "@angular/material/dialog";
 import { dmgMappingDataDTInterface } from "../types/dmgMapping/patientDetailsDmg.Interface";
+import { GetExpiredPatientDetailInterface } from "../types/expiredPatient/getExpiredpatient.Interface";
 
 @Injectable({
   providedIn: "root",
@@ -303,6 +304,7 @@ export class PatientService {
       | PatientSearchModel
       | getmergepatientsearch
       | dmgMappingDataDTInterface
+      | GetExpiredPatientDetailInterface
   ) {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
@@ -332,6 +334,7 @@ export class PatientService {
             | PatientSearchModel
             | getmergepatientsearch
             | dmgMappingDataDTInterface
+            | GetExpiredPatientDetailInterface
           )
         ]
       ) {
@@ -350,6 +353,7 @@ export class PatientService {
                   | getmergepatientsearch
                   | PatientDetails
                   | dmgMappingDataDTInterface
+                  | GetExpiredPatientDetailInterface
                 )
               ];
           }

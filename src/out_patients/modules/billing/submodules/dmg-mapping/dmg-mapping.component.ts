@@ -13,7 +13,8 @@ import { SaveDmgpatientModel } from "../../../../core/models/savedmgpatient.Mode
 import { PatientDetailsDmgInterface } from "../../../../../out_patients/core/types/dmgMapping/patientDetailsDmg.Interface";
 import { PatientService } from "@core/services/patient.service";
 import { DatePipe } from "@angular/common";
-
+import { MatDialog } from "@angular/material/dialog";
+import { SimilarPatientDialog } from "@modules/registration/submodules/op-registration/op-registration.component";
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -108,7 +109,8 @@ export class DmgMappingComponent implements OnInit {
     private zone: NgZone,
     private http: HttpService,
     private patientService: PatientService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -124,7 +126,13 @@ export class DmgMappingComponent implements OnInit {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.onMaxidEnter();
+        this.onMaxidEnter(this.dmgMappingForm.controls["maxid"].value);
+      }
+    });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.onMobilenumberEnter();
       }
     });
   }
@@ -132,9 +140,11 @@ export class DmgMappingComponent implements OnInit {
   docId!: number;
   checkboxList: any = [];
   diseasegroupnamelist: any = [];
-  onMaxidEnter() {
-    let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
-    let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
+  onMaxidEnter(maxid: any) {
+    // let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
+    //let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
+    let iacode = maxid.split(".")[0];
+    let regno = maxid.split(".")[1];
     // if (
     //   this.dmgMappingForm.value.maxid !== null ||
     //   this.dmgMappingForm.value.maxid
@@ -160,30 +170,38 @@ export class DmgMappingComponent implements OnInit {
               this.isdmgselected = index;
               this.docId = this.dmgPatientDetails.dmgMappingDataDT[index].docId;
               console.log(this.docId);
-
-              this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
-                this.dmgPatientDetails.dmgMappingDataDT[index].docName =
-                  item.docName.split(".")[1];
-              });
-              console.log(this.diseasegroupnamelist);
             } else {
               this.isdmgselected = -1;
             }
+            //  this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
+            this.dmgPatientDetails.dmgMappingDataDT[index].docName =
+              item.docName.split(".")[1];
+            //});
+            console.log(this.dmgPatientDetails.dmgMappingDataDT[index].docName);
           });
-          this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
-          this.name = this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
-          this.age = this.dmgPatientDetails.dmgPatientDetailDT[0].age;
-          this.gender = this.dmgPatientDetails.dmgPatientDetailDT[0].gender;
-          this.nationality =
-            this.dmgPatientDetails.dmgPatientDetailDT[0].nationality;
-          this.dob = this.datepipe.transform(
-            this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
-            "dd/MM/yyyy"
-          );
-          this.categoryIcons = this.patientService.getCategoryIcons(
-            this.dmgPatientDetails.dmgPatientDetailDT[0]
-          );
-          console.log(this.categoryIcons);
+          if (this.dmgPatientDetails.dmgPatientDetailDT.length != 0) {
+            this.ssn = this.dmgPatientDetails.dmgPatientDetailDT[0].ssn;
+            this.name =
+              this.dmgPatientDetails.dmgPatientDetailDT[0].patientName;
+            this.age = this.dmgPatientDetails.dmgPatientDetailDT[0].age;
+            this.gender = this.dmgPatientDetails.dmgPatientDetailDT[0].gender;
+            this.nationality =
+              this.dmgPatientDetails.dmgPatientDetailDT[0].nationality;
+            this.dob = this.datepipe.transform(
+              this.dmgPatientDetails.dmgPatientDetailDT[0].dob,
+              "dd/MM/yyyy"
+            );
+            this.dmgMappingForm.controls["maxid"].setValue(
+              this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
+            );
+            // this.dmgMappingForm.controls["mobileno"].setValue(
+            //   this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
+            // );
+            this.categoryIcons = this.patientService.getCategoryIcons(
+              this.dmgPatientDetails.dmgPatientDetailDT[0]
+            );
+            console.log(this.categoryIcons);
+          }
 
           // Assign checkbox grid here
         } else {
@@ -193,6 +211,32 @@ export class DmgMappingComponent implements OnInit {
             incorrect: true,
           });
           this.questions[0].customErrorMessage = "Invalid Maxid";
+        }
+      });
+  }
+
+  onMobilenumberEnter() {
+    this.http
+      .get(
+        ApiConstants.getSimilarPatientonMobilenumber(
+          this.dmgMappingForm.controls["mobileno"].value
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata) => {
+        console.log(resultdata);
+        if (resultdata != null) {
+          const similarpatientDialog = this.dialog.open(SimilarPatientDialog, {
+            width: "60vw",
+            height: "80vh",
+            data: {
+              searchResults: resultdata,
+            },
+          });
+          similarpatientDialog.afterClosed().subscribe((resultdata) => {
+            console.log(resultdata);
+            this.onMaxidEnter(resultdata.data.added[0].maxid);
+          });
         }
       });
   }
@@ -210,6 +254,7 @@ export class DmgMappingComponent implements OnInit {
           if (httperrorResponse.error.text == "Saved Successfully") {
             this.messagedialogservice.success("DMG mapped to this patient");
             this.showCheckboxgrid = false;
+            this.disablebutton = true;
             this.categoryIcons = [];
           }
         }

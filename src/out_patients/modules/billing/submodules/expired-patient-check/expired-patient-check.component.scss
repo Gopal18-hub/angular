@@ -82,3 +82,26 @@
     overflow:hidden;
     text-overflow:ellipsis;
 }
+
+.text-scrollbar{
+    ::ng-deep textarea{
+        height:25px !important;
+       // width:50px !important;
+        overflow-y: scroll !important;
+    }  
+}
+
+
+.text-position{
+    position:relative;
+    bottom:4px;
+  
+}
+.button-height{
+   // ::ng-deep button{
+        height:4.95vh;
+   // }
+}
+.p-0-6{
+    padding:0.6rem;
+}

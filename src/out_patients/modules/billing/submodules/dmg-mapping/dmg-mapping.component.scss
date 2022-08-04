@@ -67,7 +67,7 @@
     width:12%;
 }
 .h-63{
-    height:63%
+    height:65%
 }
 .h-50{
     height:84%;
@@ -96,4 +96,16 @@
     overflow:hidden;
     text-overflow:ellipsis;
 }
+
+.text-position{
+    position:relative;
+    bottom:5px;
+  
+}
+.button-height{
+ //   ::ng-deep button{
+        height:4.95vh;
+  //  }
+}
+
 
