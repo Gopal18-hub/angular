@@ -16,7 +16,7 @@ import { DMSComponent } from "../../../registration/submodules/dms/dms.component
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
-
+import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -210,6 +210,13 @@ export class BillingComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
+
+  investigationCheck() {
+    this.matDialog.open(InvestigationWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+  }
 
   payDueCheck(dtPatientPastDetails: any) {
     if (
