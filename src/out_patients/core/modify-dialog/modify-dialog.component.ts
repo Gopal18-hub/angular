@@ -6,6 +6,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { QuestionControlService } from "../../../shared/ui/dynamic-forms/service/question-control.service";
+import { DatePipe } from "@angular/common";
 //import { CookieService } from 'src/shared/services/cookie.service';
 // import { HttpService } from 'src/shared/services/http.service';
 // import { MergeDialogComponent } from '../../dup-reg-merging/merge-dialog/merge-dialog.component';
@@ -30,6 +31,7 @@ export class ModifyDialogComponent implements OnInit {
     },
     private dialogRef: MatDialogRef<ModifyDialogComponent>,
     private formService: QuestionControlService,
+    private datepipe: DatePipe,
     public matDialog: MatDialog // private cookie:CookieService,
   ) {}
 
@@ -105,6 +107,36 @@ export class ModifyDialogComponent implements OnInit {
         type: "string",
         title: "Gender",
         defaultValue: this.data.modifiedDetails.title,
+        required: false,
+        readonly: true,
+      },
+      dateOfBirth: {
+        type: "string",
+        title: "DOB - Age - Age Type",
+        defaultValue:
+          (this.datepipe.transform(
+            this.data.patientDetails.dateOfBirth,
+            "dd/MM/yyyy"
+          ) || null) +
+          " - " +
+          this.data.patientDetails.age +
+          " " +
+          this.data.patientDetails.ageTypeName,
+        required: false,
+        readonly: true,
+      },
+      modifieddateOfBirth: {
+        type: "string",
+        title: "DOB - Age - Age Type",
+        defaultValue:
+          (this.datepipe.transform(
+            this.data.modifiedDetails.dateOfBirth,
+            "dd/MM/yyyy"
+          ) || null) +
+          " - " +
+          this.data.modifiedDetails.age +
+          " " +
+          this.data.modifiedDetails.ageTypeName,
         required: false,
         readonly: true,
       },

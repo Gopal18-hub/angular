@@ -43,7 +43,7 @@ export class DepositComponent implements OnInit {
       },
       mobileno: {
         type: "number",
-        //title: "Mobile No."
+        readonly: true
       },
       checkbox: {
         type: "checkbox",
@@ -56,29 +56,26 @@ export class DepositComponent implements OnInit {
       },
       totaldeposit: {
         type: "string",
-        // title:"Total Deposit",
         defaultValue: "0.00",
         readonly: true
       },
       avalaibledeposit: {
         type: "string",
-        // title:"Avalaible Deposit",
         defaultValue: "0.00",
         readonly: true
       },
       totalrefund: {
         type: "string",
-        // title:"Total Refund",
         defaultValue: "0.00",
         readonly: true
       },
       remarks: {
         type: "textarea",
-        //  title:"Remarks",
         defaultValue: "Write Remarks"
       },
       panno: {
-        type: "string"
+        type: "string",
+        readonly: true
       },
       mainradio: {
         type: "radio",
@@ -87,7 +84,7 @@ export class DepositComponent implements OnInit {
           { title: "Form 60", value: "form60" },
           { title: "Pan card No.", value: "pancardno" },
         ],
-        //defaultValue: "pancardno",
+        readonly: true
       },
     }
   }
@@ -97,6 +94,10 @@ export class DepositComponent implements OnInit {
     clickSelection: "multiple",
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
+    groupby: {
+      parentcolumn: "cashTransactionID",
+      childcolumn: "parentID",
+    },
     displayedColumns: [
       "depositRefund",
       "receiptno",
@@ -153,7 +154,7 @@ export class DepositComponent implements OnInit {
       },
       usedOP: {
         title: "Used(OP)",
-        type: "string",
+        type: "number",
         style: {
           width: "5rem",
         },
@@ -232,10 +233,11 @@ export class DepositComponent implements OnInit {
   dob: string | undefined;
   nationality: string | undefined;
   ssn: string | undefined;
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
 
   depositForm !: FormGroup;
   questions: any;
-  patientDepositDetails: any = [];
   patientRefundDetails: any = [];
   patientpersonaldetails: any = [];
   depositcashlimitationdetails: any=[];
@@ -243,7 +245,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any = 69;// Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -258,10 +260,10 @@ export class DepositComponent implements OnInit {
       this.depositformdata.properties, {}
     );
     this.depositForm = formResult.form;
-    this.questions = formResult.questions;   
+    this.questions = formResult.questions;  
+    this.lastUpdatedBy = this.cookie.get("UserName"); 
     this.depositForm.controls["panno"].disable();
     this.depositForm.controls["mainradio"].disable();
-
     }
   openrefunddialog() {
   const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
@@ -329,15 +331,7 @@ export class DepositComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.depositForm.controls["mainradio"].valueChanges.subscribe((value: any) => {
-      if (value == "form60") {
-        this.matDialog.open(FormSixtyComponent, { width: "50vw", height: "98vh" });
-        this.depositForm.controls["panno"].disable();
-      }
-      else {
-        this.depositForm.controls["panno"].enable();
-      }
-    });
+   
 
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -451,15 +445,26 @@ export class DepositComponent implements OnInit {
     this.http
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: PatientPreviousDepositDetail[]) => {
-        this.depoistList = resultData;
-       
+      .subscribe((resultData: PatientPreviousDepositDetail[]) => {     
+              
         this.totaldeposit = resultData.map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
         this.totalrefund = resultData.map(t => t.refund).reduce((acc, value) => acc + value, 0);   
         this.avalaibleamount = this.totaldeposit - this.totalrefund;
-        this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit);
-        this.depositForm.controls["totalrefund"].setValue(this.totalrefund);
-        this.depositForm.controls["avalaibledeposit"].setValue(this.avalaibleamount);
+        this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit.toFixed(2));
+        this.depositForm.controls["totalrefund"].setValue(this.totalrefund.toFixed(2));
+        this.depositForm.controls["avalaibledeposit"].setValue(this.avalaibleamount.toFixed(2));
+
+        resultData = resultData.map((item: any) => {
+          item.usedIP =  item.usedIP.toFixed(2);
+          item.usedOP =  item.usedOP.toFixed(2);
+          item.balance = item.balance.toFixed(2);
+          item.refund = item.refund.toFixed(2);
+          item.deposit = item.deposit.toFixed(2);
+          item.gst = item.gst.toFixed(2);
+          item.gstValue = item.gstValue.toFixed(2);
+          return item;
+        });
+        this.depoistList = resultData;
 
       },
       (error) => {
@@ -468,18 +473,21 @@ export class DepositComponent implements OnInit {
       );
   }
 
-  clear(){
-    this.questions.reset();
+  clearDepositpage(){
+    this.depositForm.reset();
+    this.name = "";
+    this.age= "";
+    this.gender= "";
+    this.dob= "";
+    this.nationality= "";
+    this.ssn= "";
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.patientDepositDetails = [];
     this.patientpersonaldetails = [];
+    this.depoistList = [];
     this.MaxIDExist = false;
   }
 
-  setvaluestodepositform(){
-
-  }
   depositColumnClick($event: any){
     if($event.row.depositRefund == "Deposit"){
       this.MaxIDdepositExist = true;
