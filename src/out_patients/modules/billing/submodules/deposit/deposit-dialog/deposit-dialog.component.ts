@@ -47,7 +47,7 @@ export class DepositDialogComponent implements OnInit {
   questions: any;
   
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("stationId"));
+  stationId:any =  Number(this.cookie.get("stationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
@@ -85,9 +85,10 @@ export class DepositDialogComponent implements OnInit {
     this.depositdialogtypeList = {
       type: "Deposit",
           servicetypeList : this.data.servicetype,
-          deposittypeList : this.data.deposittype
+          deposittypeList : this.data.deposittype,
+
         };
-    this.patientIdentityInfo = this.data.patientinfo;
+    this.patientIdentityInfo = { type: "Deposit", patientinfo : this.data.patientinfo };
     this.patientsavedepositdetailgst = [];
     this.isNSSHLocation = false; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
   }
@@ -106,10 +107,11 @@ export class DepositDialogComponent implements OnInit {
     this.depositpatientidentityinfo = this.depositpatientidentity.patientidentityform.value;
     
     //Service and Deposit Type
-    if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
-      this.messageDialogService.error("Please Select Deposit Head");
-    }
-    else if(this.selecteddepositservicetype.servicetype == null){
+    // if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
+    //   this.messageDialogService.error("Please Select Deposit Head");
+    // }
+    // else 
+    if(this.selecteddepositservicetype.servicetype == null){
       this.messageDialogService.error("Please Select Service Type");
     }
 
@@ -222,6 +224,8 @@ export class DepositDialogComponent implements OnInit {
 
   clearsiblingcomponents:boolean = false;
   cleardepositdialog(){
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.clearsiblingcomponents = true;
     this.makedepositdialogForm.reset();
   }
