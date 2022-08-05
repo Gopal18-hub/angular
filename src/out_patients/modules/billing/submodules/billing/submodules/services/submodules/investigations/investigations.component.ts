@@ -19,9 +19,11 @@ export class InvestigationsComponent implements OnInit {
     properties: {
       serviceType: {
         type: "dropdown",
+        required: true,
       },
       investigation: {
-        type: "dropdown",
+        type: "autocomplete",
+        required: true,
       },
     },
   };
@@ -90,6 +92,39 @@ export class InvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.getServiceTypes();
+  }
+
+  getServiceTypes() {
+    this.http
+      .get(BillingApiConstants.getinvestigationservice)
+      .subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
+    this.formGroup.controls["serviceType"].valueChanges.subscribe(
+      (val: any) => {
+        if (val) {
+          this.getInvestigations(val);
+        }
+      }
+    );
+  }
+
+  getInvestigations(serviceId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getinvestigation(
+          Number(this.cookie.get("HSPLocationId")),
+          serviceId
+        )
+      )
+      .subscribe((res) => {
+        this.questions[1].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
   }
 
   add(priorityId = 1, sno = 0) {

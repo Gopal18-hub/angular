@@ -49,4 +49,10 @@ export namespace BillingApiConstants {
   export const consultationTypes = `${environment.CommonApiUrl}api/lookup/getconsultationtype`;
 
   export const getInvetigationPriorities = `${environment.CommonApiUrl}api/lookup/getinvestigationpriority`;
+
+  export const getinvestigationservice = `${environment.CommonApiUrl}api/lookup/getinvestigationservice`;
+
+  export const getinvestigation = (locationId: number, serviceId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getinvestigation/${locationId}/${serviceId}`;
+  };
 }
