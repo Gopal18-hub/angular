@@ -16,6 +16,7 @@ import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
   styleUrls: ['./investigation-orders.component.scss']
 })
 export class InvestigationOrdersComponent implements OnInit {
+  patientInfo : any;
   investigationForm!: FormGroup;
   from: any;
   to: any;
@@ -387,6 +388,7 @@ export class InvestigationOrdersComponent implements OnInit {
         console.log(res, "getediganosticacd")
       })
     //Main Grid both
+    //this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7, this.investigationForm.controls["status"].value))
     this.http.get(ApiConstants.geteprescriptdrugorders("2021-08-12", "2021-08-14", 7, 0))
       //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
       .pipe(takeUntil(this._destroying$))
@@ -400,6 +402,7 @@ export class InvestigationOrdersComponent implements OnInit {
   listRowClick(event:any)
   {
     let maxId = event.row.maxid;   
+    this.patientInfo = event.row.maxid +" / "+ event.row.ptnName+" / "+ event.row.mobileNo
    
     //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
       this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1],maxId.toString().split(".")[0],7,event.row.orderId))    
