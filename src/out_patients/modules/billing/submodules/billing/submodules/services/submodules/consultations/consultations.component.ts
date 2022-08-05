@@ -1,25 +1,28 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
-
+import { CookieService } from "@shared/services/cookie.service";
+import { BillingService } from "../../../../billing.service";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
   styleUrls: ["./consultations.component.scss"],
 })
-export class ConsultationsComponent implements OnInit {
+export class ConsultationsComponent implements OnInit, AfterViewInit {
   formData = {
     title: "",
     type: "object",
     properties: {
       specialization: {
         type: "autocomplete",
+        required: true,
       },
       doctorName: {
         type: "autocomplete",
+        required: true,
       },
     },
   };
@@ -52,7 +55,8 @@ export class ConsultationsComponent implements OnInit {
       },
       type: {
         title: "Type",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       scheduleSlot: {
         title: "Schedule Slot",
@@ -69,9 +73,13 @@ export class ConsultationsComponent implements OnInit {
     },
   };
 
+  consultationTypes = [];
+
   constructor(
     private formService: QuestionControlService,
-    private http: HttpService
+    private http: HttpService,
+    private cookie: CookieService,
+    private billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +90,21 @@ export class ConsultationsComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.getSpecialization();
+    this.data = this.billingService.consultationItems;
+    this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
+      this.consultationTypes = res;
+      this.config.columnsInfo.type.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      const source = res.added[0];
+      console.log(source);
+      this.add(source.type, source.sno);
+    });
   }
 
   getSpecialization() {
@@ -92,7 +115,9 @@ export class ConsultationsComponent implements OnInit {
     });
     this.formGroup.controls["specialization"].valueChanges.subscribe(
       (val: any) => {
-        this.getdoctorlistonSpecializationClinic(val.value);
+        if (val.value) {
+          this.getdoctorlistonSpecializationClinic(val.value);
+        }
       }
     );
   }
@@ -110,6 +135,37 @@ export class ConsultationsComponent implements OnInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+      });
+  }
+
+  add(priorityId = 57, sno = 0) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.doctorName.value,
+          25,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        if (sno > 0) {
+          const index = this.billingService.consultationItems.findIndex(
+            (c: any) => c.sno == sno
+          );
+          this.billingService.removeFromConsultation(index);
+          this.data = [...this.billingService.consultationItems];
+        }
+        this.billingService.addToConsultation({
+          sno: this.data.length + 1,
+          doctorName: this.formGroup.value.doctorName.title,
+          type: priorityId,
+          scheduleSlot: "",
+          bookingDate: "",
+          price: res.amount,
+        });
+
+        this.data = [...this.billingService.consultationItems];
       });
   }
 }

@@ -13,4 +13,12 @@ export class InvestigationWarningComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+
+  yes() {
+    this.dialogRef.close({ showlist: true });
+  }
+
+  no() {
+    this.dialogRef.close({ showlist: false });
+  }
 }

@@ -16,8 +16,8 @@ import { DMSComponent } from "../../../registration/submodules/dms/dms.component
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
-import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
-import { HealthCheckupWarningComponent } from "./prompts/health-checkup-warning/health-checkup-warning.component";
+import { BillingService } from "./billing.service";
+
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -103,7 +103,8 @@ export class BillingComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -159,6 +160,11 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.billingService.setActiveMaxId(
+              this.formGroup.value.maxid,
+              iacode,
+              regNumber.toString()
+            );
             this.patientDetails = resultData;
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
@@ -207,20 +213,6 @@ export class BillingComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
-
-  healthCheckupWarning() {
-    this.matDialog.open(HealthCheckupWarningComponent, {
-      width: "30vw",
-      data: {},
-    });
-  }
-
-  investigationCheck() {
-    this.matDialog.open(InvestigationWarningComponent, {
-      width: "30vw",
-      data: {},
-    });
-  }
 
   payDueCheck(dtPatientPastDetails: any) {
     if (
