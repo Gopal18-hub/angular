@@ -18,7 +18,7 @@ export class ProcedureOtherComponent implements OnInit {
     type: "object",
     properties: {
       otherService: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
       },

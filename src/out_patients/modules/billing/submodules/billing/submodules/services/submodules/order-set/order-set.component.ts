@@ -17,7 +17,7 @@ export class OrderSetComponent implements OnInit {
     type: "object",
     properties: {
       orderSet: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
       },
