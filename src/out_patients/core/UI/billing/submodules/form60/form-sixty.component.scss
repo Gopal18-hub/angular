@@ -10,3 +10,9 @@
 ::ng-deep .mat-form-field-wrapper{
     padding-bottom: 0 !important;
 }
+.aadharerror{ 
+::ng-deep .mat-error{
+    margin-top: 5% !important;
+}
+   
+}
