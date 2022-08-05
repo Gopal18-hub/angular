@@ -3,28 +3,17 @@
     <form
       [formGroup]="formGroup"
       autocomplete="off"
-      class="w-2/3 flex align-items-center"
+      class="w-3/5 flex align-items-center"
     >
-      <div class="flex">
-        <mat-label class="max-health-primary-color mr-2"
-          >Specialisation</mat-label
+      <div class="flex w-full">
+        <mat-label class="max-health-primary-color mr-4"
+          >Other Services</mat-label
         >
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-3/5"
-        >
-        </maxhealth-question>
-      </div>
-      <div class="flex">
-        <mat-label class="max-health-primary-color mr-2">Doctor Name</mat-label>
-        <maxhealth-question
-          [question]="questions[1]"
-          [form]="formGroup"
-          [questions]="questions[1]"
-          [index]="1"
           class="w-3/5"
         >
         </maxhealth-question>
@@ -50,10 +39,10 @@
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2"
+        class="font-sm ml-2 min-width-initial"
         type="button"
       >
-        Print Estimate
+        Pr.Est
       </button>
     </div>
   </div>

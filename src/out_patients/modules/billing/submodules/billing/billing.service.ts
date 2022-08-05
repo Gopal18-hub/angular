@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
   providedIn: "root",
 })
 export class BillingService {
+  activeMaxId: any;
   billItems: any = [];
   consultationItems: any = [];
   InvestigationItems: any = [];
@@ -14,6 +15,14 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
+    this.activeMaxId = {
+      maxId: maxId,
+      iacode: iacode,
+      regNumber: regNumber,
+    };
+  }
+
   addToBill(data: any) {
     this.billItems.push(data);
     this.billItemsTrigger.next({ data: this.billItems });
@@ -21,8 +30,12 @@ export class BillingService {
 
   removeFromBill(data: any) {}
 
-  addToConsultation() {}
-  removeFromConsultation() {}
+  addToConsultation(data: any) {
+    this.consultationItems.push(data);
+  }
+  removeFromConsultation(index: number) {
+    this.consultationItems.splice(index, 0);
+  }
   addToInvestigations() {}
   removeFromInvestigations() {}
   addToHealthCheckup() {}

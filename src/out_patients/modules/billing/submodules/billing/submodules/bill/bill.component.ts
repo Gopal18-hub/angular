@@ -141,7 +141,6 @@ export class BillComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    removeRow: true,
     displayedColumns: [
       "serviceName",
       "itemName",
