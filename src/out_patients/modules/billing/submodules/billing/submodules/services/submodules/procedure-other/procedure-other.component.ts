@@ -20,6 +20,7 @@ export class ProcedureOtherComponent implements OnInit {
       otherService: {
         type: "dropdown",
         placeholder: "--Select--",
+        required: true,
       },
     },
   };
@@ -93,4 +94,5 @@ export class ProcedureOtherComponent implements OnInit {
       });
     });
   }
+  add() {}
 }

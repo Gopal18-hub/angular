@@ -19,6 +19,7 @@ export class OrderSetComponent implements OnInit {
       orderSet: {
         type: "dropdown",
         placeholder: "--Select--",
+        required: true,
       },
     },
   };
@@ -69,4 +70,5 @@ export class OrderSetComponent implements OnInit {
       });
     });
   }
+  add() {}
 }

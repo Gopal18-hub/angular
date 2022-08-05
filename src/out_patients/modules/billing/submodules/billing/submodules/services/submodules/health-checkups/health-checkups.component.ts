@@ -19,6 +19,7 @@ export class HealthCheckupsComponent implements OnInit {
       healthCheckup: {
         type: "dropdown",
         placeholder: "--Select--",
+        required: true,
       },
     },
   };
@@ -79,4 +80,6 @@ export class HealthCheckupsComponent implements OnInit {
         });
       });
   }
+
+  add() {}
 }
