@@ -116,7 +116,7 @@
                     [form]="employeesponsorForm"
                     [questions]="questions[5]"
                     [index]="5"
-                   
+                    (click)="oncheckboxClick($event)"
                     >
                     </maxhealth-question>
                 </div>
@@ -155,14 +155,14 @@
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
         <div class="h-57 mt-2 whitespace-nowrap">
-            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable (columnClick)="checkboxClick($event)" class="input-width"></maxhealth-table>
+            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
         <div class="h-57 mt-2">
             <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
         <div class="float-right mt-2">
-            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8" >Save</button>
+            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8" [disabled]="disableButton" >Save</button>
             <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete" class="mr-6" >Delete</button>
             <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
         </div>
@@ -180,3 +180,4 @@
 <!-- [disabled]="disableButton"> -->
 <!-- [disabled]="disableClear" -->
 <!-- (click)="oncheckboxClick($event)" -->
+<!-- (columnClick)="checkboxClick($event)" -->
