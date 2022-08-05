@@ -94,32 +94,6 @@ const routes: Routes = [
       },
     ],
   },
-  {
-    path: "billing",
-    component: BillingComponent,
-    children: [
-      { path: "", component: BillingComponentPage },
-      { path: "deposit", component: DepositComponent },
-      { path: "details", component: DetailsComponent },
-      { path: "online-op-bill", component: OnlineOpBillsComponent },
-      { path: "op-order-request", component: OpOrderRequestComponent },
-      {
-        path: "miscellaneous-billing",
-        component: MiscellaneousBillingComponent,
-      },
-      { path: "initiate-deposite", component: InitiateDepositComponent },
-      { path: "dispatch-report", component: DispatchReportComponent },
-      { path: "dmg-mapping", component: DmgMappingComponent },
-      {
-        path: "expired-patient-check",
-        component: ExpiredPatientCheckComponent,
-      },
-      {
-        path: "post-discharge-follow-up-billing",
-        component: PostDischargeFollowUpBillingComponent,
-      },
-    ],
-  },
 ];
 
 @NgModule({
