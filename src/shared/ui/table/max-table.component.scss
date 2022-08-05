@@ -76,6 +76,11 @@
     height: 20px;
   }
 }
+::ng-deep {
+  .table-select-dropdown {
+    width: 90%;
+  }
+}
 ::ng-deep .table-more-actions {
   border-radius: initial !important;
   .mat-menu-item {

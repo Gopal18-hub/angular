@@ -169,7 +169,15 @@ export class DynamicFormQuestionComponent
   }
 
   displayFn(option: any): string {
-    return option && option.title ? option.title : "";
+    let strOption = "";
+    if (option && option.title) {
+      if (option.title.includes("/")) {
+        strOption = option.title.split("/")[0];
+      } else {
+        strOption = option.title;
+      }
+    }
+    return strOption.trimEnd();
   }
 
   private _filter(title: string): any[] {
