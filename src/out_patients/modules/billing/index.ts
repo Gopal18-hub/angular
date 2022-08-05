@@ -57,16 +57,17 @@ import { ProcedureOtherComponent } from "./submodules/billing/submodules/service
 import { OrderSetComponent } from "./submodules/billing/submodules/services/submodules/order-set/order-set.component";
 import { ConsumablesComponent } from "./submodules/billing/submodules/services/submodules/consumables/consumables.component";
 import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
+import { MiscCredDetail } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
-import { PostDischargeFollowUpBillingComponent } from '../billing/submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component';
-import { PostDischargeBillComponent } from './submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component';
-import { PostDischargeServicesComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component';
-import { PostDischargeCreditDetailsComponent } from './submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component';
-import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component'
+import { PostDischargeFollowUpBillingComponent } from "../billing/submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
+import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
+import { PostDischargeServicesComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component";
+import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component";
+import { PostDischargeConsultationsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -111,7 +112,8 @@ import { PostDischargeConsultationsComponent } from './submodules/post-discharge
     PostDischargeBillComponent,
     PostDischargeServicesComponent,
     PostDischargeCreditDetailsComponent,
-    PostDischargeConsultationsComponent
+    PostDischargeConsultationsComponent,
+    MiscCredDetail,
   ],
   imports: [
     BillingRoutingModule,
