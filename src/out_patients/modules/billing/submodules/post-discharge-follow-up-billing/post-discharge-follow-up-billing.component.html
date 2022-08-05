@@ -209,4 +209,16 @@
       </div>
     </mat-tab-nav-panel>
   </section>
-  
+  <div class="flex justify-between mx-5">
+      <div>
+        <p>Last Update By: {{ lastUpdatedBy }}</p>
+        <!-- <p>Last Update By: {{ userName }} (id: {{lastUpdatedBy}}) on {{currentTime}}</p> -->
+      </div>
+      <div class="flex justify-around">
+        <p class="clr-red">* Apply Patient/Company Discount after final calculation <span class="ml-3">* Need special approval for red highlighted investigations in case of PSU patients</span></p>
+      </div>
+      <div>
+        <P> Date: {{ currentTime }} </P>
+      </div>
+    
+  </div>

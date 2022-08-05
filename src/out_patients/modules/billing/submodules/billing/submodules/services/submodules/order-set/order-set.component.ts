@@ -12,10 +12,7 @@ export class OrderSetComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
+      orderSet: {
         type: "dropdown",
       },
     },
@@ -30,47 +27,14 @@ export class OrderSetComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
-      "qty",
-      "credit",
-      "cash",
-      "disc",
-    ],
+    displayedColumns: ["sno", "orderSetName"],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
-        type: "string",
+      sno: {
+        title: "S.No.",
+        type: "number",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
-        type: "string",
-      },
-      qty: {
-        title: "Qty / Type",
-        type: "string",
-      },
-      credit: {
-        title: "Credit",
-        type: "string",
-      },
-      cash: {
-        title: "Cash",
-        type: "string",
-      },
-      disc: {
-        title: "Disc %",
+      orderSetName: {
+        title: "Order Set Name",
         type: "string",
       },
     },
