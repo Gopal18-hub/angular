@@ -164,6 +164,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   add(priorityId = 57) {
+    if (this.billingService.consultationItems.length == 1) {
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(

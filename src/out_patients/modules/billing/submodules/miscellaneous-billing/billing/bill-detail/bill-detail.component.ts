@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Subject, takeUntil } from "rxjs";
+import { async, Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../gst/gst.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { MiscMasterDataModel } from "@core/types/miscMasterDataModel.Interface";
@@ -14,6 +14,8 @@ import { objMiscBillingRemarksList } from "@core/types/miscMasterDataModel.Inter
 import { objMiscDoctorsList } from "@core/types/miscMasterDataModel.Interface";
 import { ServiceTypeItemModel } from "@core/types/billingServiceItemModel.Interface";
 import { TarrifPriceModel } from "@core/types/triffPriceModel.Interface";
+import { MiscellaneousBillingModel } from "../../../../../../core/models/miscBillingModel.Model";
+import { MiscService } from "../../MiscService.service";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -21,6 +23,8 @@ import { TarrifPriceModel } from "@core/types/triffPriceModel.Interface";
   styleUrls: ["./bill-detail.component.scss"],
 })
 export class BillDetailComponent implements OnInit {
+  @Output() newItemEvent = new EventEmitter<any>();
+  newItem!: MiscellaneousBillingModel;
   doctorList!: objMiscDoctorsList[];
   // serviceList!: objMiscBillingConfigurationList;
   remarkList!: objMiscBillingRemarksList[];
@@ -31,7 +35,8 @@ export class BillDetailComponent implements OnInit {
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private miscPatient: MiscService
   ) {}
 
   miscBillData = {
@@ -309,6 +314,13 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm = serviceFormResult.form;
     this.questions = serviceFormResult.questions;
   }
+
+  addNewItem(value: MiscellaneousBillingModel) {
+    let abc = this.miscPatient.getFormLsit();
+    console.log(abc);
+    // this.newItemEvent.emit(this.serviceselectedList);
+  }
+
   count!: number;
   TotalAmount!: number;
   clearDraftedService() {
@@ -336,6 +348,7 @@ export class BillDetailComponent implements OnInit {
     this.serviceselectedList.forEach((element) => {
       if (ServiceType == element.ServiceType) {
         present = true;
+        return;
         console.log("same service");
       }
     });
@@ -362,6 +375,20 @@ export class BillDetailComponent implements OnInit {
       TotalAmount:
         this.miscServBillForm.value.tffPrice * this.miscServBillForm.value.qty,
       GST: 0,
+      serviceid: this.serviceID,
+      amount:
+        this.miscServBillForm.value.tffPrice * this.miscServBillForm.value.qty,
+      discountAmount: 0,
+      serviceName: this.serviceName,
+      itemModify: this.miscServBillForm.value.item.title,
+      discounttype: "",
+      disReasonId: 0,
+      docid: 0,
+      remarksId: this.miscServBillForm.value.remark.value,
+      itemId: this.miscServBillForm.value.item.value,
+      mPrice: this.miscServBillForm.value.tffPrice,
+      empowerApproverCode: 0,
+      couponCode: "",
     });
   }
   clearSelectedService() {
@@ -505,5 +532,100 @@ export class BillDetailComponent implements OnInit {
     list.filter(function (item) {
       return item.name === control.value;
     });
+  }
+}
+@Component({
+  selector: "out-patients-bill-detail",
+  templateUrl: "./credit-detail.component.html",
+  styleUrls: ["./bill-detail.component.scss"],
+})
+export class MiscCredDetail implements OnInit {
+  comapnyFormData = {
+    title: "",
+    type: "object",
+    properties: {
+      company: {
+        type: "dropdown",
+        title: "Company",
+      },
+      corporate: {
+        type: "dropdown",
+        title: "Corporate",
+      },
+      companyGSTN: {
+        type: "dropdown",
+        title: "Company GSTN",
+      },
+      letterDate: {
+        type: "date",
+        title: "Letter Date",
+      },
+      issuedBy: {
+        type: "string",
+        title: "Issued By",
+      },
+      employeeNo: {
+        type: "string",
+        title: "Employee No.",
+      },
+      companyName: {
+        type: "string",
+        title: "Company Name",
+      },
+      tokenNo: {
+        type: "string",
+        title: "Token No.",
+      },
+      companyAddress: {
+        type: "string",
+        title: "Company Address",
+      },
+    },
+  };
+
+  generalFormData = {
+    title: "",
+    type: "object",
+    properties: {
+      employeeName: {
+        type: "dropdown",
+        title: "Employee Name",
+      },
+      designation: {
+        type: "string",
+        title: "Designation",
+      },
+      reasonForAllowingCredit: {
+        type: "textarea",
+        title: "Reason for Allowing Credit",
+      },
+      notes: {
+        title: "Notes",
+        type: "textarea",
+      },
+    },
+  };
+
+  comapnyFormGroup!: FormGroup;
+  generalFormGroup!: FormGroup;
+  companyQuestions: any;
+  generalQuestions: any;
+
+  constructor(private formService: QuestionControlService) {}
+
+  ngOnInit(): void {
+    let formResult: any = this.formService.createForm(
+      this.comapnyFormData.properties,
+      {}
+    );
+    this.comapnyFormGroup = formResult.form;
+    this.companyQuestions = formResult.questions;
+
+    let formResult1: any = this.formService.createForm(
+      this.generalFormData.properties,
+      {}
+    );
+    this.generalFormGroup = formResult1.form;
+    this.generalQuestions = formResult1.questions;
   }
 }

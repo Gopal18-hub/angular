@@ -102,6 +102,13 @@ export class InvestigationsComponent implements OnInit {
   }
 
   getSpecialization() {
+    this.http
+      .get(BillingApiConstants.getInvetigationPriorities)
+      .subscribe((res) => {
+        this.config.columnsInfo.priority.options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
     this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
       this.config.columnsInfo.specialisation.options = res.map((r: any) => {
         return { title: r.name, value: r.id };

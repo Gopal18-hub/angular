@@ -21,6 +21,7 @@ import { DipositeDetailModel } from "../../../../core/types/dipositeDetailModel.
 import { miscPatientDetail } from "../../../../core/models/miscPatientDetail.Model";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { GstComponent } from "./billing/gst/gst.component";
+import { MiscService } from "./MiscService.service";
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -35,14 +36,19 @@ export class MiscellaneousBillingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private messageDialogService: MessageDialogService,
-    private db: DbService
+    private db: DbService,
+    private Misc: MiscService
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
-
+  items: any[] = [];
+  addItem(newItem: any) {
+    console.log(newItem);
+    this.items.push(newItem);
+  }
   linkList = [
     {
-      title: "Bill",
+      title: "Bills",
       path: "bill",
     },
     {
@@ -110,7 +116,11 @@ export class MiscellaneousBillingComponent implements OnInit {
 
     this.miscForm = formResult.form;
     this.questions = formResult.questions;
+
+    this.lastUpdatedBy = this.cookie.get("UserName");
   }
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
 
   ngAfterViewInit(): void {
     this.formEvents();
@@ -142,6 +152,26 @@ export class MiscellaneousBillingComponent implements OnInit {
     });
     this.getAllCompany();
     this.getAllCorporate();
+    this.miscForm.controls["company"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        console.log(value);
+        if (value.value) {
+          // this.patientDetail = value.title;
+          this.patientDetail.companyId = value.id;
+          this.Misc.setPatientDetail(this.patientDetail);
+        }
+      });
+    this.miscForm.controls["corporate"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        console.log(value);
+        if (value.value) {
+          this.patientDetail.corporateName = value.title;
+          this.patientDetail.corporateid = value.id;
+          this.Misc.setPatientDetail(this.patientDetail);
+        }
+      });
   }
 
   onPhoneModify() {
@@ -405,6 +435,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     // this.db.putCachePatientDetail(this.patientDetail);
 
     // console.log(this.db.getCachePatientDetail());
+    this.Misc.setPatientDetail(this.patientDetail);
     localStorage.setItem("patientDetail", this.patientDetail.toString());
   }
   filterList(list: any[], id: any): any {

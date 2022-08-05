@@ -1,10 +1,11 @@
-<div class="bg-white h-service border-radius-lg mt-0">
+<div class="bg-white h-service border-radius-lg ">
   <div class="mt-0 mr-1 border-radius-lg flex w-auto">
 
     
       <form [formGroup]="miscServBillForm " class="w-full miscForm">
           <div class="flex w-full mt-0">
               <div class="ml-1 w-1/6 h-full">
+              
                   <maxhealth-question 
                     [question]="questions[0]"
                     [form]="miscServBillForm"
@@ -436,7 +437,8 @@ class="w-7/10 mt-1 mr-1 "
 mat-raised-button
 color="primary"
 class="w-1/15 btn-md "
-type="submit"
+type="button"
+(click)="addNewItem(miscServBillForm.value)"
 >
 Make Bill
 </button>

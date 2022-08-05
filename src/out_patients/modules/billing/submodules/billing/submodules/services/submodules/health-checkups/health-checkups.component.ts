@@ -17,7 +17,7 @@ export class HealthCheckupsComponent implements OnInit {
     type: "object",
     properties: {
       healthCheckup: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
       },
