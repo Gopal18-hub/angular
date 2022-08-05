@@ -87,7 +87,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         pattern: "^[1-9]{1}[0-9]{9}",
         // type: "number",
         // pattern: "^[1-9]{1}[0-9]{9}",
-        maximum: 10,
+        // maximum: 10,
       },
       employeeCode: {
         type: "string",
