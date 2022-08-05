@@ -16,6 +16,7 @@ import { DMSComponent } from "../../../registration/submodules/dms/dms.component
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
+import { BillingService } from "./billing.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -102,7 +103,8 @@ export class BillingComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -129,15 +131,9 @@ export class BillingComponent implements OnInit {
   }
 
   formEvents() {
-    //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
@@ -147,7 +143,6 @@ export class BillingComponent implements OnInit {
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       this.http
@@ -165,6 +160,11 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.billingService.setActiveMaxId(
+              this.formGroup.value.maxid,
+              iacode,
+              regNumber.toString()
+            );
             this.patientDetails = resultData;
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
@@ -207,6 +207,9 @@ export class BillingComponent implements OnInit {
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
+    this.questions[0].readonly = true;
+    this.questions[1].readonly = true;
+    this.questions[2].readonly = true;
   }
 
   doCategoryIconAction(icon: any) {}
@@ -221,6 +224,7 @@ export class BillingComponent implements OnInit {
         width: "30vw",
         data: {
           dueAmount: dtPatientPastDetails[4].data,
+          maxId: this.formGroup.value.maxid,
         },
       });
     }

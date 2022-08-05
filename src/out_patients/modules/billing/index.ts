@@ -73,7 +73,8 @@ import { UnbilledInvestigationComponent } from './submodules/billing/prompts/unb
 import { HealthCheckupWarningComponent } from './submodules/billing/prompts/health-checkup-warning/health-checkup-warning.component';
 import { ConsumableDetailsComponent } from './submodules/billing/prompts/consumable-details/consumable-details.component';
 import { ReferalDoctorWarningComponent } from './submodules/billing/prompts/referal-doctor-warning/referal-doctor-warning.component';
-import { PackageDoctorModificationComponent } from './submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component'
+import { PackageDoctorModificationComponent } from './submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component';
+import { OrderSetDetailsComponent } from './submodules/billing/prompts/order-set-details/order-set-details.component'
 @NgModule({
   declarations: [
     BillingComponent,
@@ -125,7 +126,8 @@ import { PackageDoctorModificationComponent } from './submodules/billing/prompts
     HealthCheckupWarningComponent,
     ConsumableDetailsComponent,
     ReferalDoctorWarningComponent,
-    PackageDoctorModificationComponent
+    PackageDoctorModificationComponent,
+    OrderSetDetailsComponent
   ],
   imports: [
     BillingRoutingModule,

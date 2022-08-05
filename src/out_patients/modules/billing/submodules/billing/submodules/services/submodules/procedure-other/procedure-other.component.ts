@@ -12,10 +12,7 @@ export class ProcedureOtherComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
+      otherService: {
         type: "dropdown",
       },
     },
@@ -31,47 +28,37 @@ export class ProcedureOtherComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
+      "sno",
+      "procedures",
       "qty",
-      "credit",
-      "cash",
-      "disc",
+      "specialisation",
+      "doctorName",
+      "price",
     ],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
-        type: "string",
+      sno: {
+        title: "S.No",
+        type: "number",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
+      procedures: {
+        title: "Procedures",
         type: "string",
       },
       qty: {
-        title: "Qty / Type",
+        title: "Qty",
+        type: "number",
+      },
+      specialisation: {
+        title: "Specialisation",
         type: "string",
       },
-      credit: {
-        title: "Credit",
+      doctorName: {
+        title: "Doctor Name",
         type: "string",
       },
-      cash: {
-        title: "Cash",
-        type: "string",
-      },
-      disc: {
-        title: "Disc %",
-        type: "string",
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
