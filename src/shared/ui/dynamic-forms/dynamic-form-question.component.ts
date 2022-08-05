@@ -177,7 +177,7 @@ export class DynamicFormQuestionComponent
         strOption = option.title;
       }
     }
-    return strOption;
+    return strOption.trimEnd();
   }
 
   private _filter(title: string): any[] {
