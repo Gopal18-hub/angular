@@ -185,18 +185,26 @@
               routerLinkActive
               #rla="routerLinkActive"
               (click)="activeLink = link"
+              (newItemEvent)="addItem($event)"
               [active]="rla.isActive || activeLink.path == link.path"
             >
               {{ link.title }}
             </a>
           </nav>
           <div class="bg-white h-service border-radius-lg  display-block billing-panel-wrapper">
-            <router-outlet></router-outlet>
+            <router-outlet ></router-outlet>
           </div> 
          </div>
        <!-- ---------------------------------------------------------- BOTTOM CLEAR BUTTON ---------------------------------------------------->
-          
               </div>
+  
     
   </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between mx-5 max-health-primary-color">
+
+  <p>Last Update By: {{ lastUpdatedBy }}</p>
+
+  <P> Date: {{ currentTime }} </P>
+
+</div> 
