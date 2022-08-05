@@ -17,10 +17,10 @@ export class InvestigationsComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
+      serviceType: {
         type: "dropdown",
       },
-      doctorName: {
+      investigation: {
         type: "dropdown",
       },
     },
@@ -37,10 +37,11 @@ export class InvestigationsComponent implements OnInit {
     selectBox: false,
     displayedColumns: [
       "sno",
+      "investigations",
+      "precaution",
+      "priority",
+      "specialisation",
       "doctorName",
-      "type",
-      "scheduleSlot",
-      "bookingDate",
       "price",
     ],
     columnsInfo: {
@@ -48,22 +49,25 @@ export class InvestigationsComponent implements OnInit {
         title: "S.No.",
         type: "number",
       },
+      investigations: {
+        title: "Investigations",
+        type: "string",
+      },
+      precaution: {
+        title: "Precaution",
+        type: "string",
+      },
+      priority: {
+        title: "Priority",
+        type: "string",
+      },
+      specialisation: {
+        title: "Specialisation",
+        type: "string",
+      },
       doctorName: {
-        title: "Docotr Name",
+        title: "Doctor Name",
         type: "string",
-      },
-      type: {
-        title: "Type",
-        type: "dropdown",
-        options: [],
-      },
-      scheduleSlot: {
-        title: "Schedule Slot",
-        type: "string",
-      },
-      bookingDate: {
-        title: "Booking Date",
-        type: "date",
       },
       price: {
         title: "Price",
