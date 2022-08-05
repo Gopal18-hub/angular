@@ -150,6 +150,10 @@ export class BillComponent implements OnInit {
       "credit",
       "cash",
       "disc",
+      "discAmount",
+      "totalAmount",
+      "gst",
+      "gstValue",
     ],
     columnsInfo: {
       serviceName: {
@@ -183,6 +187,22 @@ export class BillComponent implements OnInit {
       disc: {
         title: "Disc %",
         type: "string",
+      },
+      discAmount: {
+        title: "Disc Amount",
+        type: "number",
+      },
+      totalAmount: {
+        title: "Total Amount",
+        type: "number",
+      },
+      gst: {
+        title: "GST%",
+        type: "number",
+      },
+      gstValue: {
+        title: "GST Value",
+        type: "number",
       },
     },
   };

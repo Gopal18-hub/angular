@@ -290,7 +290,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Address",
         // required property is dependent on country
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,32}",
+        pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,49}",
       },
       pincode: {
         type: "number",
@@ -1002,6 +1002,8 @@ export class OpRegistrationComponent implements OnInit {
             this.OPRegForm.value.city.value == "" ||
             this.OPRegForm.value.city.value == null)
         ) {
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[22].customErrorMessage = "";
           if (!value.value) {
             if (value.length >= 3) {
               this.localitybyCityList = await this.http
@@ -1038,7 +1040,17 @@ export class OpRegistrationComponent implements OnInit {
           value.value != null &&
           value.value != ""
         ) {
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[22].customErrorMessage = "";
           this.addressByLocalityID(value);
+        } else if (!value.value) {
+          if (value.trim() == "") {
+            this.OPRegForm.controls["locality"].setErrors({ incorrect: true });
+            this.questions[22].customErrorMessage = "locality is required";
+          } else {
+            this.OPRegForm.controls["locality"].setErrors(null);
+            this.questions[22].customErrorMessage = "";
+          }
         }
       });
 

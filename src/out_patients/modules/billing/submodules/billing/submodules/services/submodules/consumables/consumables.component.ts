@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 
 @Component({
   selector: "out-patients-consumables",
@@ -8,21 +6,6 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
   styleUrls: ["./consumables.component.scss"],
 })
 export class ConsumablesComponent implements OnInit {
-  formData = {
-    title: "",
-    type: "object",
-    properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
-        type: "dropdown",
-      },
-    },
-  };
-  formGroup!: FormGroup;
-  questions: any;
-
   @ViewChild("table") tableRows: any;
   data: any = [];
   config: any = {
@@ -31,59 +14,52 @@ export class ConsumablesComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
-      "qty",
+      "sno",
+      "surgeryName",
+      "priority",
       "credit",
       "cash",
-      "disc",
+      "doctorName",
+      "taxAmount",
+      "totalAmount",
     ],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
+      sno: {
+        title: "S.No.",
+        type: "number",
+      },
+      surgeryName: {
+        title: "Surgery Name",
         type: "string",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
-        type: "string",
-      },
-      qty: {
-        title: "Qty / Type",
+      priority: {
+        title: "Priority",
         type: "string",
       },
       credit: {
         title: "Credit",
-        type: "string",
+        type: "number",
       },
       cash: {
         title: "Cash",
+        type: "number",
+      },
+      doctorName: {
+        title: "Doctor Name",
         type: "string",
       },
-      disc: {
-        title: "Disc %",
-        type: "string",
+      taxAmount: {
+        title: "Tax Amount",
+        type: "number",
+      },
+      totalAmount: {
+        title: "Total Amount",
+        type: "number",
       },
     },
   };
 
-  constructor(private formService: QuestionControlService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    let formResult: any = this.formService.createForm(
-      this.formData.properties,
-      {}
-    );
-    this.formGroup = formResult.form;
-    this.questions = formResult.questions;
-  }
+  ngOnInit(): void {}
 }
