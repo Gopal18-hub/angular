@@ -56,11 +56,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
         options: [],
       },
       corporate: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
         options: [],
       },
       narration: {
