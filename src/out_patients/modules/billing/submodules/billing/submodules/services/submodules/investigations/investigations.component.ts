@@ -127,30 +127,31 @@ export class InvestigationsComponent implements OnInit {
       });
   }
 
-  add(priorityId = 1, sno = 0) {
+  add(priorityId = 1) {
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.doctorName.value,
+          this.formGroup.value.investigation.value,
           41,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
-        if (sno > 0) {
-          const index = this.billingService.consultationItems.findIndex(
-            (c: any) => c.sno == sno
-          );
-          this.billingService.removeFromConsultation(index);
-          this.data = [...this.billingService.consultationItems];
-        }
+        // if (sno > 0) {
+        //   const index = this.billingService.consultationItems.findIndex(
+        //     (c: any) => c.sno == sno
+        //   );
+        //   this.billingService.removeFromConsultation(index);
+        //   this.data = [...this.billingService.consultationItems];
+        // }
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.title,
-          type: priorityId,
-          scheduleSlot: "",
-          bookingDate: "",
+          investigations: this.formGroup.value.investigation.title,
+          precaution: "",
+          priority: "",
+          specialisation: "",
+          doctorName: "",
           price: res.amount,
         });
 

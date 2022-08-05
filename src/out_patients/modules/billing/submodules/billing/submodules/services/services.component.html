@@ -6,7 +6,7 @@
       <ng-container *ngFor="let tab of tabs">
         <button
           mat-raised-button
-          class="font-sm w-6/7 max-health-primary-color border-radius-xlg mat-elevation-z0 mt-3 mb-3"
+          class="font-sm w-6/7 max-health-primary-color border-radius-xlg mat-elevation-z0 mt-3 mb-1"
           type="button"
           (click)="tabChange(tab)"
           [ngClass]="{ active: activeTab?.id == tab.id }"
