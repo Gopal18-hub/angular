@@ -55,4 +55,18 @@ export namespace BillingApiConstants {
   export const getinvestigation = (locationId: number, serviceId: number) => {
     return `${environment.CommonApiUrl}api/lookup/getinvestigation/${locationId}/${serviceId}`;
   };
+
+  export const gethealthcheckups = (locationId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}`;
+  };
+  export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
+
+  export const getotherservicebilling = (
+    locationId: number,
+    servicingId: number
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
+  };
+
+  export const getOrderSet = `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/67`;
 }
