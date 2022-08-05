@@ -53,7 +53,15 @@ export interface PatientPersonalDetailInterface{
       paNno: string;
       nationalityName:string;
       agetypename:string;
-    
+      hotList: boolean,
+      od: boolean,
+      cghs: boolean,
+      note: boolean,
+      noteReason: string,
+      hwc:boolean,
+      hwcRemarks:string,
+      categoryIcons?: string;
+     
   }
 
   export interface  DepositType{

@@ -82,17 +82,17 @@
         </div>
     </form>
     <div class="h-3/4">
-        <div class=" employeeclass font-semi-bold font-base pt-1 pb-1">
+        <div class=" employeeclass font-semi-bold  pt-1 pb-1">
             <mat-label class="max-health-primary-color">Order List</mat-label>
         </div>
         <div class="tableh">
-            <maxhealth-table [config]="invListConfig" [data]=""></maxhealth-table>
+            <maxhealth-table [config]="invListConfig" [data]="invOrderList" (columnClick)="listRowClick($event)"></maxhealth-table>
         </div>
-        <div class="employeeclass font-semi-bold font-base pt-1 pb-1">
+        <div class="employeeclass font-semi-bold  pt-1 pb-1">
             <mat-label class="max-health-primary-color">Order Details</mat-label>
         </div>
         <div class="tableh">
-            <maxhealth-table [config]="invDetailsConfig" [data]=""></maxhealth-table>
+            <maxhealth-table [config]="invDetailsConfig" [data]="invOrderDetails"></maxhealth-table>
         </div>
 
     </div>

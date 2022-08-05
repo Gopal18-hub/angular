@@ -18,6 +18,8 @@ import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdeposi
 import { MakedepositDialogComponent } from './makedeposit-dialog/makedeposit-dialog.component';
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
+import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
+import { DepositService } from '@core/services/deposit.service';
 
 @Component({
   selector: 'out-patients-deposit',
@@ -28,7 +30,8 @@ export class DepositComponent implements OnInit {
 
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
-    private messageDialogService: MessageDialogService) { }
+    private messageDialogService: MessageDialogService,
+    private depositservice: DepositService) { }
 
   @ViewChild("deposittable") deposittable: any;
 
@@ -42,8 +45,7 @@ export class DepositComponent implements OnInit {
         // title: "Max ID"
       },
       mobileno: {
-        type: "number",
-        readonly: true
+        type: "number"
       },
       checkbox: {
         type: "checkbox",
@@ -201,6 +203,7 @@ export class DepositComponent implements OnInit {
         style: {
           width: "7rem",
         },
+        tooltipColumn: "advanceType",
       },
       serviceTypeName: {
         title: "Service Type",
@@ -208,6 +211,7 @@ export class DepositComponent implements OnInit {
         style: {
           width: "7rem",
         },
+        tooltipColumn: "serviceTypeName",
       },
       operatorName: {
         title: "Operator Name & ID",
@@ -215,6 +219,7 @@ export class DepositComponent implements OnInit {
         style: {
           width: "10rem",
         },
+        tooltipColumn: "operatorName",
       },
       remarks: {
         title: "Remarks",
@@ -222,6 +227,7 @@ export class DepositComponent implements OnInit {
         style: {
           width: "7rem",
         },
+        tooltipColumn: "remarks",
       },
      
     },
@@ -235,6 +241,8 @@ export class DepositComponent implements OnInit {
   ssn: string | undefined;
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
+  categoryIcons: [] = [];
+  similarContactPatientList: SimilarSoundPatientResponse[] = [];
 
   depositForm !: FormGroup;
   questions: any;
@@ -326,8 +334,10 @@ export class DepositComponent implements OnInit {
       });  
   }
 
-  openinitiatedeposit() {
-    this.router.navigate(["out-patient-billing", "initiate-deposit"]);
+  openinitiatedeposit() {    
+    this.router.navigate(["out-patient-billing", "initiate-deposit"], {
+      queryParams: { maxId: this.depositForm.value.maxid },
+    });
   }
 
   ngAfterViewInit(): void {
@@ -344,15 +354,22 @@ export class DepositComponent implements OnInit {
         else {
           this.iacode = this.depositForm.value.maxid.split(".")[0];
           this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
-          if ((this.iacode == "" || this.iacode != "0") && this.regNumber != 0) {
+          if ((this.iacode != "" && this.iacode != "0") && (this.regNumber != 0 && !Number.isNaN(Number(this.regNumber)))) {
             this.getDepositType();
             this.getPatientDetailsForDeposit();
-            this.getdepositcashlimit();
+            this.getdepositcashlimit();            
           } else {
             this.depositForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
           }
         }
+      }
+    });
+    this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
+      console.log(event);
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        this.mobilechange();
       }
     });
   }
@@ -383,6 +400,11 @@ export class DepositComponent implements OnInit {
               this.ssn = this.patientpersonaldetails[0]?.ssn;
 
               this.depositForm.controls["panno"].setValue(this.patientpersonaldetails[0]?.paNno);
+
+              this.categoryIcons = this.depositservice.getCategoryIconsForDeposit(
+                this.patientpersonaldetails[0]
+              );
+             console.log(this.categoryIcons);
             }
           },
           (error) => {
@@ -453,6 +475,7 @@ export class DepositComponent implements OnInit {
         this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit.toFixed(2));
         this.depositForm.controls["totalrefund"].setValue(this.totalrefund.toFixed(2));
         this.depositForm.controls["avalaibledeposit"].setValue(this.avalaibleamount.toFixed(2));
+        
 
         resultData = resultData.map((item: any) => {
           item.usedIP =  item.usedIP.toFixed(2);
@@ -464,7 +487,8 @@ export class DepositComponent implements OnInit {
           item.gstValue = item.gstValue.toFixed(2);
           return item;
         });
-        this.depoistList = resultData;
+        
+        this.depoistList = resultData;      
 
       },
       (error) => {
@@ -474,7 +498,10 @@ export class DepositComponent implements OnInit {
   }
 
   clearDepositpage(){
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.depositForm.reset();
+    this.depositForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.name = "";
     this.age= "";
     this.gender= "";
@@ -486,6 +513,11 @@ export class DepositComponent implements OnInit {
     this.patientpersonaldetails = [];
     this.depoistList = [];
     this.MaxIDExist = false;
+    this.MaxIDdepositExist = false;
+    this.categoryIcons = [];
+    this.depositForm.controls["totaldeposit"].setValue("0.00");
+    this.depositForm.controls["totalrefund"].setValue("0.00");
+    this.depositForm.controls["avalaibledeposit"].setValue("0.00");
   }
 
   depositColumnClick($event: any){
@@ -493,6 +525,62 @@ export class DepositComponent implements OnInit {
       this.MaxIDdepositExist = true;
     }
     this.patientRefundDetails = $event.row;
+  }
+
+   
+  mobilechange()
+  {
+    console.log('mobile changed');
+    this.matDialog.closeAll();
+    console.log(this.similarContactPatientList.length);
+      this.http
+        .post(ApiConstants.similarSoundPatientDetail, {
+          phone: this.depositForm.value.mobileno,
+        })
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData: SimilarSoundPatientResponse[]) => {
+            this.similarContactPatientList = resultData;
+            console.log(this.similarContactPatientList);           
+             {
+              if (this.similarContactPatientList.length != 0) {               
+                const similarSoundDialogref = this.matDialog.open(
+                  SimilarPatientDialog,
+                  {
+                    width: "60vw",
+                    height: "65vh",
+                    data: {
+                      searchResults: this.similarContactPatientList,
+                    },
+                  }
+                );
+                similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.iacode = maxID.split(".")[0];
+                      this.regNumber = Number(maxID.split(".")[1]);
+                      this.depositForm.controls["maxid"].setValue(maxID);
+                      this.getPatientDetailsByMaxId();
+                      this.getPatientPreviousDepositDetails();
+                    }
+                    this.similarContactPatientList = [];
+                  });
+              } else {
+                this.depositForm.controls["mobile"].setErrors({incorrect: true});
+                this.questions[1].customErrorMessage = "Invalid Mobile No";
+                console.log("no data found");
+              }
+            }
+          },
+          (error) => {
+            console.log(error);
+            this.messageDialogService.info(error.error);
+          }
+        );
   }
 }
 export const CheckPatientDetails = {

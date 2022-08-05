@@ -5,6 +5,16 @@
         <a mat-tab-link [active]="true">Deposit</a>
       </li>
     </ul>
+    <div class="maxhealth-spacer"></div>
+    <div *ngFor="let icon of categoryIcons" class="flex">
+      <img
+        [src]="icon['src']"
+        [alt]="icon['tooltip']"
+        width="45px"
+        class="mt-1 cursor-pointer"
+        [matTooltip]="icon['tooltip']"
+      />
+    </div>
   </nav>
   <mat-tab-nav-panel #tabPanel>
     <div class="h-full w-full">
@@ -27,7 +37,7 @@
                 </maxhealth-question>
               </div>
 
-              <div class="w-9/50 ml-2 wt-nowrap">
+              <div class="w-1/4 ml-2 wt-nowrap">
                 <mat-label class="font-semi-bold">Name:</mat-label>
                 <span class="bg-black ml-1">{{name}}</span>
               </div>
@@ -57,9 +67,7 @@
                 <mat-label class="font-semi-bold">SSN:</mat-label>
                 <span class="bg-black ml-1">{{ssn}}</span>
               </div>
-              <div class="clearcss mr-1">
-                <button mat-raised-button color="primary" (click)="clearDepositpage()"> Clear</button>
-              </div>
+             
             </div>
           </div>
         </div>
@@ -73,7 +81,7 @@
               <mat-label>Deposit and Refund Details</mat-label>
             </div>
 
-            <div class="float-right w-2/5 mr-3 flex">
+            <div class="float-right w-1/2 mr-4 flex">
 
               <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" [disabled]="!MaxIDExist"
                 (click)="openinitiatedeposit()">
@@ -89,6 +97,9 @@
               </button>
               <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!MaxIDExist">
                 Print Receipt
+              </button>
+              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" (click)="clearDepositpage()">
+              Clear
               </button>
             </div>
 
