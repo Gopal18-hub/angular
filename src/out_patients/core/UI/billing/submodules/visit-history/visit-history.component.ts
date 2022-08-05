@@ -4,6 +4,7 @@ import { ApiConstants } from '@core/constants/ApiConstants';
 import { HttpService } from '@shared/services/http.service';
 import { getPatientVisitHistory } from '@core/types/getPatientVisitHistory.Interface';
 import { Subject, takeUntil } from 'rxjs';
+import { CookieService } from '@shared/services/cookie.service';
 @Component({
   selector: 'out-patients-visit-history',
   templateUrl: './visit-history.component.html',
@@ -70,24 +71,31 @@ export class VisitHistoryComponent implements OnInit {
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"},
     { visitdate: "30/12/1999", lastbillno: "BL789456", lastpaymentmode: "Online", lastcompanybilled: "ABC Company", doctorname: "Ravi kant behl", days: "5", consultationtype: "Consultation", amount: "1500.00"}
   ]
-  maxId:any;
-  iacode:any;
-  regnumber:any;
-  public visithistorylist: getPatientVisitHistory[] = [];
+  maxId: any;
+  docId: any;
+  iacode: any;
+  regnumber: any;
+  hspId: any;
+  public visithistorylist: getPatientVisitHistory = {lastConsultationData:[], opPreviousDMGMappingDoctorData:[], opdmgmAppingDoctorData:[], opGroupDoctorLog:[]};
   private readonly _destroying$ = new Subject<void>();
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {maxid: any}, private http: HttpService) { 
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: {maxid: any, docid: any}, 
+    private http: HttpService,
+    private cookie: CookieService) { 
     this.maxId = data.maxid;
+    this.docId = data.docid;
   }
 
   ngOnInit(): void {
     const id = this.maxId.split('.');
     this.iacode = id[0];
     this.regnumber = id[1];
-    this.getvisithistory(this.iacode, this.regnumber);
+    this.hspId = Number(this.cookie.get("HSPLocationId"));
+    this.getvisithistory(this.iacode, this.regnumber, this.hspId, this.docId);
   }
-  getvisithistory(iacode:any, regnumber:any)
+  getvisithistory(iacode:any, regnumber:any, hspId: any, docid: any)
   {
-    this.http.get(ApiConstants.getpatientvisithistory(iacode, regnumber))
+    this.http.get(ApiConstants.getpatientvisithistory(iacode, regnumber, hspId, docid))
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata)=>{
       console.log(resultdata);

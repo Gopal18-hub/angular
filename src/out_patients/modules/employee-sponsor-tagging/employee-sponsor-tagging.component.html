@@ -87,15 +87,15 @@
         <div class="flex  ml-1 p-1-5 align-items-center input-padding  w-full">
             <div class="w-1/15  font-wrapper">
                     <mat-label  class="max-health-primary-color font-semi-bold">Name:</mat-label>
-                <span class="ml-2" >{{name}}</span>
+                <span class="ml-2" title="{{name}}" >{{name}}</span>
             </div>
             <div class="ml-3-23 w-8 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
-                <span class=" ml-2 ">{{age}}</span>
+                <span class=" ml-2 "  title="{{age}}" >{{age}}</span>
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
-                    <span class=" ml-2 ">{{gender}}</span>
+                    <span class=" ml-2 " title="{{gender}}">{{gender}}</span>
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
@@ -107,7 +107,7 @@
             </div>
             <div class="ml-3-23 w-1/15 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
-                    <span class=" ml-2 ">{{ssn}}</span>
+                    <span class=" ml-2 "  title="{{ssn}}">{{ssn}}</span>
             </div>
             <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-31" >
                 <div class="ml-2 checkbox-bottom-margin">
@@ -116,7 +116,7 @@
                     [form]="employeesponsorForm"
                     [questions]="questions[5]"
                     [index]="5"
-                    (click)="oncheckboxClick($event)"
+                   
                     >
                     </maxhealth-question>
                 </div>
@@ -150,8 +150,8 @@
         </div>
     </div>
      <div class="h-1/2 mt-1">
-        <div class="pl-2  employeeclass font-semi-bold font-base">
-            <mat-label class="max-health-primary-color">Employee Dependent Details</mat-label>
+        <div class="pl-2  employeeclass">
+            <mat-label class="max-health-primary-color font-style">Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
         <div class="h-57 mt-2 whitespace-nowrap">
@@ -174,8 +174,9 @@
     </mat-tab-nav-panel>
 </section>
 <div class="flex justify-between max-health-primary-color ">
-    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }} on {{ currentTime }}</p>
+    <p class="ml-4"cl>Last Updated By: {{ lastUpdatedBy }}</p>
     <p class=" mr-4">Date: {{currentTime | date:'shortDate'}} | Time: {{currentTime | date:'mediumTime'}}</p>
 </div>
 <!-- [disabled]="disableButton"> -->
 <!-- [disabled]="disableClear" -->
+<!-- (click)="oncheckboxClick($event)" -->

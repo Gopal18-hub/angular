@@ -41,7 +41,7 @@ export class PatientHistoryComponent implements OnInit {
       },
       mobile: {
         title:"Mobile No",
-        type: "tel",
+        type: "number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
@@ -259,12 +259,19 @@ export class PatientHistoryComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         this.getPatientDetails();
+        
+      }
+    });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      console.log(event);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.mobilechange();
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
       console.log(event);
-      if (event.key === "Enter" || event.key === "Tab") {
-        event.preventDefault();
+      if (event.key === "Tab") {
         this.mobilechange();
       }
     });
@@ -355,11 +362,21 @@ export class PatientHistoryComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((resultData: getRegisteredPatientDetailsModel[]) => {
             console.log(resultData);
-            if(resultData.length == 0)
+            if(resultData == null)
             {
               this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
               this.questions[0].customErrorMessage = "Invalid MaxID";
               // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
+            }
+            else if(resultData.length == 0)
+            {
+              this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+              this.questions[0].customErrorMessage = "Invalid MaxID";
+              // this.msgdialog.info("Registration number does not exist");
+              this.apiProcessing = false;
+              this.showtable = true;
             }
             else
             {
@@ -373,12 +390,18 @@ export class PatientHistoryComponent implements OnInit {
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);
               this.questions[0].readonly = true;
               this.searchbtn = false;
+              this.apiProcessing = false;
+              this.showtable = true;
               this.patienthistorysearch();
             }  
           },
           (error)=>{
             console.log(error);
+            this.patienthistoryform.controls["maxid"].setErrors({incorrect: true});
+            this.questions[0].customErrorMessage = "Invalid MaxID";
             this.msgdialog.info("Registration number does not exist");
+            this.apiProcessing = false;
+            this.showtable = true;
           }
         );
   }
@@ -458,6 +481,8 @@ export class PatientHistoryComponent implements OnInit {
     this.patientDetails = [];
     this.searchbtn = true;
     this.patienthistorylist = [];
+    this.apiProcessing = false;
+    this.showtable = true;
   }
   
 
@@ -480,7 +505,7 @@ export class PatientHistoryComponent implements OnInit {
       }
       else if(event.row.billType == 'Op Refund') 
       {
-        this.openReportModal('refundReport ');
+        this.openReportModal('refundReport');
       }
       else{
         this.msgdialog.success("Unable to Print. Working on other transaction type(s) !!!");
@@ -489,10 +514,34 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
-      receiptnumber: this.billno,
-      locationID: this.hsplocationId
-    });
+    if(btnname == 'depositReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptnumber: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'rptRefund')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        receiptno: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'billingreport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        opbillid: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
+    else if(btnname == 'refundReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        refundBill: this.billno,
+        locationID: this.hsplocationId
+      });
+    }
   }
 
   setimage(patienthsitory: getPatientHistoryModel[],
