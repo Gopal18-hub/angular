@@ -59,9 +59,13 @@ export class BillingService {
   removeFromConsultation(index: number) {
     this.consultationItems.splice(index, 0);
   }
-  addToInvestigations() {}
+  addToInvestigations(data: any) {
+    this.InvestigationItems.push(data);
+  }
   removeFromInvestigations() {}
-  addToHealthCheckup() {}
+  addToHealthCheckup(data: any) {
+    this.HealthCheckupItems.push(data);
+  }
   removeFromHealthCheckup() {}
   addToProcedure() {}
   removeFromProcedure() {}
