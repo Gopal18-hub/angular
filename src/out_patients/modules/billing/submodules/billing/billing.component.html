@@ -63,7 +63,7 @@
             </maxhealth-question>
           </div>
           <mat-label class="max-health-primary-color mr-1"
-            >Company <i>IOM</i></mat-label
+            >Company <i class="iom-color">IOM</i></mat-label
           >
           <div class="width-8 bg-white mr-2">
             <maxhealth-question
@@ -110,7 +110,7 @@
 
       <div
         *ngIf="apiProcessing"
-        class="flex align-items-center justify-center h-full"
+        class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader"
       >
         <mat-spinner strokeWidth="3"></mat-spinner>
       </div>

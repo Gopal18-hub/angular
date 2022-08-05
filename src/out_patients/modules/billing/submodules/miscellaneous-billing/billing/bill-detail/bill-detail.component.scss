@@ -92,8 +92,12 @@
 {   
    color: #45C0BE;
    font-style: italic;
-   text-decoration: underline;
+//    text-decoration: underline;
    font-weight:550;
+   float: left;
+   position: absolute;
+   left: 121px;
+
 }
 .h-service
 {
@@ -211,14 +215,30 @@ padding: 0%;
 {
 margin-top: 0.19rem;
 }
-// .mr-07
-// {
-//     margin-left: 0.6rem;
-
-// }
+.txt-blue
+{
+    ::ng-deep .mat-checkbox-label
+    {
+        color: #45C0BE;
+        font-style: normal;
+        font-weight: 500;
+       padding-bottom: 0.25rem;
+    } 
+}
 .text-align-right
 {
  ::ng-deep .mat-input-element
  {  text-align: right;
  }
 }
+.credit-details-wrapper {
+    .width-49 {
+      width: 49%;
+           border: 1px solid #707070;
+      opacity: 1;
+      border-radius: 12px;
+      color: #002B58;
+    }
+  
+  }
+  

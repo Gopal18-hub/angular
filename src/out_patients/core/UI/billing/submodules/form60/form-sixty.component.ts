@@ -9,9 +9,9 @@ import { Subject,Subscription } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { getform60masterdataInterface } from  "@core/types/FormSixty.Interface";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { DepositService } from '@core/services/deposit.service';
 import { savepatientform60detailsModel } from "@core/models/form60PatientDetailsModel.Model";
 import { DatePipe } from "@angular/common";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: 'out-patients-form-sixty',
@@ -19,7 +19,7 @@ import { DatePipe } from "@angular/common";
   styleUrls: ['./form-sixty.component.scss']
 })
 
-export class FormSixtyComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FormSixtyComponent implements OnInit, AfterViewInit {
 
   form60FormData = BillingForm.form60FormData;
   form60form!: FormGroup;
@@ -29,18 +29,18 @@ export class FormSixtyComponent implements OnInit, AfterViewInit, OnDestroy {
  
   constructor( private formService: QuestionControlService,private http: HttpService,
     private dialogRef: MatDialogRef<FormSixtyComponent>,
-    private matDialog: MatDialog, private messageDialogService: MessageDialogService,
-    @Inject(MAT_DIALOG_DATA) public data : {from60data:any}, private depositservice: DepositService
+    private matDialog: MatDialog, private messageDialogService: MessageDialogService
+    , private cookie: CookieService,
+    @Inject(MAT_DIALOG_DATA) public data : {from60data:any, paymentamount:any}
     ,private datepipe: DatePipe) {
       
      }
   
   private readonly _destroying$ = new Subject<void>();
-  DepositPaymentMethod: {
-    transactionamount : number, MOP: string}[] =[];
-  hsplocationId:any = 69; //Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 13647; // Number(this.cookie.get("stationId"));
-  operatorID:any = 59386; //  Number(this.cookie.get("UserId"));
+
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("stationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
   
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -56,14 +56,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getForm60DocumentType();
     this.form60form.controls["iddocumenttype"].setValue({ title: "<--Select-->", value: 0 });
     this.form60form.controls["addressdocumenttype"].setValue({ title: "<--Select-->", value: 0 });
-    this.DepositPaymentMethod = this.depositservice.getFormLsit();
-  }
-
-  
-  ngOnDestroy() {
-    // if (this.subscription && !this.subscription.closed) {
-    //   this.subscription.unsubscribe();
-    // }
+    
   }
 
   ngAfterViewInit(): void{
@@ -171,7 +164,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this._destroying$))
             .subscribe(
               (resultData) => {
-                this.matDialog.closeAll();
+                //this.matDialog.closeAll();
                 this.dialogRef.close("Success");
                 this.messageDialogService.success("Form 60 details have been saved. Please click deposit.");
               
@@ -206,8 +199,8 @@ export class FormSixtyComponent implements OnInit, AfterViewInit, OnDestroy {
       this.form60form.value.addressdocidentityno,
       this.form60form.value.addressnameofauthority ,
       this.form60form.value.remarks ,     
-      this.DepositPaymentMethod[0].transactionamount,      
-      this.DepositPaymentMethod[0].MOP,   
+      1000,      
+      "Cash",   
       3,
       0,
       ""    
