@@ -273,6 +273,11 @@ export class BillingComponent implements OnInit {
     this.country = "";
     this.gender = "";
     this.age = "";
+    this.billingService.clear();
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
+    this.questions[2].readonly = false;
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {

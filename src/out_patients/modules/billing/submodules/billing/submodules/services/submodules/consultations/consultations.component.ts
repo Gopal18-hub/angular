@@ -102,8 +102,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.tableRows.selection.changed.subscribe((res: any) => {
       const source = res.added[0];
-      console.log(source);
-      this.add(source.type, source.sno);
+      this.update(source.type, source.sno);
     });
   }
 
@@ -138,7 +137,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  add(priorityId = 57, sno = 0) {
+  update(priorityId = 57, sno = 0) {
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -153,9 +152,26 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           const index = this.billingService.consultationItems.findIndex(
             (c: any) => c.sno == sno
           );
-          this.billingService.removeFromConsultation(index);
+          this.billingService.consultationItems[index].price = res.amount;
+          this.billingService.consultationItems[index].type = priorityId;
           this.data = [...this.billingService.consultationItems];
         }
+
+        this.data = [...this.billingService.consultationItems];
+      });
+  }
+
+  add(priorityId = 57) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.doctorName.value,
+          25,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
           doctorName: this.formGroup.value.doctorName.title,
