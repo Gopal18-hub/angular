@@ -106,6 +106,9 @@ export class OpRegApprovalComponent implements OnInit {
       title: {
         title: "Title",
         type: "string",
+        style: {
+          width: "50px",
+        },
       },
       fullname: {
         title: "Patient Name",
@@ -137,6 +140,10 @@ export class OpRegApprovalComponent implements OnInit {
       uForeigner: {
         title: "Foreigner",
         type: "checkbox",
+        disabledSort: true,
+        style: {
+          width: "60px",
+        },
       },
       usmsRecNo: {
         title: "SMS Receiving Number",
@@ -149,6 +156,7 @@ export class OpRegApprovalComponent implements OnInit {
       insertdatetime: {
         title: "Requested Date",
         type: "date",
+        tooltipColumn: "insertdatetime",
       },
     },
   };
@@ -231,6 +239,7 @@ export class OpRegApprovalComponent implements OnInit {
       insertdatetime: {
         title: "Requested Date",
         type: "date",
+        tooltipColumn: "insertdatetime",
       },
       approvalDoneBy: {
         title: "Approved By",
@@ -239,6 +248,7 @@ export class OpRegApprovalComponent implements OnInit {
       approvedDate: {
         title: "Approved Date",
         type: "date",
+        tooltipColumn: "approvedDate",
       },
     },
   };
@@ -321,6 +331,7 @@ export class OpRegApprovalComponent implements OnInit {
       insertdatetime: {
         title: "Requested Date",
         type: "date",
+        tooltipColumn: "insertdatetime",
       },
       approvalDoneBy: {
         title: "Rejected By",
@@ -329,6 +340,7 @@ export class OpRegApprovalComponent implements OnInit {
       approvedDate: {
         title: "Rejected Date",
         type: "date",
+        tooltipColumn: "approvedDate",
       },
     },
   };
@@ -459,6 +471,7 @@ export class OpRegApprovalComponent implements OnInit {
             resultData = resultData.map((item: any) => {
               item.fullname =
                 item.modifiedFirstName + " " + item.modifiedLastName;
+
               return item;
             });
             this.showapprovalspinner = false;

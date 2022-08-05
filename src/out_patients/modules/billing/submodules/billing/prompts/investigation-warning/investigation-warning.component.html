@@ -1,1 +1,29 @@
-<p>investigation-warning works!</p>
+<div
+  class="flex align-items-center justify-center flex-column max-health-primary-color"
+>
+  <img src="assets/warning-yellow.svg" width="100" class="mb-8" />
+  <p class="mb-3 font-bold">
+    There are some investigations ordered from physician and not billed. Do you
+    want to bill these investigation ?
+  </p>
+  <div class="flex mt-5">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-7"
+      type="button"
+      (click)="yes()"
+    >
+      Yes
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="no()"
+    >
+      No
+    </button>
+  </div>
+</div>

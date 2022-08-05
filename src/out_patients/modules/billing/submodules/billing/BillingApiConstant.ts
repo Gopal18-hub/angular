@@ -28,4 +28,31 @@ export namespace BillingApiConstants {
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/getdoctorlistonSpecializationClinic/${isClinic}/${clinicSpecializationId}/${locationId}`;
   };
+
+  export const getinvestigationfromphysician = (
+    IACode: string,
+    RegistrationNo: number,
+    locationId: string
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getinvestigationfromphysician/${IACode}/${RegistrationNo}/${locationId}`;
+  };
+
+  export const getPrice = (
+    priorityId: number,
+    itemId: number,
+    serviceId: number,
+    hspLocationid: string
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
+  };
+
+  export const consultationTypes = `${environment.CommonApiUrl}api/lookup/getconsultationtype`;
+
+  export const getInvetigationPriorities = `${environment.CommonApiUrl}api/lookup/getinvestigationpriority`;
+
+  export const getinvestigationservice = `${environment.CommonApiUrl}api/lookup/getinvestigationservice`;
+
+  export const getinvestigation = (locationId: number, serviceId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getinvestigation/${locationId}/${serviceId}`;
+  };
 }
