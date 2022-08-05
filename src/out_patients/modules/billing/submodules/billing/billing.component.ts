@@ -16,6 +16,7 @@ import { DMSComponent } from "../../../registration/submodules/dms/dms.component
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
+import { BillingService } from "./billing.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -57,10 +58,12 @@ export class BillingComponent implements OnInit {
       company: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       corporate: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       narration: {
         type: "string",
@@ -102,7 +105,8 @@ export class BillingComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -129,15 +133,9 @@ export class BillingComponent implements OnInit {
   }
 
   formEvents() {
-    //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
@@ -147,7 +145,6 @@ export class BillingComponent implements OnInit {
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       this.http
@@ -165,6 +162,11 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.billingService.setActiveMaxId(
+              this.formGroup.value.maxid,
+              iacode,
+              regNumber.toString()
+            );
             this.patientDetails = resultData;
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
@@ -204,9 +206,12 @@ export class BillingComponent implements OnInit {
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =
-      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
+      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
+    this.questions[0].readonly = true;
+    this.questions[1].readonly = true;
+    this.questions[2].readonly = true;
   }
 
   doCategoryIconAction(icon: any) {}
@@ -221,6 +226,7 @@ export class BillingComponent implements OnInit {
         width: "30vw",
         data: {
           dueAmount: dtPatientPastDetails[4].data,
+          maxId: this.formGroup.value.maxid,
         },
       });
     }
@@ -269,6 +275,11 @@ export class BillingComponent implements OnInit {
     this.country = "";
     this.gender = "";
     this.age = "";
+    this.billingService.clear();
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
+    this.questions[2].readonly = false;
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {
@@ -278,7 +289,7 @@ export class BillingComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
-        this.questions[2].options = this.complanyList.map((a) => {
+        this.questions[3].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
         });
       });
@@ -290,8 +301,7 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
         this.coorporateList = resultData;
-        // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
-        this.questions[3].options = this.coorporateList.map((l) => {
+        this.questions[4].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
       });

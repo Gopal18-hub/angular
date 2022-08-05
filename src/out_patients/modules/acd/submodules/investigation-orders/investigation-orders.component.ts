@@ -31,6 +31,9 @@ export class InvestigationOrdersComponent implements OnInit {
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
 
+  invOrderList : any;
+  invOrderDetails : any;
+
 
   investigationFormData = {
     title: "",
@@ -38,7 +41,8 @@ export class InvestigationOrdersComponent implements OnInit {
     properties: {
       datecheckbox: {
         type: "checkbox",
-        options: [{ title: "", value: "" }]
+        options: [{ title: "", value: "" }],
+        
       },
       fromdate: {
         type: "date",
@@ -93,92 +97,143 @@ export class InvestigationOrdersComponent implements OnInit {
 
     }
   }
-  investigationConfig: any = {
+  invListConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
-    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'amnt', 'channel', 'billNo', 'status'],
+    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'buildingId', 'paymentMode'],
     rowLayout: { dynamic: { rowClass: "row['status']" } },
     clickedRows: true,
     clickSelection: "single",
     columnsInfo: {
       orderId: {
         title: 'Order Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
       maxid: {
         title: 'Max Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
       ptnName: {
         title: 'Patient Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "11%",
+        },
       },
       docName: {
         title: 'Doctor Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "12%",
+        },
       },
       deptName: {
         title: 'Department',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "12%",
+        },
       },
       visitDate: {
         title: 'Visit Date',
-        type: 'date'
+        type: 'date',
+        style: {
+          width: "9%",
+        },
       },
       mobileNo: {
         title: 'Mobile No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "9%",
+        },
       },
-      amnt: {
-        title: 'Amount',
-        type: 'string'
+      mrpValue: {
+        title: 'Amt',
+        type: 'string',
+        style: {
+          width: "5%",
+        },
       },
       channel: {
         title: 'Channel',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "7%",
+        },
       },
-      billNo: {
+      buildingId: {
         title: 'Bill No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      status: {
+      paymentMode: {
         title: 'Order Status',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "10%",
+        },
       }
 
     }
 
   }
-  config2: any = {
+  invDetailsConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['testname', 'doctorname', 'priority', 'visitdatetime', 'specialization', 'remarks'],
+    displayedColumns: ['drug', 'doctor', 'priority', 'visitDateTime', 'specialization', 'acdRemarks'],
     columnsInfo: {
-      testname: {
+      drug: {
         title: 'Test Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "18%",
+        },
       },
-      doctorname: {
+      doctor: {
         title: 'Doctor Name',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "15%",
+        },
       },
       priority: {
         title: 'Priority',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      visitdatetime: {
+      visitDateTime: {
         title: 'Visit Date & Time',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "14%",
+        },
       },
       specialization: {
         title: 'Specialization',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "10%",
+        },
       },
-      remarks: {
+      acdRemarks: {
         title: 'ACD Remarks',
-        type: 'input'
+        type: 'input',
+        style: {
+          width: "35%",
+        },
       },
 
     }
@@ -329,20 +384,28 @@ export class InvestigationOrdersComponent implements OnInit {
         this.questions[6].options = this.denyOrderTypeList.map((e) => {
           return { title: e.name, value: e.id };
         });
-        console.log(this.denyOrderTypeList, "Do")
+        console.log(res, "getediganosticacd")
       })
     //Main Grid both
-    this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7, 0))
+    this.http.get(ApiConstants.geteprescriptdrugorders("2021-08-12", "2021-08-14", 7, 0))
       //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "geteprescriptdrugorders")
+        this.invOrderList = res.objOrderDetails;
+        console.log(res.objOrderDetails, "geteprescriptdrugorders")
       })
 
-    this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+  }
+
+  listRowClick(event:any)
+  {
+    let maxId = event.row.maxid;   
+   
+    //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
+      this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1],maxId.toString().split(".")[0],7,event.row.orderId))    
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
+        this.invOrderDetails=res;
         console.log(res, "GetPhysicianOrderDetailEP")
 
       })

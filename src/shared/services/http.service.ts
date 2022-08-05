@@ -119,7 +119,7 @@ export class HttpService {
       this.cookieService.deleteAll();
       this.cookieService.deleteAll("/", environment.cookieUrl, true);
       this.dbService.cachedResponses.clear();
-      this.router.navigate(["login"]);
+      window.location.href = window.location.origin + "/login";
     } else {
       if (options && !options.showErrorMessage) {
       } else {

@@ -1,7 +1,11 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { BillingApiConstants } from "../../../../BillingApiConstant";
+import { CookieService } from "@shared/services/cookie.service";
+import { BillingService } from "../../../../billing.service";
 @Component({
   selector: "out-patients-order-set",
   templateUrl: "./order-set.component.html",
@@ -12,11 +16,10 @@ export class OrderSetComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
-        type: "dropdown",
+      orderSet: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
       },
     },
   };
@@ -30,53 +33,25 @@ export class OrderSetComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
-      "qty",
-      "credit",
-      "cash",
-      "disc",
-    ],
+    displayedColumns: ["sno", "orderSetName"],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
-        type: "string",
+      sno: {
+        title: "S.No.",
+        type: "number",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
-        type: "string",
-      },
-      qty: {
-        title: "Qty / Type",
-        type: "string",
-      },
-      credit: {
-        title: "Credit",
-        type: "string",
-      },
-      cash: {
-        title: "Cash",
-        type: "string",
-      },
-      disc: {
-        title: "Disc %",
+      orderSetName: {
+        title: "Order Set Name",
         type: "string",
       },
     },
   };
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpService,
+    private cookie: CookieService,
+    private billingService: BillingService
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -85,5 +60,15 @@ export class OrderSetComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.getOrserSetData();
   }
+
+  getOrserSetData() {
+    this.http.get(BillingApiConstants.getOrderSet).subscribe((res) => {
+      this.questions[0].options = res.orderSetBreakup.map((r: any) => {
+        return { title: r.name, value: r.orderSetId };
+      });
+    });
+  }
+  add() {}
 }

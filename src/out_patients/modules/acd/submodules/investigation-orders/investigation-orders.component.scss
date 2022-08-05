@@ -55,12 +55,17 @@
 ::ng-deep tr.Denied{
   background-color: #FFCAA7 !important;
 }  
-
+::ng-deep td mat-form-field .mat-form-field-wrapper{
+  width:175% !important
+}
 ::ng-deep .dateW{    
   width: 27% !important;
 }
 ::ng-deep .btnW{    
-  width: 27.5% !important;
+  width: 28% !important;
+}
+::ng-deep .denyBtn{
+  width: 22% !important;
 }
 ::ng-deep .tableh{    
   height: 42% !important;
