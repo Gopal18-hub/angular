@@ -64,14 +64,17 @@ export class InvestigationsComponent implements OnInit {
       priority: {
         title: "Priority",
         type: "dropdown",
+        options: [],
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
+        options: [],
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
+        options: [],
       },
       price: {
         title: "Price",
@@ -95,6 +98,31 @@ export class InvestigationsComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.getServiceTypes();
+    this.getSpecialization();
+  }
+
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          1
+        )
+      )
+      .subscribe((res) => {
+        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+      });
   }
 
   getServiceTypes() {
