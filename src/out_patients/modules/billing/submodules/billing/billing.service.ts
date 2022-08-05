@@ -15,6 +15,16 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  clear() {
+    this.billItems = [];
+    this.consultationItems = [];
+    this.InvestigationItems = [];
+    this.HealthCheckupItems = [];
+    this.ProcedureItems = [];
+    this.OrderSetItems = [];
+    this.ConsumableItems = [];
+  }
+
   setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
     this.activeMaxId = {
       maxId: maxId,
