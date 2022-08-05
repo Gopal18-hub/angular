@@ -6,6 +6,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ConsultationWarningComponent } from "../../../../prompts/consultation-warning/consultation-warning.component";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
@@ -81,7 +83,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -165,6 +168,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   add(priorityId = 57) {
     if (this.billingService.consultationItems.length == 1) {
+      this.matDialog.open(ConsultationWarningComponent, {
+        width: "30vw",
+        data: {},
+      });
       return;
     }
     this.http

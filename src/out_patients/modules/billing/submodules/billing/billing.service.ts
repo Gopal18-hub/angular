@@ -25,6 +25,19 @@ export class BillingService {
     this.ConsumableItems = [];
   }
 
+  checkOtherServicesForHealthCheckups() {
+    if (
+      this.consultationItems.length > 0 ||
+      this.InvestigationItems.length > 0 ||
+      this.ProcedureItems.length > 0 ||
+      this.OrderSetItems.length > 0 ||
+      this.ConsumableItems.length > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
     this.activeMaxId = {
       maxId: maxId,
