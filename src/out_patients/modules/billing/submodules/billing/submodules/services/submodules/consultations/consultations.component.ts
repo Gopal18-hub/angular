@@ -19,10 +19,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       specialization: {
         type: "autocomplete",
         required: true,
+        placeholder: "--Select--",
       },
       doctorName: {
         type: "autocomplete",
         required: true,
+        placeholder: "--Select--",
       },
     },
   };

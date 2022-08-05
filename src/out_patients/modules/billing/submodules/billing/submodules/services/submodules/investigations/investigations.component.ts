@@ -20,10 +20,12 @@ export class InvestigationsComponent implements OnInit {
       serviceType: {
         type: "dropdown",
         required: true,
+        placeholder: "--Select--",
       },
       investigation: {
         type: "autocomplete",
         required: true,
+        placeholder: "--Select--",
       },
     },
   };

@@ -58,10 +58,12 @@ export class BillingComponent implements OnInit {
       company: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       corporate: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       narration: {
         type: "string",
