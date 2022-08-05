@@ -175,14 +175,7 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res: any) => {
-        // if (sno > 0) {
-        //   const index = this.billingService.consultationItems.findIndex(
-        //     (c: any) => c.sno == sno
-        //   );
-        //   this.billingService.removeFromConsultation(index);
-        //   this.data = [...this.billingService.consultationItems];
-        // }
-        this.billingService.addToConsultation({
+        this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
           precaution: "",
@@ -192,7 +185,7 @@ export class InvestigationsComponent implements OnInit {
           price: res.amount,
         });
 
-        this.data = [...this.billingService.consultationItems];
+        this.data = [...this.billingService.InvestigationItems];
       });
   }
 }
