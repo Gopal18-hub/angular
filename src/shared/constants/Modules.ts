@@ -175,7 +175,8 @@ export namespace MaxModules {
         {
           id: -1,
           title: "ACD",
-          defaultPath: "acd",
+          tenentPath: "/out-patients",
+          defaultPath: "/acd",
           childrens: [],
           moreOptions: false,
         },
