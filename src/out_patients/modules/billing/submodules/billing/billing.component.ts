@@ -287,7 +287,7 @@ export class BillingComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
-        this.questions[2].options = this.complanyList.map((a) => {
+        this.questions[3].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
         });
       });
@@ -299,8 +299,7 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
         this.coorporateList = resultData;
-        // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
-        this.questions[3].options = this.coorporateList.map((l) => {
+        this.questions[4].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
       });

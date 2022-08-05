@@ -61,15 +61,15 @@ export class InvestigationsComponent implements OnInit {
       },
       priority: {
         title: "Priority",
-        type: "string",
+        type: "dropdown",
       },
       specialisation: {
         title: "Specialisation",
-        type: "string",
+        type: "dropdown",
       },
       doctorName: {
         title: "Doctor Name",
-        type: "string",
+        type: "dropdown",
       },
       price: {
         title: "Price",
@@ -149,7 +149,7 @@ export class InvestigationsComponent implements OnInit {
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
           precaution: "",
-          priority: "",
+          priority: priorityId,
           specialisation: "",
           doctorName: "",
           price: res.amount,
