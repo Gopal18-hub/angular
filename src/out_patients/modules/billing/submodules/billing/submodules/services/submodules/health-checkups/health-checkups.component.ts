@@ -12,10 +12,7 @@ export class HealthCheckupsComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
+      healthCheckup: {
         type: "dropdown",
       },
     },
@@ -30,48 +27,19 @@ export class HealthCheckupsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
-      "qty",
-      "credit",
-      "cash",
-      "disc",
-    ],
+    displayedColumns: ["sno", "healthCheckups", "price"],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
+      sno: {
+        title: "S.No",
+        type: "number",
+      },
+      healthCheckups: {
+        title: "Health Checkups",
         type: "string",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
-        type: "string",
-      },
-      qty: {
-        title: "Qty / Type",
-        type: "string",
-      },
-      credit: {
-        title: "Credit",
-        type: "string",
-      },
-      cash: {
-        title: "Cash",
-        type: "string",
-      },
-      disc: {
-        title: "Disc %",
-        type: "string",
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
