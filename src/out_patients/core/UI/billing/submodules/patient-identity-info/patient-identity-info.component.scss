@@ -62,7 +62,13 @@
 
  .textboxfontbold{
     ::ng-deep  .mat-form-field{
-    font-weight: 500 !important;
+    font-weight: 400 !important;
 }
+}
+ .pancardtext{
+    ::ng-deep  input.mat-input-element{
+        text-transform: uppercase !important;
+
+    }
 }
 
