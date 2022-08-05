@@ -52,6 +52,12 @@
       .min-width-initial {
         min-width: initial !important;
       }
+      .mat-form-field-flex{
+        align-items: normal;
+      }
+      mat-form-field.mat-form-field-appearance-outline .mat-form-field-suffix{
+          top: 0.25rem;
+      }
       button {
         height: 1.875rem;
         line-height: 1.875rem;
