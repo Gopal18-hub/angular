@@ -67,4 +67,6 @@ export namespace BillingApiConstants {
   ) => {
     return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
   };
+
+  export const getOrderSet = `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/67`;
 }
