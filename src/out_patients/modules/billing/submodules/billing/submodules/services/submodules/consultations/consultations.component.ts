@@ -28,6 +28,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         required: true,
         placeholder: "--Select--",
       },
+      clinics: {
+        type: "autocomplete",
+        required: true,
+        placeholder: "--Select--",
+      },
     },
   };
   formGroup!: FormGroup;
@@ -79,6 +84,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   consultationTypes = [];
 
+  locationId = Number(this.cookie.get("HSPLocationId"));
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -112,27 +119,45 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
-    this.formGroup.controls["specialization"].valueChanges.subscribe(
-      (val: any) => {
+    if (this.locationId == 7) {
+      this.http
+        .get(BillingApiConstants.getclinics(this.locationId))
+        .subscribe((res) => {
+          this.questions[2].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+        });
+      this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
         if (val.value) {
-          this.getdoctorlistonSpecializationClinic(val.value);
+          this.getdoctorlistonSpecializationClinic(val.value, true);
         }
-      }
-    );
+      });
+    } else {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
+      this.formGroup.controls["specialization"].valueChanges.subscribe(
+        (val: any) => {
+          if (val.value) {
+            this.getdoctorlistonSpecializationClinic(val.value);
+          }
+        }
+      );
+    }
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    isClinic = false
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
+          isClinic,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
