@@ -130,6 +130,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
+
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
+      this.displayedColumns.push("maxRemoveRow");
+    }
     this.initiateTable = true;
   }
 
@@ -175,14 +182,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
-    if (
-      this.config.actionItems &&
-      !this.displayedColumns.includes("actionItems")
-    ) {
-      this.displayedColumns.push("actionItems");
-    }
 
-    if (this.config.removeRow) {
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
       this.displayedColumns.push("maxRemoveRow");
     }
   }
