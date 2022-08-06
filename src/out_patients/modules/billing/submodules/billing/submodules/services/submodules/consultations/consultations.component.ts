@@ -60,7 +60,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         type: "number",
       },
       doctorName: {
-        title: "Docotr Name",
+        title: "Doctor Name",
         type: "string",
       },
       type: {
