@@ -81,13 +81,13 @@ export class HealthCheckupsComponent implements OnInit {
       });
   }
 
-  add(priorityId = 0) {
+  add(priorityId = 1) {
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.healthCheckup.value,
-          25,
+          26,
           this.cookie.get("HSPLocationId")
         )
       )

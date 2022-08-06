@@ -132,7 +132,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
