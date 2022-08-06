@@ -76,6 +76,7 @@ import { ConsumableDetailsComponent } from "./submodules/billing/prompts/consuma
 import { ReferalDoctorWarningComponent } from "./submodules/billing/prompts/referal-doctor-warning/referal-doctor-warning.component";
 import { PackageDoctorModificationComponent } from "./submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component";
 import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set-details/order-set-details.component";
+import { ConsultationWarningComponent } from './submodules/billing/prompts/consultation-warning/consultation-warning.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -130,6 +131,7 @@ import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set
     ReferalDoctorWarningComponent,
     PackageDoctorModificationComponent,
     OrderSetDetailsComponent,
+    ConsultationWarningComponent,
   ],
   imports: [
     BillingRoutingModule,

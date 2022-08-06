@@ -6,6 +6,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ConsultationWarningComponent } from "../../../../prompts/consultation-warning/consultation-warning.component";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
@@ -22,6 +24,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         placeholder: "--Select--",
       },
       doctorName: {
+        type: "autocomplete",
+        required: true,
+        placeholder: "--Select--",
+      },
+      clinics: {
         type: "autocomplete",
         required: true,
         placeholder: "--Select--",
@@ -77,11 +84,14 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   consultationTypes = [];
 
+  locationId = Number(this.cookie.get("HSPLocationId"));
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -109,27 +119,45 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
-    this.formGroup.controls["specialization"].valueChanges.subscribe(
-      (val: any) => {
+    if (this.locationId == 7) {
+      this.http
+        .get(BillingApiConstants.getclinics(this.locationId))
+        .subscribe((res) => {
+          this.questions[2].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+        });
+      this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
         if (val.value) {
-          this.getdoctorlistonSpecializationClinic(val.value);
+          this.getdoctorlistonSpecializationClinic(val.value, true);
         }
-      }
-    );
+      });
+    } else {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
+      this.formGroup.controls["specialization"].valueChanges.subscribe(
+        (val: any) => {
+          if (val.value) {
+            this.getdoctorlistonSpecializationClinic(val.value);
+          }
+        }
+      );
+    }
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    isClinic = false
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
+          isClinic,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -164,6 +192,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   add(priorityId = 57) {
+    if (this.billingService.consultationItems.length == 1) {
+      this.matDialog.open(ConsultationWarningComponent, {
+        width: "30vw",
+        data: {},
+      });
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(

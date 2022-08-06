@@ -17,7 +17,7 @@ export class HealthCheckupsComponent implements OnInit {
     type: "object",
     properties: {
       healthCheckup: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
       },
@@ -81,5 +81,24 @@ export class HealthCheckupsComponent implements OnInit {
       });
   }
 
-  add() {}
+  add(priorityId = 1) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.healthCheckup.value,
+          26,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.billingService.addToHealthCheckup({
+          sno: this.data.length + 1,
+          healthCheckups: this.formGroup.value.healthCheckup.title,
+          price: res.amount,
+        });
+
+        this.data = [...this.billingService.HealthCheckupItems];
+      });
+  }
 }

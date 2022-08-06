@@ -235,7 +235,7 @@ export namespace BillingForm {
             type: "string"
           },
           iddocumenttype: {
-            type: "dropdown"
+            type: "autocomplete"
           },
           iddocidentityno: {
             type: "string"
@@ -250,7 +250,7 @@ export namespace BillingForm {
             }]
           },
           addressdocumenttype: {
-            type: "dropdown"
+            type: "autocomplete"
           },
           addressdocidentityno: {
             type: "string"

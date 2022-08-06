@@ -70,7 +70,7 @@ export class RefundDialogComponent implements OnInit {
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("stationId"));
+  stationId:any = Number(this.cookie.get("stationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
@@ -103,7 +103,7 @@ export class RefundDialogComponent implements OnInit {
     this.questions = formResult.questions;
     console.log(this.data);
     this.today = new Date();
-    this.patientIdentityInfo = this.data.patientinfo;
+    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
     this.servicedeposittype = {
       type: "Refund",
       selectedservicedeposittype : this.data.clickedrowdepositdetails,
@@ -135,6 +135,8 @@ export class RefundDialogComponent implements OnInit {
   }
   clear()
   {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.paymentform.reset();
     this.paymentform.controls["chequeissuedate"].setValue(this.today);
     this.paymentform.controls["demandissuedate"].setValue(this.today);
