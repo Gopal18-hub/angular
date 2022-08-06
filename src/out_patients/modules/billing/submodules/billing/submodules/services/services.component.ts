@@ -74,7 +74,10 @@ export class ServicesComponent implements OnInit {
 
   async tabChange(tab: any) {
     this.activeMaxId = this.billingService.activeMaxId;
-    if (tab.id == 3 && this.billingService.billItems.length > 0) {
+    if (
+      tab.id == 3 &&
+      this.billingService.checkOtherServicesForHealthCheckups()
+    ) {
       this.healthCheckupWarning();
       return;
     } else if (tab.id == 2 && this.activeTab.id != tab.id) {
