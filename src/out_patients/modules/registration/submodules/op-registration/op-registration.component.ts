@@ -2800,7 +2800,7 @@ export class OpRegistrationComponent implements OnInit {
       !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
-        ? this.OPRegForm.value.locality.title
+        ? this.OPRegForm.value.locality
         : "",
       this.OPRegForm.value.sourceOfInput.value || 0,
       false,
@@ -3153,7 +3153,7 @@ export class OpRegistrationComponent implements OnInit {
       !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
-        ? this.OPRegForm.value.locality.title
+        ? this.OPRegForm.value.locality
         : "",
       this.OPRegForm.value.sourceOfInput.value || 0,
       false,

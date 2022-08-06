@@ -102,6 +102,13 @@ export class InvestigationsComponent implements OnInit {
   }
 
   getSpecialization() {
+    this.http
+      .get(BillingApiConstants.getInvetigationPriorities)
+      .subscribe((res) => {
+        this.config.columnsInfo.priority.options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
     this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
       this.config.columnsInfo.specialisation.options = res.map((r: any) => {
         return { title: r.name, value: r.id };
@@ -115,7 +122,7 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -168,14 +175,7 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res: any) => {
-        // if (sno > 0) {
-        //   const index = this.billingService.consultationItems.findIndex(
-        //     (c: any) => c.sno == sno
-        //   );
-        //   this.billingService.removeFromConsultation(index);
-        //   this.data = [...this.billingService.consultationItems];
-        // }
-        this.billingService.addToConsultation({
+        this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
           precaution: "",
@@ -185,7 +185,7 @@ export class InvestigationsComponent implements OnInit {
           price: res.amount,
         });
 
-        this.data = [...this.billingService.consultationItems];
+        this.data = [...this.billingService.InvestigationItems];
       });
   }
 }
