@@ -415,7 +415,7 @@ export namespace ApiConstants {
   };
 
   export const getTarrifByServiceID = (
-    priority: 1,
+    priority: number,
     itemID: number,
     serviceID: number,
     locationID: number
@@ -428,8 +428,7 @@ export namespace ApiConstants {
       itemID +
       "/" +
       serviceID +
-      "?" +
-      "Hsplocationid=" +
+      "/" +
       locationID
     );
   };
@@ -450,6 +449,9 @@ export namespace ApiConstants {
     );
   };
 
+  export const postMiscBill =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savemiscellaneousentrygst";
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   export const getregisteredpatientdetails = (
@@ -740,7 +742,7 @@ export namespace ApiConstants {
       "/" +
       RegistrationNo +
       "/" +
-      LocationId + 
+      LocationId +
       "?" +
       DoctorId
     );

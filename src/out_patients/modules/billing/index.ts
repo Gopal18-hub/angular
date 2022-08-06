@@ -41,6 +41,7 @@ import { DepositDialogComponent } from "./submodules/deposit/deposit-dialog/depo
 import { Form60Component } from "./submodules/deposit/refund-dialog/form60/form60.component";
 import { sharedbillingModule } from "../../../out_patients/core/UI/billing";
 import { MakedepositDialogComponent } from "./submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
+import { MakeBillDialogComponent } from "./submodules/miscellaneous-billing/makebill-dialog/makebill-dialog.component";
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
 import { DepositSuccessComponent } from "./submodules/deposit/deposit-success/deposit-success.component";
 import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefund-approval.component";
@@ -130,6 +131,7 @@ import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set
     ReferalDoctorWarningComponent,
     PackageDoctorModificationComponent,
     OrderSetDetailsComponent,
+    MakeBillDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
