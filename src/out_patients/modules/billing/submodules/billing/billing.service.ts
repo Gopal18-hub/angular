@@ -67,7 +67,9 @@ export class BillingService {
     this.HealthCheckupItems.push(data);
   }
   removeFromHealthCheckup() {}
-  addToProcedure() {}
+  addToProcedure(data: any) {
+    this.ProcedureItems.push(data);
+  }
   removeFromProcedure() {}
   addToOrderSet() {}
   removeFromORderSet() {}
