@@ -144,7 +144,10 @@ export class DetailsComponent implements OnInit {
 
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
+    this.lastUpdatedBy = this.cookie.get("UserName");
   }
+  lastUpdatedBy: string = "";
+  currentTime: string = new Date().toLocaleString();
 
   ngAfterViewInit(): void {
     this.formEvents();

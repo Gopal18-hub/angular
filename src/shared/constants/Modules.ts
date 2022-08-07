@@ -222,6 +222,7 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Reports",
+          tenentPath: "/out-patients",
           defaultPath: "",
           childrens: [
             {

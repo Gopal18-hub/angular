@@ -15,6 +15,29 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  clear() {
+    this.billItems = [];
+    this.consultationItems = [];
+    this.InvestigationItems = [];
+    this.HealthCheckupItems = [];
+    this.ProcedureItems = [];
+    this.OrderSetItems = [];
+    this.ConsumableItems = [];
+  }
+
+  checkOtherServicesForHealthCheckups() {
+    if (
+      this.consultationItems.length > 0 ||
+      this.InvestigationItems.length > 0 ||
+      this.ProcedureItems.length > 0 ||
+      this.OrderSetItems.length > 0 ||
+      this.ConsumableItems.length > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
     this.activeMaxId = {
       maxId: maxId,
@@ -36,11 +59,17 @@ export class BillingService {
   removeFromConsultation(index: number) {
     this.consultationItems.splice(index, 0);
   }
-  addToInvestigations() {}
+  addToInvestigations(data: any) {
+    this.InvestigationItems.push(data);
+  }
   removeFromInvestigations() {}
-  addToHealthCheckup() {}
+  addToHealthCheckup(data: any) {
+    this.HealthCheckupItems.push(data);
+  }
   removeFromHealthCheckup() {}
-  addToProcedure() {}
+  addToProcedure(data: any) {
+    this.ProcedureItems.push(data);
+  }
   removeFromProcedure() {}
   addToOrderSet() {}
   removeFromORderSet() {}
