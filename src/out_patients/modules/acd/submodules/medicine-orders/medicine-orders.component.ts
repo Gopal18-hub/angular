@@ -27,9 +27,13 @@ export class MedicineOrdersComponent implements OnInit {
   questions: any;
   private readonly _destroying$ = new Subject<void>();
 
+  medOrderList : any;
+  medOrderDetails : any;
+  patientInfo : any;
+
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
-
+  
 
   investigationFormData = {
     title: "",
@@ -93,14 +97,13 @@ export class MedicineOrdersComponent implements OnInit {
 
     }
   }
- 
 
   medListConfig: any  = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'amnt', 'channel', 'billNo', 'status'],
-    rowLayout: { dynamic: { rowClass: "row['status']" } },
+    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'buildingId', 'paymentMode'],
+    rowLayout: { dynamic: { rowClass: "row['paymentMode']" } },
     clickedRows: true,
     columnsInfo: {
       orderId: {
@@ -152,7 +155,7 @@ export class MedicineOrdersComponent implements OnInit {
           width: "105px",
         },
       },
-      amnt: {
+      mrpValue: {
         title: 'Amount',
         type: 'string'
       },
@@ -160,14 +163,14 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Channel',
         type: 'string'
       },
-      billNo: {
+      buildingId: {
         title: 'Bill No.',
         type: 'string',
         style: {
           width: "130px",
         },
       },
-      status: {
+      paymentMode: {
         title: 'Order Status',
         type: 'string',
         style: {
@@ -182,16 +185,16 @@ export class MedicineOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : true,
-    displayedColumns: ['testname', 'doctorname','priority','days','specialization','visitdatetime','remarks'],
+    displayedColumns: ['drug', 'doctor','priority','days','specialization','visitDatetime','acdRemarks'],
     columnsInfo: {
-      testname : {
+      drug : {
         title: 'Drug Name',
         type: 'string',
         style: {
           width: "20%",
         },
       },
-      doctorname : {
+      doctor : {
         title: 'Schedule',
         type: 'string',
         style: {
@@ -219,7 +222,7 @@ export class MedicineOrdersComponent implements OnInit {
           width: "10%",
         },
       },
-      visitdatetime : {
+      visitDatetime : {
         title: 'Visit Date & Time',
         type: 'string',
         style: {
@@ -227,7 +230,7 @@ export class MedicineOrdersComponent implements OnInit {
         },
       },
     
-      remarks : {
+      acdRemarks : {
         title: 'ACD Remarks',
         type: 'input',
         style: {
@@ -238,120 +241,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
  
     }
-
-
-  data: any[] = [
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Unbilled"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Billed"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Billed"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Partial"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Denied"
-    }
-
-  ]
-  data1: any[] = [
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    }
-  ]
   constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,) {
-
   }
 
   ngOnInit(): void {
@@ -372,33 +262,40 @@ export class MedicineOrdersComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
+      //Deny Order List
+      this.http.get(ApiConstants.getdenyreasonforacd)    
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.denyOrderTypeList = res;
+        this.questions[6].options = this.denyOrderTypeList.map((e) => {
+          return { title: e.name, value: e.id };
+        });
+      })
   }
 
   search() {
     //Deny order lists
-    this.http.get(ApiConstants.getediganosticacd("2020-12-11", "2020-12-11", 0, 0, 799041, "SKDD", 7))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+    this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+    // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        this.denyOrderTypeList = res.objACDDenialReasons;
-        this.questions[6].options = this.denyOrderTypeList.map((e) => {
-          return { title: e.name, value: e.id };
-        });
-        console.log(this.denyOrderTypeList, "Do")
-      })
-    //Main Grid both
-    this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7, 0))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        console.log(res, "geteprescriptdrugorders")
-      })
+        this.medOrderList = res.objOrderDetails;
+        
+        console.log(this.medOrderList, "Do")
+      })       
+  }
 
-    this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+  listRowClick(event:any)
+  {
+    let maxId = event.row.maxid;   
+    this.patientInfo = event.row.maxid +" / "+ event.row.ptnName+" / "+ event.row.mobileNo
+   
+    //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
+      this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1],maxId.toString().split(".")[0],7,event.row.orderId))    
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "GetPhysicianOrderDetailEP")
+        this.medOrderDetails=res;
+        console.log(res, "getphysicianorderdetailep")
 
       })
   }
