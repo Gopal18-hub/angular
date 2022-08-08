@@ -154,7 +154,7 @@ export namespace MaxModules {
             {
               id: 220,
               title: "Post Discharge Follow Up Billing",
-              defaultPath: "/out-patient-billing/",
+              defaultPath: "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
             },
             {
@@ -175,7 +175,8 @@ export namespace MaxModules {
         {
           id: -1,
           title: "ACD",
-          defaultPath: "acd",
+          tenentPath: "/out-patients",
+          defaultPath: "/acd",
           childrens: [],
           moreOptions: false,
         },
@@ -192,7 +193,7 @@ export namespace MaxModules {
           title: "Configure",
           defaultPath: "",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
         {
           id: -1,
@@ -205,20 +206,23 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Staff Dependents",
-          defaultPath: "staff-dept",
+          tenentPath: "/out-patients",
+          defaultPath: "/staff-dept",
           childrens: [],
           moreOptions: false,
         },
         {
           id: -1,
           title: "Employee Sponsor Tagging",
-          defaultPath: "employee-sponsor-tagging",
+          tenentPath: "/out-patients",
+          defaultPath: "/employee-sponsor-tagging",
           childrens: [],
           moreOptions: false,
         },
         {
           id: -1,
           title: "Reports",
+          tenentPath: "/out-patients",
           defaultPath: "",
           childrens: [
             {
@@ -289,7 +293,7 @@ export namespace MaxModules {
           title: "MIME",
           defaultPath: "",
           childrens: [],
-          moreOptions: true,
+          moreOptions: false,
         },
       ],
     },

@@ -1,16 +1,20 @@
-import { Component, Inject, EventEmitter,Input,Output, OnInit } from '@angular/core';
+import { Component, Inject, EventEmitter,Input,Output, OnInit, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { FormSixtyComponent } from '../form60/form-sixty.component';
+import { DepositService } from '@core/services/deposit.service';
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: 'patient-identity-info',
   templateUrl: './patient-identity-info.component.html',
   styleUrls: ['./patient-identity-info.component.scss']
 })
-export class PatientIdentityInfoComponent implements OnInit {
+export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() data!: any;
-
+  @Input() patientclearsibilingcomponent : boolean = false;
+  
   patientidentityformData = {
     title: "",
     type: "object",
@@ -40,10 +44,18 @@ export class PatientIdentityInfoComponent implements OnInit {
   }
   patientidentityform!: FormGroup;
   questions: any;
+  form60PatientInfo:any=[];
+  DepositPaymentMethod: { transactionamount : number, MOP: string}[] =[];
 
-  constructor( private formService: QuestionControlService, 
+  constructor( private formService: QuestionControlService,  private depositservice: DepositService, private messageDialogService: MessageDialogService,
   private matdialog: MatDialog) {
    }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['patientclearsibilingcomponent'].currentValue)
+    {
+      this.patientidentityform.controls["panno"].setValue("");
+    }
+  }
 
 
   ngOnInit(): void {
@@ -53,18 +65,38 @@ export class PatientIdentityInfoComponent implements OnInit {
     );
     this.patientidentityform = formResult.form;
     this.questions = formResult.questions;
-    this.patientidentityform.controls["panno"].setValue(this.data.panno);
-    this.patientidentityform.controls["mobileno"].setValue(this.data.mobileno);
-    this.patientidentityform.controls["email"].setValue(this.data.emailId);
+    if(this.data.type == "Deposit"){
+      this.patientidentityform.controls["mainradio"].enable();
+      this.patientidentityform.controls["panno"].enable();
+    }else if(this.data.type == "Refund"){
+      this.patientidentityform.controls["mainradio"].disable();
+      this.patientidentityform.controls["panno"].disable();
+    }
+    this.patientidentityform.controls["panno"].setValue(this.data.patientinfo.panno);
+    this.patientidentityform.controls["mobileno"].setValue(this.data.patientinfo.mobileno);
+    this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
+    this.form60PatientInfo = this.data.patientinfo;    
   }
 
   ngAfterViewInit(): void
   {
+    this.DepositPaymentMethod = this.depositservice.getFormLsit();   
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
       {
-        this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh"});
-        this.patientidentityform.controls["panno"].disable();
+        // if(this.DepositPaymentMethod[0].transactionamount == 0){
+        //     this.messageDialogService.error("Amount Zero is not Allowed");
+        // }
+        // else
+        {
+          this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
+          data: {from60data:this.form60PatientInfo,
+                paymentamount: this.DepositPaymentMethod[0]
+              }
+            });
+          this.patientidentityform.controls["panno"].disable();
+          this.patientidentityform.controls["panno"].setValue('');
+        }      
       }
       else{
         this.patientidentityform.controls["panno"].enable();

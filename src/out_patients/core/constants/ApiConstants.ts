@@ -162,40 +162,42 @@ export namespace ApiConstants {
 
   //get PATIENT hotlisting MAXID,HOTLISTING HEADER AND LOCATION ID IS MANDATORY OTHERS ARE QUERY PARAM, RESPONSE IS STRING ERROR IS ALSO RESPONSE WHEN USER IS ALREADY HOTLISTED BUT IS NOT APPROVED/REJECTED YET
   // RESPONSE --->You have already added a host list comment against this Max ID in "LOCATION NAME",Please Approve OR Reject Then Can Add new Host List Comment"
-  export const hotlistedPatient = (
-    maxId: string,
-    hotlistingHeader: string,
-    locationid: string,
-    firstName: string,
-    lastname: string,
-    middleName: string,
-    hotlistingcomment: string,
-    type: string,
-    userid: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/patienthotlisting/" +
-      maxId +
-      "/" +
-      hotlistingHeader +
-      "/" +
-      locationid +
-      "?firstName=" +
-      firstName +
-      "&middleName=" +
-      middleName +
-      "&lastName=" +
-      lastname +
-      "&hotlistingComment=" +
-      hotlistingcomment +
-      "&type=" +
-      type +
-      "&userId=" +
-      userid
-    );
-  };
+  // export const hotlistedPatient = (
+  //   maxId: string,
+  //   hotlistingHeader: string,
+  //   locationid: string,
+  //   firstName: string,
+  //   lastname: string,
+  //   middleName: string,
+  //   hotlistingcomment: string,
+  //   type: string,
+  //   userid: number
+  // ) => {
+  //   return (
+  //     environment.PatientApiUrl +
+  //     "api/patient/patienthotlisting/" +
+  //     maxId +
+  //     "/" +
+  //     hotlistingHeader +
+  //     "/" +
+  //     locationid +
+  //     "?firstName=" +
+  //     firstName +
+  //     "&middleName=" +
+  //     middleName +
+  //     "&lastName=" +
+  //     lastname +
+  //     "&hotlistingComment=" +
+  //     hotlistingcomment +
+  //     "&type=" +
+  //     type +
+  //     "&userId=" +
+  //     userid
+  //   );
+  // };
 
+  export const hotlistedPatient =
+    environment.PatientApiUrl + "api/patient/patienthotlisting";
   //appointment patient search
   export const appointmentPatientDetail = (
     phoneNo: string,
@@ -377,6 +379,81 @@ export namespace ApiConstants {
     );
   };
 
+  // ====================================================================MISC API=================================================================
+  // GET DETAILS FOR REGISTERED PATIENT RESPONSE WOULD HAVE COMPANY NAME FOR MISC BILLING
+  export const getregisteredpatientdetailsForMisc = (
+    IACode: string,
+    RegistrationNo: number,
+    location: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getregistrationdetailsformiscellenaous/" +
+      RegistrationNo +
+      "/" +
+      IACode +
+      "/" +
+      location
+    );
+  };
+
+  export const getMasterMiscDetail =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getmasterdataformiscellaneous";
+
+  export const getServiceitemsByServiceID = (
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallserviceitems/" +
+      serviceID +
+      "/" +
+      locationID
+    );
+  };
+
+  export const getTarrifByServiceID = (
+    priority: number,
+    itemID: number,
+    serviceID: number,
+    locationID: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      priority +
+      "/" +
+      itemID +
+      "/" +
+      serviceID +
+      "/" +
+      locationID
+    );
+  };
+
+  export const getDipositedAmountByMaxID = (
+    iacode: string,
+    regNo: number,
+    hspId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdepositdetails/" +
+      iacode +
+      "/" +
+      regNo +
+      "/" +
+      hspId
+    );
+  };
+
+  export const postMiscBill =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/savemiscellaneousentrygst";
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
   export const getregisteredpatientdetails = (
     IACode: string,
     RegistrationNo: number
@@ -389,6 +466,8 @@ export namespace ApiConstants {
       RegistrationNo
     );
   };
+
+  //172.30.0.16:1007/api/outpatientbilling/getallserviceitems/99/67
 
   export const getpatienthistory = (
     FromDate: any,
@@ -652,14 +731,20 @@ export namespace ApiConstants {
 
   export const getpatientvisithistory = (
     IACode: string,
-    RegistrationNo: number
+    RegistrationNo: number,
+    LocationId: number,
+    DoctorId: number
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getoppatientvisithistory/" +
       IACode +
       "/" +
-      RegistrationNo
+      RegistrationNo +
+      "/" +
+      LocationId +
+      "?" +
+      DoctorId
     );
   };
 
@@ -678,15 +763,62 @@ export namespace ApiConstants {
   export const savepatientdmg =
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 
-  //OP REFUND APPROVAL
-  export const getpendingoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallpendingoprefundapprovalrequest/01-09-2010/01-01-2022/69";
-  export const getapprovedoprefundapproval =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/getallapprovedoprefundapprovalrequest/09-09-2020/09-09-2022/69";
-
   //ACD
+  export const getediganosticacdoninvestigation = (
+    FromDate: any,
+    ToDate: any,
+    Locationid: number  
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacdoninvestigation/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      Locationid      
+    );
+  };
+  export const getediganosticacdoninvestigationgrid = (
+   
+    Locationid: number,
+    orderid : number,
+    regno : number,
+    iacode : string
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacdoninvestigationgrid/" +
+      Locationid +
+      "/" +
+      orderid +
+      "/" +
+      regno +
+      "/"+
+      iacode     
+    );
+  };
+  export const getdenyreasonforacd =
+    environment.PatientApiUrl + "api/patient/getdenyreasonforacd";
+
+  export const geteprescriptdrugorders = (
+    FromDate: any,
+    ToDate: any,
+    LocationID: number  
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/geteprescriptdrugorders/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      LocationID      
+    );
+  };
   export const getediganosticacd = (
     FromDate: any,
     ToDate: any,
@@ -714,24 +846,7 @@ export namespace ApiConstants {
       Locationid
     );
   };
-  export const geteprescriptdrugorders = (
-    FromDate: any,
-    ToDate: any,
-    LocationID: number,
-    Status: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/geteprescriptdrugorders/" +
-      FromDate +
-      "/" +
-      ToDate +
-      "/" +
-      LocationID +
-      "/" +
-      Status
-    );
-  };
+ 
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
@@ -760,6 +875,7 @@ export namespace ApiConstants {
       Userid
     );
   };
+  //ACD --
 
   export const getpatientpersonaldetails = (
     registrationno: number,
@@ -843,4 +959,45 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savepaymentdetailslog";
   export const sendotpoprefund =
     environment.PatientApiUrl + "api/patient/sendotpoprefund";
+
+  //OP REFUND APPROVAL
+  export const getpendingoprefundapproval = (fromdate: any, todate: any) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallpendingoprefundapprovalrequest/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      7
+    );
+  };
+
+  export const getapprovedoprefundapproval = (fromdate: any, todate: any) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallapprovedoprefundapprovalrequest/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      7
+    );
+  };
+
+  export const getrejectedoprefundapproval = (fromdate: any, todate: any) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getallrejectedoprefundapprovalrequest/" +
+      fromdate +
+      "/" +
+      todate +
+      "/7"
+    );
+  };
+
+  export const oprefundapprovereject =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/oprefundapprovalrequestsave";
+
 }

@@ -13,6 +13,8 @@ import { GetExpiredPatientDetailInterface } from "../../../../core/types/expired
 import { DatePipe } from "@angular/common";
 import { SaveExpiredPatientModel } from "../../../../../out_patients/core/models/saveexpiredpatient.Model";
 import { CookieService } from "../../../../../shared/services/cookie.service";
+import { PatientService } from "../../../../core/services/patient.service";
+import { SimilarPatientDialog } from "../../../../modules/registration/submodules/op-registration/op-registration.component";
 interface deleteexpiredResponse {
   success: boolean;
   message: string;
@@ -23,9 +25,12 @@ interface deleteexpiredResponse {
   styleUrls: ["./expired-patient-check.component.scss"],
 })
 export class ExpiredPatientCheckComponent implements OnInit {
+  lastUpdatedBy: string = this.cookie.get("UserName");
+  currentTime: string = new Date().toLocaleString();
   expiredpatientformdata = {
     type: "object",
     title: "",
+    dateformat: "dd/MM/yyyy",
     properties: {
       maxid: {
         type: "string",
@@ -46,6 +51,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
       },
       expiryDate: {
         type: "date",
+        maximum: new Date(),
       },
       remarks: {
         type: "textarea",
@@ -72,6 +78,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
   regno!: number;
   checkboxValue!: number;
   validmaxid!: boolean;
+  categoryIcons: any = [];
 
   constructor(
     private formService: QuestionControlService,
@@ -79,7 +86,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
     private dialog: MatDialog,
     private http: HttpService,
     private datepipe: DatePipe,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
@@ -104,22 +112,30 @@ export class ExpiredPatientCheckComponent implements OnInit {
       if (event.key === "Enter") {
         // Cancel the default action, if needed
         event.preventDefault();
-        this.onMaxidSearch();
+        this.onMaxidSearch(this.expiredpatientForm.controls["maxid"].value);
+      }
+    });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.onMobilenumberEnter();
       }
     });
     this.getCheckboxValue();
   }
 
-  onMaxidSearch() {
-    this.regno = Number(this.expiredpatientForm.value.maxid.split(".")[1]);
-    this.iacode = this.expiredpatientForm.value.maxid.split(".")[0];
+  onMaxidSearch(maxid: any) {
+    // this.regno = Number(this.expiredpatientForm.value.maxid.split(".")[1]);
+    //this.iacode = this.expiredpatientForm.value.maxid.split(".")[0];
+    let iacode = maxid.split(".")[0];
+    let regno = maxid.split(".")[1];
     console.log("inside on maxidenter");
     console.log(this.expiredpatientForm.value.maxid);
 
     // console.log(regno);
     // console.log(iacode);
     this.http
-      .get(ApiConstants.expiredpatientdetail(this.regno, this.iacode))
+      .get(ApiConstants.expiredpatientdetail(regno, iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data) => {
@@ -131,23 +147,41 @@ export class ExpiredPatientCheckComponent implements OnInit {
               console.log(this.expiredPatientDetail);
               this.validmaxid = true;
               this.disableClear = false;
-              this.enableSavedeleteControl();
+              this.disableButton = false;
+              //this.enableSavedeleteControl();
               console.log(
                 this.datepipe.transform(
                   this.expiredPatientDetail[0].dateofBirth,
                   "dd/MM/yyyy"
                 )
               );
+              // this.name = this.expiredPatientDetail[0].name;
+              // this.age = this.expiredPatientDetail[0].age;
+              // this.gender = this.expiredPatientDetail[0].gender;
+              this.nationality = this.expiredPatientDetail[0].nationality;
+
               this.dob = this.datepipe.transform(
                 this.expiredPatientDetail[0].dateofBirth,
                 "dd/MM/yyyy"
               );
               this.ssn = this.expiredPatientDetail[0].ssn;
+              this.expiredpatientForm.controls["maxid"].setValue(
+                this.expiredPatientDetail[0].regno
+              );
+              // this.expiredpatientForm.controls["mobileno"].setValue(
+              //   this.expiredPatientDetail[0].mobileno
+              // );
               this.expiredpatientForm.controls["expiryDate"].setValue(
                 this.expiredPatientDetail[0].expiryDate
               );
               this.expiredpatientForm.controls["remarks"].setValue(
                 this.expiredPatientDetail[0].remarks
+              );
+              this.expiredpatientForm.controls["checkbox"].setValue(
+                this.expiredPatientDetail[0].flagexpired
+              );
+              this.categoryIcons = this.patientService.getCategoryIcons(
+                this.expiredPatientDetail[0]
               );
             } else {
               this.validmaxid = false;
@@ -159,6 +193,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
               //this.clearValues();
             }
           } else {
+            this.disableButton = true;
             this.expiredpatientForm.controls["maxid"].setErrors({
               incorrect: true,
             });
@@ -171,6 +206,30 @@ export class ExpiredPatientCheckComponent implements OnInit {
       );
   }
 
+  onMobilenumberEnter() {
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.expiredpatientForm.controls["mobileno"].value,
+      })
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultdata) => {
+        console.log(resultdata);
+        if (resultdata != null) {
+          const similarpatientDialog = this.dialog.open(SimilarPatientDialog, {
+            width: "60vw",
+            height: "80vh",
+            data: {
+              searchResults: resultdata,
+            },
+          });
+          similarpatientDialog.afterClosed().subscribe((resultdata) => {
+            console.log(resultdata);
+            this.onMaxidSearch(resultdata.data.added[0].maxid);
+          });
+        }
+      });
+  }
+
   // clearValues() {
   //   this.ssn = "";
   //   this.dob = null;
@@ -180,11 +239,11 @@ export class ExpiredPatientCheckComponent implements OnInit {
 
   saveExpiredpatient() {
     console.log(this.expiredpatientForm.value);
-    this.expiredpatientForm.controls["checkbox"].valueChanges.subscribe(
-      (value) => {
-        console.log(value);
-      }
-    );
+    // this.expiredpatientForm.controls["checkbox"].valueChanges.subscribe(
+    //   (value) => {
+    //     console.log(value);
+    //   }
+    // );
     if (this.expiredpatientForm.value.checkbox == false) {
       this.dialog.open(SaveexpiredpatientDialogComponent, {
         width: "25vw",
@@ -257,35 +316,42 @@ export class ExpiredPatientCheckComponent implements OnInit {
   }
   deleteExpiredpatientResponse!: deleteexpiredResponse;
   deleteExpiredpatient() {
-    let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
-      width: "25vw",
-      height: "30vh",
-    });
+    if (this.expiredpatientForm.value.checkbox == false) {
+      this.dialog.open(SaveexpiredpatientDialogComponent, {
+        width: "25vw",
+        height: "30vh",
+      });
+    } else {
+      let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
+        width: "25vw",
+        height: "30vh",
+      });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log("The dialog was closed");
-      console.log(result);
-      if (result == true) {
-        this.http
-          .post(
-            ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
-            null
-          )
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((data) => {
-            console.log(data);
-            this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
-            this.messagedialogservice.success(
-              this.deleteExpiredpatientResponse.message
-            );
-            this.clearData();
-          });
-      }
-    });
+      dialogRef.afterClosed().subscribe((result) => {
+        console.log("The dialog was closed");
+        console.log(result);
+        if (result == true) {
+          this.http
+            .post(
+              ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
+              null
+            )
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((data) => {
+              console.log(data);
+              this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
+              this.messagedialogservice.success(
+                this.deleteExpiredpatientResponse.message
+              );
+              this.clearData();
+            });
+        }
+      });
+    }
   }
 
   enableSavedeleteControl() {
-    if (this.validmaxid && this.checked) {
+    if (this.validmaxid) {
       this.disableButton = false;
     } else {
       this.disableButton = true;

@@ -18,7 +18,10 @@ import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefu
 import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
 import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
-import { BillDetailComponent } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
+import {
+  BillDetailComponent,
+  MiscCredDetail,
+} from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
@@ -46,6 +49,10 @@ const routes: Routes = [
         component: DetailsComponent,
         children: [
           {
+            path: "",
+            component: BillDetailTableComponent,
+          },
+          {
             path: "cred-bill-settlement",
             component: PartialCredBillComponent,
           },
@@ -62,7 +69,8 @@ const routes: Routes = [
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
         children: [
-          { path: "credit-details", component: CreditDetailsComponent },
+          { path: "", component: BillDetailComponent },
+          { path: "credit-details", component: MiscCredDetail },
           { path: "bill", component: BillDetailComponent },
         ],
       },
@@ -74,39 +82,19 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-      { 
-        path: "post-discharge-follow-up-billing", 
+      {
+        path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
         children: [
-          { path: "", component: ServicesComponent},
-          { path: "bill", component: PostDischargeBillComponent},
-          { path: "services", component: PostDischargeServicesComponent},
-          { path: "credit-details", component: PostDischargeCreditDetailsComponent}
-        ]
-      }
-    ],
-  },
-  {
-    path: "billing",
-    component: BillingComponent,
-    children: [
-      { path: "", component: BillingComponentPage },
-      { path: "deposit", component: DepositComponent },
-      { path: "details", component: DetailsComponent },
-      { path: "online-op-bill", component: OnlineOpBillsComponent },
-      { path: "op-order-request", component: OpOrderRequestComponent },
-      {
-        path: "miscellaneous-billing",
-        component: MiscellaneousBillingComponent,
+          { path: "", component: PostDischargeServicesComponent },
+          { path: "bill", component: PostDischargeBillComponent },
+          { path: "services", component: PostDischargeServicesComponent },
+          {
+            path: "credit-details",
+            component: PostDischargeCreditDetailsComponent,
+          },
+        ],
       },
-      { path: "initiate-deposite", component: InitiateDepositComponent },
-      { path: "dispatch-report", component: DispatchReportComponent },
-      { path: "dmg-mapping", component: DmgMappingComponent },
-      {
-        path: "expired-patient-check",
-        component: ExpiredPatientCheckComponent,
-      },
-      { path: "post-discharge-follow-up-billing", component: PostDischargeFollowUpBillingComponent}
     ],
   },
 ];

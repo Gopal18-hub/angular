@@ -285,8 +285,11 @@
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
           ></textarea>
-          <mat-error *ngIf="!isValid">
+          <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="form.get(question.key)?.hasError('spaceError')">
+            {{ question.label }} is <strong>Invalid</strong>
           </mat-error>
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
         </mat-form-field>

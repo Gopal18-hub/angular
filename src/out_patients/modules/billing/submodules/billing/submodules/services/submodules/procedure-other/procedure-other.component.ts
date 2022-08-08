@@ -1,6 +1,11 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { BillingApiConstants } from "../../../../BillingApiConstant";
+import { CookieService } from "@shared/services/cookie.service";
+import { BillingService } from "../../../../billing.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -12,11 +17,10 @@ export class ProcedureOtherComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
-      specialization: {
-        type: "dropdown",
-      },
-      doctorName: {
-        type: "dropdown",
+      otherService: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
       },
     },
   };
@@ -31,52 +35,49 @@ export class ProcedureOtherComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
-      "serviceName",
-      "itemName",
-      "precaution",
-      "procedure",
+      "sno",
+      "procedures",
       "qty",
-      "credit",
-      "cash",
-      "disc",
+      "specialisation",
+      "doctorName",
+      "price",
     ],
     columnsInfo: {
-      serviceName: {
-        title: "Services Name",
-        type: "string",
+      sno: {
+        title: "S.No",
+        type: "number",
       },
-      itemName: {
-        title: "Item Name / Doctor Name",
-        type: "string",
-      },
-      precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
+      procedures: {
+        title: "Procedures",
         type: "string",
       },
       qty: {
-        title: "Qty / Type",
-        type: "string",
+        title: "Qty",
+        type: "number",
       },
-      credit: {
-        title: "Credit",
+      specialisation: {
+        title: "Specialisation",
         type: "string",
+        options: [],
       },
-      cash: {
-        title: "Cash",
+      doctorName: {
+        title: "Doctor Name",
         type: "string",
+        options: [],
       },
-      disc: {
-        title: "Disc %",
-        type: "string",
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpService,
+    private cookie: CookieService,
+    private billingService: BillingService
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -85,5 +86,62 @@ export class ProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.getOtherService();
+    this.getSpecialization();
+  }
+
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+      });
+  }
+
+  getOtherService() {
+    this.http.get(BillingApiConstants.getotherservice).subscribe((res) => {
+      this.questions[0].options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+  add(priorityId = 1) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.healthCheckup.value,
+          26,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.billingService.addToProcedure({
+          sno: this.data.length + 1,
+          procedures: this.formGroup.value.otherService.title,
+          qty: 1,
+          specialisation: "",
+          doctorName: "",
+          price: res.amount,
+        });
+
+        this.data = [...this.billingService.ProcedureItems];
+      });
   }
 }

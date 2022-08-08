@@ -5,8 +5,8 @@
     </div>
 
     <!-- Blue Banner -->
-    <div class="header w-full mt-1 p-2 border-radius-md secondary">
-        <mat-label class="font-lg col-white">Refund Receipt</mat-label>
+    <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
+        <mat-label class="font-lg col-white ml-2">Refund Receipt</mat-label>
     </div>
 
     <!-- Service Type -->
@@ -16,19 +16,19 @@
     <div class="w-full height"> 
 
         <!-- payment Methods left  -->
-        <payment-methods [config]="config" (paymentform)="paymentformevent($event)"></payment-methods>
+        <payment-methods [config]="config" [paymenthodclearsibilingcomponent]="clearsiblingcomponents" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
 
         <!-- payment Methods right -->
-        <div class="w-1/3 h-full float-right ">
+        <div class="width mt-2 h-full float-right border-radius-md">
             <div class="w-full h-full back-primary p-3 col-white">
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-1">
                     <mat-label>Available Amount</mat-label>
                     <mat-label class="float-right">{{avalaiblemaount}}</mat-label>
                 </div>              
-                <div class="mt-1">
+                <div class="mt-2">
                     <mat-label class="font-base">Payable Name</mat-label>
-                    <div class="bg-white border-radius-md mt-1">
+                    <div class="bg-white border-radius-md mt-1 payabletextbox">
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="refundform"
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="mt-1 wt-nowrap">
-                    <mat-label>OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
+                    <mat-label class="mr-1">OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
                 </div>
                 <div class="w-full mt-2">
                         <button

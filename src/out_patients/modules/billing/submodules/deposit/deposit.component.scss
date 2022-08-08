@@ -17,6 +17,9 @@
 .bg-white {
     background-color: white;
     color: rgba(0, 0, 0, 0.87);
+    ::ng-deep .mat-error{
+        margin-top: 10% !important;
+    }
 }
 
 .bg-thirdrow-white {
@@ -49,13 +52,6 @@
         gap: 10px;
     }
 }
-
-.clearcss {
-    ::ng-deep .mat-raised-button {
-        min-width: 100px !important;
-    }
-}
-
 .deposit-matnav {
     ::ng-deep .mat-tab-link {
         min-width: 0px;
@@ -77,6 +73,10 @@
 }
 .deposittablewidth{
     height: 81% !important;
+}
+
+::ng-deep .relative.table-height {
+    height: 50vh !important;
 }
 
 

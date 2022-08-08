@@ -59,14 +59,14 @@ export class StaffDeptComponent implements OnInit {
         title: 'Name of Organisation',
         type: 'string',
         style: {
-          width: "300px",
+          width: "250px",
         },
       },
       empCode : {
         title: 'Employee Code',
         type: 'string',
         style: {
-          width: "250px",
+          width: "200px",
         },
       },
      
@@ -74,7 +74,7 @@ export class StaffDeptComponent implements OnInit {
         title: 'Employee Name',
         type: 'string',
         style: {
-          width: "300px",
+          width: "250px",
         },
       },
      
@@ -98,7 +98,7 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['empCode', 'dependantName','dob','gender','relationship'],
+    displayedColumns: ['empCode', 'dependentName','dob','gender','relationship'],
     columnsInfo: {
       empCode : {
         title: 'Employee Code',
@@ -107,7 +107,7 @@ export class StaffDeptComponent implements OnInit {
           width: "240px",
         },
       },
-      dependantName : {
+      dependentName : {
         title: 'Dependent Name',
         type: 'string'
       },
@@ -159,7 +159,11 @@ export class StaffDeptComponent implements OnInit {
       this.staffDeptDetails = res.dtsStaffDependentDetails
      })
   }
-
+clear()
+{
+  this.staffDeptDetails=[];
+  this.staffDetails=[];
+}
   search()
   {
     

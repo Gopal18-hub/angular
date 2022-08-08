@@ -1,5 +1,20 @@
 .billing-page-wrapper {
   background-color: #fff;
+  .iom-color {
+    color: #45c0be;
+    font-weight: 500;
+  }
+  ::ng-deep .mat-checkbox-label {
+    color: #45c0be !important;
+    text-decoration: underline;
+  }
+  .isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
   mat-label {
     font-weight: 500;
   }

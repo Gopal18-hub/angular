@@ -14,6 +14,9 @@ import { AppointmentSearchDialogComponent } from "../../../registration/submodul
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { BillingApiConstants } from "./BillingApiConstant";
+import { PaydueComponent } from "./prompts/paydue/paydue.component";
+import { BillingService } from "./billing.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -55,10 +58,12 @@ export class BillingComponent implements OnInit {
       company: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       corporate: {
         type: "dropdown",
         options: [],
+        placeholder: "--Select--",
       },
       narration: {
         type: "string",
@@ -100,7 +105,8 @@ export class BillingComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -127,15 +133,9 @@ export class BillingComponent implements OnInit {
   }
 
   formEvents() {
-    //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
@@ -145,9 +145,12 @@ export class BillingComponent implements OnInit {
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
+      this.http
+        .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultData: Registrationdetails) => {});
       this.http
         .get(
           ApiConstants.getregisteredpatientdetailsForBilling(
@@ -159,19 +162,19 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            console.log(resultData);
-            // this.clear();
-            // this.flushAllObjects();
+            this.billingService.setActiveMaxId(
+              this.formGroup.value.maxid,
+              iacode,
+              regNumber.toString()
+            );
             this.patientDetails = resultData;
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
             // );
-            // this.MaxIDExist = true;
             // console.log(this.categoryIcons);
-            // this.checkForMaxID();
-            //RESOPONSE DATA BINDING WITH CONTROLS
+            this.setValuesToForm(this.patientDetails);
 
-            this.setValuesToMiscForm(this.patientDetails);
+            this.payDueCheck(resultData.dtPatientPastDetails);
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
@@ -192,7 +195,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-  setValuesToMiscForm(pDetails: Registrationdetails) {
+  setValuesToForm(pDetails: Registrationdetails) {
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
@@ -203,12 +206,31 @@ export class BillingComponent implements OnInit {
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =
-      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMMM-yyyy");
+      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMM-yyyy");
     this.patient = true;
     this.apiProcessing = false;
+    this.questions[0].readonly = true;
+    this.questions[1].readonly = true;
+    this.questions[2].readonly = true;
   }
 
   doCategoryIconAction(icon: any) {}
+
+  payDueCheck(dtPatientPastDetails: any) {
+    if (
+      dtPatientPastDetails[4] &&
+      dtPatientPastDetails[4].id > 0 &&
+      dtPatientPastDetails[4].data > 0
+    ) {
+      this.matDialog.open(PaydueComponent, {
+        width: "30vw",
+        data: {
+          dueAmount: dtPatientPastDetails[4].data,
+          maxId: this.formGroup.value.maxid,
+        },
+      });
+    }
+  }
 
   appointmentSearch() {
     this.matDialog.open(AppointmentSearchDialogComponent, {
@@ -247,6 +269,17 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
+    this.patientName = "";
+    this.ssn = "";
+    this.dob = "";
+    this.country = "";
+    this.gender = "";
+    this.age = "";
+    this.billingService.clear();
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
+    this.questions[2].readonly = false;
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {
@@ -256,7 +289,7 @@ export class BillingComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
-        this.questions[2].options = this.complanyList.map((a) => {
+        this.questions[3].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
         });
       });
@@ -268,8 +301,7 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
         this.coorporateList = resultData;
-        // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
-        this.questions[3].options = this.coorporateList.map((l) => {
+        this.questions[4].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
       });

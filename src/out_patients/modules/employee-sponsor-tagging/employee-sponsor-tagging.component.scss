@@ -48,9 +48,11 @@
 
 .iom-message{
     position: absolute;
-    margin-left: 53%;
+    margin-left: 51.5%;
     top: 24.5%;
     color: red;
+    font-size: smaller;
+    font-weight: 600;
 
 }
 .disableiomclass{
@@ -64,8 +66,11 @@ opacity: 0.5;
 .p-1-5{
     padding:0.35rem;
 }
-.h-57{
-    height:57%;
+.h-43{
+    height:45%;
+}
+.h-40{
+    height:43%;
 }
 .font-wrapper{
     white-space: nowrap;
@@ -132,6 +137,33 @@ margin-left:0.35%;
     ::ng-deep mat-form-field .mat-form-field-wrapper{
         padding-top:0.2rem !important;
         padding-bottom:0.2rem !important;
-        width:70%
+        width:70%;
+        height:1.5rem;
     }
+}
+
+.font-style{
+    font-size: 15px;
+    font-weight: 600;
+}
+.maxid-error{
+    position: absolute;
+    margin-top: 2.5%;
+    margin-left: 4%;
+    font-size: smaller;
+    color: red;
+    font-weight: 600;
+}
+
+.button-style{
+    min-width:initial !important;
+    height:1.875rem;
+    
+}
+.text-position{
+    position:relative;
+     bottom:3px;
+}
+.textarea-height{
+    height:1.5rem !important;
 }

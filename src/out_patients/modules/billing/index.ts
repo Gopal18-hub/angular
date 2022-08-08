@@ -41,6 +41,7 @@ import { DepositDialogComponent } from "./submodules/deposit/deposit-dialog/depo
 import { Form60Component } from "./submodules/deposit/refund-dialog/form60/form60.component";
 import { sharedbillingModule } from "../../../out_patients/core/UI/billing";
 import { MakedepositDialogComponent } from "./submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
+import { MakeBillDialogComponent } from "./submodules/miscellaneous-billing/makebill-dialog/makebill-dialog.component";
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
 import { DepositSuccessComponent } from "./submodules/deposit/deposit-success/deposit-success.component";
 import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefund-approval.component";
@@ -57,16 +58,26 @@ import { ProcedureOtherComponent } from "./submodules/billing/submodules/service
 import { OrderSetComponent } from "./submodules/billing/submodules/services/submodules/order-set/order-set.component";
 import { ConsumablesComponent } from "./submodules/billing/submodules/services/submodules/consumables/consumables.component";
 import { BillDetailComponent } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
+import { MiscCredDetail } from "../billing/submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { GstComponent } from "../billing/submodules/miscellaneous-billing/billing/gst/gst.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
-import { PostDischargeFollowUpBillingComponent } from '../billing/submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component';
-import { PostDischargeBillComponent } from './submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component';
-import { PostDischargeServicesComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component';
-import { PostDischargeCreditDetailsComponent } from './submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component';
-import { PostDischargeConsultationsComponent } from './submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component'
+import { PostDischargeFollowUpBillingComponent } from "../billing/submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
+import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
+import { PostDischargeServicesComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component";
+import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component";
+import { PostDischargeConsultationsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/submodules/post-discharge-consultations/post-discharge-consultations.component";
+import { PaydueComponent } from "./submodules/billing/prompts/paydue/paydue.component";
+import { InvestigationWarningComponent } from "./submodules/billing/prompts/investigation-warning/investigation-warning.component";
+import { UnbilledInvestigationComponent } from "./submodules/billing/prompts/unbilled-investigation/unbilled-investigation.component";
+import { HealthCheckupWarningComponent } from "./submodules/billing/prompts/health-checkup-warning/health-checkup-warning.component";
+import { ConsumableDetailsComponent } from "./submodules/billing/prompts/consumable-details/consumable-details.component";
+import { ReferalDoctorWarningComponent } from "./submodules/billing/prompts/referal-doctor-warning/referal-doctor-warning.component";
+import { PackageDoctorModificationComponent } from "./submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component";
+import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set-details/order-set-details.component";
+import { ConsultationWarningComponent } from "./submodules/billing/prompts/consultation-warning/consultation-warning.component";
 @NgModule({
   declarations: [
     BillingComponent,
@@ -111,7 +122,18 @@ import { PostDischargeConsultationsComponent } from './submodules/post-discharge
     PostDischargeBillComponent,
     PostDischargeServicesComponent,
     PostDischargeCreditDetailsComponent,
-    PostDischargeConsultationsComponent
+    PostDischargeConsultationsComponent,
+    MiscCredDetail,
+    PaydueComponent,
+    InvestigationWarningComponent,
+    UnbilledInvestigationComponent,
+    HealthCheckupWarningComponent,
+    ConsumableDetailsComponent,
+    ReferalDoctorWarningComponent,
+    PackageDoctorModificationComponent,
+    OrderSetDetailsComponent,
+    MakeBillDialogComponent,
+    ConsultationWarningComponent,
   ],
   imports: [
     BillingRoutingModule,

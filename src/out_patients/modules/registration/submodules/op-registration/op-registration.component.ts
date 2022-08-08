@@ -290,7 +290,7 @@ export class OpRegistrationComponent implements OnInit {
         title: "Address",
         // required property is dependent on country
         required: true,
-        pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,32}",
+        pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,49}",
       },
       pincode: {
         type: "number",
@@ -566,10 +566,19 @@ export class OpRegistrationComponent implements OnInit {
           relativeTo: this.route,
         });
         const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata[0]);
         if (lookupdata.length == 1) {
           if (lookupdata[0] && "maxid" in lookupdata[0]) {
             this.OPRegForm.value.maxid = lookupdata[0]["maxid"];
             this.getPatientDetailsByMaxId();
+            // if (lookupdata[0]["mergeLinked"]) {
+            //   this.messageDialogService.info(
+            //     "Max Id :" +
+            //       lookupdata[0]["maxid"] +
+            //       " merged with these " +
+            //       lookupdata[0]["mergeLinked"]
+            //   );
+            // }
           }
         }
       });
@@ -792,6 +801,14 @@ export class OpRegistrationComponent implements OnInit {
           //this.questions[9].disabled = true;
           this.OPRegForm.controls["age"].disable();
           this.questions[10].disabled = true;
+          if (!this.maxIDChangeCall) {
+            if (this.checkForModifiedPatientDetail()) {
+              this.modfiedPatiendDetails.dateOfBirth =
+                this.OPRegForm.value.dateOfBirth;
+              this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+              this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+            }
+          }
         } else {
           //this.questions[9].disabled = false;
           this.OPRegForm.controls["age"].enable();
@@ -821,6 +838,15 @@ export class OpRegistrationComponent implements OnInit {
                 }
               }
             }
+            if (!this.maxIDChangeCall) {
+              if (this.checkForModifiedPatientDetail()) {
+                this.modfiedPatiendDetails.dateOfBirth =
+                  this.OPRegForm.value.dateOfBirth;
+                this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+                this.modfiedPatiendDetails.agetype =
+                  this.OPRegForm.value.ageType;
+              }
+            }
           } else {
             this.questions[8].disabled = false;
           }
@@ -836,6 +862,14 @@ export class OpRegistrationComponent implements OnInit {
         if (value != undefined && value != null && value != "" && value > 0) {
           this.validatePatientAge(value);
           this.getSimilarpatientlistonagetype();
+          if (!this.maxIDChangeCall) {
+            if (this.checkForModifiedPatientDetail()) {
+              this.modfiedPatiendDetails.dateOfBirth =
+                this.OPRegForm.value.dateOfBirth;
+              this.modfiedPatiendDetails.age = this.OPRegForm.value.age;
+              this.modfiedPatiendDetails.agetype = this.OPRegForm.value.ageType;
+            }
+          }
         }
       });
 
@@ -968,6 +1002,8 @@ export class OpRegistrationComponent implements OnInit {
             this.OPRegForm.value.city.value == "" ||
             this.OPRegForm.value.city.value == null)
         ) {
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[22].customErrorMessage = "";
           if (!value.value) {
             if (value.length >= 3) {
               this.localitybyCityList = await this.http
@@ -1004,7 +1040,17 @@ export class OpRegistrationComponent implements OnInit {
           value.value != null &&
           value.value != ""
         ) {
+          this.OPRegForm.controls["locality"].setErrors(null);
+          this.questions[22].customErrorMessage = "";
           this.addressByLocalityID(value);
+        } else if (!value.value) {
+          if (value.trim() == "") {
+            this.OPRegForm.controls["locality"].setErrors({ incorrect: true });
+            this.questions[22].customErrorMessage = "locality is required";
+          } else {
+            this.OPRegForm.controls["locality"].setErrors(null);
+            this.questions[22].customErrorMessage = "";
+          }
         }
       });
 
@@ -1564,57 +1610,64 @@ export class OpRegistrationComponent implements OnInit {
   }
 
   postHotlistComment(title: string, remark: string) {
-    let maxid =
+    let maxId =
       this.patientDetails.iacode + "." + this.patientDetails.registrationno;
+    let firstName = this.patientDetails.firstname;
+    let middleName = this.patientDetails.middleName;
+    let lastName = this.patientDetails.lastName;
+    let type = "";
+    let userId = Number(this.cookie.get("UserId"));
+    let locationId = Number(this.cookie.get("HSPLocationId"));
+    let hotlistingHeader = title;
+    let hotlistingComment = remark;
     this.http
-      .get(
-        ApiConstants.hotlistedPatient(
-          maxid,
-          title,
-          this.cookie.get("HSPLocationId"),
-          this.patientDetails.firstname,
-          this.patientDetails.lastName,
-          this.patientDetails.middleName,
-          remark,
-          "",
-          Number(this.cookie.get("UserId"))
-        )
+      // .get(
+      //   ApiConstants.hotlistedPatient(
+      //     maxid,
+      //     title,
+      //     this.cookie.get("HSPLocationId"),
+      //     this.patientDetails.firstname,
+      //     this.patientDetails.lastName,
+      //     this.patientDetails.middleName,
+      //     remark,
+      //     "",
+      //     Number(this.cookie.get("UserId"))
+      //   )
+      // )
+      .post(
+        ApiConstants.hotlistedPatient,
+        JSON.stringify({
+          maxId,
+          firstName,
+          middleName,
+          lastName,
+          hotlistingHeader,
+          hotlistingComment,
+          type,
+          locationId,
+          userId,
+        })
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: any) => {
           console.log(resultData);
-          if (resultData == "Hotlisting request submitted for approval") {
-            this.messageDialogService.success(resultData);
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Hotlisting request submitted for approval"
+            ) {
+              this.messageDialogService.success(resultData["message"]);
+            } else {
+              this.messageDialogService.info(resultData["message"]);
+            }
           } else {
-            this.messageDialogService.info(resultData);
+            this.messageDialogService.error(resultData["message"]);
           }
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.error(error.error.text);
-          // if (
-          //   !(
-          //     error.error.text ==
-          //     "Hotlisting request submitted for approval"
-          //   )
-          // ) {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval"
-          //   );
-          // }
-          // // else
-          // // {
-          // //   You have already added a host list comment against this Max ID
-          // // }
-          // else {
-          //   this.messageDialogService.success(
-          //     "Hotlisting request submitted for approval for MAX ID - " +
-          //       this.patientDetails.iacode +
-          //       "." +
-          //       this.patientDetails.registrationno
-          //   );
-          // }
+          this.messageDialogService.error(error.error[0].error.text);
         }
       );
   }
@@ -2231,14 +2284,20 @@ export class OpRegistrationComponent implements OnInit {
           if (this.OPRegForm.value.maxid) {
             this.getPatientDetailsByMaxId();
           } // this.setValuesToOPRegForm(resultData);
-          if (resultData == "Your request has been processed successfully") {
-            this.showRegisteredId("Modified request went for approval");
+          if (resultData["success"]) {
+            if (
+              resultData["message"] ==
+              "Your request has been processed successfully"
+            ) {
+              this.showRegisteredId("Modified request went for approval");
+            }
+          } else {
+            this.messageDialogService.info(resultData["message"]);
           }
-          console.log(resultData);
         },
         (error) => {
           console.log(error);
-          this.messageDialogService.info(error.error);
+          this.messageDialogService.error(error.error);
         }
       );
   }
@@ -2741,7 +2800,7 @@ export class OpRegistrationComponent implements OnInit {
       !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
-        ? this.OPRegForm.value.locality.title
+        ? this.OPRegForm.value.locality
         : "",
       this.OPRegForm.value.sourceOfInput.value || 0,
       false,
@@ -3094,7 +3153,7 @@ export class OpRegistrationComponent implements OnInit {
       !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
-        ? this.OPRegForm.value.locality.title
+        ? this.OPRegForm.value.locality
         : "",
       this.OPRegForm.value.sourceOfInput.value || 0,
       false,
@@ -3178,6 +3237,9 @@ export class OpRegistrationComponent implements OnInit {
   registeredPatiendDetails!: ModifiedPatientDetailModel;
   getModifiedPatientDetailObj(): ModifiedPatientDetailModel {
     //this.checkForForeignerCheckbox();
+    let ageTypeName = this.ageTypeList.filter(
+      (a) => a.id === this.OPRegForm.value.ageType
+    )[0].name;
     return (this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       this.OPRegForm.value.maxid.split(".")[1],
       this.OPRegForm.value.maxid.split(".")[0],
@@ -3207,7 +3269,14 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.mobileNumber,
       false,
       "",
-      ""
+      "",
+      this.datepipe.transform(
+        this.OPRegForm.value.dob,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || null,
+      this.OPRegForm.controls["age"].value,
+      this.OPRegForm.value.ageType,
+      ageTypeName
     ));
   }
 
@@ -3229,6 +3298,7 @@ export class OpRegistrationComponent implements OnInit {
             "yyyy-MM-ddThh:mm:ss"
           )
         : "1900-01-01T00:00:00";
+
     this.modfiedPatiendDetails = new ModifiedPatientDetailModel(
       patientDetails.registrationno,
       patientDetails.iacode,
@@ -3255,7 +3325,14 @@ export class OpRegistrationComponent implements OnInit {
       patientDetails.pphone,
       false,
       "",
-      ""
+      "",
+      this.datepipe.transform(
+        patientDetails.dateOfBirth,
+        "yyyy-MM-ddThh:mm:ss"
+      ) || null,
+      patientDetails.age,
+      patientDetails.agetype,
+      patientDetails.ageTypeName
     );
   }
 
@@ -4003,9 +4080,7 @@ export class OpRegistrationComponent implements OnInit {
     let maxYear;
     if (this.passportDetails.passportNo != "") {
     } else {
-      minExpDate = new Date(
-        new Date(Date.now()).setFullYear(new Date(Date.now()).getFullYear() + 1)
-      );
+      minExpDate = new Date();
       maxYear = new Date(
         new Date(Date.now()).setFullYear(
           new Date(Date.now()).getFullYear() + 15

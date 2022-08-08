@@ -6,7 +6,6 @@
             mat-raised-button
             class="font-sm w-6/7 max-health-primary-color border-radius-xlg mat-elevation-z0 mt-3 font-semi-bold"
             type="button"
-            (click)="tabChange(tab)"
             [ngClass]="{ active: activeTab?.id == tab.id }"
           >
             {{ tab.title }}

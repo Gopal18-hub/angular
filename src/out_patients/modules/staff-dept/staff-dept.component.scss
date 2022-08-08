@@ -12,14 +12,26 @@
     }
 }
 
+::ng-deep .searchbtn
+{
+    min-width:110px
+}
 .serachcss{
     ::ng-deep .max-table-wrapper{        
         border-radius: 0.75rem;
         border: solid #707070 !important;
     }
 }
+::ng-deep .clearbtn
+{
+    height:81% !important
+}
 ::ng-deep .gridh{    
-    height: 62% !important;
+    height: 72% !important;
+}
+::ng-deep .nameW
+{
+    width:37.5% !important;
 }
 
 .employeeclass{

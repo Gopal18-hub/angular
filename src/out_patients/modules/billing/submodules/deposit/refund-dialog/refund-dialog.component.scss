@@ -35,6 +35,9 @@
 .height{
     height: 62vh;
 }
+.width{
+    width: 35% !important;
+}
 .bg-grey{
     background:#F6F6F6;
 }
@@ -60,4 +63,13 @@
     ::ng-deep .mat-form-field{
         line-height: 2 !important;
     }
+}
+
+::ng-deep .refundheight{
+    height: 5vh !important;
+}
+.payabletextbox{
+::ng-deep .mat-form-field{
+line-height: 1.25 !important;
+}
 }

@@ -1,0 +1,23 @@
+<div class="w-full h-full">
+    <div class="relative">
+        <button
+        mat-icon-button
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon closeicon"
+        type="button">
+        <mat-icon>close</mat-icon>
+    </button>
+    </div>
+
+    <div class="w-full h-2/3 flex align-items-center justify-content-center">
+        <mat-icon [svgIcon]="'rupeeicon'" class="rupeeicon-class"></mat-icon>
+    </div>
+    <div class="w-full h-1/10 text-center font-base font-bold ">
+        <p class="max-health-primary-color">{{data.message}}</p> 
+    </div>
+    <div class="flex w-full h-1/10 justify-content-center font-base makedepositbtn ">
+        <button mat-raised-button  color="primary" (click)="makedepositclosebtn()" mat-dialog-close>Yes</button>
+        <button mat-raised-button class="yesbtncss ml-4" mat-dialog-close>No</button>
+    </div>
+</div>

@@ -27,6 +27,10 @@
           color: #fff;
         }
       }
+      .remove-row-icon-wrapper {
+        width: 16px;
+        height: 16px;
+      }
       .mat-cell {
         overflow: hidden;
         white-space: nowrap;
@@ -76,6 +80,11 @@
     height: 20px;
   }
 }
+::ng-deep {
+  .table-select-dropdown {
+    width: 90%;
+  }
+}
 ::ng-deep .table-more-actions {
   border-radius: initial !important;
   .mat-menu-item {
@@ -92,4 +101,18 @@
 }
 .editable-textarea {
   background-color: #fff;
+}
+
+tr.child-detail-row {
+  height: 0 !important;
+}
+::ng-deep .child-element-detail {
+  table {
+    thead {
+      display: none;
+    }
+    .mat-column-select {
+      width: 60px !important;
+    }
+  }
 }

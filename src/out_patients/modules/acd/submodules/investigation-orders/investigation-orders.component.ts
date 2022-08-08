@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../../../shared/ui/dynamic-forms/service/question-control.service';
 import { __values } from 'tslib';
 import { DatePipe } from "@angular/common";
@@ -7,6 +7,8 @@ import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from '../../../../../out_patients/core/constants/ApiConstants';
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
+
 
 @Component({
   selector: 'out-patients-investigation-orders',
@@ -14,279 +16,238 @@ import { Subject } from "rxjs";
   styleUrls: ['./investigation-orders.component.scss']
 })
 export class InvestigationOrdersComponent implements OnInit {
+  patientInfo : any;
   investigationForm!: FormGroup;
   from: any;
   to: any;
   today = new Date();
-  isShowInvestigation :boolean = true;
-  isShowMedical : boolean = false;
-  isBtnDisable : boolean = true;
-  isBtnDisableClear : boolean = true;
-  name:any;  
+  isShowInvestigation: boolean = true;
+  isShowMedical: boolean = false;
+  isBtnDisable: boolean = false;
+  isBtnDisableClear: boolean = true;
+  name: any;
   questions: any;
   private readonly _destroying$ = new Subject<void>();
 
-  investigationDetails : any ;
-  
-  
-  investigationFormData={
+  investigationDetails: any;
+  public denyOrderTypeList: DenyOrderListTypeModel[] = [];
+
+  invOrderList : any;
+  invOrderDetails : any;
+
+
+  investigationFormData = {
     title: "",
     type: "object",
-    properties:{
+    properties: {
       datecheckbox: {
         type: "checkbox",
+        options: [{ title: "", value: "" }],
+        
+      },
+      fromdate: {
+        type: "date",
+      },
+      todate: {
+        type: "date",
+      },
+      maxid: {
+        type: "dropdown",
+        placeholder: "Select",
         options: [
-          {
-            title: "",
-          },
+          { title: "Max Id", value: "maxId" },
+          { title: "Patient Name", value: "patientName" },
+          { title: "Doctor Name", value: "doctorName" },
+          { title: "Mobile Number", value: "mobile" }
         ],
       },
-      fromdate:{
-        type:"date",
+      input: {
+        type: "string",
+        placehokder: "BLKH.",
       },
-      todate:{
-        type:"date",
-      },
-      maxid:{
-        type: "dropdown",                       
-        placeholder: "Select",  
+
+      status: {
+        type: "dropdown",
+        placeholder: "Select",
         options: [
-          {title: "MaxId",value:"maxId"  },
-          {title: "Patient Name",value:"patientName"  },
-          {title: "Doctor Name",value:"doctorName"  },
-          {title: "Mobile Number",value:"mobile"  }
-        ], 
-       
-      },     
-      input:{
-        type:"string",
-        placehokder:"BLKH.",
+          { title: "All", value: "0" },
+          { title: "Billed", value: "1" },
+          { title: "Unbilled", value: "2" },
+          { title: "Partially billed", value: "3" },
+          { title: "Denied", value: "4" },
+        ],
       },
-     
-      status:{
-        type:"dropdown",
-        placeholder:"Select",
-        options: [
-          {title: "All",value:"all"  },
-          {title: "Billed",value:"billed"  },
-          {title: "Unbilled",value:"unbilled"  },
-          {title: "Partially billed",value:"partial"  },
-          {title: "Denied",value:"denied"  },
-        ], 
+      denyorder: {
+        type: "dropdown",
+        placeholder: "Select",
+        options: this.denyOrderTypeList,
+        // options: [
+        //   {title: "Others",value:"others"  },
+        //   {title: "Price Issue",value:"price"  },
+        //   {title: "PSU Patient",value:"psu"  },
+        //   {title: "After Medication",value:"aftermed"  },
+        //   {title: "Before next review",value:"befreview"  },
+        //   {title: "Show Future Date",value:"future"  },
+        //   {title: "At the time of admission",value:"timeofadmission"  },
+        //   {title: "Machine not functional",value:"machine"  },
+        // ], 
       },
-      denyorder:{
-        type:"dropdown",
-      },
-      remarks:{
-        type:"string",
+      remarks: {
+        type: "string",
       }
-    
+
     }
   }
-  investigationConfig: any  = {
+  invListConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
-    selectBox : false,
-    displayedColumns: ['orderid','maxid', 'patientname', 'docname','dept','visitdate','mobile','amnt','channel','billno','status'],
-    rowLayout:{dynamic:{rowClass:"row['status']"}},
-    clickedRows:true,
-    clickSelection : "single",
+    selectBox: false,
+    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'buildingId', 'billdetails'],
+    rowLayout: { dynamic: { rowClass: "row['billdetails']" } },
+    clickedRows: true,
+    clickSelection: "single",
     columnsInfo: {
-      orderid: {
+      orderId: {
         title: 'Order Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      maxid : {
+      maxid: {
         title: 'Max Id',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      patientname : {
+      ptnName: {
         title: 'Patient Name',
-        type: 'string'
-      },     
-      docname : {
+        type: 'string',
+        style: {
+          width: "11%",
+        },
+      },
+      docName: {
         title: 'Doctor Name',
-        type: 'string'
-      },     
-      dept : {
+        type: 'string',
+        style: {
+          width: "12%",
+        },
+      },
+      deptName: {
         title: 'Department',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "12%",
+        },
       },
-      visitdate : {
+      visitDate: {
         title: 'Visit Date',
-        type: 'date'
+        type: 'date',
+        style: {
+          width: "9%",
+        },
       },
-      mobile : {
+      mobileNo: {
         title: 'Mobile No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "9%",
+        },
       },
-      amnt : {
-        title: 'Amount',
-        type: 'string'
+      mrpValue: {
+        title: 'Amt',
+        type: 'string',
+        style: {
+          width: "5%",
+        },
       },
-      channel : {
+      channel: {
         title: 'Channel',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "7%",
+        },
       },
-      billno : {
+      buildingId: {
         title: 'Bill No.',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      status : {
+      billdetails: {
         title: 'Order Status',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "10%",
+        },
       }
-    
-    }
- 
-    }
-  config2: any  = {
-    actionItems: false,
-    dateformat: 'dd/MM/yyyy',
-    selectBox : true,
-    displayedColumns: ['testname', 'doctorname','priority','visitdatetime','specialization','remarks'],
-    columnsInfo: {
-      testname : {
-        title: 'Test Name',
-        type: 'string'
-      },
-      doctorname : {
-        title: 'Doctor Name',
-        type: 'string'
-      },
-      priority : {
-        title: 'Priority',
-        type: 'string'
-      },
-      visitdatetime : {
-        title: 'Visit Date & Time',
-        type: 'string'
-      },
-      specialization : {
-        title: 'Specialization',
-        type: 'string'
-      },
-      remarks : {
-        title: 'ACD Remarks',
-        type: 'input'
-      },
-     
-    }
- 
+
     }
 
-    data:any[]=[
-      { 
-        orderid:"7984778",
-        maxid:"SKDO.523278",
-        patientname:"ALPIKA SINGH",
-        docname:"Saptarshi Bhattacharya",
-        dept:"Endocrinology",
-        visitdate:"05/11/2022 08.48 AM"  ,
-        mobile:"9837866912",
-        amnt:"1000.00",
-        channel:"Cash",
-        billno:"" , 
-        status:"Unbilled"
+  }
+  invDetailsConfig: any = {
+    actionItems: false,
+    dateformat: 'dd/MM/yyyy',
+    selectBox: true,
+    displayedColumns: ['testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
+    columnsInfo: {
+      testName: {
+        title: 'Test Name',
+        type: 'string',
+        style: {
+          width: "18%",
+        },
       },
-      { 
-        orderid:"7984778",
-        maxid:"SKDO.523278",
-        patientname:"ALPIKA SINGH",
-        docname:"Saptarshi Bhattacharya",
-        dept:"Endocrinology",
-        visitdate:"05/11/2022 08.48 AM"  ,
-        mobile:"9837866912",
-        amnt:"1000.00",
-        channel:"Cash",
-        billno:"" , 
-        status:"Billed"
+      docName: {
+        title: 'Doctor Name',
+        type: 'string',
+        style: {
+          width: "15%",
+        },
       },
-      { 
-        orderid:"7984778",
-        maxid:"SKDO.523278",
-        patientname:"ALPIKA SINGH",
-        docname:"Saptarshi Bhattacharya",
-        dept:"Endocrinology",
-        visitdate:"05/11/2022 08.48 AM"  ,
-        mobile:"9837866912",
-        amnt:"1000.00",
-        channel:"Cash",
-        billno:"" , 
-        status:"Billed"
+      labItemPriority: {
+        title: 'Priority',
+        type: 'string',
+        style: {
+          width: "8%",
+        },
       },
-      { 
-        orderid:"7984778",
-        maxid:"SKDO.523278",
-        patientname:"ALPIKA SINGH",
-        docname:"Saptarshi Bhattacharya",
-        dept:"Endocrinology",
-        visitdate:"05/11/2022 08.48 AM"  ,
-        mobile:"9837866912",
-        amnt:"1000.00",
-        channel:"Cash",
-        billno:"" , 
-        status:"Partial"
+      visitDateTime: {
+        title: 'Visit Date & Time',
+        type: 'string',
+        style: {
+          width: "14%",
+        },
       },
-      { 
-        orderid:"7984778",
-        maxid:"SKDO.523278",
-        patientname:"ALPIKA SINGH",
-        docname:"Saptarshi Bhattacharya",
-        dept:"Endocrinology",
-        visitdate:"05/11/2022 08.48 AM"  ,
-        mobile:"9837866912",
-        amnt:"1000.00",
-        channel:"Cash",
-        billno:"" , 
-        status:"Denied"
-      }
-     
-    ]
-    data1:any[]=[
-      {
-        testname:"Glycosylated Hemoglobin (HBA1C)",
-        doctorname:"Saptarshi Bhattacharya",
-        priority:"Routine",
-        visitdatetime:"05/11/2022 08.48 AM",
-        specialization:"Internal Medicine" ,
-        remarks:""   
-      },   
-      {
-        testname:"Glycosylated Hemoglobin (HBA1C)",
-        doctorname:"Saptarshi Bhattacharya",
-        priority:"Routine",
-        visitdatetime:"05/11/2022 08.48 AM",
-        specialization:"Internal Medicine" ,
-        remarks:""   
-      },   
-      {
-        testname:"Glycosylated Hemoglobin (HBA1C)",
-        doctorname:"Saptarshi Bhattacharya",
-        priority:"Routine",
-        visitdatetime:"05/11/2022 08.48 AM",
-        specialization:"Internal Medicine" ,
-        remarks:""   
-      },   
-      {
-        testname:"Glycosylated Hemoglobin (HBA1C)",
-        doctorname:"Saptarshi Bhattacharya",
-        priority:"Routine",
-        visitdatetime:"05/11/2022 08.48 AM",
-        specialization:"Internal Medicine" ,
-        remarks:""   
-      },   
-      {
-        testname:"Glycosylated Hemoglobin (HBA1C)",
-        doctorname:"Saptarshi Bhattacharya",
-        priority:"Routine",
-        visitdatetime:"05/11/2022 08.48 AM",
-        specialization:"Internal Medicine" ,
-        remarks:""   
-      }  
-    ]
-  constructor(private formService: QuestionControlService,public datepipe: DatePipe,private http: HttpService,) { 
-   
+      specialization: {
+        title: 'Specialization',
+        type: 'string',
+        style: {
+          width: "10%",
+        },
+      },
+      acdRemarks: {
+        title: 'ACD Remarks',
+        type: 'input',
+        style: {
+          width: "35%",
+        },
+      },
+
+    }
+
+  }
+
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,) {
+
+  }
+  denyBtn()
+  {    
+    this.isBtnDisable= true;
+    this.investigationForm.controls["denyorder"].enable();
   }
 
   ngOnInit(): void {
@@ -296,9 +257,9 @@ export class InvestigationOrdersComponent implements OnInit {
     );
     this.investigationForm = formResult.form;
     this.questions = formResult.questions;
-    let todaydate=new Date();
+    let todaydate = new Date();
     this.investigationForm.controls["fromdate"].setValue(todaydate);
-    
+
     this.investigationForm.controls["todate"].setValue(todaydate);
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
@@ -307,17 +268,45 @@ export class InvestigationOrdersComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
+    this.investigationForm.controls["denyorder"].disable();
+    //Deny Order List
+    this.http.get(ApiConstants.getdenyreasonforacd)    
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res: any) => {
+      this.denyOrderTypeList = res;
+      this.questions[6].options = this.denyOrderTypeList.map((e) => {
+        return { title: e.name, value: e.id };
+      });
+    })
   }
 
-  search()
+  search() {    
+    //Main Grid both
+   // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+    this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-08-12", "2021-08-14", 7))
+      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.invOrderList = res.objTempOrderHeader;
+        console.log(res.objTempOrderHeader, "getediganosticacdoninvestigation")
+      })
+
+  }
+
+  listRowClick(event:any)
   {
-  //   this.http.get(ApiConstants.geteprescriptdrugorders("2020-01-01","2020-04-04",7,0))    
-  //     .pipe(takeUntil(this._destroying$))
-  //     .subscribe((res :any)=>
-  //     {  
-  //       console.log(res,"resACD")
-  //       this.investigationDetails = res;
-  // } )  
-} 
+    let maxId = event.row.maxid;   
+    let orderid = event.row.orderId;
+    this.patientInfo = event.row.maxid +" / "+ event.row.ptnName+" / "+ event.row.mobileNo  
+    
+      this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7,orderid,maxId.toString().split(".")[1],maxId.toString().split(".")[0]))    
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.invOrderDetails=res.tempOrderBreakup;
+        console.log(res, "getediganosticacdoninvestigationgrid")
+
+      })
+  }
+ 
 
 }
