@@ -762,6 +762,61 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 
   //ACD
+  export const getediganosticacdoninvestigation = (
+    FromDate: any,
+    ToDate: any,
+    Locationid: number  
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacdoninvestigation/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      Locationid      
+    );
+  };
+  export const getediganosticacdoninvestigationgrid = (
+   
+    Locationid: number,
+    orderid : number,
+    regno : number,
+    iacode : string
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacdoninvestigationgrid/" +
+      Locationid +
+      "/" +
+      orderid +
+      "/" +
+      regno +
+      "/"+
+      iacode     
+    );
+  };
+  export const getdenyreasonforacd =
+    environment.PatientApiUrl + "api/patient/getdenyreasonforacd";
+
+  export const geteprescriptdrugorders = (
+    FromDate: any,
+    ToDate: any,
+    LocationID: number  
+    
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/geteprescriptdrugorders/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      LocationID      
+    );
+  };
   export const getediganosticacd = (
     FromDate: any,
     ToDate: any,
@@ -789,24 +844,7 @@ export namespace ApiConstants {
       Locationid
     );
   };
-  export const geteprescriptdrugorders = (
-    FromDate: any,
-    ToDate: any,
-    LocationID: number,
-    Status: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/geteprescriptdrugorders/" +
-      FromDate +
-      "/" +
-      ToDate +
-      "/" +
-      LocationID +
-      "/" +
-      Status
-    );
-  };
+ 
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
@@ -835,6 +873,7 @@ export namespace ApiConstants {
       Userid
     );
   };
+  //ACD --
 
   export const getpatientpersonaldetails = (
     registrationno: number,
@@ -958,4 +997,5 @@ export namespace ApiConstants {
   export const oprefundapprovereject =
     environment.BillingApiUrl +
     "api/outpatientbilling/oprefundapprovalrequestsave";
+
 }
