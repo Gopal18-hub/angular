@@ -17,7 +17,7 @@ export class MiscellaneousBillingModel {
   htParameter_P?: htParameter_P;
   dtGST_Parameter_P?: dtGST_Parameter_P;
   operatorId?: number;
-  locationId?: 0;
+  locationId?: number;
 }
 
 export class dtMiscellaneous_list {
@@ -41,7 +41,7 @@ export class tab_paymentList {
   slNo?: number;
   modeOfPayment?: string;
   amount?: number;
-  flag?: 0;
+  flag?: number;
 }
 
 export class tab_cheque {
