@@ -20,10 +20,12 @@ export class InvestigationsComponent implements OnInit {
       serviceType: {
         type: "dropdown",
         required: true,
+        placeholder: "--Select--",
       },
       investigation: {
         type: "autocomplete",
         required: true,
+        placeholder: "--Select--",
       },
     },
   };
@@ -61,15 +63,18 @@ export class InvestigationsComponent implements OnInit {
       },
       priority: {
         title: "Priority",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       specialisation: {
         title: "Specialisation",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       doctorName: {
         title: "Doctor Name",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       price: {
         title: "Price",
@@ -93,6 +98,38 @@ export class InvestigationsComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.getServiceTypes();
+    this.getSpecialization();
+  }
+
+  getSpecialization() {
+    this.http
+      .get(BillingApiConstants.getInvetigationPriorities)
+      .subscribe((res) => {
+        this.config.columnsInfo.priority.options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+      });
   }
 
   getServiceTypes() {
@@ -127,34 +164,28 @@ export class InvestigationsComponent implements OnInit {
       });
   }
 
-  add(priorityId = 1, sno = 0) {
+  add(priorityId = 1) {
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.doctorName.value,
+          this.formGroup.value.investigation.value,
           41,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
-        if (sno > 0) {
-          const index = this.billingService.consultationItems.findIndex(
-            (c: any) => c.sno == sno
-          );
-          this.billingService.removeFromConsultation(index);
-          this.data = [...this.billingService.consultationItems];
-        }
-        this.billingService.addToConsultation({
+        this.billingService.addToInvestigations({
           sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.title,
-          type: priorityId,
-          scheduleSlot: "",
-          bookingDate: "",
+          investigations: this.formGroup.value.investigation.title,
+          precaution: "",
+          priority: priorityId,
+          specialisation: "",
+          doctorName: "",
           price: res.amount,
         });
 
-        this.data = [...this.billingService.consultationItems];
+        this.data = [...this.billingService.InvestigationItems];
       });
   }
 }

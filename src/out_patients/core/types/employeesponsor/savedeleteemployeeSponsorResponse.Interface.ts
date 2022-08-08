@@ -2,9 +2,9 @@ export class SaveDeleteEmployeeSponsorResponse {
   iacode: string;
   registrationNo: number;
   companyId: number;
-  addedDateTime: string;
+  addedDateTime: any;
   addedBy: string;
-  updatedDateTime: string;
+  updatedDateTime: any;
   updatedBy: string;
   channelid: boolean;
   deleted: boolean;
@@ -18,6 +18,7 @@ export class SaveDeleteEmployeeSponsorResponse {
   validfrom: string;
   validto: string;
   slno: number;
+  flag: boolean;
   constructor(
     iacode: string,
     registrationNo: number,
@@ -37,7 +38,8 @@ export class SaveDeleteEmployeeSponsorResponse {
     remark: string,
     validfrom: string,
     validto: string,
-    slno: number
+    slno: number,
+    flag: boolean
   ) {
     this.iacode = iacode;
     this.registrationNo = registrationNo;
@@ -58,5 +60,6 @@ export class SaveDeleteEmployeeSponsorResponse {
     this.validfrom = validfrom;
     this.validto = validto;
     this.slno = slno;
+    this.flag = flag;
   }
 }

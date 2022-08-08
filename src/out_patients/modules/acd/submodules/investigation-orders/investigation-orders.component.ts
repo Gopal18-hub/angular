@@ -16,13 +16,14 @@ import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
   styleUrls: ['./investigation-orders.component.scss']
 })
 export class InvestigationOrdersComponent implements OnInit {
+  patientInfo : any;
   investigationForm!: FormGroup;
   from: any;
   to: any;
   today = new Date();
   isShowInvestigation: boolean = true;
   isShowMedical: boolean = false;
-  isBtnDisable: boolean = true;
+  isBtnDisable: boolean = false;
   isBtnDisableClear: boolean = true;
   name: any;
   questions: any;
@@ -30,6 +31,9 @@ export class InvestigationOrdersComponent implements OnInit {
 
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
+
+  invOrderList : any;
+  invOrderDetails : any;
 
 
   investigationFormData = {
@@ -98,8 +102,8 @@ export class InvestigationOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
-    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'amnt', 'channel', 'billNo', 'status'],
-    rowLayout: { dynamic: { rowClass: "row['status']" } },
+    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'buildingId', 'billdetails'],
+    rowLayout: { dynamic: { rowClass: "row['billdetails']" } },
     clickedRows: true,
     clickSelection: "single",
     columnsInfo: {
@@ -107,71 +111,77 @@ export class InvestigationOrdersComponent implements OnInit {
         title: 'Order Id',
         type: 'string',
         style: {
-          width: "115px",
+          width: "8%",
         },
       },
       maxid: {
         title: 'Max Id',
         type: 'string',
         style: {
-          width: "105px",
+          width: "8%",
         },
       },
       ptnName: {
         title: 'Patient Name',
         type: 'string',
         style: {
-          width: "135px",
+          width: "11%",
         },
       },
       docName: {
         title: 'Doctor Name',
         type: 'string',
         style: {
-          width: "165px",
+          width: "12%",
         },
       },
       deptName: {
         title: 'Department',
         type: 'string',
         style: {
-          width: "135px",
+          width: "12%",
         },
       },
       visitDate: {
         title: 'Visit Date',
         type: 'date',
         style: {
-          width: "85px",
+          width: "9%",
         },
       },
       mobileNo: {
         title: 'Mobile No.',
         type: 'string',
         style: {
-          width: "105px",
+          width: "9%",
         },
       },
-      amnt: {
-        title: 'Amount',
-        type: 'string'
+      mrpValue: {
+        title: 'Amt',
+        type: 'string',
+        style: {
+          width: "5%",
+        },
       },
       channel: {
         title: 'Channel',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "7%",
+        },
       },
-      billNo: {
+      buildingId: {
         title: 'Bill No.',
         type: 'string',
         style: {
-          width: "130px",
+          width: "8%",
         },
       },
-      status: {
+      billdetails: {
         title: 'Order Status',
         type: 'string',
         style: {
-          width: "125px",
+          width: "10%",
         },
       }
 
@@ -182,30 +192,30 @@ export class InvestigationOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: true,
-    displayedColumns: ['testname', 'doctorname', 'priority', 'visitdatetime', 'specialization', 'remarks'],
+    displayedColumns: ['testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
     columnsInfo: {
-      testname: {
+      testName: {
         title: 'Test Name',
         type: 'string',
         style: {
           width: "18%",
         },
       },
-      doctorname: {
+      docName: {
         title: 'Doctor Name',
         type: 'string',
         style: {
           width: "15%",
         },
       },
-      priority: {
+      labItemPriority: {
         title: 'Priority',
         type: 'string',
         style: {
           width: "8%",
         },
       },
-      visitdatetime: {
+      visitDateTime: {
         title: 'Visit Date & Time',
         type: 'string',
         style: {
@@ -219,7 +229,7 @@ export class InvestigationOrdersComponent implements OnInit {
           width: "10%",
         },
       },
-      remarks: {
+      acdRemarks: {
         title: 'ACD Remarks',
         type: 'input',
         style: {
@@ -231,118 +241,13 @@ export class InvestigationOrdersComponent implements OnInit {
 
   }
 
-  data: any[] = [
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Unbilled"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Billed"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Billed"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Partial"
-    },
-    {
-      orderid: "7984778",
-      maxid: "SKDO.523278",
-      patientname: "ALPIKA SINGH",
-      docname: "Saptarshi Bhattacharya",
-      dept: "Endocrinology",
-      visitdate: "05/11/2022 08.48 AM",
-      mobile: "9837866912",
-      amnt: "1000.00",
-      channel: "Cash",
-      billno: "",
-      status: "Denied"
-    }
-
-  ]
-  data1: any[] = [
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    },
-    {
-      testname: "Glycosylated Hemoglobin (HBA1C)",
-      doctorname: "Saptarshi Bhattacharya",
-      priority: "Routine",
-      visitdatetime: "05/11/2022 08.48 AM",
-      specialization: "Internal Medicine",
-      remarks: ""
-    }
-  ]
   constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,) {
 
+  }
+  denyBtn()
+  {    
+    this.isBtnDisable= true;
+    this.investigationForm.controls["denyorder"].enable();
   }
 
   ngOnInit(): void {
@@ -363,35 +268,45 @@ export class InvestigationOrdersComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
+    this.investigationForm.controls["denyorder"].disable();
+    //Deny Order List
+    this.http.get(ApiConstants.getdenyreasonforacd)    
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res: any) => {
+      this.denyOrderTypeList = res;
+      this.questions[6].options = this.denyOrderTypeList.map((e) => {
+        return { title: e.name, value: e.id };
+      });
+    })
   }
 
-  search() {
-    //Deny order lists
-    this.http.get(ApiConstants.getediganosticacd("2020-12-11", "2020-12-11", 0, 0, 799041, "SKDD", 7))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.denyOrderTypeList = res.objACDDenialReasons;
-        this.questions[6].options = this.denyOrderTypeList.map((e) => {
-          return { title: e.name, value: e.id };
-        });
-        console.log(this.denyOrderTypeList, "Do")
-      })
+  search() {    
     //Main Grid both
-    this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7, 0))
+   // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+    this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-08-12", "2021-08-14", 7))
       //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "geteprescriptdrugorders")
+        this.invOrderList = res.objTempOrderHeader;
+        console.log(res.objTempOrderHeader, "getediganosticacdoninvestigation")
       })
 
-    this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
-      //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+  }
+
+  listRowClick(event:any)
+  {
+    let maxId = event.row.maxid;   
+    let orderid = event.row.orderId;
+    this.patientInfo = event.row.maxid +" / "+ event.row.ptnName+" / "+ event.row.mobileNo  
+    
+      this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7,orderid,maxId.toString().split(".")[1],maxId.toString().split(".")[0]))    
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "GetPhysicianOrderDetailEP")
+        this.invOrderDetails=res.tempOrderBreakup;
+        console.log(res, "getediganosticacdoninvestigationgrid")
 
       })
   }
+ 
 
 }

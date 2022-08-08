@@ -23,6 +23,8 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!formGroup.valid"
+        (click)="add()"
       >
         Add
       </button>
