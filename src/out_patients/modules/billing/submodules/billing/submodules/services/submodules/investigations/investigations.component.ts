@@ -122,7 +122,7 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
