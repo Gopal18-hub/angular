@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup} from '@angular/forms';
 import { QuestionControlService } from '../../../../../shared/ui/dynamic-forms/service/question-control.service';
 import { __values } from 'tslib';
@@ -8,6 +8,8 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrderMode.Model';
 
 @Component({
   selector: 'out-patients-medicine-orders',
@@ -15,13 +17,14 @@ import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
   styleUrls: ['./medicine-orders.component.scss']
 })
 export class MedicineOrdersComponent implements OnInit {
+  @ViewChild("medOrderDetailsTable") medOrderDetailsTable: any;
   investigationForm!: FormGroup;
   from: any;
   to: any;
   today = new Date();
   isShowInvestigation: boolean = true;
   isShowMedical: boolean = false;
-  isBtnDisable: boolean = true;
+  isBtnDisable: boolean = false;
   isBtnDisableClear: boolean = true;
   name: any;
   questions: any;
@@ -30,9 +33,15 @@ export class MedicineOrdersComponent implements OnInit {
   medOrderList : any;
   medOrderDetails : any;
   patientInfo : any;
+  tokenNo : any;
 
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
+
+  objPhyOrder: any=[];
+  objdtdenialorder:any;
+
+  saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
   
 
   investigationFormData = {
@@ -102,8 +111,8 @@ export class MedicineOrdersComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'buildingId', 'paymentMode'],
-    rowLayout: { dynamic: { rowClass: "row['paymentMode']" } },
+    displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'billNo', 'orderStatus'],
+    rowLayout: { dynamic: { rowClass: "row['orderStatus']" } },
     clickedRows: true,
     columnsInfo: {
       orderId: {
@@ -163,14 +172,14 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Channel',
         type: 'string'
       },
-      buildingId: {
+      billNo: {
         title: 'Bill No.',
         type: 'string',
         style: {
           width: "130px",
         },
       },
-      paymentMode: {
+      orderStatus: {
         title: 'Order Status',
         type: 'string',
         style: {
@@ -241,10 +250,12 @@ export class MedicineOrdersComponent implements OnInit {
     }
  
     }
-  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,) {
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,private messageDialogService: MessageDialogService) {
   }
 
   ngOnInit(): void {
+    
+    
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
@@ -262,6 +273,7 @@ export class MedicineOrdersComponent implements OnInit {
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
+    this.investigationForm.controls["denyorder"].disable();
       //Deny Order List
       this.http.get(ApiConstants.getdenyreasonforacd)    
       .pipe(takeUntil(this._destroying$))
@@ -296,8 +308,72 @@ export class MedicineOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         this.medOrderDetails=res;
         console.log(res, "getphysicianorderdetailep")
+        
 
       })
+  }
+  denyBtn()
+  {    
+    this.isBtnDisable= true;
+    this.investigationForm.controls["denyorder"].enable();
+  }
+  //Generate Pharamacy Token
+  generateToken()
+  {
+    this.http.get(ApiConstants.GetPrintQueDetail("MAX-STAGING2"))    
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res: any) => { 
+     this.tokenNo = res[0].waitnno     ;
+      console.log(res, "GetPrintQueDetail")
+      if(!this.tokenNo)
+      {
+        this.messageDialogService.info("Token already generated");
+      }
+    })
+  }
+  saveOrUpdate()
+  {    
+    console.log(this.medOrderDetailsTable.selection.selected,"selected rows");   
+    
+    this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
+      if(e.drugid !== 0) 
+      this.objPhyOrder.push({
+        acDisHideDrug: true,
+        visitid: e.visitId,
+        drugid: e.drugid,
+        acdRemarks: "test"
+      });
+    });
+    this.objdtdenialorder={
+    denialid: this.investigationForm.value.denyorder,
+    denialremark: this.investigationForm.value.remarks,
+    visitid: this.medOrderDetailsTable.selection.selected[0].visitId,
+    nextScheduleDate: "",
+    nextflag: true      
+    }    
+    this.Save();
+  }
+  getSaveModel(): SaveInvestigationOrderModel {
+    return new SaveInvestigationOrderModel(
+      this.objPhyOrder,
+      this.objdtdenialorder,
+      1,
+      9233
+    );
+  
+  }
+  
+  Save()
+  {
+    console.log(this.getSaveModel(),"model");
+    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())
+    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res: any) => {
+    console.log(res)
+    })
+  
+
   }
 
 }
