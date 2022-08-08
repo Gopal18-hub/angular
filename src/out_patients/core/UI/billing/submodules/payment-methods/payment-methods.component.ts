@@ -50,46 +50,17 @@ export class PaymentMethodsComponent implements OnInit, OnChanges {
   PaymentMethodcashdeposit:any=[];
   
 
-   defaultamount:boolean = false;
+   defaultamount:boolean = true;
    depositamount:number = 0;
    paymentmode: string = "Cash";
   
-  tabChanged(event:MatTabChangeEvent){
+  tabChanged(event:MatTabChangeEvent){   
+      this.clearpaymentmethod();    
+  }
+
+  PaymentMethodvalidation(){
     this.PaymentMethodcashdeposit = this.refundform.value;
    
-    if(event.tab != undefined){
-      this.paymentmode = event.tab.textLabel;
-    }
-
-    if(Number(this.PaymentMethodcashdeposit.cashamount) > 0 && this.paymentmode == "Cash" ){ 
-      this.defaultamount = false;
-     }
-     else if(this.PaymentMethodcashdeposit.chequeamount > 0 && this.paymentmode == "Cheque"){  
-      this.defaultamount = false;
-     }
-     else if(this.PaymentMethodcashdeposit.creditamount > 0 && this.paymentmode == "Credit Card"){
-      this.defaultamount = false;
-    }
-    else if(this.PaymentMethodcashdeposit.demandamount > 0 && this.paymentmode == "Demand Draft"){
-      this.defaultamount = false;
-    }
-     else if(this.PaymentMethodcashdeposit.upiamount > 0 && this.paymentmode != "UPI"){
-      this.defaultamount = false;
-    }
-    else  if(this.PaymentMethodcashdeposit.internetamount > 0 && this.paymentmode != "Internet Payment"){
-      this.defaultamount = false;
-    }
-    else{
-      this.defaultamount = true;
-    }
-
-     if(this.defaultamount){
-      this.clearpaymentmethod();
-    }
-    
-    this.depositservice.setFormList(this.refundform.value);
-  }
-  PaymentMethodvalidation(){
     if(Number(this.PaymentMethodcashdeposit.cashamount) > 0){   
       this.depositamount =  this.PaymentMethodcashdeposit.cashamount;     
      }
@@ -110,6 +81,9 @@ export class PaymentMethodsComponent implements OnInit, OnChanges {
     }
     if((Number(this.depositamount) > Number(this.Refundavalaiblemaount.avalaiblemaount)) && this.Refundavalaiblemaount.type == "Refund"){  
       this.messageDialogService.error("Refund Amount must be less then available amount");     
+    }
+    else{      
+    this.depositservice.setFormList(this.refundform.value);
     }
      
   }
