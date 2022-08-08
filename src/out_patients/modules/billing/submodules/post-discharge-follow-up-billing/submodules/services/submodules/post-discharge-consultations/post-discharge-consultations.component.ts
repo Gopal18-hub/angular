@@ -15,10 +15,14 @@ export class PostDischargeConsultationsComponent implements OnInit {
     type: "object",
     properties: {
       specialization: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
+        options: [],
       },
       doctorName: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
+        options: [],
       },
     },
   };
@@ -26,7 +30,13 @@ export class PostDischargeConsultationsComponent implements OnInit {
   questions: any;
 
   @ViewChild("table") tableRows: any;
-  data: any = [];
+  data: any = [
+    {'sno':'1', 'doctorname':'Ravi Kant Behl', 'type':'CPT99202','schedule_slot':'Selected Slot','booking_date':'09/08/2022','price':'1200.0'},
+    {'sno':'2', 'doctorname':'Ravi Kant Behl', 'type':'CPT99202','schedule_slot':'Selected Slot','booking_date':'09/08/2022','price':'1200.0'},
+    {'sno':'3', 'doctorname':'Ravi Kant Behl', 'type':'CPT99202','schedule_slot':'Selected Slot','booking_date':'09/08/2022','price':'1200.0'},
+    {'sno':'4', 'doctorname':'Ravi Kant Behl', 'type':'CPT99202','schedule_slot':'Selected Slot','booking_date':'09/08/2022','price':'1200.0'},
+    {'sno':'5', 'doctorname':'Ravi Kant Behl', 'type':'CPT99202','schedule_slot':'Selected Slot','booking_date':'09/08/2022','price':'1200.0'}
+  ];
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -104,8 +114,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
   {
     this.formGroup.controls["specialization"].valueChanges.subscribe(res => {
       console.log(res);
+      this.questions[1].options = [];
       this.formGroup.controls["doctorName"].enable();
-      this.getdoctorlistonSpecializationClinic(res);
+      this.getdoctorlistonSpecializationClinic(res.value);
     })
   }
   getSpecialization() {

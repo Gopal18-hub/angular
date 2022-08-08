@@ -18,4 +18,9 @@ export class MiscService {
   getFormLsit() {
     return this.patientDetail;
   }
+
+  getPriority(serviceName: string): number {
+    let type = "consultation";
+    return serviceName.toLocaleLowerCase().includes(type) ? 57 : 1;
+  }
 }

@@ -26,8 +26,9 @@
         min-width: initial !important;
       }
       button {
-        height: 2.16rem;
-        line-height: 1.875rem;
+        height: 1.7rem;
+        line-height: 1.675rem;
+        width :2rem;
       }
   
       .mat-tab-header {
@@ -67,5 +68,13 @@
       height: calc(113vh - 310px);
     }
   }
-  
+//   ::ng-deep .mat-body p, .mat-body-1 p, .mat-typography .mat-body p, .mat-typography .mat-body-1 p, .mat-typography p
+// {
+//   margin : 0 0 0px !important;
+// }
+
+::ng-deep .mat-typography p
+{
+  margin : 0 0 0px !important;
+}
 
