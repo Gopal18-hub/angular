@@ -22,6 +22,7 @@ import { miscPatientDetail } from "../../../../core/models/miscPatientDetail.Mod
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { GstComponent } from "./billing/gst/gst.component";
 import { MiscService } from "./MiscService.service";
+import { MakedepositDialogComponent } from "../deposit/makedeposit-dialog/makedeposit-dialog.component";
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -158,7 +159,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         console.log(value);
         if (value.value) {
           // this.patientDetail = value.title;
-          this.patientDetail.companyId = value.id;
+          this.patientDetail.companyId = value.value;
           this.Misc.setPatientDetail(this.patientDetail);
         }
       });
@@ -168,12 +169,20 @@ export class MiscellaneousBillingComponent implements OnInit {
         console.log(value);
         if (value.value) {
           this.patientDetail.corporateName = value.title;
-          this.patientDetail.corporateid = value.id;
+          this.patientDetail.corporateid = value.value;
           this.Misc.setPatientDetail(this.patientDetail);
         }
       });
+    this.questions[4].elementRef.addEventListener(
+      "blur",
+      this.getRemark.bind(this)
+    );
   }
 
+  getRemark() {
+    this.patientDetail.narration = this.miscForm.value.narration;
+    this.Misc.setPatientDetail(this.patientDetail);
+  }
   onPhoneModify() {
     this.getSimilarPatientDetails();
   }
@@ -257,9 +266,18 @@ export class MiscellaneousBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            // this.clear();
-            // this.flushAllObjects();
             this.patientDetails = resultData;
+            if (
+              this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length !=
+              0
+            ) {
+              this.patientDetails = resultData;
+              this.MaxIDExist = true;
+              this.setValuesToMiscForm(this.patientDetails);
+              this.putCachePatientDetail(this.patientDetails);
+            } else {
+              this.setMaxIdError(iacode, regNumber);
+            }
             // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
             //   this.patientDetails
             // );
@@ -268,8 +286,6 @@ export class MiscellaneousBillingComponent implements OnInit {
             // this.checkForMaxID();
             //RESOPONSE DATA BINDING WITH CONTROLS
 
-            this.setValuesToMiscForm(this.patientDetails);
-            this.putCachePatientDetail(this.patientDetails);
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
           (error) => {
@@ -281,11 +297,8 @@ export class MiscellaneousBillingComponent implements OnInit {
               // });
               // this.flushAllObjects();
               // this.setValuesTo miscForm(this.patientDetails);
-              this.miscForm.controls["maxid"].setValue(
-                iacode + "." + regNumber
-              );
-              this.miscForm.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.setMaxIdError(iacode, regNumber);
+              this.MaxIDExist = false;
             }
             // this.clear();
 
@@ -295,6 +308,12 @@ export class MiscellaneousBillingComponent implements OnInit {
     }
   }
 
+  //SETTING ERROR FOR MAX ID
+  setMaxIdError(iacode: any, regNumber: any) {
+    this.miscForm.controls["maxid"].setValue(iacode + "." + regNumber);
+    this.miscForm.controls["maxid"].setErrors({ incorrect: true });
+    this.questions[0].customErrorMessage = "Invalid Max ID";
+  }
   patientName!: string;
   age!: string;
   gender!: string;

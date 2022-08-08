@@ -16,6 +16,8 @@ import { ServiceTypeItemModel } from "@core/types/billingServiceItemModel.Interf
 import { TarrifPriceModel } from "@core/types/triffPriceModel.Interface";
 import { MiscellaneousBillingModel } from "../../../../../../core/models/miscBillingModel.Model";
 import { MiscService } from "../../MiscService.service";
+import { MakedepositDialogComponent } from "@modules/billing/submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
+import { MakeBillDialogComponent } from "../../makebill-dialog/makebill-dialog.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -301,7 +303,7 @@ export class BillDetailComponent implements OnInit {
 
   miscServBillForm!: FormGroup;
   serviceID!: number;
-  location!: number;
+  location: number = Number(this.cookie.get("HSPLocationId"));
   questions: any;
   private readonly _destroying$ = new Subject<void>();
 
@@ -315,12 +317,57 @@ export class BillDetailComponent implements OnInit {
     this.questions = serviceFormResult.questions;
   }
 
-  addNewItem(value: MiscellaneousBillingModel) {
+  postBillObj: MiscellaneousBillingModel = [] as any;
+  addNewItem(): any {
     let abc = this.miscPatient.getFormLsit();
     console.log(abc);
-    // this.newItemEvent.emit(this.serviceselectedList);
+    this.postBillObj.dtSaveOBill_P = this.miscPatient.getFormLsit();
+    this.postBillObj.dtMiscellaneous_list = [...this.serviceselectedList];
+    this.postBillObj.dtGST_Parameter_P = this.dtGST_Parameter_P;
+    this.postBillObj.ds_paymode = {
+      tab_paymentList: [
+        {
+          slNo: 1,
+
+          modeOfPayment: "Cash",
+
+          amount: 400,
+
+          flag: 1,
+        },
+      ],
+      tab_cheque: [],
+      tab_dd: [],
+      tab_credit: [],
+      tab_debit: [],
+      tab_Mobile: [],
+      tab_Online: [],
+      tab_UPI: [],
+    };
+    this.postBillObj.dtDeposit_P = {};
+    this.postBillObj.dtSaveDeposit_P = {};
+    this.postBillObj.htParameter_P = {};
+    this.postBillObj.dtGST_Parameter_P;
+    this.postBillObj.operatorId = Number(this.cookie.get("UserId"));
+    this.postBillObj.locationId = Number(this.cookie.get("HSPLocationId"));
+    return this.postBillObj; // this.newItemEvent.emit(this.serviceselectedList);
   }
 
+  makeBill() {
+    this.addNewItem();
+    this.http
+      .post(ApiConstants.postMiscBill, this.postBillObj)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData) => {
+          console.log("success");
+        },
+        (error) => {
+          console.log(error);
+          // this.messageDialogService.info(error.error);
+        }
+      );
+  }
   count!: number;
   TotalAmount!: number;
   clearDraftedService() {
@@ -459,7 +506,7 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.serviceType) {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
       this.serviceName = this.miscServBillForm.value.serviceType.title;
-      this.location = Number(this.cookie.get("HSPLocationId"));
+
       this.getServiceItemBySerivceID();
     }
   }
@@ -496,12 +543,16 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.serviceItemsList = data as ServiceTypeItemModel[];
-        this.questions[1].options = this.serviceItemsList.map((a) => {
-          return { title: a.itemname, value: a.itemId };
-        });
+        this.questions[1].options = [
+          ...this.serviceItemsList.map((a) => {
+            return { title: a.itemname, value: a.itemId };
+          }),
+        ];
       });
   }
 
+  //  FOR SETTING PRIORITY
+  getPriority() {}
   itemID!: number;
   terrifDetail!: TarrifPriceModel;
   getTarrifPrice() {
@@ -509,7 +560,7 @@ export class BillDetailComponent implements OnInit {
       this.http
         .get(
           ApiConstants.getTarrifByServiceID(
-            1,
+            this.miscPatient.getPriority(this.serviceName),
             this.miscServBillForm.value.item.value,
             this.serviceID,
             Number(this.cookie.get("HSPLocationId"))
@@ -519,9 +570,13 @@ export class BillDetailComponent implements OnInit {
         .subscribe((data) => {
           console.log(data);
           this.terrifDetail = data as TarrifPriceModel;
-          this.miscServBillForm.controls["tffPrice"].setValue(
-            this.terrifDetail.amount
-          );
+          if (this.terrifDetail) {
+            this.miscServBillForm.controls["tffPrice"].setValue(
+              this.terrifDetail.amount
+            );
+          } else {
+            this.miscServBillForm.controls["tffPrice"].setValue(0);
+          }
         });
     }
   }
@@ -533,6 +588,123 @@ export class BillDetailComponent implements OnInit {
       return item.name === control.value;
     });
   }
+
+  openMakeBilldialog() {
+    const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+      width: "33vw",
+      height: "40vh",
+      data: {
+        message: "Do you want to make Bill?",
+      },
+    });
+
+    MakeDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result == "Success") {
+          this.openDepositdialog();
+        }
+      });
+  }
+
+  openDepositdialog() {
+    const MakeDepositDialogref = this.matDialog.open(
+      MakedepositDialogComponent,
+      {
+        width: "33vw",
+        height: "40vh",
+        data: {
+          message: "Do you want to avail Deposits?",
+        },
+      }
+    );
+
+    MakeDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        // if (result == "Success")
+        //  {
+        //   const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
+        //     width: '70vw', height: '98vh', data: {
+        //       servicetype: this.patientservicetype, deposittype: this.patientdeposittype,
+        //       patientinfo: {
+        //         emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
+        //         panno : this.patientpersonaldetails[0]?.paNno, registrationno: this.regNumber, iacode:this.iacode
+        //       }
+        //     },
+        //   });
+        //   DepositDialogref.afterClosed()
+        //     .pipe(takeUntil(this._destroying$))
+        //     .subscribe((result) => {
+        //       if(result == "Success"){
+        //         this.getPatientPreviousDepositDetails();
+        //         console.log("Deposit Dialog closed");
+        //       }
+        //     });
+        // }
+      });
+  }
+
+  //USING FOR TESTING PURPOSE
+  dtGST_Parameter_P: any = {
+    gsT_value: 0,
+    gsT_percent: 0,
+    cgsT_Value: 0,
+    cgsT_Percent: 0,
+    sgsT_value: 0,
+    sgsT_percent: 0,
+    utgsT_value: 0,
+    utgsT_percent: 0,
+    igsT_Value: 0,
+    igsT_percent: 0,
+    cesS_value: 0,
+
+    cesS_percent: 0,
+
+    taxratE1_Value: 0,
+
+    taxratE1_Percent: 0,
+
+    taxratE2_Value: 0,
+
+    taxratE2_Percent: 0,
+
+    taxratE3_Value: 0,
+
+    taxratE3_Percent: 0,
+
+    taxratE4_Value: 0,
+
+    taxratE4_Percent: 0,
+
+    taxratE5_Value: 0,
+
+    taxratE5_Percent: 0,
+
+    totaltaX_RATE: 0,
+
+    totaltaX_RATE_VALUE: 0,
+
+    saccode: "99931",
+    taxgrpid: 25,
+  };
+  tab_paymentList: {
+    slNo: number;
+
+    modeOfPayment: string;
+
+    amount: number;
+
+    flag: number;
+  } = {
+    slNo: 1,
+
+    modeOfPayment: "Cash",
+
+    amount: 400,
+
+    flag: 1,
+  };
 }
 @Component({
   selector: "out-patients-bill-detail",
@@ -611,7 +783,10 @@ export class MiscCredDetail implements OnInit {
   companyQuestions: any;
   generalQuestions: any;
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private Miscservice: MiscService
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
