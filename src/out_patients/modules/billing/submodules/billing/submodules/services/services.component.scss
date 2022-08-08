@@ -15,8 +15,22 @@
     }
   }
   .services-tab-container {
-    ::ng-deep .mat-error {
-      display: none !important;
+    ::ng-deep {
+      .mat-error {
+        display: none !important;
+      }
+      .max-table-wrapper {
+        table {
+          .mat-row {
+            &:hover {
+              background-color: transparent !important;
+              .mat-cell {
+                color: initial !important;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

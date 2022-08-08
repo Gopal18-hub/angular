@@ -262,6 +262,12 @@ export class PatientHistoryComponent implements OnInit {
         
       }
     });
+    this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
+      if (event.key === "Tab") {
+        this.getPatientDetails();
+        
+      }
+    });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       console.log(event);
       if (event.key === "Enter") {

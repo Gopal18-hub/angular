@@ -14,8 +14,8 @@ export namespace BillingApiConstants {
     );
   };
 
-  export const getclinics = () => {
-    return environment.CommonApiUrl + "api/lookup/getclinics/7";
+  export const getclinics = (locationId: number) => {
+    return environment.CommonApiUrl + "api/lookup/getclinics/${locationId}";
   };
 
   export const getspecialization =

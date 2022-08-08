@@ -3,7 +3,11 @@
     color:#004084;
 }
 .miscForm {
-    
+    ::ng-deep {
+        .min-width-initial {
+          min-width: 12vh !important;
+        }
+    }
     ::ng-deep mat-label {
     //   color: var(--primary-color);
     color: #333333;
@@ -61,7 +65,10 @@
 
 .btn-md{
  
-    height: 89%;
+    // height: 89%;
+    height: 26px;
+    line-height: 26px;
+    min-width: initial !important
       
 }
 .bg-white{
@@ -120,11 +127,15 @@
 }
 .bg-paymet
 {
-    width: 88.6%;
+    width: 84.6%;
     height: 10%;
 }
 .payment-width{
-width: 34.9%;
+width: 30.9%;
+}
+.w-26
+{
+    width: 26%;
 }
 .icon-more
 {   
@@ -191,11 +202,12 @@ padding: 0%;
 {
     ::ng-deep .mat-raised-button {
         min-width: 6rem !important;
+        
     }
 }
-.w-12
+.w-14
 {
-    width: 12%;
+    width: 15%;
 }
 
 .bg-deposit{
