@@ -16,10 +16,10 @@
     <div class="w-full height"> 
 
         <!-- payment Methods left  -->
-        <payment-methods [config]="config" (paymentform)="paymentformevent($event)"></payment-methods>
+        <payment-methods [config]="config" [paymenthodclearsibilingcomponent]="clearsiblingcomponents" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
 
         <!-- payment Methods right -->
-        <div class="w-1/3 h-full float-right ">
+        <div class="width mt-2 h-full float-right border-radius-md">
             <div class="w-full h-full back-primary p-3 col-white">
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-1">
