@@ -34,13 +34,15 @@
                                 [form]="employeesponsorForm"
                                 [questions]="questions[1]"
                                 [index]="1"
+                                
                             >
                             </maxhealth-question>
                         </div>
+                        <!-- <span  class="maxid-error">{{maxiderrormessage}}</span> -->
                         <div class="ml-1-34 text-wrap max-health-primary-color font-semi-bold" >
                             <mat-label >Employee Code</mat-label>
                         </div>
-                        <div class="ml-0-21 w-12 bg-white mt-error">
+                        <div class="ml-0-21 w-1/10 bg-white mt-error">
                             <maxhealth-question
                                 [question]="questions[2]"
                                 [form]="employeesponsorForm"
@@ -56,7 +58,7 @@
                             <a class="text-underline color-blue"  (click)="iomClick()" [ngClass]="{disableiomclass:disableIOM}" >IOM</a>
                         </div>
                         <span class="iom-message">{{iommessage}}</span>
-                        <div class="ml-0-21 w-2/10 bg-white">
+                        <div class="ml-0-21 w-1/15 bg-white">
                             <maxhealth-question
                                 [question]="questions[3]"
                                 [form]="employeesponsorForm"
@@ -68,7 +70,7 @@
                         <div class ="ml-1-34 max-health-primary-color font-semi-bold">
                             <mat-label>Corporate</mat-label>
                         </div>
-                        <div class="ml-0-21 w-1/15">
+                        <div class="ml-0-21 w-12">
                             <maxhealth-question
                                 [question]="questions[4]"
                                 [form]="employeesponsorForm"
@@ -77,6 +79,20 @@
                             >
                             </maxhealth-question>
                         </div>
+                        <!-- <div class="flex align-items-center"> -->
+                            <div class="ml-3 w-1/10">
+                                <button mat-raised-button color="primary" (click)="employeeSave()" class="button-style" [disabled]="disableButton" ><span  class="text-position">Save</span></button>
+                            </div>
+                           <div class="ml-3 w-1/10">
+                            <button mat-raised-button color="primary" class="button-style"   (click)="employeeDelete()" [disabled]="disableDelete" ><span class="text-position">Delete</span></button>
+                           </div>
+                           <div class="ml-3 w-1/10">
+                            <button mat-raised-button color="primary" class=" button-style" (click)="cleardata()"  ><span class="text-position">Clear</span></button>
+                           </div>
+                        <!-- </div> -->
+                        
+           
+          
                 </div>
             </div>
            
@@ -149,23 +165,23 @@
             
         </div>
     </div>
-     <div class="h-1/2 mt-1">
+     <div class="h-3/4 mt-1">
         <div class="pl-2  employeeclass">
-            <mat-label class="max-health-primary-color font-style">Employee Dependent Details</mat-label>
+            <mat-label class="max-health-primary-color font-style ">Employee Dependent Details</mat-label>
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
-        <div class="h-57 mt-2 whitespace-nowrap">
+        <div class="h-43 mt-1 whitespace-nowrap">
             <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
-        <div class="h-57 mt-2">
+        <div class="h-40 mt-2">
             <maxhealth-table [config]="config2" [data]="updatedTableList"></maxhealth-table>
         </div>
-        <div class="float-right mt-2">
-            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8" [disabled]="disableButton" >Save</button>
-            <button mat-raised-button color="primary" class="ml-3"   (click)="employeeDelete()" [disabled]="disableDelete" class="mr-6" >Delete</button>
-            <button mat-raised-button color="primary" class="ml-3"(click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
-        </div>
+        <!-- <div class="float-right mt-2 ">
+            <button mat-raised-button color="primary" (click)="employeeSave()" class="mr-8 button-style" [disabled]="disableButton" >Save</button>
+            <button mat-raised-button color="primary" class="ml-3 mr-6 button-style"   (click)="employeeDelete()" [disabled]="disableDelete" >Delete</button>
+            <button mat-raised-button color="primary" class="ml-3 button-style" (click)="this.employeesponsorForm.reset();cleardata()"  >Clear</button>
+        </div> -->
     </div>
         
     </div>
@@ -181,3 +197,4 @@
 <!-- [disabled]="disableClear" -->
 <!-- (click)="oncheckboxClick($event)" -->
 <!-- (columnClick)="checkboxClick($event)" -->
+<!-- (keydown.enter)="onMaxidEnter(employeesponsorForm.value.maxId)" -->

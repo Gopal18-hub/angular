@@ -33,10 +33,13 @@
     background-color:#D2D0D0;
 }
 .h-60{
-    height:60%;
+    height:60vh;
 }
 .h-90{
     height:90%;
+}
+.h-97{
+    height:97%;
 }
 ::ng-deep .mat-dialog-container{
     overflow:hidden !important;
@@ -50,13 +53,15 @@
     background-color:#45C0BE;
     height: 5vh !important;
 }
-
+.width{
+    width: 33% !important;
+}
 .font-white{
     color:white;
 }
 .textarea-length{
 ::ng-deep textarea{
 
-    min-height: 294px !important;
+    min-height: 308px !important;
 }
 }

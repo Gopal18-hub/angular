@@ -5,6 +5,7 @@
     height: 30px !important;
     color: #004084 ;
     opacity: 1 !important;
+    font-weight: 400!important;
 }
 ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
 {
@@ -47,4 +48,12 @@
 }
 ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body{
     left: 50px !important;
+}
+.width{
+    width: 65%!important;
+}
+.creditbuttonwidth{
+::ng-deep .mat-raised-button {
+    min-width: 120px !important;
+}
 }
