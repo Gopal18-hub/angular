@@ -45,7 +45,8 @@ export class DepositComponent implements OnInit {
         // title: "Max ID"
       },
       mobileno: {
-        type: "number"
+        type: "number",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
         type: "checkbox",
@@ -253,7 +254,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any =  69;// Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
