@@ -4,6 +4,7 @@
 }
 .miscForm {
     
+    
     ::ng-deep mat-label {
       color: var(--primary-color);
       font-weight: 600;
@@ -235,7 +236,14 @@ padding: 0%;
     }
 }
 .h-btn{
-    height: 4.95vh;
+    // height: 4.95vh;
+    // ::ng-deep {
+    //     .min-width-initial {
+    //       min-width: initial !important;
+    //     }}
+    height: 26px;
+    line-height: 26px;
+    min-width: initial !important
    
 }
 .m-pannel

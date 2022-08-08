@@ -98,7 +98,7 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox : false,
-    displayedColumns: ['empCode', 'dependantName','dob','gender','relationship'],
+    displayedColumns: ['empCode', 'dependentName','dob','gender','relationship'],
     columnsInfo: {
       empCode : {
         title: 'Employee Code',
@@ -107,7 +107,7 @@ export class StaffDeptComponent implements OnInit {
           width: "240px",
         },
       },
-      dependantName : {
+      dependentName : {
         title: 'Dependent Name',
         type: 'string'
       },

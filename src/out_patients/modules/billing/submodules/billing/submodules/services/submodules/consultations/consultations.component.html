@@ -5,7 +5,7 @@
       autocomplete="off"
       class="w-3/4 flex align-items-center"
     >
-      <div class="flex">
+      <div class="flex" *ngIf="locationId != 7">
         <mat-label class="max-health-primary-color mr-2"
           >Specialisation</mat-label
         >
@@ -18,6 +18,19 @@
         >
         </maxhealth-question>
       </div>
+
+      <div class="flex" *ngIf="locationId == 7">
+        <mat-label class="max-health-primary-color mr-2">Clinics</mat-label>
+        <maxhealth-question
+          [question]="questions[2]"
+          [form]="formGroup"
+          [questions]="questions[2]"
+          [index]="2"
+          class="w-3/5"
+        >
+        </maxhealth-question>
+      </div>
+
       <div class="flex ml-4 w-1/2">
         <mat-label class="max-health-primary-color mr-2">Doctor Name</mat-label>
         <maxhealth-question

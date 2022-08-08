@@ -208,11 +208,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
 
   onMobilenumberEnter() {
     this.http
-      .get(
-        ApiConstants.getSimilarPatientonMobilenumber(
-          this.expiredpatientForm.controls["mobileno"].value
-        )
-      )
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.expiredpatientForm.controls["mobileno"].value,
+      })
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultdata) => {
         console.log(resultdata);
