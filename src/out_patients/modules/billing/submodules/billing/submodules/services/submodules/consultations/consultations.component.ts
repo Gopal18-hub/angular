@@ -20,7 +20,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     properties: {
       specialization: {
         type: "autocomplete",
-        required: true,
+        required: false,
         placeholder: "--Select--",
       },
       doctorName: {
@@ -30,7 +30,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       },
       clinics: {
         type: "autocomplete",
-        required: true,
+        required: false,
         placeholder: "--Select--",
       },
     },
@@ -45,6 +45,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
       "doctorName",
@@ -59,7 +60,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         type: "number",
       },
       doctorName: {
-        title: "Docotr Name",
+        title: "Doctor Name",
         type: "string",
       },
       type: {
