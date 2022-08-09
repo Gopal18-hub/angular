@@ -251,10 +251,10 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   ngOnInit(): void {   
-    this.matdialog.open(ScheduleDateDialogComponent, {
-      height:"30vh",
-      width: "30vw",
-      });
+    // this.matdialog.open(ScheduleDateDialogComponent, {
+    //   height:"30vh",
+    //   width: "30vw",
+    //   });
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
