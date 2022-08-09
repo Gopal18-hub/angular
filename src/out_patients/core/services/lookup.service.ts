@@ -36,7 +36,7 @@ export class LookupService {
           .get(ApiConstants.globalSearchApi(formdata.data["SearchTerm"], hspId))
           .toPromise();
         if (this.routeswithoutsearch[this.router.url]) {
-          this.router.navigate([this.routes[this.router.url]], {
+          this.router.navigate([this.routeswithoutsearch[this.router.url]], {
             queryParams: formdata.data,
           });
         } else {
@@ -85,7 +85,7 @@ export class LookupService {
           );
           const resultData = await this.http.get(url).toPromise();
           if (this.routeswithoutsearch[this.router.url]) {
-            this.router.navigate([this.routes[this.router.url]], {
+            this.router.navigate([this.routeswithoutsearch[this.router.url]], {
               queryParams: formdata.data,
             });
           } else {
