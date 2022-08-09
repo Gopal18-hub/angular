@@ -20,9 +20,10 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { MatDialogModule } from '@angular/material/dialog';
 import { InvestigationOrdersComponent } from './submodules/investigation-orders/investigation-orders.component';
 import { MedicineOrdersComponent } from './submodules/medicine-orders/medicine-orders.component';
+import { ScheduleDateDialogComponent } from './submodules/schedule-date-dialog/schedule-date-dialog.component';
 
 @NgModule({
-    declarations: [AcdComponent, InvestigationOrdersComponent, MedicineOrdersComponent
+    declarations: [AcdComponent, InvestigationOrdersComponent, MedicineOrdersComponent, ScheduleDateDialogComponent
     ],
     imports: [
       AcdRoutingModule,

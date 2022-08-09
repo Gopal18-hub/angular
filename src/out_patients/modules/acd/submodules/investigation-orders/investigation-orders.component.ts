@@ -8,7 +8,7 @@ import { ApiConstants } from '../../../../../out_patients/core/constants/ApiCons
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
-import { SaveInvestigationOrderModel } from "@core/models/saveInvestigationOrderMode.Model";
+import { SaveInvestigationOrderModel } from "@core/models/saveInvestigationOrderModel.Model";
 import { MatDialog } from '@angular/material/dialog';
 //import { ScheduleDateDialogComponent } from '@modules/registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
 
@@ -271,7 +271,8 @@ export class InvestigationOrdersComponent implements OnInit {
       });
     })
   }
-
+ 
+  
   search() {    
     //Main Grid both
    // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))

@@ -9,8 +9,10 @@ import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { DenyOrderListTypeModel } from "@core/models/denyOrderListModel.Model";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrderMode.Model';
-
+import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrderModel.Model';
+import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
+import { MatDialog } from '@angular/material/dialog';
+import {ScheduleDateDialogComponent} from '../schedule-date-dialog/schedule-date-dialog.component';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -26,10 +28,13 @@ export class MedicineOrdersComponent implements OnInit {
   isShowMedical: boolean = false;
   isBtnDisable: boolean = false;
   isBtnDisableClear: boolean = true;
+  isDateDisable : boolean = false;
+  isBtnDenialDisable : boolean = false;
   name: any;
   questions: any;
   private readonly _destroying$ = new Subject<void>();
 
+  medOrderLists : any=[];
   medOrderList : any;
   medOrderDetails : any;
   patientInfo : any;
@@ -40,6 +45,7 @@ export class MedicineOrdersComponent implements OnInit {
 
   objPhyOrder: any=[];
   objdtdenialorder:any;
+  physicianOrderList : any =[];
 
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
   
@@ -78,27 +84,17 @@ export class MedicineOrdersComponent implements OnInit {
         type: "dropdown",
         placeholder: "Select",
         options: [
-          { title: "All", value: "0" },
-          { title: "Billed", value: "1" },
-          { title: "Unbilled", value: "2" },
-          { title: "Partially billed", value: "3" },
-          { title: "Denied", value: "4" },
+          { title: "All", value: "All" },
+          { title: "Billed", value: "Billed" },
+          { title: "Unbilled", value: "Unbilled" },
+          { title: "Partially billed", value: "Partially Billed" },
+          { title: "Denied", value: "Denied" },
         ],
       },
       denyorder: {
         type: "dropdown",
         placeholder: "Select",
-        options: this.denyOrderTypeList,
-        // options: [
-        //   {title: "Others",value:"others"  },
-        //   {title: "Price Issue",value:"price"  },
-        //   {title: "PSU Patient",value:"psu"  },
-        //   {title: "After Medication",value:"aftermed"  },
-        //   {title: "Before next review",value:"befreview"  },
-        //   {title: "Show Future Date",value:"future"  },
-        //   {title: "At the time of admission",value:"timeofadmission"  },
-        //   {title: "Machine not functional",value:"machine"  },
-        // ], 
+        options: this.denyOrderTypeList,      
       },
       remarks: {
         type: "string",
@@ -110,6 +106,7 @@ export class MedicineOrdersComponent implements OnInit {
   medListConfig: any  = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
+    clickSelection: "single",
     selectBox : false,
     displayedColumns: ['orderId', 'maxid', 'ptnName', 'docName', 'deptName', 'visitDate', 'mobileNo', 'mrpValue', 'channel', 'billNo', 'orderStatus'],
     rowLayout: { dynamic: { rowClass: "row['orderStatus']" } },
@@ -192,7 +189,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
   medDetailsConfig: any  = {
     actionItems: false,
-    dateformat: 'dd/MM/yyyy',
+    dateformat: 'dd/MM/yyyy - hh:mm:ss a',
     selectBox : true,
     displayedColumns: ['drug', 'doctor','priority','days','specialization','visitDatetime','acdRemarks'],
     columnsInfo: {
@@ -233,7 +230,7 @@ export class MedicineOrdersComponent implements OnInit {
       },
       visitDatetime : {
         title: 'Visit Date & Time',
-        type: 'string',
+        type: 'date',
         style: {
           width: "12%",
         },
@@ -250,18 +247,22 @@ export class MedicineOrdersComponent implements OnInit {
     }
  
     }
-  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,private messageDialogService: MessageDialogService) {
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,private messageDialogService: MessageDialogService,private matdialog: MatDialog,) {
   }
 
-  ngOnInit(): void {
-    
-    
+  ngOnInit(): void {   
+    this.matdialog.open(ScheduleDateDialogComponent, {
+      height:"30vh",
+      width: "30vw",
+      });
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
     );
     this.investigationForm = formResult.form;
     this.questions = formResult.questions;
+    this.investigationForm.controls["fromdate"].disable();
+    this.investigationForm.controls["todate"].disable();
     let todaydate = new Date();
     this.investigationForm.controls["fromdate"].setValue(todaydate);
 
@@ -284,17 +285,68 @@ export class MedicineOrdersComponent implements OnInit {
         });
       })
   }
+  ngAfterViewInit(): void {
+    this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
+if(value===10)
+{
+  this.matdialog.open(ScheduleDateDialogComponent, {
+    height:"30vh",
+    width: "30vw",
+    });
 
+}
+   
+      
+    })}
   search() {
-    //Deny order lists
-    this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-    // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+    this.medOrderList=[]    
+
+   this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+   //  this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        this.medOrderList = res.objOrderDetails;
+        this.medOrderLists=[];
+        res.objOrderDetails.forEach((e:any)=>        
+      {
+        if(this.investigationForm.value.maxid === "maxId")
+        if(e.maxid === this.investigationForm.value.input)
+        {
+          this.medOrderLists.push(e);          
+        }
+        if(this.investigationForm.value.maxid === "patientName")
+        if(e.ptnName === this.investigationForm.value.input)
+        {
+          this.medOrderLists.push(e);
+          
+        }
+        if(this.investigationForm.value.maxid === "doctorName")
+        if(e.docName === this.investigationForm.value.input)
+        {
+          this.medOrderLists.push(e);
+          
+        }
+        if(this.investigationForm.value.maxid === "mobile")
+        if(e.mobileNo === this.investigationForm.value.input)
+        {
+          this.medOrderLists.push(e);
+          
+        }
         
-        console.log(this.medOrderList, "Do")
-      })       
+        if(e.orderStatus === this.investigationForm.value.status)
+        {
+          this.medOrderLists.push(e);          
+        }
+       
+        if(!this.investigationForm.value.maxid && !this.investigationForm.value.status)
+        {
+          this.medOrderLists=res.objOrderDetails;
+        }
+       this.medOrderList=this.medOrderLists;
+       console.log(this.medOrderList,"1")
+      })
+      }) 
+      
+         
   }
 
   listRowClick(event:any)
@@ -308,9 +360,8 @@ export class MedicineOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         this.medOrderDetails=res;
         console.log(res, "getphysicianorderdetailep")
-        
-
       })
+      
   }
   denyBtn()
   {    
@@ -333,17 +384,28 @@ export class MedicineOrdersComponent implements OnInit {
   }
   saveOrUpdate()
   {    
-    console.log(this.medOrderDetailsTable.selection.selected,"selected rows");   
+    this.objPhyOrder=[];
+    this.objdtdenialorder="";
+    this.physicianOrderList=[];
+    console.log(this.medOrderDetailsTable.selection.selected,"selected rows");  
     
     this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
       if(e.drugid !== 0) 
+      this.isBtnDenialDisable = false;
       this.objPhyOrder.push({
         acDisHideDrug: true,
         visitid: e.visitId,
         drugid: e.drugid,
-        acdRemarks: "test"
+        acdRemarks: e.acdRemarks
+      });
+      this.physicianOrderList.push({
+        acDisHideDrug: true,
+        visitid: e.visitId,
+        drugid: e.drugid,
+        acdRemarks: e.acdRemarks
       });
     });
+   
     this.objdtdenialorder={
     denialid: this.investigationForm.value.denyorder,
     denialremark: this.investigationForm.value.remarks,
@@ -362,18 +424,99 @@ export class MedicineOrdersComponent implements OnInit {
     );
   
   }
-  
-  Save()
+  getModifyModel():ModifyInvestigationOrderModel{
+    return new ModifyInvestigationOrderModel(
+      this.physicianOrderList
+    )
+  }
+  isChecked(event:any)
+
   {
+    if(!this.investigationForm.controls["datecheckbox"].value)
+    {
+      this.investigationForm.controls["datecheckbox"].setValue(false)
+    }
+   
+    if(this.investigationForm.controls["datecheckbox"].value == false)
+    {
+      this.investigationForm.controls["fromdate"].enable();
+      this.investigationForm.controls["todate"].enable();
+    }
+    if(this.investigationForm.controls["datecheckbox"].value == true)
+    {
+      let todaydate = new Date();
+      this.investigationForm.controls["fromdate"].setValue(todaydate);  
+      this.investigationForm.controls["todate"].setValue(todaydate);
+      this.investigationForm.controls["fromdate"].disable();
+      this.investigationForm.controls["todate"].disable();
+      
+    }
+
+   
+  
+  }  
+  Save()
+  {    
     console.log(this.getSaveModel(),"model");
     this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())
     //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
-    console.log(res)
-    })
-  
+    if(res === 1)
+    {
+      this.messageDialogService.success("Saved Successfully!");
+     
 
+    }
+    this.objPhyOrder=[];
+    this.objdtdenialorder=[];
+    this.isBtnDisable = false;
+    this.investigationForm.controls["denyorder"].reset();
+    this.investigationForm.controls["remarks"].setValue("");
+    this.investigationForm.controls["denyorder"].disable();
+    }) 
+
+  }
+  cancelDenial()
+  {
+    this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
+      if(e.drugid !== 0) 
+      
+      this.physicianOrderList.push({
+        acDisHideDrug: true,
+        visitid: e.visitId,
+        drugid: e.drugid,
+        acdRemarks: e.acdRemarks
+      });
+    });
+    this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo,9233),this.getModifyModel())
+    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res: any) => {
+    if(res.success === true)
+    {
+      this.messageDialogService.success(res.message);
+     
+
+    }
+   
+    }) 
+  }
+  clearMed()
+  {
+    //clear Form
+    this.investigationForm.reset();
+    //Clear Grid
+    this.medOrderList=[];
+    this.medOrderDetails=[];
+    //Reset Diasble Btn
+    this.isBtnDisable = false;
+    let todaydate = new Date();
+    this.investigationForm.controls["fromdate"].setValue(todaydate);
+    this.investigationForm.controls["todate"].setValue(todaydate);
+    this.investigationForm.controls["denyorder"].disable();
   }
 
 }
+
+
