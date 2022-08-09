@@ -30,6 +30,7 @@ export class QuestionBase<T> {
   capitalizeText: boolean;
   customClasses: string;
   disabled: boolean;
+  optionsModelConfig: any;
 
   constructor(
     options: {
@@ -64,6 +65,7 @@ export class QuestionBase<T> {
       capitalizeText?: boolean;
       customClasses?: string;
       disabled?: boolean;
+      optionsModelConfig?: any;
     } = {}
   ) {
     this.value = options.value || options.defaultValue;
@@ -100,5 +102,6 @@ export class QuestionBase<T> {
       this.customClasses += " text-capitalize";
     }
     this.disabled = options.disabled || false;
+    this.optionsModelConfig = options.optionsModelConfig || "";
   }
 }

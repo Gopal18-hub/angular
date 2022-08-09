@@ -461,38 +461,6 @@
               <mat-option [value]="opt.value" [disabled]="opt?.disabled">
                 {{ opt.title }}
               </mat-option>
-              <ng-container *ngIf="opt?.child">
-                <mat-optgroup [label]="''">
-                  <ng-container *ngFor="let child of opt.child">
-                    <mat-option [value]="child.id">
-                      {{ child.name }}
-                    </mat-option>
-                    <ng-container *ngIf="child?.child">
-                      <mat-optgroup [label]="''">
-                        <ng-container *ngFor="let child1 of child.child">
-                          <mat-option
-                            [value]="child1.id"
-                            style="margin-left: 8px"
-                          >
-                            {{ child1.name }}
-                          </mat-option>
-                          <ng-container *ngIf="child1?.child">
-                            <mat-optgroup [label]="''">
-                              <mat-option
-                                *ngFor="let child2 of child1.child"
-                                [value]="child2.id"
-                                style="margin-left: 16px"
-                              >
-                                {{ child2.name }}
-                              </mat-option>
-                            </mat-optgroup>
-                          </ng-container>
-                        </ng-container>
-                      </mat-optgroup>
-                    </ng-container>
-                  </ng-container>
-                </mat-optgroup>
-              </ng-container>
             </ng-container>
           </mat-select>
           <mat-error *ngIf="!isValid">

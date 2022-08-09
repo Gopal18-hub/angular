@@ -1,0 +1,21 @@
+.prompt-form {
+  .background-white {
+    background-color: #fff;
+  }
+  mat-toolbar {
+    border-radius: 0.75rem 0.75rem 0 0;
+    background-color: #dae9f8;
+    color: #004084;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .prompt-form-action {
+    button {
+      margin-right: 1rem;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
