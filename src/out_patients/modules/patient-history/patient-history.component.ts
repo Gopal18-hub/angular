@@ -228,6 +228,7 @@ export class PatientHistoryComponent implements OnInit {
   showtable: boolean = true;
   apiProcessing: boolean = false;
   searchbtn: boolean = true;
+  clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
   @ViewChild("table") tableRows: any;
@@ -268,13 +269,39 @@ export class PatientHistoryComponent implements OnInit {
           relativeTo: this.route,
         });
         const lookupdata = await this.lookupService.searchPatient(formdata);
-        console.log(lookupdata[0]);
+        console.log(lookupdata);
         if (lookupdata.length == 1) {
           if (lookupdata[0] && "maxid" in lookupdata[0]) {
             this.patienthistoryform.controls["maxid"].setValue(lookupdata[0]["maxid"]);
             this.patienthistoryform.value.maxid = lookupdata[0]["maxid"];
             this.getPatientDetails();
           }
+        }
+        else
+        {
+          const similarSoundDialogref = this.matDialog.open(
+            SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "65vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+          similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.patienthistoryform.controls["maxid"].setValue(maxID);
+                      this.getPatientDetails();
+                      this.clearbtn = false;
+                    }
+                    this.similarContactPatientList = [];
+                  });
         }
       });
   }
@@ -305,6 +332,15 @@ export class PatientHistoryComponent implements OnInit {
         this.mobilechange();
       }
     });
+    console.log(this.patienthistoryform);
+    setTimeout(() => {
+      this.patienthistoryform.valueChanges.subscribe(val=>{
+        console.log('val');
+        console.log(val)
+        this.clearbtn = false;
+      })
+    }, 300);
+    
   }
 
   gettransactiontype()
@@ -385,6 +421,7 @@ export class PatientHistoryComponent implements OnInit {
   {
     this.apiProcessing = true;
     this.showtable = false;
+    this.clearbtn = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
@@ -513,6 +550,7 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistorylist = [];
     this.apiProcessing = false;
     this.showtable = true;
+    this.clearbtn = true;
   }
   
 

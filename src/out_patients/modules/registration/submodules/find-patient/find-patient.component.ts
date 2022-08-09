@@ -66,6 +66,8 @@ export class FindPatientComponent implements OnInit, OnDestroy {
       },
       {
         title: "Visit History",
+        actionType: "link",
+        routeLink: "/patient-history",
       },
     ],
     dateformat: "dd/MM/yyyy",
