@@ -241,6 +241,11 @@
     data.output | date: data.config.dateformat
   }}</span>
 </ng-template>
+<ng-template #datetime let-data>
+  <span *ngIf="data?.output">{{
+    data.output | date: data.config.datetimeformat
+  }}</span>
+</ng-template>
 <ng-template #image let-data>
   <div *ngIf="data?.output" class="flex">
     <img
