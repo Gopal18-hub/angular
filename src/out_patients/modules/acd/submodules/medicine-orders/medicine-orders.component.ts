@@ -301,8 +301,8 @@ if(value===10)
   search() {
     this.medOrderList=[]    
 
-   this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-   //  this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+   //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+     this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.medOrderLists=[];
@@ -467,8 +467,7 @@ if(value===10)
   Save()
   {    
     console.log(this.getSaveModel(),"model");
-    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())
-    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
     if(res === 1)
@@ -500,7 +499,6 @@ if(value===10)
       });
     });
     this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo,9233),this.getModifyModel())
-    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
     if(res.success === true)

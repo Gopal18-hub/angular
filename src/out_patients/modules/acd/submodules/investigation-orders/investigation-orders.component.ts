@@ -307,8 +307,8 @@ export class InvestigationOrdersComponent implements OnInit {
     //Main Grid both
     this.invOrderLists=[];
     this.invOrderList=[];
-   // this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
-    this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-08-12", "2021-08-14", 7))
+   this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+    //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-08-12", "2021-08-14", 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.invOrderList = res.objTempOrderHeader;
@@ -429,8 +429,7 @@ export class InvestigationOrdersComponent implements OnInit {
   Save()
   {
     console.log(this.getSaveModel(),"model");
-    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())
-    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
+    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
       if(res === 1)
@@ -468,7 +467,6 @@ export class InvestigationOrdersComponent implements OnInit {
       });
     });
     this.http.post(ApiConstants.modifyphysicianorderdetail('',9233),this.getModifyModel())
-    //this.http.get(ApiConstants.getediganosticacd(this.investigationForm.value.fromdate,this.investigationForm.value.todate,this.investigationForm.value.status,this.investigationForm.value.orderid,0,"",0))    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
     if(res.success === true)
