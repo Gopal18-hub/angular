@@ -15,6 +15,7 @@ import { PatientService } from "@core/services/patient.service";
 import { DatePipe } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { SimilarPatientDialog } from "@modules/registration/submodules/op-registration/op-registration.component";
+import { DmgDialogComponent } from "./dmg-dialog/dmg-dialog.component";
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -221,11 +222,9 @@ export class DmgMappingComponent implements OnInit {
 
   onMobilenumberEnter() {
     this.http
-      .get(
-        ApiConstants.getSimilarPatientonMobilenumber(
-          this.dmgMappingForm.controls["mobileno"].value
-        )
-      )
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.dmgMappingForm.controls["mobileno"].value,
+      })
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultdata) => {
         console.log(resultdata);
@@ -246,7 +245,20 @@ export class DmgMappingComponent implements OnInit {
   }
   iacode!: string;
   regno!: number;
+  isDmgmapped!: boolean;
   dmgsave() {
+    this.dmgPatientDetails.dmgMappingDataDT.forEach((item) => {
+      if (item.isChecked != 1) {
+        console.log("item is not checked.");
+        this.isDmgmapped = false;
+      } else {
+        this.isDmgmapped = true;
+        console.log("item is checked.");
+      }
+    });
+    // if (!this.isDmgmapped) {
+    //   this.dialog.open(DmgDialogComponent, { width: "25vw", height: "30vh" });
+    // } else {
     this.http
       .post(ApiConstants.savepatientdmg, this.getSaveDmgObject())
       .pipe(takeUntil(this._destroying$))
@@ -263,6 +275,7 @@ export class DmgMappingComponent implements OnInit {
           }
         }
       );
+    //}
   }
 
   getSaveDmgObject(): SaveDmgpatientModel {
@@ -286,6 +299,7 @@ export class DmgMappingComponent implements OnInit {
     console.log(value);
     if (this.isdmgselected != -1) {
       if (this.isdmgselected != index) {
+        this.isDmgmapped = true;
         this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
         this.docId = value;
         console.log(this.dmgPatientDetails.dmgMappingDataDT[index].isChecked);
@@ -293,6 +307,7 @@ export class DmgMappingComponent implements OnInit {
           this.isdmgselected
         ].isChecked = 0;
       } else {
+        this.isDmgmapped = true;
         this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
       }
     } else {
@@ -301,6 +316,7 @@ export class DmgMappingComponent implements OnInit {
       });
       this.dmgPatientDetails.dmgMappingDataDT[index].isChecked = 1;
       this.docId = value;
+      this.isDmgmapped = true;
     }
     console.log(this.docId);
   }

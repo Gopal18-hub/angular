@@ -65,4 +65,13 @@
     font-weight: 500 !important;
 }
 }
+ .pancardtext{
+    ::ng-deep  input.mat-input-element{
+        text-transform: uppercase !important;
+
+    }
+    ::ng-deep .mat-form-field{
+        line-height: 1.25 !important;
+        }
+}
 

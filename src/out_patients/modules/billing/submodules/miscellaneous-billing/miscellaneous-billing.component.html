@@ -135,11 +135,19 @@
                 </div>
                </div>
             
-             <div class="flex mt-0  float-right">
+             <div class="flex mt-0  my-1 float-right">
+              <button
+              mat-raised-button
+              color="primary"
+              class="h-btn mr-2"
+              type="submit"
+            >
+            Appt Search
+            </button>
                 <button
                 mat-raised-button
                 color="primary"
-                class="w-1/20 h-btn"
+                class=" h-btn mr-2"
                 type="submit"
               >
               DMS
@@ -147,7 +155,7 @@
               <button
                 mat-raised-button
                 color="primary"
-                class="w-1/20 ml-2 h-btn"
+                class=" mr-2 h-btn"
                 type="button"
                 (click)="openhistory()"
               >
@@ -157,7 +165,7 @@
                 <button
                 mat-raised-button
                 color="primary"
-                class="w-1/20 ml-2  h-btn"
+                class=" h-btn mr-2"
                 type="submit"
                 >
                 Clear
@@ -185,18 +193,26 @@
               routerLinkActive
               #rla="routerLinkActive"
               (click)="activeLink = link"
+              (newItemEvent)="addItem($event)"
               [active]="rla.isActive || activeLink.path == link.path"
             >
               {{ link.title }}
             </a>
           </nav>
           <div class="bg-white h-service border-radius-lg  display-block billing-panel-wrapper">
-            <router-outlet></router-outlet>
+            <router-outlet ></router-outlet>
           </div> 
          </div>
        <!-- ---------------------------------------------------------- BOTTOM CLEAR BUTTON ---------------------------------------------------->
-          
               </div>
+  
     
   </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between mx-5 max-health-primary-color">
+
+  <p>Last Update By: {{ lastUpdatedBy }}</p>
+
+  <P> Date: {{ currentTime }} </P>
+
+</div> 

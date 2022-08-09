@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { BillingForm } from "@core/constants/BillingForm";
@@ -10,10 +10,10 @@ import { CookieService } from "@shared/services/cookie.service";
   templateUrl: "./service-deposit.component.html",
   styleUrls: ["./service-deposit.component.scss"],
 })
-export class ServiceDepositComponent implements OnInit {
+export class ServiceDepositComponent implements OnInit, OnChanges {
 
   @Input() data!: any;
-  @Input() clearsibilingcomponent : boolean = false;
+  @Input() serviceclearsibilingcomponent : boolean = false;
 
   servicedepositformData = BillingForm.servicedepositFormData;
   servicedepositForm!: FormGroup;
@@ -28,6 +28,15 @@ export class ServiceDepositComponent implements OnInit {
 
   constructor(private formService: QuestionControlService, private cookie: CookieService) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes['serviceclearsibilingcomponent'].currentValue);
+    if(changes['serviceclearsibilingcomponent'].currentValue){
+      this.servicedepositForm.reset();
+      this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });
+      this.servicedepositForm.controls["servicetype"].setValue({ title: "Medical services @0.000", value: 1781 });  
+    }
+  }
+
   ngOnInit(): void {
     let formResult = this.formService.createForm(
       this.servicedepositformData.properties,
@@ -35,14 +44,9 @@ export class ServiceDepositComponent implements OnInit {
     );
     this.servicedepositForm = formResult.form;
     this.questions = formResult.questions;
-    this.isNSSHLocation = true; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
+    this.isNSSHLocation = false; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
 
-    if(this.clearsibilingcomponent){
-        this.servicedepositForm.reset();
-    }
-    else
-    {
-    if(this.data.type == "Deposit")
+     if(this.data.type == "Deposit")
     {
       this.servicetypeList = this.data.servicetypeList;
       this.deposittypeList = this.data.deposittypeList;  
@@ -60,8 +64,10 @@ export class ServiceDepositComponent implements OnInit {
       this.servicetype = this.data.selectedservicedeposittype.serviceTypeName;
       this.deposithead = this.data.selectedservicedeposittype.advanceType;      
     }   
-   }
+   
   }
+
+  //ngon
   ngAfterViewInit(): void{
     this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });
     this.servicedepositForm.controls["servicetype"].setValue({ title: "Medical services @0.000", value: 1781 });

@@ -15,7 +15,9 @@ import { GetCompanyDataInterface } from '@core/types/employeesponsor/getCompanyd
 import { PatientService } from '@core/services/patient.service';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
+
 import { PatientDetails } from '@core/models/patientDetailsModel.Model';
+
 @Component({
   selector: 'out-patients-post-discharge-follow-up-billing',
   templateUrl: './post-discharge-follow-up-billing.component.html',
@@ -54,11 +56,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
         options: [],
       },
       corporate: {
-        type: "dropdown",
+        type: "autocomplete",
+        placeholder: "--Select--",
         options: [],
       },
       narration: {
@@ -72,6 +76,10 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   };
   formGroup!: FormGroup;
   questions: any;
+  userName: string = '';
+  lastUpdatedBy: string = "";
+  currentTime:any;
+  currentDate:any;
   categoryIcons: any;
   patient: boolean = false;
   patientName!: string;
@@ -108,6 +116,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.userName = this.cookie.get("Name");
+    this.lastUpdatedBy = this.cookie.get("UserName");
+    this.currentDate = this.datepipe.transform(new Date(), 'dd-MM-YYYY');
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hour12: true });
+    // this.currentTime = this.datepipe.transform(new Date(), 'HH:MM:ss a')
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);

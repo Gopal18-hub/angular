@@ -6,14 +6,21 @@ export namespace CrystalReport {
 
   export const PrintOrganDonorForm = (params: any) => {
     return (
-      environment.crystalReportBaseUrl + `PrintOrganDonorForm?${params.maxId}`
+      environment.crystalReportBaseUrl +
+      `MAXHIS/Opd_Registration/PrintOrganDonorForm?${params.maxId}`
     );
   };
   export const PrintLabel = (params: any) => {
-    return environment.crystalReportBaseUrl + `PrintLabel?${params.maxId}`;
+    return (
+      environment.crystalReportBaseUrl +
+      `MAXHIS/Opd_Registration/PrintLabel?${params.maxId}`
+    );
   };
   export const PrintFormReport = (params: any) => {
-    return environment.crystalReportBaseUrl + `PrintFormReport?${params.maxId}`;
+    return (
+      environment.crystalReportBaseUrl +
+      `MAXHIS/Opd_Registration/PrintFormReport?${params.maxId}`
+    );
   };
   export const billingreport = (params: any) => {
     return (
@@ -23,7 +30,10 @@ export namespace CrystalReport {
   };
 
   export const DispatchReport = (params: any) => {
-    return environment.ReportsSampleUrl + `/Dispatch_Report/DispatchReport?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&RepType=${params.RepType}`;
+    return (
+      environment.ReportsSampleUrl +
+      `/Dispatch_Report/DispatchReport?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&RepType=${params.RepType}`
+    );
   };
 
   export const DiabeticPlanMainReport = (params: any) => {
@@ -138,5 +148,4 @@ export namespace CrystalReport {
   export const SummaryReportForUtilisationReport = (params: any) => {
     return `${environment.ReportsSampleUrl}/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
   };
-
 }

@@ -40,7 +40,7 @@ export namespace BillingForm {
           },
           creditbatchno:{
             type: "string"
-          },
+          }, //10
           creditamount: {
             type: "number",
             defaultValue: "0.00"
@@ -73,7 +73,7 @@ export namespace BillingForm {
           },
           demandauth: {
             type: "string"
-          },
+          }, //20
           mobilesendermobile: {
             type: "number"
           },
@@ -103,7 +103,7 @@ export namespace BillingForm {
           },
           onlinebookingid: {
             type: "string"
-          },
+          }, //30
           onlinecardvalidate: {
             type: "radio",
             required: false,
@@ -140,7 +140,7 @@ export namespace BillingForm {
           },
           paytmorderid: {
             type: "string"
-          },
+          }, ///40
           upicardno: {
             type: "number"
           },
@@ -171,7 +171,7 @@ export namespace BillingForm {
           },
           internetemail: {
               type: "string"
-          },
+          }, //50
           internetamount: {
               type: "number",
               defaultValue: "0.00"
@@ -202,7 +202,7 @@ export namespace BillingForm {
           },
           mobileorderid:{
             type: "string"
-          }
+          } //60
         },
     };
     
@@ -235,7 +235,7 @@ export namespace BillingForm {
             type: "string"
           },
           iddocumenttype: {
-            type: "dropdown"
+            type: "autocomplete"
           },
           iddocidentityno: {
             type: "string"
@@ -250,7 +250,7 @@ export namespace BillingForm {
             }]
           },
           addressdocumenttype: {
-            type: "dropdown"
+            type: "autocomplete"
           },
           addressdocidentityno: {
             type: "string"

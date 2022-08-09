@@ -70,11 +70,12 @@ export class RefundDialogComponent implements OnInit {
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("stationId"));
+  stationId:any = Number(this.cookie.get("stationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
+  Refundavalaiblemaount:any = [];
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -103,38 +104,44 @@ export class RefundDialogComponent implements OnInit {
     this.questions = formResult.questions;
     console.log(this.data);
     this.today = new Date();
-    this.patientIdentityInfo = this.data.patientinfo;
+    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
     this.servicedeposittype = {
       type: "Refund",
       selectedservicedeposittype : this.data.clickedrowdepositdetails,
       refundreceiptpage : this.onRefundReceiptpage
     }
     this.avalaiblemaount = this.data.clickedrowdepositdetails.balance;
+    this.Refundavalaiblemaount = {
+      type: "Refund",
+      avalaiblemaount: this.data.clickedrowdepositdetails.balance
+    }
     this.mobileno = this.data.patientinfo.mobileno;
     console.log('inside refund page');
   }
   ngAfterViewInit(): void{   
-    this.paymentform.controls["amount"].valueChanges.subscribe(
-      (res:any)=>{
-      if(res > 200000)
-      {
-        console.log("200000");
-        this.refundform.controls["panno"].enable();
-        this.refundform.controls["mainradio"].enable();
-      }
-      else{
-        this.refundform.controls["panno"].disable();
-        this.refundform.controls["mainradio"].disable();
-        this.refundform.controls["mainradio"].reset();
-      }
-    });
+    // this.paymentform.controls["amount"].valueChanges.subscribe(
+    //   (res:any)=>{
+    //   if(res > 200000)
+    //   {
+    //     console.log("200000");
+    //     this.refundform.controls["panno"].enable();
+    //     this.refundform.controls["mainradio"].enable();
+    //   }
+    //   else
+    //   {
+    //     this.refundform.controls["panno"].disable();
+    //     this.refundform.controls["mainradio"].disable();
+    //     this.refundform.controls["mainradio"].reset();
+    //   }
+    // });
   }
-  paymentformevent(event:any){
-    console.log(event);
-    this.paymentform = event;
-  }
+  clearsiblingcomponents:boolean = false;
+
   clear()
   {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+    this.clearsiblingcomponents = true;
     this.paymentform.reset();
     this.paymentform.controls["chequeissuedate"].setValue(this.today);
     this.paymentform.controls["demandissuedate"].setValue(this.today);

@@ -61,6 +61,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
+  @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
   @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
@@ -130,6 +131,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
+
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
+      this.displayedColumns.push("maxRemoveRow");
+    }
     this.initiateTable = true;
   }
 
@@ -175,14 +183,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
-    if (
-      this.config.actionItems &&
-      !this.displayedColumns.includes("actionItems")
-    ) {
-      this.displayedColumns.push("actionItems");
-    }
 
-    if (this.config.removeRow) {
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
       this.displayedColumns.push("maxRemoveRow");
     }
   }
@@ -246,6 +251,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     if (col.type == "string") return this.stringTemplate;
     else if (col.type == "number") return this.numberTemplate;
     else if (col.type == "date") return this.dateTemplate;
+    else if (col.type == "datetime") return this.dateTimeTemplate;
     else if (col.type == "image") return this.imageTemplate;
     else if (col.type == "checkbox") return this.checkboxTemplate;
     else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
@@ -305,7 +311,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
             temp[col] = item[col];
           }
         } else if (
-          ["input_datetime", "date", "input_date"].includes(
+          ["input_datetime", "date", "input_date", "datetime"].includes(
             this.displayColumnsInfo[col].type
           )
         ) {
