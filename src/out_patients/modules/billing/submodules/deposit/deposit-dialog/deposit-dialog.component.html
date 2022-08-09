@@ -16,7 +16,7 @@
         <!-------------------------------------------mat tab will appear-------------------------------------------->
        <payment-methods [config]="config" [paymenthodclearsibilingcomponent]="clearsiblingcomponents"></payment-methods>
         <!--------------------------------------------remarks -------------------------------------------->
-        <div class="w-3/10 h-full mt-3 p-4 bg-blue float-right border-radius-md" >
+        <div class="width h-97 mt-3 p-4 bg-blue float-right border-radius-md" >
             <mat-label  class="mb-2 font-base text-white">Remarks</mat-label>
             <div class="h-90 mt-2 border-radius-lg bg-white border-none textarea-length">
                 <maxhealth-question
@@ -30,7 +30,7 @@
     </div>
 
     <!-----------------------------------------------FIFTH ROW------------------------------------------------------------------>
-   <div class="mt-6">
+   <div class="mt-4">
     <patient-identity-info [data]="patientIdentityInfo" [patientclearsibilingcomponent]="clearsiblingcomponents">
                 
     </patient-identity-info>
@@ -41,7 +41,7 @@
    
 
     <!--------------------------------------------------SIXTH ROW------------------------------------------------------------>
-    <div class="h-1/10 mt-4 float-right">
+    <div class="h-1/10 mt-2 float-right">
         <button mat-raised-button color="primary" (click)="savedialogpayment()">Submit</button>
         <button mat-raised-button color="primary" (click)="cleardepositdialog()"  class="ml-3">Clear</button>
 
