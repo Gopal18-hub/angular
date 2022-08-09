@@ -40,17 +40,18 @@ export class ScheduleDateDialogComponent implements OnInit {
     this.scheduleDateForm.controls["scheduleDate"].setValue(todaydate);
   }
   ngAfterViewInit(): void {
+    this.scheduleddate=""
     this.scheduleDateForm.controls["scheduleDate"].valueChanges.subscribe((value:any)=>{
       this.scheduleddate=value;
-      console.log(this.datepipe.transform(this.scheduleddate, "YYYY-MM-dd"),"3");      
+      
     })}
     save()
     {
-
+      this.dialogRef.close({ data: this.scheduleddate })
     }
     cancel()
     {
-     this.dialogRef.close({ data:  this.scheduleddate });
+     this.dialogRef.close();
     }
 
 }

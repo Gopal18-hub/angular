@@ -85,7 +85,7 @@ export class InvestigationOrdersComponent implements OnInit {
           { title: "All", value: "0" },
           { title: "Billed", value: "1" },
           { title: "Unbilled", value: "2" },
-          { title: "Partially billed", value: "3" },
+          { title: "Partially Billed", value: "3" },
           { title: "Denied", value: "4" },
         ],
       },
@@ -191,7 +191,7 @@ export class InvestigationOrdersComponent implements OnInit {
   }
   invDetailsConfig: any = {
     actionItems: false,
-    dateformat: 'dd/MM/yyyy - hh:mm:ss a',
+    dateformat: 'dd/MM/yyyy hh:mm:ss a',
     selectBox: true,
     displayedColumns: ['testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
     columnsInfo: {
@@ -248,7 +248,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["denyorder"].enable();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
@@ -261,10 +261,11 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["fromdate"].setValue(todaydate);
     this.investigationForm.controls["todate"].setValue(todaydate);
     if (this.from == undefined && this.to == undefined) {
-      this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
-        "yyyy-MM-dd"
-      );
+      // this.from = this.datepipe.transform(
+      //   new Date().setMonth(new Date().getMonth() - 2),
+      //   "yyyy-MM-dd"
+      // );
+      this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.investigationForm.controls["denyorder"].disable();
@@ -308,11 +309,11 @@ export class InvestigationOrdersComponent implements OnInit {
     this.invOrderLists=[];
     this.invOrderList=[];
    this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
-    //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-08-12", "2021-08-14", 7))
+    //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.invOrderList = res.objTempOrderHeader;
-        console.log(res.objTempOrderHeader, "getediganosticacdoninvestigation");
+        
         res.objTempOrderHeader.forEach((e:any)=>        
         {
           if(this.investigationForm.value.maxid === "maxId")
@@ -348,7 +349,7 @@ export class InvestigationOrdersComponent implements OnInit {
             this.invOrderLists=res.objTempOrderHeader;
           }
          this.invOrderList=this.invOrderLists;
-         console.log(this.invOrderList,"invOrderList")
+         
         })
 
       })
@@ -364,7 +365,7 @@ export class InvestigationOrdersComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.invOrderDetails=res.tempOrderBreakup;
-        console.log(res, "getediganosticacdoninvestigationgrid")
+        
         this.objPhyOrder.push({
           acDisHideDrug: true,
           visitid: 0,
@@ -386,7 +387,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.objPhyOrder=[];
     this.objdtdenialorder="";
     //this.physicianOrderList=[];
-    console.log(this.invOrderDetailsTable.selection.selected,"selected rows");       
+   
     this.invOrderDetailsTable.selection.selected.forEach((e:any) => {
       if(e.drugid !== 0) 
       this.objPhyOrder.push({
@@ -428,7 +429,7 @@ export class InvestigationOrdersComponent implements OnInit {
   
   Save()
   {
-    console.log(this.getSaveModel(),"model");
+    
     this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())    
     .pipe(takeUntil(this._destroying$))
     .subscribe((res: any) => {
