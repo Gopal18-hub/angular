@@ -387,11 +387,19 @@ if(value===10)
     this.objPhyOrder=[];
     this.objdtdenialorder="";
     this.physicianOrderList=[];
-    console.log(this.medOrderDetailsTable.selection.selected,"selected rows");  
-    
+    console.log(this.medOrderDetailsTable.selection.selected,"selected rows");      
     this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
       if(e.drugid !== 0) 
       this.isBtnDenialDisable = false;
+      if(this.investigationForm.value.denyorder && !this.investigationForm.value.remarks)
+      {
+      this.messageDialogService.info("Please enter denial reason remark for order!")
+      }
+      if(!this.investigationForm.value.denyorder)
+      {
+        this.messageDialogService.info("Please select denial reason for open order before close!")      
+      }      
+      if(this.investigationForm.value.remarks && this.investigationForm.value.denyorder){
       this.objPhyOrder.push({
         acDisHideDrug: true,
         visitid: e.visitId,
@@ -404,6 +412,7 @@ if(value===10)
         drugid: e.drugid,
         acdRemarks: e.acdRemarks
       });
+    }
     });
    
     this.objdtdenialorder={
@@ -465,8 +474,6 @@ if(value===10)
     if(res === 1)
     {
       this.messageDialogService.success("Saved Successfully!");
-     
-
     }
     this.objPhyOrder=[];
     this.objdtdenialorder=[];
@@ -479,6 +486,9 @@ if(value===10)
   }
   cancelDenial()
   {
+    this.physicianOrderList=[];
+    if(this.medOrderDetailsTable.selection.selected.length === 0){this.messageDialogService.info("Please select atleast 1 row to proceed.");}
+    else
     this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
       if(e.drugid !== 0) 
       
@@ -496,8 +506,6 @@ if(value===10)
     if(res.success === true)
     {
       this.messageDialogService.success(res.message);
-     
-
     }
    
     }) 
