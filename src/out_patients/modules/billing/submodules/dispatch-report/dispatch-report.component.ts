@@ -498,10 +498,11 @@ export class DispatchReportComponent implements OnInit {
     this.openReportModal("DispatchReport");
   }
   openReportModal(btnname: string) {
+    console.log(this.dispatchhistoryform.controls["billedlocation"].value.value);
     this.reportService.openWindow(btnname, btnname, {
-      fromdate: this.dispatchhistoryform.controls["fromdate"].value,
-      todate: this.dispatchhistoryform.controls["todate"].value,
-      locationid: this.dispatchhistoryform.controls["billedlocation"].value,
+      fromdate: this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "dd/MM/YYYY"),
+      todate: this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "dd/MM/YYYY"),
+      locationid: this.dispatchhistoryform.controls["billedlocation"].value.value,
       RepType: this.dispatchhistoryform.controls["radio"].value,
     });
   }
