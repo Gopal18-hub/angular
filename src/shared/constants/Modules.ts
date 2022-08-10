@@ -154,7 +154,8 @@ export namespace MaxModules {
             {
               id: 220,
               title: "Post Discharge Follow Up Billing",
-              defaultPath: "/out-patient-billing/post-discharge-follow-up-billing",
+              defaultPath:
+                "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
             },
             {
@@ -218,6 +219,7 @@ export namespace MaxModules {
           defaultPath: "/employee-sponsor-tagging",
           childrens: [],
           moreOptions: false,
+          globalSearchKey: "employeesponsor",
         },
         {
           id: -1,

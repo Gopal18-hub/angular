@@ -39,51 +39,86 @@ export class PostDischargeBillComponent implements OnInit {
       services_name: {
         title: "Services Name",
         type: "string",
+        style: {
+          width: "9rem"
+        }
       },
       item_name: {
         title: "Items Name/ Doctors Name",
         type: "string",
+        style: {
+          width: "14rem"
+        }
       },
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "8rem"
+        }
       },
       procedure_doctor: {
         title: "Procedure Doctor",
         type: "string",
+        style: {
+          width: "10rem"
+        }
       },
       qty_type: {
         title: "Qty/ Type",
         type: "string",
+        style: {
+          width: "7rem"
+        }
       },
       credit: {
         title: "Credit",
         type: "string",
-
+        style: {
+          width: "5rem"
+        }
       },
       cash: {
         title: "Cash",
         type: "string",
+        style: {
+          width: "5rem"
+        }
       },
       disc: {
         title: "Disc%",
         type: "string",
+        style: {
+          width: "5rem"
+        }
       },
       disc_amount: {
         title: "Disc Amount",
-        type: "string"
+        type: "string",
+        style: {
+          width: "7rem"
+        }
       },
       total_amount: {
         title: "Total Amount",
-        type: "string"
+        type: "string",
+        style: {
+          width: "7rem"
+        }
       },
       gst: {
         title: "GST%",
-        type: "string"
+        type: "string",
+        style: {
+          width: "5rem"
+        }
       },
       gst_value: {
         title: "GST Value",
-        type: "string"
+        type: "string",
+        style: {
+          width: "5rem"
+        }
       }
     },
   };

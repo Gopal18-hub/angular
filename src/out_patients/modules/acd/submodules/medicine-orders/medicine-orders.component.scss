@@ -2,43 +2,55 @@
   .w-12 {
     width: 12%;
   }
+
   .w-86 {
     width: 87.25%;
   }
+
   .w-26 {
     width: 26%;
   }
+
   .h-30vh {
     height: 30vh;
   }
+
   .h-22vh {
     height: 22vh;
   }
+
   .w-44 {
     width: 44%;
   }
+
   .bg-blue {
     background-color: #bfe8e7;
   }
+
   .print-button {
     background-color: #5a5a5a;
   }
+
   .bg-deposit {
     background-color: #f6f6f6;
   }
+
   ::ng-deep {
     .sub-bill-form {
       mat-form-field {
         background-color: #fff;
       }
+
       button {
         height: 26px;
         line-height: 26px;
       }
     }
+
     mat-radio-group {
       flex-direction: row;
       width: 100%;
+
       mat-radio-button {
         margin-right: 1.2rem;
       }
@@ -46,96 +58,138 @@
   }
 }
 
-::ng-deep .mat-raised-button{
-min-width: fit-content !important;
-min-height: fit-content !important;
-  
+::ng-deep .mat-raised-button {
+  min-width: fit-content !important;
+  min-height: fit-content !important;
 }
 
-.checkboxh
-{
-height:20px
-}
-::ng-deep  .mat-typography p
-{
-margin : 0 0 0px;
-}
-::ng-deep tr.Billed{
-background-color: #9FF1AC !important;
-}
-::ng-deep tr.Partially{
-background-color: #F9FCA6 !important;
-}
-::ng-deep tr.Denied{
-background-color: #FFCAA7 !important;
-}  
-::ng-deep td mat-form-field .mat-form-field-wrapper{
-width:175% !important
+.checkboxh {
+  height: 20px
 }
 
-::ng-deep mat-option#mat-option-5{
-background-color: #9FF1AC !important;
+::ng-deep .mat-typography p {
+  margin: 0 0 0px;
 }
-::ng-deep mat-option#mat-option-7{
-background-color: #F9FCA6 !important;
+
+::ng-deep tr.Billed {
+  background-color: #9FF1AC !important;
 }
-::ng-deep mat-option#mat-option-8{
-background-color: #FFCAA7 !important;
+
+::ng-deep tr.Billed:hover {
+  background-color: #54c767 !important;
+  color: black !important;
+
 }
-.dateW{    
-width: 27% !important;
+
+::ng-deep tr.Partially {
+  background-color: #F9FCA6 !important;
 }
-.btnW{    
-width: 28% !important;
+
+::ng-deep tr.Partially:hover {
+  background-color: #FFDD00 !important;
+  color: black !important;
 }
-.denyBtn{
-width: 18% !important;
+
+::ng-deep tr.Denied {
+  background-color: #FFCAA7 !important;
 }
-.tableh{    
-height: 47% !important;
+
+::ng-deep tr.Denied:hover {
+  background-color: #FF7777 !important;
+  color: black !important;
 }
+
+::ng-deep td mat-form-field .mat-form-field-wrapper {
+  width: 175% !important
+}
+
+::ng-deep mat-option#mat-option-5 {
+  background-color: #9FF1AC !important;
+}
+::ng-deep mat-option#mat-option-7 {
+  background-color: #F9FCA6 !important;
+}
+::ng-deep mat-option#mat-option-8 {
+  background-color: #FFCAA7 !important;
+}
+::ng-deep mat-option#mat-option-5:hover {
+  background-color: #54c767 !important;
+}
+
+::ng-deep mat-option#mat-option-7:hover {
+  background-color: #FFDD00 !important;
+}
+
+::ng-deep mat-option#mat-option-8:hover {
+  background-color: #FF7777 !important;
+}
+
+.dateW {
+  width: 27% !important;
+}
+
+.btnW {
+  width: 28% !important;
+}
+
+.denyBtn {
+  width: 18% !important;
+}
+
+.tableh {
+  height: 47% !important;
+}
+
 .iconcss {
-::ng-deep {
+  ::ng-deep {
     position: absolute !important;
     padding: 1px !important;
     border-radius: 4px !important;
     left: 1px !important;
-}
+  }
 }
 
-.serachcss{
-::ng-deep .max-table-wrapper{        
+.serachcss {
+  ::ng-deep .max-table-wrapper {
     border-radius: 0.75rem;
     border: solid #707070 !important;
-   
-}
-}
-.patientInfo{
-color: #00B2A9;
-}
-.remarksw{
-  width:37%
-}
 
-.bg-lightgray{
-background :#ECECEC; 
-.medicinew{
-  width:22%
-}
- 
-}
-.bg-lightgrayb{
-  background :#ECECEC; 
-  width : 48%
-   
   }
-.bg-darkgray{
-
-background: #d8d8d8;
-width: 31%
 }
 
-.bg-white{
-background-color:white;
-color: rgba(0, 0, 0, 0.87);
+.tokentxt {
+  color: #00B2A9;
+}
+
+.patientInfo {
+  color: #00B2A9;
+}
+
+.remarksw {
+  width: 37%
+}
+
+.bg-lightgray {
+  background: #ECECEC;
+
+  .medicinew {
+    width: 22%
+  }
+
+}
+
+.bg-lightgrayb {
+  background: #ECECEC;
+  width: 48%
+}
+
+.bg-darkgray {
+
+  background: #d8d8d8;
+  width: 31%
+}
+
+.bg-white {
+  background-color: white;
+  color: rgba(0, 0, 0, 0.87);
 }
