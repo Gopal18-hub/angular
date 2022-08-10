@@ -357,6 +357,10 @@ export class DispatchReportComponent implements OnInit {
       title: this.billedlocation[0].address3,
       value: this.billedlocation[0].hspLocationId,
     });
+    this.reporttable = false;
+    setTimeout(() => {
+      this.reporttable = true;
+    }, 100);
   }
   savedialog() {
     var flag = 0;
@@ -373,7 +377,7 @@ export class DispatchReportComponent implements OnInit {
           (e.r_dispatchdate == null || e.r_dispatchdate == undefined) &&
           (e.receive_date == null || e.receive_date == undefined)
         ) {
-          this.msgdialog.error("You have Not Selected Proper Data");
+          // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
         } else if (
           e.r_dispatchdate == null ||
@@ -381,7 +385,7 @@ export class DispatchReportComponent implements OnInit {
           e.receive_date == null ||
           e.receive_date == undefined
         ) {
-          this.msgdialog.error("You have Not Selected Proper Data");
+          // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
         } else if (e.receive_date == null || e.receive_date == undefined) {
           this.dispatchreportsave.objDtSaveReport.push({
@@ -461,6 +465,9 @@ export class DispatchReportComponent implements OnInit {
             this.msgdialog.error("You have Not Selected Proper Data");
           }
         );
+    }
+    else if(flag > 0){
+      this.msgdialog.error("You have Not Selected Proper Data");
     }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }

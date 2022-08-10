@@ -15,7 +15,7 @@ export interface OpRefundApprovalListInterface {
   id: number;
   approvalRequestBy: number;
   paymentMode: string;
-  billDatetime: string;
+  billDatetime: any;
   itemId: number;
   itemName: string;
   serviceName: string;
