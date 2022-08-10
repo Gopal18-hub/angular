@@ -279,7 +279,13 @@ export class InvestigationOrdersComponent implements OnInit {
       });
     })
   }
- 
+  ngAfterViewInit(): void {
+  
+    
+    this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
+      this.investigationForm.controls["input"].reset();
+      this.investigationForm.controls["status"].reset();})
+    }
   isChecked(event:any)
 
   {
