@@ -767,8 +767,7 @@ export namespace ApiConstants {
   export const getediganosticacdoninvestigation = (
     FromDate: any,
     ToDate: any,
-    Locationid: number  
-    
+    Locationid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -777,16 +776,14 @@ export namespace ApiConstants {
       "/" +
       ToDate +
       "/" +
-      Locationid      
+      Locationid
     );
   };
   export const getediganosticacdoninvestigationgrid = (
-   
     Locationid: number,
-    orderid : number,
-    regno : number,
-    iacode : string
-    
+    orderid: number,
+    regno: number,
+    iacode: string
   ) => {
     return (
       environment.PatientApiUrl +
@@ -796,8 +793,8 @@ export namespace ApiConstants {
       orderid +
       "/" +
       regno +
-      "/"+
-      iacode     
+      "/" +
+      iacode
     );
   };
   export const getdenyreasonforacd =
@@ -806,8 +803,7 @@ export namespace ApiConstants {
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
-    LocationID: number  
-    
+    LocationID: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -816,7 +812,7 @@ export namespace ApiConstants {
       "/" +
       ToDate +
       "/" +
-      LocationID      
+      LocationID
     );
   };
   export const getediganosticacd = (
@@ -846,7 +842,7 @@ export namespace ApiConstants {
       Locationid
     );
   };
- 
+
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
@@ -961,7 +957,11 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/sendotpoprefund";
 
   //OP REFUND APPROVAL
-  export const getpendingoprefundapproval = (fromdate: any, todate: any) => {
+  export const getpendingoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallpendingoprefundapprovalrequest/" +
@@ -969,11 +969,15 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getapprovedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getapprovedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallapprovedoprefundapprovalrequest/" +
@@ -981,23 +985,27 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getrejectedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getrejectedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallrejectedoprefundapprovalrequest/" +
       fromdate +
       "/" +
       todate +
-      "/7"
+      "/" +
+      hsplocationid
     );
   };
 
   export const oprefundapprovereject =
     environment.BillingApiUrl +
     "api/outpatientbilling/oprefundapprovalrequestsave";
-
 }

@@ -334,6 +334,7 @@ export class DmgMappingComponent implements OnInit {
             }
           }
         );
+      this.isDmgmapped = false;
     } else {
       this.dialog.open(DmgDialogComponent, { width: "25vw", height: "30vh" });
     }

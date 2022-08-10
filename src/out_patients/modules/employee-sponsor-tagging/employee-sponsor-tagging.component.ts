@@ -130,7 +130,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   config1: any = {
     actionItems: false,
-    // dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/yyyy",
     clickedRows: false,
     //selectBox: true,
     // selectCheckBoxPosition: 10,
@@ -168,7 +168,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       dob: {
         title: "DOB",
-        type: "string",
+        type: "date",
         style: {
           width: "5.5rem",
         },
@@ -208,7 +208,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       doj: {
         title: "DOJ",
-        type: "string",
+        type: "date",
         style: {
           width: "5rem",
         },
@@ -356,60 +356,56 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
-        console.log(formdata);
+        console.log(formdata.data.SearchTerm);
         this.router.navigate([], {
           queryParams: {},
           relativeTo: this.route,
         });
-        const lookupdata = await this.lookupservice.searchPatient(formdata);
-        console.log(lookupdata[0]);
-        if (lookupdata.length == 1) {
-          if (lookupdata[0] && "maxid" in lookupdata[0]) {
-            this.employeesponsorForm.controls["maxId"].setValue(
-              lookupdata[0]["maxid"]
-            );
 
-            this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
+        // const lookupdata = await this.lookupservice.searchPatient(formdata);
+        // console.log(lookupdata[0]);
+        // if (lookupdata.length == 1) {
+        //   if (lookupdata[0] && "maxid" in lookupdata[0]) {
+        //     this.employeesponsorForm.controls["maxId"].setValue(
+        //       lookupdata[0]["maxid"]
+        //     );
 
-            this.onMaxidEnter(this.employeesponsorForm.controls["maxId"].value);
-          }
-        } else {
-          const similarSoundDialogref = this.dialog.open(
-            SimilarPatientDialog,
+        //     this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
 
-            {
-              width: "60vw",
-
-              height: "65vh",
-
-              data: {
-                searchResults: lookupdata,
-              },
-            }
-          );
-
-          similarSoundDialogref
-
-            .afterClosed()
-
-            .pipe(takeUntil(this._destroying$))
-
-            .subscribe((result: any) => {
-              if (result) {
-                console.log(result.data["added"][0].maxid);
-
-                let maxID = result.data["added"][0].maxid;
-                this.employeesponsorForm.controls["maxId"].setValue(maxID);
-                this.onMaxidEnter(
-                  this.employeesponsorForm.controls["maxId"].value
-                );
-
-               
-              }
-
-              //this.similarContactPatientList = [];
-            });
-        }
+        //     this.onMaxidEnter(this.employeesponsorForm.controls["maxId"].value);
+        //   }
+        //  else if (lookupdata[0] && "phone" in lookupdata[0]) {
+        //   console.log(lookupdata[0]["phone"]);
+        //   this.employeesponsorForm.controls["mobileNo"].setValue(
+        //     lookupdata[0]["phone"]
+        //   );
+        // }
+        // } else {
+        // const similarSoundDialogref = this.dialog.open(
+        //   SimilarPatientDialog,
+        //   {
+        //     width: "60vw",
+        //     height: "65vh",
+        //     data: {
+        //       searchResults: lookupdata,
+        //     },
+        //   }
+        // );
+        // similarSoundDialogref
+        //   .afterClosed()
+        //   .pipe(takeUntil(this._destroying$))
+        //   .subscribe((result: any) => {
+        //     if (result) {
+        //       console.log(result.data["added"][0].maxid);
+        //       let maxID = result.data["added"][0].maxid;
+        //       this.employeesponsorForm.controls["maxId"].setValue(maxID);
+        //       this.onMaxidEnter(
+        //         this.employeesponsorForm.controls["maxId"].value
+        //       );
+        //     }
+        //     //this.similarContactPatientList = [];
+        //   });
+        //  }
       });
     this.http
       .get(ApiConstants.getcompanyandpatientsponsordata)
@@ -706,8 +702,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
                 //item.dob = new Date(item.dob).toLocaleDateString();
                 //  console.log(item.dob);
-                item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
-                item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
+                // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+                // item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
                 // this.doblist.push(new Date(item.dob));
                 // this.doblist.forEach((a: any) => {
                 //   if (a.constructor === Date) {
