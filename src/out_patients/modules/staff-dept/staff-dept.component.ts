@@ -150,6 +150,7 @@ export class StaffDeptComponent implements OnInit {
   }
   staffColumnClick(event:any)
   {
+    if(this.staffDetail! < 1)
     this.staffDeptDetails = [];
     this.selectedCode = event.row.empCode;      
      this.http.get(ApiConstants.getstaffdependentdetails(1,this.selectedCode,""))
@@ -189,6 +190,7 @@ clear()
        if(res)      
        this.staffDeptDetails=[];     
        this.staffDetails=[];
+       this.staffDetail=[];
        res.dtsStaffDependentDetails.forEach((e:any) => {
          if(e.relationship === "Self")
          {        
@@ -197,18 +199,23 @@ clear()
        });       
       if(this.staffDetail.length === 0)
       {
-        this.messageDialogService.info("No Records Founds.");
+        this.staffDetails=[];
+        this.staffDeptDetails=[];
+        //this.messageDialogService.info("No Records Founds.");
       }      
        else if(this.staffDetail.length > 1)
        {
          this.staffDetails=res.dtsStaffDependentDetails;
        }       
-       else{
-         this.staffDeptDetails = res.dtsStaffDependentDetails;
-         if(res.dtsStaffDependentDetails[0].relationship == "Self")
-              this.staffDetail.push(res.dtsStaffDependentDetails[0]);
-              this.staffDetails = this.staffDetail;
-              this.staffDetail=[];              
+       else{      
+            
+              this.staffDeptDetails=[];
+              if(res.dtsStaffDependentDetails[0].relationship == "Self")
+                   this.staffDetail.push(res.dtsStaffDependentDetails[0]);
+                   this.staffDetails = this.staffDetail;
+                   this.staffDeptDetails = res.dtsStaffDependentDetails;
+                   this.staffDetail=[];              
+            
        }
        });
     }   

@@ -108,7 +108,7 @@
                     <!-- <mat-select > -->
                 <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT;let i=index"  >
                     <mat-checkbox class="checkbox_color" [(ngModel)]=" dmgPatientDetails.dmgMappingDataDT[i].isChecked" 
-                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId);" 
+                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId,$event);" 
                     value="dmgPatientDetails.dmgMappingDataDT[i].docId" color="primary">
                     {{diseasegroup.docName}} 
                     </mat-checkbox>
