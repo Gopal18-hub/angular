@@ -12,6 +12,7 @@ import { SaveInvestigationOrderModel } from "@core/models/saveInvestigationOrder
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
+import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-date-dialog.component';
 //import { ScheduleDateDialogComponent } from '@modules/registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
 
 @Component({
@@ -32,21 +33,25 @@ export class InvestigationOrdersComponent implements OnInit {
   isBtnDisableClear: boolean = true;
   name: any;
   questions: any;
+  statusvalue: any;
+  idValue :any;
   private readonly _destroying$ = new Subject<void>();
 
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
 
   invOrderList : any;
+  invOrderListMain : any;
   invOrderDetails : any;
 
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
 
-  invOrderLists : any =[];
+ 
   physicianOrderList : any =[];
 
   objPhyOrder: any=[];
   objdtdenialorder:any;
+  scheduleDate : any="";
 
   investigationFormData = {
     title: "",
@@ -67,10 +72,10 @@ export class InvestigationOrdersComponent implements OnInit {
         type: "dropdown",
         placeholder: "Select",
         options: [
-          { title: "Max Id", value: "maxId" },
-          { title: "Patient Name", value: "patientName" },
-          { title: "Doctor Name", value: "doctorName" },
-          { title: "Mobile Number", value: "mobile" }
+          { title: "Max Id", value: "maxid" },
+          { title: "Patient Name", value: "ptnName" },
+          { title: "Doctor Name", value: "docName" },
+          { title: "Mobile Number", value: "mobileNo" }
         ],
       },
       input: {
@@ -82,11 +87,11 @@ export class InvestigationOrdersComponent implements OnInit {
         type: "dropdown",
         placeholder: "Select",
         options: [
-          { title: "All", value: "0" },
-          { title: "Billed", value: "1" },
-          { title: "Unbilled", value: "2" },
-          { title: "Partially Billed", value: "3" },
-          { title: "Denied", value: "4" },
+          { title: "All", value: "All" },
+          { title: "Billed", value: "Billed" },
+          { title: "Unbilled", value: "Unbilled" },
+          { title: "Partially Billed", value: "Partially Billed" },
+          { title: "Denied", value: "Denied" },
         ],
       },
       denyorder: {
@@ -260,11 +265,7 @@ export class InvestigationOrdersComponent implements OnInit {
     let todaydate = new Date();
     this.investigationForm.controls["fromdate"].setValue(todaydate);
     this.investigationForm.controls["todate"].setValue(todaydate);
-    if (this.from == undefined && this.to == undefined) {
-      // this.from = this.datepipe.transform(
-      //   new Date().setMonth(new Date().getMonth() - 2),
-      //   "yyyy-MM-dd"
-      // );
+    if (this.from == undefined && this.to == undefined) {   
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
@@ -280,12 +281,30 @@ export class InvestigationOrdersComponent implements OnInit {
     })
   }
   ngAfterViewInit(): void {
-  
-    
+    //Dialog
+    this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
+      if(value===10)
+      {  
+      this.matdialog.open(ScheduleDateDialogComponent).afterClosed().subscribe(res => {
+        // received data from dialog-component
+        this.scheduleDate= this.datepipe.transform(res.data, "YYYY-MM-dd")
+      })
+  }
+      })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
       this.investigationForm.controls["input"].reset();
       this.investigationForm.controls["status"].reset();})
+    
+      //Filter
+      this.investigationForm.controls["status"].valueChanges.subscribe((value:any)=>{
+        this.statusvalue = value;
+      })
+      this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
+        this.idValue = value;
+      })
     }
+
+
   isChecked(event:any)
 
   {
@@ -310,56 +329,56 @@ export class InvestigationOrdersComponent implements OnInit {
     }
   }  
   
-  search() {    
-    //Main Grid both
-    this.invOrderLists=[];
-    this.invOrderList=[];
+  search() {  
    this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
     //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        this.invOrderList = res.objTempOrderHeader;
-        
-        res.objTempOrderHeader.forEach((e:any)=>        
-        {
-          if(this.investigationForm.value.maxid === "maxId")
-          if(e.maxid === this.investigationForm.value.input)
+        this.invOrderListMain = res.objTempOrderHeader // Main Grid;   
+      })    
+      console.log(this.statusvalue+this.idValue,"tst")
+      if(this.statusvalue === 'All')
+      {
+        this.invOrderList = this.invOrderListMain
+      }
+      else if(this.statusvalue && this.idValue && this.investigationForm.value.input)
+      {
+        this.invOrderList=[];
+       
+        this.invOrderListMain.forEach((e:any)=>  {          
+          if(e[this.idValue]=== this.investigationForm.value.input && e.billdetails === this.statusvalue)
           {
-            this.invOrderLists.push(e);          
+           this.invOrderList.push(e);
           }
-          if(this.investigationForm.value.maxid === "patientName")
-          if(e.ptnName === this.investigationForm.value.input)
-          {
-            this.invOrderLists.push(e);
-            
-          }
-          if(this.investigationForm.value.maxid === "doctorName")
-          if(e.docName === this.investigationForm.value.input)
-          {
-            this.invOrderLists.push(e);
-            
-          }
-          if(this.investigationForm.value.maxid === "mobile")
-          if(e.mobileNo === this.investigationForm.value.input)
-          {
-            this.invOrderLists.push(e);            
-          }
-          
-          if(e.orderStatus === this.investigationForm.value.status)
-          {
-            this.invOrderLists.push(e);          
-          }
-         
-          if(!this.investigationForm.value.maxid && !this.investigationForm.value.status)
-          {
-            this.invOrderLists=res.objTempOrderHeader;
-          }
-         this.invOrderList=this.invOrderLists;
-         
         })
-
-      })
-  }
+      }
+      else if(this.statusvalue){
+        this.invOrderList=[];
+        this.invOrderListMain.forEach((e:any)=>  {          
+          if(e.billdetails === this.statusvalue)
+          {
+            this.invOrderList.push(e);
+          }
+        })     
+      }
+      else if(this.idValue && this.investigationForm.value.input)
+      {
+        this.invOrderList=[];
+       
+        this.invOrderListMain.forEach((e:any)=>  {          
+          if(e[this.idValue]=== this.investigationForm.value.input)
+          {
+           this.invOrderList.push(e);
+          }
+        })
+      }
+       
+      else
+      {
+        this.invOrderList = this.invOrderListMain
+        console.log(this.invOrderList)
+      }
+      }
 
   listRowClick(event:any)
   {
@@ -417,7 +436,7 @@ export class InvestigationOrdersComponent implements OnInit {
         denialid: this.investigationForm.value.denyorder,
         denialremark: this.investigationForm.value.remarks,
         visitid: this.invOrderDetailsTable.selection.selected[0].visitId,
-        nextScheduleDate: "",
+        nextScheduleDate: this.scheduleDate,
         nextflag: true      
         }    
     }

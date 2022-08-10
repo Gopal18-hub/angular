@@ -47,6 +47,9 @@ export class MedicineOrdersComponent implements OnInit {
   objdtdenialorder:any;
   physicianOrderList : any =[];
   scheduleDate : any="";
+  statusvalue: any;
+  idValue :any
+  medOrderListMain : any;
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
 
 
@@ -69,10 +72,10 @@ export class MedicineOrdersComponent implements OnInit {
         type: "dropdown",
         placeholder: "Select",
         options: [
-          { title: "Max Id", value: "maxId" },
-          { title: "Patient Name", value: "patientName" },
-          { title: "Doctor Name", value: "doctorName" },
-          { title: "Mobile Number", value: "mobile" }
+          { title: "Max Id", value: "maxid" },
+          { title: "Patient Name", value: "ptnName" },
+          { title: "Doctor Name", value: "docName" },
+          { title: "Mobile Number", value: "mobileNo" }
         ],
       },
       input: {
@@ -87,7 +90,7 @@ export class MedicineOrdersComponent implements OnInit {
           { title: "All", value: "All" },
           { title: "Billed", value: "Billed" },
           { title: "Unbilled", value: "Unbilled" },
-          { title: "Partially billed", value: "Partially Billed" },
+          { title: "Partially Billed", value: "Partially Billed" },
           { title: "Denied", value: "Denied" },
         ],
       },
@@ -304,74 +307,77 @@ export class MedicineOrdersComponent implements OnInit {
       this.investigationForm.controls["status"].reset();
     })
     this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
-if(value===10)
-{
-  // this.matdialog.open(ScheduleDateDialogComponent, {
-  //   height:"30vh",
-  //   width: "30vw",
-  //   });
-
-
+    if(value===10)
+    {
 
     this.matdialog.open(ScheduleDateDialogComponent).afterClosed().subscribe(res => {
       // received data from dialog-component
       this.scheduleDate= this.datepipe.transform(res.data, "YYYY-MM-dd")
-
     })
-
-
 }
-
-
-    })}
+    })
+    //Filter
+     //Filter
+     this.investigationForm.controls["status"].valueChanges.subscribe((value:any)=>{
+      this.statusvalue = value;
+    })
+    this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
+      this.idValue = value;
+    })
+  }
   search() {
     this.medOrderList=[]
 
-   //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-    this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+   this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+   // this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        this.medOrderLists=[];
-        res.objOrderDetails.forEach((e:any)=>
+        this.medOrderListMain = res.objOrderDetails // Main Grid;   
+      })    
+      if(this.statusvalue === 'All')
       {
-        if(this.investigationForm.value.maxid === "maxId")
-        if(e.maxid === this.investigationForm.value.input)
-        {
-          
-          this.medOrderLists.push(e);
-        }
-        if(this.investigationForm.value.maxid === "patientName")
-        if(e.ptnName === this.investigationForm.value.input)
-        {
-          this.medOrderLists.push(e);
-
-        }
-        if(this.investigationForm.value.maxid === "doctorName")
-        if(e.docName === this.investigationForm.value.input)
-        {
-          this.medOrderLists.push(e);
-
-        }
-        if(this.investigationForm.value.maxid === "mobile")
-        if(e.mobileNo === this.investigationForm.value.input)
-        {
-          this.medOrderLists.push(e);
-
-        }
-
-        if(e.orderStatus === this.investigationForm.value.status)
-        {
-          this.medOrderLists.push(e);
-        }
-
-        if(!this.investigationForm.value.maxid && !this.investigationForm.value.status)
-        {
-          this.medOrderLists=res.objOrderDetails;
-        }
-       this.medOrderList=this.medOrderLists;
-
-      })
-      })
+        this.medOrderList = this.medOrderListMain
+      }
+      else if(this.statusvalue && this.idValue && this.investigationForm.value.input)
+      {
+        this.medOrderList=[];
+       
+        this.medOrderListMain.forEach((e:any)=>  {          
+          if(e[this.idValue]=== this.investigationForm.value.input && e.billdetails === this.statusvalue)
+          {
+           this.medOrderList.push(e);
+          }
+        })
+      }
+      else if(this.statusvalue)
+      {
+        this.medOrderList=[];
+        this.medOrderListMain.forEach((e:any)=>  {          
+          if(e.orderStatus === this.statusvalue)
+          {
+            this.medOrderList.push(e);
+          }
+        })     
+        this.statusvalue = '';
+      }
+      else if(this.idValue && this.investigationForm.value.input)
+      {
+        this.medOrderList=[];
+       
+        this.medOrderListMain.forEach((e:any)=>  {          
+          if(e[this.idValue]=== this.investigationForm.value.input)
+          {
+           this.medOrderList.push(e);
+          }
+        })
+        this.idValue = '';
+      }
+      else
+      {
+        
+        this.medOrderList = this.medOrderListMain
+        console.log(this.medOrderList)
+      }
 
 
   }
