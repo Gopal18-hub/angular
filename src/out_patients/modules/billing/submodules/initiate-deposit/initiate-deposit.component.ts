@@ -34,9 +34,9 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
   deposittypeList: [{ title: string; value: string }] = [] as any;
   selectpatientLsit: any = [];
   
-  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 12969; // Number(this.cookie.get("stationId"));
-  operatorID:any = 54741; //  Number(this.cookie.get("UserId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("stationId"));
+  operatorID:any =   Number(this.cookie.get("UserId"));
     
   initiatedepositformdata = {
     type:"object",
