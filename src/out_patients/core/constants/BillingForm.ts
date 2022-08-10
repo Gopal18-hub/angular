@@ -271,11 +271,11 @@ export namespace BillingForm {
 
     properties: {
       servicetype: {
-        type: "autocomplete",
+        type: "dropdown",
       },
 
       deposithead: {
-        type: "autocomplete",
+        type: "dropdown",
       },
     },
   };
