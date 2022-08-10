@@ -989,4 +989,27 @@ export namespace ApiConstants {
     environment.BillingApiUrl +
     "api/outpatientbilling/oprefundapprovalrequestsave";
 
+    
+  export const getsearchpatientdeceased = ( MaxID?: string,
+    MobileNo?: string, IsDetail?: string, SearchDeceased?: string
+    ) => {
+    return (  environment.BillingApiUrl +
+      "api/outpatientbilling/searchpatientdeceased?MaxID=" + 
+      MaxID +
+      "&MobileNo=" +
+      MobileNo +
+      "&IsDetail=" +
+      IsDetail +
+      "&SearchDeceased=" +
+      SearchDeceased
+    );
+  };
+
+  export const postInitiateDeposit =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/InitiateDeposit";
+
+  
+
+
 }

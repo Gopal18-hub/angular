@@ -34,6 +34,8 @@ export class DmgMappingComponent implements OnInit {
   categoryIcons: [] = [];
   lastUpdatedBy: string = this.cookie.get("UserName");
   currentTime: string = new Date().toLocaleString();
+  userId: any;
+  hsplocationId: any;
 
   dmgPatientDetails!: PatientDetailsDmgInterface;
   dmgMappingformData = {
@@ -119,6 +121,8 @@ export class DmgMappingComponent implements OnInit {
   ngOnInit(): void {
     //this.lastUpdatedBy = this.cookie.get("UserName");
     // this.userId = Number(this.cookie.get("UserId"));
+    this.userId = Number(this.cookie.get("UserId"));
+    this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     let formResult: any = this.formService.createForm(
       this.dmgMappingformData.properties,
       {}
@@ -163,9 +167,8 @@ export class DmgMappingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
-        if (data != null) {
+        if (data.dmgPatientDetailDT.length != 0) {
           this.showCheckboxgrid = true;
-          this.disablebutton = false;
           this.disableClear = false;
           this.clearPatientdata();
           this.dmgPatientDetails = data as PatientDetailsDmgInterface;
@@ -174,6 +177,7 @@ export class DmgMappingComponent implements OnInit {
             if (item.isChecked == 1) {
               this.isdmgselected = index;
               this.docId = this.dmgPatientDetails.dmgMappingDataDT[index].docId;
+              this.disablebutton = false;
               console.log(this.docId);
             } else {
               this.isdmgselected = -1;
@@ -247,18 +251,19 @@ export class DmgMappingComponent implements OnInit {
   regno!: number;
   isDmgmapped!: boolean;
   dmgsave() {
-    this.dmgPatientDetails.dmgMappingDataDT.forEach((item) => {
-      if (item.isChecked != 1) {
-        console.log("item is not checked.");
-        this.isDmgmapped = false;
-      } else {
-        this.isDmgmapped = true;
-        console.log("item is checked.");
-      }
-    });
-    // if (!this.isDmgmapped) {
+    // this.dmgPatientDetails.dmgMappingDataDT.forEach((item) => {
+    //   if (item.isChecked != 1) {
+    //     console.log("item is not checked.");
+    //     this.isDmgmapped = false;
+    //   } else {
+    //     this.isDmgmapped = true;
+    //     console.log("item is checked.");
+    //   }
+    // });
+    // if (this.isDmgmapped == false) {
     //   this.dialog.open(DmgDialogComponent, { width: "25vw", height: "30vh" });
     // } else {
+
     this.http
       .post(ApiConstants.savepatientdmg, this.getSaveDmgObject())
       .pipe(takeUntil(this._destroying$))
@@ -275,6 +280,7 @@ export class DmgMappingComponent implements OnInit {
           }
         }
       );
+
     //}
   }
 
@@ -288,15 +294,21 @@ export class DmgMappingComponent implements OnInit {
       "",
       this.regno,
       this.iacode,
-      9923,
-      7,
+      this.userId,
+      this.hsplocationId,
       ""
     );
   }
   // 0,0,this.docId,"",this.regno,this.iacode,9923,7,""
-  onChange(group: any, index: number, value: number) {
+  onChange(group: any, index: number, value: number, event: any) {
+    console.log(event);
     console.log(this.previouselected);
     console.log(value);
+    if (event.checked == false) {
+      this.disablebutton = true;
+    } else {
+      this.disablebutton = false;
+    }
     if (this.isdmgselected != -1) {
       if (this.isdmgselected != index) {
         this.isDmgmapped = true;
