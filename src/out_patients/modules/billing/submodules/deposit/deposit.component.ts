@@ -97,10 +97,10 @@ export class DepositComponent implements OnInit {
     clickSelection: "multiple",
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
-    groupby: {
-      parentcolumn: "cashTransactionID",
-      childcolumn: "parentID",
-    },
+    // groupby: {
+    //   parentcolumn: "cashTransactionID",
+    //   childcolumn: "parentID",
+    // },
     displayedColumns: [
       "depositRefund",
       "receiptno",
@@ -254,7 +254,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid:any =  69;// Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -469,7 +469,7 @@ export class DepositComponent implements OnInit {
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientPreviousDepositDetail[]) => {     
-              
+              //.filter(({depositRefund}) => depositRefund == "Deposit")
         this.totaldeposit = resultData.map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
         this.totalrefund = resultData.map(t => t.refund).reduce((acc, value) => acc + value, 0);   
         this.avalaibleamount = this.totaldeposit - this.totalrefund;
