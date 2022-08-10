@@ -77,7 +77,7 @@ export namespace CrystalReport {
   };
 
   export const GeneralOPDReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}/Out_Patient/GeneralOPDReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=${params.locationID}`;
+    return `${environment.ReportsSampleUrl}/Out_Patient/GeneralOPDReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=8`;
   };
 
   export const VisitingOTBillingReport = (params: any) => {
@@ -97,7 +97,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID=${params.DocID}&location=${params.location}&Rd_Special=${params.Rd_Special}&Cmb_Special=${params.Cmb_Special}&specialisationID=${params.specialisationID}`;
   };
   export const CRPExpiredPatientDetailReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&user=${params.user}`;
+    return `${environment.ReportsSampleUrl}/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${params.fromdate}&todate=${params.todate}&locationid=20&user=Mani`;
   };
 
   export const CROPItemPriceModifiedReport = (params: any) => {
@@ -128,7 +128,9 @@ export namespace CrystalReport {
   };
 
   export const equipmentReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${params.EquipFromDate}&EquipToDate=${params.EquipToDate}&locationID=${params.locationID}`;
+
+    return `${environment.ReportsSampleUrl}/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${params.EquipFromDate}&EquipToDate=${params.EquipToDate}&Cmb_Equip=${params.Cmb_Equip}&locationID=${params.locationID}&LocationName=${params.LocationName}`;
+
   };
 
   export const freeOutPatientReport = (params: any) => {
