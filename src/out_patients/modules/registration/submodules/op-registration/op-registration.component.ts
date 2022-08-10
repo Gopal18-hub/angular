@@ -2802,7 +2802,10 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.locality.value == undefined
         ? this.OPRegForm.value.locality
         : "",
-      this.OPRegForm.value.sourceOfInput.value || 0,
+      this.OPRegForm.value.sourceOfInput == null ||
+      this.OPRegForm.value.sourceOfInput == undefined
+        ? 0
+        : this.OPRegForm.value.sourceOfInput.value || 0,
       false,
       false, //data clean flag
       false, //isavailregcard
