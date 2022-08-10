@@ -156,7 +156,7 @@ export class DmgMappingComponent implements OnInit {
 
             this.onMaxidEnter(this.dmgMappingForm.controls["maxid"].value);
           }
-        } else {
+        } else if (lookupdata.length > 1) {
           const similarSoundDialogref = this.dialog.open(
             SimilarPatientDialog,
 

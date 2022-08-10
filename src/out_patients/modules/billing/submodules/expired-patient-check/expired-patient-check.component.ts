@@ -126,7 +126,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
 
             this.onMaxidSearch(this.expiredpatientForm.controls["maxid"].value);
           }
-        } else {
+        } else if (lookupdata.length > 1) {
           const similarSoundDialogref = this.dialog.open(
             SimilarPatientDialog,
 
