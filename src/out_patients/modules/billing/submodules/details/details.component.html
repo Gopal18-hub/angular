@@ -103,7 +103,7 @@
           <div class="pl-1 pt-0 ml-2 mr-2 border-radius-lg flex  w-2/5">
             <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-4  w-31" >
                 <!--    (click)="oncheckboxClick($event)" -->
-             <div class="ml-2 checkbox-bottom">
+             <div class="ml-2 mb-1">
                  <maxhealth-question
                  [question]="questions[4]"
                  [form]="BServiceForm"
@@ -140,7 +140,7 @@
          </div>
          <div class="float-right w-1/10 flex">
              <div class="ml-0" >
-             <button mat-raised-button color="primary" type="submit" >
+             <button mat-raised-button color="primary" type="submit" (click)="search()">
                  <img src="assets/lens.svg" class="lens-icon">
          <!-- <span class="p-0 m"> -->
                  Search

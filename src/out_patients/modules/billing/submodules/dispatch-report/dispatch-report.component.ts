@@ -19,6 +19,10 @@ import { Subject, Observable } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { CookieService } from "@shared/services/cookie.service";
 import { ReportService } from "@shared/services/report.service";
+import { SearchService } from "@shared/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { LookupService } from "@core/services/lookup.service";
+
 @Component({
   selector: "out-patients-dispatch-report",
   templateUrl: "./dispatch-report.component.html",
@@ -184,7 +188,11 @@ export class DispatchReportComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private cookie: CookieService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService
   ) {}
   today: any;
   ngOnInit(): void {
@@ -199,6 +207,16 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
     this.getBilledLocation();
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+      });
   }
   ngAfterViewInit(): void {
     this.dispatchhistoryform.controls["radio"].valueChanges.subscribe(
