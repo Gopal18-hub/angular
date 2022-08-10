@@ -12,7 +12,7 @@ import { getPatientHistoryModel } from '@core/models/getPatientHistoryModel.Mode
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { Subject, takeUntil } from 'rxjs';
 import { ReportService } from '@shared/services/report.service';
-
+import { SearchService } from '@shared/services/search.service';
 import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
 import {
   MatDialog,
@@ -20,6 +20,8 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -226,6 +228,7 @@ export class PatientHistoryComponent implements OnInit {
   showtable: boolean = true;
   apiProcessing: boolean = false;
   searchbtn: boolean = true;
+  clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
   @ViewChild("table") tableRows: any;
@@ -237,7 +240,11 @@ export class PatientHistoryComponent implements OnInit {
     private datepipe: DatePipe,
     private cookie: CookieService,
     public matDialog: MatDialog,
-    private reportService:ReportService) { }
+    private reportService:ReportService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService) { }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -253,6 +260,50 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.gettransactiontype();
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.patienthistoryform.controls["maxid"].setValue(lookupdata[0]["maxid"]);
+            this.patienthistoryform.value.maxid = lookupdata[0]["maxid"];
+            this.getPatientDetails();
+          }
+        }
+        else
+        {
+          const similarSoundDialogref = this.matDialog.open(
+            SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "65vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+          similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.patienthistoryform.controls["maxid"].setValue(maxID);
+                      this.getPatientDetails();
+                      this.clearbtn = false;
+                    }
+                    this.similarContactPatientList = [];
+                  });
+        }
+      });
   }
   ngAfterViewInit(): void{
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -281,6 +332,15 @@ export class PatientHistoryComponent implements OnInit {
         this.mobilechange();
       }
     });
+    console.log(this.patienthistoryform);
+    setTimeout(() => {
+      this.patienthistoryform.valueChanges.subscribe(val=>{
+        console.log('val');
+        console.log(val)
+        this.clearbtn = false;
+      })
+    }, 300);
+    
   }
 
   gettransactiontype()
@@ -361,6 +421,7 @@ export class PatientHistoryComponent implements OnInit {
   {
     this.apiProcessing = true;
     this.showtable = false;
+    this.clearbtn = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
@@ -489,6 +550,7 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistorylist = [];
     this.apiProcessing = false;
     this.showtable = true;
+    this.clearbtn = true;
   }
   
 
