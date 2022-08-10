@@ -240,7 +240,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       remark: {
         title: "Remarks",
-        type: "input",
+        type: "textarea",
         // readonly: true,
       },
       tooltipColumn: "remark",
