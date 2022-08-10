@@ -298,6 +298,11 @@ export class MedicineOrdersComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.scheduleDate="";
+    
+    this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
+      this.investigationForm.controls["input"].reset();
+      this.investigationForm.controls["status"].reset();
+    })
     this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
 if(value===10)
 {
@@ -313,6 +318,7 @@ if(value===10)
       this.scheduleDate= this.datepipe.transform(res.data, "YYYY-MM-dd")
 
     })
+
 
 }
 
@@ -331,6 +337,7 @@ if(value===10)
         if(this.investigationForm.value.maxid === "maxId")
         if(e.maxid === this.investigationForm.value.input)
         {
+          
           this.medOrderLists.push(e);
         }
         if(this.investigationForm.value.maxid === "patientName")
