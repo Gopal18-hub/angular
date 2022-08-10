@@ -83,10 +83,7 @@
 
             <div class="float-right w-1/2 mr-4 flex">
 
-              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" [disabled]="!MaxIDExist"
-                (click)="openinitiatedeposit()">
-                Initiate Deposit
-              </button>
+            
               <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!MaxIDExist"
                 (click)="openDepositdialog()">
                 Make Deposit
@@ -95,6 +92,10 @@
                 (click)="openrefunddialog()">
                 Refund
               </button>
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" [disabled]="!MaxIDExist"
+              (click)="openinitiatedeposit()">
+              Initiate Deposit
+            </button>
               <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!MaxIDExist">
                 Print Receipt
               </button>

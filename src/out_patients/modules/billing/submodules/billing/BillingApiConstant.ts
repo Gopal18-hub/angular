@@ -21,6 +21,13 @@ export namespace BillingApiConstants {
   export const getspecialization =
     environment.PatientApiUrl + "api/patient/getspecialization";
 
+  export const getbillingdoctorsonsearch = (
+    doctorName: string,
+    locationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getbillingdoctorsonsearch/${doctorName}/${locationId}`;
+  };
+
   export const getdoctorlistonSpecializationClinic = (
     isClinic: boolean,
     clinicSpecializationId: number,

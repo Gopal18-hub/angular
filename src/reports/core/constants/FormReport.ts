@@ -1,3 +1,5 @@
+import { environment } from "@environments/environment";
+
 export namespace FormReport {
   export const equipmentSchedule = {
     reportName: "Equipment Schedule",
@@ -9,12 +11,19 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
-        fromDate: {
+        EquipFromDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        EquipToDate: {
           type: "date",
           title: "To Date",
         },
@@ -27,23 +36,29 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Equipment Schedule",
+            reportEntity: "equipmentReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
 
     layout: "single",
     resultType: "table",
-    resultActionItems: [
-      {
-        title: "Print",
-      },
-      {
-        title: "Export",
-      },
-    ],
+    // resultActionItems: [
+    //   {
+    //     title: "Print",
+    //   },
+    //   {
+    //     title: "Export",
+    //   },
+    // ],
   };
 
   // export const expiredPatientReport = {
