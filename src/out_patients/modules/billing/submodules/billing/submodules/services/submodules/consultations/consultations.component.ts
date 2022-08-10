@@ -8,6 +8,15 @@ import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ConsultationWarningComponent } from "../../../../prompts/consultation-warning/consultation-warning.component";
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+} from "rxjs/operators";
+
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
@@ -117,6 +126,26 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       const source = res.added[0];
       this.update(source.type, source.sno);
     });
+    this.formGroup.controls["doctorName"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) =>
+          this.http
+            .get(
+              BillingApiConstants.getbillingdoctorsonsearch(
+                value,
+                Number(this.cookie.get("HSPLocationId"))
+              )
+            )
+            .pipe(finalize(() => {}))
+        )
+      )
+      .subscribe((data: any) => {});
   }
 
   getSpecialization() {
