@@ -16,12 +16,10 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
-  staffDetails: any;
   staffDetail: any = [];
   staffDeptDetails: any;
   selectedCode: any;
   private readonly _destroying$ = new Subject<void>();
-  orgList = ["id", "1", "name", "Max HealthCare"]
   staffFormData = {
     title: "",
     type: "object",
@@ -42,13 +40,13 @@ export class StaffDeptComponent implements OnInit {
   name: any;
   staffForm!: FormGroup;
   questions: any;
-  config1: any = {
+  staffListConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
-    displayedColumns: ['enterBy', 'groupCompanyName', 'empCode', 'empName', 'dob', 'gender', 'doj'],
+    displayedColumns: ['sNo', 'groupCompanyName', 'empCode', 'empName', 'dob', 'gender', 'doj'],
     columnsInfo: {
-      enterBy: {
+      sNo: {
         title: 'S.No',
         type: 'number',
         style: {
@@ -88,11 +86,10 @@ export class StaffDeptComponent implements OnInit {
         title: 'DOJ',
         type: 'date'
       },
-
     }
 
   }
-  config2: any = {
+  staffDetailConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
@@ -166,7 +163,6 @@ export class StaffDeptComponent implements OnInit {
   }
   search() {
     this.staffDetail = [];
-    this.staffDetails = [];
     this.staffDeptDetails = [];
 
     if (this.staffForm.value.organisation === "") {
@@ -176,17 +172,17 @@ export class StaffDeptComponent implements OnInit {
       this.messageDialogService.info("At least one information is required to search.");
     }
     else {
-      let staffD: any = [];
       var employeeCode = String(this.staffForm.value.employeeCode.trim());
       var employeeName = String(this.staffForm.value.employeeName.trim());
 
       this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation, employeeCode, employeeName))
-        //this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
-        //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
         .pipe(takeUntil(this._destroying$))
         .subscribe((res: any) => {
           if (res)
-            this.staffDetail = res.dtsStaffDependentDetails.filter((s: any) => s.relationship == "Self")
+            this.staffDetail = res.dtsStaffDependentDetails.filter((s: any) => s.relationship == "Self");
+          for (var i = 0; i < this.staffDetail.length; i++) {
+            this.staffDetail[i].sNo = i + 1;
+          }
           if (this.staffDetail.length == 1) {
             this.staffDeptDetails = res.dtsStaffDependentDetails
           }
