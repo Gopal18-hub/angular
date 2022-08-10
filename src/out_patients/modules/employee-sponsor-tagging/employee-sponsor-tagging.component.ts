@@ -204,7 +204,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       doj: {
         title: "DOJ",
-        type: "date",
+        type: "string",
         style: {
           width: "5rem",
         },
@@ -492,6 +492,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       //&& //check for dependant selected through active status
       // this.companySelected
       this.validmaxid &&
+      // this.employeeDependantDetailList.length > 0 &&
       this.dependantChecked &&
       this.companySelected
     ) {
@@ -807,8 +808,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.enableDelete();
               } else {
                 this.dependantChecked = false;
-                this.enableSave();
-                this.enableDelete();
+                // this.enableSave();
+                // this.enableDelete();
               }
               // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
             });
@@ -848,34 +849,38 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       if (value == true) {
         console.log(this.savedeleteEmployeeObject);
         console.log("inside value =true");
-        this.http
-          .post(
-            ApiConstants.saveEmployeeSponsorData,
-            this.getSaveDeleteEmployeeObj()
-          )
-          .subscribe(
-            (data) => {
-              console.log(data);
-              this.updatedTableList =
-                data as SaveDeleteEmployeeSponsorResponse[];
-              for (let i = 0; i < this.updatedTableList.length; i++) {
-                this.updatedTableList[i].slno = i + 1;
-                this.updatedTableList[0].flag = true;
+        if (this.empid == null) {
+          this.dialogService.info("Please select one dependant");
+        } else {
+          this.http
+            .post(
+              ApiConstants.saveEmployeeSponsorData,
+              this.getSaveDeleteEmployeeObj()
+            )
+            .subscribe(
+              (data) => {
+                console.log(data);
+                this.updatedTableList =
+                  data as SaveDeleteEmployeeSponsorResponse[];
+                for (let i = 0; i < this.updatedTableList.length; i++) {
+                  this.updatedTableList[i].slno = i + 1;
+                  this.updatedTableList[0].flag = true;
+                }
+                console.log(this.updatedTableList);
+                this.dialogService.success("Saved Successfully");
+              },
+              (error) => {
+                console.log(error.error);
+                if (error.error == "Please select Maxid!") {
+                  this.dialogService.info("Please enter Maxid");
+                } else if (error.error == "Please select company!") {
+                  this.dialogService.info("Please select company");
+                } else if (error.error == "Please enter employee code!") {
+                  this.dialogService.info("Please enter employee code");
+                }
               }
-              console.log(this.updatedTableList);
-              this.dialogService.success("Saved Successfully");
-            },
-            (error) => {
-              console.log(error.error);
-              if (error.error == "Please select Maxid!") {
-                this.dialogService.info("Please enter Maxid");
-              } else if (error.error == "Please select company!") {
-                this.dialogService.info("Please select company");
-              } else if (error.error == "Please enter employee code!") {
-                this.dialogService.info("Please enter employee code");
-              }
-            }
-          );
+            );
+        }
       }
       console.log(this.getSaveDeleteEmployeeObj());
     });
@@ -917,7 +922,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       });
   }
   flag!: number;
-  empid!: number;
+  empid!: any;
   savedeleteEmployeeObject!: SaveDeleteEmployeeSponsorRequest;
   getSaveDeleteEmployeeObj(): SaveDeleteEmployeeSponsorRequest {
     if (this.employeeDependanttable.selection.selected[0] != undefined) {
@@ -1022,6 +1027,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.employeeDependantDetailList.forEach((item) => {
           if (item.id != employeeid) {
             item.flag = 0;
+            this.empid = employeeid;
+            this.dependantRemarks = event.row.remarks;
             console.log("set other flags as 0");
           }
         });
@@ -1029,6 +1036,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.enableSave();
         this.enableDelete();
       } else {
+        this.empid = null;
+        this.dependantRemarks = "";
         this.dependantChecked = false;
       }
     }
