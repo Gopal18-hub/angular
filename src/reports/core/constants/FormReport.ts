@@ -6,6 +6,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
         equipmentName: {
           type: "dropdown",
@@ -235,12 +236,13 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
-        fromDate: {
+        ValueFromDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        ValueToDate: {
           type: "date",
           title: "To Date",
         },
@@ -253,9 +255,15 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "General OPD Scroll Report",
+            reportEntity: "GeneralOPDReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
@@ -365,19 +373,32 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
-        fromDate: {
+        fromdate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        todate: {
           type: "date",
           title: "To Date",
         },
-        location: {
+        // location: {
+        //   type: "dropdown",
+        //   placeholder: "---Location---",
+        //   title: "Location",
+        // },
+        locationid: {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`, 
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
       },
     },
@@ -388,13 +409,15 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
-          equipmentName: "w-full",
-        },
-        {
-          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Expired Patient Report",
+            reportEntity: "CRPExpiredPatientDetailReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
