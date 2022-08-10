@@ -1,0 +1,20 @@
+.search-dialog-wrapper{
+    .bg-pink{
+        background-color: #FF6A6A;
+        color: #fff;
+    }
+    .bg-orange{
+        background-color: #FF8A3B;
+        color: #fff;
+    }
+    .bg-blue{
+        background-color: #00B2A9;
+        color: #fff;
+    }
+    .pointer-disable{
+        pointer-events: none;
+    }
+    ::ng-deep .mat-raised-button {
+        min-width: 155px !important;
+    }
+}

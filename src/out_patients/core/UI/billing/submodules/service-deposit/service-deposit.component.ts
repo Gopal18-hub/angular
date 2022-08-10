@@ -32,8 +32,8 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
     console.log(changes['serviceclearsibilingcomponent'].currentValue);
     if(changes['serviceclearsibilingcomponent'].currentValue){
       this.servicedepositForm.reset();
-      this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });
-      this.servicedepositForm.controls["servicetype"].setValue({ title: "Medical services @0.000", value: 1781 });  
+      this.servicedepositForm.controls["deposithead"].setValue(0);
+      this.servicedepositForm.controls["servicetype"].setValue(1781);  
     }
   }
 
@@ -69,8 +69,8 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
 
   //ngon
   ngAfterViewInit(): void{
-    this.servicedepositForm.controls["deposithead"].setValue({ title: "-- Select Advance Type --", value: 0 });
-    this.servicedepositForm.controls["servicetype"].setValue({ title: "Medical services @0.000", value: 1781 });
+    this.servicedepositForm.controls["deposithead"].setValue(0);
+    this.servicedepositForm.controls["servicetype"].setValue(1781);
   }
 }
 
