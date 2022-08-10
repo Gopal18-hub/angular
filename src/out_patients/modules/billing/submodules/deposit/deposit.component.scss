@@ -1,3 +1,4 @@
+.depositwrapper{
 .bg-deposit {
     background-color: #F6F6F6;
     color: #004084;
@@ -30,10 +31,11 @@
     color: rgba(0, 0, 0, 0.87);
 }
 
+.deposit{ 
 ::ng-deep .mat-form-field-wrapper {
 
-    padding-bottom: 0 !important;
-
+    padding-bottom: 0 !important;   
+}
 }
 
 .wt-nowrap {
@@ -72,12 +74,13 @@
     text-overflow: ellipsis;
 }
 .deposittablewidth{
-    height: 81% !important;
+    height: 83% !important;
+}
+   ::ng-deep .relative.table-height {
+    height: 50vh !important;
+} 
 }
 
-::ng-deep .relative.table-height {
-    height: 50vh !important;
-}
 
 
 

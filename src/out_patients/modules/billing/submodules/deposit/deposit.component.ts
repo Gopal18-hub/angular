@@ -20,6 +20,7 @@ import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model"
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import { DepositService } from '@core/services/deposit.service';
+import { ReportService } from '@shared/services/report.service';
 
 @Component({
   selector: 'out-patients-deposit',
@@ -31,7 +32,8 @@ export class DepositComponent implements OnInit {
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
     private messageDialogService: MessageDialogService,
-    private depositservice: DepositService) { }
+    private depositservice: DepositService,
+    private reportService: ReportService,) { }
 
   @ViewChild("deposittable") deposittable: any;
 
@@ -94,7 +96,7 @@ export class DepositComponent implements OnInit {
 
   depositconfig: any = {
     clickedRows: true,
-    clickSelection: "multiple",
+    clickSelection: "single",
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
     // groupby: {
@@ -244,6 +246,7 @@ export class DepositComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   categoryIcons: [] = [];
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
+  tableselectionexists:boolean = false;
 
   depositForm !: FormGroup;
   questions: any;
@@ -341,8 +344,7 @@ export class DepositComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
-   
+  ngAfterViewInit(): void {   
 
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -470,8 +472,8 @@ export class DepositComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientPreviousDepositDetail[]) => {     
               //.filter(({depositRefund}) => depositRefund == "Deposit")
-        this.totaldeposit = resultData.map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
-        this.totalrefund = resultData.map(t => t.refund).reduce((acc, value) => acc + value, 0);   
+        this.totaldeposit = resultData.filter((dp) => dp.depositRefund == "Deposit").map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
+        this.totalrefund = resultData.filter((dp) => dp.depositRefund == "Refund").map(t => t.refund).reduce((acc, value) => acc + value, 0);   
         this.avalaibleamount = this.totaldeposit - this.totalrefund;
         this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit.toFixed(2));
         this.depositForm.controls["totalrefund"].setValue(this.totalrefund.toFixed(2));
@@ -489,7 +491,18 @@ export class DepositComponent implements OnInit {
           return item;
         });
         
-        this.depoistList = resultData;      
+        this.depoistList = resultData;   
+        setTimeout(() => {
+          this.deposittable.selection.changed
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            if (this.deposittable.selection.selected.length > 0) {
+              this.tableselectionexists = true;
+            } else {
+              this.tableselectionexists = false;
+            }
+          });
+        });   
 
       },
       (error) => {
@@ -515,6 +528,7 @@ export class DepositComponent implements OnInit {
     this.depoistList = [];
     this.MaxIDExist = false;
     this.MaxIDdepositExist = false;
+    this.tableselectionexists = false;
     this.categoryIcons = [];
     this.depositForm.controls["totaldeposit"].setValue("0.00");
     this.depositForm.controls["totalrefund"].setValue("0.00");
@@ -528,7 +542,6 @@ export class DepositComponent implements OnInit {
     this.patientRefundDetails = $event.row;
   }
 
-   
   mobilechange()
   {
     console.log('mobile changed');
@@ -582,6 +595,15 @@ export class DepositComponent implements OnInit {
             this.messageDialogService.info(error.error);
           }
         );
+  }
+
+  printpatientreceipt(){
+    this.deposittable.selection.selected.map((s: any) => {
+      this.reportService.openWindow("depositReport", "depositReport", {
+        receiptnumber: s.receiptno,
+        locationID: this.hspLocationid
+      });
+    });
   }
 }
 export const CheckPatientDetails = {
