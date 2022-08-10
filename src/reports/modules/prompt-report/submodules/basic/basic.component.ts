@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { ReportService } from "@shared/services/report.service";
 
 @Component({
   selector: "reports-basic",
@@ -22,7 +23,8 @@ export class BasicComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private formService: QuestionControlService
+    private formService: QuestionControlService,
+    private reportService: ReportService
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +49,18 @@ export class BasicComponent implements OnInit {
   }
   submit() {
     if (this.formGroup.valid) {
+    }
+  }
+
+  buttonAction(button: any) {
+    if (button.type == "clear") {
+      this.formGroup.reset();
+    } else if (button.type == "crystalReport") {
+      this.reportService.openWindow(
+        button.reportConfig.reportName,
+        button.reportConfig.reportEntity,
+        this.formGroup.value
+      );
     }
   }
 }

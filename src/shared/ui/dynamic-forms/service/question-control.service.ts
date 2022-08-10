@@ -22,6 +22,7 @@ import { AutoCompleteQuestion } from "../types/question-autocomplete";
 import { PasswordQuestion } from "../types/question-password";
 import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
+
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
@@ -42,7 +43,7 @@ export class QuestionControlService {
       }
 
       if (question.type == "dropdown")
-        data.push(new DropdownQuestion(question));
+        data.push(new DropdownQuestion(question, this.http));
       else if (question.type == "string")
         data.push(new TextboxQuestion(question));
       else if (question.type == "tel") data.push(new TelQuestion(question));
