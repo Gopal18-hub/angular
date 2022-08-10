@@ -60,6 +60,7 @@ export class OprefundApprovalComponent implements OnInit {
   oprefundConfig: any = {
     actionItems: true,
     selectBox: true,
+    //dateformat: "dd/MM/yyyy-hh:mm",
     actionItemList: [
       {
         title: "OP Billing",
@@ -91,11 +92,100 @@ export class OprefundApprovalComponent implements OnInit {
       "serviceName",
       "itemName",
       "refundAmt",
-      "requestedby",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
     ],
     columnsInfo: {
       maxid: {
-        title: "Max Id",
+        title: "Max ID",
+        type: "string",
+      },
+      ssn: {
+        title: "SSN",
+        type: "string",
+      },
+      ptnName: {
+        title: "Name",
+        type: "string",
+        tootltipColumn: "ptnName",
+      },
+      billNo: {
+        title: "Bill No",
+        type: "string",
+      },
+      billDatetime: {
+        title: "Bill Date/Time",
+        type: "date",
+        tooltipColumn: "billDatetime",
+      },
+      serviceName: {
+        title: "Service Name",
+        type: "string",
+      },
+      itemName: {
+        title: "Item Name",
+        type: "string",
+        tooltipColumn: "itemName",
+      },
+      refundAmt: {
+        title: "Refund Amount",
+        type: "string",
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        tootltipColumn: "approvalRequestBy",
+      },
+      approvalRequestDateTime: {
+        title: "Requested By",
+        type: "string",
+        tootltipColumn: "approvalRequestDateTime",
+      },
+    },
+  };
+  oprefundapproveConfig: any = {
+    actionItems: true,
+    selectBox: true,
+    //dateformat: "dd/MM/yyyy-hh:mm",
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "ptnName",
+      "billNo",
+      "billDatetime",
+      "serviceName",
+      "itemName",
+      "refundAmt",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
+      "approvalDoneBy",
+      "approvalDoneDateTime",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
         type: "string",
       },
       ssn: {
@@ -129,9 +219,24 @@ export class OprefundApprovalComponent implements OnInit {
         title: "Refund Amount",
         type: "string",
       },
-      requestedby: {
+      approvalRequestBy: {
         title: "Requested By",
         type: "string",
+        tootltipColumn: "approvalRequestBy",
+      },
+      approvalRequestDateTime: {
+        title: "Requested Date",
+        type: "string",
+      },
+      approvalDoneBy: {
+        title: "Approved By",
+        type: "string",
+        tootltipColumn: "approvalDoneBy",
+      },
+      approvalDoneDateTime: {
+        title: "Approved Date/Time",
+        type: "string",
+        tootltipColumn: "approvalDoneDateTime",
       },
     },
   };
@@ -169,44 +274,71 @@ export class OprefundApprovalComponent implements OnInit {
       "serviceName",
       "itemName",
       "refundAmt",
-      "requestedby",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
+      "rejectedBy",
+      "rejectedDateTime",
     ],
     columnsInfo: {
       maxid: {
-        title: "Max Id",
+        title: "Max ID",
         type: "string",
+        tootltipColumn: "maxid",
       },
       ssn: {
         title: "SSN",
         type: "string",
+        tootltipColumn: "ssn",
       },
       ptnName: {
         title: "Name",
         type: "string",
+        tootltipColumn: "ptnName",
       },
       billNo: {
         title: "Bill No",
         type: "string",
+        tootltipColumn: "billNo",
       },
       billDatetime: {
         title: "Bill Date/Time",
         type: "string",
+        tootltipColumn: "billDatetime",
       },
       serviceName: {
         title: "Service Name",
         type: "string",
+        tootltipColumn: "serviceName",
       },
       itemName: {
         title: "Item Name",
         type: "string",
+        tootltipColumn: "itemName",
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
+        tootltipColumn: "refundAmt",
       },
-      requestedby: {
+      approvalRequestBy: {
         title: "Requested By",
         type: "string",
+        tootltipColumn: "approvalRequestBy",
+      },
+      approvalRequestDateTime: {
+        title: "Requested Date/Time",
+        type: "string",
+        tootltipColumn: "approvalRequestDateTime",
+      },
+      rejectedBy: {
+        title: "Rejected By",
+        type: "string",
+        tootltipColumn: "rejectedBy",
+      },
+      rejectedDateTime: {
+        title: "Rejected Date/Time",
+        type: "string",
+        tootltipColumn: "rejectedDateTime",
       },
     },
   };
@@ -292,9 +424,13 @@ export class OprefundApprovalComponent implements OnInit {
     console.log(link);
     if (link.id == 1) {
       this.activeLink2 = link;
+      this.oprefundRejectedList = [];
+      this.oprefundApprovedList = [];
       this.getoprefundPending();
     } else if (link.id == 2) {
       this.activeLink2 = link;
+      this.oprefundRejectedList = [];
+      this.oprefundPendingList = [];
       this.getoprefundApproved();
     } else {
       this.isApprovedList = false;
@@ -305,6 +441,11 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   getoprefundPending() {
+    this.showapprovalspinner = true;
+    this.isPendingList = false;
+    this.isApprovedList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
     this.http
       .get(ApiConstants.getpendingoprefundapproval(this.from, this.to))
       .pipe(takeUntil(this._destroying$))
@@ -313,16 +454,33 @@ export class OprefundApprovalComponent implements OnInit {
         if (data != null) {
           this.oprefundPendingList =
             data.opRefundApprovalList as OpRefundApprovalListInterface[];
+          this.oprefundPendingList.forEach((item) => {
+            item.billDatetime = this.datepipe.transform(
+              item.billDatetime,
+              "dd/MM/yyyy-hh:mm"
+            );
+            item.approvalRequestDateTime = this.datepipe.transform(
+              item.approvalRequestDateTime,
+              "dd/MM/yyyy"
+            );
+            // item.addedDateTime = this.datepipe.transform(
+            //   item.addedDateTime,
+            //   "dd/MM/yyyy, hh:mm:ss a"
+            // );
+            // item.updatedDateTime = this.datepipe.transform(
+            //   item.updatedDateTime,
+            //   "dd/MM/yyyy"
+            // );
+          });
           //this.oprefundApprovedList = {} as OpRefundApprovalListInterface;
           if (this.oprefundPendingList.length > 0) {
             this.showapprovalspinner = false;
-            this.defaultUI = true;
+            this.defaultUI = false;
             this.isPendingList = true;
             this.isApprovedList = false;
             this.isRejectedList = false;
             console.log(this.oprefundPendingList);
           } else {
-            // this.oprefundicon=
             console.log("no records found");
             this.defaultUI = false;
             this.oprefundmessage = "No records found";
@@ -335,6 +493,11 @@ export class OprefundApprovalComponent implements OnInit {
       });
   }
   getoprefundApproved() {
+    this.showapprovalspinner = true;
+    this.isApprovedList = false;
+    this.isPendingList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
     this.http
       .get(ApiConstants.getapprovedoprefundapproval(this.from, this.to))
       .pipe(takeUntil(this._destroying$))
@@ -342,6 +505,22 @@ export class OprefundApprovalComponent implements OnInit {
         console.log(data);
         if (data != null) {
           this.oprefundApprovedList = data as OpRefundApprovalListInterface[];
+          this.oprefundApprovedList.forEach((item) => {
+            item.approvalRequestDateTime = this.datepipe.transform(
+              item.approvalRequestDateTime,
+              "dd/MM/yyyy"
+            );
+            item.approvalDoneDateTime = this.datepipe.transform(
+              item.approvalDoneDateTime,
+              "dd/MM/yyyy-hh:mm:ss"
+            );
+            item.billDatetime = this.datepipe.transform(
+              item.billDatetime,
+              "dd/MM/yyyy-hh:mm:ss"
+            );
+            console.log(item.approvalRequestDateTime);
+            console.log(item.approvalDoneDateTime);
+          });
           // this.oprefundPendingList = [];
           if (this.oprefundApprovedList.length > 0) {
             this.showapprovalspinner = false;
@@ -364,6 +543,11 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   getoprefundRejected() {
+    this.showapprovalspinner = true;
+    this.isApprovedList = false;
+    this.isPendingList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
     this.http
       .get(ApiConstants.getrejectedoprefundapproval(this.from, this.to))
       .pipe(takeUntil(this._destroying$))
@@ -372,6 +556,20 @@ export class OprefundApprovalComponent implements OnInit {
         if (data != null) {
           this.oprefundRejectedList = data as OpRefundApprovalListInterface[];
           // this.oprefundPendingList = [];
+          this.oprefundRejectedList.forEach((item) => {
+            item.billDatetime = this.datepipe.transform(
+              item.billDatetime,
+              "dd/MM/yyyy-hh:mm:ss"
+            );
+            item.approvalRequestDateTime = this.datepipe.transform(
+              item.approvalRequestDateTime,
+              "dd/MM/yyyy"
+            );
+            item.rejectedDateTime = this.datepipe.transform(
+              item.rejectedDateTime,
+              "dd/MM/yyyy-hh:mm:ss"
+            );
+          });
           if (this.oprefundRejectedList.length > 0) {
             this.showapprovalspinner = false;
             this.defaultUI = true;

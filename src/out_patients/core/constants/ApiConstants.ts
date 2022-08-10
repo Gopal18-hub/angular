@@ -764,6 +764,7 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 
   //ACD
+  //Investigation Order List
   export const getediganosticacdoninvestigation = (
     FromDate: any,
     ToDate: any,
@@ -780,6 +781,7 @@ export namespace ApiConstants {
       Locationid      
     );
   };
+  //Investigation Order Details
   export const getediganosticacdoninvestigationgrid = (
    
     Locationid: number,
@@ -800,9 +802,10 @@ export namespace ApiConstants {
       iacode     
     );
   };
+  //Den Order List
   export const getdenyreasonforacd =
     environment.PatientApiUrl + "api/patient/getdenyreasonforacd";
-
+  //Medicine Order List
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
@@ -818,35 +821,8 @@ export namespace ApiConstants {
       "/" +
       LocationID      
     );
-  };
-  export const getediganosticacd = (
-    FromDate: any,
-    ToDate: any,
-    status: number,
-    orderid: number,
-    regno: number,
-    iacode: string,
-    Locationid: number
-  ) => {
-    return (
-      environment.PatientApiUrl +
-      "api/patient/getediganosticacd/" +
-      FromDate +
-      "/" +
-      ToDate +
-      "/" +
-      status +
-      "/" +
-      orderid +
-      "/" +
-      regno +
-      "/" +
-      iacode +
-      "?Locationid=" +
-      Locationid
-    );
-  };
- 
+  };  
+  //Medicine Order Details
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
@@ -863,6 +839,19 @@ export namespace ApiConstants {
       locid +
       "/" +
       orderid
+    );
+  };
+  //Save/Update
+  export const SaveAndUpdateDiagnosticOrderBill =
+  environment.PatientApiUrl + "api/patient/SaveAndUpdateDiagnosticOrderBill";
+  //Generate Pharmacy Token
+  export const GetPrintQueDetail = (   
+    Ipadress: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/GetPrintQueDetail/" +
+      Ipadress
     );
   };
   //Modify ACD order with Remarks

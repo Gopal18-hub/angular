@@ -15,6 +15,9 @@ import { SaveExpiredPatientModel } from "../../../../../out_patients/core/models
 import { CookieService } from "../../../../../shared/services/cookie.service";
 import { PatientService } from "../../../../core/services/patient.service";
 import { SimilarPatientDialog } from "../../../../modules/registration/submodules/op-registration/op-registration.component";
+import { SearchService } from "@shared/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { LookupService } from "../../../../../out_patients/core/services/lookup.service";
 interface deleteexpiredResponse {
   success: boolean;
   message: string;
@@ -87,7 +90,11 @@ export class ExpiredPatientCheckComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private cookie: CookieService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupservice: LookupService
   ) {}
 
   ngOnInit(): void {
@@ -99,6 +106,62 @@ export class ExpiredPatientCheckComponent implements OnInit {
     this.questions = formResult.questions;
     this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
     this.dateofbirth = this.datepipe.transform(this.dob, "yyyy-Mm-dd");
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupservice.searchPatient(formdata);
+        console.log(lookupdata[0]);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.expiredpatientForm.controls["maxid"].setValue(
+              lookupdata[0]["maxid"]
+            );
+
+            // this.dmgMappingForm.value.maxid = lookupdata[0]["maxid"];
+
+            this.onMaxidSearch(this.expiredpatientForm.controls["maxid"].value);
+          }
+        } else {
+          const similarSoundDialogref = this.dialog.open(
+            SimilarPatientDialog,
+
+            {
+              width: "60vw",
+
+              height: "65vh",
+
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+
+          similarSoundDialogref
+
+            .afterClosed()
+
+            .pipe(takeUntil(this._destroying$))
+
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+
+                let maxID = result.data["added"][0].maxid;
+                this.expiredpatientForm.controls["maxid"].setValue(maxID);
+                this.onMaxidSearch(
+                  this.expiredpatientForm.controls["maxid"].value
+                );
+              }
+
+              //this.similarContactPatientList = [];
+            });
+        }
+      });
   }
 
   ngOnDestroy(): void {

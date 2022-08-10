@@ -10,6 +10,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
+import { SearchDialogComponent } from "./search-dialog/search-dialog.component";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -235,6 +236,13 @@ export class DetailsComponent implements OnInit {
       data: {
         maxid: this.BServiceForm.value.maxid,
       },
+    });
+  }
+  search()
+  {
+    this.matDialog.open(SearchDialogComponent, {
+      width: "80%",
+      height: "83%",
     });
   }
 }

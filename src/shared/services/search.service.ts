@@ -103,6 +103,29 @@ export class SearchService {
         },
       },
     },
+    employeesponsor: {
+      dateFormat: "dd/MM/yyyy",
+      title: "",
+      type: "object",
+      properties: {
+        maxid: {
+          type: "string",
+          title: "Max ID",
+        },
+        phone: {
+          type: "string",
+          title: "Phone",
+        },
+        name: {
+          type: "string",
+          title: "Name",
+        },
+        dob: {
+          type: "date",
+          title: "DOB",
+        },
+      },
+    },
   };
 
   setActivePage(activePage: any) {
