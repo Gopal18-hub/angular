@@ -7,6 +7,9 @@
         background-color: #FF8A3B;
         color: #fff;
     }
+    .bg-white{
+        background-color: #fff;
+    }
     .bg-blue{
         background-color: #00B2A9;
         color: #fff;
@@ -14,7 +17,33 @@
     .pointer-disable{
         pointer-events: none;
     }
-    ::ng-deep .mat-raised-button {
-        min-width: 155px !important;
+    .w35{
+        width: 35%;
+    }
+    .nowrap{
+        white-space: nowrap;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 25%;
+    }
+    .btn{
+        ::ng-deep .mat-raised-button {
+            min-width: 155px !important;
+        }
+    }
+    .searchbtn{
+        ::ng-deep .mat-raised-button {
+            min-width: 100px !important;
+        }
+        ::ng-deep .mat-button-wrapper{
+            margin-left: 25px;
+        }
+    }
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
     }
 }
