@@ -120,7 +120,7 @@ export class DispatchReportComponent implements OnInit {
       },
       remarks: {
         title: "Remarks",
-        type: "input",
+        type: "textarea",
       },
     },
   };
