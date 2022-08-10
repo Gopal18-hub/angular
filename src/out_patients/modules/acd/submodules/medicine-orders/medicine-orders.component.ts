@@ -249,7 +249,7 @@ export class MedicineOrdersComponent implements OnInit {
 
       acdRemarks : {
         title: 'ACD Remarks',
-        type: 'input',
+        type: 'textarea',
         style: {
           width: "30%",
         },
@@ -309,7 +309,6 @@ export class MedicineOrdersComponent implements OnInit {
     this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
     if(value===10)
     {
-
     this.matdialog.open(ScheduleDateDialogComponent).afterClosed().subscribe(res => {
       // received data from dialog-component
       this.scheduleDate= this.datepipe.transform(res.data, "YYYY-MM-dd")
@@ -320,16 +319,21 @@ export class MedicineOrdersComponent implements OnInit {
      //Filter
      this.investigationForm.controls["status"].valueChanges.subscribe((value:any)=>{
       this.statusvalue = value;
+      this.medOrderList=[]
+      this.medOrderDetails=[]
     })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
       this.idValue = value;
+      this.medOrderList=[]
+      this.medOrderDetails=[]
     })
   }
   search() {
     this.medOrderList=[]
+    this.medOrderDetails=[];
 
-   //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-   this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
+   this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+   //this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.medOrderListMain = res.objOrderDetails // Main Grid;   
@@ -433,42 +437,47 @@ export class MedicineOrdersComponent implements OnInit {
     this.objPhyOrder=[];
     this.objdtdenialorder="";
     this.physicianOrderList=[];
-
-    this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
-      if(e.drugid !== 0)
-      this.isBtnDenialDisable = false;
-      if(this.investigationForm.value.denyorder && !this.investigationForm.value.remarks)
-      {
-      this.messageDialogService.info("Please enter denial reason remark for order!")
+    if(this.medOrderDetailsTable.selection.selected.length === 0)
+    {
+      this.messageDialogService.info("Please select atleast 1 row to proceed.");
+    }else
+    {
+      this.medOrderDetailsTable.selection.selected.forEach((e:any) => {
+        if(e.drugid !== 0)
+        this.isBtnDenialDisable = false;
+        if(this.investigationForm.value.denyorder && !this.investigationForm.value.remarks)
+        {
+        this.messageDialogService.info("Please enter denial reason remark for order!")
+        }
+        if(!this.investigationForm.value.denyorder)
+        {
+          this.messageDialogService.info("Please select denial reason for open order before close!")
+        }        
+        if(this.investigationForm.value.remarks && this.investigationForm.value.denyorder){
+        this.objPhyOrder.push({
+          acDisHideDrug: true,
+          visitid: e.visitId,
+          drugid: e.drugid,
+          acdRemarks: e.acdRemarks
+        });
+        // this.physicianOrderList.push({
+        //   acDisHideDrug: true,
+        //   visitid: e.visitId,
+        //   drugid: e.drugid,
+        //   acdRemarks: e.acdRemarks
+        // });
       }
-      if(!this.investigationForm.value.denyorder)
-      {
-        this.messageDialogService.info("Please select denial reason for open order before close!")
+      });
+  
+      this.objdtdenialorder={
+      denialid: this.investigationForm.value.denyorder,
+      denialremark: this.investigationForm.value.remarks,
+      visitid: this.medOrderDetailsTable.selection.selected[0].visitId,
+      nextScheduleDate:this.scheduleDate,
+      nextflag: true
       }
-      if(this.investigationForm.value.remarks && this.investigationForm.value.denyorder){
-      this.objPhyOrder.push({
-        acDisHideDrug: true,
-        visitid: e.visitId,
-        drugid: e.drugid,
-        acdRemarks: e.acdRemarks
-      });
-      this.physicianOrderList.push({
-        acDisHideDrug: true,
-        visitid: e.visitId,
-        drugid: e.drugid,
-        acdRemarks: e.acdRemarks
-      });
+      this.Save();
     }
-    });
-
-    this.objdtdenialorder={
-    denialid: this.investigationForm.value.denyorder,
-    denialremark: this.investigationForm.value.remarks,
-    visitid: this.medOrderDetailsTable.selection.selected[0].visitId,
-    nextScheduleDate:this.scheduleDate,
-    nextflag: true
-    }
-    this.Save();
   }
   getSaveModel(): SaveInvestigationOrderModel {
     return new SaveInvestigationOrderModel(
@@ -519,6 +528,7 @@ export class MedicineOrdersComponent implements OnInit {
     if(res === 1)
     {
       this.messageDialogService.success("Saved Successfully!");
+      this.medOrderDetails=[]
     }
     this.objPhyOrder=[];
     this.objdtdenialorder=[];
@@ -550,6 +560,7 @@ export class MedicineOrdersComponent implements OnInit {
     if(res.success === true)
     {
       this.messageDialogService.success(res.message);
+      this.medOrderDetails=[];
     }
 
     })
