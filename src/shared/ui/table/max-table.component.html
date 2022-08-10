@@ -281,21 +281,39 @@
 
 <ng-template #textarea let-data>
   <div
-    (click)="data.isOpen = !data.isOpen"
+    (click)="data.element['isOpen'] = true"
     cdkOverlayOrigin
     #trigger="cdkOverlayOrigin"
-    class="cursor-pointer"
+    class="cursor-pointer editable-textarea-label"
   >
-    {{ data.output }}
+    {{ data.isOpen }} {{ data.output }} &nbsp;
   </div>
 
   <ng-template
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="data.isOpen"
+    [cdkConnectedOverlayOpen]="data.element['isOpen']"
+    (detach)="data.element['isOpen'] = false"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="data.element['isOpen'] = false"
   >
-    <div class="editable-textarea">
-      <mat-form-field appearance="outline" floatLabel="never">
+    <div
+      class="editable-textarea"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <!-- <div
+        [(ngModel)]="data.element[data.col]"
+        contenteditable
+        class="text-area-edit"
+      >
+        {{ data.element[data.col] }}
+      </div> -->
+      <mat-form-field
+        appearance="outline"
+        floatLabel="never"
+        class="text-area-edit"
+      >
         <textarea
           matInput
           cdkTextareaAutosize
