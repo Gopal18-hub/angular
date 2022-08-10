@@ -21,6 +21,9 @@ import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { GetCompanyDataInterface } from "../../core/types/employeesponsor/getCompanydata.Interface";
 import { ThisReceiver } from "@angular/compiler";
+import { SearchService } from "@shared/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { LookupService } from "../../../out_patients/core/services/lookup.service";
 import {
   OpRegistrationComponent,
   SimilarPatientDialog,
@@ -28,6 +31,7 @@ import {
 import { PatientSearchModel } from "@core/models/patientSearchModel";
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import * as moment from "moment";
+
 interface CorporateInterface {
   id: number;
   name: string;
@@ -319,7 +323,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private http: HttpService,
-    private dialogService: MessageDialogService
+    private dialogService: MessageDialogService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupservice: LookupService
   ) {}
 
   ngOnInit(): void {
@@ -345,6 +353,64 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //disable corporate dropdown
     this.employeesponsorForm.controls["corporate"].disable();
 
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupservice.searchPatient(formdata);
+        console.log(lookupdata[0]);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.employeesponsorForm.controls["maxId"].setValue(
+              lookupdata[0]["maxid"]
+            );
+
+            this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
+
+            this.onMaxidEnter(this.employeesponsorForm.controls["maxId"].value);
+          }
+        } else {
+          const similarSoundDialogref = this.dialog.open(
+            SimilarPatientDialog,
+
+            {
+              width: "60vw",
+
+              height: "65vh",
+
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+
+          similarSoundDialogref
+
+            .afterClosed()
+
+            .pipe(takeUntil(this._destroying$))
+
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+
+                let maxID = result.data["added"][0].maxid;
+                this.employeesponsorForm.controls["maxId"].setValue(maxID);
+                this.onMaxidEnter(
+                  this.employeesponsorForm.controls["maxId"].value
+                );
+
+               
+              }
+
+              //this.similarContactPatientList = [];
+            });
+        }
+      });
     this.http
       .get(ApiConstants.getcompanyandpatientsponsordata)
       .pipe(takeUntil(this._destroying$))
