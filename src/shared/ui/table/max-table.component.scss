@@ -100,7 +100,17 @@
   }
 }
 .editable-textarea {
-  background-color: #fff;
+  ::ng-deep .text-area-edit {
+    background: #fff;
+    width: 300px;
+    border-radius: 8px;
+    &.mat-form-field-appearance-outline .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+}
+.editable-textarea-label {
+  width: 100%;
 }
 
 tr.child-detail-row {
