@@ -48,7 +48,7 @@ export namespace CrystalReport {
   };
 
   export const HappyFamilyPlanAllocationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanAllocation?MemberShipNo=${params.MemberShipNo}&FLG=${params.FLG}&planID=${params.planID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanAllocation?MemberShipNo=${params.MemberShipNo}&Flag=${params.Flag}&planID=${params.planID}`;
   };
 
   export const HappyFamilyPlanUtilizationReport = (params: any) => {
@@ -70,10 +70,10 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Marketing/PlanSummary?FromDate=${params.FromDate}&TodDate=${params.TodDate}`;
   };
   export const DoctorSheduleReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID=${params.DocID}&location=${params.location}&Rd_Special=${params.Rd_Special}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID1=true&location=3&Rd_Special=${params.Rd_Special}&LocationName=Max Med Centre-PP ( A unit of Max Healthcare Institute Ltd.)`;
   };
   export const DoctorSheduleReportBySpecilialisation = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID=${params.DocID}&location=${params.location}&Rd_Special=${params.Rd_Special}&Cmb_Special=${params.Cmb_Special}&specialisationID=${params.specialisationID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID1=false&location=3&Rd_Special=true&Cmb_Special=${params.Cmb_Special}&specialisationID=${params.specialisationID}&LocationName=Max Med Centre-PP ( A unit of Max Healthcare Institute Ltd.)&hsplocationid=3`;
   };
   export const CRPExpiredPatientDetailReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&user=${params.user}`;
