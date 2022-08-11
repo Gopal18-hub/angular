@@ -47,7 +47,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       },
       mobileno:{
         type:"number",
-        pattern: "^[1-9]{1}[0-9]{9}",
+      //  pattern: "^[1-9]{1}[0-9]{9}",
       },
       selectpatient:{
         type:"dropdown",   
@@ -178,7 +178,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           return { title: l.maxID, value: l.maxID };
         });
         
-        if(resultData.length == 1){
+        if(resultData.length == 1 && this.initiatedepositForm.value.maxid){
           this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);   
         }
               

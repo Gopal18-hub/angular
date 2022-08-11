@@ -166,7 +166,7 @@ export class DepositDialogComponent implements OnInit {
   {
     this.depositformvalidation();
    if(!this.validationexists){
-      console.log("deposit request body" + this.getPatientDepositSubmitRequestBody());
+      console.log(this.patientSaveDepositDetails);
       this.http
         .post(ApiConstants.SavePatientsDepositDetailsGST, this.getPatientDepositSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))

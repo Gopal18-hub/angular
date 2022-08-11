@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixty.component';
 import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from "@core/constants/ApiConstants";
@@ -21,6 +21,8 @@ import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashli
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import { DepositService } from '@core/services/deposit.service';
 import { ReportService } from '@shared/services/report.service';
+import { SearchService } from "../../../../../shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -33,7 +35,18 @@ export class DepositComponent implements OnInit {
     private router: Router, private http: HttpService, private cookie: CookieService,
     private messageDialogService: MessageDialogService,
     private depositservice: DepositService,
-    private reportService: ReportService,) { }
+    private reportService: ReportService,
+    private searchService: SearchService,  private route: ActivatedRoute,
+    private lookupService: LookupService,) {
+      this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value);        
+        }
+        });
+     }
 
   @ViewChild("deposittable") deposittable: any;
 
@@ -99,10 +112,10 @@ export class DepositComponent implements OnInit {
     clickSelection: "single",
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
-    // groupby: {
-    //   parentcolumn: "cashTransactionID",
-    //   childcolumn: "parentID",
-    // },
+    groupby: {
+      parentcolumn: "cashTransactionID",
+      childcolumn: "parentID",
+    },
     displayedColumns: [
       "depositRefund",
       "receiptno",
@@ -268,6 +281,14 @@ export class DepositComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
+
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (formdata: any) => {
+      console.log(formdata);
+      await this.loadGrid(formdata);
+    });
+
     let formResult = this.formService.createForm(
       this.depositformdata.properties, {}
     );
@@ -277,6 +298,33 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["panno"].disable();
     this.depositForm.controls["mainradio"].disable();
     }
+
+    
+  async loadGrid(formdata: any): Promise<any> {
+    if (formdata.data) {
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
+        
+      } 
+    } else {
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+       
+      } else {
+        this.processLookupData(lookupdata);
+      }
+    }
+  }
+
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      return item;
+    });   
+  }
   openrefunddialog() {
   const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
       width: "70vw",
@@ -471,7 +519,7 @@ export class DepositComponent implements OnInit {
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientPreviousDepositDetail[]) => {     
-              //.filter(({depositRefund}) => depositRefund == "Deposit")
+           
         this.totaldeposit = resultData.filter((dp) => dp.depositRefund == "Deposit").map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
         this.totalrefund = resultData.filter((dp) => dp.depositRefund == "Refund").map(t => t.refund).reduce((acc, value) => acc + value, 0);   
         this.avalaibleamount = this.totaldeposit - this.totalrefund;
@@ -599,7 +647,7 @@ export class DepositComponent implements OnInit {
 
   printpatientreceipt(){
     this.deposittable.selection.selected.map((s: any) => {
-      this.reportService.openWindow("depositReport", "depositReport", {
+      this.reportService.openWindow("DepositReport", "DepositReport", {
         receiptnumber: s.receiptno,
         locationID: this.hspLocationid
       });
