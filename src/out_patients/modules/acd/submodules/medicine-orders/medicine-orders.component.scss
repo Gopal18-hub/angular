@@ -58,6 +58,12 @@
   }
 }
 
+.checkbox-bottom-margin{
+    ::ng-deep mat-checkbox label span{
+        margin-bottom:2px;
+    }
+}
+
 ::ng-deep .mat-raised-button {
   min-width: fit-content !important;
   min-height: fit-content !important;
