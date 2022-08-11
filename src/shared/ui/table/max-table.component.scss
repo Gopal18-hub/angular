@@ -102,15 +102,21 @@
 .editable-textarea {
   ::ng-deep .text-area-edit {
     background: #fff;
-    width: 300px;
+    width: 185px;
     border-radius: 8px;
     &.mat-form-field-appearance-outline .mat-form-field-wrapper {
       padding-bottom: 0 !important;
     }
   }
+  textarea{
+    min-height: 80px !important;
+    height: 80px !important;
+  }
 }
 .editable-textarea-label {
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 tr.child-detail-row {

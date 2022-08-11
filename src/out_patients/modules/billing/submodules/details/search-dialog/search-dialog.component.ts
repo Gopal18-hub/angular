@@ -16,7 +16,7 @@ export class SearchDialogComponent implements OnInit {
         type: "string",
       },
       maxid: {
-        type: "number",
+        type: "string",
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
@@ -25,17 +25,126 @@ export class SearchDialogComponent implements OnInit {
       },
       checkbox: {
         type: "checkbox",
+        options: [
+          {
+            title: "",
+          },
+        ],
       },
       fromdate: {
         type: "date",
         maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
       },
       todate: {
         type: "date",
         maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
       }
     },
   };
+  config: any = {
+    clickedRows: false,
+    // clickSelection: "single",
+    actionItems: false,
+    dateformat: "dd/MM/yyyy",
+    selectBox: false,
+    displayedColumns: [
+      "sno",
+      "billno",
+      "maxid",
+      "datetime",
+      "patientname",
+      "mobileno",
+      "age",
+      "gender",
+      "billamt",
+      "balance",
+      "ssn"
+    ],
+    columnsInfo: {
+      sno: {
+        title: "S.No",
+        type: "string",
+        style: {
+          width: "4rem"
+        }
+      },
+      billno: {
+        title: "Bill No",
+        type: "string",
+        style: {
+          width: "5rem"
+        }
+      },
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "4rem"
+        }
+      },
+      datetime: {
+        title: "Date and Time",
+        type: "number",
+        style: {
+          width: "6rem"
+        }
+      },
+      patientname: {
+        title: "Patient Name",
+        type: "date",
+        style: {
+          width: "6rem"
+        }
+      },
+      mobileno: {
+        title: "Mobile No",
+        type: "number",
+        style: {
+          width: "6rem"
+        }
+      },
+      age: {
+        title: "Age",
+        type: "number",
+        style: {
+          width: "3rem"
+        }
+      },
+      gender: {
+        title: "Gender",
+        type: "number",
+        style: {
+          width: "5rem"
+        }
+      },
+      billamt: {
+        title: "Bill Amt.",
+        type: "number",
+        style: {
+          width: "5rem"
+        }
+      },
+      balance: {
+        title: "Balance",
+        type: "number",
+        style: {
+          width: "5rem"
+        }
+      },
+      ssn: {
+        title: "SSN",
+        type: "string",
+        style: {
+          width: "4rem"
+        }
+      },
+    },
+  };
+  data:any = [];
   searchform!: FormGroup;
   questions: any;
   constructor(
