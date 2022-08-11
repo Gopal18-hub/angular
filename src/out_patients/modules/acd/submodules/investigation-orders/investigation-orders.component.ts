@@ -17,10 +17,9 @@ import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-da
 import { SearchService } from '@shared/services/search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LookupService } from '@core/services/lookup.service';
+import { CookieService } from '@shared/services/cookie.service';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
+  MatDialog
 } from "@angular/material/dialog";
 //import { ScheduleDateDialogComponent } from '@modules/registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
 
@@ -52,15 +51,12 @@ export class InvestigationOrdersComponent implements OnInit {
   invOrderList: any = [];
   invOrderListMain: any;
   invOrderDetails: any;
-
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
-
-
   physicianOrderList: any = [];
-
   objPhyOrder: any = [];
   objdtdenialorder: any;
   scheduleDate: any = "";
+  hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
   investigationFormData = {
     title: "",
@@ -270,6 +266,7 @@ export class InvestigationOrdersComponent implements OnInit {
     private route: ActivatedRoute,
     private lookupService: LookupService,
     public matdialog: MatDialog,
+    private cookie: CookieService,
   ) { }
   denyBtn() {
     this.isBtnDisable = true;
@@ -371,7 +368,7 @@ export class InvestigationOrdersComponent implements OnInit {
       this.searchFilter();
     }
     else {
-      this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
+      this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
         //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
         .pipe(takeUntil(this._destroying$))
         .subscribe((res: any) => {
@@ -407,7 +404,7 @@ export class InvestigationOrdersComponent implements OnInit {
     let orderid = event.row.orderId;
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
 
-    this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
+    this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(this.hsplocationId, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];

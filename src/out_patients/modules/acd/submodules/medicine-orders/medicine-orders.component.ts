@@ -13,9 +13,11 @@ import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrder
 import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
 import { MatDialog } from '@angular/material/dialog';
 import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-date-dialog.component';
+
 import { SearchService } from '@shared/services/search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LookupService } from '@core/services/lookup.service';
+import { CookieService } from '@shared/services/cookie.service';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -54,6 +56,7 @@ export class MedicineOrdersComponent implements OnInit {
   idValue: any = 'maxid';
   medOrderListMain: any;
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
+  hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
 
   investigationFormData = {
@@ -266,7 +269,8 @@ export class MedicineOrdersComponent implements OnInit {
     private searchService: SearchService, private router: Router,
     private route: ActivatedRoute,
     private lookupService: LookupService,
-    public matdialog: MatDialog,) {
+    public matdialog: MatDialog,
+    private cookie: CookieService,) {
   }
 
   ngOnInit(): void {
@@ -358,7 +362,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
     else {
       //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-      this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
+      this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
         .pipe(takeUntil(this._destroying$))
         .subscribe((res: any) => {
           this.medOrderListMain = res.objOrderDetails;
@@ -394,7 +398,7 @@ export class MedicineOrdersComponent implements OnInit {
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
 
     //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
-    this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], 7, event.row.orderId))
+    this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], this.hsplocationId, event.row.orderId))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
