@@ -1,3 +1,4 @@
+.depositwrapper{
 .bg-deposit {
     background-color: #F6F6F6;
     color: #004084;
@@ -30,10 +31,11 @@
     color: rgba(0, 0, 0, 0.87);
 }
 
+.deposit{ 
 ::ng-deep .mat-form-field-wrapper {
 
-    padding-bottom: 0 !important;
-
+    padding-bottom: 0 !important;   
+}
 }
 
 .wt-nowrap {
@@ -65,6 +67,12 @@
         border: 1px solid #707070 !important;
         //border-radius: 0.75rem;
     }
+    ::ng-deep th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type {
+        padding-left: 30px !important;
+    }
+    ::ng-deep th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type {
+        padding-left: 30px !important;
+    }
 }
 .text-overflow{
     white-space: nowrap;
@@ -72,12 +80,14 @@
     text-overflow: ellipsis;
 }
 .deposittablewidth{
-    height: 81% !important;
+    height: 83% !important;
+}
+   ::ng-deep .relative.table-height {
+    height: 50vh !important;
+} 
+
 }
 
-::ng-deep .relative.table-height {
-    height: 50vh !important;
-}
 
 
 

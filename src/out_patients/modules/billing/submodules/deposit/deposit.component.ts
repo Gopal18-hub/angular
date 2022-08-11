@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { FormSixtyComponent } from '@core/UI/billing/submodules/form60/form-sixty.component';
 import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from "@core/constants/ApiConstants";
@@ -20,6 +20,9 @@ import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model"
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import { DepositService } from '@core/services/deposit.service';
+import { ReportService } from '@shared/services/report.service';
+import { SearchService } from "../../../../../shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -31,7 +34,19 @@ export class DepositComponent implements OnInit {
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
     private messageDialogService: MessageDialogService,
-    private depositservice: DepositService) { }
+    private depositservice: DepositService,
+    private reportService: ReportService,
+    private searchService: SearchService,  private route: ActivatedRoute,
+    private lookupService: LookupService,) {
+      this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value);        
+        }
+        });
+     }
 
   @ViewChild("deposittable") deposittable: any;
 
@@ -94,13 +109,13 @@ export class DepositComponent implements OnInit {
 
   depositconfig: any = {
     clickedRows: true,
-    clickSelection: "multiple",
+    clickSelection: "single",
     dateformat: "dd/MM/yyyy - hh:mm",
     selectBox: true,
-    // groupby: {
-    //   parentcolumn: "cashTransactionID",
-    //   childcolumn: "parentID",
-    // },
+    groupby: {
+      parentcolumn: "cashTransactionID",
+      childcolumn: "parentID",
+    },
     displayedColumns: [
       "depositRefund",
       "receiptno",
@@ -244,6 +259,7 @@ export class DepositComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   categoryIcons: [] = [];
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
+  tableselectionexists:boolean = false;
 
   depositForm !: FormGroup;
   questions: any;
@@ -265,6 +281,14 @@ export class DepositComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
+
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (formdata: any) => {
+      console.log(formdata);
+      await this.loadGrid(formdata);
+    });
+
     let formResult = this.formService.createForm(
       this.depositformdata.properties, {}
     );
@@ -274,6 +298,33 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["panno"].disable();
     this.depositForm.controls["mainradio"].disable();
     }
+
+    
+  async loadGrid(formdata: any): Promise<any> {
+    if (formdata.data) {
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+      if (lookupdata == null || lookupdata == undefined) {
+        
+      } 
+    } else {
+      const lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+      if (lookupdata == null || lookupdata == undefined) {
+       
+      } else {
+        this.processLookupData(lookupdata);
+      }
+    }
+  }
+
+  processLookupData(lookupdata: any) {
+    const resultData = lookupdata.map((item: any) => {
+      item.fullname = item.firstName + " " + item.lastName;
+      item.notereason = item.noteReason;
+      return item;
+    });   
+  }
   openrefunddialog() {
   const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
       width: "70vw",
@@ -341,8 +392,7 @@ export class DepositComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
-   
+  ngAfterViewInit(): void {   
 
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -469,9 +519,9 @@ export class DepositComponent implements OnInit {
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: PatientPreviousDepositDetail[]) => {     
-              //.filter(({depositRefund}) => depositRefund == "Deposit")
-        this.totaldeposit = resultData.map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
-        this.totalrefund = resultData.map(t => t.refund).reduce((acc, value) => acc + value, 0);   
+           
+        this.totaldeposit = resultData.filter((dp) => dp.depositRefund == "Deposit").map(t => t.deposit).reduce((acc, value) => acc + value, 0);   
+        this.totalrefund = resultData.filter((dp) => dp.depositRefund == "Refund").map(t => t.refund).reduce((acc, value) => acc + value, 0);   
         this.avalaibleamount = this.totaldeposit - this.totalrefund;
         this.depositForm.controls["totaldeposit"].setValue(this.totaldeposit.toFixed(2));
         this.depositForm.controls["totalrefund"].setValue(this.totalrefund.toFixed(2));
@@ -489,7 +539,18 @@ export class DepositComponent implements OnInit {
           return item;
         });
         
-        this.depoistList = resultData;      
+        this.depoistList = resultData;   
+        setTimeout(() => {
+          this.deposittable.selection.changed
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            if (this.deposittable.selection.selected.length > 0) {
+              this.tableselectionexists = true;
+            } else {
+              this.tableselectionexists = false;
+            }
+          });
+        });   
 
       },
       (error) => {
@@ -515,6 +576,7 @@ export class DepositComponent implements OnInit {
     this.depoistList = [];
     this.MaxIDExist = false;
     this.MaxIDdepositExist = false;
+    this.tableselectionexists = false;
     this.categoryIcons = [];
     this.depositForm.controls["totaldeposit"].setValue("0.00");
     this.depositForm.controls["totalrefund"].setValue("0.00");
@@ -528,7 +590,6 @@ export class DepositComponent implements OnInit {
     this.patientRefundDetails = $event.row;
   }
 
-   
   mobilechange()
   {
     console.log('mobile changed');
@@ -582,6 +643,15 @@ export class DepositComponent implements OnInit {
             this.messageDialogService.info(error.error);
           }
         );
+  }
+
+  printpatientreceipt(){
+    this.deposittable.selection.selected.map((s: any) => {
+      this.reportService.openWindow("DepositReport", "DepositReport", {
+        receiptnumber: s.receiptno,
+        locationID: this.hspLocationid
+      });
+    });
   }
 }
 export const CheckPatientDetails = {
