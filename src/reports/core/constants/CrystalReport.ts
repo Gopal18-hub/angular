@@ -98,7 +98,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Refund/rpt_refund?receiptno=${params.receiptno}&locationID=${params.locationID}`;
   };
 
-  export const depositReport = (params: any) => {
+  export const DepositReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Deposits/rpt_deposit?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
   };
 
