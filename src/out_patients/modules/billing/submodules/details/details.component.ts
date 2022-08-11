@@ -11,6 +11,9 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
 import { SearchDialogComponent } from "./search-dialog/search-dialog.component";
+import { getrefundreason } from "../../../../core/types/billdetails/getrefundreason.Interface";
+import { getPatientPersonalandBillDetails } from "../../../../core/types/billdetails/getpatientpersonalandbilldetails.Interface";
+import { BillDetailsApiConstants } from "./BillDetailsApiConstants";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -27,6 +30,8 @@ export class DetailsComponent implements OnInit {
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
+  public refundreasonlist: getrefundreason[] = [];
+  public patientbilldetaillist: getPatientPersonalandBillDetails[] = [];
   linkList = [
     {
       title: "Services",
@@ -72,8 +77,18 @@ export class DetailsComponent implements OnInit {
         options: [{ title: "" }],
         defaultValue: 0,
       },
-      fromDate: { type: "date", required: false },
-      toDate: { type: "date", required: false },
+      fromDate: { 
+        type: "date",
+        maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
+      },
+      toDate: { 
+        type: "date",
+        maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
+      },
       billAmt: {
         type: "number",
         required: false,
@@ -113,6 +128,7 @@ export class DetailsComponent implements OnInit {
         type: "dropdown",
         required: false,
         readonly: true,
+        options: this.refundreasonlist,
       },
       paymentMode: {
         type: "dropdown",
@@ -134,6 +150,7 @@ export class DetailsComponent implements OnInit {
   BServiceForm!: FormGroup;
 
   questions: any;
+  
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -146,6 +163,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.getrefundreason();
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -153,7 +171,18 @@ export class DetailsComponent implements OnInit {
   ngAfterViewInit(): void {
     this.formEvents();
   }
-
+  getrefundreason()
+  {
+    this.http.get(BillDetailsApiConstants.getrefundreason)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resuldata)=>{
+      console.log(resuldata);
+      this.refundreasonlist = resuldata;
+      this.questions[13].options = this.refundreasonlist.map(l=>{
+        return { title: l.name, value: l.id}
+      })
+    })
+  }
   formEvents() {
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -242,7 +271,7 @@ export class DetailsComponent implements OnInit {
   {
     this.matDialog.open(SearchDialogComponent, {
       width: "80%",
-      height: "83%",
+      height: "85%",
     });
   }
 }
