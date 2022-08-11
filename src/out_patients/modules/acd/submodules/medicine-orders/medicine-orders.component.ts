@@ -86,7 +86,7 @@ export class MedicineOrdersComponent implements OnInit {
       },
       input: {
         type: "string",
-        placehokder: "BLKH.",
+        defaultValue: this.cookie.get("LocationIACode") + "."
       },
 
       status: {
