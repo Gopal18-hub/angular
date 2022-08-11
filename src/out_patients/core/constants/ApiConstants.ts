@@ -768,8 +768,7 @@ export namespace ApiConstants {
   export const getediganosticacdoninvestigation = (
     FromDate: any,
     ToDate: any,
-    Locationid: number  
-    
+    Locationid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -778,17 +777,15 @@ export namespace ApiConstants {
       "/" +
       ToDate +
       "/" +
-      Locationid      
+      Locationid
     );
   };
   //Investigation Order Details
   export const getediganosticacdoninvestigationgrid = (
-   
     Locationid: number,
-    orderid : number,
-    regno : number,
-    iacode : string
-    
+    orderid: number,
+    regno: number,
+    iacode: string
   ) => {
     return (
       environment.PatientApiUrl +
@@ -798,8 +795,8 @@ export namespace ApiConstants {
       orderid +
       "/" +
       regno +
-      "/"+
-      iacode     
+      "/" +
+      iacode
     );
   };
   //Den Order List
@@ -809,8 +806,7 @@ export namespace ApiConstants {
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
-    LocationID: number  
-    
+    LocationID: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -819,9 +815,9 @@ export namespace ApiConstants {
       "/" +
       ToDate +
       "/" +
-      LocationID      
+      LocationID
     );
-  };  
+  };
   //Medicine Order Details
   export const getphysicianorderdetailep = (
     registrationNo: any,
@@ -843,15 +839,11 @@ export namespace ApiConstants {
   };
   //Save/Update
   export const SaveAndUpdateDiagnosticOrderBill =
-  environment.PatientApiUrl + "api/patient/SaveAndUpdateDiagnosticOrderBill";
+    environment.PatientApiUrl + "api/patient/SaveAndUpdateDiagnosticOrderBill";
   //Generate Pharmacy Token
-  export const GetPrintQueDetail = (   
-    Ipadress: string
-  ) => {
+  export const GetPrintQueDetail = (Ipadress: string) => {
     return (
-      environment.PatientApiUrl +
-      "api/patient/GetPrintQueDetail/" +
-      Ipadress
+      environment.PatientApiUrl + "api/patient/GetPrintQueDetail/" + Ipadress
     );
   };
   //Modify ACD order with Remarks
@@ -950,7 +942,11 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/sendotpoprefund";
 
   //OP REFUND APPROVAL
-  export const getpendingoprefundapproval = (fromdate: any, todate: any) => {
+  export const getpendingoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallpendingoprefundapprovalrequest/" +
@@ -958,11 +954,15 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getapprovedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getapprovedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallapprovedoprefundapprovalrequest/" +
@@ -970,18 +970,23 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getrejectedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getrejectedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallrejectedoprefundapprovalrequest/" +
       fromdate +
       "/" +
       todate +
-      "/7"
+      "/" +
+      hsplocationid
     );
   };
 
@@ -989,12 +994,15 @@ export namespace ApiConstants {
     environment.BillingApiUrl +
     "api/outpatientbilling/oprefundapprovalrequestsave";
 
-    
-  export const getsearchpatientdeceased = ( MaxID?: string,
-    MobileNo?: string, IsDetail?: string, SearchDeceased?: string
-    ) => {
-    return (  environment.BillingApiUrl +
-      "api/outpatientbilling/searchpatientdeceased?MaxID=" + 
+  export const getsearchpatientdeceased = (
+    MaxID?: string,
+    MobileNo?: string,
+    IsDetail?: string,
+    SearchDeceased?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/searchpatientdeceased?MaxID=" +
       MaxID +
       "&MobileNo=" +
       MobileNo +
@@ -1006,10 +1014,5 @@ export namespace ApiConstants {
   };
 
   export const postInitiateDeposit =
-    environment.BillingApiUrl +
-    "api/outpatientbilling/InitiateDeposit";
-
-  
-
-
+    environment.BillingApiUrl + "api/outpatientbilling/InitiateDeposit";
 }
