@@ -75,7 +75,7 @@ export class DispatchReportComponent implements OnInit {
         type: "date",
         tooltipColumn: "orderdatetime",
         style: {
-          width: "7.5rem",
+          width: "9rem",
         },
       },
       ptnName: {
@@ -97,14 +97,14 @@ export class DispatchReportComponent implements OnInit {
         title: "Received Date Time",
         type: "input_datetime",
         style: {
-          width: "11rem",
+          width: "10rem",
         },
       },
       r_dispatchdate: {
         title: "Dispatched Date Time",
         type: "input_datetime",
         style: {
-          width: "12rem",
+          width: "11rem",
         },
       },
       r_collection_location: {
@@ -397,6 +397,7 @@ export class DispatchReportComponent implements OnInit {
         ) {
           // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
+          return;
         } else if (
           e.r_dispatchdate == null ||
           e.r_dispatchdate == undefined ||
@@ -405,6 +406,7 @@ export class DispatchReportComponent implements OnInit {
         ) {
           // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
+          return;
         } else if (e.receive_date == null || e.receive_date == undefined) {
           this.dispatchreportsave.objDtSaveReport.push({
             slNo: e.sNo.toString(),
@@ -466,6 +468,7 @@ export class DispatchReportComponent implements OnInit {
         }
       });
     }
+    console.log(flag);
     if (this.dispatchreportsave.objDtSaveReport.length > 0 && flag == 0) {
       console.log(this.dispatchreportsave.objDtSaveReport.length);
       this.http
@@ -480,12 +483,12 @@ export class DispatchReportComponent implements OnInit {
           },
           (error) => {
             console.log(error);
-            this.msgdialog.error("You have Not Selected Proper Data");
+            this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
           }
         );
     }
     else if(flag > 0){
-      this.msgdialog.error("You have Not Selected Proper Data");
+      this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
     }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }
