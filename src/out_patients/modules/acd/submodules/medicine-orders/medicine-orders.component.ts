@@ -13,6 +13,11 @@ import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrder
 import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
 import { MatDialog } from '@angular/material/dialog';
 import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-date-dialog.component';
+
+import { SearchService } from '@shared/services/search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
+import { CookieService } from '@shared/services/cookie.service';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -47,10 +52,11 @@ export class MedicineOrdersComponent implements OnInit {
   objdtdenialorder: any;
   physicianOrderList: any = [];
   scheduleDate: any = "";
-  statusvalue: any;
-  idValue: any
+  statusvalue: any = '';
+  idValue: any = 'maxid';
   medOrderListMain: any;
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
+  hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
 
   investigationFormData = {
@@ -80,7 +86,7 @@ export class MedicineOrdersComponent implements OnInit {
       },
       input: {
         type: "string",
-        placehokder: "BLKH.",
+        defaultValue: this.cookie.get("LocationIACode") + "."
       },
 
       status: {
@@ -119,71 +125,77 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Order Id',
         type: 'string',
         style: {
-          width: "115px",
+          width: "8%",
         },
       },
       maxid: {
         title: 'Max Id',
         type: 'string',
         style: {
-          width: "105px",
+          width: "8%",
         },
       },
       ptnName: {
         title: 'Patient Name',
         type: 'string',
         style: {
-          width: "135px",
+          width: "11%",
         },
       },
       docName: {
         title: 'Doctor Name',
         type: 'string',
         style: {
-          width: "165px",
+          width: "12%",
         },
       },
       deptName: {
         title: 'Department',
         type: 'string',
         style: {
-          width: "135px",
+          width: "12%",
         },
       },
       visitDate: {
         title: 'Visit Date',
         type: 'date',
         style: {
-          width: "85px",
+          width: "9%",
         },
       },
       mobileNo: {
         title: 'Mobile No.',
         type: 'string',
         style: {
-          width: "105px",
+          width: "9%",
         },
       },
       mrpValue: {
-        title: 'Amount',
-        type: 'string'
+        title: 'Amt',
+        type: 'string',
+        style: {
+          width: "5%",
+        },
       },
       channel: {
         title: 'Channel',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "7%",
+        },
       },
       billNo: {
         title: 'Bill No.',
         type: 'string',
         style: {
-          width: "130px",
+          width: "8%",
         },
       },
       orderStatus: {
         title: 'Order Status',
         type: 'string',
         style: {
-          width: "125px",
+          width: "10%",
         },
       }
 
@@ -258,7 +270,13 @@ export class MedicineOrdersComponent implements OnInit {
     }
 
   }
-  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService, private messageDialogService: MessageDialogService, private matdialog: MatDialog,) {
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe,
+    private http: HttpService, private messageDialogService: MessageDialogService,
+    private searchService: SearchService, private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService,
+    public matdialog: MatDialog,
+    private cookie: CookieService,) {
   }
 
   ngOnInit(): void {
@@ -299,6 +317,19 @@ export class MedicineOrdersComponent implements OnInit {
           return { title: e.name, value: e.id };
         });
       })
+
+    //Global Search MaxID
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+      });
   }
   ngAfterViewInit(): void {
     this.scheduleDate = "";
@@ -332,22 +363,31 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderList = []
     this.medOrderDetails = [];
 
-    //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-    this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.medOrderListMain = res.objOrderDetails // Main Grid;   
-      })
-    if (!this.statusvalue && !this.investigationForm.value.input) {
+    if ((this.statusvalue !== "" || this.investigationForm.value.input !== "") && this.medOrderListMain.length !== 0) {
+      this.searchFilter();
+    }
+    else {
+      //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+      this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.medOrderListMain = res.objOrderDetails;
+          this.medOrderList = res.objOrderDetails;
+        })
+    }
+  }
+  searchFilter() {
+    if (!this.statusvalue && !this.investigationForm.value.input && this.medOrderListMain !== undefined) {
       this.medOrderList = this.medOrderListMain;
       console.log(this.medOrderList);
     }
     else if (this.statusvalue === 'All') {
+      this.medOrderList = [];
       this.medOrderList = this.medOrderListMain
     }
-    else if (this.statusvalue && this.idValue && this.investigationForm.value.input) {
+    else if (this.statusvalue && this.investigationForm.value.input) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.billdetails === this.statusvalue));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.orderStatus === this.statusvalue));
     }
     else if (this.statusvalue) {
       this.medOrderList = [];
@@ -365,21 +405,12 @@ export class MedicineOrdersComponent implements OnInit {
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
 
     //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
-    this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], 7, event.row.orderId))
+    this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], this.hsplocationId, event.row.orderId))
+      //this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], 7, event.row.orderId))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.medOrderDetails = res;
-        this.medOrderDetails.forEach((e: any, index: number) => {
-          if (e.acDisHideDrug === true) {
-            e[index].acDisHideDrug = 1;
-          }
-          if (e.acDisHideDrug === false) {
-            e[index].acDisHideDrug = 0;
-          }
-
-        })
-
       })
 
   }
