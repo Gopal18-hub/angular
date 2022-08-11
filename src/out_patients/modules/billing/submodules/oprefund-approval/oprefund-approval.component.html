@@ -25,18 +25,21 @@
                 <maxhealth-table #oprefundpending
                 [config]="oprefundConfig"
                 [data]="oprefundPendingList"
+                class="input-align"
                 ></maxhealth-table>
             </ng-container>
-            <ng-container *ngIf="isApprovedList"  >
+            <ng-container *ngIf="isApprovedList" >
               <maxhealth-table #oprefundapproved
               [config]="oprefundapproveConfig"
               [data]="oprefundApprovedList"
+              class="input-align"
               ></maxhealth-table>
           </ng-container>
           <ng-container *ngIf="isRejectedList"  >
             <maxhealth-table #oprefundapproved
             [config]="oprefundrejectConfig"
             [data]="oprefundRejectedList"
+            class="input-align2" 
             ></maxhealth-table>
         </ng-container>
           </div> 
