@@ -47,7 +47,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       },
       mobileno:{
         type:"number",
-        pattern: "^[1-9]{1}[0-9]{9}",
+      //  pattern: "^[1-9]{1}[0-9]{9}",
       },
       selectpatient:{
         type:"dropdown",   
@@ -94,8 +94,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     .subscribe((value) => {
       if (value["maxId"]) {
         this.initiatedepositForm.value.maxid = value["maxId"];
-        this.getInitatedepositDetailsByMaxId();
-        this.getDepositType();
+        this.getInitatedepositDetailsByMaxId();      
       }
     });
   }
@@ -179,16 +178,17 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           return { title: l.maxID, value: l.maxID };
         });
         
-        if(resultData.length == 1){
-          this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);       
+        if(resultData.length == 1 && this.initiatedepositForm.value.maxid){
+          this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);   
+        }
+              
           this.maxid =  resultData[0].maxID;
           this.name = resultData[0].patientName;
           this.initiatedepositForm.controls["emailid"].setValue(resultData[0].emailID);
           this.initiatedepositForm.controls["mobilenoinput"].setValue(resultData[0].mobileNo);
-          this.initiatedepositForm.controls["selectpatient"].setValue({ title: resultData[0].maxID, value: resultData[0].maxID});
-        }else{
-          this.questions[2].elementRef.focus();
-        }      
+          this.initiatedepositForm.controls["selectpatient"].setValue(resultData[0].maxID);
+          
+           
       }else{
         this.messageDialogService.error("Please Enter valid Max ID");
       }     
@@ -242,23 +242,20 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.questions[7].elementRef.focus();
     }
     else{
+      console.log(this.getPatientInitiateDeposit());
       this.http
       .post(ApiConstants.postInitiateDeposit, this.getPatientInitiateDeposit())
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
-          this.messageDialogService.success(resultData);
+          this.messageDialogService.success(resultData.message.split("!")[0]);
           this.initiatedepositForm.controls["depositamount"].setValue('');
           this.initiatedepositForm.controls["remarks"].setValue('');
           this.initiatedepositForm.controls["deposittype"].setValue({ title: "", value: 0});
         },
         (error) => {
-          if(error.statusText == "OK"){          
-            this.messageDialogService.success(error.error.text);
-            this.initiatedepositForm.controls["depositamount"].setValue('');
-          this.initiatedepositForm.controls["remarks"].setValue('');
-          this.initiatedepositForm.controls["deposittype"].setValue({ title: "", value: 0});
-          }
+          console.log(error);                   
+            this.messageDialogService.success(error.error);            
          
         }
       );
