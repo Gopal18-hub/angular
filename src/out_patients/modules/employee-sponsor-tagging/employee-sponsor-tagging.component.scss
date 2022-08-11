@@ -40,6 +40,12 @@
 .color-blue{
     color:#45C0BE;
 }
+.font-style-iom{
+   font-style: italic;
+    color:#45C0BE;
+    font-weight:600;
+    //opacity:1;
+}
 
 //DISPLAY TABLE HEADERS IN A SINGLE LINE
 // ::ng-deep .whitespace-nowrap .mat-sort-header-content{
