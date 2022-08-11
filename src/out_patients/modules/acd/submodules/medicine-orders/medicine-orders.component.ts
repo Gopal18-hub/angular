@@ -125,71 +125,77 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Order Id',
         type: 'string',
         style: {
-          width: "115px",
+          width: "8%",
         },
       },
       maxid: {
         title: 'Max Id',
         type: 'string',
         style: {
-          width: "105px",
+          width: "8%",
         },
       },
       ptnName: {
         title: 'Patient Name',
         type: 'string',
         style: {
-          width: "135px",
+          width: "11%",
         },
       },
       docName: {
         title: 'Doctor Name',
         type: 'string',
         style: {
-          width: "165px",
+          width: "12%",
         },
       },
       deptName: {
         title: 'Department',
         type: 'string',
         style: {
-          width: "135px",
+          width: "12%",
         },
       },
       visitDate: {
         title: 'Visit Date',
         type: 'date',
         style: {
-          width: "85px",
+          width: "9%",
         },
       },
       mobileNo: {
         title: 'Mobile No.',
         type: 'string',
         style: {
-          width: "105px",
+          width: "9%",
         },
       },
       mrpValue: {
-        title: 'Amount',
-        type: 'string'
+        title: 'Amt',
+        type: 'string',
+        style: {
+          width: "5%",
+        },
       },
       channel: {
         title: 'Channel',
-        type: 'string'
+        type: 'string',
+        style: {
+          width: "7%",
+        },
       },
       billNo: {
         title: 'Bill No.',
         type: 'string',
         style: {
-          width: "130px",
+          width: "8%",
         },
       },
       orderStatus: {
         title: 'Order Status',
         type: 'string',
         style: {
-          width: "125px",
+          width: "10%",
         },
       }
 
@@ -376,6 +382,7 @@ export class MedicineOrdersComponent implements OnInit {
       console.log(this.medOrderList);
     }
     else if (this.statusvalue === 'All') {
+      this.medOrderList = [];
       this.medOrderList = this.medOrderListMain
     }
     else if (this.statusvalue && this.investigationForm.value.input) {
@@ -399,20 +406,11 @@ export class MedicineOrdersComponent implements OnInit {
 
     //this.http.get(ApiConstants.getphysicianorderdetailep(123123, "SKDD", 7, 0))
     this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], this.hsplocationId, event.row.orderId))
+      //this.http.get(ApiConstants.getphysicianorderdetailep(maxId.toString().split(".")[1], maxId.toString().split(".")[0], 7, event.row.orderId))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.medOrderDetails = res;
-        this.medOrderDetails.forEach((e: any, index: number) => {
-          if (e.acDisHideDrug === true) {
-            e[index].acDisHideDrug = 1;
-          }
-          if (e.acDisHideDrug === false) {
-            e[index].acDisHideDrug = 0;
-          }
-
-        })
-
       })
 
   }

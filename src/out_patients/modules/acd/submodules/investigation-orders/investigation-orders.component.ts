@@ -204,7 +204,7 @@ export class InvestigationOrdersComponent implements OnInit {
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
     // selectBox: true,
     displayedColumns: ['boolColumn', 'testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
-    rowLayout: { dynamic: { rowClass: "row['isBilled']" } },
+    rowLayout: { dynamic: { rowClass: "'isBilled'+row['isBilled']" } },
     columnsInfo: {
       boolColumn: {
         title: '',
@@ -383,6 +383,7 @@ export class InvestigationOrdersComponent implements OnInit {
       console.log(this.invOrderList);
     }
     else if (this.statusvalue === 'All') {
+      this.invOrderList = [];
       this.invOrderList = this.invOrderListMain;
     }
     else if (this.statusvalue && this.investigationForm.value.input) {
@@ -405,27 +406,12 @@ export class InvestigationOrdersComponent implements OnInit {
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
 
     this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(this.hsplocationId, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
+      //this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.invOrderDetails = res.tempOrderBreakup;
-        this.invOrderDetails.forEach((e: any, index: number) => {
-          if (e.boolColumn === true) {
-            e[index].boolColumn = 1;
-          }
-          if (e.boolColumn === false) {
-            e[index].boolColumn = 0;
-          }
-
-        })
-
-        this.objPhyOrder.push({
-          acDisHideDrug: true,
-          visitid: 0,
-          drugid: 0,
-          acdRemarks: "Test"
-        });
-
+        console.log(this.invOrderDetails, "invOrderDetails")
       })
   }
 
