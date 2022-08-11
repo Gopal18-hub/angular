@@ -38,9 +38,9 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   
   private readonly _destroying$ = new Subject<void>();
 
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any =Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("stationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -54,12 +54,11 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["dateofapplication"].disable();
     this.form60form.controls["applicationno"].disable();
     this.getForm60DocumentType();
-    this.form60form.controls["iddocumenttype"].setValue({ title: "<--Select-->", value: 0 });
-    this.form60form.controls["addressdocumenttype"].setValue({ title: "<--Select-->", value: 0 });
-    
+   
   }
 
   ngAfterViewInit(): void{
+   
     this.form60form.controls["appliedforpan"].valueChanges.subscribe((value:any)=>{
       console.log(value);
       if(value == true)
@@ -79,7 +78,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60form.controls["tickforsamedoc"].valueChanges.subscribe((res:any)=>{
       if(res == true)
       {
-        this.form60form.controls["addressdocumenttype"].setValue({value:this.form60form.controls["iddocumenttype"].value.value, title:this.form60form.controls["iddocumenttype"].value.title });
+        this.form60form.controls["addressdocumenttype"].setValue(this.form60form.controls["iddocumenttype"].value);
         this.form60form.controls["addressdocidentityno"].setValue(this.form60form.controls["iddocidentityno"].value);
         this.form60form.controls["addressnameofauthority"].setValue(this.form60form.controls["idnameofauthority"].value);
         console.log(this.form60form.controls["addressdocumenttype"].value);
@@ -159,6 +158,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
     this.form60validation();
      if(!this.validationerrorexists){
           console.log("deposit request body" + this.getPatientform60SubmitRequestBody());
+          console.log(this.form60savedetails);
           this.http
             .post(ApiConstants.saveform60patientdata, this.getPatientform60SubmitRequestBody())
             .pipe(takeUntil(this._destroying$))
@@ -187,15 +187,14 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
       this.operatorID,
       this.form60form.value.aadharno,
       this.form60form.value.appliedforpan == true ? 1 : 0,
-      this.datepipe.transform(this.form60form.value.dateofapplication, "yyyy-MM-ddThh:mm:ss") || "{}",
+      this.datepipe.transform(this.form60form.value.dateofapplication, "yyyy-MM-ddThh:mm:ss") || "1900-01-01T00:00:00",
       this.form60form.value.applicationno == undefined ? "" : this.form60form.value.applicationno,
       this.form60form.value.agriculturalincome == undefined ? 0 : this.form60form.value.agriculturalincome,
       this.form60form.value.otherthanagriculturalincome == undefined ? 0 : this.form60form.value.otherthanagriculturalincome,
-      this.form60form.value.iddocumenttype.value,
-      //this.form60form.value.iddocidentityno,
+      this.form60form.value.iddocumenttype,
       this.DocumentIDNumber,
       this.form60form.value.idnameofauthority,
-      this.form60form.value.addressdocumenttype.value,
+      this.form60form.value.addressdocumenttype,
       this.form60form.value.addressdocidentityno,
       this.form60form.value.addressnameofauthority ,
       this.form60form.value.remarks ,     

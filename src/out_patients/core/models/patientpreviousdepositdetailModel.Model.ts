@@ -14,6 +14,13 @@ export class PatientPreviousDepositDetail {
   advanceTypeId: number;
   advanceType: string;
   remarks: string;
+  recordSequence: number;
+  depositRefund: string;
+  cashTransactionID: number;
+  paymentType: string;
+  serviceTypeName: string;
+  operatorName: string;
+  parentID: number;
 
   constructor(
     receiptno: number,
@@ -30,7 +37,14 @@ export class PatientPreviousDepositDetail {
     donationRefundFlag: number,
     advanceTypeId: number,
     advanceType: string,
-    remarks: string
+    remarks: string,
+    recordSequence: number,
+    depositRefund: string,
+    cashTransactionID: number,
+    paymentType: string,
+    serviceTypeName: string,
+    operatorName: string,
+    parentID: number,
   ) {
     this.receiptno = receiptno,
       this.uhid = uhid,
@@ -46,6 +60,14 @@ export class PatientPreviousDepositDetail {
       this.donationRefundFlag = donationRefundFlag,
       this.advanceTypeId = advanceTypeId,
       this.advanceType = advanceType,
-      this.remarks = remarks
+      this.remarks = remarks,
+      this.recordSequence = recordSequence,
+      this.depositRefund = depositRefund,
+      this.cashTransactionID = cashTransactionID,
+      this.paymentType = paymentType,
+      this.serviceTypeName = serviceTypeName,
+      this.operatorName = operatorName,
+      this.parentID = parentID
+
   }
 }

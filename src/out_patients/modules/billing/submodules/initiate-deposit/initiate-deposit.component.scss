@@ -1,3 +1,4 @@
+.iniatedepositwrapper{
 .bg-initiatedeposit {
     background-color: #F6F6F6;
     color: #004084;
@@ -5,9 +6,9 @@
 
 .bg-white {
     background-color: white;
-    color: rgba(0, 0, 0, 0.87);
+    color: rgba(0, 0, 0, 0.87) !important;
     ::ng-deep .mat-error{
-        margin-top: 10% !important;
+        margin-top: 7% !important;
     }
 }
 
@@ -58,4 +59,5 @@
 
 .namewidth{
     width: 22% !important;
+}    
 }

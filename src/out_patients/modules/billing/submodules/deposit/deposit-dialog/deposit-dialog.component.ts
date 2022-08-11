@@ -107,10 +107,10 @@ export class DepositDialogComponent implements OnInit {
     this.depositpatientidentityinfo = this.depositpatientidentity.patientidentityform.value;
     
     //Service and Deposit Type
-    // if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
-    //   this.messageDialogService.error("Please Select Deposit Head");
-    // }
-    // else 
+    if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
+      this.messageDialogService.error("Please Select Deposit Head");
+    }
+    else 
     if(this.selecteddepositservicetype.servicetype == null){
       this.messageDialogService.error("Please Select Service Type");
     }
@@ -147,12 +147,14 @@ export class DepositDialogComponent implements OnInit {
     }
 
     //pan card and form 60
-    else if((this.PaymentTypedepositamount >= 200000) && (this.depositpatientidentityinfo.length == 0 || 
+     if((this.PaymentTypedepositamount >= 200000) && (this.depositpatientidentityinfo.length == 0 || 
       this.depositpatientidentityinfo.mainradio == "pancardno" && (this.depositpatientidentityinfo.panno == undefined || this.depositpatientidentityinfo.panno == ""))){
         this.messageDialogService.error("Please Enter a valid PAN Number");   
+        this.validationexists = true;
      }
-     else if(this.depositpatientidentityinfo.mainradio == "form60"){
+     else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false){
       this.messageDialogService.error("Please fill the form60 ");   
+      this.validationexists = true;
      }
      else{
       this.validationexists = false;
@@ -164,7 +166,7 @@ export class DepositDialogComponent implements OnInit {
   {
     this.depositformvalidation();
    if(!this.validationexists){
-      console.log("deposit request body" + this.getPatientDepositSubmitRequestBody());
+      console.log(this.patientSaveDepositDetails);
       this.http
         .post(ApiConstants.SavePatientsDepositDetailsGST, this.getPatientDepositSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))
@@ -212,7 +214,7 @@ export class DepositDialogComponent implements OnInit {
       "",
       "",
       0,
-      this.depositpatientidentityinfo.panno,
+      this.formsixtysubmit == false ? this.depositpatientidentityinfo.panno : "Form60",
       this.selecteddepositservicetype.servicetype.value,
       0,
       this.selecteddepositservicetype.deposithead.value,
@@ -228,5 +230,11 @@ export class DepositDialogComponent implements OnInit {
     this._destroying$.complete();
     this.clearsiblingcomponents = true;
     this.makedepositdialogForm.reset();
+  }
+
+  formsixtysubmit:boolean = false;
+  formsixtysuccess(event:any){
+    console.log(event);
+    this.formsixtysubmit = event;
   }
 }

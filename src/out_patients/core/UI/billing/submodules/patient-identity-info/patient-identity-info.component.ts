@@ -5,6 +5,8 @@ import { QuestionControlService } from '@shared/ui/dynamic-forms/service/questio
 import { FormSixtyComponent } from '../form60/form-sixty.component';
 import { DepositService } from '@core/services/deposit.service';
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'patient-identity-info',
@@ -14,6 +16,8 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() data!: any;
   @Input() patientclearsibilingcomponent : boolean = false;
+
+  @Output() neweventform60ssave = new EventEmitter<boolean>();
   
   patientidentityformData = {
     title: "",
@@ -46,6 +50,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
   questions: any;
   form60PatientInfo:any=[];
   DepositPaymentMethod: { transactionamount : number, MOP: string}[] =[];
+  Form60success:boolean = false;
 
   constructor( private formService: QuestionControlService,  private depositservice: DepositService, private messageDialogService: MessageDialogService,
   private matdialog: MatDialog) {
@@ -58,6 +63,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
   }
 
 
+  private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.patientidentityformData.properties,
@@ -83,17 +89,24 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
     this.DepositPaymentMethod = this.depositservice.getFormLsit();   
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
-      {
-        // if(this.DepositPaymentMethod[0].transactionamount == 0){
-        //     this.messageDialogService.error("Amount Zero is not Allowed");
-        // }
-        // else
+      {       
         {
-          this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
+         const form60dialog = this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
           data: {from60data:this.form60PatientInfo,
                 paymentamount: this.DepositPaymentMethod[0]
               }
             });
+
+            form60dialog.afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if(result == "Success"){
+                this.Form60success = true;
+                this.neweventform60ssave.emit(this.Form60success);
+                console.log("Form 60 successfull");
+              }
+            });
+
           this.patientidentityform.controls["panno"].disable();
           this.patientidentityform.controls["panno"].setValue('');
         }      
