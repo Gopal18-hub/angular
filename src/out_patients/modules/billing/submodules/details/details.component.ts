@@ -31,7 +31,7 @@ export class DetailsComponent implements OnInit {
 
   @ViewChild("selectedServices") selectedServicesTable: any;
   public refundreasonlist: getrefundreason[] = [];
-  public patientbilldetaillist: getPatientPersonalandBillDetails[] = [];
+  public patientbilldetaillist!: getPatientPersonalandBillDetails;
   linkList = [
     {
       title: "Services",
@@ -153,6 +153,14 @@ export class DetailsComponent implements OnInit {
   
 
   private readonly _destroying$ = new Subject<void>();
+  patientName: any;
+  age: any;
+  gender: any;
+  dob: any;
+  country: any;
+  ssn: any;
+  operator: any;
+  billdate: any;
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -193,9 +201,41 @@ export class DetailsComponent implements OnInit {
 
         event.preventDefault();
         console.log("event triggered");
+        this.getpatientbilldetails();
         // this.getPatientDetailsByMaxId();
       }
     });
+  }
+
+  getpatientbilldetails()
+  {
+    this.http.get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata) => {
+      console.log(resultdata);
+      this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+      console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+      if(this.patientbilldetaillist.billDetialsForRefund_Table0.length == 1)
+      {
+        this.billFormfill();
+      }
+    })
+  }
+  billFormfill()
+  {
+    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+    this.BServiceForm.controls["maxid"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
+    this.BServiceForm.controls["mobileNo"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno);
+    this.BServiceForm.controls["billDate"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime);
+    this.patientName = this.patientbilldetaillist.billDetialsForRefund_Table0[0].name;
+    this.age = this.patientbilldetaillist.billDetialsForRefund_Table0[0].age;
+    this.gender = this.patientbilldetaillist.billDetialsForRefund_Table0[0].sex;
+    this.dob = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
+    this.country = 'India';
+    this.ssn = this.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn;
+    this.operator = this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
+    this.billdate = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
+    // this.BServiceForm.controls["billDate"].setValue();
   }
   // getPatientDetailsByMaxId() {
   //   let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
@@ -252,12 +292,7 @@ export class DetailsComponent implements OnInit {
   //   }
   // }
 
-  patientName!: string;
-  age!: string;
-  gender!: string;
-  dob!: string;
-  country!: string;
-  ssn!: string;
+  
   openhistory() {
     this.matDialog.open(VisitHistoryComponent, {
       width: "70%",

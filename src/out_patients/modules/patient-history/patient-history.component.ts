@@ -225,6 +225,8 @@ export class PatientHistoryComponent implements OnInit {
   ssn:any;
 
   billno: any;
+  receiptno: any;
+  billId: any;
   showtable: boolean = true;
   apiProcessing: boolean = false;
   searchbtn: boolean = true;
@@ -323,13 +325,22 @@ export class PatientHistoryComponent implements OnInit {
       console.log(event);
       if (event.key === "Enter") {
         event.preventDefault();
-        this.mobilechange();
+        var digit = this.patienthistoryform.value.mobile.toString().length;
+        if(digit == 10)
+        {
+          this.mobilechange();
+        }
+        
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
       console.log(event);
       if (event.key === "Tab") {
-        this.mobilechange();
+        var digit = this.patienthistoryform.value.mobile.toString().length;
+        if(digit == 10)
+        {
+          this.mobilechange();
+        }
       }
     });
     console.log(this.patienthistoryform);
@@ -558,6 +569,8 @@ export class PatientHistoryComponent implements OnInit {
     console.log(event);
     if(event.column == "printIcon"){
       console.log(event.row.billType);
+      this.billId = event.row.billId;
+      this.receiptno = event.row.billNo;
       this.billno = event.row.billNo;
       if(event.row.billType == 'Deposit' || event.row.billType == 'Donation')
       {
@@ -585,7 +598,7 @@ export class PatientHistoryComponent implements OnInit {
     if(btnname == 'depositReport')
     {
       this.reportService.openWindow(btnname, btnname, {
-        receiptnumber: this.billno,
+        receiptnumber: this.receiptno,
         locationID: this.hsplocationId
       });
     }
@@ -599,7 +612,7 @@ export class PatientHistoryComponent implements OnInit {
     else if(btnname == 'billingreport')
     {
       this.reportService.openWindow(btnname, btnname, {
-        opbillid: this.billno,
+        opbillid: this.billId,
         locationID: this.hsplocationId
       });
     }

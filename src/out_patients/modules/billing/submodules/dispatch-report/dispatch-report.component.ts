@@ -75,7 +75,7 @@ export class DispatchReportComponent implements OnInit {
         type: "date",
         tooltipColumn: "orderdatetime",
         style: {
-          width: "7.5rem",
+          width: "9rem",
         },
       },
       ptnName: {
@@ -97,14 +97,14 @@ export class DispatchReportComponent implements OnInit {
         title: "Received Date Time",
         type: "input_datetime",
         style: {
-          width: "11rem",
+          width: "10rem",
         },
       },
       r_dispatchdate: {
         title: "Dispatched Date Time",
         type: "input_datetime",
         style: {
-          width: "12rem",
+          width: "11rem",
         },
       },
       r_collection_location: {
