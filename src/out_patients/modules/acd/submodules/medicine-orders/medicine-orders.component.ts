@@ -13,6 +13,9 @@ import { SaveInvestigationOrderModel } from '@core/models/saveInvestigationOrder
 import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
 import { MatDialog } from '@angular/material/dialog';
 import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-date-dialog.component';
+import { SearchService } from '@shared/services/search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -47,8 +50,8 @@ export class MedicineOrdersComponent implements OnInit {
   objdtdenialorder: any;
   physicianOrderList: any = [];
   scheduleDate: any = "";
-  statusvalue: any;
-  idValue: any
+  statusvalue: any = '';
+  idValue: any = 'maxid';
   medOrderListMain: any;
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
 
@@ -258,7 +261,12 @@ export class MedicineOrdersComponent implements OnInit {
     }
 
   }
-  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService, private messageDialogService: MessageDialogService, private matdialog: MatDialog,) {
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe,
+    private http: HttpService, private messageDialogService: MessageDialogService,
+    private searchService: SearchService, private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService,
+    public matdialog: MatDialog,) {
   }
 
   ngOnInit(): void {
@@ -299,6 +307,19 @@ export class MedicineOrdersComponent implements OnInit {
           return { title: e.name, value: e.id };
         });
       })
+
+    //Global Search MaxID
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+      });
   }
   ngAfterViewInit(): void {
     this.scheduleDate = "";
@@ -332,22 +353,30 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderList = []
     this.medOrderDetails = [];
 
-    //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-    this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.medOrderListMain = res.objOrderDetails // Main Grid;   
-      })
-    if (!this.statusvalue && !this.investigationForm.value.input) {
+    if ((this.statusvalue !== "" || this.investigationForm.value.input !== "") && this.medOrderListMain.length !== 0) {
+      this.searchFilter();
+    }
+    else {
+      //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+      this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.medOrderListMain = res.objOrderDetails;
+          this.medOrderList = res.objOrderDetails;
+        })
+    }
+  }
+  searchFilter() {
+    if (!this.statusvalue && !this.investigationForm.value.input && this.medOrderListMain !== undefined) {
       this.medOrderList = this.medOrderListMain;
       console.log(this.medOrderList);
     }
     else if (this.statusvalue === 'All') {
       this.medOrderList = this.medOrderListMain
     }
-    else if (this.statusvalue && this.idValue && this.investigationForm.value.input) {
+    else if (this.statusvalue && this.investigationForm.value.input) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.billdetails === this.statusvalue));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.orderStatus === this.statusvalue));
     }
     else if (this.statusvalue) {
       this.medOrderList = [];
