@@ -46,4 +46,9 @@
     ::ng-deep .mat-form-field-wrapper{
         padding-bottom: 0 !important;
     }
+    ::ng-deep .mat-checkbox-inner-container{
+        margin-top: -3px;
+        height: 13px;
+        width: 13px;
+    }
 }
