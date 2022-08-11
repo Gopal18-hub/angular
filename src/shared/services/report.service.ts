@@ -28,29 +28,4 @@ export class ReportService {
       height: "85%",
     });
   }
-
-  getOPRegistrationForm(_iacode: string) {
-    this.baseUrl = environment.ReportsApiUrl + "PrintFormReport";
-    window.open(
-      this.baseUrl + "?" + _iacode,
-      "_blank",
-      "toolbar=0,location=0,menubar=0"
-    );
-  }
-  getOPRegistrationPrintLabel(_iacode: string) {
-    this.baseUrl = environment.ReportsApiUrl + "PrintLabel";
-    window.open(
-      this.baseUrl + "?" + _iacode,
-      "_blank",
-      "toolbar=0,location=0,menubar=0"
-    );
-  }
-  getOPRegistrationOrganDonorForm(_iacode: string) {
-    this.baseUrl = environment.ReportsApiUrl + "PrintOrganDonorForm";
-    window.open(
-      this.baseUrl + "?" + _iacode,
-      "_blank",
-      "toolbar=0,location=0,menubar=0"
-    );
-  }
 }

@@ -22,7 +22,7 @@ import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-da
 })
 export class InvestigationOrdersComponent implements OnInit {
   @ViewChild("invOrderDetailsTable") invOrderDetailsTable: any;
-  patientInfo : any;
+  patientInfo: any;
   investigationForm!: FormGroup;
   from: any;
   to: any;
@@ -33,25 +33,25 @@ export class InvestigationOrdersComponent implements OnInit {
   isBtnDisableClear: boolean = true;
   name: any;
   questions: any;
-  statusvalue: any;
-  idValue :any;
+  statusvalue: any = '';
+  idValue: any = '';
   private readonly _destroying$ = new Subject<void>();
 
   investigationDetails: any;
   public denyOrderTypeList: DenyOrderListTypeModel[] = [];
 
-  invOrderList : any;
-  invOrderListMain : any;
-  invOrderDetails : any;
+  invOrderList: any = [];
+  invOrderListMain: any;
+  invOrderDetails: any;
 
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
 
- 
-  physicianOrderList : any =[];
 
-  objPhyOrder: any=[];
-  objdtdenialorder:any;
-  scheduleDate : any="";
+  physicianOrderList: any = [];
+
+  objPhyOrder: any = [];
+  objdtdenialorder: any;
+  scheduleDate: any = "";
 
   investigationFormData = {
     title: "",
@@ -60,7 +60,7 @@ export class InvestigationOrdersComponent implements OnInit {
       datecheckbox: {
         type: "checkbox",
         options: [{ title: "", value: "" }],
-        
+
       },
       fromdate: {
         type: "date",
@@ -97,7 +97,7 @@ export class InvestigationOrdersComponent implements OnInit {
       denyorder: {
         type: "dropdown",
         placeholder: "Select",
-        options: this.denyOrderTypeList        
+        options: this.denyOrderTypeList
       },
       remarks: {
         type: "string",
@@ -197,9 +197,18 @@ export class InvestigationOrdersComponent implements OnInit {
   invDetailsConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
-    selectBox: true,
-    displayedColumns: ['testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
+    // selectBox: true,
+    displayedColumns: ['boolColumn', 'testName', 'docName', 'labItemPriority', 'visitDateTime', 'specialization', 'acdRemarks'],
+    rowLayout: { dynamic: { rowClass: "row['isBilled']" } },
     columnsInfo: {
+      boolColumn: {
+        title: '',
+        type: "checkbox_active",
+        disabled: false,
+        style: {
+          width: "80px",
+        },
+      },
       testName: {
         title: 'Test Name',
         type: 'string',
@@ -237,7 +246,7 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       acdRemarks: {
         title: 'ACD Remarks',
-        type: 'input',
+        type: 'textarea',
         style: {
           width: "35%",
         },
@@ -246,14 +255,13 @@ export class InvestigationOrdersComponent implements OnInit {
     }
 
   }
-  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService,private matdialog: MatDialog,private messageDialogService: MessageDialogService) {}
-  denyBtn()
-  {    
-    this.isBtnDisable= true;
+  constructor(private formService: QuestionControlService, public datepipe: DatePipe, private http: HttpService, private matdialog: MatDialog, private messageDialogService: MessageDialogService) { }
+  denyBtn() {
+    this.isBtnDisable = true;
     this.investigationForm.controls["denyorder"].enable();
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
@@ -265,132 +273,123 @@ export class InvestigationOrdersComponent implements OnInit {
     let todaydate = new Date();
     this.investigationForm.controls["fromdate"].setValue(todaydate);
     this.investigationForm.controls["todate"].setValue(todaydate);
-    if (this.from == undefined && this.to == undefined) {   
+    this.investigationForm.controls["maxid"].setValue('maxid');
+    //this.investigationForm.controls["status"].setValue('Unbilled');
+    if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.investigationForm.controls["denyorder"].disable();
     //Deny Order List
-    this.http.get(ApiConstants.getdenyreasonforacd)    
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((res: any) => {
-      this.denyOrderTypeList = res;
-      this.questions[6].options = this.denyOrderTypeList.map((e) => {
-        return { title: e.name, value: e.id };
-      });
-    })
+    this.http.get(ApiConstants.getdenyreasonforacd)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.denyOrderTypeList = res;
+        this.questions[6].options = this.denyOrderTypeList.map((e) => {
+          return { title: e.name, value: e.id };
+        });
+      })
   }
   ngAfterViewInit(): void {
     //Dialog
-    this.investigationForm.controls["denyorder"].valueChanges.subscribe((value:any)=>{
-      if(value===10)
-      {  
-      this.matdialog.open(ScheduleDateDialogComponent).afterClosed().subscribe(res => {
-        // received data from dialog-component
-        this.scheduleDate= this.datepipe.transform(res.data, "YYYY-MM-dd")
-      })
-  }
-      })
-    this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
+    this.investigationForm.controls["denyorder"].valueChanges.subscribe((value: any) => {
+      if (value === 10) {
+        this.matdialog.open(ScheduleDateDialogComponent).afterClosed().subscribe(res => {
+          // received data from dialog-component
+          this.scheduleDate = this.datepipe.transform(res.data, "YYYY-MM-dd")
+        })
+      }
+    })
+    this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
       this.investigationForm.controls["input"].reset();
-      this.investigationForm.controls["status"].reset();})
-    
-      //Filter
-      this.investigationForm.controls["status"].valueChanges.subscribe((value:any)=>{
-        this.statusvalue = value;
-      })
-      this.investigationForm.controls["maxid"].valueChanges.subscribe((value:any)=>{
-        this.idValue = value;
-      })
-    }
+      this.investigationForm.controls["status"].reset();
+    })
+
+    //Filter
+    this.investigationForm.controls["status"].valueChanges.subscribe((value: any) => {
+      this.invOrderList = []
+      this.invOrderDetails = []
+      this.statusvalue = value;
+    })
+    this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
+      this.invOrderList = []
+      this.invOrderDetails = []
+      this.idValue = value;
+    })
+  }
 
 
-  isChecked(event:any)
-
-  {
-    if(!this.investigationForm.controls["datecheckbox"].value)
-    {
+  isChecked(event: any) {
+    if (!this.investigationForm.controls["datecheckbox"].value) {
       this.investigationForm.controls["datecheckbox"].setValue(false)
     }
-   
-    if(this.investigationForm.controls["datecheckbox"].value == false)
-    {
+
+    if (this.investigationForm.controls["datecheckbox"].value == false) {
       this.investigationForm.controls["fromdate"].enable();
       this.investigationForm.controls["todate"].enable();
     }
-    if(this.investigationForm.controls["datecheckbox"].value == true)
-    {
+    if (this.investigationForm.controls["datecheckbox"].value == true) {
       let todaydate = new Date();
-      this.investigationForm.controls["fromdate"].setValue(todaydate);  
+      this.investigationForm.controls["fromdate"].setValue(todaydate);
       this.investigationForm.controls["todate"].setValue(todaydate);
       this.investigationForm.controls["fromdate"].disable();
       this.investigationForm.controls["todate"].disable();
-      
+
     }
-  }  
-  
-  search() {  
-   this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "YYYY-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "YYYY-MM-dd"), 7))
-    //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
+  }
+
+  search() {
+    this.invOrderList = [];
+    this.invOrderDetails = [];
+    this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), 7))
+      // this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.invOrderListMain = res.objTempOrderHeader // Main Grid;   
-      })    
-      console.log(this.statusvalue+this.idValue,"tst")
-      if(this.statusvalue === 'All')
-      {
-        this.invOrderList = this.invOrderListMain
-      }
-      else if(this.statusvalue && this.idValue && this.investigationForm.value.input)
-      {
-        this.invOrderList=[];
-       
-        this.invOrderListMain.forEach((e:any)=>  {          
-          if(e[this.idValue]=== this.investigationForm.value.input && e.billdetails === this.statusvalue)
-          {
-           this.invOrderList.push(e);
-          }
-        })
-      }
-      else if(this.statusvalue){
-        this.invOrderList=[];
-        this.invOrderListMain.forEach((e:any)=>  {          
-          if(e.billdetails === this.statusvalue)
-          {
-            this.invOrderList.push(e);
-          }
-        })     
-      }
-      else if(this.idValue && this.investigationForm.value.input)
-      {
-        this.invOrderList=[];
-       
-        this.invOrderListMain.forEach((e:any)=>  {          
-          if(e[this.idValue]=== this.investigationForm.value.input)
-          {
-           this.invOrderList.push(e);
-          }
-        })
-      }
-       
-      else
-      {
-        this.invOrderList = this.invOrderListMain
-        console.log(this.invOrderList)
-      }
-      }
+      })
+    console.log(this.statusvalue + this.idValue, "tst")
+    if (!this.statusvalue && !this.investigationForm.value.input) {
+      this.invOrderList = this.invOrderListMain;
+      console.log(this.invOrderList);
+    }
+    else if (this.statusvalue === 'All') {
+      this.invOrderList = this.invOrderListMain;
+    }
+    else if (this.statusvalue && this.investigationForm.value.input) {
+      this.invOrderList = [];
+      this.invOrderList = this.invOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.billdetails === this.statusvalue))
+    }
+    else if (this.statusvalue) {
+      this.invOrderList = [];
+      this.invOrderList = this.invOrderListMain.filter((e: any) => ((e.billdetails === this.statusvalue)));
+    }
+    else if (this.idValue && this.investigationForm.value.input) {
+      this.invOrderList = [];
+      this.invOrderList = this.invOrderListMain.filter((e: any) => ((e[this.idValue] === this.investigationForm.value.input)));
+    }
 
-  listRowClick(event:any)
-  {
-    let maxId = event.row.maxid;   
+  }
+
+  listRowClick(event: any) {
+    let maxId = event.row.maxid;
     let orderid = event.row.orderId;
-    this.patientInfo = event.row.maxid +" / "+ event.row.ptnName+" / "+ event.row.mobileNo  
-    
-      this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7,orderid,maxId.toString().split(".")[1],maxId.toString().split(".")[0]))    
+    this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
+
+    this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        this.invOrderDetails=res.tempOrderBreakup;
-        
+        this.objPhyOrder = [];
+        this.invOrderDetails = res.tempOrderBreakup;
+        this.invOrderDetails.forEach((e: any, index: number) => {
+          if (e.boolColumn === true) {
+            e[index].boolColumn = 1;
+          }
+          if (e.boolColumn === false) {
+            e[index].boolColumn = 0;
+          }
+
+        })
+
         this.objPhyOrder.push({
           acDisHideDrug: true,
           visitid: 0,
@@ -401,47 +400,47 @@ export class InvestigationOrdersComponent implements OnInit {
       })
   }
 
-  getPatientRefundSubmitRequestBody(): SaveInvestigationOrderModel {  
+  getPatientRefundSubmitRequestBody(): SaveInvestigationOrderModel {
     return (this.saveInvestigationOrderModel = new SaveInvestigationOrderModel(
-     this.objPhyOrder,this.objdtdenialorder,0,0
+      this.objPhyOrder, this.objdtdenialorder, 0, 0
     ));
   }
- 
-  saveOrUpdate()
-  {    
-    this.objPhyOrder=[];
-    this.objdtdenialorder="";
+
+  saveOrUpdate() {
+    this.objPhyOrder = [];
+    this.objdtdenialorder = "";
     //this.physicianOrderList=[];
-   
-    this.invOrderDetailsTable.selection.selected.forEach((e:any) => {
-      if(e.drugid !== 0) 
-      this.objPhyOrder.push({
-        acDisHideDrug: true,
-        visitid: e.visitId,
-        drugid: e.testID,
-        acdRemarks: e.acdRemarks
+    if (this.invOrderDetailsTable.selection.selected.length === 0) {
+      this.messageDialogService.info("Please select atleast 1 row to proceed.");
+    }
+    else {
+      this.invOrderDetailsTable.selection.selected.forEach((e: any) => {
+        //if (e.testID !== 0)
+        this.objPhyOrder.push({
+          acDisHideDrug: true,
+          visitid: e.visitId,
+          drugid: e.testID,
+          acdRemarks: e.acdRemarks
+        });
       });
-    });
-    if(this.investigationForm.value.denyorder && !this.investigationForm.value.remarks)
-    {
-    this.messageDialogService.info("Please enter denial reason remark for order!")
+      if (this.investigationForm.value.denyorder && !this.investigationForm.value.remarks) {
+        this.messageDialogService.info("Please enter denial reason remark for order!")
+      }
+      if (!this.investigationForm.value.denyorder) {
+        this.messageDialogService.info("Please select denial reason for open order before close!")
+      }
+      if (this.investigationForm.value.remarks && this.investigationForm.value.denyorder && this.invOrderDetailsTable.selection.selected[0].visitId) {
+        this.objdtdenialorder = {
+          denialid: this.investigationForm.value.denyorder,
+          denialremark: this.investigationForm.value.remarks,
+          visitid: this.invOrderDetailsTable.selection.selected[0].visitId,
+          nextScheduleDate: this.scheduleDate,
+          nextflag: true
+        }
+      }
+      this.Save();
     }
-    if(!this.investigationForm.value.denyorder)
-    {
-      this.messageDialogService.info("Please select denial reason for open order before close!")      
-    }
-    
-    if(this.investigationForm.value.remarks && this.investigationForm.value.denyorder){
-      this.objdtdenialorder={
-        denialid: this.investigationForm.value.denyorder,
-        denialremark: this.investigationForm.value.remarks,
-        visitid: this.invOrderDetailsTable.selection.selected[0].visitId,
-        nextScheduleDate: this.scheduleDate,
-        nextflag: true      
-        }    
-    }
-    
-    this.Save();
+
   }
   getSaveModel(): SaveInvestigationOrderModel {
     return new SaveInvestigationOrderModel(
@@ -449,72 +448,73 @@ export class InvestigationOrdersComponent implements OnInit {
       this.objdtdenialorder,
       1,
       9233
-    );  
+    );
   }
-  
-  Save()
-  {
-    
-    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill,this.getSaveModel())    
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((res: any) => {
-      if(res === 1)
-      {
-        this.messageDialogService.success("Saved Successfully!");
-      }
-      this.objPhyOrder=[];
-      this.objdtdenialorder=[];
-      this.isBtnDisable = false;
-      this.investigationForm.controls["denyorder"].reset();
-      this.investigationForm.controls["remarks"].setValue("");
-      this.investigationForm.controls["denyorder"].disable();
-    })
-  
+
+  Save() {
+
+    this.http.post(ApiConstants.SaveAndUpdateDiagnosticOrderBill, this.getSaveModel())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res === 1) {
+          this.messageDialogService.success("Saved Successfully!");
+          this.invOrderDetails = []
+        }
+        this.objPhyOrder = [];
+        this.objdtdenialorder = [];
+        this.isBtnDisable = false;
+        this.investigationForm.controls["denyorder"].reset();
+        this.investigationForm.controls["remarks"].setValue("");
+        this.investigationForm.controls["denyorder"].disable();
+      })
+
 
   }
-  getModifyModel():ModifyInvestigationOrderModel{
+  getModifyModel(): ModifyInvestigationOrderModel {
     return new ModifyInvestigationOrderModel(
       this.physicianOrderList
     )
   }
-  cancelDenial()
-  {
-    this.physicianOrderList=[];
-    if(this.invOrderDetailsTable.selection.selected.length === 0){this.messageDialogService.info("Please select atleast 1 row to proceed.");}
+  cancelDenial() {
+    this.physicianOrderList = [];
+    if (this.invOrderDetailsTable.selection.selected.length === 0) { this.messageDialogService.info("Please select atleast 1 row to proceed."); }
     else
-    this.invOrderDetailsTable.selection.selected.forEach((e:any) => {
-      if(e.testID !== 0) 
-      
-      this.physicianOrderList.push({
-        acDisHideDrug: true,
-        visitid: e.visitId,
-        drugid: e.testID,
-        acdRemarks: e.acdRemarks
+      this.invOrderDetailsTable.selection.selected.forEach((e: any) => {
+        if (e.testID !== 0)
+
+          this.physicianOrderList.push({
+            acDisHideDrug: e.boolColumn,
+            visitid: e.visitId,
+            drugid: e.testID,
+            acdRemarks: e.acdRemarks
+          });
       });
-    });
-    this.http.post(ApiConstants.modifyphysicianorderdetail('',9233),this.getModifyModel())
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((res: any) => {
-    if(res.success === true)
-    {
-      this.messageDialogService.success(res.message);  
-    }
-   
-    }) 
-    
+    this.http.post(ApiConstants.modifyphysicianorderdetail('', 9233), this.getModifyModel())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res.success === true) {
+          this.messageDialogService.success(res.message);
+          this.invOrderDetails = [];
+        }
+
+      })
+
   }
-  clearInv()
-  {
+  clearInv() {
     //clear Form
     this.investigationForm.reset();
     //Clear Grid
-    this.invOrderList=[];
-    this.invOrderDetails=[];
+    this.invOrderList = [];
+    this.invOrderDetails = [];
     //Reset Diasble Btn
     this.isBtnDisable = false;
     let todaydate = new Date();
     this.investigationForm.controls["fromdate"].setValue(todaydate);
+    this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].setValue(todaydate);
+    this.investigationForm.controls["todate"].disable();
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["maxid"].setValue('maxid');
+    this.investigationForm.controls["status"].reset();
   }
 }
