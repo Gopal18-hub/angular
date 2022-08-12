@@ -368,7 +368,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         console.log(lookupdata);
         if (lookupdata.length == 1) {
           this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
-          this.onMaxidEnter(this.employeesponsorForm.controls["maxId"].value);
+          console.log(this.employeesponsorForm.value.maxId);
+          this.onMaxidEnter(this.employeesponsorForm.value.maxId);
           //   if (lookupdata[0] && "maxid" in lookupdata[0]) {
           //     this.employeesponsorForm.controls["maxId"].setValue(
           //       lookupdata[0]["maxid"]
@@ -894,6 +895,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             console.log(this.employeeDependantDetailList);
           } else {
             console.log("employee data list length =0");
+            this.questions[3].elementRef.focus();
             this.validEmployeecode = false;
             this.employeesponsorForm.controls["employeeCode"].setErrors({
               incorrect: true,
@@ -902,6 +904,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             //this.dialogService.info("Employee code does not exist");
           }
         } else {
+          this.questions[3].elementRef.focus();
+          this.employeesponsorForm.controls["employeeCode"].setErrors({
+            incorrect: true,
+          });
+          this.questions[2].customErrorMessage = "Invalid Employee code";
           this.validEmployeecode = false;
         }
       });
@@ -1018,8 +1025,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result) {
-          // if (this.empid == null) {
-          //   this.dialogService.info("Please select one dependant");
+          // if (this.updatedTableList.length == 0) {
+          //   this.dialogService.info("Maxid is not tagged as dependant");
           // } else {
           this.http
             .post(
@@ -1225,5 +1232,10 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.employeesponsorForm.controls["maxId"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
+  }
+
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

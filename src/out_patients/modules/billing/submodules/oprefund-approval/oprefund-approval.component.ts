@@ -801,4 +801,9 @@ export class OprefundApprovalComponent implements OnInit {
       }
     }
   }
+
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
