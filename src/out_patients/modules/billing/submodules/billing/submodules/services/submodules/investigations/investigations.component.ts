@@ -39,6 +39,7 @@ export class InvestigationsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
       "investigations",
@@ -99,6 +100,11 @@ export class InvestigationsComponent implements OnInit {
     this.questions = formResult.questions;
     this.getServiceTypes();
     this.getSpecialization();
+  }
+
+  rowRwmove($event: any) {
+    this.billingService.InvestigationItems.splice($event.index, 1);
+    this.data = [...this.billingService.InvestigationItems];
   }
 
   getSpecialization() {
