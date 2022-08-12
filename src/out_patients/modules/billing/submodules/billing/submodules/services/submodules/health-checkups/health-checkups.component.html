@@ -58,6 +58,11 @@
     </div>
   </div>
   <div class="mt-2 h-full">
-    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+    ></maxhealth-table>
   </div>
 </div>
