@@ -644,4 +644,9 @@ export class PatientHistoryComponent implements OnInit {
     returnicon.push(tempPager);
     return returnicon;
   }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
