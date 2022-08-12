@@ -11,7 +11,7 @@
         <form [formGroup]="BServiceForm" class="BServiceForm">
           <!---------------------------------FIRST ROW----------------------------------------------------->
           <div class=" pt-0 ml-2 mt-1  border-radius-lg mr-2 flex bg-deposit">
-          <div class="  pl-1 w-5/9 flex ">
+          <div class="  pl-1 w-2/5 flex ">
               <div class="w-full">
             <div class="w-full flex pt-2">
               <div class="flex ml-2 ">
@@ -50,7 +50,7 @@
                   >
                   </maxhealth-question>
                 </div>
-                <mat-label class="ml-4 wt-nowrap"
+                <!-- <mat-label class="ml-4 wt-nowrap"
                   >Bill Date
                 
                 </mat-label>
@@ -62,7 +62,7 @@
                     [index]="3"
                   >
                   </maxhealth-question>
-                </div>
+                </div> -->
                 <!-- <mat-label class="ml-4 wt-nowrap">Corporate</mat-label>
                 <div class="ml-1 wt-mid h-full bg-white">
                   <maxhealth-question
@@ -138,7 +138,7 @@
                  </maxhealth-question>
              </div>
          </div>
-         <div class="float-right w-1/10 flex">
+         <div class="float-right w-1/10 flex mar-left-12">
              <div class="ml-0" >
              <button mat-raised-button color="primary" type="submit" (click)="search()">
                  <img src="assets/lens.svg" class="lens-icon">
@@ -152,12 +152,12 @@
         </div>
           <!---------------------------------SECOND ROW----------------------------------------------------->
   
-          <div class="ml-2 m-pannel mr-2 mt-1 border-radius-lg flex flex-column items-center w-auto bg-deposit">
-           <div class="w-full ">
-            <div class=" wt-nowrap ">
+        <div class="ml-2 m-pannel flex mr-2 mt-1 border-radius-lg items-center w-auto bg-deposit">
+          <!-- <div class="w-full ">
+            <div class=" wt-nowrap "> -->
               
-                   <div class="float-left mt-1 w-3/5">
-                     <div class="float-left mr-1 p-1 w-2/10">
+              <!-- <div class="flex float-left mt-1 w-4/5">
+                <div class="float-left mr-1 p-1 w-2/10">
                   <mat-label class="ml-2 mr-1 wt-nowrap " >Name:</mat-label>
                   <mat-label class="patient-lbl ">{{patientName}}</mat-label>
                 </div>
@@ -166,29 +166,66 @@
                   <mat-label class="patient-lbl">{{age}}</mat-label>            
                 </div>
                 <div class="float-left pt-1 mr-1 w-1/6">
-                  <mat-label class="ml-5 mr-1 wt-nowrap">Gender: </mat-label>               
+                  <mat-label class="mr-1 wt-nowrap">Gender: </mat-label>               
                     <mat-label class="patient-lbl">{{gender}}</mat-label>               
                   </div>
                   <div class="float-left pt-1 mr-1 w-1/6">
-                  <mat-label class="ml-5 mr-1 wt-nowrap">DOB: </mat-label>               
+                  <mat-label class="mr-1 wt-nowrap">DOB: </mat-label>               
                   <mat-label class="patient-lbl" >{{dob}}</mat-label>
                             
                 </div>
-                <div class="float-left pt-1 mr-1 w-1/6">   
-                  <mat-label class="ml-5 mr-1 wt-nowrap">Nationality: </mat-label>             
+                <div class="float-left pt-1 mr-1 w-1/6 txt-nowrap">   
+                  <mat-label class="mr-1 wt-nowrap">Nationality: </mat-label>             
                   <mat-label class="patient-lbl"> {{country}}</mat-label>
                 </div>
                 <div class="float-left pt-1 mr-1 w-1/6">
                   <mat-label class="ml-5 mr-1 wt-nowrap">Operator: </mat-label>                       
                   <mat-label class="patient-lbl"> {{ssn}}</mat-label> 
+                </div>
+                <div class="float-left pt-1 mr-1">
+                  <mat-label class="ml-5 mr-1 wt-nowrap">Bill Date: </mat-label>                       
+                  <mat-label class="patient-lbl"> {{billdate}}</mat-label> 
+                </div>
+               </div> -->
+               <div class="flex w-86 align-items-center">
+                  <div class="w-18 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold ml-2">Patient Name:</mat-label>
+                    <span matTooltip="{{patientName}}" class="ml-2 clr-black">{{patientName}}</span>
                   </div>
-                 </div>
-              
-               <div class="flex mt-0  float-right">
+                  <div class="w-1/10 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Age:</mat-label>
+                    <span matTooltip="{{age}}" class="ml-2 clr-black">{{age}}</span>
+                  </div>
+                  <div class="w-1/10 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Gender:</mat-label>
+                    <span matTooltip="{{gender}}" class="ml-2 clr-black">{{gender}}</span>
+                  </div>
+                  <div class="w-11 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">DOB:</mat-label>
+                    <span matTooltip="{{dob}}" class="ml-2 clr-black">{{dob}}</span>
+                  </div >
+                  <div class="w-13 ml-3 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Nationality:</mat-label>
+                    <span matTooltip="{{country}}" class="ml-2 clr-black">{{country}}</span>
+                  </div>
+                  <div class="w-1/10 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">SSN:</mat-label>
+                    <span matTooltip="{{ssn}}" class="ml-2 clr-black">{{ssn}}</span>
+                  </div>
+                  <div class="w-13 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Operator:</mat-label>
+                    <span matTooltip="{{operator}}" class="ml-2 clr-black">{{operator}}</span>
+                  </div>
+                  <div class="w-1/15 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Bill Date:</mat-label>
+                    <span matTooltip="{{billdate}}" class="ml-2 clr-black">{{billdate}}</span>
+                  </div>
+                </div>
+               <div class="flex w-14 mt-0">
                   <button
                   mat-raised-button
                   color="primary"
-                  class="w-1/20 h-btn"
+                  class="w-1/20 h-btn btn_width"
                   type="submit"
                 >
                 DMS
@@ -196,17 +233,16 @@
                 <button
                   mat-raised-button
                   color="primary"
-                  class="w-1/20 ml-2 h-btn"
+                  class="w-1/20 ml-2 h-btn btn_width"
                   type="button"
                   (click)="openhistory()"
                 >
                  Visit History
                 </button>
               </div>    
-              </div>
-              
-          </div>    
-          </div>      
+            <!-- </div>
+          </div>     -->
+        </div>      
                 
          </form>  
           
