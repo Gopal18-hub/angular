@@ -1,6 +1,10 @@
 import { environment } from "@environments/environment";
 
 export namespace BillingApiConstants {
+  export const getcompanyandpatientsponsordata = (locationId: number) => {
+    return `${environment.PatientApiUrl}api/patient/getcompanyandpatientsponsordata/${locationId}`;
+  };
+
   export const getsimilarsoundopbilling = (
     IACode: string,
     RegistrationNo: number
@@ -15,7 +19,7 @@ export namespace BillingApiConstants {
   };
 
   export const getclinics = (locationId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getclinics/${locationId}";
+    return environment.CommonApiUrl + `api/lookup/getclinics/${locationId}`;
   };
 
   export const getspecialization =
@@ -25,7 +29,7 @@ export namespace BillingApiConstants {
     doctorName: string,
     locationId: number
   ) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/getbillingdoctorsonsearch/${doctorName}/${locationId}`;
+    return `${environment.BillingApiUrl}api/outpatientbilling/getbillingdoctorsonsearch${doctorName}/${locationId}`;
   };
 
   export const getdoctorlistonSpecializationClinic = (
@@ -63,6 +67,13 @@ export namespace BillingApiConstants {
     return `${environment.CommonApiUrl}api/lookup/getinvestigation/${locationId}/${serviceId}`;
   };
 
+  export const getinvestigationSearch = (
+    locationId: number,
+    searchKey: string
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/getinvestigationonsearch/${locationId}/${searchKey}`;
+  };
+
   export const gethealthcheckups = (locationId: number) => {
     return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}`;
   };
@@ -73,6 +84,13 @@ export namespace BillingApiConstants {
     servicingId: number
   ) => {
     return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
+  };
+
+  export const getotherservicebillingSearch = (
+    locationId: number,
+    searchKey: string
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebillingonsearch//${locationId}/${searchKey}`;
   };
 
   export const getOrderSet = `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/67`;

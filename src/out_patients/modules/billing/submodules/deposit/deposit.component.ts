@@ -43,7 +43,7 @@ export class DepositComponent implements OnInit {
       .subscribe(async (value) => {
         console.log(Object.keys(value).length);
         if (Object.keys(value).length > 0) {         
-          const lookupdata = await this.loadGrid(value);        
+          //const lookupdata = await this.loadGrid(value);        
         }
         });
      }
@@ -61,6 +61,7 @@ export class DepositComponent implements OnInit {
       },
       mobileno: {
         type: "number",
+        title: "Mobile No.",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       checkbox: {
@@ -93,7 +94,8 @@ export class DepositComponent implements OnInit {
       },
       panno: {
         type: "string",
-        readonly: true
+        readonly: true,
+        title: "Pan card No.",
       },
       mainradio: {
         type: "radio",
@@ -281,14 +283,7 @@ export class DepositComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
-
-    this.searchService.searchTrigger
-    .pipe(takeUntil(this._destroying$))
-    .subscribe(async (formdata: any) => {
-      console.log(formdata);
-      await this.loadGrid(formdata);
-    });
-
+    
     let formResult = this.formService.createForm(
       this.depositformdata.properties, {}
     );
@@ -297,34 +292,59 @@ export class DepositComponent implements OnInit {
     this.lastUpdatedBy = this.cookie.get("UserName"); 
     this.depositForm.controls["panno"].disable();
     this.depositForm.controls["mainradio"].disable();
+
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (formdata: any) => {
+      console.log(formdata);
+      this.router.navigate([], {
+        queryParams: {},
+        relativeTo: this.route,
+      });
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.depositForm.value.maxid = lookupdata[0]["maxid"];            
+          this.iacode = this.depositForm.value.maxid.split(".")[0];
+          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
+            this.getPatientDetailsForDeposit();           
+          }
+        }else if (lookupdata.length > 1){
+          const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "80vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.depositForm.controls["maxid"].setValue(maxID);
+               
+                      this.iacode = maxID.split(".")[0];
+                      this.regNumber = Number(maxID.split(".")[1]);
+                      this.depositForm.controls["maxid"].setValue(maxID);
+                      this.getPatientDetailsByMaxId();
+                      this.getPatientPreviousDepositDetails();
+              }
+
+              //this.similarContactPatientList = [];
+            });
+        }
+    });
+
     }
 
     
-  async loadGrid(formdata: any): Promise<any> {
-    if (formdata.data) {
-      const lookupdata = await this.lookupService.searchPatient(formdata);
-      if (lookupdata == null || lookupdata == undefined) {
-        
-      } 
-    } else {
-      const lookupdata = await this.lookupService.searchPatient({
-        data: formdata,
-      });
-      if (lookupdata == null || lookupdata == undefined) {
-       
-      } else {
-        this.processLookupData(lookupdata);
-      }
-    }
-  }
-
-  processLookupData(lookupdata: any) {
-    const resultData = lookupdata.map((item: any) => {
-      item.fullname = item.firstName + " " + item.lastName;
-      item.notereason = item.noteReason;
-      return item;
-    });   
-  }
   openrefunddialog() {
   const RefundDialog =   this.matDialog.open(RefundDialogComponent, {
       width: "70vw",
@@ -451,6 +471,7 @@ export class DepositComponent implements OnInit {
               this.ssn = this.patientpersonaldetails[0]?.ssn;
 
               this.depositForm.controls["panno"].setValue(this.patientpersonaldetails[0]?.paNno);
+              this.depositForm.controls["maxid"].setValue(this.patientpersonaldetails[0]?.iacode + '.' + this.patientpersonaldetails[0]?.registrationno);   
 
               this.categoryIcons = this.depositservice.getCategoryIconsForDeposit(
                 this.patientpersonaldetails[0]
@@ -500,7 +521,7 @@ export class DepositComponent implements OnInit {
             this.messageDialogService.error("This Patient is an InPatient");
           }
           else if (resultData == CheckPatientDetails.PatientNotReg) {
-            this.messageDialogService.error("This is not a Valid Registration Number");
+            this.messageDialogService.error("This is not a valid Registration Number");
           }
           else if (resultData == CheckPatientDetails.NoDeposit) {
             this.getPatientDetailsByMaxId();
@@ -592,6 +613,7 @@ export class DepositComponent implements OnInit {
 
   mobilechange()
   {
+    if(this.depositForm.value.mobileno.length == 10)
     console.log('mobile changed');
     this.matDialog.closeAll();
     console.log(this.similarContactPatientList.length);

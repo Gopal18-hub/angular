@@ -14,7 +14,7 @@
     height: 65%;
 }
 .w-27{
-    width: 27%;
+    width: 30%;
 }
 .w-14{
     width: 14.122%;
@@ -62,7 +62,7 @@
                 }
             }
 
-            tbody tr td:nth-child(6),
+            
             tbody tr td:nth-child(7),
             tbody tr td:nth-child(8),
             tbody tr td:nth-child(9),
@@ -70,6 +70,10 @@
             {
                 text-align: right !important;
                 padding-right: 30px !important
+            }
+            tbody tr td:nth-child(6){
+                text-align: right !important;
+                padding-right: 38px !important
             }
         }
         // .mat-table-fixed-layout{

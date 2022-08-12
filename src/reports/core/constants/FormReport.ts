@@ -386,53 +386,89 @@ export namespace FormReport {
       title: "",
       type: "object",
       properties: {
-        MembershipDropDown: {
+        MemberShipNo: {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "Membership",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${7}`,
+            fields: {
+              title: "membershipno",
+              value: "membershipno",
+            },
+          },
         },
       },
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        MemberShipNo: "w-screen",
       },
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Happy Family Plan Utilisation",
+            reportEntity: "HappyFamilyPlanUtilizationReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+
+    layout: "tab",
+    resultType: "table",
   };
+
   export const SummaryReportForUtilisationReport = {
     reportName: "Detailed Happy Family Utilization Report Summary",
     filterForm: {
       title: "",
       type: "object",
       properties: {
-        MembershipDropDown: {
+        membershipno: {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "Membership",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${7}`,
+            fields: {
+              title: "membershipno",
+              value: "membershipno",
+            },
+          },
         },
       },
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        membershipno: "w-screen",
       },
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Detailed Happy Family Utilization Report Summary",
+            reportEntity: "SummaryReportForUtilisationReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+    layout: "tab",
+    resultType: "table",
   };
 
   export const expiredPatientReport = {

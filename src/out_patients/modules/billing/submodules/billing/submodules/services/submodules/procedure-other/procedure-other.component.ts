@@ -6,7 +6,15 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
-
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+} from "rxjs/operators";
+import { of } from "rxjs";
 @Component({
   selector: "out-patients-procedure-other",
   templateUrl: "./procedure-other.component.html",
@@ -18,6 +26,11 @@ export class ProcedureOtherComponent implements OnInit {
     type: "object",
     properties: {
       otherService: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
+      },
+      procedure: {
         type: "autocomplete",
         placeholder: "--Select--",
         required: true,
@@ -90,6 +103,48 @@ export class ProcedureOtherComponent implements OnInit {
     this.getSpecialization();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.ProcedureItems.splice($event.index, 1);
+    this.data = [...this.billingService.ProcedureItems];
+  }
+
+  ngAfterViewInit(): void {
+    this.formGroup.controls["investigation"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.serviceType &&
+            this.formGroup.value.serviceType.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getotherservicebillingSearch(
+                  Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
+  }
+
   getSpecialization() {
     this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
       this.config.columnsInfo.specialisation.options = res.map((r: any) => {
@@ -119,8 +174,33 @@ export class ProcedureOtherComponent implements OnInit {
       this.questions[0].options = res.map((r: any) => {
         return { title: r.name, value: r.id };
       });
+      this.questions[0] = { ...this.questions[0] };
     });
+    this.formGroup.controls["otherService"].valueChanges.subscribe(
+      (val: any) => {
+        if (val) {
+          this.getProcedures(val);
+        }
+      }
+    );
   }
+
+  getProcedures(serviceId: number) {
+    this.http
+      .get(
+        BillingApiConstants.getotherservicebilling(
+          Number(this.cookie.get("HSPLocationId")),
+          serviceId
+        )
+      )
+      .subscribe((res) => {
+        this.questions[1].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[1] = { ...this.questions[1] };
+      });
+  }
+
   add(priorityId = 1) {
     this.http
       .get(

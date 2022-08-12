@@ -25,7 +25,6 @@ import { CommonModule } from "@angular/common";
           <mat-icon>info</mat-icon>
         </div>
         <div class="content">
-          <div class="label">Information</div>
           <div class="message">{{ data.message }}</div>
         </div>
       </div>
@@ -36,7 +35,6 @@ import { CommonModule } from "@angular/common";
           <mat-icon>error</mat-icon>
         </div>
         <div class="content">
-          <div class="label">Error</div>
           <div class="message">{{ data.message }}</div>
         </div>
       </div>
@@ -47,7 +45,6 @@ import { CommonModule } from "@angular/common";
           <mat-icon>check_circle</mat-icon>
         </div>
         <div class="content">
-          <div class="label">Success</div>
           <div class="message">{{ data.message }}</div>
         </div>
       </div>
