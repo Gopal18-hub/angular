@@ -71,7 +71,9 @@ export class BillingService {
     this.ProcedureItems.push(data);
   }
   removeFromProcedure() {}
-  addToOrderSet() {}
+  addToOrderSet(data: any) {
+    this.OrderSetItems.push(data);
+  }
   removeFromORderSet() {}
   addToConsumables() {}
   removeFromConsumables() {}

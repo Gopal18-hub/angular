@@ -269,7 +269,7 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / (1000 * 3600 * 24);
-      if (dif_in_days > 3100000000) {
+      if (dif_in_days > 31) {
         this.matdialog.open(MoreThanMonthComponent, {
           width: "30vw",
           height: "30vh",
@@ -508,5 +508,10 @@ export class DispatchReportComponent implements OnInit {
       locationid: this.dispatchhistoryform.controls["billedlocation"].value.value,
       RepType: this.dispatchhistoryform.controls["radio"].value,
     });
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

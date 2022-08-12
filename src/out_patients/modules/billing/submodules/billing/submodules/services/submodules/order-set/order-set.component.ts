@@ -37,6 +37,7 @@ export class OrderSetComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: ["sno", "orderSetName"],
@@ -69,6 +70,11 @@ export class OrderSetComponent implements OnInit {
     this.getOrserSetData();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.OrderSetItems.splice($event.index, 1);
+    this.data = [...this.billingService.OrderSetItems];
+  }
+
   getOrserSetData() {
     this.http.get(BillingApiConstants.getOrderSet).subscribe((res) => {
       this.questions[0].options = res.orderSetBreakup.map((r: any) => {
@@ -76,5 +82,27 @@ export class OrderSetComponent implements OnInit {
       });
     });
   }
-  add() {}
+  add(priorityId = 1) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.healthCheckup.value,
+          26,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.billingService.addToOrderSet({
+          sno: this.data.length + 1,
+          procedures: this.formGroup.value.otherService.title,
+          qty: 1,
+          specialisation: "",
+          doctorName: "",
+          price: res.amount,
+        });
+
+        this.data = [...this.billingService.OrderSetItems];
+      });
+  }
 }
