@@ -164,11 +164,6 @@ export class ExpiredPatientCheckComponent implements OnInit {
       });
   }
 
-  ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
-  }
-
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       // If the user presses the "Enter" key on the keyboard
@@ -434,5 +429,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }
