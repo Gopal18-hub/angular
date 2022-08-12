@@ -58,6 +58,12 @@
   }
 }
 
+.checkbox-bottom-margin{
+    ::ng-deep mat-checkbox label span{
+        margin-bottom:2px;
+    }
+}
+
 ::ng-deep .mat-raised-button {
   min-width: fit-content !important;
   min-height: fit-content !important;
@@ -77,7 +83,7 @@
 
 ::ng-deep tr.Billed:hover {
   background-color: #54c767 !important;
-  color: black !important;
+
 
 }
 
@@ -87,7 +93,7 @@
 
 ::ng-deep tr.Partially:hover {
   background-color: #FFDD00 !important;
-  color: black !important;
+
 }
 
 ::ng-deep tr.Denied {
@@ -96,7 +102,7 @@
 
 ::ng-deep tr.Denied:hover {
   background-color: #FF7777 !important;
-  color: black !important;
+ 
 }
 
 ::ng-deep td mat-form-field .mat-form-field-wrapper {
@@ -123,6 +129,22 @@
 ::ng-deep mat-option#mat-option-8:hover {
   background-color: #FF7777 !important;
 }
+// ::ng-deep tr.isBilled1
+// {
+//   background-color: #9FF1AC !important;
+// }
+// ::ng-deep tr.isBilled2
+// {
+//   background-color: #FFCAA7 !important;
+// }
+// ::ng-deep tr.isBilled1:hover
+// {
+//   background-color: #54c767 !important;
+// }
+// ::ng-deep tr.isBilled2:hover
+// {
+//   background-color: #FF7777 !important;
+// }
 
 .dateW {
   width: 27% !important;

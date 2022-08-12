@@ -16,6 +16,7 @@ import {
   distinctUntilChanged,
   filter,
 } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
   selector: "out-patients-consultations",
@@ -121,6 +122,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  rowRwmove($event: any) {
+    this.billingService.consultationItems.splice($event.index, 1);
+    this.data = [...this.billingService.consultationItems];
+  }
+
   ngAfterViewInit(): void {
     this.tableRows.selection.changed.subscribe((res: any) => {
       const source = res.added[0];
@@ -134,18 +140,32 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) =>
-          this.http
-            .get(
-              BillingApiConstants.getbillingdoctorsonsearch(
-                value,
-                Number(this.cookie.get("HSPLocationId"))
+        switchMap((value) => {
+          if (
+            this.formGroup.value.specialization &&
+            this.formGroup.value.specialization.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getbillingdoctorsonsearch(
+                  value,
+                  Number(this.cookie.get("HSPLocationId"))
+                )
               )
-            )
-            .pipe(finalize(() => {}))
-        )
+              .pipe(finalize(() => {}));
+          }
+        })
       )
-      .subscribe((data: any) => {});
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return { title: r.doctorName, value: r.doctorId };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getSpecialization() {
@@ -156,9 +176,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           this.questions[2].options = res.map((r: any) => {
             return { title: r.name, value: r.id };
           });
+          this.questions[2] = { ...this.questions[2] };
         });
       this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
-        if (val.value) {
+        if (val && val.value) {
           this.getdoctorlistonSpecializationClinic(val.value, true);
         }
       });
@@ -167,10 +188,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
-          if (val.value) {
+          if (val && val.value) {
             this.getdoctorlistonSpecializationClinic(val.value);
           }
         }
@@ -194,6 +216,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 
@@ -249,6 +272,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         });
 
         this.data = [...this.billingService.consultationItems];
+        this.formGroup.reset();
       });
   }
 }

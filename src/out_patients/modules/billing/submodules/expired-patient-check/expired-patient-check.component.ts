@@ -126,7 +126,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
 
             this.onMaxidSearch(this.expiredpatientForm.controls["maxid"].value);
           }
-        } else {
+        } else if (lookupdata.length > 1) {
           const similarSoundDialogref = this.dialog.open(
             SimilarPatientDialog,
 
@@ -162,11 +162,6 @@ export class ExpiredPatientCheckComponent implements OnInit {
             });
         }
       });
-  }
-
-  ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
   }
 
   ngAfterViewInit(): void {
@@ -218,9 +213,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
                   "dd/MM/yyyy"
                 )
               );
-              // this.name = this.expiredPatientDetail[0].name;
-              // this.age = this.expiredPatientDetail[0].age;
-              // this.gender = this.expiredPatientDetail[0].gender;
+              this.name = this.expiredPatientDetail[0].patientName;
+              this.age = this.expiredPatientDetail[0].age;
+              this.gender = this.expiredPatientDetail[0].gender;
               this.nationality = this.expiredPatientDetail[0].nationality;
 
               this.dob = this.datepipe.transform(
@@ -231,9 +226,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
               this.expiredpatientForm.controls["maxid"].setValue(
                 this.expiredPatientDetail[0].regno
               );
-              // this.expiredpatientForm.controls["mobileno"].setValue(
-              //   this.expiredPatientDetail[0].mobileno
-              // );
+              this.expiredpatientForm.controls["mobileno"].setValue(
+                this.expiredPatientDetail[0].mobileNo
+              );
               this.expiredpatientForm.controls["expiryDate"].setValue(
                 this.expiredPatientDetail[0].expiryDate
               );
@@ -434,5 +429,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.expiredpatientForm.controls["expiryDate"].setValue(this.todayDate);
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

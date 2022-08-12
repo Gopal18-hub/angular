@@ -10,6 +10,10 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 import { HttpService } from '@shared/services/http.service';
 import { InitiateDepositModel } from "@core/models/initiatedepositModel.Model";
+import { SearchService } from "../../../../../shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
+import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
+
 
 @Component({
   selector: 'out-patients-initiate-deposit',
@@ -21,7 +25,18 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
   constructor(public matDialog: MatDialog, private formService:QuestionControlService,
      private cookie: CookieService,
      private route: ActivatedRoute,
-     private messageDialogService: MessageDialogService,private http: HttpService,) { } 
+     private messageDialogService: MessageDialogService,private http: HttpService, private router: Router,
+     private searchService: SearchService,
+     private lookupService: LookupService,) { 
+      this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          //const lookupdata = await this.loadGrid(value);        
+        }
+        });
+     } 
   
   questions:any;
   patientdeposittype: any;
@@ -47,7 +62,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       },
       mobileno:{
         type:"number",
-        pattern: "^[1-9]{1}[0-9]{9}",
+      //  pattern: "^[1-9]{1}[0-9]{9}",
       },
       selectpatient:{
         type:"dropdown",   
@@ -94,10 +109,59 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     .subscribe((value) => {
       if (value["maxId"]) {
         this.initiatedepositForm.value.maxid = value["maxId"];
-        this.getInitatedepositDetailsByMaxId();
-        this.getDepositType();
+        this.getInitatedepositDetailsByMaxId();      
       }
     });
+
+    this.searchService.searchTrigger
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (formdata: any) => {
+      console.log(formdata);
+      this.router.navigate([], {
+        queryParams: {},
+        relativeTo: this.route,
+      });
+      const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.initiatedepositForm.value.maxid = lookupdata[0]["maxid"];            
+          this.iacode = this.initiatedepositForm.value.maxid.split(".")[0];
+          this.regNumber = Number(this.initiatedepositForm.value.maxid.split(".")[1]);
+            this.getInitatedepositDetailsByMaxId();           
+          }
+        }else if (lookupdata.length > 1){
+          const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "80vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.initiatedepositForm.controls["maxid"].setValue(maxID);
+               
+                      this.iacode = maxID.split(".")[0];
+                      this.regNumber = Number(maxID.split(".")[1]);
+                      this.initiatedepositForm.controls["maxid"].setValue(maxID);
+                      this.getInitatedepositDetailsByMaxId();
+                     
+              }
+
+              //this.similarContactPatientList = [];
+            });
+        }
+    });
+
   }
 
   ngAfterViewInit(): void {
@@ -179,18 +243,19 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
           return { title: l.maxID, value: l.maxID };
         });
         
-        if(resultData.length == 1){
-          this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);       
+        if(resultData.length == 1 && maxiddeposit){
+          this.initiatedepositForm.controls["maxid"].setValue(resultData[0].maxID);   
+        }
+              
           this.maxid =  resultData[0].maxID;
           this.name = resultData[0].patientName;
           this.initiatedepositForm.controls["emailid"].setValue(resultData[0].emailID);
           this.initiatedepositForm.controls["mobilenoinput"].setValue(resultData[0].mobileNo);
-          this.initiatedepositForm.controls["selectpatient"].setValue({ title: resultData[0].maxID, value: resultData[0].maxID});
-        }else{
-          this.questions[2].elementRef.focus();
-        }      
+          this.initiatedepositForm.controls["selectpatient"].setValue(resultData[0].maxID);
+          
+           
       }else{
-        this.messageDialogService.error("Please Enter valid Max ID");
+        this.messageDialogService.error("Please enter valid MAX ID or Phone Number for search");
       }     
     },
       (error) => {
@@ -242,23 +307,20 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       this.questions[7].elementRef.focus();
     }
     else{
+      console.log(this.getPatientInitiateDeposit());
       this.http
       .post(ApiConstants.postInitiateDeposit, this.getPatientInitiateDeposit())
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
-          this.messageDialogService.success(resultData);
+          this.messageDialogService.success(resultData.message.split("!")[0]);
           this.initiatedepositForm.controls["depositamount"].setValue('');
           this.initiatedepositForm.controls["remarks"].setValue('');
           this.initiatedepositForm.controls["deposittype"].setValue({ title: "", value: 0});
         },
         (error) => {
-          if(error.statusText == "OK"){          
-            this.messageDialogService.success(error.error.text);
-            this.initiatedepositForm.controls["depositamount"].setValue('');
-          this.initiatedepositForm.controls["remarks"].setValue('');
-          this.initiatedepositForm.controls["deposittype"].setValue({ title: "", value: 0});
-          }
+          console.log(error);                   
+            this.messageDialogService.success(error.error);            
          
         }
       );

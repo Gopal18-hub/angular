@@ -84,7 +84,7 @@
 
                 <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
                 <div class="gridh mt-2 ">
-                    <maxhealth-table [config]="config1" [data]="staffDetails" (columnClick)="staffColumnClick($event)">
+                    <maxhealth-table [config]="staffListConfig" [data]="staffDetail" (columnClick)="staffColumnClick($event)">
                     </maxhealth-table>
                 </div>
                 <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
@@ -92,7 +92,7 @@
                     <mat-label class="max-health-primary-color">Employee Dependent Detail</mat-label>
                 </div>
                 <div class="gridh mt-2">
-                    <maxhealth-table [config]="config2" [data]="staffDeptDetails"></maxhealth-table>
+                    <maxhealth-table [config]="staffDetailConfig" [data]="staffDeptDetails"></maxhealth-table>
                 </div>
                
             </div>

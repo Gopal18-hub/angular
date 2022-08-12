@@ -89,6 +89,9 @@ export class LookupService {
               queryParams: formdata.data,
             });
           } else {
+            if(!resultData){
+               return[];
+            }
             if (resultData.length > 1) {
               if (this.routes[this.router.url]) {
                 this.router.navigate([this.routes[this.router.url]], {

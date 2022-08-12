@@ -123,9 +123,16 @@
         <td mat-cell *matCellDef="let element; let i = index" class="pl-4">
           <button mat-icon-button color="accent" (click)="removeRow(i)">
             <div class="remove-row-icon-wrapper">
-              <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                viewBox="0 0 24 24"
+                width="18px"
+                fill="red"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
                 <path
-                  d="m16.5 33.6 7.5-7.5 7.5 7.5 2.1-2.1-7.5-7.5 7.5-7.5-2.1-2.1-7.5 7.5-7.5-7.5-2.1 2.1 7.5 7.5-7.5 7.5ZM24 44q-4.1 0-7.75-1.575-3.65-1.575-6.375-4.3-2.725-2.725-4.3-6.375Q4 28.1 4 24q0-4.15 1.575-7.8 1.575-3.65 4.3-6.35 2.725-2.7 6.375-4.275Q19.9 4 24 4q4.15 0 7.8 1.575 3.65 1.575 6.35 4.275 2.7 2.7 4.275 6.35Q44 19.85 44 24q0 4.1-1.575 7.75-1.575 3.65-4.275 6.375t-6.35 4.3Q28.15 44 24 44Zm0-3q7.1 0 12.05-4.975Q41 31.05 41 24q0-7.1-4.95-12.05Q31.1 7 24 7q-7.05 0-12.025 4.95Q7 16.9 7 24q0 7.05 4.975 12.025Q16.95 41 24 41Zm0-17Z"
+                  d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
                 />
               </svg>
             </div>
@@ -201,10 +208,18 @@
         *matRowDef="let row; columns: displayedColumns"
         (click)="selection.toggle(row)"
       ></tr> -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">
       <tr
@@ -286,21 +301,39 @@
 
 <ng-template #textarea let-data>
   <div
-    (click)="data.isOpen = !data.isOpen"
+    (click)="data.element['isOpen'] = true"
     cdkOverlayOrigin
     #trigger="cdkOverlayOrigin"
-    class="cursor-pointer"
+    class="cursor-pointer editable-textarea-label"
   >
-    {{ data.output }}
+    {{ data.isOpen }} {{ data.output }} &nbsp;
   </div>
 
   <ng-template
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="data.isOpen"
+    [cdkConnectedOverlayOpen]="data.element['isOpen']"
+    (detach)="data.element['isOpen'] = false"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="data.element['isOpen'] = false"
   >
-    <div class="editable-textarea">
-      <mat-form-field appearance="outline" floatLabel="never">
+    <div
+      class="editable-textarea"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <!-- <div
+        [(ngModel)]="data.element[data.col]"
+        contenteditable
+        class="text-area-edit"
+      >
+        {{ data.element[data.col] }}
+      </div> -->
+      <mat-form-field
+        appearance="outline"
+        floatLabel="never"
+        class="text-area-edit"
+      >
         <textarea
           matInput
           cdkTextareaAutosize
