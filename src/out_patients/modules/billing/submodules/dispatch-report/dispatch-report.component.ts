@@ -512,7 +512,21 @@ export class DispatchReportComponent implements OnInit {
     }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }
-
+  printrow(event: any)
+  {
+    if(event.column == "r_dispatchdate" && event.row.r_dispatchdate == null)
+    {
+      event.row.r_dispatchdate = new Date();
+    }
+    else if(event.column == "receive_date" && event.row.receive_date == null) 
+    {
+      event.row.receive_date = new Date();
+    }
+    else if(event.column == "r_collection_location" && event.r_collection_location == null) 
+    {
+      event.row.r_collection_location = this.billedlocation[0].hspLocationId;
+    }
+  }
   export() {
     console.log(this.tableRows);
     this.tableRows.exportAsExcel();

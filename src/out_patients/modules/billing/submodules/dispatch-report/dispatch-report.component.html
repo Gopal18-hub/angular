@@ -83,6 +83,7 @@
                         <maxhealth-table
                         [config]="config"
                         [data]="dispatchreport.dispatchlist"
+                        (columnClick)="printrow($event)"
                         #showtable
                         ></maxhealth-table>
                     </div>
