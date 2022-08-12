@@ -21,6 +21,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-billing",
@@ -109,7 +110,8 @@ export class BillingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -219,19 +221,24 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            this.billingService.setActiveMaxId(
-              this.formGroup.value.maxid,
-              iacode,
-              regNumber.toString()
-            );
-            this.patientDetails = resultData;
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // console.log(this.categoryIcons);
-            this.setValuesToForm(this.patientDetails);
+            console.log(resultData);
+            if (resultData) {
+              this.billingService.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString()
+              );
+              this.patientDetails = resultData;
+              // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+              //   this.patientDetails
+              // );
+              // console.log(this.categoryIcons);
+              this.setValuesToForm(this.patientDetails);
 
-            this.payDueCheck(resultData.dtPatientPastDetails);
+              this.payDueCheck(resultData.dtPatientPastDetails);
+            } else {
+              this.snackbar.open("Invalid Max ID", "error");
+            }
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
@@ -240,8 +247,9 @@ export class BillingComponent implements OnInit {
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
-              this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+              //this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open("Invalid Max ID", "error");
             }
             this.apiProcessing = false;
           }
@@ -253,8 +261,13 @@ export class BillingComponent implements OnInit {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.snackbar.open("Invalid Max ID", "error");
+      this.patient = false;
+      this.apiProcessing = false;
+      return;
+    }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
