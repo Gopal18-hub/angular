@@ -183,12 +183,24 @@ export class BillingComponent implements OnInit {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "80vh",
+                height: "60vh",
                 data: {
                   searchResults: res,
                 },
               }
             );
+            similarSoundDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result) {
+                  let maxID = result.data["added"][0].maxid;
+                  this.formGroup.controls["maxid"].setValue(maxID);
+                  this.apiProcessing = true;
+                  this.patient = false;
+                  this.getPatientDetailsByMaxId();
+                }
+              });
           }
         }
         this.apiProcessing = false;
@@ -392,11 +404,8 @@ export class SimilarPatientDialog {
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
-  // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-
-    // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
     this.getMaxID();
@@ -460,8 +469,6 @@ export class SimilarPatientDialog {
     },
   };
   getMaxID() {
-    console.log(event);
-
     this.tableRows.selection.changed.subscribe((res: any) => {
       this.dialogRef.close({ data: res });
     });
