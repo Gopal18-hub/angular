@@ -28,6 +28,7 @@ export interface OpRefundApprovalListInterface {
   approvalDoneDateTime: any;
   rejectedBy: string;
   rejectedDateTime: any;
+  requestRaisedById: number;
 }
 interface risRemarksInterface {
   id: number;

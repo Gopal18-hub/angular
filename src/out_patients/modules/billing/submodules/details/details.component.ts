@@ -11,6 +11,9 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
 import { SearchDialogComponent } from "./search-dialog/search-dialog.component";
+import { getrefundreason } from "../../../../core/types/billdetails/getrefundreason.Interface";
+import { getPatientPersonalandBillDetails } from "../../../../core/types/billdetails/getpatientpersonalandbilldetails.Interface";
+import { BillDetailsApiConstants } from "./BillDetailsApiConstants";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -27,6 +30,8 @@ export class DetailsComponent implements OnInit {
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
+  public refundreasonlist: getrefundreason[] = [];
+  public patientbilldetaillist!: getPatientPersonalandBillDetails;
   linkList = [
     {
       title: "Services",
@@ -72,8 +77,18 @@ export class DetailsComponent implements OnInit {
         options: [{ title: "" }],
         defaultValue: 0,
       },
-      fromDate: { type: "date", required: false },
-      toDate: { type: "date", required: false },
+      fromDate: { 
+        type: "date",
+        maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
+      },
+      toDate: { 
+        type: "date",
+        maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
+      },
       billAmt: {
         type: "number",
         required: false,
@@ -113,6 +128,7 @@ export class DetailsComponent implements OnInit {
         type: "dropdown",
         required: false,
         readonly: true,
+        options: this.refundreasonlist,
       },
       paymentMode: {
         type: "dropdown",
@@ -134,8 +150,17 @@ export class DetailsComponent implements OnInit {
   BServiceForm!: FormGroup;
 
   questions: any;
+  
 
   private readonly _destroying$ = new Subject<void>();
+  patientName: any;
+  age: any;
+  gender: any;
+  dob: any;
+  country: any;
+  ssn: any;
+  operator: any;
+  billdate: any;
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -146,6 +171,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.getrefundreason();
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -153,7 +179,18 @@ export class DetailsComponent implements OnInit {
   ngAfterViewInit(): void {
     this.formEvents();
   }
-
+  getrefundreason()
+  {
+    this.http.get(BillDetailsApiConstants.getrefundreason)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resuldata)=>{
+      console.log(resuldata);
+      this.refundreasonlist = resuldata;
+      this.questions[13].options = this.refundreasonlist.map(l=>{
+        return { title: l.name, value: l.id}
+      })
+    })
+  }
   formEvents() {
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -164,9 +201,41 @@ export class DetailsComponent implements OnInit {
 
         event.preventDefault();
         console.log("event triggered");
+        this.getpatientbilldetails();
         // this.getPatientDetailsByMaxId();
       }
     });
+  }
+
+  getpatientbilldetails()
+  {
+    this.http.get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultdata) => {
+      console.log(resultdata);
+      this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+      console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+      if(this.patientbilldetaillist.billDetialsForRefund_Table0.length == 1)
+      {
+        this.billFormfill();
+      }
+    })
+  }
+  billFormfill()
+  {
+    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+    this.BServiceForm.controls["maxid"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
+    this.BServiceForm.controls["mobileNo"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno);
+    this.BServiceForm.controls["billDate"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime);
+    this.patientName = this.patientbilldetaillist.billDetialsForRefund_Table0[0].name;
+    this.age = this.patientbilldetaillist.billDetialsForRefund_Table0[0].age;
+    this.gender = this.patientbilldetaillist.billDetialsForRefund_Table0[0].sex;
+    this.dob = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
+    this.country = 'India';
+    this.ssn = this.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn;
+    this.operator = this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
+    this.billdate = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
+    // this.BServiceForm.controls["billDate"].setValue();
   }
   // getPatientDetailsByMaxId() {
   //   let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
@@ -223,12 +292,7 @@ export class DetailsComponent implements OnInit {
   //   }
   // }
 
-  patientName!: string;
-  age!: string;
-  gender!: string;
-  dob!: string;
-  country!: string;
-  ssn!: string;
+  
   openhistory() {
     this.matDialog.open(VisitHistoryComponent, {
       width: "70%",
@@ -242,7 +306,7 @@ export class DetailsComponent implements OnInit {
   {
     this.matDialog.open(SearchDialogComponent, {
       width: "80%",
-      height: "83%",
+      height: "85%",
     });
   }
 }
