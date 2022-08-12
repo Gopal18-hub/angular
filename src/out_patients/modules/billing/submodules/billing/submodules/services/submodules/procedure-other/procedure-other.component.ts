@@ -95,6 +95,11 @@ export class ProcedureOtherComponent implements OnInit {
     this.getSpecialization();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.ProcedureItems.splice($event.index, 1);
+    this.data = [...this.billingService.ProcedureItems];
+  }
+
   getSpecialization() {
     this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
       this.config.columnsInfo.specialisation.options = res.map((r: any) => {
@@ -124,6 +129,7 @@ export class ProcedureOtherComponent implements OnInit {
       this.questions[0].options = res.map((r: any) => {
         return { title: r.name, value: r.id };
       });
+      this.questions[0] = { ...this.questions[0] };
     });
   }
   add(priorityId = 1) {

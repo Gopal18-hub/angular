@@ -36,6 +36,7 @@ export class HealthCheckupsComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: ["sno", "healthCheckups", "price"],
@@ -72,6 +73,11 @@ export class HealthCheckupsComponent implements OnInit {
     this.gethealthcheckups();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.HealthCheckupItems.splice($event.index, 1);
+    this.data = [...this.billingService.HealthCheckupItems];
+  }
+
   gethealthcheckups() {
     this.http
       .get(
@@ -83,6 +89,7 @@ export class HealthCheckupsComponent implements OnInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 
