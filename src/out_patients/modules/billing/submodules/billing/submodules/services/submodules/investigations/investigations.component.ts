@@ -139,6 +139,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
       (val: any) => {
@@ -161,6 +162,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 

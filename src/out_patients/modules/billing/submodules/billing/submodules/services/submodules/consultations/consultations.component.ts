@@ -122,6 +122,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  rowRwmove($event: any) {
+    this.billingService.consultationItems.splice($event.index, 1);
+    this.data = [...this.billingService.consultationItems];
+  }
+
   ngAfterViewInit(): void {
     this.tableRows.selection.changed.subscribe((res: any) => {
       const source = res.added[0];
@@ -171,6 +176,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           this.questions[2].options = res.map((r: any) => {
             return { title: r.name, value: r.id };
           });
+          this.questions[2] = { ...this.questions[2] };
         });
       this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
         if (val.value) {
@@ -182,6 +188,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
@@ -209,6 +216,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 
@@ -264,6 +272,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         });
 
         this.data = [...this.billingService.consultationItems];
+        this.formGroup.reset();
       });
   }
 }
