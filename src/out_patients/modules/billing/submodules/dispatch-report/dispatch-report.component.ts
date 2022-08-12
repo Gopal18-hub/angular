@@ -509,4 +509,9 @@ export class DispatchReportComponent implements OnInit {
       RepType: this.dispatchhistoryform.controls["radio"].value,
     });
   }
+  
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
