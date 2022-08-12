@@ -30,6 +30,8 @@ import {
 import { OverlayModule } from "@angular/cdk/overlay";
 import { TextFieldModule } from "@angular/cdk/text-field";
 
+import { ContenteditableValueAccessor } from "../../utilities/directives/contenteditable-value-accessor";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -57,7 +59,11 @@ import { TextFieldModule } from "@angular/cdk/text-field";
     NgxMatNativeDateModule,
   ],
   exports: [MaxTableComponent, MaxTableFormComponent],
-  declarations: [MaxTableComponent, MaxTableFormComponent],
+  declarations: [
+    MaxTableComponent,
+    MaxTableFormComponent,
+    ContenteditableValueAccessor,
+  ],
   providers: [],
 })
 export class MaxHealthTableModule {}

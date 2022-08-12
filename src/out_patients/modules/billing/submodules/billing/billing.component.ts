@@ -1,5 +1,4 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { Component, OnInit, ViewChild, Inject } from "@angular/core";
 import { PaymentModeComponent } from "./payment-mode/payment-mode.component";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
@@ -17,6 +16,12 @@ import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { PaydueComponent } from "./prompts/paydue/paydue.component";
 import { BillingService } from "./billing.service";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-billing",
@@ -49,8 +54,7 @@ export class BillingComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "number",
-        readonly: true,
+        type: "string",
       },
       bookingId: {
         type: "string",
@@ -106,7 +110,8 @@ export class BillingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -141,8 +146,74 @@ export class BillingComponent implements OnInit {
         this.getPatientDetailsByMaxId();
       }
     });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        //if (!this.formGroup.value.maxid) {
+        event.preventDefault();
+        this.apiProcessing = true;
+        this.patient = false;
+        this.searchByMobileNumber();
+        //}
+      }
+    });
   }
+
+  searchByMobileNumber() {
+    if (!this.formGroup.value.mobile) {
+      this.apiProcessing = false;
+      this.patient = false;
+      return;
+    }
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.formGroup.value.mobile,
+      })
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res.length == 0) {
+        } else {
+          if (res.length == 1) {
+            const maxID = res[0].maxid;
+            this.formGroup.controls["maxid"].setValue(maxID);
+            this.apiProcessing = true;
+            this.patient = false;
+            this.getPatientDetailsByMaxId();
+          } else {
+            const similarSoundDialogref = this.matDialog.open(
+              SimilarPatientDialog,
+              {
+                width: "60vw",
+                height: "60vh",
+                data: {
+                  searchResults: res,
+                },
+              }
+            );
+            similarSoundDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result) {
+                  let maxID = result.data["added"][0].maxid;
+                  this.formGroup.controls["maxid"].setValue(maxID);
+                  this.apiProcessing = true;
+                  this.patient = false;
+                  this.getPatientDetailsByMaxId();
+                }
+              });
+          }
+        }
+        this.apiProcessing = false;
+        this.patient = false;
+      });
+  }
+
   getPatientDetailsByMaxId() {
+    if (!this.formGroup.value.maxid) {
+      this.apiProcessing = false;
+      this.patient = false;
+      return;
+    }
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
     if (regNumber != 0) {
@@ -162,19 +233,24 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            this.billingService.setActiveMaxId(
-              this.formGroup.value.maxid,
-              iacode,
-              regNumber.toString()
-            );
-            this.patientDetails = resultData;
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // console.log(this.categoryIcons);
-            this.setValuesToForm(this.patientDetails);
+            console.log(resultData);
+            if (resultData) {
+              this.billingService.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString()
+              );
+              this.patientDetails = resultData;
+              // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+              //   this.patientDetails
+              // );
+              // console.log(this.categoryIcons);
+              this.setValuesToForm(this.patientDetails);
 
-            this.payDueCheck(resultData.dtPatientPastDetails);
+              this.payDueCheck(resultData.dtPatientPastDetails);
+            } else {
+              this.snackbar.open("Invalid Max ID", "error");
+            }
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
@@ -183,8 +259,9 @@ export class BillingComponent implements OnInit {
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
-              this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+              //this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open("Invalid Max ID", "error");
             }
             this.apiProcessing = false;
           }
@@ -196,8 +273,13 @@ export class BillingComponent implements OnInit {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.snackbar.open("Invalid Max ID", "error");
+      this.patient = false;
+      this.apiProcessing = false;
+      return;
+    }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
@@ -284,7 +366,11 @@ export class BillingComponent implements OnInit {
 
   getAllCompany() {
     this.http
-      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .get(
+        BillingApiConstants.getcompanyandpatientsponsordata(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -305,5 +391,86 @@ export class BillingComponent implements OnInit {
           return { title: l.name, value: l.id };
         });
       });
+  }
+}
+
+@Component({
+  selector: "out-patients-similar-patient-search",
+  templateUrl: "similarPatient-dialog.html",
+})
+export class SimilarPatientDialog {
+  @ViewChild("patientDetail") tableRows: any;
+  constructor(
+    private dialogRef: MatDialogRef<SimilarPatientDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  ngOnInit(): void {
+    console.log(this.data.searchResults);
+  }
+  ngAfterViewInit() {
+    this.getMaxID();
+  }
+
+  config: any = {
+    selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
+    displayedColumns: [
+      "maxid",
+      "firstName",
+      "lastName",
+      "phone",
+      "address",
+      "age",
+      "gender",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        style: {
+          width: "120px",
+        },
+      },
+      firstName: {
+        title: "First Name",
+        type: "string",
+      },
+      lastName: {
+        title: "Last Name",
+        type: "string",
+      },
+      phone: {
+        title: "Phone No. ",
+        type: "string",
+      },
+      address: {
+        title: "Address ",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+        tooltipColumn: "address",
+      },
+      age: {
+        title: "Age ",
+        type: "string",
+        style: {
+          width: "90px",
+        },
+      },
+      gender: {
+        title: "Gender",
+        type: "string",
+        style: {
+          width: "70px",
+        },
+      },
+    },
+  };
+  getMaxID() {
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      this.dialogRef.close({ data: res });
+    });
   }
 }
