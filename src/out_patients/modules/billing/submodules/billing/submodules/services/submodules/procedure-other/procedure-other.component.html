@@ -5,18 +5,20 @@
       autocomplete="off"
       class="w-3/5 flex align-items-center"
     >
-      <div class="flex w-full">
+      <div class="flex w-full align-items-center">
         <mat-label class="max-health-primary-color mr-4">Services</mat-label>
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-3/5"
+          class="w-2/5"
         >
         </maxhealth-question>
 
-        <mat-label class="max-health-primary-color mr-4">Procedure</mat-label>
+        <mat-label class="max-health-primary-color mr-4 ml-4"
+          >Procedure</mat-label
+        >
         <maxhealth-question
           [question]="questions[1]"
           [form]="formGroup"
@@ -57,6 +59,11 @@
     </div>
   </div>
   <div class="mt-2 h-full">
-    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+    ></maxhealth-table>
   </div>
 </div>
