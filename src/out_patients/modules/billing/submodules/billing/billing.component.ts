@@ -284,7 +284,11 @@ export class BillingComponent implements OnInit {
 
   getAllCompany() {
     this.http
-      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .get(
+        BillingApiConstants.getcompanyandpatientsponsordata(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);

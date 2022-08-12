@@ -50,6 +50,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() columnClick: EventEmitter<any> = new EventEmitter();
 
+  @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -338,6 +340,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   removeRow(index: number) {
-    this.dataSource = this.dataSource.splice(index, 1);
+    this.rowRwmove.emit({ index: index, data: this.dataSource.data[index] });
   }
 }

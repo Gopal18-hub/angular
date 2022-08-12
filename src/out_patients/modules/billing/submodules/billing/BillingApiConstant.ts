@@ -1,6 +1,10 @@
 import { environment } from "@environments/environment";
 
 export namespace BillingApiConstants {
+  export const getcompanyandpatientsponsordata = (locationId: number) => {
+    return `${environment.PatientApiUrl}api/patient/getcompanyandpatientsponsordata/${locationId}`;
+  };
+
   export const getsimilarsoundopbilling = (
     IACode: string,
     RegistrationNo: number
@@ -15,7 +19,7 @@ export namespace BillingApiConstants {
   };
 
   export const getclinics = (locationId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getclinics/${locationId}";
+    return environment.CommonApiUrl + `api/lookup/getclinics/${locationId}`;
   };
 
   export const getspecialization =
