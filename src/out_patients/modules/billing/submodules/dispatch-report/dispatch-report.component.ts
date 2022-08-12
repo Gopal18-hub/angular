@@ -323,12 +323,11 @@ export class DispatchReportComponent implements OnInit {
             console.log(resultdata.dispatchlist.length);
             for (var i = 0; i < this.dispatchreport.dispatchlist.length; i++) {
               this.dispatchreport.dispatchlist[i].sNo = i + 1;
-              console.log(this.dispatchreport.dispatchlist[i].sNo);
             }
             this.tableRows.config.columnsInfo.r_collection_location.options =
               this.billedlocation.map((l) => {
                 return { title: l.address3, value: l.hspLocationId };
-              });
+              });  
             if (this.pendingreport == true && this.show == false) {
               this.dispatchreport.dispatchlist =
                 this.dispatchreport.dispatchlist.filter((e: any) => {
