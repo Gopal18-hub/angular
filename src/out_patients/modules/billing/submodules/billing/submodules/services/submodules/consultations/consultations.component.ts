@@ -179,7 +179,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           this.questions[2] = { ...this.questions[2] };
         });
       this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
-        if (val.value) {
+        if (val && val.value) {
           this.getdoctorlistonSpecializationClinic(val.value, true);
         }
       });
@@ -192,7 +192,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
-          if (val.value) {
+          if (val && val.value) {
             this.getdoctorlistonSpecializationClinic(val.value);
           }
         }
