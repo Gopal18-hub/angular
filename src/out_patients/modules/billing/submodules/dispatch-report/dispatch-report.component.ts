@@ -121,6 +121,7 @@ export class DispatchReportComponent implements OnInit {
       remarks: {
         title: "Remarks",
         type: "textarea",
+        disabledSort: true,
       },
     },
   };
@@ -323,12 +324,11 @@ export class DispatchReportComponent implements OnInit {
             console.log(resultdata.dispatchlist.length);
             for (var i = 0; i < this.dispatchreport.dispatchlist.length; i++) {
               this.dispatchreport.dispatchlist[i].sNo = i + 1;
-              console.log(this.dispatchreport.dispatchlist[i].sNo);
             }
             this.tableRows.config.columnsInfo.r_collection_location.options =
               this.billedlocation.map((l) => {
                 return { title: l.address3, value: l.hspLocationId };
-              });
+              });  
             if (this.pendingreport == true && this.show == false) {
               this.dispatchreport.dispatchlist =
                 this.dispatchreport.dispatchlist.filter((e: any) => {
@@ -396,18 +396,29 @@ export class DispatchReportComponent implements OnInit {
           (e.receive_date == null || e.receive_date == undefined)
         ) {
           // this.msgdialog.error("You have Not Selected Proper Data");
+          console.log('all null');
           flag++;
           return;
         } else if (
           e.r_dispatchdate == null ||
-          e.r_dispatchdate == undefined ||
-          e.receive_date == null ||
-          e.receive_date == undefined
+          e.r_dispatchdate == undefined
         ) {
+          console.log(e.r_dispatchdate);
+          console.log('rec dis null');
           // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
           return;
         } else if (e.receive_date == null || e.receive_date == undefined) {
+          console.log("receive date null");
+          var loc;
+          if(e.r_collection_location == null)
+          {
+            loc = null;
+          }
+          else
+          {
+            loc = e.r_collection_location.toString();
+          }
           this.dispatchreportsave.objDtSaveReport.push({
             slNo: e.sNo.toString(),
             testName: e.itemName,
@@ -419,7 +430,7 @@ export class DispatchReportComponent implements OnInit {
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
             ),
-            dispatchPlace: e.r_collection_location.toString(),
+            dispatchPlace: loc,
             recievedDateTime: this.datepipe.transform(
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
@@ -441,6 +452,15 @@ export class DispatchReportComponent implements OnInit {
           //   }
           // })
         } else {
+          var loc;
+          if(e.r_collection_location == null)
+          {
+            loc = null;
+          }
+          else
+          {
+            loc = e.r_collection_location.toString();
+          }
           this.dispatchreportsave.objDtSaveReport.push({
             slNo: e.sNo.toString(),
             testName: e.itemName,
@@ -452,7 +472,7 @@ export class DispatchReportComponent implements OnInit {
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
             ),
-            dispatchPlace: e.r_collection_location.toString(),
+            dispatchPlace: loc,
             recievedDateTime: this.datepipe.transform(
               e.receive_date,
               "YYYY-MM-dd HH:mm:ss.ss"
@@ -476,7 +496,7 @@ export class DispatchReportComponent implements OnInit {
         .subscribe(
           (res: any) => {
             console.log(res);
-            if (res == 1) {
+            if (res >= 1) {
               this.msgdialog.success("Data Saved Succesully");
               this.getDispatchReport();
             }
@@ -492,7 +512,21 @@ export class DispatchReportComponent implements OnInit {
     }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }
-
+  printrow(event: any)
+  {
+    if(event.column == "r_dispatchdate" && event.row.r_dispatchdate == null)
+    {
+      event.row.r_dispatchdate = new Date();
+    }
+    else if(event.column == "receive_date" && event.row.receive_date == null) 
+    {
+      event.row.receive_date = new Date();
+    }
+    else if(event.column == "r_collection_location" && event.r_collection_location == null) 
+    {
+      event.row.r_collection_location = this.billedlocation[0].hspLocationId;
+    }
+  }
   export() {
     console.log(this.tableRows);
     this.tableRows.exportAsExcel();
