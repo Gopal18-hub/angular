@@ -16,6 +16,7 @@ import {
   distinctUntilChanged,
   filter,
 } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
   selector: "out-patients-consultations",
@@ -134,18 +135,32 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) =>
-          this.http
-            .get(
-              BillingApiConstants.getbillingdoctorsonsearch(
-                value,
-                Number(this.cookie.get("HSPLocationId"))
+        switchMap((value) => {
+          if (
+            this.formGroup.value.specialization &&
+            this.formGroup.value.specialization.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getbillingdoctorsonsearch(
+                  value,
+                  Number(this.cookie.get("HSPLocationId"))
+                )
               )
-            )
-            .pipe(finalize(() => {}))
-        )
+              .pipe(finalize(() => {}));
+          }
+        })
       )
-      .subscribe((data: any) => {});
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return { title: r.doctorName, value: r.doctorId };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getSpecialization() {

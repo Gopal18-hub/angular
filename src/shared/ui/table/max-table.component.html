@@ -201,10 +201,18 @@
         *matRowDef="let row; columns: displayedColumns"
         (click)="selection.toggle(row)"
       ></tr> -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">
       <tr
