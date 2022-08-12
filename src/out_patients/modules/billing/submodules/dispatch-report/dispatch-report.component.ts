@@ -121,6 +121,7 @@ export class DispatchReportComponent implements OnInit {
       remarks: {
         title: "Remarks",
         type: "textarea",
+        disabledSort: true,
       },
     },
   };
