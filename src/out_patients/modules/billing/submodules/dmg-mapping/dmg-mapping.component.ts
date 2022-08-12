@@ -258,7 +258,7 @@ export class DmgMappingComponent implements OnInit {
               this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
             );
             // this.dmgMappingForm.controls["mobileno"].setValue(
-            //   this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
+            //   this.dmgPatientDetails.dmgPatientDetailDT[0].mobileno
             // );
             this.categoryIcons = this.patientService.getCategoryIcons(
               this.dmgPatientDetails.dmgPatientDetailDT[0]
@@ -409,5 +409,9 @@ export class DmgMappingComponent implements OnInit {
     this.dmgMappingForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
+  }
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

@@ -21,6 +21,12 @@ export class OrderSetComponent implements OnInit {
         placeholder: "--Select--",
         required: true,
       },
+      items: {
+        type: "dropdown",
+        placeholder: "--Select--",
+        required: true,
+        multiple: true,
+      },
     },
   };
   formGroup!: FormGroup;

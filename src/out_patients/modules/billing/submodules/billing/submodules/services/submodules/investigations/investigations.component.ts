@@ -39,6 +39,7 @@ export class InvestigationsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
       "investigations",
@@ -101,6 +102,11 @@ export class InvestigationsComponent implements OnInit {
     this.getSpecialization();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.InvestigationItems.splice($event.index, 1);
+    this.data = [...this.billingService.InvestigationItems];
+  }
+
   getSpecialization() {
     this.http
       .get(BillingApiConstants.getInvetigationPriorities)
@@ -139,6 +145,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
       (val: any) => {
@@ -161,6 +168,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 

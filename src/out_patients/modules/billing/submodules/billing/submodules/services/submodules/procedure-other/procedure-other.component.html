@@ -6,14 +6,22 @@
       class="w-3/5 flex align-items-center"
     >
       <div class="flex w-full">
-        <mat-label class="max-health-primary-color mr-4"
-          >Other Services</mat-label
-        >
+        <mat-label class="max-health-primary-color mr-4">Services</mat-label>
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
+          class="w-3/5"
+        >
+        </maxhealth-question>
+
+        <mat-label class="max-health-primary-color mr-4">Procedure</mat-label>
+        <maxhealth-question
+          [question]="questions[1]"
+          [form]="formGroup"
+          [questions]="questions[1]"
+          [index]="1"
           class="w-3/5"
         >
         </maxhealth-question>

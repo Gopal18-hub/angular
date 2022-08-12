@@ -16,6 +16,11 @@ export class HealthCheckupsComponent implements OnInit {
     title: "",
     type: "object",
     properties: {
+      department: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
+      },
       healthCheckup: {
         type: "autocomplete",
         placeholder: "--Select--",
@@ -75,7 +80,7 @@ export class HealthCheckupsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.questions[0].options = res.map((r: any) => {
+        this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
       });

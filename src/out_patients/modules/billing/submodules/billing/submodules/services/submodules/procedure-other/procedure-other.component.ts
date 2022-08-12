@@ -22,6 +22,11 @@ export class ProcedureOtherComponent implements OnInit {
         placeholder: "--Select--",
         required: true,
       },
+      procedure: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
+      },
     },
   };
   formGroup!: FormGroup;
