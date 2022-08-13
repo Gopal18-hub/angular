@@ -83,6 +83,7 @@ import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set
 import { ConsultationWarningComponent } from "./submodules/billing/prompts/consultation-warning/consultation-warning.component";
 import { SearchDialogComponent } from "./submodules/details/search-dialog/search-dialog.component";
 import { OprefundDialogComponent } from "./submodules/oprefund-approval/oprefund-dialog/oprefund-dialog.component";
+import { MaxHealthSnackBarModule } from "@shared/ui/snack-bar";
 
 @NgModule({
   declarations: [
@@ -169,6 +170,7 @@ import { OprefundDialogComponent } from "./submodules/oprefund-approval/oprefund
     PortalModule,
     MatProgressSpinnerModule,
     EmptyPlaceholderModule,
+    MaxHealthSnackBarModule,
   ],
   exports: [],
   providers: [],
