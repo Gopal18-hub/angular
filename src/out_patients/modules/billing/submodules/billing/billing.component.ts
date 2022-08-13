@@ -21,6 +21,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-billing",
@@ -109,7 +110,8 @@ export class BillingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -181,12 +183,24 @@ export class BillingComponent implements OnInit {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "80vh",
+                height: "60vh",
                 data: {
                   searchResults: res,
                 },
               }
             );
+            similarSoundDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result) {
+                  let maxID = result.data["added"][0].maxid;
+                  this.formGroup.controls["maxid"].setValue(maxID);
+                  this.apiProcessing = true;
+                  this.patient = false;
+                  this.getPatientDetailsByMaxId();
+                }
+              });
           }
         }
         this.apiProcessing = false;
@@ -219,19 +233,24 @@ export class BillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
-            this.billingService.setActiveMaxId(
-              this.formGroup.value.maxid,
-              iacode,
-              regNumber.toString()
-            );
-            this.patientDetails = resultData;
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // console.log(this.categoryIcons);
-            this.setValuesToForm(this.patientDetails);
+            console.log(resultData);
+            if (resultData) {
+              this.billingService.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString()
+              );
+              this.patientDetails = resultData;
+              // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+              //   this.patientDetails
+              // );
+              // console.log(this.categoryIcons);
+              this.setValuesToForm(this.patientDetails);
 
-            this.payDueCheck(resultData.dtPatientPastDetails);
+              this.payDueCheck(resultData.dtPatientPastDetails);
+            } else {
+              this.snackbar.open("Invalid Max ID", "error");
+            }
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
           },
@@ -240,8 +259,9 @@ export class BillingComponent implements OnInit {
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
-              this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
+              //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+              //this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.snackbar.open("Invalid Max ID", "error");
             }
             this.apiProcessing = false;
           }
@@ -253,8 +273,13 @@ export class BillingComponent implements OnInit {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.snackbar.open("Invalid Max ID", "error");
+      this.patient = false;
+      this.apiProcessing = false;
+      return;
+    }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
@@ -379,11 +404,8 @@ export class SimilarPatientDialog {
     private dialogRef: MatDialogRef<SimilarPatientDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
-  // searchResults:{verify:string,isVerified:string,remarks:string,view:string,fileName:string,docName:string,idType:string}[]=[] as any
   ngOnInit(): void {
     console.log(this.data.searchResults);
-
-    // this.searchResults.push({verify:"no",isVerified:"no",remarks:"no",view:"no",fileName:"xyz",docName:"docname",idType:"idtype"});
   }
   ngAfterViewInit() {
     this.getMaxID();
@@ -447,8 +469,6 @@ export class SimilarPatientDialog {
     },
   };
   getMaxID() {
-    console.log(event);
-
     this.tableRows.selection.changed.subscribe((res: any) => {
       this.dialogRef.close({ data: res });
     });
