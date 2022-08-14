@@ -273,17 +273,24 @@ export class ExpiredPatientCheckComponent implements OnInit {
       .subscribe((resultdata) => {
         console.log(resultdata);
         if (resultdata != null) {
-          const similarpatientDialog = this.dialog.open(SimilarPatientDialog, {
-            width: "60vw",
-            height: "80vh",
-            data: {
-              searchResults: resultdata,
-            },
-          });
-          similarpatientDialog.afterClosed().subscribe((resultdata) => {
-            console.log(resultdata);
-            this.onMaxidSearch(resultdata.data.added[0].maxid);
-          });
+          if (resultdata.length > 1) {
+            const similarpatientDialog = this.dialog.open(
+              SimilarPatientDialog,
+              {
+                width: "60vw",
+                height: "80vh",
+                data: {
+                  searchResults: resultdata,
+                },
+              }
+            );
+            similarpatientDialog.afterClosed().subscribe((resultdata) => {
+              console.log(resultdata);
+              this.onMaxidSearch(resultdata.data.added[0].maxid);
+            });
+          } else if (resultdata.length == 1) {
+            this.onMaxidSearch(resultdata[0].maxid);
+          }
         }
       });
   }

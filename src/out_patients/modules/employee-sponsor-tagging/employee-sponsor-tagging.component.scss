@@ -175,7 +175,7 @@ margin-left:0.35%;
 }
 .company-width{
     ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
-        width:15rem;
+        width:265px;
     }
 }
 .company-width2{
@@ -190,3 +190,13 @@ margin-left:0.35%;
 // ::ng-deep .cdk-overlay-pane{
 //     width: auto !important;
 // }
+
+// ::ng-deep .mat-sort-header.mat-column-remark.mat-sort-header-arrow.mat-sort-header-stem{
+//     display:none;
+// } 
+
+// ::ng deep .cdk-overlay-pane .mat-autocomplete-panel.mat-autocomplete-visible {
+//     width:265px !important;
+// }
+
+
