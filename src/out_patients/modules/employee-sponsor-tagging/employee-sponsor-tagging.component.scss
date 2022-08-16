@@ -181,16 +181,16 @@ margin-left:0.35%;
         width: auto !important;
     }
 }
-//  .company-width2{
-//     ::ng-deep .cdk-overlay-pane{
-//         width: auto !important;
-//     }
-// }
-.company-width2{
-    ::ng-deep .cdk-overlay-container div.cdk-overlay-pane{
-        width:auto !important;
+ .company-width2{
+    ::ng-deep .cdk-overlay-pane{
+        width: auto !important;
     }
 }
+// .company-width2{
+//     ::ng-deep .cdk-overlay-container div.cdk-overlay-pane{
+//         width:auto !important;
+//     }
+// }
 
 .remarks-sort{
     ::ng-deep .max-table-wrapper table thead tr th:nth-child(12) div.mat-sort-header-arrow{
