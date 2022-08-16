@@ -257,9 +257,9 @@ export class DmgMappingComponent implements OnInit {
             this.dmgMappingForm.controls["maxid"].setValue(
               this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
             );
-            // this.dmgMappingForm.controls["mobileno"].setValue(
-            //   this.dmgPatientDetails.dmgPatientDetailDT[0].mobileno
-            // );
+            this.dmgMappingForm.controls["mobileno"].setValue(
+              this.dmgPatientDetails.dmgPatientDetailDT[0].mobileNo
+            );
             this.categoryIcons = this.patientService.getCategoryIcons(
               this.dmgPatientDetails.dmgPatientDetailDT[0]
             );
