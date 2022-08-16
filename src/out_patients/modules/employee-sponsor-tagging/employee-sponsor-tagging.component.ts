@@ -416,6 +416,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.questions[3].options = this.companySponsorData.map((a) => {
           return { title: a.name, value: a.id };
         });
+        this.questions[3] = { ...this.questions[3] };
       });
     this.http
       .get(ApiConstants.getCorporate)
