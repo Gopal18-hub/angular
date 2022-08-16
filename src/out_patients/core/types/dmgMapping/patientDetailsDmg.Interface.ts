@@ -17,6 +17,7 @@ export interface dmgMappingDataDTInterface {
   pPagerNumber: string;
   note: number;
   noteReason: string;
+  mobileNo: string;
 }
 interface dmgMappingDataDT {
   isChecked: number;

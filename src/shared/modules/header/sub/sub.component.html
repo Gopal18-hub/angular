@@ -279,6 +279,7 @@
         >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
+            [disabled]="menuItem.disabled"
               mat-button
               class="max-health-primary-color"
               (click)="activeSubModule = module"
