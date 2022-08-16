@@ -22,6 +22,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import * as moment from "moment";
 
 @Component({
   selector: "out-patients-billing",
@@ -103,11 +104,13 @@ export class BillingComponent implements OnInit {
 
   dmsProcessing: boolean = false;
 
+  moment = moment;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private http: HttpService,
-    private cookie: CookieService,
+    public cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private billingService: BillingService,
