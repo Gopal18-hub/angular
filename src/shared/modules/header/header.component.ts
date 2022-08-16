@@ -7,6 +7,9 @@ import { environment } from "@environments/environment";
 import { PermissionService } from "../../services/permission.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DbService } from "../../services/db.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ChangelocationComponent } from "./changelocation/changelocation.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "maxhealth-header",
@@ -20,6 +23,7 @@ export class HeaderComponent implements OnInit {
   usrname: string = "";
   user: string = "";
   activeModule: any;
+  private readonly _destroying$ = new Subject<void>();
 
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,
@@ -28,7 +32,8 @@ export class HeaderComponent implements OnInit {
     private permissionService: PermissionService,
     private router: Router,
     private route: ActivatedRoute,
-    private dbService: DbService
+    private dbService: DbService,
+    private matDialog: MatDialog
   ) {}
 
   async ngOnInit() {
@@ -94,5 +99,44 @@ export class HeaderComponent implements OnInit {
       this.cookieService.delete("accessToken");
       this.cookieService.set("accessToken", accessToken);
     }
+  }
+
+  openChangeLocationDialog() {
+    const changeLocationDialogref = this.matDialog.open(
+      ChangelocationComponent,
+      {
+        width: "25vw",
+        height: "44vh",
+        data: {
+          title: "Change Location and Station",
+          form: {
+            title: "",
+            type: "object",
+            properties: {
+              location: {
+                type: "autocomplete",
+                title: "Location",
+                required: true,
+              },
+              station: {
+                type: "autocomplete",
+                title: "Station",
+                required: true,
+              },
+            },
+          },
+          layout: "single",
+          buttonLabel: "Submit",
+        },
+      }
+    );
+    changeLocationDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result) {
+          window.location.reload();
+        }
+      });
   }
 }

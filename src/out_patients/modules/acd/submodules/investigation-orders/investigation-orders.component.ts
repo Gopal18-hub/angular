@@ -85,7 +85,7 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       input: {
         type: "string",
-        defaultValue: this.cookie.get("LocationIACode") + "."
+        //defaultValue: this.cookie.get("LocationIACode") + "."
       },
 
       status: {
