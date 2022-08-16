@@ -6,7 +6,15 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
-
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+} from "rxjs/operators";
+import { of } from "rxjs";
 @Component({
   selector: "out-patients-investigations",
   templateUrl: "./investigations.component.html",
@@ -39,6 +47,7 @@ export class InvestigationsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
       "investigations",
@@ -101,6 +110,48 @@ export class InvestigationsComponent implements OnInit {
     this.getSpecialization();
   }
 
+  rowRwmove($event: any) {
+    this.billingService.InvestigationItems.splice($event.index, 1);
+    this.data = [...this.billingService.InvestigationItems];
+  }
+
+  ngAfterViewInit(): void {
+    this.formGroup.controls["investigation"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.serviceType &&
+            this.formGroup.value.serviceType.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getinvestigationSearch(
+                  Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
+  }
+
   getSpecialization() {
     this.http
       .get(BillingApiConstants.getInvetigationPriorities)
@@ -139,6 +190,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
       (val: any) => {
@@ -161,6 +213,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 

@@ -61,6 +61,7 @@
     color: var(--primary-color);
     font-weight: 600 !important;
   }
+  
 }
 
   .h-white-banner
@@ -151,7 +152,7 @@
     white-space: nowrap;
 }
 .wt-mid{
-    width: 10.5%;  
+    width: 14%;  
 }
 .bg-deposit
 {
@@ -299,7 +300,7 @@ padding: 0%;
 }
 .h-btn{
     height: 4.95vh;
-   
+    min-width: fit-content !important;
 }
 .m-pannel
 {
@@ -335,3 +336,30 @@ margin-top: 0.19rem;
 .w-27{
     width:27%;
     }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.w-13{
+    width: 13%;
+}
+.w-86{
+    width: 86%;
+}
+.w-14{
+    width: 14%;
+}
+.w-11{
+    width: 11%;
+}
+.w-18{
+    width: 18%;
+}
+.clr-black{
+    color: #000;
+}
+.mar-left-12{
+    margin-left: 12.1rem;
+}
