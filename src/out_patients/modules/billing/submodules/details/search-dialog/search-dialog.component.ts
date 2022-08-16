@@ -34,10 +34,14 @@ export class SearchDialogComponent implements OnInit {
       fromdate: {
         type: "date",
         maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
       },
       todate: {
         type: "date",
         maximum: new Date(),
+        defaultValue: new Date(),
+        disabled: true,
       }
     },
   };

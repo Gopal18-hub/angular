@@ -1,6 +1,9 @@
 import { NgModule } from "@angular/core";
 import { BillingComponent } from "./billing.component";
-import { BillingComponent as BillingComponentPage } from "./submodules/billing/billing.component";
+import {
+  BillingComponent as BillingComponentPage,
+  SimilarPatientDialog,
+} from "./submodules/billing/billing.component";
 import { DepositComponent } from "./submodules/deposit/deposit.component";
 import { DetailsComponent } from "./submodules/details/details.component";
 import { OnlineOpBillsComponent } from "./submodules/online-op-bills/online-op-bills.component";
@@ -78,7 +81,10 @@ import { ReferalDoctorWarningComponent } from "./submodules/billing/prompts/refe
 import { PackageDoctorModificationComponent } from "./submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component";
 import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set-details/order-set-details.component";
 import { ConsultationWarningComponent } from "./submodules/billing/prompts/consultation-warning/consultation-warning.component";
-import { SearchDialogComponent } from './submodules/details/search-dialog/search-dialog.component';
+import { SearchDialogComponent } from "./submodules/details/search-dialog/search-dialog.component";
+import { OprefundDialogComponent } from "./submodules/oprefund-approval/oprefund-dialog/oprefund-dialog.component";
+import { MaxHealthSnackBarModule } from "@shared/ui/snack-bar";
+
 @NgModule({
   declarations: [
     BillingComponent,
@@ -136,6 +142,8 @@ import { SearchDialogComponent } from './submodules/details/search-dialog/search
     MakeBillDialogComponent,
     ConsultationWarningComponent,
     SearchDialogComponent,
+    OprefundDialogComponent,
+    SimilarPatientDialog,
   ],
   imports: [
     BillingRoutingModule,
@@ -162,6 +170,7 @@ import { SearchDialogComponent } from './submodules/details/search-dialog/search
     PortalModule,
     MatProgressSpinnerModule,
     EmptyPlaceholderModule,
+    MaxHealthSnackBarModule,
   ],
   exports: [],
   providers: [],

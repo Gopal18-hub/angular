@@ -40,6 +40,12 @@
 .color-blue{
     color:#45C0BE;
 }
+.font-style-iom{
+   font-style: italic;
+    color:#45C0BE;
+    font-weight:600;
+    //opacity:1;
+}
 
 //DISPLAY TABLE HEADERS IN A SINGLE LINE
 // ::ng-deep .whitespace-nowrap .mat-sort-header-content{
@@ -167,3 +173,20 @@ margin-left:0.35%;
 .textarea-height{
     height:1.5rem !important;
 }
+.company-width{
+    ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
+        width:15rem;
+    }
+}
+.company-width2{
+    ::ng-deep .cdk-overlay-pane{
+        width: auto !important;
+    }
+}
+
+// ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
+//     width:15rem;
+// }
+// ::ng-deep .cdk-overlay-pane{
+//     width: auto !important;
+// }

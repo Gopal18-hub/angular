@@ -1,5 +1,6 @@
 export interface GetExpiredPatientDetailInterface {
   regno: string;
+  patientName: string;
   dateofBirth: string;
   dateofRegistration: string;
   flagexpired: boolean;
@@ -15,4 +16,7 @@ export interface GetExpiredPatientDetailInterface {
   pPagerNumber: string;
   note: boolean;
   noteReason: string;
+  age: string;
+  gender: string;
+  mobileNo: string;
 }

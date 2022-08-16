@@ -156,7 +156,7 @@ export class DmgMappingComponent implements OnInit {
 
             this.onMaxidEnter(this.dmgMappingForm.controls["maxid"].value);
           }
-        } else {
+        } else if (lookupdata.length > 1) {
           const similarSoundDialogref = this.dialog.open(
             SimilarPatientDialog,
 
@@ -257,9 +257,9 @@ export class DmgMappingComponent implements OnInit {
             this.dmgMappingForm.controls["maxid"].setValue(
               this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
             );
-            // this.dmgMappingForm.controls["mobileno"].setValue(
-            //   this.dmgPatientDetails.dmgPatientDetailDT[0].maxId
-            // );
+            this.dmgMappingForm.controls["mobileno"].setValue(
+              this.dmgPatientDetails.dmgPatientDetailDT[0].mobileNo
+            );
             this.categoryIcons = this.patientService.getCategoryIcons(
               this.dmgPatientDetails.dmgPatientDetailDT[0]
             );
@@ -334,6 +334,7 @@ export class DmgMappingComponent implements OnInit {
             }
           }
         );
+      this.isDmgmapped = false;
     } else {
       this.dialog.open(DmgDialogComponent, { width: "25vw", height: "30vh" });
     }
@@ -408,5 +409,9 @@ export class DmgMappingComponent implements OnInit {
     this.dmgMappingForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
+  }
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

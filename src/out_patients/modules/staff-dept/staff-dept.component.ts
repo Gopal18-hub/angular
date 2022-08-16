@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '../../../shared/ui/dynamic-forms/service/question-control.service';
 import { __values } from 'tslib';
 import { HttpService } from '@shared/services/http.service';
@@ -16,119 +16,116 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
-  staffDetails : any ;
-  staffDetail: any=[];
-  staffDeptDetails : any;
-  selectedCode : any;
+  staffDetail: any = [];
+  staffDeptDetails: any;
+  selectedCode: any;
   private readonly _destroying$ = new Subject<void>();
-  orgList=["id","1","name","Max HealthCare"]
-  staffFormData={
+  staffFormData = {
     title: "",
     type: "object",
-    properties:{
-      organisation:{
-        type: "dropdown",              
-        options: this.staffDependentTypeList, 
-        placeholder: "Select",    
-      },     
-      employeeCode:{
-        type:"string",
+    properties: {
+      organisation: {
+        type: "dropdown",
+        options: this.staffDependentTypeList,
+        placeholder: "Select",
       },
-      employeeName:{
-        type:"string",
+      employeeCode: {
+        type: "string",
+      },
+      employeeName: {
+        type: "string",
       }
     }
   }
-  name:any;
+  name: any;
   staffForm!: FormGroup;
   questions: any;
-  config1: any  = {
+  staffListConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
-    selectBox : false,
-    displayedColumns: ['enterBy','groupCompanyName', 'empCode', 'empName','dob','gender','doj'],
+    selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
+    displayedColumns: ['sNo', 'groupCompanyName', 'empCode', 'empName', 'dob', 'gender', 'doj'],
     columnsInfo: {
-      enterBy: {
+      sNo: {
         title: 'S.No',
         type: 'number',
         style: {
           width: "100px",
         },
       },
-      groupCompanyName : {
+      groupCompanyName: {
         title: 'Name of Organisation',
         type: 'string',
         style: {
           width: "250px",
         },
       },
-      empCode : {
+      empCode: {
         title: 'Employee Code',
         type: 'string',
         style: {
           width: "200px",
         },
       },
-     
-      empName : {
+      empName: {
         title: 'Employee Name',
         type: 'string',
         style: {
           width: "250px",
         },
       },
-     
-      dob : {
+      dob: {
         title: 'DOB',
         type: 'date'
       },
-      gender : {
+      gender: {
         title: 'Gender',
         type: 'string'
       },
-      doj : {
+      doj: {
         title: 'DOJ',
         type: 'date'
       },
-    
     }
- 
-    }
-  config2: any  = {
+
+  }
+  staffDetailConfig: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
-    selectBox : false,
-    displayedColumns: ['empCode', 'dependentName','dob','gender','relationship'],
+    selectBox: false,
+    displayedColumns: ['empCode', 'dependentName', 'dob', 'gender', 'relationship'],
     columnsInfo: {
-      empCode : {
+      empCode: {
         title: 'Employee Code',
         type: 'string',
         style: {
           width: "240px",
         },
       },
-      dependentName : {
+      dependentName: {
         title: 'Dependent Name',
         type: 'string'
       },
-      dob : {
+      dob: {
         title: 'Date Of Birth',
         type: 'date'
       },
-      gender : {
+      gender: {
         title: 'Gender',
         type: 'string'
       },
-      relationship : {
+      relationship: {
         title: 'Relationship',
         type: 'string'
       },
-     
+
     }
- 
-    }
-   
-  constructor(private formService: QuestionControlService,private http: HttpService,private messageDialogService: MessageDialogService,) { }
+
+  }
+
+  constructor(private formService: QuestionControlService, private http: HttpService, private messageDialogService: MessageDialogService,) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -137,90 +134,64 @@ export class StaffDeptComponent implements OnInit {
     );
     this.staffForm = formResult.form;
     this.questions = formResult.questions;
-     //Search Type Dropdown
-     this.http.get(ApiConstants.getstaffdependentsearchtype())
-     .pipe(takeUntil(this._destroying$))
-     .subscribe((res :any)=>
-     {   
-      this.staffDependentTypeList= res;      
-      this.questions[0].options = this.staffDependentTypeList.map((l) => {
-        return { title: l.name, value: l.id };
-      });    
-     });
+    //Search Type Dropdown
+    this.http.get(ApiConstants.getstaffdependentsearchtype())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.staffDependentTypeList = res;
+        this.questions[0].options = this.staffDependentTypeList.map((l) => {
+          return { title: l.name, value: l.id };
+        });
+      });
   }
-  staffColumnClick(event:any)
-  {
-    if(this.staffDetail! < 1)
+  staffColumnClick(event: any) {
+    if (this.staffDetail.length > 1) {
+      this.staffDeptDetails = [];
+      this.selectedCode = event.row.empCode;
+      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation, this.selectedCode, ""))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.staffDeptDetails = res.dtsStaffDependentDetails
+        })
+    }
+
+  }
+  clear() {
     this.staffDeptDetails = [];
-    this.selectedCode = event.row.empCode;      
-     this.http.get(ApiConstants.getstaffdependentdetails(1,this.selectedCode,""))
-     .pipe(takeUntil(this._destroying$))
-     .subscribe((res :any)=>
-     {  
-      this.staffDeptDetails = res.dtsStaffDependentDetails
-     })
+    this.staffDetail = [];
+    this.staffForm.controls['organisation'].setValue('')
+    this.staffForm.controls['employeeCode'].setValue('')
+    this.staffForm.controls['employeeName'].setValue('')
   }
-clear()
-{
-  this.staffDeptDetails=[];
-  this.staffDetails=[];
-}
-  search()
-  {
-    
-    if(this.staffForm.value.organisation === "")
-    {
+  search() {
+    this.staffDetail = [];
+    this.staffDeptDetails = [];
+
+    if (this.staffForm.value.organisation === "") {
       this.messageDialogService.info("Select Search Type");
     }
-    else if(this.staffForm.value.employeeCode === "" && this.staffForm.value.employeeName === "")
-    {
+    if (this.staffForm.value.employeeCode === "" && this.staffForm.value.employeeName === "") {
       this.messageDialogService.info("At least one information is required to search.");
     }
-    else
-    {
+    else {
       var employeeCode = String(this.staffForm.value.employeeCode.trim());
       var employeeName = String(this.staffForm.value.employeeName.trim());
-      
-      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation,employeeCode,employeeName))
-      //this.http.get(ApiConstants.getstaffdependentdetails(1,"","sab"))
-      //this.http.get(ApiConstants.getstaffdependentdetails(1,"m015842",""))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res :any)=>
-      {  
-       if(res)      
-       this.staffDeptDetails=[];     
-       this.staffDetails=[];
-       this.staffDetail=[];
-       res.dtsStaffDependentDetails.forEach((e:any) => {
-         if(e.relationship === "Self")
-         {        
-           this.staffDetail.push(e);
-         }
-       });       
-      if(this.staffDetail.length === 0)
-      {
-        this.staffDetails=[];
-        this.staffDeptDetails=[];
-        //this.messageDialogService.info("No Records Founds.");
-      }      
-       else if(this.staffDetail.length > 1)
-       {
-         this.staffDetails=res.dtsStaffDependentDetails;
-       }       
-       else{      
-            
-              this.staffDeptDetails=[];
-              if(res.dtsStaffDependentDetails[0].relationship == "Self")
-                   this.staffDetail.push(res.dtsStaffDependentDetails[0]);
-                   this.staffDetails = this.staffDetail;
-                   this.staffDeptDetails = res.dtsStaffDependentDetails;
-                   this.staffDetail=[];              
-            
-       }
-       });
-    }   
-    
-    
+
+      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation, employeeCode, employeeName))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          if (res)
+            this.staffDetail = res.dtsStaffDependentDetails.filter((s: any) => s.relationship == "Self");
+          for (var i = 0; i < this.staffDetail.length; i++) {
+            this.staffDetail[i].sNo = i + 1;
+          }
+          if (this.staffDetail.length == 1) {
+            this.staffDeptDetails = res.dtsStaffDependentDetails
+          }
+        });
+    }
+
+
   }
- 
+
 }

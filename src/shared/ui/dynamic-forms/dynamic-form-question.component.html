@@ -453,6 +453,7 @@
             disableOptionCentering
             class="{{ question.customClasses }}"
             [disabled]="question.disabled"
+            [multiple]="question.multiple"
           >
             <ng-container *ngIf="question.emptySelect">
               <mat-option>Select</mat-option>
