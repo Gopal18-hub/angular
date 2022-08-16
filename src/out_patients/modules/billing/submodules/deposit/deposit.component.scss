@@ -87,10 +87,25 @@
   ::ng-deep .mat-icon-button:hover {
     color: #fff;
   }
+
+  ::ng-deep .mat-cell.cdk-cell.cdk-column-expandedDetail.mat-column-expandedDetail{
+      padding-left: 0px !important;
+     
+  }
+
+ 
   ::ng-deep .child-element-detail {
     position: relative;
     width: 125.5%;
+    .max-table-wrapper{
+        border-radius: 0px !important; 
+    }
  
+//    td.mat-cell:first-of-type {
+//         padding-left: 5px !important;
+//     }
+
+
     }
 }
 .text-overflow{

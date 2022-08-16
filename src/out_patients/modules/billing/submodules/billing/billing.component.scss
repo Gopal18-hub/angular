@@ -1,13 +1,20 @@
 .billing-page-wrapper {
   background-color: #fff;
+  .text-color {
+    color: #5a5a5a;
+    font-weight: 400;
+  }
   .iom-color {
     color: #45c0be;
     font-weight: 500;
   }
-  ::ng-deep .mat-checkbox-label {
-    color: #45c0be !important;
-    text-decoration: underline;
+  .special-checkbox {
+    ::ng-deep .mat-checkbox-label {
+      color: #45c0be !important;
+      text-decoration: underline;
+    }
   }
+
   .isDisabled {
     pointer-events: none;
     opacity: 0.7;

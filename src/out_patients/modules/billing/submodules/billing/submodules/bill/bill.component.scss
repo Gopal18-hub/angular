@@ -1,4 +1,9 @@
 .sub-bill-overall {
+  ::ng-deep .max-table-wrapper {
+    table {
+      width: 110% !important;
+    }
+  }
   .w-12 {
     width: 12%;
   }
@@ -34,6 +39,9 @@
       button {
         height: 26px;
         line-height: 26px;
+      }
+      .mat-checkbox-layout .mat-checkbox-label {
+        color: inherit !important;
       }
     }
     mat-radio-group {

@@ -213,6 +213,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         )
       )
       .subscribe((res) => {
+        this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
