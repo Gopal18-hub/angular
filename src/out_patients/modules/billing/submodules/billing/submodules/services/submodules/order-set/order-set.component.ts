@@ -17,12 +17,12 @@ export class OrderSetComponent implements OnInit {
     type: "object",
     properties: {
       orderSet: {
-        type: "autocomplete",
+        type: "dropdown",
         placeholder: "--Select--",
         required: true,
       },
       items: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
         multiple: true,
@@ -40,7 +40,16 @@ export class OrderSetComponent implements OnInit {
     removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    displayedColumns: ["sno", "orderSetName"],
+    displayedColumns: [
+      "sno",
+      "orderSetName",
+      "serviceType",
+      "serviceItemName",
+      "precaution",
+      "priority",
+      "specialization",
+      "doctorName",
+    ],
     columnsInfo: {
       sno: {
         title: "S.No.",
@@ -50,8 +59,34 @@ export class OrderSetComponent implements OnInit {
         title: "Order Set Name",
         type: "string",
       },
+      serviceType: {
+        title: "Service Type",
+        type: "string",
+      },
+      serviceItemName: {
+        title: "Service Item Name",
+        type: "string",
+      },
+      precaution: {
+        title: "Precaution",
+        type: "string",
+      },
+      priority: {
+        title: "Priority",
+        type: "string",
+      },
+      specialization: {
+        title: "Specialization",
+        type: "string",
+      },
+      doctorName: {
+        title: "Doctor Name",
+        type: "string",
+      },
     },
   };
+
+  apiData: any = {};
 
   constructor(
     private formService: QuestionControlService,
@@ -67,6 +102,7 @@ export class OrderSetComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.OrderSetItems;
     this.getOrserSetData();
   }
 
@@ -76,10 +112,29 @@ export class OrderSetComponent implements OnInit {
   }
 
   getOrserSetData() {
-    this.http.get(BillingApiConstants.getOrderSet).subscribe((res) => {
-      this.questions[0].options = res.orderSetBreakup.map((r: any) => {
-        return { title: r.name, value: r.orderSetId };
+    this.http
+      .get(
+        BillingApiConstants.getOrderSet(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.apiData = res;
+        this.questions[0].options = res.orderSetHeader.map((r: any) => {
+          return { title: r.orderSetName, value: r.orderSetId };
+        });
+        this.questions[0] = { ...this.questions[0] };
       });
+    this.formGroup.controls["orderSet"].valueChanges.subscribe((val: any) => {
+      if (val && this.apiData && "orderSetBreakup" in this.apiData) {
+        const filter = this.apiData.orderSetBreakup.filter((item: any) => {
+          return item.orderSetId == val;
+        });
+        this.questions[1].options = filter.map((r: any) => {
+          return { title: r.name, value: r.serviceid };
+        });
+        this.questions[1] = { ...this.questions[1] };
+      }
     });
   }
   add(priorityId = 1) {
@@ -103,6 +158,7 @@ export class OrderSetComponent implements OnInit {
         });
 
         this.data = [...this.billingService.OrderSetItems];
+        this.formGroup.reset();
       });
   }
 }

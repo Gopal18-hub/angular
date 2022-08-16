@@ -96,52 +96,116 @@ export class OprefundApprovalComponent implements OnInit {
       "refundAmt",
       "approvalRequestBy",
       "approvalRequestDateTime",
+      "authorisedby",
+      "reason",
+      "paymentMode",
+      "risReason",
     ],
     columnsInfo: {
       maxid: {
         title: "Max ID",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       ssn: {
         title: "SSN",
         type: "string",
+        style: {
+          width: "7rem",
+        },
+        tooltipColumn: "ssn",
       },
       ptnName: {
         title: "Name",
         type: "string",
-        tootltipColumn: "ptnName",
+        tooltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No",
         type: "string",
+        tooltipColumn: "billNo",
       },
       billDatetime: {
         title: "Bill Date/Time",
         type: "datetime",
         tooltipColumn: "billDatetime",
+        style: {
+          width: "9rem",
+        },
       },
       serviceName: {
         title: "Service Name",
         type: "string",
+        tooltipColumn: "serviceName",
       },
       itemName: {
         title: "Item Name",
         type: "string",
         tooltipColumn: "itemName",
+        style: {
+          width: "7rem",
+        },
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
+        style: {
+          width: "8rem",
+        },
+        tooltipColumn: "refundAmt",
       },
       approvalRequestBy: {
         title: "Requested By",
         type: "string",
-        tootltipColumn: "approvalRequestBy",
+        tooltipColumn: "approvalRequestBy",
+        style: {
+          width: "7rem",
+        },
       },
       approvalRequestDateTime: {
         title: "Requested Date",
         type: "datetime",
-        tootltipColumn: "approvalRequestDateTime",
+        tooltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
+      },
+      authorisedby: {
+        title: "Authorised  by",
+        type: "string",
+        tooltipColumn: "authorisedby",
+        style: {
+          width: "7rem",
+        },
+      },
+      reason: {
+        title: "Reason",
+        type: "string",
+        tooltipColumn: "reason",
+        style: {
+          width: "7rem",
+        },
+      },
+      paymentMode: {
+        title: "Payment Mode",
+        type: "string",
+        tooltipColumn: "paymentMode",
+        style: {
+          width: "7rem",
+        },
+      },
+      risReason: {
+        title: "RISReason",
+        type: "string",
+        tooltipColumn: "risReason",
+        style: {
+          width: "8rem",
+        },
       },
     },
   };
@@ -183,6 +247,9 @@ export class OprefundApprovalComponent implements OnInit {
       "refundAmt",
       "approvalRequestBy",
       "approvalRequestDateTime",
+      "authorisedby",
+      "reason",
+      "paymentMode",
       "approvalDoneBy",
       "approvalDoneDateTime",
     ],
@@ -199,56 +266,113 @@ export class OprefundApprovalComponent implements OnInit {
         title: "SSN",
         type: "string",
         tootltipColumn: "ssn",
+        style: {
+          width: "7rem",
+        },
       },
       ptnName: {
         title: "Name",
         type: "string",
         tootltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No",
         type: "string",
         tootltipColumn: "billNo",
+        style: {
+          width: "7rem",
+        },
       },
       billDatetime: {
         title: "Bill Date/Time",
         type: "datetime",
         tooltipColumn: "billDatetime",
+        style: {
+          width: "7rem",
+        },
       },
       serviceName: {
         title: "Service Name",
         type: "string",
         tootltipColumn: "serviceName",
+        style: {
+          width: "7rem",
+        },
       },
       itemName: {
         title: "Item Name",
         type: "string",
         tooltipColumn: "itemName",
+        style: {
+          width: "7rem",
+        },
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
         tootltipColumn: "refundAmt",
+        style: {
+          width: "8rem",
+        },
       },
       approvalRequestBy: {
         title: "Requested By",
         type: "string",
         tootltipColumn: "approvalRequestBy",
+        style: {
+          width: "7rem",
+        },
       },
       approvalRequestDateTime: {
         title: "Requested Date",
         type: "datetime",
         tootltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
+      },
+      authorisedby: {
+        title: "Authorised  by",
+        type: "string",
+        tooltipColumn: "authorisedby",
+        style: {
+          width: "7rem",
+        },
+      },
+      reason: {
+        title: "Reason",
+        type: "string",
+        tooltipColumn: "reason",
+        style: {
+          width: "7rem",
+        },
+      },
+      paymentMode: {
+        title: "Payment Mode",
+        type: "string",
+        tooltipColumn: "paymentMode",
+        style: {
+          width: "7rem",
+        },
       },
       approvalDoneBy: {
         title: "Approved By",
         type: "string",
         tootltipColumn: "approvalDoneBy",
+        style: {
+          width: "7rem",
+        },
       },
       approvalDoneDateTime: {
         title: "Approved Date",
         type: "datetime",
         tootltipColumn: "approvalDoneDateTime",
+        style: {
+          width: "9rem",
+        },
       },
     },
   };
@@ -306,56 +430,89 @@ export class OprefundApprovalComponent implements OnInit {
         title: "SSN",
         type: "string",
         tootltipColumn: "ssn",
+        style: {
+          width: "7rem",
+        },
       },
       ptnName: {
         title: "Name",
         type: "string",
         tootltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No",
         type: "string",
         tootltipColumn: "billNo",
+        style: {
+          width: "7rem",
+        },
       },
       billDatetime: {
         title: "Bill Date/Time",
         type: "datetime",
         tootltipColumn: "billDatetime",
+        style: {
+          width: "8rem",
+        },
       },
       serviceName: {
         title: "Service Name",
         type: "string",
         tootltipColumn: "serviceName",
+        style: {
+          width: "8rem",
+        },
       },
       itemName: {
         title: "Item Name",
         type: "string",
         tootltipColumn: "itemName",
+        style: {
+          width: "8rem",
+        },
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
         tootltipColumn: "refundAmt",
+        style: {
+          width: "8rem",
+        },
       },
       approvalRequestBy: {
         title: "Requested By",
         type: "string",
         tootltipColumn: "approvalRequestBy",
+        style: {
+          width: "8rem",
+        },
       },
       approvalRequestDateTime: {
         title: "Requested Date",
         type: "datetime",
         tootltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
       },
       rejectedBy: {
         title: "Rejected By",
         type: "string",
         tootltipColumn: "rejectedBy",
+        style: {
+          width: "8rem",
+        },
       },
       rejectedDateTime: {
         title: "Rejected Date",
         type: "datetime",
         tootltipColumn: "rejectedDateTime",
+        style: {
+          width: "10rem",
+        },
       },
     },
   };

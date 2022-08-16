@@ -70,7 +70,7 @@ export class RefundDialogComponent implements OnInit {
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("stationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";

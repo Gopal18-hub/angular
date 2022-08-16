@@ -39,7 +39,7 @@ export class FormSixtyComponent implements OnInit, AfterViewInit {
   private readonly _destroying$ = new Subject<void>();
 
   hsplocationId:any =Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("stationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
   
   ngOnInit(): void {

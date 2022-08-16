@@ -143,6 +143,7 @@ export class BillComponent implements OnInit {
     selectBox: false,
     removeRow: true,
     displayedColumns: [
+      "sno",
       "serviceName",
       "itemName",
       "precaution",
@@ -157,13 +158,23 @@ export class BillComponent implements OnInit {
       "gstValue",
     ],
     columnsInfo: {
+      sno: {
+        title: "S.No.",
+        type: "number",
+      },
       serviceName: {
         title: "Services Name",
         type: "string",
+        style: {
+          width: "150px",
+        },
       },
       itemName: {
         title: "Item Name / Doctor Name",
         type: "string",
+        style: {
+          width: "200px",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -172,10 +183,16 @@ export class BillComponent implements OnInit {
       procedure: {
         title: "Procedure Doctor",
         type: "string",
+        style: {
+          width: "130px",
+        },
       },
       qty: {
         title: "Qty / Type",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       credit: {
         title: "Credit",
@@ -192,10 +209,16 @@ export class BillComponent implements OnInit {
       discAmount: {
         title: "Disc Amount",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       totalAmount: {
         title: "Total Amount",
         type: "number",
+        style: {
+          width: "130px",
+        },
       },
       gst: {
         title: "GST%",
@@ -204,6 +227,9 @@ export class BillComponent implements OnInit {
       gstValue: {
         title: "GST Value",
         type: "number",
+        style: {
+          width: "130px",
+        },
       },
     },
   };
