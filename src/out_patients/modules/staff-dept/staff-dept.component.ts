@@ -19,7 +19,11 @@ export class StaffDeptComponent implements OnInit {
   staffDetail: any = [];
   staffDeptDetails: any;
   selectedCode: any;
+  org = '';
+  code = '';
+  ename = ''
   private readonly _destroying$ = new Subject<void>();
+  searchbtn: boolean = true;
   staffFormData = {
     title: "",
     type: "object",
@@ -144,6 +148,24 @@ export class StaffDeptComponent implements OnInit {
         });
       });
   }
+
+  ngAfterViewInit(): void {
+
+    this.staffForm.controls["organisation"].valueChanges.subscribe((value: any) => { this.org = value; this.enableSearchBtn() })
+
+    this.staffForm.controls["employeeCode"].valueChanges.subscribe((value: any) => { this.code = value; this.enableSearchBtn() })
+    this.staffForm.controls["employeeName"].valueChanges.subscribe((value: any) => { this.ename = value; this.enableSearchBtn() })
+
+  }
+  enableSearchBtn() {
+    if (this.org !== '' && (this.code !== '' || this.ename !== '')) {
+      this.searchbtn = false;
+      console.log(this.searchbtn, "tst")
+    }
+    else {
+      this.searchbtn = true;
+    }
+  }
   staffColumnClick(event: any) {
     if (this.staffDetail.length > 1) {
       this.staffDeptDetails = [];
@@ -157,6 +179,7 @@ export class StaffDeptComponent implements OnInit {
 
   }
   clear() {
+    this.searchbtn = true;
     this.staffDeptDetails = [];
     this.staffDetail = [];
     this.staffForm.controls['organisation'].setValue('')
