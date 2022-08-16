@@ -64,7 +64,6 @@
                                 [form]="employeesponsorForm"
                                 [questions]="questions[3]"
                                 [index]="3"
-                                class="company-width company-width2"
                             >
                             </maxhealth-question>
                         </div>
@@ -88,7 +87,7 @@
                             <button mat-raised-button color="primary" class="button-style"   (click)="employeeDelete()" [disabled]="disableDelete" ><span class="text-position">Delete</span></button>
                            </div>
                            <div class="ml-3 w-1/10">
-                            <button mat-raised-button color="primary" class="button-style" (click)="cleardata()"  ><span class="text-position">Clear</span></button>
+                            <button mat-raised-button color="primary" class="button-style" (click)="cleardata()" [disabled]="disableClear" ><span class="text-position">Clear</span></button>
                            </div>
                         <!-- </div> -->
                         
@@ -172,7 +171,7 @@
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
         <div class="h-43 mt-1 whitespace-nowrap">
-            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width"></maxhealth-table>
+            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width remarks-sort"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
         <div class="h-40 mt-2">

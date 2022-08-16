@@ -74,8 +74,8 @@ export namespace BillingApiConstants {
     return `${environment.CommonApiUrl}api/lookup/getinvestigationonsearch/${locationId}/${searchKey}`;
   };
 
-  export const gethealthcheckups = (locationId: number) => {
-    return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}`;
+  export const gethealthcheckups = (locationId: number, departmentID: any) => {
+    return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}/${departmentID}`;
   };
   export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
@@ -93,5 +93,15 @@ export namespace BillingApiConstants {
     return `${environment.CommonApiUrl}api/lookup/getotherservicebillingonsearch//${locationId}/${searchKey}`;
   };
 
-  export const getOrderSet = `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/67`;
+  export const departmentlookup = `${environment.CommonApiUrl}api/lookup/departmentlookup`;
+
+  export const getOrderSet = (locationId: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/${locationId}`;
+
+  export const consumableData = (
+    IACode: string,
+    RegistrationNo: number,
+    locationId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getdetailsforthepatientforsurgery/${IACode}/${RegistrationNo}/${locationId}`;
 }

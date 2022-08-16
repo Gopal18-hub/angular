@@ -175,14 +175,32 @@ margin-left:0.35%;
 }
 .company-width{
     ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
-        width:15rem;
+        width:265px !important;
     }
-}
-.company-width2{
     ::ng-deep .cdk-overlay-pane{
         width: auto !important;
     }
 }
+//  .company-width2{
+//     ::ng-deep .cdk-overlay-pane{
+//         width: auto !important;
+//     }
+// }
+.company-width2{
+    ::ng-deep .cdk-overlay-container div.cdk-overlay-pane{
+        width:auto !important;
+    }
+}
+
+.remarks-sort{
+    ::ng-deep .max-table-wrapper table thead tr th:nth-child(12) div.mat-sort-header-arrow{
+        // mat-sort-header-arrow{
+            display:none !important;
+        // }
+    }
+}
+
+
 
 // ::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible{
 //     width:15rem;
@@ -190,3 +208,13 @@ margin-left:0.35%;
 // ::ng-deep .cdk-overlay-pane{
 //     width: auto !important;
 // }
+
+// ::ng-deep .mat-sort-header.mat-column-remark.mat-sort-header-arrow.mat-sort-header-stem{
+//     display:none;
+// } 
+
+// ::ng deep .cdk-overlay-pane .mat-autocomplete-panel.mat-autocomplete-visible {
+//     width:265px !important;
+// }
+
+
