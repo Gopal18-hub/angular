@@ -85,7 +85,8 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       input: {
         type: "string",
-        //defaultValue: this.cookie.get("LocationIACode") + "."
+        //defaultValue: "SKDD"
+        defaultValue: this.cookie.get("LocationIACode") + "."
       },
 
       status: {
@@ -272,7 +273,6 @@ export class InvestigationOrdersComponent implements OnInit {
     this.isBtnDisable = true;
     this.investigationForm.controls["denyorder"].enable();
   }
-
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
@@ -340,8 +340,6 @@ export class InvestigationOrdersComponent implements OnInit {
       this.idValue = value;
     })
   }
-
-
   isChecked(event: any) {
     if (!this.investigationForm.controls["datecheckbox"].value) {
       this.investigationForm.controls["datecheckbox"].setValue(false)
@@ -360,22 +358,18 @@ export class InvestigationOrdersComponent implements OnInit {
 
     }
   }
-
   search() {
     this.invOrderList = [];
     this.invOrderDetails = [];
-    if ((this.statusvalue !== "" || this.investigationForm.value.input !== "") && this.invOrderListMain.length !== 0) {
-      this.searchFilter();
-    }
-    else {
-      this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
-        //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          this.invOrderListMain = res.objTempOrderHeader // Main Grid;         
-          this.invOrderList = res.objTempOrderHeader;
-        })
-    }
+
+    this.http.get(ApiConstants.getediganosticacdoninvestigation(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
+      //this.http.get(ApiConstants.getediganosticacdoninvestigation("2021-01-01", "2021-01-05", 7))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.invOrderListMain = res.objTempOrderHeader // Main Grid;         
+        this.invOrderList = res.objTempOrderHeader;
+        this.searchFilter();
+      })
   }
   searchFilter() {
     if (!this.statusvalue && !this.investigationForm.value.input && this.invOrderListMain !== undefined) {
@@ -388,7 +382,7 @@ export class InvestigationOrdersComponent implements OnInit {
     }
     else if (this.statusvalue && this.investigationForm.value.input) {
       this.invOrderList = [];
-      this.invOrderList = this.invOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.billdetails === this.statusvalue))
+      this.invOrderList = this.invOrderListMain.filter((e: any) => (e[this.idValue].includes(this.investigationForm.value.input) && e.billdetails === this.statusvalue))
     }
     else if (this.statusvalue) {
       this.invOrderList = [];
@@ -396,7 +390,7 @@ export class InvestigationOrdersComponent implements OnInit {
     }
     else if (this.idValue && this.investigationForm.value.input) {
       this.invOrderList = [];
-      this.invOrderList = this.invOrderListMain.filter((e: any) => ((e[this.idValue] === this.investigationForm.value.input)));
+      this.invOrderList = this.invOrderListMain.filter((e: any) => ((e[this.idValue].includes(this.investigationForm.value.input))));
     }
   }
 
@@ -531,5 +525,8 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["denyorder"].disable();
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
+    this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
+    // this.investigationForm.controls["input"].setValue("SKDD");
+
   }
 }

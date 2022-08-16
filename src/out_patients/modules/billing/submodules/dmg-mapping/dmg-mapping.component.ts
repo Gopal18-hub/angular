@@ -287,17 +287,24 @@ export class DmgMappingComponent implements OnInit {
       .subscribe((resultdata) => {
         console.log(resultdata);
         if (resultdata != null) {
-          const similarpatientDialog = this.dialog.open(SimilarPatientDialog, {
-            width: "60vw",
-            height: "80vh",
-            data: {
-              searchResults: resultdata,
-            },
-          });
-          similarpatientDialog.afterClosed().subscribe((resultdata) => {
-            console.log(resultdata);
-            this.onMaxidEnter(resultdata.data.added[0].maxid);
-          });
+          if (resultdata.length > 1) {
+            const similarpatientDialog = this.dialog.open(
+              SimilarPatientDialog,
+              {
+                width: "60vw",
+                height: "80vh",
+                data: {
+                  searchResults: resultdata,
+                },
+              }
+            );
+            similarpatientDialog.afterClosed().subscribe((resultdata) => {
+              console.log(resultdata);
+              this.onMaxidEnter(resultdata.data.added[0].maxid);
+            });
+          } else if (resultdata.length == 1) {
+            this.onMaxidEnter(resultdata[0].maxid);
+          }
         }
       });
   }

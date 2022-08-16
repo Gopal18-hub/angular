@@ -22,6 +22,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import * as moment from "moment";
 
 @Component({
   selector: "out-patients-billing",
@@ -103,11 +104,13 @@ export class BillingComponent implements OnInit {
 
   dmsProcessing: boolean = false;
 
+  moment = moment;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private http: HttpService,
-    private cookie: CookieService,
+    public cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private billingService: BillingService,
@@ -183,7 +186,7 @@ export class BillingComponent implements OnInit {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "60vh",
+                height: "62vh",
                 data: {
                   searchResults: res,
                 },
@@ -315,10 +318,30 @@ export class BillingComponent implements OnInit {
   }
 
   appointmentSearch() {
-    this.matDialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw",
-      width: "98vw",
-    });
+    const appointmentSearch = this.matDialog.open(
+      AppointmentSearchDialogComponent,
+      {
+        maxWidth: "100vw",
+        width: "98vw",
+      }
+    );
+
+    appointmentSearch
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        let apppatientDetails = result.data.added[0];
+        if (apppatientDetails.iAcode == "") {
+          this.snackbar.open("Invalid Max ID", "error");
+        } else {
+          let maxid =
+            apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+          this.formGroup.controls["maxid"].setValue(maxid);
+          this.apiProcessing = true;
+          this.patient = false;
+          this.getPatientDetailsByMaxId();
+        }
+      });
   }
   dms() {
     if (this.dmsProcessing) return;
@@ -336,6 +359,7 @@ export class BillingComponent implements OnInit {
       .subscribe((resultData: DMSrefreshModel[]) => {
         this.matDialog.open(DMSComponent, {
           width: "100vw",
+          maxWidth: "90vw",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,
@@ -372,10 +396,10 @@ export class BillingComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data: any) => {
         console.log(data);
-        this.complanyList = data as GetCompanyDataInterface[];
-        this.questions[3].options = this.complanyList.map((a) => {
+        //this.complanyList = data as GetCompanyDataInterface[];
+        this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
       });

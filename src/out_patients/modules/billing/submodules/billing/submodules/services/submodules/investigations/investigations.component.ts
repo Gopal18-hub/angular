@@ -27,7 +27,7 @@ export class InvestigationsComponent implements OnInit {
     properties: {
       serviceType: {
         type: "dropdown",
-        required: true,
+        required: false,
         placeholder: "--Select--",
       },
       investigation: {
@@ -106,6 +106,7 @@ export class InvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
   }
@@ -210,6 +211,7 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
+        this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -239,6 +241,7 @@ export class InvestigationsComponent implements OnInit {
         });
 
         this.data = [...this.billingService.InvestigationItems];
+        this.formGroup.reset();
       });
   }
 }
