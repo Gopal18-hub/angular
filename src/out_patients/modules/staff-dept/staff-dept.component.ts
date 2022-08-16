@@ -8,6 +8,10 @@ import { StaffDependentTypeModel } from "@core/models/staffDependentTypeModel.Mo
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from '@shared/services/search.service';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -129,7 +133,12 @@ export class StaffDeptComponent implements OnInit {
 
   }
 
-  constructor(private formService: QuestionControlService, private http: HttpService, private messageDialogService: MessageDialogService,) { }
+  constructor(private formService: QuestionControlService, private http: HttpService,
+    private messageDialogService: MessageDialogService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -146,6 +155,17 @@ export class StaffDeptComponent implements OnInit {
         this.questions[0].options = this.staffDependentTypeList.map((l) => {
           return { title: l.name, value: l.id };
         });
+      });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        // console.log(lookupdata[0]);
       });
   }
 
