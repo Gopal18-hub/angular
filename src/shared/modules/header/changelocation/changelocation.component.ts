@@ -45,17 +45,17 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
     );
     this.form = formResult.form;
     this.questions = formResult.questions;
-    this.form.controls["station"].disable();
+    //  this.form.controls["station"].disable();
   }
 
   ngAfterViewInit(): void {
     this.getUserLocationandStation();
-    this.form.controls["station"].disable();
+    //  this.form.controls["station"].disable();
     this.form.controls["location"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value) => {
         if (value) {
-          this.form.controls["station"].enable();
+          //  this.form.controls["station"].enable();
           this.form.controls["station"].setValue(null);
           this.locationdetail = this.locationList.filter(
             (l) => l.hspLocationId === value.value
@@ -124,6 +124,8 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
     this.dialogRef.close();
   }
   getUserLocationandStation() {
+    let locationId = Number(this.cookieService.get("HSPLocationId"));
+    let stationId = Number(this.cookieService.get("StationId"));
     this.adauth
       .authenticateUserName(this.cookieService.get("UserName"))
       .pipe(takeUntil(this._destroying$))
@@ -139,15 +141,25 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
           this.questions[0].options = this.locationList.map((l) => {
             return { title: l.organizationName, value: l.hspLocationId };
           });
-          if (this.locationList.length == 1) {
-            this.form.controls["location"].setValue({
-              title: this.locationList[0].organizationName,
-              value: this.locationList[0].hspLocationId,
-            });
-          }
+          this.form.controls["location"].setValue({
+            title: this.cookieService.get("Location"),
+            value: locationId,
+          });
+
+          this.form.controls["station"].setValue({
+            title: this.cookieService.get("Station"),
+            value: stationId,
+          });
+
+          // if (this.locationList.length == 1) {
+          //   this.form.controls["location"].setValue({
+          //     title: this.locationList[0].organizationName,
+          //     value: this.locationList[0].hspLocationId,
+          //   });
+          // }
         },
         (error: any) => {
-          this.form.controls["station"].disable();
+          // this.form.controls["station"].disable();
         }
       );
   }
