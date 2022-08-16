@@ -219,6 +219,7 @@ export namespace MaxModules {
           defaultPath: "/employee-sponsor-tagging",
           childrens: [],
           moreOptions: false,
+          locationSpecific: "NSSH",
           globalSearchKey: "employeesponsor",
         },
         {
