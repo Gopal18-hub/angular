@@ -17,6 +17,7 @@ export class LookupService {
   routeswithoutsearch: any = {
     "/qms": "/registration/find-patient",
     "/acd": "/registration/find-patient",
+    "/staff-dept": "/registration/find-patient",
     "/out-patient-billing/online-op-bill": "/registration/find-patient",
     "/out-patient-billing/dispatch-report": "/registration/find-patient",
   };
@@ -89,8 +90,8 @@ export class LookupService {
               queryParams: formdata.data,
             });
           } else {
-            if(!resultData){
-               return[];
+            if (!resultData) {
+              return [];
             }
             if (resultData.length > 1) {
               if (this.routes[this.router.url]) {
