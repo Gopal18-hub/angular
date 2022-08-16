@@ -44,6 +44,8 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: ['sNo', 'groupCompanyName', 'empCode', 'empName', 'dob', 'gender', 'doj'],
     columnsInfo: {
       sNo: {
