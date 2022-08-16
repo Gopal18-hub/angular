@@ -99,6 +99,7 @@ export class ProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
   }
@@ -222,6 +223,7 @@ export class ProcedureOtherComponent implements OnInit {
         });
 
         this.data = [...this.billingService.ProcedureItems];
+        this.formGroup.reset();
       });
   }
 }

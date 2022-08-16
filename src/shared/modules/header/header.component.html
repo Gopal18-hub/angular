@@ -83,21 +83,13 @@
             />
           </svg>
           </button>
-          <mat-menu #settings="matMenu">
-            <ul class="items-center p-0 m-0">
-              <li mat-menu-item class="max-health-primary-color">
-                Change Password
-              </li>
-              <li mat-menu-item class="max-health-primary-color"  (click)="openChangeLocationDialog()">
-                Change Station/Location
-              </li>
-            </ul>
-            <!-- <button mat-menu-item>
-              <span class="max-health-primary-color">Change Password</span>
+          <mat-menu #settings="matMenu"> 
+            <button mat-menu-item>
+              <span class="cursor-pointer setting-menu max-health-primary-color">Change Password</span>
             </button>
             <button mat-menu-item  (click)="openChangeLocationDialog()">
-              <span class="max-health-primary-color" >Change Station/Location</span>
-            </button> -->
+              <span class="cursor-pointer setting-menu max-health-primary-color" >Change Station/Location</span>
+            </button>
           </mat-menu>
         </span>
 
