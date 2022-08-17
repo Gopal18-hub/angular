@@ -212,9 +212,9 @@ export class DepositDialogComponent implements OnInit {
       "",
       0,
       this.formsixtysubmit == false ? this.depositpatientidentityinfo.panno : "Form60",
-      this.selecteddepositservicetype.servicetype.value,
+      this.selecteddepositservicetype.servicetype,
       0,
-      this.selecteddepositservicetype.deposithead.value,
+      this.selecteddepositservicetype.deposithead,
       this.depositpatientidentityinfo.mobileno,
       "",     
       ""
