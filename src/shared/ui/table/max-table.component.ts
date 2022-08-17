@@ -50,6 +50,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() columnClick: EventEmitter<any> = new EventEmitter();
 
+  @Output() stringLinkOutput: EventEmitter<any> = new EventEmitter();
+
   @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
 
   selection = new SelectionModel<any>(true, []);
@@ -61,6 +63,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
 
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
+  @ViewChild("stringLink") stringLinkTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
@@ -251,6 +254,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   getTemplate(col: any) {
     if (col.type == "string") return this.stringTemplate;
+    else if (col.type == "string_link") return this.stringLinkTemplate;
     else if (col.type == "number") return this.numberTemplate;
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "datetime") return this.dateTimeTemplate;
@@ -341,5 +345,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   removeRow(index: number) {
     this.rowRwmove.emit({ index: index, data: this.dataSource.data[index] });
+  }
+
+  stringLinkClick(data: any) {
+    this.stringLinkOutput.emit(data);
   }
 }
