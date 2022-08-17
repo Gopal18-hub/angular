@@ -114,6 +114,7 @@ export class ProcedureOtherComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.ProcedureItems.splice($event.index, 1);
     this.data = [...this.billingService.ProcedureItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {

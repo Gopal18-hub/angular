@@ -114,6 +114,7 @@ export class InvestigationsComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.data = [...this.billingService.InvestigationItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {

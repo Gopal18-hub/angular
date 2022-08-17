@@ -77,6 +77,7 @@ export class HealthCheckupsComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.data = [...this.billingService.HealthCheckupItems];
+    this.billingService.calculateTotalAmount();
   }
 
   getDepartments() {
