@@ -226,6 +226,7 @@
       <ng-container *ngFor="let module of submodules">
         <ng-container *ngIf="module.moreOptions">
           <li
+        
             [matMenuTriggerFor]="menu"
             #subMenuTrigger="matMenuTrigger"
             class="mr-2 cursor-pointer max-health-primary-color"
@@ -233,13 +234,12 @@
               module: module,
               subMenuTrigger: subMenuTrigger
             }"
-            [ngClass]="{ active: activeSubModule?.title == module.title }"
+            [ngClass]="{ active: activeSubModule?.title == module.title,disabled: module.disabled }"
             (mouseover)="subMenuTrigger.openMenu()"
-            (click)="activeSubModule = module"           
+            (click)="activeSubModule = module"
             routerLinkActive="active-link"
             (isActiveChange)="
-              onRouterLinkActive($event, module);
-              onPageRouterLinkActive($event, module.childrens[0])
+              onRouterLinkActive($event, module)             
             "
             [routerLinkActiveOptions]="{ exact: true }"
           >
@@ -247,17 +247,18 @@
           </li>
         </ng-container>
         <ng-container *ngIf="!module.moreOptions">
-          <li
-            
+          <li         
             class="mr-2 cursor-pointer max-health-primary-color"
             (click)="activeSubModule = module"
-            [routerLink]=" baseHref == module.tenentPath
-            ? module.defaultPath
-            : module.tenentPath + module.defaultPath"
+            [routerLink]="
+              baseHref == module.tenentPath
+                ? module.defaultPath
+                : module.tenentPath + module.defaultPath
+            "
             routerLinkActive="active-link"
             (isActiveChange)="onRouterLinkActive($event, module)"
             [routerLinkActiveOptions]="{ exact: true }"
-            [ngClass]="{ active: activeSubModule?.title == module.title }"
+            [ngClass]="{ active: activeSubModule?.title == module.title,  disabled: module.disabled }"
           >
             {{ module.title }}
           </li>
@@ -278,6 +279,7 @@
         >
           <ng-container *ngFor="let menuItem of aliasMenuItems">
             <button
+            [disabled]="menuItem.disabled"
               mat-button
               class="max-health-primary-color"
               (click)="activeSubModule = module"

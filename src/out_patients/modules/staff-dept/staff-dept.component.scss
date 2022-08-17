@@ -11,6 +11,12 @@
         left: 1px !important;
     }
 }
+.disableclass{
+    color: currentColor;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.2;
+}  
 
 ::ng-deep .searchbtn
 {
@@ -98,3 +104,10 @@ pointer-events: none;
 opacity: 0.5;
 //text-decoration: none;
 }
+.lens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 85%;
+    width: 35%;
+  }

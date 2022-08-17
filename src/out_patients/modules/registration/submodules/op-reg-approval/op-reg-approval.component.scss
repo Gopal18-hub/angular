@@ -21,4 +21,16 @@
   line-height:34px;
   margin-bottom:3px;
 }
+::ng-deep .cdk-column-uForeigner {
+  text-align: center;
+}
+
+.op-approval-table-wrapper{
+  ::ng-deep .max-table-wrapper {
+    table{
+      width: 120% !important;  
+    }  
+    
+}
+}
 

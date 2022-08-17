@@ -49,14 +49,14 @@
         </ng-container>
         <ng-container *ngIf="showapprovalaccepting">
           <maxhealth-table
-            class="w-full h-full"
+            class="w-full h-full op-approval-table-wrapper"
             [config]="approveconfig"
             [data]="opApprovalacceptList"
           ></maxhealth-table>
         </ng-container>
         <ng-container *ngIf="showapprovalreject">
           <maxhealth-table
-            class="w-full h-full"
+            class="w-full h-full op-approval-table-wrapper"
             [config]="rejectconfig"
             [data]="opApprovalrejectList"
           ></maxhealth-table>

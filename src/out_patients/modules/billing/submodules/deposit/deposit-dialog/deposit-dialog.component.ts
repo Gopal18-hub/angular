@@ -47,7 +47,7 @@ export class DepositDialogComponent implements OnInit {
   questions: any;
   
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("stationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
@@ -195,7 +195,7 @@ export class DepositDialogComponent implements OnInit {
       this.hsplocationId,
       String(this.operatorID),
       this.makedepositdialogForm.value.remarksText,
-      0,
+      this.operatorID,
       this.PaymentType,
       this.DepositcashMode.chequeno,      
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",

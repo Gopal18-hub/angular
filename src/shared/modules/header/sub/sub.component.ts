@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Inject, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Inject,
+  ViewChild,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -10,7 +18,7 @@ import { APP_BASE_HREF } from "@angular/common";
   templateUrl: "./sub.component.html",
   styleUrls: ["./sub.component.scss"],
 })
-export class SubComponent implements OnInit {
+export class SubComponent implements OnInit, OnChanges {
   @ViewChild("searchVal") globalSearchInputBox: any;
 
   @Input() submodules: any = [];
@@ -36,6 +44,15 @@ export class SubComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchFormData = this.searchService.searchFormData;
+    this.processSubModule();
+    if (!this.activePageItem) this.reInitiateSearch("global");
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.processSubModule();
+  }
+
+  processSubModule() {
     if (!this.submodules) {
       this.submodules = [];
     }
@@ -58,7 +75,6 @@ export class SubComponent implements OnInit {
         }
       }
     });
-    if (!this.activePageItem) this.reInitiateSearch("global");
   }
 
   reInitiateSearch(type: string) {

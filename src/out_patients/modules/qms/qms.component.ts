@@ -145,4 +145,9 @@ export class QmsComponent implements OnInit {
       1
     ))
   }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
