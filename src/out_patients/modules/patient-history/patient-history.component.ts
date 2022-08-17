@@ -574,7 +574,7 @@ export class PatientHistoryComponent implements OnInit {
       this.billno = event.row.billNo;
       if(event.row.billType == 'Deposit' || event.row.billType == 'Donation')
       {
-        this.openReportModal('depositReport');
+        this.openReportModal('DepositReport');
       }
       else if(event.row.billType == 'Deposit Refund')
       {
@@ -595,7 +595,7 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    if(btnname == 'depositReport')
+    if(btnname == 'DepositReport')
     {
       this.reportService.openWindow(btnname, btnname, {
         receiptnumber: this.receiptno,

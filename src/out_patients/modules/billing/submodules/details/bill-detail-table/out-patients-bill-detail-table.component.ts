@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
@@ -8,6 +8,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 
 import { Subject } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
+import { billDetailService } from "../billDetails.service";
 
 @Component({
   selector: "out-patients-bill-detail-table",
@@ -15,12 +16,15 @@ import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.compon
   styleUrls: ["./out-patients-bill-detail-table.component.scss"],
 })
 export class BillDetailTableComponent implements OnInit {
+
+  @ViewChild("selectedServices") tableRows: any;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private billDetailservice: billDetailService
   ) {}
 
   miscBillData = {
@@ -189,43 +193,58 @@ export class BillDetailTableComponent implements OnInit {
     selectBox: false,
     clickedRows: false,
     clickSelection: "single",
+    removeRow: true,
     displayedColumns: [
       "Sno",
-      "ServiceType",
-      "ItemName",
-      "BilledAmount",
-      "DiscAmount",
+      "servicename",
+      "itemname",
+      "amount",
+      "discountamount",
       "Refund",
     ],
     columnsInfo: {
       Sno: {
         title: "S.No.",
         type: "string",
+        style: {
+          width: "5rem"
+        }
       },
-      ServiceType: {
+      servicename: {
         title: "Service Name",
         type: "string",
+        style: {
+          width: "11rem"
+        }
       },
-      ItemName: {
+      itemname: {
         title: "Item Name",
         type: "string",
+        style: {
+          width: "15rem"
+        }
       },
-      BilledAmount: {
+      amount: {
         title: "Billed Amount",
         type: "string",
+        style: {
+          width: "9rem"
+        }
       },
-
-      DiscAmount: {
+      discountamount: {
         title: "Discount Amount",
-        type: "string",
+        type: "number",
+        style: {
+          width: "9rem"
+        }
       },
       Refund: {
         title: "Refund",
-        type: "string",
+        type: "checkbox_active",
       },
     },
   };
-
+  data: any = [];
   serviceselectedList: [] = [] as any;
 
   miscServBillForm!: FormGroup;
@@ -241,6 +260,10 @@ export class BillDetailTableComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    for (var i = 0; i < this.billDetailservice.serviceList.length; i++) {
+      this.billDetailservice.serviceList[i].Sno = i + 1;
+    }
+    this.data = [...this.billDetailservice.serviceList];
   }
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },
@@ -259,5 +282,12 @@ export class BillDetailTableComponent implements OnInit {
         gstDetails: this.gst,
       },
     });
+  }
+  ngAfterViewInit()
+  {
+    console.log(this.billDetailservice.serviceList);
+  }
+  rowRwmove($event: any) {
+    console.log($event);
   }
 }
