@@ -291,7 +291,7 @@ export class BillingComponent implements OnInit {
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
     this.dob =
-      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd-MMM-yyyy");
+      "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd/MM/yyyy");
     this.patient = true;
     this.apiProcessing = false;
     this.questions[0].readonly = true;

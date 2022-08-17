@@ -22,7 +22,7 @@ export class OrderSetComponent implements OnInit {
         required: true,
       },
       items: {
-        type: "autocomplete",
+        type: "dropdown",
         placeholder: "--Select--",
         required: true,
         multiple: true,

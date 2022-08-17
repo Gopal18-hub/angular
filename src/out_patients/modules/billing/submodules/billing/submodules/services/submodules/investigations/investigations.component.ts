@@ -225,7 +225,7 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          41,
+          this.formGroup.value.serviceType,
           this.cookie.get("HSPLocationId")
         )
       )
