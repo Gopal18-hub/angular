@@ -101,7 +101,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService,
+    public billingService: BillingService,
     private matDialog: MatDialog
   ) {}
 

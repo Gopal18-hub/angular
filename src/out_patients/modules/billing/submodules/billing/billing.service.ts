@@ -15,6 +15,8 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  totalCost = 0;
+
   clear() {
     this.billItems = [];
     this.consultationItems = [];

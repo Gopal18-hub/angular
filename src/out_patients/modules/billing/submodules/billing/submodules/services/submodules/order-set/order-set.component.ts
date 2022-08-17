@@ -104,7 +104,7 @@ export class OrderSetComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
