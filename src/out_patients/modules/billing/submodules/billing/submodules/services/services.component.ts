@@ -42,7 +42,7 @@ export class ServicesComponent implements OnInit {
     },
     {
       id: 4,
-      title: "Procudure & Others",
+      title: "Procedure & Others",
       component: ProcedureOtherComponent,
     },
     {
