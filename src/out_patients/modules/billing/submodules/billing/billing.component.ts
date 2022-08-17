@@ -23,6 +23,7 @@ import {
 } from "@angular/material/dialog";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
 
 @Component({
   selector: "out-patients-billing",
@@ -369,6 +370,17 @@ export class BillingComponent implements OnInit {
         });
         this.dmsProcessing = false;
       });
+  }
+
+  visitHistory() {
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.formGroup.value.maxid,
+        docid: "",
+      },
+    });
   }
 
   clear() {
