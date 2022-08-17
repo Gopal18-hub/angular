@@ -101,7 +101,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService,
+    public billingService: BillingService,
     private matDialog: MatDialog
   ) {}
 
@@ -125,6 +125,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   rowRwmove($event: any) {
     this.billingService.consultationItems.splice($event.index, 1);
     this.data = [...this.billingService.consultationItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {

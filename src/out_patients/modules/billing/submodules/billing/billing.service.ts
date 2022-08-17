@@ -15,6 +15,8 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  totalCost = 0;
+
   clear() {
     this.billItems = [];
     this.consultationItems = [];
@@ -23,6 +25,22 @@ export class BillingService {
     this.ProcedureItems = [];
     this.OrderSetItems = [];
     this.ConsumableItems = [];
+  }
+
+  calculateTotalAmount() {
+    this.totalCost = 0;
+    this.consultationItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
+    this.InvestigationItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
+    this.ProcedureItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
+    this.OrderSetItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
   }
 
   checkOtherServicesForHealthCheckups() {
@@ -55,24 +73,30 @@ export class BillingService {
 
   addToConsultation(data: any) {
     this.consultationItems.push(data);
+    this.calculateTotalAmount();
   }
   removeFromConsultation(index: number) {
     this.consultationItems.splice(index, 0);
+    this.calculateTotalAmount();
   }
   addToInvestigations(data: any) {
     this.InvestigationItems.push(data);
+    this.calculateTotalAmount();
   }
   removeFromInvestigations() {}
   addToHealthCheckup(data: any) {
     this.HealthCheckupItems.push(data);
+    this.calculateTotalAmount();
   }
   removeFromHealthCheckup() {}
   addToProcedure(data: any) {
     this.ProcedureItems.push(data);
+    this.calculateTotalAmount();
   }
   removeFromProcedure() {}
   addToOrderSet(data: any) {
     this.OrderSetItems.push(data);
+    this.calculateTotalAmount();
   }
   removeFromORderSet() {}
   addToConsumables() {}

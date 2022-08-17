@@ -67,7 +67,7 @@ export class ConsumablesComponent implements OnInit {
   constructor(
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
