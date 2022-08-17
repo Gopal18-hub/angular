@@ -26,6 +26,9 @@
         .mat-cell {
           color: #fff;
         }
+        .mat-icon-button{
+          color: #fff;
+        }
       }
       .remove-row-icon-wrapper {
         width: 16px;
@@ -84,6 +87,9 @@
   .table-select-dropdown {
     width: 90%;
   }
+  .cdk-column-maxRemoveRow {
+    text-align: right;
+  }
 }
 ::ng-deep .table-more-actions {
   border-radius: initial !important;
@@ -108,7 +114,7 @@
       padding-bottom: 0 !important;
     }
   }
-  textarea{
+  textarea {
     min-height: 80px !important;
     height: 80px !important;
   }

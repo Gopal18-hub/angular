@@ -1,1 +1,21 @@
-<p>order-set-details works!</p>
+<div class="flex flex-column h-full">
+  <h2 class="max-health-primary-color">Order Set Details</h2>
+  <div class="h-3/4">
+    <maxhealth-table
+      [config]="config"
+      [data]="itemsData"
+      #table
+    ></maxhealth-table>
+  </div>
+  <div class="flex mt-4 flex-row-reverse">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="close()"
+    >
+      Close
+    </button>
+  </div>
+</div>

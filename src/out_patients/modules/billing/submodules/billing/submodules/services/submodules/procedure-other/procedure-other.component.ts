@@ -28,7 +28,7 @@ export class ProcedureOtherComponent implements OnInit {
       otherService: {
         type: "autocomplete",
         placeholder: "--Select--",
-        required: true,
+        required: false,
       },
       procedure: {
         type: "autocomplete",
@@ -45,6 +45,7 @@ export class ProcedureOtherComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -59,6 +60,9 @@ export class ProcedureOtherComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       procedures: {
         title: "Procedures",
@@ -66,16 +70,23 @@ export class ProcedureOtherComponent implements OnInit {
       },
       qty: {
         title: "Qty",
-        type: "number",
+        type: "dropdown",
+        options: [
+          { title: 1, value: 1 },
+          { title: 2, value: 2 },
+          { title: 3, value: 3 },
+          { title: 4, value: 4 },
+          { title: 5, value: 5 },
+        ],
       },
       specialisation: {
         title: "Specialisation",
-        type: "string",
+        type: "dropdown",
         options: [],
       },
       doctorName: {
         title: "Doctor Name",
-        type: "string",
+        type: "dropdown",
         options: [],
       },
       price: {
@@ -89,7 +100,7 @@ export class ProcedureOtherComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -107,10 +118,17 @@ export class ProcedureOtherComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.ProcedureItems.splice($event.index, 1);
     this.data = [...this.billingService.ProcedureItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
-    this.formGroup.controls["investigation"].valueChanges
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      console.log(res);
+      const source = res.added[0] || res.removed[0];
+      console.log(source);
+      this.update(source.sno);
+    });
+    this.formGroup.controls["procedure"].valueChanges
       .pipe(
         filter((res) => {
           return res !== null && res.length >= 3;
@@ -179,8 +197,8 @@ export class ProcedureOtherComponent implements OnInit {
     });
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
-        if (val) {
-          this.getProcedures(val);
+        if (val && val.value) {
+          this.getProcedures(val.value);
         }
       }
     );
@@ -196,10 +214,24 @@ export class ProcedureOtherComponent implements OnInit {
       )
       .subscribe((res) => {
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return { title: r.itemName, value: r.itemID };
         });
         this.questions[1] = { ...this.questions[1] };
       });
+  }
+
+  update(sno = 0) {
+    if (sno > 0) {
+      const index = this.billingService.ProcedureItems.findIndex(
+        (c: any) => c.sno == sno
+      );
+      if (index > -1) {
+        this.billingService.ProcedureItems[index].price =
+          this.billingService.ProcedureItems[index].unitPrice *
+          this.billingService.ProcedureItems[index].qty;
+        this.data = [...this.billingService.ProcedureItems];
+      }
+    }
   }
 
   add(priorityId = 1) {
@@ -207,8 +239,8 @@ export class ProcedureOtherComponent implements OnInit {
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.healthCheckup.value,
-          26,
+          this.formGroup.value.procedure.value,
+          this.formGroup.value.otherService.value,
           this.cookie.get("HSPLocationId")
         )
       )
@@ -220,6 +252,7 @@ export class ProcedureOtherComponent implements OnInit {
           specialisation: "",
           doctorName: "",
           price: res.amount,
+          unitPrice: res.amount,
         });
 
         this.data = [...this.billingService.ProcedureItems];

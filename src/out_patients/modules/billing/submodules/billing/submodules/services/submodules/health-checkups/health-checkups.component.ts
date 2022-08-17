@@ -44,10 +44,16 @@ export class HealthCheckupsComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       healthCheckups: {
         title: "Health Checkups",
         type: "string",
+        style: {
+          width: "50%",
+        },
       },
       price: {
         title: "Price",
@@ -60,7 +66,7 @@ export class HealthCheckupsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +83,7 @@ export class HealthCheckupsComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.data = [...this.billingService.HealthCheckupItems];
+    this.billingService.calculateTotalAmount();
   }
 
   getDepartments() {

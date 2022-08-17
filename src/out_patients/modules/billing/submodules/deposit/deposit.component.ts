@@ -363,12 +363,34 @@ export class DepositComponent implements OnInit {
     .subscribe((result) => {
       if(result == "Success"){
         this.getPatientPreviousDepositDetails();
+        this.matDialog.closeAll();
+        setTimeout(() => {
+          this.MoreRefunddialog();
+        }, 3000);
+       
         console.log("Refund Dialog closed");
-      }
+      }    
       this.MaxIDdepositExist = false;
     });
   }
 
+  MoreRefunddialog(){
+    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
+      width: '33vw', height: '40vh', data: {    
+        message: "Do you want to Make More Refund?",
+      },
+    });
+
+    MoreRefundDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result == "Success")  
+         {
+           this.openrefunddialog();        
+          console.log("More Refund Dialog closed");
+        }
+      }); 
+  }
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
       width: '33vw', height: '40vh', data: {    
@@ -536,6 +558,7 @@ export class DepositComponent implements OnInit {
   }
 
   getPatientPreviousDepositDetails() {
+    this.depoistList = [];
     this.http
       .get(ApiConstants.getpatientpreviousdepositdetails(this.regNumber, this.iacode))
       .pipe(takeUntil(this._destroying$))
@@ -565,8 +588,12 @@ export class DepositComponent implements OnInit {
           this.deposittable.selection.changed
           .pipe(takeUntil(this._destroying$))
           .subscribe((res: any) => {
-            if (this.deposittable.selection.selected.length > 0) {
+            if (this.deposittable.selection.selected.length > 0) {              
               this.tableselectionexists = true;
+              if(res.added[0].depositRefund == "Deposit"){
+                this.MaxIDdepositExist = true;
+                this.patientRefundDetails = res.added[0];
+              }
             } else {
               this.tableselectionexists = false;
             }
@@ -604,12 +631,12 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
   }
 
-  depositColumnClick($event: any){
-    if($event.row.depositRefund == "Deposit"){
-      this.MaxIDdepositExist = true;
-    }
-    this.patientRefundDetails = $event.row;
-  }
+  // depositColumnClick($event: any){
+  //   if($event.row.depositRefund == "Deposit"){
+  //     this.MaxIDdepositExist = true;
+  //   }
+  //   this.patientRefundDetails = $event.row;
+  // }
 
   mobilechange()
   {

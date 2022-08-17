@@ -61,10 +61,16 @@ export class InvestigationsComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       investigations: {
         title: "Investigations",
         type: "string",
+        style: {
+          width: "25%",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -79,11 +85,17 @@ export class InvestigationsComponent implements OnInit {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       price: {
         title: "Price",
@@ -96,7 +108,7 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -114,6 +126,7 @@ export class InvestigationsComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.data = [...this.billingService.InvestigationItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
@@ -225,7 +238,7 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          41,
+          this.formGroup.value.serviceType,
           this.cookie.get("HSPLocationId")
         )
       )

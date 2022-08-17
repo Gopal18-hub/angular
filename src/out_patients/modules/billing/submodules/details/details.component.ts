@@ -14,6 +14,7 @@ import { SearchDialogComponent } from "./search-dialog/search-dialog.component";
 import { getrefundreason } from "../../../../core/types/billdetails/getrefundreason.Interface";
 import { getPatientPersonalandBillDetails } from "../../../../core/types/billdetails/getpatientpersonalandbilldetails.Interface";
 import { BillDetailsApiConstants } from "./BillDetailsApiConstants";
+import { billDetailService } from "./billDetails.service";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -26,7 +27,8 @@ export class DetailsComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private billdetailservice: billDetailService
   ) {}
 
   @ViewChild("selectedServices") selectedServicesTable: any;
@@ -90,31 +92,31 @@ export class DetailsComponent implements OnInit {
         disabled: true,
       },
       billAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       dipositrAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       discAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       discAftBill: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       refundAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
@@ -163,6 +165,10 @@ export class DetailsComponent implements OnInit {
   billdate: any;
 
   ngOnInit(): void {
+    this.router.navigate(['out-patient-billing/details'])
+    .then(()=>{
+      window.location.reload;
+    })
     let formResult = this.formService.createForm(
       this.BDetailFormData.properties,
       {}
@@ -214,9 +220,13 @@ export class DetailsComponent implements OnInit {
     .subscribe((resultdata) => {
       console.log(resultdata);
       this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+      this.billdetailservice.patientbilldetaillist = resultdata;
       console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
       if(this.patientbilldetaillist.billDetialsForRefund_Table0.length == 1)
       {
+        this.billdetailservice.serviceList = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
+        console.log(this.billdetailservice.serviceList);
+        this.router.navigate(['out-patient-billing/details','services']);
         this.billFormfill();
       }
     })
@@ -235,6 +245,12 @@ export class DetailsComponent implements OnInit {
     this.ssn = this.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn;
     this.operator = this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
     this.billdate = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
+    this.BServiceForm.controls["billAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
+    this.BServiceForm.controls["dipositrAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
+    this.BServiceForm.controls["discAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
+    this.BServiceForm.controls["discAftBill"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
+    this.BServiceForm.controls["authBy"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby);
     // this.BServiceForm.controls["billDate"].setValue();
   }
   // getPatientDetailsByMaxId() {
