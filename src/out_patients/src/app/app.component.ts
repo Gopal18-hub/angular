@@ -1,5 +1,4 @@
-import { Component, HostListener, OnInit } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
 import { AuthService } from "@shared/services/auth.service";
 
 @Component({
@@ -12,12 +11,7 @@ export class AppComponent implements OnInit {
 
   isAuthenticated: boolean = false;
 
-  @HostListener("window:keydown.Alt.r", ["$event"])
-  navigateToRegister($event: any) {
-    this.router.navigate(["/registration"]);
-  }
-
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
     this.isAuthenticated = this.auth.isAuthenticated();
