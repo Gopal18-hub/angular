@@ -28,6 +28,7 @@ export class BillingService {
   }
 
   calculateTotalAmount() {
+    this.totalCost = 0;
     this.consultationItems.forEach((item: any) => {
       this.totalCost += item.price;
     });
