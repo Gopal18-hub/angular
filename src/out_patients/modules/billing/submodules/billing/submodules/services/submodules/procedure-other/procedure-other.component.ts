@@ -45,6 +45,7 @@ export class ProcedureOtherComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [

@@ -62,7 +62,7 @@ export class OrderSetComponent implements OnInit {
         title: "Order Set Name",
         type: "string",
         style: {
-          width: "180px",
+          width: "20%",
         },
       },
       serviceType: {
@@ -93,6 +93,9 @@ export class OrderSetComponent implements OnInit {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       price: {
         title: "Price",
