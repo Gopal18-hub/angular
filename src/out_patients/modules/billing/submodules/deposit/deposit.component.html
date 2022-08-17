@@ -110,10 +110,10 @@
           <div class="flex w-full h-4/5">
             <div class="mt-2">
               <div class="h-full">
+                <!-- (columnClick)="depositColumnClick($event)" -->
                 <ng-container>
-                  <maxhealth-table class="w-full deposittable" [config]="depositconfig" [data]="depoistList"
-                  (columnClick)="depositColumnClick($event)"
-                    #deposittable></maxhealth-table>
+                  <maxhealth-table class="w-full deposittable" [config]="depositconfig" [data]="depoistList" #deposittable>
+                  </maxhealth-table>
                 </ng-container>
               </div>
             </div>

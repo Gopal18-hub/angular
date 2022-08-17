@@ -68,15 +68,24 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
+        style: {
+          width: "25%",
+        },
       },
       type: {
         title: "Type",
         type: "dropdown",
         options: [],
+        style: {
+          width: "20%",
+        },
       },
       scheduleSlot: {
         title: "Schedule Slot",

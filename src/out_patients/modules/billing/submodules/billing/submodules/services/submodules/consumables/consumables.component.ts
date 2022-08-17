@@ -32,6 +32,9 @@ export class ConsumablesComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       surgeryName: {
         title: "Surgery Name",
