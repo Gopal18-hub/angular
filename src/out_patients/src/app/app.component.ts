@@ -11,7 +11,7 @@ export class AppComponent {
 
   @HostListener("window:keydown.Alt.r", ["$event"])
   navigateToRegister($event: any) {
-    this.router.navigate(["/"]);
+    this.router.navigate(["/registration"]);
   }
 
   constructor(private router: Router) {}
