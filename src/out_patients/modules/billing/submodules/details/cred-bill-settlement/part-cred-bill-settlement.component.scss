@@ -149,14 +149,14 @@ margin-top: 0.19rem;
     width: fit-content;
     ::ng-deep .mat-radio-outer-circle 
     {
-        height: 16px;
-        width: 16px;
+        height: 13px !important;
+        width: 13px !important;
         // border: #004084;
     }
     ::ng-deep .mat-radio-inner-circle
     {
-        height: 15px;
-        width: 15px;
+        height: 13px !important;
+        width: 13px !important;
     }
     ::ng-deep .mat-radio-button
     {
@@ -207,4 +207,9 @@ padding: 0%;
 padding: 0%;
     }
 
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
 }
