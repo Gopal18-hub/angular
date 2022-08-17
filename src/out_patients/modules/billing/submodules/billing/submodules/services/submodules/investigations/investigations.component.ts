@@ -68,6 +68,9 @@ export class InvestigationsComponent implements OnInit {
       investigations: {
         title: "Investigations",
         type: "string",
+        style: {
+          width: "25%",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -82,11 +85,17 @@ export class InvestigationsComponent implements OnInit {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       price: {
         title: "Price",
