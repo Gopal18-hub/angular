@@ -51,6 +51,9 @@ export class HealthCheckupsComponent implements OnInit {
       healthCheckups: {
         title: "Health Checkups",
         type: "string",
+        style: {
+          width: "50%",
+        },
       },
       price: {
         title: "Price",
