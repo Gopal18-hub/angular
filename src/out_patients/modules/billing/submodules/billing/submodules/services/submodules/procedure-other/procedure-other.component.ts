@@ -59,6 +59,9 @@ export class ProcedureOtherComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       procedures: {
         title: "Procedures",

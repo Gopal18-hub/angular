@@ -68,6 +68,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       doctorName: {
         title: "Doctor Name",

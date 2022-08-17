@@ -54,6 +54,9 @@ export class OrderSetComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       orderSetName: {
         title: "Order Set Name",
@@ -150,16 +153,18 @@ export class OrderSetComponent implements OnInit {
         });
         const selectedItems: any = [];
         this.questions[1].options = filter.map((r: any) => {
-          selectedItems.push(r.testId.toString());
+          selectedItems.push(r.testId);
           return { title: r.name, value: r.testId };
         });
-        //this.questions[1].value = selectedItems;
+        this.questions[1].value = selectedItems;
         this.questions[1] = { ...this.questions[1] };
         console.log(selectedItems);
-
-        setTimeout(() => {
-          this.formGroup.controls["items"].setValue(selectedItems);
-        });
+        console.log(this.formGroup.controls["items"]);
+        //this.formGroup.controls["items"].patchValue(selectedItems);
+        console.log(this.formGroup.controls["items"]);
+        // setTimeout(() => {
+        //   this.formGroup.controls["items"].setValue(this.questions[1].options);
+        // });
       }
     });
   }

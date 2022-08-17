@@ -61,6 +61,9 @@ export class InvestigationsComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       investigations: {
         title: "Investigations",
