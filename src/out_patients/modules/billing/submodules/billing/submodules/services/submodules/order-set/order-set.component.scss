@@ -1,0 +1,11 @@
+.order-set-wrapper {
+  form {
+  }
+}
+::ng-deep {
+  .mat-option-multiple.mat-active {
+    .mat-option-text {
+      color: #fff !important;
+    }
+  }
+}

@@ -90,6 +90,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   childTableConfig: any = {};
 
+  @ViewChild("childTable") childTable: any;
+
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private _ngZone: NgZone,
@@ -160,8 +162,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.childTableConfig = { ...this.config };
         delete this.childTableConfig.groupby;
       }
-      console.log(this.config);
-      console.log(this.childTableConfig);
     }
 
     this.dataSource = new MatTableDataSource<any>(this.data);

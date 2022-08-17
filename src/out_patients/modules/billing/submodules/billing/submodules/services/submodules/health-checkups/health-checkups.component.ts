@@ -44,10 +44,16 @@ export class HealthCheckupsComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       healthCheckups: {
         title: "Health Checkups",
         type: "string",
+        style: {
+          width: "50%",
+        },
       },
       price: {
         title: "Price",
