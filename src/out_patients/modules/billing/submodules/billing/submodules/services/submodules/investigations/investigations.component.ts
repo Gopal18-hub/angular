@@ -27,7 +27,7 @@ export class InvestigationsComponent implements OnInit {
     properties: {
       serviceType: {
         type: "dropdown",
-        required: true,
+        required: false,
         placeholder: "--Select--",
       },
       investigation: {
@@ -96,7 +96,7 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -106,6 +106,7 @@ export class InvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
   }
@@ -113,6 +114,7 @@ export class InvestigationsComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.data = [...this.billingService.InvestigationItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
@@ -210,6 +212,7 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
+        this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -223,7 +226,7 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          41,
+          this.formGroup.value.serviceType,
           this.cookie.get("HSPLocationId")
         )
       )
@@ -239,6 +242,7 @@ export class InvestigationsComponent implements OnInit {
         });
 
         this.data = [...this.billingService.InvestigationItems];
+        this.formGroup.reset();
       });
   }
 }

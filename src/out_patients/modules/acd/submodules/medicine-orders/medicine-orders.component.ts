@@ -363,18 +363,14 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderList = []
     this.medOrderDetails = [];
 
-    if ((this.statusvalue !== "" || this.investigationForm.value.input !== "") && this.medOrderListMain.length !== 0) {
-      this.searchFilter();
-    }
-    else {
-      //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
-      this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          this.medOrderListMain = res.objOrderDetails;
-          this.medOrderList = res.objOrderDetails;
-        })
-    }
+    //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
+    this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.medOrderListMain = res.objOrderDetails;
+        this.medOrderList = res.objOrderDetails;
+        this.searchFilter();
+      })
   }
   searchFilter() {
     if (!this.statusvalue && !this.investigationForm.value.input && this.medOrderListMain !== undefined) {
@@ -387,7 +383,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
     else if (this.statusvalue && this.investigationForm.value.input) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input && e.orderStatus === this.statusvalue));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].includes(this.investigationForm.value.input) && e.orderStatus === this.statusvalue));
     }
     else if (this.statusvalue) {
       this.medOrderList = [];
@@ -395,7 +391,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
     else if (this.idValue && this.investigationForm.value.input) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue] === this.investigationForm.value.input));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].includes(this.investigationForm.value.input)));
     }
   }
 
@@ -527,7 +523,6 @@ export class MedicineOrdersComponent implements OnInit {
     else
       this.medOrderDetailsTable.selection.selected.forEach((e: any) => {
         if (e.drugid !== 0)
-
           this.physicianOrderList.push({
             acDisHideDrug: e.acDisHideDrug,
             visitid: e.visitId,
@@ -561,6 +556,7 @@ export class MedicineOrdersComponent implements OnInit {
     this.investigationForm.controls["denyorder"].disable();
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
+    this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
   }
 
 }

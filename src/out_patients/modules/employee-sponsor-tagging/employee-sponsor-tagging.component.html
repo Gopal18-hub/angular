@@ -87,7 +87,7 @@
                             <button mat-raised-button color="primary" class="button-style"   (click)="employeeDelete()" [disabled]="disableDelete" ><span class="text-position">Delete</span></button>
                            </div>
                            <div class="ml-3 w-1/10">
-                            <button mat-raised-button color="primary" class="button-style" (click)="cleardata()"  ><span class="text-position">Clear</span></button>
+                            <button mat-raised-button color="primary" class="button-style" (click)="cleardata()" [disabled]="disableClear" ><span class="text-position">Clear</span></button>
                            </div>
                         <!-- </div> -->
                         
@@ -103,27 +103,27 @@
         <div class="flex  ml-1 p-1-5 align-items-center input-padding  w-full">
             <div class="w-1/15  font-wrapper">
                     <mat-label  class="max-health-primary-color font-semi-bold">Name:</mat-label>
-                <span class="ml-2" title="{{name}}" >{{name}}</span>
+                <span class="ml-2" matTooltip="{{name}}" >{{name}}</span>
             </div>
             <div class="ml-3-23 w-8 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">Age:</mat-label>
-                <span class=" ml-2 "  title="{{age}}" >{{age}}</span>
+                <span class=" ml-2 "  matTooltip="{{age}}" >{{age}}</span>
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">Gender:</mat-label>
-                    <span class=" ml-2 " title="{{gender}}">{{gender}}</span>
+                    <span class=" ml-2 " matTooltip="{{gender}}">{{gender}}</span>
             </div>
             <div class="ml-1-5 w-1/10 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">DOB:</mat-label>
-                <span class=" ml-2 " title="{{dob}}">{{dob}}</span>
+                <span class=" ml-2 " matTooltip="{{dob}}">{{dob}}</span>
             </div>
             <div class="ml-6 w-1/15 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">Nationality:</mat-label>
-                    <span class=" ml-2 "title="{{nationality}}">{{nationality}}</span>
+                    <span class=" ml-2 "matTooltip="{{nationality}}">{{nationality}}</span>
             </div>
             <div class="ml-3-23 w-1/15 font-wrapper">
                     <mat-label class="max-health-primary-color font-semi-bold">SSN:</mat-label>
-                    <span class=" ml-2 "  title="{{ssn}}">{{ssn}}</span>
+                    <span class=" ml-2 "  matTooltip="{{ssn}}">{{ssn}}</span>
             </div>
             <div class="flex bg-darkgray align-items-center border-radius-lg p-1 mr-4  w-31" >
                 <div class="ml-2 checkbox-bottom-margin">
@@ -171,7 +171,7 @@
         </div>
         <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
         <div class="h-43 mt-1 whitespace-nowrap">
-            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width"></maxhealth-table>
+            <maxhealth-table [config]="config1" [data]="employeeDependantDetailList" #empdependanttable  (columnClick)="activeClick($event)" class="input-width remarks-sort"></maxhealth-table>
         </div>
         <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
         <div class="h-40 mt-2">

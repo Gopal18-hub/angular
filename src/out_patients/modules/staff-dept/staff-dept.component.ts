@@ -8,6 +8,10 @@ import { StaffDependentTypeModel } from "@core/models/staffDependentTypeModel.Mo
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from '@shared/services/search.service';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -19,7 +23,11 @@ export class StaffDeptComponent implements OnInit {
   staffDetail: any = [];
   staffDeptDetails: any;
   selectedCode: any;
+  org = '';
+  code = '';
+  ename = ''
   private readonly _destroying$ = new Subject<void>();
+  searchbtn: boolean = true;
   staffFormData = {
     title: "",
     type: "object",
@@ -44,6 +52,8 @@ export class StaffDeptComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy',
     selectBox: false,
+    clickedRows: true,
+    clickSelection: "single",
     displayedColumns: ['sNo', 'groupCompanyName', 'empCode', 'empName', 'dob', 'gender', 'doj'],
     columnsInfo: {
       sNo: {
@@ -123,7 +133,12 @@ export class StaffDeptComponent implements OnInit {
 
   }
 
-  constructor(private formService: QuestionControlService, private http: HttpService, private messageDialogService: MessageDialogService,) { }
+  constructor(private formService: QuestionControlService, private http: HttpService,
+    private messageDialogService: MessageDialogService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -141,6 +156,35 @@ export class StaffDeptComponent implements OnInit {
           return { title: l.name, value: l.id };
         });
       });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        // console.log(lookupdata[0]);
+      });
+  }
+
+  ngAfterViewInit(): void {
+
+    this.staffForm.controls["organisation"].valueChanges.subscribe((value: any) => { this.org = value; this.enableSearchBtn() })
+
+    this.staffForm.controls["employeeCode"].valueChanges.subscribe((value: any) => { this.code = value; this.enableSearchBtn() })
+    this.staffForm.controls["employeeName"].valueChanges.subscribe((value: any) => { this.ename = value; this.enableSearchBtn() })
+
+  }
+  enableSearchBtn() {
+    if (this.org !== '' && (this.code !== '' || this.ename !== '')) {
+      this.searchbtn = false;
+      console.log(this.searchbtn, "tst")
+    }
+    else {
+      this.searchbtn = true;
+    }
   }
   staffColumnClick(event: any) {
     if (this.staffDetail.length > 1) {
@@ -155,6 +199,7 @@ export class StaffDeptComponent implements OnInit {
 
   }
   clear() {
+    this.searchbtn = true;
     this.staffDeptDetails = [];
     this.staffDetail = [];
     this.staffForm.controls['organisation'].setValue('')

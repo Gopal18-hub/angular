@@ -1,7 +1,24 @@
 .appointment-search-dialog-wrapper {
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0 !important;
+  ::ng-deep {
+    .date-checkbox {
+      width: 3%;
+      mat-label {
+        display: none;
+      }
+    }
+    maxhealth-question {
+      mat-label {
+        margin-right: 0.25rem;
+      }
+    }
+    .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+    mat-form-field {
+      background-color: #fff;
+    }
   }
+
   .wt-nowrap {
     white-space: nowrap;
   }

@@ -23,8 +23,8 @@
         class="flex w-full align-items-center"
       >
         <div class="flex w-4/5 align-items-center justify-between">
-          <div class="flex align-items-center w-3/5 p-2 border-radius-md">
-            <div class="w-1/5 wt-nowrap mr-6">
+          <div class="flex align-items-center w-1/45 p-2 border-radius-md">
+            <div class="w-1/5 wt-nowrap">
               <maxhealth-question
                 [question]="questions[0]"
                 [form]="OPAppointmentForm"
@@ -32,7 +32,7 @@
                 [index]="0"
               ></maxhealth-question>
             </div>
-            <div class="w-1/5 wt-nowrap ml-4 mr-12">
+            <div class="w-1/5 wt-nowrap ml-12">
               <maxhealth-question
                 [question]="questions[1]"
                 [form]="OPAppointmentForm"
@@ -54,7 +54,7 @@
           <div
             class="flex align-items-center w-2/5 p-2 bg-grey border-radius-md justify-between"
           >
-            <div class="w-1/10 wt-nowrap mr-1 mb-1">
+            <div class="w-1/10 wt-nowrap mr-1 mb-1 date-checkbox">
               <maxhealth-question
                 [question]="questions[3]"
                 [form]="OPAppointmentForm"
@@ -80,7 +80,7 @@
             </div>
           </div>
         </div>
-        <div class="flex float-right ml-1">
+        <div class="flex float-right ml-4">
           <div class="mr-2">
             <button
               mat-raised-button
@@ -92,7 +92,7 @@
               Clear
             </button>
           </div>
-          <div class="mr-8">
+          <div class="mr-4">
             <button
               mat-raised-button
               color="primary"
@@ -106,7 +106,7 @@
         </div>
       </form>
     </div>
-    <div class="h-full mt-3 h-62">
+    <div class="mt-3 h-62">
       <ng-container *ngIf="defaultUI">
         <empty-placeholder
           [icon]="findpatientimage"

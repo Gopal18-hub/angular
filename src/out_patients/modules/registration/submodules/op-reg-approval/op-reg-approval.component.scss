@@ -25,3 +25,12 @@
   text-align: center;
 }
 
+.op-approval-table-wrapper{
+  ::ng-deep .max-table-wrapper {
+    table{
+      width: 120% !important;  
+    }  
+    
+}
+}
+
