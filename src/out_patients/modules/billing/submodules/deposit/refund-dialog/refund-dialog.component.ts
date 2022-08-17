@@ -62,7 +62,6 @@ export class RefundDialogComponent implements OnInit {
   otpsenttomobile:boolean = false;
   otpresenttomobile:boolean = false;
   servicedeposittype:any=[];
-  paymentform!: FormGroup;
   today: any;
   patientIdentityInfo:any=[];
   avalaiblemaount:number=0;
@@ -119,21 +118,7 @@ export class RefundDialogComponent implements OnInit {
     console.log('inside refund page');
   }
   ngAfterViewInit(): void{   
-    // this.paymentform.controls["amount"].valueChanges.subscribe(
-    //   (res:any)=>{
-    //   if(res > 200000)
-    //   {
-    //     console.log("200000");
-    //     this.refundform.controls["panno"].enable();
-    //     this.refundform.controls["mainradio"].enable();
-    //   }
-    //   else
-    //   {
-    //     this.refundform.controls["panno"].disable();
-    //     this.refundform.controls["mainradio"].disable();
-    //     this.refundform.controls["mainradio"].reset();
-    //   }
-    // });
+   
   }
   clearsiblingcomponents:boolean = false;
 
@@ -142,17 +127,17 @@ export class RefundDialogComponent implements OnInit {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.clearsiblingcomponents = true;
-    this.paymentform.reset();
-    this.paymentform.controls["chequeissuedate"].setValue(this.today);
-    this.paymentform.controls["demandissuedate"].setValue(this.today);
+    this.refundform.reset();
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
     this.refundform.controls["mail"].setValue(this.data.Mail);
   }
+
   validationexists: boolean = true;
   saverefunddialog(){
+    
     const RefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
       width: '33vw', height: '40vh', data: {    
-        message: "Do you want to make Refund?",
+        message: "Do you want to make Refund?"
       },
     });
 
@@ -162,10 +147,12 @@ export class RefundDialogComponent implements OnInit {
         if (result == "Success")  
          {
          this.refundformvalidation();
-         this.submitrefundamount();
+         this.submitrefundamount();       
         }
       });  
   }
+  
+
 
   RefundcashMode:any=[];
   refundformvalidation(){
@@ -174,6 +161,7 @@ export class RefundDialogComponent implements OnInit {
      if(this.RefundcashMode)
      {
       this.validationexists = false;
+      this.PaymentTypedepositamount = 0;
       if(this.RefundcashMode.cashamount > 0 ){
         this.PaymentTypedepositamount =  this.RefundcashMode.cashamount;
        }
@@ -187,15 +175,15 @@ export class RefundDialogComponent implements OnInit {
           }
          
        }
-       else if(this.PaymentTypedepositamount == 0){
-        this.messageDialogService.error("Refund Amount must not be Zero");
+      if(this.PaymentTypedepositamount == 0){
+        this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
         this.validationexists = true;
       }
-       if(Number(this.PaymentTypedepositamount) > Number(this.avalaiblemaount)){
+      else if(Number(this.PaymentTypedepositamount) > Number(this.avalaiblemaount)){
         this.messageDialogService.error("Refund Amount must be less then available amount");
         this.validationexists = true;
       }
-      if(this.refundform.value.otp == ""){ 
+      if(this.refundform.value.otp == "" && !this.validationexists){ 
         this.questions[4].elementRef.focus();       
         this.messageDialogService.error("Enter OTP");
        
@@ -215,11 +203,11 @@ export class RefundDialogComponent implements OnInit {
         .post(ApiConstants.savepatientrefunddetails, this.getPatientRefundSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (resultData) => {
+          (resultData) => {            
             this.matDialog.closeAll();
             this.dialogRef.close("Success");
-            this.messageDialogService.success("Refund has been done Successfully");
-          
+            this.messageDialogService.success("Refund has been done Successfully");  
+           
           },
           (error) => {
             console.log(error);
@@ -270,59 +258,76 @@ export class RefundDialogComponent implements OnInit {
   }
   sendotpclick(){
     this.RefundcashMode=[];
-    this.SendOTP = "Resend OTP";
-    this.otpsenttomobile = true;
+    this.validationexists = false;
     this.RefundcashMode = this.paymentdepositcashMode.refundform.value;    
     if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
     {
-       this.messageDialogService.error("Refund Amount must be less then available amount");
+       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
+       this.validationexists = true;
     }
-this.http
-.post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
-.pipe(takeUntil(this._destroying$))
-.subscribe((resultData) => {
-  if(resultData == 1){
-    this.messageDialogService.success("OTP Sent Successfully");
-    setTimeout(()=>{                           
-      this.otpsenttomobile = false;
-      this.otpresenttomobile = true;
-  }, 60000);
-  }
- console.log(resultData);
-},
-(error) => {
-  console.log(error.error);
-});
-
+    else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
+      this.messageDialogService.error("Refund Amount must be less then available amount");
+      this.validationexists = true;
+    }
+    
+    if(!this.validationexists){
+      this.SendOTP = "Resend OTP";
+      this.otpsenttomobile = true;
+      this.http
+      .post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
+        if(resultData == 1){
+          this.messageDialogService.success("OTP Sent Successfully");
+          setTimeout(()=>{                           
+            this.otpsenttomobile = false;
+            this.otpresenttomobile = true;
+        }, 60000);
+        }
+       console.log(resultData);
+      },
+      (error) => {
+        console.log(error.error);
+      });
+    }
   }
   resendotpclick(){
     this.refundform.controls["otp"].setValue("");
     this.flagto_set_btnname = 1;
     this.RefundcashMode=[];
     this.RefundcashMode = this.paymentdepositcashMode.refundform.value;
-    this.ResendOTP = "Resend OTP To Manager";
-    this.otpresenttomobile = false;
-    this.otpsenttomobile = true;
+    this.validationexists = false;
     if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
     {
-       this.messageDialogService.error("Refund Amount must be less then available amount");
+       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
+       this.validationexists = true;
     }
-    this.http
-.post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
-.pipe(takeUntil(this._destroying$))
-.subscribe((resultData) => {
-  if(resultData == 1){
-    this.messageDialogService.success("OTP Sent Successfully");
-    setTimeout(()=>{                           
-      this.otpsenttomobile = false;
-      this.otpresenttomobile = true;
-  }, 60000);
-  }
- console.log(resultData);
-},
-(error) => {
-  console.log(error.error);
-});
+    else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
+      this.messageDialogService.error("Refund Amount must be less then available amount");
+      this.validationexists = true;
+    }
+
+    if(!this.validationexists){
+      this.ResendOTP = "Resend OTP To Manager";
+      this.otpresenttomobile = false;
+      this.otpsenttomobile = true;
+      this.http
+      .post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData) => {
+        if(resultData == 1){
+          this.messageDialogService.success("OTP Sent Successfully");
+          setTimeout(()=>{                           
+            this.otpsenttomobile = false;
+            this.otpresenttomobile = true;
+        }, 60000);
+        }
+       console.log(resultData);
+      },
+      (error) => {
+        console.log(error.error);
+      });
+    }   
   }
 }
 
