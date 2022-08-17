@@ -43,7 +43,10 @@
         </maxhealth-question>
       </div>
     </form>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        Total Estimation: Rs {{ billingService.totalCost }}
+      </div>
       <button
         mat-raised-button
         color="primary"

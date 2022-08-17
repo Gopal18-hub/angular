@@ -17,14 +17,13 @@ export class OrderSetComponent implements OnInit {
     type: "object",
     properties: {
       orderSet: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "--Select--",
         required: true,
       },
       items: {
-        type: "autocomplete",
+        type: "dropdown",
         placeholder: "--Select--",
-        required: true,
         multiple: true,
       },
     },
@@ -49,6 +48,7 @@ export class OrderSetComponent implements OnInit {
       "priority",
       "specialization",
       "doctorName",
+      "price",
     ],
     columnsInfo: {
       sno: {
@@ -58,6 +58,9 @@ export class OrderSetComponent implements OnInit {
       orderSetName: {
         title: "Order Set Name",
         type: "string",
+        style: {
+          width: "180px",
+        },
       },
       serviceType: {
         title: "Service Type",
@@ -66,6 +69,9 @@ export class OrderSetComponent implements OnInit {
       serviceItemName: {
         title: "Service Item Name",
         type: "string",
+        style: {
+          width: "180px",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -77,11 +83,17 @@ export class OrderSetComponent implements OnInit {
       },
       specialization: {
         title: "Specialization",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       doctorName: {
         title: "Doctor Name",
-        type: "string",
+        type: "dropdown",
+        options: [],
+      },
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
@@ -92,7 +104,7 @@ export class OrderSetComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -109,6 +121,7 @@ export class OrderSetComponent implements OnInit {
   rowRwmove($event: any) {
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.data = [...this.billingService.OrderSetItems];
+    this.billingService.calculateTotalAmount();
   }
 
   getOrserSetData() {
@@ -126,35 +139,60 @@ export class OrderSetComponent implements OnInit {
         this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["orderSet"].valueChanges.subscribe((val: any) => {
-      if (val && this.apiData && "orderSetBreakup" in this.apiData) {
+      if (
+        val &&
+        val.value &&
+        this.apiData &&
+        "orderSetBreakup" in this.apiData
+      ) {
         const filter = this.apiData.orderSetBreakup.filter((item: any) => {
-          return item.orderSetId == val;
+          return item.orderSetId == val.value;
         });
+        const selectedItems: any = [];
         this.questions[1].options = filter.map((r: any) => {
-          return { title: r.name, value: r.serviceid };
+          selectedItems.push(r.testId.toString());
+          return { title: r.name, value: r.testId };
         });
+        //this.questions[1].value = selectedItems;
         this.questions[1] = { ...this.questions[1] };
+        console.log(selectedItems);
+
+        setTimeout(() => {
+          this.formGroup.controls["items"].setValue(selectedItems);
+        });
       }
     });
   }
   add(priorityId = 1) {
+    const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
+      return item.orderSetId == this.formGroup.value.orderSet.value;
+    });
+
+    if (filter[0].serviceid == 25) {
+      priorityId = 57;
+    }
+
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.healthCheckup.value,
-          26,
+          this.formGroup.value.orderSet.value,
+          filter[0].serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
         this.billingService.addToOrderSet({
           sno: this.data.length + 1,
-          procedures: this.formGroup.value.otherService.title,
-          qty: 1,
-          specialisation: "",
+          orderSetName: this.formGroup.value.orderSet.title,
+          serviceType: "Investigation",
+          serviceItemName: "",
+          precaution: "P",
+          priority: "Routine",
+          specialization: "",
           doctorName: "",
           price: res.amount,
+          items: this.formGroup.value.items,
         });
 
         this.data = [...this.billingService.OrderSetItems];

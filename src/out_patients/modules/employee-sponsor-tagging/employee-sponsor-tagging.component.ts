@@ -243,6 +243,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       remark: {
         title: "Remarks",
         type: "textarea",
+        disabledSort: "true",
         // readonly: true,
       },
       tooltipColumn: "remark",
@@ -416,6 +417,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.questions[3].options = this.companySponsorData.map((a) => {
           return { title: a.name, value: a.id };
         });
+        this.questions[3] = { ...this.questions[3] };
       });
     this.http
       .get(ApiConstants.getCorporate)
