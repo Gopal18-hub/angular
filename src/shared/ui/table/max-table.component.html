@@ -283,6 +283,14 @@
 <ng-template #string let-data>
   <span *ngIf="data?.output">{{ data.output }}</span>
 </ng-template>
+<ng-template #stringLink let-data>
+  <span
+    *ngIf="data?.output"
+    class="cursor-pointer text-underline"
+    (click)="stringLinkClick(data)"
+    >{{ data.output }}</span
+  >
+</ng-template>
 <ng-template #number let-data>
   <span>{{ data?.output }}</span>
 </ng-template>

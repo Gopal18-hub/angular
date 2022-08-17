@@ -6,6 +6,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/order-set-details.component";
+import { MatDialog } from "@angular/material/dialog";
 @Component({
   selector: "out-patients-order-set",
   templateUrl: "./order-set.component.html",
@@ -60,7 +62,7 @@ export class OrderSetComponent implements OnInit {
       },
       orderSetName: {
         title: "Order Set Name",
-        type: "string",
+        type: "string_link",
         style: {
           width: "20%",
         },
@@ -110,7 +112,8 @@ export class OrderSetComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +131,27 @@ export class OrderSetComponent implements OnInit {
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.data = [...this.billingService.OrderSetItems];
     this.billingService.calculateTotalAmount();
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      console.log(res);
+      const itemsFilter = this.apiData.orderSetBreakup.filter((item: any) => {
+        return (
+          res.element.items.includes(item.testId) &&
+          res.element.orderSetId == item.orderSetId
+        );
+      });
+      console.log(itemsFilter);
+      this.matDialog.open(OrderSetDetailsComponent, {
+        width: "50%",
+        height: "50%",
+        data: {
+          orderSet: res.element,
+          items: itemsFilter,
+        },
+      });
+    });
   }
 
   getOrserSetData() {
@@ -161,13 +185,6 @@ export class OrderSetComponent implements OnInit {
         });
         this.questions[1].value = selectedItems;
         this.questions[1] = { ...this.questions[1] };
-        console.log(selectedItems);
-        console.log(this.formGroup.controls["items"]);
-        //this.formGroup.controls["items"].patchValue(selectedItems);
-        console.log(this.formGroup.controls["items"]);
-        // setTimeout(() => {
-        //   this.formGroup.controls["items"].setValue(this.questions[1].options);
-        // });
       }
     });
   }
@@ -201,6 +218,7 @@ export class OrderSetComponent implements OnInit {
           doctorName: "",
           price: res.amount,
           items: this.formGroup.value.items,
+          orderSetId: this.formGroup.value.orderSet.value,
         });
 
         this.data = [...this.billingService.OrderSetItems];
