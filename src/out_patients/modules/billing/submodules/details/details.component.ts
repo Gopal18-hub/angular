@@ -142,7 +142,7 @@ export class DetailsComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: 0.0,
-        readonly: true,
+        readonly: false,
       },
     },
   };
@@ -164,6 +164,20 @@ export class DetailsComponent implements OnInit {
   operator: any;
   billdate: any;
 
+
+  // BTN
+  otpbtn: boolean = true;
+  managerotpbtn: boolean = true;
+  refundbill: boolean = true;
+  approvalsend: boolean = true;
+  printbill: boolean = true;
+  printrefund: boolean = true;
+  resendbill: boolean = true;
+  consumableprint: boolean = true;
+  phptracksheet: boolean = true;
+  opprescription: boolean = true;
+  doxperprint: boolean = true;
+  clearbtn: boolean = true;
   ngOnInit(): void {
     this.router.navigate(['out-patient-billing/details'])
     .then(()=>{
@@ -324,5 +338,11 @@ export class DetailsComponent implements OnInit {
       width: "80%",
       height: "85%",
     });
+  }
+  clear()
+  {
+    this.BServiceForm.reset();
+    this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
+    this.billdetailservice.clear();
   }
 }

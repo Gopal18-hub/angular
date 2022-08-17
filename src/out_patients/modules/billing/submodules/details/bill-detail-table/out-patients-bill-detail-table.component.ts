@@ -193,7 +193,7 @@ export class BillDetailTableComponent implements OnInit {
     selectBox: false,
     clickedRows: false,
     clickSelection: "single",
-    removeRow: true,
+    removeRow: false,
     displayedColumns: [
       "Sno",
       "servicename",
