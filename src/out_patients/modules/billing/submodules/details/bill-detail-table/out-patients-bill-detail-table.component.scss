@@ -24,7 +24,21 @@
         padding: 0 !important;
     
     }
-        
+    ::ng-deep .max-table-wrapper {
+        table {
+            .mat-checkbox-inner-container-no-side-margin{
+               margin-left: 8px; 
+            }
+          .mat-row {
+            &:hover {
+              background-color: transparent !important;
+              .mat-cell {
+                color: initial !important;
+              }
+            }
+          }
+        }
+      }   
     ::ng-deep .patient-lbl
   {
     color: black;

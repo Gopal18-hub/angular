@@ -8,7 +8,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 
 import { Subject } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
-
+import { billDetailService } from "../billDetails.service";
 @Component({
   selector: "part-cred-bill-settlement",
   templateUrl: "./part-cred-bill-settlement.component.html",
@@ -20,7 +20,8 @@ export class PartialCredBillComponent implements OnInit {
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private billDetailService: billDetailService
   ) {}
 
   BDetailFormData = {
@@ -51,31 +52,31 @@ export class PartialCredBillComponent implements OnInit {
       fromDate: { type: "date", required: false },
       toDate: { type: "date", required: false },
       billAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       dipositrAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       discAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       discAftBill: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
       },
       refundAmt: {
-        type: "number",
+        type: "string",
         required: false,
         defaultValue: 0.0,
         readonly: true,
@@ -103,12 +104,6 @@ export class PartialCredBillComponent implements OnInit {
             value: "companyDue",
           },
         ],
-      },
-      otpTxt: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
       },
     },
   };
@@ -169,6 +164,11 @@ export class PartialCredBillComponent implements OnInit {
 
     this.BServiceForm = serviceFormResult.form;
     this.questions = serviceFormResult.questions;
+    this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
+    this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
+    this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
+    this.BServiceForm.controls["discAftBill"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
   }
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },

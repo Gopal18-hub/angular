@@ -15,8 +15,6 @@
 }
 
 .BServiceForm {   
-    
-   
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
@@ -362,4 +360,9 @@ margin-top: 0.19rem;
 }
 .mar-left-12{
     margin-left: 12.1rem;
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
 }
