@@ -19,7 +19,7 @@ export class HealthCheckupsComponent implements OnInit {
       department: {
         type: "autocomplete",
         placeholder: "--Select--",
-        required: true,
+        required: false,
       },
       healthCheckup: {
         type: "autocomplete",
@@ -44,10 +44,16 @@ export class HealthCheckupsComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       healthCheckups: {
         title: "Health Checkups",
         type: "string",
+        style: {
+          width: "50%",
+        },
       },
       price: {
         title: "Price",
@@ -60,7 +66,7 @@ export class HealthCheckupsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -70,27 +76,52 @@ export class HealthCheckupsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.gethealthcheckups();
+    this.data = this.billingService.HealthCheckupItems;
+    this.getDepartments();
   }
 
   rowRwmove($event: any) {
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.data = [...this.billingService.HealthCheckupItems];
+    this.billingService.calculateTotalAmount();
   }
 
-  gethealthcheckups() {
+  getDepartments() {
+    this.http.get(BillingApiConstants.departmentlookup).subscribe((res) => {
+      this.questions[0].options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+      this.questions[0] = { ...this.questions[0] };
+    });
+    this.formGroup.controls["department"].valueChanges.subscribe((val: any) => {
+      if (val && val.value) {
+        this.gethealthcheckups(val.value);
+      }
+    });
+  }
+
+  gethealthcheckups(departmentId: any) {
     this.http
       .get(
         BillingApiConstants.gethealthcheckups(
-          Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId")),
+          departmentId
         )
       )
-      .subscribe((res) => {
-        this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
-        });
-        this.questions[1] = { ...this.questions[1] };
-      });
+      .subscribe(
+        (res) => {
+          this.formGroup.controls["healthCheckup"].reset();
+          this.questions[1].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        },
+        (error) => {
+          this.formGroup.controls["healthCheckup"].reset();
+          this.questions[1].options = [];
+          this.questions[1] = { ...this.questions[1] };
+        }
+      );
   }
 
   add(priorityId = 1) {
@@ -111,6 +142,7 @@ export class HealthCheckupsComponent implements OnInit {
         });
 
         this.data = [...this.billingService.HealthCheckupItems];
+        this.formGroup.reset();
       });
   }
 }

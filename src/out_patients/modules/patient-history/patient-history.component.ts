@@ -127,7 +127,7 @@ export class PatientHistoryComponent implements OnInit {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '6rem'
+          width: '5rem'
         }
       },
       discountAmount: {
@@ -246,7 +246,7 @@ export class PatientHistoryComponent implements OnInit {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private lookupService: LookupService) { }
+    private lookupService: LookupService) {  }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -510,13 +510,13 @@ export class PatientHistoryComponent implements OnInit {
           {
             console.log('data');
             this.patienthistorylist = resultdata;
-            // this.patienthistorylist.forEach(e=>{
-            //   e.billAmount = parseInt(e.balanceAmt).toFixed(2);
-            //   e.discountAmount = parseInt(e.discountAmount).toFixed(2);
-            //   e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
-            //   e.refundAmount = parseInt(e.refundAmount).toFixed(2);
-            //   e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
-            // })
+            this.patienthistorylist.forEach(e=>{
+              e.billAmount = parseInt(e.balanceAmt).toFixed(2);
+              e.discountAmount = parseInt(e.discountAmount).toFixed(2);
+              e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
+              e.refundAmount = parseInt(e.refundAmount).toFixed(2);
+              e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+            })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);
             this.apiProcessing = false;

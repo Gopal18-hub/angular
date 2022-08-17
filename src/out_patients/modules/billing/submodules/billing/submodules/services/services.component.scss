@@ -16,6 +16,12 @@
   }
   .services-tab-container {
     ::ng-deep {
+      .w-36 {
+        width: 36%;
+      }
+      .total-cost {
+        color: #45c0be;
+      }
       .mat-error {
         display: none !important;
       }

@@ -6,6 +6,7 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { AuthService } from "../auth.service";
+import { environment } from "@environments/environment";
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -15,7 +16,9 @@ export class AuthGuardService implements CanActivate {
     // let url: string = state.url;
     if (!this.auth.isAuthenticated()) {
       //this.router.navigate(['login'], { queryParams: { redirect: url } });
-      this.router.navigate(["/login"]);
+      // this.router.navigate(["/login"]);
+      // window.location.href = window.location.origin + "/login";
+      window.location.href = environment.IentityServerRedirectUrl + "/login";
       // this.auth.startAuthentication();
       return false;
     }

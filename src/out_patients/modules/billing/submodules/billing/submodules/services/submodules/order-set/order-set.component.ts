@@ -24,7 +24,6 @@ export class OrderSetComponent implements OnInit {
       items: {
         type: "dropdown",
         placeholder: "--Select--",
-        required: true,
         multiple: true,
       },
     },
@@ -40,24 +39,75 @@ export class OrderSetComponent implements OnInit {
     removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
-    displayedColumns: ["sno", "orderSetName"],
+    displayedColumns: [
+      "sno",
+      "orderSetName",
+      "serviceType",
+      "serviceItemName",
+      "precaution",
+      "priority",
+      "specialization",
+      "doctorName",
+      "price",
+    ],
     columnsInfo: {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       orderSetName: {
         title: "Order Set Name",
         type: "string",
+        style: {
+          width: "180px",
+        },
+      },
+      serviceType: {
+        title: "Service Type",
+        type: "string",
+      },
+      serviceItemName: {
+        title: "Service Item Name",
+        type: "string",
+        style: {
+          width: "180px",
+        },
+      },
+      precaution: {
+        title: "Precaution",
+        type: "string",
+      },
+      priority: {
+        title: "Priority",
+        type: "string",
+      },
+      specialization: {
+        title: "Specialization",
+        type: "dropdown",
+        options: [],
+      },
+      doctorName: {
+        title: "Doctor Name",
+        type: "dropdown",
+        options: [],
+      },
+      price: {
+        title: "Price",
+        type: "number",
       },
     },
   };
+
+  apiData: any = {};
 
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -67,42 +117,91 @@ export class OrderSetComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.OrderSetItems;
     this.getOrserSetData();
   }
 
   rowRwmove($event: any) {
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.data = [...this.billingService.OrderSetItems];
+    this.billingService.calculateTotalAmount();
   }
 
   getOrserSetData() {
-    this.http.get(BillingApiConstants.getOrderSet).subscribe((res) => {
-      this.questions[0].options = res.orderSetBreakup.map((r: any) => {
-        return { title: r.name, value: r.orderSetId };
+    this.http
+      .get(
+        BillingApiConstants.getOrderSet(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.apiData = res;
+        this.questions[0].options = res.orderSetHeader.map((r: any) => {
+          return { title: r.orderSetName, value: r.orderSetId };
+        });
+        this.questions[0] = { ...this.questions[0] };
       });
+    this.formGroup.controls["orderSet"].valueChanges.subscribe((val: any) => {
+      if (
+        val &&
+        val.value &&
+        this.apiData &&
+        "orderSetBreakup" in this.apiData
+      ) {
+        const filter = this.apiData.orderSetBreakup.filter((item: any) => {
+          return item.orderSetId == val.value;
+        });
+        const selectedItems: any = [];
+        this.questions[1].options = filter.map((r: any) => {
+          selectedItems.push(r.testId);
+          return { title: r.name, value: r.testId };
+        });
+        this.questions[1].value = selectedItems;
+        this.questions[1] = { ...this.questions[1] };
+        console.log(selectedItems);
+        console.log(this.formGroup.controls["items"]);
+        //this.formGroup.controls["items"].patchValue(selectedItems);
+        console.log(this.formGroup.controls["items"]);
+        // setTimeout(() => {
+        //   this.formGroup.controls["items"].setValue(this.questions[1].options);
+        // });
+      }
     });
   }
   add(priorityId = 1) {
+    const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
+      return item.orderSetId == this.formGroup.value.orderSet.value;
+    });
+
+    if (filter[0].serviceid == 25) {
+      priorityId = 57;
+    }
+
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.healthCheckup.value,
-          26,
+          this.formGroup.value.orderSet.value,
+          filter[0].serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
         this.billingService.addToOrderSet({
           sno: this.data.length + 1,
-          procedures: this.formGroup.value.otherService.title,
-          qty: 1,
-          specialisation: "",
+          orderSetName: this.formGroup.value.orderSet.title,
+          serviceType: "Investigation",
+          serviceItemName: "",
+          precaution: "P",
+          priority: "Routine",
+          specialization: "",
           doctorName: "",
           price: res.amount,
+          items: this.formGroup.value.items,
         });
 
         this.data = [...this.billingService.OrderSetItems];
+        this.formGroup.reset();
       });
   }
 }

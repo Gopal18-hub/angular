@@ -114,10 +114,16 @@ export class OpRegApprovalComponent implements OnInit {
         title: "DOB",
         type: "date",
         tooltipColumn: "uDateOfBirth",
+        style: {
+          width: "80px",
+        },
       },
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
@@ -197,10 +203,16 @@ export class OpRegApprovalComponent implements OnInit {
       uDateOfBirth: {
         title: "DOB",
         type: "date",
+        style: {
+          width: "80px",
+        },
       },
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
@@ -297,6 +309,9 @@ export class OpRegApprovalComponent implements OnInit {
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
