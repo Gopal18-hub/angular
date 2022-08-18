@@ -70,6 +70,9 @@ export class OrderSetComponent implements OnInit {
       serviceType: {
         title: "Service Type",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       serviceItemName: {
         title: "Service Item Name",
@@ -125,10 +128,21 @@ export class OrderSetComponent implements OnInit {
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
     this.getOrserSetData();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.OrderSetItems.splice($event.index, 1);
+    this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = [...this.billingService.OrderSetItems];
     this.billingService.calculateTotalAmount();
   }
@@ -142,7 +156,6 @@ export class OrderSetComponent implements OnInit {
           res.element.orderSetId == item.orderSetId
         );
       });
-      console.log(itemsFilter);
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
         height: "50%",
