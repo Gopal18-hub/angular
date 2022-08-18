@@ -1015,4 +1015,27 @@ export namespace ApiConstants {
 
   export const postInitiateDeposit =
     environment.BillingApiUrl + "api/outpatientbilling/InitiateDeposit";
+
+  
+  export const getonlineopbillspecialisation =
+    environment.CommonApiUrl + "api/lookup/getallspecialisationname";
+
+  export const getselectedspecialisationonlineop = (
+      fromdate: any,
+      todate: any,
+      specializationId :any,
+      hsplocationid: any
+    ) => {
+      return (
+        environment.BillingApiUrl +
+        "api/outpatientbilling/getdisplayallbilldetails/" +
+        fromdate +
+        "/" +
+        todate +
+        "/" +
+        specializationId +
+        "/" + 
+        hsplocationid
+      );
+    };
 }
