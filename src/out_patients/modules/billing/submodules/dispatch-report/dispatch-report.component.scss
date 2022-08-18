@@ -46,6 +46,9 @@
             color: #000;
             border-radius: 6px;
         }
+        ::ng-deep .mat-datepicker-toggle{
+            display: none;
+        }
     }
     .label{
         ::ng-deep mat-label{

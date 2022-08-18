@@ -1,0 +1,16 @@
+.order-set-wrapper {
+  ::ng-deep {
+    maxhealth-table {
+      table {
+        width: 120% !important;
+      }
+    }
+  }
+}
+::ng-deep {
+  .mat-option-multiple.mat-active {
+    .mat-option-text {
+      color: #fff !important;
+    }
+  }
+}

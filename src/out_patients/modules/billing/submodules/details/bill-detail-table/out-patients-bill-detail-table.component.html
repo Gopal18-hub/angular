@@ -11,6 +11,8 @@
 <ng-container class="w-full">
 <maxhealth-table  #selectedServices
 [config]="config"
+[data]="data"
+(rowRwmove)="rowRwmove($event)"
 
 ></maxhealth-table>
 </ng-container>

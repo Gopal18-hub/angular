@@ -21,3 +21,12 @@
     line-height:34px;
     margin-bottom:3px;
   }
+
+  .op-approval-table-wrapper{
+    ::ng-deep .max-table-wrapper {
+      table{
+        width: 120% !important;  
+      }  
+      
+  }
+  }

@@ -293,7 +293,7 @@
 <!-- --------------------------------------------1st FORM CONTROL COLUMN------------------------------------------------------------------------                -->
             
               <div class="ml-2 flex-column  pt-1 h-full">
-              <div class="flex">
+              <div class="flex input-align-right">
                 <!-- <div class="flex"> -->
               
                   <maxhealth-question
@@ -306,7 +306,7 @@
                   
                   </maxhealth-question>
           </div>
-          <div class="flex">
+          <div class="flex input-align-right">
             <maxhealth-question
             [question]="questions[8]"
             [form]="BServiceForm"
@@ -318,7 +318,7 @@
             </maxhealth-question>
               </div>
            
-            <div class="flex">
+            <div class="flex input-align-right">
               <maxhealth-question
               [question]="questions[9]"
               [form]="BServiceForm"
@@ -328,8 +328,8 @@
               >
               
               </maxhealth-question>
-            </div>
-            <div class="flex">
+            </div> 
+            <div class="flex input-align-right">
               <maxhealth-question
                   [question]="questions[10]"
                   [form]="BServiceForm"
@@ -370,7 +370,7 @@
  <!-- --------------------------------------------2ND FORM CONTROL COLUMN------------------------------------------------------------------------                -->
               
                 <div class="ml-2 fle-column pt-1 h-full">
-                <div class="flex">
+                <div class="flex input-align-right">
                   <!-- <div class="flex"> -->
                 
                 <maxhealth-question
@@ -382,7 +382,7 @@
                 >
               </maxhealth-question>
             </div>
-            <div class="flex">
+            <div class="flex input-align-right">
                 <maxhealth-question
                 [question]="questions[12]"
                 [form]="BServiceForm"
@@ -433,6 +433,7 @@
                   color="primary" 
                   class="btn-otp btn-blue mr-1"
                   type="submit"
+                  [disabled]="otpbtn"
                   >
                  Send OTP
                   </button>
@@ -453,6 +454,7 @@
                   color="primary"
                   class="btn-otp btn-blue pl-2 mt-1"
                   type="submit"
+                  [disabled]="managerotpbtn"
                   >
                   Send OTP to Manager
                   </button>
@@ -466,6 +468,7 @@
                   color="primary"
                   class="btn-md"
                   type="submit"
+                  [disabled]="refundbill"
                   >
                  Refund Bill
                   </button>
@@ -477,6 +480,7 @@
                     color="primary"
                     class=" btn-md"
                     type="submit"
+                    [disabled]="approvalsend"
                     >
                     Send for Approval
                     </button>
@@ -488,6 +492,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printbill"
                     >
                     Print Bill
                     </button>
@@ -499,6 +504,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printrefund"
                     >
                     Print Refund Receipt
                     </button>
@@ -510,6 +516,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="resendbill"
                     >
                     Resend bill on Email
                     </button>
@@ -525,6 +532,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="consumableprint"
                     >
                     Consumable Print
                     </button>
@@ -536,6 +544,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="phptracksheet"
                       >
                       Php Track Sheet
                       </button>
@@ -547,6 +556,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="opprescription"
                       >
                       OP Prescription
                       </button>
@@ -558,6 +568,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="doxperprint"
                       >
                       Doxper Print
                       </button>
@@ -569,6 +580,8 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      (click)="clear()"
+                      [disabled]="!BServiceForm.dirty"
                       >
                       Clear
                       </button>

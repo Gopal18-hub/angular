@@ -81,6 +81,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -90,6 +91,8 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -103,30 +106,62 @@ export class HotListingApprovalComponent implements OnInit {
       ssn: {
         title: "SSN",
         type: "number",
+        style: {
+          width: "90px",
+        },
       },
       fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
+        style: {
+          width: "150px",
+        },
       },
       age: {
         title: "Age",
         type: "number",
         disabledSort: true,
+        style: {
+          width: "70px",
+        },
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "70px",
+        },
       },
       hotListing_Header: {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "230px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "180px",
+        },
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
@@ -165,6 +200,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -174,6 +210,10 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
+      "approvalRequestDoneByName",
+      "approvalRequestDone",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -206,11 +246,47 @@ export class HotListingApprovalComponent implements OnInit {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "170px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "120px",
+        },
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDate",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDoneByName: {
+        title: "Approved By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDone: {
+        title: "Approved Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDone",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
@@ -248,6 +324,7 @@ export class HotListingApprovalComponent implements OnInit {
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -257,6 +334,10 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
+      "approvalRequestDoneByName",
+      "approvalRequestDone",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -289,11 +370,48 @@ export class HotListingApprovalComponent implements OnInit {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "170px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "120px",
+        },
+      },
+
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDate",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDoneByName: {
+        title: "Rejected By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDone: {
+        title: "Rejected Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDone",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
