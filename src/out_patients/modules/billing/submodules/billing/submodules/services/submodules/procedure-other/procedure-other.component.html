@@ -51,6 +51,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
@@ -59,6 +60,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Print Est
       </button>

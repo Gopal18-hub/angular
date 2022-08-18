@@ -47,6 +47,20 @@ export class BillingService {
     });
   }
 
+  checkServicesAdded() {
+    if (
+      this.consultationItems.length > 0 ||
+      this.InvestigationItems.length > 0 ||
+      this.ProcedureItems.length > 0 ||
+      this.OrderSetItems.length > 0 ||
+      this.ConsumableItems.length > 0 ||
+      this.HealthCheckupItems.length > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   checkOtherServicesForHealthCheckups() {
     if (
       this.consultationItems.length > 0 ||
