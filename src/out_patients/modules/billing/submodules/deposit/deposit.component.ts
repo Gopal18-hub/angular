@@ -23,6 +23,7 @@ import { DepositService } from '@core/services/deposit.service';
 import { ReportService } from '@shared/services/report.service';
 import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
+import { MaxTableComponent } from "@shared/ui/table/max-table.component";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -30,6 +31,7 @@ import { LookupService } from "@core/services/lookup.service";
   styleUrls: ['./deposit.component.scss']
 })
 export class DepositComponent implements OnInit {
+  @ViewChild("MaxTableComponent") childTable: any;
 
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
@@ -43,11 +45,59 @@ export class DepositComponent implements OnInit {
       .subscribe(async (value) => {
         console.log(Object.keys(value).length);
         if (Object.keys(value).length > 0) {         
-          //const lookupdata = await this.loadGrid(value);        
+          const lookupdata = await this.loadGrid(value);        
         }
         });
      }
+     async loadGrid(formdata: any): Promise<any> {
+       let lookupdata: string | any[]; 
+       if(!formdata.data){
+         lookupdata = await this.lookupService.searchPatient({
+          data: formdata,
+        });
+       }else{
+         lookupdata = await this.lookupService.searchPatient(formdata);
+       }     
+      
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.depositForm.value.maxid = lookupdata[0]["maxid"];            
+          this.iacode = this.depositForm.value.maxid.split(".")[0];
+          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
+            this.getPatientDetailsForDeposit();           
+          }
+        }else if (lookupdata.length > 1){
+          const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "80vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
 
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.depositForm.controls["maxid"].setValue(maxID);
+               
+                      this.iacode = maxID.split(".")[0];
+                      this.regNumber = Number(maxID.split(".")[1]);
+                      this.depositForm.controls["maxid"].setValue(maxID);
+                      this.getPatientDetailsByMaxId();
+                      this.getPatientPreviousDepositDetails();
+              }
+
+              //this.similarContactPatientList = [];
+            });
+        }
+     }
   @ViewChild("deposittable") deposittable: any;
 
   depositformdata = {
@@ -297,49 +347,7 @@ export class DepositComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe(async (formdata: any) => {
       console.log(formdata);
-      this.router.navigate([], {
-        queryParams: {},
-        relativeTo: this.route,
-      });
-      const lookupdata = await this.lookupService.searchPatient(formdata);
-        console.log(lookupdata);
-        if (lookupdata.length == 1) {
-          if (lookupdata[0] && "maxid" in lookupdata[0]) {
-            this.depositForm.value.maxid = lookupdata[0]["maxid"];            
-          this.iacode = this.depositForm.value.maxid.split(".")[0];
-          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
-            this.getPatientDetailsForDeposit();           
-          }
-        }else if (lookupdata.length > 1){
-          const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
-            {
-              width: "60vw",
-              height: "80vh",
-              data: {
-                searchResults: lookupdata,
-              },
-            }
-          );
-
-          similarSoundDialogref
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result: any) => {
-              if (result) {
-                console.log(result.data["added"][0].maxid);
-                let maxID = result.data["added"][0].maxid;
-                this.depositForm.controls["maxid"].setValue(maxID);
-               
-                      this.iacode = maxID.split(".")[0];
-                      this.regNumber = Number(maxID.split(".")[1]);
-                      this.depositForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                      this.getPatientPreviousDepositDetails();
-              }
-
-              //this.similarContactPatientList = [];
-            });
-        }
+      await this.loadGrid(formdata);
     });
 
     }
@@ -366,7 +374,7 @@ export class DepositComponent implements OnInit {
         this.matDialog.closeAll();
         setTimeout(() => {
           this.MoreRefunddialog();
-        }, 3000);
+        }, 1000);
        
         console.log("Refund Dialog closed");
       }    
@@ -584,10 +592,12 @@ export class DepositComponent implements OnInit {
         });
         
         this.depoistList = resultData;   
+        console.log(resultData);
         setTimeout(() => {
+          console.log(this.deposittable.childTable.selection);
           this.deposittable.selection.changed
           .pipe(takeUntil(this._destroying$))
-          .subscribe((res: any) => {
+          .subscribe((res: any) => {           
             if (this.deposittable.selection.selected.length > 0) {              
               this.tableselectionexists = true;
               if(res.added[0].depositRefund == "Deposit"){
@@ -598,7 +608,16 @@ export class DepositComponent implements OnInit {
               this.tableselectionexists = false;
             }
           });
-        });   
+          this.deposittable.childTable.selection.changed
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            console.log(res);
+      // if (this.deposittable.childTable.selection.selected.length > 0) {
+      //   console.log(res);
+      // }
+
+          })
+        },5000);   
 
       },
       (error) => {
