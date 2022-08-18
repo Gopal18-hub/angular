@@ -273,6 +273,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
 
         this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
       });
   }
 
