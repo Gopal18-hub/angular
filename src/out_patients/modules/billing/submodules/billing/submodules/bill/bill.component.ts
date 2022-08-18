@@ -22,11 +22,13 @@ export class BillComponent implements OnInit {
         type: "dropdown",
         required: true,
         title: "Referral Doctor",
+        placeholder: "--Select--",
       },
       interactionDetails: {
         type: "dropdown",
         required: true,
         title: "Interaction Details",
+        placeholder: "--Select--",
       },
       billAmt: {
         type: "number",

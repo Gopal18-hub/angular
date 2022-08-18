@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, HostListener } from "@angular/core";
 import { MaxModules } from "../../constants/Modules";
 import { APP_BASE_HREF } from "@angular/common";
 import { AuthService } from "../../services/auth.service";
@@ -24,6 +24,11 @@ export class HeaderComponent implements OnInit {
   user: string = "";
   activeModule: any;
   private readonly _destroying$ = new Subject<void>();
+
+  @HostListener("window:keydown.Alt.r", ["$event"])
+  navigateToRegister($event: any) {
+    this.router.navigate(["/registration"]);
+  }
 
   constructor(
     @Inject(APP_BASE_HREF) private baseHref: string,

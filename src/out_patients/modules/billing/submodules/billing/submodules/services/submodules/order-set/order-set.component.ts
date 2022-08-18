@@ -6,6 +6,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/order-set-details.component";
+import { MatDialog } from "@angular/material/dialog";
 @Component({
   selector: "out-patients-order-set",
   templateUrl: "./order-set.component.html",
@@ -54,17 +56,23 @@ export class OrderSetComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       orderSetName: {
         title: "Order Set Name",
-        type: "string",
+        type: "string_link",
         style: {
-          width: "180px",
+          width: "20%",
         },
       },
       serviceType: {
         title: "Service Type",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       serviceItemName: {
         title: "Service Item Name",
@@ -90,6 +98,9 @@ export class OrderSetComponent implements OnInit {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       price: {
         title: "Price",
@@ -104,7 +115,8 @@ export class OrderSetComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -116,12 +128,43 @@ export class OrderSetComponent implements OnInit {
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
     this.getOrserSetData();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.OrderSetItems.splice($event.index, 1);
+    this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = [...this.billingService.OrderSetItems];
     this.billingService.calculateTotalAmount();
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      console.log(res);
+      const itemsFilter = this.apiData.orderSetBreakup.filter((item: any) => {
+        return (
+          res.element.items.includes(item.testId) &&
+          res.element.orderSetId == item.orderSetId
+        );
+      });
+      this.matDialog.open(OrderSetDetailsComponent, {
+        width: "50%",
+        height: "50%",
+        data: {
+          orderSet: res.element,
+          items: itemsFilter,
+        },
+      });
+    });
   }
 
   getOrserSetData() {
@@ -150,16 +193,11 @@ export class OrderSetComponent implements OnInit {
         });
         const selectedItems: any = [];
         this.questions[1].options = filter.map((r: any) => {
-          selectedItems.push(r.testId.toString());
+          selectedItems.push(r.testId);
           return { title: r.name, value: r.testId };
         });
-        //this.questions[1].value = selectedItems;
+        this.questions[1].value = selectedItems;
         this.questions[1] = { ...this.questions[1] };
-        console.log(selectedItems);
-
-        setTimeout(() => {
-          this.formGroup.controls["items"].setValue(selectedItems);
-        });
       }
     });
   }
@@ -193,6 +231,7 @@ export class OrderSetComponent implements OnInit {
           doctorName: "",
           price: res.amount,
           items: this.formGroup.value.items,
+          orderSetId: this.formGroup.value.orderSet.value,
         });
 
         this.data = [...this.billingService.OrderSetItems];
