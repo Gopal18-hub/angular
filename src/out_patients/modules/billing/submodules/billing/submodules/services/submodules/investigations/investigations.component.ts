@@ -80,13 +80,16 @@ export class InvestigationsComponent implements OnInit {
         title: "Priority",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       doctorName: {
@@ -94,7 +97,7 @@ export class InvestigationsComponent implements OnInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       price: {
