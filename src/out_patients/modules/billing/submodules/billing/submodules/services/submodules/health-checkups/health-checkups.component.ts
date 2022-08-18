@@ -91,6 +91,11 @@ export class HealthCheckupsComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.HealthCheckupItems.splice($event.index, 1);
+    this.billingService.HealthCheckupItems =
+      this.billingService.HealthCheckupItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
   }

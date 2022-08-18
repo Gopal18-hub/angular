@@ -137,6 +137,12 @@ export class OrderSetComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.OrderSetItems.splice($event.index, 1);
+    this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = [...this.billingService.OrderSetItems];
     this.billingService.calculateTotalAmount();
   }

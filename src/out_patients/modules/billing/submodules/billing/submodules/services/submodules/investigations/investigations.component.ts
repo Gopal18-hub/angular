@@ -130,6 +130,11 @@ export class InvestigationsComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.InvestigationItems =
+      this.billingService.InvestigationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.InvestigationItems];
     this.billingService.calculateTotalAmount();
   }

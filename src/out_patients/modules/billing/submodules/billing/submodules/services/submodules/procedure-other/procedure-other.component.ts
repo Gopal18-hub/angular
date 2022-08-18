@@ -125,6 +125,12 @@ export class ProcedureOtherComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.ProcedureItems.splice($event.index, 1);
+    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = [...this.billingService.ProcedureItems];
     this.billingService.calculateTotalAmount();
   }

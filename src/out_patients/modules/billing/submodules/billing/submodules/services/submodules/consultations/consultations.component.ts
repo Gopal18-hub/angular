@@ -140,6 +140,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   rowRwmove($event: any) {
     this.billingService.consultationItems.splice($event.index, 1);
+    this.billingService.consultationItems =
+      this.billingService.consultationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.consultationItems];
     this.billingService.calculateTotalAmount();
   }
