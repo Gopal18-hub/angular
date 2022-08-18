@@ -151,8 +151,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.tableRows.selection.changed.subscribe((res: any) => {
-      const source = res.added[0];
-      this.update(source.type, source.sno);
+      const source = res.added[0] || res.removed[0];
+      this.update(source.type, source.sno, source.doctorId);
     });
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
@@ -243,12 +243,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  update(priorityId = 57, sno = 0) {
+  update(priorityId = 57, sno = 0, doctorId: number) {
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.doctorName.value,
+          doctorId,
           25,
           this.cookie.get("HSPLocationId")
         )
@@ -288,6 +288,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
           doctorName: this.formGroup.value.doctorName.title,
+          doctorId: this.formGroup.value.doctorName.value,
           type: priorityId,
           scheduleSlot: "",
           bookingDate: "",
