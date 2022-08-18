@@ -26,14 +26,23 @@ export class ConsumableDetailsComponent implements OnInit {
       itemName: {
         title: "Item Name",
         type: "string",
+        style: {
+          width: "20%",
+        },
       },
       qty: {
         title: "Qty",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       amount: {
         title: "Amount",
         type: "number",
+        style: {
+          width: "10%",
+        },
       },
       include: {
         title: "Include in Procedure",
@@ -58,17 +67,18 @@ export class ConsumableDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.data.items.forEach((item: any, index: number) => {
       this.itemsData.push({
-        itemName: "",
-        qty: "",
-        amount: "",
+        itemName: item.itemName,
+        qty: item.quantity,
+        amount: item.amount,
         include: "",
         procedure: "",
         reason: "",
+        itemid: item.itemid,
       });
     });
   }
 
   close() {
-    this.dialogRef.close();
+    this.dialogRef.close({ data: this.tableRows.dataSource.data });
   }
 }

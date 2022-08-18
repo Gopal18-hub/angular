@@ -4,6 +4,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-registration-dialogue",
@@ -22,21 +23,29 @@ export class RegistrationDialogueComponent implements OnInit {
       bt2Msg: string;
     },
     private dialogRef: MatDialogRef<RegistrationDialogueComponent>,
-    public matDialog: MatDialog
-  ) // private cookie:CookieService,
-  {}
+    public matDialog: MatDialog, // private cookie:CookieService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
   btn1Functionlity() {
-    if (this.data.bt1Msg == "Ok") {
+    if (this.data.bt1Msg == "Proceed to Billing") {
+      let MaxId = this.data.message2.trim().split(":")[1];
       this.dialogRef.close("Success");
+      this.router.navigate(["out-patient-billing"], {
+        queryParams: { maxId: MaxId.trim() },
+      });
     }
   }
 
   btn2Functionlity() {
-    if (this.data.bt2Msg == "Cancel") {
+    if (this.data.bt2Msg == "Proceed to Deposit") {
+      let MaxId = this.data.message2.trim().split(":")[1];
       this.dialogRef.close();
+      this.router.navigate(["out-patient-billing", "deposit"], {
+        queryParams: { maxID: MaxId.trim() },
+      });
     }
   }
 }
