@@ -74,6 +74,7 @@
             mat-cell
             *matCellDef="let element"
             (click)="columnClickFun(element, col)"
+            class="type-{{ displayColumnsInfo[col]?.type }}"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col].type"
