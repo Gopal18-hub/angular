@@ -106,6 +106,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
 
   locationId = Number(this.cookie.get("HSPLocationId"));
 
+  excludeClinicsLocations = [67, 69];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -179,7 +181,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (this.locationId == 7) {
+    if (!this.excludeClinicsLocations.includes(this.locationId)) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res) => {

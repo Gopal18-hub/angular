@@ -70,6 +70,9 @@ export class OrderSetComponent implements OnInit {
       serviceType: {
         title: "Service Type",
         type: "string",
+        style: {
+          width: "120px",
+        },
       },
       serviceItemName: {
         title: "Service Item Name",
@@ -142,7 +145,6 @@ export class OrderSetComponent implements OnInit {
           res.element.orderSetId == item.orderSetId
         );
       });
-      console.log(itemsFilter);
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
         height: "50%",
