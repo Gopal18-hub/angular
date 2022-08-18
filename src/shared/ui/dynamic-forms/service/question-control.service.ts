@@ -116,23 +116,23 @@ export class QuestionControlService {
     if (question.maximum) {
       conditions.push(Validators.max(question.maximum));
     }
-    if (question.multiple) {
-      if (question.value && withValue) {
-        let multipleControls: any = [];
-        question.value.forEach((element: any) => {
-          multipleControls.push(new FormControl(element));
-        });
-        control = new FormArray(multipleControls, conditions);
-      } else {
-        control = new FormArray([], conditions);
-      }
+    // if (question.multiple) {
+    //   if (question.value && withValue) {
+    //     let multipleControls: any = [];
+    //     question.value.forEach((element: any) => {
+    //       multipleControls.push(new FormControl(element));
+    //     });
+    //     control = new FormArray(multipleControls, conditions);
+    //   } else {
+    //     control = new FormArray([], conditions);
+    //   }
+    // } else {
+    if (withValue) {
+      control = new FormControl(question.value || "", conditions);
     } else {
-      if (withValue) {
-        control = new FormControl(question.value || "", conditions);
-      } else {
-        control = new FormControl("", conditions);
-      }
+      control = new FormControl("", conditions);
     }
+    //}
     return control;
   }
 

@@ -121,10 +121,20 @@ export class InvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.InvestigationItems =
+      this.billingService.InvestigationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.InvestigationItems];
     this.billingService.calculateTotalAmount();
   }
@@ -159,7 +169,7 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return { title: r.name, value: r.id, serviceid: r.serviceid };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -238,7 +248,8 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
