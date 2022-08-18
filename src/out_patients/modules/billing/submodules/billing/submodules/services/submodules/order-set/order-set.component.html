@@ -1,4 +1,4 @@
-<div class="flex flex-column h-full">
+<div class="flex flex-column h-full order-set-wrapper">
   <div class="flex justify-between w-full">
     <form
       [formGroup]="formGroup"
@@ -6,28 +6,36 @@
       class="w-3/5 flex align-items-center"
     >
       <div class="flex w-full align-items-center">
-        <mat-label class="max-health-primary-color mr-4">Order Set</mat-label>
+        <mat-label class="max-health-primary-color mr-4 font-bold"
+          >Order Set</mat-label
+        >
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-2/5"
+          class="w-3/8"
         >
         </maxhealth-question>
 
-        <mat-label class="max-health-primary-color mr-4 ml-4">Items</mat-label>
+        <mat-label class="max-health-primary-color mr-4 ml-4 font-bold"
+          >Items</mat-label
+        >
         <maxhealth-question
           [question]="questions[1]"
           [form]="formGroup"
           [questions]="questions[1]"
           [index]="1"
-          class="w-2/5"
+          class="w-3/8"
         >
         </maxhealth-question>
       </div>
     </form>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        Total Estimation: Rs {{ billingService.totalCost }}
+      </div>
+
       <button
         mat-raised-button
         color="primary"
@@ -43,6 +51,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
@@ -51,6 +60,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Print Est
       </button>

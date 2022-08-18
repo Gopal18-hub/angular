@@ -1,9 +1,13 @@
 <div class="flex flex-column h-full">
   <div class="flex justify-between w-full">
     <div class="max-health-primary-color">
-      <h3 class="mb-0">Consumables</h3>
+      <h3 class="mb-0 font-bold">Consumables</h3>
     </div>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        Total Estimation: Rs {{ billingService.totalCost }}
+      </div>
+
       <!-- <button
         mat-raised-button
         color="primary"
@@ -17,6 +21,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
@@ -25,6 +30,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Print Est
       </button>

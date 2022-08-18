@@ -5,8 +5,8 @@
       autocomplete="off"
       class="w-3/4 flex align-items-center"
     >
-      <div class="flex">
-        <mat-label class="max-health-primary-color mr-2"
+      <div class="flex align-items-center">
+        <mat-label class="max-health-primary-color mr-2 font-bold"
           >Service Type</mat-label
         >
         <maxhealth-question
@@ -18,8 +18,8 @@
         >
         </maxhealth-question>
       </div>
-      <div class="flex ml-4 w-1/2">
-        <mat-label class="max-health-primary-color mr-2"
+      <div class="flex ml-4 w-1/2 align-items-center">
+        <mat-label class="max-health-primary-color mr-2 font-bold"
           >Investigation</mat-label
         >
         <maxhealth-question
@@ -32,7 +32,11 @@
         </maxhealth-question>
       </div>
     </form>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        Total Estimation: Rs {{ billingService.totalCost }}
+      </div>
+
       <button
         mat-raised-button
         color="primary"
@@ -48,14 +52,16 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2"
+        class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Print Est
       </button>

@@ -14,15 +14,18 @@ export class CreditDetailsComponent implements OnInit {
     properties: {
       company: {
         type: "dropdown",
-        title: "Company IOM",
+        title: "",
+        placeholder: "-Select-",
       },
       corporate: {
         type: "dropdown",
         title: "Corporate",
+        placeholder: "-Select-",
       },
       companyGSTN: {
         type: "dropdown",
         title: "Company GSTN",
+        placeholder: "-Select-",
       },
       letterDate: {
         type: "date",
@@ -58,6 +61,7 @@ export class CreditDetailsComponent implements OnInit {
       employeeName: {
         type: "dropdown",
         title: "Employee Name",
+        placeholder: "-Select-",
       },
       designation: {
         type: "string",

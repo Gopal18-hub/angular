@@ -6,7 +6,9 @@
       class="w-3/5 flex align-items-center"
     >
       <div class="flex w-full align-items-center">
-        <mat-label class="max-health-primary-color mr-4">Services</mat-label>
+        <mat-label class="max-health-primary-color mr-4 font-bold"
+          >Services</mat-label
+        >
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
@@ -16,7 +18,7 @@
         >
         </maxhealth-question>
 
-        <mat-label class="max-health-primary-color mr-4 ml-4"
+        <mat-label class="max-health-primary-color mr-4 ml-4 font-bold"
           >Procedure</mat-label
         >
         <maxhealth-question
@@ -29,7 +31,11 @@
         </maxhealth-question>
       </div>
     </form>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        Total Estimation: Rs {{ billingService.totalCost }}
+      </div>
+
       <button
         mat-raised-button
         color="primary"
@@ -45,6 +51,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
@@ -53,6 +60,7 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Print Est
       </button>

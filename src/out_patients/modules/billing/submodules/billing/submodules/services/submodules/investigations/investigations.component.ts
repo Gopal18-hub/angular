@@ -61,10 +61,16 @@ export class InvestigationsComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       investigations: {
         title: "Investigations",
         type: "string",
+        style: {
+          width: "25%",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -79,11 +85,17 @@ export class InvestigationsComponent implements OnInit {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "15%",
+        },
       },
       price: {
         title: "Price",
@@ -96,7 +108,7 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService
   ) {}
 
   ngOnInit(): void {
@@ -109,11 +121,22 @@ export class InvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.InvestigationItems =
+      this.billingService.InvestigationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.InvestigationItems];
+    this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
@@ -146,7 +169,7 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return { title: r.name, value: r.id, serviceid: r.serviceid };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -225,7 +248,8 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          41,
+          this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
