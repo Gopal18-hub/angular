@@ -134,9 +134,14 @@ export class HealthCheckupsComponent implements OnInit {
       .subscribe(
         (res) => {
           this.formGroup.controls["healthCheckup"].reset();
-          this.questions[1].options = res.map((r: any) => {
-            return { title: r.name, value: r.id };
-          });
+          if (Array.isArray(res)) {
+            this.questions[1].options = res.map((r: any) => {
+              return { title: r.name, value: r.id };
+            });
+          } else {
+            this.questions[1].options = [];
+          }
+
           this.questions[1] = { ...this.questions[1] };
         },
         (error) => {

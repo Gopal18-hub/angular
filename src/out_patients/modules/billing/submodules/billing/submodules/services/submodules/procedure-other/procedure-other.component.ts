@@ -78,6 +78,9 @@ export class ProcedureOtherComponent implements OnInit {
           { title: 4, value: 4 },
           { title: 5, value: 5 },
         ],
+        style: {
+          width: "60px",
+        },
       },
       specialisation: {
         title: "Specialisation",
@@ -217,12 +220,25 @@ export class ProcedureOtherComponent implements OnInit {
           serviceId
         )
       )
-      .subscribe((res) => {
-        this.questions[1].options = res.map((r: any) => {
-          return { title: r.itemName, value: r.itemID };
-        });
-        this.questions[1] = { ...this.questions[1] };
-      });
+      .subscribe(
+        (res) => {
+          this.formGroup.controls["procedure"].reset();
+          if (Array.isArray(res)) {
+            this.questions[1].options = res.map((r: any) => {
+              return { title: r.itemName, value: r.itemID };
+            });
+          } else {
+            this.questions[1].options = [];
+          }
+
+          this.questions[1] = { ...this.questions[1] };
+        },
+        (error) => {
+          this.formGroup.controls["procedure"].reset();
+          this.questions[1].options = [];
+          this.questions[1] = { ...this.questions[1] };
+        }
+      );
   }
 
   update(sno = 0) {
@@ -252,7 +268,7 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((res: any) => {
         this.billingService.addToProcedure({
           sno: this.data.length + 1,
-          procedures: this.formGroup.value.otherService.title,
+          procedures: this.formGroup.value.procedure.title,
           qty: 1,
           specialisation: "",
           doctorName: "",
