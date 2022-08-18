@@ -131,6 +131,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         return { title: r.name, value: r.id };
       });
     });
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {

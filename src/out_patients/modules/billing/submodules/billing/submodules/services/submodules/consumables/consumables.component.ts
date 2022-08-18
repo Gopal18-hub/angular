@@ -78,6 +78,11 @@ export class ConsumablesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   ngAfterViewInit(): void {

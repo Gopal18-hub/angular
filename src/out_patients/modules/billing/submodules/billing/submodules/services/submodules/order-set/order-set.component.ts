@@ -128,6 +128,11 @@ export class OrderSetComponent implements OnInit {
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
     this.getOrserSetData();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {

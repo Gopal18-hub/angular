@@ -6,6 +6,9 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import { MatDialog } from "@angular/material/dialog";
+import { PackageDoctorModificationComponent } from "../../../../prompts/package-doctor-modification/package-doctor-modification.component";
+
 @Component({
   selector: "out-patients-health-checkups",
   templateUrl: "./health-checkups.component.html",
@@ -50,7 +53,7 @@ export class HealthCheckupsComponent implements OnInit {
       },
       healthCheckups: {
         title: "Health Checkups",
-        type: "string",
+        type: "string_link",
         style: {
           width: "50%",
         },
@@ -66,7 +69,8 @@ export class HealthCheckupsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -78,12 +82,31 @@ export class HealthCheckupsComponent implements OnInit {
     this.questions = formResult.questions;
     this.data = this.billingService.HealthCheckupItems;
     this.getDepartments();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      console.log(res);
+      this.matDialog.open(PackageDoctorModificationComponent, {
+        width: "50%",
+        height: "50%",
+        data: {
+          orderSet: res.element,
+          items: [],
+        },
+      });
+    });
   }
 
   getDepartments() {

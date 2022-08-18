@@ -113,6 +113,11 @@ export class ProcedureOtherComponent implements OnInit {
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {

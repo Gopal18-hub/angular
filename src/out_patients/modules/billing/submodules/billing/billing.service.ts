@@ -15,6 +15,8 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  clearAllItems = new Subject<boolean>();
+
   totalCost = 0;
 
   clear() {
@@ -25,6 +27,8 @@ export class BillingService {
     this.ProcedureItems = [];
     this.OrderSetItems = [];
     this.ConsumableItems = [];
+    this.totalCost = 0;
+    this.clearAllItems.next(true);
   }
 
   calculateTotalAmount() {
