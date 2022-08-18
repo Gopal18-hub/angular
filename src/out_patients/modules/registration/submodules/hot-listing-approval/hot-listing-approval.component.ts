@@ -62,13 +62,17 @@ export class HotListingApprovalComponent implements OnInit {
       {
         title: "OP Billing",
         actionType: "link",
-        routeLink: "",
+        routeLink: "/out-patient-billing",
       },
       {
         title: "Bill Details",
+        actionType: "link",
+        routeLink: "/out-patient-billing/details",
       },
       {
         title: "Deposits",
+        actionType: "link",
+        routeLink: "/out-patient-billing/deposit",
       },
       {
         title: "Admission",
@@ -78,6 +82,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       {
         title: "Visit History",
+        actionType: "link",
+        routeLink: "/patient-history",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -180,14 +186,18 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        // actionType: "link",
-        // routeLink: "",
+        actionType: "link",
+        routeLink: "/out-patient-billing",
       },
       {
         title: "Bill Details",
+        actionType: "link",
+        routeLink: "/out-patient-billing/details",
       },
       {
         title: "Deposits",
+        actionType: "link",
+        routeLink: "/out-patient-billing/deposit",
       },
       {
         title: "Admission",
@@ -197,6 +207,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       {
         title: "Visit History",
+        actionType: "link",
+        routeLink: "/patient-history",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -304,14 +316,18 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        // actionType: "link",
-        // routeLink: "",
+        actionType: "link",
+        routeLink: "/out-patient-billing",
       },
       {
         title: "Bill Details",
+        actionType: "link",
+        routeLink: "/out-patient-billing/details",
       },
       {
         title: "Deposits",
+        actionType: "link",
+        routeLink: "/out-patient-billing/deposit",
       },
       {
         title: "Admission",
@@ -321,6 +337,8 @@ export class HotListingApprovalComponent implements OnInit {
       },
       {
         title: "Visit History",
+        actionType: "link",
+        routeLink: "/patient-history",
       },
     ],
     dateformat: "dd/MM/yyyy",

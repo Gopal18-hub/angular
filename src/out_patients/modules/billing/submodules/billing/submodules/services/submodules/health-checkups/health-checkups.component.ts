@@ -8,6 +8,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
 import { MatDialog } from "@angular/material/dialog";
 import { PackageDoctorModificationComponent } from "../../../../prompts/package-doctor-modification/package-doctor-modification.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-health-checkups",
@@ -70,7 +71,8 @@ export class HealthCheckupsComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -158,6 +160,17 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.HealthCheckupItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.healthCheckup.value;
+      }
+    );
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Health Checkup Item already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -172,6 +185,9 @@ export class HealthCheckupsComponent implements OnInit {
           sno: this.data.length + 1,
           healthCheckups: this.formGroup.value.healthCheckup.title,
           price: res.amount,
+          itemid: this.formGroup.value.healthCheckup.value,
+          serviceid: 26,
+          priorityId: priorityId,
         });
 
         this.data = [...this.billingService.HealthCheckupItems];

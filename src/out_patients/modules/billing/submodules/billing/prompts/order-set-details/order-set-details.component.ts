@@ -19,18 +19,30 @@ export class OrderSetDetailsComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       serviceType: {
         title: "Service Type",
         type: "string",
+        style: {
+          width: "20%",
+        },
       },
       serviceItemName: {
         title: "Service Item Name",
-        type: "date",
+        type: "string",
+        style: {
+          width: "40%",
+        },
       },
       price: {
         title: "Price",
         type: "number",
+        style: {
+          width: "10%",
+        },
       },
     },
   };
@@ -45,8 +57,8 @@ export class OrderSetDetailsComponent implements OnInit {
       this.itemsData.push({
         sno: index + 1,
         serviceType: "",
-        serviceItemName: item.name,
-        price: 0,
+        serviceItemName: item.procedureName,
+        price: item.returnOutPut,
       });
     });
   }

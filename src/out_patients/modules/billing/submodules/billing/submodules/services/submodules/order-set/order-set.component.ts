@@ -8,6 +8,8 @@ import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
 import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/order-set-details.component";
 import { MatDialog } from "@angular/material/dialog";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-order-set",
   templateUrl: "./order-set.component.html",
@@ -93,13 +95,16 @@ export class OrderSetComponent implements OnInit {
         title: "Specialization",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
         style: {
-          width: "10%",
+          width: "17%",
         },
       },
       price: {
@@ -116,7 +121,8 @@ export class OrderSetComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -149,19 +155,12 @@ export class OrderSetComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      console.log(res);
-      const itemsFilter = this.apiData.orderSetBreakup.filter((item: any) => {
-        return (
-          res.element.items.includes(item.testId) &&
-          res.element.orderSetId == item.orderSetId
-        );
-      });
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
         height: "50%",
         data: {
           orderSet: res.element,
-          items: itemsFilter,
+          items: res.element.apiItems,
         },
       });
     });
@@ -202,24 +201,51 @@ export class OrderSetComponent implements OnInit {
     });
   }
   add(priorityId = 1) {
-    const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
-      return item.orderSetId == this.formGroup.value.orderSet.value;
+    let exist = this.billingService.OrderSetItems.findIndex((item: any) => {
+      return item.itemid == this.formGroup.value.orderSet.value;
     });
-
-    if (filter[0].serviceid == 25) {
-      priorityId = 57;
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Order Set already added to the service list"
+      );
+      return;
     }
 
+    let subItems: any = [];
+
+    this.formGroup.value.items.forEach((subItem: any) => {
+      const exist = this.apiData.orderSetBreakup.findIndex((set: any) => {
+        return set.testId == subItem;
+      });
+      if (exist > -1) {
+        const temp = this.apiData.orderSetBreakup[exist];
+        subItems.push({
+          serviceID: temp.serviceid,
+          itemId: temp.testId,
+          bundleId: 0,
+          priority: temp.serviceid == 25 ? 57 : 1,
+        });
+      }
+    });
+
+    // const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
+    //   return item.orderSetId == this.formGroup.value.orderSet.value;
+    // });
+
+    // if (filter[0].serviceid == 25) {
+    //   priorityId = 57;
+    // }
+
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.orderSet.value,
-          filter[0].serviceid,
-          this.cookie.get("HSPLocationId")
-        )
+      .post(
+        BillingApiConstants.getPriceBulk(this.cookie.get("HSPLocationId")),
+        subItems
       )
       .subscribe((res: any) => {
+        let amunt = 0;
+        res.forEach((resItem: any) => {
+          amunt += resItem.returnOutPut;
+        });
         this.billingService.addToOrderSet({
           sno: this.data.length + 1,
           orderSetName: this.formGroup.value.orderSet.title,
@@ -229,9 +255,11 @@ export class OrderSetComponent implements OnInit {
           priority: "Routine",
           specialization: "",
           doctorName: "",
-          price: res.amount,
+          price: amunt,
           items: this.formGroup.value.items,
           orderSetId: this.formGroup.value.orderSet.value,
+          itemid: this.formGroup.value.orderSet.value,
+          apiItems: res,
         });
 
         this.data = [...this.billingService.OrderSetItems];

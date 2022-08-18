@@ -76,7 +76,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "25%",
+          width: "17%",
         },
       },
       type: {
@@ -84,20 +84,29 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "20%",
+          width: "40%",
         },
       },
       scheduleSlot: {
         title: "Schedule Slot",
         type: "string",
+        style: {
+          width: "10%",
+        },
       },
       bookingDate: {
         title: "Booking Date",
         type: "date",
+        style: {
+          width: "10%",
+        },
       },
       price: {
         title: "Price",
         type: "number",
+        style: {
+          width: "10%",
+        },
       },
     },
   };
@@ -264,6 +273,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
 
         this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
       });
   }
 

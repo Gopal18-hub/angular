@@ -15,6 +15,8 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-investigations",
   templateUrl: "./investigations.component.html",
@@ -80,13 +82,16 @@ export class InvestigationsComponent implements OnInit {
         title: "Priority",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       doctorName: {
@@ -94,7 +99,7 @@ export class InvestigationsComponent implements OnInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       price: {
@@ -108,7 +113,8 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -243,6 +249,17 @@ export class InvestigationsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.investigation.value;
+      }
+    );
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Investigation already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -262,6 +279,10 @@ export class InvestigationsComponent implements OnInit {
           specialisation: "",
           doctorName: "",
           price: res.amount,
+          serviceid:
+            this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
+          itemid: this.formGroup.value.investigation.value,
         });
 
         this.data = [...this.billingService.InvestigationItems];
