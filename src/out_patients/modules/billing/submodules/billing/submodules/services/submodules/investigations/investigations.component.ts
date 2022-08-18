@@ -164,7 +164,7 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return { title: r.name, value: r.id, serviceid: r.serviceid };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -243,7 +243,8 @@ export class InvestigationsComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
