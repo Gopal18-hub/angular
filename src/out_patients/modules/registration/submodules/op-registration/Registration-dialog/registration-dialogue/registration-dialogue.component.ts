@@ -22,20 +22,19 @@ export class RegistrationDialogueComponent implements OnInit {
       bt2Msg: string;
     },
     private dialogRef: MatDialogRef<RegistrationDialogueComponent>,
-    public matDialog: MatDialog
-  ) // private cookie:CookieService,
-  {}
+    public matDialog: MatDialog // private cookie:CookieService,
+  ) {}
 
   ngOnInit(): void {}
 
   btn1Functionlity() {
-    if (this.data.bt1Msg == "Ok") {
+    if (this.data.bt1Msg == "Proceed to Billing") {
       this.dialogRef.close("Success");
     }
   }
 
   btn2Functionlity() {
-    if (this.data.bt2Msg == "Cancel") {
+    if (this.data.bt2Msg == "Proceed to Deposit") {
       this.dialogRef.close();
     }
   }

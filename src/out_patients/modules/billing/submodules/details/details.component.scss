@@ -127,8 +127,8 @@
 {
     width: 9.5rem;
     height: 100%;
-    margin-top: 1.5%;
-    margin-bottom: 0px;
+    margin-top: 5px;
+    // margin-bottom: 0px;
     padding: 0px;
     // ::ng-deep .mat-form-field-wrapper
     // {
@@ -136,6 +136,9 @@
     //   padding-bottom: 0;  
       
     // } 
+    ::ng-deep .mat-form-field{
+        line-height: 1.6;
+    }
 }
 .btn-otp
 {

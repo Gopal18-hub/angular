@@ -67,6 +67,9 @@ export class ProcedureOtherComponent implements OnInit {
       procedures: {
         title: "Procedures",
         type: "string",
+        style: {
+          width: "35%",
+        },
       },
       qty: {
         title: "Qty",
@@ -79,18 +82,24 @@ export class ProcedureOtherComponent implements OnInit {
           { title: 5, value: 5 },
         ],
         style: {
-          width: "60px",
+          width: "70px",
         },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       price: {
         title: "Price",

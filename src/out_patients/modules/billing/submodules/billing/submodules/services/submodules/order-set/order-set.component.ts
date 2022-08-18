@@ -93,13 +93,16 @@ export class OrderSetComponent implements OnInit {
         title: "Specialization",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
         style: {
-          width: "10%",
+          width: "17%",
         },
       },
       price: {
