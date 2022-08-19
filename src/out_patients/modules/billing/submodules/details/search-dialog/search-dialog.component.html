@@ -33,7 +33,7 @@
         <div class="ml-2">
             <mat-label class="nowrap">Mobile No</mat-label>
         </div>
-        <div class="ml-1 w-1/10 bg-white border-radius-md">
+        <div class="ml-1 w-1/10 bg-white border-radius-md label">
             <maxhealth-question
                 [question]="questions[2]"
                 [form]="searchform"
@@ -78,7 +78,7 @@
             </div>
         </div>
         <div class="ml-2">
-            <button mat-raised-button color="primary" type="submit" class="searchbtn">
+            <button mat-raised-button color="primary" type="submit" class="searchbtn" (click)="search()">
                 <img src="assets/lens.svg" class="lens-icon">
                 Search
             </button>
@@ -88,7 +88,7 @@
     <div class="w-full h-7/10 mt-2" style="">
         <maxhealth-table
             [config]="config"
-            [data]="data"
+            [data]="getsearchopbillslist"
             #table
         ></maxhealth-table>
     </div>
@@ -105,7 +105,7 @@
             <button mat-raised-button class="pointer-disable ml-3" color="primary" type="submit">* Estimate Age</button>
         </div>
         <div class="float-right">
-            <button mat-raised-button class="ml-3" color="primary" type="submit">Clear</button>
+            <button mat-raised-button class="ml-3" color="primary" type="submit" (click)="clear()">Clear</button>
         </div>
     </div>   
         
