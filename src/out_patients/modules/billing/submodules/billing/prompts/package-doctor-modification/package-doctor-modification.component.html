@@ -1,1 +1,30 @@
-<p>package-doctor-modification works!</p>
+<div class="flex flex-column h-full">
+  <h2 class="max-health-primary-color">Package Doctor Modification</h2>
+  <div class="h-3/4">
+    <maxhealth-table
+      [config]="config"
+      [data]="itemsData"
+      #table
+    ></maxhealth-table>
+  </div>
+  <div class="flex mt-4 justify-end">
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-6"
+      type="button"
+      (click)="close()"
+    >
+      View Track Sheet
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial"
+      type="button"
+      (click)="close()"
+    >
+      Submit
+    </button>
+  </div>
+</div>

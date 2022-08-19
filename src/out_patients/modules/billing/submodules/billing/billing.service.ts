@@ -15,6 +15,8 @@ export class BillingService {
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
 
+  clearAllItems = new Subject<boolean>();
+
   totalCost = 0;
 
   clear() {
@@ -25,6 +27,8 @@ export class BillingService {
     this.ProcedureItems = [];
     this.OrderSetItems = [];
     this.ConsumableItems = [];
+    this.totalCost = 0;
+    this.clearAllItems.next(true);
   }
 
   calculateTotalAmount() {
@@ -41,6 +45,20 @@ export class BillingService {
     this.OrderSetItems.forEach((item: any) => {
       this.totalCost += item.price;
     });
+  }
+
+  checkServicesAdded() {
+    if (
+      this.consultationItems.length > 0 ||
+      this.InvestigationItems.length > 0 ||
+      this.ProcedureItems.length > 0 ||
+      this.OrderSetItems.length > 0 ||
+      this.ConsumableItems.length > 0 ||
+      this.HealthCheckupItems.length > 0
+    ) {
+      return true;
+    }
+    return false;
   }
 
   checkOtherServicesForHealthCheckups() {

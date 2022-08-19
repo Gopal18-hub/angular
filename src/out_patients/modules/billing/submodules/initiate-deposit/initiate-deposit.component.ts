@@ -59,6 +59,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     properties:{
       maxid:{
         type:"string",
+        defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobileno:{
         type:"number",
@@ -220,6 +221,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     this.maxid="";
     this.initiatedepositForm.reset();
     this.selectpatientLsit = [];
+    this.initiatedepositForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
   }
 
   getInitatedepositDetailsByMaxId(){

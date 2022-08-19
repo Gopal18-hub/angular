@@ -15,6 +15,8 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-investigations",
   templateUrl: "./investigations.component.html",
@@ -80,13 +82,16 @@ export class InvestigationsComponent implements OnInit {
         title: "Priority",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       doctorName: {
@@ -94,7 +99,7 @@ export class InvestigationsComponent implements OnInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       price: {
@@ -108,7 +113,8 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -121,10 +127,20 @@ export class InvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.InvestigationItems =
+      this.billingService.InvestigationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.InvestigationItems];
     this.billingService.calculateTotalAmount();
   }
@@ -159,7 +175,7 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return { title: r.name, value: r.id, serviceid: r.serviceid };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -233,12 +249,24 @@ export class InvestigationsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.investigation.value;
+      }
+    );
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Investigation already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
@@ -251,6 +279,10 @@ export class InvestigationsComponent implements OnInit {
           specialisation: "",
           doctorName: "",
           price: res.amount,
+          serviceid:
+            this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
+          itemid: this.formGroup.value.investigation.value,
         });
 
         this.data = [...this.billingService.InvestigationItems];

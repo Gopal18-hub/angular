@@ -34,7 +34,7 @@ const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
-    canActivate: [AuthGuardService],
+  //  canActivate: [AuthGuardService],
     children: [
       {
         path: "",
@@ -46,11 +46,10 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent, canActivate: [AuthGuardService], },
+      { path: "deposit", component: DepositComponent,  },
       {
         path: "details",
-        component: DetailsComponent,
-        canActivate: [AuthGuardService],
+        component: DetailsComponent,      
         children: [
           {
             path: "",
@@ -67,31 +66,28 @@ const routes: Routes = [
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent, canActivate: [AuthGuardService], },
-      { path: "op-order-request", component: OpOrderRequestComponent, canActivate: [AuthGuardService], },
+      { path: "online-op-bill", component: OnlineOpBillsComponent,  },
+      { path: "op-order-request", component: OpOrderRequestComponent, },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
-        canActivate: [AuthGuardService],
         children: [
           { path: "", component: BillDetailComponent },
           { path: "credit-details", component: MiscCredDetail },
           { path: "bill", component: BillDetailComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent, canActivate: [AuthGuardService], },
-      { path: "op-refund-approval", component: OprefundApprovalComponent, canActivate: [AuthGuardService], },
-      { path: "dispatch-report", component: DispatchReportComponent, canActivate: [AuthGuardService], },
-      { path: "dmg-mapping", component: DmgMappingComponent, canActivate: [AuthGuardService], },
+      { path: "initiate-deposit", component: InitiateDepositComponent,  },
+      { path: "op-refund-approval", component: OprefundApprovalComponent,  },
+      { path: "dispatch-report", component: DispatchReportComponent, },
+      { path: "dmg-mapping", component: DmgMappingComponent, },
       {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
-        canActivate: [AuthGuardService],
       },
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
-        canActivate: [AuthGuardService],
         children: [
           { path: "", component: PostDischargeServicesComponent },
           { path: "bill", component: PostDischargeBillComponent },
