@@ -642,7 +642,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     let iacode = maxid.split(".")[0];
     let regno = maxid.split(".")[1];
     this.http
-      .get(ApiConstants.getpatientsponsordataonmaxid(iacode, regno))
+      .get(
+        ApiConstants.getpatientsponsordataonmaxid(
+          iacode,
+          regno,
+          this.hsplocationId,
+          this.userId
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data) => {
@@ -1255,16 +1262,30 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       }
     }
   }
-
+  iomdata: any;
   iomClick() {
     console.log("inside iomclick");
     //DO an api call here
     this.http
-      .get(ApiConstants.getopcompanyiomlocationwise)
+      .get(
+        ApiConstants.getopcompanyiomlocationwise(
+          this.hsplocationId,
+          this.companyId
+        )
+      )
       .subscribe((data) => {
         console.log(data);
+        this.iomdata = data;
+        // this.returnHtmlFromRichText(this.iomdata);
+        // console.log(this.returnHtmlFromRichText(this.iomdata));
       });
-    this.dialog.open(CompanydialogComponent, { width: "40vw", height: "70vh" });
+    this.dialog.open(CompanydialogComponent, {
+      width: "40vw",
+      height: "70vh",
+      data: {
+        iomresponse: this.iomdata,
+      },
+    });
   }
 
   cleardata() {

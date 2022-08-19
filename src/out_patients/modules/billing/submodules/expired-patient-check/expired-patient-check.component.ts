@@ -29,6 +29,7 @@ interface deleteexpiredResponse {
 })
 export class ExpiredPatientCheckComponent implements OnInit {
   lastUpdatedBy: string = this.cookie.get("UserName");
+  userId = Number(this.cookie.get("UserId"));
   currentTime: string = new Date().toLocaleString();
   expiredpatientformdata = {
     type: "object",
@@ -398,7 +399,11 @@ export class ExpiredPatientCheckComponent implements OnInit {
         if (result == true) {
           this.http
             .post(
-              ApiConstants.deleteexpiredpatientdetail(this.regno, this.iacode),
+              ApiConstants.deleteexpiredpatientdetail(
+                this.regno,
+                this.iacode,
+                this.userId
+              ),
               null
             )
             .pipe(takeUntil(this._destroying$))

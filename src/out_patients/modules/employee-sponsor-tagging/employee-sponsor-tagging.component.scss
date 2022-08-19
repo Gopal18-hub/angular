@@ -44,6 +44,7 @@
    font-style: italic;
     color:#45C0BE;
     font-weight:600;
+    cursor: pointer;
     //opacity:1;
 }
 
@@ -200,6 +201,13 @@ margin-left:0.35%;
 .gridcheckbox-margin-right{
     ::ng-deep mat-checkbox .mat-checkbox-layout{
         margin-right:13rem !important
+    }
+}
+
+.dropdown-width{
+    ::ng-deep .mat-select-panel-wrap{
+        width:25rem !important;
+        height:15rem !important;
     }
 }
 
