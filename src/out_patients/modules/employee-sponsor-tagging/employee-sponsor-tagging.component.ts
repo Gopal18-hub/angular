@@ -761,6 +761,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                   // this.dependantChecked = false;
                 }
                 console.log(this.dependantChecked);
+                // let date = new Date(item.dob.trim()).toDateString();
+                // console.log(date);
                 // this.stack=' Thu Jul 26 2018 15:30:00 GMT-0500 ';
                 //item.dob = new Date(item.dob);
                 //console.log('StackMoment',this.StackMoment)
@@ -771,7 +773,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
                 //item.dob = new Date(item.dob).toLocaleDateString();
                 //  console.log(item.dob);
-                //item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+                // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
                 //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
                 // this.doblist.push(new Date(item.dob));
                 // this.doblist.forEach((a: any) => {
@@ -969,6 +971,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       if (value == true) {
         if (this.empid == null) {
           this.dialogService.info("Please select one dependant");
+        } else if (this.companyId == 0) {
+          this.dialogService.info("Please select company");
         } else {
           this.http
             .post(

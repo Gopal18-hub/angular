@@ -197,5 +197,12 @@ margin-left:0.35%;
     font-size:15px;
 }
 
+.gridcheckbox-margin-right{
+    ::ng-deep mat-checkbox .mat-checkbox-layout{
+        margin-right:13rem !important
+    }
+}
+
+
 
 
