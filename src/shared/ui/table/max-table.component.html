@@ -121,7 +121,7 @@
         <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
           &nbsp;
         </th>
-        <td mat-cell *matCellDef="let element; let i = index" class="pl-4">
+        <td mat-cell *matCellDef="let element; let i = dataIndex" class="pl-4">
           <button mat-icon-button color="accent" (click)="removeRow(i)">
             <div class="remove-row-icon-wrapper">
               <svg

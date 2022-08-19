@@ -142,6 +142,7 @@ export class OrderSetComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    console.log($event.index);
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
       (item: any, index: number) => {
@@ -242,24 +243,24 @@ export class OrderSetComponent implements OnInit {
         subItems
       )
       .subscribe((res: any) => {
-        let amunt = 0;
-        res.forEach((resItem: any) => {
-          amunt += resItem.returnOutPut;
-        });
-        this.billingService.addToOrderSet({
-          sno: this.data.length + 1,
-          orderSetName: this.formGroup.value.orderSet.title,
-          serviceType: "Investigation",
-          serviceItemName: "",
-          precaution: "P",
-          priority: "Routine",
-          specialization: "",
-          doctorName: "",
-          price: amunt,
-          items: this.formGroup.value.items,
-          orderSetId: this.formGroup.value.orderSet.value,
-          itemid: this.formGroup.value.orderSet.value,
-          apiItems: res,
+        const existDataCount = this.data.length;
+        res.forEach((resItem: any, index: number) => {
+          const data1 = {
+            sno: existDataCount + index + 1,
+            orderSetName: this.formGroup.value.orderSet.title,
+            serviceType: "Investigation",
+            serviceItemName: resItem.procedureName,
+            precaution: "P",
+            priority: "Routine",
+            specialization: "",
+            doctorName: "",
+            price: resItem.returnOutPut,
+            items: this.formGroup.value.items,
+            orderSetId: this.formGroup.value.orderSet.value,
+            itemid: this.formGroup.value.orderSet.value,
+            apiItems: res,
+          };
+          this.billingService.addToOrderSet(data1);
         });
 
         this.data = [...this.billingService.OrderSetItems];
