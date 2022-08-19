@@ -44,7 +44,7 @@ export class RegistrationDialogueComponent implements OnInit {
       let MaxId = this.data.message2.trim().split(":")[1];
       this.dialogRef.close();
       this.router.navigate(["out-patient-billing", "deposit"], {
-        queryParams: { maxId: MaxId.trim() },
+        queryParams: { maxID: MaxId.trim() },
       });
     }
   }
