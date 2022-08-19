@@ -156,6 +156,7 @@ export class StaffDeptComponent implements OnInit {
           return { title: l.name, value: l.id };
         });
       });
+    this.staffForm.controls["organisation"].setValue('1');
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
@@ -171,14 +172,13 @@ export class StaffDeptComponent implements OnInit {
 
   ngAfterViewInit(): void {
 
-    this.staffForm.controls["organisation"].valueChanges.subscribe((value: any) => { this.org = value; this.enableSearchBtn() })
-
+    //this.staffForm.controls["organisation"].valueChanges.subscribe((value: any) => { this.org = value; this.enableSearchBtn() })
     this.staffForm.controls["employeeCode"].valueChanges.subscribe((value: any) => { this.code = value; this.enableSearchBtn() })
     this.staffForm.controls["employeeName"].valueChanges.subscribe((value: any) => { this.ename = value; this.enableSearchBtn() })
 
   }
   enableSearchBtn() {
-    if (this.org !== '' && (this.code !== '' || this.ename !== '')) {
+    if (this.code !== '' || this.ename !== '') {
       this.searchbtn = false;
       console.log(this.searchbtn, "tst")
     }
@@ -202,7 +202,7 @@ export class StaffDeptComponent implements OnInit {
     this.searchbtn = true;
     this.staffDeptDetails = [];
     this.staffDetail = [];
-    this.staffForm.controls['organisation'].setValue('')
+    this.staffForm.controls['organisation'].setValue('1')
     this.staffForm.controls['employeeCode'].setValue('')
     this.staffForm.controls['employeeName'].setValue('')
   }
