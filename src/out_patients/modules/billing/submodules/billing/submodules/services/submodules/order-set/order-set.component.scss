@@ -1,5 +1,10 @@
 .order-set-wrapper {
-  form {
+  ::ng-deep {
+    maxhealth-table {
+      table {
+        width: 120% !important;
+      }
+    }
   }
 }
 ::ng-deep {
