@@ -7,6 +7,7 @@
     </ul>
   </nav>
   <mat-tab-nav-panel #tabPanel>
+  
     <div class="h-full w-full">
       <form [formGroup]="onlineopbillsForm" class="h-full w-full">
            <!---------------------------------FIRST ROW----------------------------------------------------->
@@ -42,7 +43,7 @@
          
           <div class="flex float-right ">
             <div class="ml-0" >
-              <button mat-raised-button color="primary" type="submit">
+              <button mat-raised-button color="primary" type="submit" (click)="displayallspecialisation()">
                   <img src="assets/lens.svg" class="onlineoplens-icon">
   
                  <span class="ml-3 font-sm">Search</span> 
@@ -56,7 +57,7 @@
   
    <div class="px-3 pt-3 pb-1 w-full h-7/10">
     <ng-container>
-      <maxhealth-table class="onlineoptable"  [config]="onlineopbillsconfig" #onlineopbillstable></maxhealth-table>
+      <maxhealth-table class="onlineoptable"  [config]="onlineopbillsconfig" [data]="onlineopbillList" #onlineopbillstable></maxhealth-table>
     </ng-container>
   </div>
  <!------------------------------------------THIRD ROW--------------------------------------------------------------------->

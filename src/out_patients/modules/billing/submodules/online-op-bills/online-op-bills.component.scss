@@ -39,6 +39,9 @@
         border-radius: 0.75rem;
         border: 1px solid #707070 !important;
     }
+    ::ng-deep .mat-header-cell.cdk-header-cell.cdk-column-select.mat-column-select{
+        width: 40px !important;
+    }
 }
 
 .onlineoplens-icon{
@@ -47,8 +50,9 @@
     top: 2px;
     height: 90%;
     width: 25%;
+} 
+.spinner{    
+    margin-left: 47%; margin-top: 13%;
 }
-
-    
 }
    
