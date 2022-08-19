@@ -15,6 +15,8 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-procedure-other",
   templateUrl: "./procedure-other.component.html",
@@ -112,7 +114,8 @@ export class ProcedureOtherComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -271,6 +274,15 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
+      return item.itemid == this.formGroup.value.procedure.value;
+    });
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Procedure already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -289,6 +301,9 @@ export class ProcedureOtherComponent implements OnInit {
           doctorName: "",
           price: res.amount,
           unitPrice: res.amount,
+          itemid: this.formGroup.value.procedure.value,
+          priorityId: priorityId,
+          serviceId: this.formGroup.value.otherService.value,
         });
 
         this.data = [...this.billingService.ProcedureItems];
