@@ -94,7 +94,7 @@ export namespace BillingApiConstants {
     locationId: number,
     searchKey: string
   ) => {
-    return `${environment.CommonApiUrl}api/lookup/getotherservicebillingonsearch//${locationId}/${searchKey}`;
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebillingonsearch/${locationId}/${searchKey}`;
   };
 
   export const departmentlookup = `${environment.CommonApiUrl}api/lookup/departmentlookup`;

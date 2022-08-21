@@ -183,7 +183,7 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return { title: r.itemName, value: r.itemID };
           });
           this.questions[1] = { ...this.questions[1] };
         }
