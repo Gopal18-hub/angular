@@ -397,6 +397,9 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
+    this.formGroup.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
     this.questions[0].elementRef.focus();
   }
 
