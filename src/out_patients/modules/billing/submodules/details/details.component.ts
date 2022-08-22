@@ -190,6 +190,8 @@ export class DetailsComponent implements OnInit {
   opprescription: boolean = true;
   doxperprint: boolean = true;
   clearbtn: boolean = true;
+  dmsbtn: boolean = true;
+  visithistorybtn: boolean = true;
   ngOnInit(): void {
     this.router.navigate(['out-patient-billing/details'])
     .then(()=>{
@@ -317,9 +319,11 @@ export class DetailsComponent implements OnInit {
   }
   billFormfill()
   {
-    this.getPatientIcon();
     console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
     this.BServiceForm.controls["maxid"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
+    this.dmsbtn = false;
+    this.visithistorybtn = false;
+    this.getPatientIcon();
     this.BServiceForm.controls["mobileno"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno);
     this.BServiceForm.controls["billDate"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime);
     this.patientName = this.patientbilldetaillist.billDetialsForRefund_Table0[0].name;
@@ -433,9 +437,9 @@ export class DetailsComponent implements OnInit {
   clear()
   {
     this.BServiceForm.reset();
-    this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
-    this.BServiceForm.controls["fromDate"].setValue(new Date());
-    this.BServiceForm.controls["toDate"].setValue(new Date());
+    // this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
+    // this.BServiceForm.controls["fromDate"].setValue(new Date());
+    // this.BServiceForm.controls["toDate"].setValue(new Date());
     this.patientName = '';
     this.age = '';
     this.gender = '';
@@ -457,6 +461,7 @@ export class DetailsComponent implements OnInit {
     this.doxperprint = true;
     this.clearbtn = true;
     this.billdetailservice.clear();
+    this.ngOnInit();
   }
   ngDoCheck(): void{
     const changes = this.check.diff(this.billdetailservice.sendforapproval);
