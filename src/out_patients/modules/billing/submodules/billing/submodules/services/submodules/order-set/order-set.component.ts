@@ -106,6 +106,7 @@ export class OrderSetComponent implements OnInit {
         style: {
           width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -133,6 +134,7 @@ export class OrderSetComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
+    this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -155,6 +157,14 @@ export class OrderSetComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "specialization") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
+        );
+      }
+    });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
@@ -165,6 +175,34 @@ export class OrderSetComponent implements OnInit {
         },
       });
     });
+  }
+
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialization.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        let options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
+      });
   }
 
   getOrserSetData() {
