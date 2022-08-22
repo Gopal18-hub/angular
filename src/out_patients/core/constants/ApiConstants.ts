@@ -624,12 +624,17 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string
-    //    operatorid: number
+    iacode: string,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+      "api/patient/deleteexpiredpatientsdetails/" +
+      registrationno +
+      "/" +
+      iacode +
+      "/" +
+      userid
     );
   };
 
@@ -669,7 +674,9 @@ export namespace ApiConstants {
   //GET CALL ON ENTER OF MAXID
   export const getpatientsponsordataonmaxid = (
     iacode: string,
-    regno: number
+    regno: number,
+    locationid: number,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -677,7 +684,10 @@ export namespace ApiConstants {
       iacode +
       "/" +
       regno +
-      "/69/9923"
+      "/" +
+      locationid +
+      "/" +
+      userid
     );
   };
 
@@ -692,14 +702,18 @@ export namespace ApiConstants {
 
   //GET CALL ON ENTER OF EMPLOYEE CODE
   export const getpatientcompanysponsoronempcode = (
-    employeecode: string
-    //  locationid: number
+    employeecode: string,
+    locationid: number,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientcompanysponsoronempcode/" +
       employeecode +
-      "/69/9923"
+      "/" +
+      locationid +
+      "/" +
+      userid
     );
   };
 
@@ -708,9 +722,19 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savepatientsponsorcompany";
 
   //GET CALL ON IOM HYPERLINK
-  export const getopcompanyiomlocationwise =
-    environment.PatientApiUrl +
-    "api/patient/getopcompanyiomlocationwise/69/3161";
+  export const getopcompanyiomlocationwise = (
+    locationid: number,
+    companyid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getopcompanyiomlocationwise/" +
+      locationid +
+      "/" +
+      companyid
+    );
+  };
+
   //http://172.30.0.16:1008/api/patient/getopcompanyiomlocationwise/69/3161
 
   export const getCorporate =
@@ -748,7 +772,11 @@ export namespace ApiConstants {
     );
   };
 
-  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+  export const getpatientdetailsdmg = (
+    regno: number,
+    iacode: string,
+    locationid: number
+  ) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientpersonaldetailsdmg/" +
@@ -756,7 +784,7 @@ export namespace ApiConstants {
       "/" +
       iacode +
       "/" +
-      7
+      locationid
     );
   };
 
@@ -1016,26 +1044,25 @@ export namespace ApiConstants {
   export const postInitiateDeposit =
     environment.BillingApiUrl + "api/outpatientbilling/InitiateDeposit";
 
-  
   export const getonlineopbillspecialisation =
     environment.CommonApiUrl + "api/lookup/getallspecialisationname";
 
   export const getselectedspecialisationonlineop = (
-      fromdate: any,
-      todate: any,
-      specializationId :any,
-      hsplocationid: any
-    ) => {
-      return (
-        environment.BillingApiUrl +
-        "api/outpatientbilling/getdisplayallbilldetails/" +
-        fromdate +
-        "/" +
-        todate +
-        "/" +
-        specializationId +
-        "/" + 
-        hsplocationid
-      );
-    };
+    fromdate: any,
+    todate: any,
+    specializationId: any,
+    hsplocationid: any
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdisplayallbilldetails/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      specializationId +
+      "/" +
+      hsplocationid
+    );
+  };
 }

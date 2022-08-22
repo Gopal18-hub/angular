@@ -54,6 +54,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
 
+  @Output() controlValueChangeTrigger: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -349,5 +351,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   stringLinkClick(data: any) {
     this.stringLinkOutput.emit(data);
+  }
+  controlValueChange($event: any, data: any) {
+    console.log($event, data);
+    this.controlValueChangeTrigger.emit({ $event, data });
   }
 }

@@ -192,7 +192,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.doctorName, value: r.doctorId };
+            return {
+              title: r.doctorNameWithSpecialization || r.doctorName,
+              value: r.doctorId,
+              originalTitle: r.doctorName,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -246,7 +250,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
+          return {
+            title: r.doctorNameWithSpecialization || r.doctorName,
+            value: r.doctorId,
+            originalTitle: r.doctorName,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });
@@ -297,7 +305,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.title,
+          doctorName: this.formGroup.value.doctorName.originalTitle,
           doctorId: this.formGroup.value.doctorName.value,
           type: priorityId,
           scheduleSlot: "",
