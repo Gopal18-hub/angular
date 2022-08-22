@@ -13,6 +13,7 @@
         width="45px"
         class="mt-1 cursor-pointer"
         [matTooltip]="icon['tooltip']"
+        (click)="depositCategoryIconAction(icon)"
       />
     </div>
   </nav>
@@ -81,18 +82,18 @@
               <mat-label>Deposit and Refund Details</mat-label>
             </div>
 
-            <div class="float-right w-1/2 mr-4 flex">
+            <div class="float-right w-1/2 font-sm mr-4 flex second-row-depositbutton">
 
             
               <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" [disabled]="!MaxIDExist"
                 (click)="openDepositdialog()">
                 Make Deposit
               </button>
-              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" [disabled]="!MaxIDdepositExist"
+              <button mat-raised-button color="primary" class="w-2/10  ml-2 " type="button" [disabled]="!MaxIDdepositExist"
                 (click)="openrefunddialog()">
                 Refund
               </button>
-              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="submit" [disabled]="!MaxIDExist"
+              <button mat-raised-button color="primary" class="w-2/10  ml-2" type="button" [disabled]="!MaxIDExist"
               (click)="openinitiatedeposit()">
               Initiate Deposit
             </button>
@@ -100,7 +101,7 @@
               (click)="printpatientreceipt()">
                 Print Receipt
               </button>
-              <button mat-raised-button color="primary" class="w-2/10 ml-2" type="button" (click)="clearDepositpage()">
+              <button mat-raised-button color="primary" class="w-2/10 ml-2 clearwidth" type="button" (click)="clearDepositpage()">
               Clear
               </button>
             </div>
