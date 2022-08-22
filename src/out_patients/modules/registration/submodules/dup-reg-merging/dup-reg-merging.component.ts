@@ -56,6 +56,12 @@ export class DupRegMergingComponent implements OnInit {
     aadhaarId: new FormControl(""),
   });
   @ViewChild("table") tableRows: any;
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+    6: "/patient-history",
+  };
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -75,29 +81,33 @@ export class DupRegMergingComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/out-patient-billing",
+        linkid: 1,
+        actionType: "custom",
       },
       {
         title: "Bill Details",
-        actionType: "link",
-        routeLink: "/out-patient-billing/details",
+        linkid: 2,
+        actionType: "custom",
       },
       {
         title: "Deposits",
-        actionType: "link",
-        routeLink: "/out-patient-billing/deposit",
+        linkid: 3,
+        actionType: "custom",
       },
       {
         title: "Admission",
+        linkid: 4,
+        actionType: "custom",
       },
       {
         title: "Admission log",
+        linkid: 5,
+        actionType: "custom",
       },
       {
         title: "Visit History",
-        actionType: "link",
-        routeLink: "/patient-history",
+        linkid: 6,
+        actionType: "custom",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -216,6 +226,33 @@ export class DupRegMergingComponent implements OnInit {
               this.isAPIProcess = true;
               this.mergebuttonDisabled = true;
               this.tableRows.selection.clear();
+              setTimeout(() => {
+                this.tableRows.actionItemClickTrigger.subscribe((res: any) => {
+                  console.log(res);
+                  if (res) {
+                    if (res.item && res.data) {
+                      //if else condition due to queryparam for deposite
+                      if (res.item["linkid"] == 1) {
+                        if (this.quickLinksRoutes[res.item["linkid"]]) {
+                          this.router.navigate(
+                            [this.quickLinksRoutes[res.item["linkid"]]],
+                            {
+                              queryParams: { maxId: res.data["maxid"] },
+                            }
+                          );
+                        }
+                      } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxID: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    }
+                  }
+                });
+              });
             });
         }
       });
@@ -293,6 +330,32 @@ export class DupRegMergingComponent implements OnInit {
             this.mergebuttonDisabled = true;
           }
         });
+
+      this.tableRows.actionItemClickTrigger.subscribe((res: any) => {
+        console.log(res);
+        if (res) {
+          if (res.item && res.data) {
+            //if else condition due to queryparam for deposite
+            if (res.item["linkid"] == 1) {
+              if (this.quickLinksRoutes[res.item["linkid"]]) {
+                this.router.navigate(
+                  [this.quickLinksRoutes[res.item["linkid"]]],
+                  {
+                    queryParams: { maxId: res.data["maxid"] },
+                  }
+                );
+              }
+            } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+              this.router.navigate(
+                [this.quickLinksRoutes[res.item["linkid"]]],
+                {
+                  queryParams: { maxID: res.data["maxid"] },
+                }
+              );
+            }
+          }
+        }
+      });
     });
   }
 
