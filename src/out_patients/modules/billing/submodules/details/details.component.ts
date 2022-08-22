@@ -18,6 +18,7 @@ import { billDetailService } from "./billDetails.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 import { PatientService } from "@core/services/patient.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-details",
@@ -35,7 +36,8 @@ export class DetailsComponent implements OnInit {
     private datepipe: DatePipe,
     private billdetailservice: billDetailService,
     private differ: KeyValueDiffers,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private msgdialog: MessageDialogService
   ) {
     this.check = this.differ.find(this.billdetailservice.sendforapproval).create();
   }
@@ -298,6 +300,10 @@ export class DetailsComponent implements OnInit {
       if(this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1)
       {
         this.billdetailservice.serviceList = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
+        if(this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+        { var errtxt = 'Bill Number ' + this.BServiceForm.value.billNo + ' Has Been Cancelled';
+          this.msgdialog.info(errtxt);
+        }
         this.billFormfill();
         this.printbill = false;
         this.consumableprint = false;
