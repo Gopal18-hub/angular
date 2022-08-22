@@ -5,6 +5,17 @@
           <a mat-tab-link [active]="true">Bill Details</a>
         </li>
       </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="mt-1 cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+          
+        />
+    </div>
     </nav>
     <mat-tab-nav-panel #tabPanel class="h-full">
       <div class="h-full w-full">

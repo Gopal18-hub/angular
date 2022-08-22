@@ -5,7 +5,7 @@ export interface getPatientVisitHistory{
     opGroupDoctorLog: opGroupDoctorLog[];
 }
 export interface lastConsultationData{
-    visitDate: string;
+    visitDate: any;
     days: number;
     doctorName: string;
     consultationType: string;
