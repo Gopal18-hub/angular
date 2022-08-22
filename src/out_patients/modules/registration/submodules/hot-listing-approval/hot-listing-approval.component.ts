@@ -32,6 +32,7 @@ export class HotListingApprovalComponent implements OnInit {
   activeLink2 = this.link2[0];
   @ViewChild("hotlistingtable") hotlistingtable: any;
   @ViewChild("approvaTable") approvaTable: any;
+  @ViewChild("rejecttable") rejecttable: any;
 
   HotListidList: any = [];
   opApprovalHotList: opRegHotlistModel[] = [];
@@ -56,34 +57,45 @@ export class HotListingApprovalComponent implements OnInit {
     to: new FormControl(""),
   });
 
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+    6: "/patient-history",
+  };
+
   hotlistingconfig: any = {
     actionItems: true,
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/out-patient-billing",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
-        actionType: "link",
-        routeLink: "/out-patient-billing/details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
-        actionType: "link",
-        routeLink: "/out-patient-billing/deposit",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
-        actionType: "link",
-        routeLink: "/patient-history",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -186,29 +198,33 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/out-patient-billing",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
-        actionType: "link",
-        routeLink: "/out-patient-billing/details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
-        actionType: "link",
-        routeLink: "/out-patient-billing/deposit",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
-        actionType: "link",
-        routeLink: "/patient-history",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -316,29 +332,33 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/out-patient-billing",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
-        actionType: "link",
-        routeLink: "/out-patient-billing/details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
-        actionType: "link",
-        routeLink: "/out-patient-billing/deposit",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
-        actionType: "link",
-        routeLink: "/patient-history",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -553,6 +573,35 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.showapprovalreject = false;
             console.log(this.opApprovalHotList);
+            setTimeout(() => {
+              this.hotlistingtable.actionItemClickTrigger.subscribe(
+                (res: any) => {
+                  console.log(res);
+                  if (res) {
+                    if (res.item && res.data) {
+                      //if else condition due to queryparam for deposite
+                      if (res.item["linkid"] == 1) {
+                        if (this.quickLinksRoutes[res.item["linkid"]]) {
+                          this.router.navigate(
+                            [this.quickLinksRoutes[res.item["linkid"]]],
+                            {
+                              queryParams: { maxId: res.data["maxid"] },
+                            }
+                          );
+                        }
+                      } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxID: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    }
+                  }
+                }
+              );
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;
@@ -589,6 +638,33 @@ export class HotListingApprovalComponent implements OnInit {
             );
 
             console.log(this.defaultUI);
+            setTimeout(() => {
+              this.approvaTable.actionItemClickTrigger.subscribe((res: any) => {
+                console.log(res);
+                if (res) {
+                  if (res.item && res.data) {
+                    //if else condition due to queryparam for deposite
+                    if (res.item["linkid"] == 1) {
+                      if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxId: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxID: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  }
+                }
+              });
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;
@@ -624,6 +700,33 @@ export class HotListingApprovalComponent implements OnInit {
             );
 
             console.log(this.opApprovalHotlistrejectList);
+            setTimeout(() => {
+              this.rejecttable.actionItemClickTrigger.subscribe((res: any) => {
+                console.log(res);
+                if (res) {
+                  if (res.item && res.data) {
+                    //if else condition due to queryparam for deposite
+                    if (res.item["linkid"] == 1) {
+                      if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxId: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxID: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  }
+                }
+              });
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;

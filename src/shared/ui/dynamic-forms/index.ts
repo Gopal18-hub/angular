@@ -18,9 +18,11 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 import { OptionGroupComponent } from "./partials/option-group/option-group.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material/core";
+import { MatNativeDateModule, DateAdapter } from "@angular/material/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MaskedInputDirective } from "../../utilities/directives/mask.directive";
+
+import { MaxDateAdapter } from "./service/date-adapter";
 
 @NgModule({
   imports: [
@@ -47,6 +49,7 @@ import { MaskedInputDirective } from "../../utilities/directives/mask.directive"
     MaskedInputDirective,
   ],
   providers: [
+    { provide: DateAdapter, useClass: MaxDateAdapter },
     QuestionControlService,
     {
       provide: MAT_SELECT_CONFIG,
