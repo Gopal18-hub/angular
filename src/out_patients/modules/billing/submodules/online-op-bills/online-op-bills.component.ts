@@ -40,10 +40,12 @@ export class OnlineOpBillsComponent implements OnInit {
     properties:{
       fromdate:{
         type:"date",
+        title: "From Date",
         required:true
       },
       todate:{
         type:"date",
+        title: "To Date",
         required:true
       },
       specialisation:{
@@ -160,7 +162,20 @@ export class OnlineOpBillsComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultData: any) => {    
       this.onlineopbillList = resultData;
-     
+      if(resultData.length > 0 ){
+        this.MaxIDExist = true;
+      }
+   
     });
+  }
+
+  resetonlineopbill(){
+    this.onlineopbillsForm.reset();  
+    this.onlineopbillList = [];  
+    let todaydate = new Date();
+    this.MaxIDExist = false;
+    this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
+    this.onlineopbillsForm.controls["todate"].setValue(todaydate);
+  
   }
 }
