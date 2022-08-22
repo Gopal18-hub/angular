@@ -101,6 +101,7 @@ export class InvestigationsComponent implements OnInit {
         style: {
           width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -146,6 +147,12 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      this.getdoctorlistonSpecializationClinic(
+        res.$event.value,
+        res.data.index
+      );
+    });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
         filter((res) => {
@@ -202,7 +209,10 @@ export class InvestigationsComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -212,9 +222,10 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
