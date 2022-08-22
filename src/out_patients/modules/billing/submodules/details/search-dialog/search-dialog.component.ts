@@ -189,6 +189,7 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.controls['maxid'].setValue(this.formdata.maxid);
     this.searchform.controls['mobile'].setValue(this.formdata.mobileno);
     this.searchform.controls['checkbox'].setValue(this.formdata.check);
+    this.search();
     if(this.formdata.check == false)
     {
       this.searchform.controls['fromdate'].disable();
@@ -225,12 +226,16 @@ export class SearchDialogComponent implements OnInit {
     const arr = this.searchform.value.maxid.split('.');
     var regno = arr[1];
     var iacode = arr[0];
-    if(regno == '')
+    if(regno == '' || regno == undefined || regno == null)
     {
       regno = '';
       iacode = ''
     }
-    if(this.searchform.value.mobileno == null)
+    if(this.searchform.value.billno == null || this.searchform.value.billno == '' || this.searchform.value.billno == undefined)
+    {
+      this.searchform.value.billno = '';
+    }
+    if(this.searchform.value.mobileno == null || this.searchform.value.mobileno == '' || this.searchform.value.mobileno == undefined)
     {
       this.searchform.value.mobileno = '';
     }
@@ -282,5 +287,6 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.controls['fromdate'].setValue(new Date());
     this.searchform.controls['todate'].setValue(new Date());
     this.searchform.controls['maxid'].setValue(this.cookie.get("LocationIACode") + ".");
+    this.getsearchopbillslist = [];
   }
 }

@@ -199,45 +199,46 @@ export class RefundAfterBillComponent implements OnInit {
       "itemname",
       "amount",
       "discountamount",
-      "Refund",
+      "cancelled",
     ],
+    // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
       Sno: {
         title: "S.No.",
         type: "string",
         style: {
-          width: "5rem"
+          width: "6rem"
         }
       },
       servicename: {
         title: "Service Name",
         type: "string",
         style: {
-          width: "11rem"
+          width: "13rem"
         }
       },
       itemname: {
         title: "Item Name",
         type: "string",
         style: {
-          width: "15rem"
+          width: "19rem"
         }
       },
       amount: {
         title: "Billed Amount",
         type: "string",
         style: {
-          width: "9rem"
+          width: "12rem"
         }
       },
       discountamount: {
         title: "Discount Amount",
         type: "number",
         style: {
-          width: "9rem"
+          width: "13rem"
         }
       },
-      Refund: {
+      cancelled: {
         title: "Refund",
         type: "checkbox_active",
       },

@@ -60,6 +60,8 @@ export interface PatientPersonalDetailInterface{
       noteReason: string,
       hwc:boolean,
       hwcRemarks:string,
+      hotlistreason:string,
+      hotlistcomments:string,
       categoryIcons?: string;
      
   }
