@@ -183,7 +183,11 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.itemName, value: r.itemID };
+            return {
+              title: r.itemNameWithService || r.itemName,
+              value: r.itemID,
+              originalTitle: r.itemName,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -243,7 +247,11 @@ export class ProcedureOtherComponent implements OnInit {
           this.formGroup.controls["procedure"].reset();
           if (Array.isArray(res)) {
             this.questions[1].options = res.map((r: any) => {
-              return { title: r.itemName, value: r.itemID };
+              return {
+                title: r.itemNameWithService || r.itemName,
+                value: r.itemID,
+                originalTitle: r.itenmName,
+              };
             });
           } else {
             this.questions[1].options = [];
@@ -295,7 +303,7 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((res: any) => {
         this.billingService.addToProcedure({
           sno: this.data.length + 1,
-          procedures: this.formGroup.value.procedure.title,
+          procedures: this.formGroup.value.procedure.originalTitle,
           qty: 1,
           specialisation: "",
           doctorName: "",
