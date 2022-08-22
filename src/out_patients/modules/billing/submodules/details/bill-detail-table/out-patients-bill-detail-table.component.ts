@@ -9,6 +9,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
 import { billDetailService } from "../billDetails.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-bill-detail-table",
@@ -24,7 +25,8 @@ export class BillDetailTableComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailservice: billDetailService
+    private billDetailservice: billDetailService,
+    private msgdialog: MessageDialogService
   ) {}
 
   miscBillData = {
@@ -200,45 +202,46 @@ export class BillDetailTableComponent implements OnInit {
       "itemname",
       "amount",
       "discountamount",
-      "Refund",
+      "cancelled",
     ],
+    // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
       Sno: {
         title: "S.No.",
         type: "string",
         style: {
-          width: "5rem"
+          width: "6rem"
         }
       },
       servicename: {
         title: "Service Name",
         type: "string",
         style: {
-          width: "11rem"
+          width: "13rem"
         }
       },
       itemname: {
         title: "Item Name",
         type: "string",
         style: {
-          width: "15rem"
+          width: "19rem"
         }
       },
       amount: {
         title: "Billed Amount",
         type: "string",
         style: {
-          width: "9rem"
+          width: "12rem"
         }
       },
       discountamount: {
         title: "Discount Amount",
         type: "number",
         style: {
-          width: "9rem"
+          width: "13rem"
         }
       },
-      Refund: {
+      cancelled: {
         title: "Refund",
         type: "checkbox_active",
       },
@@ -285,28 +288,45 @@ export class BillDetailTableComponent implements OnInit {
   }
   ngAfterViewInit()
   {
-    console.log(this.billDetailservice.serviceList);
+
   }
   printrow(event:any)
   {
     setTimeout(() => {
       console.log(event)
-      console.log(event.row.Refund);
-      if(event.row.Refund == true)
+      console.log(event.row.cancelled);
+
+      if(event.row.cancelled == true)
       {
         console.log("true");
-        this.billDetailservice.addForApproval({
-          Refund: event.row.Refund,
-          Sno: event.row.Sno,
-          amount: event.row.amount,
-          requestToApproval: event.row.requestToApproval,
-          itemid: event.row.itemid,
-          orderid: event.row.orderid
-        })
-        this.billDetailservice.calculateTotalRefund();
-        console.log(this.billDetailservice.sendforapproval);
+        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
+          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
+            
+          })
+        });
+        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+          return a.itemid == event.row.itemid;
+        })  
+        if(list[0].ackby > 0)
+        {
+          this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
+          event.row.cancelled = false;
+        }
+        else
+        {
+            this.billDetailservice.addForApproval({
+              cancelled: event.row.cancelled,
+              Sno: event.row.Sno,
+              amount: event.row.amount,
+              requestToApproval: event.row.requestToApproval,
+              itemid: event.row.itemid,
+              orderid: event.row.orderid
+            })
+            this.billDetailservice.calculateTotalRefund();
+            console.log(this.billDetailservice.sendforapproval);
+        }
       }
-      else if(event.row.Refund == false)
+      else if(event.row.cancelled == false)
       {
         console.log("false");
         var index = this.billDetailservice.sendforapproval.findIndex((val: any) => val.Sno === event.row.Sno);

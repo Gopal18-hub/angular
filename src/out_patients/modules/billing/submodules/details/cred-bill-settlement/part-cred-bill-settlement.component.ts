@@ -64,13 +64,13 @@ export class PartialCredBillComponent implements OnInit {
         readonly: true,
         defaultValue: '0.0',
       },
-      companyDue: {
+      patienDue: {
         type: "string",
         required: false,
         readonly: true,
         defaultValue: '0.0',
       },
-      patienDue: {
+      companyDue: {
         type: "string",
         required: false,
         readonly: true,
@@ -153,7 +153,7 @@ export class PartialCredBillComponent implements OnInit {
     this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
     this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
     this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
-    this.BServiceForm.controls["discAftBill"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
     this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
   }
   gst: { service: string; percentage: number; value: number }[] = [
