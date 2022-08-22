@@ -216,7 +216,7 @@ export class DmgMappingComponent implements OnInit {
     let iacode = maxid.split(".")[0];
     let regno = maxid.split(".")[1];
     this.http
-      .get(ApiConstants.getpatientdetailsdmg(regno, iacode))
+      .get(ApiConstants.getpatientdetailsdmg(regno, iacode, this.hsplocationId))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);

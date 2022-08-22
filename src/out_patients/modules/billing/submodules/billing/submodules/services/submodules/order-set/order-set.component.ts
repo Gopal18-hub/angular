@@ -106,6 +106,7 @@ export class OrderSetComponent implements OnInit {
         style: {
           width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -133,6 +134,7 @@ export class OrderSetComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
+    this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -142,6 +144,7 @@ export class OrderSetComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    console.log($event.index);
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
       (item: any, index: number) => {
@@ -154,6 +157,14 @@ export class OrderSetComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "specialization") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
+        );
+      }
+    });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
@@ -164,6 +175,34 @@ export class OrderSetComponent implements OnInit {
         },
       });
     });
+  }
+
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialization.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        let options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
+      });
   }
 
   getOrserSetData() {
@@ -242,24 +281,24 @@ export class OrderSetComponent implements OnInit {
         subItems
       )
       .subscribe((res: any) => {
-        let amunt = 0;
-        res.forEach((resItem: any) => {
-          amunt += resItem.returnOutPut;
-        });
-        this.billingService.addToOrderSet({
-          sno: this.data.length + 1,
-          orderSetName: this.formGroup.value.orderSet.title,
-          serviceType: "Investigation",
-          serviceItemName: "",
-          precaution: "P",
-          priority: "Routine",
-          specialization: "",
-          doctorName: "",
-          price: amunt,
-          items: this.formGroup.value.items,
-          orderSetId: this.formGroup.value.orderSet.value,
-          itemid: this.formGroup.value.orderSet.value,
-          apiItems: res,
+        const existDataCount = this.data.length;
+        res.forEach((resItem: any, index: number) => {
+          const data1 = {
+            sno: existDataCount + index + 1,
+            orderSetName: this.formGroup.value.orderSet.title,
+            serviceType: "Investigation",
+            serviceItemName: resItem.procedureName,
+            precaution: "P",
+            priority: "Routine",
+            specialization: "",
+            doctorName: "",
+            price: resItem.returnOutPut,
+            items: this.formGroup.value.items,
+            orderSetId: this.formGroup.value.orderSet.value,
+            itemid: this.formGroup.value.orderSet.value,
+            apiItems: res,
+          };
+          this.billingService.addToOrderSet(data1);
         });
 
         this.data = [...this.billingService.OrderSetItems];
