@@ -16,6 +16,7 @@ import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import "../../utilities/String-Extentions";
+import maskInput from "vanilla-text-mask";
 
 @Component({
   selector: "maxhealth-question",
@@ -75,7 +76,13 @@ export class DynamicFormQuestionComponent
 
   subscription!: Subscription;
 
-  dateMask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
+  dateMaskConfig: any = {
+    mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
+    guide: true,
+    placeholderChar: "_",
+    pipe: undefined,
+    keepCharPositions: false,
+  };
 
   constructor(private qcs: QuestionControlService) {}
 
@@ -202,6 +209,15 @@ export class DynamicFormQuestionComponent
       this.question.type == "autocomplete"
     ) {
       this._subscribeToClosingActions();
+    } else if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date"
+    ) {
+      maskInput({
+        inputElement: this.element.nativeElement,
+        ...this.dateMaskConfig,
+      });
     }
   }
 

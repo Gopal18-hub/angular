@@ -4,6 +4,10 @@ import { QuestionControlService } from "../../../../../../shared/ui/dynamic-form
 import { BillingForm } from "@core/constants/BillingForm";
 import { DepositType, ServiceType } from "@core/types/PatientPersonalDetail.Interface";
 import { CookieService } from "@shared/services/cookie.service";
+import { HttpService } from '@shared/services/http.service';
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "max-service-deposit",
@@ -25,8 +29,9 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
 
   servicetypeList: ServiceType[] = [];
   deposittypeList: DepositType[] = [];
+  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
 
-  constructor(private formService: QuestionControlService, private cookie: CookieService) { }
+  constructor(private formService: QuestionControlService, private cookie: CookieService, private http: HttpService, ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes['serviceclearsibilingcomponent'].currentValue);
@@ -37,6 +42,7 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
     }
   }
 
+  private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
     let formResult = this.formService.createForm(
       this.servicedepositformData.properties,
@@ -49,14 +55,11 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
      if(this.data.type == "Deposit")
     {
       this.servicetypeList = this.data.servicetypeList;
-      this.deposittypeList = this.data.deposittypeList;  
       this.questions[0].options = this.servicetypeList.map((l) => {
         return { title: l.name, value: l.id };
       });
   
-      this.questions[1].options = this.deposittypeList.map((l) => {
-        return { title: l.advanceType, value: l.id };
-      });
+      this.getDepositType();
     }
     else if(this.data.type == "Refund")
     {
@@ -69,8 +72,19 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
 
   //ngon
   ngAfterViewInit(): void{
-    this.servicedepositForm.controls["deposithead"].setValue(0);
     this.servicedepositForm.controls["servicetype"].setValue(1781);
+    this.servicedepositForm.controls["deposithead"].setValue(0);
+  }
+  getDepositType() {
+    this.http
+      .get(ApiConstants.getadvancetype(this.hspLocationid))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: any) => {
+        this.deposittypeList = resultData;
+        this.questions[1].options = this.deposittypeList.map((l) => {
+          return { title: l.advanceType, value: l.id };
+        });
+      });
   }
 }
 
