@@ -254,7 +254,11 @@ export class PatientHistoryComponent implements OnInit {
       .subscribe(async (value) => {
         console.log(Object.keys(value).length);
         if (Object.keys(value).length > 0) {         
-          // const lookupdata = await this.loadGrid(value);        
+          const lookupdata = await this.loadGrid(value);        
+        }
+        else{
+          this.ngOnInit();
+          this.clear();
         }
         });
      }
@@ -270,9 +274,9 @@ export class PatientHistoryComponent implements OnInit {
      
        console.log(lookupdata);
        if (lookupdata.length == 1) {
-         if (lookupdata[0] && "maxid" in lookupdata[0]) {
-           this.patienthistoryform.value.maxid = lookupdata[0]["maxid"];            
+         if (lookupdata[0] && "maxid" in lookupdata[0]) {        
          this.iacode = this.patienthistoryform.value.maxid.split(".")[0];
+         this.patienthistoryform.controls['maxid'].setValue(lookupdata[0]["maxid"]);
          this.regNumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
            this.getPatientDetails();
            this.clearbtn = false;            
@@ -300,10 +304,11 @@ export class PatientHistoryComponent implements OnInit {
                      this.iacode = maxID.split(".")[0];
                      this.regNumber = Number(maxID.split(".")[1]);
                      this.patienthistoryform.controls["maxid"].setValue(maxID);
-
+                     this.getPatientDetails();
+                     this.clearbtn = false;
              }
 
-             //this.similarContactPatientList = [];
+             this.similarContactPatientList = [];
            });
        }
     }
