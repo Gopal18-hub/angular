@@ -335,8 +335,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       });
       data.push(temp);
     });
+    let wscols = [];
+    for (var i = 0; i < headers.length; i++) {
+      wscols.push({ wch: headers[i].length + 5 });
+    }
     const wb = XLSX.utils.book_new();
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    ws["!cols"] = wscols;
     XLSX.utils.sheet_add_aoa(ws, [headers]);
     const workSheet = XLSX.utils.sheet_add_json(ws, data, {
       origin: "A2",
