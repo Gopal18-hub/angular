@@ -15,6 +15,8 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-investigations",
   templateUrl: "./investigations.component.html",
@@ -80,13 +82,16 @@ export class InvestigationsComponent implements OnInit {
         title: "Priority",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
       },
       doctorName: {
@@ -94,8 +99,9 @@ export class InvestigationsComponent implements OnInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "15%",
+          width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -108,7 +114,8 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -140,6 +147,12 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      this.getdoctorlistonSpecializationClinic(
+        res.$event.value,
+        res.data.index
+      );
+    });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
         filter((res) => {
@@ -169,7 +182,12 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id, serviceid: r.serviceid };
+            return {
+              title: r.testNameWithService || r.name,
+              value: r.id,
+              serviceid: r.serviceid,
+              originalTitle: r.name,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -191,7 +209,10 @@ export class InvestigationsComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -201,9 +222,10 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
@@ -236,13 +258,28 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((res) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return {
+            title: r.testNameWithService || r.name,
+            value: r.id,
+            originalTitle: r.name,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.investigation.value;
+      }
+    );
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Investigation already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -262,6 +299,10 @@ export class InvestigationsComponent implements OnInit {
           specialisation: "",
           doctorName: "",
           price: res.amount,
+          serviceid:
+            this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
+          itemid: this.formGroup.value.investigation.value,
         });
 
         this.data = [...this.billingService.InvestigationItems];

@@ -76,7 +76,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "25%",
+          width: "17%",
         },
       },
       type: {
@@ -84,20 +84,29 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "20%",
+          width: "40%",
         },
       },
       scheduleSlot: {
         title: "Schedule Slot",
         type: "string",
+        style: {
+          width: "10%",
+        },
       },
       bookingDate: {
         title: "Booking Date",
         type: "date",
+        style: {
+          width: "10%",
+        },
       },
       price: {
         title: "Price",
         type: "number",
+        style: {
+          width: "10%",
+        },
       },
     },
   };
@@ -183,7 +192,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.doctorName, value: r.doctorId };
+            return {
+              title: r.doctorNameWithSpecialization || r.doctorName,
+              value: r.doctorId,
+              originalTitle: r.doctorName,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -237,7 +250,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
+          return {
+            title: r.doctorNameWithSpecialization || r.doctorName,
+            value: r.doctorId,
+            originalTitle: r.doctorName,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });
@@ -264,6 +281,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
 
         this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
       });
   }
 
@@ -287,7 +305,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.title,
+          doctorName: this.formGroup.value.doctorName.originalTitle,
           doctorId: this.formGroup.value.doctorName.value,
           type: priorityId,
           scheduleSlot: "",

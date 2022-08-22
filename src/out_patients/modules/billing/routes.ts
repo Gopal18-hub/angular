@@ -23,6 +23,7 @@ import {
   MiscCredDetail,
 } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
+import { RefundAfterBillComponent } from "./submodules/details/refund-after-bill/refund-after-bill.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
 import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
@@ -33,7 +34,7 @@ const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
-    canActivate: [AuthGuardService],
+  //  canActivate: [AuthGuardService],
     children: [
       {
         path: "",
@@ -45,11 +46,10 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent, canActivate: [AuthGuardService], },
+      { path: "deposit", component: DepositComponent,  },
       {
         path: "details",
-        component: DetailsComponent,
-        canActivate: [AuthGuardService],
+        component: DetailsComponent,      
         children: [
           {
             path: "",
@@ -62,35 +62,32 @@ const routes: Routes = [
           { path: "services", component: BillDetailTableComponent },
           {
             path: "refund-after-bill",
-            component: BillDetailTableComponent,
+            component: RefundAfterBillComponent,
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent, canActivate: [AuthGuardService], },
-      { path: "op-order-request", component: OpOrderRequestComponent, canActivate: [AuthGuardService], },
+      { path: "online-op-bill", component: OnlineOpBillsComponent,  },
+      { path: "op-order-request", component: OpOrderRequestComponent, },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
-        canActivate: [AuthGuardService],
         children: [
           { path: "", component: BillDetailComponent },
           { path: "credit-details", component: MiscCredDetail },
           { path: "bill", component: BillDetailComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent, canActivate: [AuthGuardService], },
-      { path: "op-refund-approval", component: OprefundApprovalComponent, canActivate: [AuthGuardService], },
-      { path: "dispatch-report", component: DispatchReportComponent, canActivate: [AuthGuardService], },
-      { path: "dmg-mapping", component: DmgMappingComponent, canActivate: [AuthGuardService], },
+      { path: "initiate-deposit", component: InitiateDepositComponent,  },
+      { path: "op-refund-approval", component: OprefundApprovalComponent,  },
+      { path: "dispatch-report", component: DispatchReportComponent, },
+      { path: "dmg-mapping", component: DmgMappingComponent, },
       {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
-        canActivate: [AuthGuardService],
       },
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
-        canActivate: [AuthGuardService],
         children: [
           { path: "", component: PostDischargeServicesComponent },
           { path: "bill", component: PostDischargeBillComponent },

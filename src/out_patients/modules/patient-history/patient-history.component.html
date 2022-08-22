@@ -62,7 +62,8 @@
                         </maxhealth-question>
                     </div>
                 </div>
-                <div class="flex align-items-center w-3/10 ml-7">
+                <!-- ml-7 -->
+                <div class="flex align-items-center w-3/10 ml-3">
                     <div>
                         <mat-label class="max-health-primary-color font-semi-bold wt-nowrap">Transaction Type</mat-label>
                     </div>
@@ -76,11 +77,17 @@
                         </maxhealth-question>
                     </div>
                 </div>
-                <div class="w-2/5">
+                <div class="w-2/5 flex">
                     <div class="mr-2 float-right btn">
                         <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="searchbtn" (click)="patienthistorysearch()">
                             <img src="assets/lens.svg" class="lens-icon" [ngClass]="{disableclass:searchbtn}">
                             Search
+                        </button>
+                    </div>
+                    <div class="mr-2 float-right">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="clearbtn">
+                            <!-- <img src="assets/lens.svg" class="lens-icon"> -->
+                            Clear
                         </button>
                     </div>
                 </div>
@@ -114,14 +121,13 @@
                         <span matTooltip="{{ssn}}" class="ml-2">{{ssn}}</span>
                     </div>
                 </div>
-                <div class="w-1/10">
+                <!-- <div class="w-1/10">
                     <div class="mr-2 float-right">
                         <button mat-raised-button color="primary" type="submit" (click)="clear()" [disabled]="clearbtn">
-                            <!-- <img src="assets/lens.svg" class="lens-icon"> -->
                             Clear
                         </button>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Table -->
@@ -131,7 +137,7 @@
             >
             <mat-spinner strokeWidth="2"></mat-spinner>
             </div>
-            <div class="mt-2 h-7/10" *ngIf="showtable">
+            <div class="mt-2 h-74" *ngIf="showtable">
                 <maxhealth-table
                 [config]="config"
                 [data]="patienthistorylist"

@@ -64,17 +64,18 @@ export class RefundDialogComponent implements OnInit {
   servicedeposittype:any=[];
   today: any;
   patientIdentityInfo:any=[];
-  avalaiblemaount:number=0;
+  avalaiblemaount:any=0;
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
   Refundavalaiblemaount:any = [];
+  totalrefundamount:number = 0;
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -129,7 +130,6 @@ export class RefundDialogComponent implements OnInit {
     this.clearsiblingcomponents = true;
     this.refundform.reset();
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
-    this.refundform.controls["mail"].setValue(this.data.Mail);
   }
 
   validationexists: boolean = true;
@@ -148,6 +148,7 @@ export class RefundDialogComponent implements OnInit {
          {
          this.refundformvalidation();
          this.submitrefundamount();       
+         
         }
       });  
   }
@@ -196,17 +197,48 @@ export class RefundDialogComponent implements OnInit {
     
   }
 
-  submitrefundamount(){
+  
+  MoreRefunddialog(){
+    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
+      width: '33vw', height: '40vh', data: {    
+        message: "Do you want to Make More Refund?",
+      },
+    });
+
+    MoreRefundDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result == "Success")  
+         {    
+         this.clear();  
+         let amount = Number(this.avalaiblemaount) - Number(this.totalrefundamount); 
+         this.avalaiblemaount =  amount.toFixed(2);
+         this.SendOTP="Send OTP";
+         this.ResendOTP="Send OTP to Manager";          
+          console.log("More Refund Dialog closed");
+        }else{
+            this.matDialog.closeAll(); 
+             this.dialogRef.close("Success");
+        }
+      }); 
+  }
+
+  submitrefundamount(){   
+    this.totalrefundamount =  Number(this.PaymentTypedepositamount);
     if(!this.validationexists){
-      console.log("deposit request body" + this.getPatientRefundSubmitRequestBody());
       this.http
         .post(ApiConstants.savepatientrefunddetails, this.getPatientRefundSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {            
-            this.matDialog.closeAll();
-            this.dialogRef.close("Success");
+          
+          
             this.messageDialogService.success("Refund has been done Successfully");  
+
+            setTimeout(() => {
+            
+                this.MoreRefunddialog();
+            }, 1000);
            
           },
           (error) => {

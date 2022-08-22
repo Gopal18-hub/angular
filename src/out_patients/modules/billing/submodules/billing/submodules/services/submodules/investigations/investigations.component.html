@@ -20,7 +20,7 @@
       </div>
       <div class="flex ml-4 w-1/2 align-items-center">
         <mat-label class="max-health-primary-color mr-2 font-bold"
-          >Investigation</mat-label
+          >Investigations</mat-label
         >
         <maxhealth-question
           [question]="questions[1]"
@@ -59,11 +59,11 @@
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2 min-width-initial"
+        class="font-sm ml-2 min-width-initial print-button"
         type="button"
         [disabled]="!billingService.checkServicesAdded()"
       >
-        Print Est
+        <mat-icon>print</mat-icon>
       </button>
     </div>
   </div>

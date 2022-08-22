@@ -5,6 +5,8 @@ import { HttpService } from '@shared/services/http.service';
 import { getPatientVisitHistory } from '@core/types/getPatientVisitHistory.Interface';
 import { Subject, takeUntil } from 'rxjs';
 import { CookieService } from '@shared/services/cookie.service';
+import { DatePipe, formatDate } from '@angular/common';
+import * as moment from 'moment';
 @Component({
   selector: 'out-patients-visit-history',
   templateUrl: './visit-history.component.html',
@@ -81,7 +83,8 @@ export class VisitHistoryComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {maxid: any, docid: any}, 
     private http: HttpService,
-    private cookie: CookieService) { 
+    private cookie: CookieService,
+    private datepipe: DatePipe) { 
     this.maxId = data.maxid;
     this.docId = data.docid;
   }
@@ -100,6 +103,9 @@ export class VisitHistoryComponent implements OnInit {
     .subscribe((resultdata)=>{
       console.log(resultdata);
         this.visithistorylist = resultdata;
+        this.visithistorylist.lastConsultationData.forEach(e=>{
+          e.visitDate = e.visitDate.replaceAll('-','/');
+        })
     },
     (error)=>{
       console.log(error);

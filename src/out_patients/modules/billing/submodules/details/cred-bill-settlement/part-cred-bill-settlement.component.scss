@@ -25,6 +25,16 @@
         padding: 0 !important;
     
     }
+    ::ng-deep .mat-radio-button .mat-radio-ripple {
+        position: absolute;
+        left: calc(50% - 13px);
+        top: calc(50% - 13px);
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        z-index: 1;
+        pointer-events: none;
+    }
         
     ::ng-deep .patient-lbl
   {
