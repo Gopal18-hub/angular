@@ -193,7 +193,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
             return {
-              title: r.doctorName,
+              title: r.doctorNameWithSpecialization || r.doctorName,
               value: r.doctorId,
               originalTitle: r.doctorName,
             };
@@ -251,7 +251,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
-            title: r.doctorNameWithSpecialization,
+            title: r.doctorNameWithSpecialization || r.doctorName,
             value: r.doctorId,
             originalTitle: r.doctorName,
           };

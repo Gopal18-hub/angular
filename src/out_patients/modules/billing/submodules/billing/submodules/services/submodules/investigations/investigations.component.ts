@@ -175,7 +175,12 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id, serviceid: r.serviceid };
+            return {
+              title: r.testNameWithService || r.name,
+              value: r.id,
+              serviceid: r.serviceid,
+              originalTitle: r.name,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -242,7 +247,11 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((res) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return {
+            title: r.testNameWithService || r.name,
+            value: r.id,
+            originalTitle: r.name,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });
