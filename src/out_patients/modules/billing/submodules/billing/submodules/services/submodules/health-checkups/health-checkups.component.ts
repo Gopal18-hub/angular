@@ -9,6 +9,15 @@ import { BillingService } from "../../../../billing.service";
 import { MatDialog } from "@angular/material/dialog";
 import { PackageDoctorModificationComponent } from "../../../../prompts/package-doctor-modification/package-doctor-modification.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+} from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
   selector: "out-patients-health-checkups",
@@ -114,6 +123,45 @@ export class HealthCheckupsComponent implements OnInit {
         },
       });
     });
+
+    this.formGroup.controls["healthCheckup"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.department &&
+            this.formGroup.value.department.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.gethealthcheckupsonsearch(
+                  Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return {
+              title: r.nameWithDepartment || r.name,
+              value: r.id,
+              originalTitle: r.name,
+            };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getDepartments() {
@@ -143,7 +191,7 @@ export class HealthCheckupsComponent implements OnInit {
           this.formGroup.controls["healthCheckup"].reset();
           if (Array.isArray(res)) {
             this.questions[1].options = res.map((r: any) => {
-              return { title: r.name, value: r.id };
+              return { title: r.name, value: r.id, originalTitle: r.name };
             });
           } else {
             this.questions[1].options = [];
@@ -183,7 +231,7 @@ export class HealthCheckupsComponent implements OnInit {
       .subscribe((res: any) => {
         this.billingService.addToHealthCheckup({
           sno: this.data.length + 1,
-          healthCheckups: this.formGroup.value.healthCheckup.title,
+          healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
           price: res.amount,
           itemid: this.formGroup.value.healthCheckup.value,
           serviceid: 26,
