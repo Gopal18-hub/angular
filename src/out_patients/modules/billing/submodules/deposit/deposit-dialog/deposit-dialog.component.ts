@@ -46,9 +46,9 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 12969; // Number(this.cookie.get("StationId"));
-  operatorID:any = 61660; // Number(this.cookie.get("UserId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -171,7 +171,7 @@ export class DepositDialogComponent implements OnInit {
           (resultData) => {
             this.matDialog.closeAll();
             this.dialogRef.close("Success");
-            this.messageDialogService.success("Deposit Has Been Successfully Save");
+            this.messageDialogService.success("Deposit Has Been Successfully Saved");
           
           },
           (error) => {

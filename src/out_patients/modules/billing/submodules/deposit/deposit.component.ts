@@ -23,7 +23,7 @@ import { DepositService } from '@core/services/deposit.service';
 import { ReportService } from '@shared/services/report.service';
 import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
-import { MaxTableComponent } from "@shared/ui/table/max-table.component";
+import { PatientService } from "@core/services/patient.service";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -31,14 +31,14 @@ import { MaxTableComponent } from "@shared/ui/table/max-table.component";
   styleUrls: ['./deposit.component.scss']
 })
 export class DepositComponent implements OnInit {
-  @ViewChild("MaxTableComponent") childTable: any;
 
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
     private messageDialogService: MessageDialogService,
     private depositservice: DepositService,
     private reportService: ReportService,
-    private searchService: SearchService,  private route: ActivatedRoute,
+    private searchService: SearchService,  private route: ActivatedRoute,    
+    private patientService: PatientService,
     private lookupService: LookupService,) {
       this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -322,13 +322,26 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
   totaldeposit: number = 0;
   totalrefund: number = 0;
   avalaibleamount: number = 0;
+  vipdb!: string;
+  noteRemarkdb!: string;
+  hwcRemarkdb!: string;
+  ewsDetailsdb: {
+    bplCardNo: string;
+    bplCardAddress: string;
+  } = {
+    bplCardNo: "",
+    bplCardAddress: "",
+  };
+
+  hotlistRemarkdb: any;
+  hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -371,34 +384,13 @@ export class DepositComponent implements OnInit {
     .subscribe((result) => {
       if(result == "Success"){
         this.getPatientPreviousDepositDetails();
-        this.matDialog.closeAll();
-        setTimeout(() => {
-          this.MoreRefunddialog();
-        }, 1000);
-       
+             
         console.log("Refund Dialog closed");
       }    
       this.MaxIDdepositExist = false;
     });
   }
 
-  MoreRefunddialog(){
-    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Do you want to Make More Refund?",
-      },
-    });
-
-    MoreRefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {
-           this.openrefunddialog();        
-          console.log("More Refund Dialog closed");
-        }
-      }); 
-  }
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
       width: '33vw', height: '40vh', data: {    
@@ -506,7 +498,14 @@ export class DepositComponent implements OnInit {
               this.categoryIcons = this.depositservice.getCategoryIconsForDeposit(
                 this.patientpersonaldetails[0]
               );
-             console.log(this.categoryIcons);
+              this.noteRemarkdb = this.patientpersonaldetails[0]?.noteReason;
+              this.vipdb = this.patientpersonaldetails[0]?.vipreason;
+              this.hwcRemarkdb = this.patientpersonaldetails[0]?.hwcRemarks;
+              this.hotlistRemarkdb = this.patientpersonaldetails[0]?.hotlistcomments;
+              this.hotlistReasondb.title = this.patientpersonaldetails[0]?.hotlistreason;
+
+console.log(this.categoryIcons);
+             console.log(this.patientpersonaldetails[0]);
             }
           },
           (error) => {
@@ -529,6 +528,7 @@ export class DepositComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
       this.depositcashlimitationdetails = resultData;
+      console.log(resultData);
     });
   }
 
@@ -594,14 +594,16 @@ export class DepositComponent implements OnInit {
         this.depoistList = resultData;   
         console.log(resultData);
         setTimeout(() => {
-          console.log(this.deposittable.childTable.selection);
+         // console.log(this.deposittable.childTable.selection);
           this.deposittable.selection.changed
           .pipe(takeUntil(this._destroying$))
           .subscribe((res: any) => {           
-            if (this.deposittable.selection.selected.length > 0) {              
+            if (this.deposittable.selection.selected.length > 0) {  
+              console.log( this.MaxIDdepositExist);            
               this.tableselectionexists = true;
               if(res.added[0].depositRefund == "Deposit"){
                 this.MaxIDdepositExist = true;
+                console.log( this.MaxIDdepositExist);
                 this.patientRefundDetails = res.added[0];
               }
             } else {
@@ -612,10 +614,7 @@ export class DepositComponent implements OnInit {
           .pipe(takeUntil(this._destroying$))
           .subscribe((res: any) => {
             console.log(res);
-      // if (this.deposittable.childTable.selection.selected.length > 0) {
-      //   console.log(res);
-      // }
-
+  
           })
         },5000);   
 
@@ -721,7 +720,37 @@ export class DepositComponent implements OnInit {
       });
     });
   }
-}
+
+  depositCategoryIconAction(categoryIcon: any){
+      const data: any = {
+        note: {
+          notes: this.noteRemarkdb,
+        },
+        vip: {
+          notes: this.vipdb,
+        },
+        hwc: {
+          notes: this.hwcRemarkdb,
+        },
+        ppagerNumber: {
+          bplCardNo: this.ewsDetailsdb.bplCardNo,
+          BPLAddress: this.ewsDetailsdb.bplCardAddress,
+        },
+        hotList: {
+          hotlistTitle: this.hotlistReasondb,
+          reason: this.hotlistRemarkdb,
+        },
+      };
+      if (
+        categoryIcon.tooltip != "CASH" &&
+        categoryIcon.tooltip != "INS" &&
+        categoryIcon.tooltip != "PSU"
+      ) {
+        this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+      }
+    }
+  }
+
 export const CheckPatientDetails = {
   PatientNotReg: 0,
   Inpatient: 1,
