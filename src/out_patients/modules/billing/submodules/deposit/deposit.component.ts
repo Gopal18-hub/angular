@@ -17,7 +17,6 @@ import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.s
 import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdepositdetailModel.Model";
 import { MakedepositDialogComponent } from './makedeposit-dialog/makedeposit-dialog.component';
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
-import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import { DepositService } from '@core/services/deposit.service';
 import { ReportService } from '@shared/services/report.service';
@@ -89,9 +88,7 @@ export class DepositComponent implements OnInit {
                
                       this.iacode = maxID.split(".")[0];
                       this.regNumber = Number(maxID.split(".")[1]);
-                      this.depositForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                      this.getPatientPreviousDepositDetails();
+                      this.getPatientDetailsForDeposit();
               }
 
               //this.similarContactPatientList = [];
@@ -317,7 +314,6 @@ export class DepositComponent implements OnInit {
   questions: any;
   patientRefundDetails: any = [];
   patientpersonaldetails: any = [];
-  depositcashlimitationdetails: any=[];
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
@@ -363,6 +359,15 @@ export class DepositComponent implements OnInit {
       await this.loadGrid(formdata);
     });
 
+    // this.route.queryParams
+    // .pipe(takeUntil(this._destroying$))
+    // .subscribe((value) => {
+    //   if (value["maxId"]) {             
+    //     this.iacode = value["maxId"].split(".")[0];
+    //     this.regNumber = Number(value["maxId"].split(".")[1]);
+    //     this.getPatientDetailsForDeposit();
+    //   }
+    // });
     }
 
     
@@ -382,11 +387,10 @@ export class DepositComponent implements OnInit {
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
-      if(result == "Success"){
-        this.getPatientPreviousDepositDetails();
-             
+      //if(result == "Success"){
+        this.getPatientPreviousDepositDetails();             
         console.log("Refund Dialog closed");
-      }    
+      //}    
       this.MaxIDdepositExist = false;
     });
   }
@@ -449,8 +453,7 @@ export class DepositComponent implements OnInit {
           this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
           if ((this.iacode != "" && this.iacode != "0") && (this.regNumber != 0 && !Number.isNaN(Number(this.regNumber)))) {
             this.getDepositType();
-            this.getPatientDetailsForDeposit();
-            this.getdepositcashlimit();            
+            this.getPatientDetailsForDeposit(); 
           } else {
             this.depositForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
@@ -522,16 +525,6 @@ console.log(this.categoryIcons);
 
   }
 
-  getdepositcashlimit(){
-    this.http
-    .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hspLocationid))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
-      this.depositcashlimitationdetails = resultData;
-      console.log(resultData);
-    });
-  }
-
   getDepositType() {
     this.http
       .get(ApiConstants.getadvancetype(this.hspLocationid))
@@ -601,10 +594,13 @@ console.log(this.categoryIcons);
             if (this.deposittable.selection.selected.length > 0) {  
               console.log( this.MaxIDdepositExist);            
               this.tableselectionexists = true;
-              if(res.added[0].depositRefund == "Deposit"){
+              if(res.added[0].depositRefund == "Deposit" && res.added[0].balance > 0 ){
                 this.MaxIDdepositExist = true;
                 console.log( this.MaxIDdepositExist);
                 this.patientRefundDetails = res.added[0];
+              }else{
+                this.MaxIDdepositExist = false;
+                this.patientRefundDetails = [];
               }
             } else {
               this.tableselectionexists = false;
@@ -693,8 +689,7 @@ console.log(this.categoryIcons);
                       this.iacode = maxID.split(".")[0];
                       this.regNumber = Number(maxID.split(".")[1]);
                       this.depositForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                      this.getPatientPreviousDepositDetails();
+                      this.getPatientDetailsForDeposit();
                     }
                     this.similarContactPatientList = [];
                   });

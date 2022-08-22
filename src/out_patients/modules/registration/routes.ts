@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: "registration",
     component: RegistrationComponent,
-    canActivate: [AuthGuardService],
+    //canActivate: [AuthGuardService],
     children: [
       { path: "", component: OpRegistrationComponent },
       {
