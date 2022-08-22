@@ -14,6 +14,9 @@
 .bg-white {
     background-color: #fff;
     color: #000;
+    ::ng-deep .mat-error{
+        margin-top: 7% !important;
+    }
 }
 
 ::ng-deep .mat-form-field-wrapper {
@@ -33,7 +36,11 @@
     }
 
 }
-
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}
 .onlineoptable{
     ::ng-deep .max-table-wrapper{
         border-radius: 0.75rem;
@@ -51,8 +58,12 @@
     height: 90%;
     width: 25%;
 } 
-.spinner{    
-    margin-left: 47%; margin-top: 13%;
+::ng-deep .online-op-button{
+    .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
 }
 }
    

@@ -101,6 +101,7 @@ export class InvestigationsComponent implements OnInit {
         style: {
           width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -146,6 +147,12 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      this.getdoctorlistonSpecializationClinic(
+        res.$event.value,
+        res.data.index
+      );
+    });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
         filter((res) => {
@@ -175,7 +182,12 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id, serviceid: r.serviceid };
+            return {
+              title: r.testNameWithService || r.name,
+              value: r.id,
+              serviceid: r.serviceid,
+              originalTitle: r.name,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -197,7 +209,10 @@ export class InvestigationsComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -207,9 +222,10 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
@@ -242,7 +258,11 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((res) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return {
+            title: r.testNameWithService || r.name,
+            value: r.id,
+            originalTitle: r.name,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });

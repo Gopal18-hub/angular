@@ -39,7 +39,7 @@
 
     position: absolute;
 
-    left: 2px;
+    left: 0px;
 
     top: 2px;
 
@@ -63,7 +63,7 @@
     }
 }
 .mt-6p{
-    margin-top:6%;
+    margin-top:7%;
 }
 .mt-error{
     ::ng-deep .mat-error{
@@ -99,9 +99,10 @@
 }
 .button-height{
    // ::ng-deep button{
-        height:4.95vh;
+        height:1.875rem;
    // }
 }
+
 .p-0-6{
     padding:0.6rem;
 }

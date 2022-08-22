@@ -462,7 +462,7 @@ export class PatientHistoryComponent implements OnInit {
               this.pname = this.patientDetails[0].firstName +" "+ this.patientDetails[0].middleName +" "+this.patientDetails[0].lastName;
               this.age = this.patientDetails[0].age +" "+this.patientDetails[0].ageTypeName;
               this.gender = this.patientDetails[0].genderName;
-              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd-MM-YYYY");
+              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd/MM/YYYY");
               this.nationality = this.patientDetails[0].nationality;
               this.ssn = this.patientDetails[0].ssn;
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);

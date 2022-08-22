@@ -61,7 +61,7 @@ export class DepositService {
         },
         note: {
           type: "dynamic",
-          value: "notereason",
+          value: "noteReason",
         },
         cash: {
           type: "static",

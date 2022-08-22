@@ -28,68 +28,53 @@ export class PartialCredBillComponent implements OnInit {
     type: "object",
     title: "",
     properties: {
-      billNo: {
-        type: "string",
-      },
-      maxid: {
-        type: "string",
-        defaultValue: this.cookie.get("LocationIACode") + ".",
-      },
-      mobileNo: {
-        type: "tel",
-        pattern: "^[1-9]{1}[0-9]{9}",
-      },
-      billDate: {
-        type: "date",
-        // title: "SSN",
-      },
-      datevalidation: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "" }],
-        defaultValue: 0,
-      },
-      fromDate: { type: "date", required: false },
-      toDate: { type: "date", required: false },
       billAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       dipositrAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       discAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      discAftBill: {
+      prePaidAMt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      refundAmt: {
-        type: "string",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      companyDue: {
+      plandic: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
+      },
+      planamt: {
+        type: "string",
+        required: false,
+        readonly: true,
+        defaultValue: '0.0',
       },
       patienDue: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
+      },
+      companyDue: {
+        type: "string",
+        required: false,
+        readonly: true,
+        defaultValue: '0.0',
       },
       paymentMode: {
         type: "radio",
@@ -97,14 +82,15 @@ export class PartialCredBillComponent implements OnInit {
           {
             title: "Patient Due",
             value: "patientDue",
-            defaultValue: true,
           },
           {
             title: "Company Due",
             value: "companyDue",
           },
         ],
+        defaultValue: "patientDue",
       },
+      
     },
   };
 
@@ -167,7 +153,7 @@ export class PartialCredBillComponent implements OnInit {
     this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
     this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
     this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
-    this.BServiceForm.controls["discAftBill"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
     this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
   }
   gst: { service: string; percentage: number; value: number }[] = [

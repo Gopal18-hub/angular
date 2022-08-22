@@ -1,22 +1,20 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { CookieService } from "@shared/services/cookie.service";
-import { HttpService } from "@shared/services/http.service";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
-import { Subject } from "rxjs";
-import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
-import { billDetailService } from "../billDetails.service";
-import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { CookieService } from '@shared/services/cookie.service';
+import { HttpService } from '@shared/services/http.service';
+import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
+import { Subject } from 'rxjs';
+import { GstComponent } from '../../miscellaneous-billing/billing/gst/gst.component';
+import { billDetailService } from '../billDetails.service';
 
 @Component({
-  selector: "out-patients-bill-detail-table",
-  templateUrl: "./out-patients-bill-detail-table.component.html",
-  styleUrls: ["./out-patients-bill-detail-table.component.scss"],
+  selector: 'out-patients-refund-after-bill',
+  templateUrl: './refund-after-bill.component.html',
+  styleUrls: ['./refund-after-bill.component.scss']
 })
-export class BillDetailTableComponent implements OnInit {
+export class RefundAfterBillComponent implements OnInit {
 
   @ViewChild("selectedServices") tableRows: any;
   constructor(
@@ -25,8 +23,7 @@ export class BillDetailTableComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailservice: billDetailService,
-    private msgdialog: MessageDialogService
+    private billDetailservice: billDetailService
   ) {}
 
   miscBillData = {
@@ -267,6 +264,7 @@ export class BillDetailTableComponent implements OnInit {
       this.billDetailservice.serviceList[i].Sno = i + 1;
     }
     this.data = [...this.billDetailservice.serviceList];
+    console.log(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].notApproved);
   }
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },
@@ -288,55 +286,19 @@ export class BillDetailTableComponent implements OnInit {
   }
   ngAfterViewInit()
   {
-
+    
   }
   printrow(event:any)
   {
-    setTimeout(() => {
-      console.log(event)
-      console.log(event.row.cancelled);
-
-      if(event.row.cancelled == true)
-      {
-        console.log("true");
-        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
-          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
-            
-          })
-        });
-        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-          return a.itemid == event.row.itemid;
-        })  
-        if(list[0].ackby > 0)
-        {
-          this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
-          event.row.cancelled = false;
-        }
-        else
-        {
-            this.billDetailservice.addForApproval({
-              cancelled: event.row.cancelled,
-              Sno: event.row.Sno,
-              amount: event.row.amount,
-              requestToApproval: event.row.requestToApproval,
-              itemid: event.row.itemid,
-              orderid: event.row.orderid
-            })
-            this.billDetailservice.calculateTotalRefund();
-            console.log(this.billDetailservice.sendforapproval);
-        }
-      }
-      else if(event.row.cancelled == false)
-      {
-        console.log("false");
-        var index = this.billDetailservice.sendforapproval.findIndex((val: any) => val.Sno === event.row.Sno);
-        console.log(index);
-        // this.billDetailservice.sendforapproval.splice(index, 1);
-        this.billDetailservice.removeForApproval(index);
-        this.billDetailservice.calculateTotalRefund();
-        console.log(this.billDetailservice.sendforapproval);
-      }
-    }, 100);
-    
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+    {
+      console.log('not ackn');
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 1)
+    {
+      console.log('ack');
+    }
+    console.log(event);
   }
+
 }
