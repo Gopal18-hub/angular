@@ -33,10 +33,10 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild("table") table: any;
   quickLinksRoutes: any = {
-    1: "/out-patient-billing",
-    2: "/out-patient-billing/details",
-    3: "/out-patient-billing/deposit",
-    6: "/patient-history",
+    1: "/out-patients/out-patient-billing",
+    2: "/out-patients/out-patient-billing/details",
+    3: "/out-patients/out-patient-billing/deposit",
+    6: "/out-patients/patient-history",
   };
 
   config: any = {
