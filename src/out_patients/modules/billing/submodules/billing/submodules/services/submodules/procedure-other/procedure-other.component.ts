@@ -102,6 +102,7 @@ export class ProcedureOtherComponent implements OnInit {
         style: {
           width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -148,12 +149,22 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.selection.changed.subscribe((res: any) => {
-      console.log(res);
-      const source = res.added[0] || res.removed[0];
-      console.log(source);
-      this.update(source.sno);
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "qty") {
+        this.update(res.data.element.sno);
+      } else if (res.data.col == "specialisation") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
+        );
+      }
     });
+    // this.tableRows.selection.changed.subscribe((res: any) => {
+    //   console.log(res);
+    //   const source = res.added[0] || res.removed[0];
+    //   console.log(source);
+    //   this.update(source.sno);
+    // });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
         filter((res) => {
@@ -202,7 +213,10 @@ export class ProcedureOtherComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -212,9 +226,10 @@ export class ProcedureOtherComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
@@ -250,7 +265,7 @@ export class ProcedureOtherComponent implements OnInit {
               return {
                 title: r.itemNameWithService || r.itemName,
                 value: r.itemID,
-                originalTitle: r.itenmName,
+                originalTitle: r.itemName,
               };
             });
           } else {
