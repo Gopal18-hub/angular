@@ -28,68 +28,53 @@ export class PartialCredBillComponent implements OnInit {
     type: "object",
     title: "",
     properties: {
-      billNo: {
-        type: "string",
-      },
-      maxid: {
-        type: "string",
-        defaultValue: this.cookie.get("LocationIACode") + ".",
-      },
-      mobileNo: {
-        type: "tel",
-        pattern: "^[1-9]{1}[0-9]{9}",
-      },
-      billDate: {
-        type: "date",
-        // title: "SSN",
-      },
-      datevalidation: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "" }],
-        defaultValue: 0,
-      },
-      fromDate: { type: "date", required: false },
-      toDate: { type: "date", required: false },
       billAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       dipositrAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       discAmt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      discAftBill: {
+      prePaidAMt: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      refundAmt: {
+      plandic: {
         type: "string",
         required: false,
-        defaultValue: 0.0,
         readonly: true,
+        defaultValue: '0.0',
+      },
+      planamt: {
+        type: "string",
+        required: false,
+        readonly: true,
+        defaultValue: '0.0',
       },
       companyDue: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
       },
       patienDue: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
       },
       paymentMode: {
         type: "radio",
@@ -97,14 +82,15 @@ export class PartialCredBillComponent implements OnInit {
           {
             title: "Patient Due",
             value: "patientDue",
-            defaultValue: true,
           },
           {
             title: "Company Due",
             value: "companyDue",
           },
         ],
+        defaultValue: "patientDue",
       },
+      
     },
   };
 

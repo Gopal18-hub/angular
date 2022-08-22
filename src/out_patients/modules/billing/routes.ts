@@ -23,6 +23,7 @@ import {
   MiscCredDetail,
 } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
+import { RefundAfterBillComponent } from "./submodules/details/refund-after-bill/refund-after-bill.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
 import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
@@ -61,7 +62,7 @@ const routes: Routes = [
           { path: "services", component: BillDetailTableComponent },
           {
             path: "refund-after-bill",
-            component: BillDetailTableComponent,
+            component: RefundAfterBillComponent,
           },
         ],
       },

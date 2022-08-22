@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel dispatch-body-wrapper">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel dispatch-body-wrapper">
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
         <ul class="list-unstyled flex items-end">
             <li class="ml-3">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <!-- radio inputs -->
-                <div class="w-3/10 flex flex-wrap ml-6">
+                <div class="w-1/5 flex flex-wrap ml-6">
                     <div class="w-full flex flex-wrap max-health-primary-color font-semi-bold">
                         <maxhealth-question
                         [question]="questions[4]"
@@ -60,26 +60,66 @@
                     </div>
                 </div>
                 <!-- buttons -->
-                <div class="float-right flex w-1/5 mr-5">
-                    <div class="mr-4">
-                        <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()" [disabled]="!dispatchhistoryform.valid">Show</button>
+                <div class="float-right flex w-1/10 mar-left-12">
+                    <div class="mr-2 searchbtn">
+                        <button mat-raised-button color="primary" type="submit" (click)="dispatchreportsearch()" [disabled]="!dispatchhistoryform.valid">
+                            <img src="assets/lens.svg" class="lens-icon">
+                            Search
+                        </button>
                     </div>
-                    <div class="mr-4">
+                    <div class=" mr-2">
                         <button mat-raised-button color="primary" type="submit" (click)="pendingreportsearch()" [disabled]="pendingbtn">Pending Reports</button>
                     </div>
+                    <!-- clear btn -->
                 </div>
                 
             </div>
             <!-- Table -->
-            <div class="mt-1 h-68">
-                <div class="ml-1" *ngIf="show">
+            <div class="flex w-full mt-1 align-items-center">
+                <div class="float-left w-9/10">
+                    <div class="ml-1" *ngIf="show">
+                        <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
+                    </div>
+                    <div class="ml-1" *ngIf="pendingreport">
+                        <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
+                    </div>
+                </div>
+                <div class="flex align-items-center">
+                    <div class="mr-2">
+                        <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
+                    </div>
+                    <div class="mr-2">
+                        <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
+                    </div>
+                    <div class="mr-2">
+                        <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
+                    </div>
+                    <div class="mr-1">
+                        <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class=" h-68">
+                <!-- <div class="ml-1" *ngIf="show">
                     <mat-label class="max-health-primary-color font-bold">List of all investigation {{title}}</mat-label>
                 </div>
                 <div class="ml-1" *ngIf="pendingreport">
                     <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
-                </div>
+                    <div class="flex h-1/5 float-right align-items-center">
+                        <div class="mr-4">
+                            <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
+                        </div>
+                        <div class="mr-4">
+                            <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
+                        </div>
+                        <div class="mr-1">
+                            <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
+                        </div>
+                        
+                    </div>
+                </div> -->
                 <ng-container *ngIf="reporttable">
-                    <div class="h-full mt-1 table">
+                    <div class="h-full w-full mt-2 table">
                         <maxhealth-table
                         [config]="config"
                         [data]="dispatchreport.dispatchlist"
@@ -89,35 +129,7 @@
                     </div>
                 </ng-container>
             </div>
-
-            <!-- <div class="mt-1 h-68" *ngIf="pendingreport">
-                <div class="ml-1">
-                    <mat-label class="max-health-primary-color font-bold">List of all pending investigation {{title}}</mat-label>
-                </div>
-                <div class="h-full mt-1 table">
-                    <maxhealth-table
-                    [config]="config"
-                    [data]="dispatchreportpending.dispatchlist"
-                    #pendingtable
-                    ></maxhealth-table>
-                </div>
-            </div> -->
-
-            <!-- Button -->
-            <div class="flex h-1/5 float-right align-items-center">
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Export</button>
-                </div>
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" [disabled]="savebtn" (click)="savedialog()">Save</button>
-                </div>
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" type="submit" (click)="print()" [disabled]="printbtn">Print</button>
-                </div>
-                <div class="">
-                    <button mat-raised-button color="primary" (click)="clear()" [disabled]="!dispatchhistoryform.dirty" type="submit">Clear</button>
-                </div>
-            </div>
+            
         </div>
     </mat-tab-nav-panel>
    
