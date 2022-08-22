@@ -9,7 +9,7 @@ import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { ActivatedRoute } from "@angular/router";
-import { AppointmentSearchDialogComponent } from "../../../registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
+import { AppointmentSearchComponent } from "./prompts/appointment-search/appointment-search.component";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
@@ -319,13 +319,10 @@ export class BillingComponent implements OnInit {
   }
 
   appointmentSearch() {
-    const appointmentSearch = this.matDialog.open(
-      AppointmentSearchDialogComponent,
-      {
-        maxWidth: "100vw",
-        width: "98vw",
-      }
-    );
+    const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
+      maxWidth: "100vw",
+      width: "98vw",
+    });
 
     appointmentSearch
       .afterClosed()
