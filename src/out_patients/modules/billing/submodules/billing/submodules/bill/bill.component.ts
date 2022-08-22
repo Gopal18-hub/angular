@@ -163,6 +163,9 @@ export class BillComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       serviceName: {
         title: "Services Name",
