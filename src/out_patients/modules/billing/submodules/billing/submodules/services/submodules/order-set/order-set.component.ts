@@ -8,6 +8,8 @@ import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
 import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/order-set-details.component";
 import { MatDialog } from "@angular/material/dialog";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-order-set",
   templateUrl: "./order-set.component.html",
@@ -93,14 +95,18 @@ export class OrderSetComponent implements OnInit {
         title: "Specialization",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
         style: {
-          width: "10%",
+          width: "17%",
         },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -116,7 +122,8 @@ export class OrderSetComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -127,6 +134,7 @@ export class OrderSetComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
+    this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -136,6 +144,7 @@ export class OrderSetComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    console.log($event.index);
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
       (item: any, index: number) => {
@@ -148,23 +157,52 @@ export class OrderSetComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      console.log(res);
-      const itemsFilter = this.apiData.orderSetBreakup.filter((item: any) => {
-        return (
-          res.element.items.includes(item.testId) &&
-          res.element.orderSetId == item.orderSetId
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "specialization") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
         );
-      });
+      }
+    });
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
         height: "50%",
         data: {
           orderSet: res.element,
-          items: itemsFilter,
+          items: res.element.apiItems,
         },
       });
     });
+  }
+
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.config.columnsInfo.specialization.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        let options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
+      });
   }
 
   getOrserSetData() {
@@ -202,36 +240,65 @@ export class OrderSetComponent implements OnInit {
     });
   }
   add(priorityId = 1) {
-    const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
-      return item.orderSetId == this.formGroup.value.orderSet.value;
+    let exist = this.billingService.OrderSetItems.findIndex((item: any) => {
+      return item.itemid == this.formGroup.value.orderSet.value;
     });
-
-    if (filter[0].serviceid == 25) {
-      priorityId = 57;
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Order Set already added to the service list"
+      );
+      return;
     }
 
+    let subItems: any = [];
+
+    this.formGroup.value.items.forEach((subItem: any) => {
+      const exist = this.apiData.orderSetBreakup.findIndex((set: any) => {
+        return set.testId == subItem;
+      });
+      if (exist > -1) {
+        const temp = this.apiData.orderSetBreakup[exist];
+        subItems.push({
+          serviceID: temp.serviceid,
+          itemId: temp.testId,
+          bundleId: 0,
+          priority: temp.serviceid == 25 ? 57 : 1,
+        });
+      }
+    });
+
+    // const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
+    //   return item.orderSetId == this.formGroup.value.orderSet.value;
+    // });
+
+    // if (filter[0].serviceid == 25) {
+    //   priorityId = 57;
+    // }
+
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.orderSet.value,
-          filter[0].serviceid,
-          this.cookie.get("HSPLocationId")
-        )
+      .post(
+        BillingApiConstants.getPriceBulk(this.cookie.get("HSPLocationId")),
+        subItems
       )
       .subscribe((res: any) => {
-        this.billingService.addToOrderSet({
-          sno: this.data.length + 1,
-          orderSetName: this.formGroup.value.orderSet.title,
-          serviceType: "Investigation",
-          serviceItemName: "",
-          precaution: "P",
-          priority: "Routine",
-          specialization: "",
-          doctorName: "",
-          price: res.amount,
-          items: this.formGroup.value.items,
-          orderSetId: this.formGroup.value.orderSet.value,
+        const existDataCount = this.data.length;
+        res.forEach((resItem: any, index: number) => {
+          const data1 = {
+            sno: existDataCount + index + 1,
+            orderSetName: this.formGroup.value.orderSet.title,
+            serviceType: "Investigation",
+            serviceItemName: resItem.procedureName,
+            precaution: "P",
+            priority: "Routine",
+            specialization: "",
+            doctorName: "",
+            price: resItem.returnOutPut,
+            items: this.formGroup.value.items,
+            orderSetId: this.formGroup.value.orderSet.value,
+            itemid: this.formGroup.value.orderSet.value,
+            apiItems: res,
+          };
+          this.billingService.addToOrderSet(data1);
         });
 
         this.data = [...this.billingService.OrderSetItems];

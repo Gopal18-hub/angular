@@ -233,6 +233,8 @@ export class PatientHistoryComponent implements OnInit {
   clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
+  iacode: any;
+  regNumber: any;
   @ViewChild("table") tableRows: any;
   private readonly _destroying$ = new Subject<void>();
   constructor( 
@@ -246,7 +248,70 @@ export class PatientHistoryComponent implements OnInit {
     private searchService: SearchService,
     private router: Router,
     private route: ActivatedRoute,
-    private lookupService: LookupService) {  }
+    private lookupService: LookupService) { 
+      this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value);        
+        }
+        else{
+          this.ngOnInit();
+          this.clear();
+        }
+        });
+     }
+     async loadGrid(formdata: any): Promise<any> {
+      let lookupdata: string | any[]; 
+      if(!formdata.data){
+        lookupdata = await this.lookupService.searchPatient({
+         data: formdata,
+       });
+      }else{
+        lookupdata = await this.lookupService.searchPatient(formdata);
+      }     
+     
+       console.log(lookupdata);
+       if (lookupdata.length == 1) {
+         if (lookupdata[0] && "maxid" in lookupdata[0]) {        
+         this.iacode = this.patienthistoryform.value.maxid.split(".")[0];
+         this.patienthistoryform.controls['maxid'].setValue(lookupdata[0]["maxid"]);
+         this.regNumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
+           this.getPatientDetails();
+           this.clearbtn = false;            
+         }
+       }else if (lookupdata.length > 1){
+         const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+           {
+             width: "60vw",
+             height: "80vh",
+             data: {
+               searchResults: lookupdata,
+             },
+           }
+         );
+
+         similarSoundDialogref
+           .afterClosed()
+           .pipe(takeUntil(this._destroying$))
+           .subscribe((result: any) => {
+             if (result) {
+               console.log(result.data["added"][0].maxid);
+               let maxID = result.data["added"][0].maxid;
+               this.patienthistoryform.controls["maxid"].setValue(maxID);
+              
+                     this.iacode = maxID.split(".")[0];
+                     this.regNumber = Number(maxID.split(".")[1]);
+                     this.patienthistoryform.controls["maxid"].setValue(maxID);
+                     this.getPatientDetails();
+                     this.clearbtn = false;
+             }
+
+             this.similarContactPatientList = [];
+           });
+       }
+    }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -462,7 +527,7 @@ export class PatientHistoryComponent implements OnInit {
               this.pname = this.patientDetails[0].firstName +" "+ this.patientDetails[0].middleName +" "+this.patientDetails[0].lastName;
               this.age = this.patientDetails[0].age +" "+this.patientDetails[0].ageTypeName;
               this.gender = this.patientDetails[0].genderName;
-              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd-MM-YYYY");
+              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd/MM/YYYY");
               this.nationality = this.patientDetails[0].nationality;
               this.ssn = this.patientDetails[0].ssn;
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);

@@ -54,6 +54,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
 
+  @Output() controlValueChangeTrigger: EventEmitter<any> = new EventEmitter();
+
+  @Output() actionItemClickTrigger: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -331,8 +335,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       });
       data.push(temp);
     });
+    let wscols = [];
+    for (var i = 0; i < headers.length; i++) {
+      wscols.push({ wch: headers[i].length + 5 });
+    }
     const wb = XLSX.utils.book_new();
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    ws["!cols"] = wscols;
     XLSX.utils.sheet_add_aoa(ws, [headers]);
     const workSheet = XLSX.utils.sheet_add_json(ws, data, {
       origin: "A2",
@@ -349,5 +358,12 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   stringLinkClick(data: any) {
     this.stringLinkOutput.emit(data);
+  }
+  controlValueChange($event: any, data: any) {
+    console.log($event, data);
+    this.controlValueChangeTrigger.emit({ $event, data });
+  }
+  actionItemClick(item: any, data: any) {
+    this.actionItemClickTrigger.emit({ item, data });
   }
 }

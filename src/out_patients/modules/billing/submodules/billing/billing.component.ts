@@ -9,7 +9,7 @@ import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { ActivatedRoute } from "@angular/router";
-import { AppointmentSearchDialogComponent } from "../../../registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
+import { AppointmentSearchComponent } from "./prompts/appointment-search/appointment-search.component";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
@@ -106,6 +106,8 @@ export class BillingComponent implements OnInit {
   dmsProcessing: boolean = false;
 
   moment = moment;
+
+  narrationAllowedLocations = ["67", "69"];
 
   constructor(
     public matDialog: MatDialog,
@@ -319,13 +321,10 @@ export class BillingComponent implements OnInit {
   }
 
   appointmentSearch() {
-    const appointmentSearch = this.matDialog.open(
-      AppointmentSearchDialogComponent,
-      {
-        maxWidth: "100vw",
-        width: "98vw",
-      }
-    );
+    const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
+      maxWidth: "100vw",
+      width: "98vw",
+    });
 
     appointmentSearch
       .afterClosed()
@@ -397,6 +396,9 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
+    this.formGroup.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
     this.questions[0].elementRef.focus();
   }
 

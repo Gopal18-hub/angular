@@ -33,7 +33,10 @@
     </form>
     <div class="flex w-36 align-items-center justify-end">
       <div class="total-cost" *ngIf="billingService.totalCost > 0">
-        Total Estimation: Rs {{ billingService.totalCost }}
+        <span>Total Estimation:</span>
+        {{
+          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
+        }}
       </div>
 
       <button
@@ -58,11 +61,11 @@
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2 min-width-initial"
+        class="font-sm ml-2 min-width-initial print-button"
         type="button"
         [disabled]="!billingService.checkServicesAdded()"
       >
-        Print Est
+        <mat-icon>print</mat-icon>
       </button>
     </div>
   </div>

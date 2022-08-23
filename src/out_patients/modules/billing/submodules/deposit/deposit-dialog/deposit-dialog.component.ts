@@ -48,7 +48,7 @@ export class DepositDialogComponent implements OnInit {
   
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -90,7 +90,7 @@ export class DepositDialogComponent implements OnInit {
         };
     this.patientIdentityInfo = { type: "Deposit", patientinfo : this.data.patientinfo };
     this.patientsavedepositdetailgst = [];
-    this.isNSSHLocation = false; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
+    this.isNSSHLocation =  this.cookie.get("LocationIACode") == "NSSH" ? true : false;
   }
 
   ngAfterViewInit():void {   
@@ -169,10 +169,15 @@ export class DepositDialogComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
-            this.matDialog.closeAll();
-            this.dialogRef.close("Success");
-            this.messageDialogService.success("Deposit Has Been Successfully Save");
-          
+            console.log(resultData);
+            if(resultData[0].returnFlag == 0){
+              this.matDialog.closeAll();
+              this.dialogRef.close("Success");
+              this.messageDialogService.success("Deposit Has Been Successfully Saved");            
+            }else{
+              this.messageDialogService.error(resultData[0].returnMessageDeposit);
+            }
+           
           },
           (error) => {
             console.log(error);
@@ -224,7 +229,7 @@ export class DepositDialogComponent implements OnInit {
   clearsiblingcomponents:boolean = false;
   cleardepositdialog(){
     this._destroying$.next(undefined);
-    this._destroying$.complete();
+    this._destroying$.complete(); 
     this.clearsiblingcomponents = true;
     this.makedepositdialogForm.reset();
   }

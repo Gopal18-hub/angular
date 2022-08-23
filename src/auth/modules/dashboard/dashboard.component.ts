@@ -32,6 +32,12 @@ export class DashboardComponent implements OnInit {
   defaultUI: boolean = true;
 
   @ViewChild("table") table: any;
+  quickLinksRoutes: any = {
+    1: "/out-patients/out-patient-billing",
+    2: "/out-patients/out-patient-billing/details",
+    3: "/out-patients/out-patient-billing/deposit",
+    6: "/out-patients/patient-history",
+  };
 
   config: any = {
     clickedRows: true,
@@ -40,23 +46,33 @@ export class DashboardComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        //actionType: "link",
-        //routeLink: "",
+        linkid: 1,
+        actionType: "custom",
       },
       {
         title: "Bill Details",
+        linkid: 2,
+        actionType: "custom",
       },
       {
         title: "Deposits",
+        linkid: 3,
+        actionType: "custom",
       },
       {
         title: "Admission",
+        linkid: 4,
+        actionType: "custom",
       },
       {
         title: "Admission log",
+        linkid: 5,
+        actionType: "custom",
       },
       {
         title: "Visit History",
+        linkid: 6,
+        actionType: "custom",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -168,6 +184,31 @@ export class DashboardComponent implements OnInit {
               { queryParams: { maxId: res.added[0].maxid } }
             );
           });
+          this.table.actionItemClickTrigger.subscribe((res: any) => {
+            console.log(res);
+            if (res) {
+              if (res.item && res.data) {
+                //if else condition due to queryparam for deposite
+                if (res.item["linkid"] == 1) {
+                  if (this.quickLinksRoutes[res.item["linkid"]]) {
+                    this.router.navigate(
+                      [this.quickLinksRoutes[res.item["linkid"]]],
+                      {
+                        queryParams: { maxId: res.data["maxid"] },
+                      }
+                    );
+                  }
+                } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                  this.router.navigate(
+                    [this.quickLinksRoutes[res.item["linkid"]]],
+                    {
+                      queryParams: { maxID: res.data["maxid"] },
+                    }
+                  );
+                }
+              }
+            }
+          });
         });
       });
     this.searchService.searchTrigger
@@ -231,6 +272,31 @@ export class DashboardComponent implements OnInit {
                 }
               );
             });
+          this.table.actionItemClickTrigger.subscribe((res: any) => {
+            console.log(res);
+            if (res) {
+              if (res.item && res.data) {
+                //if else condition due to queryparam for deposite
+                if (res.item["linkid"] == 1) {
+                  if (this.quickLinksRoutes[res.item["linkid"]]) {
+                    this.router.navigate(
+                      [this.quickLinksRoutes[res.item["linkid"]]],
+                      {
+                        queryParams: { maxId: res.data["maxid"] },
+                      }
+                    );
+                  }
+                } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                  this.router.navigate(
+                    [this.quickLinksRoutes[res.item["linkid"]]],
+                    {
+                      queryParams: { maxID: res.data["maxid"] },
+                    }
+                  );
+                }
+              }
+            }
+          });
         });
       }
     }
