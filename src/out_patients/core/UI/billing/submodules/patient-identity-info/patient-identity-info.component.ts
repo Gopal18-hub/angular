@@ -76,9 +76,9 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
       this.patientidentityform.controls["panno"].enable();
     }else if(this.data.type == "Refund"){
       this.patientidentityform.controls["mainradio"].disable();
-      this.patientidentityform.controls["panno"].disable();
-    }
+      this.patientidentityform.controls["panno"].disable();      
     this.patientidentityform.controls["panno"].setValue(this.data.patientinfo.panno);
+    }
     this.patientidentityform.controls["mobileno"].setValue(this.data.patientinfo.mobileno);
     this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
     this.form60PatientInfo = this.data.patientinfo;    

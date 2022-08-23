@@ -305,8 +305,8 @@ export class BillDetailTableComponent implements OnInit {
           })
         });
         var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-          return a.itemid == event.row.itemid;
-        })  
+          return a.serviceId == event.row.serviceid;
+        }) 
         if(list[0].ackby > 0)
         {
           this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
@@ -339,4 +339,5 @@ export class BillDetailTableComponent implements OnInit {
     }, 100);
     
   }
+
 }
