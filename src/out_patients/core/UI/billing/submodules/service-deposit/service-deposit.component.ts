@@ -29,7 +29,7 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
 
   servicetypeList: ServiceType[] = [];
   deposittypeList: DepositType[] = [];
-  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
 
   constructor(private formService: QuestionControlService, private cookie: CookieService, private http: HttpService, ) { }
 
@@ -81,9 +81,12 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.deposittypeList = resultData;
+
         this.questions[1].options = this.deposittypeList.map((l) => {
           return { title: l.advanceType, value: l.id };
         });
+      
+      
       });
   }
 }
