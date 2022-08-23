@@ -8,39 +8,30 @@ import { HttpService } from '@shared/services/http.service';
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "max-service-deposit",
   templateUrl: "./service-deposit.component.html",
   styleUrls: ["./service-deposit.component.scss"],
 })
-export class ServiceDepositComponent implements OnInit, OnChanges {
+export class ServiceDepositComponent implements OnInit {
 
   @Input() data!: any;
-  @Input() serviceclearsibilingcomponent : boolean = false;
-
+  
   servicedepositformData = BillingForm.servicedepositFormData;
   servicedepositForm!: FormGroup;
   questions: any;
   onRefundpage: boolean = false;
   servicetype: string = "Selected Service Type";
   deposithead: string = "Selected Deposit Head";
-  isNSSHLocation: boolean = false;
 
   servicetypeList: ServiceType[] = [];
   deposittypeList: DepositType[] = [];
-  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any =Number(this.cookie.get("HSPLocationId"));
 
-  constructor(private formService: QuestionControlService, private cookie: CookieService, private http: HttpService, ) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes['serviceclearsibilingcomponent'].currentValue);
-    if(changes['serviceclearsibilingcomponent'].currentValue){
-      this.servicedepositForm.reset();
-      this.servicedepositForm.controls["deposithead"].setValue(0);
-      this.servicedepositForm.controls["servicetype"].setValue(1781);  
-    }
-  }
+  constructor(private formService: QuestionControlService, private cookie: CookieService, 
+    private http: HttpService, private depositservice: DepositService ) { }
 
   private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
@@ -50,8 +41,7 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
     );
     this.servicedepositForm = formResult.form;
     this.questions = formResult.questions;
-    this.isNSSHLocation = false; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
-
+    
      if(this.data.type == "Deposit")
     {
       this.servicetypeList = this.data.servicetypeList;
@@ -67,13 +57,19 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
       this.servicetype = this.data.selectedservicedeposittype.serviceTypeName;
       this.deposithead = this.data.selectedservicedeposittype.advanceType;      
     }   
-   
+    this.depositservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.servicedepositForm.reset();
+      this.servicedepositForm.controls["deposithead"].setValue(0);
+      this.servicedepositForm.controls["servicetype"].setValue(1781);
+      }
+    });
   }
 
   //ngon
   ngAfterViewInit(): void{
     this.servicedepositForm.controls["servicetype"].setValue(1781);
-    this.servicedepositForm.controls["deposithead"].setValue(0);
+   // this.servicedepositForm.controls["deposithead"].setValue(0);
   }
   getDepositType() {
     this.http
@@ -81,9 +77,12 @@ export class ServiceDepositComponent implements OnInit, OnChanges {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: any) => {
         this.deposittypeList = resultData;
+        console.log(resultData);
         this.questions[1].options = this.deposittypeList.map((l) => {
           return { title: l.advanceType, value: l.id };
         });
+        //this.questions[1].options.push({ title: "Select Advance Type", value:0});
+      
       });
   }
 }

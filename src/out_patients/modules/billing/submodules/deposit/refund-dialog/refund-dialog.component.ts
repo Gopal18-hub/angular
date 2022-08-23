@@ -14,6 +14,8 @@ import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { DatePipe } from "@angular/common";
 import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
+import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
+import { DepositService } from '@core/services/deposit.service';
 
 @Component({
   selector: 'out-patients-refund-dialog',
@@ -68,14 +70,18 @@ export class RefundDialogComponent implements OnInit {
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
+ 
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any =   Number(this.cookie.get("UserId"));
+
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
   Refundavalaiblemaount:any = [];
   totalrefundamount:number = 0;
+  
+  depositcashlimitationdetails: any=[];
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -92,7 +98,8 @@ export class RefundDialogComponent implements OnInit {
    private messageDialogService: MessageDialogService,
   private cookie: CookieService,  private dialogRef: MatDialogRef<RefundDialogComponent>,
     private http: HttpService,
-    private datepipe: DatePipe,) {
+    private datepipe: DatePipe,
+    private depositservice: DepositService) {
    }
 
   ngOnInit(): void {
@@ -116,18 +123,18 @@ export class RefundDialogComponent implements OnInit {
       avalaiblemaount: this.data.clickedrowdepositdetails.balance
     }
     this.mobileno = this.data.patientinfo.mobileno;
+    this.getdepositcashlimit();
     console.log('inside refund page');
   }
   ngAfterViewInit(): void{   
    
   }
-  clearsiblingcomponents:boolean = false;
-
+  
   clear()
   {
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.clearsiblingcomponents = true;
+    this.depositservice.clearsibllingcomponent();
     this.refundform.reset();
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
   }
@@ -184,6 +191,10 @@ export class RefundDialogComponent implements OnInit {
         this.messageDialogService.error("Refund Amount must be less then available amount");
         this.validationexists = true;
       }
+      else if((Number(this.PaymentTypedepositamount) > Number(this.depositcashlimitationdetails[0].cashLimit)) && this.PaymentType == 1){
+        this.messageDialogService.error("Refund through Cash Cannot be more then Rs 10000");
+        this.validationexists = true;
+      }
       if(this.refundform.value.otp == "" && !this.validationexists){ 
         this.questions[4].elementRef.focus();       
         this.messageDialogService.error("Enter OTP");
@@ -200,8 +211,9 @@ export class RefundDialogComponent implements OnInit {
   
   MoreRefunddialog(){
     const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Do you want to Make More Refund?",
+      width: '33vw', height: '42vh', data: {    
+        message: "Refund has been done Successfully!",
+        message1: "Do you want to Make More Refund?"
       },
     });
 
@@ -230,15 +242,9 @@ export class RefundDialogComponent implements OnInit {
         .post(ApiConstants.savepatientrefunddetails, this.getPatientRefundSubmitRequestBody())
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (resultData) => {            
-          
-          
-            this.messageDialogService.success("Refund has been done Successfully");  
-
-            setTimeout(() => {
-            
-                this.MoreRefunddialog();
-            }, 1000);
+          (resultData) => {       
+         
+                this.MoreRefunddialog();          
            
           },
           (error) => {
@@ -288,6 +294,7 @@ export class RefundDialogComponent implements OnInit {
     this.flagto_set_btnname
     ));
   }
+
   sendotpclick(){
     this.RefundcashMode=[];
     this.validationexists = false;
@@ -323,6 +330,7 @@ export class RefundDialogComponent implements OnInit {
       });
     }
   }
+
   resendotpclick(){
     this.refundform.controls["otp"].setValue("");
     this.flagto_set_btnname = 1;
@@ -361,6 +369,16 @@ export class RefundDialogComponent implements OnInit {
       });
     }   
   }
+  getdepositcashlimit(){
+    this.http
+    .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hsplocationId))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
+      this.depositcashlimitationdetails = resultData.cashLimitOfLocation;
+      console.log(resultData);
+    });
+  }
+
 }
 
 

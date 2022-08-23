@@ -19,7 +19,7 @@ export class MakedepositDialogComponent implements OnInit {
     private domsanitizer: DomSanitizer,
     private matDialog: MatDialog,
     private dialogRef: MatDialogRef<MakedepositDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { message: String;}, 
+    @Inject(MAT_DIALOG_DATA) public data: { message: String; message1?: String}, 
   ) {}
 
   ngOnInit(): void {

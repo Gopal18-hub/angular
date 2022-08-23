@@ -17,6 +17,7 @@ import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefu
 
 import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
 import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
+import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
 import {
   BillDetailComponent,
@@ -30,11 +31,13 @@ import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-u
 import { PostDischargeServicesComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component";
 import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
+import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
+import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
-  //  canActivate: [AuthGuardService],
+    //  canActivate: [AuthGuardService],
     children: [
       {
         path: "",
@@ -46,10 +49,10 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent,  },
+      { path: "deposit", component: DepositComponent, },
       {
         path: "details",
-        component: DetailsComponent,      
+        component: DetailsComponent,
         children: [
           {
             path: "",
@@ -66,7 +69,7 @@ const routes: Routes = [
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent,  },
+      { path: "online-op-bill", component: OnlineOpBillsComponent, },
       { path: "op-order-request", component: OpOrderRequestComponent, },
       {
         path: "miscellaneous-billing",
@@ -77,8 +80,17 @@ const routes: Routes = [
           { path: "bill", component: BillDetailComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent,  },
-      { path: "op-refund-approval", component: OprefundApprovalComponent,  },
+      {
+        path: "miscellaneous-billings",
+        component: MiscellaneousBillingsComponent,
+        children: [
+          { path: "", component: BillsComponent },
+          { path: "misc-credit-details", component: CreditDetailComponent },
+          { path: "misc-bills", component: BillsComponent },
+        ],
+      },
+      { path: "initiate-deposit", component: InitiateDepositComponent, },
+      { path: "op-refund-approval", component: OprefundApprovalComponent, },
       { path: "dispatch-report", component: DispatchReportComponent, },
       { path: "dmg-mapping", component: DmgMappingComponent, },
       {
@@ -106,4 +118,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule {}
+export class BillingRoutingModule { }

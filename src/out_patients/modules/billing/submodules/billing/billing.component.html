@@ -84,17 +84,24 @@
             >
             </maxhealth-question>
           </div>
-
-          <mat-label class="max-health-primary-color mr-1">Narration</mat-label>
-          <div class="width-8 bg-white mr-2">
-            <maxhealth-question
-              [question]="questions[5]"
-              [form]="formGroup"
-              [questions]="questions[5]"
-              [index]="5"
+          <ng-container
+            *ngIf="
+              narrationAllowedLocations.includes(cookie.get('HSPLocationId'))
+            "
+          >
+            <mat-label class="max-health-primary-color mr-1"
+              >Narration</mat-label
             >
-            </maxhealth-question>
-          </div>
+            <div class="width-8 bg-white mr-2">
+              <maxhealth-question
+                [question]="questions[5]"
+                [form]="formGroup"
+                [questions]="questions[5]"
+                [index]="5"
+              >
+              </maxhealth-question>
+            </div>
+          </ng-container>
 
           <div class="ml-2 special-checkbox">
             <maxhealth-question
