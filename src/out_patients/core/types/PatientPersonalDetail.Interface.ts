@@ -62,8 +62,9 @@ export interface PatientPersonalDetailInterface{
       hwcRemarks:string,
       hotlistreason:string,
       hotlistcomments:string,
-      categoryIcons?: string;
-     
+      bplCardNo:string,
+      addressOnCard:string,
+      categoryIcons?: string;     
   }
 
   export interface  DepositType{
