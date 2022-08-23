@@ -13,10 +13,8 @@ import { takeUntil } from "rxjs/operators";
   templateUrl: './patient-identity-info.component.html',
   styleUrls: ['./patient-identity-info.component.scss']
 })
-export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnChanges {
+export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   @Input() data!: any;
-  @Input() patientclearsibilingcomponent : boolean = false;
-
   @Output() neweventform60ssave = new EventEmitter<boolean>();
   
   patientidentityformData = {
@@ -55,13 +53,6 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
   constructor( private formService: QuestionControlService,  private depositservice: DepositService, private messageDialogService: MessageDialogService,
   private matdialog: MatDialog) {
    }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes['patientclearsibilingcomponent'].currentValue)
-    {
-      this.patientidentityform.controls["panno"].setValue("");
-    }
-  }
-
 
   private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
@@ -81,7 +72,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
     }
     this.patientidentityform.controls["mobileno"].setValue(this.data.patientinfo.mobileno);
     this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
-    this.form60PatientInfo = this.data.patientinfo;    
+    this.form60PatientInfo = this.data.patientinfo;   
+
+    this.depositservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+      this.patientidentityform.controls["panno"].setValue("");
+      }
+    });
   }
 
   ngAfterViewInit(): void

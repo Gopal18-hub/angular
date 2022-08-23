@@ -278,6 +278,8 @@ export namespace BillingForm {
 
       deposithead: {
         type: "dropdown",
+       emptySelect: true,
+       placeholder: "Select Advance Type",
       },
     },
   };

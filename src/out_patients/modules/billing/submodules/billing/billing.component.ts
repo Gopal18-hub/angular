@@ -107,6 +107,8 @@ export class BillingComponent implements OnInit {
 
   moment = moment;
 
+  narrationAllowedLocations = ["67", "69"];
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
