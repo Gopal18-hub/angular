@@ -79,9 +79,12 @@ export class PaymentMethodsComponent implements OnInit, OnChanges {
     else  if(Number(this.PaymentMethodcashdeposit.internetamount) > 0){
       this.depositamount =  this.PaymentMethodcashdeposit.internetamount;     
     }
-    if((Number(this.depositamount) > Number(this.Refundavalaiblemaount.avalaiblemaount)) && this.Refundavalaiblemaount.type == "Refund"){  
-      this.messageDialogService.error("Refund Amount must be less then available amount");     
-    }
+
+    if(this.Refundavalaiblemaount){
+      if((Number(this.depositamount) > Number(this.Refundavalaiblemaount.avalaiblemaount)) && this.Refundavalaiblemaount.type == "Refund"){  
+        this.messageDialogService.error("Refund Amount must be less then available amount");     
+      }
+    }   
     else{      
     this.depositservice.setFormList(this.refundform.value);
     }
