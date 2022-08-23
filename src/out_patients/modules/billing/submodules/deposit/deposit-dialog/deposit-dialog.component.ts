@@ -16,6 +16,7 @@ import { ServiceDepositComponent } from "@core/UI/billing/submodules/service-dep
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
 import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "@core/UI/billing/submodules/form60/form-sixty.component";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -46,7 +47,7 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
   
@@ -73,7 +74,8 @@ export class DepositDialogComponent implements OnInit {
     public matDialog: MatDialog,
     private messageDialogService: MessageDialogService,  private cookie: CookieService,
     private http: HttpService,
-    private datepipe: DatePipe,) { }
+    private datepipe: DatePipe,
+    private depositservice: DepositService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -230,7 +232,7 @@ export class DepositDialogComponent implements OnInit {
   cleardepositdialog(){
     this._destroying$.next(undefined);
     this._destroying$.complete(); 
-    this.clearsiblingcomponents = true;
+    this.depositservice.clearsibllingcomponent();
     this.makedepositdialogForm.reset();
   }
 
