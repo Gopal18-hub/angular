@@ -15,7 +15,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { DatePipe } from "@angular/common";
 import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
-
+import { DepositService } from '@core/services/deposit.service';
 
 @Component({
   selector: 'out-patients-refund-dialog',
@@ -70,9 +70,11 @@ export class RefundDialogComponent implements OnInit {
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
+ 
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any =   Number(this.cookie.get("UserId"));
+
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
   flagto_set_btnname:number = 0;
@@ -96,7 +98,8 @@ export class RefundDialogComponent implements OnInit {
    private messageDialogService: MessageDialogService,
   private cookie: CookieService,  private dialogRef: MatDialogRef<RefundDialogComponent>,
     private http: HttpService,
-    private datepipe: DatePipe,) {
+    private datepipe: DatePipe,
+    private depositservice: DepositService) {
    }
 
   ngOnInit(): void {
@@ -126,13 +129,12 @@ export class RefundDialogComponent implements OnInit {
   ngAfterViewInit(): void{   
    
   }
-  clearsiblingcomponents:boolean = false;
-
+  
   clear()
   {
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.clearsiblingcomponents = true;
+    this.depositservice.clearsibllingcomponent();
     this.refundform.reset();
     this.refundform.controls["mobielno"].setValue(this.data.Mobile);
   }
@@ -209,8 +211,9 @@ export class RefundDialogComponent implements OnInit {
   
   MoreRefunddialog(){
     const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Refund has been done Successfully Do you want to Make More Refund?",
+      width: '33vw', height: '42vh', data: {    
+        message: "Refund has been done Successfully!",
+        message1: "Do you want to Make More Refund?"
       },
     });
 

@@ -13,9 +13,8 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
   templateUrl: './payment-methods.component.html',
   styleUrls: ['./payment-methods.component.scss']
 })
-export class PaymentMethodsComponent implements OnInit, OnChanges {
+export class PaymentMethodsComponent implements OnInit {
   @Input() config: any;
-  @Input() paymenthodclearsibilingcomponent : boolean = false;
   @Input() Refundavalaiblemaount:any;
 
   refundFormData =  BillingForm.refundFormData;
@@ -23,13 +22,6 @@ export class PaymentMethodsComponent implements OnInit, OnChanges {
   questions: any;
   today: any;
   constructor( private formService: QuestionControlService, private depositservice: DepositService ,private messageDialogService: MessageDialogService,) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes['paymenthodclearsibilingcomponent'].currentValue)
-    {
-      this.clearpaymentmethod();
-    }
-  }
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -45,6 +37,11 @@ export class PaymentMethodsComponent implements OnInit, OnChanges {
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
      console.log(this.Refundavalaiblemaount);
+     this.depositservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.clearpaymentmethod();
+      }
+    });
   }
 
   PaymentMethodcashdeposit:any=[];
