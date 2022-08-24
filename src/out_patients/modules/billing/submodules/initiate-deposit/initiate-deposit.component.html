@@ -10,7 +10,7 @@
         <div class="h-full w-full">
             <form [formGroup]="initiatedepositForm">
                 <!---------------------------------FIRST ROW----------------------------------------------------->
-                <div class="ml-3 mt-3 mr-4 flex  items-center w-auto border-radius-lg bg-initiatedeposit">
+                <div class="ml-3 mt-3 mr-4 flex p-1 items-center w-auto border-radius-lg bg-initiatedeposit">
                     <div class="w-full ml-2">
 
                         <div class="flex items-center">
@@ -31,12 +31,12 @@
                         </div>
 
                     </div>
-                    <div class="float-right w-1/10 mr-2 mt-1 mb-1 flex">
-                        <div class="ml-0" >
+                    <div class="float-right wserach mr-1 mt-1 mb-1 flex">
+                        <div class="ml-0  initiatedepositbutton" >
                             <button mat-raised-button color="primary" type="submit" (click)="getInitatedepositDetailsByMaxId()">
                                 <img src="assets/lens.svg" class="initiatelens-icon">
                 
-                               <span class="ml-3 font-sm">Search</span> 
+                               <span class="ml-4 font-sm">Search</span> 
                 
                             </button>
                              </div>
@@ -145,7 +145,7 @@
                 <div class="mt-10">&nbsp;</div>
                 <div class="mt-3">&nbsp;</div>
                 
-                <div class="float-right">
+                <div class="float-right initiatedepositbutton">
                     <button mat-raised-button color="primary" class="mr-5" (click)="saveinitaitedeposit()" >
                         Save
                     </button>
