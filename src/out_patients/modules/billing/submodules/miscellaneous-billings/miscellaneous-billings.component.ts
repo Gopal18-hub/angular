@@ -119,6 +119,27 @@ export class MiscellaneousBillingsComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.http.get(ApiConstants.getcorporatemaster(1))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        console.log(res, "CorporateMaster")
+      });
+    this.http.get(ApiConstants.getinteractionmaster)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        console.log(res, "getinteractionmaster")
+      });
+    this.http.get(ApiConstants.getmasterdataformiscellaneous)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        console.log(res, "getmasterdataformiscellaneous")
+      });
+    this.http.get(ApiConstants.getdataforbillreport(10, 7, 1))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        console.log(res, "getdataforbillreport")
+      });
+
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
