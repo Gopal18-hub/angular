@@ -263,8 +263,7 @@ export namespace MaxModules {
             {
               id: 917,
               title: "Monthly OP Consultation Report",
-              defaultPath:
-                "/report/prompt-report/Monthly-op-consultation-report",
+              defaultPath: "/report/prompt-report/opConsultationReport",
               globalSearchKey: "global",
             },
             {
