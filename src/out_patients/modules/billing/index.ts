@@ -86,6 +86,7 @@ import { OprefundDialogComponent } from "./submodules/oprefund-approval/oprefund
 import { MaxHealthSnackBarModule } from "@shared/ui/snack-bar";
 import { RefundAfterBillComponent } from './submodules/details/refund-after-bill/refund-after-bill.component';
 import { AppointmentSearchComponent } from './submodules/billing/prompts/appointment-search/appointment-search.component';
+import { PaymentDialogComponent } from './submodules/details/payment-dialog/payment-dialog.component';
 
 @NgModule({
   declarations: [
@@ -148,6 +149,7 @@ import { AppointmentSearchComponent } from './submodules/billing/prompts/appoint
     SimilarPatientDialog,
     RefundAfterBillComponent,
     AppointmentSearchComponent,
+    PaymentDialogComponent,
   ],
   imports: [
     BillingRoutingModule,

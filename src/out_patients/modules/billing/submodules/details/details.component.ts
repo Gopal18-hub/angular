@@ -19,6 +19,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 import { PatientService } from "@core/services/patient.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-details",
@@ -37,7 +38,8 @@ export class DetailsComponent implements OnInit {
     private billdetailservice: billDetailService,
     private differ: KeyValueDiffers,
     private patientService: PatientService,
-    private msgdialog: MessageDialogService
+    private msgdialog: MessageDialogService,
+    private snackbar: MaxHealthSnackBarService
   ) {
     this.check = this.differ.find(this.billdetailservice.sendforapproval).create();
   }
@@ -194,6 +196,7 @@ export class DetailsComponent implements OnInit {
   clearbtn: boolean = true;
   dmsbtn: boolean = true;
   visithistorybtn: boolean = true;
+  doxperurl: any;
   ngOnInit(): void {
     this.router.navigate(['out-patient-billing/details'])
     .then(()=>{
@@ -294,7 +297,12 @@ export class DetailsComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultdata) => {
       console.log(resultdata);
-      this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+      if(resultdata == null)
+      {
+        this.snackbar.open('Invalid Bill No');
+      }
+      else{
+        this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
       this.billdetailservice.patientbilldetaillist = resultdata;
       console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
       if(this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1)
@@ -304,6 +312,7 @@ export class DetailsComponent implements OnInit {
         { var errtxt = 'Bill Number ' + this.BServiceForm.value.billNo + ' Has Been Cancelled';
           this.msgdialog.info(errtxt);
         }
+        console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]);
         this.billFormfill();
         this.printbill = false;
         this.consumableprint = false;
@@ -321,6 +330,10 @@ export class DetailsComponent implements OnInit {
         console.log(this.billdetailservice.serviceList);
         this.router.navigate(['out-patient-billing/details','services']);
       }
+      }
+    },
+    (error)=>{
+      console.log(error);
     })
   }
   billFormfill()
@@ -466,8 +479,17 @@ export class DetailsComponent implements OnInit {
     this.opprescription = true;
     this.doxperprint = true;
     this.clearbtn = true;
+    this.dmsbtn = true;
+    this.visithistorybtn = true;
     this.billdetailservice.clear();
     this.ngOnInit();
+  }
+  doxperredirect()
+  {
+    let iacode = this.BServiceForm.value.maxid.split(".")[0];
+    this.doxperurl = 
+        this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1].configValue+'patient_id='+this.BServiceForm.value.maxid+'&visit_id='+this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].visitid+'&organisation='+iacode+'&token='+this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1].token;
+    window.open(this.doxperurl, "_blank");
   }
   ngDoCheck(): void{
     const changes = this.check.diff(this.billdetailservice.sendforapproval);

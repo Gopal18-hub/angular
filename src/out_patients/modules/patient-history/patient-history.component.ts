@@ -627,6 +627,10 @@ export class PatientHistoryComponent implements OnInit {
     this.apiProcessing = false;
     this.showtable = true;
     this.clearbtn = true;
+    this.router.navigate(['patient-history'])
+    .then(()=>{
+      window.location.reload;
+    })
   }
   
 
