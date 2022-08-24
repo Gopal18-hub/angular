@@ -358,16 +358,6 @@ export class DepositComponent implements OnInit {
       console.log(formdata);
       await this.loadGrid(formdata);
     });
-
-    // this.route.queryParams
-    // .pipe(takeUntil(this._destroying$))
-    // .subscribe((value) => {
-    //   if (value["maxId"]) {             
-    //     this.iacode = value["maxId"].split(".")[0];
-    //     this.regNumber = Number(value["maxId"].split(".")[1]);
-    //     this.getPatientDetailsForDeposit();
-    //   }
-    // });
     }
 
     
@@ -434,7 +424,7 @@ export class DepositComponent implements OnInit {
 
   openinitiatedeposit() {    
     this.router.navigate(["out-patient-billing", "initiate-deposit"], {
-      queryParams: { maxId: this.depositForm.value.maxid },
+      queryParams: { maxID: this.depositForm.value.maxid },
     });
   }
 
