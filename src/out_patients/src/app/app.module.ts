@@ -23,6 +23,7 @@ import { CookieService } from "../../../shared/services/cookie.service";
 import { AcdModule } from "@modules/acd";
 import { StaffDeptModule } from "@modules/staff-dept";
 import { ReportsModule } from "@modules/reports";
+import { ConfigureModule } from "@modules/configure";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -41,6 +42,7 @@ import { ReportsModule } from "@modules/reports";
     AcdModule,
     StaffDeptModule,
     ReportsModule,
+    ConfigureModule,
   ],
   providers: [
     DatePipe,
