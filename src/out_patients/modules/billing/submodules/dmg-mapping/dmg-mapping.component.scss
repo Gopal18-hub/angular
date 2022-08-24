@@ -40,20 +40,6 @@
     }
 }
 
-.lens-icon{
-
-    position: absolute;
-
-    left: 0px;
-
-    top: 2px;
-
-    height: 90%;
-
-    width: 25%;
-
-}
-
 .input-padding{
     ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
         padding-bottom: 0rem !important;  
@@ -101,14 +87,35 @@
 }
 
 .text-position{
-    position:relative;
-    bottom:5px;
+   
+    position: relative;
+    bottom: 4px;
+    left: 8px;
+
   
 }
 .button-height{
  //   ::ng-deep button{
         height:1.875rem;
+        min-width: 95px !important;
   //  }
+}
+
+.lens-icon{
+
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 92%;
+    width: 30%;
+
+    // width: 25%;
+    // position: absolute;
+    // left: 0px;
+    // top: 1px;
+    // height: 95%;
+    // width: 30%;
+
 }
 
 
