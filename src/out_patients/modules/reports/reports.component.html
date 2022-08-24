@@ -1,0 +1,16 @@
+<section
+  class="ml-4 shadow-1 mr-4 max-body-wrapper op-billing-wrapper"
+  *ngIf="reportConfig"
+>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
+    <ul class="list-unstyled flex items-end">
+      <li class="ml-3">
+        <a mat-tab-link [active]="true"> {{ reportConfig.reportName }}</a>
+      </li>
+    </ul>
+    <div class="maxhealth-spacer"></div>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
+</section>

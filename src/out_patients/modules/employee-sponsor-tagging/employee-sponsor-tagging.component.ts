@@ -132,7 +132,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   config1: any = {
     actionItems: false,
-    dateformat: "dd/MM/yyyy",
+    /// dateformat: "dd/MM/yyyy",
     clickedRows: false,
     //selectBox: true,
     // selectCheckBoxPosition: 10,
@@ -170,7 +170,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       dob: {
         title: "DOB",
-        type: "date",
+        type: "string",
         style: {
           width: "5.5rem",
         },
@@ -210,7 +210,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       doj: {
         title: "DOJ",
-        type: "date",
+        type: "string",
         style: {
           width: "5rem",
         },
@@ -770,34 +770,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 console.log(this.dependantChecked);
                 // let date = new Date(item.dob.trim()).toDateString();
                 // console.log(date);
-                // this.stack=' Thu Jul 26 2018 15:30:00 GMT-0500 ';
-                //item.dob = new Date(item.dob);
-                //console.log('StackMoment',this.StackMoment)
-                // item.dob = moment(item.dob);
-                // console.log("item.dob", item.dob);
-                //item.dob = moment(item.dob, "dd/MM/yyyy");
-                //  console.log(new Date(item.dob));
-
-                //item.dob = new Date(item.dob).toLocaleDateString();
-                //  console.log(item.dob);
-                // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
-                //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
-                // this.doblist.push(new Date(item.dob));
-                // this.doblist.forEach((a: any) => {
-                //   if (a.constructor === Date) {
-                //     item.dob = a.toLocaleDateString();
-                //     console.log(item.dob);
-                //   }
-                // });
-                //               if(item.dob)
-                //               //dateString = 'Wed Jun 20 2022 10:19:00 GMT';
-                //               newDate = new Date(dateString);
-
-                //                 if (newDate.constructor === Date) {
-                //                   isoDateString = newDate.toISOString();
-                //                   console.log(isoDateString);
-                // }
-                // console.log(item.dob);
+                item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+                item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
               });
             } else {
               this.validmaxid = false;
@@ -939,7 +913,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.employeelistLength++;
                 console.log(this.empid);
               }
-              // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+              item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+              item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
             });
           } else {
             console.log("employee data list length =0");
@@ -1276,8 +1251,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.iomdata = data;
-        // this.returnHtmlFromRichText(this.iomdata);
-        // console.log(this.returnHtmlFromRichText(this.iomdata));
       });
     this.dialog.open(CompanydialogComponent, {
       width: "40vw",
@@ -1286,6 +1259,17 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         iomresponse: this.iomdata,
       },
     });
+    // debugger;
+    // const rtfToHTML = require("@iarna/rtf-to-html");
+    // const fs = require("fs");
+    // fs.createReadStream(
+    //   this.iomdata.pipe(
+    //     rtfToHTML((err: any, html: any) => {
+    //       // …
+    //       console.log(html);
+    //     })
+    //   )
+    // );
   }
 
   cleardata() {

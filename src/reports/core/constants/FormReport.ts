@@ -1,4 +1,5 @@
 import { environment } from "@environments/environment";
+import { MaxHealthStorage } from "@shared/services/storage";
 
 export namespace FormReport {
   export const equipmentSchedule = {
@@ -335,6 +336,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {

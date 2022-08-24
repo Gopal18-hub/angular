@@ -412,7 +412,6 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
         console.log(data);
-        //this.complanyList = data as GetCompanyDataInterface[];
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
