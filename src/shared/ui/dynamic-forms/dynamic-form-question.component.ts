@@ -17,6 +17,7 @@ import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
+import { MatAutocomplete } from "@angular/material/autocomplete";
 
 @Component({
   selector: "maxhealth-question",
@@ -47,6 +48,8 @@ export class DynamicFormQuestionComponent
   arrowIcon = "arrow_drop_down";
 
   @ViewChild("element") element!: ElementRef;
+
+  @ViewChild("auto") autocomplete!: MatAutocomplete;
 
   @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
 
@@ -277,5 +280,17 @@ export class DynamicFormQuestionComponent
 
   handler(event: any): void {
     this.form.controls[this.question.key].setValue(event.option.value);
+  }
+
+  autocompleteOpened() {
+    console.log(this.element.nativeElement.parentNode.parentNode.parentNode);
+    let inputWidth =
+      this.element.nativeElement.parentNode.parentNode.parentNode.getBoundingClientRect()
+        .width - 1;
+    setTimeout(() => {
+      let panel = this.autocomplete.panel?.nativeElement;
+      if (!panel) return;
+      panel.style.minWidth = inputWidth + "px";
+    });
   }
 }
