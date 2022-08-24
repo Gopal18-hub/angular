@@ -33,11 +33,57 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       .subscribe(async (value) => {
         console.log(Object.keys(value).length);
         if (Object.keys(value).length > 0) {         
-          //const lookupdata = await this.loadGrid(value);        
+          const lookupdata = await this.loadGrid(value);        
         }
         });
      } 
-  
+     async loadGrid(formdata: any): Promise<any> {
+      let lookupdata: string | any[]; 
+      if(!formdata.data){
+        lookupdata = await this.lookupService.searchPatient({
+         data: formdata,
+       });
+      }else{
+        lookupdata = await this.lookupService.searchPatient(formdata);
+      }     
+     
+       console.log(lookupdata);
+       if (lookupdata.length == 1) {
+         if (lookupdata[0] && "maxid" in lookupdata[0]) {          
+           this.initiatedepositForm.value.maxid = lookupdata[0]["maxid"];            
+           this.iacode = this.initiatedepositForm.value.maxid.split(".")[0];
+           this.regNumber = Number(this.initiatedepositForm.value.maxid.split(".")[1]);
+           this.getInitatedepositDetailsByMaxId(); 
+         }
+       }else if (lookupdata.length > 1){
+         const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+           {
+             width: "60vw",
+             height: "80vh",
+             data: {
+               searchResults: lookupdata,
+             },
+           }
+         );
+
+         similarSoundDialogref
+           .afterClosed()
+           .pipe(takeUntil(this._destroying$))
+           .subscribe((result: any) => {
+             if (result) {
+              console.log(result.data["added"][0].maxid);
+              let maxID = result.data["added"][0].maxid;
+              this.initiatedepositForm.controls["maxid"].setValue(maxID);
+             
+                    this.iacode = maxID.split(".")[0];
+                    this.regNumber = Number(maxID.split(".")[1]);
+                    this.initiatedepositForm.controls["maxid"].setValue(maxID);
+                    this.getInitatedepositDetailsByMaxId();
+                   
+             }
+           });
+       }
+    }
   questions:any;
   patientdeposittype: any;
   lastUpdatedBy: string = "";
@@ -105,62 +151,11 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     this.questions=formResult.questions;
     
     this.lastUpdatedBy = this.cookie.get("UserName"); 
-    this.route.queryParams
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((value) => {
-      if (value["maxId"]) {
-        this.initiatedepositForm.value.maxid = value["maxId"];
-        this.getInitatedepositDetailsByMaxId();      
-      }
-    });
-
+    
     this.searchService.searchTrigger
     .pipe(takeUntil(this._destroying$))
     .subscribe(async (formdata: any) => {
-      console.log(formdata);
-      this.router.navigate([], {
-        queryParams: {},
-        relativeTo: this.route,
-      });
-      const lookupdata = await this.lookupService.searchPatient(formdata);
-        console.log(lookupdata);
-        if (lookupdata.length == 1) {
-          if (lookupdata[0] && "maxid" in lookupdata[0]) {
-            this.initiatedepositForm.value.maxid = lookupdata[0]["maxid"];            
-          this.iacode = this.initiatedepositForm.value.maxid.split(".")[0];
-          this.regNumber = Number(this.initiatedepositForm.value.maxid.split(".")[1]);
-            this.getInitatedepositDetailsByMaxId();           
-          }
-        }else if (lookupdata.length > 1){
-          const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
-            {
-              width: "60vw",
-              height: "80vh",
-              data: {
-                searchResults: lookupdata,
-              },
-            }
-          );
-
-          similarSoundDialogref
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result: any) => {
-              if (result) {
-                console.log(result.data["added"][0].maxid);
-                let maxID = result.data["added"][0].maxid;
-                this.initiatedepositForm.controls["maxid"].setValue(maxID);
-               
-                      this.iacode = maxID.split(".")[0];
-                      this.regNumber = Number(maxID.split(".")[1]);
-                      this.initiatedepositForm.controls["maxid"].setValue(maxID);
-                      this.getInitatedepositDetailsByMaxId();
-                     
-              }
-
-              //this.similarContactPatientList = [];
-            });
-        }
+      await this.loadGrid(formdata);
     });
 
   }

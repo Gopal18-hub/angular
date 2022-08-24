@@ -31,7 +31,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
       },      
       panno: {
         type: "string",
-        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$"
+        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$",
+        title: "Pan card No",
       },     
       mainradio: {
         type: "radio",
