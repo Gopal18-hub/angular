@@ -1,4 +1,4 @@
-<section>
+<section class="refunddialog-banner">
     <!-- Cross Icon -->
     <div class="flex justify-content-end">
         <mat-icon mat-dialog-close class="cursor-pointer">close</mat-icon>
@@ -10,13 +10,16 @@
     </div>
 
     <!-- Service Type -->
-    <max-service-deposit [data]="servicedeposittype"></max-service-deposit>
+   
+
+        <max-service-deposit [data]="servicedeposittype"></max-service-deposit>
+  
 
     <!-- Payment Methods -->
     <div class="w-full height"> 
 
         <!-- payment Methods left  -->
-        <payment-methods [config]="config" [paymenthodclearsibilingcomponent]="clearsiblingcomponents" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
+        <payment-methods [config]="config" [Refundavalaiblemaount]="Refundavalaiblemaount"></payment-methods>
 
         <!-- payment Methods right -->
         <div class="width mt-2 h-full float-right border-radius-md">
@@ -90,7 +93,7 @@
     </div>
 
     <!-- button -->
-    <div class="flex float-right mb-5">
+    <div class="flex float-right mb-5 refunddepositbutton">
         <div class="mr-3">
             <button mat-raised-button color="primary" type="submit" (click)="saverefunddialog()" class="mt-1 btn">Submit</button>
         </div>

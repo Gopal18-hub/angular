@@ -8,6 +8,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from '@shared/services/http.service';
 import { DatePipe } from '@angular/common';
+import { ReportService } from '@shared/services/report.service';
 
 @Component({
   selector: 'out-patients-online-op-bills',
@@ -18,7 +19,7 @@ export class OnlineOpBillsComponent implements OnInit {
 
   constructor(public matDialog: MatDialog, private formService:QuestionControlService, 
     private cookie: CookieService, private http: HttpService,
-    private datepipe: DatePipe,) { }
+    private datepipe: DatePipe, private reportService: ReportService,) { }
   
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -177,5 +178,13 @@ export class OnlineOpBillsComponent implements OnInit {
     this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
     this.onlineopbillsForm.controls["todate"].setValue(todaydate);
   
+  }
+  printonlineopbillreceipt(){
+    this.onlineopbillstable.selection.selected.map((s: any) => {
+      this.reportService.openWindow("billingreport", "billingreport", {
+        opbillid: s.billNo,
+        locationID: this.hspLocationid
+      });
+    });
   }
 }
