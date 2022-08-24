@@ -16,60 +16,56 @@
 
           <div class="flex w-1/3 h-full bg-lightgrey border-radius-md">
             <div class="mt-2 ml-2">
-              <p class="max-health-primary-color  font-semi-bold wt-nowrap">From Date </p>
+              <p class="max-health-primary-color  font-semi-bold wt-nowrap ">From Date </p>
             </div>
-            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary">
+            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary  default-label-none">
               <maxhealth-question [question]="questions[0]" [form]="onlineopbillsForm" [questions]="questions[0]"
                 [index]="0"></maxhealth-question>
             </div>
             <div class="mt-2 ml-4">
-              <p class="max-health-primary-color  font-semi-bold wt-nowrap">To Date</p>
+              <p class="max-health-primary-color  font-semi-bold wt-nowrap ">To Date</p>
             </div>
-            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary">
+            <div class="w-3/10 mt-2 border-radius-lg h-full ml-2 bg-white clr-primary  default-label-none">
               <maxhealth-question [question]="questions[1]" [form]="onlineopbillsForm" [questions]="questions[1]"
                 [index]="1"></maxhealth-question>
             </div>
           </div>
          
-          <div class="flex h-full w-1/2">
+          <div class="flex h-full w-2/5">
             <div>
               <mat-label class="max-health-primary-color wt-nowrap font-semi-bold">Specialisation</mat-label>
             </div>
-            <div class="w-3/8 ml-2  bg-white clr-primary">
+            <div class="w-5/9 ml-2  bg-white clr-primary">
               <maxhealth-question [question]="questions[2]" [form]="onlineopbillsForm" [questions]="questions[2]"
                 [index]="2"></maxhealth-question>
             </div>
           </div>
          
-          <div class="flex float-right ">
-            <div class="ml-0" >
-              <button mat-raised-button color="primary" type="submit" (click)="displayallspecialisation()">
+          <div class="flex w-1/5 float-right online-op-button">
+            
+              <button mat-raised-button color="primary" type="submit" class="mr-5" (click)="displayallspecialisation()" [disabled]="!onlineopbillsForm.valid">
                   <img src="assets/lens.svg" class="onlineoplens-icon">
   
                  <span class="ml-3 font-sm">Search</span> 
   
               </button>
-               </div>
+              <button mat-raised-button color="primary" class="mr-5" (click)="printonlineopbillreceipt()" [disabled]="!MaxIDExist">
+                Print
+            </button>
+            <button mat-raised-button color="primary" (click)="resetonlineopbill()">
+                Clear
+            </button>
+              
         </div>
 
         </div>
    <!---------------------------------SECOND ROW----------------------------------------------------->
   
-   <div class="px-3 pt-3 pb-1 w-full h-7/10">
+   <div class="px-3 pt-2 pb-2 w-full h-4/5">
     <ng-container>
       <maxhealth-table class="onlineoptable"  [config]="onlineopbillsconfig" [data]="onlineopbillList" #onlineopbillstable></maxhealth-table>
     </ng-container>
   </div>
- <!------------------------------------------THIRD ROW--------------------------------------------------------------------->
-
- <div class="float-right mt-1">
-     <button mat-raised-button color="primary" class="mr-8" [disabled]="!MaxIDExist">
-         Print
-     </button>
-     <button mat-raised-button color="primary" class="mr-3" [disabled]="!MaxIDExist">
-         Clear
-     </button>
- </div>
       </form>
     </div>
   </mat-tab-nav-panel>

@@ -107,6 +107,8 @@ export class BillingComponent implements OnInit {
 
   moment = moment;
 
+  narrationAllowedLocations = ["67", "69"];
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -410,7 +412,6 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
         console.log(data);
-        //this.complanyList = data as GetCompanyDataInterface[];
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });

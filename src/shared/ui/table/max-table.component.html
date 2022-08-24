@@ -193,7 +193,7 @@
                 </button>
               </ng-container>
               <ng-container *ngSwitchDefault>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="actionItemClick(item, element)">
                   {{ item.title }}
                 </button>
               </ng-container>

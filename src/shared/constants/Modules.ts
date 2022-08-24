@@ -130,7 +130,7 @@ export namespace MaxModules {
             {
               id: 216,
               title: "Miscellaneous Billing",
-              defaultPath: "/out-patient-billing/miscellaneous-billing",
+              defaultPath: "/out-patient-billing/miscellaneous-billings",
               globalSearchKey: "global",
             },
             {
@@ -158,12 +158,7 @@ export namespace MaxModules {
                 "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
             },
-            {
-              id: 67,
-              title: "Dispatch Report",
-              defaultPath: "/out-patient-billing/dispatch-report",
-              globalSearchKey: "global",
-            },
+            // dispatch
             {
               id: 222,
               title: "Expired Patient Check",
@@ -286,6 +281,12 @@ export namespace MaxModules {
               id: 920,
               title: "Online Deposit Report",
               defaultPath: "online-deposit-report",
+              globalSearchKey: "global",
+            },
+            {
+              id: 67,
+              title: "Dispatch Report",
+              defaultPath: "/out-patient-billing/dispatch-report",
               globalSearchKey: "global",
             },
           ],

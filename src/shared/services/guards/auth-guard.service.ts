@@ -18,7 +18,7 @@ export class AuthGuardService implements CanActivate {
       //this.router.navigate(['login'], { queryParams: { redirect: url } });
       // this.router.navigate(["/login"]);
       // window.location.href = window.location.origin + "/login";
-      window.location.href = environment.IentityServerRedirectUrl + "/login";
+      window.location.href = environment.IentityServerRedirectUrl + "login";
       // this.auth.startAuthentication();
       return false;
     }
