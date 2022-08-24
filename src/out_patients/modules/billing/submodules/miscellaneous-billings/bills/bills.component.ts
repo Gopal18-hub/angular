@@ -205,84 +205,91 @@ export class BillsComponent implements OnInit {
       "disc",
       "discAmount",
       "totalAmount",
-      "gst",
-      "gstValue",
+      "gst"
     ],
     columnsInfo: {
       sno: {
         title: "S.No.",
         type: "number",
         style: {
-          width: "80px",
+          width: "5%",
         },
       },
       serviceName: {
-        title: "Services Name",
+        title: "Services Type",
         type: "string",
         style: {
-          width: "150px",
+          width: "13%",
         },
       },
       itemName: {
-        title: "Item Name / Doctor Name",
+        title: "Item Description",
         type: "string",
         style: {
-          width: "200px",
+          width: "13%",
         },
       },
       precaution: {
-        title: "Precaution",
-        type: "string",
-      },
-      procedure: {
-        title: "Procedure Doctor",
+        title: "Item for Modify",
         type: "string",
         style: {
-          width: "130px",
+          width: "10%",
+        },
+      },
+      procedure: {
+        title: "Tarrif Doc",
+        type: "string",
+        style: {
+          width: "7%",
         },
       },
       qty: {
-        title: "Qty / Type",
+        title: "Qty",
         type: "string",
         style: {
-          width: "120px",
+          width: "3%",
         },
       },
       credit: {
-        title: "Credit",
+        title: "Price",
         type: "string",
+        style: {
+          width: "4%",
+        },
       },
       cash: {
-        title: "Cash",
+        title: "Doctor Name",
         type: "string",
+        style: {
+          width: "10%",
+        },
       },
       disc: {
         title: "Disc %",
         type: "string",
+        style: {
+          width: "5%",
+        },
       },
       discAmount: {
         title: "Disc Amount",
         type: "number",
         style: {
-          width: "120px",
+          width: "10%",
         },
       },
       totalAmount: {
         title: "Total Amount",
         type: "number",
         style: {
-          width: "130px",
+          width: "10%",
         },
       },
       gst: {
         title: "GST%",
         type: "number",
-      },
-      gstValue: {
-        title: "GST Value",
-        type: "number",
         style: {
-          width: "130px",
+          width: "3%",
         },
       },
     },
