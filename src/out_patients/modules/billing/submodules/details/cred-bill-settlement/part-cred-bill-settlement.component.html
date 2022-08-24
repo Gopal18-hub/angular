@@ -1,5 +1,5 @@
 <div class="bg-white h-full border-radius-lg mt-0">
-    <div class="mt-0 mr-1 border-radius-lg credit-wrapper flex w-auto">
+    <div class="mt-0 h-full mr-1 border-radius-lg credit-wrapper flex w-auto">
         <form [formGroup]="BServiceForm " class="w-full ">
 
 
@@ -226,7 +226,7 @@
 
 
 </div>
-<div class="pr-1 flex justify-end  mt-1 pt-1 h-full">
+<div class="pr-1 flex justify-end pt-1 ">
                  
     <div class="flex align-items-center"> 
      <button
@@ -234,6 +234,8 @@
      color="primary" 
      class="mr-1"
      type="submit"
+     (click)="makereceipt()"
+     [disabled]="makereceiptbtn"
      >
      Make Receipt
      </button>
@@ -247,6 +249,7 @@
      color="primary"
      class=""
      type="submit"
+     [disabled]="printreceiptbtn"
      >
      Print Receipt
      </button>
