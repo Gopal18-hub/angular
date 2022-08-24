@@ -20,8 +20,11 @@
         width: 36%;
       }
       .total-cost {
-        color: #45c0be;
+        color: #5a5a5a;
         font-weight: 600;
+        span {
+          color: var(--primary-color);
+        }
       }
       .print-button {
         padding-left: 0.5rem !important;

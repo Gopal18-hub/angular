@@ -49,6 +49,13 @@ export class RegistrationUnmergingComponent implements OnInit {
     ssn: new FormControl(""),
   });
 
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+    6: "/patient-history",
+  };
+
   @ViewChild("table") table: any;
 
   config: any = {
@@ -56,29 +63,31 @@ export class RegistrationUnmergingComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "/out-patient-billing",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
-        actionType: "link",
-        routeLink: "/out-patient-billing/details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
-        actionType: "link",
-        routeLink: "/out-patient-billing/deposit",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        linkid: 5,
       },
       {
         title: "Visit History",
-        actionType: "link",
-        routeLink: "/patient-history",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -235,6 +244,31 @@ export class RegistrationUnmergingComponent implements OnInit {
                   this.unmergebuttonDisabled = true;
                 }
               });
+            this.table.actionItemClickTrigger.subscribe((res: any) => {
+              console.log(res);
+              if (res) {
+                if (res.item && res.data) {
+                  //if else condition due to queryparam for deposite
+                  if (res.item["linkid"] == 1) {
+                    if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxId: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                    this.router.navigate(
+                      [this.quickLinksRoutes[res.item["linkid"]]],
+                      {
+                        queryParams: { maxID: res.data["maxid"] },
+                      }
+                    );
+                  }
+                }
+              }
+            });
           });
         },
         (error: any) => {

@@ -22,8 +22,7 @@ import { SearchService } from "../../../shared/services/search.service";
 import { CookieService } from "../../../shared/services/cookie.service";
 import { AcdModule } from "@modules/acd";
 import { StaffDeptModule } from "@modules/staff-dept";
-import { ConfigureModule } from "@modules/configure";
-
+import { ReportsModule } from "@modules/reports";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -41,7 +40,7 @@ import { ConfigureModule } from "@modules/configure";
     QmsModule,
     AcdModule,
     StaffDeptModule,
-    ConfigureModule,
+    ReportsModule,
   ],
   providers: [
     DatePipe,

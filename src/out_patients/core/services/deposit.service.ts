@@ -61,7 +61,7 @@ export class DepositService {
         },
         note: {
           type: "dynamic",
-          value: "notereason",
+          value: "noteReason",
         },
         cash: {
           type: "static",
@@ -115,7 +115,8 @@ export class DepositService {
           value: "PSU",
         },
       };
- subject = new Subject<any>();
+      
+ clearAllItems = new Subject<boolean>();
 
  transactionamount:any = 0.00;
  MOP:string = "Cash";
@@ -214,4 +215,8 @@ export class DepositService {
     
         return returnIcons;
       }
+
+    clearsibllingcomponent(){
+      this.clearAllItems.next(true);
+    }
 }

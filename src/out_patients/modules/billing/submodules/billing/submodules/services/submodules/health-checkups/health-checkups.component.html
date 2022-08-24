@@ -32,7 +32,10 @@
     </form>
     <div class="flex w-36 align-items-center justify-end">
       <div class="total-cost" *ngIf="billingService.totalCost > 0">
-        Total Estimation: Rs {{ billingService.totalCost }}
+        <span>Total Estimation:</span>
+        {{
+          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
+        }}
       </div>
 
       <button

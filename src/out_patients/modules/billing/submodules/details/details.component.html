@@ -5,6 +5,17 @@
           <a mat-tab-link [active]="true">Bill Details</a>
         </li>
       </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="mt-1 cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+          
+        />
+    </div>
     </nav>
     <mat-tab-nav-panel #tabPanel class="h-full">
       <div class="h-full w-full">
@@ -227,6 +238,7 @@
                   color="primary"
                   class="w-1/20 h-btn btn_width"
                   type="submit"
+                  [disabled]="dmsbtn"
                 >
                 DMS
                 </button>
@@ -235,6 +247,7 @@
                   color="primary"
                   class="w-1/20 ml-2 h-btn btn_width"
                   type="button"
+                  [disabled]="visithistorybtn"
                   (click)="openhistory()"
                 >
                  Visit History
@@ -292,7 +305,7 @@
 
 <!-- --------------------------------------------1st FORM CONTROL COLUMN------------------------------------------------------------------------                -->
             
-              <div class="ml-2 flex-column  pt-1 h-full clr-black">
+          <div class="ml-2 flex-column  pt-1 h-full clr-black">
               <div class="flex input-align-right">
                 <!-- <div class="flex"> -->
               
@@ -569,6 +582,7 @@
                       class="btn-md"
                       type="submit"
                       [disabled]="doxperprint"
+                      (click)="doxperredirect()"
                       >
                       Doxper Print
                       </button>

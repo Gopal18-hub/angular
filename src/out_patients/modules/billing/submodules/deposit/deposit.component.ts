@@ -17,13 +17,12 @@ import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.s
 import { PatientPreviousDepositDetail } from "@core/models/patientpreviousdepositdetailModel.Model";
 import { MakedepositDialogComponent } from './makedeposit-dialog/makedeposit-dialog.component';
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
-import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
 import { DepositService } from '@core/services/deposit.service';
 import { ReportService } from '@shared/services/report.service';
 import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
-import { MaxTableComponent } from "@shared/ui/table/max-table.component";
+import { PatientService } from "@core/services/patient.service";
 
 @Component({
   selector: 'out-patients-deposit',
@@ -31,14 +30,14 @@ import { MaxTableComponent } from "@shared/ui/table/max-table.component";
   styleUrls: ['./deposit.component.scss']
 })
 export class DepositComponent implements OnInit {
-  @ViewChild("MaxTableComponent") childTable: any;
 
   constructor(public matDialog: MatDialog, private formService: QuestionControlService,
     private router: Router, private http: HttpService, private cookie: CookieService,
     private messageDialogService: MessageDialogService,
     private depositservice: DepositService,
     private reportService: ReportService,
-    private searchService: SearchService,  private route: ActivatedRoute,
+    private searchService: SearchService,  private route: ActivatedRoute,    
+    private patientService: PatientService,
     private lookupService: LookupService,) {
       this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -89,9 +88,7 @@ export class DepositComponent implements OnInit {
                
                       this.iacode = maxID.split(".")[0];
                       this.regNumber = Number(maxID.split(".")[1]);
-                      this.depositForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                      this.getPatientPreviousDepositDetails();
+                      this.getPatientDetailsForDeposit();
               }
 
               //this.similarContactPatientList = [];
@@ -317,18 +314,30 @@ export class DepositComponent implements OnInit {
   questions: any;
   patientRefundDetails: any = [];
   patientpersonaldetails: any = [];
-  depositcashlimitationdetails: any=[];
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid:any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
   totaldeposit: number = 0;
   totalrefund: number = 0;
   avalaibleamount: number = 0;
+  vipdb!: string;
+  noteRemarkdb!: string;
+  hwcRemarkdb!: string;
+  ewsDetailsdb: {
+    bplCardNo: string;
+    bplCardAddress: string;
+  } = {
+    bplCardNo: "",
+    bplCardAddress: "",
+  };
+
+  hotlistRemarkdb: any;
+  hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -349,7 +358,6 @@ export class DepositComponent implements OnInit {
       console.log(formdata);
       await this.loadGrid(formdata);
     });
-
     }
 
     
@@ -369,36 +377,14 @@ export class DepositComponent implements OnInit {
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
-      if(result == "Success"){
-        this.getPatientPreviousDepositDetails();
-        this.matDialog.closeAll();
-        setTimeout(() => {
-          this.MoreRefunddialog();
-        }, 1000);
-       
+      //if(result == "Success"){
+        this.getPatientPreviousDepositDetails();             
         console.log("Refund Dialog closed");
-      }    
+      //}    
       this.MaxIDdepositExist = false;
     });
   }
 
-  MoreRefunddialog(){
-    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Do you want to Make More Refund?",
-      },
-    });
-
-    MoreRefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {
-           this.openrefunddialog();        
-          console.log("More Refund Dialog closed");
-        }
-      }); 
-  }
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
       width: '33vw', height: '40vh', data: {    
@@ -438,7 +424,7 @@ export class DepositComponent implements OnInit {
 
   openinitiatedeposit() {    
     this.router.navigate(["out-patient-billing", "initiate-deposit"], {
-      queryParams: { maxId: this.depositForm.value.maxid },
+      queryParams: { maxID: this.depositForm.value.maxid },
     });
   }
 
@@ -457,8 +443,7 @@ export class DepositComponent implements OnInit {
           this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
           if ((this.iacode != "" && this.iacode != "0") && (this.regNumber != 0 && !Number.isNaN(Number(this.regNumber)))) {
             this.getDepositType();
-            this.getPatientDetailsForDeposit();
-            this.getdepositcashlimit();            
+            this.getPatientDetailsForDeposit(); 
           } else {
             this.depositForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
@@ -506,7 +491,16 @@ export class DepositComponent implements OnInit {
               this.categoryIcons = this.depositservice.getCategoryIconsForDeposit(
                 this.patientpersonaldetails[0]
               );
-             console.log(this.categoryIcons);
+              this.noteRemarkdb = this.patientpersonaldetails[0]?.noteReason;
+              this.vipdb = this.patientpersonaldetails[0]?.vipreason;
+              this.hwcRemarkdb = this.patientpersonaldetails[0]?.hwcRemarks;
+              this.hotlistRemarkdb = this.patientpersonaldetails[0]?.hotlistcomments;
+              this.hotlistReasondb.title = this.patientpersonaldetails[0]?.hotlistreason;
+              this.ewsDetailsdb.bplCardNo = this.patientpersonaldetails[0]?.bplCardNo;
+              this.ewsDetailsdb.bplCardAddress = this.patientpersonaldetails[0]?.addressOnCard;
+
+              console.log(this.categoryIcons);
+             console.log(this.patientpersonaldetails[0]);
             }
           },
           (error) => {
@@ -521,15 +515,6 @@ export class DepositComponent implements OnInit {
         );
     }
 
-  }
-
-  getdepositcashlimit(){
-    this.http
-    .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hspLocationid))
-    .pipe(takeUntil(this._destroying$))
-    .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
-      this.depositcashlimitationdetails = resultData;
-    });
   }
 
   getDepositType() {
@@ -594,15 +579,20 @@ export class DepositComponent implements OnInit {
         this.depoistList = resultData;   
         console.log(resultData);
         setTimeout(() => {
-          console.log(this.deposittable.childTable.selection);
+         // console.log(this.deposittable.childTable.selection);
           this.deposittable.selection.changed
           .pipe(takeUntil(this._destroying$))
           .subscribe((res: any) => {           
-            if (this.deposittable.selection.selected.length > 0) {              
+            if (this.deposittable.selection.selected.length > 0) {  
+              console.log( this.MaxIDdepositExist);            
               this.tableselectionexists = true;
-              if(res.added[0].depositRefund == "Deposit"){
+              if(res.added[0].depositRefund == "Deposit" && res.added[0].balance > 0 ){
                 this.MaxIDdepositExist = true;
+                console.log( this.MaxIDdepositExist);
                 this.patientRefundDetails = res.added[0];
+              }else{
+                this.MaxIDdepositExist = false;
+                this.patientRefundDetails = [];
               }
             } else {
               this.tableselectionexists = false;
@@ -612,10 +602,7 @@ export class DepositComponent implements OnInit {
           .pipe(takeUntil(this._destroying$))
           .subscribe((res: any) => {
             console.log(res);
-      // if (this.deposittable.childTable.selection.selected.length > 0) {
-      //   console.log(res);
-      // }
-
+  
           })
         },5000);   
 
@@ -649,13 +636,6 @@ export class DepositComponent implements OnInit {
     this.depositForm.controls["totalrefund"].setValue("0.00");
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
   }
-
-  // depositColumnClick($event: any){
-  //   if($event.row.depositRefund == "Deposit"){
-  //     this.MaxIDdepositExist = true;
-  //   }
-  //   this.patientRefundDetails = $event.row;
-  // }
 
   mobilechange()
   {
@@ -694,8 +674,7 @@ export class DepositComponent implements OnInit {
                       this.iacode = maxID.split(".")[0];
                       this.regNumber = Number(maxID.split(".")[1]);
                       this.depositForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                      this.getPatientPreviousDepositDetails();
+                      this.getPatientDetailsForDeposit();
                     }
                     this.similarContactPatientList = [];
                   });
@@ -721,7 +700,41 @@ export class DepositComponent implements OnInit {
       });
     });
   }
-}
+
+  depositCategoryIconAction(categoryIcon: any){
+      const data: any = {
+        note: {
+          notes: this.noteRemarkdb,
+        },
+        vip: {
+          notes: this.vipdb,
+        },
+        hwc: {
+          notes: this.hwcRemarkdb,
+        },
+        pPagerNumber: {
+          bplCardNo: this.ewsDetailsdb.bplCardNo,
+          BPLAddress: this.ewsDetailsdb.bplCardAddress,
+        },
+        hotList: {
+          hotlistTitle: this.hotlistReasondb,
+          reason: this.hotlistRemarkdb,
+        },
+      };
+      if (
+        categoryIcon.tooltip != "CASH" &&
+        categoryIcon.tooltip != "INS" &&
+        categoryIcon.tooltip != "PSU"
+      ) {
+        if(categoryIcon.type == "pPagerNumber"){
+          this.patientService.doAction("ppagerNumber", data[categoryIcon.type]);
+        }else{          
+        this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+        }
+      }
+    }
+  }
+
 export const CheckPatientDetails = {
   PatientNotReg: 0,
   Inpatient: 1,
