@@ -51,4 +51,30 @@
         height: 13px;
         width: 13px;
     }
+    ::ng-deep mat-error{
+        margin-top: 12px;
+    }
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
+    ::ng-deep .max-table-wrapper table{
+        tr.newbill{
+            background-color: #00B2A9 !important;
+            td{
+                color: #fff !important;
+            }
+        }
+        tr.cancelled{
+            background-color: #FF6A6A !important;
+            td{
+                color: #fff !important;
+            }
+        }
+        tr.partially-cancelled{
+            background-color: #FF8A3B !important;
+            td{
+                color: #fff !important;
+            }
+        }
+    }
 }

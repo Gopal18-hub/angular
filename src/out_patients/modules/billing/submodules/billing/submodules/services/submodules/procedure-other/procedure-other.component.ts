@@ -15,6 +15,8 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-procedure-other",
   templateUrl: "./procedure-other.component.html",
@@ -45,6 +47,7 @@ export class ProcedureOtherComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -59,10 +62,16 @@ export class ProcedureOtherComponent implements OnInit {
       sno: {
         title: "S.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       procedures: {
         title: "Procedures",
         type: "string",
+        style: {
+          width: "35%",
+        },
       },
       qty: {
         title: "Qty",
@@ -74,16 +83,26 @@ export class ProcedureOtherComponent implements OnInit {
           { title: 4, value: 4 },
           { title: 5, value: 5 },
         ],
+        style: {
+          width: "70px",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -96,7 +115,8 @@ export class ProcedureOtherComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -109,21 +129,42 @@ export class ProcedureOtherComponent implements OnInit {
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.ProcedureItems.splice($event.index, 1);
+    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = [...this.billingService.ProcedureItems];
     this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.selection.changed.subscribe((res: any) => {
-      console.log(res);
-      const source = res.added[0] || res.removed[0];
-      console.log(source);
-      this.update(source.sno);
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "qty") {
+        this.update(res.data.element.sno);
+      } else if (res.data.col == "specialisation") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
+        );
+      }
     });
+    // this.tableRows.selection.changed.subscribe((res: any) => {
+    //   console.log(res);
+    //   const source = res.added[0] || res.removed[0];
+    //   console.log(source);
+    //   this.update(source.sno);
+    // });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
         filter((res) => {
@@ -153,7 +194,11 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.name, value: r.id };
+            return {
+              title: r.itemNameWithService || r.itemName,
+              value: r.itemID,
+              originalTitle: r.itemName,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -168,7 +213,10 @@ export class ProcedureOtherComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -178,9 +226,10 @@ export class ProcedureOtherComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
@@ -208,12 +257,29 @@ export class ProcedureOtherComponent implements OnInit {
           serviceId
         )
       )
-      .subscribe((res) => {
-        this.questions[1].options = res.map((r: any) => {
-          return { title: r.itemName, value: r.itemID };
-        });
-        this.questions[1] = { ...this.questions[1] };
-      });
+      .subscribe(
+        (res) => {
+          this.formGroup.controls["procedure"].reset();
+          if (Array.isArray(res)) {
+            this.questions[1].options = res.map((r: any) => {
+              return {
+                title: r.itemNameWithService || r.itemName,
+                value: r.itemID,
+                originalTitle: r.itemName,
+              };
+            });
+          } else {
+            this.questions[1].options = [];
+          }
+
+          this.questions[1] = { ...this.questions[1] };
+        },
+        (error) => {
+          this.formGroup.controls["procedure"].reset();
+          this.questions[1].options = [];
+          this.questions[1] = { ...this.questions[1] };
+        }
+      );
   }
 
   update(sno = 0) {
@@ -231,6 +297,15 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
+      return item.itemid == this.formGroup.value.procedure.value;
+    });
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Procedure already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -243,12 +318,15 @@ export class ProcedureOtherComponent implements OnInit {
       .subscribe((res: any) => {
         this.billingService.addToProcedure({
           sno: this.data.length + 1,
-          procedures: this.formGroup.value.otherService.title,
+          procedures: this.formGroup.value.procedure.originalTitle,
           qty: 1,
           specialisation: "",
           doctorName: "",
           price: res.amount,
           unitPrice: res.amount,
+          itemid: this.formGroup.value.procedure.value,
+          priorityId: priorityId,
+          serviceId: this.formGroup.value.otherService.value,
         });
 
         this.data = [...this.billingService.ProcedureItems];

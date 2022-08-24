@@ -5,6 +5,17 @@
           <a mat-tab-link [active]="true">Bill Details</a>
         </li>
       </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="mt-1 cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+          
+        />
+    </div>
     </nav>
     <mat-tab-nav-panel #tabPanel class="h-full">
       <div class="h-full w-full">
@@ -16,7 +27,7 @@
             <div class="w-full flex pt-2">
               <div class="flex ml-2 ">
                 <mat-label class="wt-nowrap">Bill No</mat-label>
-                <div class="ml-1 wt-mid h-full bg-white">
+                <div class="ml-1 w-19 h-full bg-white">
                   <maxhealth-question
                     [question]="questions[0]"
                     [form]="BServiceForm"
@@ -100,8 +111,8 @@
             </div>
         </div>
           </div>
-          <div class="pl-1 pt-0 ml-2 mr-2 border-radius-lg flex  w-2/5">
-            <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-4  w-31" >
+          <div class="pl-1 pt-0 ml-5 mr-2 border-radius-lg flex  w-2/5">
+            <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-12  w-31" >
                 <!--    (click)="oncheckboxClick($event)" -->
              <div class="ml-2 mb-1">
                  <maxhealth-question
@@ -139,7 +150,7 @@
              </div>
          </div>
          <div class="float-right w-1/10 flex mar-left-12">
-             <div class="ml-0" >
+             <div class="ml-0 searchbtn" >
              <button mat-raised-button color="primary" type="submit" (click)="search()">
                  <img src="assets/lens.svg" class="lens-icon">
          <!-- <span class="p-0 m"> -->
@@ -227,6 +238,7 @@
                   color="primary"
                   class="w-1/20 h-btn btn_width"
                   type="submit"
+                  [disabled]="dmsbtn"
                 >
                 DMS
                 </button>
@@ -235,6 +247,7 @@
                   color="primary"
                   class="w-1/20 ml-2 h-btn btn_width"
                   type="button"
+                  [disabled]="visithistorybtn"
                   (click)="openhistory()"
                 >
                  Visit History
@@ -292,8 +305,8 @@
 
 <!-- --------------------------------------------1st FORM CONTROL COLUMN------------------------------------------------------------------------                -->
             
-              <div class="ml-2 flex-column  pt-1 h-full">
-              <div class="flex">
+          <div class="ml-2 flex-column  pt-1 h-full clr-black">
+              <div class="flex input-align-right">
                 <!-- <div class="flex"> -->
               
                   <maxhealth-question
@@ -306,7 +319,7 @@
                   
                   </maxhealth-question>
           </div>
-          <div class="flex">
+          <div class="flex input-align-right">
             <maxhealth-question
             [question]="questions[8]"
             [form]="BServiceForm"
@@ -318,7 +331,7 @@
             </maxhealth-question>
               </div>
            
-            <div class="flex">
+            <div class="flex input-align-right">
               <maxhealth-question
               [question]="questions[9]"
               [form]="BServiceForm"
@@ -328,8 +341,8 @@
               >
               
               </maxhealth-question>
-            </div>
-            <div class="flex">
+            </div> 
+            <div class="flex input-align-right">
               <maxhealth-question
                   [question]="questions[10]"
                   [form]="BServiceForm"
@@ -345,7 +358,7 @@
               </div>  
                
                 </div>
-                <div class="flex w-1/5 h-1/5 justify-between float-left">
+                <div class="flex w-1/5 h-1/5 justify-between float-left clr-black">
                 
                 <!-- <div class="flex "> -->
  <!-- --------------------------------------------2ND LABEL COLUMN------------------------------------------------------------------------                -->
@@ -370,7 +383,7 @@
  <!-- --------------------------------------------2ND FORM CONTROL COLUMN------------------------------------------------------------------------                -->
               
                 <div class="ml-2 fle-column pt-1 h-full">
-                <div class="flex">
+                <div class="flex input-align-right">
                   <!-- <div class="flex"> -->
                 
                 <maxhealth-question
@@ -382,7 +395,7 @@
                 >
               </maxhealth-question>
             </div>
-            <div class="flex">
+            <div class="flex input-align-right">
                 <maxhealth-question
                 [question]="questions[12]"
                 [form]="BServiceForm"
@@ -433,6 +446,7 @@
                   color="primary" 
                   class="btn-otp btn-blue mr-1"
                   type="submit"
+                  [disabled]="otpbtn"
                   >
                  Send OTP
                   </button>
@@ -453,6 +467,7 @@
                   color="primary"
                   class="btn-otp btn-blue pl-2 mt-1"
                   type="submit"
+                  [disabled]="managerotpbtn"
                   >
                   Send OTP to Manager
                   </button>
@@ -466,6 +481,7 @@
                   color="primary"
                   class="btn-md"
                   type="submit"
+                  [disabled]="refundbill"
                   >
                  Refund Bill
                   </button>
@@ -477,6 +493,7 @@
                     color="primary"
                     class=" btn-md"
                     type="submit"
+                    [disabled]="approvalsend"
                     >
                     Send for Approval
                     </button>
@@ -488,6 +505,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printbill"
                     >
                     Print Bill
                     </button>
@@ -499,6 +517,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printrefund"
                     >
                     Print Refund Receipt
                     </button>
@@ -510,6 +529,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="resendbill"
                     >
                     Resend bill on Email
                     </button>
@@ -525,6 +545,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="consumableprint"
                     >
                     Consumable Print
                     </button>
@@ -536,6 +557,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="phptracksheet"
                       >
                       Php Track Sheet
                       </button>
@@ -547,6 +569,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="opprescription"
                       >
                       OP Prescription
                       </button>
@@ -558,6 +581,8 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="doxperprint"
+                      (click)="doxperredirect()"
                       >
                       Doxper Print
                       </button>
@@ -569,6 +594,8 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      (click)="clear()"
+                      [disabled]="!BServiceForm.dirty"
                       >
                       Clear
                       </button>

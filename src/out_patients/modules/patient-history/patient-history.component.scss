@@ -22,6 +22,9 @@
 .w-12{
     width: 12%;
 }
+.h-74{
+    height: 74%;
+}
 .text-overflow{
     white-space: nowrap;
     overflow: hidden;
@@ -32,7 +35,7 @@
     left: 2px;
     top: 2px;
     height: 90%;
-    width: 25%;
+    width: 28%;
 }
 .patient-history-wrapper{
     ::ng-deep .mat-form-field-wrapper{
@@ -83,7 +86,7 @@
     }
     .btn{
         ::ng-deep .mat-button-wrapper{
-            margin-left: 25px;
+            margin-left: 20px;
         }
     } 
     .disableclass{
@@ -92,6 +95,11 @@
         pointer-events: none;
         opacity: 0.2;
     }  
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
 }
 
 

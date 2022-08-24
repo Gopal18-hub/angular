@@ -72,8 +72,9 @@
         <ng-container *ngIf="!config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
-            *matCellDef="let element"
+            *matCellDef="let element; let i = dataIndex"
             (click)="columnClickFun(element, col)"
+            class="type-{{ displayColumnsInfo[col]?.type }}"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col].type"
@@ -83,7 +84,8 @@
                   output: element[col],
                   config: config,
                   col: col,
-                  element: element
+                  element: element,
+                  index: i
                 }
               }"
             ></ng-container>
@@ -93,7 +95,7 @@
         <ng-container *ngIf="config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
-            *matCellDef="let element"
+            *matCellDef="let element; let i = dataIndex"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
             (click)="columnClickFun(element, col)"
@@ -106,7 +108,8 @@
                   output: element[col],
                   config: config,
                   col: col,
-                  element: element
+                  element: element,
+                  index: i
                 }
               }"
             ></ng-container>
@@ -120,13 +123,13 @@
         <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
           &nbsp;
         </th>
-        <td mat-cell *matCellDef="let element; let i = index" class="pl-4">
+        <td mat-cell *matCellDef="let element; let i = dataIndex" class="pl-4">
           <button mat-icon-button color="accent" (click)="removeRow(i)">
             <div class="remove-row-icon-wrapper">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
+                width="20"
+                height="20"
                 viewBox="0 0 25 25"
               >
                 <g
@@ -190,7 +193,7 @@
                 </button>
               </ng-container>
               <ng-container *ngSwitchDefault>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="actionItemClick(item, element)">
                   {{ item.title }}
                 </button>
               </ng-container>
@@ -220,6 +223,7 @@
               <maxhealth-table
                 [config]="childTableConfig"
                 [data]="childrensData[element[config.groupby.parentcolumn]]"
+                #childTable
               ></maxhealth-table>
             </ng-container>
           </div>
@@ -281,6 +285,14 @@
 
 <ng-template #string let-data>
   <span *ngIf="data?.output">{{ data.output }}</span>
+</ng-template>
+<ng-template #stringLink let-data>
+  <span
+    *ngIf="data?.output"
+    class="cursor-pointer text-underline"
+    (click)="stringLinkClick(data)"
+    >{{ data.output }}</span
+  >
 </ng-template>
 <ng-template #number let-data>
   <span>{{ data?.output }}</span>
@@ -427,13 +439,33 @@
       [value]="data.element[data.col]"
       [panelClass]="'im-select-dropdown'"
       disableOptionCentering
+      (selectionChange)="controlValueChange($event, data)"
     >
       <ng-container
-        *ngFor="let opt of data.config.columnsInfo[data.col].options"
+        *ngIf="
+          data.config.columnsInfo[data.col]?.moreOptions &&
+          data.config.columnsInfo[data.col]?.moreOptions[data.index]
+        "
       >
-        <mat-option [value]="opt.value">
-          {{ opt.title }}
-        </mat-option>
+        <ng-container
+          *ngFor="
+            let opt of data.config.columnsInfo[data.col].moreOptions[data.index]
+          "
+        >
+          <mat-option [value]="opt.value">
+            {{ opt.title }}
+          </mat-option>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!data.config.columnsInfo[data.col]?.moreOptions">
+        <ng-container
+          *ngFor="let opt of data.config.columnsInfo[data.col].options"
+        >
+          <mat-option [value]="opt.value">
+            {{ opt.title }}
+          </mat-option>
+        </ng-container>
       </ng-container>
     </mat-select>
   </mat-form-field>

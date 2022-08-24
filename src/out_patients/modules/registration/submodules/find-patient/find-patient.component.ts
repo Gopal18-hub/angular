@@ -25,7 +25,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
   templateUrl: "./find-patient.component.html",
   styleUrls: ["./find-patient.component.scss"],
 })
-export class FindPatientComponent implements OnInit, OnDestroy {
+export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
   patientList: PatientSearchModel[] = [];
   isAPIProcess: boolean = false;
   processingQueryParams: boolean = false;
@@ -39,6 +39,12 @@ export class FindPatientComponent implements OnInit, OnDestroy {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+    6: "/patient-history",
+  };
 
   @ViewChild("table") tableRows: any;
 
@@ -49,24 +55,34 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     actionItemList: [
       {
         title: "OP Billing",
-        //actionType: "link",
-        //routeLink: "",
+        linkid: 1,
+        actionType: "custom",
+        routeLink: "/out-patient-billing",
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
+        routeLink: "/out-patient-billing/details",
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
+        routeLink: "/out-patient-billing/deposit",
       },
       {
         title: "Admission",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        linkid: 5,
       },
       {
         title: "Visit History",
-        actionType: "link",
+        linkid: 6,
+        actionType: "custom",
         routeLink: "/patient-history",
       },
     ],
@@ -194,6 +210,35 @@ export class FindPatientComponent implements OnInit, OnDestroy {
                         }
                       );
                     });
+                  this.tableRows.actionItemClickTrigger.subscribe(
+                    (res: any) => {
+                      console.log(res);
+                      if (res) {
+                        if (res.item && res.data) {
+                          //if else condition due to queryparam for deposite
+                          if (res.item["linkid"] == 1) {
+                            if (this.quickLinksRoutes[res.item["linkid"]]) {
+                              this.router.navigate(
+                                [this.quickLinksRoutes[res.item["linkid"]]],
+                                {
+                                  queryParams: { maxId: res.data["maxid"] },
+                                }
+                              );
+                            }
+                          } else if (
+                            this.quickLinksRoutes[res.item["linkid"]]
+                          ) {
+                            this.router.navigate(
+                              [this.quickLinksRoutes[res.item["linkid"]]],
+                              {
+                                queryParams: { maxID: res.data["maxid"] },
+                              }
+                            );
+                          }
+                        }
+                      }
+                    }
+                  );
                 });
               },
               (error) => {
@@ -218,6 +263,8 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         await this.loadGrid(formdata);
       });
   }
+
+  ngAfterViewInit(): void {}
 
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
@@ -321,6 +368,32 @@ export class FindPatientComponent implements OnInit, OnDestroy {
             queryParams: { maxId: res.added[0].maxid },
           });
         });
+
+      this.tableRows.actionItemClickTrigger.subscribe((res: any) => {
+        console.log(res);
+        if (res) {
+          if (res.item && res.data) {
+            //if else condition due to queryparam for deposite
+            if (res.item["linkid"] == 1) {
+              if (this.quickLinksRoutes[res.item["linkid"]]) {
+                this.router.navigate(
+                  [this.quickLinksRoutes[res.item["linkid"]]],
+                  {
+                    queryParams: { maxId: res.data["maxid"] },
+                  }
+                );
+              }
+            } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+              this.router.navigate(
+                [this.quickLinksRoutes[res.item["linkid"]]],
+                {
+                  queryParams: { maxID: res.data["maxid"] },
+                }
+              );
+            }
+          }
+        }
+      });
     });
   }
   ngOnDestroy(): void {

@@ -56,8 +56,17 @@
 .maxidwidth{
     width: 12.5% !important;
 }
-
+.wserach{
+    width: 8% !important;
+}
 .namewidth{
     width: 22% !important;
+}
+.initiatedepositbutton{
+    .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
 }    
 }

@@ -12,14 +12,9 @@ import { PendingChangesGuard } from "../../../shared/services/guards/pending-cha
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 const routes: Routes = [
   {
-    path: "",
-    component: RegistrationComponent,
-    canActivate: [AuthGuardService],
-  },
-  {
     path: "registration",
     component: RegistrationComponent,
-    canActivate: [AuthGuardService],
+    //canActivate: [AuthGuardService],
     children: [
       { path: "", component: OpRegistrationComponent },
       {

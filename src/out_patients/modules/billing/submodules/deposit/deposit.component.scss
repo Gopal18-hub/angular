@@ -84,9 +84,6 @@
     top: 7% !important;
     left: 0% !important;
   }
-  ::ng-deep .mat-icon-button:hover {
-    color: #fff;
-  }
 
   ::ng-deep .mat-cell.cdk-cell.cdk-column-expandedDetail.mat-column-expandedDetail{
       padding-left: 0px !important;
@@ -96,16 +93,71 @@
  
   ::ng-deep .child-element-detail {
     position: relative;
-    width: 125.5%;
+    width: 125.6%;
     .max-table-wrapper{
         border-radius: 0px !important; 
+        border:none !important;
+       
     }
- 
-//    td.mat-cell:first-of-type {
-//         padding-left: 5px !important;
-//     }
+    .mat-row {
+     .mat-cell {
+            color: rgba(0, 0, 0, 0.87) !important;
+          }
+          &:hover {
+            .mat-cell {
+                color: #fff !important;
+              }            
+          }
+      }
 
-
+           .mat-cell.cdk-cell.cdk-column-select.mat-column-select{
+            width: 3.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-depositRefund.mat-column-depositRefund{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-receiptno.mat-column-receiptno{
+            width: 5.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-dateTime.mat-column-dateTime{
+            width: 7.3% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-deposit.mat-column-deposit{
+            width: 5.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-paymentType.mat-column-paymentType{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-usedOP.mat-column-usedOP{
+            width: 4.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-usedIP.mat-column-usedIP{
+            width: 4.6% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-refund.mat-column-refund{
+            width: 5.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-balance.mat-column-balance{
+            width: 5.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-gst.mat-column-gst{
+            width: 3.4% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-gstValue.mat-column-gstValue{
+            width: 6.4% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-advanceType.mat-column-advanceType{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-serviceTypeName.mat-column-serviceTypeName{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-operatorName.mat-column-operatorName{
+            width: 9.1% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-remarks.mat-column-remarks{
+            width: 6.45% !important;
+           }           
     }
 }
 .text-overflow{
@@ -118,10 +170,18 @@
 }
    ::ng-deep .relative.table-height {
     height: 50vh !important;
-} 
+}
 
-
-
+::ng-deep .second-row-depositbutton{
+    .mat-raised-button{
+    
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+  }
+  ::ng-deep .clearwidth{
+    min-width: initial !important;
+  }
 }
 
 

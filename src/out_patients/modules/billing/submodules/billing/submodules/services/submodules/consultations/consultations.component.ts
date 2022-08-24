@@ -68,27 +68,45 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
+        style: {
+          width: "17%",
+        },
       },
       type: {
         title: "Type",
         type: "dropdown",
         options: [],
+        style: {
+          width: "40%",
+        },
       },
       scheduleSlot: {
         title: "Schedule Slot",
         type: "string",
+        style: {
+          width: "10%",
+        },
       },
       bookingDate: {
         title: "Booking Date",
         type: "date",
+        style: {
+          width: "10%",
+        },
       },
       price: {
         title: "Price",
         type: "number",
+        style: {
+          width: "10%",
+        },
       },
     },
   };
@@ -96,6 +114,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   consultationTypes = [];
 
   locationId = Number(this.cookie.get("HSPLocationId"));
+
+  excludeClinicsLocations = [67, 69];
 
   constructor(
     private formService: QuestionControlService,
@@ -120,18 +140,28 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         return { title: r.name, value: r.id };
       });
     });
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
   }
 
   rowRwmove($event: any) {
     this.billingService.consultationItems.splice($event.index, 1);
+    this.billingService.consultationItems =
+      this.billingService.consultationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
     this.data = [...this.billingService.consultationItems];
     this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
     this.tableRows.selection.changed.subscribe((res: any) => {
-      const source = res.added[0];
-      this.update(source.type, source.sno);
+      const source = res.added[0] || res.removed[0];
+      this.update(source.type, source.sno, source.doctorId);
     });
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
@@ -162,7 +192,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((data: any) => {
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
-            return { title: r.doctorName, value: r.doctorId };
+            return {
+              title: r.doctorNameWithSpecialization || r.doctorName,
+              value: r.doctorId,
+              originalTitle: r.doctorName,
+            };
           });
           this.questions[1] = { ...this.questions[1] };
         }
@@ -170,7 +204,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   getSpecialization() {
-    if (this.locationId == 7) {
+    if (!this.excludeClinicsLocations.includes(this.locationId)) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
         .subscribe((res) => {
@@ -216,18 +250,22 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
+          return {
+            title: r.doctorNameWithSpecialization || r.doctorName,
+            value: r.doctorId,
+            originalTitle: r.doctorName,
+          };
         });
         this.questions[1] = { ...this.questions[1] };
       });
   }
 
-  update(priorityId = 57, sno = 0) {
+  update(priorityId = 57, sno = 0, doctorId: number) {
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
-          this.formGroup.value.doctorName.value,
+          doctorId,
           25,
           this.cookie.get("HSPLocationId")
         )
@@ -243,6 +281,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
 
         this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
       });
   }
 
@@ -266,7 +305,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.billingService.addToConsultation({
           sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.title,
+          doctorName: this.formGroup.value.doctorName.originalTitle,
+          doctorId: this.formGroup.value.doctorName.value,
           type: priorityId,
           scheduleSlot: "",
           bookingDate: "",

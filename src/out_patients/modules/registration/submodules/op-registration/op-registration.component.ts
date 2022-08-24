@@ -291,6 +291,7 @@ export class OpRegistrationComponent implements OnInit {
         // required property is dependent on country
         required: true,
         pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,49}",
+        placeholder: "House No/Apartment/Street Name",
       },
       pincode: {
         type: "number",
@@ -1499,7 +1500,7 @@ export class OpRegistrationComponent implements OnInit {
           btn1: true,
           btn2: true,
           bt1Msg: "Proceed to Billing",
-          bt2Msg: " Proceed to Deposit",
+          bt2Msg: "Proceed to Deposit",
         },
       }
     );

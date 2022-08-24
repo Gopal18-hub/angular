@@ -22,11 +22,13 @@ export class BillComponent implements OnInit {
         type: "dropdown",
         required: true,
         title: "Referral Doctor",
+        placeholder: "--Select--",
       },
       interactionDetails: {
         type: "dropdown",
         required: true,
         title: "Interaction Details",
+        placeholder: "--Select--",
       },
       billAmt: {
         type: "number",
@@ -161,6 +163,9 @@ export class BillComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       serviceName: {
         title: "Services Name",

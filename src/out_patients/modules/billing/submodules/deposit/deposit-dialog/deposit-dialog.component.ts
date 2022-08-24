@@ -16,6 +16,7 @@ import { ServiceDepositComponent } from "@core/UI/billing/submodules/service-dep
 import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patient-identity-info/patient-identity-info.component";
 import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "@core/UI/billing/submodules/form60/form-sixty.component";
+import { DepositService } from "@core/services/deposit.service";
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -46,9 +47,9 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -73,7 +74,8 @@ export class DepositDialogComponent implements OnInit {
     public matDialog: MatDialog,
     private messageDialogService: MessageDialogService,  private cookie: CookieService,
     private http: HttpService,
-    private datepipe: DatePipe,) { }
+    private datepipe: DatePipe,
+    private depositservice: DepositService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -90,7 +92,7 @@ export class DepositDialogComponent implements OnInit {
         };
     this.patientIdentityInfo = { type: "Deposit", patientinfo : this.data.patientinfo };
     this.patientsavedepositdetailgst = [];
-    this.isNSSHLocation = false; // this.cookie.get("LocationIACode") == "NSSH" ? true : false;
+    this.isNSSHLocation =  this.cookie.get("LocationIACode") == "NSSH" ? true : false;
   }
 
   ngAfterViewInit():void {   
@@ -100,8 +102,10 @@ export class DepositDialogComponent implements OnInit {
   DepositcashMode:any=[];
   depositpatientidentityinfo:any=[];
 
-  validationexists: boolean = true;
+  validationexists: boolean = false;
   depositformvalidation(){
+    this.validationexists = false;
+    this.PaymentTypedepositamount = 0;
     this.selecteddepositservicetype = this.servicedeposittype.servicedepositForm.value;
     this.DepositcashMode = this.paymentdepositcashMode.refundform.value;
     this.depositpatientidentityinfo = this.depositpatientidentity.patientidentityform.value;
@@ -110,14 +114,12 @@ export class DepositDialogComponent implements OnInit {
     if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
       this.messageDialogService.error("Please Select Deposit Head");
     }
-    else 
-    if(this.selecteddepositservicetype.servicetype == null){
+    else  if(this.selecteddepositservicetype.servicetype == null){
       this.messageDialogService.error("Please Select Service Type");
     }
-
     //deposit - payment method
     else if(this.DepositcashMode){
-      this.validationexists = false;
+      
       if(this.DepositcashMode.cashamount > 0 ){
         this.PaymentTypedepositamount =  this.DepositcashMode.cashamount;
        }
@@ -133,33 +135,30 @@ export class DepositDialogComponent implements OnInit {
         this.PaymentType = 3;
         this.PaymentTypedepositamount =  this.DepositcashMode.demandamount;
       }
-       else if(this.DepositcashMode.upiamount > 0){
+      else if(this.DepositcashMode.upiamount > 0){
         this.PaymentType = 8;
         this.PaymentTypedepositamount =  this.DepositcashMode.upiamount;
       }
-    else  if(this.DepositcashMode.internetamount > 0){
+      else if(this.DepositcashMode.internetamount > 0){
         this.PaymentTypedepositamount =  this.DepositcashMode.internetamount;
       }
       else if(this.PaymentTypedepositamount == 0){
-        this.messageDialogService.error("Amount Zero is not Allowed");
+        this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
       }
     }
 
     //pan card and form 60
-     if((this.PaymentTypedepositamount >= 200000) && (this.depositpatientidentityinfo.length == 0 || 
-      this.depositpatientidentityinfo.mainradio == "pancardno" && (this.depositpatientidentityinfo.panno == undefined || this.depositpatientidentityinfo.panno == ""))){
+     if((this.PaymentTypedepositamount >= 200000) && !this.validationexists &&  (this.depositpatientidentityinfo.length == 0 || 
+      this.depositpatientidentityinfo.mainradio == "pancardno" && (this.depositpatientidentityinfo.panno == undefined || this.depositpatientidentityinfo.panno == "")))
+      {
         this.messageDialogService.error("Please Enter a valid PAN Number");   
         this.validationexists = true;
      }
-     else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false){
+     else if(this.depositpatientidentityinfo.mainradio == "form60" && this.formsixtysubmit == false && !this.validationexists){
       this.messageDialogService.error("Please fill the form60 ");   
       this.validationexists = true;
-     }
-     else{
-      this.validationexists = false;
-     }
-    
+     }    
   }
 
   savedialogpayment()
@@ -172,10 +171,15 @@ export class DepositDialogComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {
-            this.matDialog.closeAll();
-            this.dialogRef.close("Success");
-            this.messageDialogService.success("Deposit Has Been Successfully Save");
-          
+            console.log(resultData);
+            if(resultData[0].returnFlag == 0){
+              this.matDialog.closeAll();
+              this.dialogRef.close("Success");
+              this.messageDialogService.success("Deposit Has Been Successfully Saved");            
+            }else{
+              this.messageDialogService.error(resultData[0].returnMessageDeposit);
+            }
+           
           },
           (error) => {
             console.log(error);
@@ -215,9 +219,9 @@ export class DepositDialogComponent implements OnInit {
       "",
       0,
       this.formsixtysubmit == false ? this.depositpatientidentityinfo.panno : "Form60",
-      this.selecteddepositservicetype.servicetype.value,
+      this.selecteddepositservicetype.servicetype,
       0,
-      this.selecteddepositservicetype.deposithead.value,
+      this.selecteddepositservicetype.deposithead,
       this.depositpatientidentityinfo.mobileno,
       "",     
       ""
@@ -227,8 +231,8 @@ export class DepositDialogComponent implements OnInit {
   clearsiblingcomponents:boolean = false;
   cleardepositdialog(){
     this._destroying$.next(undefined);
-    this._destroying$.complete();
-    this.clearsiblingcomponents = true;
+    this._destroying$.complete(); 
+    this.depositservice.clearsibllingcomponent();
     this.makedepositdialogForm.reset();
   }
 

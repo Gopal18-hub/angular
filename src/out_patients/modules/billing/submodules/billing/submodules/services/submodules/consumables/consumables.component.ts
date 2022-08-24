@@ -3,6 +3,8 @@ import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
 import { HttpService } from "@shared/services/http.service";
+import { ConsumableDetailsComponent } from "../../../../prompts/consumable-details/consumable-details.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "out-patients-consumables",
@@ -32,10 +34,13 @@ export class ConsumablesComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       surgeryName: {
         title: "Surgery Name",
-        type: "string",
+        type: "string_link",
       },
       priority: {
         title: "Priority",
@@ -67,11 +72,30 @@ export class ConsumablesComponent implements OnInit {
   constructor(
     private http: HttpService,
     private cookie: CookieService,
-    public billingService: BillingService
+    public billingService: BillingService,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.getData();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      this.matDialog.open(ConsumableDetailsComponent, {
+        width: "70%",
+        height: "50%",
+        data: {
+          orderSet: res.element,
+          items: res.element.items,
+        },
+      });
+    });
   }
 
   getData() {
@@ -96,6 +120,7 @@ export class ConsumablesComponent implements OnInit {
               doctorName: head.doctorName,
               taxAmount: 0,
               totalAmount: head.amount,
+              items: res.consumableServiceDetailsData,
             });
           });
           this.data = [...data];

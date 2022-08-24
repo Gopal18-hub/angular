@@ -15,11 +15,19 @@
 }
 
 .BServiceForm {   
-    
-   
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
+    .searchbtn{
+        ::ng-deep .mat-raised-button{
+            min-width: 100px !important;
+            padding-left: 40px !important;
+        }
+        mat-button-wrapper{
+            padding-left: 25px;
+        }
+    }
+
     ::ng-deep mat-label{
         color: var(--primary-color);
         font-weight: 600 !important;
@@ -129,8 +137,8 @@
 {
     width: 9.5rem;
     height: 100%;
-    margin-top: 1.5%;
-    margin-bottom: 0px;
+    margin-top: 5px;
+    // margin-bottom: 0px;
     padding: 0px;
     // ::ng-deep .mat-form-field-wrapper
     // {
@@ -138,6 +146,9 @@
     //   padding-bottom: 0;  
       
     // } 
+    ::ng-deep .mat-form-field{
+        line-height: 1.6;
+    }
 }
 .btn-otp
 {
@@ -308,17 +319,11 @@ margin-top: 0.19rem;
 }
 
 .lens-icon{
-
     position: absolute;
-
     left: 2px;
-
     top: 2px;
-
     height: 90%;
-
-    width: 25%;
-
+    width: 32%;
 }
 
 .bg-darkgray{
@@ -351,15 +356,32 @@ margin-top: 0.19rem;
 .w-14{
     width: 14%;
 }
+.w-15{
+    width: 15%;
+}
 .w-11{
     width: 11%;
 }
+.w-16{
+    width: 16%;
+}
+.w-17{
+    width: 17%;
+}
 .w-18{
     width: 18%;
+}
+.w-19{
+    width: 19%;
 }
 .clr-black{
     color: #000;
 }
 .mar-left-12{
-    margin-left: 12.1rem;
+    margin-left: 10.9rem;
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
 }

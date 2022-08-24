@@ -6,9 +6,10 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
-
+import { billDetailService } from "../billDetails.service";
+import { PaymentDialogComponent } from './../payment-dialog/payment-dialog.component';
 @Component({
   selector: "part-cred-bill-settlement",
   templateUrl: "./part-cred-bill-settlement.component.html",
@@ -20,75 +21,61 @@ export class PartialCredBillComponent implements OnInit {
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private billDetailService: billDetailService
   ) {}
 
   BDetailFormData = {
     type: "object",
     title: "",
     properties: {
-      billNo: {
-        type: "string",
-      },
-      maxid: {
-        type: "string",
-        defaultValue: this.cookie.get("LocationIACode") + ".",
-      },
-      mobileNo: {
-        type: "tel",
-        pattern: "^[1-9]{1}[0-9]{9}",
-      },
-      billDate: {
-        type: "date",
-        // title: "SSN",
-      },
-      datevalidation: {
-        type: "checkbox",
-        required: false,
-        options: [{ title: "" }],
-        defaultValue: 0,
-      },
-      fromDate: { type: "date", required: false },
-      toDate: { type: "date", required: false },
       billAmt: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       dipositrAmt: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
       discAmt: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      discAftBill: {
-        type: "number",
+      prePaidAMt: {
+        type: "string",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: '0.0',
         readonly: true,
       },
-      refundAmt: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
-      companyDue: {
+      plandic: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
+      },
+      planamt: {
+        type: "string",
+        required: false,
+        readonly: true,
+        defaultValue: '0.0',
       },
       patienDue: {
         type: "string",
         required: false,
         readonly: true,
+        defaultValue: '0.0',
+      },
+      companyDue: {
+        type: "string",
+        required: false,
+        readonly: true,
+        defaultValue: '0.0',
       },
       paymentMode: {
         type: "radio",
@@ -96,20 +83,15 @@ export class PartialCredBillComponent implements OnInit {
           {
             title: "Patient Due",
             value: "patientDue",
-            defaultValue: true,
           },
           {
             title: "Company Due",
             value: "companyDue",
           },
         ],
+        defaultValue: "patientDue",
       },
-      otpTxt: {
-        type: "number",
-        required: false,
-        defaultValue: 0.0,
-        readonly: true,
-      },
+      
     },
   };
 
@@ -160,7 +142,8 @@ export class PartialCredBillComponent implements OnInit {
 
   questions: any;
   private readonly _destroying$ = new Subject<void>();
-
+  makereceiptbtn: boolean = true;
+  printreceiptbtn: boolean = true;
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
       this.BDetailFormData.properties,
@@ -169,23 +152,63 @@ export class PartialCredBillComponent implements OnInit {
 
     this.BServiceForm = serviceFormResult.form;
     this.questions = serviceFormResult.questions;
+    console.log(this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
+    if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid != null ||
+       this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid != undefined ||
+       this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid != '')
+       {
+         this.fillform();
+       }
+    
   }
-  gst: { service: string; percentage: number; value: number }[] = [
-    { service: "CGST", percentage: 0.0, value: 0.0 },
-    { service: "SGST", percentage: 0.0, value: 0.0 },
-    { service: "UTGST", percentage: 0.0, value: 0.0 },
-    { service: "IGST", percentage: 0.0, value: 0.0 },
-    { service: "CESS", percentage: 0.0, value: 0.0 },
-    { service: "TOTAL TAX", percentage: 0.0, value: 0.0 },
-  ];
-  openGSTDialog() {
-    this.matDialog.open(GstComponent, {
-      width: "24vw",
-      height: "56vh",
-
-      data: {
-        gstDetails: this.gst,
-      },
-    });
+  fillform()
+  {
+    this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
+    this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
+    this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
+    this.BServiceForm.controls["prePaidAMt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount);
+    this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    // this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
+    console.log(this.BServiceForm.controls["prePaidAMt"].value, this.BServiceForm.controls["companyDue"].value)
+    if(this.BServiceForm.controls["patienDue"].value == 0 && this.BServiceForm.controls["companyDue"].value == 0)
+    {
+      this.makereceiptbtn = true;
+      this.printreceiptbtn = true;
+    }
+    else if(this.BServiceForm.controls["patienDue"].value == 0 && this.BServiceForm.controls["companyDue"].value > 0)
+    {
+      this.BServiceForm.controls["paymentMode"].setValue('companyDue');
+      this.BServiceForm.controls["paymentMode"].disable();
+      this.makereceiptbtn = false;
+      this.printreceiptbtn = false;
+    }
+    else if(this.BServiceForm.controls["patienDue"].value > 0 && this.BServiceForm.controls["companyDue"].value == 0)
+    {
+      this.BServiceForm.controls["paymentMode"].setValue('patientDue');
+      this.BServiceForm.controls["paymentMode"].disable();
+      this.makereceiptbtn = false;
+      this.printreceiptbtn = false;
+    }
   }
+  makereceipt() {
+    const RefundDialog =   this.matDialog.open(PaymentDialogComponent, {
+        width: "70vw",
+        height: "98vh",
+        data: {       
+          // patientinfo: {
+          //   emailId: this.patientpersonaldetails[0]?.pEMail, 
+          //   mobileno: this.patientpersonaldetails[0]?.pcellno,
+          // },
+          // clickedrowdepositdetails : this.patientRefundDetails
+        }
+      });
+  
+      RefundDialog.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        //if(result == "Success"){        
+          console.log("Refund Dialog closed");
+        //}    
+      });
+    }
 }

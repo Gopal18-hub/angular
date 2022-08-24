@@ -130,7 +130,7 @@ export namespace MaxModules {
             {
               id: 216,
               title: "Miscellaneous Billing",
-              defaultPath: "/out-patient-billing/miscellaneous-billing",
+              defaultPath: "/out-patient-billing/miscellaneous-billings",
               globalSearchKey: "global",
             },
             {
@@ -158,12 +158,7 @@ export namespace MaxModules {
                 "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
             },
-            {
-              id: 67,
-              title: "Dispatch Report",
-              defaultPath: "/out-patient-billing/dispatch-report",
-              globalSearchKey: "global",
-            },
+            // dispatch
             {
               id: 222,
               title: "Expired Patient Check",
@@ -226,66 +221,74 @@ export namespace MaxModules {
           id: -1,
           title: "Reports",
           tenentPath: "/out-patients",
-          defaultPath: "reports",
+          defaultPath: "report",
           childrens: [
             {
               id: 83,
               title: "Doctor Schedule",
-              defaultPath: "/reports/prompt-report/DoctorSheduleReport",
+              defaultPath: "/report/prompt-report/DoctorSheduleReport",
               globalSearchKey: "global",
             },
             {
               id: 84,
               title: "Cash Scroll",
-              defaultPath: "cash-scroll",
+              defaultPath: "/report/prompt-report/cash-scroll",
               globalSearchKey: "global",
             },
             {
               id: 85,
               title: "Happy Family Report",
-              defaultPath: "happy-family-report",
+              defaultPath:
+                "/report/prompt-report/HappyFamilyPlanAllocationReport",
               globalSearchKey: "global",
             },
             {
               id: 88,
               title: "Equipment Schedule",
-              defaultPath: "equipment-schedule",
+              defaultPath: "/report/prompt-report/equipmentSchedule",
               globalSearchKey: "global",
             },
             {
               id: 89,
               title: "General OPD Scroll Report",
-              defaultPath: "general-opd-scroll-report",
+              defaultPath: "/report/prompt-report/GeneralOPDReport",
               globalSearchKey: "global",
             },
             {
               id: 916,
               title: "Expired Patient Check",
-              defaultPath: "expired-patient-check",
+              defaultPath: "/report/prompt-report/expiredPatientReport",
               globalSearchKey: "global",
             },
             {
               id: 917,
               title: "Monthly OP Consultation Report",
-              defaultPath: "Monthly-op-consultation-report",
+              defaultPath: "/report/prompt-report/opConsultationReport",
               globalSearchKey: "global",
             },
             {
               id: 918,
               title: "Acknowledge Scroll Amount Report",
-              defaultPath: "acknowledge-scroll-amount-report",
+              defaultPath:
+                "/report/prompt-report/acknowledge-scroll-amount-report",
               globalSearchKey: "global",
             },
             {
               id: 579,
               title: "Expired Deposits",
-              defaultPath: "expired-deposits",
+              defaultPath: "/report/prompt-report/expired-deposits",
               globalSearchKey: "global",
             },
             {
               id: 920,
               title: "Online Deposit Report",
-              defaultPath: "online-deposit-report",
+              defaultPath: "/report/prompt-report/online-deposit-report",
+              globalSearchKey: "global",
+            },
+            {
+              id: 67,
+              title: "Dispatch Report",
+              defaultPath: "/out-patient-billing/dispatch-report",
               globalSearchKey: "global",
             },
           ],
