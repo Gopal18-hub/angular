@@ -129,6 +129,9 @@ export class OprefundApprovalComponent implements OnInit {
         title: "Bill No",
         type: "string",
         tooltipColumn: "billNo",
+        style: {
+          width: "6rem",
+        },
       },
       billDatetime: {
         title: "Bill Date/Time",
@@ -142,6 +145,9 @@ export class OprefundApprovalComponent implements OnInit {
         title: "Service Name",
         type: "string",
         tooltipColumn: "serviceName",
+        style: {
+          width: "9rem",
+        },
       },
       itemName: {
         title: "Item Name",
