@@ -3,10 +3,9 @@
     color:#004084;
 }
 .credit-wrapper {
-    
     ::ng-deep mat-label {
     //   color: var(--primary-color);
-    color: #333333;
+      color: #333333;
       font-weight: 600;
     }
     .change-password {
@@ -221,5 +220,11 @@ padding: 0%;
 .input-align-right{
     ::ng-deep .mat-form-field{
         text-align: right;
+    }
+}
+
+.font-400{
+    ::ng-deep mat-label{
+        font-weight: 400 !important;
     }
 }

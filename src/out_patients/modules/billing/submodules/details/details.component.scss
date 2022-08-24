@@ -18,15 +18,38 @@
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
+    
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
     .searchbtn{
         ::ng-deep .mat-raised-button{
-            min-width: 100px !important;
-            padding-left: 40px !important;
+            min-width: auto !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
         }
-        mat-button-wrapper{
-            padding-left: 25px;
+        ::ng-deep .mat-button-wrapper{
+            padding-left: 20px !important;
         }
     }
+    // .searchbtn{
+    //     ::ng-deep .mat-raised-button{
+    //         min-width: 100px !important;
+    //         padding-left: 40px !important;
+    //     }
+    //     mat-button-wrapper{
+    //         padding-left: 25px;
+    //     }
+    // }
 
     ::ng-deep mat-label{
         color: var(--primary-color);
@@ -309,22 +332,22 @@ padding: 0%;
     
     }
 }
-.h-btn{
-    height: 4.95vh;
-    min-width: fit-content !important;
-}
+// .h-btn{
+//     height: 4.95vh;
+//     min-width: fit-content !important;
+// }
 .m-pannel
 {
 margin-top: 0.19rem;
 }
 
-.lens-icon{
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    height: 90%;
-    width: 32%;
-}
+// .lens-icon{
+//     position: absolute;
+//     left: 2px;
+//     top: 2px;
+//     height: 90%;
+//     width: 32%;
+// }
 
 .bg-darkgray{
     
@@ -378,7 +401,7 @@ margin-top: 0.19rem;
     color: #000;
 }
 .mar-left-12{
-    margin-left: 10.9rem;
+    margin-left: 11.2rem;
 }
 .input-align-right{
     ::ng-deep .mat-form-field{
