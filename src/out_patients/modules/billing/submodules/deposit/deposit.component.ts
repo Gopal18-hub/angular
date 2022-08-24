@@ -506,8 +506,10 @@ export class DepositComponent implements OnInit {
               this.hwcRemarkdb = this.patientpersonaldetails[0]?.hwcRemarks;
               this.hotlistRemarkdb = this.patientpersonaldetails[0]?.hotlistcomments;
               this.hotlistReasondb.title = this.patientpersonaldetails[0]?.hotlistreason;
+              this.ewsDetailsdb.bplCardNo = this.patientpersonaldetails[0]?.bplCardNo;
+              this.ewsDetailsdb.bplCardAddress = this.patientpersonaldetails[0]?.addressOnCard;
 
-console.log(this.categoryIcons);
+              console.log(this.categoryIcons);
              console.log(this.patientpersonaldetails[0]);
             }
           },
@@ -645,13 +647,6 @@ console.log(this.categoryIcons);
     this.depositForm.controls["avalaibledeposit"].setValue("0.00");
   }
 
-  // depositColumnClick($event: any){
-  //   if($event.row.depositRefund == "Deposit"){
-  //     this.MaxIDdepositExist = true;
-  //   }
-  //   this.patientRefundDetails = $event.row;
-  // }
-
   mobilechange()
   {
     if(this.depositForm.value.mobileno.length == 10)
@@ -727,7 +722,7 @@ console.log(this.categoryIcons);
         hwc: {
           notes: this.hwcRemarkdb,
         },
-        ppagerNumber: {
+        pPagerNumber: {
           bplCardNo: this.ewsDetailsdb.bplCardNo,
           BPLAddress: this.ewsDetailsdb.bplCardAddress,
         },
@@ -741,7 +736,11 @@ console.log(this.categoryIcons);
         categoryIcon.tooltip != "INS" &&
         categoryIcon.tooltip != "PSU"
       ) {
+        if(categoryIcon.type == "pPagerNumber"){
+          this.patientService.doAction("ppagerNumber", data[categoryIcon.type]);
+        }else{          
         this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+        }
       }
     }
   }

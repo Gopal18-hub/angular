@@ -1,3 +1,4 @@
+.depositdialogbanner{
 ::ng-deep .textarea-length textarea{
     min-height: 294px !important;
 }
@@ -63,5 +64,13 @@
 ::ng-deep textarea{
 
     min-height: 308px !important;
+}
+}
+.depositdialogbutton{
+    .mat-raised-button{    
+        min-width: auto !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
 }
 }
