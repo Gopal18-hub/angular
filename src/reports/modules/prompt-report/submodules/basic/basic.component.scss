@@ -9,6 +9,35 @@
     text-align: center;
     align-items: center;
     justify-content: center;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  form {
+    > div {
+      line-height: 3rem;
+    }
+    .form-control-element {
+      &:not(.w-full) {
+        ::ng-deep {
+          maxhealth-question {
+            > div {
+              display: flex;
+              align-items: center;
+              mat-label {
+                white-space: nowrap;
+                margin-right: 0.75rem;
+              }
+              mat-form-field {
+                width: 70%;
+                .mat-form-field-wrapper {
+                  padding-bottom: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   .prompt-form-action {
     button {
@@ -16,6 +45,12 @@
       &:last-child {
         margin-right: 0;
       }
+    }
+  }
+  ::ng-deep {
+    mat-radio-group {
+      flex-direction: row;
+      justify-content: space-between;
     }
   }
 }

@@ -19,6 +19,8 @@ import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { LookupService } from "@core/services/lookup.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "find-patient",
@@ -43,7 +45,6 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     1: "/out-patient-billing",
     2: "/out-patient-billing/details",
     3: "/out-patient-billing/deposit",
-    6: "/patient-history",
   };
 
   @ViewChild("table") tableRows: any;
@@ -57,19 +58,16 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
         title: "OP Billing",
         linkid: 1,
         actionType: "custom",
-        routeLink: "/out-patient-billing",
       },
       {
         title: "Bill Details",
         actionType: "custom",
         linkid: 2,
-        routeLink: "/out-patient-billing/details",
       },
       {
         title: "Deposits",
         actionType: "custom",
         linkid: 3,
-        routeLink: "/out-patient-billing/deposit",
       },
       {
         title: "Admission",
@@ -83,7 +81,6 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
         title: "Visit History",
         linkid: 6,
         actionType: "custom",
-        routeLink: "/patient-history",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -169,7 +166,8 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     private datepipe: DatePipe,
     private cookie: CookieService,
     private lookupService: LookupService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    public matDialog: MatDialog
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -225,6 +223,15 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                                 }
                               );
                             }
+                          } else if (res.item["linkid"] == 6) {
+                            this.matDialog.open(VisitHistoryComponent, {
+                              width: "70%",
+                              height: "50%",
+                              data: {
+                                maxid: res.data["maxid"],
+                                docid: "",
+                              },
+                            });
                           } else if (
                             this.quickLinksRoutes[res.item["linkid"]]
                           ) {
@@ -383,6 +390,15 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 );
               }
+            } else if (res.item["linkid"] == 6) {
+              this.matDialog.open(VisitHistoryComponent, {
+                width: "70%",
+                height: "50%",
+                data: {
+                  maxid: res.data["maxid"],
+                  docid: "",
+                },
+              });
             } else if (this.quickLinksRoutes[res.item["linkid"]]) {
               this.router.navigate(
                 [this.quickLinksRoutes[res.item["linkid"]]],
