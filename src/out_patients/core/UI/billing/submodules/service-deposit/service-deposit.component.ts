@@ -28,7 +28,7 @@ export class ServiceDepositComponent implements OnInit {
 
   servicetypeList: ServiceType[] = [];
   deposittypeList: DepositType[] = [];
-  hspLocationid:any =Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
 
   constructor(private formService: QuestionControlService, private cookie: CookieService, 
     private http: HttpService, private depositservice: DepositService ) { }
@@ -66,10 +66,9 @@ export class ServiceDepositComponent implements OnInit {
     });
   }
 
-  //ngon
   ngAfterViewInit(): void{
     this.servicedepositForm.controls["servicetype"].setValue(1781);
-   // this.servicedepositForm.controls["deposithead"].setValue(0);
+    this.servicedepositForm.controls["deposithead"].setValue(0);
   }
   getDepositType() {
     this.http
@@ -81,7 +80,7 @@ export class ServiceDepositComponent implements OnInit {
         this.questions[1].options = this.deposittypeList.map((l) => {
           return { title: l.advanceType, value: l.id };
         });
-        //this.questions[1].options.push({ title: "Select Advance Type", value:0});
+       // this.questions[1].options.push({ title: "Select Advance Type", value:0});
       
       });
   }

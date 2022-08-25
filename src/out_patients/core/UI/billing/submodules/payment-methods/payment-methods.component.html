@@ -1,4 +1,4 @@
-
+<section class="paymentmethod-wrapper"> 
     <div class="width h-full float-left maxhealth-vertical-tab">
         <div class="flex h-1/10">
                 <div class="w-1/4">
@@ -215,8 +215,8 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                </div>
-                    <div class="flex mt-3 align-items-center creditbuttonwidth">
+               
+                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
                         <div class="">
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="Enablecreditfields()">Manual</button>
                         </div>
@@ -227,7 +227,7 @@
                             <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetcreditcard()">Retry</button>
                         </div>
                     </div>
-              
+                </div>
             </mat-tab>
             <mat-tab label="Demand Draft" *ngIf="config.paymentmethod.demand">
                 <div class="ml-10">
@@ -587,7 +587,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3">
+                    <div class="flex mt-3 creditbuttonwidth">
                         <div class="">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Recheck</button>
                         </div>
@@ -753,7 +753,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-2 align-items-center">
+                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
                         <div class="">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Last Txn Status</button>
                         </div>
@@ -766,3 +766,4 @@
           </mat-tab-group>
     </div>
     
+</section>
