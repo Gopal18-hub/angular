@@ -188,22 +188,22 @@ export namespace MaxModules {
           id: -1,
           title: "Configure",
           tenentPath: "/out-patients",
-          defaultPath: "configure",
+          defaultPath: "",
           childrens: [
             {
-              id: -1,
+              id: 223,
               title: "Regenerate RIS Message",
               defaultPath: "/configure/RIS",
               globalSearchKey: "global",
             },
             {
-              id: -1,
+              id: 224,
               title: "Regenerate LIMS Message",
               defaultPath: "/configure/LIMS",
               globalSearchKey: "global",
             },
           ],
-          moreOptions: false,
+          moreOptions: true,
         },
         {
           id: -1,
