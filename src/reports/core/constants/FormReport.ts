@@ -185,7 +185,8 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        DocID: "w-full",
+        datetype: "w-full",
       },
       actionItems: [
         {
