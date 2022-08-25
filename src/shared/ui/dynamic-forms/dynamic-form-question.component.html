@@ -500,7 +500,7 @@
           <mat-autocomplete
             #auto="matAutocomplete"
             [displayWith]="displayFn"
-            (opened)="arrowIcon = 'arrow_drop_up'"
+            (opened)="autocompleteOpened(); arrowIcon = 'arrow_drop_up'"
             (closed)="arrowIcon = 'arrow_drop_down'"
             (optionSelected)="handler($event)"
             panelWidth="auto"
