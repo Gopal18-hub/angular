@@ -13,7 +13,7 @@ import { QuestionControlService } from '@shared/ui/dynamic-forms/service/questio
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MakedepositDialogComponent } from '../../deposit/makedeposit-dialog/makedeposit-dialog.component';
-
+import { billDetailService } from '../billDetails.service';
 @Component({
   selector: 'out-patients-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -21,7 +21,7 @@ import { MakedepositDialogComponent } from '../../deposit/makedeposit-dialog/mak
 })
 export class PaymentDialogComponent implements OnInit {
 
-  refundFormData = {
+  dueFormData = {
     title: "",
     type: "object",
     properties: {         
@@ -35,32 +35,16 @@ export class PaymentDialogComponent implements OnInit {
       }
     },
   };
-  refundform!: FormGroup;
+  dueform!: FormGroup;
   questions: any;
-  onRefundReceiptpage:boolean=true;
-  otpsenttomobile:boolean = false;
-  otpresenttomobile:boolean = false;
-  servicedeposittype:any=[];
-  today: any;
-  patientIdentityInfo:any=[];
-  avalaiblemaount:any=0;
-  PaymentType:number = 1; //default cash
-  PaymentTypedepositamount:number = 0;
-  mobileno:number|undefined;
+
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
-  SendOTP:string="Send OTP";
-  ResendOTP: string="Send OTP to Manager";
-  flagto_set_btnname:number = 0;
-  Refundavalaiblemaount:any = [];
-  totalrefundamount:number = 0;
-  
-  depositcashlimitationdetails: any=[];
-  
+  depositcashlimitationdetails: any;
   private readonly _destroying$ = new Subject<void>();
 
-  @ViewChild(PaymentMethodsComponent) paymentdepositcashMode! : PaymentMethodsComponent;
+  @ViewChild(PaymentMethodsComponent) paymentmethod! : PaymentMethodsComponent;
 
   config = {
     paymentmethod: {
@@ -72,6 +56,14 @@ export class PaymentDialogComponent implements OnInit {
     },
     combopayment: true
   }
+  duelabel: any;
+  billamount: any = 0;
+  prepaidamount: any = 0;
+  depositamount: any = 0;
+  discountamount: any = 0;
+  due: any = 0;
+  totaldue: any = 0;
+  finalamount: number = 0;
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -81,275 +73,55 @@ export class PaymentDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<PaymentDialogComponent>,
     private http: HttpService,
     private datepipe: DatePipe,
+    private billDetailService: billDetailService
   ) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
-      this.refundFormData.properties,
+      this.dueFormData.properties,
       {}
     );
-    this.refundform = formResult.form;
-    this.questions = formResult.questions;
     console.log(this.data);
-    this.today = new Date();
-    this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
-    this.servicedeposittype = {
-      type: "Refund",
-      selectedservicedeposittype : this.data.clickedrowdepositdetails,
-      refundreceiptpage : this.onRefundReceiptpage
+    if(this.data.flag == 'companyDue')
+    {
+      this.duelabel = 'Company Due';
+      this.due = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt;
     }
-    this.avalaiblemaount = this.data.clickedrowdepositdetails.balance;
-    this.Refundavalaiblemaount = {
-      type: "Refund",
-      avalaiblemaount: this.data.clickedrowdepositdetails.balance
+    else if(this.data.flag == 'patientDue')
+    {
+      this.duelabel = 'Patient Due';
+      this.due = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt;
     }
-    this.mobileno = this.data.patientinfo.mobileno;
+    this.dueform = formResult.form;
+    this.questions = formResult.questions;
     this.getdepositcashlimit();
-    console.log('inside refund page');
+    // this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
+    this.billamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount;
+    this.prepaidamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount;
+    this.depositamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount;
+    this.discountamount = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount;
+    this.totaldue = this.due;
   }
   ngAfterViewInit(): void{   
-   
+    console.log(this.paymentmethod.refundform);
+    this.paymentmethod.refundform.controls['cashamount'].valueChanges.subscribe(res => {
+      console.log(res);
+      this.adddueamount(res);
+    })
+    
   }
-  clearsiblingcomponents:boolean = false;
-
+  adddueamount(amount: number)
+  {
+    this.finalamount += amount;
+    console.log(this.finalamount);
+  }
   clear()
   {
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.clearsiblingcomponents = true;
-    this.refundform.reset();
-    this.refundform.controls["mobielno"].setValue(this.data.Mobile);
-  }
-
-  validationexists: boolean = true;
-  saverefunddialog(){
-    
-    const RefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Do you want to make Refund?"
-      },
-    });
-
-    RefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {
-         this.refundformvalidation();
-         this.submitrefundamount();       
-         
-        }
-      });  
+    this.dueform.reset();
   }
   
-
-
-  RefundcashMode:any=[];
-  refundformvalidation(){
-    this.RefundcashMode = this.paymentdepositcashMode.refundform.value;
-      //Refund - payment method
-     if(this.RefundcashMode)
-     {
-      this.validationexists = false;
-      this.PaymentTypedepositamount = 0;
-      if(this.RefundcashMode.cashamount > 0 ){
-        this.PaymentTypedepositamount =  this.RefundcashMode.cashamount;
-       }
-       else if(this.RefundcashMode.chequeamount > 0)
-       {
-          this.PaymentType = 2;
-          this.PaymentTypedepositamount =  this.RefundcashMode.chequeamount;
-          if(this.RefundcashMode.chequeno == "" || this.RefundcashMode.chequebankname == "" || this.RefundcashMode.chequebranchname == ""){
-            this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
-            this.validationexists = true;
-          }
-         
-       }
-      if(this.PaymentTypedepositamount == 0){
-        this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
-        this.validationexists = true;
-      }
-      else if(Number(this.PaymentTypedepositamount) > Number(this.avalaiblemaount)){
-        this.messageDialogService.error("Refund Amount must be less then available amount");
-        this.validationexists = true;
-      }
-      else if((Number(this.PaymentTypedepositamount) > Number(this.depositcashlimitationdetails[0].cashLimit)) && this.PaymentType == 1){
-        this.messageDialogService.error("Refund through Cash Cannot be more then Rs 10000");
-        this.validationexists = true;
-      }
-      if(this.refundform.value.otp == "" && !this.validationexists){ 
-        this.questions[4].elementRef.focus();       
-        this.messageDialogService.error("Enter OTP");
-       
-        this.validationexists = true;
-      }
-    }
-     else{
-      this.validationexists = false;
-     }
-    
-  }
-
-  
-  MoreRefunddialog(){
-    const MoreRefundDepositDialogref = this.matDialog.open(MakedepositDialogComponent,{
-      width: '33vw', height: '40vh', data: {    
-        message: "Refund has been done Successfully Do you want to Make More Refund?",
-      },
-    });
-
-    MoreRefundDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success")  
-         {    
-         this.clear();  
-         let amount = Number(this.avalaiblemaount) - Number(this.totalrefundamount); 
-         this.avalaiblemaount =  amount.toFixed(2);
-         this.SendOTP="Send OTP";
-         this.ResendOTP="Send OTP to Manager";          
-          console.log("More Refund Dialog closed");
-        }else{
-            this.matDialog.closeAll(); 
-             this.dialogRef.close("Success");
-        }
-      }); 
-  }
-
-  submitrefundamount(){   
-    this.totalrefundamount =  Number(this.PaymentTypedepositamount);
-    if(!this.validationexists){
-      this.http
-        .post(ApiConstants.savepatientrefunddetails, this.getPatientRefundSubmitRequestBody())
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData) => {       
-         
-                this.MoreRefunddialog();          
-           
-          },
-          (error) => {
-            console.log(error);
-            this.messageDialogService.error(error.error);
-          }
-        );
-    }
-  }
-
-  patientSaveRefundDetails: savepatientRefunddetailModel | undefined;
-  patientsaveotprefundDetails: sendotpforpatientrefund | undefined;
-  
-  getPatientRefundSubmitRequestBody(): savepatientRefunddetailModel {  
-    return (this.patientSaveRefundDetails = new savepatientRefunddetailModel(
-      this.data.clickedrowdepositdetails.uhid.split(".")[0], 
-      this.refundform.value.payable_name,
-      this.refundform.value.remarks,
-      this.data.clickedrowdepositdetails.receiptno,
-      Number(this.data.clickedrowdepositdetails.uhid.split(".")[1]),
-      this.PaymentTypedepositamount,
-      this.stationId,
-      this.hsplocationId,
-      this.operatorID,    
-      this.PaymentType,    
-      this.RefundcashMode.chequeno,    
-      this.RefundcashMode.banknamecheque,
-      this.RefundcashMode.branchnamecheque,
-      this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",     
-      0,           
-      this.refundform.value.otp
-    ));
-  }
-
-  getPatientrefundotpdetailsRequestBody(): sendotpforpatientrefund{
-    return (this.patientsaveotprefundDetails = new sendotpforpatientrefund(
-    0,
-    this.data.clickedrowdepositdetails.receiptno,
-    this.stationId,
-    this.hsplocationId,
-    this.operatorID, 
-    0,    
-    this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",    
-    this.data.clickedrowdepositdetails.uhid,
-    "OP",
-      0,
-    this.flagto_set_btnname
-    ));
-  }
-
-  sendotpclick(){
-    this.RefundcashMode=[];
-    this.validationexists = false;
-    this.RefundcashMode = this.paymentdepositcashMode.refundform.value;    
-    if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
-    {
-       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
-       this.validationexists = true;
-    }
-    else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
-      this.messageDialogService.error("Refund Amount must be less then available amount");
-      this.validationexists = true;
-    }
-    
-    if(!this.validationexists){
-      this.SendOTP = "Resend OTP";
-      this.otpsenttomobile = true;
-      this.http
-      .post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData) => {
-        if(resultData == 1){
-          this.messageDialogService.success("OTP Sent Successfully");
-          setTimeout(()=>{                           
-            this.otpsenttomobile = false;
-            this.otpresenttomobile = true;
-        }, 60000);
-        }
-       console.log(resultData);
-      },
-      (error) => {
-        console.log(error.error);
-      });
-    }
-  }
-
-  resendotpclick(){
-    this.refundform.controls["otp"].setValue("");
-    this.flagto_set_btnname = 1;
-    this.RefundcashMode=[];
-    this.RefundcashMode = this.paymentdepositcashMode.refundform.value;
-    this.validationexists = false;
-    if(this.RefundcashMode.cashamount <= 0  && this.RefundcashMode.chequeamount <= 0)
-    {
-       this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
-       this.validationexists = true;
-    }
-    else if(Number(this.RefundcashMode.cashamount) > Number(this.avalaiblemaount)){
-      this.messageDialogService.error("Refund Amount must be less then available amount");
-      this.validationexists = true;
-    }
-
-    if(!this.validationexists){
-      this.ResendOTP = "Resend OTP To Manager";
-      this.otpresenttomobile = false;
-      this.otpsenttomobile = true;
-      this.http
-      .post(ApiConstants.sendotpoprefund, this.getPatientrefundotpdetailsRequestBody())
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData) => {
-        if(resultData == 1){
-          this.messageDialogService.success("OTP Sent Successfully");
-          setTimeout(()=>{                           
-            this.otpsenttomobile = false;
-            this.otpresenttomobile = true;
-        }, 60000);
-        }
-       console.log(resultData);
-      },
-      (error) => {
-        console.log(error.error);
-      });
-    }   
-  }
   getdepositcashlimit(){
     this.http
     .get(ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(this.hsplocationId))
