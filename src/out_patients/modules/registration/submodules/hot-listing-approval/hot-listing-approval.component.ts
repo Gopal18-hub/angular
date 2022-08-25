@@ -15,6 +15,8 @@ import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "out-patients-hot-listing-approval",
@@ -61,7 +63,6 @@ export class HotListingApprovalComponent implements OnInit {
     1: "/out-patient-billing",
     2: "/out-patient-billing/details",
     3: "/out-patient-billing/deposit",
-    6: "/patient-history",
   };
 
   hotlistingconfig: any = {
@@ -471,7 +472,8 @@ export class HotListingApprovalComponent implements OnInit {
     private searchService: SearchService,
     private cookie: CookieService,
     public datepipe: DatePipe,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -589,6 +591,15 @@ export class HotListingApprovalComponent implements OnInit {
                             }
                           );
                         }
+                      } else if (res.item["linkid"] == 6) {
+                        this.matDialog.open(VisitHistoryComponent, {
+                          width: "70%",
+                          height: "50%",
+                          data: {
+                            maxid: res.data["maxid"],
+                            docid: "",
+                          },
+                        });
                       } else if (this.quickLinksRoutes[res.item["linkid"]]) {
                         this.router.navigate(
                           [this.quickLinksRoutes[res.item["linkid"]]],
@@ -653,6 +664,15 @@ export class HotListingApprovalComponent implements OnInit {
                           }
                         );
                       }
+                    } else if (res.item["linkid"] == 6) {
+                      this.matDialog.open(VisitHistoryComponent, {
+                        width: "70%",
+                        height: "50%",
+                        data: {
+                          maxid: res.data["maxid"],
+                          docid: "",
+                        },
+                      });
                     } else if (this.quickLinksRoutes[res.item["linkid"]]) {
                       this.router.navigate(
                         [this.quickLinksRoutes[res.item["linkid"]]],
@@ -715,6 +735,15 @@ export class HotListingApprovalComponent implements OnInit {
                           }
                         );
                       }
+                    } else if (res.item["linkid"] == 6) {
+                      this.matDialog.open(VisitHistoryComponent, {
+                        width: "70%",
+                        height: "50%",
+                        data: {
+                          maxid: res.data["maxid"],
+                          docid: "",
+                        },
+                      });
                     } else if (this.quickLinksRoutes[res.item["linkid"]]) {
                       this.router.navigate(
                         [this.quickLinksRoutes[res.item["linkid"]]],

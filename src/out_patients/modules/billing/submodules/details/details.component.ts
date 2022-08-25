@@ -20,12 +20,14 @@ import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 import { PatientService } from "@core/services/patient.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import * as moment from "moment";
 
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.scss"],
 })
+
 export class DetailsComponent implements OnInit {
   private check!: KeyValueDiffer<string, any>;
   constructor(
@@ -33,7 +35,7 @@ export class DetailsComponent implements OnInit {
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService,
+    public cookie: CookieService,
     private datepipe: DatePipe,
     private billdetailservice: billDetailService,
     private differ: KeyValueDiffers,
@@ -43,7 +45,7 @@ export class DetailsComponent implements OnInit {
   ) {
     this.check = this.differ.find(this.billdetailservice.sendforapproval).create();
   }
-
+  moment = moment;
   @ViewChild("selectedServices") selectedServicesTable: any;
   public refundreasonlist: getrefundreason[] = [];
   public patientbilldetaillist!: getPatientPersonalandBillDetails;
@@ -100,13 +102,11 @@ export class DetailsComponent implements OnInit {
         type: "date",
         maximum: new Date(),
         defaultValue: new Date(),
-        disabled: true,
       },
       toDate: { 
         type: "date",
         maximum: new Date(),
         defaultValue: new Date(),
-        disabled: true,
       },
       billAmt: {
         type: "string",
@@ -210,6 +210,8 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.BServiceForm.controls['fromDate'].disable();
+    this.BServiceForm.controls['toDate'].disable();
     this.getrefundreason();
   }
   lastUpdatedBy: string = "";
