@@ -1,4 +1,4 @@
-.refunddialog-banner{
+
 .col-black{
     color: #000;
 }
@@ -80,10 +80,11 @@
 line-height: 1.25 !important;
 }
 }
-
+::ng-deep .mat-dialog-container{
+    overflow:hidden !important;
+    padding: 10px 24px 24px 24px;
+}
     .mat-raised-button.mat-button-base.mat-button-disabled{
         background-color:rgb(200, 200, 200) !important;
         color: rgba(0, 0, 0, 0.26) !important;    
     }
-
-}
