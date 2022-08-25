@@ -2,7 +2,7 @@
   class="flex align-items-center justify-center w-full h-full prompt-form"
   *ngIf="reportConfig"
 >
-  <div class="w-1/2 shadow-1 background-white border-radius-xlg">
+  <div class="w-2/5 shadow-1 background-white border-radius-xlg">
     <mat-toolbar>
       <span>{{ reportConfig.reportName }}</span>
     </mat-toolbar>
@@ -13,12 +13,12 @@
       autocomplete="off"
     >
       <div
-        class="flex justify-between flex-wrap max-health-primary-color"
+        class="flex justify-between flex-wrap max-health-primary-color align-items-center"
         [ngClass]="{ 'form-column': reportConfig.layout == 'single' }"
       >
         <div
           *ngFor="let question of questions; let i = index"
-          class="mb-2 w-1/45 {{
+          class="form-control-element mb-2 w-145 w-1/45 {{
             reportConfig.form?.layout && reportConfig.form?.layout[question.key]
           }}"
           [ngClass]="{
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div
-        class="text-center prompt-form-action mt-4 max-health-primary-color"
+        class="text-center prompt-form-action mt-4 max-health-primary-color mx-8 flex justify-between"
         *ngIf="reportConfig.form?.actionItems"
       >
         <ng-container *ngFor="let button of reportConfig.form?.actionItems">
