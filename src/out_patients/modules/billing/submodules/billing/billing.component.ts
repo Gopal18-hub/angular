@@ -8,7 +8,7 @@ import { DatePipe } from "@angular/common";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AppointmentSearchComponent } from "./prompts/appointment-search/appointment-search.component";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
@@ -45,7 +45,7 @@ export class BillingComponent implements OnInit {
       path: "credit-details",
     },
   ];
-  activeLink = this.links[0];
+  activeLink: any;
 
   formData = {
     title: "",
@@ -117,7 +117,8 @@ export class BillingComponent implements OnInit {
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private billingService: BillingService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -300,6 +301,10 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
     this.questions[2].readonly = true;
+    this.router.navigate([], {
+      queryParams: { maxId: this.formGroup.value.maxid },
+      relativeTo: this.route,
+    });
   }
 
   doCategoryIconAction(icon: any) {}
@@ -400,6 +405,7 @@ export class BillingComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
+    this.router.navigate([], { queryParams: {}, relativeTo: this.route });
   }
 
   getAllCompany() {
