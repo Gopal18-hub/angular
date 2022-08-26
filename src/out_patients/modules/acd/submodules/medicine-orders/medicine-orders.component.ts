@@ -435,7 +435,8 @@ export class MedicineOrdersComponent implements OnInit {
       this.messageDialogService.info("Token already generated");
     }
 
-    this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))
+    //this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))    
+    this.http.get(ApiConstants.GetPrintQueDetail("172.16.80.51"))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.tokenNo = res[0].waitnno;
