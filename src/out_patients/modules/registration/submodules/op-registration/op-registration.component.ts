@@ -2197,23 +2197,41 @@ export class OpRegistrationComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: PatientDetails) => {
-            // this.clear();
-            this.flushAllObjects();
-            this.maxIDChangeCall = true;
-            this.patientDetails = resultData;
-            this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-              this.patientDetails
-            );
-            this.MaxIDExist = true;
-            console.log(this.categoryIcons);
-            this.checkForMaxID();
-            //RESOPONSE DATA BINDING WITH CONTROLS
+            if (!resultData) {
+              // this.messageDialogService.info(error.error);
+              this.router.navigate([], {
+                queryParams: {},
+                relativeTo: this.route,
+              });
+              this.flushAllObjects();
+              // this.setValuesToOPRegForm(this.patientDetails);
+              this.OPRegForm.controls["maxid"].setValue(
+                iacode + "." + regNumber
+              );
+              this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.questions[2].elementRef.focus();
+              //this.clear();
+              this.maxIDChangeCall = false;
+            } else {
+              this.flushAllObjects();
+              this.maxIDChangeCall = true;
+              this.patientDetails = resultData;
+              this.categoryIcons =
+                this.patientService.getCategoryIconsForPatient(
+                  this.patientDetails
+                );
+              this.MaxIDExist = true;
+              console.log(this.categoryIcons);
+              this.checkForMaxID();
+              //RESOPONSE DATA BINDING WITH CONTROLS
 
-            this.setValuesToOPRegForm(this.patientDetails);
+              this.setValuesToOPRegForm(this.patientDetails);
 
-            //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
-            this.registeredPatientDetails(this.patientDetails);
-            this.maxIDChangeCall = false;
+              //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+              this.registeredPatientDetails(this.patientDetails);
+              this.maxIDChangeCall = false;
+            }
           },
           (error) => {
             if (error.error == "Patient Not found") {
@@ -2230,7 +2248,7 @@ export class OpRegistrationComponent implements OnInit {
               this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
               this.questions[0].customErrorMessage = "Invalid Max ID";
             }
-            // this.clear();
+            //this.clear();
 
             this.maxIDChangeCall = false;
           }
@@ -2869,6 +2887,53 @@ export class OpRegistrationComponent implements OnInit {
 
   async validateForm(): Promise<boolean> {
     let validationerror = false;
+    if (!validationerror) {
+      if (this.OPRegForm.value.maxid) {
+        let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
+
+        //HANDLING IF MAX ID IS NOT PRESENT
+        if (regNumber != 0) {
+          let iacode = this.OPRegForm.value.maxid.split(".")[0];
+          const resultData = await this.http
+            .get(ApiConstants.patientDetails(regNumber, iacode))
+            .toPromise();
+          if (!resultData) {
+            validationerror = true;
+            this.flushAllObjects();
+            // this.OPRegForm.controls["maxid"].setValue(
+            //   iacode + "." + regNumber
+            // );
+            this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+            this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.questions[2].elementRef.focus();
+            // this.messageDialogService.error("Invalid MaxId");
+          } else if (resultData.length <= 0) {
+            validationerror = true;
+            this.flushAllObjects();
+            this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+            this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.questions[2].elementRef.focus();
+            //this.messageDialogService.error("Invalid MaxId");
+          } else {
+            validationerror = false;
+          }
+        } else {
+          validationerror = true;
+          this.flushAllObjects();
+          this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+          this.questions[0].customErrorMessage = "Invalid Max ID";
+          this.questions[2].elementRef.focus();
+          // this.messageDialogService.error("Invalid MaxId");
+        }
+      } else {
+        validationerror = true;
+        this.flushAllObjects();
+        this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+        this.questions[0].customErrorMessage = "Invalid Max ID";
+        this.questions[2].elementRef.focus();
+        // this.messageDialogService.error("Invalid MaxId");
+      }
+    }
     if (!validationerror) {
       if (this.OPRegForm.value.mobileNumber) {
         if (!this.MaxIDExist && !this.maxIDChangeCall) {
