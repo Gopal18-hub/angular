@@ -89,3 +89,8 @@
     }
     }
 }
+
+::ng-deep .mat-dialog-container{
+    overflow: hidden !important;
+    padding: 10px 24px 24px 24px;
+}
