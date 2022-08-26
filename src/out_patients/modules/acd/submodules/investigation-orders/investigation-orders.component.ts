@@ -58,6 +58,8 @@ export class InvestigationOrdersComponent implements OnInit {
   scheduleDate: any = "";
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
+  selectedRow: any = [];
+
   investigationFormData = {
     title: "",
     type: "object",
@@ -274,6 +276,7 @@ export class InvestigationOrdersComponent implements OnInit {
   denyBtn() {
     this.isBtnDisable = true;
     this.investigationForm.controls["denyorder"].enable();
+    //this.investigationForm.controls["remarks"].enable();
   }
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -282,6 +285,7 @@ export class InvestigationOrdersComponent implements OnInit {
     );
     this.investigationForm = formResult.form;
     this.questions = formResult.questions;
+
     this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].disable();
     let todaydate = new Date();
@@ -294,6 +298,7 @@ export class InvestigationOrdersComponent implements OnInit {
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].disable();
     //Deny Order List
     this.http.get(ApiConstants.getdenyreasonforacd)
       .pipe(takeUntil(this._destroying$))
@@ -323,6 +328,13 @@ export class InvestigationOrdersComponent implements OnInit {
           // received data from dialog-component
           this.scheduleDate = this.datepipe.transform(res.data, "YYYY-MM-dd")
         })
+      }
+      if (value === 1) {
+        this.investigationForm.controls["remarks"].enable();
+      }
+      else {
+        this.investigationForm.controls["remarks"].disable();
+        this.investigationForm.controls["remarks"].setValue('');
       }
     })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -400,7 +412,10 @@ export class InvestigationOrdersComponent implements OnInit {
     let maxId = event.row.maxid;
     let orderid = event.row.orderId;
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
-
+    this.investigationForm.controls["denyorder"].setValue('');
+    this.investigationForm.controls["remarks"].setValue('');
+    this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].disable();
     this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(this.hsplocationId, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
       //this.http.get(ApiConstants.getediganosticacdoninvestigationgrid(7, orderid, maxId.toString().split(".")[1], maxId.toString().split(".")[0]))
       .pipe(takeUntil(this._destroying$))
@@ -416,16 +431,19 @@ export class InvestigationOrdersComponent implements OnInit {
       this.objPhyOrder, this.objdtdenialorder, 0, 0
     ));
   }
-
+  tablerow(event: any) {
+    console.log(event, "table")
+    this.selectedRow.push(event.row);
+  }
   saveOrUpdate() {
     this.objPhyOrder = [];
     this.objdtdenialorder = "";
     //this.physicianOrderList=[];
-    if (this.invOrderDetailsTable.selection.selected.length === 0) {
+    if (this.selectedRow.length === 0) {
       this.messageDialogService.info("Please select atleast 1 row to proceed.");
     }
     else {
-      this.invOrderDetailsTable.selection.selected.forEach((e: any) => {
+      this.selectedRow.forEach((e: any) => {
         //if (e.testID !== 0)
         this.objPhyOrder.push({
           acDisHideDrug: true,
@@ -434,17 +452,17 @@ export class InvestigationOrdersComponent implements OnInit {
           acdRemarks: e.acdRemarks
         });
       });
-      if (this.investigationForm.value.denyorder && !this.investigationForm.value.remarks) {
-        this.messageDialogService.info("Please enter denial reason remark for order!")
-      }
+      // if (this.investigationForm.value.denyorder && !this.investigationForm.value.remarks) {
+      //   this.messageDialogService.info("Please enter denial reason remark for order!")
+      // }
       if (!this.investigationForm.value.denyorder) {
         this.messageDialogService.info("Please select denial reason for open order before close!")
       }
-      if (this.investigationForm.value.remarks && this.investigationForm.value.denyorder && this.invOrderDetailsTable.selection.selected[0].visitId) {
+      if (this.investigationForm.value.denyorder) {
         this.objdtdenialorder = {
           denialid: this.investigationForm.value.denyorder,
           denialremark: this.investigationForm.value.remarks,
-          visitid: this.invOrderDetailsTable.selection.selected[0].visitId,
+          visitid: this.selectedRow[0].visitId,
           nextScheduleDate: this.scheduleDate,
           nextflag: true
         }
@@ -469,7 +487,7 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         if (res === 1) {
           this.messageDialogService.success("Saved Successfully!");
-          this.invOrderDetails = []
+          //this.invOrderDetails = []
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
@@ -492,7 +510,6 @@ export class InvestigationOrdersComponent implements OnInit {
     else
       this.invOrderDetailsTable.selection.selected.forEach((e: any) => {
         if (e.testID !== 0)
-
           this.physicianOrderList.push({
             acDisHideDrug: e.boolColumn,
             visitid: e.visitId,
@@ -506,8 +523,7 @@ export class InvestigationOrdersComponent implements OnInit {
         if (res.success === true) {
           this.messageDialogService.success(res.message);
           //this.invOrderDetails = [];
-          this.investigationForm.controls["denyorder"].reset();
-          this.investigationForm.controls["remarks"].reset();
+
         }
 
       })
@@ -526,7 +542,10 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].setValue(todaydate);
     this.investigationForm.controls["todate"].disable();
+    this.investigationForm.controls["denyorder"].setValue('Select');
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].setValue('');
+    this.investigationForm.controls["remarks"].disable();
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
