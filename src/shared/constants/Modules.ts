@@ -240,7 +240,7 @@ export namespace MaxModules {
             {
               id: 83,
               title: "Doctor Schedule",
-              defaultPath: "/report/prompt-report/DoctorSheduleReport",
+              defaultPath: "/report/prompt-report/doctorSchedule",
               globalSearchKey: "global",
             },
             {
