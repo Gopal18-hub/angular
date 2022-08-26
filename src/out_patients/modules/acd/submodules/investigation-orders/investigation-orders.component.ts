@@ -69,9 +69,11 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       fromdate: {
         type: "date",
+        readonly: true,
       },
       todate: {
         type: "date",
+        readonly: true,
       },
       maxid: {
         type: "dropdown",
@@ -503,7 +505,9 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.success === true) {
           this.messageDialogService.success(res.message);
-          this.invOrderDetails = [];
+          //this.invOrderDetails = [];
+          this.investigationForm.controls["denyorder"].reset();
+          this.investigationForm.controls["remarks"].reset();
         }
 
       })

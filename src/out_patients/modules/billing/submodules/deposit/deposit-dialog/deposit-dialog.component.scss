@@ -1,4 +1,3 @@
-.depositdialogbanner{
 ::ng-deep .textarea-length textarea{
     min-height: 294px !important;
 }
@@ -44,6 +43,7 @@
 }
 ::ng-deep .mat-dialog-container{
     overflow:hidden !important;
+    padding: 10px 24px 24px 24px;
 }
 
 ::ng-deep .mat-radio-button{
@@ -72,5 +72,4 @@
         height: 1.875rem !important;
         line-height: 1.875rem  !important;
     }
-}
 }
