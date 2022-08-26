@@ -144,6 +144,7 @@ export class PartialCredBillComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   makereceiptbtn: boolean = true;
   printreceiptbtn: boolean = true;
+  flagfordue: any;
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
       this.BDetailFormData.properties,
@@ -181,6 +182,7 @@ export class PartialCredBillComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].disable();
       this.makereceiptbtn = false;
       this.printreceiptbtn = false;
+      this.flagfordue = this.BServiceForm.controls["paymentMode"].value;
     }
     else if(this.BServiceForm.controls["patienDue"].value > 0 && this.BServiceForm.controls["companyDue"].value == 0)
     {
@@ -188,13 +190,15 @@ export class PartialCredBillComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].disable();
       this.makereceiptbtn = false;
       this.printreceiptbtn = false;
+      this.flagfordue = this.BServiceForm.controls["paymentMode"].value;
     }
   }
   makereceipt() {
-    const RefundDialog =   this.matDialog.open(PaymentDialogComponent, {
+    const RefundDialog = this.matDialog.open(PaymentDialogComponent, {
         width: "70vw",
         height: "98vh",
-        data: {       
+        data: {   
+          flag: this.flagfordue,    
           // patientinfo: {
           //   emailId: this.patientpersonaldetails[0]?.pEMail, 
           //   mobileno: this.patientpersonaldetails[0]?.pcellno,

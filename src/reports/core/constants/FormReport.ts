@@ -146,6 +146,7 @@ export namespace FormReport {
       ],
     },
   };
+
   export const DoctorSheduleReport = {
     reportName: "Doctors",
     filterForm: {
@@ -185,7 +186,8 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        DocID: "w-full",
+        datetype: "w-full",
       },
       actionItems: [
         {
@@ -203,7 +205,7 @@ export namespace FormReport {
       ],
     },
 
-    layout: "double",
+    layout: "single",
     resultType: "table",
   };
 
@@ -264,8 +266,17 @@ export namespace FormReport {
       ],
     },
 
-    layout: "double",
+    layout: "single",
     resultType: "table",
+  };
+
+  export const doctorSchedule = {
+    layout: "tabs",
+    reportName: "Doctor Schedule",
+    childrens: [
+      { ...DoctorSheduleReport },
+      { ...DoctorSheduleReportBySpecilialisation },
+    ],
   };
 
   export const GeneralOPDReport = {
