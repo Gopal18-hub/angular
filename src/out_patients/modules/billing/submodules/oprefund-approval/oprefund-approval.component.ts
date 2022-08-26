@@ -263,15 +263,15 @@ export class OprefundApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
-        tootltipColumn: "maxid",
+        tooltipColumn: "maxid",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       ssn: {
         title: "SSN",
         type: "string",
-        tootltipColumn: "ssn",
+        tooltipColumn: "ssn",
         style: {
           width: "7rem",
         },
@@ -279,7 +279,7 @@ export class OprefundApprovalComponent implements OnInit {
       ptnName: {
         title: "Name",
         type: "string",
-        tootltipColumn: "ptnName",
+        tooltipColumn: "ptnName",
         style: {
           width: "7rem",
         },
@@ -287,7 +287,7 @@ export class OprefundApprovalComponent implements OnInit {
       billNo: {
         title: "Bill No",
         type: "string",
-        tootltipColumn: "billNo",
+        tooltipColumn: "billNo",
         style: {
           width: "7rem",
         },
@@ -303,7 +303,7 @@ export class OprefundApprovalComponent implements OnInit {
       serviceName: {
         title: "Service Name",
         type: "string",
-        tootltipColumn: "serviceName",
+        tooltipColumn: "serviceName",
         style: {
           width: "7rem",
         },
@@ -319,7 +319,7 @@ export class OprefundApprovalComponent implements OnInit {
       refundAmt: {
         title: "Refund Amount",
         type: "string",
-        tootltipColumn: "refundAmt",
+        tooltipColumn: "refundAmt",
         style: {
           width: "8rem",
         },
@@ -327,7 +327,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalRequestBy: {
         title: "Requested By",
         type: "string",
-        tootltipColumn: "approvalRequestBy",
+        tooltipColumn: "approvalRequestBy",
         style: {
           width: "7rem",
         },
@@ -335,7 +335,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalRequestDateTime: {
         title: "Requested Date",
         type: "datetime",
-        tootltipColumn: "approvalRequestDateTime",
+        tooltipColumn: "approvalRequestDateTime",
         style: {
           width: "8rem",
         },
@@ -367,7 +367,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalDoneBy: {
         title: "Approved By",
         type: "string",
-        tootltipColumn: "approvalDoneBy",
+        tooltipColumn: "approvalDoneBy",
         style: {
           width: "7rem",
         },
@@ -375,7 +375,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalDoneDateTime: {
         title: "Approved Date",
         type: "datetime",
-        tootltipColumn: "approvalDoneDateTime",
+        tooltipColumn: "approvalDoneDateTime",
         style: {
           width: "9rem",
         },
@@ -427,15 +427,15 @@ export class OprefundApprovalComponent implements OnInit {
       maxid: {
         title: "Max ID",
         type: "string",
-        tootltipColumn: "maxid",
+        tooltipColumn: "maxid",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       ssn: {
         title: "SSN",
         type: "string",
-        tootltipColumn: "ssn",
+        tooltipColumn: "ssn",
         style: {
           width: "7rem",
         },
@@ -443,7 +443,7 @@ export class OprefundApprovalComponent implements OnInit {
       ptnName: {
         title: "Name",
         type: "string",
-        tootltipColumn: "ptnName",
+        tooltipColumn: "ptnName",
         style: {
           width: "7rem",
         },
@@ -451,7 +451,7 @@ export class OprefundApprovalComponent implements OnInit {
       billNo: {
         title: "Bill No",
         type: "string",
-        tootltipColumn: "billNo",
+        tooltipColumn: "billNo",
         style: {
           width: "7rem",
         },
@@ -459,7 +459,7 @@ export class OprefundApprovalComponent implements OnInit {
       billDatetime: {
         title: "Bill Date/Time",
         type: "datetime",
-        tootltipColumn: "billDatetime",
+        tooltipColumn: "billDatetime",
         style: {
           width: "8rem",
         },
@@ -467,7 +467,7 @@ export class OprefundApprovalComponent implements OnInit {
       serviceName: {
         title: "Service Name",
         type: "string",
-        tootltipColumn: "serviceName",
+        tooltipColumn: "serviceName",
         style: {
           width: "8rem",
         },
@@ -475,7 +475,7 @@ export class OprefundApprovalComponent implements OnInit {
       itemName: {
         title: "Item Name",
         type: "string",
-        tootltipColumn: "itemName",
+        tooltipColumn: "itemName",
         style: {
           width: "8rem",
         },
@@ -483,7 +483,7 @@ export class OprefundApprovalComponent implements OnInit {
       refundAmt: {
         title: "Refund Amount",
         type: "string",
-        tootltipColumn: "refundAmt",
+        tooltipColumn: "refundAmt",
         style: {
           width: "8rem",
         },
@@ -491,7 +491,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalRequestBy: {
         title: "Requested By",
         type: "string",
-        tootltipColumn: "approvalRequestBy",
+        tooltipColumn: "approvalRequestBy",
         style: {
           width: "8rem",
         },
@@ -499,7 +499,7 @@ export class OprefundApprovalComponent implements OnInit {
       approvalRequestDateTime: {
         title: "Requested Date",
         type: "datetime",
-        tootltipColumn: "approvalRequestDateTime",
+        tooltipColumn: "approvalRequestDateTime",
         style: {
           width: "8rem",
         },
@@ -515,7 +515,7 @@ export class OprefundApprovalComponent implements OnInit {
       rejectedDateTime: {
         title: "Rejected Date",
         type: "datetime",
-        tootltipColumn: "rejectedDateTime",
+        tooltipColumn: "rejectedDateTime",
         style: {
           width: "10rem",
         },
@@ -849,7 +849,7 @@ export class OprefundApprovalComponent implements OnInit {
           itemName: a.itemName,
         });
         this.useridList.push({
-          id: this.OprefundPending.selection.selected.requestRaisedById,
+          id: a.requestRaisedById,
         });
         console.log(this.pendingList);
       });
@@ -867,11 +867,15 @@ export class OprefundApprovalComponent implements OnInit {
         });
       } else {
         if (this.requesteduser) {
+          console.log(this.useridList);
           this.dialogservice.error(
             "You are not allowed to approve/reject request generated by yourself." +
               "Max ID: " +
               this.maxid
           );
+          this.requesteduser = false;
+          this.useridList = [];
+          this.pendingList = [];
         } else {
           this.http
             .post(
@@ -886,6 +890,13 @@ export class OprefundApprovalComponent implements OnInit {
                   this.getoprefundPending();
                   this.useridList = [];
                   this.requesteduser = false;
+                  this.pendingList = [];
+                  this.defaultUI = false;
+                  if (value == 0) {
+                    this.dialogservice.success("Update Request Approved");
+                  } else if (value == 1) {
+                    this.dialogservice.success("Update Rejected");
+                  }
                 }
               },
               (httperrorResponse) => {
@@ -897,7 +908,11 @@ export class OprefundApprovalComponent implements OnInit {
                   this.useridList = [];
                   this.requesteduser = false;
                   this.getoprefundPending();
-                  this.dialogservice.success("Update Request Approved");
+                  if (value == 0) {
+                    this.dialogservice.success("Update Request Approved");
+                  } else if (value == 1) {
+                    this.dialogservice.success("Update Rejected");
+                  }
                 }
               }
             );

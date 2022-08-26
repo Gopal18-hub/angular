@@ -3,11 +3,20 @@
     .mat-form-field-wrapper {
       margin: 0;
       padding: 0;
+      
     }
   }
 
   .h-dropdown{
-    height:25px;
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+        height: 0.7rem;
+    line-height: 0.7rem;
+      }
+    }
+    
   }
     ::ng-deep .max-table-wrapper {
       table {
@@ -16,6 +25,9 @@
     }
     .w-12 {
       width: 12%;
+    }
+    .w-13 {
+      width: 13%;
     }
     .w-86 {
       width: 87.25%;
@@ -102,6 +114,14 @@ width:7%;
           display: none;
         }
       }
+    }
+    .addbtn
+    {
+      width : 8% !important
+    }
+    .w-Reff
+    {
+      width: 93%
     }
   }
   

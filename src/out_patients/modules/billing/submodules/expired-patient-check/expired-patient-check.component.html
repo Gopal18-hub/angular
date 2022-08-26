@@ -120,7 +120,7 @@
                         <mat-label class="max-health-primary-color font-semi-bold">Date of Expiry Intimation</mat-label>
                     </div>
                     <div class=" w-3/10">
-                        <div class="w-3/5">
+                        <div class="w-2/3">
                             <maxhealth-question
                             [question]="questions[3]"
                             [form]="expiredpatientForm"
@@ -158,13 +158,13 @@
         <div class="float-right flex mt-6p h-1/10 button-height">
             <div>
                  <button mat-raised-button color="primary" (click)="saveExpiredpatient()"
-                 [disabled]="disableButton" class=" button-height"><span class="text-position">Save</span></button>
+                 [disabled]="disableButton" class=" button-height"><span class="text-position2">Save</span></button>
             </div>
             <div>
-                <button mat-raised-button color="primary" class="ml-6 button-height" [disabled]="disableButton" (click)="deleteExpiredpatient()" ><span class="text-position">Delete</span></button>
+                <button mat-raised-button color="primary" class="ml-6 button-height" [disabled]="disableButton" (click)="deleteExpiredpatient()" ><span class="text-position2">Delete</span></button>
            </div>
            <div>
-            <button mat-raised-button color="primary"class="ml-6 button-height" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position">Clear</span></button>
+            <button mat-raised-button color="primary"class="ml-6 button-height" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position2">Clear</span></button>
             </div>
         </div>
         </div> 

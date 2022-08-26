@@ -1,0 +1,53 @@
+.bg-lightgray{
+    background :#F6F6F6; 
+     
+}
+.input-padding{
+    padding-bottom:0px !important;
+}
+.text-position{
+    position:relative;
+    bottom:5px;
+    left:10px;
+  
+}
+.text-position2{
+    position:relative;
+    bottom:5px;
+  
+}
+.button-height{
+ //   ::ng-deep button{
+        height:1.875rem;
+       // min-width: initial !important;
+       min-width:92px !important;
+  //  }
+}
+.button-height2{
+    height:1.875rem;
+    min-width: initial !important;
+
+}
+.lens-icon{
+
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    height: 98%;
+    width: 30%;
+
+}
+.h-80{
+    height:80%;
+}
+.w-60{
+    width: 60%;
+
+}
+.w-40{
+    width: 40%;
+
+}
+.ml-34{
+    margin-left:34%
+}

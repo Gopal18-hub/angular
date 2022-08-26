@@ -163,6 +163,7 @@ export class OnlineOpBillsComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultData: any) => {    
       this.onlineopbillList = resultData;
+      console.log(resultData);
       if(resultData.length > 0 ){
         this.MaxIDExist = true;
       }
@@ -179,10 +180,10 @@ export class OnlineOpBillsComponent implements OnInit {
     this.onlineopbillsForm.controls["todate"].setValue(todaydate);
   
   }
-  printonlineopbillreceipt(){
-    this.onlineopbillstable.selection.selected.map((s: any) => {
+  printonlineopbillreceipt(){ 
+    this.onlineopbillstable.selection.selected.map((s: any) => { 
       this.reportService.openWindow("billingreport", "billingreport", {
-        opbillid: s.billNo,
+        opbillid: s.billid,
         locationID: this.hspLocationid
       });
     });

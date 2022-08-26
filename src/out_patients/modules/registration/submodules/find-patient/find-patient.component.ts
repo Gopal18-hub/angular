@@ -19,7 +19,7 @@ import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { LookupService } from "@core/services/lookup.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { MatDialog } from "@angular/material/dialog";
 
 @Component({

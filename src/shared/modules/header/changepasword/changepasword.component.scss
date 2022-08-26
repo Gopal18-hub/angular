@@ -1,0 +1,11 @@
+.change-password-wrapper{  
+    form {
+        ::ng-deep mat-label {
+          color: var(--primary-color);
+          font-weight: 600;
+        }  
+        .margin-p{
+           margin:0;
+        }
+    }
+}
