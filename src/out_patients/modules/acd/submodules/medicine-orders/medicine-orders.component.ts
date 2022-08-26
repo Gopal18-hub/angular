@@ -70,9 +70,11 @@ export class MedicineOrdersComponent implements OnInit {
       },
       fromdate: {
         type: "date",
+        readonly: true,
       },
       todate: {
         type: "date",
+        readonly: true,
       },
       maxid: {
         type: "dropdown",
