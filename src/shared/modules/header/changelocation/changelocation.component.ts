@@ -45,7 +45,6 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
     );
     this.form = formResult.form;
     this.questions = formResult.questions;
-    //  this.form.controls["station"].disable();
   }
 
   ngAfterViewInit(): void {

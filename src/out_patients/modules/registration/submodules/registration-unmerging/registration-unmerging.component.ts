@@ -21,7 +21,7 @@ import { MessageDialogService } from "../../../../../shared/ui/message-dialog/me
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { MatDialog } from "@angular/material/dialog";
 
 @Component({

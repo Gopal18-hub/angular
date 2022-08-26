@@ -31,6 +31,7 @@
     "dexie": "^3.2.2",
     "moment": "^2.29.4",
     "oidc-client": "^1.11.5",
+    "rtf.js": "^3.0.9",
     "rxjs": "~7.5.0",
     "text-mask-core": "^5.1.2",
     "tslib": "^2.3.0",
