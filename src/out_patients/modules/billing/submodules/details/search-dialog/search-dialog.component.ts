@@ -8,6 +8,7 @@ import { HttpService } from '@shared/services/http.service';
 import { DatePipe } from '@angular/common';
 import { getsearchopbills } from "../../../../../core/types/billdetails/getsearchopbill.Interface";
 import { Subject, takeUntil } from 'rxjs';
+import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
 @Component({
   selector: 'out-patients-search-dialog',
   templateUrl: './search-dialog.component.html',
@@ -173,7 +174,8 @@ export class SearchDialogComponent implements OnInit {
       fromdate: any,
       todate: any,
     },
-    private dialogRef: MatDialogRef<SearchDialogComponent>
+    private dialogRef: MatDialogRef<SearchDialogComponent>,
+    private snackbar: MaxHealthSnackBarService
   ) { }
 
   ngOnInit(): void {
@@ -216,9 +218,15 @@ export class SearchDialogComponent implements OnInit {
       }
     })
     this.table.selection.changed.subscribe((res:any)=>{
-      console.log(res.added)
-      console.log(res.added[0].billno);
       this.dialogRef.close(res.added[0].billno)
+    })
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        if(this.searchform.value.billno == '')
+        {
+          this.snackbar.open('Invalid Bill No');
+        }
+      }
     })
   }
   search()

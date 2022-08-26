@@ -8,7 +8,7 @@ import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model"
 import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { PatientDetail } from "@core/types/patientDetailModel.Interface";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { SimilarPatientDialog } from "@modules/registration/submodules/op-registration/op-registration.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { DbService } from "@shared/services/db.service";
@@ -21,9 +21,9 @@ import { miscPatientDetail } from "../../../../core/models/miscPatientDetail.Mod
 import { Registrationdetails } from "../../../../core/types/registeredPatientDetial.Interface";
 import { MiscService } from "../miscellaneous-billing/MiscService.service";
 @Component({
-  selector: 'out-patients-miscellaneous-billings',
-  templateUrl: './miscellaneous-billings.component.html',
-  styleUrls: ['./miscellaneous-billings.component.scss']
+  selector: "out-patients-miscellaneous-billings",
+  templateUrl: "./miscellaneous-billings.component.html",
+  styleUrls: ["./miscellaneous-billings.component.scss"],
 })
 export class MiscellaneousBillingsComponent implements OnInit {
   constructor(
@@ -36,9 +36,9 @@ export class MiscellaneousBillingsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private db: DbService,
     private Misc: MiscService
-  ) { }
+  ) {}
   categoryIcons: any;
-  doCategoryIconAction(icon: any) { }
+  doCategoryIconAction(icon: any) {}
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
   addItem(newItem: any) {
@@ -75,13 +75,13 @@ export class MiscellaneousBillingsComponent implements OnInit {
       //
 
       company: {
-        type: "autocomplete",
+        type: "dropdown",
         options: this.complanyList,
         placeholder: "Select",
         // title: "SSN",
       },
       corporate: {
-        type: "autocomplete",
+        type: "dropdown",
         options: this.coorporateList,
         placeholder: "Select",
         // title: "SSN",
@@ -95,7 +95,7 @@ export class MiscellaneousBillingsComponent implements OnInit {
         type: "checkbox",
         options: [
           {
-            title: "B2B Invoice Type",
+            title: "B2B Invoice",
           },
         ],
       },
@@ -119,27 +119,32 @@ export class MiscellaneousBillingsComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
-    this.http.get(ApiConstants.getcorporatemaster(1))
+    this.http
+      .get(ApiConstants.getcorporatemaster(1))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "CorporateMaster")
+        console.log(res, "CorporateMaster");
       });
-    this.http.get(ApiConstants.getinteractionmaster)
+    this.http
+      .get(ApiConstants.getinteractionmaster)
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "getinteractionmaster")
+        console.log(res, "getinteractionmaster");
       });
-    this.http.get(ApiConstants.getmasterdataformiscellaneous)
+    this.http
+      .get(ApiConstants.getmasterdataformiscellaneous)
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "getmasterdataformiscellaneous")
+        console.log(res, "getmasterdataformiscellaneous");
       });
-    this.http.get(ApiConstants.getdataforbillreport(10, 7, 1))
+    this.http
+      .get(ApiConstants.getdataforbillreport(10, 7, 1))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res, "getdataforbillreport")
+        console.log(res, "getdataforbillreport");
       });
-
+    this.getAllCompany();
+    this.getAllCorporate();
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -172,8 +177,7 @@ export class MiscellaneousBillingsComponent implements OnInit {
         this.onPhoneModify();
       }
     });
-    this.getAllCompany();
-    this.getAllCorporate();
+
     this.miscForm.controls["company"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {

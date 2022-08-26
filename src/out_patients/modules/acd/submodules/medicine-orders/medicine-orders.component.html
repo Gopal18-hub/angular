@@ -93,7 +93,7 @@
             <mat-label class="max-health-primary-color patientInfo ml-4">{{patientInfo}}</mat-label>
         </div>
         <div class="tableh">
-            <maxhealth-table [config]="medDetailsConfig" [data]="medOrderDetails" #medOrderDetailsTable></maxhealth-table>
+            <maxhealth-table [config]="medDetailsConfig" [data]="medOrderDetails" #medOrderDetailsTable (columnClick)="tablerow($event)"></maxhealth-table>
         </div>
 
     </div>
@@ -102,7 +102,7 @@
             
             <div class="flex  bg-lightgray p-1 border-radius-md">
                 <div class="denyBtn" (click)="denyBtn()">
-                    <button mat-raised-button color="primary" class="deny"[disabled]="!isBtnDisable">Deny Order</button>
+                    <button mat-raised-button color="primary" class="deny">Deny Order</button>
                 </div>
                 <div  class="w-1/4 ml-2 h-full bg-white">
                     <maxhealth-question [question]="questions[6]"
@@ -124,14 +124,14 @@
                 </div>
             </div>
             <div class="flex medicinew">
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" [disabled]="isBtnDisableClear">Create Bill</button>
+                <div class="mr-2">
+                    <button mat-raised-button color="primary" >Create Bill</button>
                 </div>
-                <div class="mr-4">
-                    <button mat-raised-button color="primary" [disabled]="isBtnDenialDisable"(click)="cancelDenial()">Cancel Denial</button>
+                <div class="mr-2">
+                    <button mat-raised-button color="primary" (click)="cancelDenial()">Cancel Denial</button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" [disabled]="!isBtnDisable"(click)="saveOrUpdate()">Save</button>
+                    <button mat-raised-button color="primary" (click)="saveOrUpdate()">Save</button>
                 </div>
                
             </div>
