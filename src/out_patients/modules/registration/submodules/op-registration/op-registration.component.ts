@@ -2293,6 +2293,8 @@ export class OpRegistrationComponent implements OnInit {
               resultData["message"] ==
               "Your request has been processed successfully"
             ) {
+              this.OPRegForm.markAllAsTouched();
+              this.OPRegForm.markAsPristine();
               this.showRegisteredId("Modified request went for approval");
             }
           } else {
@@ -2335,6 +2337,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           this.patientDetails = resultData;
+          this.OPRegForm.markAllAsTouched();
+          this.OPRegForm.markAsPristine();
           this.showRegisteredId("Patient Registered Successfully");
           this.flushAllObjects();
           this.maxIDChangeCall = true;

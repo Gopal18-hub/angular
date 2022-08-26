@@ -174,13 +174,13 @@
 
 ::ng-deep .second-row-depositbutton{
     .mat-raised-button{
-    
+        min-width: initial !important;
         height: 1.875rem !important;
         line-height: 1.875rem  !important;
     }
   }
   ::ng-deep .clearwidth{
-    min-width: initial !important;
+    width: 12% !important;
   }
 }
 

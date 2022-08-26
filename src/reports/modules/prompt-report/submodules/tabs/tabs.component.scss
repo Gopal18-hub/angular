@@ -1,0 +1,11 @@
+::ng-deep .prompt-report-tab-layout {
+  .mat-tab-header {
+    background-color: #dae9f8;
+    color: #004084;
+    .mat-tab-labels {
+      .mat-tab-label {
+        width: 100%;
+      }
+    }
+  }
+}
