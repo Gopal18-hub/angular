@@ -9,6 +9,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { EmptyPlaceholderModule } from "../../../shared/ui/empty-placeholder";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { FormDialogueModule } from "@shared/ui/form-dialogue";
+import { VisitHistoryModule } from "@shared/modules/visit-history";
 @NgModule({
   declarations: [DashboardComponent],
   imports: [
@@ -21,6 +22,7 @@ import { FormDialogueModule } from "@shared/ui/form-dialogue";
     EmptyPlaceholderModule,
     MatProgressSpinnerModule,
     FormDialogueModule,
+    VisitHistoryModule,
   ],
   exports: [],
   providers: [DatePipe],

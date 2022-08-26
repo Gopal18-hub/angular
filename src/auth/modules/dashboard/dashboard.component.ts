@@ -11,6 +11,8 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { LookupService } from "../../../out_patients/core/services/lookup.service";
 import { CookieService } from "@shared/services/cookie.service";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "auth-dashboard",
@@ -36,7 +38,6 @@ export class DashboardComponent implements OnInit {
     1: "/out-patients/out-patient-billing",
     2: "/out-patients/out-patient-billing/details",
     3: "/out-patients/out-patient-billing/deposit",
-    6: "/out-patients/patient-history",
   };
 
   config: any = {
@@ -156,7 +157,8 @@ export class DashboardComponent implements OnInit {
     private datepipe: DatePipe,
     private router: Router,
     private lookupService: LookupService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    public matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -198,6 +200,15 @@ export class DashboardComponent implements OnInit {
                       }
                     );
                   }
+                } else if (res.item["linkid"] == 6) {
+                  this.matDialog.open(VisitHistoryComponent, {
+                    width: "70%",
+                    height: "50%",
+                    data: {
+                      maxid: res.data["maxid"],
+                      docid: "",
+                    },
+                  });
                 } else if (this.quickLinksRoutes[res.item["linkid"]]) {
                   this.router.navigate(
                     [this.quickLinksRoutes[res.item["linkid"]]],
@@ -286,6 +297,15 @@ export class DashboardComponent implements OnInit {
                       }
                     );
                   }
+                } else if (res.item["linkid"] == 6) {
+                  this.matDialog.open(VisitHistoryComponent, {
+                    width: "70%",
+                    height: "50%",
+                    data: {
+                      maxid: res.data["maxid"],
+                      docid: "",
+                    },
+                  });
                 } else if (this.quickLinksRoutes[res.item["linkid"]]) {
                   this.router.navigate(
                     [this.quickLinksRoutes[res.item["linkid"]]],
