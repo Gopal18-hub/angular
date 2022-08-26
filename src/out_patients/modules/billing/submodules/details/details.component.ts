@@ -141,7 +141,6 @@ export class DetailsComponent implements OnInit {
       authBy: {
         type: "string",
         required: false,
-        readonly: true,
       },
       reason: {
         type: "dropdown",
@@ -197,6 +196,8 @@ export class DetailsComponent implements OnInit {
   dmsbtn: boolean = true;
   visithistorybtn: boolean = true;
   doxperurl: any;
+
+  billexist: boolean = true;
   ngOnInit(): void {
     this.router.navigate(['out-patient-billing/details'])
     .then(()=>{
@@ -340,6 +341,7 @@ export class DetailsComponent implements OnInit {
   }
   billFormfill()
   {
+    this.billexist = false;
     console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
     this.BServiceForm.controls["maxid"].setValue(this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
     this.dmsbtn = false;
@@ -350,8 +352,8 @@ export class DetailsComponent implements OnInit {
     this.patientName = this.patientbilldetaillist.billDetialsForRefund_Table0[0].name;
     this.age = this.patientbilldetaillist.billDetialsForRefund_Table0[0].age;
     this.gender = this.patientbilldetaillist.billDetialsForRefund_Table0[0].sex;
-    this.dob = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
-    this.country = 'India';
+    this.dob = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].dateOfBirth, "dd/MM/YYYY");
+    this.country = this.patientbilldetaillist.billDetialsForRefund_Table0[0].nationalityName;
     this.ssn = this.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn;
     this.operator = this.patientbilldetaillist.billDetialsForRefund_Table0[0].operator;
     this.billdate = this.datepipe.transform(this.patientbilldetaillist.billDetialsForRefund_Table0[0].datetime, "dd/MM/YYYY");
@@ -483,6 +485,7 @@ export class DetailsComponent implements OnInit {
     this.clearbtn = true;
     this.dmsbtn = true;
     this.visithistorybtn = true;
+    this.billexist = true;
     this.billdetailservice.clear();
     this.ngOnInit();
   }
