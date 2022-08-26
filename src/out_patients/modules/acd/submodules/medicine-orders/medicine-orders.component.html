@@ -93,7 +93,7 @@
             <mat-label class="max-health-primary-color patientInfo ml-4">{{patientInfo}}</mat-label>
         </div>
         <div class="tableh">
-            <maxhealth-table [config]="medDetailsConfig" [data]="medOrderDetails" #medOrderDetailsTable></maxhealth-table>
+            <maxhealth-table [config]="medDetailsConfig" [data]="medOrderDetails" #medOrderDetailsTable (columnClick)="tablerow($event)"></maxhealth-table>
         </div>
 
     </div>
