@@ -310,6 +310,7 @@ export class MedicineOrdersComponent implements OnInit {
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].disable();
     //Deny Order List
     this.http.get(ApiConstants.getdenyreasonforacd)
       .pipe(takeUntil(this._destroying$))
@@ -346,6 +347,13 @@ export class MedicineOrdersComponent implements OnInit {
           // received data from dialog-component
           this.scheduleDate = this.datepipe.transform(res.data, "yyyy-MM-dd")
         })
+      }
+      if (value === 1) {
+        this.investigationForm.controls["remarks"].enable();
+      }
+      else {
+        this.investigationForm.controls["remarks"].disable();
+        this.investigationForm.controls["remarks"].setValue('');
       }
     })
     //Filter
@@ -556,6 +564,8 @@ export class MedicineOrdersComponent implements OnInit {
     this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].disable();
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].setValue("");
+    this.investigationForm.controls["remarks"].disable();
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
