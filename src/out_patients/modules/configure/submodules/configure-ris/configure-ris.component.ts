@@ -30,7 +30,7 @@ export class ConfigureRisComponent implements OnInit {
         title: "Test Name",
         type: "string",
         style: {
-          width: "7rem",
+          width: "5rem",
         },
         tooltipColumn: "testname",
       },
@@ -38,7 +38,7 @@ export class ConfigureRisComponent implements OnInit {
         title: "SSN",
         type: "string",
         style: {
-          width: "6rem",
+          width: "5rem",
         },
         tooltipColumn: "ssn",
       },
