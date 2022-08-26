@@ -95,7 +95,7 @@ export class MiscellaneousBillingsComponent implements OnInit {
         type: "checkbox",
         options: [
           {
-            title: "B2B Invoice Type",
+            title: "B2B Invoice",
           },
         ],
       },
