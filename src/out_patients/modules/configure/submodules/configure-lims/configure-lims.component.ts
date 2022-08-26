@@ -29,7 +29,7 @@ export class ConfigureLimsComponent implements OnInit {
         title: "Test Name",
         type: "string",
         style: {
-          width: "10rem",
+          width: "5rem",
         },
         tooltipColumn: "testname",
       },

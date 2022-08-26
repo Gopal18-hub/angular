@@ -69,9 +69,11 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       fromdate: {
         type: "date",
+        readonly: true,
       },
       todate: {
         type: "date",
+        readonly: true,
       },
       maxid: {
         type: "dropdown",
@@ -272,6 +274,7 @@ export class InvestigationOrdersComponent implements OnInit {
   denyBtn() {
     this.isBtnDisable = true;
     this.investigationForm.controls["denyorder"].enable();
+    this.investigationForm.controls["remarks"].enable();
   }
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -280,6 +283,7 @@ export class InvestigationOrdersComponent implements OnInit {
     );
     this.investigationForm = formResult.form;
     this.questions = formResult.questions;
+
     this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].disable();
     let todaydate = new Date();
@@ -292,6 +296,7 @@ export class InvestigationOrdersComponent implements OnInit {
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].disable();
     //Deny Order List
     this.http.get(ApiConstants.getdenyreasonforacd)
       .pipe(takeUntil(this._destroying$))
@@ -321,6 +326,13 @@ export class InvestigationOrdersComponent implements OnInit {
           // received data from dialog-component
           this.scheduleDate = this.datepipe.transform(res.data, "YYYY-MM-dd")
         })
+      }
+      if (value === 1) {
+        this.investigationForm.controls["remarks"].enable();
+      }
+      else {
+        this.investigationForm.controls["remarks"].disable();
+        this.investigationForm.controls["remarks"].setValue('');
       }
     })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -503,7 +515,9 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.success === true) {
           this.messageDialogService.success(res.message);
-          this.invOrderDetails = [];
+          //this.invOrderDetails = [];
+          this.investigationForm.controls["denyorder"].reset();
+          this.investigationForm.controls["remarks"].reset();
         }
 
       })
@@ -522,7 +536,10 @@ export class InvestigationOrdersComponent implements OnInit {
     this.investigationForm.controls["fromdate"].disable();
     this.investigationForm.controls["todate"].setValue(todaydate);
     this.investigationForm.controls["todate"].disable();
+    this.investigationForm.controls["denyorder"].setValue('Select');
     this.investigationForm.controls["denyorder"].disable();
+    this.investigationForm.controls["remarks"].setValue('');
+    this.investigationForm.controls["remarks"].disable();
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");

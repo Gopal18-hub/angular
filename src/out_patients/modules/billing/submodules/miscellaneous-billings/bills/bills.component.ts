@@ -20,13 +20,13 @@ export class BillsComponent implements OnInit {
       // },
       referralDoctor: {
         type: "dropdown",
-        //required: true,
+        required: true,
         title: "Referral Doctor",
         placeholder: "--Select--",
       },
       interactionDetails: {
         type: "dropdown",
-        //required: true,
+        required: true,
         title: "Interaction Details",
         placeholder: "--Select--",
       },
@@ -140,14 +140,14 @@ export class BillsComponent implements OnInit {
         type: "autocomplete",
         title: "Service Type",
         //options: this.serviceList,
-        //required: true,
+        required: true,
         placeholder: "Select",
 
       },
       item: {
         type: "autocomplete",
         title: "Item",
-        //required: true,
+        required: true,
         //options: this.serviceItemsList,
         placeholder: "Select",
       },
@@ -162,13 +162,13 @@ export class BillsComponent implements OnInit {
         title: "Qty",
         maximum: 9,
         minimum: 1,
-        //required: true,
+        required: true,
       },
       reqAmt: {
         type: "number",
         title: "Req. Amt.",
         minimum: 1,
-        //required: true,
+        required: true,
       },
       pDoc: {
         type: "autocomplete",
@@ -179,9 +179,14 @@ export class BillsComponent implements OnInit {
       remark: {
         type: "autocomplete",
         title: "Remarks",
-        //required: true,
+        required: true,
         //options: this.remarkList,
         placeholder: "Select",
+      },
+      self: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Self" }],
       },
     },
   };
@@ -237,7 +242,7 @@ export class BillsComponent implements OnInit {
         },
       },
       procedure: {
-        title: "Tarrif Doc",
+        title: "Tarrif Price",
         type: "string",
         style: {
           width: "7%",
