@@ -114,6 +114,7 @@ export class OpRegistrationComponent implements OnInit {
     FDPGroup: "",
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
+  maxIDSearch: boolean = false;
 
   passportDetails: {
     passportNo: string;
@@ -692,10 +693,10 @@ export class OpRegistrationComponent implements OnInit {
     );
 
     //ON MAXID CHANGE
-    // this.questions[0].elementRef.addEventListener(
-    //   "blur",
-    //   this.getPatientDetailsByMaxId.bind(this)
-    // );
+    this.questions[0].elementRef.addEventListener(
+      "change",
+      this.MarkasMaxIDChange.bind(this)
+    );
 
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -705,7 +706,7 @@ export class OpRegistrationComponent implements OnInit {
         // Cancel the default action, if needed
 
         event.preventDefault();
-
+        this.maxIDSearch = true;
         this.getPatientDetailsByMaxId();
       }
     });
@@ -1111,6 +1112,9 @@ export class OpRegistrationComponent implements OnInit {
       });
   }
 
+  MarkasMaxIDChange() {
+    this.maxIDSearch = true;
+  }
   ngAfterViewInit(): void {
     this.questions[2].elementRef.focus();
     this.formProcessing();
@@ -1145,6 +1149,7 @@ export class OpRegistrationComponent implements OnInit {
     this.flushAllObjects();
     this.formInit();
     this.formProcessingFlag = false;
+    this.maxIDSearch = false;
     setTimeout(() => {
       this.formProcessing();
     }, 10);
@@ -2231,6 +2236,7 @@ export class OpRegistrationComponent implements OnInit {
               //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
               this.registeredPatientDetails(this.patientDetails);
               this.maxIDChangeCall = false;
+              this.maxIDSearch = false;
             }
           },
           (error) => {
@@ -2305,6 +2311,7 @@ export class OpRegistrationComponent implements OnInit {
         (resultData) => {
           if (this.OPRegForm.value.maxid) {
             this.getPatientDetailsByMaxId();
+            this.maxIDSearch = false;
           } // this.setValuesToOPRegForm(resultData);
           if (resultData["success"]) {
             if (
@@ -2362,6 +2369,7 @@ export class OpRegistrationComponent implements OnInit {
           this.maxIDChangeCall = true;
           this.setValuesToOPRegForm(resultData);
           this.MaxIDExist = true;
+          this.maxIDSearch = false;
           this.checkForMaxID();
           console.log(resultData);
           this.maxIDChangeCall = false;
@@ -2878,6 +2886,7 @@ export class OpRegistrationComponent implements OnInit {
   // registationFormSubmit()
   // {}
   async registationFormSubmit() {
+    console.log(this.maxIDSearch);
     let isFormValid = await this.validateForm();
     if (!isFormValid) {
       //validateForm return boolean variable if validation error present or not
@@ -2888,34 +2897,43 @@ export class OpRegistrationComponent implements OnInit {
   async validateForm(): Promise<boolean> {
     let validationerror = false;
     if (!validationerror) {
-      if (this.OPRegForm.value.maxid) {
-        let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
+      if (this.maxIDSearch) {
+        if (this.OPRegForm.value.maxid) {
+          let regNumber = Number(this.OPRegForm.value.maxid.split(".")[1]);
 
-        //HANDLING IF MAX ID IS NOT PRESENT
-        if (regNumber != 0) {
-          let iacode = this.OPRegForm.value.maxid.split(".")[0];
-          const resultData = await this.http
-            .get(ApiConstants.patientDetails(regNumber, iacode))
-            .toPromise();
-          if (!resultData) {
+          //HANDLING IF MAX ID IS NOT PRESENT
+          if (regNumber != 0) {
+            let iacode = this.OPRegForm.value.maxid.split(".")[0];
+            const resultData = await this.http
+              .get(ApiConstants.patientDetails(regNumber, iacode))
+              .toPromise();
+            if (!resultData) {
+              validationerror = true;
+              this.flushAllObjects();
+              // this.OPRegForm.controls["maxid"].setValue(
+              //   iacode + "." + regNumber
+              // );
+              this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.questions[2].elementRef.focus();
+              // this.messageDialogService.error("Invalid MaxId");
+            } else if (resultData.length <= 0) {
+              validationerror = true;
+              this.flushAllObjects();
+              this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
+              this.questions[0].customErrorMessage = "Invalid Max ID";
+              this.questions[2].elementRef.focus();
+              //this.messageDialogService.error("Invalid MaxId");
+            } else {
+              validationerror = false;
+            }
+          } else {
             validationerror = true;
             this.flushAllObjects();
-            // this.OPRegForm.controls["maxid"].setValue(
-            //   iacode + "." + regNumber
-            // );
             this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
             this.questions[0].customErrorMessage = "Invalid Max ID";
             this.questions[2].elementRef.focus();
             // this.messageDialogService.error("Invalid MaxId");
-          } else if (resultData.length <= 0) {
-            validationerror = true;
-            this.flushAllObjects();
-            this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
-            this.questions[0].customErrorMessage = "Invalid Max ID";
-            this.questions[2].elementRef.focus();
-            //this.messageDialogService.error("Invalid MaxId");
-          } else {
-            validationerror = false;
           }
         } else {
           validationerror = true;
@@ -2925,13 +2943,6 @@ export class OpRegistrationComponent implements OnInit {
           this.questions[2].elementRef.focus();
           // this.messageDialogService.error("Invalid MaxId");
         }
-      } else {
-        validationerror = true;
-        this.flushAllObjects();
-        this.OPRegForm.controls["maxid"].setErrors({ incorrect: true });
-        this.questions[0].customErrorMessage = "Invalid Max ID";
-        this.questions[2].elementRef.focus();
-        // this.messageDialogService.error("Invalid MaxId");
       }
     }
     if (!validationerror) {
