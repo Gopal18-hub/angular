@@ -53,9 +53,16 @@
 .width{
     width: 65%!important;
 }
-.creditbuttonwidth{
-::ng-deep .mat-raised-button {
-    min-width: 120px !important;
-}
+.creditbuttonwidth
+{
+    .mat-raised-button
+    {
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+// ::ng-deep .mat-raised-button {
+//     min-width: 120px !important;
+// }
 }
 }

@@ -1,8 +1,8 @@
-<div class="flex flex-column h-full sub-bill-overall">
+<div class="flex flex-column h-full sub-bill-overall ">
   <form [formGroup]="formGroup">
     <div class="flex flex-column h-full w-full">
     <!-- First Row -->
-    <div class="w-full p-1 mt-1 bg-secondary border-radius-xlg">
+    <div class="w-full bg-secondary border-radius-xlg align-items-center">
         <div class="flex w-full mt-0">
           <div class="w-1/10 h-dropdown max-health-primary-color">          
               <maxhealth-question 
@@ -79,7 +79,7 @@
             <button
             mat-raised-button
             color="primary"
-            class="btn-md min-width-initial mt-5 ml-3"
+            class="btn-md addbtn mt-3 ml-3"
             type="submit"
           >
            Add
@@ -91,16 +91,26 @@
       </div>
       </form>
 
-    <div class="mt-2 w-full sub-bill-ovrall-table h-30vh">
+    <div class="w-full mt-1 sub-bill-ovrall-table h-30vh">
       <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
     </div>
     <div class="h-22vh mt-1 mb-1">
       <form [formGroup]="formGroup" class="sub-bill-form h-full">
         <div class="flex w-full h-full">
           <div
-            class="w-12 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center"
+            class="w-13 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center"
           >
-            <div class="ml-2 mb-4 mt-2 mr-2 w-auto">
+            <div class="ml-2 mb-4 mt-2 mr-2 w-Reff">
+              <div class="flex float-right">
+                <maxhealth-question
+                [question]="question[26]"
+                [form]="formGroup"
+                [questions]="question[26]"
+                [index]="26"
+              >
+              </maxhealth-question>
+              </div>
+            
               <maxhealth-question
                 [question]="question[0]"
                 [form]="formGroup"
@@ -108,8 +118,10 @@
                 [index]="0"
               >
               </maxhealth-question>
+         
             </div>
-            <div class="ml-2 mr-2 mb-4 w-auto">
+       
+            <div class="ml-2 mr-2 mb-4 w-Reff">
               <maxhealth-question
                 [question]="question[1]"
                 [form]="formGroup"
@@ -123,7 +135,7 @@
           <div
             class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86"
           >
-            <div class="ml-2 flex-column w-26 flex justify-between">
+            <div class="ml-1 flex-column w-26 flex justify-between">
               <div>
                 <div class="flex">
                   <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
@@ -263,7 +275,7 @@
                   </maxhealth-question>
                 </div>
               </div>
-              <div>
+              <!-- <div>
                 <div class="flex">
                   <mat-label class="wt-nowrap mr-12"> Coupon</mat-label>
   
@@ -276,7 +288,7 @@
                   >
                   </maxhealth-question>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div
               class="ml-2 flex-column w-1/5 flex border-radius-lg justify-between"

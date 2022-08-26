@@ -75,13 +75,13 @@ export class MiscellaneousBillingsComponent implements OnInit {
       //
 
       company: {
-        type: "autocomplete",
+        type: "dropdown",
         options: this.complanyList,
         placeholder: "Select",
         // title: "SSN",
       },
       corporate: {
-        type: "autocomplete",
+        type: "dropdown",
         options: this.coorporateList,
         placeholder: "Select",
         // title: "SSN",
@@ -95,7 +95,7 @@ export class MiscellaneousBillingsComponent implements OnInit {
         type: "checkbox",
         options: [
           {
-            title: "B2B Invoice Type",
+            title: "B2B Invoice",
           },
         ],
       },
@@ -139,7 +139,8 @@ export class MiscellaneousBillingsComponent implements OnInit {
       .subscribe((res: any) => {
         console.log(res, "getdataforbillreport")
       });
-
+    this.getAllCompany();
+    this.getAllCorporate();
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -172,8 +173,7 @@ export class MiscellaneousBillingsComponent implements OnInit {
         this.onPhoneModify();
       }
     });
-    this.getAllCompany();
-    this.getAllCorporate();
+
     this.miscForm.controls["company"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
