@@ -24,7 +24,7 @@ import {
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
-
+import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -411,7 +411,7 @@ export class BillingComponent implements OnInit {
   getAllCompany() {
     this.http
       .get(
-        BillingApiConstants.getcompanyandpatientsponsordata(
+        BillingApiConstants.getcompanydetail(
           Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -422,6 +422,16 @@ export class BillingComponent implements OnInit {
           return { title: a.name, value: a.id };
         });
       });
+  }
+
+  openIOM() {
+    this.matDialog.open(IomPopupComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        company: this.formGroup.value.company,
+      },
+    });
   }
 
   getAllCorporate() {
