@@ -7,9 +7,18 @@ import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { SingleComponent } from "./submodules/single/single.component";
+import { TabsComponent } from "./submodules/tabs/tabs.component";
+import { MatTabsModule } from "@angular/material/tabs";
 
 @NgModule({
-  declarations: [PromptReportComponent, BasicComponent],
+  declarations: [
+    PromptReportComponent,
+    BasicComponent,
+    SingleComponent,
+    TabsComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -18,6 +27,8 @@ import { MatButtonModule } from "@angular/material/button";
     MaxHealthTableModule,
     PromptReportRoutingModule,
     MatButtonModule,
+    MatToolbarModule,
+    MatTabsModule,
   ],
 })
 export class PromptReportModule {}

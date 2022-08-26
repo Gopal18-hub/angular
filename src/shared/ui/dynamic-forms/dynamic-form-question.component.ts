@@ -16,6 +16,8 @@ import { QuestionControlService } from "./service/question-control.service";
 import { map, startWith } from "rxjs/operators";
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import "../../utilities/String-Extentions";
+import maskInput from "vanilla-text-mask";
+import { MatAutocomplete } from "@angular/material/autocomplete";
 
 @Component({
   selector: "maxhealth-question",
@@ -47,6 +49,8 @@ export class DynamicFormQuestionComponent
 
   @ViewChild("element") element!: ElementRef;
 
+  @ViewChild("auto") autocomplete!: MatAutocomplete;
+
   @ViewChild(MatAutocompleteTrigger) trigger!: MatAutocompleteTrigger;
 
   filteredOptions!: Observable<any>;
@@ -75,7 +79,13 @@ export class DynamicFormQuestionComponent
 
   subscription!: Subscription;
 
-  dateMask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
+  dateMaskConfig: any = {
+    mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
+    guide: true,
+    placeholderChar: "_",
+    pipe: undefined,
+    keepCharPositions: false,
+  };
 
   constructor(private qcs: QuestionControlService) {}
 
@@ -202,6 +212,15 @@ export class DynamicFormQuestionComponent
       this.question.type == "autocomplete"
     ) {
       this._subscribeToClosingActions();
+    } else if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "date"
+    ) {
+      maskInput({
+        inputElement: this.element.nativeElement,
+        ...this.dateMaskConfig,
+      });
     }
   }
 
@@ -261,5 +280,17 @@ export class DynamicFormQuestionComponent
 
   handler(event: any): void {
     this.form.controls[this.question.key].setValue(event.option.value);
+  }
+
+  autocompleteOpened() {
+    console.log(this.element.nativeElement.parentNode.parentNode.parentNode);
+    let inputWidth =
+      this.element.nativeElement.parentNode.parentNode.parentNode.getBoundingClientRect()
+        .width - 1;
+    setTimeout(() => {
+      let panel = this.autocomplete.panel?.nativeElement;
+      if (!panel) return;
+      panel.style.minWidth = inputWidth + "px";
+    });
   }
 }

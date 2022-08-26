@@ -21,7 +21,7 @@
     <mat-tab-nav-panel #tabPanel>
         <div class="p-2 h-full">
         <!---------------------------------FIRST ROW----------------------------------------------------->
-      <div class=" flex align-items-center w-full bg-dmg border-radius-xlg p-1 ">
+      <div class=" flex align-items-center w-full bg-dmg border-radius-xlg p-1 input-padding ">
           <div class="w-9/10 ml-2 ">
         <form [formGroup]="dmgMappingForm">
           <div class="flex">
@@ -49,8 +49,8 @@
           </div>
         </form>
          </div>
-        <div class="float-right w-1/10 flex">
-            <div class="ml-0" >
+        <div class="w-1/10  ">
+            <div class="mr-2 float-right" >
             <button mat-raised-button color="primary" type="submit" (click)="onMaxidEnter(dmgMappingForm.value.maxid)" class="button-height">
                 <img src="assets/lens.svg" class="lens-icon">
 
@@ -64,33 +64,33 @@
     <div class="flex w-full bg-dmg border-radius-xlg p-2  mt-1">
         <div  class="w-1/7 font-wrapper">
         <mat-label  class="font-semi-bold max-health-primary-color" >Name:</mat-label>
-        <span class="ml-2" title="{{name}}">{{name}}</span>
+        <span class="ml-2" matTooltip="{{name}}">{{name}}</span>
         </div>
 
         <div class="w-1/10  font-wrapper">
         <mat-label  class="font-semi-bold max-health-primary-color">Age:</mat-label>
-        <span class="ml-2" title="{{age}}"> {{age}}</span>
+        <span class="ml-2" matTooltip="{{age}}"> {{age}}</span>
         </div>  
 
         <div  class="w-1/10  font-wrapper">
         <mat-label  class="font-semi-bold max-health-primary-color">Gender:</mat-label>
-        <span class="ml-2" title="{{gender}}">{{gender}}</span>
+        <span class="ml-2" matTooltip="{{gender}}">{{gender}}</span>
          </div>
 
          <div  class="w-12  font-wrapper ">
         <mat-label  class="font-semi-bold max-health-primary-color">DOB:</mat-label>
-        <span class="ml-2" title="{{dob}}">{{dob}}</span>
+        <span class="ml-2" matTooltip="{{dob}}">{{dob}}</span>
          </div>
 
 
          <div  class="w-12 font-wrapper">
         <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
-        <span class="ml-2" title="{{nationality}}">{{nationality}}</span>
+        <span class="ml-2" matTooltip="{{nationality}}">{{nationality}}</span>
          </div>
 
          <div  class="w-1/6  font-wrapper">
         <mat-label  class="font-semi-bold max-health-primary-color">SSN:</mat-label>
-        <span class="ml-2" title="{{ssn}}">{{ssn}}</span>
+        <span class="ml-2" matTooltip="{{ssn}}">{{ssn}}</span>
          </div>
     </div>
     <!-----------------------------------------THIRD ROW------------------------------------------------------------->
@@ -108,108 +108,15 @@
                     <!-- <mat-select > -->
                 <div *ngFor="let diseasegroup of dmgPatientDetails.dmgMappingDataDT;let i=index"  >
                     <mat-checkbox class="checkbox_color" [(ngModel)]=" dmgPatientDetails.dmgMappingDataDT[i].isChecked" 
-                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId);" 
+                    (change)="onChange(diseasegroup,i,dmgPatientDetails.dmgMappingDataDT[i].docId,$event);" 
                     value="dmgPatientDetails.dmgMappingDataDT[i].docId" color="primary">
                     {{diseasegroup.docName}} 
                     </mat-checkbox>
                 </div>
-    <!-- [(ngModel)]="diseasegroup.isChecked" -->
-                 <!-- diseasegroup.isChecked == 1 ?true:false -->
-
-                 <!-- <mat-form-field>
-                    <mat-select placeholder="Toppings">
-                        <mat-option *ngFor="let topping of toppingList; let i =index" [value]="topping">
-                            <mat-checkbox [checked]="selected === i" (change)="onChange(topping);selected = i"> {{topping}}</mat-checkbox>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field> -->
-            <!-- <form [formGroup]="dmgMappingForm"> -->
-                <!-- <ng-container *ngFor="let checkbox of checkboxList">
-                    {{checkbox.docName}} -->
-                    <!-- <maxhealth-question
-                    [question]=checkbox.docName
-                    [form]="dmgMappingForm"
-                    [questions]=checkbox.docName
-                    [index]=checkbox.id
-                    >    
-                    </maxhealth-question> -->
-                <!-- </ng-container> -->
-                <!-- <maxhealth-question
-                [question]="questions[2]"
-                [form]="dmgMappingForm"
-                [questions]="questions[2]"
-                [index]="2"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[3]"
-                [form]="dmgMappingForm"
-                [questions]="questions[3]"
-                [index]="3"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[4]"
-                [form]="dmgMappingForm"
-                [questions]="questions[4]"
-                [index]="4"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[5]"
-                [form]="dmgMappingForm"
-                [questions]="questions[5]"
-                [index]="5"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[6]"
-                [form]="dmgMappingForm"
-                [questions]="questions[6]"
-                [index]="6"
-                >    
-                </maxhealth-question>
-                 <maxhealth-question
-                [question]="questions[7]"
-                [form]="dmgMappingForm"
-                [questions]="questions[7]"
-                [index]="7"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[8]"
-                [form]="dmgMappingForm"
-                [questions]="questions[8]"
-                [index]="8"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[9]"
-                [form]="dmgMappingForm"
-                [questions]="questions[9]"
-                [index]="9"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[10]"
-                [form]="dmgMappingForm"
-                [questions]="questions[10]"
-                [index]="10"
-                >    
-                </maxhealth-question>
-                <maxhealth-question
-                [question]="questions[11]"
-                [form]="dmgMappingForm"
-                [questions]="questions[11]"
-                [index]="11"
-                >    
-                </maxhealth-question> -->
-                
-            <!-- </form> -->
         </div>
     </div>
     <!------------------------------------------FOURTH ROW--------------------------------------------------------------------->
-    <div class="float-right mt-2 ">
+    <div class="float-right mt-3 ">
         <button mat-raised-button color="primary" class="mr-8 button-height" (click)="dmgsave()" [disabled]="disablebutton">
            <span class="text-position">Save</span>
         </button>

@@ -19,6 +19,10 @@ import { Subject, Observable } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { CookieService } from "@shared/services/cookie.service";
 import { ReportService } from "@shared/services/report.service";
+import { SearchService } from "@shared/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { LookupService } from "@core/services/lookup.service";
+
 @Component({
   selector: "out-patients-dispatch-report",
   templateUrl: "./dispatch-report.component.html",
@@ -71,7 +75,7 @@ export class DispatchReportComponent implements OnInit {
         type: "date",
         tooltipColumn: "orderdatetime",
         style: {
-          width: "7.5rem",
+          width: "9rem",
         },
       },
       ptnName: {
@@ -93,14 +97,14 @@ export class DispatchReportComponent implements OnInit {
         title: "Received Date Time",
         type: "input_datetime",
         style: {
-          width: "11rem",
+          width: "10rem",
         },
       },
       r_dispatchdate: {
         title: "Dispatched Date Time",
         type: "input_datetime",
         style: {
-          width: "12rem",
+          width: "11rem",
         },
       },
       r_collection_location: {
@@ -116,7 +120,8 @@ export class DispatchReportComponent implements OnInit {
       },
       remarks: {
         title: "Remarks",
-        type: "input",
+        type: "textarea",
+        disabledSort: true,
       },
     },
   };
@@ -184,7 +189,11 @@ export class DispatchReportComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private cookie: CookieService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService
   ) {}
   today: any;
   ngOnInit(): void {
@@ -199,6 +208,16 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
     this.getBilledLocation();
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+      });
   }
   ngAfterViewInit(): void {
     this.dispatchhistoryform.controls["radio"].valueChanges.subscribe(
@@ -251,7 +270,7 @@ export class DispatchReportComponent implements OnInit {
       var tdate = new Date(this.dispatchhistoryform.controls["todate"].value);
       var dif_in_time = tdate.getTime() - fdate.getTime();
       var dif_in_days = dif_in_time / (1000 * 3600 * 24);
-      if (dif_in_days > 3100000000) {
+      if (dif_in_days > 31) {
         this.matdialog.open(MoreThanMonthComponent, {
           width: "30vw",
           height: "30vh",
@@ -305,12 +324,11 @@ export class DispatchReportComponent implements OnInit {
             console.log(resultdata.dispatchlist.length);
             for (var i = 0; i < this.dispatchreport.dispatchlist.length; i++) {
               this.dispatchreport.dispatchlist[i].sNo = i + 1;
-              console.log(this.dispatchreport.dispatchlist[i].sNo);
             }
             this.tableRows.config.columnsInfo.r_collection_location.options =
               this.billedlocation.map((l) => {
                 return { title: l.address3, value: l.hspLocationId };
-              });
+              });  
             if (this.pendingreport == true && this.show == false) {
               this.dispatchreport.dispatchlist =
                 this.dispatchreport.dispatchlist.filter((e: any) => {
@@ -357,6 +375,10 @@ export class DispatchReportComponent implements OnInit {
       title: this.billedlocation[0].address3,
       value: this.billedlocation[0].hspLocationId,
     });
+    this.reporttable = false;
+    setTimeout(() => {
+      this.reporttable = true;
+    }, 100);
   }
   savedialog() {
     var flag = 0;
@@ -373,17 +395,30 @@ export class DispatchReportComponent implements OnInit {
           (e.r_dispatchdate == null || e.r_dispatchdate == undefined) &&
           (e.receive_date == null || e.receive_date == undefined)
         ) {
-          this.msgdialog.error("You have Not Selected Proper Data");
+          // this.msgdialog.error("You have Not Selected Proper Data");
+          console.log('all null');
           flag++;
+          return;
         } else if (
           e.r_dispatchdate == null ||
-          e.r_dispatchdate == undefined ||
-          e.receive_date == null ||
-          e.receive_date == undefined
+          e.r_dispatchdate == undefined
         ) {
-          this.msgdialog.error("You have Not Selected Proper Data");
+          console.log(e.r_dispatchdate);
+          console.log('rec dis null');
+          // this.msgdialog.error("You have Not Selected Proper Data");
           flag++;
+          return;
         } else if (e.receive_date == null || e.receive_date == undefined) {
+          console.log("receive date null");
+          var loc;
+          if(e.r_collection_location == null)
+          {
+            loc = null;
+          }
+          else
+          {
+            loc = e.r_collection_location.toString();
+          }
           this.dispatchreportsave.objDtSaveReport.push({
             slNo: e.sNo.toString(),
             testName: e.itemName,
@@ -395,7 +430,7 @@ export class DispatchReportComponent implements OnInit {
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
             ),
-            dispatchPlace: e.r_collection_location.toString(),
+            dispatchPlace: loc,
             recievedDateTime: this.datepipe.transform(
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
@@ -417,6 +452,15 @@ export class DispatchReportComponent implements OnInit {
           //   }
           // })
         } else {
+          var loc;
+          if(e.r_collection_location == null)
+          {
+            loc = null;
+          }
+          else
+          {
+            loc = e.r_collection_location.toString();
+          }
           this.dispatchreportsave.objDtSaveReport.push({
             slNo: e.sNo.toString(),
             testName: e.itemName,
@@ -428,7 +472,7 @@ export class DispatchReportComponent implements OnInit {
               e.r_dispatchdate,
               "YYYY-MM-dd HH:mm:ss.ss"
             ),
-            dispatchPlace: e.r_collection_location.toString(),
+            dispatchPlace: loc,
             recievedDateTime: this.datepipe.transform(
               e.receive_date,
               "YYYY-MM-dd HH:mm:ss.ss"
@@ -444,6 +488,7 @@ export class DispatchReportComponent implements OnInit {
         }
       });
     }
+    console.log(flag);
     if (this.dispatchreportsave.objDtSaveReport.length > 0 && flag == 0) {
       console.log(this.dispatchreportsave.objDtSaveReport.length);
       this.http
@@ -451,20 +496,37 @@ export class DispatchReportComponent implements OnInit {
         .subscribe(
           (res: any) => {
             console.log(res);
-            if (res == 1) {
+            if (res >= 1) {
               this.msgdialog.success("Data Saved Succesully");
               this.getDispatchReport();
             }
           },
           (error) => {
             console.log(error);
-            this.msgdialog.error("You have Not Selected Proper Data");
+            this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
           }
         );
     }
+    else if(flag > 0){
+      this.msgdialog.error("You have Not Selected Proper Data. Received Date Time/ Dispatched Date Time/ Dispacth Place are Mandatory.");
+    }
     console.log(this.dispatchreportsave.objDtSaveReport);
   }
-
+  printrow(event: any)
+  {
+    if(event.column == "r_dispatchdate" && event.row.r_dispatchdate == null)
+    {
+      event.row.r_dispatchdate = new Date();
+    }
+    else if(event.column == "receive_date" && event.row.receive_date == null) 
+    {
+      event.row.receive_date = new Date();
+    }
+    else if(event.column == "r_collection_location" && event.r_collection_location == null) 
+    {
+      event.row.r_collection_location = this.billedlocation[0].hspLocationId;
+    }
+  }
   export() {
     console.log(this.tableRows);
     this.tableRows.exportAsExcel();
@@ -473,11 +535,17 @@ export class DispatchReportComponent implements OnInit {
     this.openReportModal("DispatchReport");
   }
   openReportModal(btnname: string) {
+    console.log(this.dispatchhistoryform.controls["billedlocation"].value.value);
     this.reportService.openWindow(btnname, btnname, {
-      fromdate: this.dispatchhistoryform.controls["fromdate"].value,
-      todate: this.dispatchhistoryform.controls["todate"].value,
-      locationid: this.dispatchhistoryform.controls["billedlocation"].value,
+      fromdate: this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "dd/MM/YYYY"),
+      todate: this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "dd/MM/YYYY"),
+      locationid: this.dispatchhistoryform.controls["billedlocation"].value.value,
       RepType: this.dispatchhistoryform.controls["radio"].value,
     });
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

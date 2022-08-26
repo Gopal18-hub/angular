@@ -12,7 +12,7 @@ import { getPatientHistoryModel } from '@core/models/getPatientHistoryModel.Mode
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { Subject, takeUntil } from 'rxjs';
 import { ReportService } from '@shared/services/report.service';
-
+import { SearchService } from '@shared/services/search.service';
 import { SimilarDetailsPopupComponent } from './similar-details-popup/similar-details-popup.component';
 import {
   MatDialog,
@@ -20,6 +20,8 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 @Component({
   selector: 'out-patients-patient-history',
   templateUrl: './patient-history.component.html',
@@ -125,7 +127,7 @@ export class PatientHistoryComponent implements OnInit {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '6rem'
+          width: '5rem'
         }
       },
       discountAmount: {
@@ -223,11 +225,16 @@ export class PatientHistoryComponent implements OnInit {
   ssn:any;
 
   billno: any;
+  receiptno: any;
+  billId: any;
   showtable: boolean = true;
   apiProcessing: boolean = false;
   searchbtn: boolean = true;
+  clearbtn: boolean = true;
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   StationId:any = Number(this.cookie.get("StationId"));
+  iacode: any;
+  regNumber: any;
   @ViewChild("table") tableRows: any;
   private readonly _destroying$ = new Subject<void>();
   constructor( 
@@ -237,7 +244,74 @@ export class PatientHistoryComponent implements OnInit {
     private datepipe: DatePipe,
     private cookie: CookieService,
     public matDialog: MatDialog,
-    private reportService:ReportService) { }
+    private reportService:ReportService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService) { 
+      this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value);        
+        }
+        else{
+          this.ngOnInit();
+          this.clear();
+        }
+        });
+     }
+     async loadGrid(formdata: any): Promise<any> {
+      let lookupdata: string | any[]; 
+      if(!formdata.data){
+        lookupdata = await this.lookupService.searchPatient({
+         data: formdata,
+       });
+      }else{
+        lookupdata = await this.lookupService.searchPatient(formdata);
+      }     
+     
+       console.log(lookupdata);
+       if (lookupdata.length == 1) {
+         if (lookupdata[0] && "maxid" in lookupdata[0]) {        
+         this.iacode = this.patienthistoryform.value.maxid.split(".")[0];
+         this.patienthistoryform.controls['maxid'].setValue(lookupdata[0]["maxid"]);
+         this.regNumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
+           this.getPatientDetails();
+           this.clearbtn = false;            
+         }
+       }else if (lookupdata.length > 1){
+         const similarSoundDialogref = this.matDialog.open( SimilarPatientDialog,
+           {
+             width: "60vw",
+             height: "80vh",
+             data: {
+               searchResults: lookupdata,
+             },
+           }
+         );
+
+         similarSoundDialogref
+           .afterClosed()
+           .pipe(takeUntil(this._destroying$))
+           .subscribe((result: any) => {
+             if (result) {
+               console.log(result.data["added"][0].maxid);
+               let maxID = result.data["added"][0].maxid;
+               this.patienthistoryform.controls["maxid"].setValue(maxID);
+              
+                     this.iacode = maxID.split(".")[0];
+                     this.regNumber = Number(maxID.split(".")[1]);
+                     this.patienthistoryform.controls["maxid"].setValue(maxID);
+                     this.getPatientDetails();
+                     this.clearbtn = false;
+             }
+
+             this.similarContactPatientList = [];
+           });
+       }
+    }
   today: any;
   fromdate: any;
   ngOnInit(): void {
@@ -253,6 +327,50 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
     this.gettransactiontype();
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.patienthistoryform.controls["maxid"].setValue(lookupdata[0]["maxid"]);
+            this.patienthistoryform.value.maxid = lookupdata[0]["maxid"];
+            this.getPatientDetails();
+          }
+        }
+        else
+        {
+          const similarSoundDialogref = this.matDialog.open(
+            SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "65vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+          similarSoundDialogref
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    if (result) {
+                      console.log(result.data["added"][0].maxid);
+                      let maxID = result.data["added"][0].maxid;
+                      this.patienthistoryform.controls["maxid"].setValue(maxID);
+                      this.getPatientDetails();
+                      this.clearbtn = false;
+                    }
+                    this.similarContactPatientList = [];
+                  });
+        }
+      });
   }
   ngAfterViewInit(): void{
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -272,15 +390,33 @@ export class PatientHistoryComponent implements OnInit {
       console.log(event);
       if (event.key === "Enter") {
         event.preventDefault();
-        this.mobilechange();
+        var digit = this.patienthistoryform.value.mobile.toString().length;
+        if(digit == 10)
+        {
+          this.mobilechange();
+        }
+        
       }
     });
     this.questions[1].elementRef.addEventListener("keydown", (event: any) => {
       console.log(event);
       if (event.key === "Tab") {
-        this.mobilechange();
+        var digit = this.patienthistoryform.value.mobile.toString().length;
+        if(digit == 10)
+        {
+          this.mobilechange();
+        }
       }
     });
+    console.log(this.patienthistoryform);
+    setTimeout(() => {
+      this.patienthistoryform.valueChanges.subscribe(val=>{
+        console.log('val');
+        console.log(val)
+        this.clearbtn = false;
+      })
+    }, 300);
+    
   }
 
   gettransactiontype()
@@ -361,6 +497,7 @@ export class PatientHistoryComponent implements OnInit {
   {
     this.apiProcessing = true;
     this.showtable = false;
+    this.clearbtn = false;
     let regnumber = Number(this.patienthistoryform.value.maxid.split(".")[1]);
       let iacode = this.patienthistoryform.value.maxid.split(".")[0];
       this.http
@@ -390,7 +527,7 @@ export class PatientHistoryComponent implements OnInit {
               this.pname = this.patientDetails[0].firstName +" "+ this.patientDetails[0].middleName +" "+this.patientDetails[0].lastName;
               this.age = this.patientDetails[0].age +" "+this.patientDetails[0].ageTypeName;
               this.gender = this.patientDetails[0].genderName;
-              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd-MM-YYYY");
+              this.dob = this.datepipe.transform(this.patientDetails[0].dateOfBirth, "dd/MM/YYYY");
               this.nationality = this.patientDetails[0].nationality;
               this.ssn = this.patientDetails[0].ssn;
               this.patienthistoryform.controls["mobile"].setValue(this.patientDetails[0].mobileNo);
@@ -438,13 +575,13 @@ export class PatientHistoryComponent implements OnInit {
           {
             console.log('data');
             this.patienthistorylist = resultdata;
-            // this.patienthistorylist.forEach(e=>{
-            //   e.billAmount = parseInt(e.balanceAmt).toFixed(2);
-            //   e.discountAmount = parseInt(e.discountAmount).toFixed(2);
-            //   e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
-            //   e.refundAmount = parseInt(e.refundAmount).toFixed(2);
-            //   e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
-            // })
+            this.patienthistorylist.forEach(e=>{
+              e.billAmount = parseInt(e.balanceAmt).toFixed(2);
+              e.discountAmount = parseInt(e.discountAmount).toFixed(2);
+              e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
+              e.refundAmount = parseInt(e.refundAmount).toFixed(2);
+              e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+            })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);
             this.apiProcessing = false;
@@ -489,6 +626,11 @@ export class PatientHistoryComponent implements OnInit {
     this.patienthistorylist = [];
     this.apiProcessing = false;
     this.showtable = true;
+    this.clearbtn = true;
+    this.router.navigate(['patient-history'])
+    .then(()=>{
+      window.location.reload;
+    })
   }
   
 
@@ -496,10 +638,12 @@ export class PatientHistoryComponent implements OnInit {
     console.log(event);
     if(event.column == "printIcon"){
       console.log(event.row.billType);
+      this.billId = event.row.billId;
+      this.receiptno = event.row.billNo;
       this.billno = event.row.billNo;
       if(event.row.billType == 'Deposit' || event.row.billType == 'Donation')
       {
-        this.openReportModal('depositReport');
+        this.openReportModal('DepositReport');
       }
       else if(event.row.billType == 'Deposit Refund')
       {
@@ -520,10 +664,10 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   openReportModal(btnname: string) {
-    if(btnname == 'depositReport')
+    if(btnname == 'DepositReport')
     {
       this.reportService.openWindow(btnname, btnname, {
-        receiptnumber: this.billno,
+        receiptnumber: this.receiptno,
         locationID: this.hsplocationId
       });
     }
@@ -537,7 +681,7 @@ export class PatientHistoryComponent implements OnInit {
     else if(btnname == 'billingreport')
     {
       this.reportService.openWindow(btnname, btnname, {
-        opbillid: this.billno,
+        opbillid: this.billId,
         locationID: this.hsplocationId
       });
     }
@@ -568,5 +712,10 @@ export class PatientHistoryComponent implements OnInit {
     };
     returnicon.push(tempPager);
     return returnicon;
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

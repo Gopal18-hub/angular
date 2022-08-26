@@ -15,11 +15,42 @@
 }
 
 .BServiceForm {   
-    
-   
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
     }
+    
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    .searchbtn{
+        ::ng-deep .mat-raised-button{
+            min-width: auto !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        }
+        ::ng-deep .mat-button-wrapper{
+            padding-left: 20px !important;
+        }
+    }
+    // .searchbtn{
+    //     ::ng-deep .mat-raised-button{
+    //         min-width: 100px !important;
+    //         padding-left: 40px !important;
+    //     }
+    //     mat-button-wrapper{
+    //         padding-left: 25px;
+    //     }
+    // }
+
     ::ng-deep mat-label{
         color: var(--primary-color);
         font-weight: 600 !important;
@@ -61,6 +92,7 @@
     color: var(--primary-color);
     font-weight: 600 !important;
   }
+  
 }
 
   .h-white-banner
@@ -128,8 +160,8 @@
 {
     width: 9.5rem;
     height: 100%;
-    margin-top: 1.5%;
-    margin-bottom: 0px;
+    margin-top: 5px;
+    // margin-bottom: 0px;
     padding: 0px;
     // ::ng-deep .mat-form-field-wrapper
     // {
@@ -137,6 +169,9 @@
     //   padding-bottom: 0;  
       
     // } 
+    ::ng-deep .mat-form-field{
+        line-height: 1.6;
+    }
 }
 .btn-otp
 {
@@ -151,7 +186,7 @@
     white-space: nowrap;
 }
 .wt-mid{
-    width: 10.5%;  
+    width: 14%;  
 }
 .bg-deposit
 {
@@ -297,28 +332,22 @@ padding: 0%;
     
     }
 }
-.h-btn{
-    height: 4.95vh;
-   
-}
+// .h-btn{
+//     height: 4.95vh;
+//     min-width: fit-content !important;
+// }
 .m-pannel
 {
 margin-top: 0.19rem;
 }
 
-.lens-icon{
-
-    position: absolute;
-
-    left: 2px;
-
-    top: 2px;
-
-    height: 90%;
-
-    width: 25%;
-
-}
+// .lens-icon{
+//     position: absolute;
+//     left: 2px;
+//     top: 2px;
+//     height: 90%;
+//     width: 32%;
+// }
 
 .bg-darkgray{
     
@@ -335,3 +364,47 @@ margin-top: 0.19rem;
 .w-27{
     width:27%;
     }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.w-13{
+    width: 13%;
+}
+.w-86{
+    width: 86%;
+}
+.w-14{
+    width: 14%;
+}
+.w-15{
+    width: 15%;
+}
+.w-11{
+    width: 11%;
+}
+.w-16{
+    width: 16%;
+}
+.w-17{
+    width: 17%;
+}
+.w-18{
+    width: 18%;
+}
+.w-19{
+    width: 19%;
+}
+.clr-black{
+    color: #000;
+}
+.mar-left-12{
+    margin-left: 11.2rem;
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
+}

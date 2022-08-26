@@ -1,3 +1,4 @@
+.depositwrapper{
 .bg-deposit {
     background-color: #F6F6F6;
     color: #004084;
@@ -30,10 +31,11 @@
     color: rgba(0, 0, 0, 0.87);
 }
 
+.deposit{ 
 ::ng-deep .mat-form-field-wrapper {
 
-    padding-bottom: 0 !important;
-
+    padding-bottom: 0 !important;   
+}
 }
 
 .wt-nowrap {
@@ -52,25 +54,110 @@
         gap: 10px;
     }
 }
-
-.clearcss {
-    ::ng-deep .mat-raised-button {
-        min-width: 100px !important;
-    }
-}
-
 .deposit-matnav {
     ::ng-deep .mat-tab-link {
         min-width: 0px;
     }
 }
-
+.default-label-none{
+    ::ng-deep mat-label{
+        display:none;
+    }
+}
 .deposittable {
     ::ng-deep .max-table-wrapper {
         width: 80% !important;
-        overflow-x: scroll !important;
+        //overflow-x: scroll !important;
         border: 1px solid #707070 !important;
         //border-radius: 0.75rem;
+    }
+    ::ng-deep th.mat-header-cell:first-of-type {
+        padding-left: 30px !important;
+    }
+    ::ng-deep td.mat-cell:first-of-type {
+        padding-left: 30px !important;
+    }
+      ::ng-deep .mat-icon-button {
+    min-width: 0 !important;
+    width: 0px !important;
+    position: absolute !important;
+    top: 7% !important;
+    left: 0% !important;
+  }
+
+  ::ng-deep .mat-cell.cdk-cell.cdk-column-expandedDetail.mat-column-expandedDetail{
+      padding-left: 0px !important;
+     
+  }
+
+ 
+  ::ng-deep .child-element-detail {
+    position: relative;
+    width: 125.6%;
+    .max-table-wrapper{
+        border-radius: 0px !important; 
+        border:none !important;
+       
+    }
+    .mat-row {
+     .mat-cell {
+            color: rgba(0, 0, 0, 0.87) !important;
+          }
+          &:hover {
+            .mat-cell {
+                color: #fff !important;
+              }            
+          }
+      }
+
+           .mat-cell.cdk-cell.cdk-column-select.mat-column-select{
+            width: 3.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-depositRefund.mat-column-depositRefund{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-receiptno.mat-column-receiptno{
+            width: 5.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-dateTime.mat-column-dateTime{
+            width: 7.3% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-deposit.mat-column-deposit{
+            width: 5.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-paymentType.mat-column-paymentType{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-usedOP.mat-column-usedOP{
+            width: 4.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-usedIP.mat-column-usedIP{
+            width: 4.6% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-refund.mat-column-refund{
+            width: 5.6% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-balance.mat-column-balance{
+            width: 5.5% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-gst.mat-column-gst{
+            width: 3.4% !important;
+           }
+           .mat-cell.cdk-cell.cdk-column-gstValue.mat-column-gstValue{
+            width: 6.4% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-advanceType.mat-column-advanceType{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-serviceTypeName.mat-column-serviceTypeName{
+            width: 6.5% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-operatorName.mat-column-operatorName{
+            width: 9.1% !important;
+           }
+           .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-remarks.mat-column-remarks{
+            width: 6.45% !important;
+           }           
     }
 }
 .text-overflow{
@@ -79,12 +166,24 @@
     text-overflow: ellipsis;
 }
 .deposittablewidth{
-    height: 81% !important;
+    height: 83% !important;
 }
-
-::ng-deep .relative.table-height {
+   ::ng-deep .relative.table-height {
     height: 50vh !important;
 }
+
+::ng-deep .second-row-depositbutton{
+    .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+  }
+  ::ng-deep .clearwidth{
+    width: 12% !important;
+  }
+}
+
 
 
 

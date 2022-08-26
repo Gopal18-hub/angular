@@ -624,12 +624,17 @@ export namespace ApiConstants {
 
   export const deleteexpiredpatientdetail = (
     registrationno: number,
-    iacode: string
-    //    operatorid: number
+    iacode: string,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/deleteexpiredpatientsdetails/64952/SHGN?operatorid=3456"
+      "api/patient/deleteexpiredpatientsdetails/" +
+      registrationno +
+      "/" +
+      iacode +
+      "/" +
+      userid
     );
   };
 
@@ -669,7 +674,9 @@ export namespace ApiConstants {
   //GET CALL ON ENTER OF MAXID
   export const getpatientsponsordataonmaxid = (
     iacode: string,
-    regno: number
+    regno: number,
+    locationid: number,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -677,7 +684,10 @@ export namespace ApiConstants {
       iacode +
       "/" +
       regno +
-      "/69/9923"
+      "/" +
+      locationid +
+      "/" +
+      userid
     );
   };
 
@@ -692,14 +702,18 @@ export namespace ApiConstants {
 
   //GET CALL ON ENTER OF EMPLOYEE CODE
   export const getpatientcompanysponsoronempcode = (
-    employeecode: string
-    //  locationid: number
+    employeecode: string,
+    locationid: number,
+    userid: number
   ) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientcompanysponsoronempcode/" +
       employeecode +
-      "/69/9923"
+      "/" +
+      locationid +
+      "/" +
+      userid
     );
   };
 
@@ -708,9 +722,19 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savepatientsponsorcompany";
 
   //GET CALL ON IOM HYPERLINK
-  export const getopcompanyiomlocationwise =
-    environment.PatientApiUrl +
-    "api/patient/getopcompanyiomlocationwise/69/3161";
+  export const getopcompanyiomlocationwise = (
+    locationid: number,
+    companyid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getopcompanyiomlocationwise/" +
+      locationid +
+      "/" +
+      companyid
+    );
+  };
+
   //http://172.30.0.16:1008/api/patient/getopcompanyiomlocationwise/69/3161
 
   export const getCorporate =
@@ -748,7 +772,11 @@ export namespace ApiConstants {
     );
   };
 
-  export const getpatientdetailsdmg = (regno: number, iacode: string) => {
+  export const getpatientdetailsdmg = (
+    regno: number,
+    iacode: string,
+    locationid: number
+  ) => {
     return (
       environment.PatientApiUrl +
       "api/patient/getpatientpersonaldetailsdmg/" +
@@ -756,7 +784,7 @@ export namespace ApiConstants {
       "/" +
       iacode +
       "/" +
-      7
+      locationid
     );
   };
 
@@ -764,38 +792,49 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/savedmgwithpatient";
 
   //ACD
-  export const getediganosticacd = (
+  //Investigation Order List
+  export const getediganosticacdoninvestigation = (
     FromDate: any,
     ToDate: any,
-    status: number,
-    orderid: number,
-    regno: number,
-    iacode: string,
     Locationid: number
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getediganosticacd/" +
+      "api/patient/getediganosticacdoninvestigation/" +
       FromDate +
       "/" +
       ToDate +
       "/" +
-      status +
+      Locationid
+    );
+  };
+  //Investigation Order Details
+  export const getediganosticacdoninvestigationgrid = (
+    Locationid: number,
+    orderid: number,
+    regno: number,
+    iacode: string
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getediganosticacdoninvestigationgrid/" +
+      Locationid +
       "/" +
       orderid +
       "/" +
       regno +
       "/" +
-      iacode +
-      "?Locationid=" +
-      Locationid
+      iacode
     );
   };
+  //Den Order List
+  export const getdenyreasonforacd =
+    environment.PatientApiUrl + "api/patient/getdenyreasonforacd";
+  //Medicine Order List
   export const geteprescriptdrugorders = (
     FromDate: any,
     ToDate: any,
-    LocationID: number,
-    Status: number
+    LocationID: number
   ) => {
     return (
       environment.PatientApiUrl +
@@ -804,11 +843,10 @@ export namespace ApiConstants {
       "/" +
       ToDate +
       "/" +
-      LocationID +
-      "/" +
-      Status
+      LocationID
     );
   };
+  //Medicine Order Details
   export const getphysicianorderdetailep = (
     registrationNo: any,
     aiCode: string,
@@ -827,6 +865,15 @@ export namespace ApiConstants {
       orderid
     );
   };
+  //Save/Update
+  export const SaveAndUpdateDiagnosticOrderBill =
+    environment.PatientApiUrl + "api/patient/SaveAndUpdateDiagnosticOrderBill";
+  //Generate Pharmacy Token
+  export const GetPrintQueDetail = (Ipadress: string) => {
+    return (
+      environment.PatientApiUrl + "api/patient/GetPrintQueDetail/" + Ipadress
+    );
+  };
   //Modify ACD order with Remarks
   export const modifyphysicianorderdetail = (token: string, Userid: number) => {
     return (
@@ -837,6 +884,7 @@ export namespace ApiConstants {
       Userid
     );
   };
+  //ACD --
 
   export const getpatientpersonaldetails = (
     registrationno: number,
@@ -922,7 +970,11 @@ export namespace ApiConstants {
     environment.PatientApiUrl + "api/patient/sendotpoprefund";
 
   //OP REFUND APPROVAL
-  export const getpendingoprefundapproval = (fromdate: any, todate: any) => {
+  export const getpendingoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallpendingoprefundapprovalrequest/" +
@@ -930,11 +982,15 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getapprovedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getapprovedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallapprovedoprefundapprovalrequest/" +
@@ -942,22 +998,85 @@ export namespace ApiConstants {
       "/" +
       todate +
       "/" +
-      7
+      hsplocationid
     );
   };
 
-  export const getrejectedoprefundapproval = (fromdate: any, todate: any) => {
+  export const getrejectedoprefundapproval = (
+    fromdate: any,
+    todate: any,
+    hsplocationid: any
+  ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getallrejectedoprefundapprovalrequest/" +
       fromdate +
       "/" +
       todate +
-      "/7"
+      "/" +
+      hsplocationid
     );
   };
 
   export const oprefundapprovereject =
     environment.BillingApiUrl +
     "api/outpatientbilling/oprefundapprovalrequestsave";
+
+  export const getsearchpatientdeceased = (
+    MaxID?: string,
+    MobileNo?: string,
+    IsDetail?: string,
+    SearchDeceased?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/searchpatientdeceased?MaxID=" +
+      MaxID +
+      "&MobileNo=" +
+      MobileNo +
+      "&IsDetail=" +
+      IsDetail +
+      "&SearchDeceased=" +
+      SearchDeceased
+    );
+  };
+
+  export const postInitiateDeposit =
+    environment.BillingApiUrl + "api/outpatientbilling/InitiateDeposit";
+
+  export const getonlineopbillspecialisation =
+    environment.CommonApiUrl + "api/lookup/getallspecialisationname";
+
+  export const getselectedspecialisationonlineop = (
+    fromdate: any,
+    todate: any,
+    specializationId: any,
+    hsplocationid: any
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdisplayallbilldetails/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      specializationId +
+      "/" +
+      hsplocationid
+    );
+  };
+
+  //Misc Billings
+  export const getcorporatemaster = (flag?: number) => { return (environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=" + flag) }
+  export const getinteractionmaster =
+    environment.BillingApiUrl + "api/outpatientbilling/getinteractionmaster";
+  export const getmasterdataformiscellaneous =
+    environment.BillingApiUrl + "api/outpatientbilling/getmasterdataformiscellaneous";
+  export const getdataforbillreport =
+    (Opbillid: number,
+      Locationid: number,
+      flag: number) => {
+      return (environment.BillingApiUrl + "api/outpatientbilling/getdataforbillreport/" + Opbillid + "/" + Locationid + "/" + flag)
+    }
+
 }

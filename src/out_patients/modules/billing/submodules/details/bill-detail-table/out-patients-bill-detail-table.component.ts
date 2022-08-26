@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
@@ -8,6 +8,8 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 
 import { Subject } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
+import { billDetailService } from "../billDetails.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-bill-detail-table",
@@ -15,12 +17,16 @@ import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.compon
   styleUrls: ["./out-patients-bill-detail-table.component.scss"],
 })
 export class BillDetailTableComponent implements OnInit {
+
+  @ViewChild("selectedServices") tableRows: any;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private billDetailservice: billDetailService,
+    private msgdialog: MessageDialogService
   ) {}
 
   miscBillData = {
@@ -189,43 +195,59 @@ export class BillDetailTableComponent implements OnInit {
     selectBox: false,
     clickedRows: false,
     clickSelection: "single",
+    removeRow: false,
     displayedColumns: [
       "Sno",
-      "ServiceType",
-      "ItemName",
-      "BilledAmount",
-      "DiscAmount",
-      "Refund",
+      "servicename",
+      "itemname",
+      "amount",
+      "discountamount",
+      "cancelled",
     ],
+    // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
       Sno: {
         title: "S.No.",
         type: "string",
+        style: {
+          width: "6rem"
+        }
       },
-      ServiceType: {
+      servicename: {
         title: "Service Name",
         type: "string",
+        style: {
+          width: "13rem"
+        }
       },
-      ItemName: {
+      itemname: {
         title: "Item Name",
         type: "string",
+        style: {
+          width: "19rem"
+        }
       },
-      BilledAmount: {
+      amount: {
         title: "Billed Amount",
         type: "string",
+        style: {
+          width: "12rem"
+        }
       },
-
-      DiscAmount: {
+      discountamount: {
         title: "Discount Amount",
-        type: "string",
+        type: "number",
+        style: {
+          width: "13rem"
+        }
       },
-      Refund: {
+      cancelled: {
         title: "Refund",
-        type: "string",
+        type: "checkbox_active",
       },
     },
   };
-
+  data: any = [];
   serviceselectedList: [] = [] as any;
 
   miscServBillForm!: FormGroup;
@@ -241,6 +263,10 @@ export class BillDetailTableComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    for (var i = 0; i < this.billDetailservice.serviceList.length; i++) {
+      this.billDetailservice.serviceList[i].Sno = i + 1;
+    }
+    this.data = [...this.billDetailservice.serviceList];
   }
   gst: { service: string; percentage: number; value: number }[] = [
     { service: "CGST", percentage: 0.0, value: 0.0 },
@@ -260,4 +286,58 @@ export class BillDetailTableComponent implements OnInit {
       },
     });
   }
+  ngAfterViewInit()
+  {
+
+  }
+  printrow(event:any)
+  {
+    setTimeout(() => {
+      console.log(event)
+      console.log(event.row.cancelled);
+
+      if(event.row.cancelled == true)
+      {
+        console.log("true");
+        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
+          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
+            
+          })
+        });
+        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+          return a.serviceId == event.row.serviceid;
+        }) 
+        if(list[0].ackby > 0)
+        {
+          this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
+          event.row.cancelled = false;
+        }
+        else
+        {
+            this.billDetailservice.addForApproval({
+              cancelled: event.row.cancelled,
+              Sno: event.row.Sno,
+              amount: event.row.amount,
+              requestToApproval: event.row.requestToApproval,
+              itemid: event.row.itemid,
+              orderid: event.row.orderid
+            })
+            this.billDetailservice.calculateTotalRefund();
+            console.log(this.billDetailservice.sendforapproval);
+        }
+      }
+      else if(event.row.cancelled == false)
+      {
+        console.log("false");
+        var index = this.billDetailservice.sendforapproval.findIndex((val: any) => val.Sno === event.row.Sno);
+        console.log(index);
+        // this.billDetailservice.sendforapproval.splice(index, 1);
+        this.billDetailservice.removeForApproval(index);
+        this.billDetailservice.calculateTotalRefund();
+        console.log(this.billDetailservice.sendforapproval);
+      }
+    }, 100);
+    
+  }
+
 }

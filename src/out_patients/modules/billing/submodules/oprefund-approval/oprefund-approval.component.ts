@@ -26,6 +26,7 @@ export class OprefundApprovalComponent implements OnInit {
   defaultUI: boolean = false;
   userId: any;
   hsplocationId: any;
+  maxid!: string;
   showapprovalspinner: boolean = false;
   isPendingList: boolean = false;
   isApprovedList: boolean = false;
@@ -60,6 +61,8 @@ export class OprefundApprovalComponent implements OnInit {
   oprefundConfig: any = {
     actionItems: true,
     selectBox: true,
+    dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     actionItemList: [
       {
         title: "OP Billing",
@@ -91,53 +94,299 @@ export class OprefundApprovalComponent implements OnInit {
       "serviceName",
       "itemName",
       "refundAmt",
-      "requestedby",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
+      "authorisedby",
+      "reason",
+      "paymentMode",
+      "risReason",
     ],
     columnsInfo: {
       maxid: {
-        title: "Max Id",
+        title: "Max ID",
         type: "string",
+        style: {
+          width: "7rem",
+        },
       },
       ssn: {
         title: "SSN",
         type: "string",
+        style: {
+          width: "7rem",
+        },
+        tooltipColumn: "ssn",
       },
       ptnName: {
         title: "Name",
         type: "string",
-        tootltipColumn: "ptnName",
+        tooltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No",
         type: "string",
+        tooltipColumn: "billNo",
+        style: {
+          width: "6rem",
+        },
       },
       billDatetime: {
         title: "Bill Date/Time",
-        type: "string",
+        type: "datetime",
         tooltipColumn: "billDatetime",
+        style: {
+          width: "9rem",
+        },
       },
       serviceName: {
         title: "Service Name",
         type: "string",
+        tooltipColumn: "serviceName",
+        style: {
+          width: "9rem",
+        },
       },
       itemName: {
         title: "Item Name",
         type: "string",
         tooltipColumn: "itemName",
+        style: {
+          width: "7rem",
+        },
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
+        style: {
+          width: "8rem",
+        },
+        tooltipColumn: "refundAmt",
       },
-      requestedby: {
+      approvalRequestBy: {
         title: "Requested By",
         type: "string",
+        tooltipColumn: "approvalRequestBy",
+        style: {
+          width: "7rem",
+        },
+      },
+      approvalRequestDateTime: {
+        title: "Requested Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
+      },
+      authorisedby: {
+        title: "Authorised  by",
+        type: "string",
+        tooltipColumn: "authorisedby",
+        style: {
+          width: "7rem",
+        },
+      },
+      reason: {
+        title: "Reason",
+        type: "string",
+        tooltipColumn: "reason",
+        style: {
+          width: "7rem",
+        },
+      },
+      paymentMode: {
+        title: "Payment Mode",
+        type: "string",
+        tooltipColumn: "paymentMode",
+        style: {
+          width: "7rem",
+        },
+      },
+      risReason: {
+        title: "RISReason",
+        type: "string",
+        tooltipColumn: "risReason",
+        style: {
+          width: "8rem",
+        },
+      },
+    },
+  };
+  oprefundapproveConfig: any = {
+    actionItems: true,
+    //selectBox: true,
+    // dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
+    actionItemList: [
+      {
+        title: "OP Billing",
+        actionType: "link",
+        routeLink: "",
+      },
+      {
+        title: "Bill Details",
+      },
+      {
+        title: "Deposits",
+      },
+      {
+        title: "Admission",
+      },
+      {
+        title: "Admission log",
+      },
+      {
+        title: "Visit History",
+      },
+    ],
+    displayedColumns: [
+      "maxid",
+      "ssn",
+      "ptnName",
+      "billNo",
+      "billDatetime",
+      "serviceName",
+      "itemName",
+      "refundAmt",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
+      "authorisedby",
+      "reason",
+      "paymentMode",
+      "approvalDoneBy",
+      "approvalDoneDateTime",
+    ],
+    columnsInfo: {
+      maxid: {
+        title: "Max ID",
+        type: "string",
+        tootltipColumn: "maxid",
+        style: {
+          width: "7rem",
+        },
+      },
+      ssn: {
+        title: "SSN",
+        type: "string",
+        tootltipColumn: "ssn",
+        style: {
+          width: "7rem",
+        },
+      },
+      ptnName: {
+        title: "Name",
+        type: "string",
+        tootltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
+      },
+      billNo: {
+        title: "Bill No",
+        type: "string",
+        tootltipColumn: "billNo",
+        style: {
+          width: "7rem",
+        },
+      },
+      billDatetime: {
+        title: "Bill Date/Time",
+        type: "datetime",
+        tooltipColumn: "billDatetime",
+        style: {
+          width: "7rem",
+        },
+      },
+      serviceName: {
+        title: "Service Name",
+        type: "string",
+        tootltipColumn: "serviceName",
+        style: {
+          width: "7rem",
+        },
+      },
+      itemName: {
+        title: "Item Name",
+        type: "string",
+        tooltipColumn: "itemName",
+        style: {
+          width: "7rem",
+        },
+      },
+      refundAmt: {
+        title: "Refund Amount",
+        type: "string",
+        tootltipColumn: "refundAmt",
+        style: {
+          width: "8rem",
+        },
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        tootltipColumn: "approvalRequestBy",
+        style: {
+          width: "7rem",
+        },
+      },
+      approvalRequestDateTime: {
+        title: "Requested Date",
+        type: "datetime",
+        tootltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
+      },
+      authorisedby: {
+        title: "Authorised  by",
+        type: "string",
+        tooltipColumn: "authorisedby",
+        style: {
+          width: "7rem",
+        },
+      },
+      reason: {
+        title: "Reason",
+        type: "string",
+        tooltipColumn: "reason",
+        style: {
+          width: "7rem",
+        },
+      },
+      paymentMode: {
+        title: "Payment Mode",
+        type: "string",
+        tooltipColumn: "paymentMode",
+        style: {
+          width: "7rem",
+        },
+      },
+      approvalDoneBy: {
+        title: "Approved By",
+        type: "string",
+        tootltipColumn: "approvalDoneBy",
+        style: {
+          width: "7rem",
+        },
+      },
+      approvalDoneDateTime: {
+        title: "Approved Date",
+        type: "datetime",
+        tootltipColumn: "approvalDoneDateTime",
+        style: {
+          width: "9rem",
+        },
       },
     },
   };
   oprefundrejectConfig: any = {
     actionItems: true,
     selectBox: false,
+    //dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     actionItemList: [
       {
         title: "OP Billing",
@@ -169,44 +418,107 @@ export class OprefundApprovalComponent implements OnInit {
       "serviceName",
       "itemName",
       "refundAmt",
-      "requestedby",
+      "approvalRequestBy",
+      "approvalRequestDateTime",
+      "rejectedBy",
+      "rejectedDateTime",
     ],
     columnsInfo: {
       maxid: {
-        title: "Max Id",
+        title: "Max ID",
         type: "string",
+        tootltipColumn: "maxid",
+        style: {
+          width: "7rem",
+        },
       },
       ssn: {
         title: "SSN",
         type: "string",
+        tootltipColumn: "ssn",
+        style: {
+          width: "7rem",
+        },
       },
       ptnName: {
         title: "Name",
         type: "string",
+        tootltipColumn: "ptnName",
+        style: {
+          width: "7rem",
+        },
       },
       billNo: {
         title: "Bill No",
         type: "string",
+        tootltipColumn: "billNo",
+        style: {
+          width: "7rem",
+        },
       },
       billDatetime: {
         title: "Bill Date/Time",
-        type: "string",
+        type: "datetime",
+        tootltipColumn: "billDatetime",
+        style: {
+          width: "8rem",
+        },
       },
       serviceName: {
         title: "Service Name",
         type: "string",
+        tootltipColumn: "serviceName",
+        style: {
+          width: "8rem",
+        },
       },
       itemName: {
         title: "Item Name",
         type: "string",
+        tootltipColumn: "itemName",
+        style: {
+          width: "8rem",
+        },
       },
       refundAmt: {
         title: "Refund Amount",
         type: "string",
+        tootltipColumn: "refundAmt",
+        style: {
+          width: "8rem",
+        },
       },
-      requestedby: {
+      approvalRequestBy: {
         title: "Requested By",
         type: "string",
+        tootltipColumn: "approvalRequestBy",
+        style: {
+          width: "8rem",
+        },
+      },
+      approvalRequestDateTime: {
+        title: "Requested Date",
+        type: "datetime",
+        tootltipColumn: "approvalRequestDateTime",
+        style: {
+          width: "8rem",
+        },
+      },
+      rejectedBy: {
+        title: "Rejected By",
+        type: "string",
+        tootltipColumn: "rejectedBy",
+        style: {
+          width: "8rem",
+        },
+      },
+      rejectedDateTime: {
+        title: "Rejected Date",
+        type: "datetime",
+        tootltipColumn: "rejectedDateTime",
+        style: {
+          width: "10rem",
+        },
       },
     },
   };
@@ -223,6 +535,7 @@ export class OprefundApprovalComponent implements OnInit {
   ngOnInit(): void {
     //obj= new ActiveXObject("wscript.network");
     this.userId = Number(this.cookie.get("UserId"));
+    console.log(this.userId);
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
@@ -238,18 +551,7 @@ export class OprefundApprovalComponent implements OnInit {
     }
     this.showmain(this.link1[2]);
   }
-  ngAfterViewInit(): void {
-    // if (this.OprefundPending != undefined) {
-    //   console.log(this.OprefundPending.selection.changed);
-    // }
-    // setTimeout(() => {
-    //   this.OprefundPending.selection.changed
-    //     .pipe(takeUntil(this._destroying$))
-    //     .subscribe((res: any) => {
-    //       console.log(res);
-    //     });
-    // });
-  }
+  ngAfterViewInit(): void {}
 
   searchOpRefundapproval(formdata: any) {
     console.log("inside searchopreu=fundapproval method");
@@ -292,9 +594,13 @@ export class OprefundApprovalComponent implements OnInit {
     console.log(link);
     if (link.id == 1) {
       this.activeLink2 = link;
+      this.oprefundRejectedList = [];
+      this.oprefundApprovedList = [];
       this.getoprefundPending();
     } else if (link.id == 2) {
       this.activeLink2 = link;
+      this.oprefundRejectedList = [];
+      this.oprefundPendingList = [];
       this.getoprefundApproved();
     } else {
       this.isApprovedList = false;
@@ -305,14 +611,45 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   getoprefundPending() {
+    this.showapprovalspinner = true;
+    this.isPendingList = false;
+    this.isApprovedList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
+    console.log(this.from);
+    console.log(this.to);
     this.http
-      .get(ApiConstants.getpendingoprefundapproval(this.from, this.to))
+      .get(
+        ApiConstants.getpendingoprefundapproval(
+          this.from,
+          this.to,
+          this.hsplocationId
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
         if (data != null) {
           this.oprefundPendingList =
             data.opRefundApprovalList as OpRefundApprovalListInterface[];
+          // this.oprefundPendingList.forEach((item) => {
+          //   item.billDatetime = this.datepipe.transform(
+          //     item.billDatetime,
+          //     "dd/MM/yyyy-hh:mm"
+          //   );
+          //   item.approvalRequestDateTime = this.datepipe.transform(
+          //     item.approvalRequestDateTime,
+          //     "dd/MM/yyyy"
+          //   );
+          // item.addedDateTime = this.datepipe.transform(
+          //   item.addedDateTime,
+          //   "dd/MM/yyyy, hh:mm:ss a"
+          // );
+          // item.updatedDateTime = this.datepipe.transform(
+          //   item.updatedDateTime,
+          //   "dd/MM/yyyy"
+          // );
+          // });
           //this.oprefundApprovedList = {} as OpRefundApprovalListInterface;
           if (this.oprefundPendingList.length > 0) {
             this.showapprovalspinner = false;
@@ -322,7 +659,6 @@ export class OprefundApprovalComponent implements OnInit {
             this.isRejectedList = false;
             console.log(this.oprefundPendingList);
           } else {
-            // this.oprefundicon=
             console.log("no records found");
             this.defaultUI = false;
             this.oprefundmessage = "No records found";
@@ -335,13 +671,41 @@ export class OprefundApprovalComponent implements OnInit {
       });
   }
   getoprefundApproved() {
+    this.showapprovalspinner = true;
+    this.isApprovedList = false;
+    this.isPendingList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
     this.http
-      .get(ApiConstants.getapprovedoprefundapproval(this.from, this.to))
+      .get(
+        ApiConstants.getapprovedoprefundapproval(
+          this.from,
+          this.to,
+          this.hsplocationId
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
         if (data != null) {
           this.oprefundApprovedList = data as OpRefundApprovalListInterface[];
+          this.oprefundApprovedList.forEach((item) => {});
+          // this.oprefundApprovedList.forEach((item) => {
+          //   item.approvalRequestDateTime = this.datepipe.transform(
+          //     item.approvalRequestDateTime,
+          //     "dd/MM/yyyy"
+          //   );
+          //   item.approvalDoneDateTime = this.datepipe.transform(
+          //     item.approvalDoneDateTime,
+          //     "dd/MM/yyyy-hh:mm:ss"
+          //   );
+          //   item.billDatetime = this.datepipe.transform(
+          //     item.billDatetime,
+          //     "dd/MM/yyyy-hh:mm:ss"
+          //   );
+          //   console.log(item.approvalRequestDateTime);
+          //   console.log(item.approvalDoneDateTime);
+          // });
           // this.oprefundPendingList = [];
           if (this.oprefundApprovedList.length > 0) {
             this.showapprovalspinner = false;
@@ -364,14 +728,41 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   getoprefundRejected() {
+    console.log(this.from);
+    console.log(this.to);
+    this.showapprovalspinner = true;
+    this.isApprovedList = false;
+    this.isPendingList = false;
+    this.isRejectedList = false;
+    this.defaultUI = true;
     this.http
-      .get(ApiConstants.getrejectedoprefundapproval(this.from, this.to))
+      .get(
+        ApiConstants.getrejectedoprefundapproval(
+          this.from,
+          this.to,
+          this.hsplocationId
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
         if (data != null) {
           this.oprefundRejectedList = data as OpRefundApprovalListInterface[];
           // this.oprefundPendingList = [];
+          // this.oprefundRejectedList.forEach((item) => {
+          //   item.billDatetime = this.datepipe.transform(
+          //     item.billDatetime,
+          //     "dd/MM/yyyy-hh:mm:ss"
+          //   );
+          //   item.approvalRequestDateTime = this.datepipe.transform(
+          //     item.approvalRequestDateTime,
+          //     "dd/MM/yyyy"
+          //   );
+          //   item.rejectedDateTime = this.datepipe.transform(
+          //     item.rejectedDateTime,
+          //     "dd/MM/yyyy-hh:mm:ss"
+          //   );
+          // });
           if (this.oprefundRejectedList.length > 0) {
             this.showapprovalspinner = false;
             this.defaultUI = true;
@@ -393,7 +784,7 @@ export class OprefundApprovalComponent implements OnInit {
   }
 
   onApprove() {
-    this.pendingObject(0, this.activeLink2);
+    this.pendingTabObject(0, this.activeLink2);
 
     console.log(this.OprefundPending.selection.selected);
 
@@ -413,8 +804,8 @@ export class OprefundApprovalComponent implements OnInit {
     // }
     //console.log(this.OprefundApproved.selection.selected);
 
-    this.pendingObject(1, this.activeLink2);
-    this.approvedObject(this.activeLink2);
+    this.pendingTabObject(1, this.activeLink2);
+    // this.approvedTabObject(this.activeLink2);
   }
   getpendingoprefundobject(): SaveOprefundApprovalModel {
     return new SaveOprefundApprovalModel(
@@ -431,11 +822,15 @@ export class OprefundApprovalComponent implements OnInit {
     );
   }
   flag!: number;
-  pendingObject(value: number, activelink: any) {
+  useridList: any = [];
+  requesteduser!: boolean;
+  pendingTabObject(value: number, activelink: any) {
     if (this.OprefundPending != undefined) {
       this.OprefundPending.selection.selected.forEach((a: any, index: any) => {
         let iacode = a.maxid.split(".")[0];
         let regno = a.maxid.split(".")[1];
+        this.maxid = iacode + "." + regno;
+        //Approve - 0 , Reject- 1
         if (value == 0) {
           this.flag = 0;
         } else {
@@ -453,15 +848,30 @@ export class OprefundApprovalComponent implements OnInit {
           billNo: a.billNo,
           itemName: a.itemName,
         });
+        this.useridList.push({
+          id: this.OprefundPending.selection.selected.requestRaisedById,
+        });
         console.log(this.pendingList);
       });
-      if (activelink.id == 1) {
-        if (this.pendingList.length == 0) {
-          console.log("inside list null");
-          this.dialog.open(OprefundDialogComponent, {
-            width: "25vw",
-            height: "30vh",
-          });
+      this.useridList.forEach((item: any) => {
+        if (item.id == this.userId) {
+          this.requesteduser = true;
+        }
+      });
+      // if (activelink.id == 1) {
+      if (this.pendingList.length == 0) {
+        console.log("inside list null");
+        this.dialog.open(OprefundDialogComponent, {
+          width: "25vw",
+          height: "30vh",
+        });
+      } else {
+        if (this.requesteduser) {
+          this.dialogservice.error(
+            "You are not allowed to approve/reject request generated by yourself." +
+              "Max ID: " +
+              this.maxid
+          );
         } else {
           this.http
             .post(
@@ -474,6 +884,8 @@ export class OprefundApprovalComponent implements OnInit {
                 console.log(data);
                 if (data == "Records Successfully Done!") {
                   this.getoprefundPending();
+                  this.useridList = [];
+                  this.requesteduser = false;
                 }
               },
               (httperrorResponse) => {
@@ -482,6 +894,8 @@ export class OprefundApprovalComponent implements OnInit {
                 ) {
                   this.pendingList = [];
                   this.defaultUI = false;
+                  this.useridList = [];
+                  this.requesteduser = false;
                   this.getoprefundPending();
                   this.dialogservice.success("Update Request Approved");
                 }
@@ -489,9 +903,11 @@ export class OprefundApprovalComponent implements OnInit {
             );
         }
       }
+      //  }
     }
   }
-  approvedObject(activelink: any) {
+  approvedTabObject(activelink: any) {
+    console.log(this.OprefundApproved.selection.selected);
     this.OprefundApproved.selection.selected.forEach((a: any, index: any) => {
       let iacode = a.maxid.split(".")[0];
       let regno = a.maxid.split(".")[1];
@@ -547,5 +963,10 @@ export class OprefundApprovalComponent implements OnInit {
           );
       }
     }
+  }
+
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

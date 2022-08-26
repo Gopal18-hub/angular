@@ -14,6 +14,13 @@ export class LookupService {
   routes: any = {
     "/registration/op-registration": "/registration/find-patient",
   };
+  routeswithoutsearch: any = {
+    "/qms": "/registration/find-patient",
+    "/acd": "/registration/find-patient",
+    "/staff-dept": "/registration/find-patient",
+    "/out-patient-billing/online-op-bill": "/registration/find-patient",
+    "/out-patient-billing/dispatch-report": "/registration/find-patient",
+  };
   constructor(
     private cookie: CookieService,
     private http: HttpService,
@@ -29,16 +36,22 @@ export class LookupService {
         const resultData = await this.http
           .get(ApiConstants.globalSearchApi(formdata.data["SearchTerm"], hspId))
           .toPromise();
-        if (resultData.length > 1) {
-          if (this.routes[this.router.url]) {
-            this.router.navigate([this.routes[this.router.url]], {
-              queryParams: formdata.data,
-            });
+        if (this.routeswithoutsearch[this.router.url]) {
+          this.router.navigate([this.routeswithoutsearch[this.router.url]], {
+            queryParams: formdata.data,
+          });
+        } else {
+          if (resultData.length > 1) {
+            if (this.routes[this.router.url]) {
+              this.router.navigate([this.routes[this.router.url]], {
+                queryParams: formdata.data,
+              });
+            } else {
+              return resultData;
+            }
           } else {
             return resultData;
           }
-        } else {
-          return resultData;
         }
       } else {
         const searchData: any = this.removeEmpty(formdata.data);
@@ -72,16 +85,25 @@ export class LookupService {
             searchData["healthID"] ? searchData["healthID"] : ""
           );
           const resultData = await this.http.get(url).toPromise();
-          if (resultData.length > 1) {
-            if (this.routes[this.router.url]) {
-              this.router.navigate([this.routes[this.router.url]], {
-                queryParams: formdata.data,
-              });
+          if (this.routeswithoutsearch[this.router.url]) {
+            this.router.navigate([this.routeswithoutsearch[this.router.url]], {
+              queryParams: formdata.data,
+            });
+          } else {
+            if (!resultData) {
+              return [];
+            }
+            if (resultData.length > 1) {
+              if (this.routes[this.router.url]) {
+                this.router.navigate([this.routes[this.router.url]], {
+                  queryParams: formdata.data,
+                });
+              } else {
+                return resultData;
+              }
             } else {
               return resultData;
             }
-          } else {
-            return resultData;
           }
         } else {
           if (this.routes[this.router.url]) {

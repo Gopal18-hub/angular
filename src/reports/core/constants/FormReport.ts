@@ -1,20 +1,31 @@
+import { environment } from "@environments/environment";
+import { MaxHealthStorage } from "@shared/services/storage";
+
 export namespace FormReport {
   export const equipmentSchedule = {
     reportName: "Equipment Schedule",
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
         equipmentName: {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
-        fromDate: {
+        EquipFromDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        EquipToDate: {
           type: "date",
           title: "To Date",
         },
@@ -27,23 +38,29 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Equipment Schedule",
+            reportEntity: "equipmentReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
 
     layout: "single",
     resultType: "table",
-    resultActionItems: [
-      {
-        title: "Print",
-      },
-      {
-        title: "Export",
-      },
-    ],
+    // resultActionItems: [
+    //   {
+    //     title: "Print",
+    //   },
+    //   {
+    //     title: "Export",
+    //   },
+    // ],
   };
 
   // export const expiredPatientReport = {
@@ -129,30 +146,39 @@ export namespace FormReport {
       ],
     },
   };
+
   export const DoctorSheduleReport = {
     reportName: "Doctors",
     filterForm: {
       title: "",
       type: "object",
+      format: "YYYY/MM/dd",
       properties: {
-        Doctors: {
+        DocID: {
           type: "dropdown",
           placeholder: "---All Doctors---",
           title: "",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getalldoctorname/69`,
+            fields: {
+              title: "doctorname",
+              value: "doctorname",
+            },
+          },
         },
-        TransactionDate: {
+        datetype: {
           type: "radio",
-          title: "Transaction Date",
+          options: [
+            { title: "Transaction Date", value: 0 },
+            { title: "Appoinment Date", value: 1 },
+          ],
+          defaultValue: "Transaction Date",
         },
-        AppoinmentDate: {
-          type: "radio",
-          title: "AppoinmentDate",
-        },
-        fromDate: {
+        dtpStartDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        dtpEndDate: {
           type: "date",
           title: "To Date",
         },
@@ -160,42 +186,61 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        DocID: "w-full",
+        datetype: "w-full",
       },
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Doctor Shedule",
+            reportEntity: "DoctorSheduleReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+
+    layout: "single",
+    resultType: "table",
   };
+
   export const DoctorSheduleReportBySpecilialisation = {
     reportName: "Specilialisation",
     filterForm: {
       title: "",
       type: "object",
+      format: "YYYY/MM/dd",
       properties: {
-        Specilialisation: {
+        Cmb_Special: {
           type: "dropdown",
           placeholder: "---Specilialisation---",
           title: "",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getallspecialisationname`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
-        TransactionDate: {
+        datetype: {
           type: "radio",
-          title: "Transaction Date",
+          options: [
+            { title: "Transaction Date", value: 0 },
+            { title: "Appoinment Date", value: 1 },
+          ],
+          defaultValue: "transactionDate",
         },
-        AppoinmentDate: {
-          type: "radio",
-          title: "AppoinmentDate",
-        },
-        fromDate: {
+        dtpStartDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        dtpEndDate: {
           type: "date",
           title: "To Date",
         },
@@ -208,24 +253,44 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Doctor Shedule BySpecilialisation",
+            reportEntity: "DoctorSheduleReportBySpecilialisation",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+
+    layout: "single",
+    resultType: "table",
   };
+
+  export const doctorSchedule = {
+    layout: "tabs",
+    reportName: "Doctor Schedule",
+    childrens: [
+      { ...DoctorSheduleReport },
+      { ...DoctorSheduleReportBySpecilialisation },
+    ],
+  };
+
   export const GeneralOPDReport = {
     reportName: "Selection Criteria",
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
-        fromDate: {
+        ValueFromDate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        ValueToDate: {
           type: "date",
           title: "To Date",
         },
@@ -238,9 +303,15 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "General OPD Scroll Report",
+            reportEntity: "GeneralOPDReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
@@ -251,28 +322,51 @@ export namespace FormReport {
       title: "",
       type: "object",
       properties: {
-        PlanName: {
+        Flag: {
           type: "radio",
-          title: "Plan Name",
+          options: [
+            { title: "PlanName", value: true },
+            { title: "Membership", value: false },
+          ],
+          defaultValue: "Transaction Date",
         },
-        PlanNameDropdown: {
+        planID: {
           type: "dropdown",
           placeholder: "---PlanName---",
           title: "",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
+            fields: {
+              title: "planname",
+              value: "id",
+            },
+          },
         },
-        Membership: {
-          type: "radio",
-          title: "Membership",
-        },
+
         Location: {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
-        MembershipDropDown: {
+        MemberShipNo: {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getmembershipnumberforreport/69`,
+            fields: {
+              title: "membershipno",
+              value: "membershipno",
+            },
+          },
         },
       },
     },
@@ -283,12 +377,21 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Happy FamilyPlan Allocation Report",
+            reportEntity: "HappyFamilyPlanAllocationReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+
+    layout: "triple",
+    resultType: "table",
   };
   export const HappyFamilyPlanUtilizationReport = {
     reportName: "Happy Family Utilization Report Summary",
@@ -296,53 +399,89 @@ export namespace FormReport {
       title: "",
       type: "object",
       properties: {
-        MembershipDropDown: {
+        MemberShipNo: {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "Membership",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${7}`,
+            fields: {
+              title: "membershipno",
+              value: "membershipno",
+            },
+          },
         },
       },
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        MemberShipNo: "w-screen",
       },
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Happy Family Plan Utilisation",
+            reportEntity: "HappyFamilyPlanUtilizationReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+
+    layout: "tab",
+    resultType: "table",
   };
+
   export const SummaryReportForUtilisationReport = {
     reportName: "Detailed Happy Family Utilization Report Summary",
     filterForm: {
       title: "",
       type: "object",
       properties: {
-        MembershipDropDown: {
+        membershipno: {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "Membership",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${7}`,
+            fields: {
+              title: "membershipno",
+              value: "membershipno",
+            },
+          },
         },
       },
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        membershipno: "w-screen",
       },
       actionItems: [
         {
           label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Detailed Happy Family Utilization Report Summary",
+            reportEntity: "SummaryReportForUtilisationReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },
+    layout: "tab",
+    resultType: "table",
   };
 
   export const expiredPatientReport = {
@@ -350,19 +489,32 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       properties: {
-        fromDate: {
+        fromdate: {
           type: "date",
           title: "From Date",
         },
-        toDate: {
+        todate: {
           type: "date",
           title: "To Date",
         },
-        location: {
+        // location: {
+        //   type: "dropdown",
+        //   placeholder: "---Location---",
+        //   title: "Location",
+        // },
+        locationid: {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
         },
       },
     },
@@ -373,13 +525,15 @@ export namespace FormReport {
       actionItems: [
         {
           label: "Preview",
-          equipmentName: "w-full",
-        },
-        {
-          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Expired Patient Report",
+            reportEntity: "CRPExpiredPatientDetailReport",
+          },
         },
         {
           label: "Clear",
+          type: "clear",
         },
       ],
     },

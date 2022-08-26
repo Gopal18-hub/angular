@@ -6,6 +6,16 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
+import {
+  debounceTime,
+  tap,
+  switchMap,
+  finalize,
+  distinctUntilChanged,
+  filter,
+} from "rxjs/operators";
+import { of } from "rxjs";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-investigations",
@@ -19,7 +29,7 @@ export class InvestigationsComponent implements OnInit {
     properties: {
       serviceType: {
         type: "dropdown",
-        required: true,
+        required: false,
         placeholder: "--Select--",
       },
       investigation: {
@@ -39,6 +49,7 @@ export class InvestigationsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
       "investigations",
@@ -52,10 +63,16 @@ export class InvestigationsComponent implements OnInit {
       sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       investigations: {
         title: "Investigations",
         type: "string",
+        style: {
+          width: "25%",
+        },
       },
       precaution: {
         title: "Precaution",
@@ -65,16 +82,26 @@ export class InvestigationsComponent implements OnInit {
         title: "Priority",
         type: "dropdown",
         options: [],
+        style: {
+          width: "10%",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        style: {
+          width: "17%",
+        },
+        moreOptions: {},
       },
       price: {
         title: "Price",
@@ -87,7 +114,8 @@ export class InvestigationsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private billingService: BillingService
+    public billingService: BillingService,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -97,8 +125,73 @@ export class InvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    this.billingService.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
+  }
+
+  rowRwmove($event: any) {
+    this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.InvestigationItems =
+      this.billingService.InvestigationItems.map((item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      });
+    this.data = [...this.billingService.InvestigationItems];
+    this.billingService.calculateTotalAmount();
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      this.getdoctorlistonSpecializationClinic(
+        res.$event.value,
+        res.data.index
+      );
+    });
+    this.formGroup.controls["investigation"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.serviceType &&
+            this.formGroup.value.serviceType.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getinvestigationSearch(
+                  Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return {
+              title: r.testNameWithService || r.name,
+              value: r.id,
+              serviceid: r.serviceid,
+              originalTitle: r.name,
+            };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getSpecialization() {
@@ -116,7 +209,10 @@ export class InvestigationsComponent implements OnInit {
     });
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -126,9 +222,10 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
-        this.config.columnsInfo.doctorName.options = res.map((r: any) => {
+        let options = res.map((r: any) => {
           return { title: r.doctorName, value: r.doctorId };
         });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
       });
   }
 
@@ -139,6 +236,7 @@ export class InvestigationsComponent implements OnInit {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
+        this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
       (val: any) => {
@@ -158,19 +256,37 @@ export class InvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
+        this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return {
+            title: r.testNameWithService || r.name,
+            value: r.id,
+            originalTitle: r.name,
+          };
         });
+        this.questions[1] = { ...this.questions[1] };
       });
   }
 
   add(priorityId = 1) {
+    let exist = this.billingService.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.investigation.value;
+      }
+    );
+    if (exist > -1) {
+      this.messageDialogService.error(
+        "Investigation already added to the service list"
+      );
+      return;
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.investigation.value,
-          41,
+          this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
@@ -183,9 +299,14 @@ export class InvestigationsComponent implements OnInit {
           specialisation: "",
           doctorName: "",
           price: res.amount,
+          serviceid:
+            this.formGroup.value.serviceType ||
+            this.formGroup.value.investigation.serviceid,
+          itemid: this.formGroup.value.investigation.value,
         });
 
         this.data = [...this.billingService.InvestigationItems];
+        this.formGroup.reset();
       });
   }
 }

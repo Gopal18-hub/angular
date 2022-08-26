@@ -15,6 +15,8 @@ import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "../../../../../shared/ui/message-dialog/message-dialog.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "out-patients-hot-listing-approval",
@@ -32,6 +34,7 @@ export class HotListingApprovalComponent implements OnInit {
   activeLink2 = this.link2[0];
   @ViewChild("hotlistingtable") hotlistingtable: any;
   @ViewChild("approvaTable") approvaTable: any;
+  @ViewChild("rejecttable") rejecttable: any;
 
   HotListidList: any = [];
   opApprovalHotList: opRegHotlistModel[] = [];
@@ -56,31 +59,48 @@ export class HotListingApprovalComponent implements OnInit {
     to: new FormControl(""),
   });
 
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+  };
+
   hotlistingconfig: any = {
     actionItems: true,
     actionItemList: [
       {
         title: "OP Billing",
-        actionType: "link",
-        routeLink: "",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -90,6 +110,8 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -103,30 +125,62 @@ export class HotListingApprovalComponent implements OnInit {
       ssn: {
         title: "SSN",
         type: "number",
+        style: {
+          width: "90px",
+        },
       },
       fullname: {
         title: "Name",
         type: "string",
         tooltipColumn: "patientName",
+        style: {
+          width: "150px",
+        },
       },
       age: {
         title: "Age",
         type: "number",
         disabledSort: true,
+        style: {
+          width: "70px",
+        },
       },
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "70px",
+        },
       },
       hotListing_Header: {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "230px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "180px",
+        },
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
@@ -145,26 +199,37 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        // actionType: "link",
-        // routeLink: "",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: true,
     displayedColumns: [
       "maxid",
@@ -174,6 +239,10 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
+      "approvalRequestDoneByName",
+      "approvalRequestDone",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -206,11 +275,47 @@ export class HotListingApprovalComponent implements OnInit {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "170px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "120px",
+        },
+      },
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDate",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDoneByName: {
+        title: "Approved By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDone: {
+        title: "Approved Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDone",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
@@ -228,26 +333,37 @@ export class HotListingApprovalComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        // actionType: "link",
-        // routeLink: "",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        actionType: "custom",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        actionType: "custom",
+        linkid: 5,
       },
       {
         title: "Visit History",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: false,
     displayedColumns: [
       "maxid",
@@ -257,6 +373,10 @@ export class HotListingApprovalComponent implements OnInit {
       "gender",
       "hotListing_Header",
       "hotListing_Comment",
+      "approvalRequestBy",
+      "approvalRequestDate",
+      "approvalRequestDoneByName",
+      "approvalRequestDone",
       "categoryIcons",
     ],
     columnsInfo: {
@@ -289,11 +409,48 @@ export class HotListingApprovalComponent implements OnInit {
         title: "Hotlisting Reason",
         type: "string",
         tooltipColumn: "hotListing_Header",
+        style: {
+          width: "170px",
+        },
       },
       hotListing_Comment: {
         title: "Remarks",
         type: "string",
         tooltipColumn: "hotListing_Comment",
+        style: {
+          width: "120px",
+        },
+      },
+
+      approvalRequestBy: {
+        title: "Requested By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDate: {
+        title: "Requested Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDate",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDoneByName: {
+        title: "Rejected By",
+        type: "string",
+        style: {
+          width: "150px",
+        },
+      },
+      approvalRequestDone: {
+        title: "Rejected Date",
+        type: "datetime",
+        tooltipColumn: "approvalRequestDone",
+        style: {
+          width: "150px",
+        },
       },
       categoryIcons: {
         title: "Category",
@@ -315,7 +472,8 @@ export class HotListingApprovalComponent implements OnInit {
     private searchService: SearchService,
     private cookie: CookieService,
     public datepipe: DatePipe,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -417,6 +575,44 @@ export class HotListingApprovalComponent implements OnInit {
             this.showapprovalaccepting = false;
             this.showapprovalreject = false;
             console.log(this.opApprovalHotList);
+            setTimeout(() => {
+              this.hotlistingtable.actionItemClickTrigger.subscribe(
+                (res: any) => {
+                  console.log(res);
+                  if (res) {
+                    if (res.item && res.data) {
+                      //if else condition due to queryparam for deposite
+                      if (res.item["linkid"] == 1) {
+                        if (this.quickLinksRoutes[res.item["linkid"]]) {
+                          this.router.navigate(
+                            [this.quickLinksRoutes[res.item["linkid"]]],
+                            {
+                              queryParams: { maxId: res.data["maxid"] },
+                            }
+                          );
+                        }
+                      } else if (res.item["linkid"] == 6) {
+                        this.matDialog.open(VisitHistoryComponent, {
+                          width: "70%",
+                          height: "50%",
+                          data: {
+                            maxid: res.data["maxid"],
+                            docid: "",
+                          },
+                        });
+                      } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxID: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    }
+                  }
+                }
+              );
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;
@@ -453,6 +649,42 @@ export class HotListingApprovalComponent implements OnInit {
             );
 
             console.log(this.defaultUI);
+            setTimeout(() => {
+              this.approvaTable.actionItemClickTrigger.subscribe((res: any) => {
+                console.log(res);
+                if (res) {
+                  if (res.item && res.data) {
+                    //if else condition due to queryparam for deposite
+                    if (res.item["linkid"] == 1) {
+                      if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxId: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    } else if (res.item["linkid"] == 6) {
+                      this.matDialog.open(VisitHistoryComponent, {
+                        width: "70%",
+                        height: "50%",
+                        data: {
+                          maxid: res.data["maxid"],
+                          docid: "",
+                        },
+                      });
+                    } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxID: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  }
+                }
+              });
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;
@@ -488,6 +720,42 @@ export class HotListingApprovalComponent implements OnInit {
             );
 
             console.log(this.opApprovalHotlistrejectList);
+            setTimeout(() => {
+              this.rejecttable.actionItemClickTrigger.subscribe((res: any) => {
+                console.log(res);
+                if (res) {
+                  if (res.item && res.data) {
+                    //if else condition due to queryparam for deposite
+                    if (res.item["linkid"] == 1) {
+                      if (this.quickLinksRoutes[res.item["linkid"]]) {
+                        this.router.navigate(
+                          [this.quickLinksRoutes[res.item["linkid"]]],
+                          {
+                            queryParams: { maxId: res.data["maxid"] },
+                          }
+                        );
+                      }
+                    } else if (res.item["linkid"] == 6) {
+                      this.matDialog.open(VisitHistoryComponent, {
+                        width: "70%",
+                        height: "50%",
+                        data: {
+                          maxid: res.data["maxid"],
+                          docid: "",
+                        },
+                      });
+                    } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxID: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  }
+                }
+              });
+            });
           },
           (error) => {
             this.enablehotlistbtn = false;

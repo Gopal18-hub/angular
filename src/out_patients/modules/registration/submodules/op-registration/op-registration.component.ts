@@ -291,6 +291,7 @@ export class OpRegistrationComponent implements OnInit {
         // required property is dependent on country
         required: true,
         pattern: "^[A-Za-z0-9]{1}[A-Za-z0-9. '',/|`~!@#$%^&*()-]{1,49}",
+        placeholder: "House No/Apartment/Street Name",
       },
       pincode: {
         type: "number",
@@ -1236,6 +1237,7 @@ export class OpRegistrationComponent implements OnInit {
       this.seafarersDetailsdialog();
     }
   }
+
   foreignCLick(event: Event) {
     if (
       !this.OPRegForm.controls["foreigner"].value
@@ -1498,7 +1500,7 @@ export class OpRegistrationComponent implements OnInit {
           btn1: true,
           btn2: true,
           bt1Msg: "Proceed to Billing",
-          bt2Msg: " Proceed to Deposit",
+          bt2Msg: "Proceed to Deposit",
         },
       }
     );
@@ -2251,12 +2253,14 @@ export class OpRegistrationComponent implements OnInit {
         this.OPRegForm.value.country.value == 1
       ) {
         passportdetailspresent = true;
-      } else if (
-        this.OPRegForm.value.foreigner &&
-        this.passportDetails.passportNo != ""
-      ) {
-        this.isPatientdetailModified = true;
-      } else {
+      }
+      //else if (
+      //   this.OPRegForm.value.foreigner &&
+      //   this.passportDetails.passportNo != ""
+      // ) {
+      //   this.isPatientdetailModified = true;
+      // }
+      else {
         passportdetailspresent = false;
       }
 
@@ -2289,6 +2293,8 @@ export class OpRegistrationComponent implements OnInit {
               resultData["message"] ==
               "Your request has been processed successfully"
             ) {
+              this.OPRegForm.markAllAsTouched();
+              this.OPRegForm.markAsPristine();
               this.showRegisteredId("Modified request went for approval");
             }
           } else {
@@ -2331,6 +2337,8 @@ export class OpRegistrationComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           this.patientDetails = resultData;
+          this.OPRegForm.markAllAsTouched();
+          this.OPRegForm.markAsPristine();
           this.showRegisteredId("Patient Registered Successfully");
           this.flushAllObjects();
           this.maxIDChangeCall = true;
@@ -2744,7 +2752,9 @@ export class OpRegistrationComponent implements OnInit {
       this.OPRegForm.value.dob == "" || this.OPRegForm.value.dob == undefined
         ? false
         : true;
-    console.log(this.OPRegForm.controls["idenityType"].value);
+    console.log(this.OPRegForm.value.locality);
+    console.log(this.OPRegForm.value.locality.value);
+    console.log(this.OPRegForm.value.locality.title);
     return (this.updateRequestBody = new UpdatepatientModel(
       this.patientDetails.id,
       this.OPRegForm.value.maxid.split(".")[1],
@@ -2800,9 +2810,18 @@ export class OpRegistrationComponent implements OnInit {
       !this.getDobStatus(),
       this.OPRegForm.value.locality.value || 0,
       this.OPRegForm.value.locality.value == undefined
+        ? this.OPRegForm.value.locality.title == undefined ||
+          this.OPRegForm.value.locality.title == ""
+          ? this.OPRegForm.value.locality
+          : this.OPRegForm.value.locality.title
+        : this.OPRegForm.value.locality.title == undefined ||
+          this.OPRegForm.value.locality.title == ""
         ? this.OPRegForm.value.locality
-        : "",
-      this.OPRegForm.value.sourceOfInput.value || 0,
+        : this.OPRegForm.value.locality.title,
+      this.OPRegForm.value.sourceOfInput == null ||
+      this.OPRegForm.value.sourceOfInput == undefined
+        ? 0
+        : this.OPRegForm.value.sourceOfInput.value || 0,
       false,
       false, //data clean flag
       false, //isavailregcard
@@ -4164,6 +4183,7 @@ export class OpRegistrationComponent implements OnInit {
             HCF: result.data.hcf,
           };
           console.log(this.passportDetails);
+          this.isPatientdetailModified = true;
         } else {
           if (result == undefined || result.data == undefined) {
             this.OPRegForm.controls["foreigner"].setValue(false);
@@ -4174,6 +4194,7 @@ export class OpRegistrationComponent implements OnInit {
               this.questions[28].customErrorMessage =
                 "foreigner unchecked as passport not entered.";
             }
+            this.isPatientdetailModified = false;
           } else {
             this.passportDetails = {
               Expirydate:
@@ -4190,6 +4211,7 @@ export class OpRegistrationComponent implements OnInit {
               passportNo: result.data.passportNo,
               HCF: result.data.hcf,
             };
+            this.isPatientdetailModified = true;
             console.log(this.passportDetails);
             this.OPRegForm.controls["nationality"].setErrors(null);
             this.questions[28].customErrorMessage = "";

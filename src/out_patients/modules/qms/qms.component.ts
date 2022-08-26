@@ -9,6 +9,10 @@ import { ApiConstants } from '@core/constants/ApiConstants';
 import { Title } from '@angular/platform-browser';
 import { Subject, takeUntil } from 'rxjs';
 import { qmsEnableCounterModel } from '@core/models/qmsEnableCounterModel.Model';
+import { SearchService } from '@shared/services/search.service';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { LookupService } from '@core/services/lookup.service';
 @Component({
   selector: 'out-patients-qms',
   templateUrl: './qms.component.html',
@@ -49,7 +53,11 @@ export class QmsComponent implements OnInit {
     private formService: QuestionControlService, 
     private matdialog: MessageDialogService, 
     private cookie: CookieService,
-    private http: HttpService) { }
+    private http: HttpService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupService: LookupService) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -65,6 +73,17 @@ export class QmsComponent implements OnInit {
     this.qmsform.controls["counter"].disable();
     this.qmsform.controls["area"].setErrors({required: true});
     this.questions[0].customErrorMessage = "Area Required";
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        // console.log(lookupdata[0]);
+      });
   }
   ngAfterViewInit(): void
   {
@@ -125,5 +144,10 @@ export class QmsComponent implements OnInit {
       this.userId,
       1
     ))
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

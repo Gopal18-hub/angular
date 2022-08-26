@@ -1,5 +1,5 @@
 <div class="bg-white h-full border-radius-lg mt-0">
-    <div class="mt-0 mr-1 border-radius-lg credit-wrapper flex w-auto">
+    <div class="mt-0 h-full mr-1 border-radius-lg credit-wrapper flex w-auto">
         <form [formGroup]="BServiceForm " class="w-full ">
 
 
@@ -27,58 +27,58 @@
      </div>
         </div>
         <div class="flex-column ml-3">
-        <div class="flex mb-3 ">
+        <div class="flex mb-3 input-align-right">
             <!-- <div class="flex mb-3 -column"> -->
         <maxhealth-question
-        [question]="questions[7]"
+        [question]="questions[0]"
         [form]="BServiceForm"
-        [questions]="questions[7]"
+        [questions]="questions[0]"
         class="w-5/9 "
-        [index]="7"
+        [index]="0"
         >
         
         </maxhealth-question>
         </div>
-        <div class="flex mb-3 ">
+        <div class="flex mb-3 input-align-right">
         
         <!------------------------------------------- AVAIL DISC INPUT ---------------------------------------->
       
         <maxhealth-question
-        [question]="questions[8]"
+        [question]="questions[1]"
         [form]="BServiceForm"
-        [questions]="questions[8]"
+        [questions]="questions[1]"
         class="w-5/9 "
-        [index]="8"
+        [index]="1"
         >
         </maxhealth-question>
         </div>
-        <div class="flex mb-3 ">
+        <div class="flex mb-3 input-align-right">
         
         
         <maxhealth-question
-          [question]="questions[9]"
+          [question]="questions[2]"
           [form]="BServiceForm"
-          [questions]="questions[9]"
+          [questions]="questions[2]"
           class="w-5/9"
-          [index]="9"
+          [index]="2"
         >
         </maxhealth-question>
         
         
         
         </div>
-        <div class="flex mb-3 ">
+        <div class="flex mb-3 input-align-right">
         
         <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
         
         
       
         <maxhealth-question
-        [question]="questions[10]"
+        [question]="questions[3]"
         [form]="BServiceForm"
-        [questions]="questions[10]"
+        [questions]="questions[3]"
         class="w-5/9 "
-        [index]="10"
+        [index]="3"
         >
         </maxhealth-question>
         </div>
@@ -100,16 +100,16 @@
         <div class=" pb-1  ml-4 ">
         <mat-label class="wt-nowrap mr-8">Plan Amount</mat-label>
         </div>
-        <div class=" mb-4 ml-3 ">
+        <div class=" mb-4 ml-3 input-align-right">
 
             <!-- <div class="ml-1 h-full "> -->
                 <div class="flex radio-payment">
                 <maxhealth-question
-                [question]="questions[14]"
+                [question]="questions[8]"
                 [form]="BServiceForm"
-                [questions]="questions[14]"
+                [questions]="questions[8]"
                 class=""
-                [index]="14"
+                [index]="8"
                 >
                
                 </maxhealth-question>
@@ -122,47 +122,47 @@
                 </div>
         <!-- </div> -->
          <div class="flex-column ml-3">
-            <div class="flex mb-3 ">
+            <div class="flex mb-3 input-align-right">
         <maxhealth-question
-        [question]="questions[11]"
+        [question]="questions[4]"
         [form]="BServiceForm"
-        [questions]="questions[11]"
+        [questions]="questions[4]"
         class="w-5/9"
         [index]="11"
         >
         
         </maxhealth-question>
         </div>
-        <div class="flex mb-3">   
+        <div class="flex mb-3 input-align-right">   
         
         
         <maxhealth-question
-        [question]="questions[12]"
+        [question]="questions[5]"
         [form]="BServiceForm"
-        [questions]="questions[12]"
+        [questions]="questions[5]"
         class="w-5/9 "
-        [index]="12"
+        [index]="5"
         >
         </maxhealth-question>
         </div>
-        <div class="flex mb-3">
+        <div class="flex mb-3 input-align-right">
             <maxhealth-question
-            [question]="questions[12]"
+            [question]="questions[6]"
             [form]="BServiceForm"
-            [questions]="questions[12]"
+            [questions]="questions[6]"
             class="w-5/9"
-            [index]="12"
+            [index]="6"
             >
            
             </maxhealth-question>
             </div>
-            <div class="flex mb-3">
+            <div class="flex mb-3 input-align-right">
             <maxhealth-question
-            [question]="questions[12]"
+            [question]="questions[7]"
             [form]="BServiceForm"
-            [questions]="questions[12]"
+            [questions]="questions[7]"
             class="w-5/9"
-            [index]="12"
+            [index]="7"
             >
         
             </maxhealth-question>
@@ -175,7 +175,7 @@
         </div>
         </div>
         </div>
-        <div class="flex-column w-1/15 ml-4 mt-0 pt-0 payment-mode justify-between pl-2 border-radius-lg float-left">
+        <!-- <div class="flex-column w-1/15 ml-4 mt-0 pt-0 payment-mode justify-between pl-2 border-radius-lg float-left">
             <div class="w-full flex mb-1 ">
                 Payment Mode
            </div>
@@ -220,13 +220,36 @@
                   
                 </div>
             </div>
+        </div> -->
+        <div class="payment-mode w-1/15 float-left p-2 ml-4 border-radius-lg">
+            <mat-label>Payment Mode</mat-label>
+            <div class="flex justify-between mt-1 font-400">
+                <mat-label>Cash</mat-label>
+                <span>0.00</span>
+            </div>
+            <div class="flex justify-between mt-1 font-400">
+                <mat-label>Cheque</mat-label>
+                <span>0.00</span>
+            </div>
+            <div class="flex justify-between mt-1 font-400">
+                <mat-label>Credit Card</mat-label>
+                <span>0.00</span>
+            </div>
+            <div class="flex justify-between mt-1 font-400">
+                <mat-label>Demand Draft</mat-label>
+                <span>0.00</span>
+            </div>
+            <div class="flex justify-between mt-1 font-400">
+                <mat-label>Online Payment</mat-label>
+                <span>0.00</span>
+            </div>
         </div>
        
 </ng-container>
 
 
 </div>
-<div class="pr-1 flex justify-end  mt-1 pt-1 h-full">
+<div class="pr-1 flex justify-end pt-1 ">
                  
     <div class="flex align-items-center"> 
      <button
@@ -234,6 +257,8 @@
      color="primary" 
      class="mr-1"
      type="submit"
+     (click)="makereceipt()"
+     [disabled]="makereceiptbtn"
      >
      Make Receipt
      </button>
@@ -247,6 +272,7 @@
      color="primary"
      class=""
      type="submit"
+     [disabled]="printreceiptbtn"
      >
      Print Receipt
      </button>

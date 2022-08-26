@@ -17,21 +17,27 @@ import { OprefundApprovalComponent } from "./submodules/oprefund-approval/oprefu
 
 import { ServicesComponent } from "./submodules/billing/submodules/services/services.component";
 import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
+import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
 import {
   BillDetailComponent,
   MiscCredDetail,
 } from "./submodules/miscellaneous-billing/billing/bill-detail/bill-detail.component";
 import { BillDetailTableComponent } from "./submodules/details/bill-detail-table/out-patients-bill-detail-table.component";
+import { RefundAfterBillComponent } from "./submodules/details/refund-after-bill/refund-after-bill.component";
 import { PartialCredBillComponent } from "./submodules/details/cred-bill-settlement/part-cred-bill-settlement.component";
 import { PostDischargeFollowUpBillingComponent } from "./submodules/post-discharge-follow-up-billing/post-discharge-follow-up-billing.component";
 import { PostDischargeBillComponent } from "./submodules/post-discharge-follow-up-billing/submodules/bill/post-discharge-bill.component";
 import { PostDischargeServicesComponent } from "./submodules/post-discharge-follow-up-billing/submodules/services/post-discharge-services.component";
 import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge-follow-up-billing/submodules/credit-details/post-discharge-credit-details.component";
+import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
+import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
+import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
+    //  canActivate: [AuthGuardService],
     children: [
       {
         path: "",
@@ -43,7 +49,7 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent },
+      { path: "deposit", component: DepositComponent, },
       {
         path: "details",
         component: DetailsComponent,
@@ -59,12 +65,12 @@ const routes: Routes = [
           { path: "services", component: BillDetailTableComponent },
           {
             path: "refund-after-bill",
-            component: BillDetailTableComponent,
+            component: RefundAfterBillComponent,
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent },
-      { path: "op-order-request", component: OpOrderRequestComponent },
+      { path: "online-op-bill", component: OnlineOpBillsComponent, },
+      { path: "op-order-request", component: OpOrderRequestComponent, },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
@@ -74,10 +80,19 @@ const routes: Routes = [
           { path: "bill", component: BillDetailComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent },
-      { path: "op-refund-approval", component: OprefundApprovalComponent },
-      { path: "dispatch-report", component: DispatchReportComponent },
-      { path: "dmg-mapping", component: DmgMappingComponent },
+      {
+        path: "miscellaneous-billings",
+        component: MiscellaneousBillingsComponent,
+        children: [
+          { path: "", component: BillsComponent },
+          { path: "misc-credit-details", component: CreditDetailComponent },
+          { path: "misc-bills", component: BillsComponent },
+        ],
+      },
+      { path: "initiate-deposit", component: InitiateDepositComponent, },
+      { path: "op-refund-approval", component: OprefundApprovalComponent, },
+      { path: "dispatch-report", component: DispatchReportComponent, },
+      { path: "dmg-mapping", component: DmgMappingComponent, },
       {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
@@ -103,4 +118,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule {}
+export class BillingRoutingModule { }

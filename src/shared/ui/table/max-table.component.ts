@@ -50,6 +50,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() columnClick: EventEmitter<any> = new EventEmitter();
 
+  @Output() stringLinkOutput: EventEmitter<any> = new EventEmitter();
+
+  @Output() rowRwmove: EventEmitter<any> = new EventEmitter();
+
+  @Output() controlValueChangeTrigger: EventEmitter<any> = new EventEmitter();
+
+  @Output() actionItemClickTrigger: EventEmitter<any> = new EventEmitter();
+
   selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
@@ -59,8 +67,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
 
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
+  @ViewChild("stringLink") stringLinkTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
+  @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
   @ViewChild("checkbox") checkboxTemplate!: TemplateRef<any>;
   @ViewChild("checkboxActive") checkboxActiveTemplate!: TemplateRef<any>;
@@ -86,6 +96,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   expandedElement: any | null;
 
   childTableConfig: any = {};
+
+  @ViewChild("childTable") childTable: any;
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
@@ -130,6 +142,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
+
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
+      this.displayedColumns.push("maxRemoveRow");
+    }
     this.initiateTable = true;
   }
 
@@ -150,8 +169,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.childTableConfig = { ...this.config };
         delete this.childTableConfig.groupby;
       }
-      console.log(this.config);
-      console.log(this.childTableConfig);
     }
 
     this.dataSource = new MatTableDataSource<any>(this.data);
@@ -175,14 +192,11 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     ) {
       this.displayedColumns.push("actionItems");
     }
-    if (
-      this.config.actionItems &&
-      !this.displayedColumns.includes("actionItems")
-    ) {
-      this.displayedColumns.push("actionItems");
-    }
 
-    if (this.config.removeRow) {
+    if (
+      this.config.removeRow &&
+      !this.displayedColumns.includes("maxRemoveRow")
+    ) {
       this.displayedColumns.push("maxRemoveRow");
     }
   }
@@ -244,8 +258,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   getTemplate(col: any) {
     if (col.type == "string") return this.stringTemplate;
+    else if (col.type == "string_link") return this.stringLinkTemplate;
     else if (col.type == "number") return this.numberTemplate;
     else if (col.type == "date") return this.dateTemplate;
+    else if (col.type == "datetime") return this.dateTimeTemplate;
     else if (col.type == "image") return this.imageTemplate;
     else if (col.type == "checkbox") return this.checkboxTemplate;
     else if (col.type == "checkbox_active") return this.checkboxActiveTemplate;
@@ -305,7 +321,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
             temp[col] = item[col];
           }
         } else if (
-          ["input_datetime", "date", "input_date"].includes(
+          ["input_datetime", "date", "input_date", "datetime"].includes(
             this.displayColumnsInfo[col].type
           )
         ) {
@@ -319,8 +335,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       });
       data.push(temp);
     });
+    let wscols = [];
+    for (var i = 0; i < headers.length; i++) {
+      wscols.push({ wch: headers[i].length + 5 });
+    }
     const wb = XLSX.utils.book_new();
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+    ws["!cols"] = wscols;
     XLSX.utils.sheet_add_aoa(ws, [headers]);
     const workSheet = XLSX.utils.sheet_add_json(ws, data, {
       origin: "A2",
@@ -332,6 +353,17 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   removeRow(index: number) {
-    this.dataSource = this.dataSource.splice(index, 1);
+    this.rowRwmove.emit({ index: index, data: this.dataSource.data[index] });
+  }
+
+  stringLinkClick(data: any) {
+    this.stringLinkOutput.emit(data);
+  }
+  controlValueChange($event: any, data: any) {
+    console.log($event, data);
+    this.controlValueChangeTrigger.emit({ $event, data });
+  }
+  actionItemClick(item: any, data: any) {
+    this.actionItemClickTrigger.emit({ item, data });
   }
 }

@@ -11,11 +11,9 @@ export interface OpRefundApprovalListInterface {
   authorisedby: string;
   reason: string;
   date: string;
-  approvalDoneBy: string;
   id: number;
-  approvalRequestBy: number;
   paymentMode: string;
-  billDatetime: string;
+  billDatetime: any;
   itemId: number;
   itemName: string;
   serviceName: string;
@@ -24,6 +22,13 @@ export interface OpRefundApprovalListInterface {
   serviceId: number;
   testStatus: number;
   risReason: string;
+  approvalRequestBy: string;
+  approvalRequestDateTime: any;
+  approvalDoneBy: string;
+  approvalDoneDateTime: any;
+  rejectedBy: string;
+  rejectedDateTime: any;
+  requestRaisedById: number;
 }
 interface risRemarksInterface {
   id: number;

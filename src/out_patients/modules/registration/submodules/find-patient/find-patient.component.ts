@@ -19,13 +19,15 @@ import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { LookupService } from "@core/services/lookup.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "find-patient",
   templateUrl: "./find-patient.component.html",
   styleUrls: ["./find-patient.component.scss"],
 })
-export class FindPatientComponent implements OnInit, OnDestroy {
+export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
   patientList: PatientSearchModel[] = [];
   isAPIProcess: boolean = false;
   processingQueryParams: boolean = false;
@@ -39,6 +41,11 @@ export class FindPatientComponent implements OnInit, OnDestroy {
   findpatientimage: string | undefined;
   findpatientmessage: string | undefined;
   defaultUI: boolean = true;
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+  };
 
   @ViewChild("table") tableRows: any;
 
@@ -49,23 +56,31 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     actionItemList: [
       {
         title: "OP Billing",
-        //actionType: "link",
-        //routeLink: "",
+        linkid: 1,
+        actionType: "custom",
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        linkid: 5,
       },
       {
         title: "Visit History",
+        linkid: 6,
+        actionType: "custom",
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -151,7 +166,8 @@ export class FindPatientComponent implements OnInit, OnDestroy {
     private datepipe: DatePipe,
     private cookie: CookieService,
     private lookupService: LookupService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    public matDialog: MatDialog
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -192,6 +208,44 @@ export class FindPatientComponent implements OnInit, OnDestroy {
                         }
                       );
                     });
+                  this.tableRows.actionItemClickTrigger.subscribe(
+                    (res: any) => {
+                      console.log(res);
+                      if (res) {
+                        if (res.item && res.data) {
+                          //if else condition due to queryparam for deposite
+                          if (res.item["linkid"] == 1) {
+                            if (this.quickLinksRoutes[res.item["linkid"]]) {
+                              this.router.navigate(
+                                [this.quickLinksRoutes[res.item["linkid"]]],
+                                {
+                                  queryParams: { maxId: res.data["maxid"] },
+                                }
+                              );
+                            }
+                          } else if (res.item["linkid"] == 6) {
+                            this.matDialog.open(VisitHistoryComponent, {
+                              width: "70%",
+                              height: "50%",
+                              data: {
+                                maxid: res.data["maxid"],
+                                docid: "",
+                              },
+                            });
+                          } else if (
+                            this.quickLinksRoutes[res.item["linkid"]]
+                          ) {
+                            this.router.navigate(
+                              [this.quickLinksRoutes[res.item["linkid"]]],
+                              {
+                                queryParams: { maxID: res.data["maxid"] },
+                              }
+                            );
+                          }
+                        }
+                      }
+                    }
+                  );
                 });
               },
               (error) => {
@@ -216,6 +270,8 @@ export class FindPatientComponent implements OnInit, OnDestroy {
         await this.loadGrid(formdata);
       });
   }
+
+  ngAfterViewInit(): void {}
 
   async loadGrid(formdata: any): Promise<any> {
     this.isAPIProcess = false;
@@ -319,6 +375,41 @@ export class FindPatientComponent implements OnInit, OnDestroy {
             queryParams: { maxId: res.added[0].maxid },
           });
         });
+
+      this.tableRows.actionItemClickTrigger.subscribe((res: any) => {
+        console.log(res);
+        if (res) {
+          if (res.item && res.data) {
+            //if else condition due to queryparam for deposite
+            if (res.item["linkid"] == 1) {
+              if (this.quickLinksRoutes[res.item["linkid"]]) {
+                this.router.navigate(
+                  [this.quickLinksRoutes[res.item["linkid"]]],
+                  {
+                    queryParams: { maxId: res.data["maxid"] },
+                  }
+                );
+              }
+            } else if (res.item["linkid"] == 6) {
+              this.matDialog.open(VisitHistoryComponent, {
+                width: "70%",
+                height: "50%",
+                data: {
+                  maxid: res.data["maxid"],
+                  docid: "",
+                },
+              });
+            } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+              this.router.navigate(
+                [this.quickLinksRoutes[res.item["linkid"]]],
+                {
+                  queryParams: { maxID: res.data["maxid"] },
+                }
+              );
+            }
+          }
+        }
+      });
     });
   }
   ngOnDestroy(): void {

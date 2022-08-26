@@ -21,11 +21,17 @@ import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { GetCompanyDataInterface } from "../../core/types/employeesponsor/getCompanydata.Interface";
 import { ThisReceiver } from "@angular/compiler";
+import { SearchService } from "@shared/services/search.service";
+import { Router, ActivatedRoute } from "@angular/router";
+import { LookupService } from "../../../out_patients/core/services/lookup.service";
 import {
   OpRegistrationComponent,
   SimilarPatientDialog,
 } from "../../../out_patients/modules/registration/submodules/op-registration/op-registration.component";
 import { PatientSearchModel } from "@core/models/patientSearchModel";
+import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
+import * as moment from "moment";
+
 interface CorporateInterface {
   id: number;
   name: string;
@@ -68,6 +74,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   isdate: number = 0;
   validfrom: any;
   validto: any;
+  companyId!: any;
+  todaydate = new Date();
+  maxidmapped!: boolean;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -87,15 +96,16 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         pattern: "^[1-9]{1}[0-9]{9}",
         // type: "number",
         // pattern: "^[1-9]{1}[0-9]{9}",
-        // maximum: 10,
+        //maximum: 10,
       },
       employeeCode: {
         type: "string",
       },
       company: {
-        type: "autocomplete",
-        options: this.patientSponsorData,
+        type: "dropdown",
         placeholder: "Select",
+        title: "",
+        options: this.patientSponsorData,
       },
       corporate: {
         type: "autocomplete",
@@ -122,7 +132,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   config1: any = {
     actionItems: false,
-    dateformat: "dd/MM/yyyy",
+    /// dateformat: "dd/MM/yyyy",
     clickedRows: false,
     //selectBox: true,
     // selectCheckBoxPosition: 10,
@@ -132,7 +142,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       "empCode",
       "dob",
       "empName",
-      "dependantName",
+      "dependentName",
       "maxid",
       "gender",
       "doj",
@@ -160,7 +170,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       dob: {
         title: "DOB",
-        type: "date",
+        type: "string",
         style: {
           width: "5.5rem",
         },
@@ -174,7 +184,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         },
         tooltipColumn: "empName",
       },
-      dependantName: {
+      dependentName: {
         title: "Dependant Name",
         type: "string",
         style: {
@@ -200,7 +210,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       },
       doj: {
         title: "DOJ",
-        type: "date",
+        type: "string",
         style: {
           width: "5rem",
         },
@@ -228,12 +238,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         style: {
           width: "5rem",
         },
-        tooltipColumn: "flag",
+        // tooltipColumn: "flag",
       },
       remark: {
         title: "Remarks",
-        type: "input",
-        readonly: true,
+        type: "textarea",
+        disabledSort: "true",
+        // readonly: true,
       },
       tooltipColumn: "remark",
     },
@@ -315,23 +326,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     private cookie: CookieService,
     private datepipe: DatePipe,
     private http: HttpService,
-    private dialogService: MessageDialogService
-  ) {
-    // setTimeout(() => {
-    //   this.employeeDependanttable.selection.selected
-    //     .pipe(takeUntil(this._destroying$))
-    //     .subscribe((res: any) => {
-    //       console.log(this.employeeDependanttable.selection);
-    //       console.log(res);
-    //       console.log(res.added[0]);
-    //       this.dependantRemarks = res.added[0].remark;
-    //       console.log(this.dependantRemarks);
-    //     });
-    // });
-  }
+    private dialogService: MessageDialogService,
+    private searchService: SearchService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private lookupservice: LookupService
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.cookie.get("LocationIACode"));
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.userId = Number(this.cookie.get("UserId"));
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
@@ -341,18 +343,71 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     );
     this.employeesponsorForm = formResult.form;
     this.questions = formResult.questions;
-    let todaydate = new Date();
+
     //this.validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
-    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
-    console.log(this.employeesponsorForm.controls["fromdate"].value);
-    this.employeesponsorForm.controls["todate"].setValue(todaydate);
-    console.log(this.employeesponsorForm.controls["todate"].value);
+    this.employeesponsorForm.controls["fromdate"].setValue(this.todaydate);
+    this.employeesponsorForm.controls["todate"].setValue(this.todaydate);
     //disable fromdate and todate
     this.employeesponsorForm.controls["fromdate"].disable();
     this.employeesponsorForm.controls["todate"].disable();
     //disable corporate dropdown
     this.employeesponsorForm.controls["corporate"].disable();
 
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata.data.SearchTerm);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+
+        const lookupdata = await this.lookupservice.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
+          console.log(this.employeesponsorForm.value.maxId);
+          this.onMaxidEnter(this.employeesponsorForm.value.maxId);
+          //   if (lookupdata[0] && "maxid" in lookupdata[0]) {
+          //     this.employeesponsorForm.controls["maxId"].setValue(
+          //       lookupdata[0]["maxid"]
+          //     );
+
+          //     this.employeesponsorForm.value.maxId = lookupdata[0]["maxid"];
+
+          //     this.onMaxidEnter(this.employeesponsorForm.controls["maxId"].value);
+          //   }
+          //  else if (lookupdata[0] && "phone" in lookupdata[0]) {
+          //   console.log(lookupdata[0]["phone"]);
+          //   this.employeesponsorForm.controls["mobileNo"].setValue(
+          //     lookupdata[0]["phone"]
+          //   );
+        }
+        // }
+        else if (lookupdata.length > 1) {
+          const similarSoundDialogref = this.dialog.open(SimilarPatientDialog, {
+            width: "60vw",
+            height: "65vh",
+            data: {
+              searchResults: lookupdata,
+            },
+          });
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.employeesponsorForm.controls["maxId"].setValue(maxID);
+                this.onMaxidEnter(
+                  this.employeesponsorForm.controls["maxId"].value
+                );
+              }
+              //this.similarContactPatientList = [];
+            });
+        }
+      });
     this.http
       .get(ApiConstants.getcompanyandpatientsponsordata)
       .pipe(takeUntil(this._destroying$))
@@ -362,6 +417,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.questions[3].options = this.companySponsorData.map((a) => {
           return { title: a.name, value: a.id };
         });
+        console.log(this.questions[3].options);
+        //this.questions[3] = { ...this.questions[3] };
       });
     this.http
       .get(ApiConstants.getCorporate)
@@ -391,100 +448,152 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.onMobilenumberEnter();
       }
     });
+    // this.employeesponsorForm.controls["company"].valueChanges.subscribe(
+    //   (companyobject) => {
+    //     console.log(companyobject);
+    //     //TO CHECK WHETHER COMPANY IS SELECTED.
+    //     if (companyobject != null) {
+    //       if (companyobject.value != null && companyobject.value != 0) {
+    //         //if (value.value != 0) {
+    //         console.log("companyobject.value!=null");
+    //         this.companySelected = true;
+    //         this.enableSave();
+    //         this.enableDelete();
+    //         this.companySponsorData.forEach((company: any) => {
+    //           if (company.id == companyobject.value) {
+    //             this.companyId = companyobject.value;
+    //             this.iommessage =
+    //               "IOM Validity:" +
+    //               this.datepipe.transform(company.iomValidity, "dd-MMM-yyyy");
+    //             console.log(company.iomValidity);
+    //             console.log(this.iommessage);
+    //           }
+    //         });
+
+    //         this.disableIOM = false;
+    //       } else {
+    //         this.disableIOM = true;
+    //         this.iommessage = "";
+    //         // this.companySelected = false;
+    //         this.companyId = 0;
+    //       }
+    //     } else {
+    //       this.disableIOM = true;
+    //       this.companyId = 0;
+    //       this.iommessage = "";
+    //       // this.companySelected = false;
+    //     }
+    //   }
+    // );
+
+    //CHNAGE FROM AUTOCOMPLETE TO DROPDOWN
     this.employeesponsorForm.controls["company"].valueChanges.subscribe(
       (companyobject) => {
         console.log(companyobject);
-        console.log(this.iommessage);
-        console.log(this.employeesponsorForm.controls["company"].value.value);
         //TO CHECK WHETHER COMPANY IS SELECTED.
         if (companyobject != null) {
-          if (companyobject.value != null && companyobject.value != 0) {
-            //if (value.value != 0) {
-            console.log("companyobject.value!=null");
-            this.companySelected = true;
-            this.enableSave();
-            this.enableDelete();
-            var selectedCompany = this.companySponsorData.find(
-              (company: any) => {
-                console.log(company);
-                console.log(company.id);
-                console.log(companyobject.value);
-                company.id == companyobject.value;
+          //if (companyobject.value != null && companyobject.value != 0) {
+          //if (value.value != 0) {
+          console.log("companyobject.value!=null");
+          this.companySelected = true;
+          this.enableSave();
+          this.enableDelete();
+
+          this.companySponsorData.forEach((company: any) => {
+            if (companyobject.value != null) {
+              if (company.id == companyobject.value) {
+                this.companyId = companyobject.value;
                 this.iommessage =
                   "IOM Validity:" +
                   this.datepipe.transform(company.iomValidity, "dd-MMM-yyyy");
+                this.employeesponsorForm.controls["company"].setValue(
+                  companyobject.value
+                );
+                console.log(company.iomValidity);
+                console.log(this.iommessage);
               }
-            );
-            this.disableIOM = false;
-            // }
-            // else if (value == null) {
-            //   this.disableIOM = true;
-            //   this.iommessage = "";
-            // }
-          } else {
-            console.log("companyobject.value =null");
-            this.disableIOM = true;
-            this.iommessage = "";
-            this.companySelected = false;
-          }
+            } else {
+              if (company.id == companyobject) {
+                this.companyId = companyobject;
+                this.iommessage =
+                  "IOM Validity:" +
+                  this.datepipe.transform(company.iomValidity, "dd-MMM-yyyy");
+                console.log(company.iomValidity);
+                console.log(this.iommessage);
+              }
+            }
+          });
+
+          this.disableIOM = false;
+          // } else {
+          //   this.disableIOM = true;
+          //   this.iommessage = "";
+          //   // this.companySelected = false;
+          //   this.companyId = 0;
+          // }
+          console.log(this.companyId);
         } else {
-          console.log("companyobject = null");
+          this.disableIOM = true;
+          this.companyId = 0;
+          this.iommessage = "";
           // this.companySelected = false;
         }
       }
     );
-    // this.employeesponsorForm.controls["fromdate"].valueChanges.subscribe(
-    //   (value) => {
-    //     console.log(value);
-    //     this.setDate();
-    //   }
-    // );
-    // this.employeesponsorForm.controls["todate"].valueChanges.subscribe(
-    //   (value) => {
-    //     console.log(value);
-    //     this.setDate();
-    //   }
-    // );
     this.employeesponsorForm.controls["datecheckbox"].valueChanges.subscribe(
       (value) => {
         console.log(value);
         if (value == true) {
-          this.setDate();
+          this.isdate = 1;
         } else {
           this.isdate = 0;
-          this.validfrom = "";
-          this.validto = "";
         }
       }
     );
 
-    // this.employeesponsorForm.controls["fromdate"].valueChanges.subscribe(
-    //   (value) => {
-    //     console.log("fromdate" + value);
-    //   }
-    // );
-    // this.employeesponsorForm.controls["todate"].valueChanges.subscribe(
-    //   (value) => {
-    //     console.log("todate" + value);
-    //   }
-    // );
+    this.employeesponsorForm.controls["fromdate"].valueChanges.subscribe(
+      (value) => {
+        if (this.isdate == 1) {
+          this.validfrom = this.datepipe.transform(
+            this.employeesponsorForm.controls["fromdate"].value,
+            "yyyy-MM-ddThh:mm:ss"
+          );
+        } else {
+          this.validfrom = this.datepipe.transform(
+            this.todaydate,
+            "yyyy-MM-ddThh:mm:ss"
+          );
+        }
+      }
+    );
+    this.employeesponsorForm.controls["todate"].valueChanges.subscribe(
+      (value) => {
+        if (this.isdate == 1) {
+          this.validto = this.datepipe.transform(
+            this.employeesponsorForm.controls["todate"].value,
+            "yyyy-MM-ddThh:mm:ss"
+          );
+        } else {
+          this.validto = this.datepipe.transform(
+            this.todaydate,
+            "yyyy-MM-ddThh:mm:ss"
+          );
+        }
+      }
+    );
     //tocall enablesave and enabledelete method to toggle buttons.
     this.employeesponsorForm.controls["employeeCode"].valueChanges.subscribe(
       (value) => {
         //  this.onEmployeecodeEnter();
       }
     );
-  }
-  setDate() {
-    this.isdate = 1;
-    this.validfrom = this.datepipe.transform(
-      this.employeesponsorForm.controls["fromdate"].value,
-      "yyyy-MM-ddThh:mm:ss"
-    );
-    this.validto = this.datepipe.transform(
-      this.employeesponsorForm.controls["todate"].value,
-      "yyyy-MM-ddThh:mm:ss"
-    );
+    setTimeout(() => {
+      this.employeesponsorForm.valueChanges.subscribe((val) => {
+        console.log("val");
+        console.log(val);
+        this.disableClear = false;
+      });
+    }, 300);
   }
 
   enableDelete() {
@@ -492,18 +601,22 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log("company" + this.companySelected);
     console.log("maxid" + this.validmaxid);
     console.log("employee code" + this.validEmployeecode);
+    console.log("dependantchecked" + this.dependantChecked);
+    console.log("maxidmapped" + this.maxidmapped);
     console.log(this.employeeDependantDetailList);
+    console.log(this.updatedTableList);
     if (
-      // this.validmaxid &&
-      // this.validEmployeecode &&
-      //this.employeeDependantDetailList.length > 0 &&
-      //&& //check for dependant selected through active status
-      // this.companySelected
       this.validmaxid &&
-      this.dependantChecked &&
+      this.employeeDependantDetailList.length > 0 &&
+      this.maxidmapped &&
+      //this.dependantChecked &&
+      this.updatedTableList.length > 0 &&
       this.companySelected
     ) {
       this.disableDelete = false;
+      //this.maxidmapped = false;
+    } else {
+      this.disableDelete = true;
     }
     console.log(this.disableDelete);
   }
@@ -513,19 +626,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log("employee code" + this.validEmployeecode);
     console.log("dependantchecked" + this.dependantChecked);
     console.log("enablesavw");
-    if (
-      this.validmaxid &&
-      this.dependantChecked &&
-      this.companySelected
-      // &&
-      // this.employeeDependantDetailList.length > 0 &&
-      //this.validEmployeecode
-      //&&
-      //  this.companySelected
-      //&&
-      //this.employeesponsorForm.value.company.value
-      //this.employeeDependantTable.selection.selected[0].checkbox
-    ) {
+    if (this.validmaxid && this.dependantChecked && this.companySelected) {
       this.disableButton = false;
     } else {
       this.disableButton = true;
@@ -533,14 +634,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(this.disableButton);
   }
 
-  maxidApicall(employeesponsorform: any) {
-    console.log("insode method");
-    employeesponsorform.fromDate = new Date();
-    employeesponsorform.mobileNo = 834738387;
-    console.log(employeesponsorform.fromDate);
-    console.log(employeesponsorform.mobileNo);
-  }
-
+  doblist: any = [];
   onMaxidEnter(maxid: any) {
     console.log(maxid);
     // let iacode = this.employeesponsorForm.controls["maxId"].value.split(".")[0];
@@ -548,16 +642,22 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     let iacode = maxid.split(".")[0];
     let regno = maxid.split(".")[1];
     this.http
-      .get(ApiConstants.getpatientsponsordataonmaxid(iacode, regno))
+      .get(
+        ApiConstants.getpatientsponsordataonmaxid(
+          iacode,
+          regno,
+          this.hsplocationId,
+          this.userId
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data) => {
-          console.log(data);
           if (data != null) {
             if (data.objPatientDemographicData.length > 0) {
-              this.validmaxid = true;
               this.cleardata();
-              this.disableClear = false;
+              this.validmaxid = true;
+              //this.disableClear = false;
               this.patientSponsorData = data as GetPatientSponsorDataInterface;
               console.log(this.patientSponsorData);
               if (
@@ -571,37 +671,18 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                     .complayId == a.id
                 );
               });
-              console.log(companydetails);
-              console.log(this.companySponsorData);
-              console.log(
-                this.patientSponsorData.objPatientDemographicData[0].complayId
-              );
-
               let maxid =
                 this.patientSponsorData.objPatientDemographicData[0].iacode +
                 "." +
                 this.patientSponsorData.objPatientDemographicData[0]
                   .registrationNo;
-              console.log(this.questions[0].value);
               this.employeesponsorForm.controls["maxId"].setValue(maxid);
-              console.log(this.employeesponsorForm.controls["maxId"].value);
               this.employeesponsorForm.controls["mobileNo"].setValue(
                 this.patientSponsorData.objPatientDemographicData[0].mobileNo
               );
               this.employeesponsorForm.controls["employeeCode"].setValue(
                 this.patientSponsorData.objPatientDemographicData[0].empCode
               );
-              // this.employeesponsorForm.controls["fromdate"].setValue(
-              //   this.patientSponsorData.objPatientDemographicData[0].validfrom
-              // );
-              // this.employeesponsorForm.controls["todate"].setValue(
-              //   this.patientSponsorData.objPatientDemographicData[0].validto
-              // );
-
-              // this.questions[1].value =
-              //   this.patientSponsorData.objPatientDemographicData[0].mobileNo;
-              // this.questions[2].value =
-              //   this.patientSponsorData.objPatientDemographicData[0].empCode;
               if (companydetails[0] != undefined) {
                 this.employeesponsorForm.controls["company"].setValue({
                   title: companydetails[0].name,
@@ -613,10 +694,17 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
               //this.questions[3].value=companyObject.title;
 
+              // this.employeesponsorForm.controls["fromdate"].setValue(
+              //   this.patientSponsorData.objPatientDemographicData[0].validfrom
+              // );
+              // this.employeesponsorForm.controls["todate"].setValue(
+              //   this.patientSponsorData.objPatientDemographicData[0].validto
+              // );
               this.questions[6].value =
                 this.patientSponsorData.objPatientDemographicData[0].validfrom;
               this.questions[7].value =
                 this.patientSponsorData.objPatientDemographicData[0].validto;
+
               //Assign Second row values
               this.name =
                 this.patientSponsorData.objPatientDemographicData[0].ptnName;
@@ -635,22 +723,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.patientSponsorData.objPatientDemographicData[0].ssn;
 
               //Assign tabledata
-              // data.objEmployeeDependentData.push({
-              //   slno: data.objEmployeeDependentData.length,
-              // });
-              console.log(data);
               this.employeeDependantDetailList =
                 this.patientSponsorData.objEmployeeDependentData;
-              this.employeeDependantDetailList.forEach((item) => {
-                if (item.flag == 1) {
-                  console.log("flag 1");
-                  this.dependantChecked = true;
-                } else {
-                  // this.dependantChecked = false;
-                }
-                console.log(this.dependantChecked);
-                // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
-              });
               this.updatedTableList =
                 this.patientSponsorData.objPatientSponsorDataAuditTrail;
               for (
@@ -662,35 +736,61 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.updatedTableList[i].slno = i + 1;
                 if (this.employeeDependantDetailList.length > 0) {
                   this.updatedTableList[0].flag = true;
+                  console.log("updatedtable flag true");
                 }
               }
-              console.log(this.updatedTableList);
               this.updatedTableList.forEach((item) => {
                 item.addedDateTime = this.datepipe.transform(
                   item.addedDateTime,
-                  "dd/MM/yyyy, hh:mm:ss a"
+                  "dd/MM/yyyy hh:mm:ss a"
                 );
                 item.updatedDateTime = this.datepipe.transform(
                   item.updatedDateTime,
                   "dd/MM/yyyy"
                 );
               });
-              this.enableSave();
-              this.enableDelete();
+              if (this.employeeDependantDetailList.length > 0) {
+                this.employeesponsorForm.controls["employeeCode"].disable();
+              }
+
+              this.employeeDependantDetailList.forEach((item) => {
+                if (item.flag == 1) {
+                  if (item.maxid != "") {
+                    this.maxidmapped = true;
+                  }
+                  this.empid = item.id;
+                  this.dependantRemarks = item.remark;
+                  console.log("flag 1");
+                  this.dependantChecked = true;
+                  this.enableSave();
+                  this.enableDelete();
+                } else {
+                  // this.dependantChecked = false;
+                }
+                console.log(this.dependantChecked);
+                // let date = new Date(item.dob.trim()).toDateString();
+                // console.log(date);
+                item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+                item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
+              });
             } else {
               this.validmaxid = false;
-              this.disableClear = true;
+              //this.disableClear = true;
+              this.questions[1].elementRef.focus();
               this.employeesponsorForm.controls["maxId"].setErrors({
                 incorrect: true,
               });
-              this.questions[0].customErrorMessage = "Invalid Maxid";
+              this.questions[0].customErrorMessage = " Invalid Maxid";
               //this.dialogService.info("Max ID doesn't exist");
             }
           } else {
+            //this.validmaxid=true;
+            console.log("else part of data != null");
+            this.questions[1].elementRef.focus();
             this.employeesponsorForm.controls["maxId"].setErrors({
               incorrect: true,
             });
-            this.questions[0].customErrorMessage = "Invalid Maxid";
+            this.questions[0].customErrorMessage = " Invalid Maxid";
           }
         },
         (error) => {
@@ -705,7 +805,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             this.questions[0].customErrorMessage = "Invalid Maxid";
             //this.dialogService.info("Please enter  valid max ID");
           } else if (error.title == "One or more validation errors occurred.") {
-            this.dialogService.info("One or more validation errors occurred.");
+            this.employeesponsorForm.controls["maxId"].setErrors({
+              incorrect: true,
+            });
+            this.questions[0].customErrorMessage = "Invalid Maxid";
+            //this.dialogService.info("One or more validation errors occurred.");
           } else if (
             error.error ==
             "There is an error occured while processing your transaction, check with administrator"
@@ -717,22 +821,22 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         }
       );
   }
-  similarPatientlist: PatientSearchModel[] = [];
+  //similarPatientlist: PatientSearchModel[] = [];
+  similarPatientlist: SimilarSoundPatientResponse[] = [];
+  maxID!: string;
   onMobilenumberEnter() {
     this.http
-      .get(
-        ApiConstants.getSimilarPatientonMobilenumber(
-          this.employeesponsorForm.controls["mobileNo"].value
-        )
-      )
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.employeesponsorForm.controls["mobileNo"].value,
+      })
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (data) => {
           console.log(data);
-          this.similarPatientlist = data as PatientSearchModel[];
-          console.log(this.similarPatientlist);
+          // this.similarPatientlist = data as PatientSearchModel[];
+          this.similarPatientlist = data as SimilarSoundPatientResponse[];
           if (this.similarPatientlist != null) {
-            if (this.similarPatientlist.length > 0) {
+            if (this.similarPatientlist.length > 1) {
               const similarPatientDialogref = this.dialog.open(
                 SimilarPatientDialog,
                 {
@@ -749,15 +853,18 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 .subscribe(
                   (result) => {
                     if (result) {
-                      console.log(result.data["added"][0].maxid);
-                      let maxID = result.data["added"][0].maxid;
-                      this.onMaxidEnter(maxID);
+                      this.maxID = result.data["added"][0].maxid;
+                      this.onMaxidEnter(this.maxID);
                     }
                   },
                   (error) => {
                     console.log(error);
                   }
                 );
+            } else if (this.similarPatientlist.length == 1) {
+              console.log(this.similarPatientlist);
+              this.maxID = this.similarPatientlist[0].maxid;
+              this.onMaxidEnter(this.maxID);
             }
           }
         },
@@ -766,7 +873,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         }
       );
   }
+  employeelistLength: number = 0;
   onEmployeecodeEnter() {
+    this.empid = null;
     this.http
       .get(
         ApiConstants.getEmployeeStaffDependantDetails(
@@ -778,29 +887,38 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         console.log(data);
         if (data != null) {
           if (data.length > 0) {
-            // data = data.forEach((e: any) => {
-            //   e.dob = this.datepipe.transform(e.dob, "dd/MM/yyyy");
-            //   return e;
-            // });
             console.log(data);
+            this.employeesponsorForm.controls["employeeCode"].disable();
             this.validEmployeecode = true;
-            this.enableSave();
-            this.enableDelete();
             console.log(data);
             this.employeeDependantDetailList =
               data as EmployeeDependantDetails[];
+            //to check the checkbox on entering employee code details.
             this.employeeDependantDetailList.forEach((item) => {
-              if (item.flag == 1) {
+              if (item.maxid != "") {
+                item.flag = 1;
+                this.empid = item.id;
+                this.dependantRemarks = item.remark;
                 this.dependantChecked = true;
+                // if (
+                //   this.employeesponsorForm.controls["maxId"].value == item.maxid
+                // ) {
+                this.maxidmapped = true;
+                // }
+                //this.maxidmapped = true;
+                console.log(this.empid);
+                this.enableSave();
+                this.enableDelete();
               } else {
-                this.dependantChecked = false;
+                this.employeelistLength++;
+                console.log(this.empid);
               }
-              // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+              item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
+              item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
             });
-            // this.employeesponsorForm.controls["employeeCode"].disable();
-            console.log(this.employeeDependantDetailList);
           } else {
             console.log("employee data list length =0");
+            this.questions[3].elementRef.focus();
             this.validEmployeecode = false;
             this.employeesponsorForm.controls["employeeCode"].setErrors({
               incorrect: true,
@@ -809,83 +927,106 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             //this.dialogService.info("Employee code does not exist");
           }
         } else {
+          this.questions[3].elementRef.focus();
+          this.employeesponsorForm.controls["employeeCode"].setErrors({
+            incorrect: true,
+          });
+          this.questions[2].customErrorMessage = "Invalid Employee code";
           this.validEmployeecode = false;
         }
       });
-
-    // this.http
-    //   .get(
-    //     ApiConstants.getpatientcompanysponsoronempcode(
-    //       this.employeesponsorForm.controls["employeeCode"].value
-    //     )
-    //   )
-    //   .subscribe((data) => {
-    //     this.patientDetailListonEmpcode =
-    //       data as GetPatientCompanySponsorOnEmpcode[];
-    //     console.log(this.patientDetailListonEmpcode);
-    //     if (this.patientDetailListonEmpcode.length == 0) {
-    //       this.dialogService.info("Employee Code does not Exist");
-    //     } else {
-    //     }
-    //   });
   }
 
   //SAVE DIALOG
   employeeSave() {
-    // this.employeeDependanttable.selection.selected
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((res: any) => {
-    //     console.log(this.employeeDependanttable.selection);
-    //     console.log(res);
-    //     console.log(res.added[0]);
-    //     this.dependantRemarks = res.added[0].remark;
-    //     console.log(this.dependantRemarks);
-    //   });
     console.log(this.dependantChecked);
     console.log(this.employeeDependanttable.selection.selected);
-    //console.log(this.employeeDependanttable.selection.selected[0].id);
+    console.log(this.employeesponsorForm.controls["company"].value);
+    console.log(this.companyId);
     // this.employeeDependanttable.config.columnsInfo.remark.disable();
-    //console.log(this.employeeDependanttable);
-    //  console.log(this.employeeDependanttable.selection.selected[0].relationship);
-    //  return;
     console.log("inside save");
     let dialogRef = this.dialog.open(SavedialogComponent, {
       width: "25vw",
       height: "30vh",
     });
     dialogRef.afterClosed().subscribe((value) => {
-      console.log(value);
       if (value == true) {
-        console.log(this.savedeleteEmployeeObject);
-        console.log("inside value =true");
-        this.http
-          .post(
-            ApiConstants.saveEmployeeSponsorData,
-            this.getSaveDeleteEmployeeObj()
-          )
-          .subscribe(
-            (data) => {
-              console.log(data);
-              this.updatedTableList =
-                data as SaveDeleteEmployeeSponsorResponse[];
-              for (let i = 0; i < this.updatedTableList.length; i++) {
-                this.updatedTableList[i].slno = i + 1;
-                this.updatedTableList[0].flag = true;
+        if (this.empid == null) {
+          this.dialogService.info("Please select one dependant");
+        } else if (this.companyId == 0) {
+          this.dialogService.info("Please select company");
+        } else {
+          this.http
+            .post(
+              ApiConstants.saveEmployeeSponsorData,
+              this.getSaveDeleteEmployeeObj()
+            )
+            .subscribe(
+              (data) => {
+                console.log(data);
+                this.updatedTableList =
+                  data as SaveDeleteEmployeeSponsorResponse[];
+                this.updatedTableList.forEach((item) => {
+                  item.addedDateTime = this.datepipe.transform(
+                    item.addedDateTime,
+                    "dd/MM/yyyy hh:mm:ss a"
+                  );
+                  item.updatedDateTime = this.datepipe.transform(
+                    item.updatedDateTime,
+                    "dd/MM/yyyy"
+                  );
+                });
+
+                for (let i = 0; i < this.updatedTableList.length; i++) {
+                  this.updatedTableList[i].slno = i + 1;
+                  this.updatedTableList[0].flag = true;
+                }
+                console.log(this.empid);
+                //To SET THE MAXID AGAINST THE MAPPED DEPENDANT
+                var selectedIndex = this.employeeDependantDetailList
+                  .map((a) => a.id)
+                  .indexOf(this.empid);
+                console.log(selectedIndex);
+                this.employeeDependantDetailList.forEach((item, index) => {
+                  if (item.maxid != "") {
+                    if (item.id != this.empid) {
+                      console.log("get the maxid and bind");
+                      this.employeeDependantDetailList[index].maxid = "";
+                      this.employeeDependantDetailList[selectedIndex].maxid =
+                        this.employeesponsorForm.controls["maxId"].value;
+                    }
+                  } else {
+                    if (selectedIndex != -1) {
+                      this.employeeDependantDetailList[selectedIndex].maxid =
+                        this.employeesponsorForm.controls["maxId"].value;
+                      this.maxidmapped = true;
+                    }
+                  }
+                });
+                //Once saved, empid=null;
+                this.enableDelete();
+                //this.empid = null; COMMENTED AS IT WAS SHOWING POPUP ON SECOND SAVE
+                this.employeelistLength = 0;
+                this.dialogService.success("Saved Successfully");
+              },
+              (error) => {
+                console.log(error);
+                if (error.error == "Please select Maxid!") {
+                  this.dialogService.info("Please enter Maxid");
+                } else if (error.error == "Please select company!") {
+                  this.dialogService.info("Please select company");
+                } else if (error.error == "Please enter employee code!") {
+                  this.dialogService.info("Please enter employee code");
+                } else if (
+                  error.error.errors.regno[0] == "The regno field is required."
+                ) {
+                  this.dialogService.info("Please enter Maxid");
+                } else if (error.error.errors.$.compid.length > 0) {
+                  this.dialogService.info("Please select company");
+                }
               }
-              console.log(this.updatedTableList);
-              this.dialogService.success("Saved Successfully");
-            },
-            (error) => {
-              console.log(error.error);
-              if (error.error == "Please select Maxid!") {
-                this.dialogService.info("Please enter Maxid");
-              } else if (error.error == "Please select company!") {
-                this.dialogService.info("Please select company");
-              } else if (error.error == "Please enter employee code!") {
-                this.dialogService.info("Please enter employee code");
-              }
-            }
-          );
+            );
+        }
       }
       console.log(this.getSaveDeleteEmployeeObj());
     });
@@ -894,11 +1035,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   //DELETE DIALOG
   onDelete: boolean = false;
   employeeDelete() {
+    console.log(this.empid);
     console.log("inside delete");
     this.onDelete = true;
-
-    console.log(this.getSaveDeleteEmployeeObj());
-
     let deleteDialogref = this.dialog.open(DeletedialogComponent, {
       width: "25vw",
       height: "30vh",
@@ -909,27 +1048,67 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result) {
-          this.http
-            .post(
-              ApiConstants.saveEmployeeSponsorData,
-              this.getSaveDeleteEmployeeObj()
-            )
-            .subscribe((data) => {
-              console.log(data);
-              this.updatedTableList =
-                data as SaveDeleteEmployeeSponsorResponse[];
-              this.employeeDependantDetailList = [];
-              this.employeesponsorForm.controls["company"].setValue(null);
-              this.iommessage = "";
-              this.disableIOM = true;
-            });
+          if (
+            this.employeelistLength == this.employeeDependantDetailList.length
+          ) {
+            this.dialogService.info("max id not mapped yet");
+          } else if (this.companyId == 0) {
+            this.dialogService.info("Please select company");
+          } else {
+            this.http
+              .post(
+                ApiConstants.saveEmployeeSponsorData,
+                this.getSaveDeleteEmployeeObj()
+              )
+              .subscribe(
+                (data) => {
+                  console.log(data);
+                  this.updatedTableList =
+                    data as SaveDeleteEmployeeSponsorResponse[];
+                  for (let i = 0; i < this.updatedTableList.length; i++) {
+                    this.updatedTableList[i].slno = i + 1;
+                  }
+                  this.employeeDependantDetailList = [];
+                  this.employeesponsorForm.controls["company"].setValue(null);
+                  this.iommessage = "";
+                  this.disableIOM = true;
+                  this.employeesponsorForm.controls["datecheckbox"].setValue(0);
+                  this.employeesponsorForm.controls["fromdate"].setValue(
+                    this.todaydate
+                  );
+                  this.employeesponsorForm.controls["todate"].setValue(
+                    this.todaydate
+                  );
+                  this.employeesponsorForm.controls["fromdate"].disable();
+                  this.employeesponsorForm.controls["todate"].disable();
+                  this.employeesponsorForm.controls["employeeCode"].enable();
+                  // this.dependantChecked = false; //COMMENETED TO PREVENT TOGGLING SAVE BUTTON
+                  this.maxidmapped = false;
+                  //this.companySelected = false;
+                  this.empid = null;
+                  this.employeelistLength = 0;
+                  this.dialogService.success("Deleted Successfully");
+                },
+                (error) => {
+                  console.log(error);
+                  // if (error.error.errors.($.compid).length > 0) {
+                  //   this.dialogService.info("Please select company");
+                  // }
+                }
+              );
+          }
+
+          //}
         }
       });
   }
   flag!: number;
-  empid!: number;
+  empid!: any;
   savedeleteEmployeeObject!: SaveDeleteEmployeeSponsorRequest;
+  iacode!: string;
+  regno!: string;
   getSaveDeleteEmployeeObj(): SaveDeleteEmployeeSponsorRequest {
+    console.log(this.empid);
     if (this.employeeDependanttable.selection.selected[0] != undefined) {
       if (this.employeeDependanttable.selection.selected[0].flag == 1) {
         this.empid = this.employeeDependanttable.selection.selected[0].id;
@@ -953,11 +1132,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         }
       });
     }
-    //console.log(this.employeeDependanttable.selection.selected[0].id);
-    console.log(this.employeesponsorForm.controls["employeeCode"].value);
-    console.log(this.employeesponsorForm.controls["maxId"].value);
-    let iacode = this.employeesponsorForm.controls["maxId"].value.split(".")[0];
-    let regno = this.employeesponsorForm.controls["maxId"].value.split(".")[1];
+
     // let validfrom = this.datepipe.transform(
     //   this.employeesponsorForm.controls["fromdate"].value,
     //   "yyyy-MM-ddThh:mm:ss"
@@ -968,19 +1143,41 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     // );
     if (this.updatedTableList.length == 0 && this.onDelete == false) {
       this.flag = 1;
+      this.iacode =
+        this.employeesponsorForm.controls["maxId"].value.split(".")[0];
+      this.regno =
+        this.employeesponsorForm.controls["maxId"].value.split(".")[1];
     } else if (this.updatedTableList.length > 0 && this.onDelete == false) {
       this.flag = 2;
+      this.iacode =
+        this.employeesponsorForm.controls["maxId"].value.split(".")[0];
+      this.regno =
+        this.employeesponsorForm.controls["maxId"].value.split(".")[1];
     } else if (this.onDelete == true) {
       this.flag = 3;
       this.onDelete = false;
+      this.employeeDependantDetailList.forEach((item) => {
+        if (item.maxid != "") {
+          this.empid = item.id;
+          this.dependantRemarks = item.remark;
+          this.iacode =
+            this.employeesponsorForm.controls["maxId"].value.split(".")[0];
+          this.regno =
+            this.employeesponsorForm.controls["maxId"].value.split(".")[1];
+          // this.iacode = item.maxid.split(".")[0];
+          // this.regno = item.maxid.split(".")[1];
+        } else {
+          // this.iacode = "";
+          //this.regno = "";
+        }
+      });
     }
-    console.log(this.flag);
     return new SaveDeleteEmployeeSponsorRequest(
       this.flag,
-      this.employeesponsorForm.value.company.value,
+      this.companyId,
       0,
-      regno,
-      iacode,
+      this.regno,
+      this.iacode,
       69,
       this.userId,
       0, //corporate id
@@ -1000,25 +1197,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(event);
     this.employeesponsorForm.controls["datecheckbox"].valueChanges.subscribe(
       (value) => {
-        console.log(value);
         if (value == true) {
-          // this.isdate = 1;
-          // this.validfrom = this.datepipe.transform(
-          //   this.employeesponsorForm.controls["fromdate"].value,
-          //   "yyyy-MM-ddThh:mm:ss"
-          // );
-          // this.validfrom = this.datepipe.transform(
-          //   this.employeesponsorForm.controls["fromdate"].value,
-          //   "yyyy-MM-ddThh:mm:ss"
-          // );
           this.employeesponsorForm.controls["fromdate"].enable();
           this.employeesponsorForm.controls["todate"].enable();
         } else {
-          // this.isdate = 0;
-          // this.validfrom = null;
-          // this.validto = null;
-          // this.employeesponsorForm.controls["fromdate"].disable();
-          // this.employeesponsorForm.controls["todate"].disable();
+          this.employeesponsorForm.controls["fromdate"].disable();
+          this.employeesponsorForm.controls["todate"].disable();
         }
       }
     );
@@ -1027,39 +1211,72 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(event);
     if (event.column == "flag") {
       if (event.row.flag == 0) {
-        console.log("flag is 0 so it is getting checked");
+        console.log("flag is 0 & it is getting checked");
         let employeeid = event.row.id;
-        this.employeeDependantDetailList.forEach((item) => {
-          if (item.id != employeeid) {
-            item.flag = 0;
-            console.log("set other flags as 0");
-          }
-        });
+        if (this.employeeDependantDetailList.length == 1) {
+          this.empid = employeeid;
+          this.dependantRemarks = event.row.remarks;
+        } else {
+          this.employeeDependantDetailList.forEach((item) => {
+            if (item.id != employeeid) {
+              item.flag = 0;
+              this.empid = employeeid;
+              this.dependantRemarks = event.row.remarks;
+              console.log("set other flags as 0");
+            }
+          });
+        }
+
         this.dependantChecked = true;
         this.enableSave();
         this.enableDelete();
       } else {
-        this.dependantChecked = false;
+        this.empid = null;
+        this.dependantRemarks = "";
+        //this.dependantChecked = false;
       }
     }
-    // if(event.row.flag == 0)
   }
-
+  iomdata: any;
   iomClick() {
     console.log("inside iomclick");
     //DO an api call here
     this.http
-      .get(ApiConstants.getopcompanyiomlocationwise)
+      .get(
+        ApiConstants.getopcompanyiomlocationwise(
+          this.hsplocationId,
+          this.companyId
+        )
+      )
       .subscribe((data) => {
         console.log(data);
+        this.iomdata = data;
       });
-    this.dialog.open(CompanydialogComponent, { width: "40vw", height: "70vh" });
+    this.dialog.open(CompanydialogComponent, {
+      width: "40vw",
+      height: "70vh",
+      data: {
+        iomresponse: this.iomdata,
+      },
+    });
+    // debugger;
+    // const rtfToHTML = require("@iarna/rtf-to-html");
+    // const fs = require("fs");
+    // fs.createReadStream(
+    //   this.iomdata.pipe(
+    //     rtfToHTML((err: any, html: any) => {
+    //       // …
+    //       console.log(html);
+    //     })
+    //   )
+    // );
   }
 
   cleardata() {
-    let todaydate = new Date();
-    this.employeesponsorForm.controls["fromdate"].setValue(todaydate);
-    this.employeesponsorForm.controls["todate"].setValue(todaydate);
+    console.log(this.empid);
+    this.employeesponsorForm.reset();
+    this.employeesponsorForm.controls["fromdate"].setValue(this.todaydate);
+    this.employeesponsorForm.controls["todate"].setValue(this.todaydate);
     this.employeesponsorForm.controls["employeeCode"].enable();
     this.employeeDependantDetailList = [];
     this.updatedTableList = [];
@@ -1073,101 +1290,19 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.disableIOM = true;
     this.disableButton = true;
     this.disableDelete = true;
-    this.disableClear = true;
+
+    this.dependantChecked = false;
+    this.validmaxid = false;
+    this.companySelected = false;
+    this.maxidmapped = false;
     this.employeesponsorForm.controls["maxId"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
+    this.disableClear = true;
   }
 
-  //HARD CODED DATA FOR EMPLOYEE DEPENDANT TABLE
-  data: any[] = [
-    {
-      groupCompany: "Max healthcare",
-      empCode: "B015330",
-      dob: "10/1/2017",
-      employeeName: "Mr.Amit kumar",
-      dependantName: "priti",
-      maxid: "",
-      gender: "F",
-      doj: "10/1/2017",
-      age: "53",
-      relationship: "Mother",
-      remarks: "",
-    },
-    {
-      groupCompany: "Max healthcare",
-      empCode: "B015330",
-      dob: "10/1/2017",
-      employeeName: "Mr.Amit kumar",
-      dependantName: "priti",
-      maxid: "",
-      gender: "F",
-      doj: "10/1/2017",
-      age: "53",
-      relationship: "Mother",
-      remarks: "",
-    },
-    {
-      groupCompany: "Max healthcare",
-      empCode: "B015330",
-      dob: "10/1/2017",
-      employeeName: "Mr.Amit kumar",
-      dependantName: "priti",
-      maxid: "",
-      gender: "F",
-      doj: "10/1/2017",
-      age: "53",
-      relationship: "Mother",
-      remarks: "",
-    },
-    {
-      groupCompany: "Max healthcare",
-      empCode: "B015330",
-      dob: "10/1/2017",
-      employeeName: "Mr.Amit kumar",
-      dependantName: "priti",
-      maxid: "",
-      gender: "F",
-      doj: "10/1/2017",
-      age: "53",
-      relationship: "Mother",
-      remarks: "",
-    },
-  ];
-
-  //HARD CODED DATA FOR SECOIND TABLE
-  data1: any[] = [
-    {
-      slno: "1",
-      companyname: "xxxxx",
-      dateandtime: "05/11/2022 08:48:52 AM",
-      addedby: "xxx",
-      updateddate: "05/11/2022",
-      updatedby: "xxxx",
-    },
-    {
-      slno: "2",
-      companyname: "yyy",
-      dateandtime: "05/11/2022 08:48:52 AM",
-      addedby: "xxx",
-      updateddate: "05/11/2022",
-      updatedby: "xxxx",
-    },
-    {
-      slno: "3",
-      companyname: "zzz",
-      dateandtime: "05/11/2022 08:48:52 AM",
-      addedby: "xxx",
-      updateddate: "05/11/2022",
-      updatedby: "xxxx",
-    },
-    {
-      slno: "4",
-      companyname: "aaa",
-      dateandtime: "05/11/2022 08:48:52 AM",
-      addedby: "xxx",
-      updateddate: "05/11/2022",
-      updatedby: "xxxx",
-    },
-  ];
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }

@@ -44,34 +44,19 @@
                         </div>
                         <div class="flex w-1/20"></div>
                         <div class="flex">
-                            <div class="serachcss">
-                                <button mat-raised-button color="primary" (click)="search()" class="searchbtn">
-                                    <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35" height="38"
-                                        viewBox="0 0 35 35">
-                                        <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                                            <rect id="Rectangle_496" data-name="Rectangle 496" width="39" height="34"
-                                                rx="4" transform="translate(-12883 23266)" fill="#fff" />
-                                            <g id="Group_1383" data-name="Group 1383"
-                                                transform="translate(-14630.995 22990.941)">
-                                                <path id="Path_296" data-name="Path 296"
-                                                    d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
-                                                    transform="translate(1768.724 298.227) rotate(-39)"
-                                                    fill="#002b58" />
-                                                <path id="Path_297" data-name="Path 297"
-                                                    d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
-                                                    transform="translate(1754.018 279.288)" fill="#002b58" />
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    <span class="ml-7 mb-5">
-                                        Search
-                                    </span>
-
+                            <div class="float-right flex clearbtn">
+                                <!-- <button mat-raised-button color="primary" (click)="search()" [disabled]="searchbtn">
+                                    <img src="assets/lens.svg" class="lens-icon mr-5" [ngClass]="{disableclass:searchbtn}">                                
+                                    <span class="ml-4">Search</span>
+                                </button> -->
+                                <button mat-raised-button color="primary" class="pl-9"(click)="search()" [disabled]="searchbtn">
+                                    <img src="assets/lens.svg" class="lens-icon " [ngClass]="{disableclass:searchbtn}">                                
+                                    Search
                                 </button>
                                 
                             </div>
                             <div class="float-right flex clearbtn">
-                                <button mat-raised-button color="primary" class="ml-3 "
+                                <button mat-raised-button color="primary" class="ml-3"
                                     (click)="this.staffForm.reset();clear()">Clear</button>
                             </div>
                         </div>
@@ -84,7 +69,7 @@
 
                 <!----------------------------------------------------FIRST TABLE------------------------------------------------------------->
                 <div class="gridh mt-2 ">
-                    <maxhealth-table [config]="config1" [data]="staffDetails" (columnClick)="staffColumnClick($event)">
+                    <maxhealth-table [config]="staffListConfig" [data]="staffDetail" (columnClick)="staffColumnClick($event)">
                     </maxhealth-table>
                 </div>
                 <!----------------------------------------------------SECOND TABLE------------------------------------------------------------->
@@ -92,7 +77,7 @@
                     <mat-label class="max-health-primary-color">Employee Dependent Detail</mat-label>
                 </div>
                 <div class="gridh mt-2">
-                    <maxhealth-table [config]="config2" [data]="staffDeptDetails"></maxhealth-table>
+                    <maxhealth-table [config]="staffDetailConfig" [data]="staffDeptDetails"></maxhealth-table>
                 </div>
                
             </div>

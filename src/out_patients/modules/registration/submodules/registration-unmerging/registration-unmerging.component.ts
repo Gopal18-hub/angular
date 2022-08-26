@@ -21,6 +21,8 @@ import { MessageDialogService } from "../../../../../shared/ui/message-dialog/me
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "out-patients-registration-unmerging",
@@ -49,6 +51,12 @@ export class RegistrationUnmergingComponent implements OnInit {
     ssn: new FormControl(""),
   });
 
+  quickLinksRoutes: any = {
+    1: "/out-patient-billing",
+    2: "/out-patient-billing/details",
+    3: "/out-patient-billing/deposit",
+  };
+
   @ViewChild("table") table: any;
 
   config: any = {
@@ -56,23 +64,31 @@ export class RegistrationUnmergingComponent implements OnInit {
     actionItemList: [
       {
         title: "OP Billing",
-        // actionType: "link",
-        // routeLink: "",
+        actionType: "custom",
+        linkid: 1,
       },
       {
         title: "Bill Details",
+        actionType: "custom",
+        linkid: 2,
       },
       {
         title: "Deposits",
+        actionType: "custom",
+        linkid: 3,
       },
       {
         title: "Admission",
+        linkid: 4,
       },
       {
         title: "Admission log",
+        linkid: 5,
       },
       {
         title: "Visit History",
+        actionType: "custom",
+        linkid: 6,
       },
     ],
     dateformat: "dd/MM/yyyy",
@@ -152,7 +168,8 @@ export class RegistrationUnmergingComponent implements OnInit {
     private patientServie: PatientService,
     private searchService: SearchService,
     private messageDialogService: MessageDialogService,
-    private router: Router
+    private router: Router,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -229,6 +246,40 @@ export class RegistrationUnmergingComponent implements OnInit {
                   this.unmergebuttonDisabled = true;
                 }
               });
+            this.table.actionItemClickTrigger.subscribe((res: any) => {
+              console.log(res);
+              if (res) {
+                if (res.item && res.data) {
+                  //if else condition due to queryparam for deposite
+                  if (res.item["linkid"] == 1) {
+                    if (this.quickLinksRoutes[res.item["linkid"]]) {
+                      this.router.navigate(
+                        [this.quickLinksRoutes[res.item["linkid"]]],
+                        {
+                          queryParams: { maxId: res.data["maxid"] },
+                        }
+                      );
+                    }
+                  } else if (res.item["linkid"] == 6) {
+                    this.matDialog.open(VisitHistoryComponent, {
+                      width: "70%",
+                      height: "50%",
+                      data: {
+                        maxid: res.data["maxid"],
+                        docid: "",
+                      },
+                    });
+                  } else if (this.quickLinksRoutes[res.item["linkid"]]) {
+                    this.router.navigate(
+                      [this.quickLinksRoutes[res.item["linkid"]]],
+                      {
+                        queryParams: { maxID: res.data["maxid"] },
+                      }
+                    );
+                  }
+                }
+              }
+            });
           });
         },
         (error: any) => {

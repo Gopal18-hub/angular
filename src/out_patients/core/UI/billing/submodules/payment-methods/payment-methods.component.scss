@@ -1,3 +1,4 @@
+.paymentmethod-wrapper{
 .height{
     height: 63vh;
 }
@@ -5,6 +6,7 @@
     height: 30px !important;
     color: #004084 ;
     opacity: 1 !important;
+    font-weight: 500!important;
 }
 ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-labels
 {
@@ -47,4 +49,20 @@
 }
 ::ng-deep .maxhealth-vertical-tab .mat-tab-group .mat-tab-body-wrapper .mat-tab-body{
     left: 50px !important;
+}
+.width{
+    width: 65%!important;
+}
+.creditbuttonwidth
+{
+    .mat-raised-button
+    {
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+// ::ng-deep .mat-raised-button {
+//     min-width: 120px !important;
+// }
+}
 }

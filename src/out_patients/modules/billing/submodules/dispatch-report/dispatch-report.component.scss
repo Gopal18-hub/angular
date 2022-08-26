@@ -11,11 +11,16 @@
     white-space: nowrap;
 }
 .h-68{
-    height: 68%;
+    height: 76%;
 }
 .dispatch-body-wrapper{
     ::ng-deep .mat-form-field-wrapper{
         padding-bottom: 0 !important;
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
     }
     ::ng-deep mat-radio-group {
         flex-direction: row !important;
@@ -46,12 +51,39 @@
             color: #000;
             border-radius: 6px;
         }
+        ::ng-deep .mat-datepicker-toggle{
+            display: none;
+        }
     }
     .label{
         ::ng-deep mat-label{
             display: none !important;
         }
     } 
+    ::ng-deep .editable-textarea-label{
+        border: 1px solid #a7a7a7;
+        background-color: #fff;
+        color: #000;
+        border-radius: 5px;
+        padding-left: 7px;
+    }
+    .mar-left-12{
+        margin-left: 6.7rem;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    .searchbtn{
+        ::ng-deep .mat-button-wrapper{
+            padding-left: 20px !important;
+        }
+    }
+
 }
+    
 
 

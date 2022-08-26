@@ -9,6 +9,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { CrystalReportModule } from "../../modules/crystal-report";
 import { PromptReportModule } from "../../modules/prompt-report";
 import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
+import { DatePipe } from "@angular/common";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,8 +21,11 @@ import { MaxHealthMessageDialogModule } from "@shared/ui/message-dialog";
     MaxHealthMessageDialogModule,
     CrystalReportModule,
     PromptReportModule,
+    
   ],
-  providers: [],
+  providers: [
+    DatePipe,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

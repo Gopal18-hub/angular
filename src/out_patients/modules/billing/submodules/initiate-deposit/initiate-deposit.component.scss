@@ -1,3 +1,4 @@
+.iniatedepositwrapper{
 .bg-initiatedeposit {
     background-color: #F6F6F6;
     color: #004084;
@@ -5,6 +6,10 @@
 
 .bg-white {
     background-color: white;
+    color: rgba(0, 0, 0, 0.87) !important;
+    ::ng-deep .mat-error{
+        margin-top: 7% !important;
+    }
 }
 
 ::ng-deep .mat-form-field-wrapper {
@@ -12,7 +17,9 @@
     padding-bottom: 0 !important;
 
 }
-
+.bg-black {
+    color: rgba(0, 0, 0, 0.87);
+}
 .wt-nowrap {
     white-space: nowrap;
 }
@@ -44,4 +51,22 @@
     top: 2px;
     height: 90%;
     width: 25%;
+}
+
+.maxidwidth{
+    width: 12.5% !important;
+}
+.wserach{
+    width: 8% !important;
+}
+.namewidth{
+    width: 22% !important;
+}
+.initiatedepositbutton{
+    .mat-raised-button{
+        min-width: initial !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+}    
 }

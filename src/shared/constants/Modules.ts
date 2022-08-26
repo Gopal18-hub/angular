@@ -130,7 +130,7 @@ export namespace MaxModules {
             {
               id: 216,
               title: "Miscellaneous Billing",
-              defaultPath: "/out-patient-billing/miscellaneous-billing",
+              defaultPath: "/out-patient-billing/miscellaneous-billings",
               globalSearchKey: "global",
             },
             {
@@ -154,15 +154,11 @@ export namespace MaxModules {
             {
               id: 220,
               title: "Post Discharge Follow Up Billing",
-              defaultPath: "/out-patient-billing/",
+              defaultPath:
+                "/out-patient-billing/post-discharge-follow-up-billing",
               globalSearchKey: "global",
             },
-            {
-              id: 67,
-              title: "Dispatch Report",
-              defaultPath: "/out-patient-billing/dispatch-report",
-              globalSearchKey: "global",
-            },
+            // dispatch
             {
               id: 222,
               title: "Expired Patient Check",
@@ -191,9 +187,23 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Configure",
+          tenentPath: "/out-patients",
           defaultPath: "",
-          childrens: [],
-          moreOptions: false,
+          childrens: [
+            {
+              id: 223,
+              title: "Regenerate RIS Message",
+              defaultPath: "/configure/RIS",
+              globalSearchKey: "global",
+            },
+            {
+              id: 224,
+              title: "Regenerate LIMS Message",
+              defaultPath: "/configure/LIMS",
+              globalSearchKey: "global",
+            },
+          ],
+          moreOptions: true,
         },
         {
           id: -1,
@@ -218,71 +228,81 @@ export namespace MaxModules {
           defaultPath: "/employee-sponsor-tagging",
           childrens: [],
           moreOptions: false,
+          locationSpecific: "NSSH",
+          globalSearchKey: "employeesponsor",
         },
         {
           id: -1,
           title: "Reports",
           tenentPath: "/out-patients",
-          defaultPath: "",
+          defaultPath: "report",
           childrens: [
             {
-              id: 911,
+              id: 83,
               title: "Doctor Schedule",
-              defaultPath: "doctor-schedule",
+              defaultPath: "/report/prompt-report/doctorSchedule",
               globalSearchKey: "global",
             },
             {
-              id: 912,
+              id: 84,
               title: "Cash Scroll",
-              defaultPath: "cash-scroll",
+              defaultPath: "/report/prompt-report/cash-scroll",
               globalSearchKey: "global",
             },
             {
-              id: 913,
+              id: 85,
               title: "Happy Family Report",
-              defaultPath: "happy-family-report",
+              defaultPath:
+                "/report/prompt-report/HappyFamilyPlanAllocationReport",
               globalSearchKey: "global",
             },
             {
-              id: 914,
+              id: 88,
               title: "Equipment Schedule",
-              defaultPath: "equipment-schedule",
+              defaultPath: "/report/prompt-report/equipmentSchedule",
               globalSearchKey: "global",
             },
             {
-              id: 915,
+              id: 89,
               title: "General OPD Scroll Report",
-              defaultPath: "general-opd-scroll-report",
+              defaultPath: "/report/prompt-report/GeneralOPDReport",
               globalSearchKey: "global",
             },
             {
               id: 916,
               title: "Expired Patient Check",
-              defaultPath: "expired-patient-check",
+              defaultPath: "/report/prompt-report/expiredPatientReport",
               globalSearchKey: "global",
             },
             {
               id: 917,
               title: "Monthly OP Consultation Report",
-              defaultPath: "Monthly-op-consultation-report",
+              defaultPath: "/report/prompt-report/opConsultationReport",
               globalSearchKey: "global",
             },
             {
               id: 918,
               title: "Acknowledge Scroll Amount Report",
-              defaultPath: "acknowledge-scroll-amount-report",
+              defaultPath:
+                "/report/prompt-report/acknowledge-scroll-amount-report",
               globalSearchKey: "global",
             },
             {
-              id: 919,
+              id: 579,
               title: "Expired Deposits",
-              defaultPath: "expired-deposits",
+              defaultPath: "/report/prompt-report/expired-deposits",
               globalSearchKey: "global",
             },
             {
               id: 920,
               title: "Online Deposit Report",
-              defaultPath: "online-deposit-report",
+              defaultPath: "/report/prompt-report/online-deposit-report",
+              globalSearchKey: "global",
+            },
+            {
+              id: 67,
+              title: "Dispatch Report",
+              defaultPath: "/out-patient-billing/dispatch-report",
               globalSearchKey: "global",
             },
           ],

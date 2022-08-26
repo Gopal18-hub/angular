@@ -1,6 +1,9 @@
 import { NgModule } from "@angular/core";
 import { BillingComponent } from "./billing.component";
-import { BillingComponent as BillingComponentPage } from "./submodules/billing/billing.component";
+import {
+  BillingComponent as BillingComponentPage,
+  SimilarPatientDialog,
+} from "./submodules/billing/billing.component";
 import { DepositComponent } from "./submodules/deposit/deposit.component";
 import { DetailsComponent } from "./submodules/details/details.component";
 import { OnlineOpBillsComponent } from "./submodules/online-op-bills/online-op-bills.component";
@@ -78,6 +81,16 @@ import { ReferalDoctorWarningComponent } from "./submodules/billing/prompts/refe
 import { PackageDoctorModificationComponent } from "./submodules/billing/prompts/package-doctor-modification/package-doctor-modification.component";
 import { OrderSetDetailsComponent } from "./submodules/billing/prompts/order-set-details/order-set-details.component";
 import { ConsultationWarningComponent } from "./submodules/billing/prompts/consultation-warning/consultation-warning.component";
+import { SearchDialogComponent } from "./submodules/details/search-dialog/search-dialog.component";
+import { OprefundDialogComponent } from "./submodules/oprefund-approval/oprefund-dialog/oprefund-dialog.component";
+import { MaxHealthSnackBarModule } from "@shared/ui/snack-bar";
+import { RefundAfterBillComponent } from './submodules/details/refund-after-bill/refund-after-bill.component';
+import { AppointmentSearchComponent } from './submodules/billing/prompts/appointment-search/appointment-search.component';
+import { PaymentDialogComponent } from './submodules/details/payment-dialog/payment-dialog.component';
+import { MiscellaneousBillingsComponent } from './submodules/miscellaneous-billings/miscellaneous-billings.component';
+import { BillsComponent } from './submodules/miscellaneous-billings/bills/bills.component';
+import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
+
 @NgModule({
   declarations: [
     BillingComponent,
@@ -134,6 +147,15 @@ import { ConsultationWarningComponent } from "./submodules/billing/prompts/consu
     OrderSetDetailsComponent,
     MakeBillDialogComponent,
     ConsultationWarningComponent,
+    SearchDialogComponent,
+    OprefundDialogComponent,
+    SimilarPatientDialog,
+    RefundAfterBillComponent,
+    AppointmentSearchComponent,
+    PaymentDialogComponent,
+    MiscellaneousBillingsComponent,
+    BillsComponent,
+    CreditDetailComponent
   ],
   imports: [
     BillingRoutingModule,
@@ -160,9 +182,10 @@ import { ConsultationWarningComponent } from "./submodules/billing/prompts/consu
     PortalModule,
     MatProgressSpinnerModule,
     EmptyPlaceholderModule,
+    MaxHealthSnackBarModule,
   ],
   exports: [],
   providers: [],
   bootstrap: [],
 })
-export class BillingModule {}
+export class BillingModule { }

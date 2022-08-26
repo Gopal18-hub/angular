@@ -1,3 +1,4 @@
+
 .col-black{
     color: #000;
 }
@@ -33,7 +34,10 @@
     color: #004084;
 }
 .height{
-    height: 60.5vh;
+    height: 61vh;
+}
+.width{
+    width: 35% !important;
 }
 .bg-grey{
     background:#F6F6F6;
@@ -61,7 +65,13 @@
         line-height: 2 !important;
     }
 }
-
+.refunddepositbutton{
+    .mat-raised-button{    
+        min-width: auto !important;
+        height: 1.875rem !important;
+        line-height: 1.875rem  !important;
+    }
+}
 ::ng-deep .refundheight{
     height: 5vh !important;
 }
@@ -70,3 +80,11 @@
 line-height: 1.25 !important;
 }
 }
+::ng-deep .mat-dialog-container{
+    overflow:hidden !important;
+    padding: 10px 24px 24px 24px;
+}
+    .mat-raised-button.mat-button-base.mat-button-disabled{
+        background-color:rgb(200, 200, 200) !important;
+        color: rgba(0, 0, 0, 0.26) !important;    
+    }

@@ -18,3 +18,34 @@
     line-height:34px;
     margin-bottom:3px;
   }
+
+  .spinner {
+    margin-left: 47%;
+    margin-top: 13%;
+  }
+
+  // .input-padding{
+  //   ::ng-deep .max-table-wrapper[_ngcontent-goq-c209] table[_ngcontent-goq-c209] .mat-row[_ngcontent-goq-c209]:hover .mat-cell[_ngcontent-goq-c209] {
+  //     span{
+  //       padding-left:1.5rem;
+  //     }
+  //   }
+  // }
+
+  // ::ng-deep  table td .max-table-wrapper table .mat-row  .mat-cell  {
+  //   span 
+  //   {padding-left:1.5rem;}
+  //    }
+.input-align{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(9){
+    //padding-left:1.5rem;
+    text-align:center;
+  }
+}
+.input-align2{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
+    //padding-left:1.5rem;
+    text-align:center;
+  }
+}
+ 

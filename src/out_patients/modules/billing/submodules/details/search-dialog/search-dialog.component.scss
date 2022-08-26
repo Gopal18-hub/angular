@@ -1,0 +1,89 @@
+.search-dialog-wrapper{
+    .bg-pink{
+        background-color: #FF6A6A;
+        color: #fff;
+    }
+    .bg-orange{
+        background-color: #FF8A3B;
+        color: #fff;
+    }
+    .bg-white{
+        background-color: #fff;
+    }
+    .bg-blue{
+        background-color: #00B2A9;
+        color: #fff;
+    }
+    .pointer-disable{
+        pointer-events: none;
+    }
+    .w35{
+        width: 35%;
+    }
+    .nowrap{
+        white-space: nowrap;
+    }
+    .margin-left-5{
+        margin-left: 5rem;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 28%;
+    }
+    
+    .btn{
+        ::ng-deep .mat-raised-button {
+            min-width: 155px !important;
+        }
+    }
+    .searchbtn{
+        ::ng-deep .mat-raised-button{
+            min-width: fit-content !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        }
+        // ::ng-deep .mat-raised-button {
+        //     min-width: 100px !important;
+        // }
+        ::ng-deep .mat-button-wrapper{
+            margin-left: 16px;
+        }
+    }
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    ::ng-deep .mat-checkbox-inner-container{
+        margin-top: -3px;
+        height: 13px;
+        width: 13px;
+    }
+    ::ng-deep mat-error{
+        margin-top: 12px;
+    }
+    .label ::ng-deep  mat-label{
+        display: none;
+    }
+    ::ng-deep .max-table-wrapper table{
+        tr.newbill{
+            background-color: #00B2A9 !important;
+            td{
+                color: #fff !important;
+            }
+        }
+        tr.cancelled{
+            background-color: #FF6A6A !important;
+            td{
+                color: #fff !important;
+            }
+        }
+        tr.partially-cancelled{
+            background-color: #FF8A3B !important;
+            td{
+                color: #fff !important;
+            }
+        }
+    }
+}

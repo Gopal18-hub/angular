@@ -75,11 +75,10 @@ export class OpRegApprovalComponent implements OnInit {
     clickedRows: true,
     clickSelection: "multiple",
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: true,
     displayedColumns: [
       "maxid",
-      "ssn",
-      "title",
       "fullname",
       "gender",
       "dateOfBirth",
@@ -99,17 +98,6 @@ export class OpRegApprovalComponent implements OnInit {
           width: "120px",
         },
       },
-      ssn: {
-        title: "SSN",
-        type: "number",
-      },
-      title: {
-        title: "Title",
-        type: "string",
-        style: {
-          width: "50px",
-        },
-      },
       fullname: {
         title: "Patient Name",
         type: "string",
@@ -118,15 +106,24 @@ export class OpRegApprovalComponent implements OnInit {
       gender: {
         title: "Gender",
         type: "string",
+        style: {
+          width: "80px",
+        },
       },
       dateOfBirth: {
         title: "DOB",
         type: "date",
         tooltipColumn: "uDateOfBirth",
+        style: {
+          width: "80px",
+        },
       },
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
@@ -136,17 +133,20 @@ export class OpRegApprovalComponent implements OnInit {
       unationality: {
         title: "Nationality",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       uForeigner: {
         title: "Foreigner",
         type: "checkbox",
         disabledSort: true,
         style: {
-          width: "60px",
+          width: "80px",
         },
       },
       usmsRecNo: {
-        title: "SMS Receiving Number",
+        title: "SMS Number",
         type: "number",
       },
       operatorName: {
@@ -155,19 +155,17 @@ export class OpRegApprovalComponent implements OnInit {
       },
       insertdatetime: {
         title: "Requested Date",
-        type: "date",
-        tooltipColumn: "insertdatetime",
+        type: "datetime",
       },
     },
   };
 
   approveconfig: any = {
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: false,
     displayedColumns: [
       "maxid",
-      "ssn",
-      "mTitle",
       "fullname",
       "uGender",
       "uDateOfBirth",
@@ -189,14 +187,6 @@ export class OpRegApprovalComponent implements OnInit {
           width: "120px",
         },
       },
-      ssn: {
-        title: "SSN",
-        type: "number",
-      },
-      mTitle: {
-        title: "Title",
-        type: "string",
-      },
       fullname: {
         title: "Patient Name",
         type: "string",
@@ -206,14 +196,23 @@ export class OpRegApprovalComponent implements OnInit {
         title: "Gender",
         type: "string",
         disabledSort: true,
+        style: {
+          width: "80px",
+        },
       },
       uDateOfBirth: {
         title: "DOB",
         type: "date",
+        style: {
+          width: "80px",
+        },
       },
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
@@ -223,13 +222,20 @@ export class OpRegApprovalComponent implements OnInit {
       unationality: {
         title: "Nationality",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       uForeigner: {
         title: "Foreigner",
         type: "checkbox",
+        disabledSort: true,
+        style: {
+          width: "80px",
+        },
       },
       usmsRecNo: {
-        title: "SMS Receiving Number",
+        title: "SMS Number",
         type: "number",
       },
       operatorName: {
@@ -238,7 +244,7 @@ export class OpRegApprovalComponent implements OnInit {
       },
       insertdatetime: {
         title: "Requested Date",
-        type: "date",
+        type: "datetime",
         tooltipColumn: "insertdatetime",
       },
       approvalDoneBy: {
@@ -247,7 +253,7 @@ export class OpRegApprovalComponent implements OnInit {
       },
       approvedDate: {
         title: "Approved Date",
-        type: "date",
+        type: "datetime",
         tooltipColumn: "approvedDate",
       },
     },
@@ -255,11 +261,10 @@ export class OpRegApprovalComponent implements OnInit {
 
   rejectconfig: any = {
     dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:MM",
     selectBox: false,
     displayedColumns: [
       "maxid",
-      "ssn",
-      "mTitle",
       "fullname",
       "uGender",
       "uDateOfBirth",
@@ -281,14 +286,6 @@ export class OpRegApprovalComponent implements OnInit {
           width: "120px",
         },
       },
-      ssn: {
-        title: "SSN",
-        type: "number",
-      },
-      mTitle: {
-        title: "Title",
-        type: "string",
-      },
       fullname: {
         title: "Patient Name",
         type: "string",
@@ -298,14 +295,23 @@ export class OpRegApprovalComponent implements OnInit {
         title: "Gender",
         type: "string",
         disabledSort: true,
+        style: {
+          width: "80px",
+        },
       },
       uDateOfBirth: {
         title: "DOB",
         type: "date",
+        style: {
+          width: "80px",
+        },
       },
       uMobile: {
         title: "Mobile",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       uEmail: {
         title: "Email",
@@ -315,13 +321,20 @@ export class OpRegApprovalComponent implements OnInit {
       unationality: {
         title: "Nationality",
         type: "string",
+        style: {
+          width: "90px",
+        },
       },
       uForeigner: {
         title: "Foreigner",
         type: "checkbox",
+        disabledSort: true,
+        style: {
+          width: "70px",
+        },
       },
       usmsRecNo: {
-        title: "SMS Receiving Number",
+        title: "SMS Number",
         type: "number",
       },
       operatorName: {
@@ -330,7 +343,7 @@ export class OpRegApprovalComponent implements OnInit {
       },
       insertdatetime: {
         title: "Requested Date",
-        type: "date",
+        type: "datetime",
         tooltipColumn: "insertdatetime",
       },
       approvalDoneBy: {
@@ -339,7 +352,7 @@ export class OpRegApprovalComponent implements OnInit {
       },
       approvedDate: {
         title: "Rejected Date",
-        type: "date",
+        type: "datetime",
         tooltipColumn: "approvedDate",
       },
     },

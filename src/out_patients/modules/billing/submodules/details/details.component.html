@@ -5,18 +5,29 @@
           <a mat-tab-link [active]="true">Bill Details</a>
         </li>
       </ul>
+      <div class="maxhealth-spacer"></div>
+      <div *ngFor="let icon of categoryIcons" class="flex">
+        <img
+          [src]="icon['src']"
+          [alt]="icon['tooltip']"
+          width="45px"
+          class="mt-1 cursor-pointer"
+          [matTooltip]="icon['tooltip']"
+          
+        />
+    </div>
     </nav>
     <mat-tab-nav-panel #tabPanel class="h-full">
       <div class="h-full w-full">
         <form [formGroup]="BServiceForm" class="BServiceForm">
           <!---------------------------------FIRST ROW----------------------------------------------------->
           <div class=" pt-0 ml-2 mt-1  border-radius-lg mr-2 flex bg-deposit">
-          <div class="  pl-1 w-5/9 flex ">
+          <div class="  pl-1 w-2/5 flex ">
               <div class="w-full">
             <div class="w-full flex pt-2">
               <div class="flex ml-2 ">
                 <mat-label class="wt-nowrap">Bill No</mat-label>
-                <div class="ml-1 wt-mid h-full bg-white">
+                <div class="ml-1 w-19 h-full bg-white">
                   <maxhealth-question
                     [question]="questions[0]"
                     [form]="BServiceForm"
@@ -50,7 +61,7 @@
                   >
                   </maxhealth-question>
                 </div>
-                <mat-label class="ml-4 wt-nowrap"
+                <!-- <mat-label class="ml-4 wt-nowrap"
                   >Bill Date
                 
                 </mat-label>
@@ -62,7 +73,7 @@
                     [index]="3"
                   >
                   </maxhealth-question>
-                </div>
+                </div> -->
                 <!-- <mat-label class="ml-4 wt-nowrap">Corporate</mat-label>
                 <div class="ml-1 wt-mid h-full bg-white">
                   <maxhealth-question
@@ -100,10 +111,10 @@
             </div>
         </div>
           </div>
-          <div class="pl-1 pt-0 ml-2 mr-2 border-radius-lg flex  w-2/5">
-            <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-4  w-31" >
+          <div class="pl-1 pt-0 ml-5 mr-2 border-radius-lg flex  w-2/5">
+            <div class="flex bg-darkgray align-items-center mt-0 p-0 border-radius-lg  mr-4 ml-12  w-31" >
                 <!--    (click)="oncheckboxClick($event)" -->
-             <div class="ml-2 checkbox-bottom">
+             <div class="ml-2 mb-1">
                  <maxhealth-question
                  [question]="questions[4]"
                  [form]="BServiceForm"
@@ -138,9 +149,9 @@
                  </maxhealth-question>
              </div>
          </div>
-         <div class="float-right w-1/10 flex">
-             <div class="ml-0" >
-             <button mat-raised-button color="primary" type="submit" >
+         <div class="float-right w-1/10 flex mar-left-12">
+             <div class="ml-0 searchbtn" >
+             <button mat-raised-button color="primary" type="submit" (click)="search()">
                  <img src="assets/lens.svg" class="lens-icon">
          <!-- <span class="p-0 m"> -->
                  Search
@@ -152,12 +163,12 @@
         </div>
           <!---------------------------------SECOND ROW----------------------------------------------------->
   
-          <div class="ml-2 m-pannel mr-2 mt-1 border-radius-lg flex flex-column items-center w-auto bg-deposit">
-           <div class="w-full ">
-            <div class=" wt-nowrap ">
+        <div class="ml-2 m-pannel flex mr-2 mt-1 border-radius-lg items-center w-auto bg-deposit">
+          <!-- <div class="w-full ">
+            <div class=" wt-nowrap "> -->
               
-                   <div class="float-left mt-1 w-3/5">
-                     <div class="float-left mr-1 p-1 w-2/10">
+              <!-- <div class="flex float-left mt-1 w-4/5">
+                <div class="float-left mr-1 p-1 w-2/10">
                   <mat-label class="ml-2 mr-1 wt-nowrap " >Name:</mat-label>
                   <mat-label class="patient-lbl ">{{patientName}}</mat-label>
                 </div>
@@ -166,47 +177,85 @@
                   <mat-label class="patient-lbl">{{age}}</mat-label>            
                 </div>
                 <div class="float-left pt-1 mr-1 w-1/6">
-                  <mat-label class="ml-5 mr-1 wt-nowrap">Gender: </mat-label>               
+                  <mat-label class="mr-1 wt-nowrap">Gender: </mat-label>               
                     <mat-label class="patient-lbl">{{gender}}</mat-label>               
                   </div>
                   <div class="float-left pt-1 mr-1 w-1/6">
-                  <mat-label class="ml-5 mr-1 wt-nowrap">DOB: </mat-label>               
+                  <mat-label class="mr-1 wt-nowrap">DOB: </mat-label>               
                   <mat-label class="patient-lbl" >{{dob}}</mat-label>
                             
                 </div>
-                <div class="float-left pt-1 mr-1 w-1/6">   
-                  <mat-label class="ml-5 mr-1 wt-nowrap">Nationality: </mat-label>             
+                <div class="float-left pt-1 mr-1 w-1/6 txt-nowrap">   
+                  <mat-label class="mr-1 wt-nowrap">Nationality: </mat-label>             
                   <mat-label class="patient-lbl"> {{country}}</mat-label>
                 </div>
                 <div class="float-left pt-1 mr-1 w-1/6">
                   <mat-label class="ml-5 mr-1 wt-nowrap">Operator: </mat-label>                       
                   <mat-label class="patient-lbl"> {{ssn}}</mat-label> 
+                </div>
+                <div class="float-left pt-1 mr-1">
+                  <mat-label class="ml-5 mr-1 wt-nowrap">Bill Date: </mat-label>                       
+                  <mat-label class="patient-lbl"> {{billdate}}</mat-label> 
+                </div>
+               </div> -->
+               <div class="flex w-86 align-items-center">
+                  <div class="w-18 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold ml-2">Patient Name:</mat-label>
+                    <span matTooltip="{{patientName}}" class="ml-2 clr-black">{{patientName}}</span>
                   </div>
-                 </div>
-              
-               <div class="flex mt-0  float-right">
+                  <div class="w-1/10 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Age:</mat-label>
+                    <span matTooltip="{{age}}" class="ml-2 clr-black">{{age}}</span>
+                  </div>
+                  <div class="w-1/10 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Gender:</mat-label>
+                    <span matTooltip="{{gender}}" class="ml-2 clr-black">{{gender}}</span>
+                  </div>
+                  <div class="w-11 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">DOB:</mat-label>
+                    <span matTooltip="{{dob}}" class="ml-2 clr-black">{{dob}}</span>
+                  </div >
+                  <div class="w-13 ml-3 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Nationality:</mat-label>
+                    <span matTooltip="{{country}}" class="ml-2 clr-black">{{country}}</span>
+                  </div>
+                  <div class="w-1/10 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">SSN:</mat-label>
+                    <span matTooltip="{{ssn}}" class="ml-2 clr-black">{{ssn}}</span>
+                  </div>
+                  <div class="w-13 ml-2 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Operator:</mat-label>
+                    <span matTooltip="{{operator}}" class="ml-2 clr-black">{{operator}}</span>
+                  </div>
+                  <div class="w-1/15 text-overflow">
+                    <mat-label class="max-health-primary-color font-bold">Bill Date:</mat-label>
+                    <span matTooltip="{{billdate}}" class="ml-2 clr-black">{{billdate}}</span>
+                  </div>
+                </div>
+               <div class="flex w-14 mt-0">
                   <button
                   mat-raised-button
                   color="primary"
-                  class="w-1/20 h-btn"
+                  class="w-1/20 h-btn btn_width"
                   type="submit"
+                  [disabled]="dmsbtn"
                 >
                 DMS
                 </button>
                 <button
                   mat-raised-button
                   color="primary"
-                  class="w-1/20 ml-2 h-btn"
+                  class="w-1/20 ml-2 h-btn btn_width"
                   type="button"
+                  [disabled]="visithistorybtn"
                   (click)="openhistory()"
                 >
                  Visit History
                 </button>
               </div>    
-              </div>
-              
-          </div>    
-          </div>      
+            <!-- </div>
+          </div>     -->
+        </div>      
                 
          </form>  
           
@@ -256,8 +305,8 @@
 
 <!-- --------------------------------------------1st FORM CONTROL COLUMN------------------------------------------------------------------------                -->
             
-              <div class="ml-2 flex-column  pt-1 h-full">
-              <div class="flex">
+          <div class="ml-2 flex-column  pt-1 h-full clr-black">
+              <div class="flex input-align-right">
                 <!-- <div class="flex"> -->
               
                   <maxhealth-question
@@ -270,7 +319,7 @@
                   
                   </maxhealth-question>
           </div>
-          <div class="flex">
+          <div class="flex input-align-right">
             <maxhealth-question
             [question]="questions[8]"
             [form]="BServiceForm"
@@ -282,7 +331,7 @@
             </maxhealth-question>
               </div>
            
-            <div class="flex">
+            <div class="flex input-align-right">
               <maxhealth-question
               [question]="questions[9]"
               [form]="BServiceForm"
@@ -292,8 +341,8 @@
               >
               
               </maxhealth-question>
-            </div>
-            <div class="flex">
+            </div> 
+            <div class="flex input-align-right">
               <maxhealth-question
                   [question]="questions[10]"
                   [form]="BServiceForm"
@@ -309,7 +358,7 @@
               </div>  
                
                 </div>
-                <div class="flex w-1/5 h-1/5 justify-between float-left">
+                <div class="flex w-1/5 h-1/5 justify-between float-left clr-black">
                 
                 <!-- <div class="flex "> -->
  <!-- --------------------------------------------2ND LABEL COLUMN------------------------------------------------------------------------                -->
@@ -334,7 +383,7 @@
  <!-- --------------------------------------------2ND FORM CONTROL COLUMN------------------------------------------------------------------------                -->
               
                 <div class="ml-2 fle-column pt-1 h-full">
-                <div class="flex">
+                <div class="flex input-align-right">
                   <!-- <div class="flex"> -->
                 
                 <maxhealth-question
@@ -346,7 +395,7 @@
                 >
               </maxhealth-question>
             </div>
-            <div class="flex">
+            <div class="flex input-align-right">
                 <maxhealth-question
                 [question]="questions[12]"
                 [form]="BServiceForm"
@@ -397,6 +446,7 @@
                   color="primary" 
                   class="btn-otp btn-blue mr-1"
                   type="submit"
+                  [disabled]="otpbtn"
                   >
                  Send OTP
                   </button>
@@ -417,6 +467,7 @@
                   color="primary"
                   class="btn-otp btn-blue pl-2 mt-1"
                   type="submit"
+                  [disabled]="managerotpbtn"
                   >
                   Send OTP to Manager
                   </button>
@@ -430,6 +481,7 @@
                   color="primary"
                   class="btn-md"
                   type="submit"
+                  [disabled]="refundbill"
                   >
                  Refund Bill
                   </button>
@@ -441,6 +493,7 @@
                     color="primary"
                     class=" btn-md"
                     type="submit"
+                    [disabled]="approvalsend"
                     >
                     Send for Approval
                     </button>
@@ -452,6 +505,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printbill"
                     >
                     Print Bill
                     </button>
@@ -463,6 +517,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="printrefund"
                     >
                     Print Refund Receipt
                     </button>
@@ -474,6 +529,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="resendbill"
                     >
                     Resend bill on Email
                     </button>
@@ -489,6 +545,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
+                    [disabled]="consumableprint"
                     >
                     Consumable Print
                     </button>
@@ -500,6 +557,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="phptracksheet"
                       >
                       Php Track Sheet
                       </button>
@@ -511,6 +569,7 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="opprescription"
                       >
                       OP Prescription
                       </button>
@@ -522,6 +581,8 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      [disabled]="doxperprint"
+                      (click)="doxperredirect()"
                       >
                       Doxper Print
                       </button>
@@ -533,6 +594,8 @@
                       color="primary"
                       class="btn-md"
                       type="submit"
+                      (click)="clear()"
+                      [disabled]="!BServiceForm.dirty"
                       >
                       Clear
                       </button>
@@ -566,11 +629,27 @@
       
     </mat-tab-nav-panel>
   </section>
-  <div class="flex justify-between mx-5 max-health-primary-color">
+  <!-- <div class="flex justify-between mx-5 max-health-primary-color">
 
     <p>Last Update By: {{ lastUpdatedBy }}</p>
   
     <P> Date: {{ currentTime }} </P>
   
-  </div> 
+  </div>  -->
+  <div class="flex ml-4 mr-2 justify-between font-xs">
+    <div class="left flex">
+      <span
+        >Last updated by: {{ cookie.get("Name") }} ( id: {{ cookie.get("UserName") }} ) on
+        07-03-2022 | 10:10:00</span
+      >
+      <span class="mat-error font-semi-bold"
+        >* Apply Patient/Company Discount after final calculation. * Need special
+        approval for red highlighted investigations in case of PSU patients</span
+      >
+    </div>
+    <div class="right">
+      Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+      {{ moment().format("LT") }}
+    </div>
+  </div>
   

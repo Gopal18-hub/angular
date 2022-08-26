@@ -5,21 +5,39 @@
       autocomplete="off"
       class="w-3/5 flex align-items-center"
     >
-      <div class="flex w-full">
-        <mat-label class="max-health-primary-color mr-4"
-          >Health Checkup</mat-label
+      <div class="flex w-full align-items-center">
+        <mat-label class="max-health-primary-color mr-4 font-bold"
+          >Department</mat-label
         >
         <maxhealth-question
           [question]="questions[0]"
           [form]="formGroup"
           [questions]="questions[0]"
           [index]="0"
-          class="w-3/5"
+          class="w-1/5"
+        >
+        </maxhealth-question>
+        <mat-label class="max-health-primary-color mr-4 ml-4 font-bold"
+          >Health Checkup</mat-label
+        >
+        <maxhealth-question
+          [question]="questions[1]"
+          [form]="formGroup"
+          [questions]="questions[1]"
+          [index]="1"
+          class="w-2/5"
         >
         </maxhealth-question>
       </div>
     </form>
-    <div>
+    <div class="flex w-36 align-items-center justify-end">
+      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+        <span>Total Estimation:</span>
+        {{
+          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
+        }}
+      </div>
+
       <button
         mat-raised-button
         color="primary"
@@ -35,20 +53,27 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
         Bill
       </button>
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2 min-width-initial"
+        class="font-sm ml-2 min-width-initial print-button"
         type="button"
+        [disabled]="!billingService.checkServicesAdded()"
       >
-        Pr.Est
+        <mat-icon>print</mat-icon>
       </button>
     </div>
   </div>
   <div class="mt-2 h-full">
-    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+    ></maxhealth-table>
   </div>
 </div>

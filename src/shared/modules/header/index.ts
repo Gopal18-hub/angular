@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { HeaderComponent } from "./header.component";
 import { SubComponent } from "./sub/sub.component";
+import { ChangelocationComponent } from "./changelocation/changelocation.component";
 import { CommonModule } from "@angular/common";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatButtonModule } from "@angular/material/button";
@@ -18,7 +19,12 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
 
 @NgModule({
-  declarations: [HeaderComponent, SubComponent, RedirectComponent],
+  declarations: [
+    HeaderComponent,
+    SubComponent,
+    RedirectComponent,
+    ChangelocationComponent,
+  ],
   imports: [
     CommonModule,
     MatMenuModule,

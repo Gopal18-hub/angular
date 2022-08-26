@@ -5,15 +5,17 @@ import { QuestionControlService } from '@shared/ui/dynamic-forms/service/questio
 import { FormSixtyComponent } from '../form60/form-sixty.component';
 import { DepositService } from '@core/services/deposit.service';
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: 'patient-identity-info',
   templateUrl: './patient-identity-info.component.html',
   styleUrls: ['./patient-identity-info.component.scss']
 })
-export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnChanges {
+export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   @Input() data!: any;
-  @Input() patientclearsibilingcomponent : boolean = false;
+  @Output() neweventform60ssave = new EventEmitter<boolean>();
   
   patientidentityformData = {
     title: "",
@@ -29,7 +31,8 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
       },      
       panno: {
         type: "string",
-        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$"
+        pattern:"^[A-Za-z]{5}[0-9]{4}[A-Za-z]$",
+        title: "Pan card No",
       },     
       mainradio: {
         type: "radio",
@@ -46,18 +49,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
   questions: any;
   form60PatientInfo:any=[];
   DepositPaymentMethod: { transactionamount : number, MOP: string}[] =[];
+  Form60success:boolean = false;
 
   constructor( private formService: QuestionControlService,  private depositservice: DepositService, private messageDialogService: MessageDialogService,
   private matdialog: MatDialog) {
    }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes['patientclearsibilingcomponent'].currentValue)
-    {
-      this.patientidentityform.controls["panno"].setValue("");
-    }
-  }
 
-
+  private readonly _destroying$ = new Subject<void>();
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.patientidentityformData.properties,
@@ -70,12 +68,18 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
       this.patientidentityform.controls["panno"].enable();
     }else if(this.data.type == "Refund"){
       this.patientidentityform.controls["mainradio"].disable();
-      this.patientidentityform.controls["panno"].disable();
-    }
+      this.patientidentityform.controls["panno"].disable();      
     this.patientidentityform.controls["panno"].setValue(this.data.patientinfo.panno);
+    }
     this.patientidentityform.controls["mobileno"].setValue(this.data.patientinfo.mobileno);
     this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
-    this.form60PatientInfo = this.data.patientinfo;    
+    this.form60PatientInfo = this.data.patientinfo;   
+
+    this.depositservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+      this.patientidentityform.controls["panno"].setValue("");
+      }
+    });
   }
 
   ngAfterViewInit(): void
@@ -83,17 +87,24 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit, OnCh
     this.DepositPaymentMethod = this.depositservice.getFormLsit();   
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
-      {
-        // if(this.DepositPaymentMethod[0].transactionamount == 0){
-        //     this.messageDialogService.error("Amount Zero is not Allowed");
-        // }
-        // else
+      {       
         {
-          this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
+         const form60dialog = this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
           data: {from60data:this.form60PatientInfo,
                 paymentamount: this.DepositPaymentMethod[0]
               }
             });
+
+            form60dialog.afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if(result == "Success"){
+                this.Form60success = true;
+                this.neweventform60ssave.emit(this.Form60success);
+                console.log("Form 60 successfull");
+              }
+            });
+
           this.patientidentityform.controls["panno"].disable();
           this.patientidentityform.controls["panno"].setValue('');
         }      

@@ -1,6 +1,10 @@
 import { environment } from "@environments/environment";
 
 export namespace BillingApiConstants {
+  export const getcompanyandpatientsponsordata = (locationId: number) => {
+    return `${environment.PatientApiUrl}api/patient/getcompanyandpatientsponsordata/${locationId}`;
+  };
+
   export const getsimilarsoundopbilling = (
     IACode: string,
     RegistrationNo: number
@@ -15,11 +19,18 @@ export namespace BillingApiConstants {
   };
 
   export const getclinics = (locationId: number) => {
-    return environment.CommonApiUrl + "api/lookup/getclinics/${locationId}";
+    return environment.CommonApiUrl + `api/lookup/getclinics/${locationId}`;
   };
 
   export const getspecialization =
     environment.PatientApiUrl + "api/patient/getspecialization";
+
+  export const getbillingdoctorsonsearch = (
+    doctorName: string,
+    locationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getbillingdoctorsonsearch${doctorName}/${locationId}`;
+  };
 
   export const getdoctorlistonSpecializationClinic = (
     isClinic: boolean,
@@ -46,6 +57,10 @@ export namespace BillingApiConstants {
     return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
   };
 
+  export const getPriceBulk = (hspLocationid: string) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbillformultiple/0/${hspLocationid}?IPOPTYPE=1&BedType=0`;
+  };
+
   export const consultationTypes = `${environment.CommonApiUrl}api/lookup/getconsultationtype`;
 
   export const getInvetigationPriorities = `${environment.CommonApiUrl}api/lookup/getinvestigationpriority`;
@@ -56,8 +71,15 @@ export namespace BillingApiConstants {
     return `${environment.CommonApiUrl}api/lookup/getinvestigation/${locationId}/${serviceId}`;
   };
 
-  export const gethealthcheckups = (locationId: number) => {
-    return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}`;
+  export const getinvestigationSearch = (
+    locationId: number,
+    searchKey: string
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/getinvestigationonsearch/${locationId}/${searchKey}`;
+  };
+
+  export const gethealthcheckups = (locationId: number, departmentID: any) => {
+    return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}/${departmentID}`;
   };
   export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
@@ -68,5 +90,29 @@ export namespace BillingApiConstants {
     return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
   };
 
-  export const getOrderSet = `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/67`;
+  export const getotherservicebillingSearch = (
+    locationId: number,
+    searchKey: string
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebillingonsearch/${locationId}/${searchKey}`;
+  };
+
+  export const gethealthcheckupsonsearch = (
+    locationId: number,
+    searchKey: string
+  ) => {
+    return `${environment.CommonApiUrl}api/lookup/gethealthcheckupsonsearch/${locationId}/${searchKey}`;
+  };
+
+  export const departmentlookup = `${environment.CommonApiUrl}api/lookup/departmentlookup`;
+
+  export const getOrderSet = (locationId: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getordersetforbilling/${locationId}`;
+
+  export const consumableData = (
+    IACode: string,
+    RegistrationNo: number,
+    locationId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getdetailsforthepatientforsurgery/${IACode}/${RegistrationNo}/${locationId}`;
 }

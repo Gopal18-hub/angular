@@ -14,13 +14,16 @@
     height: 65%;
 }
 .w-27{
-    width: 27%;
+    width: 30%;
 }
 .w-14{
     width: 14.122%;
 }
 .w-12{
     width: 12%;
+}
+.h-74{
+    height: 74%;
 }
 .text-overflow{
     white-space: nowrap;
@@ -32,7 +35,7 @@
     left: 2px;
     top: 2px;
     height: 90%;
-    width: 25%;
+    width: 28%;
 }
 .patient-history-wrapper{
     ::ng-deep .mat-form-field-wrapper{
@@ -62,7 +65,7 @@
                 }
             }
 
-            tbody tr td:nth-child(6),
+            
             tbody tr td:nth-child(7),
             tbody tr td:nth-child(8),
             tbody tr td:nth-child(9),
@@ -70,6 +73,10 @@
             {
                 text-align: right !important;
                 padding-right: 30px !important
+            }
+            tbody tr td:nth-child(6){
+                text-align: right !important;
+                padding-right: 38px !important
             }
         }
         // .mat-table-fixed-layout{
@@ -79,7 +86,7 @@
     }
     .btn{
         ::ng-deep .mat-button-wrapper{
-            margin-left: 25px;
+            margin-left: 20px;
         }
     } 
     .disableclass{
@@ -88,6 +95,11 @@
         pointer-events: none;
         opacity: 0.2;
     }  
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
 }
 
 

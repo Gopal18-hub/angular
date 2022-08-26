@@ -3,10 +3,9 @@
     color:#004084;
 }
 .credit-wrapper {
-    
     ::ng-deep mat-label {
     //   color: var(--primary-color);
-    color: #333333;
+      color: #333333;
       font-weight: 600;
     }
     .change-password {
@@ -24,6 +23,16 @@
         padding-bottom: 0 !important;
         padding: 0 !important;
     
+    }
+    ::ng-deep .mat-radio-button .mat-radio-ripple {
+        position: absolute;
+        left: calc(50% - 13px);
+        top: calc(50% - 13px);
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        z-index: 1;
+        pointer-events: none;
     }
         
     ::ng-deep .patient-lbl
@@ -104,7 +113,7 @@ width: 18%;
 }
 .mx-content
 {
-    height: 63%;
+    height: 75%;
 }
 
 
@@ -149,14 +158,14 @@ margin-top: 0.19rem;
     width: fit-content;
     ::ng-deep .mat-radio-outer-circle 
     {
-        height: 16px;
-        width: 16px;
+        height: 13px !important;
+        width: 13px !important;
         // border: #004084;
     }
     ::ng-deep .mat-radio-inner-circle
     {
-        height: 15px;
-        width: 15px;
+        height: 13px !important;
+        width: 13px !important;
     }
     ::ng-deep .mat-radio-button
     {
@@ -207,4 +216,15 @@ padding: 0%;
 padding: 0%;
     }
 
+}
+.input-align-right{
+    ::ng-deep .mat-form-field{
+        text-align: right;
+    }
+}
+
+.font-400{
+    ::ng-deep mat-label{
+        font-weight: 400 !important;
+    }
 }

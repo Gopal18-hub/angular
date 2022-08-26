@@ -1,11 +1,9 @@
-import { Component, OnInit } from "@angular/core";
-import { FormReport } from "@core/constants/FormReport";
+import { Component, OnInit, SimpleChanges } from "@angular/core";
+import { FormReport } from "../../../../core/constants/FormReport";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 import { FormGroup } from "@angular/forms";
-import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
 @Component({
   selector: "reports-basic",
   templateUrl: "./basic.component.html",
@@ -19,11 +17,7 @@ export class BasicComponent implements OnInit {
 
   reportConfig: any;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private formService: QuestionControlService
-  ) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.route.params
@@ -35,18 +29,8 @@ export class BasicComponent implements OnInit {
         ) {
           this.reportConfig =
             FormReport[params.reportName as keyof typeof FormReport];
-          let formResult: any = this.formService.createForm(
-            this.reportConfig.filterForm.properties,
-            {}
-          );
-          this.formGroup = formResult.form;
-          this.questions = formResult.questions;
         } else {
         }
       });
-  }
-  submit() {
-    if (this.formGroup.valid) {
-    }
   }
 }

@@ -58,7 +58,7 @@
     <ng-container *ngFor="let col of displayedColumns">
       <ng-container
         [matColumnDef]="col"
-        *ngIf="col != 'select' && col != 'actionItems'"
+        *ngIf="col != 'select' && col != 'actionItems' && col != 'maxRemoveRow'"
       >
         <th
           mat-header-cell
@@ -72,8 +72,9 @@
         <ng-container *ngIf="!config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
-            *matCellDef="let element"
+            *matCellDef="let element; let i = dataIndex"
             (click)="columnClickFun(element, col)"
+            class="type-{{ displayColumnsInfo[col]?.type }}"
           >
             <ng-container
               *ngIf="displayColumnsInfo[col].type"
@@ -83,7 +84,8 @@
                   output: element[col],
                   config: config,
                   col: col,
-                  element: element
+                  element: element,
+                  index: i
                 }
               }"
             ></ng-container>
@@ -93,7 +95,7 @@
         <ng-container *ngIf="config.columnsInfo[col]?.tooltipColumn">
           <td
             mat-cell
-            *matCellDef="let element"
+            *matCellDef="let element; let i = dataIndex"
             matTooltipClass="example-tooltip-red"
             [matTooltip]="element[config.columnsInfo[col].tooltipColumn]"
             (click)="columnClickFun(element, col)"
@@ -106,7 +108,8 @@
                   output: element[col],
                   config: config,
                   col: col,
-                  element: element
+                  element: element,
+                  index: i
                 }
               }"
             ></ng-container>
@@ -120,13 +123,56 @@
         <th mat-header-cell *matHeaderCellDef aria-label="row remove-row">
           &nbsp;
         </th>
-        <td mat-cell *matCellDef="let element; let i = index" class="pl-4">
+        <td mat-cell *matCellDef="let element; let i = dataIndex" class="pl-4">
           <button mat-icon-button color="accent" (click)="removeRow(i)">
-            <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-              <path
-                d="m16.5 33.6 7.5-7.5 7.5 7.5 2.1-2.1-7.5-7.5 7.5-7.5-2.1-2.1-7.5 7.5-7.5-7.5-2.1 2.1 7.5 7.5-7.5 7.5ZM24 44q-4.1 0-7.75-1.575-3.65-1.575-6.375-4.3-2.725-2.725-4.3-6.375Q4 28.1 4 24q0-4.15 1.575-7.8 1.575-3.65 4.3-6.35 2.725-2.7 6.375-4.275Q19.9 4 24 4q4.15 0 7.8 1.575 3.65 1.575 6.35 4.275 2.7 2.7 4.275 6.35Q44 19.85 44 24q0 4.1-1.575 7.75-1.575 3.65-4.275 6.375t-6.35 4.3Q28.15 44 24 44Zm0-3q7.1 0 12.05-4.975Q41 31.05 41 24q0-7.1-4.95-12.05Q31.1 7 24 7q-7.05 0-12.025 4.95Q7 16.9 7 24q0 7.05 4.975 12.025Q16.95 41 24 41Zm0-17Z"
-              />
-            </svg>
+            <div class="remove-row-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 25 25"
+              >
+                <g
+                  id="Group_2547"
+                  data-name="Group 2547"
+                  transform="translate(-471 -581)"
+                >
+                  <circle
+                    id="Ellipse_58"
+                    data-name="Ellipse 58"
+                    cx="12.5"
+                    cy="12.5"
+                    r="12.5"
+                    transform="translate(471 581)"
+                    fill="#d8d8d8"
+                  />
+                  <g
+                    id="Group_924"
+                    data-name="Group 924"
+                    transform="translate(561.636 -167.7) rotate(45)"
+                  >
+                    <rect
+                      id="Rectangle_362"
+                      data-name="Rectangle 362"
+                      width="2"
+                      height="19"
+                      rx="1"
+                      transform="translate(482 584)"
+                      fill="#df0b0b"
+                    />
+                    <rect
+                      id="Rectangle_363"
+                      data-name="Rectangle 363"
+                      width="2"
+                      height="19"
+                      rx="1"
+                      transform="translate(492.5 592.5) rotate(90)"
+                      fill="#df0b0b"
+                    />
+                  </g>
+                </g>
+              </svg>
+            </div>
           </button>
         </td>
       </ng-container>
@@ -147,7 +193,7 @@
                 </button>
               </ng-container>
               <ng-container *ngSwitchDefault>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="actionItemClick(item, element)">
                   {{ item.title }}
                 </button>
               </ng-container>
@@ -177,6 +223,7 @@
               <maxhealth-table
                 [config]="childTableConfig"
                 [data]="childrensData[element[config.groupby.parentcolumn]]"
+                #childTable
               ></maxhealth-table>
             </ng-container>
           </div>
@@ -199,10 +246,18 @@
         *matRowDef="let row; columns: displayedColumns"
         (click)="selection.toggle(row)"
       ></tr> -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="{{ rowClass(row) }}"
+      ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">
       <tr
@@ -231,12 +286,25 @@
 <ng-template #string let-data>
   <span *ngIf="data?.output">{{ data.output }}</span>
 </ng-template>
+<ng-template #stringLink let-data>
+  <span
+    *ngIf="data?.output"
+    class="cursor-pointer text-underline"
+    (click)="stringLinkClick(data)"
+    >{{ data.output }}</span
+  >
+</ng-template>
 <ng-template #number let-data>
   <span>{{ data?.output }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
     data.output | date: data.config.dateformat
+  }}</span>
+</ng-template>
+<ng-template #datetime let-data>
+  <span *ngIf="data?.output">{{
+    data.output | date: data.config.datetimeformat
   }}</span>
 </ng-template>
 <ng-template #image let-data>
@@ -273,27 +341,45 @@
       type="text"
       [(ngModel)]="data.element[data.col]"
       [value]="data.element[data.col]"
-         />
+    />
   </mat-form-field>
 </ng-template>
 
 <ng-template #textarea let-data>
   <div
-    (click)="data.isOpen = !data.isOpen"
+    (click)="data.element['isOpen'] = true"
     cdkOverlayOrigin
     #trigger="cdkOverlayOrigin"
-    class="cursor-pointer"
+    class="cursor-pointer editable-textarea-label"
   >
-    {{ data.output }}
+    {{ data.isOpen }} {{ data.output }} &nbsp;
   </div>
 
   <ng-template
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="data.isOpen"
+    [cdkConnectedOverlayOpen]="data.element['isOpen']"
+    (detach)="data.element['isOpen'] = false"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="data.element['isOpen'] = false"
   >
-    <div class="editable-textarea">
-      <mat-form-field appearance="outline" floatLabel="never">
+    <div
+      class="editable-textarea"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <!-- <div
+        [(ngModel)]="data.element[data.col]"
+        contenteditable
+        class="text-area-edit"
+      >
+        {{ data.element[data.col] }}
+      </div> -->
+      <mat-form-field
+        appearance="outline"
+        floatLabel="never"
+        class="text-area-edit"
+      >
         <textarea
           matInput
           cdkTextareaAutosize
@@ -353,13 +439,33 @@
       [value]="data.element[data.col]"
       [panelClass]="'im-select-dropdown'"
       disableOptionCentering
+      (selectionChange)="controlValueChange($event, data)"
     >
       <ng-container
-        *ngFor="let opt of data.config.columnsInfo[data.col].options"
+        *ngIf="
+          data.config.columnsInfo[data.col]?.moreOptions &&
+          data.config.columnsInfo[data.col]?.moreOptions[data.index]
+        "
       >
-        <mat-option [value]="opt.value">
-          {{ opt.title }}
-        </mat-option>
+        <ng-container
+          *ngFor="
+            let opt of data.config.columnsInfo[data.col].moreOptions[data.index]
+          "
+        >
+          <mat-option [value]="opt.value">
+            {{ opt.title }}
+          </mat-option>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!data.config.columnsInfo[data.col]?.moreOptions">
+        <ng-container
+          *ngFor="let opt of data.config.columnsInfo[data.col].options"
+        >
+          <mat-option [value]="opt.value">
+            {{ opt.title }}
+          </mat-option>
+        </ng-container>
       </ng-container>
     </mat-select>
   </mat-form-field>

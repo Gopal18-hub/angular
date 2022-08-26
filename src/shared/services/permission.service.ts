@@ -26,28 +26,33 @@ export class PermissionService {
       .split(",")
       .map((x) => +x);
     console.log(roles);
-
-    let response = await this.http
-      .get(ApiConstants.getPermissions(this.cookieService.get("role")))
-      .toPromise();
     let temp: any = {};
-    if (response) {
-      response.permissions.forEach((ele: any) => {
-        if (!temp[ele.masterModuleId]) {
-          temp[ele.masterModuleId] = {};
-          this.masterModules.push(ele.masterModuleId);
+    if (roles) {
+      if (roles.length > 0) {
+        let response = await this.http
+          .get(ApiConstants.getPermissions(this.cookieService.get("role")))
+          .toPromise();
+
+        if (response) {
+          response.permissions.forEach((ele: any) => {
+            if (!temp[ele.masterModuleId]) {
+              temp[ele.masterModuleId] = {};
+              this.masterModules.push(ele.masterModuleId);
+            }
+            if (!temp[ele.masterModuleId][ele.moduleId]) {
+              this.modules.push(ele.moduleId);
+              temp[ele.masterModuleId][ele.moduleId] = {};
+            }
+            if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
+              temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
+              this.features.push(ele.featureId);
+            }
+            temp[ele.masterModuleId][ele.moduleId][ele.featureId][
+              ele.functionId
+            ] = true;
+          });
         }
-        if (!temp[ele.masterModuleId][ele.moduleId]) {
-          this.modules.push(ele.moduleId);
-          temp[ele.masterModuleId][ele.moduleId] = {};
-        }
-        if (!temp[ele.masterModuleId][ele.moduleId][ele.featureId]) {
-          temp[ele.masterModuleId][ele.moduleId][ele.featureId] = {};
-          this.features.push(ele.featureId);
-        }
-        temp[ele.masterModuleId][ele.moduleId][ele.featureId][ele.functionId] =
-          true;
-      });
+      }
     }
 
     this.manipulatedAccessControls = temp;
@@ -69,8 +74,22 @@ export class PermissionService {
     });
     definedModules.forEach((masterModule: any, index: number) => {
       masterModule.childrens.forEach((children: any, j: number) => {
+        if (
+          "locationSpecific" in masterModule.childrens[j] &&
+          masterModule.childrens[j].locationSpecific !=
+            this.cookieService.get("LocationIACode")
+        ) {
+          definedModules[index].childrens[j].disabled = true;
+        }
         children.childrens.forEach((feature: any, c: number) => {
           if (!this.features.includes(feature.id)) {
+            definedModules[index].childrens[j].childrens[c].disabled = true;
+          }
+          if (
+            "locationSpecific" in masterModule.childrens[j] &&
+            masterModule.childrens[j].locationSpecific !=
+              this.cookieService.get("LocationIACode")
+          ) {
             definedModules[index].childrens[j].childrens[c].disabled = true;
           }
         });

@@ -22,6 +22,7 @@ import { AutoCompleteQuestion } from "../types/question-autocomplete";
 import { PasswordQuestion } from "../types/question-password";
 import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
+
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
@@ -42,7 +43,7 @@ export class QuestionControlService {
       }
 
       if (question.type == "dropdown")
-        data.push(new DropdownQuestion(question));
+        data.push(new DropdownQuestion(question, this.http));
       else if (question.type == "string")
         data.push(new TextboxQuestion(question));
       else if (question.type == "tel") data.push(new TelQuestion(question));
@@ -115,23 +116,23 @@ export class QuestionControlService {
     if (question.maximum) {
       conditions.push(Validators.max(question.maximum));
     }
-    if (question.multiple) {
-      if (question.value && withValue) {
-        let multipleControls: any = [];
-        question.value.forEach((element: any) => {
-          multipleControls.push(new FormControl(element));
-        });
-        control = new FormArray(multipleControls, conditions);
-      } else {
-        control = new FormArray([], conditions);
-      }
+    // if (question.multiple) {
+    //   if (question.value && withValue) {
+    //     let multipleControls: any = [];
+    //     question.value.forEach((element: any) => {
+    //       multipleControls.push(new FormControl(element));
+    //     });
+    //     control = new FormArray(multipleControls, conditions);
+    //   } else {
+    //     control = new FormArray([], conditions);
+    //   }
+    // } else {
+    if (withValue) {
+      control = new FormControl(question.value || "", conditions);
     } else {
-      if (withValue) {
-        control = new FormControl(question.value || "", conditions);
-      } else {
-        control = new FormControl("", conditions);
-      }
+      control = new FormControl("", conditions);
     }
+    //}
     return control;
   }
 

@@ -11,10 +11,16 @@
         left: 1px !important;
     }
 }
+.disableclass{
+    color: currentColor;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.2;
+}  
 
 ::ng-deep .searchbtn
 {
-    min-width:110px
+    min-width:110px  
 }
 .serachcss{
     ::ng-deep .max-table-wrapper{        
@@ -98,3 +104,10 @@ pointer-events: none;
 opacity: 0.5;
 //text-decoration: none;
 }
+.lens-icon{
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    height: 90%;
+    width: 25%;
+  }
