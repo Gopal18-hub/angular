@@ -59,6 +59,7 @@ export class MedicineOrdersComponent implements OnInit {
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
   selectedRow: any = [];
+  isDisableCancel: boolean = true;
 
   investigationFormData = {
     title: "",
@@ -287,6 +288,7 @@ export class MedicineOrdersComponent implements OnInit {
     //   height:"30vh",
     //   width: "30vw",
     //   });
+    this.isDisableCancel = false;
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
@@ -407,8 +409,9 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   listRowClick(event: any) {
-
+    this.isDisableCancel = false;
     let maxId = event.row.maxid;
+    let boolColumn;
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
     this.investigationForm.controls["denyorder"].setValue('');
     this.investigationForm.controls["remarks"].setValue('');
@@ -422,7 +425,13 @@ export class MedicineOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.medOrderDetails = res;
+        boolColumn = this.medOrderDetails.filter((e: any) => (e.acDisHideDrug === true));
+        if (boolColumn.length > 0) {
+          this.isDisableCancel = true;
+          console.log("canceldeni")
+        }
       })
+
 
   }
   denyBtn() {
@@ -446,7 +455,13 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   tablerow(event: any) {
+    let boolColumn;
     this.selectedRow.push(event.row);
+    boolColumn = this.selectedRow.filter((e: any) => (e.acDisHideDrug === true))
+    if (boolColumn.length > 0) {
+      console.log("canceldeni1")
+      this.isDisableCancel = true;
+    }
   }
   saveOrUpdate() {
     this.objPhyOrder = [];
