@@ -4,10 +4,17 @@
     color: #5a5a5a;
     font-weight: 400;
   }
-  .iom-color {
-    color: #45c0be;
-    font-weight: 500;
+  .iom-button {
+    padding: 0;
+    min-width: 32px;
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
   }
+
   .special-checkbox {
     ::ng-deep .mat-checkbox-label {
       color: #45c0be !important;
