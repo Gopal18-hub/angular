@@ -12,7 +12,7 @@ import { SaveInvestigationOrderModel } from "@core/models/saveInvestigationOrder
 //import { MatDialog } from '@angular/material/dialog';
 import { ModifyInvestigationOrderModel } from '@core/models/modifyInvestigationOrderModel.Model';
 import { ScheduleDateDialogComponent } from '../schedule-date-dialog/schedule-date-dialog.component';
-
+import { SaveUpdateDialogComponent } from '../save-update-dialog/save-update-dialog.component';
 import { SearchService } from '@shared/services/search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LookupService } from '@core/services/lookup.service';
@@ -441,51 +441,57 @@ export class InvestigationOrdersComponent implements OnInit {
     }
   }
   saveOrUpdate() {
+    let dialogRes;
     console.log(this.selectedRow, "this.selectedRow")
-    this.objPhyOrder = [];
-    this.objdtdenialorder = "";
-    let boolColumn = [];
-    let deniedRow = [];
-    deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-    boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
-    if (deniedRow.length > 0) {
-      this.snackbar.open("Order is already Denied", "error");
-      // this.snackbar.open("Please select Unbilled Order detail.");
-    }
-    else if (boolColumn.length === 0) {
-      this.snackbar.open("Please select atleast 1 row to proceed.", "error");
-    }
-    else {
-      boolColumn.forEach((e: any) => {
-        this.objPhyOrder.push({
-          acDisHideDrug: true,
-          visitid: e.visitId,
-          drugid: e.testID,
-          acdRemarks: e.acdRemarks
-        });
-      });
-
-      if (!this.investigationForm.value.denyorder) {
-
-        this.snackbar.open("Please select denial reason for open order before Save!", "error")
-      }
-      if (this.investigationForm.value.denyorder) {
-        if (this.denyOthers == true && !this.investigationForm.value.remarks) {
-          this.snackbar.open("Please enter denial reason remark for order!", "error")
+    this.matdialog.open(SaveUpdateDialogComponent).afterClosed().subscribe(res => {
+      // received data from dialog-component
+      dialogRes = res.data;
+      if (dialogRes === "Y") {
+        this.objPhyOrder = [];
+        this.objdtdenialorder = "";
+        let boolColumn = [];
+        let deniedRow = [];
+        deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+        boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
+        if (deniedRow.length > 0) {
+          this.snackbar.open("Order is already Denied", "error");
+          // this.snackbar.open("Please select Unbilled Order detail.");
+        }
+        else if (boolColumn.length === 0) {
+          this.snackbar.open("Please select atleast 1 row to proceed.", "error");
         }
         else {
-          this.objdtdenialorder = {
-            denialid: this.investigationForm.value.denyorder,
-            denialremark: this.investigationForm.value.remarks,
-            visitid: boolColumn[0].visitId,
-            nextScheduleDate: this.scheduleDate,
-            nextflag: true
+          boolColumn.forEach((e: any) => {
+            this.objPhyOrder.push({
+              acDisHideDrug: true,
+              visitid: e.visitId,
+              drugid: e.testID,
+              acdRemarks: e.acdRemarks
+            });
+          });
+
+          if (!this.investigationForm.value.denyorder) {
+
+            this.snackbar.open("Please select denial reason for open order before Save!", "error")
+          }
+          if (this.investigationForm.value.denyorder) {
+            if (this.denyOthers == true && !this.investigationForm.value.remarks) {
+              this.snackbar.open("Please enter denial reason remark for order!", "error")
+            }
+            else {
+              this.objdtdenialorder = {
+                denialid: this.investigationForm.value.denyorder,
+                denialremark: this.investigationForm.value.remarks,
+                visitid: boolColumn[0].visitId,
+                nextScheduleDate: this.scheduleDate,
+                nextflag: true
+              }
+              this.Save();
+            }
           }
         }
       }
-      this.Save();
-    }
-
+    })
   }
   getSaveModel(): SaveInvestigationOrderModel {
     return new SaveInvestigationOrderModel(
@@ -519,35 +525,43 @@ export class InvestigationOrdersComponent implements OnInit {
     )
   }
   cancelDenial() {
-    this.physicianOrderList = [];
-    let nondeniedRow = [];
-    let deniedRow = [];
-    nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-    deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+    let dialogRes;
+    this.matdialog.open(SaveUpdateDialogComponent).afterClosed().subscribe(res => {
+      // received data from dialog-component
+      dialogRes = res.data;
 
-    if (nondeniedRow.length > 0) { this.snackbar.open("Please select only denied Order  to proceed.", "error") }
-    else {
-      deniedRow.forEach((e: any) => {
-        if (e.testID !== 0)
-          this.physicianOrderList.push({
-            acDisHideDrug: e.boolColumn,
-            visitid: e.visitId,
-            drugid: e.testID,
-            acdRemarks: e.acdRemarks
+
+      if (dialogRes === 'Y') {
+        this.physicianOrderList = [];
+        let nondeniedRow = [];
+        let deniedRow = [];
+        nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
+        deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+
+        if (nondeniedRow.length > 0) { this.snackbar.open("Please select only denied Order  to proceed.", "error") }
+        else {
+          deniedRow.forEach((e: any) => {
+            if (e.testID !== 0)
+              this.physicianOrderList.push({
+                acDisHideDrug: e.boolColumn,
+                visitid: e.visitId,
+                drugid: e.testID,
+                acdRemarks: e.acdRemarks
+              });
           });
-      });
-      //this.http.post(ApiConstants.modifyphysicianorderdetail('', 9233), this.getModifyModel())
-      this.http.post(ApiConstants.modifyphysicianorderdetail('', Number(this.cookie.get("UserId"))), this.getModifyModel())
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          if (res.success === true) {
-            this.snackbar.open(res.message, "success");
-            this.selectedRow = [];
-            this.listRowClick(this.selectedInv);
-          }
-        })
-    }
-
+          // this.http.post(ApiConstants.modifyphysicianorderdetail('', 9233), this.getModifyModel())
+          this.http.post(ApiConstants.modifyphysicianorderdetail('', Number(this.cookie.get("UserId"))), this.getModifyModel())
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (res.success === true) {
+                this.snackbar.open(res.message, "success");
+                this.selectedRow = [];
+                this.listRowClick(this.selectedInv);
+              }
+            })
+        }
+      }
+    })
 
   }
   clearInv() {

@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LookupService } from '@core/services/lookup.service';
 import { CookieService } from '@shared/services/cookie.service';
 import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
+import { SaveUpdateDialogComponent } from '../save-update-dialog/save-update-dialog.component';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -456,49 +457,55 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   saveOrUpdate() {
-    this.objPhyOrder = [];
-    this.objdtdenialorder = "";
-    console.log(this.selectedRow, "SRM")
-    let boolColumn = [];
-    let deniedRow = [];
-    deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-    boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
-    if (deniedRow.length > 0) {
-      this.snackbar.open("Please deselect Order's already denied", "error");
-    }
-    else if (boolColumn.length === 0) {
-      this.snackbar.open("Please select atleast 1 row to proceed.", "error");
-    }
-    else {
-      boolColumn.forEach((e: any) => {
-        this.objPhyOrder.push({
-          acDisHideDrug: true,
-          visitid: e.visitId,
-          drugid: e.drugid,
-          acdRemarks: e.acdRemarks
-        });
-      });
-      if (!this.investigationForm.value.denyorder) {
-
-        this.snackbar.open("Please select denial reason for open order before Save!", "error")
-      }
-      if (this.investigationForm.value.denyorder) {
-        if (this.denyOthers == true && !this.investigationForm.value.remarks) {
-          this.snackbar.open("Please enter denial reason remark for order!", "error")
+    let dialogRes;
+    this.matdialog.open(SaveUpdateDialogComponent).afterClosed().subscribe(res => {
+      // received data from dialog-component
+      dialogRes = res.data;
+      if (dialogRes === 'Y') {
+        this.objPhyOrder = [];
+        this.objdtdenialorder = "";
+        console.log(this.selectedRow, "SRM")
+        let boolColumn = [];
+        let deniedRow = [];
+        deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+        boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
+        if (deniedRow.length > 0) {
+          this.snackbar.open("Please deselect Order's already denied", "error");
+        }
+        else if (boolColumn.length === 0) {
+          this.snackbar.open("Please select atleast 1 row to proceed.", "error");
         }
         else {
-          this.objdtdenialorder = {
-            denialid: this.investigationForm.value.denyorder,
-            denialremark: this.investigationForm.value.remarks,
-            visitid: this.selectedRow[0].visitId,
-            nextScheduleDate: this.scheduleDate,
-            nextflag: true
+          boolColumn.forEach((e: any) => {
+            this.objPhyOrder.push({
+              acDisHideDrug: true,
+              visitid: e.visitId,
+              drugid: e.drugid,
+              acdRemarks: e.acdRemarks
+            });
+          });
+          if (!this.investigationForm.value.denyorder) {
+
+            this.snackbar.open("Please select denial reason for open order before Save!", "error")
+          }
+          if (this.investigationForm.value.denyorder) {
+            if (this.denyOthers == true && !this.investigationForm.value.remarks) {
+              this.snackbar.open("Please enter denial reason remark for order!", "error")
+            }
+            else {
+              this.objdtdenialorder = {
+                denialid: this.investigationForm.value.denyorder,
+                denialremark: this.investigationForm.value.remarks,
+                visitid: this.selectedRow[0].visitId,
+                nextScheduleDate: this.scheduleDate,
+                nextflag: true
+              }
+              this.Save();
+            }
           }
         }
-
-        this.Save();
       }
-    }
+    })
   }
   getSaveModel(): SaveInvestigationOrderModel {
     return new SaveInvestigationOrderModel(
@@ -533,38 +540,45 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   cancelDenial() {
-    this.physicianOrderList = [];
+    let dialogRes;
+    this.matdialog.open(SaveUpdateDialogComponent).afterClosed().subscribe(res => {
+      // received data from dialog-component
+      dialogRes = res.data;
+      if (dialogRes === 'Y') {
+        this.physicianOrderList = [];
 
-    let nondeniedRow = [];
-    let deniedRow = [];
-    nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-    deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+        let nondeniedRow = [];
+        let deniedRow = [];
+        nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
+        deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
 
 
-    if (nondeniedRow.length > 0) {
-      this.snackbar.open("Please select only denied Order  to proceed.", "error")
-    }
-    else {
-      deniedRow.forEach((e: any) => {
-        if (e.drugid !== 0)
-          this.physicianOrderList.push({
-            acDisHideDrug: e.acDisHideDrug,
-            visitid: e.visitId,
-            drugid: e.drugid,
-            acdRemarks: e.acdRemarks
+        if (nondeniedRow.length > 0) {
+          this.snackbar.open("Please select only denied Order  to proceed.", "error")
+        }
+        else {
+          deniedRow.forEach((e: any) => {
+            if (e.drugid !== 0)
+              this.physicianOrderList.push({
+                acDisHideDrug: e.acDisHideDrug,
+                visitid: e.visitId,
+                drugid: e.drugid,
+                acdRemarks: e.acdRemarks
+              });
           });
-      });
-      //this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo, 9233), this.getModifyModel())
-      this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo, Number(this.cookie.get("UserId"))), this.getModifyModel())
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          if (res.success === true) {
-            this.snackbar.open(res.message, "success");
-            this.selectedRow = [];
-            this.listRowClick(this.selectedInv);
-          }
-        })
-    }
+          //this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo, 9233), this.getModifyModel())
+          this.http.post(ApiConstants.modifyphysicianorderdetail(this.tokenNo, Number(this.cookie.get("UserId"))), this.getModifyModel())
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (res.success === true) {
+                this.snackbar.open(res.message, "success");
+                this.selectedRow = [];
+                this.listRowClick(this.selectedInv);
+              }
+            })
+        }
+      }
+    })
   }
   clearMed() {
     this.investigationForm.reset();
