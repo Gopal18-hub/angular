@@ -63,7 +63,15 @@
             </maxhealth-question>
           </div>
           <mat-label class="max-health-primary-color mr-1"
-            >Company <i class="iom-color">IOM</i></mat-label
+            >Company
+            <button
+              mat-button
+              class="iom-button"
+              [disabled]="!formGroup.value.company"
+              (click)="openIOM()"
+            >
+              <i class="iom-color">IOM</i>
+            </button></mat-label
           >
           <div class="width-8 bg-white mr-2">
             <maxhealth-question
@@ -216,7 +224,8 @@
               routerLinkActive
               #rla="routerLinkActive"
               (click)="activeLink = link"
-              [active]="rla.isActive || activeLink.path == link.path"
+              queryParamsHandling="merge"
+              [active]="rla.isActive || activeLink?.path == link.path"
             >
               {{ link.title }}
             </a>

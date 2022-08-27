@@ -1,27 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { MatDialog } from '@angular/material/dialog';
-import { AppointmentSearchDialogComponent } from '@modules/registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component';
-import { VisitHistoryComponent } from '@core/UI/billing/submodules/visit-history/visit-history.component';
-import { ApiConstants } from '@core/constants/ApiConstants';
-import { Subject, takeUntil } from 'rxjs';
-import { HttpService } from '@shared/services/http.service';
-import { DMSComponent } from '@modules/registration/submodules/dms/dms.component';
-import { Registrationdetails } from '@core/types/registeredPatientDetial.Interface';
-import { DMSrefreshModel } from '@core/models/DMSrefresh.Model';
-import { GetCompanyDataInterface } from '@core/types/employeesponsor/getCompanydata.Interface';
-import { PatientService } from '@core/services/patient.service';
-import { ActivatedRoute } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { MatDialog } from "@angular/material/dialog";
+import { AppointmentSearchDialogComponent } from "@modules/registration/submodules/appointment-search/appointment-search-dialog/appointment-search-dialog.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject, takeUntil } from "rxjs";
+import { HttpService } from "@shared/services/http.service";
+import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
+import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
+import { PatientService } from "@core/services/patient.service";
+import { ActivatedRoute } from "@angular/router";
+import { DatePipe } from "@angular/common";
 
-import { PatientDetails } from '@core/models/patientDetailsModel.Model';
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 
 @Component({
-  selector: 'out-patients-post-discharge-follow-up-billing',
-  templateUrl: './post-discharge-follow-up-billing.component.html',
-  styleUrls: ['./post-discharge-follow-up-billing.component.scss']
+  selector: "out-patients-post-discharge-follow-up-billing",
+  templateUrl: "./post-discharge-follow-up-billing.component.html",
+  styleUrls: ["./post-discharge-follow-up-billing.component.scss"],
 })
 export class PostDischargeFollowUpBillingComponent implements OnInit {
   links = [
@@ -76,10 +76,10 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   };
   formGroup!: FormGroup;
   questions: any;
-  userName: string = '';
+  userName: string = "";
   lastUpdatedBy: string = "";
-  currentTime:any;
-  currentDate:any;
+  currentTime: any;
+  currentDate: any;
   categoryIcons: any;
   patient: boolean = false;
   patientName!: string;
@@ -96,7 +96,6 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   complanyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
 
-  
   constructor(
     private cookie: CookieService,
     private formService: QuestionControlService,
@@ -105,7 +104,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private patientService: PatientService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getAllCompany();
@@ -118,8 +117,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.questions = formResult.questions;
     this.userName = this.cookie.get("Name");
     this.lastUpdatedBy = this.cookie.get("UserName");
-    this.currentDate = this.datepipe.transform(new Date(), 'dd-MM-YYYY');
-    this.currentTime = new Date().toLocaleTimeString('en-US', { hour12: true });
+    this.currentDate = this.datepipe.transform(new Date(), "dd-MM-YYYY");
+    this.currentTime = new Date().toLocaleTimeString("en-US", { hour12: true });
     // this.currentTime = this.datepipe.transform(new Date(), 'HH:MM:ss a')
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
@@ -215,13 +214,12 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.apiProcessing = false;
   }
   doCategoryIconAction(icon: any) {}
-  appointment_popup()
-  {
+  appointment_popup() {
     console.log("appointment");
     this.matdialog.open(AppointmentSearchDialogComponent, {
       maxWidth: "100vw",
       width: "98vw",
-      });
+    });
   }
   dms() {
     if (this.dmsProcessing) return;
@@ -249,27 +247,29 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.dmsProcessing = false;
       });
   }
-  visit_history()
-  {
-    this.matdialog.open(VisitHistoryComponent, 
-      { width: "70%", 
-        height: "50%",
-        data:{
-          maxid: this.formGroup.value.maxid,
-          docid: '',
-        } });
+  visit_history() {
+    this.matdialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.formGroup.value.maxid,
+        docid: "",
+      },
+    });
   }
   clear() {
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
-    this.formGroup.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
-    this.patientName = '';
-    this.ssn = '';
-    this.age = '';
-    this.gender = '';
-    this.country = '';
-    this.dob = '';
+    this.formGroup.controls["maxid"].setValue(
+      this.cookie.get("LocationIACode") + "."
+    );
+    this.patientName = "";
+    this.ssn = "";
+    this.age = "";
+    this.gender = "";
+    this.country = "";
+    this.dob = "";
   }
 
   getAllCompany() {
@@ -290,7 +290,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       .get(ApiConstants.getCorporate)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
-        console.log(resultData)
+        console.log(resultData);
         this.coorporateList = resultData;
         // this.titleList.unshift({ id: 0, name: "-Select-", sex: 0, gender: "" });
         this.questions[4].options = this.coorporateList.map((l) => {

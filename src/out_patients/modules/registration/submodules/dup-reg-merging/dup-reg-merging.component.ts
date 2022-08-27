@@ -24,7 +24,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { LookupService } from "@core/services/lookup.service";
 import { Router } from "@angular/router";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 
 @Component({
   selector: "out-patients-dup-reg-merging",

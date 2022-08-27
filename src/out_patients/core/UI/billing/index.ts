@@ -14,7 +14,7 @@ import { FormSixtyComponent } from "./submodules/form60/form-sixty.component";
 import { MatButtonModule } from "@angular/material/button";
 import { ServiceDepositComponent } from "./submodules/service-deposit/service-deposit.component";
 import { MatTabsModule } from "@angular/material/tabs";
-import { VisitHistoryComponent } from './submodules/visit-history/visit-history.component';
+import { VisitHistoryModule } from "@shared/modules/visit-history";
 @NgModule({
   imports: [
     RouterModule,
@@ -28,7 +28,8 @@ import { VisitHistoryComponent } from './submodules/visit-history/visit-history.
     DynamicFormsModule,
     MatButtonModule,
     MatTabsModule,
-    MaxHealthTableModule
+    MaxHealthTableModule,
+    VisitHistoryModule,
   ],
   exports: [
     FormSixtyComponent,
@@ -40,7 +41,6 @@ import { VisitHistoryComponent } from './submodules/visit-history/visit-history.
     FormSixtyComponent,
     PaymentMethodsComponent,
     ServiceDepositComponent,
-    VisitHistoryComponent,
   ],
   providers: [],
 })
