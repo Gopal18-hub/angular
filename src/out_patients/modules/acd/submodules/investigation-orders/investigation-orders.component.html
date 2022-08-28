@@ -102,7 +102,7 @@
             
                 <div class="flex  bg-lightgray p-1 border-radius-md">
                     <div class="denyBtn"  (click)="denyBtn()">
-                        <button mat-raised-button color="primary" class="deny" >Deny Order</button>
+                        <button mat-raised-button color="primary" class="deny" [disabled]="!isDisableCancel">Deny Order</button>
                     </div>
                     <div  class="w-1/4 ml-2 h-full bg-white">
                         <maxhealth-question [question]="questions[6]"
@@ -123,10 +123,10 @@
                         <button mat-raised-button color="primary" >Create Bill</button>
                     </div>
                     <div class="mr-2">
-                        <button mat-raised-button color="primary" (click)="cancelDenial()">Cancel Denial</button>
+                        <button mat-raised-button color="primary" (click)="cancelDenial()" [disabled]="!isDisableCancel">Cancel Denial</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()">Save</button>
+                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()" [disabled]="!isDisableCancel">Save</button>
                     </div>
                    
                 </div>

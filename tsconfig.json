@@ -30,7 +30,8 @@
           "./src/shared/*"
         ]
 
-    }
+    },
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

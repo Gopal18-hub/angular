@@ -93,7 +93,7 @@ export class DetailsComponent implements OnInit {
       },
       mobileno: {
         type: "tel",
-        pattern: "^[1-9]{1}[0-9]{9}",
+        // pattern: "^[1-9]{1}[0-9]{9}",
       },
       billDate: {
         type: "date",
@@ -215,12 +215,15 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
-    this.BServiceForm.controls["fromDate"].disable();
-    this.BServiceForm.controls["toDate"].disable();
+    this.BServiceForm.controls['fromDate'].disable();
+    this.BServiceForm.controls['toDate'].disable();
+    this.BServiceForm.controls['authBy'].disable();
+    this.BServiceForm.controls['reason'].disable();
     this.getrefundreason();
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
+  
 
   ngAfterViewInit(): void {
     this.formEvents();
@@ -296,67 +299,62 @@ export class DetailsComponent implements OnInit {
   getpatientbilldetails() {
     this.billdetailservice.clear();
     this.http
-      .get(
-        BillDetailsApiConstants.getpatientbilldetails(
-          this.BServiceForm.controls["billNo"].value
-        )
-      )
+      .get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {
           console.log(resultdata);
           if (resultdata == null) {
             this.snackbar.open("Invalid Bill No");
-          } else {
-            this.patientbilldetaillist =
-              resultdata as getPatientPersonalandBillDetails;
+          } 
+          else 
+          {
+            this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
             this.billdetailservice.patientbilldetaillist = resultdata;
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
-            if (
-              this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1
-            ) {
-              this.billdetailservice.serviceList =
-                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
-              if (
-                this.patientbilldetaillist.billDetialsForRefund_Cancelled[0]
-                  .cancelled == 1
-              ) {
-                var errtxt =
-                  "Bill Number " +
-                  this.BServiceForm.value.billNo +
-                  " Has Been Cancelled";
+            if (this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1) 
+            {
+              this.billdetailservice.serviceList = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
+              if (this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1) 
+              {
+                var errtxt = "Bill Number " + this.BServiceForm.value.billNo + " Has Been Cancelled";
                 this.msgdialog.info(errtxt);
               }
-              console.log(
-                this.patientbilldetaillist
-                  .billDetialsForRefund_ConfigValueToken[1]
-              );
+              console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]);
               this.billFormfill();
+              if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
+                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == ''  
+              )
+              {
+                this.BServiceForm.controls['authBy'].enable();
+                this.BServiceForm.controls['reason'].enable();
+              }
+              else
+              {
+                this.BServiceForm.controls['authBy'].disable();
+                this.BServiceForm.controls['reason'].disable();
+              }
               this.printbill = false;
               this.consumableprint = false;
               this.phptracksheet = false;
               this.opprescription = false;
               this.doxperprint = false;
-              if (
-                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
-                  .requestToApproval == 0
-              ) {
+              if (this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].requestToApproval == 0) 
+              {
                 this.refundbill == false;
-              } else if (
-                this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0]
-                  .requestToApproval == 1
-              ) {
+              } 
+              else if (this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].requestToApproval == 1) 
+              {
                 this.refundbill == true;
               }
               console.log(this.billdetailservice.serviceList);
               this.router.navigate(["out-patient-billing/details", "services"]);
             }
           }
-        },
-        (error) => {
+        }),
+        (error:any) => {
           console.log(error);
         }
-      );
   }
   billFormfill() {
     this.billexist = false;
@@ -404,68 +402,15 @@ export class DetailsComponent implements OnInit {
     );
     // this.BServiceForm.controls["discAftBill"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0]);
     // this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
-    this.BServiceForm.controls["authBy"].setValue(
-      this.patientbilldetaillist
-        .billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby
-    );
-    // this.BServiceForm.controls["billDate"].setValue();
+    this.BServiceForm.controls["authBy"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby);
+    var reasonid = this.refundreasonlist.find( id => {
+      return id.name == this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason;
+    })
+    console.log(reasonid);
+    this.BServiceForm.controls['reason'].setValue(reasonid?.id);
   }
-  // getPatientDetailsByMaxId() {
-  //   let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
-
-  //   //HANDLING IF MAX ID IS NOT PRESENT
-  //   if (regNumber != 0) {
-  //     let iacode = this.miscForm.value.maxid.split(".")[0];
-  //     this.http
-  //       .get(
-  //         ApiConstants.getregisteredpatientdetailsForBilling(
-  //           iacode,
-  //           regNumber,
-  //           Number(this.cookie.get("HSPLocationId"))
-  //         )
-  //       )
-  //       .pipe(takeUntil(this._destroying$))
-  //       .subscribe(
-  //         (resultData: Registrationdetails) => {
-  //           // this.clear();
-  //           // this.flushAllObjects();
-  //           this.patientDetails = resultData;
-  //           // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-  //           //   this.patientDetails
-  //           // );
-  //           // this.MaxIDExist = true;
-  //           // console.log(this.categoryIcons);
-  //           // this.checkForMaxID();
-  //           //RESOPONSE DATA BINDING WITH CONTROLS
-
-  //           this.setValuesToMiscForm(this.patientDetails);
-
-  //           //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
-  //         },
-  //         (error) => {
-  //           if (error.error == "Patient Not found") {
-  //             // this.messageDialogService.info(error.error);
-  //             // this.router.navigate([], {
-  //             //   queryParams: {},
-  //             //   relativeTo: this.route,
-  //             // });
-  //             // this.flushAllObjects();
-  //             // this.setValuesTo miscForm(this.patientDetails);
-  //             this.miscForm.controls["maxid"].setValue(
-  //               iacode + "." + regNumber
-  //             );
-  //             this.miscForm.controls["maxid"].setErrors({ incorrect: true });
-  //             this.questions[0].customErrorMessage = "Invalid Max ID";
-  //           }
-  //           // this.clear();
-
-  //           // this.maxIDChangeCall = false;
-  //         }
-  //       );
-  //   }
-  // }
-
-  openhistory() {
+ 
+ openhistory() {
     this.matDialog.open(VisitHistoryComponent, {
       width: "70%",
       height: "50%",
