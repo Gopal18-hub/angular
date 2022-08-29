@@ -1,0 +1,50 @@
+.services-container-wrapper {
+  height: 100%;
+  .services-tab {
+    background-color: #45c0be;
+    height: max-content;
+    height: 95.5%;
+
+    button {
+      background-color: #bfe8e7;
+      height: 32px;
+      line-height: 32px;
+      &.active {
+        background-color: #fff;
+      }
+    }
+  }
+  .services-tab-container {
+    ::ng-deep {
+      .w-36 {
+        width: 36%;
+      }
+      .total-cost {
+        color: #5a5a5a;
+        font-weight: 600;
+        span {
+          color: var(--primary-color);
+        }
+      }
+      .print-button {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+      }
+      .mat-error {
+        display: none !important;
+      }
+      .max-table-wrapper {
+        table {
+          .mat-row {
+            &:hover {
+              background-color: transparent !important;
+              .mat-cell {
+                color: initial !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
