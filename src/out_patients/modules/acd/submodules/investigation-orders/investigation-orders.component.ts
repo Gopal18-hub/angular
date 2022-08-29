@@ -85,11 +85,11 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       fromdate: {
         type: "date",
-        readonly: true,
+        //readonly: true,
       },
       todate: {
         type: "date",
-        readonly: true,
+        //readonly: true,
       },
       maxid: {
         type: "dropdown",
