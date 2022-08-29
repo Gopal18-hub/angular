@@ -3,11 +3,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
-import { EMFJS, RTFJS, WMFJS } from "rtf.js";
 
-RTFJS.loggingEnabled(false);
-WMFJS.loggingEnabled(false);
-EMFJS.loggingEnabled(false);
+//RTFJS.loggingEnabled(false);
+//WMFJS.loggingEnabled(false);
+//EMFJS.loggingEnabled(false);
 
 @Component({
   selector: "out-patients-iom-popup",
@@ -36,22 +35,31 @@ export class IomPopupComponent implements OnInit {
       )
       .subscribe((res: any) => {
         console.log(res);
-        const doc = new RTFJS.Document(this.stringToArrayBuffer(res[0]), {});
+        const doc = new (<any>window).RTFJS.Document(
+          this.stringToArrayBuffer(res[0]),
+          {}
+        );
         const meta = doc.metadata();
-        doc
-          .render()
-          .then(function (htmlElements) {
-            console.log("Meta:");
-            console.log(meta);
-            console.log("Html:");
-            console.log(htmlElements);
-            const div = document.createElement("div");
-            div.append(...htmlElements);
-            (<any>document.querySelector("#iom-content")).innerHTML =
-              div.innerHTML;
-            console.log(div);
-          })
-          .catch((error) => console.error(error));
+        console.log(meta);
+        const htmlElements = doc.render();
+        const div = document.createElement("div");
+        div.append(...htmlElements);
+        (<any>document.querySelector("#iom-content")).innerHTML = div.innerHTML;
+
+        // doc
+        //   .render()
+        //   .then(function (htmlElements: any) {
+        //     console.log("Meta:");
+        //     console.log(meta);
+        //     console.log("Html:");
+        //     console.log(htmlElements);
+        //     const div = document.createElement("div");
+        //     div.append(...htmlElements);
+        //     (<any>document.querySelector("#iom-content")).innerHTML =
+        //       div.innerHTML;
+        //     console.log(div);
+        //   })
+        //   .catch((error: any) => console.error(error));
       });
   }
 
