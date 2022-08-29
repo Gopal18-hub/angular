@@ -120,13 +120,13 @@
                 </div>
                 <div class="flex ">
                     <div class="mr-2">
-                        <button mat-raised-button color="primary" >Create Bill</button>
+                        <button mat-raised-button color="primary" [disabled]="!isDisableBill" >Create Bill</button>
                     </div>
                     <div class="mr-2">
-                        <button mat-raised-button color="primary" (click)="cancelDenial()" [disabled]="!isDisableCancel">Cancel Denial</button>
+                        <button mat-raised-button color="primary" (click)="cancelDenial()" [disabled]="!isDisableDeniel">Cancel Denial</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()" [disabled]="!isDisableCancel">Save</button>
+                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()" [disabled]="!isDisableSave">Save</button>
                     </div>
                    
                 </div>

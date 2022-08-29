@@ -33,6 +33,7 @@ import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
+import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -71,6 +72,16 @@ const routes: Routes = [
         ],
       },
       { path: "online-op-bill", component: OnlineOpBillsComponent },
+      {
+        path: "op-order-request",
+        component: OpOrderRequestComponent,
+        children: [
+          { path: "", component: OrderServicesComponent },
+          { path: "services", component: OrderServicesComponent },
+          { path: "bill", component: BillComponent },
+          { path: "credit-details", component: CreditDetailsComponent },
+        ],
+      },
       { path: "op-order-request", component: OpOrderRequestComponent },
       {
         path: "miscellaneous-billing",
