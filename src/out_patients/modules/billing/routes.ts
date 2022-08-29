@@ -33,10 +33,7 @@ import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
-import { OnlineDepositReportComponent } from "./submodules/online-deposit-report/online-deposit-report.component";
-import { ExpiredPatientReportComponent } from "./submodules/expired-patient-report/expired-patient-report.component";
-import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
-import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -75,6 +72,16 @@ const routes: Routes = [
         ],
       },
       { path: "online-op-bill", component: OnlineOpBillsComponent },
+      {
+        path: "op-order-request",
+        component: OpOrderRequestComponent,
+        children: [
+          { path: "", component: OrderServicesComponent },
+          { path: "services", component: OrderServicesComponent },
+          { path: "bill", component: BillComponent },
+          { path: "credit-details", component: CreditDetailsComponent },
+        ],
+      },
       { path: "op-order-request", component: OpOrderRequestComponent },
       {
         path: "miscellaneous-billing",
@@ -97,10 +104,6 @@ const routes: Routes = [
       { path: "initiate-deposit", component: InitiateDepositComponent },
       { path: "op-refund-approval", component: OprefundApprovalComponent },
       { path: "dispatch-report", component: DispatchReportComponent },
-      { path: "online-deposit-report", component: OnlineDepositReportComponent},
-      { path:"expired-patient-report", component: ExpiredPatientReportComponent},
-      {path: "monthly-op-consultation-report", component: MonthlyOpConsultationReportComponent},
-      {path:"acknowledged-scroll-amount-report" ,component:AcknowledgedScrollAmountReportComponent},
       { path: "dmg-mapping", component: DmgMappingComponent },
       {
         path: "expired-patient-check",
