@@ -90,6 +90,10 @@ import { PaymentDialogComponent } from './submodules/details/payment-dialog/paym
 import { MiscellaneousBillingsComponent } from './submodules/miscellaneous-billings/miscellaneous-billings.component';
 import { BillsComponent } from './submodules/miscellaneous-billings/bills/bills.component';
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
+import { OnlineDepositReportComponent } from './submodules/online-deposit-report/online-deposit-report.component';
+import { ExpiredPatientReportComponent } from './submodules/expired-patient-report/expired-patient-report.component';
+import { MonthlyOpConsultationReportComponent } from './submodules/monthly-op-consultation-report/monthly-op-consultation-report.component';
+import { AcknowledgedScrollAmountReportComponent } from './submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component'
 
 @NgModule({
   declarations: [
@@ -155,7 +159,11 @@ import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credi
     PaymentDialogComponent,
     MiscellaneousBillingsComponent,
     BillsComponent,
-    CreditDetailComponent
+    CreditDetailComponent,
+    OnlineDepositReportComponent,
+    ExpiredPatientReportComponent,
+    MonthlyOpConsultationReportComponent,
+    AcknowledgedScrollAmountReportComponent
   ],
   imports: [
     BillingRoutingModule,
