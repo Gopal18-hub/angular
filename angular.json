@@ -34,7 +34,7 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/out_patients/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": ["src/out_patients/src/assets/js/rtf.js"]
           },
           "configurations": {
             "production": {
@@ -1200,7 +1200,7 @@
               "src/auth/src/styles.scss"
             ],
             "scripts": []
-          },          
+          },
           "configurations": {
             "production": {
               "budgets": [
