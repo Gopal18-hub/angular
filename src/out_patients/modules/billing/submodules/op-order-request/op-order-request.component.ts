@@ -21,7 +21,7 @@ import {
 } from "@angular/material/dialog";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+
 import { BillingService } from "../billing/billing.service";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
 import { AppointmentSearchComponent } from "../billing/prompts/appointment-search/appointment-search.component";
@@ -120,7 +120,7 @@ export class OpOrderRequestComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAllCompany();
+    // this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
@@ -370,16 +370,16 @@ export class OpOrderRequestComponent implements OnInit {
       });
   }
 
-  visitHistory() {
-    this.matDialog.open(VisitHistoryComponent, {
-      width: "70%",
-      height: "50%",
-      data: {
-        maxid: this.formGroup.value.maxid,
-        docid: "",
-      },
-    });
-  }
+  // visitHistory() {
+  //   this.matDialog.open(VisitHistoryComponent, {
+  //     width: "70%",
+  //     height: "50%",
+  //     data: {
+  //       maxid: this.formGroup.value.maxid,
+  //       docid: "",
+  //     },
+  //   });
+  // }
 
   clear() {
     this.apiProcessing = false;
@@ -401,21 +401,21 @@ export class OpOrderRequestComponent implements OnInit {
     this.questions[0].elementRef.focus();
   }
 
-  getAllCompany() {
-    this.http
-      .get(
-        BillingApiConstants.getcompanyandpatientsponsordata(
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
-        console.log(data);
-        this.questions[3].options = data.map((a: any) => {
-          return { title: a.name, value: a.id };
-        });
-      });
-  }
+  // getAllCompany() {
+  //   this.http
+  //     .get(
+  //       BillingApiConstants.getcompanyandpatientsponsordata(
+  //         Number(this.cookie.get("HSPLocationId"))
+  //       )
+  //     )
+  //     .pipe(takeUntil(this._destroying$))
+  //     .subscribe((data: any) => {
+  //       console.log(data);
+  //       this.questions[3].options = data.map((a: any) => {
+  //         return { title: a.name, value: a.id };
+  //       });
+  //     });
+  // }
 
   getAllCorporate() {
     this.http
