@@ -484,7 +484,7 @@ export class InvestigationOrdersComponent implements OnInit {
 
         const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
           width: '33vw', height: '40vh', data: {
-            message: "Do you want Saved"
+            message: "Do you want to save?"
           },
         });
 
@@ -571,9 +571,9 @@ export class InvestigationOrdersComponent implements OnInit {
   cancelDenial() {
     let nondeniedRow = [];
     nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-
+    console.log(nondeniedRow, "NDR")
     if (nondeniedRow.length > 0) {
-      this.snackbar.open("Order is Non Denied", "error");
+      this.snackbar.open("Please select the order detail to cancel deny", "error");
       //this.isDisableDeniel = false;
       this.resetRemarksDeny();
     }
@@ -581,7 +581,7 @@ export class InvestigationOrdersComponent implements OnInit {
       let dialogRes;
       const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
         width: '33vw', height: '40vh', data: {
-          message: "Do you want Modify"
+          message: "Do you want to modify?"
         },
       });
 
