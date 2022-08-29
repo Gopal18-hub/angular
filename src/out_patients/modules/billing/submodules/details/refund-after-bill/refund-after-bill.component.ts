@@ -8,6 +8,7 @@ import { QuestionControlService } from '@shared/ui/dynamic-forms/service/questio
 import { Subject } from 'rxjs';
 import { GstComponent } from '../../miscellaneous-billing/billing/gst/gst.component';
 import { billDetailService } from '../billDetails.service';
+import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 
 @Component({
   selector: 'out-patients-refund-after-bill',
@@ -16,14 +17,15 @@ import { billDetailService } from '../billDetails.service';
 })
 export class RefundAfterBillComponent implements OnInit {
 
-  @ViewChild("selectedServices") tableRows: any;
+  @ViewChild("afterbill") tableRows: any;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailservice: billDetailService
+    private billDetailservice: billDetailService,
+    private msgdialog: MessageDialogService
   ) {}
 
   miscBillData = {
@@ -266,39 +268,58 @@ export class RefundAfterBillComponent implements OnInit {
     this.data = [...this.billDetailservice.serviceList];
     console.log(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].notApproved);
   }
-  gst: { service: string; percentage: number; value: number }[] = [
-    { service: "CGST", percentage: 0.0, value: 0.0 },
-    { service: "SGST", percentage: 0.0, value: 0.0 },
-    { service: "UTGST", percentage: 0.0, value: 0.0 },
-    { service: "IGST", percentage: 0.0, value: 0.0 },
-    { service: "CESS", percentage: 0.0, value: 0.0 },
-    { service: "TOTAL TAX", percentage: 0.0, value: 0.0 },
-  ];
-  openGSTDialog() {
-    this.matDialog.open(GstComponent, {
-      width: "24vw",
-      height: "56vh",
-
-      data: {
-        gstDetails: this.gst,
-      },
-    });
-  }
   ngAfterViewInit()
   {
     
   }
   printrow(event:any)
   {
-    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
-    {
-      console.log('not ackn');
-    }
-    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 1)
-    {
-      console.log('ack');
-    }
-    console.log(event);
+    setTimeout(() => {
+      console.log(event)
+      console.log(event.row.cancelled);
+
+      if(event.row.cancelled == true )
+      {
+        console.log("true");
+        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
+          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
+            
+          })
+        });
+        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+          return a.serviceId == event.row.serviceid;
+        }) 
+        if(list[0].ackby == 0)
+        {
+          this.msgdialog.info('Only Acknowledged items can be refunded from this Tab. Refund this item from Service Tab');
+          event.row.cancelled = false;
+        }
+        else
+        {
+            this.billDetailservice.addForApproval({
+              cancelled: event.row.cancelled,
+              Sno: event.row.Sno,
+              amount: event.row.amount,
+              requestToApproval: event.row.requestToApproval,
+              itemid: event.row.itemid,
+              orderid: event.row.orderid
+            })
+            this.billDetailservice.calculateTotalRefund();
+            console.log(this.billDetailservice.sendforapproval);
+        }
+      }
+      else if(event.row.cancelled == false)
+      {
+        console.log("false");
+        var index = this.billDetailservice.sendforapproval.findIndex((val: any) => val.Sno === event.row.Sno);
+        console.log(index);
+        // this.billDetailservice.sendforapproval.splice(index, 1);
+        this.billDetailservice.removeForApproval(index);
+        this.billDetailservice.calculateTotalRefund();
+        console.log(this.billDetailservice.sendforapproval);
+      }
+    }, 100);
+    
   }
 
 }

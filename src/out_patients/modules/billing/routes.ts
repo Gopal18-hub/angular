@@ -44,7 +44,8 @@ const routes: Routes = [
         path: "",
         component: BillingComponentPage,
         children: [
-          { path: "", component: ServicesComponent },
+          // { path: "", component: ServicesComponent },
+          { path: "", redirectTo: "services", pathMatch: "full" },
           { path: "services", component: ServicesComponent },
           { path: "bill", component: BillComponent },
           { path: "credit-details", component: CreditDetailsComponent },
@@ -81,6 +82,7 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
+      { path: "op-order-request", component: OpOrderRequestComponent },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,

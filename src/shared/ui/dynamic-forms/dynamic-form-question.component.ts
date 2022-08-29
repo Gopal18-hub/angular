@@ -81,8 +81,8 @@ export class DynamicFormQuestionComponent
 
   dateMaskConfig: any = {
     mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
-    guide: true,
-    placeholderChar: "_",
+    guide: false,
+    placeholderChar: "/",
     pipe: undefined,
     keepCharPositions: false,
   };

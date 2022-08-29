@@ -26,6 +26,9 @@
     .margin-left-5{
         margin-left: 5rem;
     }
+    .clr-primary{
+        color:#004084;
+    }
     .lens-icon{
         position: absolute;
         left: 2px;
@@ -35,8 +38,10 @@
     }
     
     .btn{
-        ::ng-deep .mat-raised-button {
-            min-width: 155px !important;
+        ::ng-deep .mat-raised-button{
+            min-width: fit-content !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
         }
     }
     .searchbtn{

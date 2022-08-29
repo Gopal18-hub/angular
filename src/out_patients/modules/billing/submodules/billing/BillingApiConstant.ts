@@ -1,29 +1,29 @@
 import { environment } from "@environments/environment";
 
 export namespace BillingApiConstants {
-  export const getcompanyandpatientsponsordata = (locationId: number) => {
-    return `${environment.PatientApiUrl}api/patient/getcompanyandpatientsponsordata/${locationId}`;
+  export const getcompanydetail = (locationId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getcompanydetail/${locationId}`;
+  };
+
+  export const getopcompanyiomlocationwise = (
+    locationId: number,
+    companyId: number
+  ) => {
+    return `${environment.PatientApiUrl}api/patient/getopcompanyiomlocationwise/${locationId}/${companyId}`;
   };
 
   export const getsimilarsoundopbilling = (
     IACode: string,
     RegistrationNo: number
   ) => {
-    return (
-      environment.BillingApiUrl +
-      "api/outpatientbilling/getsimilarsoundopbilling/" +
-      RegistrationNo +
-      "/" +
-      IACode
-    );
+    return `${environment.BillingApiUrl}api/outpatientbilling/getsimilarsoundopbilling/${RegistrationNo}/${IACode}`;
   };
 
   export const getclinics = (locationId: number) => {
-    return environment.CommonApiUrl + `api/lookup/getclinics/${locationId}`;
+    return `${environment.CommonApiUrl}api/lookup/getclinics/${locationId}`;
   };
 
-  export const getspecialization =
-    environment.PatientApiUrl + "api/patient/getspecialization";
+  export const getspecialization = `${environment.PatientApiUrl}api/patient/getspecialization`;
 
   export const getbillingdoctorsonsearch = (
     doctorName: string,
