@@ -90,6 +90,7 @@ import { PaymentDialogComponent } from './submodules/details/payment-dialog/paym
 import { MiscellaneousBillingsComponent } from './submodules/miscellaneous-billings/miscellaneous-billings.component';
 import { BillsComponent } from './submodules/miscellaneous-billings/bills/bills.component';
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
+import { IomPopupComponent } from './submodules/billing/prompts/iom-popup/iom-popup.component';
 
 @NgModule({
   declarations: [
@@ -155,7 +156,8 @@ import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credi
     PaymentDialogComponent,
     MiscellaneousBillingsComponent,
     BillsComponent,
-    CreditDetailComponent
+    CreditDetailComponent,
+    IomPopupComponent
   ],
   imports: [
     BillingRoutingModule,

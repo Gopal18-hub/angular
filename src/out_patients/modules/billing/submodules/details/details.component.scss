@@ -2,7 +2,10 @@
     background-color: #F6F6F6;
     color:#004084;
 }
-
+.isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
 
 .bill-service-wrapper
 {
@@ -30,6 +33,13 @@
         min-width: fit-content !important;
         height: 1.875rem;
         line-height: 1.875rem;
+    }
+    .btn{
+        ::ng-deep .mat-raised-button{
+            min-width: auto !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        } 
     }
     .searchbtn{
         ::ng-deep .mat-raised-button{
@@ -231,7 +241,7 @@ background-color: #45C0BE;
     border-radius: 0% 0.5rem 0.5rem 0.5rem;
     margin-left: 0.3%;
     margin-right: 0.3%;
-    margin-top: 0.1%;
+    // margin-top: 0.1%;
 }
 // .h-9/20
 .h-table
@@ -401,7 +411,7 @@ margin-top: 0.19rem;
     color: #000;
 }
 .mar-left-12{
-    margin-left: 11.2rem;
+    margin-left: 6.7rem;
 }
 .input-align-right{
     ::ng-deep .mat-form-field{
