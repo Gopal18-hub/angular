@@ -97,6 +97,10 @@ const routes: Routes = [
       { path: "initiate-deposit", component: InitiateDepositComponent },
       { path: "op-refund-approval", component: OprefundApprovalComponent },
       { path: "dispatch-report", component: DispatchReportComponent },
+      { path: "online-deposit-report", component: OnlineDepositReportComponent},
+      { path:"expired-patient-report", component: ExpiredPatientReportComponent},
+      {path: "monthly-op-consultation-report", component: MonthlyOpConsultationReportComponent},
+      {path:"acknowledged-scroll-amount-report" ,component:AcknowledgedScrollAmountReportComponent},
       { path: "dmg-mapping", component: DmgMappingComponent },
       {
         path: "expired-patient-check",
