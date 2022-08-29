@@ -8,7 +8,7 @@ import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model"
 import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { PatientDetail } from "@core/types/patientDetailModel.Interface";
-import { VisitHistoryComponent } from "@core/UI/billing/submodules/visit-history/visit-history.component";
+import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { SimilarPatientDialog } from "@modules/registration/submodules/op-registration/op-registration.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { DbService } from "@shared/services/db.service";

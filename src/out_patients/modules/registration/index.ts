@@ -53,6 +53,7 @@ import { RegistrationDialogueComponent } from "@modules/registration/submodules/
 import { PendingChangesGuard } from "@shared/services/guards/pending-change-guard.service";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
+import { VisitHistoryModule } from "@shared/modules/visit-history";
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { AuthGuardService } from "../../../shared/services/guards/auth-guard.ser
     MatRadioModule,
     MatTooltipModule,
     FormDialogueModule,
+    VisitHistoryModule,
   ],
   exports: [],
   providers: [
