@@ -39,6 +39,7 @@ export class InvestigationOrdersComponent implements OnInit {
   isShowMedical: boolean = false;
   isBtnDisable: boolean = false;
   isBtnDisableClear: boolean = true;
+  isDisableCancel: boolean = true;
   name: any;
   questions: any;
   statusvalue: any = '';
@@ -59,6 +60,14 @@ export class InvestigationOrdersComponent implements OnInit {
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
   selectedRow: any = [];
+
+  statusDropdown = [
+    { title: "All", value: "All", id: 0 },
+    { title: "Billed", value: "Billed", id: 1 },
+    { title: "Unbilled", value: "Unbilled", id: 2 },
+    { title: "Partially Billed", value: "Partially Billed", id: 3 },
+    { title: "Denied", value: "Denied", id: 4 },
+  ];
 
   investigationFormData = {
     title: "",
@@ -96,13 +105,7 @@ export class InvestigationOrdersComponent implements OnInit {
       status: {
         type: "dropdown",
         placeholder: "Select",
-        options: [
-          { title: "All", value: "All" },
-          { title: "Billed", value: "Billed" },
-          { title: "Unbilled", value: "Unbilled" },
-          { title: "Partially Billed", value: "Partially Billed" },
-          { title: "Denied", value: "Denied" },
-        ],
+        options: this.statusDropdown
       },
       denyorder: {
         type: "dropdown",
@@ -299,6 +302,11 @@ export class InvestigationOrdersComponent implements OnInit {
     }
     this.investigationForm.controls["denyorder"].disable();
     this.investigationForm.controls["remarks"].disable();
+    this.isDisableCancel = false;
+    //status
+
+
+
     //Deny Order List
     this.http.get(ApiConstants.getdenyreasonforacd)
       .pipe(takeUntil(this._destroying$))
@@ -411,6 +419,8 @@ export class InvestigationOrdersComponent implements OnInit {
   listRowClick(event: any) {
     let maxId = event.row.maxid;
     let orderid = event.row.orderId;
+    let boolColumn;
+    this.isDisableCancel = false;
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
     this.investigationForm.controls["denyorder"].setValue('');
     this.investigationForm.controls["remarks"].setValue('');
@@ -422,6 +432,11 @@ export class InvestigationOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.invOrderDetails = res.tempOrderBreakup;
+        boolColumn = this.invOrderDetails.filter((e: any) => (e.boolColumn === true));
+        if (boolColumn.length > 0) {
+          this.isDisableCancel = true;
+          console.log("canceldeni")
+        }
         console.log(this.invOrderDetails, "invOrderDetails")
       })
   }
@@ -432,8 +447,16 @@ export class InvestigationOrdersComponent implements OnInit {
     ));
   }
   tablerow(event: any) {
-    console.log(event, "table")
+    let boolColumn;
+
     this.selectedRow.push(event.row);
+    console.log(this.selectedRow, "table")
+    boolColumn = this.selectedRow.filter((e: any) => (e.boolColumn === true))
+    if (boolColumn.length > 0) {
+      console.log("canceldeni1")
+      this.isDisableCancel = true;
+    }
+
   }
   saveOrUpdate() {
     this.objPhyOrder = [];
