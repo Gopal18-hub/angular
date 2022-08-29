@@ -36,6 +36,8 @@ export class RegistrationDialogueComponent implements OnInit {
       this.router.navigate(["out-patient-billing"], {
         queryParams: { maxId: MaxId.trim() },
       });
+    } else if (this.data.bt1Msg == "Ok") {
+      this.dialogRef.close("Success");
     }
   }
 
@@ -46,6 +48,8 @@ export class RegistrationDialogueComponent implements OnInit {
       this.router.navigate(["out-patient-billing", "deposit"], {
         queryParams: { maxID: MaxId.trim() },
       });
+    } else if (this.data.bt2Msg == "Cancel") {
+      this.dialogRef.close();
     }
   }
 }

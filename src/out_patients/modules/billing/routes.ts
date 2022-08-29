@@ -47,13 +47,14 @@ const routes: Routes = [
         path: "",
         component: BillingComponentPage,
         children: [
-          { path: "", component: ServicesComponent },
+          // { path: "", component: ServicesComponent },
+          { path: "", redirectTo: "services", pathMatch: "full" },
           { path: "services", component: ServicesComponent },
           { path: "bill", component: BillComponent },
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent, },
+      { path: "deposit", component: DepositComponent },
       {
         path: "details",
         component: DetailsComponent,
@@ -73,8 +74,8 @@ const routes: Routes = [
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent, },
-      { path: "op-order-request", component: OpOrderRequestComponent, },
+      { path: "online-op-bill", component: OnlineOpBillsComponent },
+      { path: "op-order-request", component: OpOrderRequestComponent },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
@@ -93,14 +94,10 @@ const routes: Routes = [
           { path: "misc-bills", component: BillsComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent, },
-      { path: "op-refund-approval", component: OprefundApprovalComponent, },
-      { path: "dispatch-report", component: DispatchReportComponent, },
-      { path: "online-deposit-report", component: OnlineDepositReportComponent},
-      { path:"expired-patient-report", component: ExpiredPatientReportComponent},
-      {path: "monthly-op-consultation-report", component: MonthlyOpConsultationReportComponent},
-      {path:"acknowledged-scroll-amount-report" ,component:AcknowledgedScrollAmountReportComponent},
-      { path: "dmg-mapping", component: DmgMappingComponent, },
+      { path: "initiate-deposit", component: InitiateDepositComponent },
+      { path: "op-refund-approval", component: OprefundApprovalComponent },
+      { path: "dispatch-report", component: DispatchReportComponent },
+      { path: "dmg-mapping", component: DmgMappingComponent },
       {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
@@ -126,4 +123,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule { }
+export class BillingRoutingModule {}

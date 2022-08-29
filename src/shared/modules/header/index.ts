@@ -17,6 +17,7 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { RedirectComponent } from "./redirect/redirect.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { OverlayModule } from "@angular/cdk/overlay";
+import { ChangepaswordComponent } from "./changepasword/changepasword.component";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
     SubComponent,
     RedirectComponent,
     ChangelocationComponent,
+    ChangepaswordComponent,
   ],
   imports: [
     CommonModule,

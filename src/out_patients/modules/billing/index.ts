@@ -94,6 +94,7 @@ import { OnlineDepositReportComponent } from './submodules/online-deposit-report
 import { ExpiredPatientReportComponent } from './submodules/expired-patient-report/expired-patient-report.component';
 import { MonthlyOpConsultationReportComponent } from './submodules/monthly-op-consultation-report/monthly-op-consultation-report.component';
 import { AcknowledgedScrollAmountReportComponent } from './submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component'
+import { IomPopupComponent } from './submodules/billing/prompts/iom-popup/iom-popup.component';
 
 @NgModule({
   declarations: [
@@ -163,7 +164,8 @@ import { AcknowledgedScrollAmountReportComponent } from './submodules/acknowledg
     OnlineDepositReportComponent,
     ExpiredPatientReportComponent,
     MonthlyOpConsultationReportComponent,
-    AcknowledgedScrollAmountReportComponent
+    AcknowledgedScrollAmountReportComponent,
+    IomPopupComponent
   ],
   imports: [
     BillingRoutingModule,

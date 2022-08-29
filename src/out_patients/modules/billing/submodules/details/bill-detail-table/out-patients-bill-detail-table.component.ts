@@ -267,28 +267,18 @@ export class BillDetailTableComponent implements OnInit {
       this.billDetailservice.serviceList[i].Sno = i + 1;
     }
     this.data = [...this.billDetailservice.serviceList];
-  }
-  gst: { service: string; percentage: number; value: number }[] = [
-    { service: "CGST", percentage: 0.0, value: 0.0 },
-    { service: "SGST", percentage: 0.0, value: 0.0 },
-    { service: "UTGST", percentage: 0.0, value: 0.0 },
-    { service: "IGST", percentage: 0.0, value: 0.0 },
-    { service: "CESS", percentage: 0.0, value: 0.0 },
-    { service: "TOTAL TAX", percentage: 0.0, value: 0.0 },
-  ];
-  openGSTDialog() {
-    this.matDialog.open(GstComponent, {
-      width: "24vw",
-      height: "56vh",
-
-      data: {
-        gstDetails: this.gst,
-      },
-    });
+    
   }
   ngAfterViewInit()
   {
-
+    console.log(this.tableRows);
+    for(var i = 0; i < this.tableRows.data.length; i++)
+    {
+      if(this.tableRows.data[i].cancelled == 1)
+      {
+        
+      }
+    }
   }
   printrow(event:any)
   {
@@ -296,7 +286,7 @@ export class BillDetailTableComponent implements OnInit {
       console.log(event)
       console.log(event.row.cancelled);
 
-      if(event.row.cancelled == true)
+      if(event.row.cancelled == true )
       {
         console.log("true");
         this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {

@@ -11,5 +11,23 @@ export namespace ApiConstants {
     );
   };
 
+  export const getpatientvisithistory = (
+    IACode: string,
+    RegistrationNo: number,
+    LocationId: number,
+    DoctorId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getoppatientvisithistory/" +
+      IACode +
+      "/" +
+      RegistrationNo +
+      "/" +
+      LocationId +
+      "?" +
+      DoctorId
+    );
+  };
   // export const getPermissions = `${environment.IdentityServerUrl}api/MaxPermission/getpermissionmatrixrolewise`;
 }
