@@ -302,6 +302,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.isDisableSave = false;
     this.isDisableDeniel = false;
     this.isDisableBill = false;
+    this.patientInfo = '';
     //Deny Order List
     this.http.get(ApiConstants.getdenyreasonforacd)
       .pipe(takeUntil(this._destroying$))
@@ -444,31 +445,34 @@ export class InvestigationOrdersComponent implements OnInit {
     ));
   }
   tablerow(event: any) {
-    if (event.row.sno !== true) {
-      this.isDisableCancel = true;
-      this.isDisableDeniel = true;
-    }
-    if (event.row.isBilled === 0 || event.row.isBilled === 2) {
-      this.selectedRow.push(event.row);
-      this.isDisableCancel = true;
-      this.isDisableDeniel = true;
-    }
-    else {
-      console.log(this.selectedRow, "Bill")
-      this.snackbar.open("Order cannot denied,As item already bill!Order cannot denied,As item already bill!", "error");
-      event.row.sno = true;
-      // this.isDisableCancel = false;
-      // this.isDisableSave = false;
-      // this.isDisableDeniel = false;
-      let billRow = [];
-      billRow = this.selectedRow.filter((e: any) => (e.sno === false || e.isBilled === 1))
-      if ((this.selectedRow.length === billRow.length) || this.selectedRow.length === 0) {
-        this.isDisableCancel = false;
-        this.isDisableSave = false;
-        this.isDisableDeniel = false;
+    if (event.column === "sno") {
+      if (event.row.sno !== true) {
+        this.isDisableCancel = true;
+        this.isDisableDeniel = true;
       }
+      if (event.row.isBilled === 0 || event.row.isBilled === 2) {
+        this.selectedRow.push(event.row);
+        this.isDisableCancel = true;
+        this.isDisableDeniel = true;
+      }
+      else {
+        console.log(this.selectedRow, "Bill")
+        this.snackbar.open("Order cannot denied,As item already bill!", "error");
+        event.row.sno = true;
+        // this.isDisableCancel = false;
+        // this.isDisableSave = false;
+        // this.isDisableDeniel = false;
+        let billRow = [];
+        billRow = this.selectedRow.filter((e: any) => (e.sno === false || e.isBilled === 1))
+        if ((this.selectedRow.length === billRow.length) || this.selectedRow.length === 0) {
+          this.isDisableCancel = false;
+          this.isDisableSave = false;
+          this.isDisableDeniel = false;
+        }
 
+      }
     }
+
   }
   saveOrUpdate() {
     if (this.investigationForm.value.denyorder === "Select") {
@@ -639,6 +643,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
+    this.patientInfo = '';
 
   }
   resetRemarksDeny() {

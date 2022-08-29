@@ -446,24 +446,26 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   tablerow(event: any) {
-    if (event.row.sno !== true) {
-      this.isDisableCancel = true;
-      this.isDisableDeniel = true;
-    }
-    if (event.row.isBilled === 0 || event.row.isBilled === 2) {
-      this.selectedRow.push(event.row);
-      this.isDisableCancel = true;
-      this.isDisableDeniel = true;
-    }
-    else {
-      this.snackbar.open("Order cannot denied,As item already bill!Order cannot denied,As item already bill!", "error");
-      event.row.sno = true;
-      let billRow = [];
-      billRow = this.selectedRow.filter((e: any) => (e.sno === false || e.isBilled === 1))
-      if ((this.selectedRow.length === billRow.length) || this.selectedRow.length === 0) {
-        this.isDisableCancel = false;
-        this.isDisableSave = false;
-        this.isDisableDeniel = false;
+    if (event.column === "sno") {
+      if (event.row.sno !== true) {
+        this.isDisableCancel = true;
+        this.isDisableDeniel = true;
+      }
+      if (event.row.isBilled === 0 || event.row.isBilled === 2) {
+        this.selectedRow.push(event.row);
+        this.isDisableCancel = true;
+        this.isDisableDeniel = true;
+      }
+      else {
+        this.snackbar.open("Order cannot denied,As item already bill!", "error");
+        event.row.sno = true;
+        let billRow = [];
+        billRow = this.selectedRow.filter((e: any) => (e.sno === false || e.isBilled === 1))
+        if ((this.selectedRow.length === billRow.length) || this.selectedRow.length === 0) {
+          this.isDisableCancel = false;
+          this.isDisableSave = false;
+          this.isDisableDeniel = false;
+        }
       }
     }
   }
@@ -661,6 +663,7 @@ export class MedicineOrdersComponent implements OnInit {
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
+    this.patientInfo = '';
   }
   resetDate() {
     this.investigationForm.controls["fromdate"].disable();
