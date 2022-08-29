@@ -13,6 +13,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { IomPopupComponent } from "@modules/billing/submodules/billing/prompts/iom-popup/iom-popup.component";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-credit-details",
@@ -104,7 +105,8 @@ export class CreditDetailsComponent implements OnInit {
   today: any;
 
   constructor(private formService: QuestionControlService,
-    private http: HttpService, public matDialog: MatDialog,) {}
+    private http: HttpService, public matDialog: MatDialog,
+    public cookie: CookieService,) {}
 
   ngOnInit(): void { 
     this.today = new Date();  
@@ -130,7 +132,7 @@ export class CreditDetailsComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          67 //Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
