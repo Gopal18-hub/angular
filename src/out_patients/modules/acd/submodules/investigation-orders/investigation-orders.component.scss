@@ -84,24 +84,29 @@
 ::ng-deep tr.Denied:hover {
   background-color: #FF7777 !important; 
 }
-::ng-deep mat-option#mat-option-5 {
+// ::ng-deep mat-option#mat-option-5 {
+//   background-color: #9FF1AC !important;
+// }
+::ng-deep mat-option[ng-reflect-value="Billed"]{
+
   background-color: #9FF1AC !important;
+
 }
-::ng-deep mat-option#mat-option-7 {
+::ng-deep mat-option[ng-reflect-value="Partially Billed"] {
   background-color: #F9FCA6 !important;
 }
-::ng-deep mat-option#mat-option-8 {
+::ng-deep mat-option[ng-reflect-value="Denied"] {
   background-color: #FFCAA7 !important;
 }
-::ng-deep mat-option#mat-option-5:hover {
+::ng-deep mat-option[ng-reflect-value="Billed"]:hover {
   background-color: #54c767 !important;
 }
 
-::ng-deep mat-option#mat-option-7:hover {
+::ng-deep mat-option[ng-reflect-value="Partially Billed"]:hover {
   background-color: #FFDD00 !important;
 }
 
-::ng-deep mat-option#mat-option-8:hover {
+::ng-deep mat-option[ng-reflect-value="Denied"]:hover {
   background-color: #FF7777 !important;
 }
 ::ng-deep tr.isBilled1
