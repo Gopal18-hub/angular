@@ -33,6 +33,7 @@ import { PostDischargeCreditDetailsComponent } from "./submodules/post-discharge
 import { AuthGuardService } from "../../../shared/services/guards/auth-guard.service";
 import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
+import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -49,7 +50,7 @@ const routes: Routes = [
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
-      { path: "deposit", component: DepositComponent, },
+      { path: "deposit", component: DepositComponent },
       {
         path: "details",
         component: DetailsComponent,
@@ -69,8 +70,17 @@ const routes: Routes = [
           },
         ],
       },
-      { path: "online-op-bill", component: OnlineOpBillsComponent, },
-      { path: "op-order-request", component: OpOrderRequestComponent, },
+      { path: "online-op-bill", component: OnlineOpBillsComponent },
+      {
+        path: "op-order-request",
+        component: OpOrderRequestComponent,
+        children: [
+          { path: "", component: OrderServicesComponent },
+          { path: "services", component: OrderServicesComponent },
+          { path: "bill", component: BillComponent },
+          { path: "credit-details", component: CreditDetailsComponent },
+        ],
+      },
       {
         path: "miscellaneous-billing",
         component: MiscellaneousBillingComponent,
@@ -89,10 +99,10 @@ const routes: Routes = [
           { path: "misc-bills", component: BillsComponent },
         ],
       },
-      { path: "initiate-deposit", component: InitiateDepositComponent, },
-      { path: "op-refund-approval", component: OprefundApprovalComponent, },
-      { path: "dispatch-report", component: DispatchReportComponent, },
-      { path: "dmg-mapping", component: DmgMappingComponent, },
+      { path: "initiate-deposit", component: InitiateDepositComponent },
+      { path: "op-refund-approval", component: OprefundApprovalComponent },
+      { path: "dispatch-report", component: DispatchReportComponent },
+      { path: "dmg-mapping", component: DmgMappingComponent },
       {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
@@ -118,4 +128,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule { }
+export class BillingRoutingModule {}
