@@ -1,4 +1,5 @@
 import { environment } from "@environments/environment";
+import { MaxHealthStorage } from "@shared/services/storage";
 
 export namespace CrystalReport {
   export const test =
@@ -70,10 +71,30 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Marketing/PlanSummary?FromDate=${params.FromDate}&TodDate=${params.TodDate}`;
   };
   export const DoctorSheduleReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID1=true&location=3&Rd_Special=${params.Rd_Special}&LocationName=Max Med Centre-PP ( A unit of Max Healthcare Institute Ltd.)`;
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${
+      params.dtpStartDate
+    }&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${
+      params.rd_Doctor
+    }&DocID1=true&location=${MaxHealthStorage.getCookie(
+      "HSPLocationId"
+    )}&Rd_Special=${params.Rd_Special}&LocationName=${params.LocationName}`;
   };
   export const DoctorSheduleReportBySpecilialisation = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${params.dtpStartDate}&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${params.rd_Doctor}&DocID1=false&location=3&Rd_Special=true&Cmb_Special=${params.Cmb_Special}&specialisationID=${params.specialisationID}&LocationName=Max Med Centre-PP ( A unit of Max Healthcare Institute Ltd.)&hsplocationid=3`;
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=${
+      params.dtpStartDate
+    }&dtpEndDate=${params.dtpEndDate}&datetype=${params.datetype}&rd_Doctor=${
+      params.rd_Doctor
+    }&DocID1={params.DocID1}&location={params.location}&Rd_Special=${
+      params.Rd_Special
+    }&Cmb_Special=${params.Cmb_Special}&specialisationID=${
+      params.specialisationID
+    }&LocationName=${
+      params.LocationName
+    }&hsplocationid=${MaxHealthStorage.getCookie("HSPLocationId")}`;
   };
   export const CRPExpiredPatientDetailReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&user=${params.user}`;
