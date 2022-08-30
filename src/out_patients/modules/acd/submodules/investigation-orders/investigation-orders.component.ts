@@ -426,17 +426,24 @@ export class InvestigationOrdersComponent implements OnInit {
   }
   denyBtn() {
     let deniedRow = [];
+    let enabledRow = [];
     deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-
+    enabledRow = this.selectedRow.filter((e: any) => (e.sno === true))
     if (deniedRow.length > 0) {
       this.snackbar.open("Order is already Denied", "error");
       this.isDisableSave = false;
       this.resetRemarksDeny();
     }
-    else if (this.selectedRow.length > 0) {
+    else if (this.selectedRow.length > 0 && enabledRow.length > 0) {
       this.isBtnDisable = true;
       this.investigationForm.controls["denyorder"].enable();
+      this.investigationForm.controls["remarks"].enable();
       this.isDisableSave = true;
+    }
+    else {
+      this.investigationForm.controls["denyorder"].disable();
+      this.investigationForm.controls["remarks"].disable();
+      this.isDisableSave = false;
     }
   }
   getPatientRefundSubmitRequestBody(): SaveInvestigationOrderModel {
@@ -475,67 +482,73 @@ export class InvestigationOrdersComponent implements OnInit {
 
   }
   saveOrUpdate() {
-    if (this.investigationForm.value.denyorder === "Select") {
-      this.snackbar.open("Please select denial reason for open order before Save!", "error")
-    }
-    if (this.investigationForm.value.denyorder !== "Select") {
-      if (this.denyOthers == true && !this.investigationForm.value.remarks) {
-        this.snackbar.open("Please enter denial reason remark for order!", "error")
+    let enabledRow = [];
+    enabledRow = this.selectedRow.filter((e: any) => (e.sno === true))
+    if (enabledRow.length > 0) {
+      if (this.investigationForm.value.denyorder === "Select") {
+        this.snackbar.open("Please select denial reason for open order before Save!", "error")
       }
-      else {
-        let dialogRes;
-        console.log(this.selectedRow, "this.selectedRow")
+      if (this.investigationForm.value.denyorder !== "Select") {
+        if (this.denyOthers == true && !this.investigationForm.value.remarks) {
+          this.snackbar.open("Please enter denial reason remark for order!", "error")
+        }
+        else {
+          let dialogRes;
+          console.log(this.selectedRow, "this.selectedRow")
 
-        const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-          width: '33vw', height: '40vh', data: {
-            message: "Do you want to save?"
-          },
-        });
+          const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
+            width: '33vw', height: '40vh', data: {
+              message: "Do you want to save?"
+            },
+          });
 
-        dialogref.afterClosed().subscribe(res => {
-          // received data from dialog-component
-          dialogRes = res.data;
-          if (dialogRes === "Y") {
-            this.objPhyOrder = [];
-            this.objdtdenialorder = "";
-            let boolColumn = [];
-            let deniedRow = [];
-            deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-            boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
-            if (deniedRow.length > 0) {
-              this.snackbar.open("Order is already Denied", "error");
-              // this.snackbar.open("Please select Unbilled Order detail.");
-            }
-            else if (boolColumn.length === 0) {
-              this.snackbar.open("Please select atleast 1 row to proceed.", "error");
-            }
-            else {
-              boolColumn.forEach((e: any) => {
-                this.objPhyOrder.push({
-                  acDisHideDrug: true,
-                  visitid: e.visitId,
-                  drugid: e.testID,
-                  acdRemarks: e.acdRemarks
-                });
-              });
-
-
-              this.objdtdenialorder = {
-                denialid: this.investigationForm.value.denyorder,
-                denialremark: this.investigationForm.value.remarks,
-                visitid: boolColumn[0].visitId,
-                nextScheduleDate: this.scheduleDate,
-                nextflag: true
+          dialogref.afterClosed().subscribe(res => {
+            // received data from dialog-component
+            dialogRes = res.data;
+            if (dialogRes === "Y") {
+              this.objPhyOrder = [];
+              this.objdtdenialorder = "";
+              let boolColumn = [];
+              let deniedRow = [];
+              deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+              boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
+              if (deniedRow.length > 0) {
+                this.snackbar.open("Order is already Denied", "error");
+                // this.snackbar.open("Please select Unbilled Order detail.");
               }
-              this.Save();
-              //}
-              //}
+              else if (boolColumn.length === 0) {
+                this.snackbar.open("Please select atleast 1 row to proceed.", "error");
+              }
+              else {
+                boolColumn.forEach((e: any) => {
+                  this.objPhyOrder.push({
+                    acDisHideDrug: true,
+                    visitid: e.visitId,
+                    drugid: e.testID,
+                    acdRemarks: e.acdRemarks
+                  });
+                });
+
+
+                this.objdtdenialorder = {
+                  denialid: this.investigationForm.value.denyorder,
+                  denialremark: this.investigationForm.value.remarks,
+                  visitid: boolColumn[0].visitId,
+                  nextScheduleDate: this.scheduleDate,
+                  nextflag: true
+                }
+                this.Save();
+                //}
+                //}
+              }
             }
-          }
-        })
+          })
+        }
       }
     }
-
+    else {
+      this.snackbar.open("Please select atleast 1 row to proceed.", "error");
+    }
 
   }
   getSaveModel(): SaveInvestigationOrderModel {
