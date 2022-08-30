@@ -533,7 +533,10 @@ export class OprefundApprovalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    var require: any;
     //obj= new ActiveXObject("wscript.network");
+    // const os = require("os");
+    //console.log(os.hostname());
     this.userId = Number(this.cookie.get("UserId"));
     console.log(this.userId);
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
