@@ -68,15 +68,6 @@ export class QuestionControlService {
       else if (question.type == "date") data.push(new DateQuestion(question));
     }
 
-    //questions = questions.sort((a, b) => a.order - b.order)
-    // questions.forEach(question => {
-    // 	if(question.controlType=='dropdown') data.push(new DropdownQuestion(question));
-    // 	else if(question.controlType=='string') data.push(new TextboxQuestion(question));
-    //   else if(question.controlType=='textarea') data.push(new TextboxQuestion(question));
-    //   else if(question.controlType=='hidden') data.push(new TextboxQuestion(question));
-    //   else if(question.controlType=='email') data.push(new TextboxQuestion(question));
-    //   else if(question.controlType=='file') data.push(new FileQuestion(question, this.http));
-    // });
     return data;
     //console.log(data);
   }

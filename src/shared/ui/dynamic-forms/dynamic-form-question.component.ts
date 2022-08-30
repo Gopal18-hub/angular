@@ -101,34 +101,37 @@ export class DynamicFormQuestionComponent
     }
   }
 
-  excuteCondition(conditions: any, value: any) {
+  excuteCondition(conditions: any, self: any, formValue: any) {
     conditions.forEach((conditionParam: any) => {
-      if (conditionParam.type == "disabled") {
-        // if (eval(conditionParam.condition)) {
-        //     this[conditionParam.type] = true;
-        // } else {
-        //     this[conditionParam.type] = false;
-        // }
-      } else if (conditionParam.type == "value") {
-        let tempValue = eval(conditionParam.condition);
-        this.form.controls[conditionParam.key].setValue(tempValue);
-      } else if (conditionParam.type == "option") {
-        console.log(conditionParam);
-        let coptions = [];
-        for (let i = 0; i < conditionParam.options.length; i++) {
-          let element = { ...conditionParam.options[i] };
-          if (element.disabled) {
-            element.disabled = eval(element.disabled);
+      switch (conditionParam.type) {
+        case "value":
+          let tempValue = eval(conditionParam.expression);
+          this.form.controls[conditionParam.controlKey].setValue(tempValue);
+          break;
+        case "hide":
+          const exprHideEvaluate = eval(conditionParam.expression);
+          if (exprHideEvaluate) {
+            let questionIndex = this.questions.findIndex(
+              (it) => it.key == conditionParam.controlKey
+            );
+            if (questionIndex > -1) {
+              this.questions[questionIndex].questionClasses += " hidden";
+            }
           }
-          coptions.push(element);
-        }
-        let questionIndex = this.questions.findIndex(
-          (it) => it.key == conditionParam.key
-        );
-        if (questionIndex > -1) {
-          this.questions[questionIndex].options = coptions;
-          this.form.controls[conditionParam.key].setValue("");
-        }
+          break;
+        case "show":
+          const exprShowEvaluate = eval(conditionParam.expression);
+          if (exprShowEvaluate) {
+            let questionIndex = this.questions.findIndex(
+              (it) => it.key == conditionParam.controlKey
+            );
+            if (questionIndex > -1) {
+              this.questions[questionIndex].questionClasses += " visible";
+            }
+          }
+          break;
+        default:
+          console.log(`NA`);
       }
     });
   }
@@ -157,9 +160,11 @@ export class DynamicFormQuestionComponent
   ngOnInit() {
     if (this.question)
       this.question.label = this.question.label.replace(/_/gi, " ");
-    // this.form.controls[this.question.key].valueChanges.subscribe((value) => {
-    //   this.excuteCondition(this.question.conditions, value);
-    // });
+    if (this.question.conditions.length > 0) {
+      this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+        this.excuteCondition(this.question.conditions, value, this.form.value);
+      });
+    }
 
     if (
       this.question &&
