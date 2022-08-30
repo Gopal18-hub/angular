@@ -297,7 +297,7 @@ export class InvestigationOrdersComponent implements OnInit {
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
-
+    this.investigationForm.controls["maxid"].setValue('maxid');
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
