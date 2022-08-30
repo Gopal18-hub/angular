@@ -31,6 +31,7 @@ import {
 import { PatientSearchModel } from "@core/models/patientSearchModel";
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import * as moment from "moment";
+import { IomPopupComponent } from "@modules/billing/submodules/billing/prompts/iom-popup/iom-popup.component";
 
 interface CorporateInterface {
   id: number;
@@ -1270,6 +1271,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //     })
     //   )
     // );
+    // this.dialog.open(IomPopupComponent, {
+    //   width: "70%",
+    //   height: "50%",
+    //   data: {
+    //     company: this.employeesponsorForm.value.company,
+    //   },
+    // });
   }
 
   cleardata() {
