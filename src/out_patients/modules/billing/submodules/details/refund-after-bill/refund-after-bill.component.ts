@@ -246,7 +246,7 @@ export class RefundAfterBillComponent implements OnInit {
       },
     },
   };
-  data: any = [];
+  data1: any = [];
   serviceselectedList: [] = [] as any;
 
   miscServBillForm!: FormGroup;
@@ -262,10 +262,10 @@ export class RefundAfterBillComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
-    for (var i = 0; i < this.billDetailservice.serviceList.length; i++) {
-      this.billDetailservice.serviceList[i].Sno = i + 1;
+    for (var i = 0; i < this.billDetailservice.billafterrefund.length; i++) {
+      this.billDetailservice.billafterrefund[i].Sno = i + 1;
     }
-    this.data = [...this.billDetailservice.serviceList];
+    this.data1 = [...this.billDetailservice.billafterrefund];
     console.log(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].notApproved);
   }
   ngAfterViewInit()
