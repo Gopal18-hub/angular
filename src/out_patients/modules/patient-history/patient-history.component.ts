@@ -127,7 +127,7 @@ export class PatientHistoryComponent implements OnInit {
         title: "Bill Amt",
         type: "number",
         style: {
-          width: '5rem'
+          width: '7rem'
         }
       },
       discountAmount: {
@@ -581,6 +581,7 @@ export class PatientHistoryComponent implements OnInit {
               e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
               e.refundAmount = parseInt(e.refundAmount).toFixed(2);
               e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+              e.billDate = e.billDate.split(' ')[0];
             })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
             console.log(this.patienthistorylist);

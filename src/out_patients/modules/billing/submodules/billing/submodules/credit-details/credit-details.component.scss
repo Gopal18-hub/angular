@@ -9,9 +9,15 @@
       }
     }
   }
-  .iom-color {
-    color: #45c0be;
-    font-weight: 600;
+  .iom-button {
+    padding: 0;
+    min-width: 32px;
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
   }
   .creditoutpatientbill{
     .mat-raised-button{
