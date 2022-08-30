@@ -7,9 +7,16 @@
       class="w-full flex align-items-center flex-wrap justify-between"
     >
       <div class="w-1/2 flex flex-column">
-        <mat-label class="max-health-primary-color"
-          >Company <i class="iom-color">IOM</i></mat-label
+        <mat-label class="max-health-primary-color font-semi-bold"
+          >Company<button
+          mat-button
+          class="iom-button"
+          [disabled]="!comapnyFormGroup.value.company"
+          (click)="openIOM()"
         >
+          <i class="iom-color">IOM</i>
+        </button>
+          </mat-label>
         <maxhealth-question
           [question]="companyQuestions[0]"
           [form]="comapnyFormGroup"
