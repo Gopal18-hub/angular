@@ -31,6 +31,7 @@ import {
 import { PatientSearchModel } from "@core/models/patientSearchModel";
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import * as moment from "moment";
+import { IomPopupComponent } from "@modules/billing/submodules/billing/prompts/iom-popup/iom-popup.component";
 
 interface CorporateInterface {
   id: number;
@@ -1241,24 +1242,24 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   iomClick() {
     console.log("inside iomclick");
     //DO an api call here
-    this.http
-      .get(
-        ApiConstants.getopcompanyiomlocationwise(
-          this.hsplocationId,
-          this.companyId
-        )
-      )
-      .subscribe((data) => {
-        console.log(data);
-        this.iomdata = data;
-      });
-    this.dialog.open(CompanydialogComponent, {
-      width: "40vw",
-      height: "70vh",
-      data: {
-        iomresponse: this.iomdata,
-      },
-    });
+    // this.http
+    //   .get(
+    //     ApiConstants.getopcompanyiomlocationwise(
+    //       this.hsplocationId,
+    //       this.companyId
+    //     )
+    //   )
+    //   .subscribe((data) => {
+    //     console.log(data);
+    //     this.iomdata = data;
+    //   });
+    // this.dialog.open(CompanydialogComponent, {
+    //   width: "40vw",
+    //   height: "70vh",
+    //   data: {
+    //     iomresponse: this.iomdata,
+    //   },
+    // });
     // debugger;
     // const rtfToHTML = require("@iarna/rtf-to-html");
     // const fs = require("fs");
@@ -1270,6 +1271,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //     })
     //   )
     // );
+    this.dialog.open(IomPopupComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        company: this.employeesponsorForm.value.company,
+      },
+    });
   }
 
   cleardata() {
