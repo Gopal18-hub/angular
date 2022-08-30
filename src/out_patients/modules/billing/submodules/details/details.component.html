@@ -450,65 +450,6 @@
                 
                 <!-- <div class="flex  flex-column"> -->
                 <div class="pr-2 float-right div-otp justify-end flex mt-1 pt-1 h-full">
-                 
-                 <div class="flex justify-start align-items-center"> 
-                  <button
-                  mat-raised-button
-                  color="primary" 
-                  class="btn-otp btn-blue mr-1"
-                  type="submit"
-                  [disabled]="otpbtn"
-                  >
-                 Send OTP
-                  </button>
-                  </div>
-                  <maxhealth-question
-                  [question]="questions[15]"
-                  [form]="BServiceForm"
-                  [questions]="questions[15]"
-                  class="input-otp mr-1"
-                  [index]="15"
-                  >
-                  </maxhealth-question>
-                <!-- </div> -->
-               
-                <div class="flex">
-                <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-otp btn-blue pl-2 mt-1 mr-1"
-                  type="submit"
-                  [disabled]="managerotpbtn"
-                  >
-                  Send OTP to Manager
-                  </button>
-                </div>
-                <div class="flex">
-                
-                  <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-otp btn-blue pl-2 mt-1 mr-1"
-                  type="submit"
-                  [disabled]="resendbill"
-                  >
-                  Resend bill on Email
-                  </button>
-                </div>
-                </div>
-                <div class="ml-2 h-full">
-                <div class="flex justify-end pr-2">
-                  <div class="flex mr-1">
-                  <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn-md"
-                  type="submit"
-                  [disabled]="refundbill"
-                  >
-                 Refund Bill
-                  </button>
-                  </div>
                   <div class="flex mr-1">
                 
                     <button
@@ -522,15 +463,44 @@
                     </button>
                   </div>
                   <div class="flex mr-1">
-                
                     <button
                     mat-raised-button
                     color="primary"
                     class="btn-md"
                     type="submit"
-                    [disabled]="printbill"
+                    [disabled]="!refundbill"
+                    (click)="refunddialog()"
                     >
-                    Print Bill
+                   Refund Bill
+                    </button>
+                    </div>
+                    <div class="flex mr-1">
+                
+                      <button
+                      mat-raised-button
+                      color="primary"
+                      class="btn-md"
+                      type="submit"
+                      [disabled]="printbill"
+                      >
+                      Print Bill
+                      </button>
+                    </div>
+                </div>
+                <div class="ml-2 h-full mt-2">
+                <div class="flex justify-end pr-2">
+                  
+                  
+                  <div class="flex">
+                
+                    <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn-md btn-blue pl-2 mr-1"
+                    type="submit"
+                    [disabled]="resendbill"
+                    >
+                    Resend bill on Email
                     </button>
                   </div>
                   <div class="flex mr-1">
@@ -545,13 +515,7 @@
                     Print Refund Receipt
                     </button>
                   </div>
-                  
-                
-                </div>
-                </div>
-                <div class="ml-2 h-full">
-                  <div class="flex justify-end pr-1">
-                    <div class="flex mr-1 ">
+                  <div class="flex mr-1 ">
                     <button
                     mat-raised-button
                     color="primary"
@@ -562,6 +526,12 @@
                     Consumable Print
                     </button>
                     </div>
+                
+                </div>
+                </div>
+                <div class="ml-2 h-full mt-2">
+                  <div class="flex justify-end pr-1">
+                    
                     <div class="flex mr-1 ">
                   
                       <button
