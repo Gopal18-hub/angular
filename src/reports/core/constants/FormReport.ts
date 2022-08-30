@@ -341,6 +341,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---PlanName---",
           title: "",
+          questionClasses: "hidden",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -354,6 +355,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          questionClasses: "hidden",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
@@ -367,6 +369,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "",
+          questionClasses: "hidden",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -562,9 +565,7 @@ export namespace FormReport {
         title: "Export",
       },
     ],
-    
   };
-  
 
   // export const onlineDepositReport = {
 

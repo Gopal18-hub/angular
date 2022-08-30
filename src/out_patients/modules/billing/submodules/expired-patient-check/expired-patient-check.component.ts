@@ -83,6 +83,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
   checkboxValue!: number;
   validmaxid!: boolean;
   categoryIcons: any = [];
+  expireddate!: any;
 
   constructor(
     private formService: QuestionControlService,
@@ -229,9 +230,21 @@ export class ExpiredPatientCheckComponent implements OnInit {
               this.expiredpatientForm.controls["mobileno"].setValue(
                 this.expiredPatientDetail[0].mobileNo
               );
-              this.expiredpatientForm.controls["expiryDate"].setValue(
-                this.expiredPatientDetail[0].expiryDate
+              this.expireddate = this.datepipe.transform(
+                this.expiredPatientDetail[0].expiryDate,
+                "dd/MM/yyyy"
               );
+              console.log(this.expireddate);
+              if (this.expireddate == "01/01/1900") {
+                this.expiredpatientForm.controls["expiryDate"].setValue(
+                  this.todayDate
+                );
+              } else {
+                this.expiredpatientForm.controls["expiryDate"].setValue(
+                  this.expiredPatientDetail[0].expiryDate
+                );
+              }
+
               this.expiredpatientForm.controls["remarks"].setValue(
                 this.expiredPatientDetail[0].remarks
               );
@@ -318,6 +331,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
         width: "25vw",
         height: "30vh",
       });
+    } else if (this.expiredpatientForm.value.remarks == "") {
+      this.messagedialogservice.info("Please enter remarks");
     } else {
       this.http
         .post(
@@ -330,7 +345,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
             console.log(resultdata);
             this.saveApimessage = resultdata;
             if (this.saveApimessage.toString() == "Saved Successfully") {
-              this.messagedialogservice.success("Data Saved");
+              this.messagedialogservice.success("Data saved successfully");
               this.clearData();
               //this.expiredpatientForm.controls["checkbox"].setValue(false);
             }
@@ -339,7 +354,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
             console.log(HttpErrorResponse);
             if (HttpErrorResponse.error.text == "Saved Successfully") {
               console.log("inside error success message");
-              this.messagedialogservice.success("Data Saved");
+              this.messagedialogservice.success("Data saved successfully");
               this.clearData();
             }
           }
