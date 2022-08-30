@@ -37,7 +37,7 @@ export class ConfigureLimsComponent implements OnInit {
         title: "SSN",
         type: "string",
         style: {
-          width: "6rem",
+          width: "5rem",
         },
         tooltipColumn: "ssn",
       },
@@ -53,7 +53,7 @@ export class ConfigureLimsComponent implements OnInit {
         title: "Order Time",
         type: "string",
         style: {
-          width: "9rem",
+          width: "6rem",
         },
         tooltipColumn: "ordertime",
       },
@@ -61,7 +61,7 @@ export class ConfigureLimsComponent implements OnInit {
         title: "Message Status",
         type: "string",
         style: {
-          width: "9.5rem",
+          width: "17rem",
         },
         tooltipColumn: "messagestatus",
       },
@@ -85,4 +85,41 @@ export class ConfigureLimsComponent implements OnInit {
       },
     },
   };
+  dataconfig: any = [
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+  ];
 }

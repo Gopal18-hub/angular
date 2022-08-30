@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from "@angular/material/dialog";
+import { Component, OnInit, Inject } from "@angular/core";
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 @Component({
   selector: 'out-patients-save-update-dialog',
   templateUrl: './save-update-dialog.component.html',
@@ -7,7 +10,8 @@ import { MatDialogRef } from "@angular/material/dialog";
 })
 export class SaveUpdateDialogComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<SaveUpdateDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<SaveUpdateDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { message: String }) { }
 
   ngOnInit(): void {
   }

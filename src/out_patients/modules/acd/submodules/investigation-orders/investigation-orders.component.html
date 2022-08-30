@@ -48,28 +48,10 @@
                     </div>
                 </div>
                 <div class="flex  mr-2">
-                    <div class="serachcss">
-                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn">
-                            <svg class="iconcss" xmlns="http://www.w3.org/2000/svg" width="35" height="38"
-                                viewBox="0 0 35 35">
-                                <g id="Group_2152" data-name="Group 2152" transform="translate(12883 -23266)">
-                                    <rect id="Rectangle_496" data-name="Rectangle 496" width="31" height="28"
-                                        rx="4" transform="translate(-12883 23263)" fill="#fff" />
-                                    <g id="Group_1383" data-name="Group 1383"
-                                        transform="translate(-14632.995 22989.941)">
-                                        <path id="Path_296" data-name="Path 296"
-                                            d="M0,0H4.246V11.614a2.451,2.451,0,0,1-2.123,2.68A2.451,2.451,0,0,1,0,11.614Z"
-                                            transform="translate(1766.724 291.227) rotate(-39)"
-                                            fill="#002b58" />
-                                        <path id="Path_297" data-name="Path 297"
-                                            d="M10.427,1.741a8.686,8.686,0,1,0,8.686,8.686,8.686,8.686,0,0,0-8.686-8.686m0-1.741A10.427,10.427,0,1,1,0,10.427,10.427,10.427,0,0,1,10.427,0Z"
-                                            transform="translate(1751.018 274.288)" fill="#002b58" />
-                                    </g>
-                                </g>
-                            </svg>
-                            <span class="ml-7">
-                                Search
-                            </span>
+                    <div >
+                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn searchWidth" >
+                            <img src="assets/lens.svg" class="lens-icon mr-4 ">                                
+                                   <span class="ml-6">Search</span> 
 
                         </button>
                     </div>
@@ -120,13 +102,13 @@
                 </div>
                 <div class="flex ">
                     <div class="mr-2">
-                        <button mat-raised-button color="primary" >Create Bill</button>
+                        <button mat-raised-button color="primary" [disabled]="!isDisableBill" >Create Bill</button>
                     </div>
                     <div class="mr-2">
-                        <button mat-raised-button color="primary" (click)="cancelDenial()" [disabled]="!isDisableCancel">Cancel Denial</button>
+                        <button mat-raised-button color="primary" (click)="cancelDenial()" [disabled]="!isDisableDeniel">Cancel Denial</button>
                     </div>
                     <div>
-                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()" [disabled]="!isDisableCancel">Save</button>
+                        <button mat-raised-button color="primary"  (click)="saveOrUpdate()" [disabled]="!isDisableSave">Save</button>
                     </div>
                    
                 </div>

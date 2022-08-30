@@ -159,7 +159,11 @@ export namespace FormReport {
           placeholder: "---All Doctors---",
           title: "",
           optionsModelConfig: {
-            uri: `${environment.CommonApiUrl}api/lookup/getalldoctorname/69`,
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "doctorname",
               value: "doctorname",
@@ -248,7 +252,8 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Cmb_Special: "w-full",
+        datetype: "w-full",
       },
       actionItems: [
         {
@@ -363,7 +368,11 @@ export namespace FormReport {
           placeholder: "---Membership---",
           title: "",
           optionsModelConfig: {
-            uri: `${environment.CommonApiUrl}api/lookup/getmembershipnumberforreport/69`,
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "membershipno",
               value: "membershipno",
@@ -374,7 +383,10 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Flag: "w-full",
+        planID: "w-full",
+        Location: "w-full",
+        MemberShipNo: "w-full",
       },
       actionItems: [
         {
