@@ -163,6 +163,7 @@ export class DmgMappingComponent implements OnInit {
   docId!: number;
   checkboxList: any = [];
   diseasegroupnamelist: any = [];
+  isDmgmapped: boolean = false;
   onMaxidEnter(maxid: any) {
     // let iacode = this.dmgMappingForm.controls["maxid"].value.split(".")[0];
     //let regno = this.dmgMappingForm.controls["maxid"].value.split(".")[1];
@@ -184,6 +185,7 @@ export class DmgMappingComponent implements OnInit {
             this.dmgPatientDetails.dmgMappingDataDT.forEach((item, index) => {
               if (item.isChecked == 1) {
                 this.isdmgselected = index;
+                this.isDmgmapped = true;
                 this.docId =
                   this.dmgPatientDetails.dmgMappingDataDT[index].docId;
                 //this.disablebutton = false;
@@ -278,7 +280,7 @@ export class DmgMappingComponent implements OnInit {
   }
   iacode!: string;
   regno!: number;
-  isDmgmapped!: boolean;
+
   dmgsave() {
     // this.dmgPatientDetails.dmgMappingDataDT.forEach((item) => {
     //   if (item.isChecked != 1) {
@@ -382,6 +384,7 @@ export class DmgMappingComponent implements OnInit {
     this.disablebutton = true;
     this.disableClear = true;
     this.showCheckboxgrid = false;
+    this.isDmgmapped = false;
     this.dmgMappingForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
