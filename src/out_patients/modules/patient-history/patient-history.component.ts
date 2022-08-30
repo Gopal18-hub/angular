@@ -417,6 +417,9 @@ export class PatientHistoryComponent implements OnInit {
       })
     }, 300);
     
+    this.patienthistoryform.controls['fromdate'].valueChanges.subscribe( (val) => {
+      this.questions[3].minimum = val;
+    });
   }
 
   gettransactiontype()

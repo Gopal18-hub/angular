@@ -228,6 +228,9 @@ export class SearchDialogComponent implements OnInit {
         }
       }
     })
+    this.searchform.controls['fromdate'].valueChanges.subscribe( (val) => {
+      this.questions[5].minimum = val;
+    })
   }
   search()
   {
