@@ -1,6 +1,6 @@
 <ng-container *ngIf="question">
   <ng-container [ngSwitch]="question?.type">
-    <div [formGroup]="form">
+    <div [formGroup]="form" class="{{ question.questionClasses }}">
       <ng-container *ngSwitchCase="'hidden'">
         <input
           [formControlName]="question.key"
