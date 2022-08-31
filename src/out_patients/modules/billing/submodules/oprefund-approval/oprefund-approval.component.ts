@@ -13,6 +13,8 @@ import { SaveOprefundApprovalModel } from "../../../../core/models/saveOprefunda
 import { CookieService } from "@shared/services/cookie.service";
 import { OprefundDialogComponent } from "./oprefund-dialog/oprefund-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { HttpClient } from "@angular/common/http";
+import { switchMap } from "rxjs";
 @Component({
   selector: "out-patients-oprefund-approval",
   templateUrl: "./oprefund-approval.component.html",
@@ -529,14 +531,11 @@ export class OprefundApprovalComponent implements OnInit {
     private datepipe: DatePipe,
     private searchService: SearchService,
     private cookie: CookieService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private httpclient: HttpClient
   ) {}
 
   ngOnInit(): void {
-    var require: any;
-    //obj= new ActiveXObject("wscript.network");
-    // const os = require("os");
-    //console.log(os.hostname());
     this.userId = Number(this.cookie.get("UserId"));
     console.log(this.userId);
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
@@ -554,6 +553,25 @@ export class OprefundApprovalComponent implements OnInit {
     }
     this.showmain(this.link1[2]);
   }
+  // loadIp() {
+  //   this.httpclient
+  //     .get("https://jsonip.com")
+  //     .pipe(
+  //       switchMap((value: any) => {
+  //         //this.userIP = value.ip;
+  //         let url = `http://api.ipstack.com/${value.ip}?access_key=Your_API_Key`;
+  //         return this.httpclient.get(url);
+  //       })
+  //     )
+  //     .subscribe(
+  //       (value: any) => {
+  //         console.log(value);
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
   ngAfterViewInit(): void {}
 
   searchOpRefundapproval(formdata: any) {
