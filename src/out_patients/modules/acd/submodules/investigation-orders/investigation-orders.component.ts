@@ -338,8 +338,8 @@ export class InvestigationOrdersComponent implements OnInit {
       }
       else {
         this.denyOthers = false;
-        this.investigationForm.controls["remarks"].disable();
-        this.investigationForm.controls["remarks"].setValue('');
+        // this.investigationForm.controls["remarks"].disable();
+        // this.investigationForm.controls["remarks"].setValue('');
       }
     })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
@@ -464,7 +464,7 @@ export class InvestigationOrdersComponent implements OnInit {
       }
       else {
         console.log(this.selectedRow, "Bill")
-        this.snackbar.open("Order cannot denied,As item already bill!", "error");
+        this.snackbar.open("Please select the order detail to cancel deny", "error");
         event.row.sno = true;
         // this.isDisableCancel = false;
         // this.isDisableSave = false;
@@ -586,62 +586,73 @@ export class InvestigationOrdersComponent implements OnInit {
     )
   }
   cancelDenial() {
-    let nondeniedRow = [];
-    nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-    console.log(nondeniedRow, "NDR")
-    if (nondeniedRow.length > 0) {
-      this.snackbar.open("Please select the order detail to cancel deny", "error");
-      //this.isDisableDeniel = false;
-      this.resetRemarksDeny();
+    let deniedRow = [];
+    let enabledRow = [];
+    enabledRow = this.selectedRow.filter((e: any) => (e.sno === true))
+
+    if (enabledRow.length > 0) {
+      let nondeniedRow = [];
+      nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
+      console.log(nondeniedRow, "NDR")
+      if (nondeniedRow.length > 0) {
+        this.snackbar.open("Please select the order detail to cancel deny", "error");
+        //this.isDisableDeniel = false;
+        this.resetRemarksDeny();
+      }
+      else {
+        let dialogRes;
+        const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
+          width: '33vw', height: '40vh', data: {
+            message: "Do you want to modify?"
+          },
+        });
+
+        dialogref.afterClosed().subscribe(res => {
+
+          // received data from dialog-component
+          dialogRes = res.data;
+
+
+          if (dialogRes === 'Y') {
+            this.physicianOrderList = [];
+            let nondeniedRow = [];
+            let deniedRow = [];
+            nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
+            deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
+
+            if (nondeniedRow.length > 0) { this.snackbar.open("Please select only denied Order  to proceed.", "error") }
+            else {
+              deniedRow.forEach((e: any) => {
+                if (e.testID !== 0)
+                  this.physicianOrderList.push({
+                    acDisHideDrug: e.boolColumn,
+                    visitid: e.visitId,
+                    drugid: e.testID,
+                    acdRemarks: e.acdRemarks
+                  });
+              });
+              //this.http.post(ApiConstants.modifyphysicianorderdetail('', 9233), this.getModifyModel())
+              this.http.post(ApiConstants.modifyphysicianorderdetail('', Number(this.cookie.get("UserId"))), this.getModifyModel())
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((res: any) => {
+                  if (res.success === true) {
+                    this.snackbar.open("Modified Successfully", "success");
+                    this.selectedRow = [];
+                    this.isDisableDeniel = false;
+                    this.listRowClick(this.selectedInv);
+                  }
+                })
+            }
+          }
+        })
+
+      }
     }
     else {
-      let dialogRes;
-      const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-        width: '33vw', height: '40vh', data: {
-          message: "Do you want to modify?"
-        },
-      });
-
-      dialogref.afterClosed().subscribe(res => {
-
-        // received data from dialog-component
-        dialogRes = res.data;
-
-
-        if (dialogRes === 'Y') {
-          this.physicianOrderList = [];
-          let nondeniedRow = [];
-          let deniedRow = [];
-          nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-          deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-
-          if (nondeniedRow.length > 0) { this.snackbar.open("Please select only denied Order  to proceed.", "error") }
-          else {
-            deniedRow.forEach((e: any) => {
-              if (e.testID !== 0)
-                this.physicianOrderList.push({
-                  acDisHideDrug: e.boolColumn,
-                  visitid: e.visitId,
-                  drugid: e.testID,
-                  acdRemarks: e.acdRemarks
-                });
-            });
-            //this.http.post(ApiConstants.modifyphysicianorderdetail('', 9233), this.getModifyModel())
-            this.http.post(ApiConstants.modifyphysicianorderdetail('', Number(this.cookie.get("UserId"))), this.getModifyModel())
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((res: any) => {
-                if (res.success === true) {
-                  this.snackbar.open("Modified Successfully", "success");
-                  this.selectedRow = [];
-                  this.isDisableDeniel = false;
-                  this.listRowClick(this.selectedInv);
-                }
-              })
-          }
-        }
-      })
-
+      this.snackbar.open("Please select a row to proceed", "error")
     }
+
+
 
   }
   clearInv() {
