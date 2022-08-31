@@ -34,6 +34,7 @@ import { AuthGuardService } from "../../../shared/services/guards/auth-guard.ser
 import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
+import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/view-request/view-request.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -78,7 +79,7 @@ const routes: Routes = [
         children: [
           { path: "", component: OrderServicesComponent },
           { path: "services", component: OrderServicesComponent },
-          { path: "bill", component: BillComponent },
+          { path: "view-request", component: OPOrderViewRequest },
           { path: "credit-details", component: CreditDetailsComponent },
         ],
       },
