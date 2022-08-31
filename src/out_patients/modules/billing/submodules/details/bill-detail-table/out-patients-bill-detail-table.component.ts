@@ -282,10 +282,11 @@ export class BillDetailTableComponent implements OnInit {
   }
   printrow(event:any)
   {
+    console.log(event);
     setTimeout(() => {
       console.log(event)
       console.log(event.row.cancelled);
-
+      debugger;
       if(event.row.cancelled == true )
       {
         console.log("true");

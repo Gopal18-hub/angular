@@ -25,6 +25,8 @@ import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -118,7 +120,8 @@ export class BillingComponent implements OnInit {
     private route: ActivatedRoute,
     private billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
-    private router: Router
+    private router: Router,
+    public messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -254,7 +257,21 @@ export class BillingComponent implements OnInit {
               // console.log(this.categoryIcons);
               this.setValuesToForm(this.patientDetails);
 
-              this.payDueCheck(resultData.dtPatientPastDetails);
+              if (
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1
+                  .length > 0
+              ) {
+                const patientDetails =
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+                if (
+                  !patientDetails.isAvailRegCard &&
+                  moment().diff(moment(patientDetails.regdatetime), "days") == 0
+                ) {
+                  this.addRegistrationCharges(resultData);
+                }
+              }
+
+              this.inPatientCheck(resultData.dtPatientPastDetails);
             } else {
               this.snackbar.open("Invalid Max ID", "error");
             }
@@ -323,6 +340,61 @@ export class BillingComponent implements OnInit {
         },
       });
     }
+  }
+
+  inPatientCheck(dtPatientPastDetails: any) {
+    if (
+      dtPatientPastDetails[0] &&
+      dtPatientPastDetails[0].id > 0 &&
+      dtPatientPastDetails[0].data == 1
+    ) {
+      const dialogRef = this.messageDialogService.info(
+        "This Patient is an InPatient"
+      );
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          this.payDueCheck(dtPatientPastDetails);
+        });
+    } else {
+      this.payDueCheck(dtPatientPastDetails);
+    }
+  }
+
+  linkedMaxId(maxId: string) {
+    const dialogRef = this.messageDialogService.confirm(
+      "",
+      `This Record has been mapped with ${maxId}. Do you want to Pick this number for further transaction ?`
+    );
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("type" in result) {
+          if (result.type == "yes") {
+          } else {
+          }
+        }
+      });
+  }
+
+  addRegistrationCharges(resultData: any) {
+    const dialogRef = this.messageDialogService.confirm(
+      "",
+      `Registration charges is not billed for this patient. Do you want to Bill ?`
+    );
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("type" in result) {
+          if (result.type == "yes") {
+          } else {
+            this.inPatientCheck(resultData.dtPatientPastDetails);
+          }
+        }
+      });
   }
 
   appointmentSearch() {
@@ -427,7 +499,7 @@ export class BillingComponent implements OnInit {
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
-      height: "50%",
+      height: "80%",
       data: {
         company: this.formGroup.value.company,
       },

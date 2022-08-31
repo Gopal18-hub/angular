@@ -7,9 +7,18 @@ import { Router } from "@angular/router";
 
 export class billDetailService{
     serviceList: any = [];
+    billafterrefund: any = [];
     patientbilldetaillist: any = [];
     sendforapproval: any = [];
     totalrefund: any;
+    paymentmode: any = [
+        {title: 'Cash', value: 1},
+        {title: 'Cheque', value: 2},
+        {title: 'Credit Card', value: 3},
+        {title: 'Online Payment', value: 4},
+        {title: 'Mobile Payment', value: 5},
+        {title: 'UPI', value: 6},
+    ]
     constructor(
         private router: Router
     )
