@@ -246,6 +246,9 @@ export class DetailsComponent implements OnInit {
       }
     );
     console.log(this.billdetailservice.sendforapproval);
+    this.BServiceForm.controls['fromDate'].valueChanges.subscribe( (val) => {
+      this.questions[6].minimum = val;
+    })
   }
   getrefundreason() {
     this.http

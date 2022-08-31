@@ -41,7 +41,7 @@ export class OpOrderRequestComponent implements OnInit {
     },
     {
       title: "View Request",
-      path: "bill",
+      path: "view-request",
     },
   ];
   activeLink = this.links[0];
