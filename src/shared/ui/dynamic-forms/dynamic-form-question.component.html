@@ -459,7 +459,11 @@
               <mat-option>Select</mat-option>
             </ng-container>
             <ng-container *ngFor="let opt of question.options">
-              <mat-option [value]="opt.value" [disabled]="opt?.disabled">
+              <mat-option
+                [value]="opt.value"
+                [disabled]="opt?.disabled"
+                [attr.maxValue]="opt.value"
+              >
                 {{ opt.title }}
               </mat-option>
             </ng-container>

@@ -115,6 +115,9 @@ export class DynamicFormQuestionComponent
               (it) => it.key == conditionParam.controlKey
             );
             if (questionIndex > -1) {
+              this.questions[questionIndex].questionClasses = this.questions[
+                questionIndex
+              ].questionClasses.replace("visible", " ");
               this.questions[questionIndex].questionClasses += " hidden";
             }
           }
@@ -126,6 +129,9 @@ export class DynamicFormQuestionComponent
               (it) => it.key == conditionParam.controlKey
             );
             if (questionIndex > -1) {
+              this.questions[questionIndex].questionClasses = this.questions[
+                questionIndex
+              ].questionClasses.replace("hidden", " ");
               this.questions[questionIndex].questionClasses += " visible";
             }
           }
