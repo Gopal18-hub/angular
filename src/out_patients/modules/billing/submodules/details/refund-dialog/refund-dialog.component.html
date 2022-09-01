@@ -1,0 +1,99 @@
+<section class="payment-dialog">
+    <!-- Cross Icon -->
+    <div class="flex justify-content-end">
+        <mat-icon mat-dialog-close class="cursor-pointer">close</mat-icon>
+    </div>
+
+    <!-- Blue Banner -->
+    <div class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight">
+        <mat-label class="font-lg col-white ml-2">Payment Receipt</mat-label>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="w-full height"> 
+
+        <!-- payment Methods left  -->
+        <payment-methods [config]="config"></payment-methods>
+        
+        <!-- payment Methods right -->
+        <div class="back-primary col-white width h-full mt-2 float-right">
+            <div class="p-3 border-radius-md">
+                <mat-label class="font-base">Refund Summary</mat-label>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Total Bill Amount: </mat-label>
+                    <span>{{billamount}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Pre-Paid Amount: </mat-label>
+                    <span>{{prepaidamount}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Deposit Amount: </mat-label>
+                    <span>{{depositamount}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Discount Amount: </mat-label>
+                    <span>{{discountamount}}</span>
+                </div>
+                <div class="mt-2 w-full flex justify-between">
+                    <mat-label>Patient Due: </mat-label>
+                    <span>{{due}}</span>
+                </div>
+                <div class="mt-5 w-full flex justify-between">
+                    <mat-label>Total: </mat-label>
+                    <span>{{totaldue}}</span>
+                </div>
+            </div>
+
+
+            <div class="flex  p-3">
+                <div class="btn">
+                    <button
+                        mat-raised-button
+                        type="submit" 
+                        class="btn secondary col-white" 
+                        (click)="sendotpclick()" [disabled]="otpsenttomobile">
+                      {{ SendOTP }}
+                    </button>
+                    
+                </div>
+                
+                <div class="w-64 ml-2 border-radius-lg h-full bg-white otptextcnt">
+                    <maxhealth-question
+                    [question]="questions[0]"
+                    [form]="dueform"
+                    [questions]="questions[0]"
+                    [index]="0"
+                    ></maxhealth-question>
+                </div>
+            </div>
+            <div class="wt-nowrap px-3">
+                <mat-label class="mr-1">OTP will be sent to Reg. Mob. No.  {{mobileno}}</mat-label>
+            </div>
+            <div class="w-full mt-1 p-3">
+                    <button
+                        mat-raised-button
+                        type="submit" 
+                        class="w-full btn bg-btn" (click)="resendotpclick()" [disabled]="!otpresenttomobile">
+                        {{ResendOTP}}
+                    </button>
+            </div>
+        </div>
+    </div>
+    <!-- Checkbox -->
+    <!-- Footer Part -->
+    <div class="mt-12 bottom">
+        <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
+    </div>
+
+    <!-- button -->
+    <div class="flex float-right">
+        <div class="mr-3">
+            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Submit</button>
+        </div>
+       
+        <div class="">
+            <button mat-raised-button color="primary" type="submit" (click)="clear()" class="mt-1 btn">Clear</button>
+        </div>
+    </div>
+</section>

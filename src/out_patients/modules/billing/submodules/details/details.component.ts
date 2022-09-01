@@ -27,6 +27,8 @@ import { PatientService } from "@core/services/patient.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
+import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
+import { BillDetailsRefundDialogComponent } from "./refund-dialog/refund-dialog.component";
 
 @Component({
   selector: "out-patients-details",
@@ -79,7 +81,7 @@ export class DetailsComponent implements OnInit {
     },
   ];
   activeLink = this.linkList[0];
-
+  paymentmode: any = [];
   BDetailFormData = {
     type: "object",
     title: "",
@@ -158,8 +160,7 @@ export class DetailsComponent implements OnInit {
       paymentMode: {
         type: "dropdown",
         required: false,
-        defaultValue: "0.0",
-        readonly: true,
+        options: this.paymentmode,
       },
       otpTxt: {
         type: "number",
@@ -204,6 +205,7 @@ export class DetailsComponent implements OnInit {
 
   billexist: boolean = true;
   ngOnInit(): void {
+
     this.router.navigate(["out-patient-billing/details"]).then(() => {
       window.location.reload;
     });
@@ -220,6 +222,10 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
     this.getrefundreason();
+    this.paymentmode = this.billdetailservice.paymentmode;
+    this.questions[14].options = this.paymentmode.map((l: any) => {
+      return { title: l.title, value: l.value };
+    });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -240,6 +246,9 @@ export class DetailsComponent implements OnInit {
       }
     );
     console.log(this.billdetailservice.sendforapproval);
+    this.BServiceForm.controls['fromDate'].valueChanges.subscribe( (val) => {
+      this.questions[6].minimum = val;
+    })
   }
   getrefundreason() {
     this.http
@@ -314,6 +323,7 @@ export class DetailsComponent implements OnInit {
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
             if (this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1) 
             {
+              this.billdetailservice.billafterrefund = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
               this.billdetailservice.serviceList = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
               if (this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1) 
               {
@@ -439,6 +449,30 @@ export class DetailsComponent implements OnInit {
         this.BServiceForm.controls["billNo"].setValue(res);
         this.getpatientbilldetails();
       }
+    });
+  }
+  refunddialog()
+  { 
+    const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
+      width: "70vw",
+      height: "98vh",
+      data: {  
+        patientinfo: {
+          emailId: ''  , 
+          mobileno: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
+        },  
+        refundamount: this.BServiceForm.value.refundAmt,
+        mop: this.BServiceForm.value.paymentMode,
+        mobile: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
+      }
+    });
+
+    RefundDialog.afterClosed()
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((result) => {
+      //if(result == "Success"){        
+        console.log("Refund Dialog closed");
+      //}    
     });
   }
   clear() {
