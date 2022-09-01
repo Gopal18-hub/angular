@@ -324,6 +324,7 @@ export class PatientHistoryComponent implements OnInit {
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.patienthistoryform.controls["fromdate"].setValue(this.fromdate);
+    this.questions[2].maximum = this.patienthistoryform.controls["todate"].value;
     this.questions[3].minimum = this.patienthistoryform.controls["fromdate"].value;
     this.gettransactiontype();
     this.searchService.searchTrigger
@@ -418,6 +419,9 @@ export class PatientHistoryComponent implements OnInit {
     
     this.patienthistoryform.controls['fromdate'].valueChanges.subscribe( (val) => {
       this.questions[3].minimum = val;
+    });
+    this.patienthistoryform.controls['todate'].valueChanges.subscribe( (val) => {
+      this.questions[2].maximum = val;
     });
   }
 
