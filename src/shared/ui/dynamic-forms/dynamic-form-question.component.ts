@@ -86,6 +86,8 @@ export class DynamicFormQuestionComponent
     keepCharPositions: false,
   };
 
+  toogleButtonTextarea: boolean = false;
+
   constructor(private qcs: QuestionControlService) {}
 
   compareFn: (f1: any, f2: any) => boolean = this.compareByValue;
