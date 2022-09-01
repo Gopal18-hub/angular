@@ -208,6 +208,7 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
     this.questions[3].minimum = this.dispatchhistoryform.controls["fromdate"].value;
+    this.questions[2].maximum = this.dispatchhistoryform.controls["todate"].value;
     this.getBilledLocation();
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
@@ -229,6 +230,11 @@ export class DispatchReportComponent implements OnInit {
     this.dispatchhistoryform.controls["fromdate"].valueChanges.subscribe(
       (value) => {
         this.questions[3].minimum = value;
+      }
+    );
+    this.dispatchhistoryform.controls["todate"].valueChanges.subscribe(
+      (value) => {
+        this.questions[2].maximum = value;
       }
     );
   }

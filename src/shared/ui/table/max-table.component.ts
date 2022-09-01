@@ -10,6 +10,8 @@ import {
   Output,
   EventEmitter,
   NgZone,
+  ViewChildren,
+  QueryList,
 } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
@@ -97,7 +99,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   childTableConfig: any = {};
 
-  @ViewChild("childTable") childTable: any;
+  @ViewChildren("childTable") childTable!: QueryList<any>;
 
   constructor(
     private _liveAnnouncer: LiveAnnouncer,

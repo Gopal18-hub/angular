@@ -19,21 +19,24 @@
 .asterisk-color{
     color: red;
 }
-::ng-deep .mat-form-field-wrapper{
+.input-padding{
+    ::ng-deep .mat-form-field-wrapper{
 
-    padding-bottom: 0 !important;
-
+        padding-bottom: 0 !important;
+    
+    }
 }
+
 .btn{
     padding: 1px;
 }
-::ng-deep .btn .mat-button-wrapper{
-    display: flex;
-    gap: 15px;
-    div{
-        display: flex;
-    }
-}
+// ::ng-deep .btn .mat-button-wrapper{
+//     display: flex;
+//     gap: 15px;
+//     div{
+//         display: flex;
+//     }
+// }
 
 
 .ml-1-34{
