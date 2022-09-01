@@ -162,17 +162,16 @@
   }
 }
 
-.searchbtn
-{
+.searchbtn {
   //min-width: initial !important;
 
-  height: 1.875rem !important;
+  height: 1.9rem !important;
+  width : 5vw!important
 
   //line-height: 1.875rem  !important;
 }
-.searchWidth
-{
-  width : 3rem !important
+.clr {
+  height: 1.9rem !important;
 }
 .serachcss{
   
@@ -219,11 +218,9 @@
   color: rgba(0, 0, 0, 0.87);
 }
 .lens-icon{
-
   position: absolute;
-  left: 0px;
+  left: 2px;
   top: 2px;
-  height: 84%;
-  width: 33%;
-
+  height: 90%;
+  width: 28%;
 }
