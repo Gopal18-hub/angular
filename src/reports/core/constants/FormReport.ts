@@ -9,14 +9,16 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
-        equipmentName: {
+        Cmb_Equip: {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
             fields: {
               title: "name",
+          
               value: "id",
             },
           },
@@ -33,7 +35,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Cmb_Equip: "w-full",
       },
       actionItems: [
         {
