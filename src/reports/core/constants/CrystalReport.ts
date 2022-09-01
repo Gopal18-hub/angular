@@ -148,4 +148,7 @@ export namespace CrystalReport {
   export const SummaryReportForUtilisationReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
   };
+  export const PHPTracksheet = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
+  };
 }
