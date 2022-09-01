@@ -1101,6 +1101,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
 
   //DELETE DIALOG
   onDelete: boolean = false;
+  count: number = 0;
   employeeDelete() {
     console.log(this.empid);
     console.log("inside delete");
@@ -1115,12 +1116,25 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result) {
+          this.employeeDependantDetailList.forEach((item) => {
+            if (
+              item.maxid != this.employeesponsorForm.controls["maxId"].value
+            ) {
+              this.count++;
+            }
+          });
+
           if (
             this.employeelistLength == this.employeeDependantDetailList.length
           ) {
-            this.dialogService.info("max id not mapped yet");
+            this.dialogService.info("Max id  is not mapped yet");
           } else if (this.companyId == 0) {
             this.dialogService.info("Please select company");
+          } else if (this.count == this.employeeDependantDetailList.length) {
+            {
+              this.dialogService.info("Max id  is not mapped yet");
+              this.count = 0;
+            }
           } else {
             this.http
               .post(
@@ -1354,7 +1368,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           } else {
             this.dialog.open(IomPopupComponent, {
               width: "70%",
-              height: "50%",
+              height: "80%",
               data: {
                 company: this.employeesponsorForm.value.company,
               },
@@ -1394,6 +1408,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     this.validmaxid = false;
     this.companySelected = false;
     this.maxidmapped = false;
+    this.activeflaglength = 0;
+    this.employeelistLength = 0;
     this.employeesponsorForm.controls["maxId"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
