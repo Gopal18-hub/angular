@@ -282,7 +282,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
 
   }
-  ipAddress: any;
+  ipAddress = '';
   findIP: any;
   constructor(private formService: QuestionControlService, public datepipe: DatePipe,
     private http: HttpService, private messageDialogService: MessageDialogService,
@@ -335,6 +335,14 @@ export class MedicineOrdersComponent implements OnInit {
         const lookupdata = await this.lookupService.searchPatient(formdata);
         console.log(lookupdata);
       });
+    this.getIPAddress();
+  }
+  getIPAddress() {
+    this.http.get("http://api.ipify.org/?format=json").subscribe((res: any) => {
+      this.ipAddress = res.ip;
+      console.log(this.ipAddress, "ipAddress")
+
+    });
   }
   ngAfterViewInit(): void {
     this.scheduleDate = "";
