@@ -213,7 +213,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         title: "DOJ",
         type: "string",
         style: {
-          width: "5rem",
+          width: "5.5rem",
         },
         tooltipColumn: "doj",
       },
@@ -754,11 +754,15 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.employeesponsorForm.controls["employeeCode"].disable();
               }
 
-              this.employeeDependantDetailList.forEach((item) => {
+              this.employeeDependantDetailList.forEach((item, index) => {
                 if (item.flag == 1) {
                   if (item.maxid != "") {
                     this.maxidmapped = true;
+                    // this.employeeDependantDetailList[index].maxid = item.maxid;
                   }
+
+                  // this.employeeDependantDetailList[selectedIndex].maxid =
+                  //   this.employeesponsorForm.controls["maxId"].value;
                   this.empid = item.id;
                   this.dependantRemarks = item.remark;
                   console.log("flag 1");
@@ -919,21 +923,23 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             });
           } else {
             console.log("employee data list length =0");
-            this.questions[3].elementRef.focus();
+            this.questions[1].elementRef.focus();
             this.validEmployeecode = false;
             this.employeesponsorForm.controls["employeeCode"].setErrors({
               incorrect: true,
             });
             this.questions[2].customErrorMessage = "Invalid Employee code";
+            this.questions[2].elementRef.focus();
             //this.dialogService.info("Employee code does not exist");
           }
         } else {
-          this.questions[3].elementRef.focus();
+          this.questions[1].elementRef.focus();
           this.employeesponsorForm.controls["employeeCode"].setErrors({
             incorrect: true,
           });
           this.questions[2].customErrorMessage = "Invalid Employee code";
           this.validEmployeecode = false;
+          this.questions[2].elementRef.focus();
         }
       });
   }
@@ -995,6 +1001,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                       this.employeeDependantDetailList[index].maxid = "";
                       this.employeeDependantDetailList[selectedIndex].maxid =
                         this.employeesponsorForm.controls["maxId"].value;
+                    } else {
                     }
                   } else {
                     if (selectedIndex != -1) {
