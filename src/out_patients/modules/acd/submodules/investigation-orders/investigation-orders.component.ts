@@ -109,7 +109,13 @@ export class InvestigationOrdersComponent implements OnInit {
       status: {
         type: "dropdown",
         placeholder: "Select",
-        options: this.statusDropdown
+        options: [
+          { title: "All", value: "All" },
+          { title: "Billed", value: "Billed" },
+          { title: "Unbilled", value: "Unbilled" },
+          { title: "Partially Billed", value: "Partially Billed" },
+          { title: "Denied", value: "Denied" },
+        ],
       },
       denyorder: {
         type: "dropdown",
