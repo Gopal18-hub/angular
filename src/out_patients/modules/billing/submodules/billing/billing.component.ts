@@ -26,7 +26,7 @@ import * as moment from "moment";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-
+import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -231,69 +231,81 @@ export class BillingComponent implements OnInit {
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
-        .subscribe((resultData: Registrationdetails) => {});
-      this.http
-        .get(
-          ApiConstants.getregisteredpatientdetailsForBilling(
-            iacode,
-            regNumber,
-            Number(this.cookie.get("HSPLocationId"))
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData: Registrationdetails) => {
-            console.log(resultData);
-            if (resultData) {
-              this.billingService.setActiveMaxId(
-                this.formGroup.value.maxid,
-                iacode,
-                regNumber.toString()
-              );
-              this.patientDetails = resultData;
-              // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-              //   this.patientDetails
-              // );
-              // console.log(this.categoryIcons);
-              this.setValuesToForm(this.patientDetails);
-
-              if (
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1
-                  .length > 0
-              ) {
-                const patientDetails =
-                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
-                if (
-                  !patientDetails.isAvailRegCard &&
-                  moment().diff(moment(patientDetails.regdatetime), "days") == 0
-                ) {
-                  this.addRegistrationCharges(resultData);
-                }
-              }
-
-              this.inPatientCheck(resultData.dtPatientPastDetails);
-            } else {
-              this.snackbar.open("Invalid Max ID", "error");
-            }
-
-            //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
-          },
-          (error) => {
-            if (error.error == "Patient Not found") {
-              this.formGroup.controls["maxid"].setValue(
-                iacode + "." + regNumber
-              );
-              //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              //this.questions[0].customErrorMessage = "Invalid Max ID";
-              this.snackbar.open("Invalid Max ID", "error");
-            }
-            this.apiProcessing = false;
+        .subscribe((resultData: any) => {
+          if (resultData.length > 0) {
+            this.linkedMaxId(
+              resultData[0].iaCode + "." + resultData[0].registrationNo,
+              iacode,
+              regNumber
+            );
+          } else {
+            this.registrationDetails(iacode, regNumber);
           }
-        );
+        });
     } else {
       this.apiProcessing = false;
       this.patient = false;
     }
+  }
+
+  registrationDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        ApiConstants.getregisteredpatientdetailsForBilling(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: Registrationdetails) => {
+          console.log(resultData);
+          if (resultData) {
+            this.billingService.setActiveMaxId(
+              this.formGroup.value.maxid,
+              iacode,
+              regNumber.toString()
+            );
+            this.patientDetails = resultData;
+            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            //   this.patientDetails
+            // );
+            // console.log(this.categoryIcons);
+            this.setValuesToForm(this.patientDetails);
+
+            if (
+              this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
+              0
+            ) {
+              const patientDetails =
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+              if (
+                !patientDetails.isAvailRegCard &&
+                moment().diff(moment(patientDetails.regdatetime), "days") == 0
+              ) {
+                //if (!patientDetails.isAvailRegCard) {
+                this.addRegistrationCharges(resultData);
+              } else {
+                this.inPatientCheck(resultData.dtPatientPastDetails);
+              }
+            }
+          } else {
+            this.snackbar.open("Invalid Max ID", "error");
+          }
+
+          //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+        },
+        (error) => {
+          if (error.error == "Patient Not found") {
+            this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
+            //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+            //this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.snackbar.open("Invalid Max ID", "error");
+          }
+          this.apiProcessing = false;
+        }
+      );
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
@@ -332,11 +344,28 @@ export class BillingComponent implements OnInit {
       dtPatientPastDetails[4].id > 0 &&
       dtPatientPastDetails[4].data > 0
     ) {
-      this.matDialog.open(PaydueComponent, {
+      const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
         data: {
           dueAmount: dtPatientPastDetails[4].data,
           maxId: this.formGroup.value.maxid,
+        },
+      });
+    } else {
+      this.planDetailsCheck(dtPatientPastDetails);
+    }
+  }
+
+  planDetailsCheck(dtPatientPastDetails: any) {
+    if (
+      dtPatientPastDetails[5] &&
+      dtPatientPastDetails[5].id == 6 &&
+      dtPatientPastDetails[5].data == 1
+    ) {
+      const dialogRef = this.matDialog.open(ShowPlanDetilsComponent, {
+        width: "40vw",
+        data: {
+          planDetails: [],
         },
       });
     }
@@ -362,7 +391,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-  linkedMaxId(maxId: string) {
+  linkedMaxId(maxId: string, iacode: string, regNumber: number) {
     const dialogRef = this.messageDialogService.confirm(
       "",
       `This Record has been mapped with ${maxId}. Do you want to Pick this number for further transaction ?`
@@ -373,7 +402,12 @@ export class BillingComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
+            this.formGroup.controls["maxid"].setValue(maxId);
+            let regNumber = Number(maxId.split(".")[1]);
+            let iacode = maxId.split(".")[0];
+            this.registrationDetails(iacode, regNumber);
           } else {
+            this.registrationDetails(iacode, regNumber);
           }
         }
       });
@@ -390,6 +424,19 @@ export class BillingComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
+            this.billingService.addToProcedure({
+              sno: 1,
+              procedures: "Registration Charge",
+              qty: 1,
+              specialisation: "30632",
+              doctorName: "24",
+              price: 0,
+              unitPrice: 0,
+              itemid: "",
+              priorityId: "",
+              serviceId: "",
+            });
+            this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
             this.inPatientCheck(resultData.dtPatientPastDetails);
           }
