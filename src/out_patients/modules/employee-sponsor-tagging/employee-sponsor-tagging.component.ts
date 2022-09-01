@@ -1357,7 +1357,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     //   )
     // );
     this.http
-      .get(ApiConstants.getopcompanyiomlocationwise(69, this.companyId))
+      .get(
+        ApiConstants.getopcompanyiomlocationwise(
+          this.hsplocationId,
+          this.companyId
+        )
+      )
       .subscribe((data) => {
         console.log(data);
         if (data.length == 0) {
