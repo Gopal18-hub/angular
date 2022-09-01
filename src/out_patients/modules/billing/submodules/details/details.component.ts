@@ -109,12 +109,10 @@ export class DetailsComponent implements OnInit {
       },
       fromDate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
       },
       toDate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
       },
       billAmt: {
@@ -221,6 +219,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['toDate'].disable();
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
+    this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
     this.questions[14].options = this.paymentmode.map((l: any) => {

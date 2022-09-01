@@ -207,6 +207,7 @@ export class DispatchReportComponent implements OnInit {
     this.userId = Number(this.cookie.get("UserId"));
     this.dispatchhistoryform.controls["fromdate"].setValue(this.today);
     this.dispatchhistoryform.controls["todate"].setValue(this.today);
+    this.questions[3].minimum = this.dispatchhistoryform.controls["fromdate"].value;
     this.getBilledLocation();
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
