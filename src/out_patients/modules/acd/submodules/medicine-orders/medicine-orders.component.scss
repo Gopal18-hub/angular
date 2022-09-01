@@ -95,27 +95,25 @@
 ::ng-deep tr.Denied:hover {
   background-color: #FF7777 !important; 
 }
-::ng-deep mat-option[ng-reflect-value="Billed"]{
-
-  background-color: #9FF1AC !important;
-
+::ng-deep mat-option[maxvalue="Billed"] {
+  background-color: #9ff1ac !important;
 }
-::ng-deep mat-option[ng-reflect-value="Partially Billed"] {
-  background-color: #F9FCA6 !important;
+::ng-deep mat-option[maxvalue="Partially Billed"] {
+  background-color: #f9fca6 !important;
 }
-::ng-deep mat-option[ng-reflect-value="Denied"] {
-  background-color: #FFCAA7 !important;
+::ng-deep mat-option[maxvalue="Denied"] {
+  background-color: #ffcaa7 !important;
 }
-::ng-deep mat-option[ng-reflect-value="Billed"]:hover {
+::ng-deep mat-option[maxvalue="Billed"]:hover {
   background-color: #54c767 !important;
 }
 
-::ng-deep mat-option[ng-reflect-value="Partially Billed"]:hover {
-  background-color: #FFDD00 !important;
+::ng-deep mat-option[maxvalue="Partially Billed"]:hover {
+  background-color: #ffdd00 !important;
 }
 
-::ng-deep mat-option[ng-reflect-value="Denied"]:hover {
-  background-color: #FF7777 !important;
+::ng-deep mat-option[maxvalue="Denied"]:hover {
+  background-color: #ff7777 !important;
 }
 ::ng-deep tr.isBilled1
 {
@@ -164,17 +162,16 @@
   }
 }
 
-.searchbtn
-{
+.searchbtn {
   //min-width: initial !important;
 
-  height: 1.875rem !important;
+  height: 1.9rem !important;
+  width : 5vw!important
 
   //line-height: 1.875rem  !important;
 }
-.searchWidth
-{
-  width : 3rem !important
+.clr {
+  height: 1.9rem !important;
 }
 .serachcss{
   
@@ -221,11 +218,9 @@
   color: rgba(0, 0, 0, 0.87);
 }
 .lens-icon{
-
   position: absolute;
-  left: 0px;
+  left: 2px;
   top: 2px;
-  height: 84%;
-  width: 33%;
-
+  height: 90%;
+  width: 28%;
 }

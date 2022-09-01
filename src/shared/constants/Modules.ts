@@ -172,7 +172,7 @@ export namespace MaxModules {
           id: -1,
           title: "ACD",
           tenentPath: "/out-patients",
-          defaultPath: "/acd",
+          defaultPath: "/acd/investigation-orders",
           childrens: [],
           moreOptions: false,
         },
