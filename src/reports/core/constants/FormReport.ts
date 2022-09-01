@@ -159,7 +159,11 @@ export namespace FormReport {
           placeholder: "---All Doctors---",
           title: "",
           optionsModelConfig: {
-            uri: `${environment.CommonApiUrl}api/lookup/getalldoctorname/69`,
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "doctorname",
               value: "doctorname",
@@ -248,7 +252,8 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Cmb_Special: "w-full",
+        datetype: "w-full",
       },
       actionItems: [
         {
@@ -280,7 +285,7 @@ export namespace FormReport {
   };
 
   export const GeneralOPDReport = {
-    reportName: "Selection Criteria",
+    reportName: "General OPD Scroll Report",
     filterForm: {
       title: "",
       type: "object",
@@ -315,6 +320,8 @@ export namespace FormReport {
         },
       ],
     },
+    layout: "single",
+    resultType: "table",
   };
   export const HappyFamilyPlanAllocationReport = {
     reportName: "Happy Family Plan",
@@ -325,15 +332,48 @@ export namespace FormReport {
         Flag: {
           type: "radio",
           options: [
-            { title: "PlanName", value: true },
-            { title: "Membership", value: false },
+            { title: "PlanName", value: "PlanName" },
+            { title: "Membership", value: "Membership" },
           ],
           defaultValue: "Transaction Date",
+          conditions: [
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "planID",
+              type: "show",
+            },
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "Location",
+              type: "show",
+            },
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "MemberShipNo",
+              type: "hide",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "MemberShipNo",
+              type: "show",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "planID",
+              type: "hide",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "Location",
+              type: "hide",
+            },
+          ],
         },
         planID: {
           type: "dropdown",
           placeholder: "---PlanName---",
           title: "",
+          questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -347,6 +387,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
+          questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
@@ -360,8 +401,13 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "",
+          questionClasses: "max-hide",
           optionsModelConfig: {
-            uri: `${environment.CommonApiUrl}api/lookup/getmembershipnumberforreport/69`,
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "membershipno",
               value: "membershipno",
@@ -372,7 +418,10 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Flag: "w-full",
+        planID: "w-full",
+        Location: "w-full",
+        MemberShipNo: "w-full",
       },
       actionItems: [
         {
@@ -390,7 +439,7 @@ export namespace FormReport {
       ],
     },
 
-    layout: "triple",
+    layout: "single",
     resultType: "table",
   };
   export const HappyFamilyPlanUtilizationReport = {
@@ -484,8 +533,8 @@ export namespace FormReport {
     resultType: "table",
   };
 
-  export const expiredPatientReport = {
-    reportName: "Selection Criteria",
+  export const expiredDeposits = {
+    reportName: "Expired Deposits",
     filterForm: {
       title: "",
       type: "object",
@@ -521,6 +570,7 @@ export namespace FormReport {
     form: {
       layout: {
         location: "w-full",
+        locationid: "w-full",
       },
       actionItems: [
         {
@@ -537,7 +587,6 @@ export namespace FormReport {
         },
       ],
     },
-
     layout: "single",
     resultType: "table",
     resultActionItems: [

@@ -54,7 +54,7 @@ export class ConfigureRisComponent implements OnInit {
         title: "Order Time",
         type: "string",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
         tooltipColumn: "ordertime",
       },
@@ -62,7 +62,7 @@ export class ConfigureRisComponent implements OnInit {
         title: "Message Status",
         type: "string",
         style: {
-          width: "5rem",
+          width: "17rem",
         },
         tooltipColumn: "messagestatus",
       },
@@ -86,4 +86,41 @@ export class ConfigureRisComponent implements OnInit {
       },
     },
   };
+  dataconfig: any = [
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+    {
+      testname: "xray-abdomen",
+      ssn: "6700000009",
+      orderdate: "26-05-2002",
+      ordertime: "16:10:00",
+      messagestatus: "Not created",
+    },
+  ];
 }
