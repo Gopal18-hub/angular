@@ -33,15 +33,15 @@ export class VisitHistoryComponent implements OnInit {
         type: "string",
       },
       billNo: {
-        title: "Last Bill No.",
+        title: "Bill No.",
         type: "number",
       },
       paymentMode: {
-        title: "Last Payment Mode",
+        title: "Payment Mode",
         type: "string",
       },
       companyName: {
-        title: "Last Company Billed",
+        title: "Company Billed",
         type: "string",
       },
       doctorName: {

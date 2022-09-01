@@ -1,0 +1,21 @@
+<div class="billing-page-wrapper">
+  <div class="overflow-y-auto display-block billing-panel-wrapper ">
+<div class="flex flex-column h-full sub-bill-overall">
+  <div class="mt-2 w-full sub-bill-ovrall-table h-full mb-2">
+    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+  </div>
+
+</div>
+</div>
+</div>
+<div  class="justify-end float-right mt-1 " >
+  <button
+  mat-raised-button
+  color="primary"
+  class="font-sm min-width-initial mr-1"
+  type="button"
+
+>
+Clear
+</button>
+</div>

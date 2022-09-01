@@ -1,3 +1,5 @@
+<div class="billing-page-wrapper ">
+<div class="overflow-y-auto display-block billing-panel-wrapper">
 <div class="flex w-full services-container-wrapper">
   <div class="w-1/7 services-tab border-radius-xlg my-3">
     <div
@@ -19,4 +21,36 @@
   <div class="w-6/7 p-2 flex services-tab-container">
     <ng-template [cdkPortalOutlet]="selectedComponent"></ng-template>
   </div>
+</div>
+
+</div>
+</div>
+<div  class="justify-end float-right mt-1 " >
+  <button
+  mat-raised-button
+  color="primary"
+  class="font-sm min-width-initial mr-1"
+  type="button"
+
+>
+Save Request
+</button>
+<button
+mat-raised-button
+color="primary"
+class="font-sm min-width-initial mr-1"
+type="button"
+
+>
+View Request
+</button>
+<button
+mat-raised-button
+color="primary"
+class="font-sm min-width-initial my-1"
+type="button"
+
+>
+Clear
+</button>
 </div>
