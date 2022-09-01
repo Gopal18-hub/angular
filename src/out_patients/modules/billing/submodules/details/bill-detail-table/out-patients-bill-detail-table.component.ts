@@ -286,7 +286,6 @@ export class BillDetailTableComponent implements OnInit {
     setTimeout(() => {
       console.log(event)
       console.log(event.row.cancelled);
-      debugger;
       if(event.row.cancelled == true )
       {
         console.log("true");
