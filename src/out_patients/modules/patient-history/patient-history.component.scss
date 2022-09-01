@@ -51,6 +51,9 @@
         border: 1px solid #707070;
         table{
             white-space: nowrap !important;
+            thead tr th:nth-child(6){
+                padding-left: 25px;
+            }
             tbody tr td:nth-last-child(1) div{ 
                 display: flex;
                 justify-content: center;
