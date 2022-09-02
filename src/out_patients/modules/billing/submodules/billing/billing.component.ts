@@ -65,12 +65,12 @@ export class BillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "dropdown",
+        type: "autocomplete",
         options: [],
         placeholder: "--Select--",
       },
       corporate: {
-        type: "dropdown",
+        type: "autocomplete",
         options: [],
         placeholder: "--Select--",
       },
@@ -582,7 +582,7 @@ export class BillingComponent implements OnInit {
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
-      height: "80%",
+      height: "90%",
       data: {
         company: this.formGroup.value.company,
       },
