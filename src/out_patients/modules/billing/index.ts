@@ -100,6 +100,7 @@ import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-di
 import { ShowPlanDetilsComponent } from "./submodules/billing/prompts/show-plan-detils/show-plan-detils.component";
 import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
 import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
+import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-appointment/online-appointment.component';
 
 @NgModule({
   declarations: [
@@ -175,6 +176,7 @@ import { ConfigurationBillingComponent } from "./submodules/billing/prompts/conf
     ShowPlanDetilsComponent,
     DmgPopupComponent,
     ConfigurationBillingComponent,
+    OnlineAppointmentComponent,
   ],
   imports: [
     BillingRoutingModule,
