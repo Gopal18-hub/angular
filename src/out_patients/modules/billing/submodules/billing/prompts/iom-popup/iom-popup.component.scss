@@ -3,3 +3,13 @@
     border: 1px solid grey;
   }
 }
+
+.iomcloseicon{
+  position: absolute;
+  top:4.5rem;
+  margin-left:56.5rem;
+  ::ng-deep .material-icons{
+    font-size:18px;
+  }
+}
+

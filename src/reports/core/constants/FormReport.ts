@@ -9,14 +9,16 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
-        equipmentName: {
+        Cmb_Equip: {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
             fields: {
               title: "name",
+          
               value: "id",
             },
           },
@@ -33,7 +35,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        equipmentName: "w-full",
+        Cmb_Equip: "w-full",
       },
       actionItems: [
         {
@@ -332,16 +334,48 @@ export namespace FormReport {
         Flag: {
           type: "radio",
           options: [
-            { title: "PlanName", value: true },
-            { title: "Membership", value: false },
+            { title: "PlanName", value: "PlanName" },
+            { title: "Membership", value: "Membership" },
           ],
           defaultValue: "Transaction Date",
+          conditions: [
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "planID",
+              type: "show",
+            },
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "Location",
+              type: "show",
+            },
+            {
+              expression: "self == 'PlanName'",
+              controlKey: "MemberShipNo",
+              type: "hide",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "MemberShipNo",
+              type: "show",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "planID",
+              type: "hide",
+            },
+            {
+              expression: "self == 'Membership'",
+              controlKey: "Location",
+              type: "hide",
+            },
+          ],
         },
         planID: {
           type: "dropdown",
           placeholder: "---PlanName---",
           title: "",
-          questionClasses: "hidden",
+          questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
             fields: {
@@ -355,7 +389,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
-          questionClasses: "hidden",
+          questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
@@ -369,7 +403,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "",
-          questionClasses: "hidden",
+          questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl

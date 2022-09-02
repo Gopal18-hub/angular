@@ -24,6 +24,8 @@ import { MaskedInputDirective } from "../../utilities/directives/mask.directive"
 
 import { MaxDateAdapter } from "./service/date-adapter";
 
+import { OverlayModule } from "@angular/cdk/overlay";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { MaxDateAdapter } from "./service/date-adapter";
     MatNativeDateModule,
     MatDatepickerModule,
     MatCheckboxModule,
+    OverlayModule,
   ],
   exports: [DynamicFormQuestionComponent, MaskedInputDirective],
   declarations: [

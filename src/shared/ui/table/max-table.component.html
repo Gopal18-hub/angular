@@ -224,6 +224,7 @@
                 [config]="childTableConfig"
                 [data]="childrensData[element[config.groupby.parentcolumn]]"
                 #childTable
+                id="{{ element[config.groupby.parentcolumn] }}"
               ></maxhealth-table>
             </ng-container>
           </div>
