@@ -426,6 +426,7 @@ export class MedicineOrdersComponent implements OnInit {
     }
   }
   listRowClick(event: any) {
+    this.medOrderDetailsTable.selection.clear();
     this.selectedInv = event;
     //this.isDisableCancel = false;
     this.resetRemarksDeny();
