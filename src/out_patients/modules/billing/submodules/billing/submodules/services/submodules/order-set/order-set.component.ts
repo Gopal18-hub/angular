@@ -168,7 +168,7 @@ export class OrderSetComponent implements OnInit {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
         width: "50%",
-        height: "50%",
+        //height: "50%",
         data: {
           orderSet: res.element,
           items: res.element.apiItems,
@@ -267,9 +267,11 @@ export class OrderSetComponent implements OnInit {
       }
     });
 
-    // const filter: any = this.apiData.orderSetBreakup.filter((item: any) => {
-    //   return item.orderSetId == this.formGroup.value.orderSet.value;
-    // });
+    const orderSetItems: any = this.apiData.orderSetBreakup.filter(
+      (item: any) => {
+        return item.orderSetId == this.formGroup.value.orderSet.value;
+      }
+    );
 
     // if (filter[0].serviceid == 25) {
     //   priorityId = 57;
@@ -296,7 +298,7 @@ export class OrderSetComponent implements OnInit {
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.orderSet.value,
-            apiItems: res,
+            apiItems: orderSetItems,
           };
           this.billingService.addToOrderSet(data1);
         });
