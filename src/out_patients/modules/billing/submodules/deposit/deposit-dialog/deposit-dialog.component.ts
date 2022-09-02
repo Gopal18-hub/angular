@@ -47,6 +47,7 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
+  
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));

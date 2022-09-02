@@ -26,4 +26,15 @@
       line-height: 1.875rem  !important;
   }
   }
+  .iom-message{
+    position: absolute;
+    margin-left: 7%;
+    top: 32.5%;
+    color: red;
+}
+.corporate{
+  ::ng-deep .mat-form-field{
+    margin-top: 3% !important;
+  }
+}
 }

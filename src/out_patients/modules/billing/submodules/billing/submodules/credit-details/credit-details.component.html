@@ -17,6 +17,7 @@
           <i class="iom-color">IOM</i>
         </button>
           </mat-label>
+          <span class="iom-message font-semi-bold font-xs" [hidden]="!comapnyFormGroup.value.company">{{iommessage}}</span>
         <maxhealth-question
           [question]="companyQuestions[0]"
           [form]="comapnyFormGroup"
@@ -32,7 +33,7 @@
           [form]="comapnyFormGroup"
           [questions]="companyQuestions[1]"
           [index]="1"
-          class="w-3/4"
+          class="w-3/4 corporate"
         >
         </maxhealth-question>
       </div>
@@ -144,7 +145,7 @@
       </div>
       <div class="flex w-1/3 mt-5 creditoutpatientbill">
          
-        <button mat-raised-button color="primary" type="button" class="ml-7">
+        <button mat-raised-button color="primary" type="button" class="ml-7" (click)="openconfiguration()">
        Configuration
       </button>
       </div>
