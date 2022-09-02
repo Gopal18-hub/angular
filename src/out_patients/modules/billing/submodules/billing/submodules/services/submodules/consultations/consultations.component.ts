@@ -17,6 +17,7 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-consultations",
@@ -122,7 +123,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -316,5 +319,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.data = [...this.billingService.consultationItems];
         this.formGroup.reset();
       });
+  }
+
+  goToBill() {
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

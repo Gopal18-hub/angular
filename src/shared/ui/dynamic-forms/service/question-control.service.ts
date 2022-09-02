@@ -51,6 +51,8 @@ export class QuestionControlService {
         data.push(new NumberQuestion(question));
       else if (question.type == "textarea")
         data.push(new TextboxQuestion(question));
+      else if (question.type == "buttonTextarea")
+        data.push(new TextboxQuestion(question));
       else if (question.type == "hidden")
         data.push(new TextboxQuestion(question));
       else if (question.type == "email")
