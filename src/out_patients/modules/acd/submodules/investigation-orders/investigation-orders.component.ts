@@ -415,6 +415,7 @@ export class InvestigationOrdersComponent implements OnInit {
     }
   }
   listRowClick(event: any) {
+    this.invOrderDetailsTable.selection.clear();
     this.selectedInv = event;
     //this.isDisableCancel = false;
     this.tableSelectedRows = [];
