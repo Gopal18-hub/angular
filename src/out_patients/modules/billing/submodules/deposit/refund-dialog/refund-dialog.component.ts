@@ -71,9 +71,10 @@ export class RefundDialogComponent implements OnInit {
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
  
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =   Number(this.cookie.get("UserId"));
+  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
+  stationId:any = 12969; // Number(this.cookie.get("StationId"));
+  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
+
 
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
@@ -195,7 +196,7 @@ export class RefundDialogComponent implements OnInit {
         this.messageDialogService.error("Refund through Cash Cannot be more then Rs 10000");
         this.validationexists = true;
       }
-      if(this.refundform.value.otp == "" && !this.validationexists){ 
+      if((this.refundform.value.otp == "" || this.refundform.value.otp == null) && !this.validationexists){ 
         this.questions[4].elementRef.focus();       
         this.messageDialogService.error("Enter OTP");
        

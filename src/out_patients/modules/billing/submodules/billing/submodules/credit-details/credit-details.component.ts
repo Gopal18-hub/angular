@@ -14,6 +14,7 @@ import {
 } from "@angular/material/dialog";
 import { IomPopupComponent } from "@modules/billing/submodules/billing/prompts/iom-popup/iom-popup.component";
 import { CookieService } from "@shared/services/cookie.service";
+import { ConfigurationBillingComponent } from "../../prompts/configuration-billing/configuration-billing.component";
 
 @Component({
   selector: "out-patients-credit-details",
@@ -98,15 +99,17 @@ export class CreditDetailsComponent implements OnInit {
   generalFormGroup!: FormGroup;
   companyQuestions: any;
   generalQuestions: any;
-  
+  iommessage: string = "";
+
   private readonly _destroying$ = new Subject<void>();
-  complanyList!: GetCompanyDataInterface[];
+  companyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
   today: any;
 
   constructor(private formService: QuestionControlService,
     private http: HttpService, public matDialog: MatDialog,
-    public cookie: CookieService,) {}
+    public cookie: CookieService,
+    private datepipe: DatePipe,) {}
 
   ngOnInit(): void { 
     this.today = new Date();  
@@ -132,15 +135,16 @@ export class CreditDetailsComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          Number(this.cookie.get("HSPLocationId"))
+         67 // Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
+      .subscribe((data: GetCompanyDataInterface[]) => {
         console.log(data);
+        this.companyList = data;
         this.companyQuestions[0].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
-        });
+        });       
       });
   }
 
@@ -160,6 +164,27 @@ export class CreditDetailsComponent implements OnInit {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
       height: "50%",
+      data: {
+        company: this.comapnyFormGroup.value.company,
+      },
+    });
+  }
+
+  ngAfterViewInit(){
+    this.comapnyFormGroup.controls["company"].valueChanges.subscribe(
+      (company) => {
+        if (company != null || company != 0 ) {
+        let iomcompany = this.companyList.filter((iom) => iom.id == company);        
+        this.iommessage =   "IOM Validity till : " + this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
+        }
+
+      });
+  }
+
+  openconfiguration(){
+    this.matDialog.open(ConfigurationBillingComponent, {
+      width: "70%",
+      height: "80%",
       data: {
         company: this.comapnyFormGroup.value.company,
       },
