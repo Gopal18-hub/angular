@@ -49,7 +49,6 @@ export class BillingComponent implements OnInit {
       path: "credit-details",
     },
   ];
-  activeLink: any;
 
   formData = {
     title: "",

@@ -228,9 +228,8 @@
                 [routerLink]="link.path"
                 routerLinkActive
                 #rla="routerLinkActive"
-                (click)="activeLink = link"
                 queryParamsHandling="merge"
-                [active]="rla.isActive || activeLink?.path == link.path"
+                [active]="rla.isActive"
               >
                 {{ link.title }}
               </a>
