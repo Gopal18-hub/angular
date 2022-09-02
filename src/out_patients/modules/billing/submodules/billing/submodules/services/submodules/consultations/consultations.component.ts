@@ -18,6 +18,7 @@ import {
 } from "rxjs/operators";
 import { of } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
+import { DmgPopupComponent } from "../../../../prompts/dmg-popup/dmg-popup.component";
 
 @Component({
   selector: "out-patients-consultations",
@@ -77,7 +78,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "17%",
+          width: "36%",
         },
       },
       type: {
@@ -85,7 +86,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         type: "dropdown",
         options: [],
         style: {
-          width: "40%",
+          width: "20%",
         },
       },
       scheduleSlot: {
@@ -148,6 +149,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.data = [];
       }
     });
+    //this.showDmgPopup();
   }
 
   rowRwmove($event: any) {
@@ -159,6 +161,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
     this.data = [...this.billingService.consultationItems];
     this.billingService.calculateTotalAmount();
+  }
+
+  showDmgPopup() {
+    this.matDialog.open(DmgPopupComponent, {
+      data: {},
+      width: "60%",
+    });
   }
 
   ngAfterViewInit(): void {
