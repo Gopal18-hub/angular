@@ -4,12 +4,12 @@
       <h3 class="mb-0 font-bold">Consumables</h3>
     </div>
     <div class="flex w-36 align-items-center justify-end">
-      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+      <!-- <div class="total-cost" *ngIf="billingService.totalCost > 0">
         <span>Total Estimation:</span>
         {{
           billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
         }}
-      </div>
+      </div> -->
 
       <!-- <button
         mat-raised-button
@@ -28,7 +28,7 @@
       >
         Bill
       </button>
-      <button
+      <!-- <button
         mat-raised-button
         color="primary"
         class="font-sm ml-2 min-width-initial print-button"
@@ -36,7 +36,7 @@
         [disabled]="!billingService.checkServicesAdded()"
       >
         <mat-icon>print</mat-icon>
-      </button>
+      </button> -->
     </div>
   </div>
   <div class="mt-2 h-full">

@@ -120,7 +120,7 @@ export class BillingComponent implements OnInit {
     public cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService,
+    public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     public messageDialogService: MessageDialogService,
