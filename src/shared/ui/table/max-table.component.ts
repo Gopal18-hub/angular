@@ -50,6 +50,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() data: any;
 
+  @Input() childTableRefId: any = -1;
+
+  @Input() parentTable: any = null;
+
   @Output() columnClick: EventEmitter<any> = new EventEmitter();
 
   @Output() stringLinkOutput: EventEmitter<any> = new EventEmitter();
