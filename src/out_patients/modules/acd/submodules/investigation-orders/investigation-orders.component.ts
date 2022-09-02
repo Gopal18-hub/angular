@@ -347,8 +347,18 @@ export class InvestigationOrdersComponent implements OnInit {
       }
     })
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.investigationForm.controls["input"].reset();
+      if (value === "maxid") {
+        this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
+        //this.investigationForm.controls["input"].setValue("test");       
+      }
+      else {
+        this.investigationForm.controls["status"].reset();
+      }
+      this.invOrderList = [];
+      this.invOrderDetails = [];
+      this.idValue = value;
       this.investigationForm.controls["status"].reset();
+      this.patientInfo = '';
     })
 
     //Filter
@@ -357,11 +367,7 @@ export class InvestigationOrdersComponent implements OnInit {
       this.invOrderDetails = []
       this.statusvalue = value;
     })
-    this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.invOrderList = []
-      this.invOrderDetails = []
-      this.idValue = value;
-    })
+
   }
   isChecked(event: any) {
     if (!this.investigationForm.controls["datecheckbox"].value) {
