@@ -448,6 +448,9 @@ export class BillingComponent implements OnInit {
     const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
       maxWidth: "100vw",
       width: "98vw",
+      data: {
+        phoneNumber: this.formGroup.value.mobile,
+      },
     });
 
     appointmentSearch
