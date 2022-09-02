@@ -643,12 +643,14 @@ export class DepositComponent implements OnInit {
               .subscribe((res: any) => {
                 if (this.deposittable.selection.selected.length > 0) {
                   console.log(this.MaxIDdepositExist);
-                  const childTableExist = this.deposittable.childTable.find(
-                    (r: any) =>
-                      r.childTableRefId == res.added[0].cashTransactionID
-                  );
-                  if (childTableExist) {
-                    childTableExist.selection.clear();
+                  if (res.added.length > 0) {
+                    const childTableExist = this.deposittable.childTable.find(
+                      (r: any) =>
+                        r.childTableRefId == res.added[0].cashTransactionID
+                    );
+                    if (childTableExist) {
+                      childTableExist.selection.clear();
+                    }
                   }
                   this.tableselectionexists = true;
                   if (
@@ -671,7 +673,9 @@ export class DepositComponent implements OnInit {
               r.selection.changed
                 .pipe(takeUntil(this._destroying$))
                 .subscribe((res: any) => {
-                  r.parentTable.selection.clear();
+                  if (res.added.length > 0) {
+                    r.parentTable.selection.clear();
+                  }
                 });
             });
           }, 5000);
