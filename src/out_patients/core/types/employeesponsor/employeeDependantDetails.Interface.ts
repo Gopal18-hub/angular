@@ -18,4 +18,5 @@ export interface EmployeeDependantDetails {
   remark: string;
   maxid: string;
   age: string;
+  remark_disabled?: boolean;
 }
