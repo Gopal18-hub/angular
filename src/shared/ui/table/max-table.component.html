@@ -224,7 +224,8 @@
                 [config]="childTableConfig"
                 [data]="childrensData[element[config.groupby.parentcolumn]]"
                 #childTable
-                id="{{ element[config.groupby.parentcolumn] }}"
+                [childTableRefId]="element[config.groupby.parentcolumn]"
+                [parentTable]="this"
               ></maxhealth-table>
             </ng-container>
           </div>
@@ -347,51 +348,55 @@
 </ng-template>
 
 <ng-template #textarea let-data>
-  <div
-    (click)="data.element['isOpen'] = true"
-    cdkOverlayOrigin
-    #trigger="cdkOverlayOrigin"
-    class="cursor-pointer editable-textarea-label"
-  >
-    {{ data.isOpen }} {{ data.output }} &nbsp;
-  </div>
-
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="data.element['isOpen']"
-    (detach)="data.element['isOpen'] = false"
-    [cdkConnectedOverlayHasBackdrop]="true"
-    (backdropClick)="data.element['isOpen'] = false"
-  >
+  <ng-container *ngIf="data.element[data.col + '_disabled']">
+    <div>{{ data.isOpen }} {{ data.output }}</div>
+  </ng-container>
+  <ng-container *ngIf="!data.element[data.col + '_disabled']">
     <div
-      class="editable-textarea"
-      cdkTrapFocus
-      [cdkTrapFocusAutoCapture]="true"
+      (click)="data.element['isOpen'] = true"
+      cdkOverlayOrigin
+      #trigger="cdkOverlayOrigin"
+      class="cursor-pointer editable-textarea-label"
     >
-      <!-- <div
+      {{ data.isOpen }} {{ data.output }} &nbsp;
+    </div>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="data.element['isOpen']"
+      (detach)="data.element['isOpen'] = false"
+      [cdkConnectedOverlayHasBackdrop]="true"
+      (backdropClick)="data.element['isOpen'] = false"
+    >
+      <div
+        class="editable-textarea"
+        cdkTrapFocus
+        [cdkTrapFocusAutoCapture]="true"
+      >
+        <!-- <div
         [(ngModel)]="data.element[data.col]"
         contenteditable
         class="text-area-edit"
       >
         {{ data.element[data.col] }}
       </div> -->
-      <mat-form-field
-        appearance="outline"
-        floatLabel="never"
-        class="text-area-edit"
-      >
-        <textarea
-          matInput
-          cdkTextareaAutosize
-          #autosize="cdkTextareaAutosize"
-          cdkAutosizeMinRows="5"
-          [(ngModel)]="data.element[data.col]"
-          [value]="data.element[data.col]"
-        ></textarea>
-      </mat-form-field>
-    </div>
-  </ng-template>
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="text-area-edit"
+        >
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="5"
+            [(ngModel)]="data.element[data.col]"
+            [value]="data.element[data.col]"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </ng-template>
+  </ng-container>
 </ng-template>
 
 <ng-template #inputDate let-data>

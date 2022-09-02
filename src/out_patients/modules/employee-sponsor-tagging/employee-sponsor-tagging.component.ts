@@ -737,6 +737,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.patientSponsorData.objPatientDemographicData[0].ssn;
 
               //Assign tabledata
+              this.patientSponsorData.objEmployeeDependentData =
+                this.patientSponsorData.objEmployeeDependentData.map((r) => {
+                  if (!r.flag) {
+                    r.remark_disabled = true;
+                  }
+                  return r;
+                });
               this.employeeDependantDetailList =
                 this.patientSponsorData.objEmployeeDependentData;
               this.updatedTableList =
