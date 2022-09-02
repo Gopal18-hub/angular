@@ -82,10 +82,11 @@ export class DynamicFormQuestionComponent
   dateMaskConfig: any = {
     mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
     guide: false,
-    placeholderChar: "/",
     pipe: undefined,
     keepCharPositions: false,
   };
+
+  toogleButtonTextarea: boolean = false;
 
   constructor(private qcs: QuestionControlService) {}
 
@@ -115,7 +116,10 @@ export class DynamicFormQuestionComponent
               (it) => it.key == conditionParam.controlKey
             );
             if (questionIndex > -1) {
-              this.questions[questionIndex].questionClasses += " hidden";
+              this.questions[questionIndex].questionClasses = this.questions[
+                questionIndex
+              ].questionClasses.replace(/max-show/g, " ");
+              this.questions[questionIndex].questionClasses += " max-hide";
             }
           }
           break;
@@ -126,7 +130,10 @@ export class DynamicFormQuestionComponent
               (it) => it.key == conditionParam.controlKey
             );
             if (questionIndex > -1) {
-              this.questions[questionIndex].questionClasses += " visible";
+              this.questions[questionIndex].questionClasses = this.questions[
+                questionIndex
+              ].questionClasses.replace(/max-hide/g, " ");
+              this.questions[questionIndex].questionClasses += " max-show";
             }
           }
           break;

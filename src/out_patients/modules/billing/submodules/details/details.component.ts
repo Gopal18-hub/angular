@@ -109,12 +109,10 @@ export class DetailsComponent implements OnInit {
       },
       fromDate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
       },
       toDate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
       },
       billAmt: {
@@ -221,6 +219,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['toDate'].disable();
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
+    this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
     this.questions[14].options = this.paymentmode.map((l: any) => {
@@ -246,6 +245,19 @@ export class DetailsComponent implements OnInit {
       }
     );
     console.log(this.billdetailservice.sendforapproval);
+    this.BServiceForm.controls['fromDate'].valueChanges.subscribe( (val) => {
+      this.questions[6].minimum = val;
+    })
+    this.BServiceForm.controls['refundAmt'].valueChanges.subscribe((res) => {
+      this.sendapprovalcheck();
+    })
+    this.questions[12].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
+    this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
+      this.sendapprovalcheck();
+    })
+    this.BServiceForm.controls['paymentMode'].valueChanges.subscribe((res) => {
+      this.sendapprovalcheck();
+    })
   }
   getrefundreason() {
     this.http
@@ -258,6 +270,22 @@ export class DetailsComponent implements OnInit {
           return { title: l.name, value: l.id };
         });
       });
+  }
+  sendapprovalcheck()
+  {
+    console.log(this.BServiceForm.controls['refundAmt'].value, this.BServiceForm.controls['authBy'].value, this.BServiceForm.controls['reason'].value, this.BServiceForm.controls['paymentMode'].value);
+    console.log(this.billdetailservice.sendforapproval.length);
+    if(this.BServiceForm.controls['authBy'].value != '' && 
+    this.BServiceForm.controls['reason'].value != '' &&
+    this.BServiceForm.controls['paymentMode'].value != '' &&
+    this.BServiceForm.controls['refundAmt'].value > 0)
+    {
+      this.approvalsend = false;
+    }
+    else
+    {
+      this.approvalsend = true;
+    }
   }
   formEvents() {
     //ON billno CHANGE
@@ -525,13 +553,13 @@ export class DetailsComponent implements OnInit {
       console.log(this.billdetailservice.sendforapproval);
       console.log(changes);
       this.BServiceForm.controls["refundAmt"].setValue(
-        this.billdetailservice.totalrefund
+        this.billdetailservice.totalrefund.toFixed(2)
       );
-      if (this.billdetailservice.sendforapproval.length > 0) {
-        this.approvalsend = false;
-      } else if (this.billdetailservice.sendforapproval.length == 0) {
-        this.approvalsend = true;
-      }
+      // if (this.billdetailservice.sendforapproval.length > 0) {
+      //   this.approvalsend = false;
+      // } else if (this.billdetailservice.sendforapproval.length == 0) {
+      //   this.approvalsend = true;
+      // }
     }
   }
 }

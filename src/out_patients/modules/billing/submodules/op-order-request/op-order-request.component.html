@@ -225,38 +225,11 @@
               </a>
             </nav>
             
-            <div class="overflow-y-auto display-block billing-panel-wrapper">
+           
               <router-outlet></router-outlet>
-            </div>
-            <div class="justify-end float-right mt-1 ">
-            <button
-            mat-raised-button
-            color="primary"
-            class="font-sm min-width-initial mr-1"
-            type="button"
-            (click)="appointmentSearch()"
-          >
-          Save Request
-          </button>
-          <button
-          mat-raised-button
-          color="primary"
-          class="font-sm min-width-initial mr-1"
-          type="button"
-          (click)="appointmentSearch()"
-        >
-        View Request
-        </button>
-        <button
-        mat-raised-button
-        color="primary"
-        class="font-sm min-width-initial my-1"
-        type="button"
-        (click)="appointmentSearch()"
-      >
-      Clear
-      </button>
-        </div>
+           
+            <!-- *ngIf="activeLink==View Request" -->
+        
           </div>
         </div>
       </div>

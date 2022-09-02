@@ -56,6 +56,7 @@ import { ServicesComponent } from "./submodules/billing/submodules/services/serv
 import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 import { CreditDetailsComponent } from "./submodules/billing/submodules/credit-details/credit-details.component";
 import { BillComponent } from "./submodules/billing/submodules/bill/bill.component";
+import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/view-request/view-request.component";
 import { ConsultationsComponent } from "./submodules/billing/submodules/services/submodules/consultations/consultations.component";
 import { InvestigationsComponent } from "./submodules/billing/submodules/services/submodules/investigations/investigations.component";
 import { OderInvestigationsComponent } from "./submodules/op-order-request/submodules/services/submodules/investigations/investigations.component";
@@ -96,6 +97,7 @@ import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
 import { IomPopupComponent } from './submodules/billing/prompts/iom-popup/iom-popup.component';
 import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-dialog/refund-dialog.component";
+import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-detils/show-plan-detils.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -129,6 +131,7 @@ import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-di
     OrderServicesComponent,
     CreditDetailsComponent,
     BillComponent,
+    OPOrderViewRequest,
     ConsultationsComponent,
     InvestigationsComponent,
     OderInvestigationsComponent,
@@ -165,7 +168,8 @@ import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-di
     BillsComponent,
     CreditDetailComponent,
     IomPopupComponent,
-    BillDetailsRefundDialogComponent
+    BillDetailsRefundDialogComponent,
+    ShowPlanDetilsComponent
   ],
   imports: [
     BillingRoutingModule,
