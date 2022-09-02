@@ -343,8 +343,18 @@ export class MedicineOrdersComponent implements OnInit {
     this.scheduleDate = "";
 
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.investigationForm.controls["input"].reset();
+      if (value === "maxid") {
+        this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
+        //this.investigationForm.controls["input"].setValue("test");
+      }
+      else {
+        this.investigationForm.controls["input"].reset();
+      }
       this.investigationForm.controls["status"].reset();
+      this.medOrderList = [];
+      this.medOrderDetails = [];
+      this.idValue = value;
+      this.patientInfo = '';
     })
     this.investigationForm.controls["denyorder"].valueChanges.subscribe((value: any) => {
       if (value === 10) {
@@ -369,11 +379,11 @@ export class MedicineOrdersComponent implements OnInit {
       this.medOrderList = []
       this.medOrderDetails = []
     })
-    this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.idValue = value;
-      this.medOrderList = []
-      this.medOrderDetails = []
-    })
+    // this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
+    //   this.idValue = value;
+    //   this.medOrderList = []
+    //   this.medOrderDetails = []
+    // })
   }
   isChecked(event: any) {
     if (!this.investigationForm.controls["datecheckbox"].value) {
@@ -531,13 +541,17 @@ export class MedicineOrdersComponent implements OnInit {
     // if (this.tokenNo != null) {
     //   this.messageDialogService.info("Token already generated");
     // }
-
-    //this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))
-    this.http.get(ApiConstants.GetPrintQueDetail("172.16.80.51"))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.tokenNo = res[0].waitnno;
-      })
+    if (this.tableSelectedRows.length > 0) {
+      //this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))
+      this.http.get(ApiConstants.GetPrintQueDetail("172.16.80.51"))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.tokenNo = res[0].waitnno;
+        })
+    }
+    else {
+      this.snackbar.open("Please select a row to generate token!", "error")
+    }
   }
 
   saveOrUpdate() {
