@@ -9,6 +9,7 @@ import { BillingService } from "../../../../billing.service";
 import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/order-set-details.component";
 import { MatDialog } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-order-set",
@@ -123,7 +124,9 @@ export class OrderSetComponent implements OnInit {
     private cookie: CookieService,
     public billingService: BillingService,
     public matDialog: MatDialog,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -306,5 +309,12 @@ export class OrderSetComponent implements OnInit {
         this.data = [...this.billingService.OrderSetItems];
         this.formGroup.reset();
       });
+  }
+
+  goToBill() {
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

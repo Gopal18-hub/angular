@@ -55,6 +55,7 @@
         class="font-sm ml-2 min-width-initial"
         type="button"
         [disabled]="!billingService.checkServicesAdded()"
+        (click)="goToBill()"
       >
         Bill
       </button>
