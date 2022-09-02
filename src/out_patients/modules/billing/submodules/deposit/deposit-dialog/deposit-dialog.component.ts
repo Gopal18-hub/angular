@@ -48,9 +48,9 @@ export class DepositDialogComponent implements OnInit {
   questions: any;
   
   
-  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 12969; // Number(this.cookie.get("StationId"));
-  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 

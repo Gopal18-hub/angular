@@ -79,6 +79,8 @@
         tbody tr td:nth-child(12)
         {
             text-align: right !important;
+            
+            padding-right: 20px !important
         }
     }
     ::ng-deep th.mat-header-cell:first-of-type {
