@@ -16,6 +16,7 @@ import {
 } from "rxjs/operators";
 import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -116,7 +117,9 @@ export class ProcedureOtherComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -332,5 +335,12 @@ export class ProcedureOtherComponent implements OnInit {
         this.data = [...this.billingService.ProcedureItems];
         this.formGroup.reset();
       });
+  }
+
+  goToBill() {
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

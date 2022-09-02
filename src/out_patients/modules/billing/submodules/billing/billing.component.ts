@@ -27,6 +27,8 @@ import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-histo
 import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
+import { PatientService } from "@core/services/patient.service";
+
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -47,7 +49,6 @@ export class BillingComponent implements OnInit {
       path: "credit-details",
     },
   ];
-  activeLink: any;
 
   formData = {
     title: "",
@@ -118,10 +119,11 @@ export class BillingComponent implements OnInit {
     public cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService,
+    public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
@@ -268,16 +270,18 @@ export class BillingComponent implements OnInit {
               regNumber.toString()
             );
             this.patientDetails = resultData;
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // console.log(this.categoryIcons);
+
             this.setValuesToForm(this.patientDetails);
 
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              this.categoryIcons =
+                this.patientService.getCategoryIconsForPatientAny(
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                );
+              console.log(this.categoryIcons);
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
               if (
@@ -336,7 +340,36 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  doCategoryIconAction(icon: any) {}
+  doCategoryIconAction(categoryIcon: any) {
+    const patientDetails: any =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    const data: any = {
+      note: {
+        notes: patientDetails.noteReason,
+      },
+      vip: {
+        notes: patientDetails.vipreason,
+      },
+      hwc: {
+        notes: patientDetails.hwcRemarks,
+      },
+      ppagerNumber: {
+        bplCardNo: patientDetails.bplcardNo,
+        BPLAddress: patientDetails.addressOnCard,
+      },
+      hotlist: {
+        hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
+        reason: patientDetails.hotlistcomments,
+      },
+    };
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
 
   payDueCheck(dtPatientPastDetails: any) {
     if (
@@ -448,6 +481,9 @@ export class BillingComponent implements OnInit {
     const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
       maxWidth: "100vw",
       width: "98vw",
+      data: {
+        phoneNumber: this.formGroup.value.mobile,
+      },
     });
 
     appointmentSearch

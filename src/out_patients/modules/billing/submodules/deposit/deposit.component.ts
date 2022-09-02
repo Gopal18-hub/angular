@@ -440,7 +440,7 @@ export class DepositComponent implements OnInit {
         }
         else {
           this.iacode = this.depositForm.value.maxid.split(".")[0];
-          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
+          this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);        
           if ((this.iacode != "" && this.iacode != "0") && (this.regNumber != 0 && !Number.isNaN(Number(this.regNumber)))) {
             this.getDepositType();
             this.getPatientDetailsForDeposit(); 
@@ -484,6 +484,7 @@ export class DepositComponent implements OnInit {
               this.dob = this.patientpersonaldetails[0]?.dateOfBirth;
               this.nationality = this.patientpersonaldetails[0]?.nationalityName;
               this.ssn = this.patientpersonaldetails[0]?.ssn;
+              this.questions[0].readonly = true;
 
               this.depositForm.controls["panno"].setValue(this.patientpersonaldetails[0]?.paNno);
               this.depositForm.controls["maxid"].setValue(this.patientpersonaldetails[0]?.iacode + '.' + this.patientpersonaldetails[0]?.registrationno);   
@@ -595,6 +596,7 @@ export class DepositComponent implements OnInit {
                 this.patientRefundDetails = [];
               }
             } else {
+              this.MaxIDdepositExist = false;
               this.tableselectionexists = false;
             }
           });
@@ -617,6 +619,7 @@ export class DepositComponent implements OnInit {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.depositForm.reset();
+    this.questions[0].readonly = false;
     this.depositForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.name = "";
     this.age= "";

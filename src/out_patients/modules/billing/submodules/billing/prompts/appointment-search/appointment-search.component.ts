@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, Inject } from "@angular/core";
 import { environment } from "@environments/environment";
 import { HttpService } from "@shared/services/http.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { AppointmentSearchModel } from "../../../../../../core/models/appointmentSearchModel.Model";
 import { DatePipe } from "@angular/common";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ApiConstants } from "../../../../../../core/constants/ApiConstants";
 
 @Component({
@@ -42,7 +42,8 @@ export class AppointmentSearchComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private formService: QuestionControlService,
-    public dialogRef: MatDialogRef<AppointmentSearchComponent>
+    public dialogRef: MatDialogRef<AppointmentSearchComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -82,7 +83,7 @@ export class AppointmentSearchComponent implements OnInit {
         required: false,
         //  pattern: "^[1-9]{1}[0-9]{9}",
         maximum: 10,
-        defaultValue: "",
+        defaultValue: this.data.phoneNumber,
       },
       datevalidation: {
         type: "checkbox",
@@ -498,7 +499,7 @@ export class AppointmentSearchComponent implements OnInit {
   getAppointmentSearch() {
     return this.http.get(
       ApiConstants.appointmentPatientDetail(
-        this.OPAppointmentForm.value.phoneNo || "",
+        this.OPAppointmentForm.value.phoneNo || this.data.phoneNumber,
         this.OPAppointmentForm.value.name || "",
         this.OPAppointmentForm.value.lastname || "",
         this.OPAppointmentForm.value.datevalidation == false ? 0 : 1,
