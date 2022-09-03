@@ -1,0 +1,12 @@
+.resendbill{
+    .white-nowrap{
+        white-space: nowrap;
+    }
+    .btn{
+        ::ng-deep .mat-raised-button{
+            min-width: fit-content !important;
+            height: 1.875rem;
+            line-height: 1.875rem;
+        }
+    }
+}
