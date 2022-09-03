@@ -222,7 +222,24 @@ export class BillingComponent implements OnInit {
       });
   }
 
-  getPatientDetailsByMaxId() {
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async getPatientDetailsByMaxId() {
     if (!this.formGroup.value.maxid) {
       this.apiProcessing = false;
       this.patient = false;
@@ -232,6 +249,15 @@ export class BillingComponent implements OnInit {
 
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        const dialogRef = this.messageDialogService.error(
+          "Patient is an Expired Patient!"
+        );
+        this.apiProcessing = false;
+        this.patient = false;
+        return;
+      }
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
