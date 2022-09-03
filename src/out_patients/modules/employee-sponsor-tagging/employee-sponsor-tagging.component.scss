@@ -11,12 +11,6 @@
     background-color:white;
 }
 
-//REMOVE PADDING FOR INPUT CONTROLS
-// ::ng-deep .input .mat-form-field-wrapper{
-
-//     padding-bottom: 0 !important;
-
-// }
 
 .input-padding{
     ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
@@ -51,10 +45,6 @@
     //opacity:1;
 }
 
-//DISPLAY TABLE HEADERS IN A SINGLE LINE
-// ::ng-deep .whitespace-nowrap .mat-sort-header-content{
-//     white-space:nowrap;
-// }
 
 .iom-message{
     position: absolute;
@@ -129,7 +119,7 @@ margin-left:0.35%;
 .mt-error{
     ::ng-deep .mat-error{
         margin-top:8%;
-       // white-space:nowrap;
+     
     }
 }
 .default-label-none{
@@ -137,11 +127,7 @@ margin-left:0.35%;
         display:none;
     }
 }
-// .input-width{
-//     ::ng-deep mat-form-field{
-//         width:105%
-//     }
-// }
+
 
 .input-width{
     ::ng-deep mat-form-field .mat-form-field-wrapper{
@@ -192,9 +178,9 @@ margin-left:0.35%;
 }
 .remarks-sort{
     ::ng-deep .max-table-wrapper table thead tr th:nth-child(12) div.mat-sort-header-arrow{
-        // mat-sort-header-arrow{
+        
             display:none !important;
-        // }
+    
     }
 }
 .font-size-name{
