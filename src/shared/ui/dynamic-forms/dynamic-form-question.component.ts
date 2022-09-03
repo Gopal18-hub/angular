@@ -214,6 +214,10 @@ export class DynamicFormQuestionComponent
     form.controls[key].setValue($event.value);
   }
 
+  getValue() {
+    return this.form.controls[this.question.key].value;
+  }
+
   ngAfterViewInit(): void {
     if (this.element) {
       this.question.elementRef = this.element.nativeElement;
