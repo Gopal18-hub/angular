@@ -466,3 +466,10 @@ input[type="number"]::-webkit-inner-spin-button {
 .min-width-initial {
   min-width: initial !important;
 }
+
+.info-message-dialog-title {
+  .info-icon {
+    background: #45c0be;
+    border-radius: 50%;
+  }
+}

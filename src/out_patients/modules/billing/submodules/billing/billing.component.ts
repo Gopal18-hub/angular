@@ -284,19 +284,29 @@ export class BillingComponent implements OnInit {
               console.log(this.categoryIcons);
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
-              if (!patientDetails.isAvailRegCard) {
-                this.questions[0].questionClasses = "bg-vilot";
-                this.questions[0] = { ...this.questions[0] };
-              }
-              if (
-                !patientDetails.isAvailRegCard &&
-                moment().diff(moment(patientDetails.regdatetime), "days") == 0
-              ) {
-                this.addRegistrationCharges(resultData);
+              if (patientDetails.nationality != 149) {
+                const dialogRef = this.messageDialogService.info(
+                  "Please Ensure International Tariff Is Applied!"
+                );
+                dialogRef
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    this.startProcess(
+                      patientDetails,
+                      resultData,
+                      iacode,
+                      regNumber
+                    );
+                  });
               } else {
-                this.inPatientCheck(resultData.dtPatientPastDetails);
+                this.startProcess(
+                  patientDetails,
+                  resultData,
+                  iacode,
+                  regNumber
+                );
               }
-              this.getforonlinebilldetails(iacode, regNumber);
             }
           } else {
             this.snackbar.open("Invalid Max ID", "error");
@@ -314,6 +324,27 @@ export class BillingComponent implements OnInit {
           this.apiProcessing = false;
         }
       );
+  }
+
+  startProcess(
+    patientDetails: any,
+    resultData: any,
+    iacode: any,
+    regNumber: any
+  ) {
+    if (!patientDetails.isAvailRegCard) {
+      this.questions[0].questionClasses = "bg-vilot";
+      this.questions[0] = { ...this.questions[0] };
+    }
+    if (
+      !patientDetails.isAvailRegCard &&
+      moment().diff(moment(patientDetails.regdatetime), "days") == 0
+    ) {
+      this.addRegistrationCharges(resultData);
+    } else {
+      this.inPatientCheck(resultData.dtPatientPastDetails);
+    }
+    this.getforonlinebilldetails(iacode, regNumber);
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
