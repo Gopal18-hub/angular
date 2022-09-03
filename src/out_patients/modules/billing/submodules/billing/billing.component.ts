@@ -75,7 +75,7 @@ export class BillingComponent implements OnInit {
         placeholder: "--Select--",
       },
       narration: {
-        type: "string",
+        type: "buttonTextarea",
       },
       b2bInvoice: {
         type: "checkbox",
