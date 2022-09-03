@@ -8,12 +8,10 @@
 
 <div class="h-table m-1">
 <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" -->
-<ng-container class="w-full">
+<ng-container class="w-full" *ngIf="servicetable">
 <maxhealth-table  #selectedServices
 [config]="config"
 [data]="data"
-(columnClick)="printrow($event)"
-
 ></maxhealth-table>
 </ng-container>
 
