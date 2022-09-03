@@ -98,6 +98,8 @@ import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credi
 import { IomPopupComponent } from './submodules/billing/prompts/iom-popup/iom-popup.component';
 import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-dialog/refund-dialog.component";
 import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-detils/show-plan-detils.component';
+import { PrintRefundReceiptDialogComponent } from './submodules/details/printrefundreceiptdialog/print-refund-receipt-dialog.component';
+import { ResendBillEmailDialogComponent } from './submodules/details/resend-bill-email-dialog/resend-bill-email-dialog.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -169,7 +171,9 @@ import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-
     CreditDetailComponent,
     IomPopupComponent,
     BillDetailsRefundDialogComponent,
-    ShowPlanDetilsComponent
+    ShowPlanDetilsComponent,
+    PrintRefundReceiptDialogComponent,
+    ResendBillEmailDialogComponent
   ],
   imports: [
     BillingRoutingModule,

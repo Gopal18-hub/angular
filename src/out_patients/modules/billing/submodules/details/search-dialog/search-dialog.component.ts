@@ -72,6 +72,7 @@ export class SearchDialogComponent implements OnInit {
       "gender",
       "billamount",
       "balance",
+      "billMadeBy",
       "ssn"
     ],
     rowLayout: { dynamic: { rowClass: "row['billStatus']" } },
@@ -80,7 +81,7 @@ export class SearchDialogComponent implements OnInit {
         title: "S.No",
         type: "string",
         style: {
-          width: "4rem"
+          width: "3rem"
         }
       },
       billno: {
@@ -109,27 +110,28 @@ export class SearchDialogComponent implements OnInit {
         type: "string",
         style: {
           width: "6rem"
-        }
+        },
+        tooltipColumn: 'patientName'
       },
       mobileNo: {
         title: "Mobile No",
         type: "string",
         style: {
-          width: "6rem"
+          width: "5rem"
         }
       },
       age: {
         title: "Age",
         type: "string",
         style: {
-          width: "3rem"
+          width: "3.5rem"
         }
       },
       gender: {
         title: "Gender",
         type: "string",
         style: {
-          width: "5rem"
+          width: "4rem"
         }
       },
       billamount: {
@@ -145,6 +147,14 @@ export class SearchDialogComponent implements OnInit {
         style: {
           width: "5rem"
         }
+      },
+      billMadeBy: {
+        title: "Billed By",
+        type: "string",
+        style: {
+          width: "5rem"
+        },
+        tooltipColumn: 'billMadeBy'
       },
       ssn: {
         title: "SSN",
