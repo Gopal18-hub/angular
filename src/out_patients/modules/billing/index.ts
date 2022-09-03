@@ -103,6 +103,7 @@ import { ResendBillEmailDialogComponent } from './submodules/details/resend-bill
 import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
 import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
 import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-appointment/online-appointment.component';
+import { GstTaxDialogComponent } from './submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component';
 
 @NgModule({
   declarations: [
@@ -181,6 +182,7 @@ import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-
     DmgPopupComponent,
     ConfigurationBillingComponent,
     OnlineAppointmentComponent,
+    GstTaxDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
