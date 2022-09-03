@@ -295,15 +295,22 @@
         </mat-form-field>
       </ng-container>
       <ng-container *ngSwitchCase="'buttonTextarea'">
-        <div>
+        <div class="flex">
           <button
             mat-button
             (click)="toogleButtonTextarea = true"
             cdkOverlayOrigin
             #trigger="cdkOverlayOrigin"
-            class="editable-textarea-button"
+            class="editable-textarea-button w-full"
           >
-            {{ question.label }}
+            <span
+              *ngIf="question.label"
+              class="max-health-primary-color mr-1"
+              >{{ question.label }}</span
+            >
+            <div class="border border-radius-md box-input">
+              {{ getValue() }}
+            </div>
           </button>
           <ng-template
             cdkConnectedOverlay
