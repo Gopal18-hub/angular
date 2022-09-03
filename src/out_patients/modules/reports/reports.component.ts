@@ -14,9 +14,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   reportConfig: any;
 
+  multipleReports: any = [];
+
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    console.log(this.route);
+    if (
+      this.route.snapshot.data &&
+      this.route.snapshot.data["reports"] &&
+      this.route.snapshot.data["reports"].length > 0
+    ) {
+      this.multipleReports = this.route.snapshot.data["reports"];
+    }
     if (this.route.children.length > 0) {
       this.route.children[0].children[0].params
         .pipe(takeUntil(this._destroying$))

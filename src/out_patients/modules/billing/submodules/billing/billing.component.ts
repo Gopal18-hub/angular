@@ -284,15 +284,19 @@ export class BillingComponent implements OnInit {
               console.log(this.categoryIcons);
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+              if (!patientDetails.isAvailRegCard) {
+                this.questions[0].questionClasses = "bg-vilot";
+                this.questions[0] = { ...this.questions[0] };
+              }
               if (
                 !patientDetails.isAvailRegCard &&
                 moment().diff(moment(patientDetails.regdatetime), "days") == 0
               ) {
-                //if (!patientDetails.isAvailRegCard) {
                 this.addRegistrationCharges(resultData);
               } else {
                 this.inPatientCheck(resultData.dtPatientPastDetails);
               }
+              this.getforonlinebilldetails(iacode, regNumber);
             }
           } else {
             this.snackbar.open("Invalid Max ID", "error");
@@ -369,6 +373,20 @@ export class BillingComponent implements OnInit {
     ) {
       this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
     }
+  }
+
+  getforonlinebilldetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        BillingApiConstants.getforonlinebilldetails(
+          iacode,
+          regNumber,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        console.log(res);
+      });
   }
 
   payDueCheck(dtPatientPastDetails: any) {
