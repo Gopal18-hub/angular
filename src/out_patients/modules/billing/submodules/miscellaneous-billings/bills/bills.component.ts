@@ -4,6 +4,7 @@ import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MatDialog } from "@angular/material/dialog";
 import { GstTaxDialogComponent } from "../bills/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "../bills/discount-amt-dialog/discount-amt-dialog.component";
 @Component({
   selector: 'out-patients-bills',
   templateUrl: './bills.component.html',
@@ -323,12 +324,20 @@ export class BillsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
-    this.openGstTaxDialog();
+    // this.discAmtDialog();
   }
 
   openGstTaxDialog() {
     this.matdialog.open(GstTaxDialogComponent, {
       width: '35vw', height: '70vh', data: {
+        message: "Do you want to save?"
+      },
+    });
+  }
+
+  discAmtDialog() {
+    this.matdialog.open(DiscountAmtDialogComponent, {
+      width: 'full', height: 'auto', data: {
         message: "Do you want to save?"
       },
     });
