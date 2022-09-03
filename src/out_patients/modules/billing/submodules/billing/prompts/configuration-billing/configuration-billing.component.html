@@ -1,0 +1,71 @@
+<section>
+    <div class="relative max-health-primary-color modify-dialog-wrapper">
+        <label class="max-health-primary-color font-base font-semi-bold"
+        >Patient's Service Configuration</label>
+      <button
+        mat-icon-button
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <form [formGroup]="Configurationbilling" class="mt-4 mb-2">
+          <div class="flex w-full">
+          
+        <div class="w-1/4">
+            <mat-label class="max-health-primary-color"
+              >Max Id:
+              <span class="text-color">{{maxid }}</span></mat-label
+            >
+            <span class="ml-2"></span>
+          </div>
+          <div class="w-1/6">
+            <mat-label class="max-health-primary-color"
+              >Patient Name: <span class="text-color">{{ patientname }}</span></mat-label
+            >
+            <span class="ml-2"></span>
+          </div>    
+        </div>
+        <div class="flex mt-3 w-full">          
+            <div class="w-1/4">
+                <mat-label class="max-health-primary-color"
+                  >Company Name:
+                  <span class="text-color">{{companyname }}</span></mat-label
+                >
+                <span class="ml-2"></span>
+              </div>
+              <div class="w-1/6">
+                <mat-label class="max-health-primary-color"
+                  >TPA: <span class="text-color">{{ tpa }}</span></mat-label
+                >
+                <span class="ml-2"></span>
+              </div>  
+              <div class="w-1/6">
+                <mat-label class="max-health-primary-color"
+                  >Credit Limit: <span class="text-color">{{ creditlimit }}</span></mat-label
+                >
+                <span class="ml-2"></span>
+              </div>    
+            </div>
+        <div class="flex w-full">
+            <label class="max-health-primary-color font-base font-semi-bold"
+            >All Items (Paid by Company) </label>
+            <ng-container>
+                <maxhealth-table class="w-full" [config]="configurationbillingconfig" #configbillingtable>
+                </maxhealth-table>
+              </ng-container>
+        </div>
+        <div class="flex w-full">
+            <label class="max-health-primary-color font-base font-semi-bold"
+            >Deductible Items (Paid by Company) </label>
+            <ng-container>
+                <maxhealth-table class="w-full" [config]="configurationbillingconfig" #configbillingtable>
+                </maxhealth-table>
+              </ng-container>
+        </div>
+      </form>
+    </div>
+</section>

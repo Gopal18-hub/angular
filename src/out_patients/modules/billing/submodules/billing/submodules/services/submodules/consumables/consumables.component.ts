@@ -5,6 +5,7 @@ import { BillingService } from "../../../../billing.service";
 import { HttpService } from "@shared/services/http.service";
 import { ConsumableDetailsComponent } from "../../../../prompts/consumable-details/consumable-details.component";
 import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-consumables",
@@ -73,7 +74,9 @@ export class ConsumablesComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -127,5 +130,12 @@ export class ConsumablesComponent implements OnInit {
         },
         (error) => {}
       );
+  }
+
+  goToBill() {
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

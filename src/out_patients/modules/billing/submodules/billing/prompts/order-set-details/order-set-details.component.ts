@@ -27,14 +27,14 @@ export class OrderSetDetailsComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "20%",
+          width: "30%",
         },
       },
       serviceItemName: {
         title: "Service Item Name",
         type: "string",
         style: {
-          width: "40%",
+          width: "45%",
         },
       },
       price: {
@@ -56,9 +56,9 @@ export class OrderSetDetailsComponent implements OnInit {
     this.data.items.forEach((item: any, index: number) => {
       this.itemsData.push({
         sno: index + 1,
-        serviceType: "",
-        serviceItemName: item.procedureName,
-        price: item.returnOutPut,
+        serviceType: item.serviceType,
+        serviceItemName: item.name,
+        price: item.price,
       });
     });
   }

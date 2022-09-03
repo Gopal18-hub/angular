@@ -115,4 +115,65 @@ export namespace BillingApiConstants {
     locationId: string
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getdetailsforthepatientforsurgery/${IACode}/${RegistrationNo}/${locationId}`;
+
+  export const checkpriceforzeroitemid = (
+    itemCode: string,
+    locationId: string,
+    type: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkpriceforzeroitemid/${itemCode}/${locationId}/${type}`;
+
+  export const getotherplanretrieve = (
+    IACode: string,
+    RegistrationNo: number,
+    planId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getotherplanretrieve/${planId}/${IACode}/${RegistrationNo}`;
+
+  export const getselectedhappyfamilyplandetail = (
+    IACode: string,
+    RegistrationNo: number,
+    planId: string,
+    locationId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getselectedhappyfamilyplandetail/${RegistrationNo}/${IACode}/${planId}/${locationId}`;
+
+  export const getforonlinebilldetails = (
+    IACode: string,
+    RegistrationNo: number,
+    locationId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getforonlinebilldetails/${RegistrationNo}/${IACode}/${locationId}`;
+
+  export const getforegexpiredpatientdetails = (
+    IACode: string,
+    RegistrationNo: number,
+    fromTime?: string,
+    toTime?: string,
+    locationID?: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getforegexpiredpatientdetails/${RegistrationNo}/${IACode}`;
+
+  export const getunorderedpatientvisits = (
+    IACode: string,
+    RegistrationNo: number
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getunorderedpatientvisits/${RegistrationNo}/${IACode}`;
+
+  export const gethisdecommissionconfigurationvalue = (
+    decommissionType: string,
+    locationId: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getunorderedpatientvisits/${decommissionType}/${locationId}`;
+
+  export const isopdoctorinbulk = (DoctorsId: string, HsplocationId: string) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/isopdoctorinbulk/${DoctorsId}/${HsplocationId}`;
+
+  export const dmgList = (
+    IACode: string,
+    RegistrationNo: number,
+    locationId: string,
+    doctorId: number
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${IACode}/${RegistrationNo}/${locationId}/${doctorId}`;
 }

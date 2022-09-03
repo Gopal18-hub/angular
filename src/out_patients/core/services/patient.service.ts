@@ -412,6 +412,53 @@ export class PatientService {
     return returnIcons;
   }
 
+  getCategoryIconsForPatientAny(patient: any) {
+    let returnIcons: any = [];
+    Object.keys(patient).forEach((e) => {
+      if (
+        e == "ppagerNumber" &&
+        this.pageNumberIcons[patient["ppagerNumber"]]
+      ) {
+        console.log(patient["ppagerNumber"]);
+        let tempPager: any = {
+          src:
+            "assets/patient-categories/" +
+            this.pageNumberIcons[patient["ppagerNumber"]],
+          type: e,
+        };
+        if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
+          if (
+            this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] ==
+            "static"
+          ) {
+            tempPager["tooltip"] =
+              this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
+          }
+        }
+        returnIcons.push(tempPager);
+      } else if (this.categoryIcons[e] && patient[e as keyof PatientDetails]) {
+        let temp: any = {
+          src: "assets/patient-categories/" + this.categoryIcons[e],
+          type: e,
+        };
+        if (this.categoryIconsTooltip[e]) {
+          if (this.categoryIconsTooltip[e]["type"] == "static") {
+            temp["tooltip"] = this.categoryIconsTooltip[e]["value"];
+          }
+          if (this.categoryIconsTooltip[e]["type"] == "dynamic") {
+            temp["tooltip"] =
+              patient[
+                this.categoryIconsTooltip[e]["value"] as keyof PatientDetails
+              ];
+          }
+        }
+        returnIcons.push(temp);
+      }
+    });
+
+    return returnIcons;
+  }
+
   doAction(type: string, data: any) {
     if (this.categoryIconsActions[type]) {
       if (this.categoryIconsActions[type].action == "dialog") {

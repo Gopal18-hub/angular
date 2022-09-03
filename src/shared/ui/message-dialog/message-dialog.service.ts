@@ -27,7 +27,7 @@ export class MessageDialogService {
   }
 
   error(message: string) {
-    const dialogRef = this.dialog.open(MessageInfoComponent, {
+    const dialogRef = this.dialog.open(MessageWarningComponent, {
       //width: "40vw",
       minWidth: "25vw",
       maxWidth: "40vw",
@@ -39,7 +39,7 @@ export class MessageDialogService {
   }
 
   info(message: string) {
-    const dialogRef = this.dialog.open(MessageWarningComponent, {
+    const dialogRef = this.dialog.open(MessageInfoComponent, {
       //width: "40vw",
       minWidth: "25vw",
       maxWidth: "40vw",

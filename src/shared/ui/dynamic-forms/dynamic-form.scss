@@ -56,3 +56,16 @@ mat-label.mat-form-field-required-marker {
     top: 1px;
   }
 }
+.editable-textarea-button {
+  color: #5a5a5a;
+}
+.editable-form-textarea {
+  ::ng-deep .text-area-edit {
+    background: #fff;
+    width: 185px;
+    border-radius: 8px;
+    &.mat-form-field-appearance-outline .mat-form-field-wrapper {
+      padding-bottom: 0 !important;
+    }
+  }
+}

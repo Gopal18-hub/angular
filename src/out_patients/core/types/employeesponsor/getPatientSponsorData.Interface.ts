@@ -40,6 +40,7 @@ interface objEmployeeDependentDataInterface {
   remark: string;
   maxid: string;
   age: string;
+  remark_disabled?: boolean;
 }
 
 interface objPatientSponsorDataAuditTrailInterface {

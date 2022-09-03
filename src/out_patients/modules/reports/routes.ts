@@ -11,6 +11,30 @@ const routes: Routes = [
         (m) => m.PromptReportModule
       ),
   },
+  {
+    path: "report-multiple",
+    component: ReportsComponent,
+    loadChildren: () =>
+      import("../../../reports/modules/prompt-report").then(
+        (m) => m.PromptReportModule
+      ),
+    data: {
+      reports: [
+        {
+          title: "Happy Family Plan",
+          link: "prompt-report/HappyFamilyPlanAllocationReport",
+        },
+        {
+          title: "Utilization Report Summary",
+          link: "prompt-report/HappyFamilyPlanUtilizationReport",
+        },
+        {
+          title: "Detailed Utilization Report Summary",
+          link: "prompt-report/SummaryReportForUtilisationReport",
+        },
+      ],
+    },
+  },
 ];
 
 @NgModule({
