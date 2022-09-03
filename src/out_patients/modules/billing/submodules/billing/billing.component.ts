@@ -91,7 +91,7 @@ export class BillingComponent implements OnInit {
   patient: boolean = false;
 
   patientName!: string;
-  age!: string;
+  age!: string | undefined;
   gender!: string;
   dob!: string;
   country!: string;
@@ -309,7 +309,6 @@ export class BillingComponent implements OnInit {
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
                 );
-              console.log(this.categoryIcons);
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
               if (patientDetails.nationality != 149) {
@@ -397,7 +396,7 @@ export class BillingComponent implements OnInit {
     }
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
-    this.age = patientDetails.age + " " + patientDetails.ageTypeName;
+    this.age = this.onageCalculator(patientDetails.dateOfBirth);
     this.gender = patientDetails.genderName;
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
@@ -412,6 +411,33 @@ export class BillingComponent implements OnInit {
       queryParams: { maxId: this.formGroup.value.maxid },
       relativeTo: this.route,
     });
+  }
+
+  onageCalculator(ageDOB = "") {
+    if (ageDOB) {
+      let dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+      let returnAge = "";
+      if (diffYears > 0) {
+        returnAge = diffYears + " Year(s)";
+      } else if (diffMonths > 0) {
+        returnAge = diffYears + " Month(s)";
+      } else if (diffDays > 0) {
+        returnAge = diffYears + " Day(s)";
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        returnAge = "N/A";
+      } else if (diffDays == 0) {
+        returnAge = "1 Day(s)";
+      }
+      return returnAge;
+    }
+    return "N/A";
   }
 
   doCategoryIconAction(categoryIcon: any) {
