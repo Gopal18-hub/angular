@@ -354,7 +354,7 @@ export class InvestigationOrdersComponent implements OnInit {
         //this.investigationForm.controls["input"].setValue("test");       
       }
       else {
-        this.investigationForm.controls["status"].reset();
+        this.investigationForm.controls["input"].reset();
       }
       this.invOrderList = [];
       this.invOrderDetails = [];
