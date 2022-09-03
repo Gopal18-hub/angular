@@ -148,11 +148,11 @@ export namespace BillingApiConstants {
   export const getforegexpiredpatientdetails = (
     IACode: string,
     RegistrationNo: number,
-    fromTime: string,
-    toTime: string,
-    locationID: string
+    fromTime?: string,
+    toTime?: string,
+    locationID?: string
   ) =>
-    `${environment.BillingApiUrl}api/outpatientbilling/getforegexpiredpatientdetails/${RegistrationNo}/${IACode}/${fromTime}/${toTime}/${locationID}`;
+    `${environment.BillingApiUrl}api/outpatientbilling/getforegexpiredpatientdetails/${RegistrationNo}/${IACode}`;
 
   export const getunorderedpatientvisits = (
     IACode: string,
