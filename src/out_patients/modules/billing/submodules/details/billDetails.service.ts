@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { Router } from "@angular/router";
+import { sendForBillDetailsApproval } from '../../../../core/models/sendForBillDetailsApproval.Model';
 @Injectable({
   providedIn: "root",
 })
@@ -9,8 +10,11 @@ export class billDetailService{
     serviceList: any = [];
     billafterrefund: any = [];
     patientbilldetaillist: any = [];
-    sendforapproval: any = [];
+    sendforapproval: any= [];
     totalrefund: any;
+    authorisedby: any;
+    reason: any;
+    mop: any;
     paymentmode: any = [
         {title: 'Cash', value: 1},
         {title: 'Cheque', value: 2},
@@ -46,7 +50,7 @@ export class billDetailService{
     {
         this.totalrefund = 0;
         this.sendforapproval.forEach((i: any)=>{
-            this.totalrefund += i.amount;
+            this.totalrefund += i.refundAmt;
         })
     }
 }

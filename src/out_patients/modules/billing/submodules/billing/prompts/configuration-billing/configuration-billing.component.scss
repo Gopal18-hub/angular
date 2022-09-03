@@ -1,0 +1,18 @@
+.configurationbillingbanner{
+    .configbillingbutton{
+       ::ng-deep .mat-raised-button{
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+    }
+    .firstsecondrow{
+        border-radius: 0.2em;
+        border: 1px solid #ababab !important;
+        padding: 1px !important;
+    }  
+    .text-color {
+        color: #5a5a5a;
+        font-weight: 400;
+      }  
+}

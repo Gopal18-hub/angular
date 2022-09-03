@@ -29,7 +29,10 @@ import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import * as moment from "moment";
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 import { BillDetailsRefundDialogComponent } from "./refund-dialog/refund-dialog.component";
-
+import { objSendApprovalTableList, sendForBillDetailsApproval } from '../../../../core/models/sendForBillDetailsApproval.Model';
+import { PrintRefundReceiptDialogComponent } from './printrefundreceiptdialog/print-refund-receipt-dialog.component';
+import { ResendBillEmailDialogComponent } from './resend-bill-email-dialog/resend-bill-email-dialog.component'
+import { ReportService } from "@shared/services/report.service";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -48,7 +51,8 @@ export class DetailsComponent implements OnInit {
     private differ: KeyValueDiffers,
     private patientService: PatientService,
     private msgdialog: MessageDialogService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private reportService: ReportService
   ) {
     this.check = this.differ
       .find(this.billdetailservice.sendforapproval)
@@ -223,7 +227,7 @@ export class DetailsComponent implements OnInit {
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
     this.questions[14].options = this.paymentmode.map((l: any) => {
-      return { title: l.title, value: l.value };
+      return { title: l.title, value: l.title };
     });
   }
   lastUpdatedBy: string = "";
@@ -281,11 +285,60 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['refundAmt'].value > 0)
     {
       this.approvalsend = false;
+      this.billdetailservice.authorisedby = this.BServiceForm.controls['authBy'].value;
+      this.billdetailservice.reason = this.BServiceForm.controls['reason'].value;
+      this.billdetailservice.mop = this.BServiceForm.controls['paymentMode'].value;
     }
     else
     {
       this.approvalsend = true;
     }
+  }
+  sendforapproval()
+  {
+    var reas = this.refundreasonlist.filter(i => {
+      return i.id == this.BServiceForm.controls['reason'].value;
+    });
+    this.billdetailservice.sendforapproval.forEach((i:any) => {
+      i.authorisedby = this.BServiceForm.controls['authBy'].value,
+      i.reason = reas[0].name,
+      i.mop = this.BServiceForm.controls['paymentMode'].value
+    });
+    this.http.post(BillDetailsApiConstants.sendapproval('GAVS-HIS', this.cookie.get('HSPLocationId'), this.cookie.get('UserId')), this.approvelist())
+    .subscribe(res => {
+      console.log(res);
+      if(res.length > 0)
+      {
+        this.msgdialog.success(res[0].returnMessage);
+      }
+    })
+  }
+  sendforapprovallist: sendForBillDetailsApproval = new sendForBillDetailsApproval();
+  approvelist()
+  {
+    this.sendforapprovallist.objSendApprovalTableList = [] as Array<objSendApprovalTableList>
+    this.billdetailservice.sendforapproval.forEach( (i: any) => {
+      console.log(i);
+      this.sendforapprovallist.objSendApprovalTableList.push({
+        ssn : i.ssn,
+        maxid : i.maxid,
+        ptnName : i.ptnName,
+        billNo : i.billNo,
+        operatorName : i.operatorName,
+        authorisedby : i.authorisedby,
+        reason : i.reason,
+        refundAmt : i.refundAmt,
+        mop : i.mop,
+        serviceId : i.serviceId,
+        itemId : i.itemId,
+        serviceName : i.serviceName,
+        itemName : i.itemName,
+        refundAfterAck : i.refundAfterAck,
+        itemOrderId : i.itemOrderId
+      })
+    })
+    console.log(this.sendforapprovallist);
+    return this.sendforapprovallist;
   }
   formEvents() {
     //ON billno CHANGE
@@ -358,16 +411,19 @@ export class DetailsComponent implements OnInit {
               console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]);
               this.billFormfill();
               if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
-                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == ''  
+                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
+                this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == ''  
               )
               {
                 this.BServiceForm.controls['authBy'].enable();
                 this.BServiceForm.controls['reason'].enable();
+                this.BServiceForm.controls['paymentMode'].enable();
               }
               else
               {
                 this.BServiceForm.controls['authBy'].disable();
                 this.BServiceForm.controls['reason'].disable();
+                this.BServiceForm.controls['paymentMode'].disable();
               }
               this.printbill = false;
               this.consumableprint = false;
@@ -441,8 +497,17 @@ export class DetailsComponent implements OnInit {
     var reasonid = this.refundreasonlist.find( id => {
       return id.name == this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason;
     })
-    console.log(reasonid);
+    var payid = this.billdetailservice.paymentmode.find( (id: any) => {
+      return id.title == this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode;
+    })
     this.BServiceForm.controls['reason'].setValue(reasonid?.id);
+    console.log(payid);
+    if(payid != undefined)
+    {
+      this.BServiceForm.controls['paymentMode'].setValue(payid.title);
+      console.log(this.BServiceForm.controls['paymentMode'].value);
+    }
+    this.sendapprovalcheck();
   }
  
  openhistory() {
@@ -489,6 +554,9 @@ export class DetailsComponent implements OnInit {
         refundamount: this.BServiceForm.value.refundAmt,
         mop: this.BServiceForm.value.paymentMode,
         mobile: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
+        billid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
+        billno: this.BServiceForm.value.billNo,
+        maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
       }
     });
 
@@ -546,11 +614,56 @@ export class DetailsComponent implements OnInit {
       this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1].token;
     window.open(this.doxperurl, "_blank");
   }
+  printrefunddialog()
+  {
+    const printrefunddialog = this.matDialog.open(PrintRefundReceiptDialogComponent, {
+      width: "35vw",
+      height: "35vh"
+    })
+  }
+  resendbilldialog()
+  {
+    const printrefunddialog = this.matDialog.open(ResendBillEmailDialogComponent, {
+      width: "35vw",
+      height: "40vh"
+    })
+  }
+  reportprint(name: any)
+  {
+    this.openReportModal(name);
+  }
+  openReportModal(btnname: string) {
+    if(btnname == 'PHPTracksheet')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        BillNo: this.BServiceForm.value.billNo,
+      });
+    }
+  else if(btnname == 'billingreport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
+        locationID: this.cookie.get('HSPLocationId')
+      });
+    }
+    
+  }
   ngDoCheck(): void {
     const changes = this.check.diff(this.billdetailservice.sendforapproval);
     if (changes) {
       console.log(this.billdetailservice.totalrefund);
       console.log(this.billdetailservice.sendforapproval);
+      var approvedlist;
+      // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
+      //   console.log(i);
+        this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((j: any) => {
+          console.log(j);
+          approvedlist = this.billdetailservice.sendforapproval.filter( (e: any) => {
+            return e.itemId = j.itemId;
+          })
+        // })
+      })
+      console.log(approvedlist);
       console.log(changes);
       this.BServiceForm.controls["refundAmt"].setValue(
         this.billdetailservice.totalrefund.toFixed(2)
