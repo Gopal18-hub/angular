@@ -12,6 +12,7 @@ import { SearchService } from '@shared/services/search.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { LookupService } from '@core/services/lookup.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'out-patients-staff-dept',
@@ -20,6 +21,7 @@ import { LookupService } from '@core/services/lookup.service';
 })
 export class StaffDeptComponent implements OnInit {
   public staffDependentTypeList: StaffDependentTypeModel[] = [];
+  rowData = '';
   staffDetail: any = [];
   staffDeptDetails: any;
   selectedCode: any;
@@ -50,7 +52,7 @@ export class StaffDeptComponent implements OnInit {
   questions: any;
   staffListConfig: any = {
     actionItems: false,
-    dateformat: 'dd/MM/yyyy',
+    //dateformat: 'dd/MM/yyyy',
     selectBox: false,
     clickedRows: true,
     clickSelection: "single",
@@ -86,7 +88,7 @@ export class StaffDeptComponent implements OnInit {
       },
       dob: {
         title: 'DOB',
-        type: 'date'
+        type: 'string'
       },
       gender: {
         title: 'Gender',
@@ -94,14 +96,14 @@ export class StaffDeptComponent implements OnInit {
       },
       doj: {
         title: 'DOJ',
-        type: 'date'
+        type: 'string'
       },
     }
 
   }
   staffDetailConfig: any = {
     actionItems: false,
-    dateformat: 'dd/MM/yyyy',
+    //dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: ['empCode', 'dependentName', 'dob', 'gender', 'relationship'],
     columnsInfo: {
@@ -118,7 +120,7 @@ export class StaffDeptComponent implements OnInit {
       },
       dob: {
         title: 'Date Of Birth',
-        type: 'date'
+        type: "string"
       },
       gender: {
         title: 'Gender',
@@ -187,15 +189,38 @@ export class StaffDeptComponent implements OnInit {
     }
   }
   staffColumnClick(event: any) {
-    if (this.staffDetail.length > 1) {
-      this.staffDeptDetails = [];
-      this.selectedCode = event.row.empCode;
-      this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation, this.selectedCode, ""))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((res: any) => {
-          this.staffDeptDetails = res.dtsStaffDependentDetails
-        })
-    }
+    setTimeout(() => {
+      this.rowData = event;
+      if (this.staffDetail.length > 1) {
+        this.staffDeptDetails = [];
+        this.selectedCode = event.row.empCode;
+        this.http.get(ApiConstants.getstaffdependentdetails(this.staffForm.value.organisation, this.selectedCode, ""))
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((res: any) => {
+            console.log(res.dtsStaffDependentDetails, "re")
+            this.staffDeptDetails = res.dtsStaffDependentDetails;
+            for (var i = 0; i < this.staffDeptDetails.length; i++) {
+              console.log(this.staffDeptDetails[i].dob, "dob")
+              //this.staffDetail[i].sNo = i + 1;
+              this.staffDeptDetails[i].dob = moment(this.staffDeptDetails[i].dob).format('DD/MM/YYYY');
+              this.staffDeptDetails[i].doj = moment(this.staffDeptDetails[i].doj).format('DD/MM/YYYY');
+              if (moment(this.staffDeptDetails[i].dob).format('DD/MM/YYYY') === "Invalid date") {
+                this.staffDeptDetails[i].dob = ''
+              }
+              if (moment(this.staffDeptDetails[i].doj).format('DD/MM/YYYY') === "Invalid date") {
+                this.staffDeptDetails[i].doj = ''
+              }
+              if ((this.staffDeptDetails[i].gender === "M") || (this.staffDeptDetails[i].gender === "m")) {
+                this.staffDeptDetails[i].gender = 'Male'
+              }
+              else if ((this.staffDeptDetails[i].gender === "F") || (this.staffDeptDetails[i].gender === "f")) {
+                this.staffDeptDetails[i].gender = 'Female'
+              }
+            }
+            console.log(this.staffDeptDetails);
+          })
+      }
+    })
 
   }
   clear() {
@@ -226,9 +251,24 @@ export class StaffDeptComponent implements OnInit {
           if (res)
             this.staffDetail = res.dtsStaffDependentDetails.filter((s: any) => s.relationship == "Self");
           for (var i = 0; i < this.staffDetail.length; i++) {
+            console.log(this.staffDetail[i].dob, "dob")
             this.staffDetail[i].sNo = i + 1;
+            this.staffDetail[i].dob = moment(this.staffDetail[i].dob).format('DD/MM/YYYY');
+            this.staffDetail[i].doj = moment(this.staffDetail[i].doj).format('DD/MM/YYYY');
+            if (moment(this.staffDetail[i].dob).format('DD/MM/YYYY') === "Invalid date") {
+              this.staffDetail[i].dob = ''
+            }
+            if (moment(this.staffDetail[i].doj).format('DD/MM/YYYY') === "Invalid date") {
+              this.staffDetail[i].doj = ''
+            }
+            if ((this.staffDetail[i].gender === "M") || (this.staffDetail[i].gender === "m")) {
+              this.staffDetail[i].gender = 'Male'
+            }
+            else if ((this.staffDetail[i].gender === "F") || (this.staffDetail[i].gender === "f")) {
+              this.staffDetail[i].gender = 'Female'
+            }
           }
-          if (this.staffDetail.length == 1) {
+          if (this.staffDetail.length === 1) {
             this.staffDeptDetails = res.dtsStaffDependentDetails
           }
         });

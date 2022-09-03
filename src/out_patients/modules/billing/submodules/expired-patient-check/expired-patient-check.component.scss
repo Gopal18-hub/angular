@@ -19,20 +19,16 @@
 .asterisk-color{
     color: red;
 }
-::ng-deep .mat-form-field-wrapper{
+.input-padding{
+    ::ng-deep .mat-form-field-wrapper{
 
-    padding-bottom: 0 !important;
-
+        padding-bottom: 0 !important;
+    
+    }
 }
+
 .btn{
     padding: 1px;
-}
-::ng-deep .btn .mat-button-wrapper{
-    display: flex;
-    gap: 15px;
-    div{
-        display: flex;
-    }
 }
 
 
@@ -74,7 +70,7 @@
 .text-scrollbar{
     ::ng-deep textarea{
         height:25px !important;
-       // width:50px !important;
+      
         overflow-y: scroll !important;
     }  
 }
@@ -97,10 +93,10 @@
   
 }
 .button-height{
- //   ::ng-deep button{
+
         height:1.875rem;
         min-width: 95px !important;
-  //  }
+ 
 }
 
 .lens-icon{
@@ -111,12 +107,7 @@
     height: 92%;
     width: 30%;
 
-    // width: 25%;
-    // position: absolute;
-    // left: 0px;
-    // top: 1px;
-    // height: 95%;
-    // width: 30%;
+    
 
 }
 
@@ -124,7 +115,7 @@
     padding:0.6rem;
 }
 w-137{
- //  ::ng-deep mat-form-field .mat-form-field-wrapper .mat-form-field-flex{
+ 
         width:130%
- //   }
+ 
 }

@@ -416,6 +416,8 @@ export class ExpiredPatientCheckComponent implements OnInit {
         width: "25vw",
         height: "30vh",
       });
+    } else if (this.expiredpatientForm.value.remarks == "") {
+      this.messagedialogservice.info("Please enter remarks");
     } else {
       let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
         width: "25vw",
@@ -439,9 +441,13 @@ export class ExpiredPatientCheckComponent implements OnInit {
             .subscribe((data) => {
               console.log(data);
               this.deleteExpiredpatientResponse = data as deleteexpiredResponse;
-              this.messagedialogservice.success(
-                this.deleteExpiredpatientResponse.message
-              );
+              console.log(this.deleteExpiredpatientResponse.success);
+              if (this.deleteExpiredpatientResponse.success == true) {
+                this.messagedialogservice.success(
+                  "Patient Expired Details Has Been Deleted"
+                );
+              }
+
               this.clearData();
             });
         }

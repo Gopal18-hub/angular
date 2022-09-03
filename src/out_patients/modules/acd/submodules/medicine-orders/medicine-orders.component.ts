@@ -20,6 +20,7 @@ import { LookupService } from '@core/services/lookup.service';
 import { CookieService } from '@shared/services/cookie.service';
 import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
 import { SaveUpdateDialogComponent } from '../save-update-dialog/save-update-dialog.component';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'out-patients-medicine-orders',
   templateUrl: './medicine-orders.component.html',
@@ -61,6 +62,7 @@ export class MedicineOrdersComponent implements OnInit {
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
 
   selectedRow: any = [];
+  tableSelectedRows: any = [];
   isDisableCancel: boolean = true;
   isDisableSave: boolean = true;
   isDisableDeniel: boolean = true;
@@ -215,18 +217,12 @@ export class MedicineOrdersComponent implements OnInit {
   }
   medDetailsConfig: any = {
     actionItems: false,
+    selectBox: true,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
-    displayedColumns: ['sno', 'drug', 'doctor', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
+    displayedColumns: ['drug', 'doctor', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
     rowLayout: { dynamic: { rowClass: "'isBilled'+row['isBilled']" } },
     columnsInfo: {
-      sno: {
-        title: '',
-        type: "checkbox_active",
-        disabled: false,
-        style: {
-          width: "80px",
-        },
-      },
+
       drug: {
         title: 'Drug Name',
         type: 'string',
@@ -281,6 +277,8 @@ export class MedicineOrdersComponent implements OnInit {
     }
 
   }
+  ipAddress = '';
+  findIP: any;
   constructor(private formService: QuestionControlService, public datepipe: DatePipe,
     private http: HttpService, private messageDialogService: MessageDialogService,
     private searchService: SearchService, private router: Router,
@@ -288,13 +286,13 @@ export class MedicineOrdersComponent implements OnInit {
     private lookupService: LookupService,
     public matdialog: MatDialog,
     private cookie: CookieService,
-    private snackbar: MaxHealthSnackBarService,) {
+    private snackbar: MaxHealthSnackBarService) {
+
   }
   ngOnInit(): void {
-    this.isDisableCancel = false;
-    this.isDisableSave = false;
-    this.isDisableDeniel = false;
+
     this.isDisableBill = false;
+    this.patientInfo = '';
     let formResult: any = this.formService.createForm(
       this.investigationFormData.properties,
       {}
@@ -303,7 +301,10 @@ export class MedicineOrdersComponent implements OnInit {
     this.questions = formResult.questions;
     this.resetDate();
     this.resetRemarksDeny();
+    this.disableBtns();
     this.investigationForm.controls["maxid"].setValue('maxid');
+    this.questions[1].maximum = this.investigationForm.controls["todate"].value;
+    this.questions[2].minimum = this.investigationForm.controls["fromdate"].value;
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -331,13 +332,31 @@ export class MedicineOrdersComponent implements OnInit {
         const lookupdata = await this.lookupService.searchPatient(formdata);
         console.log(lookupdata);
       });
+    this.getIPAddress();
+  }
+  getIPAddress() {
+    this.http.get("http://api.ipify.org/?format=json").subscribe((res: any) => {
+      this.ipAddress = res.ip;
+      console.log(this.ipAddress, "ipAddress")
+
+    });
   }
   ngAfterViewInit(): void {
     this.scheduleDate = "";
 
     this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.investigationForm.controls["input"].reset();
+      if (value === "maxid") {
+        this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
+        //this.investigationForm.controls["input"].setValue("test");
+      }
+      else {
+        this.investigationForm.controls["input"].reset();
+      }
       this.investigationForm.controls["status"].reset();
+      this.medOrderList = [];
+      this.medOrderDetails = [];
+      this.idValue = value;
+      this.patientInfo = '';
     })
     this.investigationForm.controls["denyorder"].valueChanges.subscribe((value: any) => {
       if (value === 10) {
@@ -348,10 +367,12 @@ export class MedicineOrdersComponent implements OnInit {
       }
       if (value === 1) {
         this.investigationForm.controls["remarks"].enable();
+        this.denyOthers = true;
       }
       else {
-        this.investigationForm.controls["remarks"].disable();
-        this.investigationForm.controls["remarks"].setValue('');
+        this.denyOthers = false;
+        // this.investigationForm.controls["remarks"].disable();
+        // this.investigationForm.controls["remarks"].setValue('');
       }
     })
 
@@ -360,11 +381,17 @@ export class MedicineOrdersComponent implements OnInit {
       this.medOrderList = []
       this.medOrderDetails = []
     })
-    this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
-      this.idValue = value;
-      this.medOrderList = []
-      this.medOrderDetails = []
-    })
+    // this.investigationForm.controls["maxid"].valueChanges.subscribe((value: any) => {
+    //   this.idValue = value;
+    //   this.medOrderList = []
+    //   this.medOrderDetails = []
+    // })
+    this.investigationForm.controls['fromdate'].valueChanges.subscribe((val) => {
+      this.questions[2].minimum = val;
+    });
+    this.investigationForm.controls['todate'].valueChanges.subscribe((val) => {
+      this.questions[1].maximum = val;
+    });
   }
   isChecked(event: any) {
     if (!this.investigationForm.controls["datecheckbox"].value) {
@@ -382,9 +409,10 @@ export class MedicineOrdersComponent implements OnInit {
   search() {
     this.medOrderList = []
     this.medOrderDetails = [];
+    this.patientInfo = ''
 
-    //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
     this.http.get(ApiConstants.geteprescriptdrugorders(this.datepipe.transform(this.investigationForm.controls["fromdate"].value, "yyyy-MM-dd"), this.datepipe.transform(this.investigationForm.controls["todate"].value, "yyyy-MM-dd"), this.hsplocationId))
+      //this.http.get(ApiConstants.geteprescriptdrugorders("2020-12-11", "2020-12-11", 7))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.medOrderListMain = res.objOrderDetails;
@@ -393,7 +421,8 @@ export class MedicineOrdersComponent implements OnInit {
       })
   }
   searchFilter() {
-    if (!this.statusvalue && !this.investigationForm.value.input && this.medOrderListMain !== undefined) {
+    let maxid = String(this.investigationForm.value.input.trim()).toUpperCase();
+    if (!this.statusvalue && !maxid && this.medOrderListMain !== undefined) {
       this.medOrderList = this.medOrderListMain;
 
     }
@@ -401,23 +430,26 @@ export class MedicineOrdersComponent implements OnInit {
       this.medOrderList = [];
       this.medOrderList = this.medOrderListMain
     }
-    else if (this.statusvalue && this.investigationForm.value.input) {
+    else if (this.statusvalue && maxid) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].includes(this.investigationForm.value.input) && e.orderStatus === this.statusvalue));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].toUpperCase().includes(maxid) && e.orderStatus === this.statusvalue));
     }
     else if (this.statusvalue) {
       this.medOrderList = [];
       this.medOrderList = this.medOrderListMain.filter((e: any) => (e.orderStatus === this.statusvalue));
     }
-    else if (this.idValue && this.investigationForm.value.input) {
+    else if (this.idValue && maxid) {
       this.medOrderList = [];
-      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].includes(this.investigationForm.value.input)));
+      this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].toUpperCase().includes(maxid)));
     }
   }
   listRowClick(event: any) {
+    this.medOrderDetailsTable.selection.clear();
     this.selectedInv = event;
-    this.isDisableCancel = false;
+    //this.isDisableCancel = false;
     this.resetRemarksDeny();
+    this.disableBtns();
+    this.tableSelectedRows = [];
     let maxId = event.row.maxid;
     this.patientInfo = event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo
 
@@ -427,21 +459,45 @@ export class MedicineOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         this.objPhyOrder = [];
         this.medOrderDetails = res.physicianOrderDetail;
+        this.selectedRow = [];
+        setTimeout(() => {
+          this.medOrderDetailsTable.selection.changed
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (this.medOrderDetailsTable.selection.selected.length > 0) {
+                this.isDisableCancel = true;
+                this.isDisableDeniel = true;
+                this.tableSelectedRows = this.medOrderDetailsTable.selection.selected;
+              }
+              else {
+                this.disableBtns();
+                this.resetRemarksDeny();
+                this.tableSelectedRows = [];
+              }
+              console.log(this.medOrderDetailsTable.selection.selected, "res")
+            })
+        })
       })
   }
   denyBtn() {
-
     let deniedRow = [];
-    deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-    let enabledRow = [];
-    enabledRow = this.selectedRow.filter((e: any) => (e.sno === true))
+    let nondeniedRow = [];
+    let billedRow = [];
+    deniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 2))
+    nondeniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 0))
+    billedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 1))
 
-    if (deniedRow.length > 0 && enabledRow.length > 0) {
+    if (deniedRow.length > 0) {
       this.snackbar.open("Order is already Denied", "error");
-      this.isDisableSave = false;
       this.resetRemarksDeny();
+      this.isDisableSave = false;
     }
-    else if (this.selectedRow.length > 0) {
+    else if (billedRow.length > 0) {
+      this.snackbar.open("Order is already Billed", "error");
+      this.resetRemarksDeny();
+      this.isDisableSave = false;
+    }
+    else if (this.tableSelectedRows.length > 0 && nondeniedRow.length > 0) {
       this.isBtnDisable = true;
       this.investigationForm.controls["denyorder"].enable();
       this.investigationForm.controls["remarks"].enable();
@@ -463,9 +519,10 @@ export class MedicineOrdersComponent implements OnInit {
         this.selectedRow.push(event.row);
         this.isDisableCancel = true;
         this.isDisableDeniel = true;
+        this.unselectRow();
       }
       else {
-        this.snackbar.open("Order cannot denied,As item already bill!", "error");
+        this.snackbar.open("Billed order cannot be denied", "error");
         event.row.sno = true;
         let billRow = [];
         billRow = this.selectedRow.filter((e: any) => (e.sno === false || e.isBilled === 1))
@@ -477,84 +534,103 @@ export class MedicineOrdersComponent implements OnInit {
       }
     }
   }
+  unselectRow() {
+    setTimeout(() => {
+      let unselectRow = this.selectedRow.filter((e: any) => (e.sno === true));
+      console.log(unselectRow, "USR")
+      if (unselectRow.length === 0) {
+        this.disableBtns();
+        this.resetRemarksDeny();
+      }
+    }, -1)
+
+  }
   generateToken() {
     // if (this.tokenNo != null) {
     //   this.messageDialogService.info("Token already generated");
     // }
-
-    //this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))    
-    this.http.get(ApiConstants.GetPrintQueDetail("172.16.80.51"))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.tokenNo = res[0].waitnno;
-      })
+    if (this.tableSelectedRows.length > 0) {
+      //this.http.get(ApiConstants.GetPrintQueDetail(window.location.hostname))
+      this.http.get(ApiConstants.GetPrintQueDetail("172.16.80.51"))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.tokenNo = res[0].waitnno;
+        })
+    }
+    else {
+      this.snackbar.open("Please select a row to generate token!", "error")
+    }
   }
 
   saveOrUpdate() {
-    let enabledRow = [];
-    enabledRow = this.selectedRow.filter((e: any) => (e.sno === true))
-    if (enabledRow.length > 0) {
-      if (this.investigationForm.value.denyorder === "Select") {
+    setTimeout(() => {
+      let deniedRow = [];
+      let nondeniedRow: any = [];
+      let billedRow = [];
+      deniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 2))
+      nondeniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 0))
+      billedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 1))
 
-        this.snackbar.open("Please select denial reason for open order before Save!", "error")
+
+      if (deniedRow.length > 0) {
+        this.snackbar.open("Order is already Denied", "error")
       }
-      if (this.investigationForm.value.denyorder !== "Select") {
-        if (this.denyOthers == true && !this.investigationForm.value.remarks) {
-          this.snackbar.open("Please enter denial reason remark for order!", "error")
+      else if (billedRow.length > 0) {
+        this.snackbar.open("Order is already Billed", "error")
+      }
+      else
+        if (nondeniedRow.length > 0 && this.tableSelectedRows.length > 0) {
+          if (this.investigationForm.value.denyorder === "Select") {
+            this.snackbar.open("Please select denial reason for open order before Save!", "error")
+          }
+          if (this.investigationForm.value.denyorder !== "Select") {
+            if (this.denyOthers == true && !this.investigationForm.value.remarks) {
+              this.snackbar.open("Please enter denial reason remark for order!", "error")
+            }
+            else {
+              let dialogRes;
+              const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
+                width: '33vw', height: '40vh', data: {
+                  message: "Do you want to save?"
+                },
+              });
+
+              dialogref.afterClosed().subscribe(res => {
+                // received data from dialog-component
+                dialogRes = res.data;
+                if (dialogRes === 'Y') {
+                  this.objPhyOrder = [];
+                  this.objdtdenialorder = "";
+
+                  nondeniedRow.forEach((e: any) => {
+                    this.objPhyOrder.push({
+                      acDisHideDrug: true,
+                      visitid: e.visitId,
+                      drugid: e.drugid,
+                      acdRemarks: e.acdRemarks
+                    });
+                  });
+
+                  this.objdtdenialorder = {
+                    denialid: this.investigationForm.value.denyorder,
+                    denialremark: this.investigationForm.value.remarks,
+                    visitid: nondeniedRow[0].visitId,
+                    nextScheduleDate: this.scheduleDate,
+                    nextflag: true
+                  }
+                  this.Save();
+
+
+                }
+              })
+            }
+          }
         }
         else {
-          let dialogRes;
-          const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-            width: '33vw', height: '40vh', data: {
-              message: "Do you want to save?"
-            },
-          });
-
-          dialogref.afterClosed().subscribe(res => {
-            // received data from dialog-component
-            dialogRes = res.data;
-            if (dialogRes === 'Y') {
-              this.objPhyOrder = [];
-              this.objdtdenialorder = "";
-              let boolColumn = [];
-              let deniedRow = [];
-              deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-              boolColumn = this.selectedRow.filter((e: any) => (e.sno === true && e.isBilled === 0))
-              if (deniedRow.length > 0) {
-                this.snackbar.open("Please deselect Order's already denied", "error");
-              }
-              else if (boolColumn.length === 0) {
-                this.snackbar.open("Please select atleast 1 row to proceed.", "error");
-              }
-              else {
-                boolColumn.forEach((e: any) => {
-                  this.objPhyOrder.push({
-                    acDisHideDrug: true,
-                    visitid: e.visitId,
-                    drugid: e.drugid,
-                    acdRemarks: e.acdRemarks
-                  });
-                });
-
-                this.objdtdenialorder = {
-                  denialid: this.investigationForm.value.denyorder,
-                  denialremark: this.investigationForm.value.remarks,
-                  visitid: this.selectedRow[0].visitId,
-                  nextScheduleDate: this.scheduleDate,
-                  nextflag: true
-                }
-                this.Save();
-
-              }
-            }
-          })
+          this.snackbar.open("Please select a row to proceed.", "error");
+          this.tableSelectedRows = [];
         }
-      }
-    }
-    else {
-      this.snackbar.open("Please select atleast 1 row to proceed.", "error");
-    }
-
+    }, -1)
   }
   getSaveModel(): SaveInvestigationOrderModel {
     return new SaveInvestigationOrderModel(
@@ -572,15 +648,13 @@ export class MedicineOrdersComponent implements OnInit {
       .subscribe((res: any) => {
         if (res === 1) {
           this.snackbar.open("Saved Successfully!", "success")
-          this.selectedRow = [];
-          this.listRowClick(this.selectedInv)
+          this.listRowClick(this.selectedInv);
+          this.tableSelectedRows = [];
         }
         this.objPhyOrder = [];
         this.objdtdenialorder = [];
         this.isBtnDisable = false;
-        this.isDisableCancel = false;
-        this.isDisableSave = false;
-        this.isDisableDeniel = false;
+        this.disableBtns();
         this.resetRemarksDeny();
       })
 
@@ -592,40 +666,33 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
   cancelDenial() {
-
-    let nondeniedRow = [];
-    nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
+    let deniedRow: any = [];
+    let nondeniedRow: any = [];
+    let billedRow = [];
+    deniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 2))
+    nondeniedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 0))
+    billedRow = this.tableSelectedRows.filter((e: any) => (e.isBilled === 1))
 
     if (nondeniedRow.length > 0) {
-      this.snackbar.open("Please select the order detail to cancel deny", "error");
-      this.resetRemarksDeny();
+      this.snackbar.open("Please deny the order to cancel the denial", "error")
+    }
+    else if (billedRow.length > 0) {
+      this.snackbar.open("Order is already Billed", "error")
     }
     else {
+      if (deniedRow.length > 0 && this.tableSelectedRows.length > 0) {
+        let dialogRes;
+        const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
+          width: '33vw', height: '40vh', data: {
+            message: "Do you want to modify?"
+          },
+        });
 
-
-      let dialogRes;
-      const dialogref = this.matdialog.open(SaveUpdateDialogComponent, {
-        width: '33vw', height: '40vh', data: {
-          message: "Do you want to modify?"
-        },
-      });
-
-      dialogref.afterClosed().subscribe(res => {
-        // received data from dialog-component
-        dialogRes = res.data;
-        if (dialogRes === 'Y') {
-          this.physicianOrderList = [];
-
-          let nondeniedRow = [];
-          let deniedRow = [];
-          nondeniedRow = this.selectedRow.filter((e: any) => (e.isBilled !== 2 && e.sno === true))
-          deniedRow = this.selectedRow.filter((e: any) => (e.isBilled === 2 && e.sno === true))
-
-
-          if (nondeniedRow.length > 0) {
-            this.snackbar.open("Please select only denied Order  to proceed.", "error")
-          }
-          else {
+        dialogref.afterClosed().subscribe(res => {
+          // received data from dialog-component
+          dialogRes = res.data;
+          if (dialogRes === 'Y') {
+            this.physicianOrderList = [];
             deniedRow.forEach((e: any) => {
               if (e.drugid !== 0)
                 this.physicianOrderList.push({
@@ -641,20 +708,21 @@ export class MedicineOrdersComponent implements OnInit {
               .subscribe((res: any) => {
                 if (res.success === true) {
                   this.snackbar.open("Modified Successfully", "success");
-                  this.selectedRow = [];
                   this.listRowClick(this.selectedInv);
-                  this.isDisableCancel = false;
-                  this.isDisableSave = false;
-                  this.isDisableDeniel = false;
+                  this.tableSelectedRows = [];
+                  this.disableBtns();
                 }
               })
+
           }
-        }
-      })
+        })
+      }
+      else {
+        this.snackbar.open("Please select a row to proceed", "error");
+        this.tableSelectedRows = [];
+      }
+
     }
-
-
-
   }
   clearMed() {
     this.investigationForm.reset();
@@ -662,23 +730,27 @@ export class MedicineOrdersComponent implements OnInit {
     this.medOrderDetails = [];
     this.resetDate();
     this.resetRemarksDeny();
+    this.disableBtns();
     // this.isDisableCancel = false;
     // this.isDisableSave = false;
     // this.isDisableDeniel = false;
     this.investigationForm.controls["maxid"].setValue('maxid');
     this.investigationForm.controls["status"].reset();
     this.investigationForm.controls["input"].setValue(this.cookie.get("LocationIACode") + ".");
-
+    this.patientInfo = '';
   }
   resetRemarksDeny() {
     this.investigationForm.controls["denyorder"].setValue('Select');
     this.investigationForm.controls["denyorder"].disable();
     this.investigationForm.controls["remarks"].setValue('');
     this.investigationForm.controls["remarks"].disable();
+
+
+  }
+  disableBtns() {
     this.isDisableCancel = false;
     this.isDisableSave = false;
     this.isDisableDeniel = false;
-    this.patientInfo = '';
   }
   resetDate() {
     this.investigationForm.controls["fromdate"].disable();

@@ -19,4 +19,8 @@ export namespace BillDetailsApiConstants{
     ) => {
         return `${environment.BillingApiUrl}api/outpatientbilling/getsearchopbills/${DateFlag}/${fromDate}/${ToDate}/${locationid}?BillNo=${BillNo}&registrationno=${registrationno}&iacode=${iacode}&MobileNo=${MobileNo}`
     }
+
+    export const sendapproval = (HostName: string, Locationid: any, UserId: any) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval?HostName=${HostName}&Locationid=${Locationid}&UserId=${UserId}`;
+    }
 }

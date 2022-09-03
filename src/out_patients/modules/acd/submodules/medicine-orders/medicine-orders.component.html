@@ -49,14 +49,14 @@
                 </div>
                 <div class="flex  mr-2">
                     <div >
-                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn searchWidth" >
-                            <img src="assets/lens.svg" class="lens-icon mr-4 ">                                
-                                   <span class="ml-6">Search</span> 
+                        <button mat-raised-button color="primary" (click)="search()" class="searchbtn" >
+                            <img src="assets/lens.svg" class="lens-icon">                                
+                                   <span class="ml-5">Search</span> 
 
                         </button>
                     </div>
                     <div class="w-1/2 ml-2">
-                        <button mat-raised-button color="primary" class="searchbtn" (click)="clearMed()">Clear</button>
+                        <button mat-raised-button color="primary" class="clr"(click)="clearMed()" >Clear</button>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@
                     <button mat-raised-button color="primary" (click)="cancelDenial()"   [disabled]="!isDisableDeniel">Cancel Denial</button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="saveOrUpdate()"  [disabled]="!isDisableSave">Save</button>
+                    <button mat-raised-button color="primary" (click)="saveOrUpdate()"  [disabled]="!isDisableSave">Save Denial</button>
                 </div>
                
             </div>
