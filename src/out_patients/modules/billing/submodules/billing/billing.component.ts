@@ -423,6 +423,9 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
+      if (diffMonths == 0 && diffDays == 0) {
+        this.snackbar.open("It’s their birthday today", "info");
+      }
       let returnAge = "";
       if (diffYears > 0) {
         returnAge = diffYears + " Year(s)";
