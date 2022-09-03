@@ -112,6 +112,8 @@ export class BillingComponent implements OnInit {
 
   narrationAllowedLocations = ["67", "69"];
 
+  companyData = [];
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -356,6 +358,17 @@ export class BillingComponent implements OnInit {
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
+    if (patientDetails.companyid) {
+      const companyExist: any = this.companyData.find(
+        (c: any) => c.id == patientDetails.companyid
+      );
+      if (companyExist) {
+        this.formGroup.controls["company"].setValue({
+          title: companyExist.name,
+          value: patientDetails.companyid,
+        });
+      }
+    }
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + " " + patientDetails.ageTypeName;
@@ -621,7 +634,7 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
-        console.log(data);
+        this.companyData = data;
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
@@ -633,7 +646,7 @@ export class BillingComponent implements OnInit {
       width: "70%",
       height: "90%",
       data: {
-        company: this.formGroup.value.company,
+        company: this.formGroup.value.company.value,
       },
     });
   }
