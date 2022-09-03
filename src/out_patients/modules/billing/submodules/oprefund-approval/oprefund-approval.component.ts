@@ -422,8 +422,12 @@ export class OprefundApprovalComponent implements OnInit {
       "refundAmt",
       "approvalRequestBy",
       "approvalRequestDateTime",
+      "authorisedby",
+      "reason",
+      "paymentMode",
       "rejectedBy",
       "rejectedDateTime",
+      "risReason",
     ],
     columnsInfo: {
       maxid: {
@@ -506,6 +510,30 @@ export class OprefundApprovalComponent implements OnInit {
           width: "8rem",
         },
       },
+      authorisedby: {
+        title: "Authorised by",
+        type: "string",
+        tooltipColumn: "authorisedby",
+        style: {
+          width: "7rem",
+        },
+      },
+      reason: {
+        title: "Reason",
+        type: "string",
+        tooltipColumn: "reason",
+        style: {
+          width: "8rem",
+        },
+      },
+      paymentMode: {
+        title: "Payment Mode",
+        type: "string",
+        tooltipColumn: "paymentMode",
+        style: {
+          width: "8rem",
+        },
+      },
       rejectedBy: {
         title: "Rejected By",
         type: "string",
@@ -518,6 +546,14 @@ export class OprefundApprovalComponent implements OnInit {
         title: "Rejected Date",
         type: "datetime",
         tooltipColumn: "rejectedDateTime",
+        style: {
+          width: "10rem",
+        },
+      },
+      risReason: {
+        title: "RIS Reason",
+        type: "string",
+        tooltipColumn: "risReason",
         style: {
           width: "10rem",
         },
