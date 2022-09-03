@@ -95,9 +95,13 @@ import { PaymentDialogComponent } from "./submodules/details/payment-dialog/paym
 import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billings/miscellaneous-billings.component";
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
-import { IomPopupComponent } from './submodules/billing/prompts/iom-popup/iom-popup.component';
+import { IomPopupComponent } from "./submodules/billing/prompts/iom-popup/iom-popup.component";
 import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-dialog/refund-dialog.component";
-import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-detils/show-plan-detils.component';
+import { ShowPlanDetilsComponent } from "./submodules/billing/prompts/show-plan-detils/show-plan-detils.component";
+import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
+import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
+import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-appointment/online-appointment.component';
+
 @NgModule({
   declarations: [
     BillingComponent,
@@ -169,7 +173,10 @@ import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-
     CreditDetailComponent,
     IomPopupComponent,
     BillDetailsRefundDialogComponent,
-    ShowPlanDetilsComponent
+    ShowPlanDetilsComponent,
+    DmgPopupComponent,
+    ConfigurationBillingComponent,
+    OnlineAppointmentComponent,
   ],
   imports: [
     BillingRoutingModule,

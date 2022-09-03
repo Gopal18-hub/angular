@@ -294,6 +294,49 @@
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
         </mat-form-field>
       </ng-container>
+      <ng-container *ngSwitchCase="'buttonTextarea'">
+        <div>
+          <button
+            mat-button
+            (click)="toogleButtonTextarea = true"
+            cdkOverlayOrigin
+            #trigger="cdkOverlayOrigin"
+            class="editable-textarea-button"
+          >
+            {{ question.label }}
+          </button>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="trigger"
+            [cdkConnectedOverlayOpen]="toogleButtonTextarea"
+            (detach)="toogleButtonTextarea = false"
+            [cdkConnectedOverlayHasBackdrop]="true"
+            (backdropClick)="toogleButtonTextarea = false"
+          >
+            <div class="editable-form-textarea" cdkTrapFocus>
+              <mat-form-field
+                appearance="outline"
+                floatLabel="never"
+                class="text-area-edit"
+              >
+                <textarea
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="5"
+                  [formControlName]="question.key"
+                  [value]="question.value"
+                  class="{{ question.customClasses }}"
+                  [readonly]="question.readonly"
+                  [placeholder]="question.placeholder"
+                  #element
+                  [disabled]="question.disabled"
+                ></textarea>
+              </mat-form-field>
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
       <ng-container *ngSwitchCase="'email'">
         <mat-label
           [attr.for]="question.key"

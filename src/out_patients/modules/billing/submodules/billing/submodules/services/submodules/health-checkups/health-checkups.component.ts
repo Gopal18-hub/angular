@@ -18,6 +18,7 @@ import {
   filter,
 } from "rxjs/operators";
 import { of } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-health-checkups",
@@ -81,7 +82,9 @@ export class HealthCheckupsComponent implements OnInit {
     private cookie: CookieService,
     public billingService: BillingService,
     public matDialog: MatDialog,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -241,5 +244,12 @@ export class HealthCheckupsComponent implements OnInit {
         this.data = [...this.billingService.HealthCheckupItems];
         this.formGroup.reset();
       });
+  }
+
+  goToBill() {
+    this.router.navigate(["../bill"], {
+      queryParamsHandling: "merge",
+      relativeTo: this.route,
+    });
   }
 }

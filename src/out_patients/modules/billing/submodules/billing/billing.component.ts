@@ -27,6 +27,8 @@ import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-histo
 import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
+import { PatientService } from "@core/services/patient.service";
+
 @Component({
   selector: "out-patients-billing",
   templateUrl: "./billing.component.html",
@@ -47,7 +49,6 @@ export class BillingComponent implements OnInit {
       path: "credit-details",
     },
   ];
-  activeLink: any;
 
   formData = {
     title: "",
@@ -64,12 +65,12 @@ export class BillingComponent implements OnInit {
         type: "string",
       },
       company: {
-        type: "dropdown",
+        type: "autocomplete",
         options: [],
         placeholder: "--Select--",
       },
       corporate: {
-        type: "dropdown",
+        type: "autocomplete",
         options: [],
         placeholder: "--Select--",
       },
@@ -90,7 +91,7 @@ export class BillingComponent implements OnInit {
   patient: boolean = false;
 
   patientName!: string;
-  age!: string;
+  age!: string | undefined;
   gender!: string;
   dob!: string;
   country!: string;
@@ -111,6 +112,8 @@ export class BillingComponent implements OnInit {
 
   narrationAllowedLocations = ["67", "69"];
 
+  companyData = [];
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -118,10 +121,11 @@ export class BillingComponent implements OnInit {
     public cookie: CookieService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private billingService: BillingService,
+    public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
@@ -218,7 +222,24 @@ export class BillingComponent implements OnInit {
       });
   }
 
-  getPatientDetailsByMaxId() {
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async getPatientDetailsByMaxId() {
     if (!this.formGroup.value.maxid) {
       this.apiProcessing = false;
       this.patient = false;
@@ -228,6 +249,15 @@ export class BillingComponent implements OnInit {
 
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        const dialogRef = this.messageDialogService.error(
+          "Patient is an Expired Patient!"
+        );
+        this.apiProcessing = false;
+        this.patient = false;
+        return;
+      }
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
@@ -268,26 +298,41 @@ export class BillingComponent implements OnInit {
               regNumber.toString()
             );
             this.patientDetails = resultData;
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // console.log(this.categoryIcons);
+
             this.setValuesToForm(this.patientDetails);
 
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              this.categoryIcons =
+                this.patientService.getCategoryIconsForPatientAny(
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                );
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
-              if (
-                !patientDetails.isAvailRegCard &&
-                moment().diff(moment(patientDetails.regdatetime), "days") == 0
-              ) {
-                //if (!patientDetails.isAvailRegCard) {
-                this.addRegistrationCharges(resultData);
+              if (patientDetails.nationality != 149) {
+                const dialogRef = this.messageDialogService.info(
+                  "Please Ensure International Tariff Is Applied!"
+                );
+                dialogRef
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result) => {
+                    this.startProcess(
+                      patientDetails,
+                      resultData,
+                      iacode,
+                      regNumber
+                    );
+                  });
               } else {
-                this.inPatientCheck(resultData.dtPatientPastDetails);
+                this.startProcess(
+                  patientDetails,
+                  resultData,
+                  iacode,
+                  regNumber
+                );
               }
             }
           } else {
@@ -308,6 +353,27 @@ export class BillingComponent implements OnInit {
       );
   }
 
+  startProcess(
+    patientDetails: any,
+    resultData: any,
+    iacode: any,
+    regNumber: any
+  ) {
+    if (!patientDetails.isAvailRegCard) {
+      this.questions[0].questionClasses = "bg-vilot";
+      this.questions[0] = { ...this.questions[0] };
+    }
+    if (
+      !patientDetails.isAvailRegCard &&
+      moment().diff(moment(patientDetails.regdatetime), "days") == 0
+    ) {
+      this.addRegistrationCharges(resultData);
+    } else {
+      this.inPatientCheck(resultData.dtPatientPastDetails);
+    }
+    this.getforonlinebilldetails(iacode, regNumber);
+  }
+
   setValuesToForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
       this.snackbar.open("Invalid Max ID", "error");
@@ -317,9 +383,20 @@ export class BillingComponent implements OnInit {
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
+    if (patientDetails.companyid) {
+      const companyExist: any = this.companyData.find(
+        (c: any) => c.id == patientDetails.companyid
+      );
+      if (companyExist) {
+        this.formGroup.controls["company"].setValue({
+          title: companyExist.name,
+          value: patientDetails.companyid,
+        });
+      }
+    }
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
-    this.age = patientDetails.age + " " + patientDetails.ageTypeName;
+    this.age = this.onageCalculator(patientDetails.dateOfBirth);
     this.gender = patientDetails.genderName;
     this.country = patientDetails.nationalityName;
     this.ssn = patientDetails.ssn;
@@ -336,7 +413,77 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  doCategoryIconAction(icon: any) {}
+  onageCalculator(ageDOB = "") {
+    if (ageDOB) {
+      let dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+      let returnAge = "";
+      if (diffYears > 0) {
+        returnAge = diffYears + " Year(s)";
+      } else if (diffMonths > 0) {
+        returnAge = diffYears + " Month(s)";
+      } else if (diffDays > 0) {
+        returnAge = diffYears + " Day(s)";
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        returnAge = "N/A";
+      } else if (diffDays == 0) {
+        returnAge = "1 Day(s)";
+      }
+      return returnAge;
+    }
+    return "N/A";
+  }
+
+  doCategoryIconAction(categoryIcon: any) {
+    const patientDetails: any =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    const data: any = {
+      note: {
+        notes: patientDetails.noteReason,
+      },
+      vip: {
+        notes: patientDetails.vipreason,
+      },
+      hwc: {
+        notes: patientDetails.hwcRemarks,
+      },
+      ppagerNumber: {
+        bplCardNo: patientDetails.bplcardNo,
+        BPLAddress: patientDetails.addressOnCard,
+      },
+      hotlist: {
+        hotlistTitle: { title: patientDetails.hotlistreason, value: 0 },
+        reason: patientDetails.hotlistcomments,
+      },
+    };
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
+
+  getforonlinebilldetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        BillingApiConstants.getforonlinebilldetails(
+          iacode,
+          regNumber,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        console.log(res);
+      });
+  }
 
   payDueCheck(dtPatientPastDetails: any) {
     if (
@@ -448,6 +595,9 @@ export class BillingComponent implements OnInit {
     const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
       maxWidth: "100vw",
       width: "98vw",
+      data: {
+        phoneNumber: this.formGroup.value.mobile,
+      },
     });
 
     appointmentSearch
@@ -536,7 +686,7 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
-        console.log(data);
+        this.companyData = data;
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
@@ -546,9 +696,9 @@ export class BillingComponent implements OnInit {
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
-      height: "80%",
+      height: "90%",
       data: {
-        company: this.formGroup.value.company,
+        company: this.formGroup.value.company.value,
       },
     });
   }
