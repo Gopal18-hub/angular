@@ -300,6 +300,8 @@ export class InvestigationOrdersComponent implements OnInit {
     this.resetDate();
     this.resetRemarksDeny();
     this.disableBtns();
+    this.questions[1].maximum = this.investigationForm.controls["todate"].value;
+    this.questions[2].minimum = this.investigationForm.controls["fromdate"].value;
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -352,7 +354,7 @@ export class InvestigationOrdersComponent implements OnInit {
         //this.investigationForm.controls["input"].setValue("test");       
       }
       else {
-        this.investigationForm.controls["status"].reset();
+        this.investigationForm.controls["input"].reset();
       }
       this.invOrderList = [];
       this.invOrderDetails = [];
@@ -367,6 +369,13 @@ export class InvestigationOrdersComponent implements OnInit {
       this.invOrderDetails = []
       this.statusvalue = value;
     })
+
+    this.investigationForm.controls['fromdate'].valueChanges.subscribe((val) => {
+      this.questions[2].minimum = val;
+    });
+    this.investigationForm.controls['todate'].valueChanges.subscribe((val) => {
+      this.questions[1].maximum = val;
+    });
 
   }
   isChecked(event: any) {
