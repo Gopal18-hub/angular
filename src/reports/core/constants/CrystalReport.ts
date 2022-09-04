@@ -172,4 +172,7 @@ export namespace CrystalReport {
   export const PHPTracksheet = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
   };
+  export const ScrollSummaryReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/ScrollSummaryReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&locationID=${params.locationID}`;
+  };
 }
