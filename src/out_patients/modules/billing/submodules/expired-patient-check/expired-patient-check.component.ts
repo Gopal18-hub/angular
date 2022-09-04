@@ -416,11 +416,9 @@ export class ExpiredPatientCheckComponent implements OnInit {
         width: "25vw",
         height: "30vh",
       });
-    }
-    // else if (this.expiredpatientForm.value.remarks == "") {
-    //   this.messagedialogservice.info("Please enter remarks");
-    // }
-    else {
+    } else if (this.expiredpatientForm.value.remarks == "") {
+      this.messagedialogservice.info("Please enter remarks");
+    } else {
       let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
         width: "25vw",
         height: "30vh",

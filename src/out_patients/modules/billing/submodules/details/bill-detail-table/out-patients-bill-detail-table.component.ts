@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, KeyValueDiffer, KeyValueDiffers, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
@@ -6,7 +6,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 
-import { Subject } from "rxjs";
+import { empty, Subject } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
 import { billDetailService } from "../billDetails.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
@@ -19,15 +19,19 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 export class BillDetailTableComponent implements OnInit {
 
   @ViewChild("selectedServices") tableRows: any;
+  private check!: KeyValueDiffer<string, any>;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
+    private differ: KeyValueDiffers,
     private billDetailservice: billDetailService,
     private msgdialog: MessageDialogService
-  ) {}
+  ) {
+    
+  }
 
   miscBillData = {
     type: "object",
@@ -192,10 +196,9 @@ export class BillDetailTableComponent implements OnInit {
   };
 
   config: any = {
-    selectBox: false,
-    clickedRows: false,
-    clickSelection: "single",
+    selectBox: true,
     removeRow: false,
+    clickedRows: true,
     displayedColumns: [
       "Sno",
       "servicename",
@@ -243,7 +246,8 @@ export class BillDetailTableComponent implements OnInit {
       },
       cancelled: {
         title: "Refund",
-        type: "checkbox_active",
+        type: "checkbox",
+        disabledSort: true,
       },
     },
   };
@@ -254,7 +258,7 @@ export class BillDetailTableComponent implements OnInit {
 
   question: any;
   private readonly _destroying$ = new Subject<void>();
-
+  servicetable: boolean = true;
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
       this.miscBillData.properties,
@@ -267,18 +271,132 @@ export class BillDetailTableComponent implements OnInit {
       this.billDetailservice.serviceList[i].Sno = i + 1;
     }
     this.data = [...this.billDetailservice.serviceList];
-    
   }
   ngAfterViewInit()
   {
+    this.check = this.differ
+      .find(this.tableRows)
+      .create();
     console.log(this.tableRows);
-    for(var i = 0; i < this.tableRows.data.length; i++)
-    {
-      if(this.tableRows.data[i].cancelled == 1)
-      {
-        
+    
+  }
+  ngDoCheck(): void {
+    setTimeout(() => {
+      const changes = this.check.diff(this.tableRows.selection);
+      if (changes) {
+        console.log(changes);
+        console.log(this.tableRows.selection.selected);
+        if(this.tableRows.selection.selected.length > 0)
+        {
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++){
+            var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceDetail.filter((a:any) => {
+              return a.serviceId == this.tableRows.selection.selected[i].serviceid;
+          })
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+          {
+            var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+              return a.serviceId == this.tableRows.selection.selected[i].serviceid;
+            }) 
+          }
+          if(list.length > 0)
+          {
+            var flag = 0;
+            for(var i = 0; i < list.length; i++)
+            {
+              if(list[i].ackby > 0)
+              {
+                flag++;
+              }
+            }
+            var cancelflag = 0;
+            for(var i = 0; i< this.tableRows.selection.selected.length; i++)
+            {
+              if( this.tableRows.selection.selected[i].cancelled == 1)
+              {
+                cancelflag++;
+              }
+            }
+            if(flag > 0)
+            {
+              this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
+              this.servicetable = false;
+              setTimeout(() => {
+                this.servicetable = true;
+              }, 100);
+              this.billDetailservice.sendforapproval = [];
+              this.billDetailservice.totalrefund = 0;
+            }
+            else if(cancelflag > 0)
+            {
+              this.msgdialog.info('Item in this list Already Refunded');
+              this.servicetable = false;
+              setTimeout(() => {
+                this.servicetable = true;
+              }, 100);
+              this.billDetailservice.sendforapproval = [];
+              this.billDetailservice.totalrefund = 0;
+            }  
+            else
+              {
+                this.billDetailservice.sendforapproval = [];
+                this.billDetailservice.totalrefund = 0;
+                for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+                {
+                  this.billDetailservice.addForApproval({
+                    ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+                    maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+                    ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+                    billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+                    operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+                    authorisedby: '',
+                    reason: '',
+                    refundAmt: this.tableRows.selection.selected[i].amount,
+                    mop: '',
+                    serviceId: this.tableRows.selection.selected[i].serviceid,
+                    itemId: this.tableRows.selection.selected[i].itemid,
+                    serviceName: this.tableRows.selection.selected[i].servicename,
+                    itemName: this.tableRows.selection.selected[i].itemname,
+                    refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+                    itemOrderId: this.tableRows.selection.selected[i].orderid,
+                  })
+                  this.billDetailservice.calculateTotalRefund();
+                  console.log(this.billDetailservice.sendforapproval);
+                }
+              }  
+              
+          }
+          console.log('id:', id, 'list:', list);
+          }
+        }
+        else
+        {
+          this.billDetailservice.sendforapproval = [];
+          this.billDetailservice.totalrefund = 0;
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+                {
+                  this.billDetailservice.addForApproval({
+                    ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+                    maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+                    ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+                    billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+                    operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+                    authorisedby: '',
+                    reason: '',
+                    refundAmt: this.tableRows.selection.selected[i].amount,
+                    mop: '',
+                    serviceId: this.tableRows.selection.selected[i].serviceid,
+                    itemId: this.tableRows.selection.selected[i].itemid,
+                    serviceName: this.tableRows.selection.selected[i].servicename,
+                    itemName: this.tableRows.selection.selected[i].itemname,
+                    refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+                    itemOrderId: this.tableRows.selection.selected[i].orderid,
+                  })
+                  this.billDetailservice.calculateTotalRefund();
+                  console.log(this.billDetailservice.sendforapproval);
+                }
+        }
       }
-    }
+    }, 1000);
   }
   printrow(event:any)
   {
@@ -289,11 +407,9 @@ export class BillDetailTableComponent implements OnInit {
       if(event.row.cancelled == true )
       {
         console.log("true");
-        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
-          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
-            
-          })
-        });
+        var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceDetail.filter((a:any) => {
+            return a.serviceId == event.row.serviceid;
+        })
         var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
           return a.serviceId == event.row.serviceid;
         }) 
@@ -305,12 +421,21 @@ export class BillDetailTableComponent implements OnInit {
         else
         {
             this.billDetailservice.addForApproval({
-              cancelled: event.row.cancelled,
-              Sno: event.row.Sno,
-              amount: event.row.amount,
-              requestToApproval: event.row.requestToApproval,
-              itemid: event.row.itemid,
-              orderid: event.row.orderid
+              ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+              maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+              ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+              billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+              operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+              authorisedby: '',
+              reason: '',
+              refundAmt: event.row.amount,
+              mop: '',
+              serviceId: event.row.serviceid,
+              itemId: event.row.itemid,
+              serviceName: event.row.servicename,
+              itemName: event.row.itemname,
+              refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+              itemOrderId: event.row.orderid,
             })
             this.billDetailservice.calculateTotalRefund();
             console.log(this.billDetailservice.sendforapproval);

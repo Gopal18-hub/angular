@@ -644,13 +644,19 @@ export class DepositComponent implements OnInit {
                 if (this.deposittable.selection.selected.length > 0) {
                   console.log(this.MaxIDdepositExist);
                   if (res.added.length > 0) {
-                    const childTableExist = this.deposittable.childTable.find(
-                      (r: any) =>
-                        r.childTableRefId == res.added[0].cashTransactionID
-                    );
-                    if (childTableExist) {
-                      childTableExist.selection.clear();
-                    }
+                   // const childTableExist = this.deposittable.childTable;
+                    this.deposittable.childTable.forEach((childItem:any)=>{
+
+                      childItem.selection.clear()
+                      
+                      })
+                    // .find(
+                    //   (r: any) =>
+                    //     r.childTableRefId == res.added[0].cashTransactionID
+                    // );
+                    // if (childTableExist) {
+                    //   childTableExist.selection.clear();
+                    // }
                   }
                   this.tableselectionexists = true;
                   if (
@@ -675,6 +681,7 @@ export class DepositComponent implements OnInit {
                 .subscribe((res: any) => {
                   if (res.added.length > 0) {
                     r.parentTable.selection.clear();
+                    this.tableselectionexists = true;
                   }
                 });
             });
@@ -775,6 +782,18 @@ export class DepositComponent implements OnInit {
         receiptnumber: s.receiptno,
         locationID: this.hspLocationid,
       });
+    });
+
+    this.deposittable.childTable.map((r: any) => {
+      r.selection.selected
+       .map((res: any) => {
+          if (res) {
+            this.reportService.openWindow("rptRefund", "rptRefund", {
+              receiptnumber: res.receiptno,
+              locationID: this.hspLocationid,
+            });
+          }
+        });
     });
   }
 

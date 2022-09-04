@@ -303,6 +303,8 @@ export class MedicineOrdersComponent implements OnInit {
     this.resetRemarksDeny();
     this.disableBtns();
     this.investigationForm.controls["maxid"].setValue('maxid');
+    this.questions[1].maximum = this.investigationForm.controls["todate"].value;
+    this.questions[2].minimum = this.investigationForm.controls["fromdate"].value;
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(new Date(), "yyyy-MM-dd");
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -384,6 +386,12 @@ export class MedicineOrdersComponent implements OnInit {
     //   this.medOrderList = []
     //   this.medOrderDetails = []
     // })
+    this.investigationForm.controls['fromdate'].valueChanges.subscribe((val) => {
+      this.questions[2].minimum = val;
+    });
+    this.investigationForm.controls['todate'].valueChanges.subscribe((val) => {
+      this.questions[1].maximum = val;
+    });
   }
   isChecked(event: any) {
     if (!this.investigationForm.controls["datecheckbox"].value) {
