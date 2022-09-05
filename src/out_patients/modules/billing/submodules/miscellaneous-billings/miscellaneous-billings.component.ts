@@ -36,9 +36,9 @@ export class MiscellaneousBillingsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private db: DbService,
     private Misc: MiscService
-  ) {}
+  ) { }
   categoryIcons: any;
-  doCategoryIconAction(icon: any) {}
+  doCategoryIconAction(icon: any) { }
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
   addItem(newItem: any) {
@@ -485,6 +485,20 @@ export class MiscellaneousBillingsComponent implements OnInit {
   filterList(list: any[], id: any): any {
     return list.filter(function (item) {
       return item.id === id;
+    });
+  }
+
+
+  //Sep 03
+
+  visitHistory() {
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.miscForm.value.maxid,
+        docid: "",
+      },
     });
   }
 }
