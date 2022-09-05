@@ -7,6 +7,7 @@ export class MaxDateAdapter extends NativeDateAdapter {
   }
 
   override parse(value: any): Date | null {
+    value = value.replace("\u2000", "");
     if (!moment(value, "DD/MM/YYYY", true).isValid()) {
       return this.invalid();
     }

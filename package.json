@@ -33,11 +33,12 @@
     "oidc-client": "^1.11.5",
     "rtf.js": "^3.0.9",
     "rxjs": "~7.5.0",
+    "text-mask-addons": "^3.8.0",
     "text-mask-core": "^5.1.2",
     "tslib": "^2.3.0",
     "tslint": "^6.1.3",
     "vanilla-text-mask": "^5.1.1",
-    "winbox": "^0.2.1",
+    "winbox": "^0.2.5",
     "xlsx": "^0.18.5",
     "zone.js": "~0.11.4"
   },
