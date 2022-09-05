@@ -342,6 +342,7 @@ export class BillDetailTableComponent implements OnInit {
                 this.billDetailservice.totalrefund = 0;
                 for(var i = 0; i < this.tableRows.selection.selected.length; i++)
                 {
+                  console.log(this.tableRows.selection.selected[i].itemid);
                   this.billDetailservice.addForApproval({
                     ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
                     maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
@@ -353,12 +354,13 @@ export class BillDetailTableComponent implements OnInit {
                     refundAmt: this.tableRows.selection.selected[i].amount,
                     mop: '',
                     serviceId: this.tableRows.selection.selected[i].serviceid,
-                    itemId: this.tableRows.selection.selected[i].itemid,
+                    itemid: this.tableRows.selection.selected[i].itemid,
                     serviceName: this.tableRows.selection.selected[i].servicename,
                     itemName: this.tableRows.selection.selected[i].itemname,
                     refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
                     itemOrderId: this.tableRows.selection.selected[i].orderid,
                   })
+                  console.log(this.billDetailservice.sendforapproval);
                   this.billDetailservice.calculateTotalRefund();
                   console.log(this.billDetailservice.sendforapproval);
                 }
