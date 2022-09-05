@@ -124,7 +124,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "ptnName",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       billNo: {
@@ -172,7 +172,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalRequestBy",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       approvalRequestDateTime: {
@@ -196,7 +196,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "reason",
         style: {
-          width: "7rem",
+          width: "12rem",
         },
       },
       paymentMode: {
@@ -283,7 +283,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "ptnName",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       billNo: {
@@ -331,7 +331,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalRequestBy",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       approvalRequestDateTime: {
@@ -355,7 +355,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "reason",
         style: {
-          width: "7rem",
+          width: "12rem",
         },
       },
       paymentMode: {
@@ -451,7 +451,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "ptnName",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       billNo: {
@@ -523,7 +523,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "reason",
         style: {
-          width: "8rem",
+          width: "12rem",
         },
       },
       paymentMode: {
@@ -689,6 +689,10 @@ export class OprefundApprovalComponent implements OnInit {
         if (data != null) {
           this.oprefundPendingList =
             data.opRefundApprovalList as OpRefundApprovalListInterface[];
+          this.oprefundPendingList.forEach((item) => {
+            item.refundAmt = item.refundAmt.toFixed(2);
+            console.log(item.refundAmt);
+          });
           // this.oprefundPendingList.forEach((item) => {
           //   item.billDatetime = this.datepipe.transform(
           //     item.billDatetime,
@@ -746,7 +750,9 @@ export class OprefundApprovalComponent implements OnInit {
         console.log(data);
         if (data != null) {
           this.oprefundApprovedList = data as OpRefundApprovalListInterface[];
-          this.oprefundApprovedList.forEach((item) => {});
+          this.oprefundApprovedList.forEach((item) => {
+            item.refundAmt = item.refundAmt.toFixed(2);
+          });
           // this.oprefundApprovedList.forEach((item) => {
           //   item.approvalRequestDateTime = this.datepipe.transform(
           //     item.approvalRequestDateTime,
@@ -805,6 +811,10 @@ export class OprefundApprovalComponent implements OnInit {
         console.log(data);
         if (data != null) {
           this.oprefundRejectedList = data as OpRefundApprovalListInterface[];
+          this.oprefundRejectedList.forEach((item) => {
+            item.refundAmt = item.refundAmt.toFixed(2);
+            console.log(item.refundAmt);
+          });
           // this.oprefundPendingList = [];
           // this.oprefundRejectedList.forEach((item) => {
           //   item.billDatetime = this.datepipe.transform(
