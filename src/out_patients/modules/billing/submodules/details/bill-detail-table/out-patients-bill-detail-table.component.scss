@@ -181,10 +181,14 @@ width: 18%;
 {
 margin-top: 0.19rem;
 }
-::ng-deep .max-table-wrapper{
-    table{
-        .mat-row .type-checkbox{
-            text-align: inherit !important;
+
+.bill-detail-table{
+    ::ng-deep .max-table-wrapper{
+        table{
+            .mat-header-row .mat-column-select{
+                width: 100px !important;
+                // text-align: inherit !important;
+            }
         }
     }
 }
