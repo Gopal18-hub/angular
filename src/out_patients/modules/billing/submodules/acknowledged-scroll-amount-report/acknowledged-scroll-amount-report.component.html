@@ -53,20 +53,34 @@
             </div>
         </div>
     <!-- Table -->
-    <div
+    <!-- <div
     *ngIf="apiProcessing"
     class="flex align-items-center justify-center mb-12 h-full"
-    >
+    > -->
     <!-- <mat-spinner strokeWidth="2"></mat-spinner> -->
-    </div>
-    <div class="mt-2 h-74" >
+    <!-- </div> -->
+    <div class="mt-2 h-65" >
         <maxhealth-table
         [config]="config"
         [data]="acknowledgementlist"
         #table
         ></maxhealth-table>
     </div>
-    
+     <div class="flex float-right  mt-5">
+        <div class="mr-8">
+            <button mat-raised-button color="primary" type="submit">View</button>
+        </div>
+        <div class="mr-8">
+            <button mat-raised-button color="primary" type="submit">Print</button>
+        </div>
+                <div class="mr-8">
+                    <button mat-raised-button color="primary" type="submit">Excel</button>
+                </div>
+                <div  class="mr-8">
+                    <button mat-raised-button color="primary" type="submit">Clear</button>
+                </div>
+            </div>
     </div>
     </mat-tab-nav-panel>
 </section>
+
