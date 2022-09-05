@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { MatDialog } from "@angular/material/dialog";
+import { GstTaxDialogComponent } from "../bills/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "../bills/discount-amt-dialog/discount-amt-dialog.component";
 @Component({
   selector: 'out-patients-bills',
   templateUrl: './bills.component.html',
@@ -210,7 +212,8 @@ export class BillsComponent implements OnInit {
       "disc",
       "discAmount",
       "totalAmount",
-      "gst"
+      "gst",
+      "gstValue"
     ],
     columnsInfo: {
       sno: {
@@ -231,14 +234,14 @@ export class BillsComponent implements OnInit {
         title: "Item Description",
         type: "string",
         style: {
-          width: "13%",
+          width: "11%",
         },
       },
       precaution: {
         title: "Item for Modify",
         type: "string",
         style: {
-          width: "10%",
+          width: "9%",
         },
       },
       procedure: {
@@ -266,7 +269,7 @@ export class BillsComponent implements OnInit {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "10%",
+          width: "9%",
         },
       },
       disc: {
@@ -280,22 +283,29 @@ export class BillsComponent implements OnInit {
         title: "Disc Amount",
         type: "number",
         style: {
-          width: "10%",
+          width: "9%",
         },
       },
       totalAmount: {
         title: "Total Amount",
         type: "number",
         style: {
-          width: "10%",
+          width: "9%",
         },
       },
       gst: {
         title: "GST%",
         type: "number",
         style: {
-          width: "3%",
+          width: "4%",
         },
+      },
+      gstValue: {
+        title: "GST Value%",
+        type: "number",
+        style: {
+          width: "7%",
+        }
       },
     },
   };
@@ -305,7 +315,7 @@ export class BillsComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  constructor(private formService: QuestionControlService) { }
+  constructor(private formService: QuestionControlService, public matdialog: MatDialog,) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -314,5 +324,22 @@ export class BillsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    // this.discAmtDialog();
+  }
+
+  openGstTaxDialog() {
+    this.matdialog.open(GstTaxDialogComponent, {
+      width: '35vw', height: '70vh', data: {
+        message: "Do you want to save?"
+      },
+    });
+  }
+
+  discAmtDialog() {
+    this.matdialog.open(DiscountAmtDialogComponent, {
+      width: 'full', height: 'auto', data: {
+        message: "Do you want to save?"
+      },
+    });
   }
 }
