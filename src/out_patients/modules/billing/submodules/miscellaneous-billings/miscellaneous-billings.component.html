@@ -65,7 +65,7 @@
             <mat-label class="max-health-primary-color mr-1"
               >Company <span class="txt-blue"><a> IOM</a></span></mat-label
             >
-            <div class="width-8 bg-white mr-2">
+            <div class="width-13 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[2]"
                 [form]="miscForm"
@@ -75,7 +75,7 @@
               </maxhealth-question>
             </div>
             <mat-label class="max-health-primary-color mr-1">Corporate</mat-label>
-            <div class="width-8 bg-white mr-2">
+            <div class="width-13 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[3]"
                 [form]="miscForm"
@@ -86,7 +86,7 @@
             </div>
   
             <mat-label class="max-health-primary-color mr-3">Narration</mat-label>
-            <div class="width-12 bg-white mr-2">
+            <div class="width-15 bg-white mr-2">
               <maxhealth-question
                 [question]="questions[4]"
                 [form]="miscForm"
@@ -158,7 +158,7 @@
               <span class="ml-2"></span>
             </div>
           </div>
-          <div class="flex second-row-action-items">
+          <div class="flex second-row-action-items mr-2">
     
             <button
               mat-raised-button
@@ -175,7 +175,7 @@
               color="primary"
               class="font-sm ml-2 min-width-initial"
               type="button"
-           
+              (click)="visitHistory()"
             >
               Visit History
             </button>
@@ -184,7 +184,7 @@
               color="primary"
               class="font-sm ml-2 min-width-initial"
               type="button"
-              
+             
             >
               Clear
             </button>

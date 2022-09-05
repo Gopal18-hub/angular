@@ -1,4 +1,10 @@
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { ReportService } from "@shared/services/report.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -8,7 +14,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
   templateUrl: "./single.component.html",
   styleUrls: ["./single.component.scss"],
 })
-export class SingleComponent implements OnInit {
+export class SingleComponent implements OnInit, OnChanges {
   @Input() reportConfig: any;
   formGroup: any;
   questions: any;
@@ -20,12 +26,25 @@ export class SingleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  init() {
     let formResult: any = this.formService.createForm(
       this.reportConfig.filterForm.properties,
       {}
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+  }
+
+  ngOnChanges(changes: any): void {
+    if (
+      changes.reportConfig.currentValue.reportName !=
+      changes.reportConfig.previousValue.reportName
+    ) {
+      this.init();
+    }
   }
 
   submit() {

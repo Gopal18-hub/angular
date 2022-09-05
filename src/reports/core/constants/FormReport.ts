@@ -18,7 +18,7 @@ export namespace FormReport {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
             fields: {
               title: "name",
-          
+
               value: "id",
             },
           },
@@ -160,6 +160,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---All Doctors---",
           title: "",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -168,7 +169,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "doctorname",
-              value: "doctorname",
+              value: "doctorid",
             },
           },
         },
@@ -178,7 +179,7 @@ export namespace FormReport {
             { title: "Transaction Date", value: 0 },
             { title: "Appoinment Date", value: 1 },
           ],
-          defaultValue: "Transaction Date",
+          defaultValue: "0",
         },
         dtpStartDate: {
           type: "date",
@@ -226,21 +227,23 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Specilialisation---",
           title: "",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getallspecialisationname`,
             fields: {
-              title: "name",
               value: "id",
+              title: "name",
             },
           },
         },
+
         datetype: {
           type: "radio",
           options: [
-            { title: "Transaction Date", value: 0 },
-            { title: "Appoinment Date", value: 1 },
+            { title: "Transaction Date", value: "0" },
+            { title: "Appoinment Date", value: "1" },
           ],
-          defaultValue: "transactionDate",
+          defaultValue: "0",
         },
         dtpStartDate: {
           type: "date",
@@ -337,7 +340,7 @@ export namespace FormReport {
             { title: "PlanName", value: "PlanName" },
             { title: "Membership", value: "Membership" },
           ],
-          defaultValue: "Transaction Date",
+          //defaultValue: "Transaction Date",
           conditions: [
             {
               expression: "self == 'PlanName'",
@@ -347,7 +350,7 @@ export namespace FormReport {
             {
               expression: "self == 'PlanName'",
               controlKey: "Location",
-              type: "show",
+              type: "hide",
             },
             {
               expression: "self == 'PlanName'",
@@ -367,7 +370,7 @@ export namespace FormReport {
             {
               expression: "self == 'Membership'",
               controlKey: "Location",
-              type: "hide",
+              type: "show",
             },
           ],
         },
@@ -752,4 +755,217 @@ export namespace FormReport {
   //     },
   //   },
   // }
+
+  export const OpenScrollReport = {
+    reportName: "Open Scroll Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        fromdate: {
+          type: "date",
+          title: "From Date",
+        },
+        todate: {
+          type: "date",
+          title: "To Date",
+        },
+        locationid: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        openScrollFor: {
+          type: "dropdown",
+          placeholder: "---Open Scroll---",
+          title: "Open Scroll For",
+          defaultValue: "0",
+          // optionsModelConfig: {
+          //   uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+          //   fields: {
+          //     title: "name",
+          //     value: "id",
+          //   },
+          // },
+        },
+      },
+    },
+    form: {
+      layout: {
+        locationid: "w-full",
+        openScrollFor: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Open Scroll Report",
+            reportEntity: "OpenScrollReport",
+          },
+        },
+        {
+          label: "Export",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+    ],
+  };
+
+  export const CROPItemPriceModifiedReport = {
+    reportName: "Op Item PriceModification Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        dtpfrom: {
+          type: "date",
+          title: "From Date",
+        },
+        dtpto: {
+          type: "date",
+          title: "To Date",
+        },
+        locationid: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        locationid: "w-full",
+        openScrollFor: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Op Item PriceModification Report",
+            reportEntity: "CROPItemPriceModifiedReport",
+          },
+        },
+        {
+          label: "Export",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+    ],
+  };
+  export const ServiceTaxReport = {
+    reportName: "Service Tax Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        dtpFromDate: {
+          type: "date",
+          title: "FromDate",
+        },
+        dtpToDate: {
+          type: "date",
+          title: "ToDate",
+        },
+        // location: {
+        //   type: "dropdown",
+        //   placeholder: "---Location---",
+        //   title: "Location",
+        // },
+        locationid: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          //defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        rbIP: {
+          type: "radio",
+          title: "Report Type",
+          required: "true",
+          options: [
+            { title: "IP", value: "true" },
+            { title: "OP", value: "false" },
+          ],
+          defaultValue: "0",
+        },
+      },
+    },
+    form: {
+      layout: {
+        locationid: "w-full",
+        openScrollFor: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Service Tax Report",
+            reportEntity: "ServiceTaxReportDataReports",
+          },
+        },
+        {
+          label: "Export",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+    ],
+  };
 }
