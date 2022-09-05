@@ -172,7 +172,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalRequestBy",
         style: {
-          width: "8rem",
+          width: "13rem",
         },
       },
       approvalRequestDateTime: {
@@ -188,7 +188,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "authorisedby",
         style: {
-          width: "7rem",
+          width: "11rem",
         },
       },
       reason: {
@@ -331,7 +331,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalRequestBy",
         style: {
-          width: "8rem",
+          width: "13rem",
         },
       },
       approvalRequestDateTime: {
@@ -371,7 +371,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalDoneBy",
         style: {
-          width: "7rem",
+          width: "11rem",
         },
       },
       approvalDoneDateTime: {
@@ -499,7 +499,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalRequestBy",
         style: {
-          width: "8rem",
+          width: "13rem",
         },
       },
       approvalRequestDateTime: {
@@ -539,7 +539,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tootltipColumn: "rejectedBy",
         style: {
-          width: "8rem",
+          width: "11rem",
         },
       },
       rejectedDateTime: {

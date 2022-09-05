@@ -20,12 +20,21 @@ export class ReportService {
 
   openWindow(reportName: string, reportEntity: string, reportParams: any) {
     const params = "?" + new URLSearchParams(reportParams).toString();
-    new WinBox(reportName, {
-      url: `${environment.reportTenantUrl}${reportEntity}${params}`,
-      x: "center",
-      y: "center",
-      width: "1100px",
-      height: "85%",
-    });
+   const winbox:any =   new WinBox(reportName, {
+    url: `${environment.reportTenantUrl}${reportEntity}${params}`,
+    x: "center",
+    y: "center",
+    width: "1100px",
+    height: "85%",
+  });
+   winbox.addControl({
+    index: 0,
+    class: "material-print-icon",
+    image: "",
+    click: function(event:any, winbox:any){
+        
+        window.print();
+    }
+});
   }
 }

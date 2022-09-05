@@ -641,6 +641,7 @@ export class DepositComponent implements OnInit {
             this.deposittable.selection.changed
               .pipe(takeUntil(this._destroying$))
               .subscribe((res: any) => {
+                console.log(this.deposittable.selection.selected.length);
                 if (this.deposittable.selection.selected.length > 0) {
                   console.log(this.MaxIDdepositExist);
                   if (res.added.length > 0) {
@@ -685,7 +686,7 @@ export class DepositComponent implements OnInit {
                   }
                 });
             });
-          }, 5000);
+          }, 100);
         },
         (error) => {
           console.log(error);
@@ -709,6 +710,7 @@ export class DepositComponent implements OnInit {
     this.ssn = "";
     this._destroying$.next(undefined);
     this._destroying$.complete();
+    this.deposittable.selection.clear();
     this.patientpersonaldetails = [];
     this.depoistList = [];
     this.MaxIDExist = false;
@@ -790,7 +792,7 @@ export class DepositComponent implements OnInit {
           if (res) {
             this.reportService.openWindow("rptRefund", "rptRefund", {
               receiptnumber: res.receiptno,
-              locationID: this.hspLocationid,
+              locationID:  this.hspLocationid,
             });
           }
         });

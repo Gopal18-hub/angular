@@ -158,7 +158,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   
   getPatientrefundotpdetailsRequestBody(): sendotpforpatientrefund{
     return (this.patientsaveotprefundDetails = new sendotpforpatientrefund(
-    this.data.billid,
+    0,
     this.data.billno,
     this.stationId,
     this.hsplocationId,

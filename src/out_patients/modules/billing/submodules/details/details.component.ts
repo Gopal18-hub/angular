@@ -330,7 +330,7 @@ export class DetailsComponent implements OnInit {
         refundAmt : i.refundAmt,
         mop : i.mop,
         serviceId : i.serviceId,
-        itemId : i.itemId,
+        itemId : i.itemid,
         serviceName : i.serviceName,
         itemName : i.itemName,
         refundAfterAck : i.refundAfterAck,
@@ -543,6 +543,7 @@ export class DetailsComponent implements OnInit {
   }
   refunddialog()
   { 
+    console.log(this.BServiceForm.value.paymentMode);
     const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
       width: "70vw",
       height: "98vh",
