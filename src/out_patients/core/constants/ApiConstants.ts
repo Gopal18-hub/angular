@@ -1067,16 +1067,39 @@ export namespace ApiConstants {
   };
 
   //Misc Billings
-  export const getcorporatemaster = (flag?: number) => { return (environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=" + flag) }
+  export const getcorporatemaster = (flag?: number) => {
+    return (
+      environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=" + flag
+    );
+  };
   export const getinteractionmaster =
     environment.BillingApiUrl + "api/outpatientbilling/getinteractionmaster";
   export const getmasterdataformiscellaneous =
-    environment.BillingApiUrl + "api/outpatientbilling/getmasterdataformiscellaneous";
-  export const getdataforbillreport =
-    (Opbillid: number,
-      Locationid: number,
-      flag: number) => {
-      return (environment.BillingApiUrl + "api/outpatientbilling/getdataforbillreport/" + Opbillid + "/" + Locationid + "/" + flag)
-    }
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getmasterdataformiscellaneous";
+  export const getdataforbillreport = (
+    Opbillid: number,
+    Locationid: number,
+    flag: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdataforbillreport/" +
+      Opbillid +
+      "/" +
+      Locationid +
+      "/" +
+      flag
+    );
+  };
 
+  export const getconfiguremessage = (requesttype: string, value: string) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/gethl7outboundmessageris/" +
+      requesttype +
+      "/" +
+      value
+    );
+  };
 }
