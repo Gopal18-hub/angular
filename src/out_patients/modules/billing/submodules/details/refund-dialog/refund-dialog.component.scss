@@ -57,7 +57,7 @@
     }
     .btn{
         ::ng-deep .mat-raised-button{
-            min-width: auto !important;
+            // min-width: auto !important;
         }
     }
     ::ng-deep .mat-radio-button{
@@ -94,7 +94,7 @@
     }
     }
     .w-64{
-        width: 64%;
+        width: 54%;
     }
 }
 
