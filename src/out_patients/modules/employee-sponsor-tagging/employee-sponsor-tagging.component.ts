@@ -78,6 +78,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   companyId!: any;
   todaydate = new Date();
   maxidmapped!: boolean;
+  activeflaglength: number = 0;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -646,7 +647,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   }
 
   doblist: any = [];
-  activeflaglength: number = 0;
+
   onMaxidEnter(maxid: any) {
     console.log(maxid);
     // let iacode = this.employeesponsorForm.controls["maxId"].value.split(".")[0];
@@ -705,15 +706,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                       .complayId,
                 });
               }
-
-              //this.questions[3].value=companyObject.title;
-
-              // this.employeesponsorForm.controls["fromdate"].setValue(
-              //   this.patientSponsorData.objPatientDemographicData[0].validfrom
-              // );
-              // this.employeesponsorForm.controls["todate"].setValue(
-              //   this.patientSponsorData.objPatientDemographicData[0].validto
-              // );
               this.questions[6].value =
                 this.patientSponsorData.objPatientDemographicData[0].validfrom;
               this.questions[7].value =
@@ -737,6 +729,13 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 this.patientSponsorData.objPatientDemographicData[0].ssn;
 
               //Assign tabledata
+              this.patientSponsorData.objEmployeeDependentData =
+                this.patientSponsorData.objEmployeeDependentData.map((r) => {
+                  if (!r.flag) {
+                    r.remark_disabled = true;
+                  }
+                  return r;
+                });
               this.employeeDependantDetailList =
                 this.patientSponsorData.objEmployeeDependentData;
               this.updatedTableList =
@@ -804,6 +803,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 // console.log(date);
                 //item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
                 //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
+                console.log(this.activeflaglength);
               });
             } else {
               this.validmaxid = false;
@@ -949,7 +949,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               // }
               // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
               //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
-
+              if (item.flag != 1) {
+                item.remark_disabled = true;
+              }
               if (item.maxid != "") {
                 item.flag = 1;
                 this.empid = item.id;
@@ -1012,8 +1014,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         // if (this.empid == null) {
         //   this.dialogService.info("Please select one dependant");
         // } else
-        if (this.activeflaglength == this.employeeDependantDetailList.length) {
+        // if (this.activeflaglength == this.employeeDependantDetailList.length) {
+        //   this.dialogService.info("Only one dependant can be selected");
+        // } else
+        if (this.activeflaglength > 1) {
+          console.log("active flag more than 1");
           this.dialogService.info("Only one dependant can be selected");
+        } else if (this.activeflaglength == 0) {
+          this.dialogService.info("Please select one dependant");
         } else if (this.companyId == 0) {
           this.dialogService.info("Please select company");
         } else {
@@ -1071,7 +1079,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 // });
                 //Once saved, empid=null;
                 this.enableDelete();
-                //this.empid = null; COMMENTED AS IT WAS SHOWING POPUP ON SECOND SAVE
                 this.employeelistLength = 0;
                 this.activeflaglength = 0;
                 this.dialogService.success("Saved Successfully");
@@ -1088,9 +1095,10 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                   error.error.errors.regno[0] == "The regno field is required."
                 ) {
                   this.dialogService.info("Please enter Maxid");
-                } else if (error.error.errors.$.compid.length > 0) {
-                  this.dialogService.info("Please select company");
                 }
+                //  else if (error.error.errors.$.compid.length > 0) {
+                //   this.dialogService.info("Please select company");
+                // }
               }
             );
         }
@@ -1297,6 +1305,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     if (event.column == "flag") {
       if (event.row.flag == 0) {
         console.log("flag is 0 & it is getting checked");
+        this.activeflaglength = 1;
         let employeeid = event.row.id;
         if (this.employeeDependantDetailList.length == 1) {
           this.empid = employeeid;
@@ -1308,17 +1317,26 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               this.empid = employeeid;
               this.dependantRemarks = event.row.remarks;
               console.log("set other flags as 0");
+              item.remark_disabled = true;
+            } else {
+              item.remark_disabled = false;
             }
           });
         }
-
+        //item.remark_disabled = false;
+        console.log(this.activeflaglength);
         this.dependantChecked = true;
         this.enableSave();
         this.enableDelete();
       } else {
         //this.empid = null;
-        this.activeflaglength = 0;
+        // this.activeflaglength = 0;
+        this.activeflaglength--;
+        console.log(this.activeflaglength);
         this.dependantRemarks = "";
+        this.employeeDependantDetailList.forEach((item) => {
+          item.remark_disabled = true;
+        });
         //this.dependantChecked = false;
       }
     }

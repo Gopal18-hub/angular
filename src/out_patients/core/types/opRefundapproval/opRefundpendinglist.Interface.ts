@@ -6,7 +6,7 @@ export interface OpRefundApprovalListInterface {
   maxid: string;
   ptnName: string;
   billNo: string;
-  refundAmt: number;
+  refundAmt: any;
   operatorName: string;
   authorisedby: string;
   reason: string;

@@ -309,6 +309,7 @@ And we can use any breakpoint prefix, i.e:
 - `.h-0` -> `height: 0`
 - `.h-1/2` -> `height: 50%`
 - `.h-1/3` -> `height: 33.33333%`
+- `.h-3/10`-> `height: 30%`
 - `.h-2/3` -> `height: 66.66667%`
 - `.h-1/4` -> `height: 25%`
 - `.h-3/4` -> `height: 75%`
@@ -321,7 +322,7 @@ And we can use any breakpoint prefix, i.e:
 - `.h-screen` -> `height: 100vh`
 - `.h-auto` -> `height: auto`
 - `.h-9/10`-> `height: 90%`
-- `.h-7/10`-> `width: 70%`
+- `.h-7/10`-> `height: 70%`
 
 or
 

@@ -8,7 +8,7 @@ export const environment = {
   IentityServerRedirectUrl: "https://MaxHIS-uat.maxhealthcare.in/",
   PatientApiUrl: "https://MaxHIS-OpReg-uat.maxhealthcare.in/",
   CommonApiUrl: "https://MaxHIS-Common-uat.maxhealthcare.in/",
-  BillingApiUrl: "http://172.30.0.16:1007/",
+  BillingApiUrl: "https://MaxHIS-OpBill-uat.maxhealthcare.in/",
   reportTenantUrl:
     "https://maxhis-uat.maxhealthcare.in/reports/crystal-report/popup/",
   ReportsSampleUrl: "https://MaxHIS-Reports-uat.maxhealthcare.in/",

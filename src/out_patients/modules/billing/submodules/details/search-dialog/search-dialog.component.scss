@@ -36,7 +36,12 @@
         height: 90%;
         width: 28%;
     }
-    
+    .btn-white{
+        background: white;
+        color: #333333;
+        box-shadow: none;
+        border: 1px solid #707070;
+    }
     .btn{
         ::ng-deep .mat-raised-button{
             min-width: fit-content !important;

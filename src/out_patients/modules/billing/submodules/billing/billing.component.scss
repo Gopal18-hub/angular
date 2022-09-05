@@ -4,6 +4,9 @@
       object-fit: cover;
     }
   }
+  ::ng-deep .bg-vilot {
+    background-color: violet;
+  }
 }
 
 .billing-page-wrapper {
