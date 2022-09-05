@@ -389,6 +389,8 @@ export class DepositComponent implements OnInit {
         console.log("Refund Dialog closed");
         //}
         this.MaxIDdepositExist = false;
+        this.tableselectionexists = false;
+        this.deposittable.selection.clear();
       });
   }
 
@@ -427,9 +429,12 @@ export class DepositComponent implements OnInit {
           DepositDialogref.afterClosed()
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
+              this.MaxIDdepositExist = false;
+                this.tableselectionexists = false;
+                this.deposittable.selection.clear();
               if (result == "Success") {
                 this.getPatientPreviousDepositDetails();
-
+                
                 console.log("Deposit Dialog closed");
               }
             });
@@ -683,6 +688,9 @@ export class DepositComponent implements OnInit {
                   if (res.added.length > 0) {
                     r.parentTable.selection.clear();
                     this.tableselectionexists = true;
+                  }
+                  else{
+                    this.tableselectionexists = false;
                   }
                 });
             });
