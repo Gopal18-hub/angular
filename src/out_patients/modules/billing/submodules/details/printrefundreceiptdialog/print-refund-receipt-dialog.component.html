@@ -1,0 +1,23 @@
+<section class="h-full printrefund">
+    <div>
+        <mat-label class="max-health-primary-color font-semi-bold font-base">Print Refund Receipt</mat-label>
+        <mat-icon mat-dialog-close color="primary" class="float-right cursor-pointer" aria-hidden="false" aria-label="Example home icon">close</mat-icon>
+    </div>
+    <div class="flex mt-6 h-3/5">
+        <mat-label class="max-health-primary-color font-semi-bold white-nowrap">Receipt Number</mat-label>
+        <div class="ml-4 w-3/4 bg-white border-radius-md">
+            <maxhealth-question
+                [question]="questions[0]"
+                [form]="printrefundform"
+                [questions]="questions[0]"
+                [index]="0"
+            >
+            </maxhealth-question>
+        </div>
+    </div>
+    <div class="mt-2 flex btn justify-content-end">
+        <button mat-raised-button color="primary" type="submit">Print</button>
+        <button mat-raised-button color="primary" class="ml-2" type="submit">Clear</button>
+    </div>
+
+</section>
