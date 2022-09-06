@@ -57,8 +57,13 @@ export namespace BillingApiConstants {
     return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
   };
 
-  export const getPriceBulk = (hspLocationid: string) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbillformultiple/0/${hspLocationid}?IPOPTYPE=1&BedType=0`;
+  export const getcalculateopbill = `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbill`;
+
+  export const getPriceBulk = (
+    hspLocationid: string,
+    companyId: number = 0
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbillformultiple/${companyId}/${hspLocationid}?IPOPTYPE=1&BedType=0`;
   };
 
   export const consultationTypes = `${environment.CommonApiUrl}api/lookup/getconsultationtype`;
