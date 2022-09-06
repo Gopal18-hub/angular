@@ -18,6 +18,7 @@ import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import "../../utilities/String-Extentions";
 import maskInput from "vanilla-text-mask";
 import { MatAutocomplete } from "@angular/material/autocomplete";
+import createAutoCorrectedDatePipe from "text-mask-addons/dist/createAutoCorrectedDatePipe";
 
 @Component({
   selector: "maxhealth-question",
@@ -81,9 +82,10 @@ export class DynamicFormQuestionComponent
 
   dateMaskConfig: any = {
     mask: [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/],
-    guide: false,
-    pipe: undefined,
-    keepCharPositions: false,
+    guide: true,
+    pipe: createAutoCorrectedDatePipe("dd/mm/yyyy"),
+    keepCharPositions: true,
+    placeholderChar: "\u2000",
   };
 
   toogleButtonTextarea: boolean = false;
