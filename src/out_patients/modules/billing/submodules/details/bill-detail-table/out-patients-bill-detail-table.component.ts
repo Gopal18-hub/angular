@@ -197,6 +197,8 @@ export class BillDetailTableComponent implements OnInit {
 
   config: any = {
     selectBox: true,
+    selectCheckBoxPosition: 6,
+    selectCheckBoxLabel: 'Refund',
     removeRow: false,
     clickedRows: true,
     displayedColumns: [
@@ -205,7 +207,7 @@ export class BillDetailTableComponent implements OnInit {
       "itemname",
       "amount",
       "discountamount",
-      "cancelled",
+      // "cancelled",
     ],
     // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
@@ -244,11 +246,11 @@ export class BillDetailTableComponent implements OnInit {
           width: "13rem"
         }
       },
-      cancelled: {
-        title: "Refund",
-        type: "checkbox",
-        disabledSort: true,
-      },
+      // cancelled: {
+      //   title: "Refund",
+      //   type: "checkbox",
+      //   disabledSort: true,
+      // },
     },
   };
   data: any = [];
@@ -278,6 +280,24 @@ export class BillDetailTableComponent implements OnInit {
       .find(this.tableRows)
       .create();
     console.log(this.tableRows);
+    this.data.forEach((item: any) => {
+      if(item.cancelled == 1)
+      {
+        this.tableRows.selection.select(item);
+      }
+    })
+    this.tableRows.selection.changed.subscribe((s: any) => {
+      console.log(s);
+      if(s.removed.length > 0)
+      {
+        s.removed.forEach((item: any) =>{
+          if(item.cancelled == 1)
+          {
+            this.tableRows.selection.select(item);
+          }
+        })
+      }
+    })
     
   }
   ngDoCheck(): void {
@@ -318,23 +338,23 @@ export class BillDetailTableComponent implements OnInit {
             }
             if(flag > 0)
             {
-              this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
-              this.servicetable = false;
-              setTimeout(() => {
-                this.servicetable = true;
-              }, 100);
-              this.billDetailservice.sendforapproval = [];
-              this.billDetailservice.totalrefund = 0;
+              // this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
+              // this.servicetable = false;
+              // // setTimeout(() => {
+              // //   this.servicetable = true;
+              // // }, 100);
+              // this.billDetailservice.sendforapproval = [];
+              // this.billDetailservice.totalrefund = 0;
             }
             else if(cancelflag > 0)
             {
-              this.msgdialog.info('Item in this list Already Refunded');
-              this.servicetable = false;
-              setTimeout(() => {
-                this.servicetable = true;
-              }, 100);
-              this.billDetailservice.sendforapproval = [];
-              this.billDetailservice.totalrefund = 0;
+              // this.msgdialog.info('Item in this list Already Refunded');
+              // this.servicetable = false;
+              // // setTimeout(() => {
+              // //   this.servicetable = true;
+              // // }, 100);
+              // this.billDetailservice.sendforapproval = [];
+              // this.billDetailservice.totalrefund = 0;
             }  
             else
               {
@@ -342,6 +362,7 @@ export class BillDetailTableComponent implements OnInit {
                 this.billDetailservice.totalrefund = 0;
                 for(var i = 0; i < this.tableRows.selection.selected.length; i++)
                 {
+                  console.log(this.tableRows.selection.selected[i].itemid);
                   this.billDetailservice.addForApproval({
                     ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
                     maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
@@ -353,12 +374,13 @@ export class BillDetailTableComponent implements OnInit {
                     refundAmt: this.tableRows.selection.selected[i].amount,
                     mop: '',
                     serviceId: this.tableRows.selection.selected[i].serviceid,
-                    itemId: this.tableRows.selection.selected[i].itemid,
+                    itemid: this.tableRows.selection.selected[i].itemid,
                     serviceName: this.tableRows.selection.selected[i].servicename,
                     itemName: this.tableRows.selection.selected[i].itemname,
                     refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
                     itemOrderId: this.tableRows.selection.selected[i].orderid,
                   })
+                  console.log(this.billDetailservice.sendforapproval);
                   this.billDetailservice.calculateTotalRefund();
                   console.log(this.billDetailservice.sendforapproval);
                 }
