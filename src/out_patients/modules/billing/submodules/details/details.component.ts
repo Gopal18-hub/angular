@@ -372,6 +372,7 @@ export class DetailsComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
+        this.billno = this.BServiceForm.controls['billNo'].value;
         this.getpatientbilldetails();
       }
     });
@@ -452,11 +453,35 @@ export class DetailsComponent implements OnInit {
                 this.BServiceForm.controls['reason'].disable();
                 this.BServiceForm.controls['paymentMode'].disable();
               }
-              this.printbill = false;
-              this.consumableprint = false;
-              this.phptracksheet = false;
-              this.opprescription = false;
-              this.doxperprint = false;
+              var healthlist = 0;
+              var consultlist = 0;  
+              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach( (item: any) => {
+                console.log(item);
+                if(item.servicename == 'Health Checkups')
+                {
+                  healthlist++;
+                }
+                else if(item.servicename == 'Consultations')
+                {
+                  consultlist++;
+                }
+              })
+              if(healthlist > 0)
+              {
+                this.phptracksheet = false;
+              }
+              else
+              {
+                this.phptracksheet = true;
+              }
+              if(consultlist > 0 && this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 0)
+              {
+                this.opprescription = false;
+              }
+              else
+              {
+                this.opprescription = true;
+              }
               if (this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].requestToApproval == 0) 
               {
                 this.refundbill == false;
@@ -465,6 +490,9 @@ export class DetailsComponent implements OnInit {
               {
                 this.refundbill == true;
               }
+              this.printbill = false;
+              this.consumableprint = false;
+              this.doxperprint = false;
               console.log(this.billdetailservice.serviceList);
               this.router.navigate(["out-patient-billing/details", "services"]);
             }
@@ -476,6 +504,7 @@ export class DetailsComponent implements OnInit {
   }
   billFormfill() {
     this.billexist = false;
+    this.BServiceForm.controls['billNo'].setValue(this.billno);
     console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
     this.BServiceForm.controls["maxid"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
