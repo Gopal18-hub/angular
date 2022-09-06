@@ -799,8 +799,8 @@ export class DepositComponent implements OnInit {
        .map((res: any) => {
           if (res) {
             this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptnumber: res.receiptno,
-              locationID:  this.hspLocationid,
+              receiptno: res.receiptno,
+              locationID: this.hspLocationid,
             });
           }
         });
