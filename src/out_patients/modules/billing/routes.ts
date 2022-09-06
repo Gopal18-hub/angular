@@ -35,6 +35,8 @@ import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billi
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/view-request/view-request.component";
+import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -107,9 +109,14 @@ const routes: Routes = [
       { path: "dispatch-report", component: DispatchReportComponent },
       { path: "dmg-mapping", component: DmgMappingComponent },
       {
+        path: "acknowledged-scroll-amount-report",
+        component: AcknowledgedScrollAmountReportComponent,
+      },
+      {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
+
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,

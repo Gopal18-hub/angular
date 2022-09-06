@@ -119,7 +119,7 @@ export class MedicineOrdersComponent implements OnInit {
         options: this.denyOrderTypeList,
       },
       remarks: {
-        type: "string",
+        type: "buttonTextarea",
       }
 
     }
