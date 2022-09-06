@@ -1,4 +1,4 @@
-.payment-dialog{
+.refund-bill-dialog{
     .col-black{
         color: #000;
     }
@@ -57,7 +57,7 @@
     }
     .btn{
         ::ng-deep .mat-raised-button{
-            min-width: auto !important;
+            // min-width: auto !important;
         }
     }
     ::ng-deep .mat-radio-button{
@@ -94,11 +94,12 @@
     }
     }
     .w-64{
-        width: 64%;
+        width: 54%;
+    }
+    ::ng-deep .mat-dialog-container{
+        overflow: hidden !important;
+        padding: 10px 24px 24px 24px;
     }
 }
 
-::ng-deep .mat-dialog-container{
-    overflow: hidden !important;
-    padding: 10px 24px 24px 24px;
-}
+

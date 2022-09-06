@@ -348,6 +348,11 @@ export class DepositComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
+  
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -389,6 +394,8 @@ export class DepositComponent implements OnInit {
         console.log("Refund Dialog closed");
         //}
         this.MaxIDdepositExist = false;
+        this.tableselectionexists = false;
+        this.deposittable.selection.clear();
       });
   }
 
@@ -427,9 +434,12 @@ export class DepositComponent implements OnInit {
           DepositDialogref.afterClosed()
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
+              this.MaxIDdepositExist = false;
+                this.tableselectionexists = false;
+                this.deposittable.selection.clear();
               if (result == "Success") {
                 this.getPatientPreviousDepositDetails();
-
+                
                 console.log("Deposit Dialog closed");
               }
             });
@@ -641,6 +651,7 @@ export class DepositComponent implements OnInit {
             this.deposittable.selection.changed
               .pipe(takeUntil(this._destroying$))
               .subscribe((res: any) => {
+                console.log(this.deposittable.selection.selected.length);
                 if (this.deposittable.selection.selected.length > 0) {
                   console.log(this.MaxIDdepositExist);
                   if (res.added.length > 0) {
@@ -683,9 +694,12 @@ export class DepositComponent implements OnInit {
                     r.parentTable.selection.clear();
                     this.tableselectionexists = true;
                   }
+                  else{
+                    this.tableselectionexists = false;
+                  }
                 });
             });
-          }, 5000);
+          }, 100);
         },
         (error) => {
           console.log(error);
@@ -709,6 +723,7 @@ export class DepositComponent implements OnInit {
     this.ssn = "";
     this._destroying$.next(undefined);
     this._destroying$.complete();
+    this.deposittable.selection.clear();
     this.patientpersonaldetails = [];
     this.depoistList = [];
     this.MaxIDExist = false;
@@ -789,7 +804,7 @@ export class DepositComponent implements OnInit {
        .map((res: any) => {
           if (res) {
             this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptnumber: res.receiptno,
+              receiptno: res.receiptno,
               locationID: this.hspLocationid,
             });
           }

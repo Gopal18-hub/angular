@@ -191,17 +191,18 @@ export class RefundAfterBillComponent implements OnInit {
   };
 
   config: any = {
-    selectBox: false,
-    clickedRows: false,
-    clickSelection: "single",
+    selectBox: true,
+    selectCheckBoxPosition: 5,
+    selectCheckBoxLabel: 'Refund',
     removeRow: false,
+    clickedRows: true,
     displayedColumns: [
       "Sno",
       "servicename",
       "itemname",
       "amount",
       "discountamount",
-      "cancelled",
+      // "cancelled",
     ],
     // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
@@ -240,13 +241,14 @@ export class RefundAfterBillComponent implements OnInit {
           width: "13rem"
         }
       },
-      cancelled: {
-        title: "Refund",
-        type: "checkbox_active",
-      },
+      // cancelled: {
+      //   title: "Refund",
+      //   type: "checkbox",
+      //   disabledSort: true,
+      // },
     },
   };
-  data1: any = [];
+  data: any = [];
   serviceselectedList: [] = [] as any;
 
   miscServBillForm!: FormGroup;
@@ -265,61 +267,137 @@ export class RefundAfterBillComponent implements OnInit {
     for (var i = 0; i < this.billDetailservice.billafterrefund.length; i++) {
       this.billDetailservice.billafterrefund[i].Sno = i + 1;
     }
-    this.data1 = [...this.billDetailservice.billafterrefund];
+    this.billDetailservice.sendforapproval = [];
+    this.billDetailservice.calculateTotalRefund();
+    this.billDetailservice.totalrefund = 0;
+    this.data = [...this.billDetailservice.billafterrefund];
     console.log(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].notApproved);
   }
   ngAfterViewInit()
-  {
-    
-  }
-  printrow(event:any)
-  {
-    setTimeout(() => {
-      console.log(event)
-      console.log(event.row.cancelled);
-
-      if(event.row.cancelled == true )
+  { 
+    this.data.forEach((item: any) => {
+      if(item.cancelled == 1)
       {
-        console.log("true");
-        this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.forEach((e:any) => {
-          var id = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.find((a:any) => {
-            
-          })
-        });
-        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-          return a.serviceId == event.row.serviceid;
-        }) 
-        if(list[0].ackby == 0)
-        {
-          this.msgdialog.info('Only Acknowledged items can be refunded from this Tab. Refund this item from Service Tab');
-          event.row.cancelled = false;
+        this.tableRows.selection.select(item);
+      }
+    }) 
+    console.log(this.tableRows);
+    this.tableRows.selection.changed.subscribe((s: any) => {
+      console.log(s);
+      console.log(this.tableRows.selection.selected);
+      if(this.tableRows.selection.selected.length > 0)
+        {  
+          this.billDetailservice.sendforapproval = [];
+          this.billDetailservice.totalrefund = 0;
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+          {
+            for(var j = 0; j < this.tableRows.selection.selected.length; j++)
+            {
+              var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+                return a.serviceId == this.tableRows.selection.selected[j].serviceid;
+              }) 
+            }
+            for(var z = 0; z < list.length; z++)
+            {
+              if(list[z].ackby == 0)
+              {
+                var acklist = this.billDetailservice.serviceList.filter((a: any) => {
+                  console.log(a);
+                  return a.serviceid == list[z].serviceId;
+                })
+                console.log(acklist);
+                console.log(list[z]);
+                this.data.forEach((item: any) => {
+                  console.log(item)
+                  var flag = 0;
+                  for(var x = 0; x < acklist.length, flag < 1; x++)
+                  {
+                    if(item.serviceid == acklist[x].serviceid && item.cancelled == 0)
+                    {
+                      flag++;
+                      this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+                      console.log(this.tableRows.selection);
+                      setTimeout(() => {
+                      this.tableRows.selection.deselect(item);
+                    }, 100);
+                    break;                      
+                    }
+                    return;
+                  }
+                })
+              }
+            }
+            console.log(this.tableRows.selection.selected[i])
+            if(this.tableRows.selection.selected[i].cancelled == 0)
+            {
+              console.log(this.tableRows.selection.selected[i].itemid);
+              this.billDetailservice.addForApproval({
+              ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+              maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+              ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+              billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+              operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+              authorisedby: '',
+              reason: '',
+              refundAmt: this.tableRows.selection.selected[i].amount,
+              mop: '',
+              serviceId: this.tableRows.selection.selected[i].serviceid,
+              itemid: this.tableRows.selection.selected[i].itemid,
+              serviceName: this.tableRows.selection.selected[i].servicename,
+              itemName: this.tableRows.selection.selected[i].itemname,
+              refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+              itemOrderId: this.tableRows.selection.selected[i].orderid,
+            })
+            console.log(this.billDetailservice.sendforapproval);
+            this.billDetailservice.calculateTotalRefund();
+            console.log(this.billDetailservice.sendforapproval);
+            }
+          }                  
         }
         else
         {
-            this.billDetailservice.addForApproval({
-              cancelled: event.row.cancelled,
-              Sno: event.row.Sno,
-              amount: event.row.amount,
-              requestToApproval: event.row.requestToApproval,
-              itemid: event.row.itemid,
-              orderid: event.row.orderid
-            })
-            this.billDetailservice.calculateTotalRefund();
-            console.log(this.billDetailservice.sendforapproval);
+          this.billDetailservice.sendforapproval = [];
+          this.billDetailservice.totalrefund = 0;
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+                {
+                  this.billDetailservice.addForApproval({
+                    ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+                    maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+                    ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+                    billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+                    operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+                    authorisedby: '',
+                    reason: '',
+                    refundAmt: this.tableRows.selection.selected[i].amount,
+                    mop: '',
+                    serviceId: this.tableRows.selection.selected[i].serviceid,
+                    itemId: this.tableRows.selection.selected[i].itemid,
+                    serviceName: this.tableRows.selection.selected[i].servicename,
+                    itemName: this.tableRows.selection.selected[i].itemname,
+                    refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+                    itemOrderId: this.tableRows.selection.selected[i].orderid,
+                  })
+                  this.billDetailservice.calculateTotalRefund();
+                  console.log(this.billDetailservice.sendforapproval);
+                }
         }
-      }
-      else if(event.row.cancelled == false)
+      if(s.removed.length > 0)
       {
-        console.log("false");
-        var index = this.billDetailservice.sendforapproval.findIndex((val: any) => val.Sno === event.row.Sno);
-        console.log(index);
-        // this.billDetailservice.sendforapproval.splice(index, 1);
-        this.billDetailservice.removeForApproval(index);
-        this.billDetailservice.calculateTotalRefund();
-        console.log(this.billDetailservice.sendforapproval);
+        s.removed.forEach((item: any) =>{
+          if(item.cancelled == 1)
+          {
+            console.log(item);
+            // this.msgdialog.info('Item in this list Already Refunded');
+            setTimeout(() => {
+              this.tableRows.selection.select(item);
+            }, 1);
+            // this.tableRows.selection.select(item);
+          }
+        })
       }
-    }, 100);
+    })
     
   }
+  
 
 }

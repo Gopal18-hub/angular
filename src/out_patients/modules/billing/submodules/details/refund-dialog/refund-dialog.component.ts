@@ -14,7 +14,7 @@ import { billDetailService } from '../billDetails.service';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
-  styleUrls: ['./refund-dialog.component.scss']
+  styleUrls: ['./refund-dialog.component.scss'],
 })
 export class BillDetailsRefundDialogComponent implements OnInit {
 
@@ -158,7 +158,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   
   getPatientrefundotpdetailsRequestBody(): sendotpforpatientrefund{
     return (this.patientsaveotprefundDetails = new sendotpforpatientrefund(
-    this.data.billid,
+    0,
     this.data.billno,
     this.stationId,
     this.hsplocationId,

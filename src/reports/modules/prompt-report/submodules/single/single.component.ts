@@ -8,6 +8,9 @@ import {
 import { DatePipe } from "@angular/common";
 import { ReportService } from "@shared/services/report.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { HttpService } from "@shared/services/http.service";
+import { environment } from "@environments/environment";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "reports-single",
@@ -19,10 +22,13 @@ export class SingleComponent implements OnInit, OnChanges {
   formGroup: any;
   questions: any;
 
+  private readonly _destroying$ = new Subject<void>();
+
   constructor(
     private datepipe: DatePipe,
     private reportService: ReportService,
-    private formService: QuestionControlService
+    private formService: QuestionControlService,
+    private http: HttpService
   ) {}
 
   ngOnInit(): void {
@@ -68,11 +74,45 @@ export class SingleComponent implements OnInit, OnChanges {
         }
       }
       console.log(this.formGroup);
-      this.reportService.openWindow(
-        button.reportConfig.reportName,
-        button.reportConfig.reportEntity,
-        this.formGroup.value
-      );
+      if (
+        button.reportConfig.reportEntity ==
+        "DoctorSheduleReportBySpecilialisation"
+      ) {
+        let specilizationName;
+        this.http
+          .get(`${environment.CommonApiUrl}api/lookup/getallspecialisationname`)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((resultData: any) => {
+            if (resultData) {
+              if (resultData.length > 0) {
+                specilizationName = resultData.filter(
+                  (e: any) => e.id === this.formGroup.value.Cmb_Special
+                )[0].name;
+                let Cmb_Special = this.formGroup.value.Cmb_Special;
+                let datetype = this.formGroup.value.datetype;
+                let dtpEndDate = this.formGroup.value.dtpEndDate;
+                let dtpStartDate = this.formGroup.value.dtpStartDate;
+                this.reportService.openWindow(
+                  button.reportConfig.reportName,
+                  button.reportConfig.reportEntity,
+                  {
+                    Cmb_Special,
+                    datetype,
+                    dtpEndDate,
+                    dtpStartDate,
+                    specilizationName,
+                  }
+                );
+              }
+            }
+          });
+      } else {
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          this.formGroup.value
+        );
+      }
     }
   }
 }

@@ -34,10 +34,11 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/DiabeticPlanNew/DiabeticPlanNew?from_date=08/19/2021&to_date=03/31/2023&name1=Quit%20Alcohol%20program%20(PPG)&department=Tobbaco%20Cessation%20Program&planTypeName=Others%20Plan&planAmount=18500`;
   };
 
-  export const DailyCollectionReport = `${environment.ReportsSampleUrl}MAXHIS/MIS/DailyCollectionReport`;
-
+  export const DailyCollectionReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MIS/DailyCollectionReport?FromDate=${params.FromDate}&ToDate=${params.todate}&LocationName=${params.LocationName}&User=${params.Username}&locationid=${params.locationID}`;
+  };
   export const OnlinePaymentDetailReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/MIS/OnlinePaymentDetailReport`;
+    return `${environment.ReportsSampleUrl}MAXHIS/MIS/OnlinePaymentDetailReport?radiovalue=${params.radiovalue}&FromDate=${params.fromdate}&ToDate=${params.Todate}&locationid=${params.locationid}&User=${params.User}`;
   };
 
   export const CreateOPVisitSlipReport = (params: any) => {
@@ -45,7 +46,7 @@ export namespace CrystalReport {
   };
 
   export const ConsumabaleEntryDetailsReport = (params: any) => {
-    return `${environment.reportTenantUrl}MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${params.billno}&locationID=${params.locationID}&MAXID=${params.MAXID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/OTBilling/ConsumabaleEntryDetails?billno=${params.billno}&locationID=${params.locationID}&MAXID=${params.MAXID}`;
   };
 
   export const HappyFamilyPlanAllocationReport = (params: any) => {
@@ -100,7 +101,7 @@ export namespace CrystalReport {
     }&DocID1=false&location=${MaxHealthStorage.getCookie(
       "HSPLocationId"
     )}&Rd_Special=${params.Rd_Special}&Cmb_Special=${
-      params.Cmb_Special
+      params.specilizationName
     }&specialisationID=${
       params.Cmb_Special
     }&specialisationID1=true&LocationName=${MaxHealthStorage.getCookie(
@@ -189,5 +190,8 @@ export namespace CrystalReport {
   };
   export const PHPTracksheet = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
+  };
+  export const ScrollSummaryReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/ScrollSummaryReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&locationID=${params.locationID}`;
   };
 }

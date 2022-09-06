@@ -97,12 +97,15 @@ import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
 import { IomPopupComponent } from "./submodules/billing/prompts/iom-popup/iom-popup.component";
 import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-dialog/refund-dialog.component";
-import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-detils/show-plan-detils.component';
-import { PrintRefundReceiptDialogComponent } from './submodules/details/printrefundreceiptdialog/print-refund-receipt-dialog.component';
-import { ResendBillEmailDialogComponent } from './submodules/details/resend-bill-email-dialog/resend-bill-email-dialog.component';
+import { ShowPlanDetilsComponent } from "./submodules/billing/prompts/show-plan-detils/show-plan-detils.component";
+import { PrintRefundReceiptDialogComponent } from "./submodules/details/printrefundreceiptdialog/print-refund-receipt-dialog.component";
+import { ResendBillEmailDialogComponent } from "./submodules/details/resend-bill-email-dialog/resend-bill-email-dialog.component";
 import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
 import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
-import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-appointment/online-appointment.component';
+import { OnlineAppointmentComponent } from "./submodules/billing/prompts/online-appointment/online-appointment.component";
+import { GstTaxDialogComponent } from "./submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "./submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
+import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 
 @NgModule({
   declarations: [
@@ -181,6 +184,9 @@ import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-
     DmgPopupComponent,
     ConfigurationBillingComponent,
     OnlineAppointmentComponent,
+    GstTaxDialogComponent,
+    DiscountAmtDialogComponent,
+    AcknowledgedScrollAmountReportComponent,
   ],
   imports: [
     BillingRoutingModule,
