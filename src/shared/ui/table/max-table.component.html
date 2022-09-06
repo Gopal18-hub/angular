@@ -264,6 +264,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         class="{{ rowClass(row) }}"
+        [class.row-is-clicked]="selection.isSelected(row)"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">

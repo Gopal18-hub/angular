@@ -87,10 +87,16 @@ export class OrderSetComponent implements OnInit {
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       priority: {
         title: "Priority",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       specialization: {
         title: "Specialization",
@@ -175,6 +181,7 @@ export class OrderSetComponent implements OnInit {
         data: {
           orderSet: res.element,
           items: res.element.apiItems,
+          gridData: this.data,
         },
       });
     });
@@ -290,6 +297,7 @@ export class OrderSetComponent implements OnInit {
         res.forEach((resItem: any, index: number) => {
           const data1 = {
             sno: existDataCount + index + 1,
+
             orderSetName: this.formGroup.value.orderSet.title,
             serviceType: "Investigation",
             serviceItemName: resItem.procedureName,
@@ -300,7 +308,7 @@ export class OrderSetComponent implements OnInit {
             price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
-            itemid: this.formGroup.value.orderSet.value,
+            itemid: this.formGroup.value.items[index],
             apiItems: orderSetItems,
           };
           this.billingService.addToOrderSet(data1);
