@@ -348,6 +348,11 @@ export class DepositComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
+  
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -389,6 +394,8 @@ export class DepositComponent implements OnInit {
         console.log("Refund Dialog closed");
         //}
         this.MaxIDdepositExist = false;
+        this.tableselectionexists = false;
+        this.deposittable.selection.clear();
       });
   }
 
@@ -427,9 +434,12 @@ export class DepositComponent implements OnInit {
           DepositDialogref.afterClosed()
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
+              this.MaxIDdepositExist = false;
+                this.tableselectionexists = false;
+                this.deposittable.selection.clear();
               if (result == "Success") {
                 this.getPatientPreviousDepositDetails();
-
+                
                 console.log("Deposit Dialog closed");
               }
             });
@@ -684,6 +694,9 @@ export class DepositComponent implements OnInit {
                     r.parentTable.selection.clear();
                     this.tableselectionexists = true;
                   }
+                  else{
+                    this.tableselectionexists = false;
+                  }
                 });
             });
           }, 100);
@@ -791,8 +804,8 @@ export class DepositComponent implements OnInit {
        .map((res: any) => {
           if (res) {
             this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptnumber: res.receiptno,
-              locationID:  this.hspLocationid,
+              receiptno: res.receiptno,
+              locationID: this.hspLocationid,
             });
           }
         });

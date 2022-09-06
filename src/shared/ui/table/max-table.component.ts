@@ -282,6 +282,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   columnClickFun(element: any, col: string) {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
+    if (!this.config.selectBox && !this.config.clickedRows) return;
     this.selection.toggle(element);
   }
 

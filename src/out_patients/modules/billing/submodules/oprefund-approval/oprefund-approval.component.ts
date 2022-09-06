@@ -110,6 +110,7 @@ export class OprefundApprovalComponent implements OnInit {
         style: {
           width: "7rem",
         },
+        tooltipColumn: "maxid",
       },
       ssn: {
         title: "SSN",
@@ -156,7 +157,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "7rem",
+          width: "12rem",
         },
       },
       refundAmt: {
@@ -315,7 +316,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "7rem",
+          width: "12rem",
         },
       },
       refundAmt: {
@@ -483,7 +484,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "8rem",
+          width: "12rem",
         },
       },
       refundAmt: {
@@ -537,7 +538,7 @@ export class OprefundApprovalComponent implements OnInit {
       rejectedBy: {
         title: "Rejected By",
         type: "string",
-        tootltipColumn: "rejectedBy",
+        tooltipColumn: "rejectedBy",
         style: {
           width: "11rem",
         },

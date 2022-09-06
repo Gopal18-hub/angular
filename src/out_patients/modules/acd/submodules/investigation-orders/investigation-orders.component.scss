@@ -142,7 +142,11 @@
 }
 .searchbtn {
   //min-width: initial !important;
-
+ // button {
+        //height: 1.7rem;
+        line-height: 1.675rem;
+        //width :2rem;
+      // }
   height: 1.9rem !important;
   width : 5vw!important
 
@@ -150,6 +154,7 @@
 }
 .clr {
   height: 1.9rem !important;
+  line-height: 1.675rem;
 }
 .serachcss {
   ::ng-deep .max-table-wrapper {

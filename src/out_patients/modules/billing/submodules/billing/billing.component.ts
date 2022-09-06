@@ -149,6 +149,9 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+      this.billingService.setCompnay(res.value);
+    });
   }
 
   formEvents() {
