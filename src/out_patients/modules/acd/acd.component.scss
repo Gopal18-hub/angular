@@ -63,14 +63,15 @@
       padding: 0 0.45rem;
       height: calc(113vh - 310px);
     }
+    ::ng-deep .mat-typography p
+{
+  margin : 0 0 0px !important;
+}
+
   }
 //   ::ng-deep .mat-body p, .mat-body-1 p, .mat-typography .mat-body p, .mat-typography .mat-body-1 p, .mat-typography p
 // {
 //   margin : 0 0 0px !important;
 // }
 
-::ng-deep .mat-typography p
-{
-  margin : 0 0 0px !important;
-}
 
