@@ -26,14 +26,14 @@ export class ReportService {
     y: "center",
     width: "1100px",
     height: "85%",
+    id: reportEntity
   });
    winbox.addControl({
     index: 0,
     class: "material-print-icon",
     image: "",
     click: function(event:any, winbox:any){
-        
-        window.print();
+      (<any>document.getElementById(reportEntity)).querySelector("iframe").contentWindow.document.querySelector("iframe").contentWindow.print()
     }
 });
   }
