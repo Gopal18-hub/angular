@@ -129,7 +129,8 @@ export class InvestigationOrdersComponent implements OnInit {
       //   disabled: false,
       // },
       remarks: {
-        type: "string",
+        type: "buttonTextarea",
+        //title: "Remarks"
       }
     }
   }

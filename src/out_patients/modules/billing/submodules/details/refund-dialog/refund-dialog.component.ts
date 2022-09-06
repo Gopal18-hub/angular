@@ -14,7 +14,7 @@ import { billDetailService } from '../billDetails.service';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
-  styleUrls: ['./refund-dialog.component.scss']
+  styleUrls: ['./refund-dialog.component.scss'],
 })
 export class BillDetailsRefundDialogComponent implements OnInit {
 
