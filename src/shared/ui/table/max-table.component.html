@@ -20,9 +20,11 @@
             color="primary"
           >
           </mat-checkbox>
-          <span *ngIf="config.selectCheckBoxLabel" class="ml-1 max-health-primary-color">{{
-            config.selectCheckBoxLabel
-          }}</span>
+          <span
+            *ngIf="config.selectCheckBoxLabel"
+            class="ml-1 max-health-primary-color"
+            >{{ config.selectCheckBoxLabel }}</span
+          >
         </div>
       </th>
       <td mat-cell *matCellDef="let row">
@@ -264,6 +266,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         class="{{ rowClass(row) }}"
+        [class.row-is-clicked]="selection.isSelected(row)"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">
@@ -451,6 +454,8 @@
       [panelClass]="'im-select-dropdown'"
       disableOptionCentering
       (selectionChange)="controlValueChange($event, data)"
+      [required]="data.element[data.col + '_required']"
+      controlDirty
     >
       <ng-container
         *ngIf="
