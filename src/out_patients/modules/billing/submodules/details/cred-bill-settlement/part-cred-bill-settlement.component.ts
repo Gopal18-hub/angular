@@ -32,50 +32,50 @@ export class PartialCredBillComponent implements OnInit {
       billAmt: {
         type: "string",
         required: false,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
         readonly: true,
       },
       dipositrAmt: {
         type: "string",
         required: false,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
         readonly: true,
       },
       discAmt: {
         type: "string",
         required: false,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
         readonly: true,
       },
       prePaidAMt: {
         type: "string",
         required: false,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
         readonly: true,
       },
       plandic: {
         type: "string",
         required: false,
         readonly: true,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
       },
       planamt: {
         type: "string",
         required: false,
         readonly: true,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
       },
       patienDue: {
         type: "string",
         required: false,
         readonly: true,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
       },
       companyDue: {
         type: "string",
         required: false,
         readonly: true,
-        defaultValue: '0.0',
+        defaultValue: '0.00',
       },
       paymentMode: {
         type: "radio",
@@ -164,11 +164,11 @@ export class PartialCredBillComponent implements OnInit {
   }
   fillform()
   {
-    this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount);
-    this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount);
-    this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount);
-    this.BServiceForm.controls["prePaidAMt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount);
-    this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt);
+    this.BServiceForm.controls["billAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2));
+    this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2));
+    this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2));
+    this.BServiceForm.controls["prePaidAMt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount.toFixed(2));
+    this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].companyPaidAmt.toFixed(2));
     // this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
     console.log(this.BServiceForm.controls["prePaidAMt"].value, this.BServiceForm.controls["companyDue"].value)
     if(this.BServiceForm.controls["patienDue"].value == 0 && this.BServiceForm.controls["companyDue"].value == 0)
