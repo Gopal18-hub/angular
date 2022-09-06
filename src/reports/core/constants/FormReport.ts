@@ -489,7 +489,7 @@ export namespace FormReport {
       ],
     },
 
-    layout: "tab",
+    layout: "single",
     resultType: "table",
   };
 
@@ -534,7 +534,7 @@ export namespace FormReport {
         },
       ],
     },
-    layout: "tab",
+    layout: "single",
     resultType: "table",
   };
 
