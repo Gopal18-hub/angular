@@ -21,6 +21,6 @@ export namespace BillDetailsApiConstants{
     }
 
     export const sendapproval = (HostName: string, Locationid: any, UserId: any) => {
-        return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval?HostName=${HostName}&Locationid=${Locationid}&UserId=${UserId}`;
+        return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval/${HostName}/${Locationid}/${UserId}`;
     }
 }
