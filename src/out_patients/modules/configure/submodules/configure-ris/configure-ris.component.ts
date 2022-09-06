@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { DynamicFormQuestionComponent } from "@shared/ui/dynamic-forms/dynamic-form-question.component";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { HttpClient } from "@angular/common/http";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject, takeUntil } from "rxjs";
+import { GetConfigureMessageInterface } from "../../../../core/types/configure/getConfiguremessage.Interface";
 
 @Component({
   selector: "out-patients-configure-ris",
@@ -11,6 +15,8 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 export class ConfigureRisComponent implements OnInit {
   questions: any;
   risconfigureform!: FormGroup;
+  risconfigurelist: GetConfigureMessageInterface[] = [];
+  private readonly _destroying$ = new Subject<void>();
   config: any = {
     actionItems: false,
     /// dateformat: "dd/MM/yyyy",
@@ -19,20 +25,20 @@ export class ConfigureRisComponent implements OnInit {
     // selectCheckBoxPosition: 10,
     clickSelection: "single",
     displayedColumns: [
-      "testname",
+      "testName",
       "ssn",
       "orderdate",
       "ordertime",
       "messagestatus",
     ],
     columnsInfo: {
-      testname: {
+      testName: {
         title: "Test Name",
         type: "string",
         style: {
           width: "5rem",
         },
-        tooltipColumn: "testname",
+        tooltipColumn: "testName",
       },
       ssn: {
         title: "SSN",
@@ -56,7 +62,7 @@ export class ConfigureRisComponent implements OnInit {
         style: {
           width: "6rem",
         },
-        tooltipColumn: "ordertime",
+        tooltipColumn: "",
       },
       messagestatus: {
         title: "Message Status",
@@ -68,7 +74,11 @@ export class ConfigureRisComponent implements OnInit {
       },
     },
   };
-  constructor(private formService: QuestionControlService) {}
+  @ViewChild("ristable") risconfiguretable: any;
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpClient
+  ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.risconfigureformData.properties,
@@ -76,6 +86,13 @@ export class ConfigureRisComponent implements OnInit {
     );
     this.risconfigureform = formResult.form;
     this.questions = formResult.questions;
+  }
+  ngAfterViewInit() {
+    this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
+      if (event.key == "Enter") {
+        this.getdata();
+      }
+    });
   }
   risconfigureformData = {
     title: "",
@@ -86,6 +103,7 @@ export class ConfigureRisComponent implements OnInit {
       },
     },
   };
+
   dataconfig: any = [
     {
       testname: "xray-abdomen",
@@ -123,4 +141,23 @@ export class ConfigureRisComponent implements OnInit {
       messagestatus: "Not created",
     },
   ];
+
+  getdata() {
+    this.http
+      .get(ApiConstants.getconfiguremessage("RIS", "SKCS3760202"))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.risconfigurelist = data as GetConfigureMessageInterface[];
+        this.risconfigurelist.forEach((item) => {
+          item.orderdate = item.orderdatetime.split("T")[0];
+          item.ordertime = item.orderdatetime.split("T")[1];
+        });
+      });
+  }
+  cleardata() {
+    console.log("inside cleardata");
+    this.dataconfig = [];
+    this.risconfigureform.reset();
+  }
 }
