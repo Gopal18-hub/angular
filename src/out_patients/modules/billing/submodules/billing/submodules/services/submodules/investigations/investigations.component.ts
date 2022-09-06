@@ -190,6 +190,7 @@ export class InvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
+              docRequired: r.docRequired,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -265,6 +266,7 @@ export class InvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
+            docRequired: r.docRequired,
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -284,29 +286,58 @@ export class InvestigationsComponent implements OnInit {
       return;
     }
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.investigation.value,
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.investigation.value,
+        serviceId:
           this.formGroup.value.serviceType ||
-            this.formGroup.value.investigation.serviceid,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+          this.formGroup.value.investigation.serviceid,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToInvestigations({
-          sno: this.data.length + 1,
-          investigations: this.formGroup.value.investigation.title,
-          precaution: "",
-          priority: priorityId,
-          specialisation: "",
-          doctorName: "",
-          price: res.amount,
-          serviceid:
-            this.formGroup.value.serviceType ||
-            this.formGroup.value.investigation.serviceid,
-          itemid: this.formGroup.value.investigation.value,
-        });
+        if (res.length > 0) {
+          this.billingService.addToInvestigations({
+            sno: this.data.length + 1,
+            investigations: this.formGroup.value.investigation.title,
+            precaution: "",
+            priority: priorityId,
+            specialisation: "",
+            doctorName: "",
+            specialisation_required: this.formGroup.value.investigation
+              .docRequired
+              ? true
+              : false,
+            doctorName_required: this.formGroup.value.investigation.docRequired
+              ? true
+              : false,
+            price: res[0].returnOutPut,
+
+            billItem: {
+              itemId: this.formGroup.value.investigation.value,
+              priority: priorityId,
+              serviceId:
+                this.formGroup.value.serviceType ||
+                this.formGroup.value.investigation.serviceid,
+              price: res[0].returnOutPut,
+              serviceName: "Investigations",
+              itemName: this.formGroup.value.investigation.title,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
+          });
+        }
 
         this.data = [...this.billingService.InvestigationItems];
         this.formGroup.reset();
