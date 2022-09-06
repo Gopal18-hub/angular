@@ -101,7 +101,7 @@ export namespace CrystalReport {
     }&DocID1=false&location=${MaxHealthStorage.getCookie(
       "HSPLocationId"
     )}&Rd_Special=${params.Rd_Special}&Cmb_Special=${
-      params.Cmb_Special
+      params.specilizationName
     }&specialisationID=${
       params.Cmb_Special
     }&specialisationID1=true&LocationName=${MaxHealthStorage.getCookie(
