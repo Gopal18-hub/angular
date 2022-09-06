@@ -348,6 +348,11 @@ export class DepositComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
+  
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -799,8 +804,8 @@ export class DepositComponent implements OnInit {
        .map((res: any) => {
           if (res) {
             this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptnumber: res.receiptno,
-              locationID:  this.hspLocationid,
+              receiptno: res.receiptno,
+              locationID: this.hspLocationid,
             });
           }
         });
