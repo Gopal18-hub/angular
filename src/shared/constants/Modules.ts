@@ -253,7 +253,7 @@ export namespace MaxModules {
               id: 85,
               title: "Happy Family Report",
               defaultPath:
-                "/report/prompt-report/HappyFamilyPlanAllocationReport",
+                "report-multiple/prompt-report/HappyFamilyPlanAllocationReport",
               globalSearchKey: "global",
             },
             {
