@@ -297,7 +297,6 @@ export class OrderSetComponent implements OnInit {
         res.forEach((resItem: any, index: number) => {
           const data1 = {
             sno: existDataCount + index + 1,
-
             orderSetName: this.formGroup.value.orderSet.title,
             serviceType: "Investigation",
             serviceItemName: resItem.procedureName,
@@ -305,11 +304,31 @@ export class OrderSetComponent implements OnInit {
             priority: "Routine",
             specialization: "",
             doctorName: "",
+            specialization_required: true,
+            doctorName_required: true,
             price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.items[index],
             apiItems: orderSetItems,
+            billItem: {
+              itemId: subItems[index].itemId,
+              priority: subItems[index].priority,
+              serviceId: subItems[index].serviceID,
+              price: resItem.returnOutPut,
+              serviceName: this.formGroup.value.orderSet.title,
+              itemName: resItem.procedureNames,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: resItem.returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
           };
           this.billingService.addToOrderSet(data1);
         });
