@@ -143,31 +143,31 @@ export class DetailsComponent implements OnInit {
       billAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       dipositrAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       discAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       discAftBill: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       refundAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       authBy: {
@@ -424,6 +424,12 @@ export class DetailsComponent implements OnInit {
           else 
           {
             this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+            this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(item => {
+              item.amount = item.amount.toFixed(2);
+              item.discountamount = item.discountamount.toFixed(2);
+              item.planAmount = item.planAmount.toFixed(2);
+            })
+            console.log(this.patientbilldetaillist)
             this.billdetailservice.patientbilldetaillist = resultdata;
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
             if (this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1) 
@@ -454,16 +460,24 @@ export class DetailsComponent implements OnInit {
                 this.BServiceForm.controls['paymentMode'].disable();
               }
               var healthlist = 0;
-              var consultlist = 0;  
+              var consultlist = 0; 
+              var consumablelist = 0; 
               this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach( (item: any) => {
                 console.log(item);
                 if(item.servicename == 'Health Checkups')
                 {
+                  console.log('health')
                   healthlist++;
                 }
                 else if(item.servicename == 'Consultations')
                 {
+                  console.log('consultation')
                   consultlist++;
+                }
+                else if(item.servicename == "Consumable")
+                {
+                  console.log('consumable')
+                  consumablelist++;
                 }
               })
               if(healthlist > 0)
@@ -482,6 +496,14 @@ export class DetailsComponent implements OnInit {
               {
                 this.opprescription = true;
               }
+              if(consumablelist > 0)
+              {
+                this.consumableprint = false;
+              }
+              else
+              {
+                this.consumableprint = true;
+              }
               if (this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].requestToApproval == 0) 
               {
                 this.refundbill == false;
@@ -491,7 +513,6 @@ export class DetailsComponent implements OnInit {
                 this.refundbill == true;
               }
               this.printbill = false;
-              this.consumableprint = false;
               this.doxperprint = false;
               console.log(this.billdetailservice.serviceList);
               this.router.navigate(["out-patient-billing/details", "services"]);
@@ -504,6 +525,7 @@ export class DetailsComponent implements OnInit {
   }
   billFormfill() {
     this.billexist = false;
+    this.BServiceForm.markAsDirty();
     this.BServiceForm.controls['billNo'].setValue(this.billno);
     console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
     this.BServiceForm.controls["maxid"].setValue(
@@ -537,15 +559,15 @@ export class DetailsComponent implements OnInit {
     );
     this.BServiceForm.controls["billAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].billamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2)
     );
     this.BServiceForm.controls["dipositrAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].depositamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2)
     );
     this.BServiceForm.controls["discAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2)
     );
     // this.BServiceForm.controls["discAftBill"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0]);
     // this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
@@ -700,11 +722,19 @@ export class DetailsComponent implements OnInit {
         BillNo: this.BServiceForm.value.billNo,
       });
     }
-  else if(btnname == 'billingreport')
+    else if(btnname == 'billingreport')
     {
       this.reportService.openWindow(btnname, btnname, {
         opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
         locationID: this.cookie.get('HSPLocationId')
+      });
+    }
+    else if(btnname == 'ConsumabaleEntryDetailsReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        billno: this.BServiceForm.value.billNo,
+        locationID: this.cookie.get('HSPLocationId'),
+        MAXID: this.BServiceForm.value.maxid
       });
     }
     
@@ -729,6 +759,7 @@ export class DetailsComponent implements OnInit {
       this.BServiceForm.controls["refundAmt"].setValue(
         this.billdetailservice.totalrefund.toFixed(2)
       );
+      this.sendapprovalcheck();
       // if (this.billdetailservice.sendforapproval.length > 0) {
       //   this.approvalsend = false;
       // } else if (this.billdetailservice.sendforapproval.length == 0) {
