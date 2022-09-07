@@ -94,7 +94,7 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Out Patient Billing",
-          defaultPath: "",
+          defaultPath: "out-patient-billing",
           tenentPath: "/out-patients",
           childrens: [
             {
