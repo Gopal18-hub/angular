@@ -1,264 +1,138 @@
-.bg-deposit{
-    background-color: #F6F6F6;
-    color:#004084;
-}
-.miscForm {
-    ::ng-deep {
-        .min-width-initial {
-          min-width: 12vh !important;
+.sub-bill-overall {
+    ::ng-deep mat-form-field {
+      .mat-form-field-wrapper {
+        margin: 0;
+        padding: 0;
+        
+      }
+    }
+  
+    .h-dropdown{
+      ::ng-deep mat-form-field {
+        .mat-form-field-wrapper {
+          margin: 0;
+          padding: 0;
+          height: 0.7rem;
+      line-height: 0.7rem;
         }
-    }
-    ::ng-deep mat-label {
-    //   color: var(--primary-color);
-    color: #333333;
-    opacity: 1;
-      font-weight: 600;
-    }
-    .change-password {
-      color: var(--primary-color);
-    }
-    ::ng-deep .input1 .mat-form-field-infix{
-        text-align: right !important;  
-    }
-    ::ng-deep .mat-input-element 
-    {
-        color: black;
-    }
-    ::ng-deep .mat-form-field
-    {
-        background-color: white;
-        border-radius: 6px;
-    }
-    ::ng-deep .mat-form-field-wrapper{
-
-        padding-bottom: 0 !important;
-        padding: 0 !important;
-    
-    }
-        
-    ::ng-deep .patient-lbl
-  {
-    color: black;
-  }
-  ::ng-deep .mat-checkbox-label
-  {
-    //    color: var(--primary-color);
-    color: #333333;
-    opacity: 1;
-    font-weight: 600;
-  }
-  }
-
-//  
-.w-fit{
-    width: -webkit-fill-available;
-} 
-
-.w-79
-{
-    width: 79%;
-}
-  .w-7
-  {
-      width: 7.9%;
-  }
-
-.btn-md{
- 
-    // height: 89%;
-    height: 26px;
-    line-height: 26px;
-    min-width: initial !important
+      }
       
-}
-.bg-white{
-    background-color:white;
-}
-
-.wt-nowrap{
-    white-space: nowrap;
-}
-.wt-mid{
-    width: 8.5%;  
-}
-.h-white-banner
-{
- height: 8%;   
-}
-.bg-billdetails{
-    
-    height: 76%;
-    background-color:#45C0BE; 
-}
-.bg-blue
-{
+    }
+      ::ng-deep .max-table-wrapper {
+        table {
+          width: 110% !important;
+        }
+      }
+      .w-12 {
+        width: 12%;
+      }
+      .w-13 {
+        width: 13%;
+      }
+      .w-86 {
+        width: 87.25%;
+      }
+      .w-26 {
+        width: 26%;
+      }
+      .h-30vh {
+        height: 30vh;
+      }
+      .h-22vh {
+        height: 22vh;
+      }
+      .w-44 {
+        width: 44%;
+      }
+      .bg-blue {
+        background-color: #bfe8e7;
+      }
+      .pr5int-button {
+        background-color: #5a5a5a;
+      }
+      .bg-deposit {
+        background-color: #f6f6f6;
+      }
+      ::ng-deep {
+        .sub-bill-form {
+          mat-form-field {
+            background-color: #fff;
+          }
+          button {
+            height: 26px;
+            line-height: 26px;
+          }
+          .mat-checkbox-layout .mat-checkbox-label {
+            color: inherit !important;
+          }
+        }
+        mat-radio-group {
+          flex-direction: row;
+          width: 100%;
+          mat-radio-button {
+            margin-right: 1.2rem;
+          }
+        }
+        .w-tarrif{
+  width:7%;
+        }
+        ::ng-deep {
+          .min-width-initial {
+            min-width: 82px !important;
+          }
+          button {
+            height: 1.875rem;
+            line-height: 1.875rem;
+          }
+      
+          .mat-tab-header {
+            border-bottom: none;
+          }
+          .mat-tab-links {
+            background-color: #45c0be;
+            border-radius: 13px 13px 0 0;
+            border: 4px solid #45c0be;
+            border-bottom: 0;
+            a {
+              color: #fff;
+              background-color: #bfe8e7;
+              border-radius: 13px 13px 0 0;
+              margin-right: 4px;
+              color: #08504f;
+              opacity: 1;
+              &.mat-tab-link {
+                height: 26px;
+              }
+              &.mat-tab-label-active {
+                background-color: #fff;
+                color: #08504f;
+                font-weight: 600;
+              }
+            }
+          }
+          .mat-ink-bar {
+            display: none;
+          }
+        }
+      }
+      .addbtn
+      {
+        width : 8% !important
+      }
+      .w-Reff
+      {
+        width: 93%
+      }
+      .icon-more
+  {   
    
-    background-color: #BFE8E7;
-}
-.txt-blue
-{   
-   color: #45C0BE;
-   font-style: italic;
-//    text-decoration: underline;
-   font-weight:550;
-   float: left;
-   position: absolute;
-   left: 121px;
-
-}
-.h-service
-{
-    height: 92%;
-    border-radius: 0% 0.5rem 0.5rem 0.5rem;
-    margin-left: 0.3%;
-    margin-right: 0.3%;
-}
-// .h-9/20
-.h-table
-{
-    height: 100% !important;
-    //  max-height: 57% !important;
-     box-sizing: unset;
-    // min-height: 67% !important;
+          background-color:#D2D0D0;
+          border-radius: 4px;
+          color: black;
+          margin-left: 1px;
+          height: 22.9px;
   
-}
-.fixtable{
-    height: 25.3vh !important;margin-bottom: px;
-}
-.bg-paymet
-{
-    width: 84.6%;
-    height: 10%;
-}
-.payment-width{
-width: 30.9%;
-}
-.w-26
-{
-    width: 26%;
-}
-.icon-more
-{   
- 
-        background-color:#D2D0D0;
-        border-radius: 4px;
-        color: black;
-        margin-left: 1px;
-        height: 22.9px;
-
-   
-}
-.grid-container
-{
-    ::ng-deep .mat-radio-group {
-        flex-direction: row !important;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 2px;
-        height: 0.1vh;
-        padding: 0px;
-        // margin-top: 1px;
-        //  margin-bottom: 10px;
-    }
-    ::ng-deep .mat-radio-outer-circle 
-    {
-        height: 16px;
-        width: 16px;
-    }
-    ::ng-deep .mat-radio-inner-circle
-    {
-        height: 15px;
-        width: 15px;
-    }
-    ::ng-deep .mat-radio-button
-    {
-padding: 0%;
-    }
-}
-
-
-.txt-blue
-{
-    ::ng-deep .mat-checkbox-label
-    {
-        color: #45C0BE;
-        font-style: normal;
-        font-weight: 500;
-       padding-bottom: 0.25rem;
-    } 
-}
-
-.w-6{
-    width: 7%;
-}
-
-.w-2
-{
-    width: 11%;
-    
-
-}
-.w-2
-{
-    ::ng-deep .mat-raised-button {
-        min-width: 6rem !important;
-        
-    }
-}
-.w-14
-{
-    width: 15%;
-}
-
-.bg-deposit{
-    ::ng-deep .mat-checkbox-inner-container
-    {
-        margin: 2px 1px 1px 1px;
-        height: 2vh;
-        width: 2vh;
-    
-    }
-}
-.h-btn{
-    height: 4.95vh;
-   
-}
-.m-pannel
-{
-margin-top: 0.19rem;
-}
-.txt-blue
-{
-    ::ng-deep .mat-checkbox-label
-    {
-        color: #45C0BE;
-        font-style: normal;
-        font-weight: 500;
-       padding-bottom: 0.25rem;
-    } 
-}
-.text-align-right
-{
- ::ng-deep .mat-input-element
- {  text-align: right;
- }
-}
-.credit-details-wrapper {
-    .width-49 {
-      width: 49%;
-           border: 1px solid #707070;
-      opacity: 1;
-      border-radius: 12px;
-      color: #002B58;
-    }
-
-.creditmiscellaneousbill{
-    .mat-raised-button{
-        //min-width: initial !important;
-        height: 1.875rem !important;
-        line-height: 1.875rem  !important;
-    }
-}
-  
+     
   }
-  
+    }
+    
