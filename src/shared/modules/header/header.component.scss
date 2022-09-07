@@ -1,5 +1,5 @@
 :host {
-  width: 100vw;
+  width: 100%;
   margin-bottom: 6px;
   display: block;
 }
@@ -24,7 +24,7 @@
     }
   }
   .main-modules {
-    min-width: calc(100vw - 180px);
+    min-width: calc(100% - 180px);
     clip-path: polygon(
       0 0,
       30px 50%,
@@ -61,7 +61,7 @@
 
 ::ng-deep {
   .header-menu {
-    width: 38vw;
+    width: 38%;
     //height: 34vh;
     max-width: initial !important;
     .mat-menu-content {
@@ -70,6 +70,6 @@
   }
 }
 
-.setting-menu{
+.setting-menu {
   font-weight: 600 !important;
 }

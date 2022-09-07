@@ -181,4 +181,12 @@ export namespace BillingApiConstants {
     doctorId: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${IACode}/${RegistrationNo}/${locationId}/${doctorId}`;
+
+  export const getediganosticacdoninvestigationgrid = (
+    locationid: string,
+    orderId: number,
+    RegistrationNo: number,
+    IACode: string
+  ) =>
+    `${environment.PatientApiUrl}patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
 }
