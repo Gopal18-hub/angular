@@ -24,13 +24,7 @@ export class ConfigureRisComponent implements OnInit {
     selectBox: true,
     // selectCheckBoxPosition: 10,
     clickSelection: "single",
-    displayedColumns: [
-      "testName",
-      "ssn",
-      "orderdate",
-      "ordertime",
-      "messagestatus",
-    ],
+    displayedColumns: ["testName", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
       testName: {
         title: "Test Name",
@@ -48,22 +42,22 @@ export class ConfigureRisComponent implements OnInit {
         },
         tooltipColumn: "ssn",
       },
-      orderdate: {
-        title: "Order Date",
+      orderdatetime: {
+        title: "Order DateTime",
         type: "string",
         style: {
           width: "5.5rem",
         },
-        tooltipColumn: "orderdate",
+        tooltipColumn: "orderdatetime",
       },
-      ordertime: {
-        title: "Order Time",
-        type: "string",
-        style: {
-          width: "6rem",
-        },
-        tooltipColumn: "",
-      },
+      // ordertime: {
+      //   title: "Order Time",
+      //   type: "string",
+      //   style: {
+      //     width: "6rem",
+      //   },
+      //   tooltipColumn: "",
+      // },
       messagestatus: {
         title: "Message Status",
         type: "string",
@@ -149,10 +143,10 @@ export class ConfigureRisComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.risconfigurelist = data as GetConfigureMessageInterface[];
-        this.risconfigurelist.forEach((item) => {
-          item.orderdate = item.orderdatetime.split("T")[0];
-          item.ordertime = item.orderdatetime.split("T")[1];
-        });
+        // this.risconfigurelist.forEach((item) => {
+        //   item.orderdate = item.orderdatetime.split("T")[0];
+        //   item.ordertime = item.orderdatetime.split("T")[1];
+        // });
       });
   }
   cleardata() {

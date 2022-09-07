@@ -237,12 +237,18 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   getOtherService() {
-    this.http.get(BillingApiConstants.getotherservice).subscribe((res) => {
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
+    this.http
+      .get(
+        BillingApiConstants.getotherserviceop(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[0] = { ...this.questions[0] };
       });
-      this.questions[0] = { ...this.questions[0] };
-    });
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {

@@ -88,6 +88,10 @@ export namespace BillingApiConstants {
   };
   export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
+  export const getotherserviceop = (locationId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getotherserviceforop/${locationId}`;
+  };
+
   export const getotherservicebilling = (
     locationId: number,
     servicingId: number

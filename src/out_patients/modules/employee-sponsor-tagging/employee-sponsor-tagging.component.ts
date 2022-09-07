@@ -194,7 +194,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         style: {
           width: "9.5rem",
         },
-        tooltipColumn: "dependantName",
+        tooltipColumn: "dependentName",
       },
       maxid: {
         title: "Max Id",
@@ -312,7 +312,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         style: {
           width: "4rem",
         },
-        tooltipColumn: "updatedDateTime",
+        tooltipColumn: "updatedBy",
       },
       flag: {
         title: "Active",
