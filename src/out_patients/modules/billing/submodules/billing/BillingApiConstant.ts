@@ -86,9 +86,9 @@ export namespace BillingApiConstants {
   export const gethealthcheckups = (locationId: number, departmentID: any) => {
     return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}/${departmentID}`;
   };
-  // export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
+  export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
-  export const getotherservice = (locationId: number) => {
+  export const getotherserviceop = (locationId: number) => {
     return `${environment.CommonApiUrl}api/lookup/getotherserviceforop/${locationId}`;
   };
 
