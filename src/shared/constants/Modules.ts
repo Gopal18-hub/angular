@@ -130,7 +130,7 @@ export namespace MaxModules {
             {
               id: 216,
               title: "Miscellaneous Billing",
-              defaultPath: "/out-patient-billing/miscellaneous-billings",
+              defaultPath: "/out-patient-billing/miscellaneous-billing",
               globalSearchKey: "global",
             },
             {
