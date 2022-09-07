@@ -87,7 +87,7 @@
              </div>
     
     
-             <div  class="w-12  font-wrapper">
+             <div  class="w-1/15  font-wrapper">
             <mat-label  class="font-semi-bold max-health-primary-color">Nationality:</mat-label>
             <span class="ml-2" matTooltip="{{nationality}}">{{nationality}}</span>
              </div>
@@ -158,13 +158,13 @@
         <div class="float-right flex mt-6p h-1/10 button-height">
             <div>
                  <button mat-raised-button color="primary" (click)="saveExpiredpatient()"
-                 [disabled]="disableButton" class=" button-height"><span class="text-position2">Save</span></button>
+                 [disabled]="disableButton" class=" button-height2"><span class="text-position2">Save</span></button>
             </div>
             <div>
-                <button mat-raised-button color="primary" class="ml-6 button-height" [disabled]="disableButton" (click)="deleteExpiredpatient()" ><span class="text-position2">Delete</span></button>
+                <button mat-raised-button color="primary" class="ml-4 button-height2" [disabled]="disableButton" (click)="deleteExpiredpatient()" ><span class="text-position2">Delete</span></button>
            </div>
            <div>
-            <button mat-raised-button color="primary"class="ml-6 button-height" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position2">Clear</span></button>
+            <button mat-raised-button color="primary"class="ml-4 mr-2 button-height2" [disabled]="disableClear" (click)="this.expiredpatientForm.reset();clearData()"><span class="text-position2">Clear</span></button>
             </div>
         </div>
         </div> 
