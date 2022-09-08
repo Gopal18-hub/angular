@@ -253,23 +253,45 @@ export class HealthCheckupsComponent implements OnInit {
 
   proceedToAdd(priorityId: number) {
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.healthCheckup.value,
-          26,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.healthCheckup.value,
+        serviceId: 26,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToHealthCheckup({
-          sno: this.data.length + 1,
-          healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
-          price: res.amount,
-          itemid: this.formGroup.value.healthCheckup.value,
-          serviceid: 26,
-          priorityId: priorityId,
-        });
+        if (res.length > 0) {
+          this.billingService.addToHealthCheckup({
+            sno: this.data.length + 1,
+            healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
+            price: res[0].returnOutPut,
+            itemid: this.formGroup.value.healthCheckup.value,
+            serviceid: 26,
+            priorityId: priorityId,
+            billItem: {
+              itemId: this.formGroup.value.healthCheckup.value,
+              priority: priorityId,
+              serviceId: 26,
+              price: res[0].returnOutPut,
+              serviceName: "Health Checkups",
+              itemName: this.formGroup.value.healthCheckup.originalTitle,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
+          });
+        }
 
         this.data = [...this.billingService.HealthCheckupItems];
         this.formGroup.reset();
