@@ -85,6 +85,12 @@ export class SingleComponent implements OnInit, OnChanges {
           .subscribe((resultData: any) => {
             if (resultData) {
               if (resultData.length > 0) {
+                if (
+                  !this.formGroup.value.Cmb_Special ||
+                  this.formGroup.value.Cmb_Special == "0"
+                ) {
+                  this.formGroup.value.Cmb_Special = 0;
+                }
                 specilizationName = resultData.filter(
                   (e: any) => e.id === this.formGroup.value.Cmb_Special
                 )[0].name;
