@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { takeUntil } from "rxjs/operators";
+import { BillingService } from "../../billing.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -244,7 +246,7 @@ export class BillComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(private formService: QuestionControlService, private billingservice: BillingService) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -253,5 +255,13 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+  }
+
+  ngAfterViewInit(){
+    this.formGroup.controls["paymentMode"].valueChanges
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((value: any) => {
+     this.billingservice.setBilltype(value);
+    });
   }
 }
