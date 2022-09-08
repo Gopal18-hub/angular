@@ -245,25 +245,26 @@ export class ProcedureOtherComponent implements OnInit {
       )
       .subscribe((res) => {
         this.questions[0].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return { title: r.name, value: r.id, isBundle: r.isBundle };
         });
         this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {
-          this.getProcedures(val.value);
+          this.getProcedures(val.value, val.isBundle);
         }
       }
     );
   }
 
-  getProcedures(serviceId: number) {
+  getProcedures(serviceId: number, isBundle = 0) {
     this.http
       .get(
         BillingApiConstants.getotherservicebilling(
           Number(this.cookie.get("HSPLocationId")),
-          serviceId
+          serviceId,
+          isBundle
         )
       )
       .subscribe(
