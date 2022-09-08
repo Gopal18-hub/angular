@@ -505,6 +505,9 @@ export class BillingService {
     this.OrderSetItems.forEach((item: any) => {
       this.totalCost += item.price;
     });
+    this.HealthCheckupItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
   }
 
   checkServicesAdded() {

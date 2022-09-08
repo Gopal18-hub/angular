@@ -276,6 +276,7 @@ export class ProcedureOtherComponent implements OnInit {
                 title: r.itemNameWithService || r.itemName,
                 value: r.itemID,
                 originalTitle: r.itemName,
+                docRequired: r.proceduredoctor,
               };
             });
           } else {
@@ -335,6 +336,12 @@ export class ProcedureOtherComponent implements OnInit {
             qty: 1,
             specialisation: "",
             doctorName: "",
+            doctorName_required: this.formGroup.value.procedure.docRequired
+              ? true
+              : false,
+            specialisation_required: this.formGroup.value.procedure.docRequired
+              ? true
+              : false,
             price: res[0].returnOutPut,
             unitPrice: res[0].returnOutPut,
             itemid: this.formGroup.value.procedure.value,
