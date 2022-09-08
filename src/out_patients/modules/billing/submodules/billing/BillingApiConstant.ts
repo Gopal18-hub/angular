@@ -86,9 +86,9 @@ export namespace BillingApiConstants {
   export const gethealthcheckups = (locationId: number, departmentID: any) => {
     return `${environment.CommonApiUrl}api/lookup/gethealthcheckups/${locationId}/${departmentID}`;
   };
-  // export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
+  export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
-  export const getotherservice = (locationId: number) => {
+  export const getotherserviceop = (locationId: number) => {
     return `${environment.CommonApiUrl}api/lookup/getotherserviceforop/${locationId}`;
   };
 
@@ -185,4 +185,12 @@ export namespace BillingApiConstants {
     doctorId: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${IACode}/${RegistrationNo}/${locationId}/${doctorId}`;
+
+  export const getediganosticacdoninvestigationgrid = (
+    locationid: string,
+    orderId: number,
+    RegistrationNo: number,
+    IACode: string
+  ) =>
+    `${environment.PatientApiUrl}patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
 }

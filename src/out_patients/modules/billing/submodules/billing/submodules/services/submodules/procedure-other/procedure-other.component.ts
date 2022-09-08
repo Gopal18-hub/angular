@@ -239,7 +239,7 @@ export class ProcedureOtherComponent implements OnInit {
   getOtherService() {
     this.http
       .get(
-        BillingApiConstants.getotherservice(
+        BillingApiConstants.getotherserviceop(
           Number(this.cookie.get("HSPLocationId"))
         )
       )

@@ -106,6 +106,7 @@ import { OnlineAppointmentComponent } from "./submodules/billing/prompts/online-
 import { GstTaxDialogComponent } from "./submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
 import { DiscountAmtDialogComponent } from "./submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
 import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { IomCompanyBillingComponent } from './submodules/billing/prompts/iom-company-billing/iom-company-billing.component';
 
 @NgModule({
   declarations: [
@@ -187,6 +188,7 @@ import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledg
     GstTaxDialogComponent,
     DiscountAmtDialogComponent,
     AcknowledgedScrollAmountReportComponent,
+    IomCompanyBillingComponent,
   ],
   imports: [
     BillingRoutingModule,
