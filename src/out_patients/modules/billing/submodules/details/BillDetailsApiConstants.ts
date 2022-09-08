@@ -23,4 +23,10 @@ export namespace BillDetailsApiConstants{
     export const sendapproval = (HostName: string, Locationid: any, UserId: any) => {
         return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval/${HostName}/${Locationid}/${UserId}`;
     }
+
+    export const getrefundbillnumber = (
+        opbillid: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getrefundbillnumber/${opbillid}`;
+    }
 }
