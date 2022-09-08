@@ -49,7 +49,7 @@ export class PaymentMethodsComponent implements OnInit {
 
    defaultamount:boolean = true;
    depositamount:number = 0;
-   paymentmode: string = "Cash";
+   PaymentType:number = 1; //default cash
   
   tabChanged(event:MatTabChangeEvent){   
       this.clearpaymentmethod();    
@@ -62,7 +62,8 @@ export class PaymentMethodsComponent implements OnInit {
       this.depositamount =  this.PaymentMethodcashdeposit.cashamount;     
      }
      else if(Number(this.PaymentMethodcashdeposit.chequeamount) > 0){             
-      this.depositamount =  this.PaymentMethodcashdeposit.chequeamount;      
+      this.depositamount =  this.PaymentMethodcashdeposit.chequeamount;   
+      this.PaymentType = 2;   
      }
      else if(Number(this.PaymentMethodcashdeposit.creditamount) > 0){
       this.depositamount =  this.PaymentMethodcashdeposit.creditamount;    
@@ -78,8 +79,15 @@ export class PaymentMethodsComponent implements OnInit {
     }
 
     if(this.Refundavalaiblemaount){
+      let cashlimit= this.depositservice.getcashlimit();
       if((Number(this.depositamount) > Number(this.Refundavalaiblemaount.avalaiblemaount)) && this.Refundavalaiblemaount.type == "Refund"){  
         this.messageDialogService.error("Refund Amount must be less then available amount");     
+      }
+      else if((Number(this.depositamount) > Number(cashlimit[0].cashLimit)) && this.PaymentType == 1){
+        this.messageDialogService.error("Refund through Cash Cannot be more then Rs 10000");
+      }
+      else if(Number(this.depositamount == 0)){
+        this.messageDialogService.error("Refund Amount must not be Zero or Negative number");
       }
     }   
     else{      
