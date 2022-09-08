@@ -181,7 +181,12 @@ export class BillingComponent implements OnInit {
         event.preventDefault();
         this.apiProcessing = true;
         this.patient = false;
-        this.getPatientDetailsByMaxId();
+        this.router.navigate([], {
+          queryParams: { maxId: this.formGroup.value.maxid },
+          relativeTo: this.route,
+          queryParamsHandling: "merge",
+        });
+        //this.getPatientDetailsByMaxId();
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -215,7 +220,12 @@ export class BillingComponent implements OnInit {
             this.formGroup.controls["maxid"].setValue(maxID);
             this.apiProcessing = true;
             this.patient = false;
-            this.getPatientDetailsByMaxId();
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
           } else {
             const similarSoundDialogref = this.matDialog.open(
               SimilarPatientDialog,
@@ -236,7 +246,12 @@ export class BillingComponent implements OnInit {
                   this.formGroup.controls["maxid"].setValue(maxID);
                   this.apiProcessing = true;
                   this.patient = false;
-                  this.getPatientDetailsByMaxId();
+                  //this.getPatientDetailsByMaxId();
+                  this.router.navigate([], {
+                    queryParams: { maxId: this.formGroup.value.maxid },
+                    relativeTo: this.route,
+                    queryParamsHandling: "merge",
+                  });
                 }
               });
           }
@@ -435,11 +450,6 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
     this.questions[2].readonly = true;
-    this.router.navigate([], {
-      queryParams: { maxId: this.formGroup.value.maxid },
-      relativeTo: this.route,
-      queryParamsHandling: "merge",
-    });
   }
 
   onageCalculator(ageDOB = "") {
@@ -646,7 +656,12 @@ export class BillingComponent implements OnInit {
           this.formGroup.controls["maxid"].setValue(maxid);
           this.apiProcessing = true;
           this.patient = false;
-          this.getPatientDetailsByMaxId();
+          //this.getPatientDetailsByMaxId();
+          this.router.navigate([], {
+            queryParams: { maxId: this.formGroup.value.maxid },
+            relativeTo: this.route,
+            queryParamsHandling: "merge",
+          });
         }
       });
   }
