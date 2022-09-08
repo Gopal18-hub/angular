@@ -11,6 +11,7 @@ import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.s
 import { Subject, takeUntil } from 'rxjs';
 import { PaymentMethodsComponent } from '../../../../../core/UI/billing/submodules/payment-methods/payment-methods.component';
 import { billDetailService } from '../billDetails.service';
+
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
@@ -23,7 +24,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     type: "object",
     properties: {         
       otp: {
-        type: "string"
+        type: "number",
       }
     },
   };
@@ -105,6 +106,10 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       'blur',
       this.paymentvalidation.bind(this)
       )
+    this.questions[0].elementRef.addEventListener(
+      'blur',
+      this.otpcheck.bind(this)
+    )
   }
   paymentvalidation(){
     console.log(this.paymentmethod.refundform.value.cashamount);
@@ -112,6 +117,10 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     {
       this.paymentmethod.refundform.controls['cashamount'].setValue(this.data.refundamount);
     }
+  }
+  otpcheck()
+  {
+    console.log(this.dueform.controls['otp'].value.toString().length);
   }
   sendotpclick(){    
       this.SendOTP = "Resend OTP";
@@ -170,6 +179,16 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       0,
     this.flagto_set_btnname
     ));
+  }
+
+  submitbtn()
+  {
+    if(this.dueform.controls['otp'].value.toString().length == 0){
+      this.messageDialogService.info('Enter OTP');
+    } 
+    else if(this.dueform.controls['otp'].value.toString().length < 4 || this.dueform.controls['otp'].value.toString().length > 4){
+      this.messageDialogService.info('Invalid OTP');
+    }
   }
   clear()
   {

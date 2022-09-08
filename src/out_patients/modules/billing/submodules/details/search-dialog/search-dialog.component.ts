@@ -297,6 +297,8 @@ export class SearchDialogComponent implements OnInit {
         {
           e.billStatus = 'partially-cancelled'
         }
+        e.balance = e.balance.toFixed(2);
+        e.billamount = e.billamount.toFixed(2);
       })
       console.log(this.getsearchopbillslist);
     })
