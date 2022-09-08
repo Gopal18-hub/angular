@@ -573,6 +573,9 @@ export class BillingService {
       itemname: data.billItem.itemName,
       servicename: "Consultation",
     });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
     this.calculateTotalAmount();
   }
   removeFromConsultation(index: number) {
@@ -594,7 +597,9 @@ export class BillingService {
       itemname: data.healthCheckups,
       servicename: "Health Checkups",
     });
-
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
     this.calculateTotalAmount();
   }
   removeFromHealthCheckup() {}
@@ -604,6 +609,9 @@ export class BillingService {
       itemname: data.procedures,
       servicename: "Procedures",
     });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
 
     this.calculateTotalAmount();
   }
@@ -614,6 +622,9 @@ export class BillingService {
       itemname: data.billItem.itemName,
       servicename: data.billItem.serviceName,
     });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
 
     this.calculateTotalAmount();
   }
