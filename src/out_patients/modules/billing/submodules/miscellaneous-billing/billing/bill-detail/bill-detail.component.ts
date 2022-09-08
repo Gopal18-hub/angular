@@ -18,6 +18,7 @@ import { MiscellaneousBillingModel } from "../../../../../../core/models/miscBil
 import { MiscService } from "../../MiscService.service";
 import { MakedepositDialogComponent } from "@modules/billing/submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
 import { MakeBillDialogComponent } from "../../makebill-dialog/makebill-dialog.component";
+import { DiscountAmtDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -39,30 +40,34 @@ export class BillDetailComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private miscPatient: MiscService
-  ) {}
+  ) { }
 
   miscBillData = {
     type: "object",
     title: "",
     properties: {
+      //0
       serviceType: {
         type: "autocomplete",
         title: "Service Type",
         options: this.serviceList,
         required: true,
       },
+      //1
       item: {
         type: "autocomplete",
         title: "Item",
         required: true,
         options: this.serviceItemsList,
       },
+      //2
       tffPrice: {
         type: "number",
         title: "Tarrif Price",
         required: true,
         readonly: true,
       },
+      //3
       qty: {
         type: "number",
         title: "Qty",
@@ -70,132 +75,154 @@ export class BillDetailComponent implements OnInit {
         minimum: 1,
         required: true,
       },
+      //4
       reqAmt: {
         type: "number",
         title: "Req. Amt.",
         minimum: 1,
         required: true,
       },
+      //5
       pDoc: {
         type: "autocomplete",
         title: "Procedure Doctor",
         options: this.doctorList,
       },
+      //6
       remark: {
         type: "autocomplete",
         title: "Remarks",
         required: true,
         options: this.remarkList,
       },
+      //7
       self: {
         type: "checkbox",
         required: false,
         options: [{ title: "Self" }],
       },
+      //8
       referralDoctor: {
         type: "dropdown",
         required: true,
         title: "Referral Doctor",
       },
+      //9
       interactionDetails: {
         type: "dropdown",
         required: true,
         title: "Interaction Details",
       },
+      //10
       billAmt: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //11
       availDiscCheck: {
         type: "checkbox",
         required: false,
         options: [{ title: "Avail Plan Disc ( - )" }],
       },
+      //12
       availDisc: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //13
       discAmtCheck: {
         type: "checkbox",
         required: false,
         options: [{ title: " Discount  Amount  (  -  ) " }],
       },
+      //14
       discAmt: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //15
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
       },
-
+      //16
       dipositAmt: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: false,
       },
+      //17
       patientDisc: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //18
       compDisc: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //19
       planAmt: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //20
       coupon: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //21
       coPay: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //22
       credLimit: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //23
       gstTax: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //24
       amtPayByPatient: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //25
       amtPayByComp: {
         type: "number",
         required: false,
         defaultValue: "0.00",
         readonly: true,
       },
+      //26
       paymentMode: {
         type: "radio",
         required: true,
@@ -304,7 +331,7 @@ export class BillDetailComponent implements OnInit {
   miscServBillForm!: FormGroup;
   serviceID!: number;
   location: number = Number(this.cookie.get("HSPLocationId"));
-  questions: any;
+  question: any;
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -314,7 +341,7 @@ export class BillDetailComponent implements OnInit {
     );
 
     this.miscServBillForm = serviceFormResult.form;
-    this.questions = serviceFormResult.questions;
+    this.question = serviceFormResult.questions;
   }
 
   postBillObj: MiscellaneousBillingModel = [] as any;
@@ -473,7 +500,7 @@ export class BillDetailComponent implements OnInit {
     //   "change",
     //   this.setServiceItemList.bind(this)
     // );
-    this.questions[1].elementRef.addEventListener(
+    this.question[1].elementRef.addEventListener(
       "blur",
       this.getTarrifPrice.bind(this)
     );
@@ -519,15 +546,15 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.miscMasterDataList = data as MiscMasterDataModel;
-        this.questions[0].options =
+        this.question[0].options =
           this.miscMasterDataList.objMiscBillingConfigurationList.map((a) => {
             return { title: a.name, value: a.serviceid };
           });
-        this.questions[5].options =
+        this.question[5].options =
           this.miscMasterDataList.objMiscDoctorsList.map((a) => {
             return { title: a.name, value: a.id };
           });
-        this.questions[6].options =
+        this.question[6].options =
           this.miscMasterDataList.objMiscBillingRemarksList.map((a) => {
             return { title: a.name, value: a.id };
           });
@@ -543,7 +570,7 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.serviceItemsList = data as ServiceTypeItemModel[];
-        this.questions[1].options = [
+        this.question[1].options = [
           ...this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
           }),
@@ -552,7 +579,7 @@ export class BillDetailComponent implements OnInit {
   }
 
   //  FOR SETTING PRIORITY
-  getPriority() {}
+  getPriority() { }
   itemID!: number;
   terrifDetail!: TarrifPriceModel;
   getTarrifPrice() {
@@ -588,7 +615,13 @@ export class BillDetailComponent implements OnInit {
       return item.name === control.value;
     });
   }
-
+  discAmtDialog() {
+    this.matDialog.open(DiscountAmtDialogComponent, {
+      width: 'full', height: 'auto', data: {
+        message: "Do you want to save?"
+      },
+    });
+  }
   openMakeBilldialog() {
     const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
       width: "33vw",
@@ -697,14 +730,14 @@ export class BillDetailComponent implements OnInit {
 
     flag: number;
   } = {
-    slNo: 1,
+      slNo: 1,
 
-    modeOfPayment: "Cash",
+      modeOfPayment: "Cash",
 
-    amount: 400,
+      amount: 400,
 
-    flag: 1,
-  };
+      flag: 1,
+    };
 }
 @Component({
   selector: "out-patients-bill-detail",
@@ -786,7 +819,7 @@ export class MiscCredDetail implements OnInit {
   constructor(
     private formService: QuestionControlService,
     private Miscservice: MiscService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -803,4 +836,6 @@ export class MiscCredDetail implements OnInit {
     this.generalFormGroup = formResult1.form;
     this.generalQuestions = formResult1.questions;
   }
+
+
 }

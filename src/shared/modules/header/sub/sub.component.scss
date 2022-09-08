@@ -2,7 +2,7 @@
   height: 3.525em;
   align-items: center;
   &-left {
-    width: 39vw;
+    width: 39%;
     height: 2.625em;
     .home-icon {
       svg {
@@ -46,7 +46,7 @@
     }
   }
   &-right {
-    width: 67.5vw;
+    width: 67.5%;
     background-color: #fff;
     padding: 0 1em;
     border-radius: 0 0 0 1em;
@@ -80,7 +80,7 @@
 
 ::ng-deep {
   .sub-header-menu {
-    width: 48vw;
+    width: 48%;
     //height: vh;
     overflow: hidden;
     max-width: initial !important;
@@ -102,7 +102,7 @@
     }
   }
   .search-header-menu {
-    width: 40vw;
+    width: 40%;
 
     max-width: initial !important;
     margin-left: 5%;

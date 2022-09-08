@@ -114,6 +114,8 @@ export class BillingComponent implements OnInit {
 
   companyData = [];
 
+  orderId: number = 0;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -144,11 +146,32 @@ export class BillingComponent implements OnInit {
         this.patient = false;
         this.getPatientDetailsByMaxId();
       }
+      if (params.orderId) {
+        this.orderId = Number(params.orderId);
+      }
     });
+  }
+
+  getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        BillingApiConstants.getediganosticacdoninvestigationgrid(
+          this.cookie.get("HSPLocationId"),
+          this.orderId,
+          regNumber,
+          iacode
+        )
+      )
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
+      this.billingService.setCompnay(res.value);
+    });
   }
 
   formEvents() {
@@ -300,6 +323,9 @@ export class BillingComponent implements OnInit {
             this.patientDetails = resultData;
 
             this.setValuesToForm(this.patientDetails);
+            if (this.orderId) {
+              this.getediganosticacdoninvestigationgrid(iacode, regNumber);
+            }
 
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
@@ -410,6 +436,7 @@ export class BillingComponent implements OnInit {
     this.router.navigate([], {
       queryParams: { maxId: this.formGroup.value.maxid },
       relativeTo: this.route,
+      queryParamsHandling: "merge",
     });
   }
 

@@ -39,15 +39,16 @@ export class MiscellaneousBillingComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private db: DbService,
     private Misc: MiscService
-  ) {}
-
+  ) { }
+  categoryIcons: any;
+  doCategoryIconAction(icon: any) { }
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
   addItem(newItem: any) {
     console.log(newItem);
     this.items.push(newItem);
   }
-  linkList = [
+  links = [
     {
       title: "Bills",
       path: "bill",
@@ -57,7 +58,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       path: "credit-details",
     },
   ];
-  activeLink = this.linkList[0];
+  activeLink = this.links[0];
 
   complanyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
@@ -95,7 +96,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         type: "checkbox",
         options: [
           {
-            title: "B2B Invoice Type",
+            title: "B2B Invoice",
           },
         ],
       },
@@ -462,4 +463,16 @@ export class MiscellaneousBillingComponent implements OnInit {
       return item.id === id;
     });
   }
+
+  visitHistory() {
+    this.matDialog.open(VisitHistoryComponent, {
+      width: "70%",
+      height: "50%",
+      data: {
+        maxid: this.miscForm.value.maxid,
+        docid: "",
+      },
+    });
+  }
+
 }

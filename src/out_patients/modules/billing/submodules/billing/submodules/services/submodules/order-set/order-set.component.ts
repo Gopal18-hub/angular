@@ -87,10 +87,16 @@ export class OrderSetComponent implements OnInit {
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       priority: {
         title: "Priority",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       specialization: {
         title: "Specialization",
@@ -175,6 +181,7 @@ export class OrderSetComponent implements OnInit {
         data: {
           orderSet: res.element,
           items: res.element.apiItems,
+          gridData: this.data,
         },
       });
     });
@@ -244,7 +251,7 @@ export class OrderSetComponent implements OnInit {
   }
   add(priorityId = 1) {
     let exist = this.billingService.OrderSetItems.findIndex((item: any) => {
-      return item.itemid == this.formGroup.value.orderSet.value;
+      return this.formGroup.value.items.includes(item.itemid);
     });
     if (exist > -1) {
       this.messageDialogService.error(
@@ -297,11 +304,31 @@ export class OrderSetComponent implements OnInit {
             priority: "Routine",
             specialization: "",
             doctorName: "",
+            specialization_required: true,
+            doctorName_required: true,
             price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
-            itemid: this.formGroup.value.orderSet.value,
+            itemid: this.formGroup.value.items[index],
             apiItems: orderSetItems,
+            billItem: {
+              itemId: subItems[index].itemId,
+              priority: subItems[index].priority,
+              serviceId: subItems[index].serviceID,
+              price: resItem.returnOutPut,
+              serviceName: this.formGroup.value.orderSet.title,
+              itemName: resItem.procedureNames,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: resItem.returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
           };
           this.billingService.addToOrderSet(data1);
         });
