@@ -119,7 +119,6 @@ export class HealthCheckupsComponent implements OnInit {
       console.log(res);
       this.matDialog.open(PackageDoctorModificationComponent, {
         width: "50%",
-        height: "50%",
         data: {
           orderSet: res.element,
           items: [],

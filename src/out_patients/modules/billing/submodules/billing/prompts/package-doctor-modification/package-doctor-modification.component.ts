@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-package-doctor-modification",
@@ -30,6 +31,7 @@ export class PackageDoctorModificationComponent implements OnInit {
         title: "Doctor Name",
         type: "dropdown",
         options: [],
+        moreOptions: {},
       },
     },
   };
@@ -37,21 +39,48 @@ export class PackageDoctorModificationComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PackageDoctorModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private http: HttpService
+    private http: HttpService,
+    private cookie: CookieService
   ) {}
 
   getData(hid: string, serviceid: string) {
-    // this.http
-    //   .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
-    //   .subscribe((res) => {
-    //   res.forEach((item: any, index: number) => {
-    //     this.itemsData.push({
-    //       sno: index + 1,
-    //       specialisation: "",
-    //       doctorName: "",
-    //     });
-    //   });
-    // });
+    this.http
+      .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
+      .subscribe((res) => {
+        let i = 0;
+        res.forEach((item: any, index: number) => {
+          if (item.isConsult == 1 && item.itemServiceID == 25) {
+            this.itemsData[i] = {
+              sno: i + 1,
+              specialisation: item.itemName,
+              doctorName: "",
+            };
+            this.getdoctorlistonSpecializationClinic(item.itemID, i);
+            i++;
+          }
+        });
+        this.itemsData = [...this.itemsData];
+      });
+  }
+
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    index: number
+  ) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          false,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        let options = res.map((r: any) => {
+          return { title: r.doctorName, value: r.doctorId };
+        });
+        this.config.columnsInfo.doctorName.moreOptions[index] = options;
+      });
   }
 
   ngOnInit(): void {
