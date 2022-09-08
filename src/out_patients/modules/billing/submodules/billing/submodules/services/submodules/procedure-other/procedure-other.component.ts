@@ -245,25 +245,26 @@ export class ProcedureOtherComponent implements OnInit {
       )
       .subscribe((res) => {
         this.questions[0].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+          return { title: r.name, value: r.id, isBundle: r.isBundle };
         });
         this.questions[0] = { ...this.questions[0] };
       });
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {
-          this.getProcedures(val.value);
+          this.getProcedures(val.value, val.isBundle);
         }
       }
     );
   }
 
-  getProcedures(serviceId: number) {
+  getProcedures(serviceId: number, isBundle = 0) {
     this.http
       .get(
         BillingApiConstants.getotherservicebilling(
           Number(this.cookie.get("HSPLocationId")),
-          serviceId
+          serviceId,
+          isBundle
         )
       )
       .subscribe(
@@ -275,6 +276,7 @@ export class ProcedureOtherComponent implements OnInit {
                 title: r.itemNameWithService || r.itemName,
                 value: r.itemID,
                 originalTitle: r.itemName,
+                docRequired: r.proceduredoctor,
               };
             });
           } else {
@@ -316,27 +318,55 @@ export class ProcedureOtherComponent implements OnInit {
       return;
     }
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.procedure.value,
-          this.formGroup.value.otherService.value,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.procedure.value,
+        serviceId: this.formGroup.value.otherService.value,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToProcedure({
-          sno: this.data.length + 1,
-          procedures: this.formGroup.value.procedure.originalTitle,
-          qty: 1,
-          specialisation: "",
-          doctorName: "",
-          price: res.amount,
-          unitPrice: res.amount,
-          itemid: this.formGroup.value.procedure.value,
-          priorityId: priorityId,
-          serviceId: this.formGroup.value.otherService.value,
-        });
+        if (res.length > 0) {
+          this.billingService.addToProcedure({
+            sno: this.data.length + 1,
+            procedures: this.formGroup.value.procedure.originalTitle,
+            qty: 1,
+            specialisation: "",
+            doctorName: "",
+            doctorName_required: this.formGroup.value.procedure.docRequired
+              ? true
+              : false,
+            specialisation_required: this.formGroup.value.procedure.docRequired
+              ? true
+              : false,
+            price: res[0].returnOutPut,
+            unitPrice: res[0].returnOutPut,
+            itemid: this.formGroup.value.procedure.value,
+            priorityId: priorityId,
+            serviceId: this.formGroup.value.otherService.value,
+            billItem: {
+              itemId: this.formGroup.value.procedure.value,
+              priority: priorityId,
+              serviceId: this.formGroup.value.otherService.value,
+              price: res[0].returnOutPut,
+              serviceName: "Procedure & Others",
+              itemName: this.formGroup.value.procedure.originalTitle,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
+          });
+        }
 
         this.data = [...this.billingService.ProcedureItems];
         this.formGroup.reset();
