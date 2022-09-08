@@ -194,4 +194,7 @@ export namespace CrystalReport {
   export const ScrollSummaryReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/ScrollSummaryReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&locationID=${params.locationID}`;
   };
+  export const PrintOPPrescriptionReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+  };
 }

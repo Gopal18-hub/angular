@@ -94,9 +94,10 @@ export namespace BillingApiConstants {
 
   export const getotherservicebilling = (
     locationId: number,
-    servicingId: number
+    servicingId: number,
+    isBundle = 0
   ) => {
-    return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}/${isBundle}`;
   };
 
   export const getotherservicebillingSearch = (

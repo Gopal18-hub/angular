@@ -293,21 +293,23 @@ export class BillDetailTableComponent implements OnInit {
         {  
           this.billDetailservice.sendforapproval = [];
           this.billDetailservice.totalrefund = 0;
+          var ackflag = 0;
           for(var i = 0; i < this.tableRows.selection.selected.length; i++)
           {
             for(var j = 0; j < this.tableRows.selection.selected.length; j++)
             {
               var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-                return a.serviceId == this.tableRows.selection.selected[j].serviceid;
+                return a.itemid == this.tableRows.selection.selected[j].itemid;
               }) 
             }
+            console.log(list);
             for(var z = 0; z < list.length; z++)
             {
               if(list[z].ackby > 0)
               {
                 var acklist = this.billDetailservice.serviceList.filter((a: any) => {
                   console.log(a);
-                  return a.serviceid == list[z].serviceId;
+                  return a.itemid == list[z].itemid;
                 })
                 console.log(acklist);
                 console.log(list[z]);
@@ -315,7 +317,7 @@ export class BillDetailTableComponent implements OnInit {
                   console.log(item)
                   for(var x = 0; x < acklist.length; x++)
                   {
-                    if(item.serviceid == acklist[x].serviceid && item.cancelled == 0)
+                    if(item.itemid == acklist[x].itemid && item.cancelled == 0)
                     {
                       this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
                       console.log(this.tableRows.selection);
@@ -327,6 +329,7 @@ export class BillDetailTableComponent implements OnInit {
                 })
               }
             }
+            
             console.log(this.tableRows.selection.selected[i])
             if(this.tableRows.selection.selected[i].cancelled == 0)
             {
