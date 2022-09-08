@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 
 @Injectable({
   providedIn: "root",
@@ -14,12 +15,14 @@ export class BillingService {
   OrderSetItems: any = [];
   ConsumableItems: any = [];
   billItemsTrigger = new Subject<any>();
+  configurationservice: [{ itemname: string; servicename: string }] = [] as any;
 
   clearAllItems = new Subject<boolean>();
 
   totalCost = 0;
 
   company: number = 0;
+  billtype: string = "cash";
 
   makeBillPayload = {
     ds_insert_bill: {
@@ -502,6 +505,9 @@ export class BillingService {
     this.OrderSetItems.forEach((item: any) => {
       this.totalCost += item.price;
     });
+    this.HealthCheckupItems.forEach((item: any) => {
+      this.totalCost += item.price;
+    });
   }
 
   checkServicesAdded() {
@@ -535,11 +541,25 @@ export class BillingService {
     this.company = companyid;
   }
 
-  setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
+  setBilltype(billtype: string) {
+    this.billtype = billtype;
+  }
+
+  getbilltype() {
+    return this.billtype;
+  }
+
+  setActiveMaxId(
+    maxId: string,
+    iacode: string,
+    regNumber: string,
+    genderName: string = ""
+  ) {
     this.activeMaxId = {
       maxId: maxId,
       iacode: iacode,
       regNumber: regNumber,
+      gender: genderName,
     };
   }
 
@@ -552,6 +572,13 @@ export class BillingService {
 
   addToConsultation(data: any) {
     this.consultationItems.push(data);
+    this.configurationservice.push({
+      itemname: data.billItem.itemName,
+      servicename: "Consultation",
+    });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
     this.calculateTotalAmount();
   }
   removeFromConsultation(index: number) {
@@ -560,24 +587,64 @@ export class BillingService {
   }
   addToInvestigations(data: any) {
     this.InvestigationItems.push(data);
+    this.configurationservice.push({
+      itemname: data.billItem.itemName,
+      servicename: data.billItem.serviceName,
+    });
     this.calculateTotalAmount();
   }
   removeFromInvestigations() {}
   addToHealthCheckup(data: any) {
     this.HealthCheckupItems.push(data);
+    this.configurationservice.push({
+      itemname: data.healthCheckups,
+      servicename: "Health Checkups",
+    });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
     this.calculateTotalAmount();
   }
   removeFromHealthCheckup() {}
   addToProcedure(data: any) {
     this.ProcedureItems.push(data);
+    this.configurationservice.push({
+      itemname: data.procedures,
+      servicename: "Procedures",
+    });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
+
     this.calculateTotalAmount();
   }
   removeFromProcedure() {}
   addToOrderSet(data: any) {
     this.OrderSetItems.push(data);
+    this.configurationservice.push({
+      itemname: data.billItem.itemName,
+      servicename: data.billItem.serviceName,
+    });
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
+
     this.calculateTotalAmount();
   }
   removeFromORderSet() {}
   addToConsumables() {}
   removeFromConsumables() {}
+
+  getconfigurationservice() {
+    return this.configurationservice;
+  }
+
+  patientDetailsInfo: any = [];
+  setPatientDetails(patientdetails: Registrationdetails) {
+    this.patientDetailsInfo =
+      patientdetails.dsPersonalDetails.dtPersonalDetails1;
+  }
+  getPatientDetails() {
+    return this.patientDetailsInfo[0];
+  }
 }

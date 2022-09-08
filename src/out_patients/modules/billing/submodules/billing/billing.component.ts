@@ -114,6 +114,8 @@ export class BillingComponent implements OnInit {
 
   companyData = [];
 
+  orderId: number = 0;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -144,7 +146,26 @@ export class BillingComponent implements OnInit {
         this.patient = false;
         this.getPatientDetailsByMaxId();
       }
+      if (params.orderId) {
+        this.orderId = Number(params.orderId);
+      }
     });
+  }
+
+  getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        BillingApiConstants.getediganosticacdoninvestigationgrid(
+          this.cookie.get("HSPLocationId"),
+          this.orderId,
+          regNumber,
+          iacode
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -160,7 +181,12 @@ export class BillingComponent implements OnInit {
         event.preventDefault();
         this.apiProcessing = true;
         this.patient = false;
-        this.getPatientDetailsByMaxId();
+        this.router.navigate([], {
+          queryParams: { maxId: this.formGroup.value.maxid },
+          relativeTo: this.route,
+          queryParamsHandling: "merge",
+        });
+        //this.getPatientDetailsByMaxId();
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -194,7 +220,12 @@ export class BillingComponent implements OnInit {
             this.formGroup.controls["maxid"].setValue(maxID);
             this.apiProcessing = true;
             this.patient = false;
-            this.getPatientDetailsByMaxId();
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
           } else {
             const similarSoundDialogref = this.matDialog.open(
               SimilarPatientDialog,
@@ -215,7 +246,12 @@ export class BillingComponent implements OnInit {
                   this.formGroup.controls["maxid"].setValue(maxID);
                   this.apiProcessing = true;
                   this.patient = false;
-                  this.getPatientDetailsByMaxId();
+                  //this.getPatientDetailsByMaxId();
+                  this.router.navigate([], {
+                    queryParams: { maxId: this.formGroup.value.maxid },
+                    relativeTo: this.route,
+                    queryParamsHandling: "merge",
+                  });
                 }
               });
           }
@@ -295,14 +331,12 @@ export class BillingComponent implements OnInit {
         (resultData: Registrationdetails) => {
           console.log(resultData);
           if (resultData) {
-            this.billingService.setActiveMaxId(
-              this.formGroup.value.maxid,
-              iacode,
-              regNumber.toString()
-            );
             this.patientDetails = resultData;
 
             this.setValuesToForm(this.patientDetails);
+            if (this.orderId) {
+              this.getediganosticacdoninvestigationgrid(iacode, regNumber);
+            }
 
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
@@ -314,6 +348,12 @@ export class BillingComponent implements OnInit {
                 );
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+              this.billingService.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString(),
+                patientDetails.genderName
+              );
               if (patientDetails.nationality != 149) {
                 const dialogRef = this.messageDialogService.info(
                   "Please Ensure International Tariff Is Applied!"
@@ -410,10 +450,6 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
     this.questions[2].readonly = true;
-    this.router.navigate([], {
-      queryParams: { maxId: this.formGroup.value.maxid },
-      relativeTo: this.route,
-    });
   }
 
   onageCalculator(ageDOB = "") {
@@ -486,6 +522,7 @@ export class BillingComponent implements OnInit {
           this.cookie.get("HSPLocationId")
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         console.log(res);
       });
@@ -619,7 +656,12 @@ export class BillingComponent implements OnInit {
           this.formGroup.controls["maxid"].setValue(maxid);
           this.apiProcessing = true;
           this.patient = false;
-          this.getPatientDetailsByMaxId();
+          //this.getPatientDetailsByMaxId();
+          this.router.navigate([], {
+            queryParams: { maxId: this.formGroup.value.maxid },
+            relativeTo: this.route,
+            queryParamsHandling: "merge",
+          });
         }
       });
   }
@@ -663,6 +705,8 @@ export class BillingComponent implements OnInit {
   }
 
   clear() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
@@ -676,6 +720,8 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
+    this.categoryIcons = [];
+    this.questions[0].questionClasses = "";
     this.formGroup.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );

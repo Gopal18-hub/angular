@@ -88,11 +88,16 @@ export namespace BillingApiConstants {
   };
   export const getotherservice = `${environment.CommonApiUrl}api/lookup/getotherservice`;
 
+  export const getotherserviceop = (locationId: number) => {
+    return `${environment.CommonApiUrl}api/lookup/getotherserviceforop/${locationId}`;
+  };
+
   export const getotherservicebilling = (
     locationId: number,
-    servicingId: number
+    servicingId: number,
+    isBundle = 0
   ) => {
-    return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}`;
+    return `${environment.CommonApiUrl}api/lookup/getotherservicebilling/${locationId}/${servicingId}/${isBundle}`;
   };
 
   export const getotherservicebillingSearch = (
@@ -181,4 +186,23 @@ export namespace BillingApiConstants {
     doctorId: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${IACode}/${RegistrationNo}/${locationId}/${doctorId}`;
+
+  export const getediganosticacdoninvestigationgrid = (
+    locationid: string,
+    orderId: number,
+    RegistrationNo: number,
+    IACode: string
+  ) =>
+    `${environment.PatientApiUrl}patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
+
+  export const checkPatientSex = (
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkPatientSex/${testId}/${gender}/${serviceId}/${type}`;
+
+  export const getHealthCheckupdetails = (hcuid: string, serviceid: string) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getHealthCheckupdetails/${hcuid}/${serviceid}`;
 }

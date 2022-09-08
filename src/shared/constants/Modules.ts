@@ -94,7 +94,7 @@ export namespace MaxModules {
         {
           id: -1,
           title: "Out Patient Billing",
-          defaultPath: "",
+          defaultPath: "out-patient-billing",
           tenentPath: "/out-patients",
           childrens: [
             {
@@ -284,7 +284,7 @@ export namespace MaxModules {
               id: 918,
               title: "Acknowledge Scroll Amount Report",
               defaultPath:
-                "/report/prompt-report/acknowledge-scroll-amount-report",
+                "out-patient-billing/acknowledged-scroll-amount-report",
               globalSearchKey: "global",
             },
             {

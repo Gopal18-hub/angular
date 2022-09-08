@@ -1102,4 +1102,22 @@ export namespace ApiConstants {
       value
     );
   };
+  export const getExpiredDepositReport = (
+    iacode: string,
+    registrationno: number,
+    fromdate: string,
+    todate: string
+  ) => {
+    return (
+      environment.CommonApiUrl +
+      "iacode" +
+      "/" +
+      "registrationno" +
+      "/" +
+      "fromdate" +
+      "/" +
+      "todate" +
+      "/"
+    );
+  };
 }
