@@ -119,6 +119,50 @@ export class SingleComponent implements OnInit, OnChanges {
           this.formGroup.value
         );
       }
+      if (button.reportConfig.reportEntity == "OpenScrollReport") {
+        let openscrolltypename;
+        this.http
+          .get(`${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((resultData: any) => {
+            if (resultData) {
+              if (resultData.length > 0) {
+                if (
+                  !this.formGroup.value.cmbopenscrolltype ||
+                  this.formGroup.value.cmbopenscrolltype == "0"
+                ) {
+                  this.formGroup.value.cmbopenscrolltype = 0;
+                }
+                openscrolltypename = resultData.filter(
+                  (e: any) => e.id === this.formGroup.value.cmbopenscrolltype
+                )[0].name;
+                let user = this.formGroup.value.user;
+                let cmbopenscrolltype = this.formGroup.value.cmbopenscrolltype;
+                let datetype = this.formGroup.value.datetype;
+                let dtpEndDate = this.formGroup.value.dtpEndDate;
+                let dtpStartDate = this.formGroup.value.dtpStartDate;
+                this.reportService.openWindow(
+                  button.reportConfig.reportName,
+                  button.reportConfig.reportEntity,
+                  {
+                    cmbopenscrolltype,
+                    datetype,
+                    dtpEndDate,
+                    dtpStartDate,
+                    openscrolltypename,
+                    user,
+                  }
+                );
+              }
+            }
+          });
+      } else {
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          this.formGroup.value
+        );
+      }
     }
   }
 }
