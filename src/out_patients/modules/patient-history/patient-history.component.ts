@@ -667,7 +667,7 @@ export class PatientHistoryComponent implements OnInit {
       {
         this.openReportModal('billingreport');
       }
-      else if(event.row.billType == 'Op Refund') 
+      else if(event.row.billType == 'OP Refund') 
       {
         this.openReportModal('refundReport');
       }
