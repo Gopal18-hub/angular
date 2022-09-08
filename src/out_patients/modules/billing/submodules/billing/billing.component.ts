@@ -162,6 +162,7 @@ export class BillingComponent implements OnInit {
           iacode
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
         console.log(res);
       });
@@ -315,11 +316,6 @@ export class BillingComponent implements OnInit {
         (resultData: Registrationdetails) => {
           console.log(resultData);
           if (resultData) {
-            this.billingService.setActiveMaxId(
-              this.formGroup.value.maxid,
-              iacode,
-              regNumber.toString()
-            );
             this.patientDetails = resultData;
 
             this.setValuesToForm(this.patientDetails);
@@ -337,6 +333,12 @@ export class BillingComponent implements OnInit {
                 );
               const patientDetails =
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+              this.billingService.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString(),
+                patientDetails.genderName
+              );
               if (patientDetails.nationality != 149) {
                 const dialogRef = this.messageDialogService.info(
                   "Please Ensure International Tariff Is Applied!"
@@ -510,6 +512,7 @@ export class BillingComponent implements OnInit {
           this.cookie.get("HSPLocationId")
         )
       )
+      .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         console.log(res);
       });
@@ -687,6 +690,8 @@ export class BillingComponent implements OnInit {
   }
 
   clear() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
@@ -700,6 +705,7 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
+    this.categoryIcons = [];
     this.formGroup.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );

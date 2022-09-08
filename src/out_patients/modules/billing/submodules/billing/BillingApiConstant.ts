@@ -193,4 +193,15 @@ export namespace BillingApiConstants {
     IACode: string
   ) =>
     `${environment.PatientApiUrl}patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
+
+  export const checkPatientSex = (
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkPatientSex/${testId}/${gender}/${serviceId}/${type}`;
+
+  export const getHealthCheckupdetails = (hcuid: string, serviceid: string) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getHealthCheckupdetails/${hcuid}/${serviceid}`;
 }

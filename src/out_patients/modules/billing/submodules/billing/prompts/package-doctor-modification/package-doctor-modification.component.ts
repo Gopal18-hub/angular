@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { HttpService } from "@shared/services/http.service";
+import { BillingApiConstants } from "../../BillingApiConstant";
 
 @Component({
   selector: "out-patients-package-doctor-modification",
@@ -34,17 +36,26 @@ export class PackageDoctorModificationComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PackageDoctorModificationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private http: HttpService
   ) {}
 
+  getData(hid: string, serviceid: string) {
+    // this.http
+    //   .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
+    //   .subscribe((res) => {
+    //   res.forEach((item: any, index: number) => {
+    //     this.itemsData.push({
+    //       sno: index + 1,
+    //       specialisation: "",
+    //       doctorName: "",
+    //     });
+    //   });
+    // });
+  }
+
   ngOnInit(): void {
-    this.data.items.forEach((item: any, index: number) => {
-      this.itemsData.push({
-        sno: index + 1,
-        specialisation: "",
-        doctorName: "",
-      });
-    });
+    this.getData(this.data.orderSet.itemid, this.data.orderSet.serviceid);
   }
 
   close() {

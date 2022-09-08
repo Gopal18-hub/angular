@@ -210,6 +210,27 @@ export class HealthCheckupsComponent implements OnInit {
       );
   }
 
+  checkPatientSex(
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string,
+    priorityId: number
+  ) {
+    this.http
+      .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
+      .subscribe((res) => {
+        if (res == 1) {
+          this.proceedToAdd(priorityId);
+        } else {
+          this.messageDialogService.error(
+            "This plan can not assign for this sex"
+          );
+          this.formGroup.reset();
+        }
+      });
+  }
+
   add(priorityId = 1) {
     let exist = this.billingService.HealthCheckupItems.findIndex(
       (item: any) => {
@@ -222,6 +243,16 @@ export class HealthCheckupsComponent implements OnInit {
       );
       return;
     }
+    this.checkPatientSex(
+      this.formGroup.value.healthCheckup.value,
+      this.billingService.activeMaxId.gender,
+      "26",
+      "1",
+      priorityId
+    );
+  }
+
+  proceedToAdd(priorityId: number) {
     this.http
       .get(
         BillingApiConstants.getPrice(

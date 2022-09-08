@@ -535,11 +535,17 @@ export class BillingService {
     this.company = companyid;
   }
 
-  setActiveMaxId(maxId: string, iacode: string, regNumber: string) {
+  setActiveMaxId(
+    maxId: string,
+    iacode: string,
+    regNumber: string,
+    genderName: string = ""
+  ) {
     this.activeMaxId = {
       maxId: maxId,
       iacode: iacode,
       regNumber: regNumber,
+      gender: genderName,
     };
   }
 
