@@ -50,7 +50,7 @@ export class billDetailService{
     {
         this.totalrefund = 0;
         this.sendforapproval.forEach((i: any)=>{
-            this.totalrefund += i.refundAmt;
+            this.totalrefund += Number(i.refundAmt);
         })
     }
 }

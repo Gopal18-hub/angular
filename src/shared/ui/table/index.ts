@@ -31,6 +31,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { TextFieldModule } from "@angular/cdk/text-field";
 
 import { ContenteditableValueAccessor } from "../../utilities/directives/contenteditable-value-accessor";
+import { ControlDirtyDirective } from "../../utilities/directives/control-dirty";
 
 @NgModule({
   imports: [
@@ -63,6 +64,7 @@ import { ContenteditableValueAccessor } from "../../utilities/directives/content
     MaxTableComponent,
     MaxTableFormComponent,
     ContenteditableValueAccessor,
+    ControlDirtyDirective,
   ],
   providers: [],
 })

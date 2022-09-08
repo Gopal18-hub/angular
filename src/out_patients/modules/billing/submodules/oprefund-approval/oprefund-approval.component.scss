@@ -28,13 +28,16 @@
 .input-align{
   ::ng-deep .max-table-wrapper table tbody tr td:nth-child(9){
    
-    text-align:center;
+    text-align:right;
+    padding-right: 52px !important;
   }
 }
 .input-align2{
   ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
     
-    text-align:center;
+    text-align:right;
+    padding-right: 55px !important;
   }
 }
+
  

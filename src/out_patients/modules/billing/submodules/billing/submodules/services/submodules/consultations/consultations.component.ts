@@ -306,25 +306,46 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       return;
     }
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.doctorName.value,
-          25,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.doctorName.value,
+        serviceId: 25,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToConsultation({
-          sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.originalTitle,
-          doctorId: this.formGroup.value.doctorName.value,
-          type: priorityId,
-          scheduleSlot: "",
-          bookingDate: "",
-          price: res.amount,
-        });
-
+        if (res.length > 0) {
+          this.billingService.addToConsultation({
+            sno: this.data.length + 1,
+            doctorName: this.formGroup.value.doctorName.originalTitle,
+            doctorId: this.formGroup.value.doctorName.value,
+            type: priorityId,
+            scheduleSlot: "",
+            bookingDate: "",
+            price: res[0].returnOutPut,
+            billItem: {
+              itemId: this.formGroup.value.doctorName.value,
+              priority: priorityId,
+              serviceId: 25,
+              price: res[0].returnOutPut,
+              serviceName: "Consultation Charges",
+              itemName: this.formGroup.value.doctorName.originalTitle,
+              qty: 1,
+              precaution: "n/a",
+              procedureDoctor: "n/a",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+            },
+          });
+        }
         this.data = [...this.billingService.consultationItems];
         this.formGroup.reset();
       });
