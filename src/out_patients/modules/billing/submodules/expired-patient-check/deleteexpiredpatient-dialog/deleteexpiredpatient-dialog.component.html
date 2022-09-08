@@ -8,12 +8,15 @@
     <div class="h-1/10 max-health-primary-color mt-3">
         <p>Do You Want To Delete Expired Patient Details?</p>
     </div>
-    <div class="h-2/10">
-        <button mat-raised-button (click)="deleteExpiredpatient()" mat-dialog-close>
+    <div class="h-2/10 w-full flex justify-content-center ">
+        <button mat-raised-button (click)="deleteExpiredpatient()" class="min-width " mat-dialog-close>
             Yes
         </button>
-        <button class="ml-2" mat-raised-button color="primary" mat-dialog-close>
-            No
-        </button>
+        <div class="ml-6">
+            <button class=" min-width" mat-raised-button color="primary" class="min-width" mat-dialog-close>
+                No
+            </button>
+        </div>
+       
     </div>
 </div>
