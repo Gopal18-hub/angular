@@ -148,7 +148,130 @@ export namespace FormReport {
       ],
     },
   };
+  export const OnlinePaymentDetailReport = {
+    reportName: "Online Payment Detail Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        fromdate: {
+          type: "date",
+          title: "From Date",
+        },
+        todate: {
+          type: "date",
+          title: "To Date",
+        },
+        locationid: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        RepType: {
+          type: "radio",
+          options: [
+            { title: "OP", value: "OP" },
+            { title: "PreAdmission", value: "PreAdmission" },
+            { title: "Emergency", value: "Emergency" },
+            { title: "IP", value: "IP" },
+          ],
+        },
+      },
+    },
+    form: {
+      layout: {
+        locationid: "w-full",
+        openScrollFor: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Online Payment Detail Report",
+            reportEntity: "OnlinePaymentDetailReport",
+          },
+        },
+        {
+          label: "Export",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+    ],
+  };
+  export const DailyCollectionReport = {
+    reportName: "DailyCollectionReport",
+    filterForm: {
+      format: "dd/MM/YYYY",
+      title: "",
+      type: "object",
+      properties: {
+        todate: {
+          type: "date",
+          title: "Date",
+        },
+        locationID: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          questionClasses: "max-hide",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        LocationName: "w-screen",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Daily Collection Report",
+            reportEntity: "DailyCollectionReport",
+          },
+        },
+        {
+          label: "Excel",
+          type: "",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
 
+    layout: "single",
+    resultType: "table",
+  };
   export const DoctorSheduleReport = {
     reportName: "Doctors",
     filterForm: {
