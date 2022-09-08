@@ -251,7 +251,7 @@ export class OrderSetComponent implements OnInit {
   }
   add(priorityId = 1) {
     let exist = this.billingService.OrderSetItems.findIndex((item: any) => {
-      return item.itemid == this.formGroup.value.orderSet.value;
+      return this.formGroup.value.items.includes(item.itemid);
     });
     if (exist > -1) {
       this.messageDialogService.error(

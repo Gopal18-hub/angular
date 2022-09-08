@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { GetConfigureMessageInterface } from "@core/types/configure/getConfiguremessage.Interface";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { HttpClient } from "@angular/common/http";
+import { Subject, takeUntil } from "rxjs";
 @Component({
   selector: "out-patients-configure-lims",
   templateUrl: "./configure-lims.component.html",
@@ -10,6 +13,8 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 export class ConfigureLimsComponent implements OnInit {
   questions: any;
   limsconfigureform!: FormGroup;
+  limsconfigureList: GetConfigureMessageInterface[] = [];
+  private readonly _destroying$ = new Subject<void>();
   config: any = {
     actionItems: false,
     /// dateformat: "dd/MM/yyyy",
@@ -17,13 +22,7 @@ export class ConfigureLimsComponent implements OnInit {
     selectBox: true,
     // selectCheckBoxPosition: 10,
     clickSelection: "single",
-    displayedColumns: [
-      "testname",
-      "ssn",
-      "orderdate",
-      "ordertime",
-      "messagestatus",
-    ],
+    displayedColumns: ["testname", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
       testname: {
         title: "Test Name",
@@ -41,22 +40,22 @@ export class ConfigureLimsComponent implements OnInit {
         },
         tooltipColumn: "ssn",
       },
-      orderdate: {
-        title: "Order Date",
+      orderdatetime: {
+        title: "Order DateTime",
         type: "string",
         style: {
           width: "5.5rem",
         },
-        tooltipColumn: "orderdate",
+        tooltipColumn: "orderdatetime",
       },
-      ordertime: {
-        title: "Order Time",
-        type: "string",
-        style: {
-          width: "6rem",
-        },
-        tooltipColumn: "ordertime",
-      },
+      // ordertime: {
+      //   title: "Order Time",
+      //   type: "string",
+      //   style: {
+      //     width: "6rem",
+      //   },
+      //   tooltipColumn: "ordertime",
+      // },
       messagestatus: {
         title: "Message Status",
         type: "string",
@@ -67,7 +66,10 @@ export class ConfigureLimsComponent implements OnInit {
       },
     },
   };
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpClient
+  ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.limsconfigureformData.properties,
@@ -75,6 +77,19 @@ export class ConfigureLimsComponent implements OnInit {
     );
     this.limsconfigureform = formResult.form;
     this.questions = formResult.questions;
+  }
+  ngAfterViewInit() {
+    this.http
+      .get(ApiConstants.getconfiguremessage("LIMS", "SKCS3760202"))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.limsconfigureList = data as GetConfigureMessageInterface[];
+        // this.limsconfigureList.forEach((item) => {
+        //   item.orderdate = item.orderdatetime.split("T")[0];
+        //   item.ordertime = item.orderdatetime.split("T")[1];
+        // });
+      });
   }
   limsconfigureformData = {
     title: "",

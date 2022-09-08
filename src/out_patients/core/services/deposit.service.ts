@@ -219,4 +219,11 @@ export class DepositService {
     clearsibllingcomponent(){
       this.clearAllItems.next(true);
     }
+    refundcashlimit:any=[];
+    setcashlimitation(cashlimitlist:any){
+       this.refundcashlimit = cashlimitlist;
+    }
+    getcashlimit(){
+      return this.refundcashlimit;
+    }
 }
