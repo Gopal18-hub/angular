@@ -34,6 +34,8 @@ import { PrintRefundReceiptDialogComponent } from './printrefundreceiptdialog/pr
 import { ResendBillEmailDialogComponent } from './resend-bill-email-dialog/resend-bill-email-dialog.component'
 import { ReportService } from "@shared/services/report.service";
 import { ActivatedRoute } from "@angular/router";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -396,15 +398,18 @@ export class DetailsComponent implements OnInit {
     let iacode = this.BServiceForm.value.maxid.split(".")[0];
     let regNumber = this.BServiceForm.value.maxid.split(".")[1];
     this.http
-      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .get(ApiConstants.getregisteredpatientdetailsForBilling(iacode, regNumber, Number(this.cookie.get("HSPLocationId"))))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
-        (resultData: PatientDetails) => {
+        (resultData: Registrationdetails) => {
+          console.log(resultData);
           // this.clear();
-          this.patientDetailsforicon = resultData;
-          this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            this.patientDetailsforicon
-          );
+          this.patientDetails = resultData;
+          console.log(this.patientDetails)
+          // this.patientDetailsforicon = this.patientDetails.dsPersonalDetails.dtPersonalDetails1;
+          // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+          //   this.patientDetailsforicon
+          // );
         },
         (error) => {}
       );
@@ -432,6 +437,20 @@ export class DetailsComponent implements OnInit {
             console.log(this.patientbilldetaillist)
             this.billdetailservice.patientbilldetaillist = resultdata;
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+            var printrefundflag = 0;
+            this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(k => {
+              if(k.cancelled == 1)
+              {
+                printrefundflag++;
+              }
+            })
+            if(printrefundflag > 0)
+            {
+              this.printrefund = false;
+            }
+            else{
+              this.printrefund = true;
+            }
             if (this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1) 
             {
               this.billdetailservice.billafterrefund = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
@@ -587,7 +606,33 @@ export class DetailsComponent implements OnInit {
     }
     this.sendapprovalcheck();
   }
- 
+  dms() {
+    console.log(this.patientDetails)
+    const patientDetails =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    this.http
+      .get(
+        ApiConstants.PatientDMSDetail(
+          patientDetails.iacode,
+          patientDetails.registrationno
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: DMSrefreshModel[]) => {
+        this.matDialog.open(DMSComponent, {
+          width: "100vw",
+          maxWidth: "90vw",
+          height: '90vh',
+          data: {
+            list: resultData,
+            maxid: patientDetails.iacode + "." + patientDetails.registrationno,
+            firstName: patientDetails.firstname,
+            lastName: patientDetails.lastname,
+          },
+        });
+        // this.dmsProcessing = false;
+      });
+  }
  openhistory() {
     this.matDialog.open(VisitHistoryComponent, {
       width: "70%",
@@ -611,21 +656,38 @@ export class DetailsComponent implements OnInit {
     });
     dialogref.afterClosed().subscribe((res) => {
       console.log(res);
-      if (res == "" && res == null && res == undefined) {
-        // this.clear();
-      } else {
+      if (res) {
         this.BServiceForm.controls["billNo"].setValue(res);
         this.billno = this.BServiceForm.controls["billNo"].value;
         console.log(this.BServiceForm.controls["billNo"].value)
         this.getpatientbilldetails();
+      } else {
+        // console.log('res')
+        // this.clear();
       }
     });
     this.BServiceForm.markAsDirty();
   }
   refunddialog()
   { 
+    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0]);
+    if(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0] > '65')
+    {
+      var dialogref = this.msgdialog.info('Patient is Senior Citizen.');
+      dialogref.afterClosed()
+      .subscribe(res => {
+        this.refunddialogopen();
+      })
+    }
+    else
+    {
+      this.refunddialogopen();
+    }
+  }
+  refunddialogopen()
+  {
     console.log(this.BServiceForm.value.paymentMode);
-    const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
+      const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
       panelClass: 'refund-bill-dialog',
       width: "70vw",
       height: "98vh",
@@ -642,7 +704,6 @@ export class DetailsComponent implements OnInit {
         maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
       }
     });
-
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
@@ -737,6 +798,13 @@ export class DetailsComponent implements OnInit {
         MAXID: this.BServiceForm.value.maxid
       });
     }
+    else if(btnname == 'PrintOPPrescriptionReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
+        locationID: this.cookie.get('HSPLocationId'),
+      });
+    }
     
   }
   ngDoCheck(): void {
@@ -745,6 +813,26 @@ export class DetailsComponent implements OnInit {
       console.log(this.billdetailservice.totalrefund);
       console.log(this.billdetailservice.sendforapproval);
       var approvedlist;
+      var forenablerefundbill: any;
+      this.billdetailservice.sendforapproval.forEach((j: any) => {
+        forenablerefundbill = this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(k => {
+          return k.serviceId == j.serviceId;
+        })
+      })
+      
+      console.log(forenablerefundbill);
+
+      forenablerefundbill.forEach((k: any) => {
+        if(k.notApproved == 1)
+        {
+          this.refundbill = false;
+          return;
+        }
+        else
+        {
+          this.refundbill = true;
+        }
+      })
       // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
       //   console.log(i);
         this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((j: any) => {
