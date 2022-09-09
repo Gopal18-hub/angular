@@ -29,4 +29,12 @@ export namespace BillDetailsApiConstants{
     ) => {
         return `${environment.BillingApiUrl}api/outpatientbilling/getrefundbillnumber/${opbillid}`;
     }
+
+    export const getpaymentmode = (BillNo: any, stationid: any) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getpaymentmode/${BillNo}/${stationid}`;
+    }
+
+    export const saverefunddetailsforparticularbill = `${environment.BillingApiUrl}api/outpatientbilling/saverefunddetailsforparticularbill`;
+
+    export const billrefundforsingleitem = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitem`;
 }
