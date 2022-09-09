@@ -19,6 +19,7 @@ import { MiscService } from "../../MiscService.service";
 import { MakedepositDialogComponent } from "@modules/billing/submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
 import { MakeBillDialogComponent } from "../../makebill-dialog/makebill-dialog.component";
 import { DiscountAmtDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
+import { GstTaxDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -51,20 +52,20 @@ export class BillDetailComponent implements OnInit {
         type: "autocomplete",
         title: "Service Type",
         options: this.serviceList,
-        required: true,
+        //required: true,
       },
       //1
       item: {
         type: "autocomplete",
         title: "Item",
-        required: true,
+        //required: true,
         options: this.serviceItemsList,
       },
       //2
       tffPrice: {
         type: "number",
         title: "Tarrif Price",
-        required: true,
+        //required: true,
         readonly: true,
       },
       //3
@@ -73,14 +74,14 @@ export class BillDetailComponent implements OnInit {
         title: "Qty",
         maximum: 9,
         minimum: 1,
-        required: true,
+        //required: true,
       },
       //4
       reqAmt: {
         type: "number",
         title: "Req. Amt.",
         minimum: 1,
-        required: true,
+        //required: true,
       },
       //5
       pDoc: {
@@ -92,7 +93,7 @@ export class BillDetailComponent implements OnInit {
       remark: {
         type: "autocomplete",
         title: "Remarks",
-        required: true,
+        //required: true,
         options: this.remarkList,
       },
       //7
@@ -104,13 +105,13 @@ export class BillDetailComponent implements OnInit {
       //8
       referralDoctor: {
         type: "dropdown",
-        required: true,
+        //required: true,
         title: "Referral Doctor",
       },
       //9
       interactionDetails: {
         type: "dropdown",
-        required: true,
+        //required: true,
         title: "Interaction Details",
       },
       //10
@@ -225,7 +226,7 @@ export class BillDetailComponent implements OnInit {
       //26
       paymentMode: {
         type: "radio",
-        required: true,
+        //required: true,
         options: [
           { title: "Cash", value: "cash" },
           { title: "Credit", value: "credit" },
@@ -570,6 +571,7 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.serviceItemsList = data as ServiceTypeItemModel[];
+        console.log(this.serviceItemsList, "Service list")
         this.question[1].options = [
           ...this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
@@ -639,7 +641,21 @@ export class BillDetailComponent implements OnInit {
         }
       });
   }
+  openGstTaxDialog() {
+    this.matDialog.open(GstTaxDialogComponent, {
+      width: '35vw', height: '70vh', data: {
+        message: "Do you want to save?"
+      },
+    });
+  }
 
+  // discAmtDialog() {
+  //   this.matDialog.open(DiscountAmtDialogComponent, {
+  //     width: 'full', height: 'auto', data: {
+  //       message: "Do you want to save?"
+  //     },
+  //   });
+  // }
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(
       MakedepositDialogComponent,

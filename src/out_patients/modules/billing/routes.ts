@@ -36,6 +36,8 @@ import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.
 import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/view-request/view-request.component";
 import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
+import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
 
 const routes: Routes = [
   {
@@ -116,7 +118,14 @@ const routes: Routes = [
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
       },
-
+      {
+        path: "expired-deposits",
+        component: ExpiredDepositsComponent,
+      },
+      {
+        path: "monthly-op-consultation-report",
+        component: MonthlyOpConsultationReportComponent,
+      },
       {
         path: "post-discharge-follow-up-billing",
         component: PostDischargeFollowUpBillingComponent,
