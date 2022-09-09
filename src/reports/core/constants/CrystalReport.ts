@@ -197,4 +197,7 @@ export namespace CrystalReport {
   export const PrintOPPrescriptionReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
+  export const DueReceiptReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
+  };
 }
