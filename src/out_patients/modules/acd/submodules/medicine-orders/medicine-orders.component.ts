@@ -219,7 +219,7 @@ export class MedicineOrdersComponent implements OnInit {
     actionItems: false,
     selectBox: true,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
-    displayedColumns: ['drug', 'doctor', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
+    displayedColumns: ['drug', 'scheduleName', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
     rowLayout: { dynamic: { rowClass: "'isBilled'+row['isBilled']" } },
     columnsInfo: {
 
@@ -230,7 +230,7 @@ export class MedicineOrdersComponent implements OnInit {
           width: "20%",
         },
       },
-      doctor: {
+      scheduleName: {
         title: 'Schedule',
         type: 'string',
         style: {
