@@ -157,7 +157,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "12rem",
+          width: "18rem",
         },
       },
       refundAmt: {
@@ -316,7 +316,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "12rem",
+          width: "18rem",
         },
       },
       refundAmt: {
@@ -484,7 +484,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "itemName",
         style: {
-          width: "12rem",
+          width: "18rem",
         },
       },
       refundAmt: {
