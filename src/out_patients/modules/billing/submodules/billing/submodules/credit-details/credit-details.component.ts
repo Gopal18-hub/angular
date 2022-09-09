@@ -222,14 +222,19 @@ export class CreditDetailsComponent implements OnInit {
   openconfiguration(){
     let billtype;
     billtype = this.billingservice.getbilltype();
+    let configurationitems:any = this.billingservice.getconfigurationservice();
     if(billtype != "credit"){  
       this.dialogService.error("Select credit check first");
-    }else{
+    }
+    else if(configurationitems.length == 0){
+      this.dialogService.error("There is no items for configuration");
+    }
+    else{
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",
         height: "80%",
         data: {
-          serviceconfiguration: this.billingservice.getconfigurationservice(),
+          serviceconfiguration: configurationitems,
           patientdetails: this.billingservice.getPatientDetails(),
           companyname: this.companyname
         },
