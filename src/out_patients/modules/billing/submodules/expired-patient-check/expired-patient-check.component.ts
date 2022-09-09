@@ -18,6 +18,7 @@ import { SimilarPatientDialog } from "../../../../modules/registration/submodule
 import { SearchService } from "@shared/services/search.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { LookupService } from "../../../../../out_patients/core/services/lookup.service";
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 interface deleteexpiredResponse {
   success: boolean;
   message: string;
@@ -251,9 +252,10 @@ export class ExpiredPatientCheckComponent implements OnInit {
               this.expiredpatientForm.controls["checkbox"].setValue(
                 this.expiredPatientDetail[0].flagexpired
               );
-              this.categoryIcons = this.patientService.getCategoryIcons(
-                this.expiredPatientDetail[0]
-              );
+              // this.categoryIcons = this.patientService.getCategoryIcons(
+              //   this.expiredPatientDetail[0]
+              // );
+              this.getPatientIcon();
             } else {
               this.validmaxid = false;
               // this.disableClear = false;
@@ -270,6 +272,24 @@ export class ExpiredPatientCheckComponent implements OnInit {
     // this.questions[0].elementRef.focus();
   }
 
+  patientDetailsforicon!: PatientDetails;
+  getPatientIcon() {
+    let iacode = this.expiredpatientForm.value.maxid.split(".")[0];
+    let regNumber = this.expiredpatientForm.value.maxid.split(".")[1];
+    this.http
+      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: PatientDetails) => {
+          // this.clear();
+          this.patientDetailsforicon = resultData;
+          this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            this.patientDetailsforicon
+          );
+        },
+        (error) => {}
+      );
+  }
   seterroronMaxid() {
     this.clearpatientData();
     this.questions[1].elementRef.focus();
@@ -346,7 +366,10 @@ export class ExpiredPatientCheckComponent implements OnInit {
             this.saveApimessage = resultdata;
             if (this.saveApimessage.toString() == "Saved Successfully") {
               this.messagedialogservice.success("Data saved successfully");
-              this.clearData();
+              this.onMaxidSearch(
+                this.expiredpatientForm.controls["maxid"].value
+              );
+              //this.clearData();
               //this.expiredpatientForm.controls["checkbox"].setValue(false);
             }
           },
@@ -355,7 +378,10 @@ export class ExpiredPatientCheckComponent implements OnInit {
             if (HttpErrorResponse.error.text == "Saved Successfully") {
               console.log("inside error success message");
               this.messagedialogservice.success("Data saved successfully");
-              this.clearData();
+              this.onMaxidSearch(
+                this.expiredpatientForm.controls["maxid"].value
+              );
+              //this.clearData();
             }
           }
         );
@@ -447,8 +473,10 @@ export class ExpiredPatientCheckComponent implements OnInit {
                   "Patient Expired Details Has Been Deleted"
                 );
               }
-
-              this.clearData();
+              this.onMaxidSearch(
+                this.expiredpatientForm.controls["maxid"].value
+              );
+              //this.clearData();
             });
         }
       });
