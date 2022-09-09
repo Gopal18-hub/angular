@@ -59,7 +59,7 @@ export class SearchDialogComponent implements OnInit {
     clickedRows: true,
     clickSelection: "single",
     actionItems: false,
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/yyyy H:mm:ss",
     selectBox: false,
     displayedColumns: [
       "sno",
@@ -103,7 +103,8 @@ export class SearchDialogComponent implements OnInit {
         type: "date",
         style: {
           width: "6rem"
-        }
+        },
+        tooltipColumn: 'datetime'
       },
       patientName: {
         title: "Patient Name",
