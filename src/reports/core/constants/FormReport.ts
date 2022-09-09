@@ -886,15 +886,15 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
-        fromdate: {
+        dtpFromDate: {
           type: "date",
           title: "From Date",
         },
-        todate: {
+        dtpToDate: {
           type: "date",
           title: "To Date",
         },
-        locationid: {
+        cmbLocation: {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
@@ -907,25 +907,25 @@ export namespace FormReport {
             },
           },
         },
-        openScrollFor: {
+        cmbopenscrolltype: {
           type: "dropdown",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
           defaultValue: "0",
-          // optionsModelConfig: {
-          //   uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
-          //   fields: {
-          //     title: "name",
-          //     value: "id",
-          //   },
-          // },
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`,
+            fields: {
+              title: "scrollName",
+              value: "flag",
+            },
+          },
         },
       },
     },
     form: {
       layout: {
-        locationid: "w-full",
-        openScrollFor: "w-full",
+        cmbLocation: "w-full",
+        cmbopenscrolltype: "w-full",
       },
       actionItems: [
         {
