@@ -19,6 +19,7 @@ import { DmgDialogComponent } from "./dmg-dialog/dmg-dialog.component";
 import { SearchService } from "@shared/services/search.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { LookupService } from "../../../../../out_patients/core/services/lookup.service";
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 @Component({
   selector: "out-patients-dmg-mapping",
   templateUrl: "./dmg-mapping.component.html",
@@ -219,9 +220,10 @@ export class DmgMappingComponent implements OnInit {
               this.dmgMappingForm.controls["mobileno"].setValue(
                 this.dmgPatientDetails.dmgPatientDetailDT[0].mobileNo
               );
-              this.categoryIcons = this.patientService.getCategoryIcons(
-                this.dmgPatientDetails.dmgPatientDetailDT[0]
-              );
+              // this.categoryIcons = this.patientService.getCategoryIcons(
+              //   this.dmgPatientDetails.dmgPatientDetailDT[0]
+              // );
+              this.getPatientIcon();
               console.log(this.categoryIcons);
             }
 
@@ -235,7 +237,24 @@ export class DmgMappingComponent implements OnInit {
       });
     // this.questions[0].elementRef.focus();
   }
-
+  patientDetailsforicon!: PatientDetails;
+  getPatientIcon() {
+    let iacode = this.dmgMappingForm.value.maxid.split(".")[0];
+    let regNumber = this.dmgMappingForm.value.maxid.split(".")[1];
+    this.http
+      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: PatientDetails) => {
+          // this.clear();
+          this.patientDetailsforicon = resultData;
+          this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            this.patientDetailsforicon
+          );
+        },
+        (error) => {}
+      );
+  }
   setErroronMaxid() {
     this.clearPatientdata();
     this.showCheckboxgrid = false;
@@ -305,9 +324,9 @@ export class DmgMappingComponent implements OnInit {
           (httperrorResponse) => {
             if (httperrorResponse.error.text == "Saved Successfully") {
               this.messagedialogservice.success("DMG mapped to this patient");
-              this.showCheckboxgrid = false;
-              //this.disablebutton = true;
+              //this.showCheckboxgrid = false;
               this.categoryIcons = [];
+              this.onMaxidEnter(this.dmgMappingForm.controls["maxid"].value);
             }
           }
         );

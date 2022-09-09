@@ -312,14 +312,14 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['paymentMode'].value != '' &&
     this.BServiceForm.controls['refundAmt'].value > 0)
     {
-      this.approvalsend = false;
+      // this.approvalsend = false;
       this.billdetailservice.authorisedby = this.BServiceForm.controls['authBy'].value;
       this.billdetailservice.reason = this.BServiceForm.controls['reason'].value;
       this.billdetailservice.mop = this.BServiceForm.controls['paymentMode'].value;
     }
     else
     {
-      this.approvalsend = true;
+      // this.approvalsend = true;
     }
   }
   sendforapproval()
@@ -337,7 +337,14 @@ export class DetailsComponent implements OnInit {
       console.log(res);
       if(res.length > 0)
       {
-        this.msgdialog.success(res[0].returnMessage);
+        if(res[0].successFlag == true)
+        {
+          this.msgdialog.success(res[0].returnMessage);
+        }
+        else
+        {
+          this.msgdialog.info(res[0].returnMessage);
+        }
       }
     })
   }
@@ -382,14 +389,34 @@ export class DetailsComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
-        this.search();
+        if(this.BServiceForm.value.maxid == this.cookie.get("LocationIACode") + ".")
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
+        else if(this.BServiceForm.value.maxid == '')
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
+        else
+        { 
+          this.search();
+        }
+        
       }
     });
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
-        this.search();
+        if(this.BServiceForm.value.mobileno.toString().length < 10)
+        {
+          this.snackbar.open('Invalid Mobile No');
+        }
+        else
+        {
+          this.search();
+        }
+        
       }
     });
   }
@@ -417,6 +444,7 @@ export class DetailsComponent implements OnInit {
 
   getpatientbilldetails() {
     this.billdetailservice.clear();
+    this.BServiceForm.controls['refundAmt'].setValue('0.00');
     this.http
       .get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
       .pipe(takeUntil(this._destroying$))
@@ -686,6 +714,9 @@ export class DetailsComponent implements OnInit {
   }
   refunddialogopen()
   {
+    var reas = this.refundreasonlist.filter(i => {
+      return i.id == this.BServiceForm.controls['reason'].value;
+    });
     console.log(this.BServiceForm.value.paymentMode);
       const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
       panelClass: 'refund-bill-dialog',
@@ -693,15 +724,18 @@ export class DetailsComponent implements OnInit {
       height: "98vh",
       data: {  
         patientinfo: {
-          emailId: ''  , 
+          emailId: this.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId, 
           mobileno: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
         },  
         refundamount: this.BServiceForm.value.refundAmt,
-        mop: this.BServiceForm.value.paymentMode,
+        authby: this.BServiceForm.controls['authBy'].value,
+        reason: reas[0].name,
+        mop: this.BServiceForm.controls['paymentMode'].value,
         mobile: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
         billid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
         billno: this.BServiceForm.value.billNo,
-        maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
+        maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+        email: this.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId
       }
     });
     RefundDialog.afterClosed()
@@ -814,25 +848,36 @@ export class DetailsComponent implements OnInit {
       console.log(this.billdetailservice.sendforapproval);
       var approvedlist;
       var forenablerefundbill: any;
-      this.billdetailservice.sendforapproval.forEach((j: any) => {
-        forenablerefundbill = this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(k => {
-          return k.serviceId == j.serviceId;
+      if(this.billdetailservice.sendforapproval.length > 0)
+      {
+        this.billdetailservice.sendforapproval.forEach((j: any) => {
+          console.log(j);
+          forenablerefundbill = this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(k => {
+            return k.itemId == j.itemid;
+          })
         })
-      })
+        
+        console.log(forenablerefundbill);
+  
+        forenablerefundbill.forEach((k: any) => {
+          if(k.notApproved == 1)
+          {
+            this.refundbill = false;
+            this.approvalsend = true;
+          }
+          else
+          {
+            this.refundbill = true;
+            this.approvalsend = false;
+          }
+        })
+      }
+      else
+      {
+        this.refundbill = true;
+        this.approvalsend = true;
+      }
       
-      console.log(forenablerefundbill);
-
-      forenablerefundbill.forEach((k: any) => {
-        if(k.notApproved == 1)
-        {
-          this.refundbill = false;
-          return;
-        }
-        else
-        {
-          this.refundbill = true;
-        }
-      })
       // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
       //   console.log(i);
         this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((j: any) => {

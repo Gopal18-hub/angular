@@ -1120,4 +1120,19 @@ export namespace ApiConstants {
       "/"
     );
   };
+  export const getopconsultationcount = (
+    fromdate: Date,
+    todate: Date,
+    locationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "fromdate" +
+      "/" +
+      "todate" +
+      "/" +
+      "locationid" +
+      "/"
+    );
+  };
 }
