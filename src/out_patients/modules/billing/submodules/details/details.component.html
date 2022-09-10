@@ -370,31 +370,30 @@
               </div>  
                
                 </div>
-                <div class="flex w-1/5 h-1/5 justify-between float-left clr-black">
+                <div class="flex w-2/5 h-1/5  float-left clr-black">
                 
                 <!-- <div class="flex "> -->
  <!-- --------------------------------------------2ND LABEL COLUMN------------------------------------------------------------------------                -->
                 <div class="flex-column pt-1 ml-2">
                   <div class="flex-column mb-3 ">
-                <mat-label class="wt-nowrap text-black   ">Refund Amount</mat-label>
-                </div>
-                <div class="flex-column mb-3">
-                <mat-label class="wt-nowrap text-black  ">Authorised By</mat-label>
-                </div>
-                
-                <div class="flex-column mb-3">
-                <mat-label class="wt-nowrap text-black  ">Reason</mat-label>
-                </div>
-             
-                <div class="flex-column">
-                  <mat-label class="wt-nowrap text-black ">Payment Mode</mat-label>
+                    <mat-label class="wt-nowrap text-black   ">Refund Amount</mat-label>
                   </div>
+                  <div class="flex-column mb-3">
+                    <mat-label class="wt-nowrap text-black ">Payment Mode</mat-label>
+                  </div>
+                  <div class="flex-column mb-3">
+                    <mat-label class="wt-nowrap text-black  ">Authorised By</mat-label>
+                  </div>
+                  <div class="flex-column">
+                    <mat-label class="wt-nowrap text-black  ">Reason</mat-label>
+                  </div>
+                  
                 </div>
 
 
  <!-- --------------------------------------------2ND FORM CONTROL COLUMN------------------------------------------------------------------------                -->
               
-                <div class="ml-2 fle-column pt-1 h-full">
+                <div class="ml-2 w-4/5 fle-column pt-1 h-full">
                 <div class="flex input-align-right">
                   <!-- <div class="flex"> -->
                 
@@ -402,9 +401,19 @@
                 [question]="questions[11]"
                 [form]="BServiceForm"
                 [questions]="questions[11]"
-                class="w-4/5"
+                class="w-1/2"
                 [index]="11"
                 >
+              </maxhealth-question>
+            </div>
+            <div class="flex">
+              <maxhealth-question
+              [question]="questions[14]"
+              [form]="BServiceForm"
+              [questions]="questions[14]"
+              class="w-1/2"
+              [index]="14"
+              >
               </maxhealth-question>
             </div>
             <div class="flex">
@@ -412,7 +421,7 @@
                 [question]="questions[12]"
                 [form]="BServiceForm"
                 [questions]="questions[12]"
-                class="w-4/5"
+                class="w-9/10"
                 [index]="12"
                 >
                 </maxhealth-question>
@@ -424,21 +433,12 @@
                 [question]="questions[13]"
                 [form]="BServiceForm"
                 [questions]="questions[13]"
-                class="w-4/5"
+                class="w-9/10"
                 [index]="13"
                 >
                 </maxhealth-question>
               </div>
-              <div class="flex">
-                <maxhealth-question
-                [question]="questions[14]"
-                [form]="BServiceForm"
-                [questions]="questions[14]"
-                class="w-4/5"
-                [index]="14"
-                >
-                </maxhealth-question>
-              </div>
+              
               
                 
                 </div>
