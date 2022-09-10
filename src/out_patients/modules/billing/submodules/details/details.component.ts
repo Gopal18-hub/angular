@@ -257,6 +257,8 @@ export class DetailsComponent implements OnInit {
     this.questions[14].options = this.paymentmode.map((l: any) => {
       return { title: l.title, value: l.title };
     });
+    
+    this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -312,14 +314,14 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['paymentMode'].value != '' &&
     this.BServiceForm.controls['refundAmt'].value > 0)
     {
-      // this.approvalsend = false;
+      this.approvalsend = false;
       this.billdetailservice.authorisedby = this.BServiceForm.controls['authBy'].value;
       this.billdetailservice.reason = this.BServiceForm.controls['reason'].value;
       this.billdetailservice.mop = this.BServiceForm.controls['paymentMode'].value;
     }
     else
     {
-      // this.approvalsend = true;
+      this.approvalsend = true;
     }
   }
   sendforapproval()
@@ -729,7 +731,8 @@ export class DetailsComponent implements OnInit {
         },  
         refundamount: this.BServiceForm.value.refundAmt,
         authby: this.BServiceForm.controls['authBy'].value,
-        reason: reas[0].name,
+        reasonname: reas[0].name,
+        reasonid: reas[0].id,
         mop: this.BServiceForm.controls['paymentMode'].value,
         mobile: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
         billid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
@@ -875,7 +878,6 @@ export class DetailsComponent implements OnInit {
       else
       {
         this.refundbill = true;
-        this.approvalsend = true;
       }
       
       // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {

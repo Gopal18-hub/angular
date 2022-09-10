@@ -8,7 +8,7 @@ import { CookieService } from '@shared/services/cookie.service';
 import { HttpService } from '@shared/services/http.service';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, throwIfEmpty } from 'rxjs';
 import { PaymentMethodsComponent } from '../../../../../core/UI/billing/submodules/payment-methods/payment-methods.component';
 import { billDetailService } from '../billDetails.service';
 import { Router } from '@angular/router';
@@ -16,6 +16,8 @@ import { getpaymentmode } from './../../../../../core/types/billdetails/getPayme
 import { BillDetailsApiConstants } from '../BillDetailsApiConstants';
 import { objdt, objtab_cancelbill, saveRefundforParticularBill } from '../../../../../core/models/saveRefundforParticularBill.Model';
 import { billRefundforSingleItem, objDsSave } from '../../../../../core/models/billRefundforSingleItem.Model';
+import { cancelVisitNumberinRefund, objVisitDataTable } from '../../../../../core/models/cancelVisitNumberinRefund.Model';
+import { refundbillafteracknowledgementforfull } from '../../../../../core/models/refundAfterAckforParticularBill.Model';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
@@ -163,6 +165,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   paymentMode: getpaymentmode[] = [];
   saveforparticularbilllist: saveRefundforParticularBill = new saveRefundforParticularBill();
   billrefundforsingleitem: billRefundforSingleItem = new billRefundforSingleItem();
+  cancelVisitNumberinRefundList: cancelVisitNumberinRefund = new cancelVisitNumberinRefund();
+  refundafteracklistforfull: refundbillafteracknowledgementforfull = new refundbillafteracknowledgementforfull();
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -402,6 +406,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       console.log('Before Ack');
       if(this.particularbillflag == 1)
       {
+        this.cancelvisitrequestbody();
         console.log('Full Bill');
         this.http.post(BillDetailsApiConstants.saverefunddetailsforparticularbill, this.fullbillrequestbody())
         .pipe(takeUntil(this._destroying$))
@@ -410,6 +415,17 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           if(res.length > 0)
           {
             this.messageDialogService.success(res[0].returnMessage);
+          }
+          if(res[0].successFlag == true)
+          {
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            {
+              this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(value => {
+                console.log(value);
+              });
+            }
           }
         })
       }
@@ -424,6 +440,17 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           {
             this.messageDialogService.success(res[0].returnMessage);
           }
+          if(res[0].successFlag == true)
+          {
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            {
+              this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(value => {
+                console.log(value);
+              });
+            }
+          }
         })
       }
     }
@@ -433,6 +460,32 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       if(this.particularbillflag == 1)
       {
         console.log('Full Bill');
+        this.http.post(BillDetailsApiConstants.refundbillafteracknowledgementforfull(
+          this.dueform.controls['otp'].value,
+          'Gavs',
+          Number(this.cookie.get('UserId')),
+          Number(this.cookie.get('HSPLocationId')),
+          Number(this.cookie.get('StationId'))
+        ), this.fullbillafterackreqbody())
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(res => {
+          console.log(res);
+          if(res.length > 0)
+          {
+            this.messageDialogService.success(res[0].returnMessage);
+          }
+          if(res[0].successFlag == true)
+          {
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            {
+              this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(value => {
+                console.log(value);
+              });
+            }
+          }
+        })
       }
       else if(this.singleitemflag == 1)
       {
@@ -467,7 +520,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         registrationno: this.data.maxid.split('.')[1],
         mop: this.mop,
         authorisedby: this.data.authby,
-        reason: this.data.reason,
+        reason: this.data.reasonname,
         chequeno: this.dueform.controls['chequeno'].value,
         chequedate: this.dueform.controls['chequeissuedate'].value,
         bankid: Number(this.dueform.controls['chequebankname'].value),
@@ -533,7 +586,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         registrationno: this.data.maxid.split('.')[1],
         mop: this.mop,
         authorisedby: this.data.authby,
-        reason: this.data.reason,
+        reason: this.data.reasonname,
         chequeno: this.dueform.controls['chequeno'].value,
         chequedate: this.dueform.controls['chequeissuedate'].value,
         bankid: Number(this.dueform.controls['chequebankname'].value),
@@ -574,6 +627,71 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     })
     console.log(this.billrefundforsingleitem);
     return this.billrefundforsingleitem;
+  }
+  cancelvisitrequestbody()
+  {
+    var dtlist;
+    this.billDetailService.sendforapproval.forEach((item: any) => {
+      console.log(item);
+      dtlist = this.billDetailService.serviceList.filter((i: any) => {
+        return i.itemid == item.itemid;
+      }) 
+    });
+    this.cancelVisitNumberinRefundList.objVisitDataTable = [] as Array<objVisitDataTable>;
+    this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.forEach((item: any) => {
+      this.cancelVisitNumberinRefundList.cancelReasonID = Number(this.data.reasonid);
+      this.cancelVisitNumberinRefundList.operatorID = Number(this.cookie.get('UserId'));
+      this.cancelVisitNumberinRefundList.locationId = Number(this.cookie.get('HSPLocationId'));
+      this.cancelVisitNumberinRefundList.objVisitDataTable.push({
+        id: item.id,
+        visitId: 0,
+        visitno: item.visitNo,
+        deleted: 1,
+        ssn: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+        uhid: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+        registrationno : this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid.split('.')[1]
+      })
+    })
+    console.log(this.cancelVisitNumberinRefundList);
+    return this.cancelVisitNumberinRefundList;
+  }
+  fullbillafterackreqbody()
+  {
+    this.refundafteracklistforfull.objtab_cancelbill = [] as Array<objtab_cancelbill>;
+    this.billDetailService.sendforapproval.forEach((item: any) => {
+      console.log(item);
+      var dtlist = this.billDetailService.serviceList.filter((i: any) => {
+        return i.itemid == item.itemid;
+      }) 
+      this.refundafteracklistforfull.objtab_cancelbill.push({
+        billno: this.data.billno,
+        operatorid: Number(this.cookie.get('UserId')),
+        hsplocationid: Number(this.cookie.get('HSPLocationId')),
+        registrationno: this.data.maxid.split('.')[1],
+        mop: this.mop,
+        authorisedby: this.data.authby,
+        reason: this.data.reasonname,
+        chequeno: this.dueform.controls['chequeno'].value,
+        chequedate: this.dueform.controls['chequeissuedate'].value,
+        bankid: Number(this.dueform.controls['chequebankname'].value),
+        branchname: this.dueform.controls['chequebranchname'].value,
+        validity: this.dueform.controls['chequevalidity'].value,
+        cardtype: Number(this.dueform.controls['creditcardtype'].value),
+        approvalno: '',
+        stationid: Number(this.cookie.get('StationId')),
+        itemid: item.itemid,
+        orderid: item.itemOrderId,
+        serviceid: item.serviceId,
+        qtslno: dtlist[0].qTslno,
+        itemName: item.itemName,
+        iaCode: this.data.maxid.split('.')[0],
+        transMode: 0,
+        priority: 0,
+      })
+      console.log(dtlist);
+    })
+    console.log(this.refundafteracklistforfull);
+    return this.refundafteracklistforfull;
   }
   clear()
   {

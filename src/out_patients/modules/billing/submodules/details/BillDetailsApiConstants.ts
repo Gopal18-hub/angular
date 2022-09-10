@@ -37,4 +37,16 @@ export namespace BillDetailsApiConstants{
     export const saverefunddetailsforparticularbill = `${environment.BillingApiUrl}api/outpatientbilling/saverefunddetailsforparticularbill`;
 
     export const billrefundforsingleitem = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitem`;
+
+    export const cancelvisitnumberinrefund = `${environment.BillingApiUrl}api/outpatientbilling/cancelvisitnumberinrefund`;
+
+    export const refundbillafteracknowledgementforfull = (
+        OTP: any,
+        HostName : any,
+        Operatorid : any,
+        LocationId: any,
+        Stationid: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/refundbillafteracknowledgementforfull/${OTP}/${HostName}/${Operatorid}/${LocationId}/${Stationid}`;
+    }
 }
