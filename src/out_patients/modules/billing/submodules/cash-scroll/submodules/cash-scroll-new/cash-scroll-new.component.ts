@@ -1,51 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
+import { Component, OnInit } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'out-patients-cash-scroll-new',
-  templateUrl: './cash-scroll-new.component.html',
-  styleUrls: ['./cash-scroll-new.component.scss']
+  selector: "out-patients-cash-scroll-new",
+  templateUrl: "./cash-scroll-new.component.html",
+  styleUrls: ["./cash-scroll-new.component.scss"],
 })
 export class CashScrollNewComponent implements OnInit {
-
-  questions:any;
-  constructor(private formService:QuestionControlService,
-    private cookie: CookieService,  private router: Router) { }
+  questions: any;
+  constructor(
+    private formService: QuestionControlService,
+    private cookie: CookieService,
+    private router: Router
+  ) {}
   cashscrollnewformdata = {
-    type:"object",
-    title:"",
-      properties: {  
-        employeename:{
-           type: "string",
-        },
-        scrollno:{
-          type: "string",
-         
-        } , 
-        takenat:{
-          type: "string",
-        }, 
-        mainradio: {
-          type: "radio",
-          required: false,
-          options: [
-            { title: "Pending", value: "pending" },
-            { title: "Acknowledge", value: "acknowledge" },
-          ],
-        },
-        fromdate: {
-          type: "date",
-        },
-        todate: {
-          type: "date",
-        },
-      }  
-  }
+    type: "object",
+    title: "",
+    properties: {
+      employeename: {
+        type: "string",
+      },
+      scrollno: {
+        type: "string",
+      },
+      takenat: {
+        type: "string",
+      },
+      mainradio: {
+        type: "radio",
+        required: false,
+        options: [
+          { title: "Pending", value: "pending" },
+          { title: "Acknowledge", value: "acknowledge" },
+        ],
+      },
+      fromdate: {
+        type: "date",
+      },
+      todate: {
+        type: "date",
+      },
+    },
+  };
   cashscrollnewconfig: any = {
     clickedRows: true,
     clickSelection: "single",
@@ -75,7 +76,7 @@ export class CashScrollNewComponent implements OnInit {
       "upiamount",
       "totalamount",
       "companyname",
-      "internetpayment"
+      "internetpayment",
     ],
     columnsInfo: {
       sno: {
@@ -85,7 +86,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      receiptno:{
+      receiptno: {
         title: "Receipt No.",
         type: "string",
         style: {
@@ -99,7 +100,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      datetime:{
+      datetime: {
         title: "Date Time",
         type: "date",
         style: {
@@ -113,7 +114,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      refund:{
+      refund: {
         title: "Refund",
         type: "string",
         style: {
@@ -127,7 +128,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      discountamount:{
+      discountamount: {
         title: "Discount Amount",
         type: "string",
         style: {
@@ -141,7 +142,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      plandiscount:{
+      plandiscount: {
         title: "Plan Discount",
         type: "string",
         style: {
@@ -155,7 +156,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      cash:{
+      cash: {
         title: "Cash",
         type: "string",
         style: {
@@ -169,7 +170,7 @@ export class CashScrollNewComponent implements OnInit {
           width: "3.5rem",
         },
       },
-      dd:{
+      dd: {
         title: "DD",
         type: "string",
         style: {
@@ -192,7 +193,7 @@ export class CashScrollNewComponent implements OnInit {
       },
       onlinepayment: {
         title: "Online Payment",
-        type: "date",        
+        type: "date",
         style: {
           width: "6rem",
         },
@@ -213,7 +214,7 @@ export class CashScrollNewComponent implements OnInit {
       },
       donation: {
         title: "Donation",
-        type: "date",        
+        type: "date",
         style: {
           width: "6rem",
         },
@@ -225,44 +226,47 @@ export class CashScrollNewComponent implements OnInit {
           width: "6rem",
         },
       },
-      totalamount:{
+      totalamount: {
         title: "Total Amount",
         type: "string",
         style: {
           width: "6rem",
         },
       },
-      companyname:{
+      companyname: {
         title: "Company Name",
         type: "string",
         style: {
           width: "6rem",
         },
       },
-      internetpayment:{
-         title: "Internet Payment",
-      type: "string",
-      style: {
-        width: "6rem",
-      },},
+      internetpayment: {
+        title: "Internet Payment",
+        type: "string",
+        style: {
+          width: "6rem",
+        },
+      },
     },
   };
-  cashscrollnewForm !: FormGroup;
+  cashscrollnewForm!: FormGroup;
 
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
+    console.log("inside cash scroll new");
     let formResult = this.formService.createForm(
-      this.cashscrollnewformdata.properties,{}
+      this.cashscrollnewformdata.properties,
+      {}
     );
-    this.cashscrollnewForm=formResult.form;
-    this.questions=formResult.questions;
-    
+    this.cashscrollnewForm = formResult.form;
+    this.questions = formResult.questions;
+
     this.lastUpdatedBy = this.cookie.get("UserName");
   }
-  opencashscroll(){
-    this.router.navigate(["report/cash-scroll","cash-scroll"]);
+  opencashscroll() {
+    this.router.navigate(["report/cash-scroll", "cash-scroll"]);
   }
 }
