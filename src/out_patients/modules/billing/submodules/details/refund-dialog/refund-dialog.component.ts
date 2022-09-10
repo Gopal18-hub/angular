@@ -18,12 +18,17 @@ import { objdt, objtab_cancelbill, saveRefundforParticularBill } from '../../../
 import { billRefundforSingleItem, objDsSave } from '../../../../../core/models/billRefundforSingleItem.Model';
 import { cancelVisitNumberinRefund, objVisitDataTable } from '../../../../../core/models/cancelVisitNumberinRefund.Model';
 import { refundbillafteracknowledgementforfull } from '../../../../../core/models/refundAfterAckforParticularBill.Model';
+import { getBankName } from '../../../../../core/types/billdetails/getBankName.Interface';
+import { getcreditcard } from '../../../../../core/types/billdetails/getcreditcard.Interface';
 @Component({
   selector: 'out-patients-refund-dialog',
   templateUrl: './refund-dialog.component.html',
   styleUrls: ['./refund-dialog.component.scss'],
 })
 export class BillDetailsRefundDialogComponent implements OnInit {
+
+  bankname: getBankName[] = [];
+  creditcard: getcreditcard[] = [];
 
   dueFormData = {
     title: "",
@@ -48,12 +53,15 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     chequeissuedate: {
       type: "date",
       maximum: new Date(),
+      defaultValue: new Date(),
     },
     chequevalidity: {
-      type: "string"
+      type: "date",
+      defaultValue: new Date(),
     },
     chequebankname: {
-      type: "string"
+      type: "dropdown",
+      options: this.bankname
     },
     chequebranchname: {
       type: "string"
@@ -64,7 +72,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       defaultValue: "0.00"
     },
     creditcardtype:{
-      type: "string"
+      type: "dropdown",
+      options: this.creditcard
     }, 
     creditcardno: {
       type: "number"
@@ -182,10 +191,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   { 
     console.log(data);
     console.log(data.mop);
-    if(data.mop == 'Cash')
-    {
-      
-    }
   }
 
   ngOnInit(): void {
@@ -206,6 +211,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     var notcancelledlist = this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceDetail.filter( (item: any) => {
         return item.cancelled == 0;
     })
+    console.log(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceDetail.length);
     if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceDetail.length == this.billDetailService.sendforapproval.length)
     {
       this.particularbillflag = 1;
@@ -218,7 +224,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     }
     console.log(this.billDetailService.sendforapproval)
     console.log(notcancelledlist);
-    console.log(this.simpleRefund, this.AckRefund);
+    console.log('Simple Refund:', this.simpleRefund,'Acknowledged Refund:', this.AckRefund);
+    console.log('particular bill flag:',this.particularbillflag,'single item flag:', this.singleitemflag);
     console.log(this.router.url);
     this.dueform = formResult.form;
     this.questions = formResult.questions;
@@ -230,6 +237,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.totaldue = this.due.toFixed(2);
     this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
     this.getpaymentmode();
+    this.getbankname();
+    this.getcreditcard();
   }
   ngAfterViewInit(): void{
     
@@ -241,7 +250,30 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     )
     this.mopcheck();
   }
-
+  getbankname()
+  {
+    this.http.get(BillDetailsApiConstants.getbankname)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe( res => {
+      console.log(res);
+      this.bankname = res;
+      this.questions[6].options = this.bankname.map(l => {
+        return { title: l.name, value: l.id}
+      })
+    })
+  }
+  getcreditcard()
+  {
+    this.http.get(BillDetailsApiConstants.getcreditcard)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe( res => {
+      console.log(res);
+      this.creditcard = res;
+      this.questions[9].options = this.creditcard.map(l => {
+        return { title: l.name, value: l.id}
+      })
+    })
+  }
   mopcheck()
   {
     if(this.data.mop == 'Cash')
@@ -265,7 +297,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       setTimeout(() => {
         this.selected = 1
       }, 300);
-      this.forcheque = true;
+      this.forcash = true;
       this.forcredit = true;
       this.foronline = true;
       this.formobile = true;
@@ -404,7 +436,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     if(this.simpleRefund == 1)
     {
       console.log('Before Ack');
-      if(this.particularbillflag == 1)
+      if(this.particularbillflag == 1 && this.singleitemflag == 0)
       {
         this.cancelvisitrequestbody();
         console.log('Full Bill');
@@ -414,7 +446,17 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           console.log(res);
           if(res.length > 0)
           {
-            this.messageDialogService.success(res[0].returnMessage);
+            if(res[0].successFlag == true)
+            {
+              var dialog =  this.messageDialogService.success(res[0].returnMessage);
+              dialog.afterClosed().subscribe(res => {
+              this.dialogRef.close('success');
+              })
+            }
+            else if(res[0].successFlag == false)
+            {
+              var dialog =  this.messageDialogService.info(res[0].returnMessage);
+            }
           }
           if(res[0].successFlag == true)
           {
@@ -429,7 +471,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
         })
       }
-      else if(this.singleitemflag == 1)
+      else if(this.singleitemflag == 1 && this.particularbillflag == 0)
       {
         console.log('Single Bill Item');
         this.http.post(BillDetailsApiConstants.billrefundforsingleitem, this.singlebillrequestbody())
@@ -438,7 +480,17 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           console.log(res);
           if(res.length > 0)
           {
-            this.messageDialogService.success(res[0].returnMessage);
+            if(res[0].successFlag == true)
+            {
+              var dialog =  this.messageDialogService.success(res[0].returnMessage);
+              dialog.afterClosed().subscribe(res => {
+              this.dialogRef.close('success');
+              })
+            }
+            else if(res[0].successFlag == false)
+            {
+              var dialog =  this.messageDialogService.info(res[0].returnMessage);
+            }
           }
           if(res[0].successFlag == true)
           {
@@ -457,7 +509,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     else if(this.AckRefund == 1)
     {
       console.log('After Ack');
-      if(this.particularbillflag == 1)
+      if(this.particularbillflag == 1 && this.singleitemflag == 0)
       {
         console.log('Full Bill');
         this.http.post(BillDetailsApiConstants.refundbillafteracknowledgementforfull(
@@ -487,7 +539,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           }
         })
       }
-      else if(this.singleitemflag == 1)
+      else if(this.singleitemflag == 1 && this.particularbillflag == 0)
       {
         console.log('Single Bill Item');
       }

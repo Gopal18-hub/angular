@@ -24,7 +24,7 @@
                 
                 <mat-tab-group class="mt-12" animationDuration="0ms" #mattab [(selectedIndex)]="selected">
                     <mat-tab [disabled]="forcash" label="Cash">
-                        <div class="ml-10">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Cash Details</mat-label>
                             <div class="flex w-3/4 mt-3">
                                 <mat-label class="max-health-primary-color font-medium">Amount:</mat-label>
@@ -40,13 +40,13 @@
                         </div> 
                     </mat-tab>
                     <mat-tab [disabled]="forcheque" label="Cheque">
-                        <div class="ml-10 ">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Cheque Details</mat-label>
                             <div class="flex w-3/4 mt-3">
                                 <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3 input1">
+                                <div class="w-5/9 ml-8 input1">
                                     <maxhealth-question
                                     [question]="questions[2]"
                                     [form]="dueform"
@@ -57,9 +57,9 @@
                             </div>
                             <div class="flex w-3/4 mt-1">
                                 <div class="w-3/10">
-                                    <mat-label class="max-health-primary-color  font-medium">Cheque/NEFT No.</mat-label>
+                                    <mat-label class="max-health-primary-color font-medium white-nowrap">Cheque/NEFT No.</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3">
+                                <div class="w-5/9 ml-8">
                                     <maxhealth-question
                                     [question]="questions[3]"
                                     [form]="dueform"
@@ -72,7 +72,7 @@
                                 <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Issue Date</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3">
+                                <div class="w-5/9 ml-8">
                                     <maxhealth-question
                                     [question]="questions[4]"
                                     [form]="dueform"
@@ -85,7 +85,7 @@
                                 <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3">
+                                <div class="w-5/9 ml-8">
                                     <maxhealth-question
                                     [question]="questions[5]"
                                     [form]="dueform"
@@ -98,7 +98,7 @@
                                 <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3">
+                                <div class="w-5/9 ml-8">
                                     <maxhealth-question
                                     [question]="questions[6]"
                                     [form]="dueform"
@@ -111,7 +111,7 @@
                                 <div class="w-3/10">
                                     <mat-label class="max-health-primary-color  font-medium">Branch Name</mat-label>
                                 </div>
-                                <div class="w-5/9 ml-3">
+                                <div class="w-5/9 ml-8">
                                     <maxhealth-question
                                     [question]="questions[7]"
                                     [form]="dueform"
@@ -123,7 +123,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab [disabled]="forcredit" label="Credit Card">
-                        <div class="ml-10">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Credit Card Details</mat-label>
                             <div class="flex w-3/4 mt-3">
                                 <div class="w-2/5">
@@ -180,7 +180,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab [disabled]="foronline" label="Online Payment">
-                        <div class="ml-10">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Online Payment Details</mat-label>
                             <div class="flex w-3/4 mt-3">
                                 <div class="w-3/10">
@@ -224,7 +224,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab [disabled]="formobile" label="Mobile Payment">
-                        <div class="ml-10">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">Mobile Payment Details</mat-label>
                             
                             <div class="flex w-3/4 mt-3">
@@ -269,7 +269,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab [disabled]="forupi" label="UPI">
-                        <div class="ml-10">
+                        <div class="ml-4">
                             <mat-label class="max-health-primary-color font-base font-medium">UPI Payment Details</mat-label>
                             <div class="flex w-3/4 mt-3">
                                 <div class="w-1/3">

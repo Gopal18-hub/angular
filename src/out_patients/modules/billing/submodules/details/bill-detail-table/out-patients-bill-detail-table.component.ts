@@ -289,7 +289,27 @@ export class BillDetailTableComponent implements OnInit {
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
-      if(this.tableRows.selection.selected.length > 0)
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+      {
+        this.data.forEach((item: any) => {
+          console.log(item);
+          this.tableRows.selection.selected.forEach((i: any) =>{ 
+            console.log(i)
+            if(item.itemid == i.itemid)
+            {
+              setTimeout(() => {
+                this.tableRows.selection.deselect(item);
+              }, 100);
+            }
+          })
+          console.log(this.tableRows.selection.selected)
+          
+          // var errtxt = "Bill Number " + this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno + " Has Been Cancelled";
+          // this.msgdialog.info(errtxt);
+          
+        })
+      }            
+      else if(this.tableRows.selection.selected.length > 0)
         {  
           this.billDetailservice.sendforapproval = [];
           this.billDetailservice.totalrefund = 0;
@@ -315,9 +335,25 @@ export class BillDetailTableComponent implements OnInit {
                 console.log(list[z]);
                 this.data.forEach((item: any) => {
                   console.log(item)
+                  if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+                  {
+                    var errtxt = "Bill Number " + this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno + " Has Been Cancelled";
+                    this.msgdialog.info(errtxt);
+                    setTimeout(() => {
+                      this.tableRows.selection.deselect(item);
+                    }, 100);
+                  }
                   for(var x = 0; x < acklist.length; x++)
                   {
-                    if(item.itemid == acklist[x].itemid && item.cancelled == 0)
+                    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+                    {
+                      var errtxt = "Bill Number " + this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno + " Has Been Cancelled";
+                      this.msgdialog.info(errtxt);
+                      setTimeout(() => {
+                        this.tableRows.selection.deselect(item);
+                      }, 100);
+                    }
+                    else if(item.itemid == acklist[x].itemid && item.cancelled == 0)
                     {
                       this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
                       console.log(this.tableRows.selection);
