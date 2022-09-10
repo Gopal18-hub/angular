@@ -21,7 +21,7 @@
                             </div>    
                             
                         </div>                                               
-                            <div class="ml-3 w-9/50 h-full cashscrollradiobutton">
+                            <div class="ml-3 w-9/50 h-full font-semi-bold cashscrollradiobutton">
                                 <maxhealth-question  [question]="questions[1]" [form]="cashscrollForm"
                                     [questions]="questions[1]" [index]="1">
                                 </maxhealth-question>
@@ -37,7 +37,7 @@
                                <span class="ml-4 font-sm">Search</span> 
                 
                             </button>
-                            <button mat-raised-button color="primary" class="ml-3" >
+                            <button mat-raised-button color="primary" class="ml-3" (click)="clearcashscroll()" >
                                 Clear
                             </button>
                            <button mat-raised-button color="primary" class="ml-3">
