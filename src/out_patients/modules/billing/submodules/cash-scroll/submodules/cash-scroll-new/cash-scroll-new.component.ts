@@ -31,14 +31,6 @@ export class CashScrollNewComponent implements OnInit {
       takenat: {
         type: "string",
       },
-      mainradio: {
-        type: "radio",
-        required: false,
-        options: [
-          { title: "Pending", value: "pending" },
-          { title: "Acknowledge", value: "acknowledge" },
-        ],
-      },
       fromdate: {
         type: "date",
       },
