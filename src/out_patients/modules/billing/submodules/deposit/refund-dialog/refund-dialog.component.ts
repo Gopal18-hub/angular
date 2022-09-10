@@ -70,9 +70,9 @@ export class RefundDialogComponent implements OnInit {
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
- 
+
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
   SendOTP:string="Send OTP";
@@ -246,6 +246,8 @@ export class RefundDialogComponent implements OnInit {
             this.avalaiblemaount =  amount.toFixed(2);
             if(amount <= 0){
               this.clear();
+              this.dialogRef.close();
+              this.matDialog.closeAll();
                this.messageDialogService.success("Refund has been done Successfully!");
             }else{
               this.MoreRefunddialog();   

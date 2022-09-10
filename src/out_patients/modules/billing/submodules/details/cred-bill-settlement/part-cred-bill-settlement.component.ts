@@ -10,6 +10,7 @@ import { Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.component";
 import { billDetailService } from "../billDetails.service";
 import { PaymentDialogComponent } from './../payment-dialog/payment-dialog.component';
+import { ReportService } from "@shared/services/report.service";
 @Component({
   selector: "part-cred-bill-settlement",
   templateUrl: "./part-cred-bill-settlement.component.html",
@@ -22,7 +23,8 @@ export class PartialCredBillComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailService: billDetailService
+    private billDetailService: billDetailService,
+    private reportService:ReportService
   ) {}
 
   BDetailFormData = {
@@ -215,4 +217,14 @@ export class PartialCredBillComponent implements OnInit {
         //}    
       });
     }
+  printreceipt()
+  {
+    this.openReportModal('DueReceiptReport');
+  }
+  openReportModal(btnname: string) {
+    this.reportService.openWindow(btnname, btnname, {
+      receiptnumber: this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+      locationID: this.cookie.get('HSPLocationId'),
+    });
+  }
 }
