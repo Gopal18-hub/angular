@@ -3,8 +3,19 @@ import { RouterModule, Routes } from "@angular/router";
 import { AcknowledgedScrollAmountReportComponent } from "@modules/billing/submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 import { BillingComponent } from "@modules/billing/submodules/billing/billing.component";
 import { ReportsComponent } from "./reports.component";
+import { CashScrollComponent } from "./cash-scroll/cash-scroll.component";
+import { CashScrollModifyComponent } from "./cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
+import { CashScrollNewComponent } from "./cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 
 const routes: Routes = [
+  {
+    path: "report/cash-scroll",
+    component: CashScrollComponent,
+    children:[  
+      { path: "cash-scroll-modify", component: CashScrollModifyComponent },
+      { path: "cash-scroll-new", component: CashScrollNewComponent },
+    ],
+  },
   {
     path: "report",
     component: ReportsComponent,
@@ -13,7 +24,8 @@ const routes: Routes = [
         (m) => m.PromptReportModule
       ),
   },
-  {
+
+    {
     path: "report/Acknowledgement-Scroll-Amount-Report",
     component: AcknowledgedScrollAmountReportComponent,
   },
