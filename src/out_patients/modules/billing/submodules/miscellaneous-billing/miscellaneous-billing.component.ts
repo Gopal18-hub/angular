@@ -126,6 +126,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   questions: any;
   question: any;
   private readonly _destroying$ = new Subject<void>();
+  disableBtn: boolean = false;
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -282,7 +283,9 @@ export class MiscellaneousBillingComponent implements OnInit {
         );
     }
   }
-
+  clearForm() {
+    this.miscForm.reset()
+  }
 
   getssnandmaxid() {
     let iacode = this.miscForm.value.maxid.split(".")[0];
@@ -305,6 +308,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
 
     if (regNumber != 0) {
+      this.disableBtn = true;
       this.http.get(ApiConstants.getregisteredpatientdetailsForMisc(
         iacode,
         regNumber,

@@ -25,6 +25,7 @@ export class miscPatientDetail {
   billToCompany?: number;
   invoiceType?: string;
   narration?: string;
+  authorisedid?: number
   constructor(
     registrationno?: number,
     iacode?: string,
@@ -51,7 +52,8 @@ export class miscPatientDetail {
     channelId?: number,
     billToCompany?: number,
     invoiceType?: string,
-    narration?: string
+    narration?: string,
+    authorisedid?: number
   ) {
     this.registrationno = registrationno;
     this.iacode = iacode;
@@ -79,5 +81,6 @@ export class miscPatientDetail {
     this.billToCompany = billToCompany;
     this.invoiceType = invoiceType;
     this.narration = narration;
+    this.authorisedid = authorisedid;
   }
 }

@@ -1241,6 +1241,34 @@ export namespace ApiConstants {
     );
   };
 
+  //Discount Header
+  export const getbilldiscountreasonmainhead = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getbilldiscountreasonmainhead/" +
+      locid
+
+    );
+  };
+
+
+  //Discount Reason
+  export const getbilldiscountreason = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getbilldiscountreason/" + locid
+    );
+  };
+
+
+  //Authorised by 
+  export const getauthorisedby = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getauthorisedby/" + locid
+    );
+  };
+
   export const getconfiguremessage = (requesttype: string, value: string) => {
     return (
       environment.BillingApiUrl +
