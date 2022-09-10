@@ -260,7 +260,7 @@
                 <maxhealth-question [question]="question[25]" [form]="miscServBillForm" [questions]="question[25]"
                   class="w-7/10 mt-1 mr-1" [index]="25">
                 </maxhealth-question>
-                <button mat-raised-button color="primary" class="btn-md min-width-bill" type="submit">
+                <button mat-raised-button color="primary" class="btn-md min-width-bill" type="submit" (click)="print()">
                   Print Bill&nbsp;
                 </button>
               </div>
