@@ -93,7 +93,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "", component: BillDetailComponent },
-          { path: "credit-details", component: MiscCredDetail },
+          { path: "credit-details", component: CreditDetailsComponent },
           { path: "bill", component: BillDetailComponent },
         ],
       },
@@ -147,4 +147,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule {}
+export class BillingRoutingModule { }

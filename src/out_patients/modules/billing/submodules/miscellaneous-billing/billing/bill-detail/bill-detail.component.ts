@@ -19,6 +19,8 @@ import { MiscService } from "../../MiscService.service";
 import { MakedepositDialogComponent } from "@modules/billing/submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
 import { MakeBillDialogComponent } from "../../makebill-dialog/makebill-dialog.component";
 import { DiscountAmtDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
+import { GstTaxDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
+import { ReportService } from "@shared/services/report.service";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -33,13 +35,23 @@ export class BillDetailComponent implements OnInit {
   remarkList!: objMiscBillingRemarksList[];
   serviceItemsList!: ServiceTypeItemModel[];
   serviceList!: { title: string; value: number }[];
+
+  //Tax info
+  taxid = 0;
+  taxcode = '';
+  taxtype = '';
+  taxService = '';
+  billAmnt = 0;
+  gstData = [];
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private miscPatient: MiscService
+    private miscPatient: MiscService,
+    private reportService: ReportService,
   ) { }
 
   miscBillData = {
@@ -51,20 +63,20 @@ export class BillDetailComponent implements OnInit {
         type: "autocomplete",
         title: "Service Type",
         options: this.serviceList,
-        required: true,
+        //required: true,
       },
       //1
       item: {
         type: "autocomplete",
         title: "Item",
-        required: true,
+        //required: true,
         options: this.serviceItemsList,
       },
       //2
       tffPrice: {
         type: "number",
         title: "Tarrif Price",
-        required: true,
+        //required: true,
         readonly: true,
       },
       //3
@@ -73,14 +85,14 @@ export class BillDetailComponent implements OnInit {
         title: "Qty",
         maximum: 9,
         minimum: 1,
-        required: true,
+        //required: true,
       },
       //4
       reqAmt: {
         type: "number",
         title: "Req. Amt.",
         minimum: 1,
-        required: true,
+        //required: true,
       },
       //5
       pDoc: {
@@ -92,7 +104,7 @@ export class BillDetailComponent implements OnInit {
       remark: {
         type: "autocomplete",
         title: "Remarks",
-        required: true,
+        //required: true,
         options: this.remarkList,
       },
       //7
@@ -104,13 +116,13 @@ export class BillDetailComponent implements OnInit {
       //8
       referralDoctor: {
         type: "dropdown",
-        required: true,
+        //required: true,
         title: "Referral Doctor",
       },
       //9
       interactionDetails: {
         type: "dropdown",
-        required: true,
+        //required: true,
         title: "Interaction Details",
       },
       //10
@@ -225,7 +237,7 @@ export class BillDetailComponent implements OnInit {
       //26
       paymentMode: {
         type: "radio",
-        required: true,
+        //required: true,
         options: [
           { title: "Cash", value: "cash" },
           { title: "Credit", value: "credit" },
@@ -333,6 +345,8 @@ export class BillDetailComponent implements OnInit {
   location: number = Number(this.cookie.get("HSPLocationId"));
   question: any;
   private readonly _destroying$ = new Subject<void>();
+  interactionData: { id: number; name: string }[] = [] as any;
+  referralDoctor: { id: number; name: string }[] = [] as any;
 
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
@@ -342,7 +356,52 @@ export class BillDetailComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+
+    //Referral Doctor
+    this.http
+      .get(ApiConstants.getreferraldoctor(2, ''))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.referralDoctor = res;
+        this.question[8].options = this.referralDoctor.map((a) => {
+          return { title: a.name, value: a.id };
+        });
+
+      });
+
+
+    //interaction master
+    this.http
+      .get(ApiConstants.getinteractionmaster)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        this.interactionData = res;
+        this.question[9].options = this.interactionData.map((a) => {
+          return { title: a.name, value: a.id };
+        });
+
+      });
   }
+
+
+  //Print Report
+  print() {
+    this.openReportModal("billingreport");
+  }
+  openReportModal(btnname: string) {
+
+    this.reportService.openWindow(btnname, btnname, {
+      opbillid: 10,
+      locationID: 7
+    });
+  }
+
+
+
+
+
+
+
 
   postBillObj: MiscellaneousBillingModel = [] as any;
   addNewItem(): any {
@@ -442,16 +501,16 @@ export class BillDetailComponent implements OnInit {
       ItemforModify: this.miscServBillForm.value.item.title,
       TariffPrice: this.miscServBillForm.value.tffPrice,
       Qty: this.miscServBillForm.value.qty,
-      Price: this.miscServBillForm.value.tffPrice,
+      Price: this.miscServBillForm.value.reqAmt,
       DoctorName: this.miscServBillForm.value.pDoc.title,
       Disc: 1,
       DiscAmount: 1,
       TotalAmount:
-        this.miscServBillForm.value.tffPrice * this.miscServBillForm.value.qty,
+        this.miscServBillForm.value.reqAmt * this.miscServBillForm.value.qty,
       GST: 0,
       serviceid: this.serviceID,
       amount:
-        this.miscServBillForm.value.tffPrice * this.miscServBillForm.value.qty,
+        this.miscServBillForm.value.reqAmt * this.miscServBillForm.value.qty,
       discountAmount: 0,
       serviceName: this.serviceName,
       itemModify: this.miscServBillForm.value.item.title,
@@ -496,6 +555,16 @@ export class BillDetailComponent implements OnInit {
         }
         this.setServiceItemList();
       });
+    this.miscServBillForm.controls["item"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        console.log(value);
+        if (value.value) {
+          this.itemID = value.value;
+          this.itemName = value.title;
+        }
+        this.setTarrifItemList();
+      });
     // this.questions[0].elementRef.addEventListener(
     //   "change",
     //   this.setServiceItemList.bind(this)
@@ -525,6 +594,8 @@ export class BillDetailComponent implements OnInit {
     });
   }
   serviceName!: string;
+  itemName!: string;
+
   setServiceItemList() {
     console.log("setServiceItemList");
 
@@ -533,9 +604,102 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.serviceType) {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
       this.serviceName = this.miscServBillForm.value.serviceType.title;
+      if (this.serviceID) {
+        this.getallserviceitems();
+      }
 
       this.getServiceItemBySerivceID();
     }
+  }
+  //Filter items based on Service
+  getallserviceitems() {
+    this.serviceItemsList = [];
+    this.http
+      .get(
+        ApiConstants.getServiceitemsByServiceID(
+          this.serviceID, 7
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        this.serviceItemsList = data as ServiceTypeItemModel[];
+        this.question[1].options = [
+          ...this.serviceItemsList.map((a) => {
+            return { title: a.itemname, value: a.itemId };
+          }),
+        ];
+
+      })
+  }
+  //Tarrif Trigger
+  setTarrifItemList() {
+    if (this.miscServBillForm.value.item) {
+      this.getPriceforitemwithTariffId();
+      this.getservices_byprocedureidnew();
+    }
+  }
+  // Bill amt based on service
+  getPriceforitemwithTariffId() {
+    let PriorityId = 1;
+
+    //let Hsplocationid = this.location;
+    let Hsplocationid = 7;
+    let CompanyId = 0;
+    let CompanyFlag = 0;
+    let intBundleId = 0;
+    this.http
+      .get(
+        ApiConstants.getPriceforitemwithTariffId(PriorityId, this.itemID, this.serviceID, Hsplocationid, CompanyId, CompanyFlag, intBundleId)
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        this.billAmnt = data.amount;
+        this.miscServBillForm.controls["tffPrice"].setValue(data.amount);
+        this.miscServBillForm.controls["reqAmt"].setValue(data.amount);
+
+        console.log(data, "getPriceforitemwithTariffId");
+      })
+  }
+  //Get Tax id & type
+  getservices_byprocedureidnew() {
+    this.http
+      .get(
+        ApiConstants.getservices_byprocedureidnew(
+          this.itemID, this.serviceID
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        this.taxid = data[0].id;
+        this.taxcode = data[0].code;
+        this.taxtype = data[0].taxType;
+        this.taxService = data[0].serviceId
+
+        console.log(data, "getservices_byprocedureidnew");
+      })
+
+    if (this.taxid) {
+      this.getgstdata();
+    }
+  }
+  //Fetch GST Data
+  getgstdata() {
+    // let location = this.location;
+    //let company =this.miscServBillForm.controls["company"].value;
+    let location = 7;
+    let company = 31316;
+    this.http
+      .get(
+        ApiConstants.getgstdata(
+          this.taxid, company, location, this.billAmnt
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+
+        this.gstData = data;
+        console.log(this.gstData, "getgstdata");
+      })
   }
   miscMasterDataList!: MiscMasterDataModel;
 
@@ -570,6 +734,7 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.serviceItemsList = data as ServiceTypeItemModel[];
+        console.log(this.serviceItemsList, "Service list")
         this.question[1].options = [
           ...this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
@@ -639,7 +804,21 @@ export class BillDetailComponent implements OnInit {
         }
       });
   }
+  openGstTaxDialog() {
+    this.matDialog.open(GstTaxDialogComponent, {
+      width: '35vw', height: '70vh', data: {
+        gstdata: this.gstData,
+      },
+    });
+  }
 
+  // discAmtDialog() {
+  //   this.matDialog.open(DiscountAmtDialogComponent, {
+  //     width: 'full', height: 'auto', data: {
+  //       message: "Do you want to save?"
+  //     },
+  //   });
+  // }
   openDepositdialog() {
     const MakeDepositDialogref = this.matDialog.open(
       MakedepositDialogComponent,
