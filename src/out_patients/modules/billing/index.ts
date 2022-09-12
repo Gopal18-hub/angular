@@ -110,7 +110,6 @@ import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-com
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
 
-
 @NgModule({
   declarations: [
     BillingComponent,
@@ -194,7 +193,6 @@ import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-co
     IomCompanyBillingComponent,
     ExpiredDepositsComponent,
     MonthlyOpConsultationReportComponent,
-
   ],
   imports: [
     BillingRoutingModule,
