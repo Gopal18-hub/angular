@@ -110,8 +110,13 @@ import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-com
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
 
+import { BillForm60Component } from "./submodules/billing/prompts/payment-dialog/form60/form60.component";
+import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment-dialog/payment-dialog.component";
+
 @NgModule({
   declarations: [
+    BillForm60Component,
+    BillPaymentDialogComponent,
     BillingComponent,
     BillDetailTableComponent,
     BillingComponentPage,
