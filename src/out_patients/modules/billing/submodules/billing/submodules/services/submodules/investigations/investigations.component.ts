@@ -154,10 +154,19 @@ export class InvestigationsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      this.getdoctorlistonSpecializationClinic(
-        res.$event.value,
-        res.data.index
-      );
+      if (res.data.col == "specialisation") {
+        this.getdoctorlistonSpecializationClinic(
+          res.$event.value,
+          res.data.index
+        );
+        this.billingService.InvestigationItems[
+          res.data.index
+        ].billItem.specialisationID = res.$event.value;
+      } else if (res.data.col == "doctorName") {
+        this.billingService.InvestigationItems[
+          res.data.index
+        ].billItem.doctorID = res.$event.value;
+      }
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
@@ -338,6 +347,8 @@ export class InvestigationsComponent implements OnInit {
               totalAmount: res[0].returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           });
         }

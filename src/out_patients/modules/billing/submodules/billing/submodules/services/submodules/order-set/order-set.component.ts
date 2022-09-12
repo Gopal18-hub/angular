@@ -331,6 +331,8 @@ export class OrderSetComponent implements OnInit {
               totalAmount: resItem.returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           };
           this.billingService.addToOrderSet(data1);

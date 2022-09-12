@@ -367,6 +367,8 @@ export class ProcedureOtherComponent implements OnInit {
               totalAmount: res[0].returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           });
         }
