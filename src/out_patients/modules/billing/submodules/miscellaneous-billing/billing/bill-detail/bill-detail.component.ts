@@ -93,7 +93,7 @@ export class BillDetailComponent implements OnInit {
         type: "number",
         title: "Qty",
         maximum: 9,
-        minimum: 0,
+        minimum: 1,
         defaultValue: "0.00",
         //required: true,
       },
@@ -581,19 +581,25 @@ export class BillDetailComponent implements OnInit {
   }
   addService() {
     if (!this.miscServBillForm.value.serviceType) {
-      this.snackbar.open("Please choose Service", "error");
+      this.snackbar.open("Select Service Item", "error");
     }
     else if (!this.miscServBillForm.value.item) {
-      this.snackbar.open("Please choose Item", "error");
+      this.snackbar.open("Enter the Item Description First", "error");
     }
     else if (!this.miscServBillForm.value.qty) {
-      this.snackbar.open("Please enter Quantity", "error");
+      this.snackbar.open("Enter the Item Quantity", "error");
+    }
+    else if (this.miscServBillForm.value.qty === 0) {
+      this.snackbar.open("Quantity Can Not be Zero", "error");
     }
     else if (!this.miscServBillForm.value.reqAmt) {
-      this.snackbar.open("Please enter Amount", "error");
+      this.snackbar.open("Enter the Item Price", "error");
+    }
+    else if (this.miscServBillForm.value.reqAmt === 0) {
+      this.snackbar.open("Item Price Can Not be Zero", "error");
     }
     else if (!this.miscServBillForm.value.remark.value) {
-      this.snackbar.open("Please enter Remarks field", "error");
+      this.snackbar.open("Please select remarks!", "error");
     }
     else {
       this.count = this.serviceselectedList.length + 1;
@@ -601,12 +607,14 @@ export class BillDetailComponent implements OnInit {
       let present = false;
       this.serviceselectedList.forEach((element) => {
         if (ServiceType == element.ServiceType) {
+          this.snackbar.open("Item Already Exits", "error");
           present = true;
           return;
-          //console.log("same service");
         }
       });
       if (!present) {
+
+
         this.pushDataToServiceTable();
         this.serviceselectedList.forEach((e: any) => {
           e.TariffPrice = Number(e.TariffPrice).toFixed(2);
@@ -622,6 +630,7 @@ export class BillDetailComponent implements OnInit {
         })
         this.serviceselectedList = [...this.serviceselectedList];
         this.miscPatient.setBillDetail(this.serviceselectedList);
+
       }
 
       this.calculateTotalAmount();
@@ -630,6 +639,8 @@ export class BillDetailComponent implements OnInit {
 
   }
   pushDataToServiceTable() {
+
+
     this.serviceselectedList.push({
       Sno: this.count,
       ServiceType: this.serviceName,
