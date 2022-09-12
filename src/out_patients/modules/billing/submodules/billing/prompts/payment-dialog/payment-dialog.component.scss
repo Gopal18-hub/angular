@@ -1,0 +1,96 @@
+.payment-dialog{
+    .col-black{
+        color: #000;
+    }
+    .col-white{
+        color: #fff;
+    }
+    .back-primary{
+        background-color: #004084;
+    }
+    .bold{
+        font-weight: bold;
+    }
+    .lighter{
+        font-weight: lighter;
+    }
+    .wt-nowrap{
+        white-space: nowrap;
+    }
+    .pointer{
+        cursor: pointer;
+    }
+    .secondary{
+        background-color: #45C0BE;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+        padding-bottom: 0 !important;
+    }
+    .bg-white{
+        background-color: #fff;
+        color: #000;
+    }
+    .clr-primary{
+        color: #004084;
+    }
+    .height{
+        height: 62vh;
+    }
+    .width{
+        width: 30% !important;
+    }
+    .bg-grey{
+        background:#F6F6F6;
+    }
+    .bg-lightgrey{
+        background-color: #D2D0D0;
+    }
+    .bg-btn{
+        background-color: #C8C8C8;
+    }
+    .mg-top-1{
+        margin-top: 1px;
+    }
+    ::ng-deep mat-radio-group {
+        flex-direction: row !important;
+        gap: 15px;
+    }
+    ::ng-deep .mat-radio-button{
+        margin-left: 10px;
+        padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        margin-bottom: 10px;
+    }
+    .bottom{
+        ::ng-deep .mat-radio-button{
+            margin-left: 10px;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            padding-top: 0 !important;
+            margin-top: 8px;
+        }
+    }
+    ::ng-deep .ta textarea{
+        min-height: 120px !important;
+    }
+    
+    .otptextcnt{
+        ::ng-deep .mat-form-field{
+            line-height: 2 !important;
+        }
+    }
+    
+    ::ng-deep .refundheight{
+        height: 5vh !important;
+    }
+    .payabletextbox{
+    ::ng-deep .mat-form-field{
+    line-height: 1.25 !important;
+    }
+    }
+}
+
+::ng-deep .mat-dialog-container{
+    overflow: hidden !important;
+    padding: 10px 24px 24px 24px;
+}

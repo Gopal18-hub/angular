@@ -205,4 +205,7 @@ export namespace BillingApiConstants {
 
   export const getHealthCheckupdetails = (hcuid: string, serviceid: string) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getHealthCheckupdetails/${hcuid}/${serviceid}`;
+
+  export const insert_billdetailsgst = () =>
+    `${environment.BillingApiUrl}api/outpatientbilling/insert_billdetailsgst`;
 }

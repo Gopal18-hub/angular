@@ -342,6 +342,9 @@ export class BillingComponent implements OnInit {
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              this.billingService.setPatientDetails(
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+              );
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]

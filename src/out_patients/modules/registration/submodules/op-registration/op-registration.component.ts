@@ -90,7 +90,7 @@ export class OpRegistrationComponent implements OnInit {
   cityList: CityModel[] = [];
   disttList: DistrictModel[] = [];
   lastUpdatedBy: string = "";
-  currentTime: string = new Date().toLocaleString();
+  currentTime: any = this.datepipe.transform(new Date(), "dd/MM/yyyy hh:mm aa");
   localityList: LocalityModel[] = [];
   localitybyCityList: LocalityModel[] = [];
   fatherSpouseOptionList: [{ title: string; value: number }] = [] as any;
@@ -467,7 +467,8 @@ export class OpRegistrationComponent implements OnInit {
   bool: boolean | undefined;
   ngOnInit(): void {
     this.bool = true;
-    this.lastUpdatedBy = this.cookie.get("UserName");
+    this.lastUpdatedBy =
+      this.cookie.get("Name") + "(" + this.cookie.get("UserName") + ")";
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
