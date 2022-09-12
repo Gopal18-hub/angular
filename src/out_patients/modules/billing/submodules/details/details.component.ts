@@ -252,6 +252,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['toDate'].disable();
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
+    this.BServiceForm.controls['paymentMode'].disable();
     this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
@@ -499,9 +500,9 @@ export class DetailsComponent implements OnInit {
                 this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == ''  
               )
               {
-                this.BServiceForm.controls['authBy'].enable();
-                this.BServiceForm.controls['reason'].enable();
-                this.BServiceForm.controls['paymentMode'].enable();
+                // this.BServiceForm.controls['authBy'].enable();
+                // this.BServiceForm.controls['reason'].enable();
+                // this.BServiceForm.controls['paymentMode'].enable();
               }
               else
               {
@@ -875,6 +876,22 @@ export class DetailsComponent implements OnInit {
       console.log(this.billdetailservice.totalrefund);
       console.log(this.billdetailservice.sendforapproval);
       var approvedlist;
+      if(this.billdetailservice.totalrefund > 0 &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == '' 
+      )
+      {
+        this.BServiceForm.controls['authBy'].enable();
+        this.BServiceForm.controls['reason'].enable();
+        this.BServiceForm.controls['paymentMode'].enable();
+      }
+      else
+      {
+        this.BServiceForm.controls['authBy'].disable();
+        this.BServiceForm.controls['reason'].disable();
+        this.BServiceForm.controls['paymentMode'].disable();
+      }
       var forenablerefundbill: any;
       if(this.billdetailservice.sendforapproval.length > 0)
       {

@@ -109,7 +109,7 @@ import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledg
 import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-company-billing/iom-company-billing.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
-import { OpPrescriptionDialogComponent } from './submodules/details/op-prescription-dialog/op-prescription-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -194,7 +194,7 @@ import { OpPrescriptionDialogComponent } from './submodules/details/op-prescript
     IomCompanyBillingComponent,
     ExpiredDepositsComponent,
     MonthlyOpConsultationReportComponent,
-    OpPrescriptionDialogComponent,
+
   ],
   imports: [
     BillingRoutingModule,
