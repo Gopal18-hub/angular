@@ -1099,8 +1099,12 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/getssnandmaxid/?iaCode=" + iaCode + "&registrationNo=" + registrationNo + "&SSN" + SSN
-
+      "api/outpatientbilling/getssnandmaxid/?iaCode=" +
+      iaCode +
+      "&registrationNo=" +
+      registrationNo +
+      "&SSN" +
+      SSN
     );
   };
 
@@ -1111,8 +1115,7 @@ export namespace ApiConstants {
     Hsplocationid: number,
     CompanyId?: number,
     CompanyFlag?: number,
-    intBundleId?: number,
-
+    intBundleId?: number
   ) => {
     return (
       environment.BillingApiUrl +
@@ -1123,7 +1126,13 @@ export namespace ApiConstants {
       "/" +
       ServiceId +
       "/" +
-      Hsplocationid + "?CompanyId=" + CompanyId + "&CompanyFlag=" + CompanyFlag + "&intBundleId=" + intBundleId
+      Hsplocationid +
+      "?CompanyId=" +
+      CompanyId +
+      "&CompanyFlag=" +
+      CompanyFlag +
+      "&intBundleId=" +
+      intBundleId
     );
   };
   export const getgstdata = (
@@ -1146,66 +1155,60 @@ export namespace ApiConstants {
   };
   export const getreferraldoctor = (
     Type: number,
-    ReferralDoctorName?: string,
-
+    ReferralDoctorName?: string
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getreferraldoctor/" +
-      Type + "?ReferralDoctorName=" + ReferralDoctorName
-
+      Type +
+      "?ReferralDoctorName=" +
+      ReferralDoctorName
     );
   };
-  export const getbilltocompany = (
-
-    Companyid?: number,
-
-  ) => {
+  export const getbilltocompany = (Companyid?: number) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getbilltocompany/" +
       Companyid
-
     );
   };
   export const getservices_byprocedureidnew = (
-
     Itemid: number,
     Serviceid: number
-
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getservices_byprocedureidnew/" +
-      Itemid + "/" + Serviceid
-
+      Itemid +
+      "/" +
+      Serviceid
     );
   };
   export const setpanno = (
-
     Iacode: string,
     RegistrationNo: number,
     PANNo: string
-
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/setpanno/" +
-      Iacode + "/" + RegistrationNo + "/" + PANNo
-
+      Iacode +
+      "/" +
+      RegistrationNo +
+      "/" +
+      PANNo
     );
   };
   export const getservices_byprocedureid = (
-
     ProcedureId: number,
     Serviceid: number
-
   ) => {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getservices_byprocedureid/" +
-      ProcedureId + "/" + Serviceid
-
+      ProcedureId +
+      "/" +
+      Serviceid
     );
   };
 
@@ -1237,7 +1240,6 @@ export namespace ApiConstants {
       HealthId +
       "&HsplocationId=" +
       HsplocationId
-
     );
   };
 
@@ -1247,26 +1249,19 @@ export namespace ApiConstants {
       environment.CommonApiUrl +
       "api/lookup/getbilldiscountreasonmainhead/" +
       locid
-
     );
   };
-
 
   //Discount Reason
   export const getbilldiscountreason = (locid: number) => {
     return (
-      environment.CommonApiUrl +
-      "api/lookup/getbilldiscountreason/" + locid
+      environment.CommonApiUrl + "api/lookup/getbilldiscountreason/" + locid
     );
   };
 
-
-  //Authorised by 
+  //Authorised by
   export const getauthorisedby = (locid: number) => {
-    return (
-      environment.CommonApiUrl +
-      "api/lookup/getauthorisedby/" + locid
-    );
+    return environment.CommonApiUrl + "api/lookup/getauthorisedby/" + locid;
   };
 
   //Authorised by 
@@ -1287,37 +1282,39 @@ export namespace ApiConstants {
       value
     );
   };
-  export const getExpiredDepositReport = (
+  export const getPatientExpiredDepositDetails = (
     iacode: string,
     registrationno: number,
-    fromdate: string,
-    todate: string
+    fromdate: any,
+    todate: any
   ) => {
     return (
-      environment.CommonApiUrl +
-      "iacode" +
+      environment.PatientApiUrl +
+      "api/patient/getpatientexpireddepositdetails/" +
+      iacode +
       "/" +
-      "registrationno" +
+      registrationno +
       "/" +
-      "fromdate" +
+      fromdate +
       "/" +
-      "todate" +
-      "/"
+      todate
     );
   };
   export const getopconsultationcount = (
-    fromdate: Date,
-    todate: Date,
+    fromdate: any,
+    todate: any,
     locationid: number
   ) => {
     return (
       environment.BillingApiUrl +
-      "fromdate" +
+      "api/outpatientbilling/(getopconsultationcount /" +
+      fromdate +
       "/" +
-      "todate" +
+      todate +
       "/" +
-      "locationid" +
-      "/"
+      locationid
     );
   };
+  export const getLocationMaster =
+    environment.CommonApiUrl + "api/lookup/getlocationmaster";
 }
