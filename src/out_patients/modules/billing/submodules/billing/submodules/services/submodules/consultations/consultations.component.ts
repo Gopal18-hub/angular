@@ -153,6 +153,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     this.billingService.consultationItems.splice($event.index, 1);
     this.billingService.consultationItems =
       this.billingService.consultationItems.map((item: any, index: number) => {
@@ -208,6 +211,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               title: r.doctorNameWithSpecialization || r.doctorName,
               value: r.doctorId,
               originalTitle: r.doctorName,
+              specialisationid: r.specialisationid,
+              clinicID: r.clinicID,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -266,6 +271,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             title: r.doctorNameWithSpecialization || r.doctorName,
             value: r.doctorId,
             originalTitle: r.doctorName,
+            specialisationid: r.specialisationid,
+            clinicID: r.clinicID,
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -326,6 +333,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             scheduleSlot: "",
             bookingDate: "",
             price: res[0].returnOutPut,
+            specialization: this.formGroup.value.specialization.value,
+            clinics: this.formGroup.value.clinics.value,
             billItem: {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
@@ -343,6 +352,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               totalAmount: res[0].returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID:
+                this.formGroup.value.doctorName.specialisationid,
+              doctorID: this.formGroup.value.doctorName.value,
             },
           });
         }
