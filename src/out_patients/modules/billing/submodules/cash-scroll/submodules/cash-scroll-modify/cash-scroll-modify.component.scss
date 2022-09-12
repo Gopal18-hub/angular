@@ -1,0 +1,55 @@
+.text-wrap{
+    white-space: nowrap;
+}
+.bg-lightgray{
+    background :#F6F6F6; 
+     
+}
+.bg-darkgray{
+    
+    background: #d8d8d8;
+}
+.p-0-15{
+    padding:0.15rem ;
+}
+.p-0-35{
+    padding:0.35rem ;
+}
+.border-class{
+   border: 1px ridge  black;
+   border-radius: 5px;
+}
+.h-20{
+    height:20%;
+}
+.input-padding{
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
+}
+.ml-16{
+    margin-left:3.4rem;
+}
+.ml-20{
+    margin-left:5.1rem;
+}
+.pt-0-5{
+    padding:0.5%;
+}
+.mt-6p{
+    margin-top:6%
+}
+.button{
+    height:1.875rem;
+    min-width:initial !important;
+    line-height: 1.875rem  !important;
+}
+.w-18{
+    width:18%
+}
+.p-0-15{
+    padding:0.15rem;
+}
+.w-8{
+    width:8%;
+}
