@@ -598,7 +598,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         itemname: item.itemName,
         amount: Number(dtlist[0].amount),
         discountamount: Number(dtlist[0].discountamount),
-        cancelled: dtlist[0].cancelled,
+        cancelled: 0,
         orderid: dtlist[0].orderid,
         qTslno: dtlist[0].qTslno,
         planAmount: Number(dtlist[0].planAmount),
@@ -629,7 +629,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.billrefundforsingleitem.locationId = Number(this.cookie.get('HSPLocationId'));
       this.billrefundforsingleitem.operatorId = Number(this.cookie.get('UserId'));
       this.billrefundforsingleitem.stationId = Number(this.cookie.get('StationId'));
-      this.billrefundforsingleitem.amount = Number(dtlist[0].amount);
+      this.billrefundforsingleitem.amount = this.billDetailService.totalrefund;
       this.billrefundforsingleitem.decDiscountAmount = Number(dtlist[0].discountamount);
       this.billrefundforsingleitem.objDsSave.objtab_cancelbill.push({
         billno: this.data.billno,
@@ -660,11 +660,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.billrefundforsingleitem.objDsSave.objdt.push({
         serviceid: item.serviceId,
         itemid: item.itemid,
-        servicename: item.servicename,
+        servicename: item.serviceName,
         itemname: item.itemName,
         amount: Number(dtlist[0].amount),
         discountamount: Number(dtlist[0].discountamount),
-        cancelled: dtlist[0].cancelled,
+        cancelled: 0,
         orderid: dtlist[0].orderid,
         qTslno: dtlist[0].qTslno,
         planAmount: Number(dtlist[0].planAmount),

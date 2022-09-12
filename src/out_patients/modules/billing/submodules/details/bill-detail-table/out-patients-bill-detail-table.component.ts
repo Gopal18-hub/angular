@@ -209,7 +209,7 @@ export class BillDetailTableComponent implements OnInit {
       "discountamount",
       // "cancelled",
     ],
-    // rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
+    rowLayout: { dynamic: { rowClass: "row['cancelled']" } },
     columnsInfo: {
       Sno: {
         title: "S.No.",
@@ -271,6 +271,14 @@ export class BillDetailTableComponent implements OnInit {
     this.question = serviceFormResult.questions;
     for (var i = 0; i < this.billDetailservice.serviceList.length; i++) {
       this.billDetailservice.serviceList[i].Sno = i + 1;
+      if(this.billDetailservice.serviceList[i].cancelled == 1)
+      {
+        this.billDetailservice.serviceList[i].cancelled = 'cancelledrefund'
+      }
+      else if(this.billDetailservice.serviceList[i].cancelled == 0)
+      {
+        this.billDetailservice.serviceList[i].cancelled = 'notcancelledrefund'
+      }
     }
     this.data = [...this.billDetailservice.serviceList];
   }
@@ -280,7 +288,7 @@ export class BillDetailTableComponent implements OnInit {
       .find(this.tableRows)
       .create();
       this.data.forEach((item: any) => {
-        if(item.cancelled == 1)
+        if(item.cancelled == 'cancelledrefund')
         {
           this.tableRows.selection.select(item);
         }
@@ -353,7 +361,7 @@ export class BillDetailTableComponent implements OnInit {
                         this.tableRows.selection.deselect(item);
                       }, 100);
                     }
-                    else if(item.itemid == acklist[x].itemid && item.cancelled == 0)
+                    else if(item.itemid == acklist[x].itemid && item.cancelled == 'notcancelledrefund')
                     {
                       this.msgdialog.info('Sample For Item has been Acknowledged, Cannot Refund this Item');
                       console.log(this.tableRows.selection);
@@ -367,7 +375,7 @@ export class BillDetailTableComponent implements OnInit {
             }
             
             console.log(this.tableRows.selection.selected[i])
-            if(this.tableRows.selection.selected[i].cancelled == 0)
+            if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {
               console.log(this.tableRows.selection.selected[i].itemid);
               this.billDetailservice.addForApproval({
@@ -423,7 +431,7 @@ export class BillDetailTableComponent implements OnInit {
       if(s.removed.length > 0)
       {
         s.removed.forEach((item: any) =>{
-          if(item.cancelled == 1)
+          if(item.cancelled == 'cancelledrefund')
           {
             console.log(item);
             // this.msgdialog.info('Item in this list Already Refunded');
