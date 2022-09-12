@@ -43,7 +43,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private formService: QuestionControlService,
     private router: Router,
     private http: HttpService,
-    private cookie: CookieService,
+    public cookie: CookieService,
     private datepipe: DatePipe,
     private messageDialogService: MessageDialogService,
     private db: DbService,
@@ -53,6 +53,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private patientService: PatientService
   ) { }
   categoryIcons: any;
+  moment = moment;
   doCategoryIconAction(icon: any) { }
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
@@ -643,7 +644,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: DMSrefreshModel[]) => {
         this.matDialog.open(DMSComponent, {
-          width: "100vw",
+          width: "80vw",
+          height: "80vh",
           maxWidth: "90vw",
           data: {
             list: resultData,
