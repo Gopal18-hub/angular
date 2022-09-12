@@ -109,10 +109,16 @@ import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledg
 import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-company-billing/iom-company-billing.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
+<<<<<<< HEAD
 
 import { BillForm60Component } from "./submodules/billing/prompts/payment-dialog/form60/form60.component";
 import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment-dialog/payment-dialog.component";
 
+=======
+import { CashScrollComponent } from "./../billing/submodules/cash-scroll/cash-scroll.component";
+import { CashScrollNewComponent } from "./../billing/submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
+import { CashScrollModifyComponent } from './submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component';
+>>>>>>> dff9ebfda009364ea79b9d0d2768b2ae72baa10c
 @NgModule({
   declarations: [
     BillForm60Component,
@@ -198,6 +204,9 @@ import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment
     IomCompanyBillingComponent,
     ExpiredDepositsComponent,
     MonthlyOpConsultationReportComponent,
+    CashScrollNewComponent,
+    CashScrollComponent,
+    CashScrollModifyComponent,
   ],
   imports: [
     BillingRoutingModule,

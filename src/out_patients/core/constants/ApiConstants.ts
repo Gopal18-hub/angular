@@ -1092,6 +1092,182 @@ export namespace ApiConstants {
       flag
     );
   };
+  export const getssnandmaxid = (
+    iaCode?: string,
+    registrationNo?: number,
+    SSN?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getssnandmaxid/?iaCode=" + iaCode + "&registrationNo=" + registrationNo + "&SSN" + SSN
+
+    );
+  };
+
+  export const getPriceforitemwithTariffId = (
+    PriorityId: number,
+    ItemId: number,
+    ServiceId: number,
+    Hsplocationid: number,
+    CompanyId?: number,
+    CompanyFlag?: number,
+    intBundleId?: number,
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      PriorityId +
+      "/" +
+      ItemId +
+      "/" +
+      ServiceId +
+      "/" +
+      Hsplocationid + "?CompanyId=" + CompanyId + "&CompanyFlag=" + CompanyFlag + "&intBundleId=" + intBundleId
+    );
+  };
+  export const getgstdata = (
+    Taxid: number,
+    Companyid: number,
+    Logedlocationid: number,
+    Amount: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getgstdata/" +
+      Taxid +
+      "/" +
+      Companyid +
+      "/" +
+      Logedlocationid +
+      "/" +
+      Amount
+    );
+  };
+  export const getreferraldoctor = (
+    Type: number,
+    ReferralDoctorName?: string,
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getreferraldoctor/" +
+      Type + "?ReferralDoctorName=" + ReferralDoctorName
+
+    );
+  };
+  export const getbilltocompany = (
+
+    Companyid?: number,
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getbilltocompany/" +
+      Companyid
+
+    );
+  };
+  export const getservices_byprocedureidnew = (
+
+    Itemid: number,
+    Serviceid: number
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getservices_byprocedureidnew/" +
+      Itemid + "/" + Serviceid
+
+    );
+  };
+  export const setpanno = (
+
+    Iacode: string,
+    RegistrationNo: number,
+    PANNo: string
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/setpanno/" +
+      Iacode + "/" + RegistrationNo + "/" + PANNo
+
+    );
+  };
+  export const getservices_byprocedureid = (
+
+    ProcedureId: number,
+    Serviceid: number
+
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getservices_byprocedureid/" +
+      ProcedureId + "/" + Serviceid
+
+    );
+  };
+
+  export const searchPatientApiMisc = (
+    maxId?: string,
+    SSN?: string,
+    Name?: string,
+    PhoneNumber?: string,
+    DOB?: string,
+    AadhaarId?: string,
+    HealthId?: string,
+    HsplocationId?: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getallpatientssearch?MaxId=" +
+      maxId +
+      "&SSN=" +
+      SSN +
+      "&Name=" +
+      Name +
+      "&PhoneNumber=" +
+      PhoneNumber +
+      "&DOB=" +
+      DOB +
+      "&AadhaarId=" +
+      AadhaarId +
+      "&HealthId=" +
+      HealthId +
+      "&HsplocationId=" +
+      HsplocationId
+
+    );
+  };
+
+  //Discount Header
+  export const getbilldiscountreasonmainhead = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getbilldiscountreasonmainhead/" +
+      locid
+
+    );
+  };
+
+
+  //Discount Reason
+  export const getbilldiscountreason = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getbilldiscountreason/" + locid
+    );
+  };
+
+
+  //Authorised by 
+  export const getauthorisedby = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getauthorisedby/" + locid
+    );
+  };
 
   export const getconfiguremessage = (requesttype: string, value: string) => {
     return (
@@ -1117,6 +1293,21 @@ export namespace ApiConstants {
       "fromdate" +
       "/" +
       "todate" +
+      "/"
+    );
+  };
+  export const getopconsultationcount = (
+    fromdate: Date,
+    todate: Date,
+    locationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "fromdate" +
+      "/" +
+      "todate" +
+      "/" +
+      "locationid" +
       "/"
     );
   };

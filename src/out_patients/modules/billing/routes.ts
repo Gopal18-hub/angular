@@ -38,7 +38,9 @@ import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/vie
 import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
-
+import { CashScrollComponent } from "./submodules/cash-scroll/cash-scroll.component";
+import { CashScrollNewComponent } from "./submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
+import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -93,7 +95,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "", component: BillDetailComponent },
-          { path: "credit-details", component: MiscCredDetail },
+          { path: "credit-details", component: CreditDetailComponent },
           { path: "bill", component: BillDetailComponent },
         ],
       },
@@ -138,6 +140,23 @@ const routes: Routes = [
             component: PostDischargeCreditDetailsComponent,
           },
         ],
+      },
+      {
+        path: "cash-scroll",
+        component: CashScrollComponent,
+        // children: [
+        //   //  { path: "cash-scroll-modify", component: CashScrollModifyComponent },
+        //   { path: "cash-scroll-new", component: CashScrollNewComponent },
+        //   { path: "cash-scroll-modify", component: CashScrollModifyComponent },
+        // ],
+      },
+      {
+        path: "cash-scroll/cash-scroll-new",
+        component: CashScrollNewComponent,
+      },
+      {
+        path: "cash-scroll/cash-scroll-modify",
+        component: CashScrollModifyComponent,
       },
     ],
   },

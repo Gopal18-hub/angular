@@ -13,6 +13,7 @@ const routes: Routes = [
         (m) => m.PromptReportModule
       ),
   },
+
   {
     path: "report/Acknowledgement-Scroll-Amount-Report",
     component: AcknowledgedScrollAmountReportComponent,

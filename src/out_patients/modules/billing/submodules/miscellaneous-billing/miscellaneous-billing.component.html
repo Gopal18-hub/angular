@@ -158,14 +158,15 @@
             <span class="ml-2"></span>
           </div>
         </div>
-        <div class="flex second-row-action-items mr-2">
+        <div class="flex second-row-action-items mr-4">
   
           <button
             mat-raised-button
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
-            
+            [disabled]="!disableBtn"
+            (click)="dms()"
            
           >
            DMS
@@ -175,6 +176,7 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            [disabled]="!disableBtn"
             (click)="visitHistory()"
           >
             Visit History
@@ -184,7 +186,8 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
-           
+            [disabled]="!disableBtn"
+           (click)="clearForm()"
           >
             Clear
           </button>
@@ -230,3 +233,5 @@
   </div>
 </div>
  -->
+<div *ngIf=false>
+ <out-patients-bill-detail [miscCompany]="companyId"></out-patients-bill-detail></div>

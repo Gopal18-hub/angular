@@ -42,6 +42,8 @@ export interface billDetialsForRefund_Table0{
     hotlistreason: any,
     hotlistcomments: any,
     bplCardNo: any,
+    addressOnCard: any,
+    emailId: any,
 }
 export interface billDetialsForRefund_Table1{
     opBillID: number,
