@@ -112,13 +112,14 @@ import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-co
 
 import { BillForm60Component } from "./submodules/billing/prompts/payment-dialog/form60/form60.component";
 import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment-dialog/payment-dialog.component";
-
+import { BillingPaymentMethodsComponent } from "./submodules/billing/prompts/payment-dialog/payment-methods/payment-methods.component";
 import { CashScrollComponent } from "./../billing/submodules/cash-scroll/cash-scroll.component";
 import { CashScrollNewComponent } from "./../billing/submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 import { CashScrollModifyComponent } from './submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component';
 import { OpPrescriptionDialogComponent } from './submodules/details/op-prescription-dialog/op-prescription-dialog.component';
 @NgModule({
   declarations: [
+    BillingPaymentMethodsComponent,
     BillForm60Component,
     BillPaymentDialogComponent,
     BillingComponent,

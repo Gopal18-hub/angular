@@ -104,18 +104,11 @@ export class BillPaymentDialogComponent implements OnInit {
     };
   }
   ngAfterViewInit(): void {
-    console.log(this.paymentmethod.refundform);
     this.paymentmethod.refundform.controls["cashamount"].valueChanges.subscribe(
-      (res) => {
-        console.log(res);
-        this.adddueamount(res);
-      }
+      (res) => {}
     );
   }
-  adddueamount(amount: number) {
-    this.finalamount += amount;
-    console.log(this.finalamount);
-  }
+
   clear() {
     this._destroying$.next(undefined);
     this._destroying$.complete();
@@ -125,7 +118,9 @@ export class BillPaymentDialogComponent implements OnInit {
   makeBill() {
     this.billingService.makeBill().subscribe((res) => {
       if (res.length > 0) {
-        this.dialogRef.close(res[0]);
+        if (res[0].billNo) {
+          this.dialogRef.close(res[0]);
+        }
       }
     });
   }
