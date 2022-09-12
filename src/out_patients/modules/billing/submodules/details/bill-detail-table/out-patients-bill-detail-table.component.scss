@@ -198,4 +198,14 @@ margin-top: 0.19rem;
             }
         }
     }
+    ::ng-deep .max-table-wrapper table{
+        tr.cancelledrefund{
+            background-color: #fff !important;
+            td{
+                pointer-events: none;
+                opacity: 0.5;
+            }
+        }
+
+    }
 }
