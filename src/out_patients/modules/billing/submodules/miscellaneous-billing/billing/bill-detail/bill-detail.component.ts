@@ -31,12 +31,15 @@ import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 export class BillDetailComponent implements OnInit {
   @Input() miscCompany!: any;
   @Output() newItemEvent = new EventEmitter<any>();
+  discountedAmt = 0;
   newItem!: MiscellaneousBillingModel;
   doctorList!: objMiscDoctorsList[];
   // serviceList!: objMiscBillingConfigurationList;
   remarkList!: objMiscBillingRemarksList[];
   serviceItemsList!: ServiceTypeItemModel[];
   serviceList!: { title: string; value: number }[];
+  miscCompanyId: any;
+  generatedBillNo = '';
 
   //Tax info
   taxid = 0;
@@ -409,8 +412,8 @@ export class BillDetailComponent implements OnInit {
   openReportModal(btnname: string) {
 
     this.reportService.openWindow(btnname, btnname, {
-      opbillid: 10,
-      locationID: 7
+      opbillid: this.generatedBillNo,
+      locationID: this.location
     });
   }
 
@@ -433,43 +436,40 @@ export class BillDetailComponent implements OnInit {
       });
   }
 
-
-
-
-
-
   postBillObj: MiscellaneousBillingModel = {} as any;
   addNewItem(): any {
-    let abc = this.miscPatient.getFormLsit();
+    this.miscCompanyId = this.miscPatient.getCompany();
+    let miscPatient = this.miscPatient.getFormLsit();
+    console.log(miscPatient, "localmiscpatient");
     //console.log(abc);
     this.postBillObj.dtSaveOBill_P =
     {
-      registrationno: 1,
-      iacode: 'blkh',
-      billAmount: 500,
+      registrationno: miscPatient.registrationno,
+      iacode: miscPatient.iacode,
+      billAmount: this.billAmnt,
       depositAmount: 0,
-      discountAmount: 0,
+      discountAmount: this.discountedAmt,
       stationid: 10475,
-      billType: 1,
+      billType: 1, //cash
       categoryId: 0,
-      companyId: 0,
-      operatorId: 9923,
+      companyId: this.miscCompanyId,
+      operatorId: 9923, //Number(this.cookie.get("UserId"))
       collectedamount: 400,
       balance: 100,
-      hsplocationid: 7,
-      refdoctorid: 443406,
+      hsplocationid: 7, //Number(this.cookie.get("HSPLocationId"))
+      refdoctorid: this.miscServBillForm.value.referralDoctor.value,
       authorisedid: 0,
       serviceTax: 0,
       creditLimit: 0,
       tpaId: 0,
       paidbyTPA: 0,
-      interactionID: 3,
-      corporateid: -1,
-      corporateName: '',
+      interactionID: this.miscServBillForm.value.interactionDetails.value,
+      corporateid: miscPatient.corporateid,
+      corporateName: miscPatient.corporateName,
       channelId: 0,
       billToCompany: 0,
       invoiceType: 'B2C',
-      narration: 'sample'
+      narration: miscPatient.narration
     };
     this.postBillObj.dtMiscellaneous_list = [{
       quantity: 0,
@@ -531,9 +531,10 @@ export class BillDetailComponent implements OnInit {
           console.log(resultData, "success");
 
           if (resultData[0].successFlag === true) {
-
+            this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
+            this.generatedBillNo = resultData[0].billId;
           }
-          this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
+
         },
         (error) => {
           this.snackbar.open(error, "error")
@@ -593,6 +594,7 @@ export class BillDetailComponent implements OnInit {
       if (!present) {
         this.pushDataToServiceTable();
         this.serviceselectedList = [...this.serviceselectedList];
+        this.miscPatient.setBillDetail(this.serviceselectedList);
       }
 
       this.calculateTotalAmount();
@@ -644,6 +646,7 @@ export class BillDetailComponent implements OnInit {
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount += element.TotalAmount;
     });
+    this.billAmnt = this.TotalAmount;
     this.miscServBillForm.controls["billAmt"].setValue(this.TotalAmount);
   }
   ngAfterViewInit(): void {
@@ -752,11 +755,15 @@ export class BillDetailComponent implements OnInit {
   }
   // Bill amt based on service
   getPriceforitemwithTariffId() {
+
+    this.miscCompanyId = this.miscPatient.getCompany();
+    console.log(this.miscCompanyId, "datap")
+
     let PriorityId = 1;
 
     //let Hsplocationid = this.location;
     let Hsplocationid = 7;
-    let CompanyId = 0;
+    let CompanyId = this.miscCompanyId;
     //let CompanyId = Number(this.miscCompany);
 
     let CompanyFlag = 0;
@@ -768,7 +775,7 @@ export class BillDetailComponent implements OnInit {
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
-          this.billAmnt = data.amount;
+
 
           this.miscServBillForm.controls["tffPrice"].setValue(data.amount);
           this.miscServBillForm.controls["reqAmt"].setValue(data.amount);
@@ -803,7 +810,7 @@ export class BillDetailComponent implements OnInit {
     // let location = this.location;
     //let company =this.miscServBillForm.controls["company"].value;
     let location = 7;
-    let company = 31316;
+    let company = this.miscCompanyId;
     this.http
       .get(
         ApiConstants.getgstdata(
@@ -861,7 +868,7 @@ export class BillDetailComponent implements OnInit {
   getbilltocompany() {
     this.http
       .get(
-        ApiConstants.getbilltocompany(31316)
+        ApiConstants.getbilltocompany(this.miscCompanyId)
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
@@ -908,11 +915,20 @@ export class BillDetailComponent implements OnInit {
     });
   }
   discAmtDialog() {
-    this.matDialog.open(DiscountAmtDialogComponent, {
+
+    let dialogRes;
+    const dialogref = this.matDialog.open(DiscountAmtDialogComponent, {
       width: 'full', height: 'auto', data: {
         data: this.billAmnt
       },
     });
+
+
+    dialogref.afterClosed().subscribe(res => {
+      this.discountedAmt = res.data;
+      this.miscServBillForm.controls["discAmt"].setValue(this.discountedAmt);
+      console.log("DisocuntedAMTformpopup,",)
+    })
   }
   openMakeBilldialog() {
     const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {

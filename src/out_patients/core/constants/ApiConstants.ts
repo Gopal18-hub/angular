@@ -1269,6 +1269,15 @@ export namespace ApiConstants {
     );
   };
 
+  //Authorised by 
+  export const checkdiscountamountforparticularautharisation = (authorisedby: number, locationid: number, discAmount: number) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/checkdiscountamountforparticularautharisation/" + authorisedby + "/" + locationid + "/" + discAmount
+    );
+  };
+
+
   export const getconfiguremessage = (requesttype: string, value: string) => {
     return (
       environment.BillingApiUrl +

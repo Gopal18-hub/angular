@@ -20,6 +20,9 @@ import {
 })
 export class DiscountAmtDialogComponent implements OnInit {
   discountRows: any[] = [];
+  discountAmtSelected = 0;
+
+  billData: any = [];
   discAmtForm!: FormGroup;
   count = 0;
   disc = 0;
@@ -52,7 +55,7 @@ export class DiscountAmtDialogComponent implements OnInit {
     this.discAmtForm = formResult.form;
     this.question = formResult.questions;
     let location = Number(this.cookie.get("HSPLocationId"));
-
+    this.checkdiscountamountforparticularautharisation();
     this.http
       .get(
         ApiConstants.getbilldiscountreasonmainhead(
@@ -108,9 +111,9 @@ export class DiscountAmtDialogComponent implements OnInit {
         type: "dropdown",
         title: "Discount Types",
         options: [
-          { title: "In Bill", value: "bill" },
-          { title: "In Service", value: "service" },
-          { title: "In Item", value: "item" }
+          { title: "In Bill", value: "In Bill" },
+          { title: "In Service", value: "In Service" },
+          { title: "In Item", value: "In Item" }
         ],
         placeholder: "Select"
         //readonly: true,
@@ -164,7 +167,6 @@ export class DiscountAmtDialogComponent implements OnInit {
     //dateformat: 'dd/MM/yyyy',
     selectBox: false,
     displayedColumns: ['sno', 'discType', 'service', 'doctor', 'price', 'disc', 'discAmt', 'totalAmt', 'head', 'reason', 'value'],
-
     clickedRows: true,
     clickSelection: "single",
     columnsInfo: {
@@ -258,7 +260,9 @@ export class DiscountAmtDialogComponent implements OnInit {
     // { services: "TOTAL TAX", percentage: '0.00', value: '0.00' }
 
   ]
-
+  listRowClick(e: any) {
+    this.discountAmtSelected = e.row.discAmt;
+  }
 
   ngAfterViewInit(): void {
     this.discAmtForm.controls["types"].valueChanges
@@ -305,7 +309,8 @@ export class DiscountAmtDialogComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         console.log(value)
-
+        this.billData = this.miscPatient.getBillData();
+        console.log(this.billData, "BD")
       })
 
   }
@@ -314,31 +319,47 @@ export class DiscountAmtDialogComponent implements OnInit {
     console.log("Enter" + this.count)
     this.addDiscountRow();
     this.discountRows = [...this.discountRows];
+
+
   }
-
+  checkdiscountamountforparticularautharisation() {
+    this.http
+      .get(
+        ApiConstants.checkdiscountamountforparticularautharisation(89,
+          67, 4000
+        )
+        // ( ApiConstants.checkdiscountamountforparticularautharisation(this.discAmtForm.value.authorise.value,
+        //   67, this.disc)
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => { console.log(data, "author") })
+  }
   addDiscountRow() {
-    this.pushTable()
+    this.pushTable();
 
+    this.discAmtForm.reset();
 
   };
   pushTable() {
     this.discountRows.push
       ({
         sno: this.count,
-        discType: '',
-        service: '',
-        doctor: '',
-        price: '',
+        discType: this.discAmtForm.value.types,
+        service: this.billData[0].ServiceType,
+        doctor: this.billData[0].ItemDescription,
+        price: this.billData[0].Price,
         disc: this.disc,
         discAmt: this.discAmount,
         totalAmt: this.data.data,
         head: this.discAmtForm.value.head.title,
-        reason: this.discAmtForm.value.percentage.title,
+        reason: this.discAmtForm.value.reason.title,
         value: this.disc,
       })
   }
 
-
+  applyDiscount() {
+    this.dialogRef.close({ data: this.discountAmtSelected });
+  }
 }
 
 
