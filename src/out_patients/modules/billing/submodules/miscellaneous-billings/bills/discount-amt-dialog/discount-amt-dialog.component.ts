@@ -304,17 +304,24 @@ export class DiscountAmtDialogComponent implements OnInit {
     this.discAmtForm.controls["amt"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (value)
-          this.count = this.discountRows.length + 1;
-        console.log("Enter" + this.count)
-        this.addDiscountRow();
-        this.discountRows = [...this.discountRows];
+        console.log(value)
+
       })
 
   }
-
+  clear() {
+    this.count = this.discountRows.length + 1;
+    console.log("Enter" + this.count)
+    this.addDiscountRow();
+    this.discountRows = [...this.discountRows];
+  }
 
   addDiscountRow() {
+    this.pushTable()
+
+
+  };
+  pushTable() {
     this.discountRows.push
       ({
         sno: this.count,
@@ -329,9 +336,7 @@ export class DiscountAmtDialogComponent implements OnInit {
         reason: this.discAmtForm.value.percentage.title,
         value: this.disc,
       })
-
-  };
-
+  }
 
 
 }

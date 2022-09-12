@@ -517,22 +517,30 @@ export class BillDetailComponent implements OnInit {
     //return this.postBillObj; // this.newItemEvent.emit(this.serviceselectedList);
     console.log(this.postBillObj, "pbo")
 
+
+  }
+
+  makeBill() {
+    this.addNewItem();
+
     this.http
       .post(ApiConstants.postMiscBill, this.postBillObj)
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
           console.log(resultData, "success");
+
+          if (resultData[0].successFlag === true) {
+
+          }
+          this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
         },
         (error) => {
+          this.snackbar.open(error, "error")
           //console.log(error);
           // this.messageDialogService.info(error.error);
         }
       );
-  }
-
-  makeBill() {
-    this.addNewItem();
 
   }
   count!: number;
