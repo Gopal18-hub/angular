@@ -4,6 +4,13 @@ import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { takeUntil } from "rxjs/operators";
 import { BillingService } from "../../billing.service";
+import { BillPaymentDialogComponent } from "../../prompts/payment-dialog/payment-dialog.component";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-bill",
@@ -15,11 +22,6 @@ export class BillComponent implements OnInit {
     type: "object",
     title: "",
     properties: {
-      // self: {
-      //   type: "checkbox",
-      //   required: false,
-      //   options: [{ title: "Self" }],
-      // },
       referralDoctor: {
         type: "dropdown",
         required: true,
@@ -136,6 +138,11 @@ export class BillComponent implements OnInit {
         ],
         defaultValue: "cash",
       },
+      self: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Self" }],
+      },
     },
   };
   @ViewChild("table") tableRows: any;
@@ -186,6 +193,9 @@ export class BillComponent implements OnInit {
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       procedure: {
         title: "Procedure Doctor",
@@ -212,6 +222,9 @@ export class BillComponent implements OnInit {
       disc: {
         title: "Disc %",
         type: "string",
+        style: {
+          width: "80px",
+        },
       },
       discAmount: {
         title: "Disc Amount",
@@ -244,11 +257,15 @@ export class BillComponent implements OnInit {
   formGroup!: FormGroup;
   question: any;
 
+  billNo = "";
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
     private formService: QuestionControlService,
-    private billingservice: BillingService
+    private billingservice: BillingService,
+    private matDialog: MatDialog,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -269,11 +286,72 @@ export class BillComponent implements OnInit {
     });
   }
 
+  rowRwmove($event: any) {
+    this.billingservice.deleteFromService(
+      this.billingservice.billItems[$event.index]
+    );
+    this.billingservice.billItems.splice($event.index, 1);
+    this.billingservice.billItems = this.billingservice.billItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
+
+    this.data = [...this.billingservice.consultationItems];
+    this.billingservice.calculateTotalAmount();
+  }
+
   ngAfterViewInit() {
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.billingservice.totalCost
+    );
   }
+
+  makeBill() {
+    const dialogRef = this.messageDialogService.confirm(
+      "",
+      `Do you want to make the Bill?`
+    );
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("type" in result) {
+          if (result.type == "yes") {
+            this.makereceipt();
+          } else {
+          }
+        }
+      });
+  }
+
+  makereceipt() {
+    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+      width: "70vw",
+      height: "98vh",
+      data: {
+        billAmount: this.billingservice.totalCost,
+      },
+    });
+
+    RefundDialog.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("billNo" in result && result.billNo) {
+          this.billNo = result.billNo;
+          this.messageDialogService.info(
+            `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+          );
+        }
+      });
+  }
+
+  makePrint() {}
 }

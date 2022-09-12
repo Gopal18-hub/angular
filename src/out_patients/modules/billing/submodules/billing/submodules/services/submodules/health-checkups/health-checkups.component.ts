@@ -104,6 +104,9 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.billingService.HealthCheckupItems =
       this.billingService.HealthCheckupItems.map((item: any, index: number) => {
@@ -289,6 +292,8 @@ export class HealthCheckupsComponent implements OnInit {
               totalAmount: res[0].returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           });
         }
