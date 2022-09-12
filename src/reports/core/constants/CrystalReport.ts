@@ -195,7 +195,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/ScrollSummaryReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&locationID=${params.locationID}`;
   };
   export const PrintOPPrescriptionReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/PrintOPPrescription?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
   export const DueReceiptReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;

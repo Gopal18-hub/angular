@@ -139,6 +139,9 @@ export class InvestigationsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.InvestigationItems =
       this.billingService.InvestigationItems.map((item: any, index: number) => {

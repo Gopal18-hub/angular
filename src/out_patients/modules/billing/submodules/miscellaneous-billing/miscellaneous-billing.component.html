@@ -165,6 +165,7 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            [disabled]="!disableBtn"
             (click)="dms()"
            
           >
@@ -175,6 +176,7 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
+            [disabled]="!disableBtn"
             (click)="visitHistory()"
           >
             Visit History
@@ -184,7 +186,8 @@
             color="primary"
             class="font-sm ml-2 min-width-initial"
             type="button"
-           
+            [disabled]="!disableBtn"
+           (click)="clearForm()"
           >
             Clear
           </button>
@@ -230,3 +233,5 @@
   </div>
 </div>
  -->
+<div *ngIf=false>
+ <out-patients-bill-detail [miscCompany]="companyId"></out-patients-bill-detail></div>
