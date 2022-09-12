@@ -112,6 +112,7 @@ import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-co
 import { CashScrollComponent } from "./../billing/submodules/cash-scroll/cash-scroll.component";
 import { CashScrollNewComponent } from "./../billing/submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 import { CashScrollModifyComponent } from './submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component';
+import { OpPrescriptionDialogComponent } from './submodules/details/op-prescription-dialog/op-prescription-dialog.component';
 @NgModule({
   declarations: [
     BillingComponent,
@@ -198,6 +199,7 @@ import { CashScrollModifyComponent } from './submodules/cash-scroll/submodules/c
     CashScrollNewComponent,
     CashScrollComponent,
     CashScrollModifyComponent,
+    OpPrescriptionDialogComponent
   ],
   imports: [
     BillingRoutingModule,
