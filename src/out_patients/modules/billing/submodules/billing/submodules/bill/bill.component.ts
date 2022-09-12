@@ -308,9 +308,11 @@ export class BillComponent implements OnInit {
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
-    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["billAmt"].setValue(
+      this.billingservice.totalCost + ".00"
+    );
     this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost
+      this.billingservice.totalCost + ".00"
     );
   }
 
