@@ -82,20 +82,26 @@
         display: none;
     }
     ::ng-deep .max-table-wrapper table{
+        .mat-row:hover{
+            opacity: 1;
+        }
         tr.newbill{
             background-color: #fff !important;
+            opacity: 0.8;
             td{
                 color: #000 !important;
             }
         }
         tr.cancelled{
             background-color: #FF6A6A !important;
+            opacity: 0.8;
             td{
                 color: #fff !important;
             }
         }
         tr.partially-cancelled{
             background-color: #FF8A3B !important;
+            opacity: 0.8;
             td{
                 color: #fff !important;
             }

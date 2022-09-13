@@ -115,10 +115,10 @@
           }
         }
       }
-      .addbtn
-      {
-        width : 8% !important
-      }
+      // .addbtn
+      // {
+      //   width : 8% !important
+      // }
       .w-Reff
       {
         width: 93%
@@ -140,6 +140,44 @@
   }
   .min-width-bill {
     min-width: 100px !important;
+  }
+  .addbtn
+  {
+    min-width: fit-content !important;
+    min-height: fit-content !important;
+  }
+  .input-align{
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(5){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(6){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(7){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(9){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(10){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+    ::ng-deep .max-table-wrapper table tbody tr td:nth-child(11){
+     
+      text-align:right;
+      padding-right: 28px !important;
+    }
+
   }
     }
     
