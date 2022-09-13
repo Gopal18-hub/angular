@@ -193,6 +193,9 @@ export class BillComponent implements OnInit {
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       procedure: {
         title: "Procedure Doctor",
@@ -219,6 +222,9 @@ export class BillComponent implements OnInit {
       disc: {
         title: "Disc %",
         type: "string",
+        style: {
+          width: "80px",
+        },
       },
       discAmount: {
         title: "Disc Amount",
@@ -302,9 +308,11 @@ export class BillComponent implements OnInit {
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
-    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["billAmt"].setValue(
+      this.billingservice.totalCost + ".00"
+    );
     this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost
+      this.billingservice.totalCost + ".00"
     );
   }
 
@@ -337,8 +345,9 @@ export class BillComponent implements OnInit {
 
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if ("billNo" in result) {
+      .subscribe((result: any) => {
+        if (result && "billNo" in result && result.billNo) {
+          this.billingservice.billNoGenerated.next(true);
           this.billNo = result.billNo;
           this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`

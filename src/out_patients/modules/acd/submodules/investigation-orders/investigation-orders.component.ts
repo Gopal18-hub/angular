@@ -196,7 +196,7 @@ export class InvestigationOrdersComponent implements OnInit {
         title: 'Amt',
         type: 'string',
         style: {
-          width: "5%",
+          width: "7%",
         },
       },
       channel: {
@@ -264,14 +264,14 @@ export class InvestigationOrdersComponent implements OnInit {
         title: 'Specialization',
         type: 'string',
         style: {
-          width: "10%",
+          width: "15%",
         },
       },
       acdRemarks: {
         title: 'ACD Remarks',
         type: 'textarea',
         style: {
-          width: "35%",
+          width: "30%",
         },
       },
 
@@ -429,6 +429,11 @@ export class InvestigationOrdersComponent implements OnInit {
       this.invOrderList = [];
       this.invOrderList = this.invOrderListMain.filter((e: any) => ((e[this.idValue].toUpperCase().includes(maxid))));
     }
+    this.invOrderList.forEach((item: any) => {
+      if (item.amount !== '' && item.amount !== undefined)
+        item.amount = Number(item.amount).toFixed(2);
+      console.log(item.amount)
+    });
   }
   listRowClick(event: any) {
     this.invOrderDetailsTable.selection.clear();

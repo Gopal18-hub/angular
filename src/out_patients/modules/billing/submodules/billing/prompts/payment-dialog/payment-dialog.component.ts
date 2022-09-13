@@ -10,7 +10,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
 import { savepatientRefunddetailModel } from "@core/models/savepatientRefundDetailModel.Model";
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
-import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-methods/payment-methods.component";
+import { BillingPaymentMethodsComponent } from "./payment-methods/payment-methods.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -49,18 +49,19 @@ export class BillPaymentDialogComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  @ViewChild(PaymentMethodsComponent) paymentmethod!: PaymentMethodsComponent;
+  @ViewChild(BillingPaymentMethodsComponent)
+  paymentmethod!: BillingPaymentMethodsComponent;
 
   config = {
-    paymentmethod: {
-      cash: true,
-      cheque: true,
-      credit: true,
-      demand: true,
-      mobilepayment: true,
-      onlinepayment: true,
-      upi: true,
-    },
+    paymentmethods: [
+      "cash",
+      "cheque",
+      "credit",
+      "demand",
+      "mobilepayment",
+      "onlinepayment",
+      "upi",
+    ],
     combopayment: true,
     totalAmount: this.data.billAmount,
   };
@@ -72,6 +73,7 @@ export class BillPaymentDialogComponent implements OnInit {
   due: any = 0;
   totaldue: any = 0;
   finalamount: number = 0;
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -103,31 +105,37 @@ export class BillPaymentDialogComponent implements OnInit {
       },
     };
   }
-  ngAfterViewInit(): void {
-    console.log(this.paymentmethod.refundform);
-    this.paymentmethod.refundform.controls["cashamount"].valueChanges.subscribe(
-      (res) => {
-        console.log(res);
-        this.adddueamount(res);
-      }
-    );
-  }
-  adddueamount(amount: number) {
-    this.finalamount += amount;
-    console.log(this.finalamount);
-  }
+  ngAfterViewInit(): void {}
+
   clear() {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.dueform.reset();
+    this.paymentmethod.tabs.forEach((tab: any, index: number) => {
+      this.paymentmethod.tabPrices[index] = 0;
+      this.paymentmethod.paymentForm[tab.key].reset();
+    });
   }
 
   makeBill() {
     this.billingService.makeBill().subscribe((res) => {
       if (res.length > 0) {
-        this.dialogRef.close(res[0]);
+        if (res[0].billNo) {
+          this.dialogRef.close(res[0]);
+        }
       }
     });
+  }
+
+  breakupTotal() {
+    if (this.paymentmethod) {
+      return this.paymentmethod.tabPrices.reduce(
+        (partialSum, a) => partialSum + a,
+        0
+      );
+    } else {
+      return 0;
+    }
   }
 
   getdepositcashlimit() {
