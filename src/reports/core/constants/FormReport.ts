@@ -224,6 +224,66 @@ export namespace FormReport {
     layout: "single",
     resultType: "table",
   };
+  export const ScrollSummaryReport = {
+    reportName: "Scroll Summary Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "YYYY/dd/MM",
+      properties: {
+        ValueFromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ValueToDate: {
+          type: "date",
+          title: "To Date",
+        },
+        SelectedLocationsId: {
+          type: "dropdown",
+          placeholder: "---Select Organization---",
+          title: "Organization",
+          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        SelectedLocationsId: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Scroll Summary Report",
+            reportEntity: "ScrollSummaryReport",
+          },
+        },
+        {
+          label: "Export",
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+    ],
+  };
   export const DoctorSheduleReport = {
     reportName: "Doctors",
     filterForm: {
