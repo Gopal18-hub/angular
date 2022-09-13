@@ -271,13 +271,13 @@ export namespace MaxModules {
             {
               id: 916,
               title: "Expired Patient Report",
-              defaultPath: "/out-patient-billing/expired-patient-report",
+              defaultPath: "report/prompt-report/CRPExpiredPatientDetailReport",
               globalSearchKey: "global",
             },
             {
               id: 917,
               title: "Monthly OP Consultation Report",
-              defaultPath: "/report/prompt-report/opConsultationReport",
+              defaultPath: "out-patient-billing/monthly-op-consultation-report",
               globalSearchKey: "global",
             },
             {
@@ -290,7 +290,7 @@ export namespace MaxModules {
             {
               id: 579,
               title: "Expired Deposits",
-              defaultPath: "/report/prompt-report/expiredDeposits",
+              defaultPath: "out-patient-billing/expired-deposits",
               globalSearchKey: "global",
             },
             {
