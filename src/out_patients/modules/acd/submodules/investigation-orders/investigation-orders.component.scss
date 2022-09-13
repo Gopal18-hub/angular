@@ -185,3 +185,11 @@
   height: 90%;
   width: 28%;
 }
+
+.input-align{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
+   
+    text-align:right;
+    padding-right: 28px !important;
+  }
+}

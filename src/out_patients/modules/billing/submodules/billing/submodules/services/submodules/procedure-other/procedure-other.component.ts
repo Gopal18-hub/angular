@@ -140,6 +140,9 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     this.billingService.ProcedureItems.splice($event.index, 1);
     this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
       (item: any, index: number) => {
@@ -364,6 +367,8 @@ export class ProcedureOtherComponent implements OnInit {
               totalAmount: res[0].returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           });
         }

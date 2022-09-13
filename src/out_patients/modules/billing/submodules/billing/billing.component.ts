@@ -35,7 +35,7 @@ import { PatientService } from "@core/services/patient.service";
   styleUrls: ["./billing.component.scss"],
 })
 export class BillingComponent implements OnInit {
-  links = [
+  links: any = [
     {
       title: "Services",
       path: "services",
@@ -148,6 +148,13 @@ export class BillingComponent implements OnInit {
       }
       if (params.orderId) {
         this.orderId = Number(params.orderId);
+      }
+    });
+    this.billingService.billNoGenerated.subscribe((res: boolean) => {
+      if (res) {
+        this.links[0].disabled = true;
+      } else {
+        this.links[0].disabled = false;
       }
     });
   }
@@ -342,6 +349,9 @@ export class BillingComponent implements OnInit {
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              this.billingService.setPatientDetails(
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+              );
               this.categoryIcons =
                 this.patientService.getCategoryIconsForPatientAny(
                   this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]

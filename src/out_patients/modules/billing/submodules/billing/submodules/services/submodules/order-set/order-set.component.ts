@@ -153,6 +153,9 @@ export class OrderSetComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     console.log($event.index);
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
@@ -328,6 +331,8 @@ export class OrderSetComponent implements OnInit {
               totalAmount: resItem.returnOutPut,
               gst: 0,
               gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
             },
           };
           this.billingService.addToOrderSet(data1);
