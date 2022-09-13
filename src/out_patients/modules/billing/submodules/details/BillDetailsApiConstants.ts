@@ -53,4 +53,6 @@ export namespace BillDetailsApiConstants{
     export const getbankname = `${environment.CommonApiUrl}api/lookup/getbankname`;
 
     export const getcreditcard =  `${environment.CommonApiUrl}api/lookup/getcreditcard`;
+
+    export const billrefundforsingleitemafteracknowledgement = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitemafteracknowledgement`;
 }
