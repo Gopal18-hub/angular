@@ -629,7 +629,7 @@ export class DetailsComponent implements OnInit {
       this.patientbilldetaillist
         .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2)
     );
-    // this.BServiceForm.controls["discAftBill"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0]);
+    this.BServiceForm.controls["discAftBill"].setValue(Number(0).toFixed(2));
     // this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
     this.BServiceForm.controls["authBy"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby);
     var reasonid = this.refundreasonlist.find( id => {
@@ -777,6 +777,11 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.BServiceForm.controls["fromDate"].setValue(new Date());
     this.BServiceForm.controls["toDate"].setValue(new Date());
+    this.BServiceForm.controls["billAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["dipositrAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["discAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["discAftBill"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["refundAmt"].setValue(Number(0).toFixed(2))
     this.patientName = "";
     this.age = "";
     this.gender = "";
