@@ -343,8 +343,8 @@ export class BillComponent implements OnInit {
 
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if ("billNo" in result && result.billNo) {
+      .subscribe((result: any) => {
+        if (result && "billNo" in result && result.billNo) {
           this.billNo = result.billNo;
           this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`

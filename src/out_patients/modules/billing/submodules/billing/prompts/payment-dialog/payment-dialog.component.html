@@ -58,16 +58,25 @@
           }}</span>
         </div>
       </div>
-      <div class="h-auto secondary col-white p-3 border-radius-md mt-2">
+      <div
+        class="h-auto secondary col-white p-3 border-radius-md mt-2"
+        *ngIf="breakupTotal() > 0"
+      >
         <mat-label class="font-base">Payment Breakup</mat-label>
-        <div class="mt-2 w-full flex justify-between">
-          <mat-label>Cash: </mat-label>
-          <span>{{ data.billAmount }}</span>
-        </div>
+        <ng-container *ngFor="let tab of paymentmethod?.tabs">
+          <div
+            class="mt-2 w-full flex justify-between"
+            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+          >
+            <mat-label>{{ tab.method.label }}: </mat-label>
+            <span>{{ paymentmethod.paymentForm[tab.key].value.price }}</span>
+          </div>
+        </ng-container>
+
         <div class="mt-2 w-full flex justify-between font-bold">
           <mat-label>Total: </mat-label>
           <span>{{
-            data.billAmount | currency: "INR":undefined:undefined:"en-IN"
+            breakupTotal() | currency: "INR":undefined:undefined:"en-IN"
           }}</span>
         </div>
       </div>
