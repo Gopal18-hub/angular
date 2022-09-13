@@ -9,7 +9,7 @@
 }
 .bg-white{
     background-color: #fff;
-    color: #000;
+    //color: #000;
 }
 .online-deposit-wrapper{
     ::ng-deep .max-table-wrapper table{
@@ -34,4 +34,34 @@
         ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
             padding-bottom: 0rem !important;  
         }
+    }.text-wrap{
+        white-space: nowrap;
     }
+    .bg-lightgray{
+        background :#F6F6F6; 
+         
+    }
+    .bg-darkgray{
+    
+        background: #d8d8d8;
+    }
+    .p-0-35{
+        padding:0.35rem;
+    }
+    .lens-icon{
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        height: 90%;
+        width: 25%;
+      }
+      .button{
+        min-width: 95px !important;
+        height: 1.875rem;
+        line-height: 1.875rem;  
+      }
+      .button1{
+        min-width: initial !important;
+        height: 1.875rem;
+        line-height: 1.875rem;  
+      }

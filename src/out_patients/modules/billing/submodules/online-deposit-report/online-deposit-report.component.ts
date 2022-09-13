@@ -227,16 +227,33 @@ export class OnlineDepositReportComponent implements OnInit {
       this.onlineDepositformdata.properties,
       {}
     );
+
     this.onlinedepositForm = formResult.form;
     this.questions = formResult.questions;
     this.today = new Date();
     this.onlinedepositForm.controls["enddate"].setValue(this.today);
-    // this.onlinedepositForm = new Date(this.today);
-    // this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.questions[1].maximum = this.onlinedepositForm.controls["enddate"].value;
-    this.questions[0].minimum = this.onlinedepositForm.controls["startdate"].value;
-    this.getdepositstatus();
+    this.questions[1].maximum =
+      this.onlinedepositForm.controls["enddate"].value;
+    this.questions[0].minimum =
+      this.onlinedepositForm.controls["startdate"].value;
+      this.getdepositstatus();
+
+
+
+
+
+    // this.onlinedepositForm = formResult.form;
+    // this.questions = formResult.questions;
+    // this.today = new Date();
+    // this.onlinedepositForm.controls["enddate"].setValue(this.today);
+    
+    // this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
+    // this.questions[1].maximum = this.onlinedepositForm.controls["enddate"].value;
+    // this.questions[0].minimum = this.onlinedepositForm.controls["startdate"].value;
+    // this.getdepositstatus();
 
 }
 
