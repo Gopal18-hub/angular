@@ -7,11 +7,17 @@
   .w-12 {
     width: 12%;
   }
+  .w-14 {
+    width: 14%;
+  }
   .w-86 {
-    width: 87.25%;
+    width: 85.5%;
   }
   .w-26 {
     width: 26%;
+  }
+  .w-27 {
+    width: 27%;
   }
   .h-30vh {
     height: 30vh;
@@ -22,6 +28,9 @@
   .w-44 {
     width: 44%;
   }
+  .w-42 {
+    width: 38%;
+  }
   .bg-blue {
     background-color: #bfe8e7;
   }
@@ -30,6 +39,19 @@
   }
   .bg-deposit {
     background-color: #f6f6f6;
+    &.mat-button-base {
+      padding: 0 !important;
+      height: 24px;
+      line-height: 24px;
+      ::ng-deep .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        mat-icon {
+          height: auto !important;
+        }
+      }
+    }
   }
   ::ng-deep {
     .sub-bill-form {

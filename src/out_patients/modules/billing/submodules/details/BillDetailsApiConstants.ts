@@ -49,4 +49,8 @@ export namespace BillDetailsApiConstants{
     ) => {
         return `${environment.BillingApiUrl}api/outpatientbilling/refundbillafteracknowledgementforfull/${OTP}/${HostName}/${Operatorid}/${LocationId}/${Stationid}`;
     }
+
+    export const getbankname = `${environment.CommonApiUrl}api/lookup/getbankname`;
+
+    export const getcreditcard =  `${environment.CommonApiUrl}api/lookup/getcreditcard`;
 }

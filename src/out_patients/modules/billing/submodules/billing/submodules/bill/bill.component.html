@@ -1,14 +1,28 @@
 <div class="flex flex-column h-full sub-bill-overall">
   <div class="mt-2 w-full sub-bill-ovrall-table h-30vh">
-    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+    <maxhealth-table
+      [config]="config"
+      [data]="data"
+      #table
+      (rowRwmove)="rowRwmove($event)"
+    ></maxhealth-table>
   </div>
   <div class="h-22vh mt-1 mb-1">
     <form [formGroup]="formGroup" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
         <div
-          class="w-12 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center"
+          class="w-14 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center"
         >
-          <div class="ml-2 mb-4 mt-2 mr-2 w-auto">
+          <div class="ml-2 mb-4 mt-2 mr-2 w-auto relative">
+            <div class="absolute right-0 bottom-25-px">
+              <maxhealth-question
+                [question]="question[19]"
+                [form]="formGroup"
+                [questions]="question[19]"
+                [index]="19"
+              >
+              </maxhealth-question>
+            </div>
             <maxhealth-question
               [question]="question[0]"
               [form]="formGroup"
@@ -31,7 +45,7 @@
         <div
           class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86"
         >
-          <div class="ml-2 flex-column w-26 flex justify-between">
+          <div class="ml-2 flex-column w-27 flex justify-between">
             <div>
               <div class="flex">
                 <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
@@ -90,17 +104,15 @@
                     [index]="6"
                   >
                   </maxhealth-question>
-                  <div class="text-center">
-                    <!-- <button
-                    mat-raised-button
-                    color="bg-deposit"
-                    class="p-2"
-                                 >
-                  &#8230;
-                  </button> -->
-                    <mat-icon class="icon-more pt-2 pb-0 font-xs"
-                      >more_horiz</mat-icon
+                  <div class="text-center ml-2">
+                    <button
+                      mat-raised-button
+                      class="min-width-initial p-0 bg-deposit"
                     >
+                      <mat-icon class="icon-more p-0 font-xs"
+                        >more_horiz</mat-icon
+                      >
+                    </button>
                   </div>
                 </div>
               </div>
@@ -187,11 +199,11 @@
             </div>
           </div>
           <div
-            class="ml-2 flex-column w-1/5 flex border-radius-lg justify-between"
+            class="ml-2 flex-column w-1/6 flex border-radius-lg justify-between"
           >
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-4">Co-Payment %</mat-label>
+                <mat-label class="wt-nowrap mr-2">Co-Payment %</mat-label>
                 <maxhealth-question
                   [question]="question[13]"
                   [form]="formGroup"
@@ -204,7 +216,7 @@
             </div>
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-9">Credit Limit</mat-label>
+                <mat-label class="wt-nowrap mr-7">Credit Limit</mat-label>
 
                 <maxhealth-question
                   [question]="question[14]"
@@ -218,7 +230,7 @@
             </div>
             <div>
               <div class="flex">
-                <mat-label class="wt-nowrap mr-7">GST Tax</mat-label>
+                <mat-label class="wt-nowrap mr-5">GST Tax</mat-label>
 
                 <div class="w-1/45 flex">
                   <maxhealth-question
@@ -229,23 +241,21 @@
                     [index]="15"
                   >
                   </maxhealth-question>
-                  <div class="text-center">
-                    <!-- <button
-                        mat-raised-button
-                        color="bg-deposit"
-                        class="p-2"
-                                     >
-                      &#8230;
-                      </button> -->
-                    <mat-icon class="icon-more pt-2 pb-0 font-xs"
-                      >more_horiz</mat-icon
+                  <div class="text-center ml-2">
+                    <button
+                      mat-raised-button
+                      class="p-0 bg-deposit min-width-initial"
                     >
+                      <mat-icon class="icon-more p-0 font-xs"
+                        >more_horiz</mat-icon
+                      >
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="bg-deposit flex-column w-44 flex justify-between">
+          <div class="bg-deposit flex-column ml-2 w-42 flex justify-between">
             <div class="flex">
               <mat-label class="mr-6 mt-1">Amt. Paid by Patient</mat-label>
               <div class="flex w-1/45">
@@ -262,6 +272,8 @@
                   color="primary"
                   class="btn-md min-width-initial"
                   type="submit"
+                  [disabled]="!data.length || billNo"
+                  (click)="makeBill()"
                 >
                   Make Bill
                 </button>
@@ -286,6 +298,8 @@
                   color="primary"
                   class="btn-md min-width-initial print-button"
                   type="submit"
+                  [disabled]="!data.length || !billNo"
+                  (click)="makePrint()"
                 >
                   Print Bill&nbsp;
                 </button>
