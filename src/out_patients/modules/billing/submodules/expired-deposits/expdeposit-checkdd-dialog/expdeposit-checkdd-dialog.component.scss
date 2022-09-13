@@ -1,0 +1,12 @@
+.w-4{
+    width: 16rem;
+}
+.okbtncss{
+    border: 1px solid #004084;
+    color: #004084;
+}
+.okexpdepositbtn{
+    ::ng-deep .mat-raised-button{
+      min-width: 65px !important;
+    }
+}
