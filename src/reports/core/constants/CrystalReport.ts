@@ -160,15 +160,17 @@ export namespace CrystalReport {
   };
 
   export const equipmentReport = (params: any) => {
-    return `${
-      environment.ReportsSampleUrl
-    }/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${
-      params.EquipFromDate
-    }&EquipToDate=${params.EquipToDate}&Cmb_Equip=${
-      params.Cmb_Equip
-    }&locationID=${MaxHealthStorage.getCookie(
+
+    return `${environment.ReportsSampleUrl}MAXHIS/EquipmentSchedule/Equipment_Shedule_Report?EquipFromDate=${params.EquipFromDate}&EquipToDate=${params.EquipToDate}&Cmb_Equip=${params.Cmb_Equip}&locationID=${MaxHealthStorage.getCookie(
+
       "HSPLocationId"
-    )}&LocationName=${MaxHealthStorage.getCookie("LocationIACode")}`;
+
+    )}&LocationName=${MaxHealthStorage.getCookie(
+
+      "LocationIACode"
+
+    )}`;
+
   };
 
   export const freeOutPatientReport = (params: any) => {
