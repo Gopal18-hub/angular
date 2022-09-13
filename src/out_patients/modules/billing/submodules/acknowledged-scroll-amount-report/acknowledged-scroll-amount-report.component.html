@@ -66,17 +66,17 @@
         #table
         ></maxhealth-table>
     </div>
-     <div class="flex float-right  mt-5">
-        <div class="mr-8">
+     <div class="flex float-right mt-5">
+        <div >
             <button mat-raised-button color="primary" type="submit">View</button>
         </div>
-        <div class="mr-8">
-            <button mat-raised-button color="primary" type="submit">Print</button>
+        <div class="ml-3">
+            <button mat-raised-button color="primary" [disabled]="true" type="submit">Print</button>
         </div>
-                <div class="mr-8">
-                    <button mat-raised-button color="primary" type="submit">Excel</button>
+                <div class="ml-3">
+                    <button mat-raised-button color="primary" [disabled]="true" type="submit">Excel</button>
                 </div>
-                <div  class="mr-8">
+                <div class="ml-3">
                     <button mat-raised-button color="primary" type="submit">Clear</button>
                 </div>
             </div>
