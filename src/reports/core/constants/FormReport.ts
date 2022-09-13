@@ -65,54 +65,6 @@ export namespace FormReport {
     // ],
   };
 
-  // export const expiredPatientReport = {
-  //   reportName: "Selection Criteria",
-  //   filterForm: {
-  //     title: "",
-  //     type: "object",
-  //     properties: {
-
-  //       fromDate: {
-  //         type: "date",
-  //         title: "From Date",
-  //       },
-  //       toDate: {
-  //         type: "date",
-  //         title: "To Date",
-  //       },
-  //       location: {
-  //         type: "dropdown",
-  //         placeholder: "---Location---",
-  //         title: "Location",
-  //       },
-  //     },
-  //   },
-  //   form: {
-  //     layout: {
-  //       location: "w-full",
-  //     },
-  //     actionItems: [
-  //       {
-  //         label: "Preview",
-  //       },
-  //       {
-  //         label: "Clear",
-  //       },
-  //     ],
-  //   },
-
-  //   layout: "single",
-  //   resultType: "table",
-  //   resultActionItems: [
-  //     {
-  //       title: "Print",
-  //     },
-  //     {
-  //       title: "Export",
-  //     },
-  //   ],
-  // };
-
   export const opConsultationReport = {
     reportName: "Selection Criteria",
     filterForm: {
@@ -721,7 +673,7 @@ export namespace FormReport {
     resultType: "table",
   };
 
-  export const expiredDeposits = {
+  export const CRPExpiredPatientDetailReport = {
     reportName: "Expired Deposits",
     filterForm: {
       title: "",
@@ -786,159 +738,6 @@ export namespace FormReport {
       },
     ],
   };
-
-  // export const onlineDepositReport = {
-
-  //   filterForm: {
-  //     title: "",
-  //     type: "object",
-  //     properties: {
-
-  //       fromDate: {
-  //         type: "date",
-  //         title: "From Date",
-  //       },
-  //       toDate: {
-  //         type: "date",
-  //         title: "To Date",
-  //       },
-  //       location: {
-  //         type: "dropdown",
-  //         placeholder: "---Location---",
-  //         title: "Location",
-  //       },
-  //     },
-  //   },
-
-  //   form: {
-  //     layout: {
-  //       location: "w-full",
-  //     },
-  //     actionItems: [
-  //       {
-  //         label:"Search"
-  //       },
-  //       {
-  //         label: "Preview",
-  //       },
-  //       {
-  //         label: "Clear",
-  //       },
-
-  //     ],
-  //   },
-
-  //   layout: "single",
-  //   resultType: "table",
-  //   resultActionItems: [
-  //     {
-  //       title: "Print",
-  //     },
-  //     {
-  //       title: "Export",
-  //     },
-  //   ],
-  // };
-
-  // export const config = {
-  //   clickedRows: true,
-  //   clickSelection: "multiple",
-  //   dateformat: "dd/MM/yyyy",
-  //   selectBox: true,
-  //   displayedColumns: [
-  //     "maxId",
-  //     "emailId",
-  //     "mobileNo",
-  //     "depositType",
-  //     "amount",
-  //     "stationName",
-  //     "depositStatus",
-  //     "date",
-  //     "depositSource",
-  //     "initdepdatetime",
-  //     "initdepResponsetime",
-  //     "payOrpayCheck",
-  //     "payRefNo",
-  //     "payBankRefNo",
-  //     "HisUpdateDatetime",
-  //     "HisDepositID",
-  //     "receiptNo"
-  //   ],
-  //   columnsInfo: {
-  //     maxId: {
-  //       title: "Max ID",
-  //       type: "string",
-  //     },
-  //     emailId: {
-  //       title: "Email ID",
-  //       type: "string",
-  //     },
-  //     mobileNo: {
-  //       title: "Mobile No",
-  //       type: "number",
-  //     },
-  //     depositType: {
-  //       title: "Deposit Type",
-  //       type: "string",
-
-  //     },
-  //     amount: {
-  //       title: "Amount",
-  //       type: "number",
-  //     },
-  //     stationName: {
-  //       title: "Station Name",
-  //       type: "string",
-  //     },
-  //     depositStatus: {
-  //       title: "Deposit Status",
-  //       type: "string",
-
-  //     },
-  //     date: {
-  //       title: "Date",
-  //       type: "date",
-  //     },
-  //     depositSource:{
-  //       title: "Deposit Source",
-  //       type: "string",
-  //     },
-
-  //     initdepdatetime: {
-  //       title: "Init Dep Date Time",
-  //       type: "date",
-  //     },
-  //     initdepResponsetime: {
-  //       title: "Init Deposit Response Time",
-  //       type: "date",
-  //     },
-  //     payOrpayCheck: {
-  //       title: "Pay Or Pay Check Date",
-  //       type: "string",
-  //     },
-  //     payRefNo: {
-  //       title: "Pay Reference No",
-  //       type: "number",
-  //     },
-  //     payBankRefNo: {
-  //       title: "Pay Bank Reference No",
-  //       type: "number",
-  //     },
-  //     HisUpdateDatetime: {
-  //       title: "HIS Update Date Time",
-  //       type: "date",
-  //     },
-  //     HisDepositID: {
-  //       title: "HIS Deposit ID",
-  //       type: "string",
-  //     },
-  //     receiptNo: {
-  //       title: "Receipt No",
-  //       type: "number",
-  //     },
-  //   },
-  // }
-
   export const OpenScrollReport = {
     reportName: "Open Scroll Report",
     filterForm: {
@@ -1150,5 +949,340 @@ export namespace FormReport {
         title: "Print",
       },
     ],
+  };
+  export const freeOutPatientReport = {
+    reportName: "Free Out Patient Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+        },
+       
+        locationID: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Free Out Patient Report",
+            reportEntity: "freeOutPatientReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+  };
+
+  export const miscellaneousBillingReportNew = {
+    reportName: "Miscellaneous Bills Report (OP) New",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+        },
+       
+        locationID: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Miscellaneous Bills Report (OP) New",
+            reportEntity: "miscellaneousBillReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+  };
+
+  export const opBillRegister = {
+    reportName: "OP Bill Register",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+        },
+       
+        locationID: {
+          type: "dropdown",
+          placeholder: "---Location---",
+          title: "Location",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+
+        sortBy: {
+          type: "radio",
+          options: [
+            
+            { title: "Summary", value: 1 },
+            { title: "Details", value: 2 },
+          ],
+          defaultValue: "Summary",
+          
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "OP Bill Register",
+            reportEntity: "opBillRegisterReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+  };
+
+  export const opRefundReport = {
+    reportName: "OP Refund Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        ValueFromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ValueToDate: {
+          type: "date",
+          title: "To Date",
+        },
+       
+        SelectedLocationsId: {
+          type: "dropdown",
+          placeholder: "--- Select Organization---",
+          title: "Organization",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/locationlookup/0`,
+            fields: {
+              title: "address3",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        SelectedLocationsId: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "OP Refund Report",
+            reportEntity: "OPRefundReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+    layout: "single",
+    resultType: "table",
+  };
+
+  export const discountReport = {
+    reportName: "OP Discount Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "MM/dd/YYYY",
+      properties: {
+        ReportChecked: {
+          type: "radio",
+          options: [
+            
+            { title: "Summary", value: 1 },
+            { title: "Details", value: 2 },
+          ],
+          defaultValue: "Summary",
+          
+        },
+
+        
+      
+        ValueFromDate: {
+          type: "date",
+          title: "From Date",
+        },
+        ValueToDate: {
+          type: "date",
+          title: "To Date",
+        },
+       
+        SelectedLocationsId: {
+          type: "dropdown",
+          placeholder: "--- Select Organization---",
+          title: "Organization",
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/locationlookup/0`,
+            fields: {
+              title: "address3",
+              value: "id",
+            },
+          },
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        SelectedLocationsId: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "OP Discount Report",
+            reportEntity: "opDiscountReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+    layout: "single",
+    resultType: "table",
   };
 }

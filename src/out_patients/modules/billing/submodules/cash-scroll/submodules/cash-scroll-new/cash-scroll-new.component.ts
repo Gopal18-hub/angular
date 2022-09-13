@@ -75,168 +75,168 @@ export class CashScrollNewComponent implements OnInit {
         title: "S.No",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "5rem",
         },
       },
       receiptno: {
         title: "Receipt No.",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       billno: {
         title: "Bill No.",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       datetime: {
         title: "Date Time",
         type: "date",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       billamount: {
         title: "Bill Amount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       refund: {
         title: "Refund",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       depositamount: {
         title: "Deposit Amount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "9rem",
         },
       },
       discountamount: {
         title: "Discount Amount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "9rem",
         },
       },
       planamount: {
         title: "Plan Amount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "9rem",
         },
       },
       plandiscount: {
         title: "Plan Discount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "9rem",
         },
       },
       netamount: {
         title: "Net Amount",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "9rem",
         },
       },
       cash: {
         title: "Cash",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       cheque: {
         title: "Cheque",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       dd: {
         title: "DD",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "6rem",
         },
       },
       creditcard: {
         title: "Credit Card",
         type: "number",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       cashpaymentbymobile: {
         title: "Cash Payment by Mobile",
         type: "date",
         style: {
-          width: "6rem",
+          width: "12rem",
         },
       },
       onlinepayment: {
         title: "Online Payment",
         type: "date",
         style: {
-          width: "6rem",
+          width: "9rem",
         },
       },
       dues: {
         title: "Dues",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       tdsamount: {
         title: "TDS Amount",
         type: "date",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       donation: {
         title: "Donation",
         type: "date",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       upiamount: {
         title: "UPI Amount",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       totalamount: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       companyname: {
         title: "Company Name",
         type: "string",
         style: {
-          width: "6rem",
+          width: "9rem",
         },
       },
       internetpayment: {
         title: "Internet Payment",
         type: "string",
         style: {
-          width: "6rem",
+          width: "9rem",
         },
       },
     },
