@@ -93,7 +93,7 @@ export class BillDetailComponent implements OnInit {
         type: "number",
         title: "Qty",
         maximum: 9,
-        minimum: 0,
+        minimum: 1,
         defaultValue: "0.00",
         //required: true,
       },
@@ -285,71 +285,86 @@ export class BillDetailComponent implements OnInit {
       Sno: {
         title: "S.No.",
         type: "number",
+        style: {
+          width: "5%",
+        },
       },
       ServiceType: {
         title: "Service Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "12%",
         },
       },
       ItemDescription: {
         title: "Item Description",
         type: "string",
         style: {
-          width: "180px",
+          width: "15%",
         },
       },
       ItemforModify: {
         title: "Item For Modify",
         type: "string",
         style: {
-          width: "120px",
+          width: "15%",
         },
       },
       TariffPrice: {
         title: "Tariff Price",
         type: "number",
         style: {
-          width: "90px",
+          width: "7%",
         },
       },
       Qty: {
         title: "Qty",
         type: "string",
+        style: {
+          width: "7%",
+        },
       },
       Price: {
         title: "Price",
         type: "string",
+        style: {
+          width: "5%",
+        },
       },
       DoctorName: {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "120px",
+          width: "8%",
         },
       },
       Disc: {
         title: "Disc%",
         type: "string",
+        style: {
+          width: "4%",
+        },
       },
       DiscAmount: {
         title: "Disc. Amount",
         type: "string",
         style: {
-          width: "120px",
+          width: "8%",
         },
       },
       TotalAmount: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "120px",
+          width: "8%",
         },
       },
       GST: {
         title: "GST%",
         type: "string",
+        style: {
+          width: "4%",
+        },
       },
     },
   };
@@ -566,19 +581,25 @@ export class BillDetailComponent implements OnInit {
   }
   addService() {
     if (!this.miscServBillForm.value.serviceType) {
-      this.snackbar.open("Please choose Service", "error");
+      this.snackbar.open("Select Service Item", "error");
     }
     else if (!this.miscServBillForm.value.item) {
-      this.snackbar.open("Please choose Item", "error");
+      this.snackbar.open("Enter the Item Description First", "error");
     }
     else if (!this.miscServBillForm.value.qty) {
-      this.snackbar.open("Please enter Quantity", "error");
+      this.snackbar.open("Enter the Item Quantity", "error");
+    }
+    else if (this.miscServBillForm.value.qty === 0) {
+      this.snackbar.open("Quantity Can Not be Zero", "error");
     }
     else if (!this.miscServBillForm.value.reqAmt) {
-      this.snackbar.open("Please enter Amount", "error");
+      this.snackbar.open("Enter the Item Price", "error");
+    }
+    else if (this.miscServBillForm.value.reqAmt === 0) {
+      this.snackbar.open("Item Price Can Not be Zero", "error");
     }
     else if (!this.miscServBillForm.value.remark.value) {
-      this.snackbar.open("Please enter Remarks field", "error");
+      this.snackbar.open("Please select remarks!", "error");
     }
     else {
       this.count = this.serviceselectedList.length + 1;
@@ -586,15 +607,30 @@ export class BillDetailComponent implements OnInit {
       let present = false;
       this.serviceselectedList.forEach((element) => {
         if (ServiceType == element.ServiceType) {
+          this.snackbar.open("Item Already Exits", "error");
           present = true;
           return;
-          //console.log("same service");
         }
       });
       if (!present) {
+
+
         this.pushDataToServiceTable();
+        this.serviceselectedList.forEach((e: any) => {
+          e.TariffPrice = Number(e.TariffPrice).toFixed(2);
+          e.Qty = Number(e.Qty).toFixed(2);
+          e.Price = Number(e.Price).toFixed(2);
+          e.Disc = Number(e.Disc).toFixed(2);
+          e.DiscAmount = Number(e.DiscAmount).toFixed(2);
+          e.TotalAmount = Number(e.TotalAmount).toFixed(2);
+          e.GST = Number(e.GST).toFixed(2);
+          e.amount = Number(e.amount).toFixed(2);
+          e.discountAmount = Number(e.discount).toFixed(2);
+          e.mPrice = Number(e.mPrice).toFixed(2);
+        })
         this.serviceselectedList = [...this.serviceselectedList];
         this.miscPatient.setBillDetail(this.serviceselectedList);
+
       }
 
       this.calculateTotalAmount();
@@ -603,6 +639,8 @@ export class BillDetailComponent implements OnInit {
 
   }
   pushDataToServiceTable() {
+
+
     this.serviceselectedList.push({
       Sno: this.count,
       ServiceType: this.serviceName,
