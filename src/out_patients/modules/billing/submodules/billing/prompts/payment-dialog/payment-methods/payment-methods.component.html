@@ -1,0 +1,47 @@
+<section class="paymentmethod-wrapper">
+  <div class="width h-full float-left maxhealth-vertical-tab">
+    <div class="flex h-1/10">
+      <div class="w-1/4">
+        <mat-label
+          class="max-health-primary-color font-medium font-base absolute mt-3"
+          >Payment Methods</mat-label
+        >
+      </div>
+    </div>
+
+    <mat-tab-group
+      class="mt-12"
+      animationDuration="0ms"
+      (selectedTabChange)="tabChanged($event)"
+    >
+      <ng-container *ngFor="let tab of tabs; let i = index">
+        <mat-tab [label]="tab.method.label">
+          <div class="ml-10">
+            <mat-label class="max-health-primary-color font-base font-medium">{{
+              tab.form.tittle
+            }}</mat-label>
+            <ng-container
+              *ngFor="let question of questions[tab.key]; let i = index"
+            >
+              <div class="flex w-3/4 mt-3">
+                <div class="w-3/10">
+                  <mat-label class="max-health-primary-color font-medium">{{
+                    tab.form.properties[question.key].label
+                  }}</mat-label>
+                </div>
+                <div class="w-5/9 ml-3 input1">
+                  <maxhealth-question
+                    [question]="question"
+                    [form]="paymentForm[tab.key]"
+                    [questions]="question"
+                    [index]="i"
+                  ></maxhealth-question>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </div>
+</section>

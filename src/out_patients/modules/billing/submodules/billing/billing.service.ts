@@ -22,6 +22,8 @@ export class BillingService {
 
   clearAllItems = new Subject<boolean>();
 
+  billNoGenerated = new Subject<boolean>();
+
   totalCost = 0;
 
   company: number = 0;
@@ -174,6 +176,7 @@ export class BillingService {
     this.activeMaxId = null;
     this.company = 0;
     this.clearAllItems.next(true);
+    this.billNoGenerated.next(false);
     this.makeBillPayload = {
       ds_insert_bill: {
         tab_insertbill: {},
@@ -534,23 +537,24 @@ export class BillingService {
     if (data.billItem) {
       this.addToBill(data.billItem);
       this.makeBillPayload.ds_insert_bill.tab_o_optestList.push({
-        remarks: "string",
+        remarks: "",
         orderDatetime: new Date(),
-        doctorId: 0,
-        priority: 0,
+        doctorId: data.billItem.doctorID || 0,
+        priority: data.billItem.priority,
         reorder: true,
         transportationmode: 0,
         refDoctorID: 0,
         startDateTime: new Date(),
         hspLocationID: 0,
-        registrationNo: 0,
-        iaCode: "string",
+        registrationNo:
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo,
+        iaCode: this.makeBillPayload.ds_insert_bill.tab_insertbill.iaCode,
         sourceStId: 0,
         operatorID: 0,
-        orderNo: "string",
+        orderNo: "",
       });
       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.push({
-        testId: 0,
+        testId: data.billItem.itemId,
         sampleId: 0,
         profileId: 0,
         destId: 0,
@@ -559,9 +563,9 @@ export class BillingService {
         hcuId: 0,
         opbillid: 0,
         orderid: 0,
-        opbillno: "string",
+        opbillno: "",
         destHspLocationId: 0,
-        qty: 0,
+        qty: data.billItem.qty,
         investigationDocID: 0,
       });
     }

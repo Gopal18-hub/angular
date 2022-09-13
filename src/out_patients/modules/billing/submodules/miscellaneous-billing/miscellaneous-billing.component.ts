@@ -122,6 +122,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   patientDetails!: Registrationdetails;
   serviceselectedList: [] = [] as any;
+  miscHeaderDetails: [] = [] as any;
   miscForm!: FormGroup;
   questions: any;
   question: any;
@@ -187,6 +188,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .subscribe((value: any) => {
 
         if (value.value) {
+          this.Misc.setCompany(value.value);
           console.log(value, "com")
           //this.patientDetail.companyName = value.title;
           //this.patientDetail.companyId = value.value;
@@ -682,7 +684,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       0,
       0,
       "",
-      this.miscForm.value.narration
+      this.miscForm.value.narration,
+      0
     );
     // this.db.putCachePatientDetail(this.patientDetail);
 
