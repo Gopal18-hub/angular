@@ -1317,4 +1317,38 @@ export namespace ApiConstants {
   };
   export const getLocationMaster =
     environment.CommonApiUrl + "api/lookup/getlocationmaster";
+
+    //Added for deposit status dropdown on online deposit report
+    export const getdepositstatus =
+    environment.PatientApiUrl +
+    "api/patient/getdepositstatus";
+
+
+    export const getonlinedepositreportdata = (
+      flag: any,
+      depsource: any,
+      selecttype: any,
+      startdate: any,
+      enddate: any,
+      hsplocationid: any,
+      
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getonlinedepositreportdata/flag/depsource/selecttype/startdate/enddate/hsplocationid?flag=" +
+        flag +
+        "&depSource=" +
+        depsource +
+        "&selectType=" +
+        selecttype +
+        "&startDate=" +
+        startdate +
+        "&endDate=" +
+        enddate +
+        "&hspLocationID=" +
+        hsplocationid
+      
+      );
+    };
 }
+
