@@ -87,9 +87,7 @@ export namespace CrystalReport {
       params.DocID
     }&DocID1=true&location=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-    )}&Rd_Special=${
-      params.Rd_Special
-    }&LocationName=${MaxHealthStorage.getCookie("Location")}`;
+    )}&Rd_Special=false&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
   export const DoctorSheduleReportBySpecilialisation = (params: any) => {
     return `${
