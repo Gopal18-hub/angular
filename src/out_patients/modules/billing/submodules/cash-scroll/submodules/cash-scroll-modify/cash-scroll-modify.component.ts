@@ -96,20 +96,23 @@ export class CashScrollModifyComponent implements OnInit {
       "dues",
       "tdsamount",
       "totalamount",
+      "actualupiamt",
+      "internetpaymtamt",
+      "actualinternetpaymtamt",
     ],
     columnsInfo: {
       slno: {
         title: "Sl No.",
         type: "number",
         style: {
-          width: "10rem",
+          width: "5rem",
         },
       },
       receiptno: {
         title: "Receipt No.",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
         tooltipColumn: "receiptno",
       },
@@ -117,7 +120,7 @@ export class CashScrollModifyComponent implements OnInit {
         title: "Bill No.",
         type: "string",
         style: {
-          width: "5.5rem",
+          width: "6rem",
         },
         tooltipColumn: "billno",
       },
@@ -141,7 +144,7 @@ export class CashScrollModifyComponent implements OnInit {
         title: "Refund",
         type: "string",
         style: {
-          width: "9rem",
+          width: "8rem",
         },
         tooltipColumn: "refund",
       },
@@ -189,12 +192,12 @@ export class CashScrollModifyComponent implements OnInit {
         title: "Cash",
         type: "string",
         style: {
-          width: "9rem",
+          width: "8rem",
         },
         tooltipColumn: "cash",
       },
       actualcash: {
-        title: "CaActual Cash",
+        title: "Actual Cash",
         type: "string",
         style: {
           width: "9rem",
@@ -229,12 +232,12 @@ export class CashScrollModifyComponent implements OnInit {
         title: "DD",
         type: "string",
         style: {
-          width: "9rem",
+          width: "5rem",
         },
         tooltipColumn: "dd",
       },
       actualddamount: {
-        title: "DD",
+        title: "Actual DD Amount",
         type: "string",
         style: {
           width: "9rem",
@@ -336,6 +339,30 @@ export class CashScrollModifyComponent implements OnInit {
           width: "9rem",
         },
         tooltipColumn: "totalamount",
+      },
+      actualupiamt: {
+        title: "Actual UPI Amount",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "actualupiamt",
+      },
+      internetpaymtamt: {
+        title: "Internet Payment Amt",
+        type: "string",
+        style: {
+          width: "12rem",
+        },
+        tooltipColumn: "internetpaymtamt",
+      },
+      actualinternetpaymtamt: {
+        title: "Actual Internet Payment",
+        type: "string",
+        style: {
+          width: "14rem",
+        },
+        tooltipColumn: "actualinternetpaymtamt",
       },
     },
   };
