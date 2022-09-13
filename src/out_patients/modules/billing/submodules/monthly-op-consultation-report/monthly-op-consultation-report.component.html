@@ -42,7 +42,7 @@
             <div class="ml-9 mt-3 ml-1">
                 <mat-label class="max-health-primary-color font-semi-bold">Location</mat-label>
             </div>
-            <div class="ml-2 w-5 bg-white border-radius-md">
+            <div class="ml-2 w-5 bg-white border-radius-md mt-2">
                 <maxhealth-question
                     [question]="questions[2]"
                     [form]="OpConsultform"
@@ -53,11 +53,14 @@
             </div>
         </div>
         <div class="flex searchbtn ml-12 mt-5">
-            <button mat-raised-button color="primary" type="submit" class="searchbtn">
+            <button mat-raised-button color="primary" type="submit" class="searchbtn" (click)="PerformQuery()"  [disabled]="!OpConsultform.valid">
                 Perform Query
             </button>
         
-            <button mat-raised-button class="ml-12" color="primary" type="submit">Clear</button>
+            <button mat-raised-button class="ml-12" color="primary" type="submit" (click)="clickbtn()">Clear</button>
+        </div>
+        <div class="w-full text-center mt-4">
+            <span class="clr-blue font-semi-bold">{{msgresponse}}</span>
         </div>
             </div>
         </Section>

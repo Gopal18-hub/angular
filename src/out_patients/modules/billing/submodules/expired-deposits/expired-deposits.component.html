@@ -67,7 +67,7 @@
                 </div>
                 <div class="w-2/5 flex">
                     <div class="ml-2 float-right btn">
-                        <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="searchbtn" (click)="expireddepositsearch()">
+                        <button mat-raised-button color="primary" type="submit" class="btn" (click)="expireddepositsearch()" [disabled]="!ExpiredDepositform.valid">
                             <img src="assets/lens.svg" class="lens-icon">
                             Search
                         </button>
@@ -85,8 +85,10 @@
              <!-- <mat-spinner strokeWidth="2"></mat-spinner> -->
              <div  >
                 <maxhealth-table 
+                #table
                 [config]="ExpiredDepositconfig"
                 [data]="ExpiredDepositformlist"
+                (columnClick)="activeClick($event)"
                 ></maxhealth-table>
             </div>
             </div>
