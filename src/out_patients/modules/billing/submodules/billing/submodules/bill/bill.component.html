@@ -45,7 +45,7 @@
         <div
           class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86"
         >
-          <div class="ml-2 flex-column w-26 flex justify-between">
+          <div class="ml-2 flex-column w-27 flex justify-between">
             <div>
               <div class="flex">
                 <mat-label class="wt-nowrap mr-12">Bill Amount</mat-label>
@@ -272,7 +272,7 @@
                   color="primary"
                   class="btn-md min-width-initial"
                   type="submit"
-                  [disabled]="!data.length"
+                  [disabled]="!data.length || billNo"
                   (click)="makeBill()"
                 >
                   Make Bill
