@@ -38,6 +38,7 @@ import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/vie
 import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
+import { OnlineDepositReportComponent} from "./submodules/online-deposit-report/online-deposit-report.component";
 import { CashScrollComponent } from "./submodules/cash-scroll/cash-scroll.component";
 import { CashScrollNewComponent } from "./submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
@@ -127,6 +128,10 @@ const routes: Routes = [
       {
         path: "monthly-op-consultation-report",
         component: MonthlyOpConsultationReportComponent,
+      },
+      {
+        path:"online-deposit-report",
+        component: OnlineDepositReportComponent,
       },
       {
         path: "post-discharge-follow-up-billing",
