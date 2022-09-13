@@ -86,9 +86,9 @@
             </div> -->
             <div class="flex  w-full  max-health-primary-color text-wrap bg-lightgray border-radius-lg input-padding">
       
-                <div class="flex align-items-center p-2 w-3/5 font-semi-bold">
+                <div class="flex align-items-center p-2 w-2/5 font-semi-bold">
                     <mat-label> Employee Name</mat-label>
-                    <div class="w-1/15 ml-4 bg-white ">
+                    <div class="w-3/10 ml-4 bg-white ">
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="cashscrollnewForm"
@@ -97,18 +97,10 @@
                         </maxhealth-question>
                     </div>
                 
-                    <mat-label class="ml-3"> Scroll No.</mat-label>
-                    <div class="w-18 ml-2 bg-white">
-                        <maxhealth-question
-                        [question]="questions[1]"
-                        [form]="cashscrollnewForm"
-                        [questions]="questions[1]"
-                        [index]="1"    >
-                        </maxhealth-question>
-                    </div>
+                   
                    
                     <mat-label class="ml-3">Taken At</mat-label>
-                    <div class="w-1/15 ml-2 bg-white">
+                    <div class="w-3/10 ml-2 bg-white">
                         <maxhealth-question
                         [question]="questions[2]"
                         [form]="cashscrollnewForm"
@@ -119,8 +111,8 @@
                   
                 </div>
               
-                <div class="flex  p-1 w-2/5 ">
-                    <div class="flex  align-items-center  bg-darkgray border-radius-lg w-6/7 mr-12 ">
+                <div class="flex  p-1 w-1/3 ">
+                    <div class="flex  align-items-center  bg-darkgray border-radius-lg w-full mr-12 ">
                         <mat-label class="ml-2"> From Date</mat-label>
                         <div class="w-3/10 ml-2 bg-white border-radius-lg">
                             <maxhealth-question
@@ -144,8 +136,41 @@
                    
              
                 </div>
+                <div class="w-3/10 flex align-items-center justify-content-end mr-3">
+                    <mat-label class="max-health-primary-color font-semi-bold cursor-pointer">Back to scroll search</mat-label>
+                    <button mat-raised-button color="primary" class="button ml-2">Clear</button>
+                </div>
             </div>
             <!---Second row-->
+            <div class="p-1 flex bg-lightgray mt-1 border-radius-lg align-items-center">
+                <div class ="w-3/10 flex max-health-primary-color font-semi-bold">
+                    <mat-label class="ml-1"> Scroll No.</mat-label>
+                    <div class="w-3/10 ml-2 bg-white input-padding ">
+                        <maxhealth-question
+                        [question]="questions[1]"
+                        [form]="cashscrollnewForm"
+                        [questions]="questions[1]"
+                        [index]="1"    >
+                        </maxhealth-question>
+                    </div>
+                </div>
+                <div class="w-7/10 flex justify-content-end mr-2">
+                    <div >
+                        <button mat-raised-button color="primary" type="submit" class="button">View</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" type="submit" class="ml-2 button">Save</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" type="submit" class="ml-2 button">Print</button>
+                    </div>
+                    <div>
+                        <button mat-raised-button color="primary" type="submit" class="ml-2 button">Excel</button>
+                    </div>
+                </div>
+              
+            </div>
+            <!---third row-->
             <div class="mt-2 h-3/5 table">
                 <maxhealth-table
                 [config]="cashscrollnewconfig"
@@ -155,7 +180,7 @@
 
             <!-- Button -->
             <div class="flex float-right mt-5 ">
-                <div >
+                <!-- <div >
                     <button mat-raised-button color="primary" type="submit" class="button">View</button>
                 </div>
                 <div>
@@ -166,7 +191,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" type="submit" class="ml-2 button">Excel</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </mat-tab-nav-panel>
