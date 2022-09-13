@@ -551,7 +551,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe(res => {
       console.log(res);
-      
     })
   }
   fullbillrequestbody()
@@ -587,14 +586,14 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         qtslno: dtlist[0].qTslno,
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
-        transMode: 0,
-        priority: 0,
+        transMode: Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].transportationMode),
+        priority: Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].priority),
       })
       console.log(dtlist);
       this.saveforparticularbilllist.objdt.push({
         serviceid: item.serviceId,
         itemid: item.itemid,
-        servicename: item.servicename,
+        servicename: item.serviceName,
         itemname: item.itemName,
         amount: Number(dtlist[0].amount),
         discountamount: Number(dtlist[0].discountamount),
@@ -744,6 +743,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     })
     console.log(this.refundafteracklistforfull);
     return this.refundafteracklistforfull;
+  }
+
+  mopvalidation()
+  {
+
   }
   clear()
   {
