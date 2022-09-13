@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatTabChangeEvent } from "@angular/material/tabs";
-import { BillingForm } from "@core/constants/BillingForm";
+import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { Subject, Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -25,10 +25,20 @@ export class BillingPaymentMethodsComponent implements OnInit {
   @Input() config: any;
   @Input() Refundavalaiblemaount: any;
 
-  refundFormData = BillingForm.refundFormData;
-  refundform!: FormGroup;
-  questions: any;
+  paymentForm: any = {};
+  questions: any = {};
   today: any;
+
+  totalAmount = 0;
+
+  remainingAmount = 0;
+
+  tabPrices: number[] = [];
+
+  tabs: any = [];
+
+  activeTab: any;
+
   constructor(
     private formService: QuestionControlService,
     private depositservice: DepositService,
@@ -38,136 +48,62 @@ export class BillingPaymentMethodsComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   ngOnInit(): void {
-    let formResult: any = this.formService.createForm(
-      this.refundFormData.properties,
-      {}
-    );
-    this.refundform = formResult.form;
-
-    this.questions = formResult.questions;
-    this.today = new Date();
     if (this.config.totalAmount) {
-      this.refundform.controls["cashamount"].setValue(this.config.totalAmount);
+      this.totalAmount = this.config.totalAmount;
     }
-    this.refundform.controls["chequeissuedate"].setValue(this.today);
-    this.refundform.controls["demandissuedate"].setValue(this.today);
-    console.log(this.Refundavalaiblemaount);
-    this.depositservice.clearAllItems.subscribe((clearItems) => {
-      if (clearItems) {
-        this.clearpaymentmethod();
+    this.config.paymentmethods.forEach((method: string, index: number) => {
+      const form: any =
+        PaymentMethods[
+          PaymentMethods.methods[method].form as keyof typeof PaymentMethods
+        ];
+      const temp: any = {
+        key: method,
+        form: form,
+        method: PaymentMethods.methods[method],
+      };
+      this.tabs.push(temp);
+      let formResult: any = this.formService.createForm(form.properties, {});
+      this.paymentForm[method] = formResult.form;
+      this.questions[method] = formResult.questions;
+      if (index == 0) {
+        this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+        this.tabPrices.push(this.totalAmount);
+        this.remainingAmount = 0;
+        this.activeTab = this.tabs[0];
+      }
+      this.tabPrices.push(0);
+      if (this.paymentForm[method].controls["price"]) {
+        this.paymentForm[method].controls["price"].valueChanges.subscribe(
+          (res: any) => {
+            this.tabPrices[index] = Number(res);
+            console.log(this.tabPrices);
+            const sum = this.tabPrices.reduce(
+              (partialSum, a) => partialSum + a,
+              0
+            );
+            console.log(sum);
+            this.remainingAmount = this.totalAmount - sum;
+          }
+        );
       }
     });
+
+    this.today = new Date();
   }
-
-  PaymentMethodcashdeposit: any = [];
-
-  defaultamount: boolean = true;
-  depositamount: number = 0;
-  PaymentType: number = 1; //default cash
 
   tabChanged(event: MatTabChangeEvent) {
-    this.clearpaymentmethod();
-  }
-
-  PaymentMethodvalidation() {
-    this.PaymentMethodcashdeposit = this.refundform.value;
-
-    if (Number(this.PaymentMethodcashdeposit.cashamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.cashamount;
-    } else if (Number(this.PaymentMethodcashdeposit.chequeamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.chequeamount;
-      this.PaymentType = 2;
-    } else if (Number(this.PaymentMethodcashdeposit.creditamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.creditamount;
-    } else if (Number(this.PaymentMethodcashdeposit.demandamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.demandamount;
-    } else if (Number(this.PaymentMethodcashdeposit.upiamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.upiamount;
-    } else if (Number(this.PaymentMethodcashdeposit.internetamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.internetamount;
-    }
-
-    if (this.Refundavalaiblemaount) {
-      let cashlimit = this.depositservice.getcashlimit();
-      if (
-        Number(this.depositamount) >
-          Number(this.Refundavalaiblemaount.avalaiblemaount) &&
-        this.Refundavalaiblemaount.type == "Refund"
-      ) {
-        this.messageDialogService.error(
-          "Refund Amount must be less then available amount"
-        );
-      } else if (
-        Number(this.depositamount) > Number(cashlimit[0].cashLimit) &&
-        this.PaymentType == 1
-      ) {
-        this.messageDialogService.error(
-          "Refund through Cash Cannot be more then Rs 10000"
-        );
-      } else if (Number(this.depositamount == 0)) {
-        this.messageDialogService.error(
-          "Refund Amount must not be Zero or Negative number"
+    this.activeTab = this.tabs[1];
+    if (this.remainingAmount > 0) {
+      if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
+      } else {
+        this.paymentForm[this.activeTab.key].controls["price"].setValue(
+          this.remainingAmount
         );
       }
-    } else {
-      this.depositservice.setFormList(this.refundform.value);
     }
   }
 
-  ngAfterViewInit(): void {
-    this.Disablecreditfields();
-    this.questions[0].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
+  PaymentMethodvalidation() {}
 
-    this.questions[5].elementRef.addEventListener(
-      "blur",
-      this.PaymentMethodvalidation.bind(this)
-    );
-  }
-
-  Enablecreditfields() {
-    this.refundform.controls["creditcardno"].enable();
-    this.refundform.controls["creditholdername"].enable();
-    this.refundform.controls["creditbankno"].enable();
-    this.refundform.controls["creditbatchno"].enable();
-    this.refundform.controls["creditapproval"].enable();
-    this.refundform.controls["creditacquiring"].enable();
-    this.refundform.controls["creditterminal"].enable();
-  }
-
-  Disablecreditfields() {
-    this.refundform.controls["creditcardno"].disable();
-    this.refundform.controls["creditholdername"].disable();
-    this.refundform.controls["creditbankno"].disable();
-    this.refundform.controls["creditbatchno"].disable();
-    this.refundform.controls["creditapproval"].disable();
-    this.refundform.controls["creditacquiring"].disable();
-    this.refundform.controls["creditterminal"].disable();
-  }
-
-  clearpaymentmethod() {
-    this.refundform.reset();
-    this.today = new Date();
-    this.refundform.controls["chequeissuedate"].setValue(this.today);
-    this.refundform.controls["demandissuedate"].setValue(this.today);
-    this.refundform.controls["cashamount"].setValue("0.00");
-    this.refundform.controls["chequeamount"].setValue("0.00");
-    this.refundform.controls["creditamount"].setValue("0.00");
-    this.refundform.controls["demandamount"].setValue("0.00");
-    this.refundform.controls["paytmamount"].setValue("0.00");
-    this.refundform.controls["upiamount"].setValue(this.today);
-  }
-
-  resetcreditcard() {
-    this.refundform.controls["creditcardno"].setValue("");
-    this.refundform.controls["creditholdername"].setValue("");
-    this.refundform.controls["creditbankno"].setValue("");
-    this.refundform.controls["creditbatchno"].setValue("");
-    this.refundform.controls["creditapproval"].setValue("");
-    this.refundform.controls["creditacquiring"].setValue("");
-    this.refundform.controls["creditterminal"].setValue("");
-    this.refundform.controls["creditamount"].setValue("");
-  }
+  ngAfterViewInit(): void {}
 }

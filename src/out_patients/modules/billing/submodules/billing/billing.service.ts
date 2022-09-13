@@ -22,6 +22,8 @@ export class BillingService {
 
   clearAllItems = new Subject<boolean>();
 
+  billNoGenerated = new Subject<boolean>();
+
   totalCost = 0;
 
   company: number = 0;
@@ -174,6 +176,7 @@ export class BillingService {
     this.activeMaxId = null;
     this.company = 0;
     this.clearAllItems.next(true);
+    this.billNoGenerated.next(false);
     this.makeBillPayload = {
       ds_insert_bill: {
         tab_insertbill: {},

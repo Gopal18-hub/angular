@@ -1264,6 +1264,15 @@ export namespace ApiConstants {
     return environment.CommonApiUrl + "api/lookup/getauthorisedby/" + locid;
   };
 
+  //Authorised by 
+  export const checkdiscountamountforparticularautharisation = (authorisedby: number, locationid: number, discAmount: number) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/checkdiscountamountforparticularautharisation/" + authorisedby + "/" + locationid + "/" + discAmount
+    );
+  };
+
+
   export const getconfiguremessage = (requesttype: string, value: string) => {
     return (
       environment.BillingApiUrl +
@@ -1308,4 +1317,38 @@ export namespace ApiConstants {
   };
   export const getLocationMaster =
     environment.CommonApiUrl + "api/lookup/getlocationmaster";
+
+    //Added for deposit status dropdown on online deposit report
+    export const getdepositstatus =
+    environment.PatientApiUrl +
+    "api/patient/getdepositstatus";
+
+
+    export const getonlinedepositreportdata = (
+      flag: any,
+      depsource: any,
+      selecttype: any,
+      startdate: any,
+      enddate: any,
+      hsplocationid: any,
+      
+    ) => {
+      return (
+        environment.PatientApiUrl +
+        "api/patient/getonlinedepositreportdata/flag/depsource/selecttype/startdate/enddate/hsplocationid?flag=" +
+        flag +
+        "&depSource=" +
+        depsource +
+        "&selectType=" +
+        selecttype +
+        "&startDate=" +
+        startdate +
+        "&endDate=" +
+        enddate +
+        "&hspLocationID=" +
+        hsplocationid
+      
+      );
+    };
 }
+
