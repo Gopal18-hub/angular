@@ -460,6 +460,9 @@ export class DetailsComponent implements OnInit {
           } 
           else 
           {
+            this.questions[0].readonly = true;
+            this.questions[1].readonly = true;
+            this.questions[2].readonly = true;
             this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(item => {
               item.amount = item.amount.toFixed(2);
@@ -767,6 +770,9 @@ export class DetailsComponent implements OnInit {
   }
   clear() {
     this.BServiceForm.reset();
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
+    this.questions[2].readonly = false;
     this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
     this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
     this.BServiceForm.controls["fromDate"].setValue(new Date());
@@ -886,11 +892,18 @@ export class DetailsComponent implements OnInit {
         this.BServiceForm.controls['reason'].enable();
         this.BServiceForm.controls['paymentMode'].enable();
       }
-      else
+      else if(this.billdetailservice.totalrefund == 0 &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == '' 
+      )
       {
         this.BServiceForm.controls['authBy'].disable();
         this.BServiceForm.controls['reason'].disable();
         this.BServiceForm.controls['paymentMode'].disable();
+        this.BServiceForm.controls['authBy'].setValue('');
+        this.BServiceForm.controls['reason'].setValue('');
+        this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
       }
       var forenablerefundbill: any;
       if(this.billdetailservice.sendforapproval.length > 0)

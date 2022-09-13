@@ -551,7 +551,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe(res => {
       console.log(res);
-      
     })
   }
   fullbillrequestbody()
@@ -744,6 +743,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     })
     console.log(this.refundafteracklistforfull);
     return this.refundafteracklistforfull;
+  }
+
+  mopvalidation()
+  {
+    
   }
   clear()
   {
