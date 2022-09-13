@@ -261,6 +261,7 @@ export class BillDetailTableComponent implements OnInit {
   question: any;
   private readonly _destroying$ = new Subject<void>();
   servicetable: boolean = true;
+  headercheck: boolean = false;
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
       this.miscBillData.properties,
@@ -269,6 +270,8 @@ export class BillDetailTableComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    this.billDetailservice.sendforapproval = [];
+    this.billDetailservice.totalrefund = 0;
     for (var i = 0; i < this.billDetailservice.serviceList.length; i++) {
       this.billDetailservice.serviceList[i].Sno = i + 1;
       if(this.billDetailservice.serviceList[i].cancelled == 1)
@@ -280,10 +283,73 @@ export class BillDetailTableComponent implements OnInit {
         this.billDetailservice.serviceList[i].cancelled = 'notcancelledrefund'
       }
     }
+    console.log(this.billDetailservice.serviceList)
+    console.log(this.billDetailservice.patientbilldetaillist)
+    if(this.billDetailservice.patientbilldetaillist.length > 0)
+    {
+      if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.serviceList.length > 1)
+    {
+      this.headercheck = false;
+    }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+    {
+      this.headercheck = false;
+    }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
+    {
+      this.headercheck = false;
+    }
+    }
     this.data = [...this.billDetailservice.serviceList];
+    console.log(this.data);
   }
   ngAfterViewInit()
   {
+    console.log(this.billDetailservice.patientbilldetaillist);
+    if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.serviceList.length > 1)
+    {
+      this.headercheck = false;
+    }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
+    {
+      this.headercheck = true;
+    }
+    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+    // {
+    //   this.headercheck = false;
+    // }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+    {
+      this.headercheck = true;
+    }
+    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
+    // {
+    //   this.headercheck = false;
+    // }
     this.check = this.differ
       .find(this.tableRows)
       .create();
@@ -297,6 +363,22 @@ export class BillDetailTableComponent implements OnInit {
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+      {
+        this.data.forEach((item: any) => {
+          console.log(item);
+          this.tableRows.selection.selected.forEach((i: any) =>{ 
+            console.log(i)
+            if(item.itemid == i.itemid)
+            {
+              this.msgdialog.info('This Bill Have some Due Amount');
+              setTimeout(() => {
+                this.tableRows.selection.deselect(item);
+              }, 100);
+            }
+          })
+        })
+      }
       if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
       {
         this.data.forEach((item: any) => {
@@ -620,6 +702,11 @@ export class BillDetailTableComponent implements OnInit {
       }
     }, 100);
     
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 
 }

@@ -524,7 +524,17 @@ export class BillDetailsRefundDialogComponent implements OnInit {
           console.log(res);
           if(res.length > 0)
           {
-            this.messageDialogService.success(res[0].returnMessage);
+            if(res[0].successFlag == true)
+            {
+              var dialog =  this.messageDialogService.success(res[0].returnMessage);
+              dialog.afterClosed().subscribe(res => {
+              this.dialogRef.close('success');
+              })
+            }
+            else if(res[0].successFlag == false)
+            {
+              var dialog =  this.messageDialogService.info(res[0].returnMessage);
+            }
           }
           if(res[0].successFlag == true)
           {
@@ -542,6 +552,36 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       else if(this.singleitemflag == 1 && this.particularbillflag == 0)
       {
         console.log('Single Bill Item');
+        this.http.post(BillDetailsApiConstants.billrefundforsingleitemafteracknowledgement, this.singlebillrequestbody())
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(res => {
+          console.log(res);
+          if(res.length > 0)
+          {
+            if(res[0].successFlag == true)
+            {
+              var dialog =  this.messageDialogService.success(res[0].returnMessage);
+              dialog.afterClosed().subscribe(res => {
+              this.dialogRef.close('success');
+              })
+            }
+            else if(res[0].successFlag == false)
+            {
+              var dialog =  this.messageDialogService.info(res[0].returnMessage);
+            }
+          }
+          if(res[0].successFlag == true)
+          {
+            if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_VisitDetail.length > 0)
+            {
+              this.http.post(BillDetailsApiConstants.cancelvisitnumberinrefund, this.cancelvisitrequestbody())
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(value => {
+                console.log(value);
+              });
+            }
+          }
+        })
       }
     }
   }
