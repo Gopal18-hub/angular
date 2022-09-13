@@ -347,6 +347,7 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
+          this.billingservice.billNoGenerated.next(true);
           this.billNo = result.billNo;
           this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`

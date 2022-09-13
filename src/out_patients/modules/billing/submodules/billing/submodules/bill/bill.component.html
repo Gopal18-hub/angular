@@ -272,7 +272,7 @@
                   color="primary"
                   class="btn-md min-width-initial"
                   type="submit"
-                  [disabled]="!data.length"
+                  [disabled]="!data.length || billNo"
                   (click)="makeBill()"
                 >
                   Make Bill
