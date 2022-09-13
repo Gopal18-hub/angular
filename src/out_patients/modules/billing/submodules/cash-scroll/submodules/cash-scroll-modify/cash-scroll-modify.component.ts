@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { Router } from "@angular/router";
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -78,7 +78,24 @@ export class CashScrollModifyComponent implements OnInit {
       "plandiscount",
       "netamount",
       "cash",
+      "actualcash",
       "cheque",
+      "actualchequeamount",
+      "chequeno",
+      "dd",
+      "actualddamount",
+      "ddnumber",
+      "creditcard",
+      "actualccamount",
+      "authorizationcode",
+      "cashpaymtbymobile",
+      "actualcashpaymt",
+      "onlinepaymt",
+      "actualonlinepaymt",
+      "transactionid",
+      "dues",
+      "tdsamount",
+      "totalamount",
     ],
     columnsInfo: {
       slno: {
@@ -176,6 +193,14 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "cash",
       },
+      actualcash: {
+        title: "CaActual Cash",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "actualcash",
+      },
       cheque: {
         title: "Cheque",
         type: "string",
@@ -184,10 +209,141 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "cheque",
       },
+      actualchequeamount: {
+        title: "Actual Cheque Amount",
+        type: "string",
+        style: {
+          width: "12rem",
+        },
+        tooltipColumn: "actualchequeamount",
+      },
+      chequeno: {
+        title: "Cheque No",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "chequeno",
+      },
+      dd: {
+        title: "DD",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "dd",
+      },
+      actualddamount: {
+        title: "DD",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "actualddamount",
+      },
+      ddnumber: {
+        title: "DD Number",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "ddnumber",
+      },
+      creditcard: {
+        title: "Credit Card",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "creditcard",
+      },
+      actualccamount: {
+        title: "Actual CC Amount",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "actualccamount",
+      },
+      authorizationcode: {
+        title: "Authorization Code",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "authorizationcode",
+      },
+      cashpaymtbymobile: {
+        title: "Cash Payment By Mobile",
+        type: "string",
+        style: {
+          width: "12rem",
+        },
+        tooltipColumn: "cashpaymtbymobile",
+      },
+      actualcashpaymt: {
+        title: "Actual Cash Payment",
+        type: "string",
+        style: {
+          width: "12rem",
+        },
+        tooltipColumn: "actualcashpaymt",
+      },
+      onlinepaymt: {
+        title: "Online Payment",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "onlinepaymt",
+      },
+      actualonlinepaymt: {
+        title: "Online Payment",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "actualonlinepaymt",
+      },
+      transactionid: {
+        title: "Transaction ID",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "transactionid",
+      },
+      dues: {
+        title: "Dues",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "dues",
+      },
+      tdsamount: {
+        title: "TDS Amount",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "tdsamount",
+      },
+      totalamount: {
+        title: "Total Amount",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+        tooltipColumn: "totalamount",
+      },
     },
   };
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -196,5 +352,13 @@ export class CashScrollModifyComponent implements OnInit {
     );
     this.cashscrollmodifyForm = formResult.form;
     this.questions = formResult.questions;
+    this.cashscrollmodifyForm.controls["fromdate"].disable();
+    this.cashscrollmodifyForm.controls["todate"].disable();
+    this.cashscrollmodifyForm.controls["employeename"].disable();
+    this.cashscrollmodifyForm.controls["takenat"].disable();
+    this.cashscrollmodifyForm.controls["scrollno"].disable();
+  }
+  navigatetomain() {
+    this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
 }
