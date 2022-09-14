@@ -109,14 +109,18 @@ import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledg
 import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-company-billing/iom-company-billing.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
 import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
+import { OnlineDepositReportComponent } from "./submodules/online-deposit-report/online-deposit-report.component";
 
 import { BillForm60Component } from "./submodules/billing/prompts/payment-dialog/form60/form60.component";
 import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment-dialog/payment-dialog.component";
 import { BillingPaymentMethodsComponent } from "./submodules/billing/prompts/payment-dialog/payment-methods/payment-methods.component";
 import { CashScrollComponent } from "./../billing/submodules/cash-scroll/cash-scroll.component";
 import { CashScrollNewComponent } from "./../billing/submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
-import { CashScrollModifyComponent } from './submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component';
-import { OpPrescriptionDialogComponent } from './submodules/details/op-prescription-dialog/op-prescription-dialog.component';
+import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
+import { OpPrescriptionDialogComponent } from "./submodules/details/op-prescription-dialog/op-prescription-dialog.component";
+import { ExpdepositRefundDialogComponent } from "./submodules/expired-deposits/expdeposit-refund-dialog/expdeposit-refund-dialog.component";
+import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
+
 @NgModule({
   declarations: [
     BillingPaymentMethodsComponent,
@@ -206,7 +210,10 @@ import { OpPrescriptionDialogComponent } from './submodules/details/op-prescript
     CashScrollNewComponent,
     CashScrollComponent,
     CashScrollModifyComponent,
-    OpPrescriptionDialogComponent
+    OpPrescriptionDialogComponent,
+    OnlineDepositReportComponent,
+    ExpdepositRefundDialogComponent,
+    ExpdepositCheckddDialogComponent,
   ],
   imports: [
     BillingRoutingModule,

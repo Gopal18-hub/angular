@@ -5,7 +5,9 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { Router } from "@angular/router";
-
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { HttpClient } from "@angular/common/http";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-cash-scroll",
   templateUrl: "./cash-scroll.component.html",
@@ -16,7 +18,9 @@ export class CashScrollComponent implements OnInit {
   constructor(
     private formService: QuestionControlService,
     private cookie: CookieService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
+    private dialogservice: MessageDialogService
   ) {}
   cashscrollformdata = {
     type: "object",
@@ -29,8 +33,8 @@ export class CashScrollComponent implements OnInit {
         type: "radio",
         required: false,
         options: [
-          { title: "Pending", value: "pending" },
-          { title: "Acknowledge", value: "acknowledge" },
+          { title: "Pending", value: "1" },
+          { title: "Acknowledge", value: "2" },
         ],
       },
     },
@@ -101,24 +105,34 @@ export class CashScrollComponent implements OnInit {
 
     this.lastUpdatedBy = this.cookie.get("UserName");
   }
+  ngAfterViewInit() {
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        event.preventDefault();
+        // this.scrollnoEnter();
+      }
+    });
+  }
+  scrollnoSearch() {
+    if (this.cashscrollForm.controls["mainradio"].value != null) {
+      this.http
+        .get(ApiConstants.getdetaileddataforoldscroll(4, 10412))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+        });
+    } else {
+      console.log("radio button not selected");
+      this.dialogservice.info("Please select Pending/Acknowledge");
+    }
+  }
 
   opennewcashscroll() {
-    // this.router.navigate(["out-patient-billing", "op-refund-approval"]);
-    // this.router.navigate([
-    //   "out-patient-billing/cash-scroll/cash-scroll-new",
-    //   // "cash-scroll",
-    //   // "cash-scroll-new",
-    // ]);
     this.router.navigate(["out-patient-billing/cash-scroll/cash-scroll-new"]);
     // this.router.navigate([
     //   "out-patient-billing/cash-scroll",
     //   "cash-scroll-new",
     // ]);
-    // this.router
-    //   .navigate(["out-patient-billing/cash-scroll", "cash-scroll-new"])
-    //   .then(() => {
-    //     window.location.reload;
-    //   });
   }
   cashscrollmodify() {
     this.router.navigate([
