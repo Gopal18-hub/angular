@@ -388,4 +388,7 @@ export class CashScrollModifyComponent implements OnInit {
   navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
+  clear() {
+    this.cashscrollmodifyForm.reset();
+  }
 }
