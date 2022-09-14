@@ -73,7 +73,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     const pathname = window.location.pathname;
 
     if (query == null || query == "") {
-      if (window.location.href == window.origin + "/" || pathname == "/login")
+      if (
+        window.location.href == window.origin + "/" ||
+        pathname.includes("/login")
+      )
         this.authService.startAuthentication();
     }
   }
@@ -227,7 +230,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 this.locationdetail!.organizationName
               );
               this.cookie.set("Station", this.stationdetail!.stationName);
-              this.cookie.set("StationId",this.stationdetail!.stationid.toString());
+              this.cookie.set(
+                "StationId",
+                this.stationdetail!.stationid.toString()
+              );
               window.location = data["redirectUrl"];
               this.Authentication = true;
             } else if (status == "InvalidUser") {

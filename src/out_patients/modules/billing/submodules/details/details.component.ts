@@ -343,7 +343,13 @@ export class DetailsComponent implements OnInit {
       {
         if(res[0].successFlag == true)
         {
-          this.msgdialog.success(res[0].returnMessage);
+          let dialogref =  this.msgdialog.success(res[0].returnMessage);
+          dialogref.afterClosed().subscribe(() => {
+            this.billno = this.BServiceForm.controls['billNo'].value;
+            this.clear();
+            this.BServiceForm.controls['billNo'].setValue(this.billno);
+            this.getpatientbilldetails();
+          })
         }
         else
         {
@@ -463,6 +469,7 @@ export class DetailsComponent implements OnInit {
             this.questions[0].readonly = true;
             this.questions[1].readonly = true;
             this.questions[2].readonly = true;
+            this.activeLink = this.linkList[0];
             this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(item => {
               item.amount = item.amount.toFixed(2);
@@ -770,6 +777,7 @@ export class DetailsComponent implements OnInit {
   }
   clear() {
     this.BServiceForm.reset();
+    this.activeLink = this.linkList[0];
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
@@ -961,5 +969,10 @@ export class DetailsComponent implements OnInit {
       //   this.approvalsend = true;
       // }
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }
