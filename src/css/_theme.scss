@@ -396,6 +396,8 @@ mat-form-field {
 .max-dialog-close-icon {
   right: -1.2em;
   top: -1em;
+  color: #ababab;
+  transform: scale(0.75);
 }
 .mat-tooltip {
   background-color: #dae9f8;
@@ -404,10 +406,10 @@ mat-form-field {
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.2px;
-  margin:2px !important;
+  margin: 2px !important;
   padding-top: 2px !important;
   padding-bottom: 2px !important;
-  max-width:350px !important;
+  max-width: 350px !important;
 }
 
 .mat-option {
