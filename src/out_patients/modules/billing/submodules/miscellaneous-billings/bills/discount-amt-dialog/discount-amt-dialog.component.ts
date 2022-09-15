@@ -111,9 +111,9 @@ export class DiscountAmtDialogComponent implements OnInit {
         type: "dropdown",
         title: "Discount Types",
         options: [
-          { title: "In Bill", value: "In Bill" },
-          { title: "In Service", value: "In Service" },
-          { title: "In Item", value: "In Item" }
+          { title: "On Bill", value: "On Bill" },
+          { title: "On Service", value: "On Service" },
+          { title: "On Items", value: "On Item" }
         ],
         placeholder: "Select"
         //readonly: true,
