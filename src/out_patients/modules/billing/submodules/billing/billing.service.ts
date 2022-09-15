@@ -329,6 +329,9 @@ export class BillingService {
     this.HealthCheckupItems.forEach((item: any) => {
       this.totalCost += item.price;
     });
+    this.ConsumableItems.forEach((item: any) => {
+      this.totalCost += item.totalAmount;
+    });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
@@ -647,6 +650,7 @@ export class BillingService {
   addToConsumables(data: any) {
     this.ConsumableItems.push(data);
     this.servicesTabStatus.next({ consumables: true });
+    this.calculateTotalAmount();
   }
 
   getconfigurationservice() {
