@@ -42,18 +42,30 @@ export class ConsumablesComponent implements OnInit {
       surgeryName: {
         title: "Surgery Name",
         type: "string_link",
+        style: {
+          width: "28%",
+        },
       },
       priority: {
         title: "Priority",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       credit: {
         title: "Credit",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       cash: {
         title: "Cash",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       doctorName: {
         title: "Doctor Name",
@@ -62,6 +74,9 @@ export class ConsumablesComponent implements OnInit {
       taxAmount: {
         title: "Tax Amount",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       totalAmount: {
         title: "Total Amount",
