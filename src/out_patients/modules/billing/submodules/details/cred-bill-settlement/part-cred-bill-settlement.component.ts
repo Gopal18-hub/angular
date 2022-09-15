@@ -183,7 +183,6 @@ export class PartialCredBillComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].setValue('companyDue');
       this.BServiceForm.controls["paymentMode"].disable();
       this.makereceiptbtn = false;
-      this.printreceiptbtn = false;
       this.flagfordue = this.BServiceForm.controls["paymentMode"].value;
     }
     else if(this.BServiceForm.controls["patienDue"].value > 0 && this.BServiceForm.controls["companyDue"].value == 0)
@@ -191,20 +190,20 @@ export class PartialCredBillComponent implements OnInit {
       this.BServiceForm.controls["paymentMode"].setValue('patientDue');
       this.BServiceForm.controls["paymentMode"].disable();
       this.makereceiptbtn = false;
-      this.printreceiptbtn = false;
       this.flagfordue = this.BServiceForm.controls["paymentMode"].value;
     }
   }
+  receiptno: any;
   makereceipt() {
     const RefundDialog = this.matDialog.open(PaymentDialogComponent, {
         width: "70vw",
         height: "98vh",
         data: {   
           flag: this.flagfordue,    
-          // patientinfo: {
-          //   emailId: this.patientpersonaldetails[0]?.pEMail, 
-          //   mobileno: this.patientpersonaldetails[0]?.pcellno,
-          // },
+          patientinfo: {
+            emailId: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId, 
+            mobileno: this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
+          }, 
           // clickedrowdepositdetails : this.patientRefundDetails
         }
       });
@@ -212,8 +211,11 @@ export class PartialCredBillComponent implements OnInit {
       RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        //if(result == "Success"){        
+        //if(result == "Success"){  
+          this.printreceiptbtn = false;      
           console.log("Refund Dialog closed");
+          console.log(result);
+          this.receiptno = result.res[0].receiptNumber
         //}    
       });
     }
@@ -223,7 +225,7 @@ export class PartialCredBillComponent implements OnInit {
   }
   openReportModal(btnname: string) {
     this.reportService.openWindow(btnname, btnname, {
-      receiptnumber: this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+      receiptnumber: this.receiptno,
       locationID: this.cookie.get('HSPLocationId'),
     });
   }
