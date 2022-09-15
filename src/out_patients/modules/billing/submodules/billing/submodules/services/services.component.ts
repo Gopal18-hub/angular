@@ -15,6 +15,8 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { InvestigationWarningComponent } from "../../prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "../../prompts/unbilled-investigation/unbilled-investigation.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-services",
   templateUrl: "./services.component.html",
@@ -65,7 +67,8 @@ export class ServicesComponent implements OnInit {
     private billingService: BillingService,
     private matDialog: MatDialog,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -79,6 +82,14 @@ export class ServicesComponent implements OnInit {
       this.billingService.checkOtherServicesForHealthCheckups()
     ) {
       this.healthCheckupWarning();
+      return;
+    } else if (
+      tab.id == 6 &&
+      this.billingService.checkOtherServicesForConsumables()
+    ) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
       return;
     } else if (tab.id == 2 && this.activeTab.id != tab.id) {
       let checkinvestigations = await this.http
