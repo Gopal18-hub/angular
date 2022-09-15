@@ -63,6 +63,10 @@ export class ServicesComponent implements OnInit {
 
   activeMaxId: any;
 
+  consumablesExist: boolean = false;
+
+  healthCheckupExist: boolean = false;
+
   constructor(
     private billingService: BillingService,
     private matDialog: MatDialog,
@@ -73,10 +77,37 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeMaxId = this.billingService.activeMaxId;
+    this.billingService.servicesTabStatus.subscribe((res: any) => {
+      if ("consumables" in res) {
+        this.consumablesExist = true;
+        this.healthCheckupExist = false;
+      } else if ("healthCheckup" in res) {
+        this.healthCheckupExist = true;
+        this.consumablesExist = false;
+      } else if ("clear" in res) {
+        this.healthCheckupExist = false;
+        this.consumablesExist = false;
+      }
+    });
   }
 
   async tabChange(tab: any) {
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (tab.id != 6 && this.consumablesExist) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
+      return;
+    }
+
+    if (tab.id != 3 && this.healthCheckupExist) {
+      this.messageDialogService.info(
+        "You cannot select Health Checkup with other Services"
+      );
+      return;
+    }
+
     if (
       tab.id == 3 &&
       this.billingService.checkOtherServicesForHealthCheckups()
