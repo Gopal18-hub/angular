@@ -378,6 +378,19 @@ export class BillingService {
     return false;
   }
 
+  checkOtherServicesForConsumables() {
+    if (
+      this.consultationItems.length > 0 ||
+      this.InvestigationItems.length > 0 ||
+      this.ProcedureItems.length > 0 ||
+      this.OrderSetItems.length > 0 ||
+      this.HealthCheckupItems.length > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   setCompnay(companyid: number) {
     this.company = companyid;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
