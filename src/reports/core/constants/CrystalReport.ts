@@ -109,11 +109,13 @@ export namespace CrystalReport {
   export const CRPExpiredPatientDetailReport = (params: any) => {
     return `${
       environment.ReportsSampleUrl
-    }MAXHIS/FrontOfficeReports/CRPExpiredPatientDetail?fromdate=${
-      params.fromdate
-    }&todate=${params.todate}&locationid=${
+    }MAXHIS/FrontOfficeReports/CRPExpiredPatientDetail?dtpfromdate=${
+      params.dtpfromdate
+    }&dtptodate=${params.dtptodate}&locationid=${
       params.locationid
-    }&user=${MaxHealthStorage.getCookie("UserName")}`;
+    }&LocationName=${MaxHealthStorage.getCookie(
+      "Location"
+    )}&user=${MaxHealthStorage.getCookie("UserName")}`;
   };
 
   export const CROPItemPriceModifiedReport = (params: any) => {
