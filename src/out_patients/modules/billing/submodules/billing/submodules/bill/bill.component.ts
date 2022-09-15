@@ -358,9 +358,29 @@ export class BillComponent implements OnInit {
           this.billingservice.billNoGenerated.next(true);
           this.billNo = result.billNo;
           this.billId = result.billId;
-          this.messageDialogService.info(
+          const successInfo = this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
           );
+          successInfo
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              const printDialog = this.messageDialogService.confirm(
+                "",
+                `Do you want to print bill?`
+              );
+              printDialog
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result: any) => {
+                  if ("type" in result) {
+                    if (result.type == "yes") {
+                      this.makePrint();
+                    } else {
+                    }
+                  }
+                });
+            });
         }
       });
   }
