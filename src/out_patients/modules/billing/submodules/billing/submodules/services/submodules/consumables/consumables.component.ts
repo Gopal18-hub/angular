@@ -102,6 +102,7 @@ export class ConsumablesComponent implements OnInit {
   }
 
   getData() {
+    this.billingService.ConsumableItems = [];
     return this.http
       .get(
         BillingApiConstants.consumableData(
@@ -124,6 +125,26 @@ export class ConsumablesComponent implements OnInit {
               taxAmount: 0,
               totalAmount: head.amount,
               items: res.consumableServiceDetailsData,
+              billItem: {
+                itemId: head.itemId,
+                priority: head.priority,
+                serviceId: head.serviceId,
+                price: head.amount,
+                serviceName: "Consumables Charges",
+                itemName: head.itemName,
+                qty: 1,
+                precaution: "n/a",
+                procedureDoctor: "n/a",
+                credit: 0,
+                cash: 0,
+                disc: 0,
+                discAmount: 0,
+                totalAmount: head.amount,
+                gst: 0,
+                gstValue: 0,
+                specialisationID: 0,
+                doctorID: 0,
+              },
             });
           });
           this.data = [...this.billingService.ConsumableItems];

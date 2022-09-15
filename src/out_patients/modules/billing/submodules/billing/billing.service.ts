@@ -649,6 +649,9 @@ export class BillingService {
   }
   addToConsumables(data: any) {
     this.ConsumableItems.push(data);
+    if (data.billItem) {
+      this.addToBill(data.billItem);
+    }
     this.servicesTabStatus.next({ consumables: true });
     this.calculateTotalAmount();
   }
