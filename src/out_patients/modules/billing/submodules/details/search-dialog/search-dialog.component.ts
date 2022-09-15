@@ -88,14 +88,14 @@ export class SearchDialogComponent implements OnInit {
         title: "Bill No",
         type: "string",
         style: {
-          width: "5rem"
+          width: "4.5rem"
         }
       },
       maxId: {
         title: "Max ID",
         type: "string",
         style: {
-          width: "4rem"
+          width: "4.5rem"
         }
       },
       datetime: {
@@ -104,7 +104,6 @@ export class SearchDialogComponent implements OnInit {
         style: {
           width: "6rem"
         },
-        tooltipColumn: 'datetime'
       },
       patientName: {
         title: "Patient Name",

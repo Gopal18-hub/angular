@@ -42,18 +42,30 @@ export class ConsumablesComponent implements OnInit {
       surgeryName: {
         title: "Surgery Name",
         type: "string_link",
+        style: {
+          width: "28%",
+        },
       },
       priority: {
         title: "Priority",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       credit: {
         title: "Credit",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       cash: {
         title: "Cash",
         type: "number",
+        style: {
+          width: "100px",
+        },
       },
       doctorName: {
         title: "Doctor Name",
@@ -62,6 +74,9 @@ export class ConsumablesComponent implements OnInit {
       taxAmount: {
         title: "Tax Amount",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
       totalAmount: {
         title: "Total Amount",
@@ -102,6 +117,7 @@ export class ConsumablesComponent implements OnInit {
   }
 
   getData() {
+    this.billingService.ConsumableItems = [];
     return this.http
       .get(
         BillingApiConstants.consumableData(
@@ -114,7 +130,7 @@ export class ConsumablesComponent implements OnInit {
         (res) => {
           let data: any = [];
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
-            data.push({
+            this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
               priority: head.priority,
@@ -124,9 +140,29 @@ export class ConsumablesComponent implements OnInit {
               taxAmount: 0,
               totalAmount: head.amount,
               items: res.consumableServiceDetailsData,
+              billItem: {
+                itemId: head.itemId,
+                priority: head.priority,
+                serviceId: head.serviceId,
+                price: head.amount,
+                serviceName: "Consumables Charges",
+                itemName: head.itemName,
+                qty: 1,
+                precaution: "n/a",
+                procedureDoctor: "n/a",
+                credit: 0,
+                cash: 0,
+                disc: 0,
+                discAmount: 0,
+                totalAmount: head.amount,
+                gst: 0,
+                gstValue: 0,
+                specialisationID: 0,
+                doctorID: 0,
+              },
             });
           });
-          this.data = [...data];
+          this.data = [...this.billingService.ConsumableItems];
         },
         (error) => {}
       );

@@ -40,7 +40,7 @@ export class BillDetailComponent implements OnInit {
   serviceList!: { title: string; value: number }[];
   miscCompanyId: any;
   generatedBillNo = '';
-
+  enableDiscount: boolean = false;
   //Tax info
   taxid = 0;
   taxcode = '';
@@ -48,6 +48,7 @@ export class BillDetailComponent implements OnInit {
   taxService = '';
   billAmnt = 0;
   gstData = [];
+  billToCompId = 0;
 
   constructor(
     public matDialog: MatDialog,
@@ -164,6 +165,7 @@ export class BillDetailComponent implements OnInit {
       discAmtCheck: {
         type: "checkbox",
         required: false,
+        readonly: true,
         options: [{ title: " Discount  Amount  (  -  ) " }],
       },
       //14
@@ -226,7 +228,7 @@ export class BillDetailComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        readonly: true,
+        //readonly: true,
       },
       //23
       gstTax: {
@@ -328,7 +330,7 @@ export class BillDetailComponent implements OnInit {
         title: "Price",
         type: "string",
         style: {
-          width: "5%",
+          width: "8%",
         },
       },
       DoctorName: {
@@ -387,7 +389,7 @@ export class BillDetailComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
-    this.getbilltocompany();
+    //this.getbilltocompany();
     this.setpanno();
 
     //Referral Doctor
@@ -464,7 +466,7 @@ export class BillDetailComponent implements OnInit {
       billAmount: this.billAmnt,
       depositAmount: 0,
       discountAmount: this.discountedAmt,
-      stationid: 10475,
+      stationid: 10475, // Number(this.cookie.get("StationId")),
       billType: 1, //cash
       categoryId: 0,
       companyId: this.miscCompanyId,
@@ -482,7 +484,7 @@ export class BillDetailComponent implements OnInit {
       corporateid: miscPatient.corporateid,
       corporateName: miscPatient.corporateName,
       channelId: 0,
-      billToCompany: 0,
+      billToCompany: this.billToCompId,
       invoiceType: 'B2C',
       narration: miscPatient.narration
     };
@@ -536,7 +538,21 @@ export class BillDetailComponent implements OnInit {
   }
 
   makeBill() {
-    this.addNewItem();
+
+    //Set Gst Values
+    //this.addNewItem();
+
+    let TotalTaxGST = this.totaltaxRate;
+    let txtgsttaxamt = ((this.billAmnt * TotalTaxGST) / 100)
+    let txttotalamount = this.billAmnt;
+    let billamount = (txttotalamount + txtgsttaxamt);
+    //let depositAmount=txtavaileddeposit
+    //  let CreditAmtforSrvTax = CreditAmtforSrvTax + this.billAmnt
+    //  let txtServiceTaxAmt = ((CreditAmtforSrvTax) * srvTax) / 100
+    //  let serviceTax = Convert.ToDecimal(txtServiceTaxAmt.Text)
+
+
+
 
     this.http
       .post(ApiConstants.postMiscBill, this.postBillObj)
@@ -560,7 +576,8 @@ export class BillDetailComponent implements OnInit {
 
   }
   count!: number;
-  TotalAmount!: number;
+  TotalAmount: any = '0';
+  totaltaxRate: any = 0;
   clearDraftedService() {
     this.miscServBillForm.controls["item"].setValue({
       title: "",
@@ -622,7 +639,7 @@ export class BillDetailComponent implements OnInit {
           e.Price = Number(e.Price).toFixed(2);
           e.Disc = Number(e.Disc).toFixed(2);
           e.DiscAmount = Number(e.DiscAmount).toFixed(2);
-          e.TotalAmount = Number(e.TotalAmount).toFixed(2);
+          e.TotalAmount = Number(e.this.billAmnt).toFixed(2);
           e.GST = Number(e.GST).toFixed(2);
           e.amount = Number(e.amount).toFixed(2);
           e.discountAmount = Number(e.discount).toFixed(2);
@@ -684,8 +701,8 @@ export class BillDetailComponent implements OnInit {
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount += element.TotalAmount;
     });
-    this.billAmnt = this.TotalAmount;
-    this.miscServBillForm.controls["billAmt"].setValue(this.TotalAmount);
+    this.billAmnt = Number(String(this.TotalAmount.substring(1)));
+    this.miscServBillForm.controls["billAmt"].setValue(Number(this.billAmnt).toFixed(2));
   }
   ngAfterViewInit(): void {
     this.formEvents();
@@ -693,12 +710,26 @@ export class BillDetailComponent implements OnInit {
 
   formEvents() {
     this.getMasterMiscDetail();
+    let compId = this.miscPatient.getCompany();
+    this.getbilltocompany(compId);
 
+
+    // compId.valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((value: any) => {
+    //     console.log(value);
+    //     if (value) {
+    //       this.getbilltocompany(value);
+    //     }
+    //     this.setServiceItemList();
+    //   });
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         //console.log(value);
         if (value.value) {
+          let compId = this.miscPatient.getCompany();
+          this.getbilltocompany(compId);
           this.serviceID = value.value;
           this.serviceName = value.title;
         }
@@ -718,6 +749,39 @@ export class BillDetailComponent implements OnInit {
 
 
       });
+    this.miscServBillForm.controls["discAmtCheck"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        this.enableDiscount = false;
+        console.log(value, "discAmtCheck");
+        if (value === true) {
+          this.enableDiscount = true;
+        }
+      });
+
+    // this.question[22].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") {
+    //     console.log(this.miscServBillForm.value.credLimit, "cL")
+    //     console.log(event, "eL")
+    //     //event.preventDefault();
+
+    //   }
+    // });
+    // this.miscServBillForm.controls["credLimit"].valueChanges
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((value: any) => {
+    //     this.enableDiscount = false;
+    //     console.log(value, "credLimit");
+    //     if (value === true) {
+    //       if (this.billAmnt > value) {
+    //         { this.snackbar.open("Credit limit should not be less than bill amount", "error") }
+    //       }
+
+    //     }
+    //   });
+
+
+
     // this.questions[0].elementRef.addEventListener(
     //   "change",
     //   this.setServiceItemList.bind(this)
@@ -859,6 +923,8 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
 
         this.gstData = data;
+        this.totaltaxRate = data[0].totaltaX_RATE
+        console.log(this.gstData, "gstData")
 
       })
   }
@@ -903,14 +969,29 @@ export class BillDetailComponent implements OnInit {
         ];
       });
   }
-  getbilltocompany() {
+  b2bflag: any = "";
+  getbilltocompany(data: any) {
     this.http
       .get(
-        ApiConstants.getbilltocompany(this.miscCompanyId)
+        ApiConstants.getbilltocompany(data)
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
+        this.billToCompId = data.dtBilltocompany[0].id;
+        this.b2bflag = data.dtBilltocompany[0].checkGSTN_ForB2B;
 
+        if (String(this.b2bflag.trim()).toUpperCase() === "Y") {
+          //TotalTaxGST > 0 And creditlimit > 0
+
+          if ((data.dtBilltocompany[0].gstNumber === null) || (data.dtBilltocompany[0].gstNumber === 0)) {
+            this.snackbar.open("Bill To Company GSTN and Address Details are Mandatory for Bill Preparation", "error")
+          }
+          else if (this.miscCompanyId === 0 || this.miscCompanyId === null) {
+            this.snackbar.open("Please Select Company GSTN!", "error")
+          }
+        }
+
+        console.log("Bill", data)
       })
   }
 
@@ -965,25 +1046,54 @@ export class BillDetailComponent implements OnInit {
     dialogref.afterClosed().subscribe(res => {
       this.discountedAmt = res.data;
       this.miscServBillForm.controls["discAmt"].setValue(this.discountedAmt);
-      console.log("DisocuntedAMTformpopup,",)
+      let discountedBillAmt = Number(this.billAmnt) - this.discountedAmt;
+      this.miscServBillForm.controls["billAmt"].setValue(discountedBillAmt);
     })
   }
   openMakeBilldialog() {
-    const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
-      width: "33vw",
-      height: "40vh",
-      data: {
-        message: "Do you want to make Bill?",
-      },
-    });
+    let miscFormData = this.miscPatient.getMiscBillFormData();
+    if (!this.miscServBillForm.value.referralDoctor) { this.snackbar.open("Please select Referral Doctor", "error") }
+    if (!miscFormData.companyId) { this.snackbar.open("Select the Company", "error") }
+    else {
+      if (miscFormData.companyId) {
+        //  this.getbilltocompany(miscFormData.companyId)
+      }
 
-    MakeDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success") {
-          this.openDepositdialog();
-        }
-      });
+    }
+    if (!miscFormData.corporateId) { this.snackbar.open(" Please select corporate!", "error") }
+    if (this.miscServBillForm.value.credLimit <= 0) { this.snackbar.open(" Enter Credit limit", "error") }
+    else {
+      if (Number(this.billAmnt) > this.miscServBillForm.value.credLimit) {
+        { this.snackbar.open("Credit limit should not be less than bill amount", "error") }
+      }
+      else {
+        let amtbyPat = this.billAmnt - this.miscServBillForm.value.credLimit;
+        let amtbyComp = this.miscServBillForm.value.credLimit;
+        this.miscServBillForm.controls["amtPayByPatient"].setValue(amtbyPat);
+        this.miscServBillForm.controls["amtPayByComp"].setValue(amtbyComp);
+      }
+    }
+    if (this.serviceselectedList.length <= 0) { this.snackbar.open("Nothing to Save", "error") }
+    else {
+      // const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+      //   width: "33vw",
+      //   height: "40vh",
+      //   data: {
+      //     message: "Do you want to make Bill?",
+      //   },
+      // });
+
+      // MakeDepositDialogref.afterClosed()
+      //   .pipe(takeUntil(this._destroying$))
+      //   .subscribe((result) => {
+      //     if (result == "Success") {
+      //       this.openDepositdialog();
+      //     }
+      //   });
+    }
+
+
+
   }
   openGstTaxDialog() {
     this.matDialog.open(GstTaxDialogComponent, {
@@ -1015,26 +1125,10 @@ export class BillDetailComponent implements OnInit {
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        // if (result == "Success")
-        //  {
-        //   const DepositDialogref = this.matDialog.open(DepositDialogComponent, {
-        //     width: '70vw', height: '98vh', data: {
-        //       servicetype: this.patientservicetype, deposittype: this.patientdeposittype,
-        //       patientinfo: {
-        //         emailId: this.patientpersonaldetails[0]?.pEMail  , mobileno: this.patientpersonaldetails[0]?.pcellno,
-        //         panno : this.patientpersonaldetails[0]?.paNno, registrationno: this.regNumber, iacode:this.iacode
-        //       }
-        //     },
-        //   });
-        //   DepositDialogref.afterClosed()
-        //     .pipe(takeUntil(this._destroying$))
-        //     .subscribe((result) => {
-        //       if(result == "Success"){
-        //         this.getPatientPreviousDepositDetails();
-
-        //       }
-        //     });
-        // }
+        console.log(result, "depositre")
+        if (result == "Success") {
+          this.makeBill();
+        }
       });
   }
 
