@@ -13,6 +13,9 @@ import {
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReportService } from "@shared/services/report.service";
 import { CookieService } from "@shared/services/cookie.service";
+import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
+import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
+import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -373,4 +376,30 @@ export class BillComponent implements OnInit {
       }
     );
   }
+
+  discountreason()
+  {
+    this.matDialog.open(DisountReasonComponent, {
+      width: '80vw',
+      minWidth: '90vw',
+      height: '67vh'
+    })
+  }
+
+  depositdetails()
+  {
+    this.matDialog.open(DepositDetailsComponent, {
+      width: '60vw',
+      height: '50vh'
+    })
+  }
+
+  gsttaxdialog()
+  {
+    this.matDialog.open(GstTaxComponent,{
+      width: '30vw',
+      height: '50vh'
+    })
+  }
 }
+
