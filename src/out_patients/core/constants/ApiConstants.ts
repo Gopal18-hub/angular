@@ -1264,14 +1264,22 @@ export namespace ApiConstants {
     return environment.CommonApiUrl + "api/lookup/getauthorisedby/" + locid;
   };
 
-  //Authorised by 
-  export const checkdiscountamountforparticularautharisation = (authorisedby: number, locationid: number, discAmount: number) => {
+  //Authorised by
+  export const checkdiscountamountforparticularautharisation = (
+    authorisedby: number,
+    locationid: number,
+    discAmount: number
+  ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/checkdiscountamountforparticularautharisation/" + authorisedby + "/" + locationid + "/" + discAmount
+      "api/outpatientbilling/checkdiscountamountforparticularautharisation/" +
+      authorisedby +
+      "/" +
+      locationid +
+      "/" +
+      discAmount
     );
   };
-
 
   export const getconfiguremessage = (requesttype: string, value: string) => {
     return (
@@ -1317,4 +1325,62 @@ export namespace ApiConstants {
   };
   export const getLocationMaster =
     environment.CommonApiUrl + "api/lookup/getlocationmaster";
+
+  //Added for deposit status dropdown on online deposit report
+  export const getdepositstatus =
+    environment.PatientApiUrl + "api/patient/getdepositstatus";
+
+  export const getonlinedepositreportdata = (
+    flag: any,
+    depsource: any,
+    selecttype: any,
+    startdate: any,
+    enddate: any,
+    hsplocationid: any
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getonlinedepositreportdata/flag/depsource/selecttype/startdate/enddate/hsplocationid?flag=" +
+      flag +
+      "&depSource=" +
+      depsource +
+      "&selectType=" +
+      selecttype +
+      "&startDate=" +
+      startdate +
+      "&endDate=" +
+      enddate +
+      "&hspLocationID=" +
+      hsplocationid
+    );
+  };
+  export const getdetaileddataforoldscroll = (
+    scrollno: number,
+    stationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getdetaileddataforoldscroll/" +
+      scrollno +
+      "/" +
+      stationid
+    );
+  };
+  export const getdetailsforscroll = (
+    fromdate: any,
+    todate: any,
+    stationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getdetailsforscroll/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      stationid
+    );
+  };
+  //export const;
+  //http://172.30.0.16:1008/api/patient/getdetailsforscroll/2022-01-01/2022-01-12/10412
 }

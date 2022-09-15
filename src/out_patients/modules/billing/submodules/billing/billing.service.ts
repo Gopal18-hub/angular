@@ -554,16 +554,16 @@ export class BillingService {
         orderDatetime: new Date(),
         doctorId: data.billItem.doctorID || 0,
         priority: data.billItem.priority,
-        reorder: true,
-        transportationmode: 0,
-        refDoctorID: 0,
+        reorder: false,
+        transportationmode: 3,
+        refDoctorID: 2015, //hardcoded for now
         startDateTime: new Date(),
-        hspLocationID: 0,
+        hspLocationID: Number(this.cookie.get("HSPLocationId")),
         registrationNo:
           this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo,
         iaCode: this.makeBillPayload.ds_insert_bill.tab_insertbill.iaCode,
-        sourceStId: 0,
-        operatorID: 0,
+        sourceStId: Number(this.cookie.get("StationId")),
+        operatorID: Number(this.cookie.get("UserId")),
         orderNo: "",
       });
       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.push({
@@ -571,7 +571,7 @@ export class BillingService {
         sampleId: 0,
         profileId: 0,
         destId: 0,
-        reorder: true,
+        reorder: false,
         testStatus: 0,
         hcuId: 0,
         opbillid: 0,

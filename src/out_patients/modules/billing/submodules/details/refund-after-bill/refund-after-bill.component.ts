@@ -255,6 +255,7 @@ export class RefundAfterBillComponent implements OnInit {
 
   question: any;
   private readonly _destroying$ = new Subject<void>();
+  headercheck: boolean = false;
 
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
@@ -264,6 +265,8 @@ export class RefundAfterBillComponent implements OnInit {
 
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    this.billDetailservice.sendforapproval = [];
+    this.billDetailservice.totalrefund = 0;
     for (var i = 0; i < this.billDetailservice.billafterrefund.length; i++) {
       this.billDetailservice.billafterrefund[i].Sno = i + 1;
       if(this.billDetailservice.serviceList[i].cancelled == 1)
@@ -275,6 +278,34 @@ export class RefundAfterBillComponent implements OnInit {
         this.billDetailservice.serviceList[i].cancelled = 'notcancelledrefund'
       }
     }
+    if(this.billDetailservice.serviceList.length == 1 && this.billDetailservice.serviceList[0].cancelled == 'cancelledrefund')
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
+    {
+      this.headercheck = true;
+    }
+    else if(this.billDetailservice.serviceList.length > 1)
+    {
+      this.headercheck = false;
+    }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
+    {
+      this.headercheck = true;
+    }
+    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
+    // {
+    //   this.headercheck = false;
+    // }
+    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+    {
+      this.headercheck = true;
+    }
+    // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance == 0)
+    // {
+    //   this.headercheck = false;
+    // }
     this.billDetailservice.sendforapproval = [];
     this.billDetailservice.calculateTotalRefund();
     this.billDetailservice.totalrefund = 0;
@@ -290,52 +321,102 @@ export class RefundAfterBillComponent implements OnInit {
       }
     }) 
     console.log(this.tableRows);
+    var flag = 0;
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
-      if(this.tableRows.selection.selected.length > 0)
-        {  
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+      {
+        this.data.forEach((item: any) => {
+          console.log(item);
+          this.tableRows.selection.selected.forEach((i: any) =>{ 
+            console.log(i)
+            if(item.itemid == i.itemid)
+            {
+              this.msgdialog.info('This Bill Have some Due Amount');
+              setTimeout(() => {
+                this.tableRows.selection.deselect(item);
+              }, 100);
+            }
+          })
+        })
+      }
+      else if(this.tableRows.selection.selected.length > 0)
+      {  
           this.billDetailservice.sendforapproval = [];
           this.billDetailservice.totalrefund = 0;
-          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+          for(var j = 0; j < this.tableRows.selection.selected.length; j++)
           {
-            for(var j = 0; j < this.tableRows.selection.selected.length; j++)
+            if(this.tableRows.selection.selected[j].cancelled == 'notcancelledrefund')
             {
               var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-                return a.serviceId == this.tableRows.selection.selected[j].serviceid;
-              }) 
-            }
-            for(var z = 0; z < list.length; z++)
+                return a.itemid == this.tableRows.selection.selected[j].itemid;
+              })
+            } 
+          } 
+          console.log(list) 
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+          {
+            if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {
-              if(list[z].ackby == 0)
+              for(var z = 0; z < list.length; z++)
               {
-                var acklist = this.billDetailservice.serviceList.filter((a: any) => {
-                  console.log(a);
-                  return a.serviceid == list[z].serviceId;
-                })
-                console.log(acklist);
                 console.log(list[z]);
+                if(list[z].ackby == 0)
+                {
+                  var acklist = this.billDetailservice.serviceList.filter((a: any) => {
+                  console.log(a);
+                  return a.itemid == list[z].itemid;
+                  })
+                  
+                }
+              }
+              console.log(acklist);
+              console.log(list[z]);
+              if(acklist != undefined)
+              {
+                for(var m = 0; m < acklist.length; m++)
+                {
                 this.data.forEach((item: any) => {
-                  console.log(item)
-                  var flag = 0;
-                  for(var x = 0; x < acklist.length, flag < 1; x++)
+                  if(item.itemid == acklist[m].itemid)
                   {
-                    if(item.serviceid == acklist[x].serviceid && item.cancelled == 'notcancelledrefund')
-                    {
-                      flag++;
-                      this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
-                      console.log(this.tableRows.selection);
-                      setTimeout(() => {
+                    flag++;
+                    this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+                    setTimeout(() => {
                       this.tableRows.selection.deselect(item);
                     }, 100);
-                    break;                      
-                    }
-                    return;
                   }
                 })
+                }
               }
+              
+                // this.data.forEach((item: any) => {
+                //   console.log(item)
+                //   for(var x = 0; x < acklist.length, flag < 1; x++)
+                //   {
+                //     console.log((item.itemid, acklist[x].itemid));
+                //     if(item.itemid == acklist[x].itemid && item.cancelled == 'notcancelledrefund')
+                //     {
+                //       flag++;
+                //       this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+                //       console.log(this.tableRows.selection);
+                //       setTimeout(() => {
+                //       this.tableRows.selection.deselect(item);
+                //     }, 100);
+                //     break;                      
+                //     }
+                //     return;
+                //   }
+                  
+                //   console.log(flag);
+                // })
             }
-            console.log(this.tableRows.selection.selected[i])
+            // if(flag == 1)
+            // {
+            //   this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+            //   break;
+            // }
+            // console.log(this.tableRows.selection.selected[i])
             if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {
               console.log(this.tableRows.selection.selected[i].itemid);
@@ -360,7 +441,12 @@ export class RefundAfterBillComponent implements OnInit {
             this.billDetailservice.calculateTotalRefund();
             console.log(this.billDetailservice.sendforapproval);
             }
-          }                  
+          } 
+          // console.log(flag);
+          // if(flag >= 1)
+          // {
+          //   this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+          // }                   
         }
         else
         {
@@ -404,6 +490,7 @@ export class RefundAfterBillComponent implements OnInit {
         })
       }
     })
+    
     
   }
   
