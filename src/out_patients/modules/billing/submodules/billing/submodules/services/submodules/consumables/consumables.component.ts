@@ -114,7 +114,7 @@ export class ConsumablesComponent implements OnInit {
         (res) => {
           let data: any = [];
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
-            data.push({
+            this.billingService.addToConsumables({
               sno: index + 1,
               surgeryName: head.itemName,
               priority: head.priority,
@@ -126,7 +126,7 @@ export class ConsumablesComponent implements OnInit {
               items: res.consumableServiceDetailsData,
             });
           });
-          this.data = [...data];
+          this.data = [...this.billingService.ConsumableItems];
         },
         (error) => {}
       );

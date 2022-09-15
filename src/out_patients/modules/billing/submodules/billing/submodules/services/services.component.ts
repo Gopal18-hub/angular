@@ -73,6 +73,29 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeMaxId = this.billingService.activeMaxId;
+    this.billingService.servicesTabStatus.subscribe((res: any) => {
+      if ("consumables" in res) {
+        this.tabs.forEach((tab: any, index: number) => {
+          if (tab.id != 6) {
+            this.tabs[index]["disabled"] = true;
+          } else {
+            this.tabs[index]["disabled"] = false;
+          }
+        });
+      } else if ("healthCheckup" in res) {
+        this.tabs.forEach((tab: any, index: number) => {
+          if (tab.id != 3) {
+            this.tabs[index]["disabled"] = true;
+          } else {
+            this.tabs[index]["disabled"] = false;
+          }
+        });
+      } else if ("clear" in res) {
+        this.tabs.forEach((tab: any, index: number) => {
+          this.tabs[index]["disabled"] = false;
+        });
+      }
+    });
   }
 
   async tabChange(tab: any) {

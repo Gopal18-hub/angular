@@ -24,6 +24,8 @@ export class BillingService {
 
   billNoGenerated = new Subject<boolean>();
 
+  servicesTabStatus = new Subject<any>();
+
   totalCost = 0;
 
   company: number = 0;
@@ -177,20 +179,21 @@ export class BillingService {
     this.company = 0;
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
+    this.servicesTabStatus.next({ clear: true });
     this.makeBillPayload = {
       ds_insert_bill: {
-        tab_insertbill: {},
-        tab_d_opbillList: [],
-        tab_o_opdoctorList: [],
-        tab_d_opdoctorList: [],
-        tab_o_optestList: [],
-        tab_d_optestorderList: [],
-        tab_o_procedureList: [],
-        tab_d_procedureList: [],
-        tab_d_packagebillList: [],
-        tab_d_depositList: [],
-        tab_getdepositList: [],
-        tab_l_receiptList: [],
+        tab_insertbill: {}, //header information of entire bill
+        tab_d_opbillList: [], // Services list
+        tab_o_opdoctorList: [], // consultation header
+        tab_d_opdoctorList: [], // consultation breakup
+        tab_o_optestList: [], // Investigation header
+        tab_d_optestorderList: [], // Investigation brakup
+        tab_o_procedureList: [], // Procedure header
+        tab_d_procedureList: [], // Procedura breakup
+        tab_d_packagebillList: [], // Healthcheckup header
+        tab_d_depositList: [], // deposite adjustment details
+        tab_getdepositList: [], // demopiste actual amount (patient deposit amount)
+        tab_l_receiptList: [], //
       },
       hcudetails: "",
       ds_paymode: {
@@ -593,6 +596,8 @@ export class BillingService {
     if (data.billItem) {
       this.addToBill(data.billItem);
     }
+    this.servicesTabStatus.next({ healthCheckup: true });
+
     this.calculateTotalAmount();
   }
   addToProcedure(data: any) {
@@ -603,6 +608,26 @@ export class BillingService {
     });
     if (data.billItem) {
       this.addToBill(data.billItem);
+
+      this.makeBillPayload.ds_insert_bill.tab_o_procedureList.push({
+        dateTime: new Date(),
+        stationId: Number(this.cookie.get("StationId")),
+        operatorId: Number(this.cookie.get("UserId")),
+        iaCode: this.makeBillPayload.ds_insert_bill.tab_insertbill.iaCode,
+        registrationNo:
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo,
+        hspLocationId: Number(this.cookie.get("HSPLocationId")),
+        orderNo: "",
+      }),
+        this.makeBillPayload.ds_insert_bill.tab_d_procedureList.push({
+          orderId: 0,
+          procedureId: data.billItem.itemId,
+          serviceid: data.billItem.serviceId,
+          quantity: data.billItem.qty,
+          doctorId: data.billItem.doctorID || 0,
+          opBillid: 0,
+          refDocId: 0,
+        });
     }
 
     this.calculateTotalAmount();
@@ -619,7 +644,10 @@ export class BillingService {
 
     this.calculateTotalAmount();
   }
-  addToConsumables() {}
+  addToConsumables(data: any) {
+    this.ConsumableItems.push(data);
+    this.servicesTabStatus.next({ consumables: true });
+  }
 
   getconfigurationservice() {
     return this.configurationservice;
