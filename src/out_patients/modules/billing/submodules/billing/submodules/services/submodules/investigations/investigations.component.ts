@@ -288,7 +288,7 @@ export class InvestigationsComponent implements OnInit {
   add(priorityId = 1) {
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
-        return item.itemid == this.formGroup.value.investigation.value;
+        return item.billItem.itemId == this.formGroup.value.investigation.value;
       }
     );
     if (exist > -1) {

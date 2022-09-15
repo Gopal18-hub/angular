@@ -237,6 +237,12 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    if (this.billingService.HealthCheckupItems.length == 1) {
+      this.messageDialogService.error(
+        "Only one health check up will allow per bill"
+      );
+      return;
+    }
     let exist = this.billingService.HealthCheckupItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.healthCheckup.value;
