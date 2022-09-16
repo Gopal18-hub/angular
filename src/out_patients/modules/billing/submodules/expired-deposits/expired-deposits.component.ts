@@ -23,6 +23,7 @@ import { SimilarDetailsPopupComponent } from "@modules/patient-history/similar-d
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ExpdepositRefundDialogComponent } from "./expdeposit-refund-dialog/expdeposit-refund-dialog.component";
 import { ExpdepositCheckddDialogComponent } from "./expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
+import { ThisReceiver } from "@angular/compiler";
 
 @Component({
   selector: "out-patients-expired-deposits",
@@ -34,7 +35,7 @@ export class ExpiredDepositsComponent implements OnInit {
   public ExpiredDepositformlist: getExpiredDepositReportModel[] = [];
   public patienthistorylist: getPatientHistoryModel[] = [];
   public patientDetails: getRegisteredPatientDetailsModel[] = [];
-
+  response: any;
   ExpiredDepositformData = {
     title: "",
     type: "object",
@@ -62,11 +63,12 @@ export class ExpiredDepositsComponent implements OnInit {
   questions: any;
 
   ExpiredDepositconfig = {
-    clickedRows: true,
+    clickedRows: false,
     clickSelection: "single",
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
+    rowLayout: { dynamic: { rowClass: "row['checkDD']" } },
     displayedColumns: [
       "receiptno",
       "uhid",
@@ -78,7 +80,7 @@ export class ExpiredDepositsComponent implements OnInit {
       "balance",
       "checkDD",
       "executeDate",
-      "executedof",
+      "executeBy",
       "episode",
     ],
     columnsInfo: {
@@ -119,7 +121,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "number",
         tooltipColumb: "Usedop",
         style: {
-          width: "6.5rem",
+          width: "7.5rem",
         },
       },
       usedIP: {
@@ -162,7 +164,7 @@ export class ExpiredDepositsComponent implements OnInit {
           width: "6.5rem",
         },
       },
-      executedof: {
+      executeBy: {
         title: "Executed Of",
         type: "string",
         tooltipColumb: "executedof",
@@ -216,6 +218,7 @@ export class ExpiredDepositsComponent implements OnInit {
   @ViewChild("table") tablerow: any;
   onDelete: boolean = false;
   OpenCheckdddialog: boolean = false;
+  messageDialogService: any;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -356,7 +359,7 @@ export class ExpiredDepositsComponent implements OnInit {
       });
   }
   expireddepositsearch() {
-    this.apiProcessing = true;
+    //this.apiProcessing = true;
     console.log(this.ExpiredDepositform.value);
     let registrationno = Number(
       this.ExpiredDepositform.value.maxid.split(".")[1]
@@ -392,6 +395,17 @@ export class ExpiredDepositsComponent implements OnInit {
     }
   }
   ngAfterViewInit(): void {
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.getPatientDetails();
+      }
+    });
+    this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
+      if (event.key === "Tab") {
+        this.getPatientDetails();
+      }
+    });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       console.log(event);
       if (event.key === "Enter") {
@@ -411,6 +425,23 @@ export class ExpiredDepositsComponent implements OnInit {
         }
       }
     });
+    console.log(this.ExpiredDepositform);
+    setTimeout(() => {
+      this.ExpiredDepositform.valueChanges.subscribe((val) => {
+        console.log("val");
+        console.log(val);
+        this.clearbtn = false;
+      });
+    }, 300);
+
+    this.ExpiredDepositform.controls["fromdate"].valueChanges.subscribe(
+      (val) => {
+        this.questions[3].minimum = val;
+      }
+    );
+    this.ExpiredDepositform.controls["todate"].valueChanges.subscribe((val) => {
+      this.questions[2].maximum = val;
+    });
     this.tablerow.selection.changed.subscribe((res: any) => {
       console.log(res);
       if (this.tablerow.selection.selected.length > 0) {
@@ -429,19 +460,26 @@ export class ExpiredDepositsComponent implements OnInit {
               {
                 width: "30vw",
                 height: "25vh",
+                data: {
+                  id: this.tablerow.selection.selected[0].id,
+                  episode: this.tablerow.selection.selected[0].episode,
+                },
               }
             );
+            dialogRef.afterClosed().subscribe((res) => {
+              console.log(res);
+              this.response = res;
+              console.log(this.response);
+              console.log(this.response.message);
+              if (this.response.message == "Records Updated!") {
+                this.dialogService.success("Saved Sucessfully!");
+                this.expireddepositsearch();
+              }
+            });
           }
         });
       }
     });
-    // setTimeout(() => {
-    //   this.ExpiredDepositform.valueChanges.subscribe((val) => {
-    //     console.log("val");
-    //     console.log(val);
-    //     this.clearbtn = false;
-    //   });
-    // }, 300);
   }
   mobilechange() {
     console.log("mobile changed");
