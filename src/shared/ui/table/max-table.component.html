@@ -247,6 +247,7 @@
         *matRowDef="let row; columns: displayedColumns"
         [class.row-is-clicked]="selection.isSelected(row)"
         class="{{ rowClass(row) }}"
+        [class.row-highlight]="config.rowHighlightOnHover"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.selectBox && !config.clickedRows">
@@ -259,6 +260,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         class="{{ rowClass(row) }}"
+        [class.row-highlight]="config.rowHighlightOnHover"
       ></tr>
     </ng-container>
     <ng-container *ngIf="!config.selectBox && !config.clickedRows">
@@ -267,6 +269,7 @@
         *matRowDef="let row; columns: displayedColumns"
         class="{{ rowClass(row) }}"
         [class.row-is-clicked]="selection.isSelected(row)"
+        [class.row-highlight]="config.rowHighlightOnHover"
       ></tr>
     </ng-container>
     <ng-container *ngIf="config.groupby">

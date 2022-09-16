@@ -34,6 +34,7 @@ export class SubComponent implements OnInit, OnChanges {
   searchForm!: FormGroup;
 
   questions: any;
+  searchFormProperties: any;
 
   constructor(
     @Inject(APP_BASE_HREF) public baseHref: string,
@@ -78,6 +79,7 @@ export class SubComponent implements OnInit, OnChanges {
   }
 
   reInitiateSearch(type: string) {
+    this.searchFormProperties = this.searchFormData[type];
     let formResult: any = this.formService.createForm(
       this.searchFormData[type].properties,
       {}
@@ -103,7 +105,10 @@ export class SubComponent implements OnInit, OnChanges {
   searchSubmit() {
     this.searchService.searchTrigger.next({ data: this.searchForm.value });
     setTimeout(() => {
-      this.searchForm.reset();
+      if (this.searchFormProperties.resetFormOnSubmit == false) {
+      } else {
+        this.searchForm.reset();
+      }
     }, 800);
   }
 
