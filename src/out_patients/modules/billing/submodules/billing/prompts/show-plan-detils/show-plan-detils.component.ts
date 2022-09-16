@@ -24,8 +24,11 @@ export class ShowPlanDetilsComponent implements OnInit {
     ],
     columnsInfo: {
       sno: {
-        title: "SL.No",
+        title: "Sl.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       planType: {
         title: "Plan Type",

@@ -34,6 +34,7 @@ import { PatientService } from "@core/services/patient.service";
 import * as moment from "moment";
 import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { ShowPlanDetilsComponent } from "../billing/prompts/show-plan-detils/show-plan-detils.component";
+import { isTypedRule } from "tslint";
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -56,6 +57,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   ) { }
   categoryIcons: any;
   moment = moment;
+  setItemsToBill: any = [];
   doCategoryIconAction(categoryIcon: any) {
     const patientDetails: any =
       this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -161,7 +163,16 @@ export class MiscellaneousBillingComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   disableBtn: boolean = false;
 
+
+  dtPatientPastDetails = [];
+  dsPersonalDetails: any = [];
+
   ngOnInit(): void {
+    this.setItemsToBill.enableBill = false;
+    this.setItemsToBill.enablecompanyId = true;
+    this.setItemsToBill.corporateId = 0;
+    this.setItemsToBill.companyId = 0;
+    this.Misc.setMiscBillFormData(this.setItemsToBill);
     let formResult = this.formService.createForm(
       this.miscFormData.properties,
       {}
@@ -182,6 +193,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   formEvents() {
     //ON MAXID CHANGE
+
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -207,6 +219,9 @@ export class MiscellaneousBillingComponent implements OnInit {
           //this.patientDetail.companyId = value.value;
           this.companyId = value.value;
           console.log(this.companyId, "comid")
+          this.setItemsToBill.enablecompanyId = true;
+          this.setItemsToBill.companyId = this.companyId;
+          this.Misc.setMiscBillFormData(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
         }
       });
@@ -219,13 +234,30 @@ export class MiscellaneousBillingComponent implements OnInit {
           //this.patientDetail.corporateName = value.title;
           //this.patientDetail.corporateid = value.value;
           this.corporateId = value.value;
+          this.setItemsToBill.corporateId = this.corporateId;
+          this.Misc.setMiscBillFormData(this.setItemsToBill);
           console.log(this.corporateId, "comid")
           this.Misc.setPatientDetail(this.patientDetail);
         }
       });
-    // this.questions[4].elementRef.addEventListener(
+    this.miscForm.controls["b2bInvoiceType"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        console.log(value, "b2bInvoiceType");
+        if (value === true) {
+          this.setItemsToBill.b2bInvoiceType = "B2B"
+        }
+        else {
+          this.setItemsToBill.b2bInvoiceType = "B2C"
+        }
+        this.Misc.setMiscBillFormData(this.setItemsToBill);
+      });
+    // this.questions[0].elementRef.addEventListener(
     //   "blur",
-    //   this.getRemark.bind(this)
+    //   if (!this.miscForm.value.maxid.value) {
+    //     this.setItemsToBill.enableBill = false;
+    //     this.Misc.setMiscBillFormData(this.setItemsToBill);
+    //   }
     // );
   }
 
@@ -302,7 +334,8 @@ export class MiscellaneousBillingComponent implements OnInit {
 
     this._destroying$.next(undefined);
     this._destroying$.complete();
-
+    this.setItemsToBill.clear = true;
+    this.Misc.setMiscBillFormData(this.setItemsToBill);
 
     this.patientName = "";
     this.ssn = "";
@@ -366,7 +399,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.http.get(ApiConstants.getregisteredpatientdetailsForMisc(
         iacode,
         regNumber,
-        Number(this.cookie.get("HSPLocationId"))
+        // Number(this.cookie.get("HSPLocationId"))
+        67
       )
       )
         .pipe(takeUntil(this._destroying$)).subscribe((resultData: Registrationdetails) => {
@@ -378,7 +412,16 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.setValuesToMiscForm(this.patientDetails);
             this.putCachePatientDetail(this.patientDetails);
 
-            this.getDipositedAmountByMaxID();
+            this.dsPersonalDetails = resultData.dsPersonalDetails;
+            this.dtPatientPastDetails = resultData.dtPatientPastDetails;
+
+            let cashLimit = this.dsPersonalDetails.dtPersonalDetails1[0].cashLimit;
+            this.setItemsToBill.cashLimit = cashLimit;
+            this.setItemsToBill.enableBill = true;
+            this.Misc.setMiscBillFormData(this.setItemsToBill);
+            this.Misc.setCashLimit(cashLimit);
+
+            //this.getDipositedAmountByMaxID();
           } else {
             this.setMaxIdError(iacode, regNumber);
           }
@@ -771,6 +814,12 @@ export class MiscellaneousBillingComponent implements OnInit {
       .subscribe(
         (resultData: any) => {
           console.log(resultData, "fulldepo")
+
+          this.dsPersonalDetails = resultData.dsPersonalDetails;
+          this.dtPatientPastDetails = resultData.dtPatientPastDetails;
+
+          let cashLimit = this.dsPersonalDetails.dtPersonalDetails1.cashLimit;
+
           // if(totalDeposit > 0)
           // {
           //   Enable deposit checkbox and value

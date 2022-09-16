@@ -603,6 +603,11 @@ export class BillingService {
 
     this.calculateTotalAmount();
   }
+
+  setHCUDetails(itemId: string, doctorsList: any) {
+    this.makeBillPayload.hcudetails = itemId + ":" + doctorsList.join(":");
+  }
+
   addToProcedure(data: any) {
     this.ProcedureItems.push(data);
     this.configurationservice.push({
