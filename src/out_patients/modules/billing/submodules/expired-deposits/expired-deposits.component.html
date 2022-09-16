@@ -73,7 +73,7 @@
                         </button>
                     </div>
                     <div class="mr-8 ml-1 float-right btn">
-                        <button mat-raised-button color="primary" type="submit">Clear</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
              <!-- <mat-spinner strokeWidth="2"></mat-spinner> -->
              <div  >
                 <maxhealth-table 
-                #table
+                #expireTable
                 [config]="ExpiredDepositconfig"
                 [data]="ExpiredDepositformlist"
                 (columnClick)="activeClick($event)"

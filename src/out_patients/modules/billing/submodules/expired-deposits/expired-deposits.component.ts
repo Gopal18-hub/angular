@@ -68,7 +68,7 @@ export class ExpiredDepositsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
-    rowLayout: { dynamic: { rowClass: "row['checkDD']" } },
+    rowLayout: { dynamic: { rowClass: "'isExpdeop'+row['isExpdeop']" } }, //"'isExpdeop'+row['isExpdeop']"
     displayedColumns: [
       "receiptno",
       "uhid",
@@ -97,7 +97,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "string",
         tooltipColumb: "maxid",
         style: {
-          width: "6.5rem",
+          width: "5.5rem",
         },
       },
       datetime: {
@@ -105,7 +105,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "Datetime",
         tooltipColumb: "datetime",
         style: {
-          width: "6.5rem",
+          width: "8.5rem",
         },
       },
       deposit: {
@@ -113,7 +113,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "decimal",
         tooltipColumb: "deposit",
         style: {
-          width: "6.5rem",
+          width: "3.5rem",
         },
       },
       usedOP: {
@@ -121,7 +121,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "number",
         tooltipColumb: "Usedop",
         style: {
-          width: "7.5rem",
+          width: "5.5rem",
         },
       },
       usedIP: {
@@ -129,7 +129,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "number",
         tooltipColumb: "usedip",
         style: {
-          width: "6.5rem",
+          width: "3.5rem",
         },
       },
       refund: {
@@ -137,7 +137,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "string",
         tooltipColumb: "refund",
         style: {
-          width: "6.5rem",
+          width: "5rem",
         },
       },
       balance: {
@@ -145,7 +145,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "string",
         tooltipColumb: "balance",
         style: {
-          width: "6.5rem",
+          width: "3.5rem",
         },
       },
       checkDD: {
@@ -153,7 +153,7 @@ export class ExpiredDepositsComponent implements OnInit {
         type: "string",
         tooltipColumb: "checkdd",
         style: {
-          width: "6.5rem",
+          width: "4.5rem",
         },
       },
       executeDate: {
@@ -215,10 +215,11 @@ export class ExpiredDepositsComponent implements OnInit {
   ssn: any;
   msgdialog: any;
   private readonly _destroying$ = new Subject<void>();
-  @ViewChild("table") tablerow: any;
+  @ViewChild("expireTable") tablerow: any;
   onDelete: boolean = false;
   OpenCheckdddialog: boolean = false;
   messageDialogService: any;
+  sucessflag = false;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -388,8 +389,18 @@ export class ExpiredDepositsComponent implements OnInit {
         .subscribe((resultdata: any) => {
           console.log(resultdata);
           if (resultdata.length > 0) {
+            //this.sucessflag = false;
             console.log("data");
             this.ExpiredDepositformlist = resultdata;
+            if (this.sucessflag == true) {
+              this.tablerow.selection.clear();
+              this.ExpiredDepositformlist.forEach((e: any) => {
+                if (this.sucessflag == true) {
+                  e.isExpdeop = "isExpdeop";
+                }
+              });
+              this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
+            }
           }
         });
     }
@@ -467,13 +478,19 @@ export class ExpiredDepositsComponent implements OnInit {
               }
             );
             dialogRef.afterClosed().subscribe((res) => {
+              this.sucessflag = false;
               console.log(res);
               this.response = res;
               console.log(this.response);
               console.log(this.response.message);
+
               if (this.response.message == "Records Updated!") {
                 this.dialogService.success("Saved Sucessfully!");
+                this.sucessflag = true;
                 this.expireddepositsearch();
+
+                // let getExpiredDepositReportModel: any = [];
+                //this.response.isExpdeop == 1;
               }
             });
           }
@@ -538,11 +555,11 @@ export class ExpiredDepositsComponent implements OnInit {
               console.log("no data found");
             }
           }
+        },
+        (error) => {
+          console.log(error);
+          this.msgdialog.info(error.error);
         }
-        // (error) => {
-        //   console.log(error);
-        //   this.msgdialog.info(error.error);
-        // }
       );
   }
 
@@ -604,17 +621,17 @@ export class ExpiredDepositsComponent implements OnInit {
             this.showtable = true;
             this.expireddepositsearch();
           }
+        },
+        (error) => {
+          console.log(error);
+          this.ExpiredDepositform.controls["maxid"].setErrors({
+            incorrect: true,
+          });
+          this.questions[0].customErrorMessage = "Invalid MaxID";
+          this.msgdialog.info("Registration number does not exist");
+          this.apiProcessing = false;
+          this.showtable = true;
         }
-        // (error) => {
-        //   console.log(error);
-        //   this.ExpiredDepositform.controls["maxid"].setErrors({
-        //     incorrect: true,
-        //   });
-        //   this.questions[0].customErrorMessage = "Invalid MaxID";
-        //   this.msgdialog.info("Registration number does not exist");
-        //   this.apiProcessing = false;
-        //   this.showtable = true;
-        // }
       );
   }
   clear() {
@@ -635,15 +652,18 @@ export class ExpiredDepositsComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.patientDetails = [];
+    //this.getExpiredDepositReportModel = [];
+    this.ExpiredDepositformlist = [];
     this.searchbtn = true;
     this.patienthistorylist = [];
-    this.apiProcessing = false;
+    // this.apiProcessing = false;
     this.showtable = true;
     this.clearbtn = true;
-    this.router.navigate(["expired-deposit"]).then(() => {
-      window.location.reload;
-    });
+    // this.router.navigate(["expired-deposits"]).then(() => {
+    //   window.location.reload;
+    // });
   }
+
   activeClick(event: any) {
     console.log(event);
   }
