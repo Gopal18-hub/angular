@@ -145,6 +145,8 @@ export class HealthCheckupsComponent implements OnInit {
           }
         });
         this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
+      } else {
+        this.doctorsList = this.doctorsList.map((d: number) => d * 0);
       }
     });
   }
