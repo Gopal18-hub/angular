@@ -203,6 +203,7 @@ export class InvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
+              patient_Instructions: r.patient_Instructions,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -279,6 +280,7 @@ export class InvestigationsComponent implements OnInit {
             value: r.id,
             originalTitle: r.name,
             docRequired: r.docRequired,
+            patient_Instructions: r.patient_Instructions,
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -351,6 +353,11 @@ export class InvestigationsComponent implements OnInit {
               doctorID: 0,
             },
           });
+          if (this.formGroup.value.investigation.patient_Instructions) {
+            this.messageDialogService.info(
+              this.formGroup.value.investigation.patient_Instructions
+            );
+          }
         }
 
         this.data = [...this.billingService.InvestigationItems];
