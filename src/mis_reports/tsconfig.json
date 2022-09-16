@@ -3,15 +3,21 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/app",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "types": [],
     "paths": {
-        "@modules/*": [
-          "./modules/*"
-        ],
-        "@core/*": [
-          "./core/*"
-        ]
+      "@modules/*": [
+        "./modules/*"
+      ],
+      "@core/*": [
+        "./core/*"
+      ],
+      "@environments/*": [
+        "../environments/*"
+      ],
+      "@shared/*": [
+        "../shared/*"
+      ]
     }
   },
   "files": [
@@ -19,6 +25,7 @@
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "../shared/**/*.d.ts"
   ]
 }

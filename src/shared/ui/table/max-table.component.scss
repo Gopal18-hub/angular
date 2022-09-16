@@ -23,7 +23,7 @@
       font-weight: bold;
     }
     .mat-row {
-      &:hover {
+      &.row-highlight:hover {
         background-color: var(--primary-color);
         .mat-cell {
           color: #fff;
@@ -55,6 +55,12 @@
         &.mat-column-select {
           width: 24px !important;
           flex: 0 0 24px !important;
+        }
+        &.type-string_link {
+          .text-underline {
+            text-underline-position: under;
+            color: var(--primary-color);
+          }
         }
       }
     }

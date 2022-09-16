@@ -1,4 +1,13 @@
-<div class="flex flex-column h-full">
+<div class="flex flex-column h-full package-doctor-modification relative">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
   <h2 class="max-health-primary-color">Package Doctor Modification</h2>
   <div class="h-3/4">
     <maxhealth-table
@@ -23,6 +32,7 @@
       class="font-sm min-width-initial"
       type="button"
       (click)="close()"
+      [disabled]="checkValidationSubmit()"
     >
       Submit
     </button>
