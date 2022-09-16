@@ -180,6 +180,9 @@ export class BillingComponent implements OnInit {
     this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
       this.billingService.setCompnay(res.value);
     });
+    if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
+      this.questions[0].elementRef.focus();
+    }
   }
 
   formEvents() {
