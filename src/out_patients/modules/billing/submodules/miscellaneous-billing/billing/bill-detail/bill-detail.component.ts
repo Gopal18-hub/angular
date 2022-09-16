@@ -388,9 +388,11 @@ export class BillDetailComponent implements OnInit {
 
   miscServBillForm!: FormGroup;
   serviceID!: number;
-  location: number = Number(this.cookie.get("HSPLocationId"));
+  //location: number = Number(this.cookie.get("HSPLocationId"));
   stationId = Number(this.cookie.get("StationId"));
   userID = Number(this.cookie.get("UserId"));
+
+  location = 67;
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
@@ -896,7 +898,7 @@ export class BillDetailComponent implements OnInit {
       //     67)
       // )
       (
-        ApiConstants.getregisteredpatientdetailsForMisc(
+        ApiConstants.getDipositedAmountByMaxID(
           iacode,
           regNumber,
           this.location
