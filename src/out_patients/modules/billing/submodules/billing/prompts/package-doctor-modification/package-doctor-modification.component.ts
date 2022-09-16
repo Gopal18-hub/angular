@@ -22,10 +22,16 @@ export class PackageDoctorModificationComponent implements OnInit {
       sno: {
         title: "Sl.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "string",
+        style: {
+          width: "30%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
@@ -53,7 +59,13 @@ export class PackageDoctorModificationComponent implements OnInit {
             this.itemsData[i] = {
               sno: i + 1,
               specialisation: item.itemName,
-              doctorName: "",
+              doctorName:
+                this.data.doctorsList.length > 0
+                  ? this.data.doctorsList[i] == 0
+                    ? null
+                    : this.data.doctorsList[i]
+                  : null,
+              doctorName_required: true,
             };
             this.getdoctorlistonSpecializationClinic(item.itemID, i);
             i++;
@@ -88,6 +100,9 @@ export class PackageDoctorModificationComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close();
+    this.dialogRef.close({
+      data: this.itemsData,
+      itemId: this.data.orderSet.itemid,
+    });
   }
 }
