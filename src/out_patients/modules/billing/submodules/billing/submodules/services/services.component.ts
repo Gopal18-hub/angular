@@ -15,6 +15,8 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { InvestigationWarningComponent } from "../../prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "../../prompts/unbilled-investigation/unbilled-investigation.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-services",
   templateUrl: "./services.component.html",
@@ -61,24 +63,64 @@ export class ServicesComponent implements OnInit {
 
   activeMaxId: any;
 
+  consumablesExist: boolean = false;
+
+  healthCheckupExist: boolean = false;
+
   constructor(
     private billingService: BillingService,
     private matDialog: MatDialog,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
     this.activeMaxId = this.billingService.activeMaxId;
+    this.billingService.servicesTabStatus.subscribe((res: any) => {
+      if ("consumables" in res) {
+        this.consumablesExist = true;
+        this.healthCheckupExist = false;
+      } else if ("healthCheckup" in res) {
+        this.healthCheckupExist = true;
+        this.consumablesExist = false;
+      } else if ("clear" in res) {
+        this.healthCheckupExist = false;
+        this.consumablesExist = false;
+      }
+    });
   }
 
   async tabChange(tab: any) {
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (tab.id != 6 && this.consumablesExist) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
+      return;
+    }
+
+    if (tab.id != 3 && this.healthCheckupExist) {
+      this.messageDialogService.info(
+        "You cannot select Health Checkup with other Services"
+      );
+      return;
+    }
+
     if (
       tab.id == 3 &&
       this.billingService.checkOtherServicesForHealthCheckups()
     ) {
       this.healthCheckupWarning();
+      return;
+    } else if (
+      tab.id == 6 &&
+      this.billingService.checkOtherServicesForConsumables()
+    ) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
       return;
     } else if (tab.id == 2 && this.activeTab.id != tab.id) {
       let checkinvestigations = await this.http
