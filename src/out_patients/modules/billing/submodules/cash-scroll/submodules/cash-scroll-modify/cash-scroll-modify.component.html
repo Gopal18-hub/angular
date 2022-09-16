@@ -72,13 +72,13 @@
         </div>
         <div class=" w-2/10 flex align-items-center  justify-content-end mr-4">
             <mat-label class="font-semi-bold cursor-pointer" (click)="navigatetomain()">Back to scroll search</mat-label>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center">Clear</button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()">Clear</button>
         </div>
         
     </div>
     
     <!--Second row-->
-    <div class=" p-2 align-items-center mt-1 w-full max-health-primary-color flex bg-lightgray border-radius-lg  input-padding">
+    <div class=" p-0-35 align-items-center mt-1 w-full max-health-primary-color flex bg-lightgray border-radius-lg  input-padding">
         <div class="w-3/5 flex font-semi-bold">
             <mat-label> Search Bill/Receipt</mat-label>
             <div class="w-1/15 ml-2 bg-white">
@@ -92,15 +92,15 @@
         </div>
        
         <div class="w-2/5 flex justify-content-end mr-2 "> 
-            <button mat-raised-button color="primary" class="button align-items-center">Acknowledge</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center">Modify</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center">Print</button>
+            <button mat-raised-button color="primary" class="button align-items-center" (click)="acknowledge()">Acknowledge</button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="modify()">Modify</button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="print()">Print</button>
                    </div>
      
     </div>
     <!-----Third Row-->
     <div class="h-1/2 mt-1">
-<maxhealth-table  [config]="config">
+<maxhealth-table  [config]="config" [data]="filtertableList">
 
 </maxhealth-table>
     </div>
