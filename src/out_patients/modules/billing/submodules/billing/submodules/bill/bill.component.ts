@@ -248,6 +248,9 @@ export class BillComponent implements OnInit {
       gst: {
         title: "GST%",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       gstValue: {
         title: "GST Value",
@@ -397,29 +400,25 @@ export class BillComponent implements OnInit {
     );
   }
 
-  discountreason()
-  {
+  discountreason() {
     this.matDialog.open(DisountReasonComponent, {
-      width: '80vw',
-      minWidth: '90vw',
-      height: '67vh'
-    })
+      width: "80vw",
+      minWidth: "90vw",
+      height: "67vh",
+    });
   }
 
-  depositdetails()
-  {
+  depositdetails() {
     this.matDialog.open(DepositDetailsComponent, {
-      width: '60vw',
-      height: '50vh'
-    })
+      width: "60vw",
+      height: "50vh",
+    });
   }
 
-  gsttaxdialog()
-  {
-    this.matDialog.open(GstTaxComponent,{
-      width: '30vw',
-      height: '50vh'
-    })
+  gsttaxdialog() {
+    this.matDialog.open(GstTaxComponent, {
+      width: "30vw",
+      height: "50vh",
+    });
   }
 }
-

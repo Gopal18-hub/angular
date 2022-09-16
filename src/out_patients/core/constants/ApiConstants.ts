@@ -1383,4 +1383,6 @@ export namespace ApiConstants {
   };
   //export const;
   //http://172.30.0.16:1008/api/patient/getdetailsforscroll/2022-01-01/2022-01-12/10412
+  export const postUpdateOPExpiredDepositsPatient =
+    environment.PatientApiUrl + "api/patient/updateopexpireddepositspatient";
 }
