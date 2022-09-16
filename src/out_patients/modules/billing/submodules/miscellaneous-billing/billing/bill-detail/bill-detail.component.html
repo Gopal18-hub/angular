@@ -144,7 +144,7 @@
                                >
                 &#8230;
                 </button> -->
-                    <mat-icon *ngIf="enableDiscount" class="icon-more pt-2 pb-0 font-xs" (click)="discAmtDialog()" >more_horiz</mat-icon>
+                    <mat-icon class="icon-more pt-2 pb-0 font-xs" (click)="openDiscountdialog()" >more_horiz</mat-icon>
                   </div>
                 </div>
 
@@ -158,9 +158,14 @@
                   [index]="15">
                   <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
                 </maxhealth-question>
+               
                 <maxhealth-question [question]="question[16]" [form]="miscServBillForm" [questions]="question[16]"
-                  class="w-2/5 mb-1 ml-3" [index]="16">
+                  class="w-24 mb-1 ml-3" [index]="16">
                 </maxhealth-question>
+                <maxhealth-question [question]="question[27]" [form]="miscServBillForm" [questions]="question[27]"
+                  class="w-24 mb-1 ml-1" [index]="27">
+                </maxhealth-question>
+             
               </div>
             </div>
           </div>
@@ -260,7 +265,7 @@
                 <maxhealth-question [question]="question[25]" [form]="miscServBillForm" [questions]="question[25]"
                   class="w-5/9 mt-1 mr-1" [index]="25">
                 </maxhealth-question>
-                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" (click)="print()">
+                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" [disabled]="!enablePrint" (click)="print()">
                   Print Bill&nbsp;
                 </button>
               </div>
