@@ -120,6 +120,9 @@ import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/c
 import { OpPrescriptionDialogComponent } from "./submodules/details/op-prescription-dialog/op-prescription-dialog.component";
 import { ExpdepositRefundDialogComponent } from "./submodules/expired-deposits/expdeposit-refund-dialog/expdeposit-refund-dialog.component";
 import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
+import { DisountReasonComponent } from './submodules/billing/prompts/discount-reason/disount-reason.component';
+import { DepositDetailsComponent } from './submodules/billing/prompts/deposit-details/deposit-details.component';
+import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-tax.component';
 
 @NgModule({
   declarations: [
@@ -214,6 +217,9 @@ import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/
     OnlineDepositReportComponent,
     ExpdepositRefundDialogComponent,
     ExpdepositCheckddDialogComponent,
+    DisountReasonComponent,
+    DepositDetailsComponent,
+    GstTaxComponent,
   ],
   imports: [
     BillingRoutingModule,

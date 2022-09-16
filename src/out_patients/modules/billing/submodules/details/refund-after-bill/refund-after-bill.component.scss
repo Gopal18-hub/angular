@@ -190,10 +190,14 @@ margin-top: 0.19rem;
             }
             tbody tr td:nth-child(4)
             {
-                padding-left: 25px !important
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 25px !important
             }
             tbody tr td:nth-child(5){
-                padding-left: 50px !important
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 50px !important
             }
         }
     }

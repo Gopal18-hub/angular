@@ -680,11 +680,11 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
-        fromdate: {
+        dtpfromdate: {
           type: "date",
           title: "From Date",
         },
-        todate: {
+        dtptodate: {
           type: "date",
           title: "To Date",
         },
