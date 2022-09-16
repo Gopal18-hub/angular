@@ -318,8 +318,8 @@ export namespace FormReport {
         datetype: {
           type: "radio",
           options: [
-            { title: "Transaction Date", value: 0 },
-            { title: "Appoinment Date", value: 1 },
+            { title: "Transaction Date", value: "0" },
+            { title: "Appoinment Date", value: "1" },
           ],
           defaultValue: "0",
         },
@@ -924,7 +924,7 @@ export namespace FormReport {
             { title: "IP", value: "true" },
             { title: "OP", value: "false" },
           ],
-          defaultValue: "0",
+          defaultValue: "true",
         },
       },
     },

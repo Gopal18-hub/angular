@@ -14,6 +14,7 @@ export class PackageDoctorModificationComponent implements OnInit {
   itemsData: any = [];
   config: any = {
     clickedRows: false,
+    rowHighlightOnHover: false,
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
@@ -22,10 +23,16 @@ export class PackageDoctorModificationComponent implements OnInit {
       sno: {
         title: "Sl.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       specialisation: {
         title: "Specialisation",
         type: "string",
+        style: {
+          width: "30%",
+        },
       },
       doctorName: {
         title: "Doctor Name",
@@ -53,7 +60,13 @@ export class PackageDoctorModificationComponent implements OnInit {
             this.itemsData[i] = {
               sno: i + 1,
               specialisation: item.itemName,
-              doctorName: "",
+              doctorName:
+                this.data.doctorsList.length > 0
+                  ? this.data.doctorsList[i] == 0
+                    ? null
+                    : this.data.doctorsList[i]
+                  : null,
+              doctorName_required: true,
             };
             this.getdoctorlistonSpecializationClinic(item.itemID, i);
             i++;
@@ -87,7 +100,31 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.getData(this.data.orderSet.itemid, this.data.orderSet.serviceid);
   }
 
+  ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "doctorName") {
+        this.data.doctorsList[res.data.index] = res.$event.value;
+      }
+    });
+  }
+
+  checkValidationSubmit() {
+    if (this.data.doctorsList.length > 0) {
+      if (
+        this.data.doctorsList.length ==
+        this.data.doctorsList.filter(Number).length
+      ) {
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+
   close() {
-    this.dialogRef.close();
+    this.dialogRef.close({
+      data: this.itemsData,
+      itemId: this.data.orderSet.itemid,
+    });
   }
 }
