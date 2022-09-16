@@ -13,6 +13,8 @@ export class MiscService {
   patientDetail: any;
   company: any;
   billDetail: any
+  cashLimit: any = 0;
+  miscFormData: any = [];
 
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
@@ -25,7 +27,8 @@ export class MiscService {
     this.company = data;
   }
   getCompany() {
-    return this.company;;
+    //this.billtoCompany(this.company);
+    return this.company;
   }
   getPriority(serviceName: string): number {
     let type = "consultation";
@@ -36,5 +39,17 @@ export class MiscService {
   }
   getBillData() {
     return this.billDetail;
+  }
+  setCashLimit(data: any) {
+    this.cashLimit = data;
+  }
+  getCashLimit() {
+    return this.cashLimit
+  }
+  setMiscBillFormData(data: any) {
+    this.miscFormData = data;
+  }
+  getMiscBillFormData() {
+    return this.miscFormData;
   }
 }
