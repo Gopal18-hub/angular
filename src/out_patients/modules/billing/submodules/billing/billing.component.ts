@@ -584,6 +584,31 @@ export class BillingComponent implements OnInit {
           planDetails: [],
         },
       });
+    } else if (
+      dtPatientPastDetails[7] &&
+      dtPatientPastDetails[7].id == 8 &&
+      dtPatientPastDetails[7].data == 1
+    ) {
+      if (this.patientDetails.dtOtherPlanDetail.length > 0) {
+        let data: any = [];
+        this.patientDetails.dtOtherPlanDetail.forEach(
+          (plan: any, index: number) => {
+            data.push({
+              sno: index + 1,
+              planType: "OTher",
+              planName: plan.planName,
+              serviceId: plan.serviceId,
+              planId: plan.planId,
+            });
+          }
+        );
+        const dialogRef = this.matDialog.open(ShowPlanDetilsComponent, {
+          width: "50vw",
+          data: {
+            planDetails: data,
+          },
+        });
+      }
     }
   }
 
