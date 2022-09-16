@@ -811,15 +811,16 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["dipositAmtEdit"].reset()
           this.miscServBillForm.controls["dipositAmtEdit"].disable()
           this.miscServBillForm.controls["amtPayByPatient"].setValue(this.miscServBillForm.value.billAmt)
+          this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
         }
       });
 
     this.miscServBillForm.controls["billAmt"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        this.miscServBillForm.value.dipositAmtcheck = false;
-        this.miscServBillForm.controls["dipositAmt"].reset()
-        this.miscServBillForm.controls["dipositAmtEdit"].reset()
+        this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
+        this.miscServBillForm.controls["dipositAmt"].setValue(0.00)
+        this.miscServBillForm.controls["dipositAmtEdit"].setValue(0.00)
         this.miscServBillForm.controls["dipositAmtEdit"].disable()
         this.miscServBillForm.controls["amtPayByPatient"].setValue(this.miscServBillForm.value.billAmt)
         // if (this.miscServBillForm.value.dipositAmtcheck === true) {
@@ -915,12 +916,12 @@ export class BillDetailComponent implements OnInit {
           console.log(this.TotalAmount, "tl")
           if (this.totalDeposit > 0) {
             this.miscServBillForm.controls["dipositAmt"].setValue(this.totalDeposit);
-            this.disabledipositAmtEdit = true;
+            // this.disabledipositAmtEdit = true;
             this.miscServBillForm.controls["dipositAmtEdit"].enable()
           }
           else {
-            this.miscServBillForm.controls["dipositAmtEdit"].setValue(0.00);
-            this.disabledipositAmtEdit = false;
+            this.miscServBillForm.controls["dipositAmtEdit"].setValue('0.00');
+            //   this.disabledipositAmtEdit = false;
 
             //this.miscServBillForm.controls["dipositAmtEdit"].disable();
           }
