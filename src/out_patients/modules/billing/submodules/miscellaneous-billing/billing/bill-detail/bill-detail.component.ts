@@ -53,6 +53,7 @@ export class BillDetailComponent implements OnInit {
   enablePrint = false;
   enableItems = false;
 
+
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -388,6 +389,8 @@ export class BillDetailComponent implements OnInit {
   miscServBillForm!: FormGroup;
   serviceID!: number;
   location: number = Number(this.cookie.get("HSPLocationId"));
+  stationId = Number(this.cookie.get("StationId"));
+  userID = Number(this.cookie.get("UserId"));
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
@@ -481,20 +484,20 @@ export class BillDetailComponent implements OnInit {
       registrationno: miscPatient.registrationno,
       iacode: miscPatient.iacode,
       billAmount: this.billAmnt,
-      depositAmount: 0,
+      depositAmount: this.miscServBillForm.value.dipositAmtEdit,
       discountAmount: this.discountedAmt,
-      stationid: 10475, // Number(this.cookie.get("StationId")),
+      stationid: this.stationId, //10475, // Number(this.cookie.get("StationId")),
       billType: 1, //cash
       categoryId: 0,
       companyId: this.miscCompanyId,
-      operatorId: 9923, //Number(this.cookie.get("UserId"))
+      operatorId: this.userID,// 9923, //Number(this.cookie.get("UserId"))
       collectedamount: 400,
       balance: 100,
-      hsplocationid: 7, //Number(this.cookie.get("HSPLocationId"))
+      hsplocationid: this.location, //Number(this.cookie.get("HSPLocationId"))
       refdoctorid: this.miscServBillForm.value.referralDoctor.value,
       authorisedid: 0,
       serviceTax: 0,
-      creditLimit: 0,
+      creditLimit: this.miscServBillForm.value.credLimit.value,
       tpaId: 0,
       paidbyTPA: 0,
       interactionID: this.miscServBillForm.value.interactionDetails.value,
@@ -502,7 +505,7 @@ export class BillDetailComponent implements OnInit {
       corporateName: miscPatient.corporateName,
       channelId: 0,
       billToCompany: this.billToCompId,
-      invoiceType: 'B2C',
+      invoiceType: miscPatient.b2bInvoiceType,
       narration: miscPatient.narration
     };
     this.postBillObj.dtMiscellaneous_list = [{
@@ -510,8 +513,8 @@ export class BillDetailComponent implements OnInit {
       serviceid: 99,
       amount: 100,
       discountAmount: 0,
-      serviceName: 'Ambulance Charges',
-      itemModify: 'ACLS-Pickup/Drop per KM-Including LAMA/COVID HillS',
+      serviceName: this.miscServBillForm.value.serviceType.value,
+      itemModify: this.miscServBillForm.value.item.value,
       discounttype: 0,
       disReasonId: 0,
       docid: 20362,
@@ -547,7 +550,7 @@ export class BillDetailComponent implements OnInit {
     this.postBillObj.htParameter_P = {};
     this.postBillObj.dtGST_Parameter_P;
     this.postBillObj.operatorId = 9923;
-    this.postBillObj.locationId = 7;
+    this.postBillObj.locationId = this.location;
     //return this.postBillObj; // this.newItemEvent.emit(this.serviceselectedList);
     console.log(this.postBillObj, "pbo")
 
@@ -677,6 +680,8 @@ export class BillDetailComponent implements OnInit {
 
   }
   pushDataToServiceTable() {
+
+    let miscPatient = this.miscPatient.getMiscBillFormData();
     let pDoc = this.miscServBillForm.value.pDoc.title;
     if (!this.miscServBillForm.value.pDoc.title) {
       pDoc = '';
@@ -894,7 +899,7 @@ export class BillDetailComponent implements OnInit {
         ApiConstants.getregisteredpatientdetailsForMisc(
           iacode,
           regNumber,
-          Number(this.cookie.get("HSPLocationId"))
+          this.location
         )
       )
       .pipe(takeUntil(this._destroying$))
