@@ -56,6 +56,12 @@
           width: 24px !important;
           flex: 0 0 24px !important;
         }
+        &.type-string_link {
+          .text-underline {
+            text-underline-position: under;
+            color: var(--primary-color);
+          }
+        }
       }
     }
     .mat-header-row {

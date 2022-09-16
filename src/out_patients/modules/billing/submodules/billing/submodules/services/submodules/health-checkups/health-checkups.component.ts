@@ -76,6 +76,8 @@ export class HealthCheckupsComponent implements OnInit {
     },
   };
 
+  doctorsList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -120,16 +122,38 @@ export class HealthCheckupsComponent implements OnInit {
     this.billingService.calculateTotalAmount();
   }
 
-  ngAfterViewInit(): void {
-    this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      console.log(res);
-      this.matDialog.open(PackageDoctorModificationComponent, {
+  detialsForHealthCheckup(res: any) {
+    const dialogPopup = this.matDialog.open(
+      PackageDoctorModificationComponent,
+      {
         width: "50%",
         data: {
           orderSet: res.element,
           items: [],
+          doctorsList: this.doctorsList,
         },
-      });
+      }
+    );
+    dialogPopup.afterClosed().subscribe((res1: any) => {
+      if (res1.itemId) {
+        this.doctorsList = [];
+        res1.data.forEach((doctor: any) => {
+          if (doctor.doctorName) {
+            this.doctorsList.push(doctor.doctorName);
+          } else {
+            this.doctorsList.push(0);
+          }
+        });
+        this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
+      } else {
+        this.doctorsList = this.doctorsList.map((d: number) => d * 0);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      this.detialsForHealthCheckup(res);
     });
 
     this.formGroup.controls["healthCheckup"].valueChanges
@@ -236,7 +260,31 @@ export class HealthCheckupsComponent implements OnInit {
       });
   }
 
+  getDoctorsList(hid: string, serviceid: string) {
+    this.doctorsList = [];
+    this.http
+      .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
+      .subscribe((res) => {
+        res.forEach((item: any, index: number) => {
+          if (item.isConsult == 1 && item.itemServiceID == 25) {
+            this.doctorsList.push(0);
+          }
+        });
+        if (this.doctorsList.length > 0) {
+          this.detialsForHealthCheckup({
+            element: this.billingService.HealthCheckupItems[0],
+          });
+        }
+      });
+  }
+
   add(priorityId = 1) {
+    if (this.billingService.HealthCheckupItems.length == 1) {
+      this.messageDialogService.error(
+        "Only one health check up will allow per bill"
+      );
+      return;
+    }
     let exist = this.billingService.HealthCheckupItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.healthCheckup.value;
@@ -299,6 +347,7 @@ export class HealthCheckupsComponent implements OnInit {
               doctorID: 0,
             },
           });
+          this.getDoctorsList(this.formGroup.value.healthCheckup.value, "26");
         }
 
         this.data = [...this.billingService.HealthCheckupItems];

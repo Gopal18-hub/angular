@@ -1,6 +1,15 @@
 <div
-  class="flex align-items-center justify-center flex-column max-health-primary-color"
+  class="flex align-items-center justify-center flex-column max-health-primary-color relative"
 >
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
   <img src="assets/warning-yellow.svg" width="100" class="mb-4" />
   <p class="mb-3 font-bold">
     This Patient have Due Amount of
