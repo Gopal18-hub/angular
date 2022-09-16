@@ -320,7 +320,7 @@
             [cdkConnectedOverlayHasBackdrop]="true"
             (backdropClick)="toogleButtonTextarea = false"
           >
-            <div class="editable-form-textarea" cdkTrapFocus>
+            <div class="editable-form-textarea" cdkTrapFocus  [cdkTrapFocusAutoCapture]="true">
               <mat-form-field
                 appearance="outline"
                 floatLabel="never"

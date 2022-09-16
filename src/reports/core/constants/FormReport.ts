@@ -1,5 +1,6 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
+import * as moment from "moment";
 
 export namespace FormReport {
   export const equipmentSchedule = {
@@ -173,10 +174,16 @@ export namespace FormReport {
   export const DailyCollectionReport = {
     reportName: "DailyCollectionReport",
     filterForm: {
-      format: "dd/MM/YYYY",
       title: "",
       type: "object",
+      // FromDate: moment("dd/MM/YYYY"),
+      // todate: moment("dd/MM/YYYY"),
       properties: {
+        FromDate: {
+          type: "hidden",
+          defaultValue: moment().format("DD/MM/YYYY"),
+          // format: moment("dd/MM/YYYY"),
+        },
         todate: {
           type: "date",
           title: "Date",
@@ -311,8 +318,8 @@ export namespace FormReport {
         datetype: {
           type: "radio",
           options: [
-            { title: "Transaction Date", value: 0 },
-            { title: "Appoinment Date", value: 1 },
+            { title: "Transaction Date", value: "0" },
+            { title: "Appoinment Date", value: "1" },
           ],
           defaultValue: "0",
         },
@@ -595,7 +602,9 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/${7}`,
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "membershipno",
               value: "membershipno",
@@ -915,7 +924,7 @@ export namespace FormReport {
             { title: "IP", value: "true" },
             { title: "OP", value: "false" },
           ],
-          defaultValue: "0",
+          defaultValue: "true",
         },
       },
     },
@@ -965,7 +974,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
         },
-       
+
         locationID: {
           type: "dropdown",
           placeholder: "---Location---",
@@ -1027,7 +1036,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
         },
-       
+
         locationID: {
           type: "dropdown",
           placeholder: "---Location---",
@@ -1089,7 +1098,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
         },
-       
+
         locationID: {
           type: "dropdown",
           placeholder: "---Location---",
@@ -1106,12 +1115,10 @@ export namespace FormReport {
         sortBy: {
           type: "radio",
           options: [
-            
             { title: "Summary", value: 1 },
             { title: "Details", value: 2 },
           ],
           defaultValue: "Summary",
-          
         },
       },
     },
@@ -1162,7 +1169,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
         },
-       
+
         SelectedLocationsId: {
           type: "dropdown",
           placeholder: "--- Select Organization---",
@@ -1197,7 +1204,7 @@ export namespace FormReport {
         },
       ],
     },
-    
+
     resultActionItems: [
       {
         title: "Print",
@@ -1220,16 +1227,12 @@ export namespace FormReport {
         ReportChecked: {
           type: "radio",
           options: [
-            
             { title: "Summary", value: 1 },
             { title: "Details", value: 2 },
           ],
           defaultValue: "Summary",
-          
         },
 
-        
-      
         ValueFromDate: {
           type: "date",
           title: "From Date",
@@ -1238,7 +1241,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
         },
-       
+
         SelectedLocationsId: {
           type: "dropdown",
           placeholder: "--- Select Organization---",
@@ -1273,7 +1276,7 @@ export namespace FormReport {
         },
       ],
     },
-    
+
     resultActionItems: [
       {
         title: "Print",

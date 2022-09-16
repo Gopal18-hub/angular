@@ -26,6 +26,8 @@ import { MaxDateAdapter } from "./service/date-adapter";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 
+import { A11yModule } from "@angular/cdk/a11y";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -44,6 +46,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
     MatDatepickerModule,
     MatCheckboxModule,
     OverlayModule,
+    A11yModule,
   ],
   exports: [DynamicFormQuestionComponent, MaskedInputDirective],
   declarations: [

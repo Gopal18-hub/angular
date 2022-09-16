@@ -144,7 +144,7 @@
                                >
                 &#8230;
                 </button> -->
-                    <mat-icon class="icon-more pt-2 pb-0 font-xs" (click)="discAmtDialog()">more_horiz</mat-icon>
+                    <mat-icon *ngIf="enableDiscount" class="icon-more pt-2 pb-0 font-xs" (click)="discAmtDialog()" >more_horiz</mat-icon>
                   </div>
                 </div>
 
@@ -248,7 +248,7 @@
                   class="w-5/9 mt-1 mr-1" [index]="24">
                 </maxhealth-question>
                 <button mat-raised-button color="primary" class="btn-md min-width-bill  ml-5" type="submit"
-                  (click)="makeBill()">
+                  (click)="openMakeBilldialog()">
                   Make Bill
                 </button>
               </div>
