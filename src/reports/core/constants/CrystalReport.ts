@@ -167,7 +167,7 @@ export namespace CrystalReport {
 
     )}&LocationName=${MaxHealthStorage.getCookie(
 
-      "LocationIACode"
+      "Location"
 
     )}`;
 
