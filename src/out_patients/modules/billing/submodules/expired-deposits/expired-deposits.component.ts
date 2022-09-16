@@ -21,6 +21,8 @@ import { LookupService } from "@core/services/lookup.service";
 import { SearchService } from "@shared/services/search.service";
 import { SimilarDetailsPopupComponent } from "@modules/patient-history/similar-details-popup/similar-details-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ExpdepositRefundDialogComponent } from "./expdeposit-refund-dialog/expdeposit-refund-dialog.component";
+import { ExpdepositCheckddDialogComponent } from "./expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
 
 @Component({
   selector: "out-patients-expired-deposits",
@@ -212,6 +214,8 @@ export class ExpiredDepositsComponent implements OnInit {
   msgdialog: any;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("table") tablerow: any;
+  onDelete: boolean = false;
+  OpenCheckdddialog: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -411,9 +415,26 @@ export class ExpiredDepositsComponent implements OnInit {
       console.log(res);
       if (this.tablerow.selection.selected.length > 0) {
         console.log("table selected");
+        this.onDelete = false;
+        let dialogRef = this.matDialog.open(ExpdepositRefundDialogComponent, {
+          width: "38vw",
+          height: "35vh",
+        });
+        dialogRef.afterClosed().subscribe((res) => {
+          console.log(res);
+          if (res == "yes") {
+            console.log("this.OpenCheckdddialog");
+            let dialogRef = this.matDialog.open(
+              ExpdepositCheckddDialogComponent,
+              {
+                width: "30vw",
+                height: "25vh",
+              }
+            );
+          }
+        });
       }
     });
-    console.log(this.ExpiredDepositform);
     // setTimeout(() => {
     //   this.ExpiredDepositform.valueChanges.subscribe((val) => {
     //     console.log("val");

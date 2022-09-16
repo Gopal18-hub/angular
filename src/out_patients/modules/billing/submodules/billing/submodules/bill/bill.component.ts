@@ -11,6 +11,11 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ReportService } from "@shared/services/report.service";
+import { CookieService } from "@shared/services/cookie.service";
+import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
+import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
+import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -258,6 +263,7 @@ export class BillComponent implements OnInit {
   question: any;
 
   billNo = "";
+  billId = "";
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -265,7 +271,9 @@ export class BillComponent implements OnInit {
     private formService: QuestionControlService,
     private billingservice: BillingService,
     private matDialog: MatDialog,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private reportService: ReportService,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -349,12 +357,69 @@ export class BillComponent implements OnInit {
         if (result && "billNo" in result && result.billNo) {
           this.billingservice.billNoGenerated.next(true);
           this.billNo = result.billNo;
-          this.messageDialogService.info(
+          this.billId = result.billId;
+          const successInfo = this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
           );
+          successInfo
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              const printDialog = this.messageDialogService.confirm(
+                "",
+                `Do you want to print bill?`
+              );
+              printDialog
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result: any) => {
+                  if ("type" in result) {
+                    if (result.type == "yes") {
+                      this.makePrint();
+                    } else {
+                    }
+                  }
+                });
+            });
         }
       });
   }
 
-  makePrint() {}
+  makePrint() {
+    this.reportService.openWindow(
+      this.billNo + " - Billing Report",
+      "billingreport",
+      {
+        opbillid: this.billId,
+
+        locationID: this.cookie.get("HSPLocationId"),
+      }
+    );
+  }
+
+  discountreason()
+  {
+    this.matDialog.open(DisountReasonComponent, {
+      width: '80vw',
+      minWidth: '90vw',
+      height: '67vh'
+    })
+  }
+
+  depositdetails()
+  {
+    this.matDialog.open(DepositDetailsComponent, {
+      width: '60vw',
+      height: '50vh'
+    })
+  }
+
+  gsttaxdialog()
+  {
+    this.matDialog.open(GstTaxComponent,{
+      width: '30vw',
+      height: '50vh'
+    })
+  }
 }
+

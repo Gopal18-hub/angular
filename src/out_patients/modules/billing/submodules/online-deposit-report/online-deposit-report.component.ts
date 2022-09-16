@@ -8,6 +8,7 @@ import { Subject, takeUntil } from 'rxjs';
 import {onlinedeposit} from "@core/types/getOnlineDepositModel.Interface";
 import { DatePipe } from '@angular/common';
 
+
 @Component({
   selector: 'out-patients-online-deposit-report',
   templateUrl: './online-deposit-report.component.html',
@@ -34,8 +35,10 @@ export class OnlineDepositReportComponent implements OnInit {
         type:"date",
       },
       selecttype:{
-        type:"dropdown",  
-        options: this.depositstatus,      
+        type:"dropdown",
+        //placeholder: '--All--',  
+        options: this.depositstatus,
+        value:0,     
       },
     }
   }
@@ -227,16 +230,39 @@ export class OnlineDepositReportComponent implements OnInit {
       this.onlineDepositformdata.properties,
       {}
     );
+
     this.onlinedepositForm = formResult.form;
     this.questions = formResult.questions;
     this.today = new Date();
     this.onlinedepositForm.controls["enddate"].setValue(this.today);
-    // this.onlinedepositForm = new Date(this.today);
-    // this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.questions[1].maximum = this.onlinedepositForm.controls["enddate"].value;
-    this.questions[0].minimum = this.onlinedepositForm.controls["startdate"].value;
-    this.getdepositstatus();
+    this.questions[1].maximum =
+      this.onlinedepositForm.controls["enddate"].value;
+    this.questions[0].minimum =
+      this.onlinedepositForm.controls["startdate"].value;
+      this.getdepositstatus();
+      setTimeout(() => {
+        this.onlinedepositsearch();
+      }, 500);
+      
+      
+      
+
+
+
+
+
+    // this.onlinedepositForm = formResult.form;
+    // this.questions = formResult.questions;
+    // this.today = new Date();
+    // this.onlinedepositForm.controls["enddate"].setValue(this.today);
+    
+    // this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
+    // this.questions[1].maximum = this.onlinedepositForm.controls["enddate"].value;
+    // this.questions[0].minimum = this.onlinedepositForm.controls["startdate"].value;
+    // this.getdepositstatus();
 
 }
 
@@ -247,10 +273,17 @@ getdepositstatus()
     .subscribe((resultdata: any)=>{
       this.depositstatus = resultdata;
       console.log(this.depositstatus);
-      this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].statusDesc);
+      
       this.questions[2].options = this.depositstatus.map((l)=>{
-        return { title: l.statusDesc, value: l.id}
+        return { title: l.statusDesc, value: l.id.toString()}
       })
+      this.questions[2] = {...this.questions[2]}
+      console.log(this.depositstatus[0].id);
+      setTimeout(()=> {
+        this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id.toString());
+      },50);
+     // console.log()
+      console.log(this.onlinedepositForm.value.selecttype)
     })
   }
 
@@ -284,12 +317,11 @@ clear()
     this.onlinedepositForm.reset();
     this.onlinedepositlist = [];
     this.today = new Date();
-    this.onlinedepositForm.controls["startdate"].setValue(this.today);
+    this.onlinedepositForm.controls["enddate"].setValue(this.today);
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[2]);
-
+    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id);
     
    
     console.log(this.onlinedepositlist = []);

@@ -105,7 +105,7 @@ export class HealthCheckupsComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.removeFromBill(
-      this.billingService.consultationItems[$event.index]
+      this.billingService.HealthCheckupItems[$event.index]
     );
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.billingService.HealthCheckupItems =
@@ -113,6 +113,9 @@ export class HealthCheckupsComponent implements OnInit {
         item["sno"] = index + 1;
         return item;
       });
+    if (this.billingService.HealthCheckupItems.length == 0) {
+      this.billingService.servicesTabStatus.next({ clear: true });
+    }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
   }
@@ -234,6 +237,12 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    if (this.billingService.HealthCheckupItems.length == 1) {
+      this.messageDialogService.error(
+        "Only one health check up will allow per bill"
+      );
+      return;
+    }
     let exist = this.billingService.HealthCheckupItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.healthCheckup.value;
