@@ -99,6 +99,27 @@ export class PackageDoctorModificationComponent implements OnInit {
     this.getData(this.data.orderSet.itemid, this.data.orderSet.serviceid);
   }
 
+  ngAfterViewInit(): void {
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "doctorName") {
+        this.data.doctorsList[res.data.index] = res.$event.value;
+      }
+    });
+  }
+
+  checkValidationSubmit() {
+    if (this.data.doctorsList.length > 0) {
+      if (
+        this.data.doctorsList.length ==
+        this.data.doctorsList.filter(Number).length
+      ) {
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+
   close() {
     this.dialogRef.close({
       data: this.itemsData,
