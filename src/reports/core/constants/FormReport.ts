@@ -1,5 +1,6 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
+import * as moment from "moment";
 
 export namespace FormReport {
   export const equipmentSchedule = {
@@ -173,10 +174,16 @@ export namespace FormReport {
   export const DailyCollectionReport = {
     reportName: "DailyCollectionReport",
     filterForm: {
-      format: "dd/MM/YYYY",
       title: "",
       type: "object",
+      // FromDate: moment("dd/MM/YYYY"),
+      // todate: moment("dd/MM/YYYY"),
       properties: {
+        FromDate: {
+          type: "hidden",
+          defaultValue: moment().format("DD/MM/YYYY"),
+          // format: moment("dd/MM/YYYY"),
+        },
         todate: {
           type: "date",
           title: "Date",
@@ -595,7 +602,9 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/${7}`,
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "membershipno",
               value: "membershipno",
