@@ -176,13 +176,12 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      FromDate: moment("dd/MM/YYYY"),
-      todate: moment("dd/MM/YYYY"),
+      // FromDate: moment("dd/MM/YYYY"),
+      // todate: moment("dd/MM/YYYY"),
       properties: {
         FromDate: {
           type: "hidden",
-          defaultValue: new Date(),
-
+          defaultValue: moment().format("DD/MM/YYYY"),
           // format: moment("dd/MM/YYYY"),
         },
         todate: {

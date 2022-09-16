@@ -1,5 +1,6 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
+import * as moment from "moment";
 
 export namespace CrystalReport {
   export const test =
@@ -37,9 +38,11 @@ export namespace CrystalReport {
   export const DailyCollectionReport = (params: any) => {
     return `${
       environment.ReportsSampleUrl
-    }MAXHIS/MIS/DailyCollectionReport?FromDate=${params.FromDate}&ToDate=${
-      params.todate
-    }&LocationName=${MaxHealthStorage.getCookie(
+    }MAXHIS/MIS/DailyCollectionReport?FromDate=${
+      params.FromDate
+    }&ToDate=${moment(params.todate).format(
+      "DD/MM/YYYY"
+    )}&LocationName=${MaxHealthStorage.getCookie(
       "HSPLocationId"
     )}&User=${MaxHealthStorage.getCookie(
       "UserName"
