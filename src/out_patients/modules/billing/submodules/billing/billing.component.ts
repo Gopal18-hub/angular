@@ -280,6 +280,9 @@ export class BillingComponent implements OnInit {
         )
       )
       .toPromise();
+    if (res == null) {
+      return;
+    }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
         return true;
@@ -310,17 +313,24 @@ export class BillingComponent implements OnInit {
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
-        .subscribe((resultData: any) => {
-          if (resultData.length > 0) {
-            this.linkedMaxId(
-              resultData[0].iaCode + "." + resultData[0].registrationNo,
-              iacode,
-              regNumber
-            );
-          } else {
-            this.registrationDetails(iacode, regNumber);
+        .subscribe(
+          (resultData: any) => {
+            if (resultData && resultData.length > 0) {
+              this.linkedMaxId(
+                resultData[0].iaCode + "." + resultData[0].registrationNo,
+                iacode,
+                regNumber
+              );
+            } else {
+              this.registrationDetails(iacode, regNumber);
+            }
+          },
+          (error) => {
+            this.snackbar.open("Invalid Max ID", "error");
+            this.apiProcessing = false;
+            this.patient = false;
           }
-        });
+        );
     } else {
       this.apiProcessing = false;
       this.patient = false;
@@ -392,6 +402,8 @@ export class BillingComponent implements OnInit {
               }
             }
           } else {
+            this.apiProcessing = false;
+            this.patient = false;
             this.snackbar.open("Invalid Max ID", "error");
           }
 
@@ -405,6 +417,7 @@ export class BillingComponent implements OnInit {
             this.snackbar.open("Invalid Max ID", "error");
           }
           this.apiProcessing = false;
+          this.patient = false;
         }
       );
   }
