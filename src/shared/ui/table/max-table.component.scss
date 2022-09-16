@@ -23,7 +23,7 @@
       font-weight: bold;
     }
     .mat-row {
-      &:hover {
+      &.row-highlight:hover {
         background-color: var(--primary-color);
         .mat-cell {
           color: #fff;

@@ -112,6 +112,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    if (!("rowHighlightOnHover" in this.config)) {
+      this.config.rowHighlightOnHover = true;
+    }
     if (this.config.groupby) {
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
@@ -159,6 +162,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!("rowHighlightOnHover" in this.config)) {
+      this.config.rowHighlightOnHover = true;
+    }
     if (this.config.groupby) {
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
