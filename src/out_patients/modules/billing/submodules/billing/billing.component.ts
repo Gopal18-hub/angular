@@ -508,7 +508,7 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-      if (diffMonths == 0 && diffDays == 0) {
+      if (dobRef.date() == today.date() && dobRef.month() == today.month()) {
         this.billingService.todayPatientBirthday = true;
       }
       let returnAge = "";
