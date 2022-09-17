@@ -295,7 +295,7 @@ export class InvestigationsComponent implements OnInit {
       });
   }
 
-  add(priorityId = 1) {
+  async add(priorityId = 1) {
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
         return item.billItem.itemId == this.formGroup.value.investigation.value;
@@ -307,70 +307,21 @@ export class InvestigationsComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .post(BillingApiConstants.getcalculateopbill, {
-        compId: this.billingService.company,
-        priority: priorityId,
-        itemId: this.formGroup.value.investigation.value,
-        serviceId:
-          this.formGroup.value.serviceType ||
-          this.formGroup.value.investigation.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
-        ipoptype: 1,
-        bedType: 0,
-        bundleId: 0,
-      })
-      .subscribe((res: any) => {
-        if (res.length > 0) {
-          this.billingService.addToInvestigations({
-            sno: this.data.length + 1,
-            investigations: this.formGroup.value.investigation.title,
-            precaution: "",
-            priority: priorityId,
-            specialisation: "",
-            doctorName: "",
-            specialisation_required: this.formGroup.value.investigation
-              .docRequired
-              ? true
-              : false,
-            doctorName_required: this.formGroup.value.investigation.docRequired
-              ? true
-              : false,
-            price: res[0].returnOutPut,
+    await this.billingService.processInvestigationAdd(
+      priorityId,
+      this.formGroup.value.serviceType ||
+        this.formGroup.value.investigation.serviceid,
+      this.formGroup.value.investigation
+    );
 
-            billItem: {
-              itemId: this.formGroup.value.investigation.value,
-              priority: priorityId,
-              serviceId:
-                this.formGroup.value.serviceType ||
-                this.formGroup.value.investigation.serviceid,
-              price: res[0].returnOutPut,
-              serviceName: "Investigations",
-              itemName: this.formGroup.value.investigation.title,
-              qty: 1,
-              precaution: "",
-              procedureDoctor: "",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
-              specialisationID: 0,
-              doctorID: 0,
-            },
-          });
-          if (this.formGroup.value.investigation.patient_Instructions) {
-            this.messageDialogService.info(
-              this.formGroup.value.investigation.patient_Instructions
-            );
-          }
-        }
+    if (this.formGroup.value.investigation.patient_Instructions) {
+      this.messageDialogService.info(
+        this.formGroup.value.investigation.patient_Instructions
+      );
+    }
 
-        this.data = [...this.billingService.InvestigationItems];
-        this.formGroup.reset();
-      });
+    this.data = [...this.billingService.InvestigationItems];
+    this.formGroup.reset();
   }
   goToBill() {
     this.router.navigate(["../bill"], {
