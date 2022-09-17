@@ -578,12 +578,34 @@ export class BillingComponent implements OnInit {
       dtPatientPastDetails[5].id == 6 &&
       dtPatientPastDetails[5].data == 1
     ) {
+      let data: any = [];
+      this.patientDetails.dtPlanDetail.forEach((plan: any, index: number) => {
+        data.push({
+          sno: index + 1,
+          planType: "Health Plan",
+          planName: plan.planName,
+          planId: plan.planID,
+        });
+      });
       const dialogRef = this.matDialog.open(ShowPlanDetilsComponent, {
         width: "40vw",
         data: {
-          planDetails: [],
+          planDetails: data,
+          type: "healthPlan",
         },
       });
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          if (result && result.selected && result.selected.length > 0) {
+            const selectedPlan = result.selected[0];
+            this.billingService.setHealthPlan(selectedPlan);
+            this.messageDialogService.info(
+              "You have selected " + selectedPlan.planName
+            );
+          }
+        });
     } else if (
       dtPatientPastDetails[7] &&
       dtPatientPastDetails[7].id == 8 &&
@@ -606,8 +628,21 @@ export class BillingComponent implements OnInit {
           width: "50vw",
           data: {
             planDetails: data,
+            type: "other",
           },
         });
+        dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result && result.selected && result.selected.length > 0) {
+              const selectedPlan = result.selected[0];
+              this.billingService.setOtherPlan(selectedPlan);
+              this.messageDialogService.info(
+                "You have selected " + selectedPlan.planName
+              );
+            }
+          });
       }
     }
   }
@@ -777,7 +812,11 @@ export class BillingComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router.navigate([], { queryParams: {}, relativeTo: this.route });
+    this.router.navigate(["services"], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {

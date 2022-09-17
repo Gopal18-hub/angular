@@ -626,8 +626,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         qtslno: dtlist[0].qTslno,
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
-        transMode: Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].transportationMode),
-        priority: Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].priority),
+        transMode: 0,
+        priority: 1,
       })
       console.log(dtlist);
       this.saveforparticularbilllist.objdt.push({
@@ -693,7 +693,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
         transMode: 0,
-        priority: 0,
+        priority: 1,
       })
       console.log(dtlist);
       this.billrefundforsingleitem.objDsSave.objdt.push({
@@ -777,7 +777,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
         transMode: 0,
-        priority: 0,
+        priority: 1,
       })
       console.log(dtlist);
     })
