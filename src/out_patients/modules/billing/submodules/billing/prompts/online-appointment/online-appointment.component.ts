@@ -13,48 +13,55 @@ export class OnlineAppointmentComponent implements OnInit {
     clickedRows: false,
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: false,
+    selectBox: true,
     displayedColumns: [
-      "itemName",
-      "qty",
+      "doctorname",
+      "bookingNo",
+      "transactionNo",
+      "appointmentDate",
+      "paymentStatus",
       "amount",
-      "include",
-      "procedure",
-      "reason",
+      "mobileno",
+      "specialisationName",
     ],
     columnsInfo: {
-      itemName: {
-        title: "Item Name",
+      doctorname: {
+        title: "Doctor Name",
         type: "string",
         style: {
-          width: "20%",
+          width: "15%",
         },
       },
-      qty: {
-        title: "Qty",
-        type: "number",
+      bookingNo: {
+        title: "Booking No",
+        type: "string",
+      },
+      transactionNo: {
+        title: "Transaction No.",
+        type: "string",
+      },
+      appointmentDate: {
+        title: "Appointment Time",
+        type: "date",
+      },
+      paymentStatus: {
+        title: "Paid",
+        type: "string",
         style: {
           width: "80px",
         },
       },
       amount: {
         title: "Amount",
-        type: "number",
-        style: {
-          width: "10%",
-        },
-      },
-      include: {
-        title: "Include in Procedure",
-        type: "checkbox",
-      },
-      procedure: {
-        title: "Procedure",
         type: "string",
       },
-      reason: {
-        title: "Reason",
-        type: "textarea",
+      mobileno: {
+        title: "Mobile No",
+        type: "string",
+      },
+      specialisationName: {
+        title: "Specialisation",
+        type: "string",
       },
     },
   };
@@ -69,6 +76,6 @@ export class OnlineAppointmentComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close({ data: this.tableRows.dataSource.data });
+    this.dialogRef.close({ selected: this.tableRows.selection.data });
   }
 }

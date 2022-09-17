@@ -160,6 +160,13 @@ export class BillingComponent implements OnInit {
         this.links[0].disabled = false;
       }
     });
+    this.billingService.disableBillTabChange.subscribe((res: boolean) => {
+      if (res) {
+        this.links[1].disabled = true;
+      } else {
+        this.links[1].disabled = false;
+      }
+    });
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
@@ -567,11 +574,21 @@ export class BillingComponent implements OnInit {
         }
         if (items.length > 0) {
           const dialogRef = this.matDialog.open(OnlineAppointmentComponent, {
-            width: "60vw",
+            width: "80vw",
+            maxWidth: "90vw",
             data: {
               items: items,
             },
           });
+          dialogRef
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if (result && result.selected && result.selected.length > 0) {
+                const doctors = result.selected;
+                for (let i = 0; i < doctors.length; i++) {}
+              }
+            });
         }
       });
   }
