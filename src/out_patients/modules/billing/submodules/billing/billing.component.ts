@@ -361,12 +361,19 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
-        (resultData: Registrationdetails) => {
+        async (resultData: Registrationdetails) => {
           console.log(resultData);
           if (resultData) {
             this.patientDetails = resultData;
 
             this.setValuesToForm(this.patientDetails);
+            if (this.billingService.todayPatientBirthday) {
+              const birthdayDialog = this.messageDialogService.info(
+                "It’s their birthday today"
+              );
+              await birthdayDialog.afterClosed().toPromise();
+            }
+
             if (this.orderId) {
               this.getediganosticacdoninvestigationgrid(iacode, regNumber);
             }
@@ -502,7 +509,7 @@ export class BillingComponent implements OnInit {
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
       if (diffMonths == 0 && diffDays == 0) {
-        this.snackbar.open("It’s their birthday today", "info");
+        this.billingService.todayPatientBirthday = true;
       }
       let returnAge = "";
       if (diffYears > 0) {
