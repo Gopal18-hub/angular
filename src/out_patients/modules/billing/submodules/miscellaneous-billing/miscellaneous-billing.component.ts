@@ -55,6 +55,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private patientService: PatientService
   ) { }
+  totalDeposit = 0;
   categoryIcons: any;
   moment = moment;
   setItemsToBill: any = [];
@@ -199,6 +200,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         event.preventDefault();
         console.log("event triggered");
         this.getPatientDetailsByMaxId();
+
       }
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -362,9 +364,9 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getssnandmaxid(
-          "0",
-          0,
-          "670001234"
+          iacode,
+          regNumber,
+          this.ssn
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -399,8 +401,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.http.get(ApiConstants.getregisteredpatientdetailsForMisc(
         iacode,
         regNumber,
-        // Number(this.cookie.get("HSPLocationId"))
-        67
+        Number(this.cookie.get("HSPLocationId"))
+        //67
       )
       )
         .pipe(takeUntil(this._destroying$)).subscribe((resultData: Registrationdetails) => {
@@ -421,7 +423,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.Misc.setMiscBillFormData(this.setItemsToBill);
             this.Misc.setCashLimit(cashLimit);
 
-            //this.getDipositedAmountByMaxID();
+            // this.getDipositedAmountByMaxID();
           } else {
             this.setMaxIdError(iacode, regNumber);
           }
@@ -705,6 +707,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.pan = patientDetails.paNno;
     this.setCompany(patientDetails);
     this.setCorporate(patientDetails);
+
   }
   onageCalculator(ageDOB = "") {
     if (ageDOB) {
@@ -765,8 +768,8 @@ export class MiscellaneousBillingComponent implements OnInit {
 
 
     this.http
-    let location = 67;
-    //let location = Number(this.cookie.get("HSPLocationId"));
+    //let location = 67;
+    let location = Number(this.cookie.get("HSPLocationId"));
     this.http
       .get(BillingApiConstants.getcompanydetail(location))
       .pipe(takeUntil(this._destroying$))
@@ -799,8 +802,8 @@ export class MiscellaneousBillingComponent implements OnInit {
 
     this.http
       .get(
-        ApiConstants.getregisteredpatientdetailsForMisc(
-          "MDDN", 99825,
+        ApiConstants.getDipositedAmountByMaxID(
+          "BLKH", 1020369,
           67)
       )
       // (
@@ -815,16 +818,20 @@ export class MiscellaneousBillingComponent implements OnInit {
         (resultData: any) => {
           console.log(resultData, "fulldepo")
 
-          this.dsPersonalDetails = resultData.dsPersonalDetails;
-          this.dtPatientPastDetails = resultData.dtPatientPastDetails;
+          resultData.forEach((element: any) => {
+            this.totalDeposit += element.balanceamount;
+          });
+          if (this.totalDeposit > 0) {
+            this.setItemsToBill.totalDeposit = this.totalDeposit;
+            this.Misc.setMiscBillFormData(this.setItemsToBill);
+          }
 
-          let cashLimit = this.dsPersonalDetails.dtPersonalDetails1.cashLimit;
 
           // if(totalDeposit > 0)
           // {
           //   Enable deposit checkbox and value
           // }
-          console.log(resultData.dsPersonalDetails.dtPersonalDetails1[0], "Deposit")
+
         },
         (error) => {
           // this.clear();
