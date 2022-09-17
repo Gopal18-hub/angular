@@ -113,6 +113,8 @@ export class InvestigationsComponent implements OnInit {
 
   precautionExcludeLocations = [69];
 
+  defaultPriorityId = 1;
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -169,7 +171,7 @@ export class InvestigationsComponent implements OnInit {
         }
       }
     });
-    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -182,6 +184,25 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+      } else if (res.data.col == "priority") {
+        if (this.data.length == 1) {
+          this.defaultPriorityId = res.$event.value;
+        } else {
+          if (this.defaultPriorityId != res.$event.value) {
+            this.billingService.changeBillTabStatus(true);
+            const errorDialog = this.messageDialogService.error(
+              "Investigations can not have different priorities"
+            );
+            await errorDialog.afterClosed().toPromise();
+          } else {
+            this.billingService.changeBillTabStatus(false);
+          }
+        }
+        this.updatePriceByChangePriority(
+          res.$event.value,
+          res.data.element,
+          res.data.index
+        );
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -306,7 +327,39 @@ export class InvestigationsComponent implements OnInit {
       });
   }
 
-  async add(priorityId = 1) {
+  updatePriceByChangePriority(priorityId: number, data: any, index: number) {
+    this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: data.billItem.itemId,
+        serviceId: data.billItem.serviceId,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .subscribe((res: any) => {
+        if (res.length > 0) {
+          this.billingService.InvestigationItems[index].price =
+            res[0].returnOutPut;
+          this.billingService.InvestigationItems[index].billItem.price =
+            res[0].returnOutPut;
+          this.billingService.InvestigationItems[index].billItem.totalAmount =
+            res[0].returnOutPut;
+          this.data = [...this.billingService.InvestigationItems];
+          this.billingService.calculateTotalAmount();
+          if (res[0].returnOutPut == 0) {
+            this.messageDialogService.error(
+              "Price Not Defined For " + data.investigations
+            );
+          }
+        }
+      });
+  }
+
+  async add() {
+    const priorityId = this.defaultPriorityId;
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
         return item.billItem.itemId == this.formGroup.value.investigation.value;

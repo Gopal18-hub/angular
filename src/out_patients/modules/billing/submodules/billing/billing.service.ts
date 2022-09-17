@@ -170,7 +170,20 @@ export class BillingService {
 
   unbilledInvestigations: boolean = false;
 
+  disableBillTabChange = new Subject<boolean>();
+
+  disableBillTab: boolean = false;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
+
+  changeBillTabStatus(status: boolean) {
+    this.disableBillTab = status;
+    this.disableBillTabChange.next(status);
+  }
+
+  getBillTabStatus() {
+    return this.disableBillTab;
+  }
 
   clear() {
     this.billItems = [];

@@ -160,6 +160,13 @@ export class BillingComponent implements OnInit {
         this.links[0].disabled = false;
       }
     });
+    this.billingService.disableBillTabChange.subscribe((res: boolean) => {
+      if (res) {
+        this.links[1].disabled = true;
+      } else {
+        this.links[1].disabled = false;
+      }
+    });
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
