@@ -57,4 +57,10 @@ export namespace BillDetailsApiConstants{
     export const billrefundforsingleitemafteracknowledgement = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitemafteracknowledgement`;
 
     export const insertdueamount = `${environment.BillingApiUrl}api/outpatientbilling/insertdueamount`;
+
+    export const getduereceiptnumber = (
+        OPBillNo: any
+    ) => { 
+           return `${environment.BillingApiUrl}api/outpatientbilling/getduereceiptnumber/${OPBillNo}`
+    }
 }
