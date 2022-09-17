@@ -180,6 +180,9 @@ export class BillingComponent implements OnInit {
     this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
       this.billingService.setCompnay(res.value);
     });
+    if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
+      this.questions[0].elementRef.focus();
+    }
   }
 
   formEvents() {
@@ -277,6 +280,9 @@ export class BillingComponent implements OnInit {
         )
       )
       .toPromise();
+    if (res == null) {
+      return;
+    }
     if (res.length > 0) {
       if (res[0].flagexpired == 1) {
         return true;
@@ -307,17 +313,24 @@ export class BillingComponent implements OnInit {
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
-        .subscribe((resultData: any) => {
-          if (resultData.length > 0) {
-            this.linkedMaxId(
-              resultData[0].iaCode + "." + resultData[0].registrationNo,
-              iacode,
-              regNumber
-            );
-          } else {
-            this.registrationDetails(iacode, regNumber);
+        .subscribe(
+          (resultData: any) => {
+            if (resultData && resultData.length > 0) {
+              this.linkedMaxId(
+                resultData[0].iaCode + "." + resultData[0].registrationNo,
+                iacode,
+                regNumber
+              );
+            } else {
+              this.registrationDetails(iacode, regNumber);
+            }
+          },
+          (error) => {
+            this.snackbar.open("Invalid Max ID", "error");
+            this.apiProcessing = false;
+            this.patient = false;
           }
-        });
+        );
     } else {
       this.apiProcessing = false;
       this.patient = false;
@@ -389,6 +402,8 @@ export class BillingComponent implements OnInit {
               }
             }
           } else {
+            this.apiProcessing = false;
+            this.patient = false;
             this.snackbar.open("Invalid Max ID", "error");
           }
 
@@ -402,6 +417,7 @@ export class BillingComponent implements OnInit {
             this.snackbar.open("Invalid Max ID", "error");
           }
           this.apiProcessing = false;
+          this.patient = false;
         }
       );
   }
@@ -562,12 +578,72 @@ export class BillingComponent implements OnInit {
       dtPatientPastDetails[5].id == 6 &&
       dtPatientPastDetails[5].data == 1
     ) {
+      let data: any = [];
+      this.patientDetails.dtPlanDetail.forEach((plan: any, index: number) => {
+        data.push({
+          sno: index + 1,
+          planType: "Health Plan",
+          planName: plan.planName,
+          planId: plan.planID,
+        });
+      });
       const dialogRef = this.matDialog.open(ShowPlanDetilsComponent, {
         width: "40vw",
         data: {
-          planDetails: [],
+          planDetails: data,
+          type: "healthPlan",
         },
       });
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          if (result && result.selected && result.selected.length > 0) {
+            const selectedPlan = result.selected[0];
+            this.billingService.setHealthPlan(selectedPlan);
+            this.messageDialogService.info(
+              "You have selected " + selectedPlan.planName
+            );
+          }
+        });
+    } else if (
+      dtPatientPastDetails[7] &&
+      dtPatientPastDetails[7].id == 8 &&
+      dtPatientPastDetails[7].data == 1
+    ) {
+      if (this.patientDetails.dtOtherPlanDetail.length > 0) {
+        let data: any = [];
+        this.patientDetails.dtOtherPlanDetail.forEach(
+          (plan: any, index: number) => {
+            data.push({
+              sno: index + 1,
+              planType: "OTher",
+              planName: plan.planName,
+              serviceId: plan.serviceId,
+              planId: plan.planId,
+            });
+          }
+        );
+        const dialogRef = this.matDialog.open(ShowPlanDetilsComponent, {
+          width: "50vw",
+          data: {
+            planDetails: data,
+            type: "other",
+          },
+        });
+        dialogRef
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result && result.selected && result.selected.length > 0) {
+              const selectedPlan = result.selected[0];
+              this.billingService.setOtherPlan(selectedPlan);
+              this.messageDialogService.info(
+                "You have selected " + selectedPlan.planName
+              );
+            }
+          });
+      }
     }
   }
 
@@ -736,7 +812,11 @@ export class BillingComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router.navigate([], { queryParams: {}, relativeTo: this.route });
+    this.router.navigate(["services"], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {
