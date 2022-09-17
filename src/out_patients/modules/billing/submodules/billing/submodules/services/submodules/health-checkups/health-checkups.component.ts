@@ -152,6 +152,13 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.detialsForHealthCheckup(res);
     });

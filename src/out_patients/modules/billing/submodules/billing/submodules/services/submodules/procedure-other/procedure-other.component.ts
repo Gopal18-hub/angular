@@ -155,6 +155,13 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
       if (res.data.col == "qty") {
         this.update(res.data.element.sno);
@@ -165,12 +172,6 @@ export class ProcedureOtherComponent implements OnInit {
         );
       }
     });
-    // this.tableRows.selection.changed.subscribe((res: any) => {
-    //   console.log(res);
-    //   const source = res.added[0] || res.removed[0];
-    //   console.log(source);
-    //   this.update(source.sno);
-    // });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
         filter((res) => {
