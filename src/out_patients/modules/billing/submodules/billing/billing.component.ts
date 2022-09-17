@@ -28,6 +28,7 @@ import { IomPopupComponent } from "./prompts/iom-popup/iom-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
 import { PatientService } from "@core/services/patient.service";
+import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-appointment.component";
 
 @Component({
   selector: "out-patients-billing",
@@ -115,6 +116,8 @@ export class BillingComponent implements OnInit {
   companyData = [];
 
   orderId: number = 0;
+
+  expiredPatient: boolean = false;
 
   constructor(
     public matDialog: MatDialog,
@@ -303,38 +306,41 @@ export class BillingComponent implements OnInit {
       let iacode = this.formGroup.value.maxid.split(".")[0];
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
+        this.expiredPatient = true;
         const dialogRef = this.messageDialogService.error(
           "Patient is an Expired Patient!"
         );
-        this.apiProcessing = false;
-        this.patient = false;
-        return;
+        await dialogRef.afterClosed().toPromise();
       }
-      this.http
-        .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData: any) => {
-            if (resultData && resultData.length > 0) {
-              this.linkedMaxId(
-                resultData[0].iaCode + "." + resultData[0].registrationNo,
-                iacode,
-                regNumber
-              );
-            } else {
-              this.registrationDetails(iacode, regNumber);
-            }
-          },
-          (error) => {
-            this.snackbar.open("Invalid Max ID", "error");
-            this.apiProcessing = false;
-            this.patient = false;
-          }
-        );
+      this.getSimilarSoundDetails(iacode, regNumber);
     } else {
       this.apiProcessing = false;
       this.patient = false;
     }
+  }
+
+  getSimilarSoundDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: any) => {
+          if (resultData && resultData.length > 0) {
+            this.linkedMaxId(
+              resultData[0].iaCode + "." + resultData[0].registrationNo,
+              iacode,
+              regNumber
+            );
+          } else {
+            this.registrationDetails(iacode, regNumber);
+          }
+        },
+        (error) => {
+          this.snackbar.open("Invalid Max ID", "error");
+          this.apiProcessing = false;
+          this.patient = false;
+        }
+      );
   }
 
   registrationDetails(iacode: string, regNumber: number) {
@@ -550,7 +556,23 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res);
+        let items: any = [];
+        if (res.dtpatientonlinebill.length > 0) {
+          items = res.dtpatientonlinebill;
+        }
+        if (res.dtpatientonlinebillPracto.length > 0) {
+          res.dtpatientonlinebillPracto.forEach((appointment: any) => {
+            items.push(appointment);
+          });
+        }
+        if (items.length > 0) {
+          const dialogRef = this.matDialog.open(OnlineAppointmentComponent, {
+            width: "60vw",
+            data: {
+              items: items,
+            },
+          });
+        }
       });
   }
 
@@ -806,6 +828,7 @@ export class BillingComponent implements OnInit {
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
+    this.expiredPatient = false;
     this.categoryIcons = [];
     this.questions[0].questionClasses = "";
     this.formGroup.controls["maxid"].setValue(

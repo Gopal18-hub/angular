@@ -64,7 +64,9 @@ export class OnlineAppointmentComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.itemsData = this.data.items;
+  }
 
   close() {
     this.dialogRef.close({ data: this.tableRows.dataSource.data });
