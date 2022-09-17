@@ -17,6 +17,8 @@ import { ActivatedRoute } from "@angular/router";
 import { DatePipe } from "@angular/common";
 
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.component";
+import { BillingApiConstants } from "../billing/BillingApiConstant";
 
 @Component({
   selector: "out-patients-post-discharge-follow-up-billing",
@@ -66,7 +68,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         options: [],
       },
       narration: {
-        type: "string",
+        type: "buttonTextarea",
       },
       b2bInvoice: {
         type: "checkbox",
@@ -135,18 +137,14 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   formEvents() {
     //ON MAXID CHANGE
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      // If the user presses the "Enter" key on the keyboard
-
       if (event.key === "Enter") {
-        // Cancel the default action, if needed
-
         event.preventDefault();
-        console.log("event triggered");
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
       }
     });
+
   }
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
@@ -257,6 +255,15 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       },
     });
   }
+  openIOM() {
+    this.matdialog.open(IomPopupComponent, {
+      width: "70%",
+      height: "90%",
+      data: {
+        company: this.formGroup.value.company.value,
+      },
+    });
+  }
   clear() {
     this.apiProcessing = false;
     this.patient = false;
@@ -274,12 +281,15 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
 
   getAllCompany() {
     this.http
-      .get(ApiConstants.getcompanyandpatientsponsordata)
+      .get(
+        BillingApiConstants.getcompanydetail(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        this.complanyList = data as GetCompanyDataInterface[];
-        this.questions[3].options = this.complanyList.map((a) => {
+      .subscribe((data: any) => {
+        this.complanyList = data;
+        this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
       });
