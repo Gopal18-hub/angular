@@ -288,6 +288,7 @@ export class InvestigationsComponent implements OnInit {
             originalTitle: r.name,
             docRequired: r.docRequired,
             patient_Instructions: r.patient_Instructions,
+            serviceid: r.serviceid,
           };
         });
         this.questions[1] = { ...this.questions[1] };
