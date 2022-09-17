@@ -14,6 +14,7 @@ export class PackageDoctorModificationComponent implements OnInit {
   itemsData: any = [];
   config: any = {
     clickedRows: false,
+    rowHighlightOnHover: false,
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,

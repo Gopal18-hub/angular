@@ -144,7 +144,7 @@
                                >
                 &#8230;
                 </button> -->
-                    <mat-icon *ngIf="enableDiscount" class="icon-more pt-2 pb-0 font-xs" (click)="discAmtDialog()" >more_horiz</mat-icon>
+                    <mat-icon class="icon-more pt-2 pb-0 font-xs" (click)="openDiscountdialog()" >more_horiz</mat-icon>
                   </div>
                 </div>
 
@@ -158,9 +158,14 @@
                   [index]="15">
                   <!------------------------------------------- DIPO AMOUNT INPUT ---------------------------------------->
                 </maxhealth-question>
+               
                 <maxhealth-question [question]="question[16]" [form]="miscServBillForm" [questions]="question[16]"
-                  class="w-2/5 mb-1 ml-3" [index]="16">
+                  class="w-24 mb-1 ml-3" [index]="16">
                 </maxhealth-question>
+                <maxhealth-question [question]="question[27]" [form]="miscServBillForm" [questions]="question[27]"
+                  class="w-24 mb-1 ml-1" [index]="27">
+                </maxhealth-question>
+             
               </div>
             </div>
           </div>
@@ -171,7 +176,7 @@
               <div class="flex">
                 <mat-label class="wt-nowrap mr-5">Patient Disc.</mat-label>
                 <maxhealth-question [question]="question[17]" [form]="miscServBillForm" [questions]="question[17]"
-                  class="w-5/9" [index]="17">
+                  class="w-2/5" [index]="17">
                 </maxhealth-question>
               </div>
             </div>
@@ -180,7 +185,7 @@
                 <mat-label class="wt-nowrap mr-1">Company Disc.</mat-label>
 
                 <maxhealth-question [question]="question[18]" [form]="miscServBillForm" [questions]="question[18]"
-                  class="w-5/9" [index]="18">
+                  class="w-2/5" [index]="18">
                 </maxhealth-question>
               </div>
             </div>
@@ -189,7 +194,7 @@
                 <mat-label class="wt-nowrap mr-5">Plan Amt ( - )</mat-label>
 
                 <maxhealth-question [question]="question[19]" [form]="miscServBillForm" [questions]="question[19]"
-                  class="w-5/9" [index]="19">
+                  class="w-2/5" [index]="19">
                 </maxhealth-question>
               </div>
             </div>
@@ -260,16 +265,16 @@
                 <maxhealth-question [question]="question[25]" [form]="miscServBillForm" [questions]="question[25]"
                   class="w-5/9 mt-1 mr-1" [index]="25">
                 </maxhealth-question>
-                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" (click)="print()">
+                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" [disabled]="!enablePrint" (click)="print()">
                   Print Bill&nbsp;
                 </button>
               </div>
             </div>
-            <div class="flex border-radius-lg bg-blue px-1 py-0 align-items-center mr-3 shadow-1">
+            <div class="flex border-radius-lg bg-blue align-items-center mr-3 w-2/3">
               <mat-label class="wt-nowrap mr-6 ml-2 inline">Bill Type</mat-label>
               <div class="grid-container w-1/3">
                 <maxhealth-question [question]="question[26]" [form]="miscServBillForm" [questions]="question[26]"
-                  class="h-1/20 mb-5" [index]="26">
+                  class="h-1/6 mb-5" [index]="26">
                 </maxhealth-question>
               </div>
             </div>

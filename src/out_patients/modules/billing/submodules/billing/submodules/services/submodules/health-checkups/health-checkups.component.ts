@@ -152,6 +152,13 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.detialsForHealthCheckup(res);
     });
@@ -334,8 +341,8 @@ export class HealthCheckupsComponent implements OnInit {
               serviceName: "Health Checkups",
               itemName: this.formGroup.value.healthCheckup.originalTitle,
               qty: 1,
-              precaution: "n/a",
-              procedureDoctor: "n/a",
+              precaution: "",
+              procedureDoctor: "",
               credit: 0,
               cash: 0,
               disc: 0,

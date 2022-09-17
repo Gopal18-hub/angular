@@ -164,6 +164,10 @@ export class BillingService {
 
   patientDetailsInfo: any = [];
 
+  selectedHealthPlan: any;
+
+  selectedOtherPlan: any;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   clear() {
@@ -357,6 +361,14 @@ export class BillingService {
     });
   }
 
+  setHealthPlan(data: any) {
+    this.selectedHealthPlan = data;
+  }
+
+  setOtherPlan(data: any) {
+    this.selectedOtherPlan = data;
+  }
+
   checkServicesAdded() {
     if (
       this.consultationItems.length > 0 ||
@@ -509,7 +521,7 @@ export class BillingService {
 
   removeFromBill(data: any) {
     let exist = this.billItems.findIndex((item: any) => {
-      return (item.itemId = data.billItem.itemId);
+      return (item.itemId = data.billItem && data.billItem.itemId);
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);

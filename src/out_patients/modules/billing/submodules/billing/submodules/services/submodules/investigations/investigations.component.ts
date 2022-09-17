@@ -153,6 +153,13 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
@@ -203,6 +210,7 @@ export class InvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
+              patient_Instructions: r.patient_Instructions,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -279,6 +287,7 @@ export class InvestigationsComponent implements OnInit {
             value: r.id,
             originalTitle: r.name,
             docRequired: r.docRequired,
+            patient_Instructions: r.patient_Instructions,
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -338,8 +347,8 @@ export class InvestigationsComponent implements OnInit {
               serviceName: "Investigations",
               itemName: this.formGroup.value.investigation.title,
               qty: 1,
-              precaution: "n/a",
-              procedureDoctor: "n/a",
+              precaution: "",
+              procedureDoctor: "",
               credit: 0,
               cash: 0,
               disc: 0,
@@ -351,6 +360,11 @@ export class InvestigationsComponent implements OnInit {
               doctorID: 0,
             },
           });
+          if (this.formGroup.value.investigation.patient_Instructions) {
+            this.messageDialogService.info(
+              this.formGroup.value.investigation.patient_Instructions
+            );
+          }
         }
 
         this.data = [...this.billingService.InvestigationItems];
