@@ -302,7 +302,9 @@ export class DiscountAmtDialogComponent implements OnInit {
           let billAMt = this.data.data;
           this.discAmount = ((this.disc / 100) * billAMt);
           this.discAmtForm.controls["amt"].setValue(this.discAmount);
-
+          if (this.reasonName.includes("Staff")) {
+            this.employeeCode();
+          }
 
         }
 
@@ -315,6 +317,11 @@ export class DiscountAmtDialogComponent implements OnInit {
         this.billData = this.miscPatient.getBillData();
         console.log(this.billData, "BD")
       })
+
+
+    // this.question[7].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") { this.employeeCode }
+    // })
 
   }
   clear() {

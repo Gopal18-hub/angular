@@ -22,6 +22,8 @@ import { DiscountAmtDialogComponent } from "@modules/billing/submodules/miscella
 import { GstTaxDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
 import { ReportService } from "@shared/services/report.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { DepositDetailsComponent } from "@modules/billing/submodules/billing/prompts/deposit-details/deposit-details.component";
+import { DisountReasonComponent } from "@modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -52,6 +54,7 @@ export class BillDetailComponent implements OnInit {
   billToCompId = 0;
   enablePrint = false;
   enableItems = false;
+  depositDetails: any = [];
 
 
   constructor(
@@ -388,17 +391,18 @@ export class BillDetailComponent implements OnInit {
 
   miscServBillForm!: FormGroup;
   serviceID!: number;
-  //location: number = Number(this.cookie.get("HSPLocationId"));
+  location: number = Number(this.cookie.get("HSPLocationId"));
   stationId = Number(this.cookie.get("StationId"));
   userID = Number(this.cookie.get("UserId"));
 
-  location = 67;
+  //location = 67;
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
   referralDoctor: { id: number; name: string }[] = [] as any;
 
   ngOnInit(): void {
+
     let serviceFormResult = this.formService.createForm(
       this.miscBillData.properties,
       {}
@@ -460,7 +464,6 @@ export class BillDetailComponent implements OnInit {
     // let iacode = this.miscForm.value.maxid.split(".")[0];
 
     let miscPatient = this.miscPatient.getFormLsit();
-    console.log(miscPatient, "localmiscpatient");
     let regNumber = miscPatient.registrationno;
     let iacode = miscPatient.iacode;
     this.http
@@ -479,8 +482,7 @@ export class BillDetailComponent implements OnInit {
   addNewItem(): any {
     this.miscCompanyId = this.miscPatient.getCompany();
     let miscPatient = this.miscPatient.getFormLsit();
-    console.log(miscPatient, "localmiscpatient");
-    //console.log(abc);
+
     this.postBillObj.dtSaveOBill_P =
     {
       registrationno: miscPatient.registrationno,
@@ -554,7 +556,7 @@ export class BillDetailComponent implements OnInit {
     this.postBillObj.operatorId = 9923;
     this.postBillObj.locationId = this.location;
     //return this.postBillObj; // this.newItemEvent.emit(this.serviceselectedList);
-    console.log(this.postBillObj, "pbo")
+    ////console.log(this.postBillObj, "pbo")
 
 
   }
@@ -581,7 +583,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
-          console.log(resultData, "success");
+          ////console.log(resultData, "success");
 
           if (resultData[0].successFlag === true) {
             this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
@@ -592,7 +594,7 @@ export class BillDetailComponent implements OnInit {
         },
         (error) => {
           this.snackbar.open(error, "error")
-          //console.log(error);
+          //////console.log(error);
           // this.messageDialogService.info(error.error);
         }
       );
@@ -738,7 +740,7 @@ export class BillDetailComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.formEvents();
-    this.getDipositedAmountByMaxID();
+    // this.getDipositedAmountByMaxID();
   }
 
   formEvents() {
@@ -751,7 +753,7 @@ export class BillDetailComponent implements OnInit {
     // compId.valueChanges
     //   .pipe(takeUntil(this._destroying$))
     //   .subscribe((value: any) => {
-    //     console.log(value);
+    //     ////console.log(value);
     //     if (value) {
     //       this.getbilltocompany(value);
     //     }
@@ -760,7 +762,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        //console.log(value);
+        //////console.log(value);
         if (value.value) {
           let compId = this.miscPatient.getCompany();
 
@@ -774,7 +776,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["item"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        console.log(value, "Item");
+        ////console.log(value, "Item");
         if (value.value) {
 
           this.itemID = value.value;
@@ -791,7 +793,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.enableDiscount = false;
-        console.log(value, "discAmtCheck");
+        ////console.log(value, "discAmtCheck");
         if (value === true) {
           this.enableDiscount = true;
           this.openDiscountdialog();
@@ -802,7 +804,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.enableDiscount = false;
-        console.log(value, "dipositAmtcheck");
+        ////console.log(value, "dipositAmtcheck");
         if (value === true) {
           this.openDepositdialog();
         }
@@ -846,8 +848,8 @@ export class BillDetailComponent implements OnInit {
 
     // this.question[22].elementRef.addEventListener("keypress", (event: any) => {
     //   if (event.key === "Enter") {
-    //     console.log(this.miscServBillForm.value.credLimit, "cL")
-    //     console.log(event, "eL")
+    //     //console.log(this.miscServBillForm.value.credLimit, "cL")
+    //     //console.log(event, "eL")
     //     //event.preventDefault();
 
     //   }
@@ -863,8 +865,8 @@ export class BillDetailComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         let newDeposit = this.miscServBillForm.value.dipositAmtEdit;
-        console.log(newDeposit, "newDe")
-        if (this.miscServBillForm.value.dipositAmtEdit >= this.miscServBillForm.value.billAmt) {
+        //console.log(newDeposit, "newDe")
+        if ((this.miscServBillForm.value.dipositAmtEdit >= this.miscServBillForm.value.billAmt) || (this.miscServBillForm.value.dipositAmtEdit > this.miscServBillForm.value.dipositAmt)) {
           this.miscServBillForm.controls["dipositAmtEdit"].setValue(this.miscServBillForm.value.billAmt)
           this.miscServBillForm.controls["amtPayByPatient"].setValue(0.00);
         }
@@ -886,7 +888,7 @@ export class BillDetailComponent implements OnInit {
   }
   getDipositedAmountByMaxID() {
     let miscPatient = this.miscPatient.getFormLsit();
-    console.log(miscPatient, "localmiscpatient");
+    //console.log(miscPatient, "localmiscpatient");
     let regNumber = miscPatient.registrationno;
     let iacode = miscPatient.iacode;
     this.disabledipositAmtEdit = false;
@@ -908,23 +910,23 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: any) => {
-
-
+          this.depositDetails = resultData;
+          //console.log(this.depositDetails, "DDD")
           resultData.forEach((element: any) => {
             this.totalDeposit += element.balanceamount;
           });
-          console.log(this.TotalAmount, "tl")
-          if (this.totalDeposit > 0) {
-            this.miscServBillForm.controls["dipositAmt"].setValue(this.totalDeposit);
-            // this.disabledipositAmtEdit = true;
-            this.miscServBillForm.controls["dipositAmtEdit"].enable()
-          }
-          else {
-            this.miscServBillForm.controls["dipositAmtEdit"].setValue('0.00');
-            //   this.disabledipositAmtEdit = false;
+          //console.log(this.TotalAmount, "tl")
+          // if (this.totalDeposit > 0) {
+          //   this.miscServBillForm.controls["dipositAmt"].setValue(this.totalDeposit);
+          //   // this.disabledipositAmtEdit = true;
+          //   this.miscServBillForm.controls["dipositAmtEdit"].enable()
+          // }
+          // else {
+          //   this.miscServBillForm.controls["dipositAmtEdit"].setValue('0.00');
+          //   //   this.disabledipositAmtEdit = false;
 
-            //this.miscServBillForm.controls["dipositAmtEdit"].disable();
-          }
+          //   //this.miscServBillForm.controls["dipositAmtEdit"].disable();
+          // }
 
 
           // if(totalDeposit > 0)
@@ -1009,7 +1011,7 @@ export class BillDetailComponent implements OnInit {
     if (!this.miscCompanyId) {
       this.miscCompanyId = 0
     }
-    console.log(this.miscCompanyId, "datap")
+    //console.log(this.miscCompanyId, "datap")
 
     let PriorityId = 1;
 
@@ -1074,7 +1076,7 @@ export class BillDetailComponent implements OnInit {
 
         this.gstData = data;
         this.totaltaxRate = data[0].totaltaX_RATE
-        console.log(this.gstData, "gstData")
+        //console.log(this.gstData, "gstData")
 
       })
   }
@@ -1142,7 +1144,7 @@ export class BillDetailComponent implements OnInit {
           }
         }
 
-        console.log("Bill", data)
+        //console.log("Bill", data)
       })
   }
 
@@ -1187,6 +1189,8 @@ export class BillDetailComponent implements OnInit {
   discAmtDialog() {
 
     let dialogRes;
+    //DisountReasonComponent
+    //DiscountAmtDialogComponent
     const dialogref = this.matDialog.open(DiscountAmtDialogComponent, {
       width: 'full', height: 'auto', data: {
         data: this.billAmnt
@@ -1267,6 +1271,7 @@ export class BillDetailComponent implements OnInit {
   //   });
   // }
   openDepositdialog() {
+    this.getDipositedAmountByMaxID()
     const MakeDepositDialogref = this.matDialog.open(
       MakedepositDialogComponent,
       {
@@ -1281,13 +1286,32 @@ export class BillDetailComponent implements OnInit {
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        console.log(result, "depositre")
+        //console.log(result, "depositre")
         if (result == "Success") {
+          const dialogref = this.matDialog.open(DepositDetailsComponent, {
+            width: 'full', height: 'auto', data: {
+              data: this.depositDetails
+            },
+          });
+
+
+          dialogref.afterClosed().subscribe(res => {
+            this.miscServBillForm.controls["dipositAmt"].setValue(res.data);
+            if (res.data)
+              this.snackbar.open("Deposit Amount availed successfully!")
+          })
+
+
+
           //this.makeBill();
-          this.getDipositedAmountByMaxID();
+          // this.getDipositedAmountByMaxID();
 
         }
         else {
+          this.miscServBillForm.controls["dipositAmt"].reset()
+          this.miscServBillForm.controls["dipositAmtEdit"].reset()
+          this.miscServBillForm.controls["dipositAmtEdit"].disable()
+          this.miscServBillForm.controls["amtPayByPatient"].setValue(this.miscServBillForm.value.billAmt)
           this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
           // /  dipositAmtcheck
         }
@@ -1309,7 +1333,7 @@ export class BillDetailComponent implements OnInit {
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        console.log(result, "discount")
+        //console.log(result, "discount")
         if (result == "Success") {
           this.discAmtDialog();
         }
@@ -1460,6 +1484,7 @@ export class MiscCredDetail implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     let formResult: any = this.formService.createForm(
       this.comapnyFormData.properties,
       {}
