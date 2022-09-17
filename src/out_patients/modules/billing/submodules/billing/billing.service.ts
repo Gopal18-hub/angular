@@ -816,7 +816,10 @@ export class BillingService {
       this.addToInvestigations({
         sno: this.InvestigationItems.length + 1,
         investigations: investigation.title,
-        precaution: "",
+        precaution:
+          investigation.precaution == "P"
+            ? '<span class="max-health-red-color">P</span>'
+            : investigation.precaution,
         priority: priorityId,
         specialisation: "",
         doctorName: investigation.doctorid || "",

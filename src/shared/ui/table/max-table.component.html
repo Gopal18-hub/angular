@@ -297,7 +297,7 @@
 </div>
 
 <ng-template #string let-data>
-  <span *ngIf="data?.output">{{ data.output }}</span>
+  <span *ngIf="data?.output" [innerHtml]="data.output"></span>
 </ng-template>
 <ng-template #stringLink let-data>
   <span

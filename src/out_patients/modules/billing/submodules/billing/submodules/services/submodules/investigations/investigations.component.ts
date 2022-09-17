@@ -220,6 +220,7 @@ export class InvestigationsComponent implements OnInit {
               originalTitle: r.name,
               docRequired: r.docRequired,
               patient_Instructions: r.patient_Instructions,
+              precaution: r.precaution,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -298,6 +299,7 @@ export class InvestigationsComponent implements OnInit {
             docRequired: r.docRequired,
             patient_Instructions: r.patient_Instructions,
             serviceid: r.serviceid,
+            precaution: r.precaution,
           };
         });
         this.questions[1] = { ...this.questions[1] };
