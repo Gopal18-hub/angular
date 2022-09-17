@@ -816,6 +816,7 @@ export class BillingComponent implements OnInit {
       queryParams: {},
       relativeTo: this.route,
     });
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {
