@@ -168,6 +168,8 @@ export class BillingService {
 
   selectedOtherPlan: any;
 
+  unbilledInvestigations: boolean = false;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   clear() {
@@ -181,6 +183,7 @@ export class BillingService {
     this.totalCost = 0;
     this.activeMaxId = null;
     this.company = 0;
+    this.unbilledInvestigations = false;
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
@@ -790,5 +793,57 @@ export class BillingService {
       BillingApiConstants.insert_billdetailsgst(),
       this.makeBillPayload
     );
+  }
+
+  async processInvestigationAdd(
+    priorityId: number,
+    serviceType: string,
+    investigation: any
+  ) {
+    const res = await this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.company,
+        priority: priorityId,
+        itemId: investigation.value,
+        serviceId: serviceType || investigation.serviceid,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .toPromise();
+    if (res.length > 0) {
+      this.addToInvestigations({
+        sno: this.InvestigationItems.length + 1,
+        investigations: investigation.title,
+        precaution: "",
+        priority: priorityId,
+        specialisation: "",
+        doctorName: investigation.doctorid || "",
+        specialisation_required: investigation.docRequired ? true : false,
+        doctorName_required: investigation.docRequired ? true : false,
+        price: res[0].returnOutPut,
+        billItem: {
+          itemId: investigation.value,
+          priority: priorityId,
+          serviceId: serviceType || investigation.serviceid,
+          price: res[0].returnOutPut,
+          serviceName: "Investigations",
+          itemName: investigation.title,
+          qty: 1,
+          precaution: "",
+          procedureDoctor: "",
+          credit: 0,
+          cash: 0,
+          disc: 0,
+          discAmount: 0,
+          totalAmount: res[0].returnOutPut,
+          gst: 0,
+          gstValue: 0,
+          specialisationID: 0,
+          doctorID: 0,
+        },
+      });
+    }
   }
 }
