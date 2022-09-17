@@ -567,11 +567,21 @@ export class BillingComponent implements OnInit {
         }
         if (items.length > 0) {
           const dialogRef = this.matDialog.open(OnlineAppointmentComponent, {
-            width: "60vw",
+            width: "80vw",
+            maxWidth: "90vw",
             data: {
               items: items,
             },
           });
+          dialogRef
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if (result && result.selected && result.selected.length > 0) {
+                const doctors = result.selected;
+                for (let i = 0; i < doctors.length; i++) {}
+              }
+            });
         }
       });
   }
