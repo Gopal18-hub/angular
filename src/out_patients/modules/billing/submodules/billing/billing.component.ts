@@ -812,7 +812,10 @@ export class BillingComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router.navigate([], { queryParams: {}, relativeTo: this.route });
+    this.router.navigate(["services"], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
   }
 
   getAllCompany() {
