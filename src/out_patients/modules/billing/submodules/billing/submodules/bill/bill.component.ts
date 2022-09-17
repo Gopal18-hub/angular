@@ -361,6 +361,8 @@ export class BillComponent implements OnInit {
           this.billingservice.billNoGenerated.next(true);
           this.billNo = result.billNo;
           this.billId = result.billId;
+          this.config.removeRow = false;
+          this.config = { ...this.config };
           const successInfo = this.messageDialogService.info(
             `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
           );
