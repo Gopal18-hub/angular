@@ -9,9 +9,14 @@ import {
 } from "@angular/core";
 import { QuestionControlService } from "../../../ui/dynamic-forms/service/question-control.service";
 import { FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
+import {
+  Router,
+  NavigationEnd,
+  Event as NavigationEvent,
+} from "@angular/router";
 import { SearchService } from "../../../services/search.service";
 import { APP_BASE_HREF } from "@angular/common";
+import { map, filter } from "rxjs/operators";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -47,6 +52,11 @@ export class SubComponent implements OnInit, OnChanges {
     this.searchFormData = this.searchService.searchFormData;
     this.processSubModule();
     if (!this.activePageItem) this.reInitiateSearch("global");
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe((event: NavigationEvent) => {
+        this.processSubModule();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

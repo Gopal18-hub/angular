@@ -164,6 +164,10 @@ export class BillingService {
 
   patientDetailsInfo: any = [];
 
+  selectedHealthPlan: any;
+
+  selectedOtherPlan: any;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   clear() {
@@ -355,6 +359,14 @@ export class BillingService {
       hspLocationId: Number(this.cookie.get("HSPLocationId")),
       recNumber: "",
     });
+  }
+
+  setHealthPlan(data: any) {
+    this.selectedHealthPlan = data;
+  }
+
+  setOtherPlan(data: any) {
+    this.selectedOtherPlan = data;
   }
 
   checkServicesAdded() {
