@@ -141,7 +141,7 @@ export class ProcedureOtherComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.removeFromBill(
-      this.billingService.consultationItems[$event.index]
+      this.billingService.ProcedureItems[$event.index]
     );
     this.billingService.ProcedureItems.splice($event.index, 1);
     this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
@@ -205,6 +205,8 @@ export class ProcedureOtherComponent implements OnInit {
               title: r.itemNameWithService || r.itemName,
               value: r.itemID,
               originalTitle: r.itemName,
+              serviceid: r.serviceID,
+              docRequired: r.proceduredoctor,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -281,6 +283,7 @@ export class ProcedureOtherComponent implements OnInit {
                 value: r.itemID,
                 originalTitle: r.itemName,
                 docRequired: r.proceduredoctor,
+                serviceid: r.serviceID,
               };
             });
           } else {
@@ -326,7 +329,7 @@ export class ProcedureOtherComponent implements OnInit {
         compId: this.billingService.company,
         priority: priorityId,
         itemId: this.formGroup.value.procedure.value,
-        serviceId: this.formGroup.value.otherService.value,
+        serviceId: this.formGroup.value.procedure.serviceid,
         locationId: this.cookie.get("HSPLocationId"),
         ipoptype: 1,
         bedType: 0,
@@ -350,11 +353,11 @@ export class ProcedureOtherComponent implements OnInit {
             unitPrice: res[0].returnOutPut,
             itemid: this.formGroup.value.procedure.value,
             priorityId: priorityId,
-            serviceId: this.formGroup.value.otherService.value,
+            serviceId: this.formGroup.value.procedure.serviceid,
             billItem: {
               itemId: this.formGroup.value.procedure.value,
               priority: priorityId,
-              serviceId: this.formGroup.value.otherService.value,
+              serviceId: this.formGroup.value.procedure.serviceid,
               price: res[0].returnOutPut,
               serviceName: "Procedure & Others",
               itemName: this.formGroup.value.procedure.originalTitle,
