@@ -111,6 +111,8 @@ export class InvestigationsComponent implements OnInit {
     },
   };
 
+  precautionExcludeLocations = [69];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -122,6 +124,13 @@ export class InvestigationsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (
+      this.precautionExcludeLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
+    ) {
+      this.config.displayedColumns.splice(2, 1);
+    }
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
