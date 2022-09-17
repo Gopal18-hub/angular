@@ -179,7 +179,13 @@ export namespace CrystalReport {
       params.Cmb_Equip
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-    )}&LocationName=${MaxHealthStorage.getCookie("LocationIACode")}`;
+
+    )}&LocationName=${MaxHealthStorage.getCookie(
+
+      "Location"
+
+    )}`;
+
   };
 
   export const freeOutPatientReport = (params: any) => {
