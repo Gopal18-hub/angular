@@ -571,14 +571,10 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         let items: any = [];
-        if (res.dtpatientonlinebill.length > 0) {
-          items = res.dtpatientonlinebill;
-        }
         if (res.dtpatientonlinebillPracto.length > 0) {
-          res.dtpatientonlinebillPracto.forEach((appointment: any) => {
-            items.push(appointment);
-          });
+          items = res.dtpatientonlinebillPracto;
         }
+
         if (items.length > 0) {
           const dialogRef = this.matDialog.open(OnlineAppointmentComponent, {
             width: "80vw",
