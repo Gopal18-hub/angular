@@ -28,14 +28,14 @@ export class OrderSetDetailsComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "30%",
+          width: "20%",
         },
       },
       serviceItemName: {
         title: "Service Item Name",
         type: "string",
         style: {
-          width: "45%",
+          width: "65%",
         },
       },
       price: {

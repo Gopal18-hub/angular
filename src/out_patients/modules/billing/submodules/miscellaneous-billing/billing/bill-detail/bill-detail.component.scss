@@ -78,7 +78,15 @@
         }
         .w-24
         {
-          width:21%
+          width:26%
+        }
+        .w-17
+        {
+          width:17%
+        }
+        .w-16
+        {
+          width:16%
         }
         ::ng-deep {
           .min-width-initial {
@@ -151,6 +159,7 @@
     min-height: fit-content !important;
   }
   .input-align{
+    
     ::ng-deep .max-table-wrapper table tbody tr td:nth-child(5){
      
       text-align:right;
@@ -159,12 +168,12 @@
     ::ng-deep .max-table-wrapper table tbody tr td:nth-child(6){
      
       text-align:right;
-      padding-right: 28px !important;
+      padding-right: 73px !important;
     }
     ::ng-deep .max-table-wrapper table tbody tr td:nth-child(7){
      
       text-align:right;
-      padding-right: 28px !important;
+      padding-right: 73px !important;
     }
     ::ng-deep .max-table-wrapper table tbody tr td:nth-child(9){
      

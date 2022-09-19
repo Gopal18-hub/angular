@@ -92,7 +92,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
   addItem(newItem: any) {
-    console.log(newItem);
+    //console.lo(newItem);
     this.items.push(newItem);
   }
   links = [
@@ -198,7 +198,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        console.log("event triggered");
+        //console.log("event triggered");
         this.getPatientDetailsByMaxId();
 
       }
@@ -216,11 +216,11 @@ export class MiscellaneousBillingComponent implements OnInit {
 
         if (value.value) {
           this.Misc.setCompany(value.value);
-          console.log(value, "com")
+          //console.log(value, "com")
           //this.patientDetail.companyName = value.title;
           //this.patientDetail.companyId = value.value;
           this.companyId = value.value;
-          console.log(this.companyId, "comid")
+          //console.log(this.companyId, "comid")
           this.setItemsToBill.enablecompanyId = true;
           this.setItemsToBill.companyId = this.companyId;
           this.Misc.setMiscBillFormData(this.setItemsToBill);
@@ -230,22 +230,22 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.miscForm.controls["corporate"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        //console.log(value);
+        ////console.log(value);
         if (value.value) {
-          console.log(value, "cor")
+          //console.log(value, "cor")
           //this.patientDetail.corporateName = value.title;
           //this.patientDetail.corporateid = value.value;
           this.corporateId = value.value;
           this.setItemsToBill.corporateId = this.corporateId;
           this.Misc.setMiscBillFormData(this.setItemsToBill);
-          console.log(this.corporateId, "comid")
+          //console.log(this.corporateId, "comid")
           this.Misc.setPatientDetail(this.patientDetail);
         }
       });
     this.miscForm.controls["b2bInvoiceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        console.log(value, "b2bInvoiceType");
+        //console.log(value, "b2bInvoiceType");
         if (value === true) {
           this.setItemsToBill.b2bInvoiceType = "B2B"
         }
@@ -277,7 +277,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     // subscribe to component event to know when to deleteconst selfDeleteSub = component.instance.deleteSelf
 
     this.matDialog.closeAll();
-    console.log(this.similarContactPatientList.length);
+    //console.log(this.similarContactPatientList.length);
     if (!this.MaxIDExist) {
       this.http
         .get(
@@ -289,9 +289,9 @@ export class MiscellaneousBillingComponent implements OnInit {
         .subscribe(
           (resultData: SimilarSoundPatientResponse[]) => {
             this.similarContactPatientList = resultData;
-            console.log(this.similarContactPatientList);
+            //console.log(this.similarContactPatientList);
             if (this.similarContactPatientList.length == 1) {
-              console.log(this.similarContactPatientList[0]);
+              //console.log(this.similarContactPatientList[0]);
               let maxID = this.similarContactPatientList[0].maxid;
               this.miscForm.controls["maxid"].setValue(maxID);
               this.getPatientDetailsByMaxId();
@@ -312,21 +312,21 @@ export class MiscellaneousBillingComponent implements OnInit {
                   .pipe(takeUntil(this._destroying$))
                   .subscribe((result) => {
                     if (result) {
-                      console.log(result.data["added"][0].maxid);
+                      //console.log(result.data["added"][0].maxid);
                       let maxID = result.data["added"][0].maxid;
                       this.miscForm.controls["maxid"].setValue(maxID);
                       this.getPatientDetailsByMaxId();
                     }
-                    console.log("seafarers dialog was closed");
+                    //console.log("seafarers dialog was closed");
                     this.similarContactPatientList = [];
                   });
               } else {
-                console.log("no data found");
+                //console.log("no data found");
               }
             }
           },
           (error) => {
-            console.log(error);
+            //console.log(error);
             this.messageDialogService.info(error.error);
           }
         );
@@ -371,7 +371,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
-        (resultData: Registrationdetails) => { console.log(resultData, "SSN") })
+        (resultData: Registrationdetails) => { //console.log(resultData, "SSN")
+        })
   }
   async getPatientDetailsByMaxId() {
     let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
@@ -507,7 +508,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: Registrationdetails) => {
-          console.log(resultData);
+          //console.log(resultData);
           if (resultData) {
             this.patientDetails = resultData;
 
@@ -774,7 +775,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .get(BillingApiConstants.getcompanydetail(location))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
-        console.log(data);
+        //console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
         this.questions[2].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
@@ -816,7 +817,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: any) => {
-          console.log(resultData, "fulldepo")
+          //console.log(resultData, "fulldepo")
 
           resultData.forEach((element: any) => {
             this.totalDeposit += element.balanceamount;
@@ -910,7 +911,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     );
     // this.db.putCachePatientDetail(this.patientDetail);
 
-    // console.log(this.db.getCachePatientDetail());
+    // //console.log(this.db.getCachePatientDetail());
     this.Misc.setPatientDetail(this.patientDetail);
     localStorage.setItem("patientDetail", this.patientDetail.toString());
   }
