@@ -9,12 +9,14 @@
     <div class="h-7/10 mt-3">
         <maxhealth-table      
         [config]="config"
-        [data]=""
+        [data]="depoDetails"
+        #depoTable
+        (columnClick)="listRowClick()"
         ></maxhealth-table>
     </div>
 
     <div class="w-full mt-3">
-        <button class="float-right" mat-raised-button color="primary">Submit</button>
+        <button class="float-right" mat-raised-button color="primary" (click)="submit()">Submit</button>
     </div>
 
 </section>

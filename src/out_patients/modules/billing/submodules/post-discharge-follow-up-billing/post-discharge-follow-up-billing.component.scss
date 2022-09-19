@@ -48,6 +48,16 @@
         padding: 0;
       }
     }
+    .iom-button {
+      padding: 0;
+      min-width: initial;
+      .iom-color {
+        color: #45c0be;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-decoration: underline;
+      }
+    }
     ::ng-deep {
       .min-width-initial {
         min-width: initial !important;
