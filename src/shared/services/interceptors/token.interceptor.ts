@@ -68,8 +68,6 @@ export class TokenInterceptor implements HttpInterceptor {
     // Used to be accessible from the whole chain of observers
     let sharedCacheResponse: IHttpCacheResponse | null = null;
 
-    console.log(request);
-
     return this.getCachedResponse(request.url).pipe(
       // Modify request headers if there is already something in cache
       mergeMap((cachedResponse: IHttpCacheResponse) => {

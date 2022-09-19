@@ -431,6 +431,14 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+
+  noteRemarkdb: any;
+  vipdb: any;
+  hwcRemarkdb: any;
+  hotlistReasondb: any;
+  hotlistRemarkdb: any;
+  bplcardNo: any;
+  bplCardAddress: any;
   getPatientIcon() {
     let iacode = this.BServiceForm.value.maxid.split(".")[0];
     let regNumber = this.BServiceForm.value.maxid.split(".")[1];
@@ -443,15 +451,56 @@ export class DetailsComponent implements OnInit {
           // this.clear();
           this.patientDetails = resultData;
           console.log(this.patientDetails)
-          // this.patientDetailsforicon = this.patientDetails.dsPersonalDetails.dtPersonalDetails1;
-          // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-          //   this.patientDetailsforicon
-          // );
         },
         (error) => {}
       );
-  }
 
+      this.http.get(ApiConstants.patientDetails(regNumber, iacode))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: PatientDetails) => {
+        console.log(res);
+        this.patientDetailsforicon = res;
+        this.noteRemarkdb = res.notereason;
+        this.vipdb = res.vipreason;
+        this.hwcRemarkdb = res.hwcRemarks;
+        this.hotlistReasondb = res.hotlistreason;
+        this.hotlistRemarkdb = res.hotlistcomments;
+        this.bplcardNo = res.bplcardNo;
+        this.bplCardAddress = res.addressOnCard;
+        this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            this.patientDetailsforicon
+        );
+      })
+  }
+  
+  doCategoryIconAction(categoryIcon: any) {
+    const data: any = {
+      note: {
+        notes: this.noteRemarkdb,
+      },
+      vip: {
+        notes: this.vipdb,
+      },
+      hwc: {
+        notes: this.hwcRemarkdb,
+      },
+      ppagerNumber: {
+        bplCardNo: this.bplcardNo,
+        BPLAddress: this.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReasondb,
+        reason: this.hotlistRemarkdb,
+      },
+    };
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
   getpatientbilldetails() {
     this.billdetailservice.clear();
     this.BServiceForm.controls['refundAmt'].setValue('0.00');
