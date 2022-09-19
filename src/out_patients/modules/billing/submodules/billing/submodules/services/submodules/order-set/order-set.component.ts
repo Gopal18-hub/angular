@@ -179,7 +179,7 @@ export class OrderSetComponent implements OnInit {
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
-        width: "50%",
+        width: "70vw",
         //height: "50%",
         data: {
           orderSet: res.element,
@@ -322,8 +322,8 @@ export class OrderSetComponent implements OnInit {
               serviceName: this.formGroup.value.orderSet.title,
               itemName: resItem.procedureNames,
               qty: 1,
-              precaution: "n/a",
-              procedureDoctor: "n/a",
+              precaution: "",
+              procedureDoctor: "",
               credit: 0,
               cash: 0,
               disc: 0,

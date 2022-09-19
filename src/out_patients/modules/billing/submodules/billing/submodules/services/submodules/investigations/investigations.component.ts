@@ -17,6 +17,7 @@ import {
 import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BillingStaticConstants } from "../../../../BillingStaticConstant";
 
 @Component({
   selector: "out-patients-investigations",
@@ -111,6 +112,10 @@ export class InvestigationsComponent implements OnInit {
     },
   };
 
+  precautionExcludeLocations = [69];
+
+  defaultPriorityId = 1;
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -122,6 +127,13 @@ export class InvestigationsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (
+      this.precautionExcludeLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
+    ) {
+      this.config.displayedColumns.splice(2, 1);
+    }
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -153,7 +165,14 @@ export class InvestigationsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -166,6 +185,25 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+      } else if (res.data.col == "priority") {
+        if (this.data.length == 1) {
+          this.defaultPriorityId = res.$event.value;
+        } else {
+          if (this.defaultPriorityId != res.$event.value) {
+            this.billingService.changeBillTabStatus(true);
+            const errorDialog = this.messageDialogService.error(
+              "Investigations can not have different priorities"
+            );
+            await errorDialog.afterClosed().toPromise();
+          } else {
+            this.billingService.changeBillTabStatus(false);
+          }
+        }
+        this.updatePriceByChangePriority(
+          res.$event.value,
+          res.data.element,
+          res.data.index
+        );
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -203,6 +241,11 @@ export class InvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
+              patient_Instructions:
+                BillingStaticConstants.investigationItemBasedInstructions[
+                  r.id.toString()
+                ],
+              precaution: r.precaution,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -279,13 +322,51 @@ export class InvestigationsComponent implements OnInit {
             value: r.id,
             originalTitle: r.name,
             docRequired: r.docRequired,
+            patient_Instructions:
+              BillingStaticConstants.investigationItemBasedInstructions[
+                r.id.toString()
+              ],
+            serviceid: r.serviceid,
+            precaution: r.precaution,
           };
         });
         this.questions[1] = { ...this.questions[1] };
       });
   }
 
-  add(priorityId = 1) {
+  updatePriceByChangePriority(priorityId: number, data: any, index: number) {
+    this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: data.billItem.itemId,
+        serviceId: data.billItem.serviceId,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .subscribe((res: any) => {
+        if (res.length > 0) {
+          this.billingService.InvestigationItems[index].price =
+            res[0].returnOutPut;
+          this.billingService.InvestigationItems[index].billItem.price =
+            res[0].returnOutPut;
+          this.billingService.InvestigationItems[index].billItem.totalAmount =
+            res[0].returnOutPut;
+          this.data = [...this.billingService.InvestigationItems];
+          this.billingService.calculateTotalAmount();
+          if (res[0].returnOutPut == 0) {
+            this.messageDialogService.error(
+              "Price Not Defined For " + data.investigations
+            );
+          }
+        }
+      });
+  }
+
+  async add() {
+    const priorityId = this.defaultPriorityId;
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
         return item.billItem.itemId == this.formGroup.value.investigation.value;
@@ -297,65 +378,21 @@ export class InvestigationsComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .post(BillingApiConstants.getcalculateopbill, {
-        compId: this.billingService.company,
-        priority: priorityId,
-        itemId: this.formGroup.value.investigation.value,
-        serviceId:
-          this.formGroup.value.serviceType ||
-          this.formGroup.value.investigation.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
-        ipoptype: 1,
-        bedType: 0,
-        bundleId: 0,
-      })
-      .subscribe((res: any) => {
-        if (res.length > 0) {
-          this.billingService.addToInvestigations({
-            sno: this.data.length + 1,
-            investigations: this.formGroup.value.investigation.title,
-            precaution: "",
-            priority: priorityId,
-            specialisation: "",
-            doctorName: "",
-            specialisation_required: this.formGroup.value.investigation
-              .docRequired
-              ? true
-              : false,
-            doctorName_required: this.formGroup.value.investigation.docRequired
-              ? true
-              : false,
-            price: res[0].returnOutPut,
+    await this.billingService.processInvestigationAdd(
+      priorityId,
+      this.formGroup.value.serviceType ||
+        this.formGroup.value.investigation.serviceid,
+      this.formGroup.value.investigation
+    );
 
-            billItem: {
-              itemId: this.formGroup.value.investigation.value,
-              priority: priorityId,
-              serviceId:
-                this.formGroup.value.serviceType ||
-                this.formGroup.value.investigation.serviceid,
-              price: res[0].returnOutPut,
-              serviceName: "Investigations",
-              itemName: this.formGroup.value.investigation.title,
-              qty: 1,
-              precaution: "n/a",
-              procedureDoctor: "n/a",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
-              specialisationID: 0,
-              doctorID: 0,
-            },
-          });
-        }
+    if (this.formGroup.value.investigation.patient_Instructions) {
+      this.messageDialogService.info(
+        this.formGroup.value.investigation.patient_Instructions
+      );
+    }
 
-        this.data = [...this.billingService.InvestigationItems];
-        this.formGroup.reset();
-      });
+    this.data = [...this.billingService.InvestigationItems];
+    this.formGroup.reset();
   }
   goToBill() {
     this.router.navigate(["../bill"], {

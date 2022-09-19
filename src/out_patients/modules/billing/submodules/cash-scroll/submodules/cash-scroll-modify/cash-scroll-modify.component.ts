@@ -2,6 +2,15 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Router } from "@angular/router";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ModifyCashScrollInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
+import { getERPscrollDetailDtoInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
+import { HttpClient } from "@angular/common/http";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject, takeUntil } from "rxjs";
+import { DatePipe } from "@angular/common";
+import { AckDetailsForScrollModel } from "../../../../../../core/models/ackdetailsforscroll.Model";
+import { dtExcelforScrollInterface } from "../../../../../../core/models/ackdetailsforscroll.Model";
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -10,6 +19,9 @@ import { Router } from "@angular/router";
 export class CashScrollModifyComponent implements OnInit {
   cashscrollmodifyForm!: FormGroup;
   questions: any;
+  private readonly _destroying$ = new Subject<void>();
+  scrolldataObject!: ModifyCashScrollInterface;
+  billList: getERPscrollDetailDtoInterface[] = [];
   cashscrollModifyData = {
     type: "object",
     title: "",
@@ -67,7 +79,7 @@ export class CashScrollModifyComponent implements OnInit {
   config: any = {
     displayedColumns: [
       "slno",
-      "receiptno",
+      "receiptNo",
       "billno",
       "datetime",
       "billamount",
@@ -78,25 +90,25 @@ export class CashScrollModifyComponent implements OnInit {
       "plandiscount",
       "netamount",
       "cash",
-      "actualcash",
+      "modifiedCash",
       "cheque",
-      "actualchequeamount",
-      "chequeno",
+      "modifiedCheqAmt",
+      "chequeNo",
       "dd",
-      "actualddamount",
+      "modifiedDDAmt",
       "ddnumber",
-      "creditcard",
-      "actualccamount",
+      "creditCard",
+      "modifiedCCAmt",
       "authorizationcode",
       "cashpaymtbymobile",
       "actualcashpaymt",
-      "onlinepaymt",
-      "actualonlinepaymt",
+      "onlinePayment",
+      "modifiedOnlinePayment",
       "transactionid",
       "dues",
       "tdsamount",
       "totalamount",
-      "actualupiamt",
+      "modifiedUPIAmt",
       "internetpaymtamt",
       "actualinternetpaymtamt",
     ],
@@ -108,7 +120,7 @@ export class CashScrollModifyComponent implements OnInit {
           width: "5rem",
         },
       },
-      receiptno: {
+      receiptNo: {
         title: "Receipt No.",
         type: "string",
         style: {
@@ -134,7 +146,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       billamount: {
         title: "Bill Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9.5rem",
         },
@@ -142,7 +154,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       refund: {
         title: "Refund",
-        type: "string",
+        type: "number",
         style: {
           width: "8rem",
         },
@@ -150,7 +162,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       depositamount: {
         title: "Deposit Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -158,7 +170,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       discountamount: {
         title: "Discount Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -174,7 +186,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       plandiscount: {
         title: "Plan Discount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -182,7 +194,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       netamount: {
         title: "Net Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -190,87 +202,87 @@ export class CashScrollModifyComponent implements OnInit {
       },
       cash: {
         title: "Cash",
-        type: "string",
+        type: "number",
         style: {
           width: "8rem",
         },
         tooltipColumn: "cash",
       },
-      actualcash: {
+      modifiedCash: {
         title: "Actual Cash",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualcash",
+        tooltipColumn: "modifiedCash",
       },
       cheque: {
         title: "Cheque",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
         tooltipColumn: "cheque",
       },
-      actualchequeamount: {
+      modifiedCheqAmt: {
         title: "Actual Cheque Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "12rem",
         },
-        tooltipColumn: "actualchequeamount",
+        tooltipColumn: "modifiedCheqAmt",
       },
-      chequeno: {
+      chequeNo: {
         title: "Cheque No",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "chequeno",
+        tooltipColumn: "chequeNo",
       },
       dd: {
         title: "DD",
-        type: "string",
+        type: "number",
         style: {
           width: "5rem",
         },
         tooltipColumn: "dd",
       },
-      actualddamount: {
+      modifiedDDAmt: {
         title: "Actual DD Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualddamount",
+        tooltipColumn: "modifiedDDAmt",
       },
       ddnumber: {
         title: "DD Number",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
         tooltipColumn: "ddnumber",
       },
-      creditcard: {
+      creditCard: {
         title: "Credit Card",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "creditcard",
+        tooltipColumn: "creditCard",
       },
-      actualccamount: {
+      modifiedCCAmt: {
         title: "Actual CC Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualccamount",
+        tooltipColumn: "modifiedCCAmt",
       },
       authorizationcode: {
         title: "Authorization Code",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -278,7 +290,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       cashpaymtbymobile: {
         title: "Cash Payment By Mobile",
-        type: "string",
+        type: "number",
         style: {
           width: "12rem",
         },
@@ -286,31 +298,31 @@ export class CashScrollModifyComponent implements OnInit {
       },
       actualcashpaymt: {
         title: "Actual Cash Payment",
-        type: "string",
+        type: "number",
         style: {
           width: "12rem",
         },
         tooltipColumn: "actualcashpaymt",
       },
-      onlinepaymt: {
+      onlinePayment: {
         title: "Online Payment",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "onlinepaymt",
+        tooltipColumn: "onlinePayment",
       },
-      actualonlinepaymt: {
+      modifiedOnlinePayment: {
         title: "Online Payment",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualonlinepaymt",
+        tooltipColumn: "modifiedOnlinePayment",
       },
       transactionid: {
         title: "Transaction ID",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -318,7 +330,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       dues: {
         title: "Dues",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -326,7 +338,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       tdsamount: {
         title: "TDS Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
@@ -334,23 +346,23 @@ export class CashScrollModifyComponent implements OnInit {
       },
       totalamount: {
         title: "Total Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
         tooltipColumn: "totalamount",
       },
-      actualupiamt: {
+      modifiedUPIAmt: {
         title: "Actual UPI Amount",
-        type: "string",
+        type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualupiamt",
+        tooltipColumn: "modifiedUPIAmt",
       },
       internetpaymtamt: {
         title: "Internet Payment Amt",
-        type: "string",
+        type: "number",
         style: {
           width: "12rem",
         },
@@ -358,7 +370,7 @@ export class CashScrollModifyComponent implements OnInit {
       },
       actualinternetpaymtamt: {
         title: "Actual Internet Payment",
-        type: "string",
+        type: "number",
         style: {
           width: "14rem",
         },
@@ -369,7 +381,10 @@ export class CashScrollModifyComponent implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private router: Router
+    private router: Router,
+    private dialogservice: MessageDialogService,
+    private http: HttpClient,
+    private datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -384,8 +399,91 @@ export class CashScrollModifyComponent implements OnInit {
     this.cashscrollmodifyForm.controls["employeename"].disable();
     this.cashscrollmodifyForm.controls["takenat"].disable();
     this.cashscrollmodifyForm.controls["scrollno"].disable();
+    this.http
+      .get(ApiConstants.getdetaileddataforoldscrollerp(1, 10412))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.scrolldataObject = data as ModifyCashScrollInterface;
+        console.log(this.scrolldataObject);
+        this.billList = this.scrolldataObject.getERPscrollDetailDto;
+        console.log(this.billList);
+        this.cashscrollmodifyForm.controls["employeename"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].name
+        );
+        this.cashscrollmodifyForm.controls["fromdate"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].fromdatetime
+        );
+        this.cashscrollmodifyForm.controls["todate"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].todatetime
+        );
+        this.cashscrollmodifyForm.controls["takenat"].setValue(
+          this.datepipe.transform(
+            this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime,
+            "MM/dd/yyyy hh:mm:ss a"
+          )
+        );
+        this.cashscrollmodifyForm.controls["scrollno"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].stationslno
+        );
+      });
   }
+  ngAfterViewInit() {
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        event.preventDefault();
+      }
+    });
+  }
+
   navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
+  }
+  acknowledge() {
+    this.dialogservice.success("Scroll Has Been Acknowledged");
+  }
+  modify() {
+    // this.http.post(ApiConstants.ackdetailsforscroll, this.modifyObject());
+    //this.dialogservice.success("Scroll Has Been Modified");
+  }
+  fromdate: any;
+  todate: any;
+  tableList: dtExcelforScrollInterface[] = [];
+  // modifyObject(): AckDetailsForScrollModel {
+  //   this.fromdate = this.datepipe.transform(
+  //     this.cashscrollmodifyForm.controls["fromdate"].value,
+  //     "yyyy-MM-ddThh:mm:ss"
+  //   );
+  //   this.todate = this.datepipe.transform(
+  //     this.cashscrollmodifyForm.controls["todate"].value,
+  //     "yyyy-MM-ddThh:mm:ss"
+  //   );
+  //    return new AckDetailsForScrollModel(this.fromdate, this.todate,);
+  // }
+  checktotal() {
+    this.billList.forEach((row, index) => {
+      if (
+        row.cash +
+          row.dd +
+          row.onlinePayment +
+          row.netamount +
+          row.modifiedDDAmt +
+          row.chequeNo +
+          row.upiAmt !=
+        row.cheque +
+          row.creditCard +
+          row.dues +
+          row.modifiedCheqAmt +
+          row.modifiedCash +
+          row.creditCardNo +
+          row.modifiedUPIAmt
+      ) {
+      }
+    });
+  }
+
+  print() {}
+  clear() {
+    this.cashscrollmodifyForm.reset();
   }
 }

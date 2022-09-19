@@ -178,6 +178,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       const source = res.added[0] || res.removed[0];
       this.update(source.type, source.sno, source.doctorId);
     });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
         filter((res) => {
@@ -343,8 +350,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
-              precaution: "n/a",
-              procedureDoctor: "n/a",
+              precaution: "",
+              procedureDoctor: "",
               credit: 0,
               cash: 0,
               disc: 0,

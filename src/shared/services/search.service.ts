@@ -21,6 +21,7 @@ export class SearchService {
     global: {
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxID: {
           type: "string",
@@ -56,6 +57,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         name: {
           type: "string",
@@ -80,6 +82,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: false,
       properties: {
         from: {
           type: "date",
@@ -97,6 +100,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxID: {
           type: "string",
@@ -113,6 +117,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxid: {
           type: "string",

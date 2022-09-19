@@ -164,7 +164,28 @@ export class BillingService {
 
   patientDetailsInfo: any = [];
 
+  selectedHealthPlan: any;
+
+  selectedOtherPlan: any;
+
+  unbilledInvestigations: boolean = false;
+
+  disableBillTabChange = new Subject<boolean>();
+
+  disableBillTab: boolean = false;
+
+  todayPatientBirthday: boolean = false;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
+
+  changeBillTabStatus(status: boolean) {
+    this.disableBillTab = status;
+    this.disableBillTabChange.next(status);
+  }
+
+  getBillTabStatus() {
+    return this.disableBillTab;
+  }
 
   clear() {
     this.billItems = [];
@@ -177,6 +198,7 @@ export class BillingService {
     this.totalCost = 0;
     this.activeMaxId = null;
     this.company = 0;
+    this.unbilledInvestigations = false;
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
@@ -357,6 +379,14 @@ export class BillingService {
     });
   }
 
+  setHealthPlan(data: any) {
+    this.selectedHealthPlan = data;
+  }
+
+  setOtherPlan(data: any) {
+    this.selectedOtherPlan = data;
+  }
+
   checkServicesAdded() {
     if (
       this.consultationItems.length > 0 ||
@@ -509,7 +539,7 @@ export class BillingService {
 
   removeFromBill(data: any) {
     let exist = this.billItems.findIndex((item: any) => {
-      return (item.itemId = data.billItem.itemId);
+      return (item.itemId = data.billItem && data.billItem.itemId);
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
@@ -778,5 +808,61 @@ export class BillingService {
       BillingApiConstants.insert_billdetailsgst(),
       this.makeBillPayload
     );
+  }
+
+  async processInvestigationAdd(
+    priorityId: number,
+    serviceType: string,
+    investigation: any
+  ) {
+    const res = await this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.company,
+        priority: priorityId,
+        itemId: investigation.value,
+        serviceId: serviceType || investigation.serviceid,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .toPromise();
+    if (res.length > 0) {
+      this.addToInvestigations({
+        sno: this.InvestigationItems.length + 1,
+        investigations: investigation.title,
+        precaution:
+          investigation.precaution == "P"
+            ? '<span class="max-health-red-color">P</span>'
+            : investigation.precaution,
+        priority: priorityId,
+        priority_required: false,
+        specialisation: "",
+        doctorName: investigation.doctorid || "",
+        specialisation_required: investigation.docRequired ? true : false,
+        doctorName_required: investigation.docRequired ? true : false,
+        price: res[0].returnOutPut,
+        billItem: {
+          itemId: investigation.value,
+          priority: priorityId,
+          serviceId: serviceType || investigation.serviceid,
+          price: res[0].returnOutPut,
+          serviceName: "Investigations",
+          itemName: investigation.title,
+          qty: 1,
+          precaution: "",
+          procedureDoctor: "",
+          credit: 0,
+          cash: 0,
+          disc: 0,
+          discAmount: 0,
+          totalAmount: res[0].returnOutPut,
+          gst: 0,
+          gstValue: 0,
+          specialisationID: 0,
+          doctorID: 0,
+        },
+      });
+    }
   }
 }
