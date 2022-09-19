@@ -458,14 +458,19 @@ export class AppointmentSearchComponent implements OnInit {
     //this.http.getExternal(ApiConstants.getAppointmentPatientSearch(this.appointmentSearchForm.value.phone,this.appointmentSearchForm.value.name,'',this.appointmentSearchForm.value.isDateRange,this.appointmentSearchForm.value.startdate,this.appointmentSearchForm.value.enddate,'',this.appointmentSearchForm.value.booknumber)).subscribe((response)=>{
     this.getAppointmentSearch().subscribe(
       (response) => {
-        this.searchResults = response;
-        console.log(this.searchResults);
-        if (this.searchResults.length == 0) {
+        if (response.length == 0) {
           this.searchAppPatient = false;
           this.defaultUI = true;
           this.findpatientimage = "norecordfound";
           this.findpatientmessage = "No Appointment Found";
         } else {
+          let temp: AppointmentSearchModel[] = [];
+          response.forEach((item: any) => {
+            if (item.iAcode && item.registrationno) {
+              temp.push(item);
+            }
+          });
+          this.searchResults = temp;
           this.searchAppPatient = true;
           this.defaultUI = false;
           this.searchResults = this.searchResults.map((item: any) => {
