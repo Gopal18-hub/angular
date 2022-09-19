@@ -49,6 +49,7 @@ export class GstTaxDialogComponent implements OnInit {
       this.cesS_Value = this.data.gstdata[0].cesS_Value
       this.totaltaX_Value = this.data.gstdata[0].totaltaX_Value
       this.sac = this.data.gstdata[0].saccode
+      this.gstTaxForm.controls["code"].setValue(this.sac)
 
     })
 
