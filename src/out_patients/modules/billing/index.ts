@@ -123,7 +123,7 @@ import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/
 import { DisountReasonComponent } from './submodules/billing/prompts/discount-reason/disount-reason.component';
 import { DepositDetailsComponent } from './submodules/billing/prompts/deposit-details/deposit-details.component';
 import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-tax.component';
-
+import { StaffDeptDialogComponent } from './submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component';
 @NgModule({
   declarations: [
     BillingPaymentMethodsComponent,
@@ -220,6 +220,7 @@ import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-
     DisountReasonComponent,
     DepositDetailsComponent,
     GstTaxComponent,
+    StaffDeptDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -252,4 +253,4 @@ import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-
   providers: [],
   bootstrap: [],
 })
-export class BillingModule {}
+export class BillingModule { }

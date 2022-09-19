@@ -24,7 +24,10 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
-        [disabled]="!billingService.checkServicesAdded()"
+        [disabled]="
+          !billingService.checkServicesAdded() ||
+          billingService.getBillTabStatus()
+        "
         (click)="goToBill()"
       >
         Bill
@@ -40,7 +43,7 @@
       </button> -->
     </div>
   </div>
-  <div class="mt-2 h-full">
+  <div class="mt-2 service-table-height">
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
 </div>
