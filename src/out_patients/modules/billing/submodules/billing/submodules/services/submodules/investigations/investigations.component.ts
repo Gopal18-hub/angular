@@ -17,6 +17,7 @@ import {
 import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BillingStaticConstants } from "../../../../BillingStaticConstant";
 
 @Component({
   selector: "out-patients-investigations",
@@ -240,7 +241,10 @@ export class InvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
-              patient_Instructions: r.patient_Instructions,
+              patient_Instructions:
+                BillingStaticConstants.investigationItemBasedInstructions[
+                  r.id.toString()
+                ],
               precaution: r.precaution,
             };
           });
@@ -318,7 +322,10 @@ export class InvestigationsComponent implements OnInit {
             value: r.id,
             originalTitle: r.name,
             docRequired: r.docRequired,
-            patient_Instructions: r.patient_Instructions,
+            patient_Instructions:
+              BillingStaticConstants.investigationItemBasedInstructions[
+                r.id.toString()
+              ],
             serviceid: r.serviceid,
             precaution: r.precaution,
           };

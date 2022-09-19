@@ -179,7 +179,7 @@ export class OrderSetComponent implements OnInit {
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
-        width: "50%",
+        width: "70vw",
         //height: "50%",
         data: {
           orderSet: res.element,

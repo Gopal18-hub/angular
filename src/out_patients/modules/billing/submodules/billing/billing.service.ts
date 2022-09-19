@@ -174,6 +174,8 @@ export class BillingService {
 
   disableBillTab: boolean = false;
 
+  todayPatientBirthday: boolean = false;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   changeBillTabStatus(status: boolean) {
@@ -834,6 +836,7 @@ export class BillingService {
             ? '<span class="max-health-red-color">P</span>'
             : investigation.precaution,
         priority: priorityId,
+        priority_required: false,
         specialisation: "",
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,

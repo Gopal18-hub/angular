@@ -361,12 +361,19 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
-        (resultData: Registrationdetails) => {
+        async (resultData: Registrationdetails) => {
           console.log(resultData);
           if (resultData) {
             this.patientDetails = resultData;
 
             this.setValuesToForm(this.patientDetails);
+            if (this.billingService.todayPatientBirthday) {
+              const birthdayDialog = this.messageDialogService.info(
+                "It’s their birthday today"
+              );
+              await birthdayDialog.afterClosed().toPromise();
+            }
+
             if (this.orderId) {
               this.getediganosticacdoninvestigationgrid(iacode, regNumber);
             }
@@ -501,8 +508,8 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
-      if (diffMonths == 0 && diffDays == 0) {
-        this.snackbar.open("It’s their birthday today", "info");
+      if (dobRef.date() == today.date() && dobRef.month() == today.month()) {
+        this.billingService.todayPatientBirthday = true;
       }
       let returnAge = "";
       if (diffYears > 0) {
@@ -564,14 +571,10 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         let items: any = [];
-        if (res.dtpatientonlinebill.length > 0) {
-          items = res.dtpatientonlinebill;
-        }
         if (res.dtpatientonlinebillPracto.length > 0) {
-          res.dtpatientonlinebillPracto.forEach((appointment: any) => {
-            items.push(appointment);
-          });
+          items = res.dtpatientonlinebillPracto;
         }
+
         if (items.length > 0) {
           const dialogRef = this.matDialog.open(OnlineAppointmentComponent, {
             width: "80vw",
@@ -772,21 +775,23 @@ export class BillingComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        let apppatientDetails = result.data.added[0];
-        if (apppatientDetails.iAcode == "") {
-          this.snackbar.open("Invalid Max ID", "error");
-        } else {
-          let maxid =
-            apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
-          this.formGroup.controls["maxid"].setValue(maxid);
-          this.apiProcessing = true;
-          this.patient = false;
-          //this.getPatientDetailsByMaxId();
-          this.router.navigate([], {
-            queryParams: { maxId: this.formGroup.value.maxid },
-            relativeTo: this.route,
-            queryParamsHandling: "merge",
-          });
+        if (result && result.data) {
+          let apppatientDetails = result.data.added[0];
+          if (apppatientDetails.iAcode == "") {
+            this.snackbar.open("Invalid Max ID", "error");
+          } else {
+            let maxid =
+              apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            this.formGroup.controls["maxid"].setValue(maxid);
+            this.apiProcessing = true;
+            this.patient = false;
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
+          }
         }
       });
   }
