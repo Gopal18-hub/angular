@@ -9,9 +9,11 @@ import { ReportService } from '@shared/services/report.service';
 import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
 import { async, Subject, takeUntil } from "rxjs";
 import {
+  MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
+import { StaffDeptDialogComponent } from '@modules/billing/submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component';
 
 @Component({
   selector: 'out-patients-discount-amt-dialog',
@@ -44,6 +46,7 @@ export class DiscountAmtDialogComponent implements OnInit {
     private miscPatient: MiscService,
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
+    public matDialog: MatDialog,
     private dialogRef: MatDialogRef<DiscountAmtDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
@@ -299,7 +302,9 @@ export class DiscountAmtDialogComponent implements OnInit {
           let billAMt = this.data.data;
           this.discAmount = ((this.disc / 100) * billAMt);
           this.discAmtForm.controls["amt"].setValue(this.discAmount);
-
+          if (this.reasonName.includes("Staff")) {
+            this.employeeCode();
+          }
 
         }
 
@@ -312,6 +317,11 @@ export class DiscountAmtDialogComponent implements OnInit {
         this.billData = this.miscPatient.getBillData();
         console.log(this.billData, "BD")
       })
+
+
+    // this.question[7].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") { this.employeeCode }
+    // })
 
   }
   clear() {
@@ -359,6 +369,25 @@ export class DiscountAmtDialogComponent implements OnInit {
 
   applyDiscount() {
     this.dialogRef.close({ data: this.discountAmtSelected });
+  }
+
+  employeeCode() {
+
+    // this.matDialog.open(StaffDeptDialogComponent, {
+    //   width: '55vw', height: '80vh', data: {
+
+    //   },
+    // });
+    const dialogref = this.matDialog.open(StaffDeptDialogComponent, {
+      width: '55vw', height: '80vh', data: {
+        //  data: this.billAmnt
+      },
+    });
+
+    dialogref.afterClosed().subscribe(res => {
+      this.discAmtForm.controls["empCode"].setValue(res.data);
+    })
+
   }
 }
 

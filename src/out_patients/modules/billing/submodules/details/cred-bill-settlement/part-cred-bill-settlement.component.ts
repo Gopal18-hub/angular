@@ -11,6 +11,9 @@ import { GstComponent } from "../../miscellaneous-billing/billing/gst/gst.compon
 import { billDetailService } from "../billDetails.service";
 import { PaymentDialogComponent } from './../payment-dialog/payment-dialog.component';
 import { ReportService } from "@shared/services/report.service";
+import { getduereceiptnumber } from '../../../../../core/types/billdetails/getDueReceiptNumber.Interface';
+import { BillDetailsApiConstants } from "../BillDetailsApiConstants";
+
 @Component({
   selector: "part-cred-bill-settlement",
   templateUrl: "./part-cred-bill-settlement.component.html",
@@ -147,6 +150,7 @@ export class PartialCredBillComponent implements OnInit {
   makereceiptbtn: boolean = true;
   printreceiptbtn: boolean = true;
   flagfordue: any;
+  receiptnumberList: getduereceiptnumber [] = [];
   ngOnInit(): void {
     let serviceFormResult = this.formService.createForm(
       this.BDetailFormData.properties,
@@ -155,6 +159,7 @@ export class PartialCredBillComponent implements OnInit {
 
     this.BServiceForm = serviceFormResult.form;
     this.questions = serviceFormResult.questions;
+    this.getreceiptnumber();
     console.log(this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid);
     if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid != null ||
        this.billDetailService.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid != undefined ||
@@ -212,13 +217,28 @@ export class PartialCredBillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         //if(result == "Success"){  
-          this.printreceiptbtn = false;      
+          this.getreceiptnumber();     
           console.log("Refund Dialog closed");
           console.log(result);
-          this.receiptno = result.res[0].receiptNumber
         //}    
       });
     }
+
+  getreceiptnumber()
+  {
+    var billno = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno;
+    this.http.get(BillDetailsApiConstants.getduereceiptnumber(billno))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res) => {
+      console.log(res);
+      this.receiptnumberList = res;
+      if(res.length > 0)
+      {
+        this.receiptno = res[res.length - 1].recNumber;
+        this.printreceiptbtn = false;
+      }
+    })
+  }
   printreceipt()
   {
     this.openReportModal('DueReceiptReport');

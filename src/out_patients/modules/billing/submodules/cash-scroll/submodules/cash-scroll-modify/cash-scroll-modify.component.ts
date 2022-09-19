@@ -3,7 +3,14 @@ import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Router } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { ThisTypeNode } from "typescript";
+import { ModifyCashScrollInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
+import { getERPscrollDetailDtoInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
+import { HttpClient } from "@angular/common/http";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { Subject, takeUntil } from "rxjs";
+import { DatePipe } from "@angular/common";
+import { AckDetailsForScrollModel } from "../../../../../../core/models/ackdetailsforscroll.Model";
+import { dtExcelforScrollInterface } from "../../../../../../core/models/ackdetailsforscroll.Model";
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -12,6 +19,9 @@ import { ThisTypeNode } from "typescript";
 export class CashScrollModifyComponent implements OnInit {
   cashscrollmodifyForm!: FormGroup;
   questions: any;
+  private readonly _destroying$ = new Subject<void>();
+  scrolldataObject!: ModifyCashScrollInterface;
+  billList: getERPscrollDetailDtoInterface[] = [];
   cashscrollModifyData = {
     type: "object",
     title: "",
@@ -69,7 +79,7 @@ export class CashScrollModifyComponent implements OnInit {
   config: any = {
     displayedColumns: [
       "slno",
-      "receiptno",
+      "receiptNo",
       "billno",
       "datetime",
       "billamount",
@@ -80,25 +90,25 @@ export class CashScrollModifyComponent implements OnInit {
       "plandiscount",
       "netamount",
       "cash",
-      "actualcash",
+      "modifiedCash",
       "cheque",
-      "actualchequeamount",
-      "chequeno",
+      "modifiedCheqAmt",
+      "chequeNo",
       "dd",
-      "actualddamount",
+      "modifiedDDAmt",
       "ddnumber",
-      "creditcard",
-      "actualccamount",
+      "creditCard",
+      "modifiedCCAmt",
       "authorizationcode",
       "cashpaymtbymobile",
       "actualcashpaymt",
-      "onlinepaymt",
-      "actualonlinepaymt",
+      "onlinePayment",
+      "modifiedOnlinePayment",
       "transactionid",
       "dues",
       "tdsamount",
       "totalamount",
-      "actualupiamt",
+      "modifiedUPIAmt",
       "internetpaymtamt",
       "actualinternetpaymtamt",
     ],
@@ -110,7 +120,7 @@ export class CashScrollModifyComponent implements OnInit {
           width: "5rem",
         },
       },
-      receiptno: {
+      receiptNo: {
         title: "Receipt No.",
         type: "string",
         style: {
@@ -198,13 +208,13 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "cash",
       },
-      actualcash: {
+      modifiedCash: {
         title: "Actual Cash",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualcash",
+        tooltipColumn: "modifiedCash",
       },
       cheque: {
         title: "Cheque",
@@ -214,21 +224,21 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "cheque",
       },
-      actualchequeamount: {
+      modifiedCheqAmt: {
         title: "Actual Cheque Amount",
         type: "number",
         style: {
           width: "12rem",
         },
-        tooltipColumn: "actualchequeamount",
+        tooltipColumn: "modifiedCheqAmt",
       },
-      chequeno: {
+      chequeNo: {
         title: "Cheque No",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "chequeno",
+        tooltipColumn: "chequeNo",
       },
       dd: {
         title: "DD",
@@ -238,13 +248,13 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "dd",
       },
-      actualddamount: {
+      modifiedDDAmt: {
         title: "Actual DD Amount",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualddamount",
+        tooltipColumn: "modifiedDDAmt",
       },
       ddnumber: {
         title: "DD Number",
@@ -254,21 +264,21 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "ddnumber",
       },
-      creditcard: {
+      creditCard: {
         title: "Credit Card",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "creditcard",
+        tooltipColumn: "creditCard",
       },
-      actualccamount: {
+      modifiedCCAmt: {
         title: "Actual CC Amount",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualccamount",
+        tooltipColumn: "modifiedCCAmt",
       },
       authorizationcode: {
         title: "Authorization Code",
@@ -294,21 +304,21 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "actualcashpaymt",
       },
-      onlinepaymt: {
+      onlinePayment: {
         title: "Online Payment",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "onlinepaymt",
+        tooltipColumn: "onlinePayment",
       },
-      actualonlinepaymt: {
+      modifiedOnlinePayment: {
         title: "Online Payment",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualonlinepaymt",
+        tooltipColumn: "modifiedOnlinePayment",
       },
       transactionid: {
         title: "Transaction ID",
@@ -342,13 +352,13 @@ export class CashScrollModifyComponent implements OnInit {
         },
         tooltipColumn: "totalamount",
       },
-      actualupiamt: {
+      modifiedUPIAmt: {
         title: "Actual UPI Amount",
         type: "number",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "actualupiamt",
+        tooltipColumn: "modifiedUPIAmt",
       },
       internetpaymtamt: {
         title: "Internet Payment Amt",
@@ -372,7 +382,9 @@ export class CashScrollModifyComponent implements OnInit {
   constructor(
     private formService: QuestionControlService,
     private router: Router,
-    private dialogservice: MessageDialogService
+    private dialogservice: MessageDialogService,
+    private http: HttpClient,
+    private datepipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -387,385 +399,43 @@ export class CashScrollModifyComponent implements OnInit {
     this.cashscrollmodifyForm.controls["employeename"].disable();
     this.cashscrollmodifyForm.controls["takenat"].disable();
     this.cashscrollmodifyForm.controls["scrollno"].disable();
+    this.http
+      .get(ApiConstants.getdetaileddataforoldscrollerp(1, 10412))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        console.log(data);
+        this.scrolldataObject = data as ModifyCashScrollInterface;
+        console.log(this.scrolldataObject);
+        this.billList = this.scrolldataObject.getERPscrollDetailDto;
+        console.log(this.billList);
+        this.cashscrollmodifyForm.controls["employeename"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].name
+        );
+        this.cashscrollmodifyForm.controls["fromdate"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].fromdatetime
+        );
+        this.cashscrollmodifyForm.controls["todate"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].todatetime
+        );
+        this.cashscrollmodifyForm.controls["takenat"].setValue(
+          this.datepipe.transform(
+            this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime,
+            "MM/dd/yyyy hh:mm:ss a"
+          )
+        );
+        this.cashscrollmodifyForm.controls["scrollno"].setValue(
+          this.scrolldataObject.getERPscrollMainDto[0].stationslno
+        );
+      });
   }
   ngAfterViewInit() {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         event.preventDefault();
-        this.filterTableData();
       }
     });
   }
-  dataconfig: any[] = [
-    {
-      slno: "1",
-      receiptno: "BLCR4",
-      billno: "BLCR5",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR5",
-      billno: "BLCR6",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR7",
-      billno: "BLCR8",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR9",
-      billno: "BLCR10",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR11",
-      billno: "BLCR12",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR13",
-      billno: "BLCR14",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR15",
-      billno: "BLCR16",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR17",
-      billno: "BLCR18",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR19",
-      billno: "BLCR20",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-    {
-      slno: "1",
-      receiptno: "BLCR21",
-      billno: "BLCR22",
-      datetime: "2022-01-01T12:12:00",
-      billamount: 0,
-      refund: 0,
-      depositamount: 0,
-      discountamount: 0,
-      planamount: 0,
-      plandiscount: 0,
-      netamount: 0,
-      cash: 0,
-      actualcash: 0,
-      cheque: 0,
-      actualchequeamount: 0,
-      chequeno: 0,
-      dd: 0,
-      actualddamount: 0,
-      ddnumber: 0,
-      creditcard: 0,
-      actualccamount: 0,
-      authorizationcode: 0,
-      cashpaymtbymobile: 0,
-      actualcashpaymt: 0,
-      onlinepaymt: 0,
-      actualonlinepaymt: 0,
-      transactionid: 0,
-      dues: 0,
-      tdsamount: 0,
-      totalamount: 0,
-      actualupiamt: 0,
-      internetpaymtamt: 0,
-      actualinternetpaymtamt: 0,
-    },
-  ];
-  filtertableList: any[] = this.dataconfig;
-  filterTableData() {
-    if (this.cashscrollmodifyForm.controls["billreceiptno"].value != "") {
-      this.filtertableList = this.dataconfig.filter((item) => {
-        if (
-          item.billno ==
-            this.cashscrollmodifyForm.controls["billreceiptno"].value ||
-          item.receiptno ==
-            this.cashscrollmodifyForm.controls["billreceiptno"].value
-        ) {
-          return item;
-        }
-      });
-    } else {
-      this.filtertableList = this.dataconfig;
-      //this.dialogservice.info("Scroll")
-    }
-  }
+
   navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
@@ -773,8 +443,45 @@ export class CashScrollModifyComponent implements OnInit {
     this.dialogservice.success("Scroll Has Been Acknowledged");
   }
   modify() {
-    this.dialogservice.success("Scroll Has Been Modified");
+    // this.http.post(ApiConstants.ackdetailsforscroll, this.modifyObject());
+    //this.dialogservice.success("Scroll Has Been Modified");
   }
+  fromdate: any;
+  todate: any;
+  tableList: dtExcelforScrollInterface[] = [];
+  // modifyObject(): AckDetailsForScrollModel {
+  //   this.fromdate = this.datepipe.transform(
+  //     this.cashscrollmodifyForm.controls["fromdate"].value,
+  //     "yyyy-MM-ddThh:mm:ss"
+  //   );
+  //   this.todate = this.datepipe.transform(
+  //     this.cashscrollmodifyForm.controls["todate"].value,
+  //     "yyyy-MM-ddThh:mm:ss"
+  //   );
+  //    return new AckDetailsForScrollModel(this.fromdate, this.todate,);
+  // }
+  checktotal() {
+    this.billList.forEach((row, index) => {
+      if (
+        row.cash +
+          row.dd +
+          row.onlinePayment +
+          row.netamount +
+          row.modifiedDDAmt +
+          row.chequeNo +
+          row.upiAmt !=
+        row.cheque +
+          row.creditCard +
+          row.dues +
+          row.modifiedCheqAmt +
+          row.modifiedCash +
+          row.creditCardNo +
+          row.modifiedUPIAmt
+      ) {
+      }
+    });
+  }
+
   print() {}
   clear() {
     this.cashscrollmodifyForm.reset();

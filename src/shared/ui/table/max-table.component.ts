@@ -210,6 +210,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       !this.displayedColumns.includes("maxRemoveRow")
     ) {
       this.displayedColumns.push("maxRemoveRow");
+    } else {
+      if (
+        !this.config.removeRow &&
+        this.displayedColumns.includes("maxRemoveRow")
+      ) {
+        this.displayedColumns.splice(-1);
+      }
     }
   }
 

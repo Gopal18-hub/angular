@@ -123,18 +123,21 @@ export class ServicesComponent implements OnInit {
       );
       return;
     } else if (tab.id == 2 && this.activeTab.id != tab.id) {
-      let checkinvestigations = await this.http
-        .get(
-          BillingApiConstants.getinvestigationfromphysician(
-            this.activeMaxId.iacode,
-            this.activeMaxId.regNumber,
-            this.cookie.get("HSPLocationId")
+      if (this.billingService.unbilledInvestigations) {
+      } else {
+        let checkinvestigations = await this.http
+          .get(
+            BillingApiConstants.getinvestigationfromphysician(
+              this.activeMaxId.iacode,
+              this.activeMaxId.regNumber,
+              this.cookie.get("HSPLocationId")
+            )
           )
-        )
-        .toPromise();
-      if (checkinvestigations.length > 0) {
-        this.investigationCheck(checkinvestigations);
-        return;
+          .toPromise();
+        if (checkinvestigations.length > 0) {
+          this.investigationCheck(checkinvestigations);
+          return;
+        }
       }
     }
     this.activeTab = tab;
@@ -162,8 +165,27 @@ export class ServicesComponent implements OnInit {
             investigations: checkinvestigations,
           },
         });
-        uDialogRef.afterClosed().subscribe((ures: any) => {
+        uDialogRef.afterClosed().subscribe(async (ures: any) => {
           if (ures.process == 1) {
+            if (ures.data.length > 0) {
+              for (let i = 0; i < ures.data.length; i++) {
+                const item = ures.data[i];
+                await this.billingService.processInvestigationAdd(
+                  1,
+                  item.serviceId,
+                  {
+                    title: item.testName,
+                    value: item.testID,
+                    originalTitle: item.testName,
+                    docRequired: item.doctorid ? true : false,
+                    patient_Instructions: "",
+                    serviceid: item.serviceId,
+                    doctorid: item.doctorid,
+                  }
+                );
+              }
+            }
+            this.billingService.unbilledInvestigations = true;
             this.activeTab = this.tabs[1];
             this.selectedComponent = new ComponentPortal(
               this.activeTab.component
@@ -171,6 +193,7 @@ export class ServicesComponent implements OnInit {
           }
         });
       } else {
+        this.billingService.unbilledInvestigations = true;
         this.activeTab = this.tabs[1];
         this.selectedComponent = new ComponentPortal(this.activeTab.component);
       }

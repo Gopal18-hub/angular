@@ -1404,4 +1404,18 @@ export namespace ApiConstants {
   //http://172.30.0.16:1008/api/patient/getdetailsforscroll/2022-01-01/2022-01-12/10412
   export const postUpdateOPExpiredDepositsPatient =
     environment.PatientApiUrl + "api/patient/updateopexpireddepositspatient";
+  export const getdetaileddataforoldscrollerp = (
+    scrollno: number,
+    stationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdetaileddataforoldscrollerp/" +
+      scrollno +
+      "/" +
+      stationid
+    );
+  };
+  export const ackdetailsforscroll =
+    environment.BillingApiUrl + "api/outpatientbilling/ackdetailsforscroll";
 }

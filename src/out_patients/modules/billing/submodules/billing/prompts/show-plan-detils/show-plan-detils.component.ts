@@ -12,20 +12,18 @@ export class ShowPlanDetilsComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    selectCheckBoxPosition: 3,
     dateformat: "dd/MM/yyyy",
-    selectBox: false,
-    displayedColumns: [
-      "sno",
-      "planType",
-      "planName",
-      "select",
-      "serviceId",
-      "planId",
-    ],
+    selectBox: true,
+    clickSelection: "single",
+    displayedColumns: ["sno", "planType", "planName"],
     columnsInfo: {
       sno: {
-        title: "SL.No",
+        title: "Sl.No",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       planType: {
         title: "Plan Type",
@@ -33,18 +31,6 @@ export class ShowPlanDetilsComponent implements OnInit {
       },
       planName: {
         title: "Plan Name",
-        type: "string",
-      },
-      select: {
-        title: "Select",
-        type: "string",
-      },
-      serviceId: {
-        title: "Service Id",
-        type: "string",
-      },
-      planId: {
-        title: "Plan Id",
         type: "string",
       },
     },
@@ -59,6 +45,10 @@ export class ShowPlanDetilsComponent implements OnInit {
   }
 
   cancel() {
-    this.dialogRef.close({ process: 0 });
+    this.dialogRef.close();
+  }
+
+  save() {
+    this.dialogRef.close({ selected: this.tableRows.selection.selected });
   }
 }
