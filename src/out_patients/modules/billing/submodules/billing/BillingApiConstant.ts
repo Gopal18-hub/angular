@@ -54,7 +54,18 @@ export namespace BillingApiConstants {
     serviceId: number,
     hspLocationid: string
   ) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      priorityId +
+      "/" +
+      itemId +
+      "/" +
+      serviceId +
+      "/" +
+      hspLocationid
+    );
+    // return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
   };
 
   export const getcalculateopbill = `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbill`;

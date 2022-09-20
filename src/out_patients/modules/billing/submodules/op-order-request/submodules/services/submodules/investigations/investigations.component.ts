@@ -15,6 +15,9 @@ import {
   switchMap,
   of,
   finalize,
+  pipe,
+  takeUntil,
+  Subject,
 } from "rxjs";
 
 @Component({
@@ -109,6 +112,9 @@ export class OderInvestigationsComponent implements OnInit {
       },
     },
   };
+  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
+  serviceInvestigatationresponse: any;
+  private readonly _destroying$ = new Subject<void>();
 
   constructor(
     private formService: QuestionControlService,
@@ -192,6 +198,13 @@ export class OderInvestigationsComponent implements OnInit {
           this.questions[1] = { ...this.questions[1] };
         }
       });
+    this.formGroup.controls["serviceType"].valueChanges.subscribe(
+      (val: any) => {
+        if (val) {
+          this.getInvestigations(val);
+        }
+      }
+    );
   }
 
   getSpecialization() {
@@ -233,6 +246,7 @@ export class OderInvestigationsComponent implements OnInit {
     this.http
       .get(BillingApiConstants.getinvestigationservice)
       .subscribe((res) => {
+        console.log(res);
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -256,6 +270,7 @@ export class OderInvestigationsComponent implements OnInit {
         )
       )
       .subscribe((res) => {
+        console.log(res);
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -269,6 +284,7 @@ export class OderInvestigationsComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    console.log(this.hspLocationid);
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.investigation.value;
@@ -287,10 +303,13 @@ export class OderInvestigationsComponent implements OnInit {
           this.formGroup.value.investigation.value,
           this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
-          this.cookie.get("HSPLocationId")
+          "67"
+          //this.hspLocationid
         )
       )
       .subscribe((res: any) => {
+        console.log(res);
+        this.serviceInvestigatationresponse = res;
         this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
@@ -306,6 +325,48 @@ export class OderInvestigationsComponent implements OnInit {
         });
 
         this.data = [...this.billingService.InvestigationItems];
+        // this.data.forEach((item: any, index: any) => {
+        //   console.log(item);
+        //   if (item.itemid == 6085) {
+        //     this.messageDialogService.info(
+        //       "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
+        //     );
+        //   }
+        // });
+        if (this.formGroup.value.investigation.value == 6085) {
+          this.messageDialogService.info(
+            "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
+          );
+        }
+        this.http
+          .get(
+            BillingApiConstants.checkpriceforzeroitemid(
+              //"5842",
+              // this.serviceInvestigatationresponse.itemcode,
+              this.formGroup.value.investigation.value,
+              "67",
+              "2"
+            )
+          )
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((response) => {
+            console.log(response);
+            if (response == 0 || response == null) {
+              this.messageDialogService.info(
+                "Price for this service is not defined"
+              );
+            }
+          });
+
+        // this.http
+        //       .get(BillingApiConstants.checkPatientSex(this.formGroup.value.investigation.value,))
+        //       .pipe(takeUntil(this._destroying$)).subscribe;
+        // checkPriceforZeroItemID
+        // checkPatientSex
+        // checkItemModality
+        this.billingService.getPatientDetails().subscribe((result: any) => {
+          console.log(result);
+        });
         this.formGroup.reset();
       });
   }

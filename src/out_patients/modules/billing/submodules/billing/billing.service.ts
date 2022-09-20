@@ -17,6 +17,7 @@ export class BillingService {
   ProcedureItems: any = [];
   OrderSetItems: any = [];
   ConsumableItems: any = [];
+  patientDemographicdata: any = {};
   billItemsTrigger = new Subject<any>();
   configurationservice: [{ itemname: string; servicename: string }] = [] as any;
 
@@ -548,10 +549,10 @@ export class BillingService {
 
   addToConsultation(data: any) {
     this.consultationItems.push(data);
-    this.configurationservice.push({
-      itemname: data.billItem.itemName,
-      servicename: "Consultation",
-    });
+    // this.configurationservice.push({
+    //   itemname: data.billItem.itemName,
+    //   servicename: "Consultation",
+    // });
     if (data.billItem) {
       this.addToBill(data.billItem);
       this.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.push({
@@ -579,10 +580,10 @@ export class BillingService {
 
   addToInvestigations(data: any) {
     this.InvestigationItems.push(data);
-    this.configurationservice.push({
-      itemname: data.billItem.itemName,
-      servicename: data.billItem.serviceName,
-    });
+    // this.configurationservice.push({
+    //   itemname: data.billItem.itemName,
+    //   servicename: data.billItem.serviceName,
+    // });
     if (data.billItem) {
       this.addToBill(data.billItem);
       this.makeBillPayload.ds_insert_bill.tab_o_optestList.push({
