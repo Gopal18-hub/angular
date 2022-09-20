@@ -3,6 +3,14 @@ import { FormGroup } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { CookieService } from "@shared/services/cookie.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { HttpService } from "@shared/services/http.service";
+import { LookupService } from "@core/services/lookup.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { getackdetailsforscroll } from "core/types/GetackdetailsforScroll.Interface";
+import { ackscrolldetailslist } from "core/types/GetackdetailsforScroll.Interface";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "out-patients-acknowledged-scroll-amount-report",
@@ -14,31 +22,26 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
     properties: {
       fromdate: {
         type: "date",
+        required: true,
       },
       todate: {
         type: "date",
+        required: true,
       },
       scrollno: {
         type: "number",
+        required: true,
       },
     },
   };
-
   acknowledgementForm!: FormGroup;
+
+  private readonly _destroying$ = new Subject<void>();
   config: any = {
-    // clickedRows: false,
-    // clickSelection: "single",
-    // actionItems: false,
     dateformat: "dd/MM/yyyy",
-    // selectBox: false,
-    displayedColumns: [
-      "ScrollNo",
-      "AcknowledgeDateTime",
-      "EmployeeName",
-      "Amount",
-    ],
+    displayedColumns: ["stationslno", "ackDateTime", "name", "amount"],
     columnsInfo: {
-      ScrollNo: {
+      stationslno: {
         title: "Scroll.No",
         type: "string",
         tooltipColumn: "ScrollNo",
@@ -46,7 +49,7 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
           width: "1.5rem",
         },
       },
-      AcknowledgeDateTime: {
+      ackDateTime: {
         title: "Acknowledge Date Time",
         type: "string",
         tooltipColumn: "AcknowledgeDateTime",
@@ -54,7 +57,7 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
           width: "2.5rem",
         },
       },
-      EmployeeName: {
+      name: {
         title: "Employee Name",
         type: "string",
         tooltipColumn: "EmployeeName",
@@ -62,7 +65,7 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
           width: "3rem",
         },
       },
-      Amount: {
+      amount: {
         title: "Amount",
         type: "number",
         style: {
@@ -71,46 +74,51 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
       },
     },
   };
-  data: any[] = [
-    {
-      ScrollNo: "BLDP24920",
-      AcknowledgeDateTime: "05/11/2022",
-      Amount: "150.00",
-      EmployeeName: "Sanjeev Singh (EMP001)",
-    },
-    {
-      ScrollNo: "BLDP24920",
-      AcknowledgeDateTime: "05/11/2022",
-      Amount: "150.00",
-      EmployeeName: "Sanjeev Singh (EMP001)",
-    },
-    {
-      ScrollNo: "BLDP24920",
-      AcknowledgeDateTime: "05/11/2022",
-      Amount: "150.00",
-      EmployeeName: "Sanjeev Singh (EMP001)",
-    },
-    {
-      ScrollNo: "BLDP24920",
-      AcknowledgeDateTime: "05/11/2022",
-      Amount: "150.00",
-      EmployeeName: "Sanjeev Singh (EMP001)",
-    },
-    {
-      ScrollNo: "BLDP24920",
-      AcknowledgeDateTime: "05/11/2022",
-      Amount: "150.00",
-      EmployeeName: "Sanjeev Singh (EMP001)",
-    },
-  ];
+
+  public acknowledgementscroll: ackscrolldetailslist[] = [];
+  data: any[] = this.acknowledgementscroll;
+  // data: any[] = [
+  //   {
+  //     ScrollNo: "BLDP24920",
+  //     AcknowledgeDateTime: "05/11/2022",
+  //     Amount: "150.00",
+  //     EmployeeName: "Sanjeev Singh (EMP001)",
+  //   },
+  //   {
+  //     ScrollNo: "BLDP24920",
+  //     AcknowledgeDateTime: "05/11/2022",
+  //     Amount: "150.00",
+  //     EmployeeName: "Sanjeev Singh (EMP001)",
+  //   },
+  //   {
+  //     ScrollNo: "BLDP24920",
+  //     AcknowledgeDateTime: "05/11/2022",
+  //     Amount: "150.00",
+  //     EmployeeName: "Sanjeev Singh (EMP001)",
+  //   },
+  //   {
+  //     ScrollNo: "BLDP24920",
+  //     AcknowledgeDateTime: "05/11/2022",
+  //     Amount: "150.00",
+  //     EmployeeName: "Sanjeev Singh (EMP001)",
+  //   },
+  //   {
+  //     ScrollNo: "BLDP24920",
+  //     AcknowledgeDateTime: "05/11/2022",
+  //     Amount: "150.00",
+  //     EmployeeName: "Sanjeev Singh (EMP001)",
+  //   },
+  // ];
   @ViewChild("table") tableRows: any;
-  public acknowledgementlist = this.data;
   questions: any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private cookie: CookieService,
-    private formService: QuestionControlService
+    private formService: QuestionControlService,
+    private http: HttpService,
+    private lookupservice: LookupService,
+    private datepipe: DatePipe
   ) {}
   apiProcessing: boolean = true;
   showtable: boolean = false;
@@ -121,7 +129,6 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
       queryParams: {},
       relativeTo: this.route,
     });
-    console.log(this.acknowledgementlist);
     let formResult: any = this.formService.createForm(
       this.acknowledgedFormData.properties,
       {}
@@ -130,15 +137,37 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
     this.acknowledgementForm = formResult.form;
     this.questions = formResult.questions;
     this.today = new Date();
-    this.acknowledgementForm.controls["todate"].setValue(this.today);
-    this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
-    this.acknowledgementForm.controls["fromdate"].setValue(this.fromdate);
-    this.questions[2].maximum =
-      this.acknowledgementForm.controls["todate"].value;
-    this.questions[3].minimum =
-      this.acknowledgementForm.controls["fromdate"].value;
     this.acknowledgedFormData = formResult.form;
-    this.questions = formResult.questions;
+  }
+  Viewbtn() {
+    this.acknowledgementlist1();
+    // "2022-09-16",
+    // "2022-09-17",
+  }
+  acknowledgementlist1() {
+    this.http
+      .get(
+        ApiConstants.getackdetailsforscroll(
+          this.datepipe.transform(
+            this.acknowledgementForm.controls["fromdate"].value,
+            "YYYY-MM-dd"
+          ),
+          this.datepipe.transform(
+            this.acknowledgementForm.controls["todate"].value,
+            "YYYY-MM-dd"
+          ),
+          Number(this.cookie.get("StationId")),
+          // 12969,
+          // 9923,
+          Number(this.cookie.get("UserId"))
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data) => {
+        this.acknowledgementscroll = data as ackscrolldetailslist[];
+        console.log(data);
+      });
+    console.log(this.acknowledgementscroll);
+    console.log("data");
   }
 }
