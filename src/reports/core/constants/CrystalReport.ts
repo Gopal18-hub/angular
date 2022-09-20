@@ -65,7 +65,7 @@ export namespace CrystalReport {
   };
 
   export const HappyFamilyPlanUtilizationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?MemberShipNo=${params.MemberShipNo}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?${params.MemberShipNo}`;
   };
 
   export const GeneralOPDReport = (params: any) => {
@@ -179,13 +179,7 @@ export namespace CrystalReport {
       params.Cmb_Equip
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-
-    )}&LocationName=${MaxHealthStorage.getCookie(
-
-      "Location"
-
-    )}`;
-
+    )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
 
   export const freeOutPatientReport = (params: any) => {
@@ -203,7 +197,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}`;
   };
   export const SummaryReportForUtilisationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?${params.membershipno}`;
   };
   export const PHPTracksheet = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
