@@ -18,7 +18,9 @@ export namespace CrystalReport {
   export const billingreport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
-
+  export const billingreportPDF = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReportPDF?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+  };
   export const DispatchReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Dispatch_Report/DispatchReport?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&RepType=${params.RepType}`;
   };
