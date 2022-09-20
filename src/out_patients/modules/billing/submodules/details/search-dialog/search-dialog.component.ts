@@ -355,4 +355,8 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.controls['maxid'].setValue(this.cookie.get("LocationIACode") + ".");
     this.getsearchopbillslist = [];
   }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }

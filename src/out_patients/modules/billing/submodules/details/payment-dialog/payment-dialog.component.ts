@@ -589,5 +589,9 @@ export class PaymentDialogComponent implements OnInit {
       })
     })
   }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 
 }
