@@ -728,7 +728,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Expired Patient Report",
+            reportName: "Expired Deposits",
             reportEntity: "CRPExpiredPatientDetailReport",
           },
         },
