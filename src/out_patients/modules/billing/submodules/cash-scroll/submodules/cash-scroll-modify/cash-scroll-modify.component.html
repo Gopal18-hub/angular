@@ -92,20 +92,31 @@
         </div>
        
         <div class="w-2/5 flex justify-content-end mr-2 "> 
-            <button mat-raised-button color="primary" class="button align-items-center" (click)="acknowledge()">Acknowledge</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="modify()">Modify</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="print()">Print</button>
+            <button mat-raised-button color="primary" class="button align-items-center" [disabled]="ackbtn" (click)="acknowledge()">Acknowledge</button>
+            <button 
+            mat-raised-button 
+            color="primary" 
+            class="ml-2 button align-items-center" 
+            [disabled]="modifybtn" 
+            (click)="modify()"
+            accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="66"
+            actionId="1528"
+            >Modify</button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center" (click)="print()">Print</button>
                    </div>
      
     </div>
     <!-----Third Row-->
-    <div class="h-1/2 mt-1">
-<maxhealth-table  [config]="config" [data]="billList">
+    <div class="h-1/2 mt-1 scroll-table">
+<maxhealth-table  [config]="config" [data]="billList" #table>
 
 </maxhealth-table>
     </div>
     <!--Fourth row-->
-    <div class="h-20 w-full p-3 mt-2 border-class flex  text-wrap ">
+    <div class="h-20 w-full p-3 mt-2 border-class flex  text-wrap bg-lightgray">
         <!-- <div class=" h-1/10 flex max-health-primary-color ">
             <mat-label class="ml-1"> Total Cash</mat-label>
             <div class="w-1/15 ml-2">
@@ -184,10 +195,10 @@
             </div>
 
         </div> -->
-        <div class="w-2/10 pt-0-5 " >
+        <div class="w-2/10 pt-0-5 scroll-input" >
             <div class="flex input-padding">
                 <mat-label class="ml-1"> Total Cash</mat-label>
-            <div class="w-1/2 ml-16">
+            <div class="w-1/2 ml-16 bg-white">
                 <maxhealth-question
                 [question]="questions[6]"
                 [form]="cashscrollmodifyForm"
@@ -197,9 +208,9 @@
             </div>
             </div>
             
-            <div class="flex  mt-6p" >
+            <div class="flex mt-6p input-padding">
                 <mat-label class="ml-1"> Total Cheque (Rs.)</mat-label>
-                <div class="w-1/2 ml-2 ">
+                <div class="w-1/2 ml-2 bg-white">
                     <maxhealth-question
                     [question]="questions[10]"
                     [form]="cashscrollmodifyForm"
@@ -210,10 +221,10 @@
             </div>
           
         </div>
-        <div class="w-2/10 ml-12 pt-0-5">
+        <div class="w-2/10 ml-12 pt-0-5 scroll-input">
              <div class="flex input-padding">
                 <mat-label class="ml-1">Total CC (Rs.)</mat-label>
-                <div class="w-1/2 ml-4">
+                <div class="w-1/2 ml-4 bg-white">
                     <maxhealth-question
                     [question]="questions[7]"
                     [form]="cashscrollmodifyForm"
@@ -222,9 +233,9 @@
                     </maxhealth-question>
                 </div>
             </div>
-            <div class="flex mt-6p">
+            <div class="flex mt-6p input-padding">
                 <mat-label class="ml-1">Total DD (Rs.)</mat-label>
-                <div class="w-1/2 ml-4">
+                <div class="w-1/2 ml-4 bg-white">
                     <maxhealth-question
                     [question]="questions[11]"
                     [form]="cashscrollmodifyForm"
@@ -235,10 +246,10 @@
             </div>
 
         </div>
-        <div class="w-2/10 ml-12 pt-0-5">
+        <div class="w-2/10 ml-12 pt-0-5 scroll-input">
             <div class="flex input-padding">
                 <mat-label class="ml-1">Total Online (Rs.)</mat-label>
-                <div class="w-1/2 ml-2">
+                <div class="w-1/2 ml-2 bg-white">
                     <maxhealth-question
                     [question]="questions[8]"
                     [form]="cashscrollmodifyForm"
@@ -247,9 +258,9 @@
                     </maxhealth-question>
                 </div>
            </div>
-           <div class="flex mt-6p">
+           <div class="flex mt-6p input-padding">
             <mat-label class="ml-1">Total UPI (Rs.)</mat-label>
-            <div class="w-1/2 ml-7">
+            <div class="w-1/2 ml-7 bg-white">
                 <maxhealth-question
                 [question]="questions[12]"
                 [form]="cashscrollmodifyForm"
@@ -260,10 +271,10 @@
            </div>
 
        </div>
-       <div class="w-2/10 ml-12 pt-0-5">
+       <div class="w-2/10 ml-12 pt-0-5 scroll-input">
         <div class="flex input-padding">
             <mat-label class="ml-1 text-wrap"> Total Mobile (Rs.)</mat-label>
-            <div class="w-1/2 ml-20">
+            <div class="w-1/2 ml-20 bg-white">
                 <maxhealth-question
                 [question]="questions[9]"
                 [form]="cashscrollmodifyForm"
@@ -272,9 +283,9 @@
                 </maxhealth-question>
             </div>
        </div>
-       <div class="flex mt-6p">
+       <div class="flex mt-6p input-padding">
         <mat-label class="ml-1 text-wrap" > Total Internet Payment (Rs.)</mat-label>
-        <div class="w-1/2 ml-5">
+        <div class="w-1/2 ml-5 bg-white">
             <maxhealth-question
             [question]="questions[13]"
             [form]="cashscrollmodifyForm"

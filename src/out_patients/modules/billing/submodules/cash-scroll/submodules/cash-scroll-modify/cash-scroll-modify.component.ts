@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, KeyValueDiffer, KeyValueDiffers, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Router } from "@angular/router";
@@ -9,8 +9,9 @@ import { HttpClient } from "@angular/common/http";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
-import { AckDetailsForScrollModel } from "../../../../../../core/models/ackdetailsforscroll.Model";
-import { dtExcelforScrollInterface } from "../../../../../../core/models/ackdetailsforscroll.Model";
+import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
+
+
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -22,6 +23,8 @@ export class CashScrollModifyComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   scrolldataObject!: ModifyCashScrollInterface;
   billList: getERPscrollDetailDtoInterface[] = [];
+  differ!: KeyValueDiffer<any, any>;
+  ackdetailsreqbody: AckDetailsForScrollModel = new AckDetailsForScrollModel();
   cashscrollModifyData = {
     type: "object",
     title: "",
@@ -52,33 +55,49 @@ export class CashScrollModifyComponent implements OnInit {
       },
       totalcash: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalcc: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalonline: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalmobile: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalcheque: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totaldd: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalupi: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
       totalinternetpayment: {
         type: "number",
+        readonly: true,
+        defaultValue: '0.00'
       },
     },
   };
   config: any = {
     displayedColumns: [
-      "slno",
+      "sno",
       "receiptNo",
       "billno",
       "datetime",
@@ -99,21 +118,23 @@ export class CashScrollModifyComponent implements OnInit {
       "ddnumber",
       "creditCard",
       "modifiedCCAmt",
-      "authorizationcode",
-      "cashpaymtbymobile",
-      "actualcashpaymt",
+      "creditCardNo",
+      "mobilePayment",
+      "modifiedCashPaymentMobile",
       "onlinePayment",
       "modifiedOnlinePayment",
-      "transactionid",
+      "onlinePaymentDetails", //TransactionID
       "dues",
       "tdsamount",
       "totalamount",
+      "upiAmt",
       "modifiedUPIAmt",
       "internetpaymtamt",
       "actualinternetpaymtamt",
     ],
+    rowLayout: { dynamic: { rowClass: "row['forclr']" } },
     columnsInfo: {
-      slno: {
+      sno: {
         title: "Sl No.",
         type: "number",
         style: {
@@ -126,7 +147,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "8rem",
         },
-        tooltipColumn: "receiptno",
       },
       billno: {
         title: "Bill No.",
@@ -134,7 +154,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "6rem",
         },
-        tooltipColumn: "billno",
       },
       datetime: {
         title: "Date Time",
@@ -142,7 +161,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "datetime",
       },
       billamount: {
         title: "Bill Amount",
@@ -150,7 +168,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9.5rem",
         },
-        tooltipColumn: "billamount",
       },
       refund: {
         title: "Refund",
@@ -158,7 +175,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "8rem",
         },
-        tooltipColumn: "refund",
       },
       depositamount: {
         title: "Deposit Amount",
@@ -166,7 +182,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "depositamount",
       },
       discountamount: {
         title: "Discount Amount",
@@ -174,7 +189,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "discountamount",
       },
       planamount: {
         title: "Plan Amount",
@@ -182,7 +196,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "planamount",
       },
       plandiscount: {
         title: "Plan Discount",
@@ -190,7 +203,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "plandiscount",
       },
       netamount: {
         title: "Net Amount",
@@ -198,7 +210,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "netamount",
       },
       cash: {
         title: "Cash",
@@ -206,15 +217,13 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "8rem",
         },
-        tooltipColumn: "cash",
       },
       modifiedCash: {
         title: "Actual Cash",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "modifiedCash",
       },
       cheque: {
         title: "Cheque",
@@ -222,23 +231,20 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "cheque",
       },
       modifiedCheqAmt: {
         title: "Actual Cheque Amount",
-        type: "number",
+        type: "input",
         style: {
           width: "12rem",
         },
-        tooltipColumn: "modifiedCheqAmt",
       },
       chequeNo: {
         title: "Cheque No",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "chequeNo",
       },
       dd: {
         title: "DD",
@@ -246,23 +252,20 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "5rem",
         },
-        tooltipColumn: "dd",
       },
       modifiedDDAmt: {
         title: "Actual DD Amount",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "modifiedDDAmt",
       },
       ddnumber: {
         title: "DD Number",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "ddnumber",
       },
       creditCard: {
         title: "Credit Card",
@@ -270,39 +273,34 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "creditCard",
       },
       modifiedCCAmt: {
         title: "Actual CC Amount",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "modifiedCCAmt",
       },
-      authorizationcode: {
+      creditCardNo: {
         title: "Authorization Code",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "authorizationcode",
       },
-      cashpaymtbymobile: {
+      mobilePayment: {
         title: "Cash Payment By Mobile",
         type: "number",
         style: {
           width: "12rem",
         },
-        tooltipColumn: "cashpaymtbymobile",
       },
-      actualcashpaymt: {
+      modifiedCashPaymentMobile: {
         title: "Actual Cash Payment",
-        type: "number",
+        type: "input",
         style: {
           width: "12rem",
         },
-        tooltipColumn: "actualcashpaymt",
       },
       onlinePayment: {
         title: "Online Payment",
@@ -310,23 +308,20 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "onlinePayment",
       },
       modifiedOnlinePayment: {
-        title: "Online Payment",
-        type: "number",
+        title: "Actual online Payment",
+        type: "input",
         style: {
-          width: "9rem",
+          width: "14rem",
         },
-        tooltipColumn: "modifiedOnlinePayment",
       },
-      transactionid: {
+      onlinePaymentDetails: {
         title: "Transaction ID",
-        type: "number",
+        type: "input",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "transactionid",
       },
       dues: {
         title: "Dues",
@@ -334,7 +329,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "dues",
       },
       tdsamount: {
         title: "TDS Amount",
@@ -342,7 +336,6 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "tdsamount",
       },
       totalamount: {
         title: "Total Amount",
@@ -350,15 +343,20 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "9rem",
         },
-        tooltipColumn: "totalamount",
       },
-      modifiedUPIAmt: {
-        title: "Actual UPI Amount",
-        type: "number",
+      upiAmt: {
+        title: "UPI Amount",
+        type: "string",
         style: {
           width: "9rem",
         },
-        tooltipColumn: "modifiedUPIAmt",
+      },
+      modifiedUPIAmt: {
+        title: "Actual UPI Amount",
+        type: "input",
+        style: {
+          width: "9rem",
+        },
       },
       internetpaymtamt: {
         title: "Internet Payment Amt",
@@ -366,25 +364,27 @@ export class CashScrollModifyComponent implements OnInit {
         style: {
           width: "12rem",
         },
-        tooltipColumn: "internetpaymtamt",
       },
       actualinternetpaymtamt: {
         title: "Actual Internet Payment",
-        type: "number",
+        type: "input",
         style: {
           width: "14rem",
         },
-        tooltipColumn: "actualinternetpaymtamt",
       },
     },
   };
 
+  @ViewChild('table') table: any;
+  ackbtn: boolean = false;
+  modifybtn: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
     private dialogservice: MessageDialogService,
     private http: HttpClient,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private differservice: KeyValueDiffers
   ) {}
 
   ngOnInit(): void {
@@ -426,29 +426,127 @@ export class CashScrollModifyComponent implements OnInit {
         this.cashscrollmodifyForm.controls["scrollno"].setValue(
           this.scrolldataObject.getERPscrollMainDto[0].stationslno
         );
+        this.filltable();
       });
   }
   ngAfterViewInit() {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-      if (event.key == "Enter") {
-        event.preventDefault();
+      if(event.key == 'Enter')
+      {
+        console.log(this.cashscrollmodifyForm.controls['billreceiptno'].value);
+        this.filtercall();
       }
     });
+    this.cashscrollmodifyForm.controls['billreceiptno'].valueChanges.subscribe(() => {
+      this.filtercall();
+    })
+    console.log(this.table);
+    setTimeout(() => {
+      this.differ = this.differservice.find(this.table).create();
+    }, 1000);
+  }
+  netamount: any = 0;
+  filltable()
+  {
+    if(this.scrolldataObject.getERPscrollMainDto[0].ackOperator == 0)
+    {
+      this.ackbtn = false;
+      this.modifybtn = false;
+    }
+    else{
+      this.ackbtn = true;
+      this.modifybtn = true;
+    }
+    var i = 1;
+        this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
+          // item.forclr = 'rowcolor'
+          this.netamount += Number(item.billamount);
+          item.sno = i++; 
+          item.billamount = item.billamount.toFixed(2);
+          item.refund = item.refund.toFixed(2);
+          item.depositamount = item.depositamount.toFixed(2);
+          item.discountamount = item.discountamount.toFixed(2);
+          item.planamount = item.planamount.toFixed(2);
+          item.plandiscount = item.plandiscount.toFixed(2);
+          item.netamount = item.netamount.toFixed(2);
+          item.cash = item.cash.toFixed(2);
+          if(item.modifiedCash == null)
+          {
+            item.modifiedCash = 0;
+            item.modifiedCash = Number(item.cash).toFixed(2);
+          }
+          item.cheque = item.cheque.toFixed(2);
+          item.modifiedCheqAmt = item.modifiedCheqAmt.toFixed(2);
+          item.dd = item.dd.toFixed(2);
+          item.dues = item.dues.toFixed(2);
+          item.tdsamount = item.tdsamount.toFixed(2);
+          item.totalamount = item.netamount;
+          item.internetpaymtamt = Number(0).toFixed(2);
+          item.actualinternetpaymtamt = Number(0).toFixed(2);
+          if(item.modifiedCashPaymentMobile == null)
+          {
+            item.modifiedCashPaymentMobile = 0;
+            item.modifiedCashPaymentMobile = item.modifiedCashPaymentMobile.toFixed(2);
+          }
+          if(item.modifiedDDAmt == null)
+          {
+            item.modifiedDDAmt = 0;
+            item.modifiedDDAmt = item.modifiedDDAmt.toFixed(2);
+          }
+          item.creditCard = item.creditCard.toFixed(2);
+          if(item.modifiedCCAmt == null)
+          {
+            item.modifiedCCAmt = 0;
+            item.modifiedCCAmt = item.modifiedCCAmt.toFixed(2);
+          }
+          item.mobilePayment = item.mobilePayment.toFixed(2);
+          if(item.modifiedCashMobileDetails == null)
+          {
+            item.modifiedCashMobileDetails = 0;
+            item.modifiedCashMobileDetails = item.modifiedCashMobileDetails.toFixed(2);
+          }
+          item.onlinePayment = item.onlinePayment.toFixed(2);
+          if(item.modifiedOnlinePayment == null)
+          {
+            item.modifiedOnlinePayment = 0;
+            item.modifiedOnlinePayment = item.modifiedOnlinePayment.toFixed(2);
+          }
+          item.upiAmt = item.upiAmt.toFixed(2);
+          if(item.modifiedUPIAmt == null)
+          {
+            item.modifiedUPIAmt = 0;
+            item.modifiedUPIAmt = item.modifiedUPIAmt.toFixed(2);
+          }
+          if(item.mobilePayment == null)
+          {
+            item.mobilePayment = Number(item.mobilePayment).toFixed(2)
+          }
+        })
   }
 
+  filtercall()
+  {
+    var value = this.cashscrollmodifyForm.controls['billreceiptno'].value;
+    this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
+      if(item.billno == value || item.receiptNo == value)
+      {
+        item.forclr = 'rowcolorchange';
+      }
+      else
+      {
+        item.forclr = '';
+      }
+    })
+  }
   navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
   acknowledge() {
     this.dialogservice.success("Scroll Has Been Acknowledged");
   }
-  modify() {
-    // this.http.post(ApiConstants.ackdetailsforscroll, this.modifyObject());
-    //this.dialogservice.success("Scroll Has Been Modified");
-  }
   fromdate: any;
   todate: any;
-  tableList: dtExcelforScrollInterface[] = [];
+  // tableList: dtExcelforScrollInterface[] = [];
   // modifyObject(): AckDetailsForScrollModel {
   //   this.fromdate = this.datepipe.transform(
   //     this.cashscrollmodifyForm.controls["fromdate"].value,
@@ -460,30 +558,170 @@ export class CashScrollModifyComponent implements OnInit {
   //   );
   //    return new AckDetailsForScrollModel(this.fromdate, this.todate,);
   // }
-  checktotal() {
-    this.billList.forEach((row, index) => {
-      if (
-        row.cash +
-          row.dd +
-          row.onlinePayment +
-          row.netamount +
-          row.modifiedDDAmt +
-          row.chequeNo +
-          row.upiAmt !=
-        row.cheque +
-          row.creditCard +
-          row.dues +
-          row.modifiedCheqAmt +
-          row.modifiedCash +
-          row.creditCardNo +
-          row.modifiedUPIAmt
-      ) {
-      }
-    });
-  }
 
   print() {}
   clear() {
     this.cashscrollmodifyForm.reset();
+  }
+
+  ngDoCheck()
+  {
+    if(this.differ)
+    {
+      const changes = this.differ.diff(this.table);
+      this.totalvaluecheck();
+    }
+  }
+  totalcash: any = 0;
+  totalcheque: any = 0;
+  totalcredit: any = 0;
+  totaldemand: any = 0;
+  totalonline: any = 0;
+  totalupi: any = 0;
+  totalmobile: any = 0;
+  totalinternet: any = 0;
+  totalamount: any = 0;
+  totalvaluecheck()
+  {
+    this.totalcash = 0;
+    this.totalcheque = 0;
+    this.totalcredit = 0;
+    this.totaldemand = 0;
+    this.totalonline = 0;
+    this.totalupi = 0;
+    this.totalmobile = 0;
+    this.totalinternet = 0;
+    this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
+      this.totalcash += Number(item.modifiedCash);
+      this.totalcheque += Number(item.modifiedCheqAmt);
+      this.totalcredit += Number(item.modifiedCCAmt);
+      this.totaldemand += Number(item.modifiedDDAmt);
+      this.totalonline += Number(item.modifiedOnlinePayment);
+      this.totalupi += Number(item.modifiedUPIAmt);
+      this.totalmobile += Number(item.modifiedCashPaymentMobile);
+      this.totalinternet += Number(item.actualinternetpaymtamt);
+      this.totalamount = this.totalcash 
+                        +this.totalcheque 
+                        +this.totalcredit 
+                        +this.totaldemand 
+                        +this.totalonline 
+                        +this.totalupi 
+                        + this.totalmobile
+                        +this.totalinternet;
+    })
+    console.log(this.totalamount);
+    console.log(this.netamount);
+    this.cashscrollmodifyForm.controls['totalcash'].setValue(this.totalcash.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalcheque'].setValue(this.totalcheque.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalcc'].setValue(this.totalcredit.toFixed(2));
+    this.cashscrollmodifyForm.controls['totaldd'].setValue(this.totaldemand.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalonline'].setValue(this.totalonline.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalupi'].setValue(this.totalupi.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalmobile'].setValue(this.totalmobile.toFixed(2));
+    this.cashscrollmodifyForm.controls['totalinternetpayment'].setValue(this.totalinternet.toFixed(2));
+  }
+  modify()
+  {
+    var cashflag = 0, otherflag = 0, chequeflag = 0, ccflag = 0, ddflag = 0, onlineflag = 0;
+    var billforcash, billforother, billforcheque, billforcc, billfordd, billforonline;
+    this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
+
+      //Cash
+      if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
+      {
+        console.log(item.modifiedCash, item.netamount);
+        var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
+        console.log(total, item.netamount)
+        if(Number(total) == Number(item.netamount))
+        {
+
+        }
+        else
+        {
+          cashflag = 1;
+          billforcash = item.billno;
+        }
+      }
+
+      if(Number(item.modifiedCheqAmt) > 0 ||
+        Number(item.modifiedDDAmt) > 0 ||
+        Number(item.modifiedCCAmt) > 0 ||
+        Number(item.modifiedCashPaymentMobile) > 0 ||
+        Number(item.modifiedOnlinePayment) > 0 ||
+        Number(item.modifiedUPIAmt) > 0)
+      {
+        var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
+        console.log(total, item.netamount)
+        if(Number(total) == Number(item.netamount))
+        {
+
+        }
+        else
+        {
+          otherflag = 1;
+          billforother = item.billno;
+        }
+      }
+
+      //cheque
+      if(Number(item.modifiedCheqAmt) > 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
+      {
+        console.log(item.modifiedCheqAmt);
+        chequeflag = 1;
+        billforcheque = item.billno;
+      }
+
+      //credit card
+      if(Number(item.modifiedCCAmt) > 0 && (item.creditCardNo == '' || item.creditCardNo == null || Number(item.creditCardNo) == 0))
+      {
+        ccflag = 1;
+        billforcc = item.billno;
+      }
+
+      //DD
+      if(Number(item.modifiedDDAmt) > 0 && (item.ddnumber == '' || item.ddnumber == null || Number(item.ddnumber) == 0))
+      {
+        ddflag = 1;
+        billfordd = item.billno;
+      }
+
+      //Online
+      if(Number(item.modifiedOnlinePayment) > 0 && (item.onlinePaymentDetails == '' || item.onlinePaymentDetails == null || Number(item.onlinePaymentDetails) == 0))
+      {
+        onlineflag = 1;
+        billforonline = item.billno;
+      }
+
+    })
+    console.log(cashflag, otherflag, chequeflag, ccflag)
+    if(cashflag == 1)
+    {
+      this.dialogservice.info('Cannot save scroll Total Actual Amount Does not match Net Amount for Bill No: '+ billforcash);
+    }
+    else if(otherflag == 1)
+    {
+      this.dialogservice.info('Cannot save scroll Total Actual Amount Does not match Net Amount for Bill No: '+ billforother); 
+    }
+    else if(chequeflag == 1)
+    {
+      this.dialogservice.info('Cheque No Cannot Be Blank for Bill No: '+ billforcheque);
+    }
+    else if(ccflag == 1)
+    {
+      this.dialogservice.info('Credit Card Authorization Code Cannot Be Blank for Bill No: '+ billforcc);
+    }
+    else if(ddflag == 1)
+    {
+      this.dialogservice.info('DD Number Cannot Be Blank for Bill No: '+ billfordd);
+    }
+    else if(onlineflag == 1)
+    {
+      this.dialogservice.info('Online TransactionID Cannot Be Blank for Bill No: '+ billforonline);
+    }
+  }
+
+  modifyrequestbody()
+  {
+    this.ackdetailsreqbody.dT_EXCELforScroll = [] as Array<dtExcelforScroll>
   }
 }
