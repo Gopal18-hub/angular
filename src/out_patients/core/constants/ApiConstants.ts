@@ -1315,7 +1315,7 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/(getopconsultationcount /" +
+      "api/outpatientbilling/getopconsultationcount/" +
       fromdate +
       "/" +
       todate +
