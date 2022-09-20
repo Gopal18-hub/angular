@@ -24,6 +24,7 @@ import { ReportService } from "@shared/services/report.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { DepositDetailsComponent } from "@modules/billing/submodules/billing/prompts/deposit-details/deposit-details.component";
 import { DisountReasonComponent } from "@modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
+import { BillPaymentDialogComponent } from "@modules/billing/submodules/billing/prompts/payment-dialog/payment-dialog.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -57,11 +58,11 @@ export class BillDetailComponent implements OnInit {
   depositDetails: any = [];
   miscServBillForm!: FormGroup;
   serviceID!: number;
-  location: number = Number(this.cookie.get("HSPLocationId"));
+  //location: number = Number(this.cookie.get("HSPLocationId"));
   stationId = Number(this.cookie.get("StationId"));
   userID = Number(this.cookie.get("UserId"));
 
-  //location = 67;
+  location = 67;
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
@@ -1051,10 +1052,10 @@ export class BillDetailComponent implements OnInit {
   }
   //  FOR SETTING PRIORITY
   getPriority() { }
-  rowRwmove(event: any) {
-    console.log(event, "EE")
+  rowRwmove($event: any) {
+    console.log($event, "EE")
 
-    this.serviceselectedList.splice(event.data.Sno, 1);
+    this.serviceselectedList.splice($event.index, 1);
     this.serviceselectedList = this.serviceselectedList.map(
       (item: any, index: number) => {
         item["Sno"] = index + 1;
@@ -1101,38 +1102,38 @@ export class BillDetailComponent implements OnInit {
     //   { this.snackbar.open("Credit limit should not be less than bill amount", "error") }
     // }
     else if (this.serviceselectedList.length <= 0) { this.snackbar.open("Nothing to Save", "error") }
-    else if (this.serviceselectedList.length > 0) {
+    //else if (this.serviceselectedList.length > 0) {
 
-      let depo = 0;
-      let discount = 0;
-      if (this.miscServBillForm.value.dipositAmt > 0) {
-        depo = this.miscServBillForm.value.dipositAmt;
-      }
-      if (this.miscServBillForm.value.discAmt > 0) {
-        discount = this.miscServBillForm.value.discAmt;
-      }
-
-      let amtbyPat = this.billAmnt - depo - discount;
-      let amtbyComp = this.miscServBillForm.value.credLimit;
-      this.miscServBillForm.controls["amtPayByPatient"].setValue(amtbyPat + ".00");
-      this.miscServBillForm.controls["amtPayByComp"].setValue(amtbyComp + ".00");
-
-      const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to make Bill?",
-        },
-      });
-
-      MakeDepositDialogref.afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((result) => {
-          if (result == "Success") {
-            this.openDepositdialog();
-          }
-        });
+    let depo = 0;
+    let discount = 0;
+    if (this.miscServBillForm.value.dipositAmt > 0) {
+      depo = this.miscServBillForm.value.dipositAmt;
     }
+    if (this.miscServBillForm.value.discAmt > 0) {
+      discount = this.miscServBillForm.value.discAmt;
+    }
+
+    let amtbyPat = this.billAmnt - depo - discount;
+    let amtbyComp = this.miscServBillForm.value.credLimit;
+    this.miscServBillForm.controls["amtPayByPatient"].setValue(amtbyPat + ".00");
+    this.miscServBillForm.controls["amtPayByComp"].setValue(amtbyComp + ".00");
+
+    const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+      width: "33vw",
+      height: "40vh",
+      data: {
+        message: "Do you want to make Bill?",
+      },
+    });
+
+    MakeDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result == "Success") {
+          this.openDepositdialog();
+        }
+      });
+    //}
 
 
 
@@ -1174,6 +1175,13 @@ export class BillDetailComponent implements OnInit {
             if (res.data)
               this.snackbar.open("Deposit Amount availed successfully!");
             this.miscServBillForm.controls["dipositAmtEdit"].enable();
+            const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+              width: "70vw",
+              height: "98vh",
+              data: {
+                billAmount: this.billAmnt,
+              },
+            });
             //this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
           })
         }
