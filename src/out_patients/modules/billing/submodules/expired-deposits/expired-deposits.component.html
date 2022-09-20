@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper patient-history-wrapper whitePanel">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper expired-deposit-wrapper whitePanel">
     <nav mat-tab-nav-bar [tabPanel]="tabPanel"  class="banner">
         <ul class="list-unstyled flex items-end">
             <li class="ml-3">
@@ -17,7 +17,7 @@
                     <div>
                         <mat-label class="max-health-primary-color font-semi-bold">Max ID</mat-label>
                     </div>
-                    <div class="ml-1 w-3/10 border-radius-md">
+                    <div class="ml-1 w-3/10 bg-white border-radius-md">
                         <maxhealth-question
                             [question]="questions[0]"
                             [form]="ExpiredDepositform"
@@ -73,7 +73,7 @@
                         </button>
                     </div>
                     <div class="mr-8 ml-1 float-right btn">
-                        <button mat-raised-button color="primary" type="submit">Clear</button>
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
              <!-- <mat-spinner strokeWidth="2"></mat-spinner> -->
              <div  >
                 <maxhealth-table 
-                #table
+                #expireTable
                 [config]="ExpiredDepositconfig"
                 [data]="ExpiredDepositformlist"
                 (columnClick)="activeClick($event)"
@@ -98,12 +98,16 @@
                     Clear
                 </button>
             </div> -->
+            <div class="row w-full flex">
+            <div class='box pink text-float left mb-2 border-radius-md w-1/3'></div>
+            <p class="mt-1 w-1/3">Refunded Deopsit</p>
               <!-- Button -->
-              <div class="flex float-right mt-1">
-                <div class="mr-8">
-                    <button mat-raised-button color="primary" type="submit">Excel</button>
+              <div class="flex float-right w-1/3">
+                <div class="ml-13 mt-1">
+                    <button mat-raised-button color="primary" type="submit" (click)="export()">Excel</button>
                 </div>
                 
             </div>
         </div>
+    </div>
 </section>
