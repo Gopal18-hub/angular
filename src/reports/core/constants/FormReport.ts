@@ -650,7 +650,9 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/${7}`,
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
             fields: {
               title: "membershipno",
               value: "membershipno",

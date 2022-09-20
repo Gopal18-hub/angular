@@ -17,7 +17,7 @@ export class DepositDetailsComponent implements OnInit {
     actionItems: false,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
     selectBox: true,
-    displayedColumns: ['datetime', 'advanceType', 'receiptno', 'takenBy', 'balanceamount'],
+    displayedColumns: ['datetime', 'advanceType', 'receiptno', 'takenBy', 'balAmount'],
     clickedRows: true,
     //clickSelection: "single",
     columnsInfo: {
@@ -37,7 +37,7 @@ export class DepositDetailsComponent implements OnInit {
         title: 'Deposit Taken By',
         type: 'string',
       },
-      balanceamount: {
+      balAmount: {
         title: 'Amount Available',
         type: 'string',
         style: {
@@ -55,7 +55,8 @@ export class DepositDetailsComponent implements OnInit {
 
       this.depoDetails
       this.depoDetails.forEach((e: any) => {
-        e.balanceamount = Number(e.balanceamount).toFixed(2);
+        e.balAmount = Number(e.balanceamount).toFixed(2);
+        e.balanceamount = e.balanceamount;
       })
       this.depoDetails = [...this.depoDetails];
 
