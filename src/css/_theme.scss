@@ -161,6 +161,9 @@ $custom-typography: mat.define-typography-config(
 .max-health-primary-color {
   color: var(--primary-color);
 }
+.max-health-red-color {
+  color: red;
+}
 .text-underline {
   text-underline-position: under;
 }

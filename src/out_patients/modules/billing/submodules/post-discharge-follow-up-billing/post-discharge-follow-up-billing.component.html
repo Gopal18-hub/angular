@@ -63,7 +63,16 @@
               </maxhealth-question>
             </div>
             <mat-label class="max-health-primary-color mr-1 font-semi-bold"
-              >Company <u class="clr-blue"><i class="clr-blue">IOM</i></u></mat-label
+              >Company
+              <button
+              mat-button
+              class="iom-button"
+              [disabled]="!formGroup.value.company"
+              (click)="openIOM()"
+            >
+              <i class="iom-color">IOM</i>
+            </button> 
+              </mat-label
             >
             <div class="w-11 bg-white mr-2">
               <maxhealth-question
@@ -119,7 +128,7 @@
           class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
         >
           <div class="flex w-3/4 align-items-center">
-            <div class="w-1/5 text-overflow">
+            <div class="w-3/10 text-overflow">
               <mat-label class="max-health-primary-color font-semi-bold">Name:</mat-label>
               <span class="ml-2">{{ patientName }}</span>
             </div>
