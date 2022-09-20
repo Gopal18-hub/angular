@@ -249,4 +249,9 @@ export class PartialCredBillComponent implements OnInit {
       locationID: this.cookie.get('HSPLocationId'),
     });
   }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
