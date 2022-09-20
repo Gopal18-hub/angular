@@ -40,6 +40,7 @@
     height: 90%;
     width: 28%;
 }
+.expired-deposit-wrapper{
 ::ng-deep .mat-form-field-wrapper{
     padding-bottom: 0 !important;
 }
@@ -117,3 +118,23 @@
 ::ng-deep tr.isExpdeopisExpdeop {
     background-color: #FFCCD5 !important;
   }
+  .row {
+    display : flex;
+    align-items : center;
+    margin-bottom: 50px;
+}
+  .box {
+    float: left;
+  height: 15px;
+  width: 23px;
+  margin-bottom: 8px !important;
+  border: 1px solid black;
+  clear: both;
+  }
+  .pink{
+    background-color: #FFCCD5 !important;
+  }
+  .ml-13{
+      margin-left: 45.5rem !important;
+  }
+}

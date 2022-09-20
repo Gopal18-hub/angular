@@ -405,6 +405,7 @@ export class ExpiredDepositsComponent implements OnInit {
         });
     }
   }
+
   ngAfterViewInit(): void {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
@@ -497,6 +498,10 @@ export class ExpiredDepositsComponent implements OnInit {
         });
       }
     });
+  }
+  export() {
+    console.log(this.tablerow);
+    this.tablerow.exportAsExcel();
   }
   mobilechange() {
     console.log("mobile changed");
