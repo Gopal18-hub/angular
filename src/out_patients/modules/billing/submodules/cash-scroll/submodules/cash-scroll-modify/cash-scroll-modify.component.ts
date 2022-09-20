@@ -10,7 +10,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
-
+import { CookieService } from "@shared/services/cookie.service";
+import { numbers } from "@material/menu";
 
 @Component({
   selector: "out-patients-cash-scroll-modify",
@@ -384,7 +385,8 @@ export class CashScrollModifyComponent implements OnInit {
     private dialogservice: MessageDialogService,
     private http: HttpClient,
     private datepipe: DatePipe,
-    private differservice: KeyValueDiffers
+    private differservice: KeyValueDiffers,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -400,7 +402,7 @@ export class CashScrollModifyComponent implements OnInit {
     this.cashscrollmodifyForm.controls["takenat"].disable();
     this.cashscrollmodifyForm.controls["scrollno"].disable();
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(1, 10412))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(3, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -448,9 +450,9 @@ export class CashScrollModifyComponent implements OnInit {
   netamount: any = 0;
   filltable()
   {
-    if(this.scrolldataObject.getERPscrollMainDto[0].ackOperator == 0)
+    if(this.scrolldataObject.getERPscrollMainDto[0].ackCashier == 0)
     {
-      this.ackbtn = false;
+      this.ackbtn = true;
       this.modifybtn = false;
     }
     else{
@@ -462,65 +464,34 @@ export class CashScrollModifyComponent implements OnInit {
           // item.forclr = 'rowcolor'
           this.netamount += Number(item.billamount);
           item.sno = i++; 
-          item.billamount = item.billamount.toFixed(2);
-          item.refund = item.refund.toFixed(2);
-          item.depositamount = item.depositamount.toFixed(2);
-          item.discountamount = item.discountamount.toFixed(2);
-          item.planamount = item.planamount.toFixed(2);
-          item.plandiscount = item.plandiscount.toFixed(2);
-          item.netamount = item.netamount.toFixed(2);
-          item.cash = item.cash.toFixed(2);
-          if(item.modifiedCash == null)
-          {
-            item.modifiedCash = 0;
-            item.modifiedCash = Number(item.cash).toFixed(2);
-          }
-          item.cheque = item.cheque.toFixed(2);
-          item.modifiedCheqAmt = item.modifiedCheqAmt.toFixed(2);
-          item.dd = item.dd.toFixed(2);
-          item.dues = item.dues.toFixed(2);
-          item.tdsamount = item.tdsamount.toFixed(2);
-          item.totalamount = item.netamount;
+          item.billamount = Number(item.billamount).toFixed(2);
+          item.refund = Number(item.refund).toFixed(2);
+          item.depositamount = Number(item.depositamount).toFixed(2);
+          item.discountamount = Number(item.discountamount).toFixed(2);
+          item.planamount = Number(item.planamount).toFixed(2);
+          item.plandiscount = Number(item.plandiscount).toFixed(2);
+          item.netamount = Number(item.netamount).toFixed(2);
+          item.cash = Number(item.cash).toFixed(2);
+          item.modifiedCash = Number(item.cash).toFixed(2);
+          item.cheque = Number(item.cheque).toFixed(2);
+          item.modifiedCheqAmt = Number(item.modifiedCheqAmt).toFixed(2);
+          item.dd = Number(item.dd).toFixed(2);
+          item.dues = Number(item.dues).toFixed(2);
+          item.tdsamount = Number(item.tdsamount).toFixed(2);
+          item.totalamount = Number(item.netamount).toFixed(2);
           item.internetpaymtamt = Number(0).toFixed(2);
           item.actualinternetpaymtamt = Number(0).toFixed(2);
-          if(item.modifiedCashPaymentMobile == null)
-          {
-            item.modifiedCashPaymentMobile = 0;
-            item.modifiedCashPaymentMobile = item.modifiedCashPaymentMobile.toFixed(2);
-          }
-          if(item.modifiedDDAmt == null)
-          {
-            item.modifiedDDAmt = 0;
-            item.modifiedDDAmt = item.modifiedDDAmt.toFixed(2);
-          }
-          item.creditCard = item.creditCard.toFixed(2);
-          if(item.modifiedCCAmt == null)
-          {
-            item.modifiedCCAmt = 0;
-            item.modifiedCCAmt = item.modifiedCCAmt.toFixed(2);
-          }
-          item.mobilePayment = item.mobilePayment.toFixed(2);
-          if(item.modifiedCashMobileDetails == null)
-          {
-            item.modifiedCashMobileDetails = 0;
-            item.modifiedCashMobileDetails = item.modifiedCashMobileDetails.toFixed(2);
-          }
-          item.onlinePayment = item.onlinePayment.toFixed(2);
-          if(item.modifiedOnlinePayment == null)
-          {
-            item.modifiedOnlinePayment = 0;
-            item.modifiedOnlinePayment = item.modifiedOnlinePayment.toFixed(2);
-          }
-          item.upiAmt = item.upiAmt.toFixed(2);
-          if(item.modifiedUPIAmt == null)
-          {
-            item.modifiedUPIAmt = 0;
-            item.modifiedUPIAmt = item.modifiedUPIAmt.toFixed(2);
-          }
-          if(item.mobilePayment == null)
-          {
-            item.mobilePayment = Number(item.mobilePayment).toFixed(2)
-          }
+          item.modifiedCashPaymentMobile = Number(item.modifiedCashPaymentMobile).toFixed(2);
+          item.modifiedDDAmt = Number(item.modifiedDDAmt).toFixed(2);
+          item.creditCard = Number(item.creditCard).toFixed(2);
+          item.modifiedCCAmt = Number(item.modifiedCCAmt).toFixed(2);
+          item.mobilePayment = Number(item.mobilePayment).toFixed(2);
+          item.modifiedCashMobileDetails = Number(item.modifiedCashMobileDetails).toFixed(2);
+          item.onlinePayment = Number(item.onlinePayment).toFixed(2);
+          item.modifiedOnlinePayment = Number(item.modifiedOnlinePayment).toFixed(2);
+          item.upiAmt = Number(item.upiAmt).toFixed(2);
+          item.modifiedUPIAmt = Number(item.modifiedUPIAmt).toFixed(2);
+          item.mobilePayment = Number(item.mobilePayment).toFixed(2)
         })
   }
 
@@ -718,10 +689,105 @@ export class CashScrollModifyComponent implements OnInit {
     {
       this.dialogservice.info('Online TransactionID Cannot Be Blank for Bill No: '+ billforonline);
     }
+    else{
+      this.http.post(ApiConstants.ackdetailsforscroll, this.modifyrequestbody())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        console.log(res.message);
+        // console.log(res['message']);
+        if(res.success == true)
+        {
+          this.dialogservice.success(res.message);
+        }
+      })
+      // this.modifyrequestbody();
+    }
   }
 
   modifyrequestbody()
   {
-    this.ackdetailsreqbody.dT_EXCELforScroll = [] as Array<dtExcelforScroll>
+    this.ackdetailsreqbody.dT_EXCELforScroll = [] as Array<dtExcelforScroll>;
+    this.ackdetailsreqbody.fromdate = this.scrolldataObject.getERPscrollMainDto[0].fromdatetime;
+    this.ackdetailsreqbody.todate = this.scrolldataObject.getERPscrollMainDto[0].todatetime;
+    this.scrolldataObject.getERPscrollDetailDto.forEach((item) => {
+      this.ackdetailsreqbody.totdisc += Number(item.discountamount);
+      this.ackdetailsreqbody.totcash += Number(item.cash);
+      this.ackdetailsreqbody.ccamt += Number(item.creditCard);
+      this.ackdetailsreqbody.cheque += Number(item.cheque);
+      this.ackdetailsreqbody.totdues += Number(item.dues);
+      this.ackdetailsreqbody.totrefund += Number(item.refund);
+      this.ackdetailsreqbody.gross += Number(item.totalamount);
+      this.ackdetailsreqbody.netamt += Number(item.netamount);
+      this.ackdetailsreqbody.duereceived += Number(item.duesrec);
+      this.ackdetailsreqbody.totalamt += Number(item.totalamount);
+      this.ackdetailsreqbody.totdd += Number(item.dd);
+      this.ackdetailsreqbody.totplanamt += Number(item.planamount);
+      this.ackdetailsreqbody.totplandiscount += Number(item.plandiscount);
+      this.ackdetailsreqbody.totaltds += Number(item.tdsamount);
+      this.ackdetailsreqbody.totaldeposit += Number(item.depositamount);
+      this.ackdetailsreqbody.mobilePayment += Number(item.mobilePayment);
+      this.ackdetailsreqbody.onlinePayment += Number(item.onlinePayment);
+      this.ackdetailsreqbody.upiAmt += Number(item.upiAmt);
+    })
+    this.ackdetailsreqbody.scrolldate = this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime;
+    this.ackdetailsreqbody.modifiedCheqAmt = this.totalcheque;
+    this.ackdetailsreqbody.modifiedCCAmt = this.totalcredit;
+    this.ackdetailsreqbody.modifiedDDAmt = this.totaldemand;
+    this.ackdetailsreqbody.modifiedCash = this.totalcash;
+    this.ackdetailsreqbody.modifiedCashPaymentMobile = this.totalmobile;
+    this.ackdetailsreqbody.modifiedOnlinePayment = this.totalonline;
+    this.ackdetailsreqbody.modifiedUPIAmount = this.totalupi;
+    this.ackdetailsreqbody.scrollID = this.scrolldataObject.getERPscrollMainDto[0].stationslno;
+    this.ackdetailsreqbody.stationid = Number(this.cookie.get('StationId'));
+    this.ackdetailsreqbody.isAckCashier = true;
+    this.ackdetailsreqbody.operatorId = Number(this.cookie.get('UserId'));
+    this.ackdetailsreqbody.hsplocationId = Number(this.cookie.get('HSPLocationId'));
+    this.scrolldataObject.getERPscrollDetailDto.forEach((item) => {
+      this.ackdetailsreqbody.dT_EXCELforScroll.push({
+        slNo: Number(item.sno),
+        receiptNo: String(item.receiptNo),
+        billNo: String(item.billno),
+        dateTime: this.datepipe.transform(item.datetime, 'YYYY-MM-ddTHH:mm:ss'),
+        billAmount: String(item.billamount),
+        refund: String(item.refund),
+        depositamount: String(item.depositamount),
+        discountAmount: String(item.discountamount),
+        planAmount: String(item.planamount),
+        planDiscount: String(item.plandiscount),
+        netAmount: String(item.netamount),
+        cash: String(item.cash),
+        cheque: String(item.cheque),
+        dd: String(item.dd),
+        creaditCard: String(item.creditCard),
+        cashpaymentbyMobile: String(item.mobilePayment),
+        onlinePayment: String(item.onlinePayment),
+        dues: String(item.dues),
+        tdsAmount: String(item.tdsamount),
+        totalAmount: String(item.totalamount),
+        modifiedCheqAmt: String(item.modifiedCheqAmt),
+        modifiedCCAmt: String(item.modifiedCCAmt),
+        modifiedDDAmt: String(item.modifiedDDAmt),
+        modifiedCash: String(item.modifiedCash),
+        chequeNo: String(item.chequeNo),
+        creditCardNo: String(item.creditCardNo),
+        modifiedCashPaymentMobile: String(item.modifiedCashMobileDetails),
+        modifiedDDNumber: String(item.ddnumber),
+        modifiedOnlinePayment: String(item.modifiedOnlinePayment),
+        onlinePaymentDetails: String(item.onlinePaymentDetails),
+        operatorName: this.cookie.get('UserName'),
+        duereceved: String(item.duesrec),
+        batchno: String(item.batchno),
+        upiAmt: String(item.upiAmt),
+        modifiedUPIAmount: Number(item.modifiedUPIAmt),
+        upiPaymentDetails: Number(item.upiPaymentDetails)
+      })
+    })
+    console.log(this.ackdetailsreqbody);
+    return this.ackdetailsreqbody;
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }
