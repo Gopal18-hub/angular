@@ -57,6 +57,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   ) { }
   totalDeposit = 0;
   categoryIcons: any;
+  apiProcessing = false;
   moment = moment;
   setItemsToBill: any = [];
   doCategoryIconAction(categoryIcon: any) {
@@ -205,7 +206,9 @@ export class MiscellaneousBillingComponent implements OnInit {
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
+        this.apiProcessing = true;
         this.onPhoneModify();
+
       }
     });
     this.getAllCompany();
@@ -278,66 +281,66 @@ export class MiscellaneousBillingComponent implements OnInit {
 
     this.matDialog.closeAll();
     //console.log(this.similarContactPatientList.length);
-    if (!this.MaxIDExist) {
-      this.http
-        .get(
-          ApiConstants.searchPatientApiMisc(
-            '', '', '', this.miscForm.value.mobileNo, '', '', '', 0
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultData: SimilarSoundPatientResponse[]) => {
-            this.similarContactPatientList = resultData;
-            //console.log(this.similarContactPatientList);
-            if (this.similarContactPatientList.length == 1) {
-              //console.log(this.similarContactPatientList[0]);
-              let maxID = this.similarContactPatientList[0].maxid;
-              this.miscForm.controls["maxid"].setValue(maxID);
-              this.getPatientDetailsByMaxId();
-            } else {
-              if (this.similarContactPatientList.length != 0) {
-                const similarSoundDialogref = this.matDialog.open(
-                  SimilarPatientDialog,
-                  {
-                    width: "60vw",
-                    height: "80vh",
-                    data: {
-                      searchResults: this.similarContactPatientList,
-                    },
+    //if (!this.MaxIDExist) {
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.miscForm.value.mobileNo,
+      })
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: SimilarSoundPatientResponse[]) => {
+          this.apiProcessing = false;
+          this.similarContactPatientList = resultData;
+          //console.log(this.similarContactPatientList);
+          if (this.similarContactPatientList.length == 1) {
+            //console.log(this.similarContactPatientList[0]);
+            let maxID = this.similarContactPatientList[0].maxid;
+            this.miscForm.controls["maxid"].setValue(maxID);
+            // this.getPatientDetailsByMaxId();
+          } else {
+            if (this.similarContactPatientList.length != 0) {
+              const similarSoundDialogref = this.matDialog.open(
+                SimilarPatientDialog,
+                {
+                  width: "60vw",
+                  height: "80vh",
+                  data: {
+                    searchResults: this.similarContactPatientList,
+                  },
+                }
+              );
+              similarSoundDialogref
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result) => {
+                  if (result) {
+                    //console.log(result.data["added"][0].maxid);
+                    let maxID = result.data["added"][0].maxid;
+                    this.miscForm.controls["maxid"].setValue(maxID);
+                    this.getPatientDetailsByMaxId();
                   }
-                );
-                similarSoundDialogref
-                  .afterClosed()
-                  .pipe(takeUntil(this._destroying$))
-                  .subscribe((result) => {
-                    if (result) {
-                      //console.log(result.data["added"][0].maxid);
-                      let maxID = result.data["added"][0].maxid;
-                      this.miscForm.controls["maxid"].setValue(maxID);
-                      this.getPatientDetailsByMaxId();
-                    }
-                    //console.log("seafarers dialog was closed");
-                    this.similarContactPatientList = [];
-                  });
-              } else {
-                //console.log("no data found");
-              }
+                  //console.log("seafarers dialog was closed");
+                  this.similarContactPatientList = [];
+                });
+            } else {
+              //console.log("no data found");
             }
-          },
-          (error) => {
-            //console.log(error);
-            this.messageDialogService.info(error.error);
           }
-        );
-    }
+        },
+        (error) => {
+          //console.log(error);
+          this.messageDialogService.info(error.error);
+        }
+      );
+    // }
   }
   clearForm() {
 
     this._destroying$.next(undefined);
     this._destroying$.complete();
-    this.setItemsToBill.clear = true;
-    this.Misc.setMiscBillFormData(this.setItemsToBill);
+    // this.setItemsToBill.clear = true;
+    // this.Misc.setMiscBillFormData(this.setItemsToBill);
+    this.Misc.clearMiscBlling();
 
 
     this.patientName = "";
@@ -383,7 +386,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
       if (expiredStatus) {
         this.snackbar.open("Patient is an Expired Patient!", "error")
-        return;
+        // return;
       }
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
@@ -809,17 +812,17 @@ export class MiscellaneousBillingComponent implements OnInit {
 
     this.http
       .get(
-        ApiConstants.getDipositedAmountByMaxID(
-          "BLKH", 1020369,
-          67)
+        //   ApiConstants.getDipositedAmountByMaxID(
+        //     "BLKH", 1020369,
+        //     67)
+        // )
+        //(
+        ApiConstants.getregisteredpatientdetailsForMisc(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
       )
-      // (
-      //   ApiConstants.getregisteredpatientdetailsForMisc(
-      //     iacode,
-      //     regNumber,
-      //     Number(this.cookie.get("HSPLocationId"))
-      //   )
-      // )
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: any) => {
