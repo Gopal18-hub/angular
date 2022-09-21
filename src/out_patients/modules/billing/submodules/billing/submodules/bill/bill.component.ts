@@ -328,7 +328,7 @@ export class BillComponent implements OnInit {
       }
     );
 
-    this.data = [...this.billingservice.consultationItems];
+    this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
   }
 
