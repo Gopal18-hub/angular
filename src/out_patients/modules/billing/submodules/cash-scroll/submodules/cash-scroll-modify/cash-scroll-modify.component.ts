@@ -11,7 +11,6 @@ import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
 import { CookieService } from "@shared/services/cookie.service";
-import { numbers } from "@material/menu";
 
 @Component({
   selector: "out-patients-cash-scroll-modify",
@@ -119,7 +118,7 @@ export class CashScrollModifyComponent implements OnInit {
       "ddnumber",
       "creditCard",
       "modifiedCCAmt",
-      "creditCardNo",
+      "batchno",
       "mobilePayment",
       "modifiedCashPaymentMobile",
       "onlinePayment",
@@ -282,7 +281,7 @@ export class CashScrollModifyComponent implements OnInit {
           width: "9rem",
         },
       },
-      creditCardNo: {
+      batchno: {
         title: "Authorization Code",
         type: "input",
         style: {
@@ -402,7 +401,7 @@ export class CashScrollModifyComponent implements OnInit {
     this.cashscrollmodifyForm.controls["takenat"].disable();
     this.cashscrollmodifyForm.controls["scrollno"].disable();
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(3, Number(this.cookie.get('StationId'))))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(11, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -458,6 +457,7 @@ export class CashScrollModifyComponent implements OnInit {
     else{
       this.ackbtn = true;
       this.modifybtn = true;
+      this.dialogservice.info('Items for Scroll No: '+this.scrolldataObject.getERPscrollMainDto[0].stationslno+' Modified Already.');
     }
     var i = 1;
         this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
@@ -643,7 +643,7 @@ export class CashScrollModifyComponent implements OnInit {
       }
 
       //credit card
-      if(Number(item.modifiedCCAmt) > 0 && (item.creditCardNo == '' || item.creditCardNo == null || Number(item.creditCardNo) == 0))
+      if(Number(item.modifiedCCAmt) > 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
       {
         ccflag = 1;
         billforcc = item.billno;
@@ -769,7 +769,7 @@ export class CashScrollModifyComponent implements OnInit {
         modifiedDDAmt: String(item.modifiedDDAmt),
         modifiedCash: String(item.modifiedCash),
         chequeNo: String(item.chequeNo),
-        creditCardNo: String(item.creditCardNo),
+        creditCardNo: String(item.batchno),
         modifiedCashPaymentMobile: String(item.modifiedCashMobileDetails),
         modifiedDDNumber: String(item.ddnumber),
         modifiedOnlinePayment: String(item.modifiedOnlinePayment),

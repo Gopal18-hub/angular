@@ -76,6 +76,6 @@ export class OnlineAppointmentComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close({ selected: this.tableRows.selection.data });
+    this.dialogRef.close({ selected: this.tableRows.selection.selected });
   }
 }
