@@ -173,6 +173,8 @@ export class InvestigationsComponent implements OnInit {
       }
     });
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
+      console.log(this.tableRows.tableForm);
+      console.log(this.tableRows.tableForm.value);
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -385,7 +387,10 @@ export class InvestigationsComponent implements OnInit {
       this.formGroup.value.investigation
     );
 
-    if (this.formGroup.value.investigation.patient_Instructions) {
+    if (
+      "patient_Instructions" in this.formGroup.value.investigation &&
+      this.formGroup.value.investigation.patient_Instructions
+    ) {
       this.messageDialogService.info(
         this.formGroup.value.investigation.patient_Instructions
       );

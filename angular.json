@@ -708,19 +708,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "out_patients:build:production"
+              "browserTarget": "mis_reports:build:production"
             },
             "uat": {
-              "browserTarget": "out_patients:build:uat"
+              "browserTarget": "mis_reports:build:uat"
             },
             "sit": {
-              "browserTarget": "out_patients:build:sit"
+              "browserTarget": "mis_reports:build:sit"
             },
             "dev": {
-              "browserTarget": "out_patients:build:dev"
+              "browserTarget": "mis_reports:build:dev"
             },
             "development": {
-              "browserTarget": "out_patients:build:development"
+              "browserTarget": "mis_reports:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -739,7 +739,7 @@
             "tsConfig": "src/mis_reports/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/mis_reports/src/assets"],
+            "assets": ["src/mis_reports/src/favicon.ico", "src/mis_reports/src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/mis_reports/src/styles.scss"
