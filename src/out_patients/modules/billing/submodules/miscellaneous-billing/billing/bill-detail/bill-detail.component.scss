@@ -36,7 +36,9 @@
         width: 26%;
       }
       .h-30vh {
-        height: 30vh;
+        height: 55% !important;
+        //position: absolute;
+        overflow-y: scroll !important;
       }
       .h-22vh {
         height: 22vh;
