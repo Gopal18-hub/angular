@@ -15,6 +15,8 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { InvestigationWarningComponent } from "../../prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "../../prompts/unbilled-investigation/unbilled-investigation.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+
 @Component({
   selector: "out-patients-services",
   templateUrl: "./services.component.html",
@@ -61,38 +63,81 @@ export class ServicesComponent implements OnInit {
 
   activeMaxId: any;
 
+  consumablesExist: boolean = false;
+
+  healthCheckupExist: boolean = false;
+
   constructor(
     private billingService: BillingService,
     private matDialog: MatDialog,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
     this.activeMaxId = this.billingService.activeMaxId;
+    this.billingService.servicesTabStatus.subscribe((res: any) => {
+      if ("consumables" in res) {
+        this.consumablesExist = true;
+        this.healthCheckupExist = false;
+      } else if ("healthCheckup" in res) {
+        this.healthCheckupExist = true;
+        this.consumablesExist = false;
+      } else if ("clear" in res) {
+        this.healthCheckupExist = false;
+        this.consumablesExist = false;
+      }
+    });
   }
 
   async tabChange(tab: any) {
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (tab.id != 6 && this.consumablesExist) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
+      return;
+    }
+
+    if (tab.id != 3 && this.healthCheckupExist) {
+      this.messageDialogService.info(
+        "You cannot select Health Checkup with other Services"
+      );
+      return;
+    }
+
     if (
       tab.id == 3 &&
       this.billingService.checkOtherServicesForHealthCheckups()
     ) {
       this.healthCheckupWarning();
       return;
+    } else if (
+      tab.id == 6 &&
+      this.billingService.checkOtherServicesForConsumables()
+    ) {
+      this.messageDialogService.info(
+        "You cannot select Consumables with other Services"
+      );
+      return;
     } else if (tab.id == 2 && this.activeTab.id != tab.id) {
-      let checkinvestigations = await this.http
-        .get(
-          BillingApiConstants.getinvestigationfromphysician(
-            this.activeMaxId.iacode,
-            this.activeMaxId.regNumber,
-            this.cookie.get("HSPLocationId")
+      if (this.billingService.unbilledInvestigations) {
+      } else {
+        let checkinvestigations = await this.http
+          .get(
+            BillingApiConstants.getinvestigationfromphysician(
+              this.activeMaxId.iacode,
+              this.activeMaxId.regNumber,
+              this.cookie.get("HSPLocationId")
+            )
           )
-        )
-        .toPromise();
-      if (checkinvestigations.length > 0) {
-        this.investigationCheck(checkinvestigations);
-        return;
+          .toPromise();
+        if (checkinvestigations.length > 0) {
+          this.investigationCheck(checkinvestigations);
+          return;
+        }
       }
     }
     this.activeTab = tab;
@@ -120,8 +165,27 @@ export class ServicesComponent implements OnInit {
             investigations: checkinvestigations,
           },
         });
-        uDialogRef.afterClosed().subscribe((ures: any) => {
+        uDialogRef.afterClosed().subscribe(async (ures: any) => {
           if (ures.process == 1) {
+            if (ures.data.length > 0) {
+              for (let i = 0; i < ures.data.length; i++) {
+                const item = ures.data[i];
+                await this.billingService.processInvestigationAdd(
+                  1,
+                  item.serviceId,
+                  {
+                    title: item.testName,
+                    value: item.testID,
+                    originalTitle: item.testName,
+                    docRequired: item.doctorid ? true : false,
+                    patient_Instructions: "",
+                    serviceid: item.serviceId,
+                    doctorid: item.doctorid,
+                  }
+                );
+              }
+            }
+            this.billingService.unbilledInvestigations = true;
             this.activeTab = this.tabs[1];
             this.selectedComponent = new ComponentPortal(
               this.activeTab.component
@@ -129,6 +193,7 @@ export class ServicesComponent implements OnInit {
           }
         });
       } else {
+        this.billingService.unbilledInvestigations = true;
         this.activeTab = this.tabs[1];
         this.selectedComponent = new ComponentPortal(this.activeTab.component);
       }

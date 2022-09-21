@@ -2,7 +2,7 @@
   ::ng-deep {
     maxhealth-table {
       table {
-        width: 120% !important;
+        width: 140% !important;
       }
     }
   }
@@ -13,4 +13,8 @@
       color: #fff !important;
     }
   }
+}
+
+.service-table-height {
+  height: calc(100% - 38px);
 }

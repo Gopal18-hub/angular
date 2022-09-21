@@ -1,0 +1,32 @@
+<div class="w-full h-full">
+    <div class="relative">
+        <button
+        mat-icon-button
+        aria-label="close dialog"
+        mat-dialog-close
+        class="absolute max-dialog-close-icon closeicon"
+        type="button">
+        <mat-icon>close</mat-icon>
+    </button>
+    </div>
+    <div class="font-base font-bold justify-content-center">
+        <p class="max-health-primary-color">Mode of Payment for refund</p>
+    </div>
+        <div class="flex w-5/10 ml-2 mt-5">
+            <div class="font-semi-bold">
+                <mat-label class="max-health-primary-color">Check/DD</mat-label>
+            </div>
+
+            <div class="w-4 ml-2 bg-white">
+                <maxhealth-question 
+                [question]="questions[0]" 
+                [form]="CheckDDForm"
+                [questions]="questions[0]" 
+                [index]="0">
+                </maxhealth-question>
+            </div>
+          </div>
+          <div class="okexpdepositbtn float-right ml-3 mt-6">
+          <button mat-raised-button  color="primary" (click)="Checkddfun()">Ok</button>
+</div>
+</div>

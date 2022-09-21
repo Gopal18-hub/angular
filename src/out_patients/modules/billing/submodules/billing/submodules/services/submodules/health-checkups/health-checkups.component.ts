@@ -76,6 +76,8 @@ export class HealthCheckupsComponent implements OnInit {
     },
   };
 
+  doctorsList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -104,27 +106,61 @@ export class HealthCheckupsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.HealthCheckupItems[$event.index]
+    );
     this.billingService.HealthCheckupItems.splice($event.index, 1);
     this.billingService.HealthCheckupItems =
       this.billingService.HealthCheckupItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
         return item;
       });
+    if (this.billingService.HealthCheckupItems.length == 0) {
+      this.billingService.servicesTabStatus.next({ clear: true });
+    }
     this.data = [...this.billingService.HealthCheckupItems];
     this.billingService.calculateTotalAmount();
   }
 
-  ngAfterViewInit(): void {
-    this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      console.log(res);
-      this.matDialog.open(PackageDoctorModificationComponent, {
+  detialsForHealthCheckup(res: any) {
+    const dialogPopup = this.matDialog.open(
+      PackageDoctorModificationComponent,
+      {
         width: "50%",
-        height: "50%",
         data: {
           orderSet: res.element,
           items: [],
+          doctorsList: this.doctorsList,
         },
-      });
+      }
+    );
+    dialogPopup.afterClosed().subscribe((res1: any) => {
+      if (res1.itemId) {
+        this.doctorsList = [];
+        res1.data.forEach((doctor: any) => {
+          if (doctor.doctorName) {
+            this.doctorsList.push(doctor.doctorName);
+          } else {
+            this.doctorsList.push(0);
+          }
+        });
+        this.billingService.setHCUDetails(res1.itemId, this.doctorsList);
+      } else {
+        this.doctorsList = this.doctorsList.map((d: number) => d * 0);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
+    });
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      this.detialsForHealthCheckup(res);
     });
 
     this.formGroup.controls["healthCheckup"].valueChanges
@@ -210,7 +246,52 @@ export class HealthCheckupsComponent implements OnInit {
       );
   }
 
+  checkPatientSex(
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string,
+    priorityId: number
+  ) {
+    this.http
+      .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
+      .subscribe((res) => {
+        if (res == 1) {
+          this.proceedToAdd(priorityId);
+        } else {
+          this.messageDialogService.error(
+            "This plan can not assign for this sex"
+          );
+          this.formGroup.reset();
+        }
+      });
+  }
+
+  getDoctorsList(hid: string, serviceid: string) {
+    this.doctorsList = [];
+    this.http
+      .get(BillingApiConstants.getHealthCheckupdetails(hid, serviceid))
+      .subscribe((res) => {
+        res.forEach((item: any, index: number) => {
+          if (item.isConsult == 1 && item.itemServiceID == 25) {
+            this.doctorsList.push(0);
+          }
+        });
+        if (this.doctorsList.length > 0) {
+          this.detialsForHealthCheckup({
+            element: this.billingService.HealthCheckupItems[0],
+          });
+        }
+      });
+  }
+
   add(priorityId = 1) {
+    if (this.billingService.HealthCheckupItems.length == 1) {
+      this.messageDialogService.error(
+        "Only one health check up will allow per bill"
+      );
+      return;
+    }
     let exist = this.billingService.HealthCheckupItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.healthCheckup.value;
@@ -222,24 +303,59 @@ export class HealthCheckupsComponent implements OnInit {
       );
       return;
     }
+    this.checkPatientSex(
+      this.formGroup.value.healthCheckup.value,
+      this.billingService.activeMaxId.gender,
+      "26",
+      "1",
+      priorityId
+    );
+  }
+
+  proceedToAdd(priorityId: number) {
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.healthCheckup.value,
-          26,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.healthCheckup.value,
+        serviceId: 26,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToHealthCheckup({
-          sno: this.data.length + 1,
-          healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
-          price: res.amount,
-          itemid: this.formGroup.value.healthCheckup.value,
-          serviceid: 26,
-          priorityId: priorityId,
-        });
+        if (res.length > 0) {
+          this.billingService.addToHealthCheckup({
+            sno: this.data.length + 1,
+            healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
+            price: res[0].returnOutPut,
+            itemid: this.formGroup.value.healthCheckup.value,
+            serviceid: 26,
+            priorityId: priorityId,
+            billItem: {
+              itemId: this.formGroup.value.healthCheckup.value,
+              priority: priorityId,
+              serviceId: 26,
+              price: res[0].returnOutPut,
+              serviceName: "Health Checkups",
+              itemName: this.formGroup.value.healthCheckup.originalTitle,
+              qty: 1,
+              precaution: "",
+              procedureDoctor: "",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+              specialisationID: 0,
+              doctorID: 0,
+            },
+          });
+          this.getDoctorsList(this.formGroup.value.healthCheckup.value, "26");
+        }
 
         this.data = [...this.billingService.HealthCheckupItems];
         this.formGroup.reset();

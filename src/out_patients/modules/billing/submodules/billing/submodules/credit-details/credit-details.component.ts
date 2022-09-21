@@ -15,6 +15,9 @@ import {
 import { IomPopupComponent } from "@modules/billing/submodules/billing/prompts/iom-popup/iom-popup.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { ConfigurationBillingComponent } from "../../prompts/configuration-billing/configuration-billing.component";
+import { IomCompanyBillingComponent } from "../../prompts/iom-company-billing/iom-company-billing.component";
+import { BillingService } from "../../billing.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-credit-details",
@@ -100,6 +103,7 @@ export class CreditDetailsComponent implements OnInit {
   companyQuestions: any;
   generalQuestions: any;
   iommessage: string = "";
+  companyexists:boolean =  false;
 
   private readonly _destroying$ = new Subject<void>();
   companyList!: GetCompanyDataInterface[];
@@ -109,7 +113,9 @@ export class CreditDetailsComponent implements OnInit {
   constructor(private formService: QuestionControlService,
     private http: HttpService, public matDialog: MatDialog,
     public cookie: CookieService,
-    private datepipe: DatePipe,) {}
+    private datepipe: DatePipe,
+    private billingservice: BillingService,    
+    private dialogService: MessageDialogService,) {}
 
   ngOnInit(): void { 
     this.today = new Date();  
@@ -127,6 +133,7 @@ export class CreditDetailsComponent implements OnInit {
     this.generalFormGroup = formResult1.form;
     this.generalQuestions = formResult1.questions;
     this.comapnyFormGroup.controls["letterDate"].setValue(this.today);
+    this.comapnyFormGroup.controls["corporate"].disable();
     this.getAllCompany();
     this.getAllCorporate();
   }
@@ -135,7 +142,7 @@ export class CreditDetailsComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          Number(this.cookie.get("HSPLocationId"))
+        67 // Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -170,24 +177,68 @@ export class CreditDetailsComponent implements OnInit {
     });
   }
 
+  companyname:string | undefined;
   ngAfterViewInit(){
+    let TPA;
     this.comapnyFormGroup.controls["company"].valueChanges.subscribe(
-      (company) => {
-        if (company != null || company != 0 ) {
-        let iomcompany = this.companyList.filter((iom) => iom.id == company);        
+      (res:any) => {
+        if (res != null && res != 0 && res != undefined) {
+          this.companyname = res;
+          this.companyexists = true;
+        let iomcompany = this.companyList.filter((iom) => iom.id == res);        
         this.iommessage =   "IOM Validity till : " + this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
-        }
+        TPA = iomcompany[0].isTPA;
+        if(TPA == 1){
+         const iomcompanycorporate =  this.matDialog.open(IomCompanyBillingComponent, {
+            width: "25%",
+            height: "28%",           
+           });
 
+           iomcompanycorporate.afterClosed()
+           .pipe(takeUntil(this._destroying$))
+           .subscribe((result) => {
+             if (result.data == "corporate") {
+              this.comapnyFormGroup.controls["corporate"].enable();
+              this.comapnyFormGroup.controls["corporate"].setValue(0);
+             }
+             else{
+               
+          this.comapnyFormGroup.controls["corporate"].setValue(0);
+          this.comapnyFormGroup.controls["corporate"].disable();
+             }
+          });
+        }else{
+          this.comapnyFormGroup.controls["corporate"].setValue(0);
+          this.comapnyFormGroup.controls["corporate"].disable();
+        }
+      }
+      else{
+        this.companyexists = false;
+      }
+       
       });
   }
 
   openconfiguration(){
-    this.matDialog.open(ConfigurationBillingComponent, {
-      width: "70%",
-      height: "80%",
-      data: {
-        company: this.comapnyFormGroup.value.company,
-      },
-    });
-  }
+    let billtype;
+    billtype = this.billingservice.getbilltype();
+    let configurationitems:any = this.billingservice.getconfigurationservice();
+    if(billtype != "credit"){  
+      this.dialogService.error("Select credit check first");
+    }
+    else if(configurationitems.length == 0){
+      this.dialogService.error("There is no items for configuration");
+    }
+    else{
+      this.matDialog.open(ConfigurationBillingComponent, {
+        width: "70%",
+        height: "80%",
+        data: {
+          serviceconfiguration: configurationitems,
+          patientdetails: this.billingservice.getPatientDetails(),
+          companyname: this.companyname
+        },
+      });    
+    }
+    }
 }

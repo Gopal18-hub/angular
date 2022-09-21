@@ -79,8 +79,9 @@
             color="primary"
             class="btn-md addbtn mt-3 ml-3"
             type="submit"
+            (click)="clear()"
           >
-           Clear
+           Add
           </button>
             </div>
            
@@ -94,7 +95,8 @@
     <div class="mt-3 w-full h-62">  
       <maxhealth-table      
         [config]="discAmtFormConfig"
-        [data]="discAmtData"
+        [data]="discountRows"
+        (columnClick)="listRowClick($event)" 
       ></maxhealth-table>
       <!-- </ng-container> -->
     </div>
@@ -131,6 +133,7 @@
                 [form]="discAmtForm"
                 [questions]="question[7]"
                 [index]="7"
+                (click)="employeeCode()"
               >
               </maxhealth-question>
             </div>
@@ -143,6 +146,7 @@
             color="primary"
             class="btn-md addbtn mt-3 ml-3"
             type="submit"
+            (click)="applyDiscount()"
           >
            Apply Discount
           </button>

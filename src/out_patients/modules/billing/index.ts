@@ -97,17 +97,38 @@ import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.
 import { CreditDetailComponent } from "./submodules/miscellaneous-billings/credit-details/credit-details.component";
 import { IomPopupComponent } from "./submodules/billing/prompts/iom-popup/iom-popup.component";
 import { BillDetailsRefundDialogComponent } from "./submodules/details/refund-dialog/refund-dialog.component";
-import { ShowPlanDetilsComponent } from './submodules/billing/prompts/show-plan-detils/show-plan-detils.component';
-import { PrintRefundReceiptDialogComponent } from './submodules/details/printrefundreceiptdialog/print-refund-receipt-dialog.component';
-import { ResendBillEmailDialogComponent } from './submodules/details/resend-bill-email-dialog/resend-bill-email-dialog.component';
+import { ShowPlanDetilsComponent } from "./submodules/billing/prompts/show-plan-detils/show-plan-detils.component";
+import { PrintRefundReceiptDialogComponent } from "./submodules/details/printrefundreceiptdialog/print-refund-receipt-dialog.component";
+import { ResendBillEmailDialogComponent } from "./submodules/details/resend-bill-email-dialog/resend-bill-email-dialog.component";
 import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
 import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
-import { OnlineAppointmentComponent } from './submodules/billing/prompts/online-appointment/online-appointment.component';
-import { GstTaxDialogComponent } from './submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component';
-import { DiscountAmtDialogComponent } from './submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component';
+import { OnlineAppointmentComponent } from "./submodules/billing/prompts/online-appointment/online-appointment.component";
+import { GstTaxDialogComponent } from "./submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "./submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
+import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-company-billing/iom-company-billing.component";
+import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
+import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
+import { OnlineDepositReportComponent } from "./submodules/online-deposit-report/online-deposit-report.component";
 
+import { BillForm60Component } from "./submodules/billing/prompts/payment-dialog/form60/form60.component";
+import { BillPaymentDialogComponent } from "./submodules/billing/prompts/payment-dialog/payment-dialog.component";
+import { BillingPaymentMethodsComponent } from "./submodules/billing/prompts/payment-dialog/payment-methods/payment-methods.component";
+import { CashScrollComponent } from "./../billing/submodules/cash-scroll/cash-scroll.component";
+import { CashScrollNewComponent } from "./../billing/submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
+import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
+import { OpPrescriptionDialogComponent } from "./submodules/details/op-prescription-dialog/op-prescription-dialog.component";
+import { ExpdepositRefundDialogComponent } from "./submodules/expired-deposits/expdeposit-refund-dialog/expdeposit-refund-dialog.component";
+import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
+import { DisountReasonComponent } from './submodules/billing/prompts/discount-reason/disount-reason.component';
+import { DepositDetailsComponent } from './submodules/billing/prompts/deposit-details/deposit-details.component';
+import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-tax.component';
+import { StaffDeptDialogComponent } from './submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component';
 @NgModule({
   declarations: [
+    BillingPaymentMethodsComponent,
+    BillForm60Component,
+    BillPaymentDialogComponent,
     BillingComponent,
     BillDetailTableComponent,
     BillingComponentPage,
@@ -185,6 +206,21 @@ import { DiscountAmtDialogComponent } from './submodules/miscellaneous-billings/
     OnlineAppointmentComponent,
     GstTaxDialogComponent,
     DiscountAmtDialogComponent,
+    AcknowledgedScrollAmountReportComponent,
+    IomCompanyBillingComponent,
+    ExpiredDepositsComponent,
+    MonthlyOpConsultationReportComponent,
+    CashScrollNewComponent,
+    CashScrollComponent,
+    CashScrollModifyComponent,
+    OpPrescriptionDialogComponent,
+    OnlineDepositReportComponent,
+    ExpdepositRefundDialogComponent,
+    ExpdepositCheckddDialogComponent,
+    DisountReasonComponent,
+    DepositDetailsComponent,
+    GstTaxComponent,
+    StaffDeptDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -217,4 +253,4 @@ import { DiscountAmtDialogComponent } from './submodules/miscellaneous-billings/
   providers: [],
   bootstrap: [],
 })
-export class BillingModule {}
+export class BillingModule { }

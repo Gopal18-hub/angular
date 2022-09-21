@@ -1,0 +1,34 @@
+.text-wrap{
+    white-space: nowrap;
+}
+.input-padding{
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
+}
+.bg-lightgray{
+    background :#F6F6F6; 
+     
+}
+.bg-darkgray{
+    
+    background: #d8d8d8;
+}
+
+.table{
+    ::ng-deep .mat-sort-header-content{
+        white-space: nowrap;
+    }
+}
+.button{
+    height:1.875rem;
+    line-height: 1.875rem;
+    min-width:initial !important;
+
+}
+.w-18{
+    width:18%
+}
+.bg-white{
+    background: white;
+}

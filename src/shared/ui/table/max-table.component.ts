@@ -112,6 +112,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    if (!("rowHighlightOnHover" in this.config)) {
+      this.config.rowHighlightOnHover = true;
+    }
     if (this.config.groupby) {
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
@@ -159,6 +162,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!("rowHighlightOnHover" in this.config)) {
+      this.config.rowHighlightOnHover = true;
+    }
     if (this.config.groupby) {
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
@@ -204,6 +210,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       !this.displayedColumns.includes("maxRemoveRow")
     ) {
       this.displayedColumns.push("maxRemoveRow");
+    } else {
+      if (
+        !this.config.removeRow &&
+        this.displayedColumns.includes("maxRemoveRow")
+      ) {
+        this.displayedColumns.splice(-1);
+      }
     }
   }
 
@@ -282,6 +295,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   columnClickFun(element: any, col: string) {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
+    if (!this.config.selectBox && !this.config.clickedRows) return;
     this.selection.toggle(element);
   }
 

@@ -70,11 +70,10 @@ export class RefundDialogComponent implements OnInit {
   PaymentType:number = 1; //default cash
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
- 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
 
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
 
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
@@ -104,6 +103,7 @@ export class RefundDialogComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.getdepositcashlimit();
     let formResult: any = this.formService.createForm(
       this.refundFormData.properties,
       {}
@@ -124,7 +124,7 @@ export class RefundDialogComponent implements OnInit {
       avalaiblemaount: this.data.clickedrowdepositdetails.balance
     }
     this.mobileno = this.data.patientinfo.mobileno;
-    this.getdepositcashlimit();
+   
     console.log('inside refund page');
   }
   ngAfterViewInit(): void{   
@@ -223,9 +223,7 @@ export class RefundDialogComponent implements OnInit {
       .subscribe((result) => {
         if (result == "Success")  
          {    
-         this.clear();  
-         let amount = Number(this.avalaiblemaount) - Number(this.totalrefundamount); 
-         this.avalaiblemaount =  amount.toFixed(2);
+         this.clear();          
          this.SendOTP="Send OTP";
          this.ResendOTP="Send OTP to Manager";          
           console.log("More Refund Dialog closed");
@@ -244,8 +242,17 @@ export class RefundDialogComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData) => {       
-         
-                this.MoreRefunddialog();          
+            let amount = Number(this.avalaiblemaount) - Number(this.totalrefundamount); 
+            this.avalaiblemaount =  amount.toFixed(2);
+            if(amount <= 0){
+              this.clear();
+              this.dialogRef.close();
+              this.matDialog.closeAll();
+               this.messageDialogService.success("Refund has been done Successfully!");
+            }else{
+              this.MoreRefunddialog();   
+            }
+                       
            
           },
           (error) => {
@@ -376,7 +383,7 @@ export class RefundDialogComponent implements OnInit {
     .pipe(takeUntil(this._destroying$))
     .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
       this.depositcashlimitationdetails = resultData.cashLimitOfLocation;
-      console.log(resultData);
+     this.depositservice.setcashlimitation(this.depositcashlimitationdetails);
     });
   }
 

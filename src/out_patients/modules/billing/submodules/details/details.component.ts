@@ -33,6 +33,10 @@ import { objSendApprovalTableList, sendForBillDetailsApproval } from '../../../.
 import { PrintRefundReceiptDialogComponent } from './printrefundreceiptdialog/print-refund-receipt-dialog.component';
 import { ResendBillEmailDialogComponent } from './resend-bill-email-dialog/resend-bill-email-dialog.component'
 import { ReportService } from "@shared/services/report.service";
+import { ActivatedRoute } from "@angular/router";
+import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
+import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -40,10 +44,13 @@ import { ReportService } from "@shared/services/report.service";
 })
 export class DetailsComponent implements OnInit {
   private check!: KeyValueDiffer<string, any>;
+  maxid: any;
+  billno: any;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpService,
     public cookie: CookieService,
     private datepipe: DatePipe,
@@ -54,9 +61,26 @@ export class DetailsComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private reportService: ReportService
   ) {
+    this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value); 
+        }
+        else{
+          this.ngOnInit();
+          this.clear();
+        }
+        });
     this.check = this.differ
       .find(this.billdetailservice.sendforapproval)
       .create();
+    
+  }
+  async loadGrid(formdata: any): Promise<any> {    
+     console.log(formdata.maxID);
+     this.maxid = formdata.maxID;
   }
   moment = moment;
   @ViewChild("selectedServices") selectedServicesTable: any;
@@ -122,31 +146,31 @@ export class DetailsComponent implements OnInit {
       billAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       dipositrAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       discAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       discAftBill: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       refundAmt: {
         type: "string",
         required: false,
-        defaultValue: "0.0",
+        defaultValue: "0.00",
         readonly: true,
       },
       authBy: {
@@ -208,27 +232,35 @@ export class DetailsComponent implements OnInit {
   billexist: boolean = true;
   ngOnInit(): void {
 
-    this.router.navigate(["out-patient-billing/details"]).then(() => {
-      window.location.reload;
-    });
+    // this.router.navigate(["out-patient-billing/details"]).then(() => {
+    //   window.location.reload;
+    // });
     let formResult = this.formService.createForm(
       this.BDetailFormData.properties,
       {}
     );
-
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    if(this.maxid != '' && this.maxid != undefined)
+    {
+      this.BServiceForm.controls['maxid'].setValue(this.maxid);
+      this.search();
+      this.maxid = '';
+    }
     this.BServiceForm.controls['fromDate'].disable();
     this.BServiceForm.controls['toDate'].disable();
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
+    this.BServiceForm.controls['paymentMode'].disable();
     this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
     this.questions[14].options = this.paymentmode.map((l: any) => {
       return { title: l.title, value: l.title };
     });
+    
+    this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -304,12 +336,25 @@ export class DetailsComponent implements OnInit {
       i.reason = reas[0].name,
       i.mop = this.BServiceForm.controls['paymentMode'].value
     });
-    this.http.post(BillDetailsApiConstants.sendapproval('GAVS-HIS', this.cookie.get('HSPLocationId'), this.cookie.get('UserId')), this.approvelist())
+    this.http.post(BillDetailsApiConstants.sendapproval('Gavs', this.cookie.get('HSPLocationId'), this.cookie.get('UserId')), this.approvelist())
     .subscribe(res => {
       console.log(res);
       if(res.length > 0)
       {
-        this.msgdialog.success(res[0].returnMessage);
+        if(res[0].successFlag == true)
+        {
+          let dialogref =  this.msgdialog.success(res[0].returnMessage);
+          dialogref.afterClosed().subscribe(() => {
+            this.billno = this.BServiceForm.controls['billNo'].value;
+            this.clear();
+            this.BServiceForm.controls['billNo'].setValue(this.billno);
+            this.getpatientbilldetails();
+          })
+        }
+        else
+        {
+          this.msgdialog.info(res[0].returnMessage);
+        }
       }
     })
   }
@@ -330,7 +375,7 @@ export class DetailsComponent implements OnInit {
         refundAmt : i.refundAmt,
         mop : i.mop,
         serviceId : i.serviceId,
-        itemId : i.itemId,
+        itemId : i.itemid,
         serviceName : i.serviceName,
         itemName : i.itemName,
         refundAfterAck : i.refundAfterAck,
@@ -346,6 +391,7 @@ export class DetailsComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
+        this.billno = this.BServiceForm.controls['billNo'].value;
         this.getpatientbilldetails();
       }
     });
@@ -353,38 +399,111 @@ export class DetailsComponent implements OnInit {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
-        this.search();
+        if(this.BServiceForm.value.maxid == this.cookie.get("LocationIACode") + ".")
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
+        else if(this.BServiceForm.value.maxid == '')
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
+        else
+        { 
+          this.search();
+        }
+        
       }
     });
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
         console.log("event triggered");
-        this.search();
+        if(this.BServiceForm.value.mobileno.toString().length < 10)
+        {
+          this.snackbar.open('Invalid Mobile No');
+        }
+        else
+        {
+          this.search();
+        }
+        
       }
     });
   }
 
+
+  noteRemarkdb: any;
+  vipdb: any;
+  hwcRemarkdb: any;
+  hotlistReasondb: any;
+  hotlistRemarkdb: any;
+  bplcardNo: any;
+  bplCardAddress: any;
   getPatientIcon() {
     let iacode = this.BServiceForm.value.maxid.split(".")[0];
     let regNumber = this.BServiceForm.value.maxid.split(".")[1];
     this.http
-      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .get(ApiConstants.getregisteredpatientdetailsForBilling(iacode, regNumber, Number(this.cookie.get("HSPLocationId"))))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
-        (resultData: PatientDetails) => {
+        (resultData: Registrationdetails) => {
+          console.log(resultData);
           // this.clear();
-          this.patientDetailsforicon = resultData;
-          this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            this.patientDetailsforicon
-          );
+          this.patientDetails = resultData;
+          console.log(this.patientDetails)
         },
         (error) => {}
       );
-  }
 
+      this.http.get(ApiConstants.patientDetails(regNumber, iacode))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: PatientDetails) => {
+        console.log(res);
+        this.patientDetailsforicon = res;
+        this.noteRemarkdb = res.notereason;
+        this.vipdb = res.vipreason;
+        this.hwcRemarkdb = res.hwcRemarks;
+        this.hotlistReasondb = res.hotlistreason;
+        this.hotlistRemarkdb = res.hotlistcomments;
+        this.bplcardNo = res.bplcardNo;
+        this.bplCardAddress = res.addressOnCard;
+        this.categoryIcons = this.patientService.getCategoryIconsForPatient(
+            this.patientDetailsforicon
+        );
+      })
+  }
+  
+  doCategoryIconAction(categoryIcon: any) {
+    const data: any = {
+      note: {
+        notes: this.noteRemarkdb,
+      },
+      vip: {
+        notes: this.vipdb,
+      },
+      hwc: {
+        notes: this.hwcRemarkdb,
+      },
+      ppagerNumber: {
+        bplCardNo: this.bplcardNo,
+        BPLAddress: this.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReasondb,
+        reason: this.hotlistRemarkdb,
+      },
+    };
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientService.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
   getpatientbilldetails() {
     this.billdetailservice.clear();
+    this.BServiceForm.controls['refundAmt'].setValue('0.00');
     this.http
       .get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
       .pipe(takeUntil(this._destroying$))
@@ -396,9 +515,33 @@ export class DetailsComponent implements OnInit {
           } 
           else 
           {
+            this.questions[0].readonly = true;
+            this.questions[1].readonly = true;
+            this.questions[2].readonly = true;
+            this.activeLink = this.linkList[0];
             this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
+            this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(item => {
+              item.amount = item.amount.toFixed(2);
+              item.discountamount = item.discountamount.toFixed(2);
+              item.planAmount = item.planAmount.toFixed(2);
+            })
+            console.log(this.patientbilldetaillist)
             this.billdetailservice.patientbilldetaillist = resultdata;
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+            var printrefundflag = 0;
+            this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(k => {
+              if(k.cancelled == 1)
+              {
+                printrefundflag++;
+              }
+            })
+            if(printrefundflag > 0)
+            {
+              this.printrefund = false;
+            }
+            else{
+              this.printrefund = true;
+            }
             if (this.patientbilldetaillist.billDetialsForRefund_Table0.length >= 1) 
             {
               this.billdetailservice.billafterrefund = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail;
@@ -409,15 +552,16 @@ export class DetailsComponent implements OnInit {
                 this.msgdialog.info(errtxt);
               }
               console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]);
+              this.BServiceForm.controls["billNo"].setValue(this.billno);
               this.billFormfill();
               if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
                 this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
                 this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == ''  
               )
               {
-                this.BServiceForm.controls['authBy'].enable();
-                this.BServiceForm.controls['reason'].enable();
-                this.BServiceForm.controls['paymentMode'].enable();
+                // this.BServiceForm.controls['authBy'].enable();
+                // this.BServiceForm.controls['reason'].enable();
+                // this.BServiceForm.controls['paymentMode'].enable();
               }
               else
               {
@@ -425,11 +569,58 @@ export class DetailsComponent implements OnInit {
                 this.BServiceForm.controls['reason'].disable();
                 this.BServiceForm.controls['paymentMode'].disable();
               }
-              this.printbill = false;
-              this.consumableprint = false;
-              this.phptracksheet = false;
-              this.opprescription = false;
-              this.doxperprint = false;
+              var healthlist = 0;
+              var consultlist = 0; 
+              var consumablelist = 0; 
+              this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach( (item: any) => {
+                console.log(item);
+                if(item.servicename == 'Health Checkups')
+                {
+                  console.log('health')
+                  healthlist++;
+                }
+                else if(item.servicename == 'Consultations')
+                {
+                  console.log('consultation')
+                  consultlist++;
+                }
+                else if(item.servicename == "Consumable")
+                {
+                  console.log('consumable')
+                  consumablelist++;
+                }
+              })
+              if(healthlist > 0)
+              {
+                this.phptracksheet = false;
+              }
+              else
+              {
+                this.phptracksheet = true;
+              }
+              if(consultlist > 0 && this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 0)
+              {
+                this.opprescription = false;
+              }
+              else
+              {
+                this.opprescription = true;
+              }
+              if(consumablelist > 0)
+              {
+                this.consumableprint = false;
+              }
+              else
+              {
+                this.consumableprint = true;
+              }
+              if(consultlist > 0)
+              {
+                this.doxperprint = false;
+              }
+              else{
+                this.doxperprint = true;
+              }
               if (this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].requestToApproval == 0) 
               {
                 this.refundbill == false;
@@ -438,6 +629,7 @@ export class DetailsComponent implements OnInit {
               {
                 this.refundbill == true;
               }
+              this.printbill = false;
               console.log(this.billdetailservice.serviceList);
               this.router.navigate(["out-patient-billing/details", "services"]);
             }
@@ -449,6 +641,8 @@ export class DetailsComponent implements OnInit {
   }
   billFormfill() {
     this.billexist = false;
+    this.BServiceForm.markAsDirty();
+    this.BServiceForm.controls['billNo'].setValue(this.billno);
     console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
     this.BServiceForm.controls["maxid"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
@@ -481,17 +675,17 @@ export class DetailsComponent implements OnInit {
     );
     this.BServiceForm.controls["billAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].billamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2)
     );
     this.BServiceForm.controls["dipositrAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].depositamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2)
     );
     this.BServiceForm.controls["discAmt"].setValue(
       this.patientbilldetaillist
-        .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount
+        .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2)
     );
-    // this.BServiceForm.controls["discAftBill"].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0]);
+    this.BServiceForm.controls["discAftBill"].setValue(Number(0).toFixed(2));
     // this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
     this.BServiceForm.controls["authBy"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby);
     var reasonid = this.refundreasonlist.find( id => {
@@ -509,7 +703,33 @@ export class DetailsComponent implements OnInit {
     }
     this.sendapprovalcheck();
   }
- 
+  dms() {
+    console.log(this.patientDetails)
+    const patientDetails =
+      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    this.http
+      .get(
+        ApiConstants.PatientDMSDetail(
+          patientDetails.iacode,
+          patientDetails.registrationno
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((resultData: DMSrefreshModel[]) => {
+        this.matDialog.open(DMSComponent, {
+          width: "100vw",
+          maxWidth: "90vw",
+          height: '90vh',
+          data: {
+            list: resultData,
+            maxid: patientDetails.iacode + "." + patientDetails.registrationno,
+            firstName: patientDetails.firstname,
+            lastName: patientDetails.lastname,
+          },
+        });
+        // this.dmsProcessing = false;
+      });
+  }
  openhistory() {
     this.matDialog.open(VisitHistoryComponent, {
       width: "70%",
@@ -533,46 +753,92 @@ export class DetailsComponent implements OnInit {
     });
     dialogref.afterClosed().subscribe((res) => {
       console.log(res);
-      if (res == "" || res == null || res == undefined) {
-        // this.clear();
-      } else {
+      if (res) {
         this.BServiceForm.controls["billNo"].setValue(res);
+        this.billno = this.BServiceForm.controls["billNo"].value;
+        console.log(this.BServiceForm.controls["billNo"].value)
         this.getpatientbilldetails();
+      } else {
+        // console.log('res')
+        // this.clear();
       }
     });
+    this.BServiceForm.markAsDirty();
   }
   refunddialog()
   { 
-    const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
+    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0]);
+    if(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0] > '65')
+    {
+      var dialogref = this.msgdialog.info('Patient is Senior Citizen.');
+      dialogref.afterClosed()
+      .subscribe(res => {
+        this.refunddialogopen();
+      })
+    }
+    else
+    {
+      this.refunddialogopen();
+    }
+  }
+  refunddialogopen()
+  {
+    var reas = this.refundreasonlist.filter(i => {
+      return i.id == this.BServiceForm.controls['reason'].value;
+    });
+    console.log(this.BServiceForm.value.paymentMode);
+      const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
+      panelClass: 'refund-bill-dialog',
       width: "70vw",
       height: "98vh",
       data: {  
         patientinfo: {
-          emailId: ''  , 
+          emailId: this.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId, 
           mobileno: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
         },  
         refundamount: this.BServiceForm.value.refundAmt,
-        mop: this.BServiceForm.value.paymentMode,
+        authby: this.BServiceForm.controls['authBy'].value,
+        reasonname: reas[0].name,
+        reasonid: reas[0].id,
+        mop: this.BServiceForm.controls['paymentMode'].value,
         mobile: this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno,
         billid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
         billno: this.BServiceForm.value.billNo,
-        maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
+        maxid: this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+        email: this.patientbilldetaillist.billDetialsForRefund_Table0[0].emailId
       }
     });
-
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
     .subscribe((result) => {
       //if(result == "Success"){        
-        console.log("Refund Dialog closed");
+        console.log(result);
+        if(result == 'success')
+        {
+          var billno = this.BServiceForm.controls['billNo'].value;
+          this.clear();
+          this.billdetailservice.clear();
+          this.BServiceForm.controls['billNo'].setValue(billno);
+          this.getpatientbilldetails();
+        }
       //}    
     });
   }
   clear() {
     this.BServiceForm.reset();
-    // this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
-    // this.BServiceForm.controls["fromDate"].setValue(new Date());
-    // this.BServiceForm.controls["toDate"].setValue(new Date());
+    this.activeLink = this.linkList[0];
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
+    this.questions[2].readonly = false;
+    this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
+    this.BServiceForm.controls["maxid"].setValue(this.cookie.get("LocationIACode") + ".");
+    this.BServiceForm.controls["fromDate"].setValue(new Date());
+    this.BServiceForm.controls["toDate"].setValue(new Date());
+    this.BServiceForm.controls["billAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["dipositrAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["discAmt"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["discAftBill"].setValue(Number(0).toFixed(2));
+    this.BServiceForm.controls["refundAmt"].setValue(Number(0).toFixed(2))
     this.patientName = "";
     this.age = "";
     this.gender = "";
@@ -597,21 +863,19 @@ export class DetailsComponent implements OnInit {
     this.visithistorybtn = true;
     this.billexist = true;
     this.billdetailservice.clear();
-    this.ngOnInit();
+    // this.ngOnInit();
   }
   doxperredirect() {
-    let iacode = this.BServiceForm.value.maxid.split(".")[0];
-    this.doxperurl =
-      this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]
-        .configValue +
-      "patient_id=" +
-      this.BServiceForm.value.maxid +
-      "&visit_id=" +
-      this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].visitid +
-      "&organisation=" +
-      iacode +
-      "&token=" +
-      this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1].token;
+    console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken);
+    console.log(this.BServiceForm.controls['maxid'].value);
+    var maxid = this.BServiceForm.controls['maxid'].value;
+    var visitid = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].id;
+    var token = this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[0].token;
+    var config = this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[0].configValue.split('?')[0];
+    var iacode = maxid.split(".")[0];
+    var location = this.cookie.get('Location').split('%');
+    console.log(location[0].split(' ')[0])
+    this.doxperurl = config+'?patient_id='+maxid+'&visit_id='+visitid+'&organisation='+location[0].split(' ')[0]+'&token='+token;
     window.open(this.doxperurl, "_blank");
   }
   printrefunddialog()
@@ -639,12 +903,38 @@ export class DetailsComponent implements OnInit {
         BillNo: this.BServiceForm.value.billNo,
       });
     }
-  else if(btnname == 'billingreport')
+    else if(btnname == 'billingreport')
     {
       this.reportService.openWindow(btnname, btnname, {
         opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
         locationID: this.cookie.get('HSPLocationId')
       });
+    }
+    else if(btnname == 'ConsumabaleEntryDetailsReport')
+    {
+      this.reportService.openWindow(btnname, btnname, {
+        billno: this.BServiceForm.value.billNo,
+        locationID: this.cookie.get('HSPLocationId'),
+        MAXID: this.BServiceForm.value.maxid
+      });
+    }
+    else if(btnname == 'PrintOPPrescriptionReport')
+    {
+      const dialogref = this.matDialog.open(OpPrescriptionDialogComponent, {
+        width: '30vw',
+        height: '35vh'
+      })
+      dialogref.afterClosed().subscribe( res => {
+        console.log(res);
+        if(res == 'yes')
+        {
+          this.reportService.openWindow(btnname, btnname, {
+          opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
+          locationID: this.cookie.get('HSPLocationId'),
+          });
+        }
+      })
+      
     }
     
   }
@@ -654,6 +944,59 @@ export class DetailsComponent implements OnInit {
       console.log(this.billdetailservice.totalrefund);
       console.log(this.billdetailservice.sendforapproval);
       var approvedlist;
+      if(this.billdetailservice.totalrefund > 0 &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == '' 
+      )
+      {
+        this.BServiceForm.controls['authBy'].enable();
+        this.BServiceForm.controls['reason'].enable();
+        this.BServiceForm.controls['paymentMode'].enable();
+      }
+      else if(this.billdetailservice.totalrefund == 0 &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].reason == '' &&
+        this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode == '' 
+      )
+      {
+        this.BServiceForm.controls['authBy'].disable();
+        this.BServiceForm.controls['reason'].disable();
+        this.BServiceForm.controls['paymentMode'].disable();
+        this.BServiceForm.controls['authBy'].setValue('');
+        this.BServiceForm.controls['reason'].setValue('');
+        this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
+      }
+      var forenablerefundbill: any;
+      if(this.billdetailservice.sendforapproval.length > 0)
+      {
+        this.billdetailservice.sendforapproval.forEach((j: any) => {
+          console.log(j);
+          forenablerefundbill = this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(k => {
+            return k.itemId == j.itemid;
+          })
+        })
+        
+        console.log(forenablerefundbill);
+  
+        forenablerefundbill.forEach((k: any) => {
+          if(k.notApproved == 1 && this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 0)
+          {
+            this.refundbill = false;
+            this.approvalsend = true;
+          }
+          else if(k.notApproved == 0 && this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 0)
+          {
+            this.refundbill = true;
+            this.approvalsend = false;
+          }
+        })
+      }
+      else
+      {
+        this.refundbill = true;
+      }
+      
       // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
       //   console.log(i);
         this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((j: any) => {
@@ -668,11 +1011,17 @@ export class DetailsComponent implements OnInit {
       this.BServiceForm.controls["refundAmt"].setValue(
         this.billdetailservice.totalrefund.toFixed(2)
       );
+      this.sendapprovalcheck();
       // if (this.billdetailservice.sendforapproval.length > 0) {
       //   this.approvalsend = false;
       // } else if (this.billdetailservice.sendforapproval.length == 0) {
       //   this.approvalsend = true;
       // }
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

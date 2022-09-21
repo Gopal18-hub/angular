@@ -12,12 +12,12 @@
 .billing-page-wrapper {
   background-color: #fff;
   .text-color {
-    color: #5a5a5a;
+    color: #000;
     font-weight: 400;
   }
   .iom-button {
     padding: 0;
-    min-width: 32px;
+    min-width: initial;
     .iom-color {
       color: #45c0be;
       font-weight: 600;
@@ -100,10 +100,18 @@
             color: #08504f;
             font-weight: 600;
           }
+          &.mat-tab-disabled {
+            opacity: 0.4;
+          }
         }
       }
       .mat-ink-bar {
         display: none;
+      }
+      .qms-container {
+        .text-white {
+          color: #fff;
+        }
       }
     }
   }

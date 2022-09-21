@@ -13,7 +13,7 @@
           width="45px"
           class="mt-1 cursor-pointer"
           [matTooltip]="icon['tooltip']"
-          
+          (click)="doCategoryIconAction(icon)"
         />
     </div>
     </nav>
@@ -210,7 +210,7 @@
                 </div>
                </div> -->
                <div class="flex w-86 align-items-center">
-                  <div class="w-18 text-overflow">
+                  <div class="w-23 text-overflow">
                     <mat-label class="max-health-primary-color font-bold ml-2">Patient Name:</mat-label>
                     <span matTooltip="{{patientName}}" class="ml-2 clr-black">{{patientName}}</span>
                   </div>
@@ -226,7 +226,7 @@
                     <mat-label class="max-health-primary-color font-bold">DOB:</mat-label>
                     <span matTooltip="{{dob}}" class="ml-2 clr-black">{{dob}}</span>
                   </div >
-                  <div class="w-13 ml-3 text-overflow">
+                  <div class="w-13 text-overflow">
                     <mat-label class="max-health-primary-color font-bold">Nationality:</mat-label>
                     <span matTooltip="{{country}}" class="ml-2 clr-black">{{country}}</span>
                   </div>
@@ -234,11 +234,11 @@
                     <mat-label class="max-health-primary-color font-bold">SSN:</mat-label>
                     <span matTooltip="{{ssn}}" class="ml-2 clr-black">{{ssn}}</span>
                   </div> -->
-                  <div class="w-13 ml-2 text-overflow">
+                  <div class="w-18 ml-2 text-overflow">
                     <mat-label class="max-health-primary-color font-bold">Operator:</mat-label>
                     <span matTooltip="{{operator}}" class="ml-2 clr-black">{{operator}}</span>
                   </div>
-                  <div class="w-1/15 text-overflow">
+                  <div class="w-12 text-overflow">
                     <mat-label class="max-health-primary-color font-bold">Bill Date:</mat-label>
                     <span matTooltip="{{billdate}}" class="ml-2 clr-black">{{billdate}}</span>
                   </div>
@@ -249,6 +249,7 @@
                   color="primary"
                   class="w-1/20 h-btn btn_width"
                   type="submit"
+                  (click)="dms()"
                   [disabled]="dmsbtn"
                 >
                 DMS
@@ -369,31 +370,30 @@
               </div>  
                
                 </div>
-                <div class="flex w-1/5 h-1/5 justify-between float-left clr-black">
+                <div class="flex w-2/5 h-1/5  float-left clr-black">
                 
                 <!-- <div class="flex "> -->
  <!-- --------------------------------------------2ND LABEL COLUMN------------------------------------------------------------------------                -->
                 <div class="flex-column pt-1 ml-2">
                   <div class="flex-column mb-3 ">
-                <mat-label class="wt-nowrap text-black   ">Refund Amount</mat-label>
-                </div>
-                <div class="flex-column mb-3">
-                <mat-label class="wt-nowrap text-black  ">Authorised By</mat-label>
-                </div>
-                
-                <div class="flex-column mb-3">
-                <mat-label class="wt-nowrap text-black  ">Reason</mat-label>
-                </div>
-             
-                <div class="flex-column">
-                  <mat-label class="wt-nowrap text-black ">Payment Mode</mat-label>
+                    <mat-label class="wt-nowrap text-black   ">Refund Amount</mat-label>
                   </div>
+                  <div class="flex-column mb-3">
+                    <mat-label class="wt-nowrap text-black ">Payment Mode</mat-label>
+                  </div>
+                  <div class="flex-column mb-3">
+                    <mat-label class="wt-nowrap text-black  ">Authorised By</mat-label>
+                  </div>
+                  <div class="flex-column">
+                    <mat-label class="wt-nowrap text-black  ">Reason</mat-label>
+                  </div>
+                  
                 </div>
 
 
  <!-- --------------------------------------------2ND FORM CONTROL COLUMN------------------------------------------------------------------------                -->
               
-                <div class="ml-2 fle-column pt-1 h-full">
+                <div class="ml-2 w-4/5 fle-column pt-1 h-full">
                 <div class="flex input-align-right">
                   <!-- <div class="flex"> -->
                 
@@ -401,9 +401,19 @@
                 [question]="questions[11]"
                 [form]="BServiceForm"
                 [questions]="questions[11]"
-                class="w-4/5"
+                class="w-36"
                 [index]="11"
                 >
+              </maxhealth-question>
+            </div>
+            <div class="flex">
+              <maxhealth-question
+              [question]="questions[14]"
+              [form]="BServiceForm"
+              [questions]="questions[14]"
+              class="w-36"
+              [index]="14"
+              >
               </maxhealth-question>
             </div>
             <div class="flex">
@@ -411,7 +421,7 @@
                 [question]="questions[12]"
                 [form]="BServiceForm"
                 [questions]="questions[12]"
-                class="w-4/5"
+                class="w-9/10"
                 [index]="12"
                 >
                 </maxhealth-question>
@@ -423,21 +433,12 @@
                 [question]="questions[13]"
                 [form]="BServiceForm"
                 [questions]="questions[13]"
-                class="w-4/5"
+                class="w-9/10"
                 [index]="13"
                 >
                 </maxhealth-question>
               </div>
-              <div class="flex">
-                <maxhealth-question
-                [question]="questions[14]"
-                [form]="BServiceForm"
-                [questions]="questions[14]"
-                class="w-4/5"
-                [index]="14"
-                >
-                </maxhealth-question>
-              </div>
+              
               
                 
                 </div>
@@ -469,7 +470,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
-                    [disabled]="!refundbill"
+                    [disabled]="refundbill"
                     (click)="refunddialog()"
                     >
                    Refund Bill
@@ -500,7 +501,7 @@
                     color="primary"
                     class="btn-md pl-2 mr-1"
                     type="submit"
-                    [disabled]="!resendbill"
+                    [disabled]="resendbill"
                     (click)="resendbilldialog()"
                     >
                     Resend bill on Email
@@ -513,7 +514,7 @@
                     color="primary"
                     class="btn-md"
                     type="submit"
-                    [disabled]="!printrefund"
+                    [disabled]="printrefund"
                     (click)="printrefunddialog()"
                     >
                     Print Refund Receipt
@@ -526,6 +527,7 @@
                     class="btn-md"
                     type="submit"
                     [disabled]="consumableprint"
+                    (click)="reportprint('ConsumabaleEntryDetailsReport')"
                     >
                     Consumable Print
                     </button>
@@ -557,6 +559,7 @@
                       class="btn-md"
                       type="submit"
                       [disabled]="opprescription"
+                      (click)="reportprint('PrintOPPrescriptionReport')"
                       >
                       OP Prescription
                       </button>

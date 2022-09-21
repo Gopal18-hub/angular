@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AcknowledgedScrollAmountReportComponent } from "@modules/billing/submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { BillingComponent } from "@modules/billing/submodules/billing/billing.component";
 import { ReportsComponent } from "./reports.component";
 
 const routes: Routes = [
@@ -10,6 +12,11 @@ const routes: Routes = [
       import("../../../reports/modules/prompt-report").then(
         (m) => m.PromptReportModule
       ),
+  },
+
+  {
+    path: "report/Acknowledgement-Scroll-Amount-Report",
+    component: AcknowledgedScrollAmountReportComponent,
   },
   {
     path: "report-multiple",

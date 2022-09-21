@@ -35,6 +35,13 @@ import { MiscellaneousBillingsComponent } from "./submodules/miscellaneous-billi
 import { BillsComponent } from "./submodules/miscellaneous-billings/bills/bills.component";
 import { OrderServicesComponent } from "./submodules/op-order-request/submodules/services/services.component";
 import { OPOrderViewRequest } from "./submodules/op-order-request/submodules/view-request/view-request.component";
+import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
+import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
+import { MonthlyOpConsultationReportComponent } from "./submodules/monthly-op-consultation-report/monthly-op-consultation-report.component";
+import { OnlineDepositReportComponent} from "./submodules/online-deposit-report/online-deposit-report.component";
+import { CashScrollComponent } from "./submodules/cash-scroll/cash-scroll.component";
+import { CashScrollNewComponent } from "./submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
+import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -89,7 +96,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "", component: BillDetailComponent },
-          { path: "credit-details", component: MiscCredDetail },
+          { path: "credit-details", component: CreditDetailComponent },
           { path: "bill", component: BillDetailComponent },
         ],
       },
@@ -107,8 +114,24 @@ const routes: Routes = [
       { path: "dispatch-report", component: DispatchReportComponent },
       { path: "dmg-mapping", component: DmgMappingComponent },
       {
+        path: "acknowledged-scroll-amount-report",
+        component: AcknowledgedScrollAmountReportComponent,
+      },
+      {
         path: "expired-patient-check",
         component: ExpiredPatientCheckComponent,
+      },
+      {
+        path: "expired-deposits",
+        component: ExpiredDepositsComponent,
+      },
+      {
+        path: "monthly-op-consultation-report",
+        component: MonthlyOpConsultationReportComponent,
+      },
+      {
+        path:"online-deposit-report",
+        component: OnlineDepositReportComponent,
       },
       {
         path: "post-discharge-follow-up-billing",
@@ -122,6 +145,23 @@ const routes: Routes = [
             component: PostDischargeCreditDetailsComponent,
           },
         ],
+      },
+      {
+        path: "cash-scroll",
+        component: CashScrollComponent,
+        // children: [
+        //   //  { path: "cash-scroll-modify", component: CashScrollModifyComponent },
+        //   { path: "cash-scroll-new", component: CashScrollNewComponent },
+        //   { path: "cash-scroll-modify", component: CashScrollModifyComponent },
+        // ],
+      },
+      {
+        path: "cash-scroll/cash-scroll-new",
+        component: CashScrollNewComponent,
+      },
+      {
+        path: "cash-scroll/cash-scroll-modify",
+        component: CashScrollModifyComponent,
       },
     ],
   },

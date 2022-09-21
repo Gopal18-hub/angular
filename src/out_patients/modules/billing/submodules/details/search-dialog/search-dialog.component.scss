@@ -10,9 +10,14 @@
     .bg-white{
         background-color: #fff;
     }
+    .est{
+        border: none !important;
+    }
     .bg-blue{
-        background-color: #00B2A9;
-        color: #fff;
+        background: white;
+        color: #333333;
+        box-shadow: none;
+        border: 1px solid #707070;
     }
     .pointer-disable{
         pointer-events: none;
@@ -77,20 +82,26 @@
         display: none;
     }
     ::ng-deep .max-table-wrapper table{
+        .mat-row:hover{
+            opacity: 1;
+        }
         tr.newbill{
-            background-color: #00B2A9 !important;
+            background-color: #fff !important;
+            opacity: 0.8;
             td{
-                color: #fff !important;
+                color: #000 !important;
             }
         }
         tr.cancelled{
             background-color: #FF6A6A !important;
+            opacity: 0.8;
             td{
                 color: #fff !important;
             }
         }
         tr.partially-cancelled{
             background-color: #FF8A3B !important;
+            opacity: 0.8;
             td{
                 color: #fff !important;
             }

@@ -2,6 +2,20 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { takeUntil } from "rxjs/operators";
+import { BillingService } from "../../billing.service";
+import { BillPaymentDialogComponent } from "../../prompts/payment-dialog/payment-dialog.component";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { ReportService } from "@shared/services/report.service";
+import { CookieService } from "@shared/services/cookie.service";
+import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
+import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
+import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -13,11 +27,6 @@ export class BillComponent implements OnInit {
     type: "object",
     title: "",
     properties: {
-      // self: {
-      //   type: "checkbox",
-      //   required: false,
-      //   options: [{ title: "Self" }],
-      // },
       referralDoctor: {
         type: "dropdown",
         required: true,
@@ -134,6 +143,11 @@ export class BillComponent implements OnInit {
         ],
         defaultValue: "cash",
       },
+      self: {
+        type: "checkbox",
+        required: false,
+        options: [{ title: "Self" }],
+      },
     },
   };
   @ViewChild("table") tableRows: any;
@@ -184,6 +198,9 @@ export class BillComponent implements OnInit {
       precaution: {
         title: "Precaution",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       procedure: {
         title: "Procedure Doctor",
@@ -210,6 +227,9 @@ export class BillComponent implements OnInit {
       disc: {
         title: "Disc %",
         type: "string",
+        style: {
+          width: "80px",
+        },
       },
       discAmount: {
         title: "Disc Amount",
@@ -228,6 +248,9 @@ export class BillComponent implements OnInit {
       gst: {
         title: "GST%",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       gstValue: {
         title: "GST Value",
@@ -242,9 +265,19 @@ export class BillComponent implements OnInit {
   formGroup!: FormGroup;
   question: any;
 
+  billNo = "";
+  billId = "";
+
   private readonly _destroying$ = new Subject<void>();
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private billingservice: BillingService,
+    private matDialog: MatDialog,
+    private messageDialogService: MessageDialogService,
+    private reportService: ReportService,
+    private cookie: CookieService
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -253,5 +286,141 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    this.billingservice.billItems.forEach((item: any, index: number) => {
+      item["sno"] = index + 1;
+    });
+    this.data = this.billingservice.billItems;
+    this.billingservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    });
+  }
+
+  rowRwmove($event: any) {
+    this.billingservice.deleteFromService(
+      this.billingservice.billItems[$event.index]
+    );
+    this.billingservice.billItems.splice($event.index, 1);
+    this.billingservice.billItems = this.billingservice.billItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
+
+    this.data = [...this.billingservice.consultationItems];
+    this.billingservice.calculateTotalAmount();
+  }
+
+  ngAfterViewInit() {
+    this.formGroup.controls["paymentMode"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        this.billingservice.setBilltype(value);
+      });
+    this.formGroup.controls["billAmt"].setValue(
+      this.billingservice.totalCost + ".00"
+    );
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.billingservice.totalCost + ".00"
+    );
+  }
+
+  makeBill() {
+    const dialogRef = this.messageDialogService.confirm(
+      "",
+      `Do you want to make the Bill?`
+    );
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("type" in result) {
+          if (result.type == "yes") {
+            this.makereceipt();
+          } else {
+          }
+        }
+      });
+  }
+
+  makereceipt() {
+    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+      width: "70vw",
+      height: "98vh",
+      data: {
+        billAmount: this.billingservice.totalCost,
+      },
+    });
+
+    RefundDialog.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result: any) => {
+        if (result && "billNo" in result && result.billNo) {
+          this.billingservice.billNoGenerated.next(true);
+          this.billNo = result.billNo;
+          this.billId = result.billId;
+          this.config.removeRow = false;
+          this.config = { ...this.config };
+          const successInfo = this.messageDialogService.info(
+            `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+          );
+          successInfo
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              const printDialog = this.messageDialogService.confirm(
+                "",
+                `Do you want to print bill?`
+              );
+              printDialog
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result: any) => {
+                  if ("type" in result) {
+                    if (result.type == "yes") {
+                      this.makePrint();
+                    } else {
+                    }
+                  }
+                });
+            });
+        }
+      });
+  }
+
+  makePrint() {
+    this.reportService.openWindow(
+      this.billNo + " - Billing Report",
+      "billingreport",
+      {
+        opbillid: this.billId,
+
+        locationID: this.cookie.get("HSPLocationId"),
+      }
+    );
+  }
+
+  discountreason() {
+    this.matDialog.open(DisountReasonComponent, {
+      width: "80vw",
+      minWidth: "90vw",
+      height: "67vh",
+    });
+  }
+
+  depositdetails() {
+    this.matDialog.open(DepositDetailsComponent, {
+      width: "60vw",
+      height: "50vh",
+    });
+  }
+
+  gsttaxdialog() {
+    this.matDialog.open(GstTaxComponent, {
+      width: "30vw",
+      height: "50vh",
+    });
   }
 }

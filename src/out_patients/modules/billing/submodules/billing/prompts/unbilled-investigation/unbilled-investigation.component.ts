@@ -54,7 +54,10 @@ export class UnbilledInvestigationComponent implements OnInit {
   }
 
   process() {
-    this.dialogRef.close({ process: 1 });
+    this.dialogRef.close({
+      process: 1,
+      data: this.tableRows.selection.selected,
+    });
   }
 
   cancel() {

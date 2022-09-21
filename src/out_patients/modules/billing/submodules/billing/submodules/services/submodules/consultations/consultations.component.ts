@@ -153,6 +153,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   rowRwmove($event: any) {
+    this.billingService.removeFromBill(
+      this.billingService.consultationItems[$event.index]
+    );
     this.billingService.consultationItems.splice($event.index, 1);
     this.billingService.consultationItems =
       this.billingService.consultationItems.map((item: any, index: number) => {
@@ -174,6 +177,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     this.tableRows.selection.changed.subscribe((res: any) => {
       const source = res.added[0] || res.removed[0];
       this.update(source.type, source.sno, source.doctorId);
+    });
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key == "Enter") {
+        if (this.formGroup.valid) {
+          this.add();
+        }
+      }
     });
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
@@ -208,6 +218,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               title: r.doctorNameWithSpecialization || r.doctorName,
               value: r.doctorId,
               originalTitle: r.doctorName,
+              specialisationid: r.specialisationid,
+              clinicID: r.clinicID,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -266,6 +278,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             title: r.doctorNameWithSpecialization || r.doctorName,
             value: r.doctorId,
             originalTitle: r.doctorName,
+            specialisationid: r.specialisationid,
+            clinicID: r.clinicID,
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -306,25 +320,51 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       return;
     }
     this.http
-      .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.doctorName.value,
-          25,
-          this.cookie.get("HSPLocationId")
-        )
-      )
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: this.formGroup.value.doctorName.value,
+        serviceId: 25,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
       .subscribe((res: any) => {
-        this.billingService.addToConsultation({
-          sno: this.data.length + 1,
-          doctorName: this.formGroup.value.doctorName.originalTitle,
-          doctorId: this.formGroup.value.doctorName.value,
-          type: priorityId,
-          scheduleSlot: "",
-          bookingDate: "",
-          price: res.amount,
-        });
-
+        if (res.length > 0) {
+          this.billingService.addToConsultation({
+            sno: this.data.length + 1,
+            doctorName: this.formGroup.value.doctorName.originalTitle,
+            doctorId: this.formGroup.value.doctorName.value,
+            type: priorityId,
+            scheduleSlot: "",
+            bookingDate: "",
+            price: res[0].returnOutPut,
+            specialization: this.formGroup.value.specialization.value,
+            clinics: this.formGroup.value.clinics.value,
+            billItem: {
+              itemId: this.formGroup.value.doctorName.value,
+              priority: priorityId,
+              serviceId: 25,
+              price: res[0].returnOutPut,
+              serviceName: "Consultation Charges",
+              itemName: this.formGroup.value.doctorName.originalTitle,
+              qty: 1,
+              precaution: "",
+              procedureDoctor: "",
+              credit: 0,
+              cash: 0,
+              disc: 0,
+              discAmount: 0,
+              totalAmount: res[0].returnOutPut,
+              gst: 0,
+              gstValue: 0,
+              specialisationID:
+                this.formGroup.value.doctorName.specialisationid,
+              doctorID: this.formGroup.value.doctorName.value,
+            },
+          });
+        }
         this.data = [...this.billingService.consultationItems];
         this.formGroup.reset();
       });

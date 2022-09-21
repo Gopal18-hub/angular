@@ -346,6 +346,25 @@ export namespace ApiConstants {
       reptype
     );
   };
+  //Get API Call for Acknowlegement scroll amount page view button
+  export const getackdetailsforscroll = (
+    fromdate: any,
+    todate: any,
+    stationid: number,
+    operatorID: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getackdetailsforscroll/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      stationid +
+      "/" +
+      operatorID
+    );
+  };
 
   export const getarecounter = (HsplocationId: number) => {
     return (
@@ -1067,16 +1086,336 @@ export namespace ApiConstants {
   };
 
   //Misc Billings
-  export const getcorporatemaster = (flag?: number) => { return (environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=" + flag) }
+  export const getcorporatemaster = (flag?: number) => {
+    return (
+      environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=" + flag
+    );
+  };
   export const getinteractionmaster =
     environment.BillingApiUrl + "api/outpatientbilling/getinteractionmaster";
   export const getmasterdataformiscellaneous =
-    environment.BillingApiUrl + "api/outpatientbilling/getmasterdataformiscellaneous";
-  export const getdataforbillreport =
-    (Opbillid: number,
-      Locationid: number,
-      flag: number) => {
-      return (environment.BillingApiUrl + "api/outpatientbilling/getdataforbillreport/" + Opbillid + "/" + Locationid + "/" + flag)
-    }
+    environment.BillingApiUrl +
+    "api/outpatientbilling/getmasterdataformiscellaneous";
+  export const getdataforbillreport = (
+    Opbillid: number,
+    Locationid: number,
+    flag: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdataforbillreport/" +
+      Opbillid +
+      "/" +
+      Locationid +
+      "/" +
+      flag
+    );
+  };
+  export const getssnandmaxid = (
+    iaCode?: string,
+    registrationNo?: number,
+    SSN?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getssnandmaxid/?iaCode=" +
+      iaCode +
+      "&registrationNo=" +
+      registrationNo +
+      "&SSN" +
+      SSN
+    );
+  };
 
+  export const getPriceforitemwithTariffId = (
+    PriorityId: number,
+    ItemId: number,
+    ServiceId: number,
+    Hsplocationid: number,
+    CompanyId?: number,
+    CompanyFlag?: number,
+    intBundleId?: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      PriorityId +
+      "/" +
+      ItemId +
+      "/" +
+      ServiceId +
+      "/" +
+      Hsplocationid +
+      "?CompanyId=" +
+      CompanyId +
+      "&CompanyFlag=" +
+      CompanyFlag +
+      "&intBundleId=" +
+      intBundleId
+    );
+  };
+  export const getgstdata = (
+    Taxid: number,
+    Companyid: number,
+    Logedlocationid: number,
+    Amount: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getgstdata/" +
+      Taxid +
+      "/" +
+      Companyid +
+      "/" +
+      Logedlocationid +
+      "/" +
+      Amount
+    );
+  };
+  export const getreferraldoctor = (
+    Type: number,
+    ReferralDoctorName?: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getreferraldoctor/" +
+      Type +
+      "?ReferralDoctorName=" +
+      ReferralDoctorName
+    );
+  };
+  export const getbilltocompany = (Companyid?: number) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getbilltocompany/" +
+      Companyid
+    );
+  };
+  export const getservices_byprocedureidnew = (
+    Itemid: number,
+    Serviceid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getservices_byprocedureidnew/" +
+      Itemid +
+      "/" +
+      Serviceid
+    );
+  };
+  export const setpanno = (
+    Iacode: string,
+    RegistrationNo: number,
+    PANNo: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/setpanno/" +
+      Iacode +
+      "/" +
+      RegistrationNo +
+      "/" +
+      PANNo
+    );
+  };
+  export const getservices_byprocedureid = (
+    ProcedureId: number,
+    Serviceid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getservices_byprocedureid/" +
+      ProcedureId +
+      "/" +
+      Serviceid
+    );
+  };
+
+  export const searchPatientApiMisc = (
+    maxId?: string,
+    SSN?: string,
+    Name?: string,
+    PhoneNumber?: string,
+    DOB?: string,
+    AadhaarId?: string,
+    HealthId?: string,
+    HsplocationId?: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getallpatientssearch?MaxId=" +
+      maxId +
+      "&SSN=" +
+      SSN +
+      "&Name=" +
+      Name +
+      "&PhoneNumber=" +
+      PhoneNumber +
+      "&DOB=" +
+      DOB +
+      "&AadhaarId=" +
+      AadhaarId +
+      "&HealthId=" +
+      HealthId +
+      "&HsplocationId=" +
+      HsplocationId
+    );
+  };
+
+  //Discount Header
+  export const getbilldiscountreasonmainhead = (locid: number) => {
+    return (
+      environment.CommonApiUrl +
+      "api/lookup/getbilldiscountreasonmainhead/" +
+      locid
+    );
+  };
+
+  //Discount Reason
+  export const getbilldiscountreason = (locid: number) => {
+    return (
+      environment.CommonApiUrl + "api/lookup/getbilldiscountreason/" + locid
+    );
+  };
+
+  //Authorised by
+  export const getauthorisedby = (locid: number) => {
+    return environment.CommonApiUrl + "api/lookup/getauthorisedby/" + locid;
+  };
+
+  //Authorised by
+  export const checkdiscountamountforparticularautharisation = (
+    authorisedby: number,
+    locationid: number,
+    discAmount: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/checkdiscountamountforparticularautharisation/" +
+      authorisedby +
+      "/" +
+      locationid +
+      "/" +
+      discAmount
+    );
+  };
+
+  export const getconfiguremessage = (requesttype: string, value: string) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/gethl7outboundmessageris/" +
+      requesttype +
+      "/" +
+      value
+    );
+  };
+  export const getPatientExpiredDepositDetails = (
+    iacode: string,
+    registrationno: number,
+    fromdate: any,
+    todate: any
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getpatientexpireddepositdetails/" +
+      iacode +
+      "/" +
+      registrationno +
+      "/" +
+      fromdate +
+      "/" +
+      todate
+    );
+  };
+  export const getopconsultationcount = (
+    fromdate: any,
+    todate: any,
+    locationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getopconsultationcount/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      locationid
+    );
+  };
+  export const getLocationMaster =
+    environment.CommonApiUrl + "api/lookup/getlocationmaster";
+
+  //Added for deposit status dropdown on online deposit report
+  export const getdepositstatus =
+    environment.PatientApiUrl + "api/patient/getdepositstatus";
+
+  export const getonlinedepositreportdata = (
+    flag: any,
+    depsource: any,
+    selecttype: any,
+    startdate: any,
+    enddate: any,
+    hsplocationid: any
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getonlinedepositreportdata/flag/depsource/selecttype/startdate/enddate/hsplocationid?flag=" +
+      flag +
+      "&depSource=" +
+      depsource +
+      "&selectType=" +
+      selecttype +
+      "&startDate=" +
+      startdate +
+      "&endDate=" +
+      enddate +
+      "&hspLocationID=" +
+      hsplocationid
+    );
+  };
+  export const getdetaileddataforoldscroll = (
+    scrollno: number,
+    stationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getdetaileddataforoldscroll/" +
+      scrollno +
+      "/" +
+      stationid
+    );
+  };
+  export const getdetailsforscroll = (
+    fromdate: any,
+    todate: any,
+    stationid: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getdetailsforscroll/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      stationid
+    );
+  };
+  //export const;
+  //http://172.30.0.16:1008/api/patient/getdetailsforscroll/2022-01-01/2022-01-12/10412
+  export const postUpdateOPExpiredDepositsPatient =
+    environment.PatientApiUrl + "api/patient/updateopexpireddepositspatient";
+  export const getdetaileddataforoldscrollerp = (
+    scrollno: number,
+    stationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdetaileddataforoldscrollerp/" +
+      scrollno +
+      "/" +
+      stationid
+    );
+  };
+  export const ackdetailsforscroll =
+    environment.BillingApiUrl + "api/outpatientbilling/ackdetailsforscroll";
 }

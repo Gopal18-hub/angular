@@ -6,14 +6,13 @@
 ------------------------------------------------------TABLE BLOCK----------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------- -->
 
-<div class="h-table m-1">
+<div class="h-table m-1 bill-after-detail-table">
 <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" -->
 <ng-container class="w-full">
 <maxhealth-table  #afterbill
 [config]="config"
-[data]="data1"
-(columnClick)="printrow($event)"
-
+[data]="data"
+[class.disable-table-check]="headercheck"
 ></maxhealth-table>
 </ng-container>
 

@@ -21,6 +21,46 @@ export namespace BillDetailsApiConstants{
     }
 
     export const sendapproval = (HostName: string, Locationid: any, UserId: any) => {
-        return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval?HostName=${HostName}&Locationid=${Locationid}&UserId=${UserId}`;
+        return `${environment.BillingApiUrl}api/outpatientbilling/sendapproval/${HostName}/${Locationid}/${UserId}`;
+    }
+
+    export const getrefundbillnumber = (
+        opbillid: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getrefundbillnumber/${opbillid}`;
+    }
+
+    export const getpaymentmode = (BillNo: any, stationid: any) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getpaymentmode/${BillNo}/${stationid}`;
+    }
+
+    export const saverefunddetailsforparticularbill = `${environment.BillingApiUrl}api/outpatientbilling/saverefunddetailsforparticularbill`;
+
+    export const billrefundforsingleitem = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitem`;
+
+    export const cancelvisitnumberinrefund = `${environment.BillingApiUrl}api/outpatientbilling/cancelvisitnumberinrefund`;
+
+    export const refundbillafteracknowledgementforfull = (
+        OTP: any,
+        HostName : any,
+        Operatorid : any,
+        LocationId: any,
+        Stationid: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/refundbillafteracknowledgementforfull/${OTP}/${HostName}/${Operatorid}/${LocationId}/${Stationid}`;
+    }
+
+    export const getbankname = `${environment.CommonApiUrl}api/lookup/getbankname`;
+
+    export const getcreditcard =  `${environment.CommonApiUrl}api/lookup/getcreditcard`;
+
+    export const billrefundforsingleitemafteracknowledgement = `${environment.BillingApiUrl}api/outpatientbilling/billrefundforsingleitemafteracknowledgement`;
+
+    export const insertdueamount = `${environment.BillingApiUrl}api/outpatientbilling/insertdueamount`;
+
+    export const getduereceiptnumber = (
+        OPBillNo: any
+    ) => { 
+           return `${environment.BillingApiUrl}api/outpatientbilling/getduereceiptnumber/${OPBillNo}`
     }
 }

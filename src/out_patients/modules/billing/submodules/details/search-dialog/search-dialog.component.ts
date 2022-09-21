@@ -59,7 +59,7 @@ export class SearchDialogComponent implements OnInit {
     clickedRows: true,
     clickSelection: "single",
     actionItems: false,
-    dateformat: "dd/MM/yyyy",
+    dateformat: "dd/MM/yyyy H:mm:ss",
     selectBox: false,
     displayedColumns: [
       "sno",
@@ -88,14 +88,14 @@ export class SearchDialogComponent implements OnInit {
         title: "Bill No",
         type: "string",
         style: {
-          width: "5rem"
+          width: "4.5rem"
         }
       },
       maxId: {
         title: "Max ID",
         type: "string",
         style: {
-          width: "4rem"
+          width: "4.5rem"
         }
       },
       datetime: {
@@ -103,7 +103,7 @@ export class SearchDialogComponent implements OnInit {
         type: "date",
         style: {
           width: "6rem"
-        }
+        },
       },
       patientName: {
         title: "Patient Name",
@@ -213,6 +213,7 @@ export class SearchDialogComponent implements OnInit {
       this.searchform.controls['todate'].enable();
       this.searchform.controls['fromdate'].setValue(this.formdata.fromdate);
       this.searchform.controls['todate'].setValue(this.formdata.todate);
+      this.search();
     }
     this.searchform.controls['checkbox'].valueChanges.subscribe(value=>{
       console.log(value);
@@ -236,17 +237,56 @@ export class SearchDialogComponent implements OnInit {
         {
           this.snackbar.open('Invalid Bill No');
         }
+        else
+        {
+          this.search();
+        }
       }
     })
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        if(this.searchform.value.maxid == this.cookie.get("LocationIACode") + "." || 
+          this.searchform.value.maxid == ''
+        )
+        {
+          this.snackbar.open('Invalid Max ID');
+        }
+        else
+        {
+          this.search();
+        }
+      }
+    })
+    this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        if(this.searchform.value.mobile.toString() == '' ||
+          this.searchform.value.mobile.toString().length < 10
+        )
+        {
+          this.snackbar.open('Invalid Mobile No');
+        }
+        else
+        {
+          this.search();
+        }
+      }
+    })
+    
     this.searchform.controls['fromdate'].valueChanges.subscribe( (val) => {
       this.questions[5].minimum = val;
     })
   }
   search()
   {
-    const arr = this.searchform.value.maxid.split('.');
-    var regno = arr[1];
-    var iacode = arr[0];
+    var arr: any;
+    var regno: any;
+    var iacode: any;
+    if(this.searchform.value.maxid != '')
+    {
+      arr = this.searchform.value.maxid.split('.');
+      regno = arr[1];
+      iacode = arr[0];
+    }
     if(regno == '' || regno == undefined || regno == null)
     {
       regno = '';
@@ -280,25 +320,30 @@ export class SearchDialogComponent implements OnInit {
     .subscribe(res=>{
       console.log(res);
       this.getsearchopbillslist = res;
-      for(var i = 0 ; i < res.length; i++)
+      if(res.length > 0) 
       {
-        this.getsearchopbillslist[i].sno = i + 1;
+        for(var i = 0 ; i < res.length; i++)
+        {
+          this.getsearchopbillslist[i].sno = i + 1;
+        }
+        this.getsearchopbillslist.forEach(e=>{
+          if(e.billStatus == 0)
+          {
+            e.billStatus = 'newbill'
+          }
+          else if(e.billStatus == 1)
+          {
+            e.billStatus = 'cancelled'
+          }
+          else if(e.billStatus == 2)
+          {
+            e.billStatus = 'partially-cancelled'
+          }
+          e.balance = e.balance.toFixed(2);
+          e.billamount = e.billamount.toFixed(2);
+        })
+        console.log(this.getsearchopbillslist);
       }
-      this.getsearchopbillslist.forEach(e=>{
-        if(e.billStatus == 0)
-        {
-          e.billStatus = 'newbill'
-        }
-        else if(e.billStatus == 1)
-        {
-          e.billStatus = 'cancelled'
-        }
-        else if(e.billStatus == 2)
-        {
-          e.billStatus = 'partially-cancelled'
-        }
-      })
-      console.log(this.getsearchopbillslist);
     })
     console.log(this.table);
   }
@@ -309,5 +354,9 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.controls['todate'].setValue(new Date());
     this.searchform.controls['maxid'].setValue(this.cookie.get("LocationIACode") + ".");
     this.getsearchopbillslist = [];
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

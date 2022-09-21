@@ -1,0 +1,138 @@
+<section class="payment-dialog">
+  <!-- Cross Icon -->
+  <div class="flex justify-content-end">
+    <mat-icon mat-dialog-close class="cursor-pointer">close</mat-icon>
+  </div>
+
+  <!-- Blue Banner -->
+  <div
+    class="w-full mt-1 flex align-items-center border-radius-md secondary refundheight"
+  >
+    <mat-label class="font-lg col-white ml-2">Payment Receipt</mat-label>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="w-full height">
+    <!-- payment Methods left  -->
+    <billing-payment-methods [config]="config"></billing-payment-methods>
+
+    <!-- payment Methods right -->
+    <div class="width h-full mt-2 float-right">
+      <div class="back-primary col-white p-3 border-radius-md">
+        <mat-label class="font-base">Bill Summary</mat-label>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Total Bill Amount: </mat-label>
+          <span>{{
+            data.billAmount | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Total Deposit: </mat-label>
+          <span>{{ prepaidamount }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Total Refund: </mat-label>
+          <span>{{ depositamount }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Total Discount: </mat-label>
+          <span>{{ discountamount }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Credit Limit: </mat-label>
+          <span>{{ due }}</span>
+        </div>
+        <mat-label class="font-base mt-2 flex">On Settlement</mat-label>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Amount Refunded: </mat-label>
+          <span>{{ billamount }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between">
+          <mat-label>Amount Received: </mat-label>
+          <span>{{ prepaidamount }}</span>
+        </div>
+        <div class="mt-2 w-full flex justify-between font-bold">
+          <mat-label class="">Total: </mat-label>
+          <span>{{
+            data.billAmount | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
+        </div>
+      </div>
+      <div
+        class="h-auto secondary col-white p-3 border-radius-md mt-2"
+        *ngIf="breakupTotal() > 0"
+      >
+        <mat-label class="font-base">Payment Breakup</mat-label>
+        <ng-container *ngFor="let tab of paymentmethod?.tabs">
+          <div
+            class="mt-2 w-full flex justify-between"
+            *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
+          >
+            <mat-label>{{ tab.method.label }}: </mat-label>
+            <span>{{ paymentmethod.paymentForm[tab.key].value.price }}</span>
+          </div>
+        </ng-container>
+
+        <div class="mt-2 w-full flex justify-between font-bold">
+          <mat-label>Total: </mat-label>
+          <span>{{
+            breakupTotal() | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Checkbox -->
+  <div class="flex absolute mt-2">
+    <div>
+      <maxhealth-question
+        [question]="questions[0]"
+        [form]="dueform"
+        [questions]="questions[0]"
+        [index]="0"
+      >
+      </maxhealth-question>
+    </div>
+    <div class="mg-top-1 ml-2">
+      <maxhealth-question
+        [question]="questions[1]"
+        [form]="dueform"
+        [questions]="questions[1]"
+        [index]="1"
+      >
+      </maxhealth-question>
+    </div>
+  </div>
+
+  <!-- Footer Part -->
+  <div class="mt-12 bottom">
+    <patient-identity-info [data]="patientInfo"></patient-identity-info>
+  </div>
+
+  <!-- button -->
+  <div class="flex float-right">
+    <div class="mr-3">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="mt-1 btn"
+        (click)="makeBill()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <div class="">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="clear()"
+        class="mt-1 btn"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+</section>

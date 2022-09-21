@@ -14,6 +14,7 @@ export class OrderSetDetailsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
+    clickSelection: "multiple",
     displayedColumns: ["sno", "serviceType", "serviceItemName", "price"],
     columnsInfo: {
       sno: {
@@ -27,14 +28,14 @@ export class OrderSetDetailsComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "30%",
+          width: "20%",
         },
       },
       serviceItemName: {
         title: "Service Item Name",
         type: "string",
         style: {
-          width: "45%",
+          width: "65%",
         },
       },
       price: {
@@ -59,8 +60,21 @@ export class OrderSetDetailsComponent implements OnInit {
         serviceType: item.serviceType,
         serviceItemName: item.name,
         price: item.price,
+        testId: item.testId,
       });
     });
+  }
+
+  ngAfterViewInit() {
+    this.itemsData.forEach((item: any, index: number) => {
+      let exist = this.data.gridData.find(
+        (gi: any) => gi.itemid == item.testId
+      );
+      if (exist) {
+        this.tableRows.selection.select(item);
+      }
+    });
+    console.log(this.tableRows.selection);
   }
 
   close() {

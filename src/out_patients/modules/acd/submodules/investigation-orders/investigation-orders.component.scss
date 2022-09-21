@@ -124,13 +124,13 @@
   width: 27% !important;
 }
 .btnW {
-  width: 28% !important;
+  width: 28.4% !important;
 }
 .denyBtn {
   width: 18% !important;
 }
 .tableh {
-  height: 47% !important;
+  height: 52% !important;
 }
 .iconcss {
   ::ng-deep {
@@ -142,7 +142,11 @@
 }
 .searchbtn {
   //min-width: initial !important;
-
+ // button {
+        //height: 1.7rem;
+        line-height: 1.675rem;
+        //width :2rem;
+      // }
   height: 1.9rem !important;
   width : 5vw!important
 
@@ -150,6 +154,7 @@
 }
 .clr {
   height: 1.9rem !important;
+  line-height: 1.675rem;
 }
 .serachcss {
   ::ng-deep .max-table-wrapper {
@@ -179,4 +184,12 @@
   top: 2px;
   height: 90%;
   width: 28%;
+}
+
+.input-align{
+  ::ng-deep .max-table-wrapper table tbody tr td:nth-child(8){
+   
+    text-align:right;
+    padding-right: 28px !important;
+  }
 }

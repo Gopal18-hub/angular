@@ -79,6 +79,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   todaydate = new Date();
   maxidmapped!: boolean;
   activeflaglength: number = 0;
+  onDelete: boolean = false;
+  count: number = 0;
   // validFromMaxdate = this.employeesponsorForm.controls["todate"].value;
   private readonly _destroying$ = new Subject<void>();
   @ViewChild("empdependanttable") employeeDependanttable: any;
@@ -192,7 +194,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         style: {
           width: "9.5rem",
         },
-        tooltipColumn: "dependantName",
+        tooltipColumn: "dependentName",
       },
       maxid: {
         title: "Max Id",
@@ -310,7 +312,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         style: {
           width: "4rem",
         },
-        tooltipColumn: "updatedDateTime",
+        tooltipColumn: "updatedBy",
       },
       flag: {
         title: "Active",
@@ -951,19 +953,28 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
               if (item.flag != 1) {
                 item.remark_disabled = true;
+                //ADDED sep 5
+                //this.dependantChecked = true;
+                // this.activeflaglength++;
+                // this.empid = item.id;
+                // this.dependantRemarks = item.remark;
               }
               if (item.maxid != "") {
-                item.flag = 1;
+                //item.flag = 1;
+                //ADDED sep 5
+                //if(item.maxid == this.employeesponsorForm.controls["maxId"].value){
+                // this.maxidmapped = true;
+                //}
                 this.empid = item.id;
                 this.dependantRemarks = item.remark;
-                this.dependantChecked = true;
-                // if (
-                //   this.employeesponsorForm.controls["maxId"].value == item.maxid
-                // ) {
-                this.maxidmapped = true;
-                this.activeflaglength++;
+                // if(item.flag == 1){
+                // this.dependantChecked = true;
+                // this.maxidmapped = true;
+                // this.activeflaglength++;
                 // }
+                //this.dependantChecked = true;
                 //this.maxidmapped = true;
+                //this.activeflaglength++;
                 console.log(this.empid);
                 console.log(this.activeflaglength);
                 this.enableSave();
@@ -1004,6 +1015,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(this.companyId);
     // this.employeeDependanttable.config.columnsInfo.remark.disable();
     console.log("inside save");
+    this.onDelete = false;
     let dialogRef = this.dialog.open(SavedialogComponent, {
       width: "25vw",
       height: "30vh",
@@ -1108,11 +1120,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   }
 
   //DELETE DIALOG
-  onDelete: boolean = false;
-  count: number = 0;
+
   employeeDelete() {
     console.log(this.empid);
     console.log("inside delete");
+    this.count = 0;
     this.onDelete = true;
     let deleteDialogref = this.dialog.open(DeletedialogComponent, {
       width: "25vw",
@@ -1126,10 +1138,11 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         if (result) {
           this.employeeDependantDetailList.forEach((item) => {
             if (
-              item.maxid != this.employeesponsorForm.controls["maxId"].value
+              item.maxid == this.employeesponsorForm.controls["maxId"].value
             ) {
               this.count++;
             }
+            console.log(this.count);
           });
 
           if (
@@ -1138,7 +1151,14 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             this.dialogService.info("Max id  is not mapped yet");
           } else if (this.companyId == 0) {
             this.dialogService.info("Please select company");
-          } else if (this.count == this.employeeDependantDetailList.length) {
+          }
+          //  else if (this.count == this.employeeDependantDetailList.length) {
+          //   {
+          //     this.dialogService.info("Max id  is not mapped yet");
+          //     this.count = 0;
+          //   }
+          // }
+          else if (this.count == 0) {
             {
               this.dialogService.info("Max id  is not mapped yet");
               this.count = 0;
@@ -1256,7 +1276,9 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             this.regno =
               this.employeesponsorForm.controls["maxId"].value.split(".")[1];
           }
-
+          console.log(this.employeesponsorForm.controls["maxId"].value);
+          console.log(this.iacode);
+          console.log(this.regno);
           // this.iacode = item.maxid.split(".")[0];
           // this.regno = item.maxid.split(".")[1];
         } else {

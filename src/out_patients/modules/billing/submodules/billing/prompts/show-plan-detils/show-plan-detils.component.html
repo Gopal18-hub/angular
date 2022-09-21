@@ -1,5 +1,14 @@
-<div class="flex flex-column h-full">
-  <h2 class="max-health-primary-color">Plan Deatils</h2>
+<div class="flex flex-column h-full relative">
+  <button
+    mat-icon-button
+    aria-label="close dialog"
+    mat-dialog-close
+    class="absolute max-dialog-close-icon"
+    type="button"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <h2 class="max-health-primary-color">Plan Details</h2>
   <div class="h-3/4">
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
@@ -12,6 +21,15 @@
       (click)="cancel()"
     >
       Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="font-sm min-width-initial mr-5"
+      type="button"
+      (click)="save()"
+    >
+      Ok
     </button>
   </div>
 </div>

@@ -1,15 +1,15 @@
 <div class="w-full h-full">
     <div class=" w-full h-1/10">
-        <span class="material-icons float-right" mat-dialog-close>close</span>
+        <span class="material-icons float-right cursor-pointer" mat-dialog-close>close</span>
     </div>
-    <div class="w-full h-2/5 flex align-items-center justify-content-center">
+    <div class="w-full h-2/5 flex align-items-center justify-content-center warningicon">
         <mat-icon svgIcon="warning"></mat-icon>
     </div>
     <div class="w-full h-1/10 text-center">
-        <p class="text-color">Do you want to delete?</p> 
+        <p class="max-health-primary-color font-medium">Do you want to delete?</p> 
     </div>
     <div class="flex w-full h-1/10 justify-content-center">
-        <button mat-raised-button (click)="deletesuccess()" mat-dialog-close >OK</button>
-        <button mat-raised-button color="primary" mat-dialog-close class="ml-4">Cancel</button>
+        <button mat-raised-button (click)="deletesuccess()" class="min-width max-health-primary-color " mat-dialog-close >OK</button>
+        <button mat-raised-button color="primary" mat-dialog-close class="ml-6 min-width">Cancel</button>
     </div>
 </div>

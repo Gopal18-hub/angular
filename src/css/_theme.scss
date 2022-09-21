@@ -161,6 +161,16 @@ $custom-typography: mat.define-typography-config(
 .max-health-primary-color {
   color: var(--primary-color);
 }
+.max-health-red-color {
+  color: red;
+}
+.text-underline {
+  text-underline-position: under;
+}
+body {
+  min-width: 1366px;
+  overflow-x: auto;
+}
 
 mat-form-field {
   font-size: 14px;
@@ -392,6 +402,8 @@ mat-form-field {
 .max-dialog-close-icon {
   right: -1.2em;
   top: -1em;
+  color: #ababab;
+  transform: scale(0.75);
 }
 .mat-tooltip {
   background-color: #dae9f8;
@@ -400,6 +412,10 @@ mat-form-field {
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.2px;
+  margin: 2px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  max-width: 350px !important;
 }
 
 .mat-option {
@@ -472,4 +488,9 @@ input[type="number"]::-webkit-inner-spin-button {
     background: #45c0be;
     border-radius: 50%;
   }
+}
+.material-print-icon {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAABRElEQVRoge2Y0U3DMBCGLwh1CDahLEDFDqyCeICWMZilmxTSNT5eHBQFt7IvtjlZ972kku36/3N3Sc4iji2GnMkAtYTEGIYhWd9NTSEtudUsyrlTGjSR7yYibsQabsQabsQabsQa/RkBNsAHcOYCs7lVSdhnBPbA5o8j4FBbYAXeY0bGMHhfPvBlAbZB6xgbBNr2G2tY6u2v2C0CPAHfwBewS11kLrWCgYnTYqzP1PrFaER2ISon4HExFtdr0cg1uk0tN2KNrHOt1jXkJ42p+EljRdzIBHDMbIZiHP/dSCHKPQ1TPlFafcZotMwjcg4TtpX0FQN4CD+jre4+NaEX6zQ1crUmMv7nbVozf4+8hOuziNypblU6a9NzFJFPEXnV7R6JSA00+1h5aq3G3yOFaduZeo00oBsjqn6kRXrl0k1EHGv8AD1mW8wNH1e/AAAAAElFTkSuQmCC");
+  background-repeat: no-repeat;
+  background-size: contain;
 }

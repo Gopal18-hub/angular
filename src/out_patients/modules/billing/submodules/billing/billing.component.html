@@ -193,7 +193,7 @@
             (click)="dms()"
             [disabled]="dmsProcessing || !patient"
           >
-            {{ dmsProcessing ? "..." : "DMS" }}
+            DMS
           </button>
           <button
             mat-raised-button
@@ -217,7 +217,7 @@
           </button>
         </div>
       </div>
-      <div [class.isDisabled]="!patient">
+      <div [class.isDisabled]="!patient || expiredPatient">
         <div class="mt-2">
           <div
             class="flex justify-between services-tab-header-container align-items-center pr-3"
@@ -231,19 +231,32 @@
                 #rla="routerLinkActive"
                 queryParamsHandling="merge"
                 [active]="rla.isActive"
+                [disabled]="link.disabled"
               >
                 {{ link.title }}
               </a>
             </nav>
-            <div
-              class="total-cost max-health-primary-color font-bold text-underline"
-              *ngIf="billingService.totalCost > 0"
-            >
-              <span>Total Estimation:</span>
-              {{
-                billingService.totalCost
-                  | currency: "INR":undefined:undefined:"en-IN"
-              }}
+            <div class="flex">
+              <div
+                class="total-cost max-health-primary-color font-bold text-underline"
+                *ngIf="billingService.totalCost > 0"
+              >
+                <span>Total Estimation:</span>
+                {{
+                  billingService.totalCost
+                    | currency: "INR":undefined:undefined:"en-IN"
+                }}
+              </div>
+              <!-- <div class="qms-container ml-3">
+                <span class="text-white">Counter No. </span
+                ><span class="ml-1 max-health-primary-color font-semi-bold"
+                  >2</span
+                >
+                <span class="ml-2 text-white">Queue No.</span>
+                <span class="ml-1 max-health-primary-color font-semi-bold"
+                  >23</span
+                >
+              </div> -->
             </div>
           </div>
 

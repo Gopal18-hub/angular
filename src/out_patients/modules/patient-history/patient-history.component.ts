@@ -433,6 +433,12 @@ export class PatientHistoryComponent implements OnInit {
       this.transactiontype = resultdata;
       console.log(this.transactiontype);
       this.patienthistoryform.controls["transactiontype"].setValue(this.transactiontype[0].valueString);
+      this.transactiontype.forEach(item => {
+        if(item.dispalyString == 'Deposit Refund')
+        {
+          item.valueString = 'Deposit Refund'
+        }
+      })
       this.questions[4].options = this.transactiontype.map((l)=>{
         return { title: l.dispalyString, value: l.valueString}
       })
@@ -581,12 +587,13 @@ export class PatientHistoryComponent implements OnInit {
           {
             console.log('data');
             this.patienthistorylist = resultdata;
+            console.log(this.patienthistorylist)
             this.patienthistorylist.forEach(e=>{
-              e.billAmount = parseInt(e.balanceAmt).toFixed(2);
-              e.discountAmount = parseInt(e.discountAmount).toFixed(2);
-              e.receiptAmt = parseInt(e.receiptAmt).toFixed(2);
-              e.refundAmount = parseInt(e.refundAmount).toFixed(2);
-              e.balanceAmt = parseInt(e.balanceAmt).toFixed(2);
+              e.billAmount = Number(e.billAmount).toFixed(2);
+              e.discountAmount = Number(e.discountAmount).toFixed(2);
+              e.receiptAmt = Number(e.receiptAmt).toFixed(2);
+              e.refundAmount = Number(e.refundAmount).toFixed(2);
+              e.balanceAmt = Number(e.balanceAmt).toFixed(2);
               e.billDate = e.billDate.split(' ')[0];
             })
             this.patienthistorylist = this.setimage(this.patienthistorylist);
@@ -660,7 +667,7 @@ export class PatientHistoryComponent implements OnInit {
       {
         this.openReportModal('billingreport');
       }
-      else if(event.row.billType == 'Op Refund') 
+      else if(event.row.billType == 'OP Refund') 
       {
         this.openReportModal('refundReport');
       }

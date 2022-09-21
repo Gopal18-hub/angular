@@ -181,10 +181,44 @@ width: 18%;
 {
 margin-top: 0.19rem;
 }
-::ng-deep .max-table-wrapper{
-    table{
-        .mat-row .type-checkbox{
-            text-align: inherit !important;
+
+.bill-detail-table{
+    ::ng-deep .max-table-wrapper{
+        table{
+            .mat-header-row .mat-column-select{
+                width: 100px !important;
+                // text-align: inherit !important;
+            }
+            tbody tr td:nth-child(4)
+            {
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 25px !important
+            }
+            tbody tr td:nth-child(5){
+                text-align: right;
+                padding-right: 130px !important;
+                // padding-left: 50px !important
+            }
+        }
+    }
+    ::ng-deep .max-table-wrapper table{
+        tr.cancelledrefund{
+            background-color: #fff !important;
+            td{
+                pointer-events: none;
+                opacity: 0.5;
+            }
+        }
+
+    }
+}
+
+.disable-table-check{
+    ::ng-deep .max-table-wrapper table .mat-header-row .mat-column-select{
+        pointer-events: none;
+        div mat-checkbox{
+            opacity: 0.5;
         }
     }
 }

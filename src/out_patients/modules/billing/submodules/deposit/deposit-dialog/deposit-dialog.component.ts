@@ -50,7 +50,8 @@ export class DepositDialogComponent implements OnInit {
   
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
+
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -93,7 +94,7 @@ export class DepositDialogComponent implements OnInit {
         };
     this.patientIdentityInfo = { type: "Deposit", patientinfo : this.data.patientinfo };
     this.patientsavedepositdetailgst = [];
-    this.isNSSHLocation =  this.cookie.get("LocationIACode") == "NSSH" ? true : false;
+    this.isNSSHLocation = this.cookie.get("LocationIACode") == "NSSH" ? true : false;
   }
 
   ngAfterViewInit():void {   
@@ -112,11 +113,13 @@ export class DepositDialogComponent implements OnInit {
     this.depositpatientidentityinfo = this.depositpatientidentity.patientidentityform.value;
     
     //Service and Deposit Type
-    if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead.value == 0 && this.isNSSHLocation)){
+    if(this.selecteddepositservicetype.deposithead == null || (this.selecteddepositservicetype.deposithead == 0 && this.isNSSHLocation)){
       this.messageDialogService.error("Please Select Deposit Head");
+      this.validationexists = true;
     }
     else  if(this.selecteddepositservicetype.servicetype == null){
       this.messageDialogService.error("Please Select Service Type");
+      this.validationexists = true;
     }
     //deposit - payment method
     else if(this.DepositcashMode){
@@ -146,7 +149,7 @@ export class DepositDialogComponent implements OnInit {
       else if(this.PaymentTypedepositamount == 0){
         this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
-      }
+      }      
     }
 
     //pan card and form 60
@@ -177,10 +180,15 @@ export class DepositDialogComponent implements OnInit {
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
               this.messageDialogService.success("Deposit Has Been Successfully Saved");            
-            }else{
-              this.messageDialogService.error(resultData[0].returnMessageDeposit);
-            }
-           
+            }else
+           {
+             const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
+             let tempString = "";
+             temp.forEach((element:string) => {
+               tempString += '<p class="text-left;">' + element + '</p>'  ; 
+             });
+             this.messageDialogService.error(tempString);
+            }                       
           },
           (error) => {
             console.log(error);

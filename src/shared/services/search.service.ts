@@ -1,22 +1,27 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 import { CookieService } from "./cookie.service";
-
+import { DatePipe } from "@angular/common";
 @Injectable({
   providedIn: "root",
 })
 export class SearchService {
-  constructor(private cookie: CookieService) {}
+  constructor(private cookie: CookieService, private datepipe: DatePipe) {}
   searchTrigger = new Subject<any>();
 
   activePageTrigger = new Subject<any>();
 
   activePage: any;
+  fromdate = this.datepipe.transform(
+    new Date().setMonth(new Date().getMonth() - 2),
+    "yyyy-MM-dd"
+  );
 
   searchFormData: any = {
     global: {
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxID: {
           type: "string",
@@ -52,6 +57,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         name: {
           type: "string",
@@ -76,14 +82,17 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: false,
       properties: {
         from: {
           type: "date",
           title: "From",
+          defaultValue: this.fromdate,
         },
         to: {
           type: "date",
           title: "To",
+          defaultValue: new Date(),
         },
       },
     },
@@ -91,6 +100,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxID: {
           type: "string",
@@ -107,6 +117,7 @@ export class SearchService {
       dateFormat: "dd/MM/yyyy",
       title: "",
       type: "object",
+      resetFormOnSubmit: true,
       properties: {
         maxid: {
           type: "string",

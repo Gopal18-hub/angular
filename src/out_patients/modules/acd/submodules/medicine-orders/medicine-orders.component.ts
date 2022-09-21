@@ -119,7 +119,7 @@ export class MedicineOrdersComponent implements OnInit {
         options: this.denyOrderTypeList,
       },
       remarks: {
-        type: "string",
+        type: "buttonTextarea",
       }
 
     }
@@ -219,7 +219,7 @@ export class MedicineOrdersComponent implements OnInit {
     actionItems: false,
     selectBox: true,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
-    displayedColumns: ['drug', 'doctor', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
+    displayedColumns: ['drug', 'scheduleName', 'priority', 'days', 'specialization', 'visitDatetime', 'acdRemarks'],
     rowLayout: { dynamic: { rowClass: "'isBilled'+row['isBilled']" } },
     columnsInfo: {
 
@@ -230,7 +230,7 @@ export class MedicineOrdersComponent implements OnInit {
           width: "20%",
         },
       },
-      doctor: {
+      scheduleName: {
         title: 'Schedule',
         type: 'string',
         style: {
@@ -262,7 +262,7 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Visit Date & Time',
         type: 'date',
         style: {
-          width: "12%",
+          width: "15%",
         },
       },
 
@@ -270,7 +270,7 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'ACD Remarks',
         type: 'textarea',
         style: {
-          width: "30%",
+          width: "26%",
         },
       },
 
@@ -442,6 +442,11 @@ export class MedicineOrdersComponent implements OnInit {
       this.medOrderList = [];
       this.medOrderList = this.medOrderListMain.filter((e: any) => (e[this.idValue].toUpperCase().includes(maxid)));
     }
+    this.medOrderList.forEach((item: any) => {
+      if (item.mrpValue !== '' && item.mrpValue !== undefined)
+        item.mrpValue = Number(item.mrpValue).toFixed(2);
+      console.log(item.mrpValue)
+    });
   }
   listRowClick(event: any) {
     this.medOrderDetailsTable.selection.clear();
