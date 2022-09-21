@@ -219,10 +219,16 @@ export class BillComponent implements OnInit {
       credit: {
         title: "Credit",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       cash: {
         title: "Cash",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       disc: {
         title: "Disc %",

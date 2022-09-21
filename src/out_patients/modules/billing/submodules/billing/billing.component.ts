@@ -149,8 +149,8 @@ export class BillingComponent implements OnInit {
         this.patient = false;
         this.getPatientDetailsByMaxId();
       }
-      if (params.orderId) {
-        this.orderId = Number(params.orderId);
+      if (params.orderid) {
+        this.orderId = Number(params.orderid);
       }
     });
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
@@ -181,7 +181,21 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
-        console.log(res);
+        if (res.tempOrderBreakup.length > 0) {
+          res.tempOrderBreakup.forEach((item: any) => {
+            if (item.serviceType == "Investigation") {
+              this.billingService.processInvestigationAdd(1, item.serviceId, {
+                title: item.testName,
+                value: item.testID,
+                originalTitle: item.testName,
+                docRequired: item.doctorid ? true : false,
+                patient_Instructions: "",
+                serviceid: item.serviceId,
+                doctorid: item.doctorid,
+              });
+            }
+          });
+        }
       });
   }
 
@@ -405,20 +419,24 @@ export class BillingComponent implements OnInit {
                   .afterClosed()
                   .pipe(takeUntil(this._destroying$))
                   .subscribe((result) => {
-                    this.startProcess(
-                      patientDetails,
-                      resultData,
-                      iacode,
-                      regNumber
-                    );
+                    if (!this.orderId) {
+                      this.startProcess(
+                        patientDetails,
+                        resultData,
+                        iacode,
+                        regNumber
+                      );
+                    }
                   });
               } else {
-                this.startProcess(
-                  patientDetails,
-                  resultData,
-                  iacode,
-                  regNumber
-                );
+                if (!this.orderId) {
+                  this.startProcess(
+                    patientDetails,
+                    resultData,
+                    iacode,
+                    regNumber
+                  );
+                }
               }
             }
           } else {
