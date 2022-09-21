@@ -346,6 +346,25 @@ export namespace ApiConstants {
       reptype
     );
   };
+  //Get API Call for Acknowlegement scroll amount page view button
+  export const getackdetailsforscroll = (
+    fromdate: any,
+    todate: any,
+    stationid: number,
+    operatorID: number
+  ) => {
+    return (
+      environment.PatientApiUrl +
+      "api/patient/getackdetailsforscroll/" +
+      fromdate +
+      "/" +
+      todate +
+      "/" +
+      stationid +
+      "/" +
+      operatorID
+    );
+  };
 
   export const getarecounter = (HsplocationId: number) => {
     return (
@@ -1315,7 +1334,7 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.BillingApiUrl +
-      "api/outpatientbilling/(getopconsultationcount /" +
+      "api/outpatientbilling/getopconsultationcount/" +
       fromdate +
       "/" +
       todate +

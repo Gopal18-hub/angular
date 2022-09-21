@@ -15,7 +15,7 @@ export class MiscService {
   billDetail: any
   cashLimit: any = 0;
   miscFormData: any = [];
-
+  clearForm = false;
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
@@ -50,6 +50,17 @@ export class MiscService {
     this.miscFormData = data;
   }
   getMiscBillFormData() {
+    if (this.miscFormData.clear === true) {
+      this.clearForm = true;
+    }
+
+
     return this.miscFormData;
   }
+  // calculateBill(deposit,discount,totalAmount,credit)
+
+  // {
+  //  dr("billamount") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
+  //  dr("PaidByCompany") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
+  // }
 }

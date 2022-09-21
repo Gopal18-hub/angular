@@ -140,7 +140,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         // title: "SSN",
       },
       narration: {
-        type: "string",
+        type: "buttonTextarea",
         // title: "SSN",
       },
 
@@ -339,6 +339,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.setItemsToBill.clear = true;
     this.Misc.setMiscBillFormData(this.setItemsToBill);
 
+
     this.patientName = "";
     this.ssn = "";
     this.dob = "";
@@ -348,14 +349,15 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.billingService.clear();
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
-    this.questions[2].readonly = false;
+    // this.questions[2].readonly = false;
     this.categoryIcons = [];
     this.questions[0].questionClasses = "";
+
+    this.questions[0].elementRef.focus();
+    this.miscForm.reset();
     this.miscForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
-    this.questions[0].elementRef.focus();
-    this.miscForm.reset()
   }
 
   getssnandmaxid() {
@@ -409,6 +411,10 @@ export class MiscellaneousBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$)).subscribe((resultData: Registrationdetails) => {
           this.patientDetails = resultData;
           if (this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length != 0) {
+            this.questions[0].readonly = true;
+            this.questions[1].readonly = true;
+            //this.questions[2].readonly = true;
+
             this.patientDetails = resultData;
             this.MaxIDExist = true;
 
