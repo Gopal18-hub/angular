@@ -11,7 +11,6 @@ import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
 import { CookieService } from "@shared/services/cookie.service";
-import { numbers } from "@material/menu";
 
 @Component({
   selector: "out-patients-cash-scroll-modify",
@@ -458,6 +457,7 @@ export class CashScrollModifyComponent implements OnInit {
     else{
       this.ackbtn = true;
       this.modifybtn = true;
+      this.dialogservice.info('Items for Scroll No: '+this.scrolldataObject.getERPscrollMainDto[0].stationslno+' Modified Already.');
     }
     var i = 1;
         this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
