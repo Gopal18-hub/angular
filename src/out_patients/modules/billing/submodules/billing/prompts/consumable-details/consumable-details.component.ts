@@ -80,6 +80,14 @@ export class ConsumableDetailsComponent implements OnInit {
     this.tableRows.selection.select(...this.tableRows.dataSource.data);
   }
 
+  copyReason() {
+    const copyText = this.itemsData[0].reason;
+    this.itemsData.forEach((item: any) => {
+      item.reason = copyText;
+    });
+    this.itemsData = [...this.itemsData];
+  }
+
   close() {
     this.dialogRef.close({ data: this.tableRows.selection.selected });
   }
