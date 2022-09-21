@@ -48,6 +48,8 @@ export class BillingService {
 
   todayPatientBirthday: boolean = false;
 
+  consultationItemsAdded = new Subject<boolean>();
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   changeBillTabStatus(status: boolean) {
@@ -660,6 +662,7 @@ export class BillingService {
           doctorID: doctorName.value,
         },
       });
+      this.consultationItemsAdded.next(true);
     }
   }
 }

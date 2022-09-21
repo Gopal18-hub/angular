@@ -150,6 +150,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       }
     });
     //this.showDmgPopup();
+    this.billingService.consultationItemsAdded.subscribe((added: boolean) => {
+      if (added) {
+        this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
+      }
+    });
   }
 
   rowRwmove($event: any) {
