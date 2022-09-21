@@ -77,9 +77,7 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.itemsData.forEach((item: any) => {
-      this.tableRows.selection.add(item);
-    });
+    this.tableRows.selection.select(...this.tableRows.dataSource.data);
   }
 
   close() {
