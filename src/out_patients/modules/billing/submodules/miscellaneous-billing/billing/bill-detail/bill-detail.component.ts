@@ -60,11 +60,11 @@ export class BillDetailComponent implements OnInit {
   depositDetails: any = [];
   miscServBillForm!: FormGroup;
   serviceID!: number;
-  //location: number = Number(this.cookie.get("HSPLocationId"));
+  location: number = Number(this.cookie.get("HSPLocationId"));
   stationId = Number(this.cookie.get("StationId"));
   userID = Number(this.cookie.get("UserId"));
 
-  location = 67;
+  //location = 67;
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
@@ -135,7 +135,7 @@ export class BillDetailComponent implements OnInit {
       tffPrice: {
         type: "number",
         title: "Tarrif Price",
-        required: true,
+        //required: true,
         readonly: true,
         defaultValue: "0.00",
       },
@@ -308,6 +308,7 @@ export class BillDetailComponent implements OnInit {
         options: [
           { title: "Cash", value: "cash" },
           { title: "Credit", value: "credit" },
+          { title: "Gen. OPD", value: "Gen OPD" },
         ],
         defaultValue: "cash",
       },
@@ -352,7 +353,7 @@ export class BillDetailComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "12%",
+          width: "11%",
         },
       },
       ItemDescription: {
@@ -472,10 +473,7 @@ export class BillDetailComponent implements OnInit {
         });
 
       });
-    if (this.serviceItemsList.length === 0) {
-      this.miscServBillForm.disable();
-      this.miscServBillForm.controls["serviceType"].enable();
-    }
+
 
 
 
@@ -524,6 +522,8 @@ export class BillDetailComponent implements OnInit {
           this.serviceID = value.value;
           this.serviceName = value.title;
         }
+
+
         this.setServiceItemList();
       });
 
@@ -1059,8 +1059,8 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["pDoc"].reset()
     this.miscServBillForm.controls["remark"].reset()
     this.miscServBillForm.controls["reqAmt"].reset()
-    this.miscServBillForm.controls["serviceType"].reset();
-    this.miscServBillForm.controls["reqAmt"].reset()
+    //this.miscServBillForm.controls["serviceType"].reset();
+    //this.miscServBillForm.controls["reqAmt"].reset()
     this.miscServBillForm.controls["serviceType"].reset()
 
 
