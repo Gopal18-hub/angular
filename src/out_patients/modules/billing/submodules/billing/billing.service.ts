@@ -188,6 +188,7 @@ export class BillingService {
   }
 
   clear() {
+    this.todayPatientBirthday = false;
     this.billItems = [];
     this.consultationItems = [];
     this.InvestigationItems = [];

@@ -43,7 +43,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Equipment Schedule",
+            reportName: "equipmentReport",
             reportEntity: "equipmentReport",
           },
         },
@@ -528,6 +528,7 @@ export namespace FormReport {
               value: "id",
             },
           },
+          defaultValue: "0",
         },
 
         Location: {
@@ -560,6 +561,8 @@ export namespace FormReport {
               value: "membershipno",
             },
           },
+
+          defaultValue: "0",
         },
       },
     },
@@ -650,9 +653,7 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
-              "HSPLocationId"
-            )}`,
+            }api/lookup/getmembershipnumberforreport/${7}`,
             fields: {
               title: "membershipno",
               value: "membershipno",
@@ -885,7 +886,7 @@ export namespace FormReport {
       },
     ],
   };
-  export const ServiceTaxReport = {
+  export const ServiceTaxReportData = {
     reportName: "Service Tax Report",
     filterForm: {
       title: "",
@@ -921,12 +922,11 @@ export namespace FormReport {
         rbIP: {
           type: "radio",
           title: "Report Type",
-          required: "true",
           options: [
-            { title: "IP", value: "true" },
-            { title: "OP", value: "false" },
+            { title: "IP", value: true },
+            { title: "OP", value: false },
           ],
-          defaultValue: "true",
+          defaultValue: true,
         },
       },
     },
@@ -941,7 +941,7 @@ export namespace FormReport {
           type: "crystalReport",
           reportConfig: {
             reportName: "Service Tax Report",
-            reportEntity: "ServiceTaxReportDataReports",
+            reportEntity: "ServiceTaxReportData",
           },
         },
         {
@@ -961,6 +961,7 @@ export namespace FormReport {
       },
     ],
   };
+
   export const freeOutPatientReport = {
     reportName: "Free Out Patient Report",
     filterForm: {
