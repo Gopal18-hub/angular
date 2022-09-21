@@ -43,7 +43,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Equipment Schedule",
+            reportName: "equipmentReport",
             reportEntity: "equipmentReport",
           },
         },
