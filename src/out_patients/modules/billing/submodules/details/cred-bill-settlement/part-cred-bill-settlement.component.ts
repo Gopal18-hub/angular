@@ -13,7 +13,7 @@ import { PaymentDialogComponent } from './../payment-dialog/payment-dialog.compo
 import { ReportService } from "@shared/services/report.service";
 import { getduereceiptnumber } from '../../../../../core/types/billdetails/getDueReceiptNumber.Interface';
 import { BillDetailsApiConstants } from "../BillDetailsApiConstants";
-
+import { PrintduereceiptComponent } from "../printduereceipt/printduereceipt.component";
 @Component({
   selector: "part-cred-bill-settlement",
   templateUrl: "./part-cred-bill-settlement.component.html",
@@ -241,12 +241,14 @@ export class PartialCredBillComponent implements OnInit {
   }
   printreceipt()
   {
-    this.openReportModal('DueReceiptReport');
+    // this.openReportModal('DueReceiptReport');
+    this.matDialog.open(PrintduereceiptComponent, {
+      width: "30vw",
+      height: "30vh"
+    })
   }
-  openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
-      receiptnumber: this.receiptno,
-      locationID: this.cookie.get('HSPLocationId'),
-    });
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

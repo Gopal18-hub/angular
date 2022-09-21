@@ -54,8 +54,36 @@
     width:8%;
 }
 .bg-white{
-    background: white;;
+    background: white;
 }
 .w-35{
     width:35%;
+}
+.scroll-input{
+    ::ng-deep .mat-form-field-infix{
+        text-align: right;
+    }
+}
+.scroll-table{
+    ::ng-deep .mat-form-field{
+        display: block !important;
+        background-color: #fff;
+        color: #000;
+        border-radius: 6px;
+    }
+    ::ng-deep .mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0;
+    }
+    ::ng-deep mat-form-field.mat-form-field-appearance-outline .mat-form-field-infix
+    {
+        width: 100px;
+    }
+    ::ng-deep .max-table-wrapper table{
+        tr.rowcolorchange{
+            background-color: #004084 !important;
+            td{
+                color: #fff !important;
+            }
+        }
+    }
 }

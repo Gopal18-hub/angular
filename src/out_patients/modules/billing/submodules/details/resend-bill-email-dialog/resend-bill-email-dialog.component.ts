@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'out-patients-resend-bill-email-dialog',
@@ -27,6 +28,7 @@ export class ResendBillEmailDialogComponent implements OnInit {
   };
   resendbillform!: FormGroup;
   questions: any;
+  private readonly _destroying$ = new Subject<void>();
   constructor(
     private formService: QuestionControlService
   ) { }
@@ -38,6 +40,11 @@ export class ResendBillEmailDialogComponent implements OnInit {
     );
     this.resendbillform = formResult.form;
     this.questions = formResult.questions;
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 
 }

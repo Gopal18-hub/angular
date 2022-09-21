@@ -49,7 +49,26 @@ export class GstTaxDialogComponent implements OnInit {
       this.cesS_Value = this.data.gstdata[0].cesS_Value
       this.totaltaX_Value = this.data.gstdata[0].totaltaX_Value
       this.sac = this.data.gstdata[0].saccode
+      this.gstTaxForm.controls["code"].setValue(this.sac)
 
+      this.taxData.forEach((e: any) => {
+        if (e.services == "CGST") {
+          e.percentage = this.cgsT_Value
+        }
+        if (e.services == "SGST") {
+          e.percentage = this.sgsT_Value
+        }
+        if (e.services == "UTGST") {
+          e.percentage = this.utgsT_Value
+        }
+        if (e.services == "CESS") {
+          e.percentage = this.cesS_Value
+        }
+        if (e.services == "TOTAL TAX") {
+          e.percentage = this.totaltaX_Value
+        }
+
+      })
     })
 
 

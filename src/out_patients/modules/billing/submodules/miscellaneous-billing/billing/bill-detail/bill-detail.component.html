@@ -1,4 +1,4 @@
-<div class="flex flex-column h-full sub-bill-overall ">
+<div class="flex flex-column h-full sub-bill-overall  ">
   <form [formGroup]="miscServBillForm">
     <div class="flex flex-column h-full w-full">
 
@@ -14,7 +14,7 @@
           </div>
           <!-- Item -->
           <div class="ml-1  w-1/4 h-dropdown max-health-primary-color">
-            <maxhealth-question [question]="question[1]" [form]="miscServBillForm" [questions]="question[1]"
+            <maxhealth-question [question]="question[1]" [form]="miscServBillForm" [questions]="question[1]" 
               [index]="1">
             </maxhealth-question>
           </div>
@@ -54,7 +54,7 @@
           </div>
 
 
-          <button mat-raised-button color="primary" class="addbtn mt-3 ml-3" type="submit" 
+          <button mat-raised-button color="primary" class="addbtn mt-3 ml-3" type="submit"  [disabled]="!enableItemsService"
             (click)="addService()">
             Add
           </button>
@@ -64,10 +64,10 @@
     </div>
   </form>
 
-  <div class="w-auto mt-1  h-30vh">
+  <div class="w-full mt-1  h-30vh">
     <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" #selectedServices -->
     <!-- <ng-container class="w-full h-table"> -->
-    <maxhealth-table [data]="serviceselectedList" [config]="config" class="input-align"></maxhealth-table>
+    <maxhealth-table [data]="serviceselectedList" [config]="config" class="input-align" (rowRwmove)="rowRwmove($event)"></maxhealth-table>
     <!-- </ng-container> -->
 
   </div>
@@ -252,7 +252,7 @@
                 <maxhealth-question [question]="question[24]" [form]="miscServBillForm" [questions]="question[24]"
                   class="w-5/9 mt-1 mr-1" [index]="24">
                 </maxhealth-question>
-                <button mat-raised-button color="primary" class="btn-md min-width-bill  ml-5" type="submit"
+                <button mat-raised-button color="primary" class="btn-md min-width-bill  ml-5" type="submit" [disabled]="!isEnableBillBtn"
                   (click)="openMakeBilldialog()">
                   Make Bill
                 </button>

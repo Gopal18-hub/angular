@@ -8,6 +8,7 @@ export class MiscService {
   subject = new Subject<any>();
 
   transactionamount: any = 0.0;
+  clearAllItems = new Subject<boolean>();
   MOP: string = "Cash";
   data: any = [];
   patientDetail: any;
@@ -15,7 +16,7 @@ export class MiscService {
   billDetail: any
   cashLimit: any = 0;
   miscFormData: any = [];
-
+  clearForm = false;
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
@@ -50,6 +51,22 @@ export class MiscService {
     this.miscFormData = data;
   }
   getMiscBillFormData() {
+    if (this.miscFormData.clear === true) {
+      this.clearForm = true;
+    }
+
+
     return this.miscFormData;
   }
+
+
+  clearMiscBlling() {
+    this.clearAllItems.next(true);
+  }
+  // calculateBill(deposit,discount,totalAmount,credit)
+
+  // {
+  //  dr("billamount") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
+  //  dr("PaidByCompany") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
+  // }
 }
