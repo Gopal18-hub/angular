@@ -29,6 +29,7 @@ import {
   trigger,
 } from "@angular/animations";
 import { DatePipe } from "@angular/common";
+import { FormGroup } from "@angular/forms";
 
 @Component({
   selector: "maxhealth-table",
@@ -90,6 +91,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild("autosize") autosize!: CdkTextareaAutosize;
 
+  tableForm!: FormGroup;
+
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this._ngZone.onStable
@@ -112,6 +115,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.tableForm = new FormGroup({});
     if (!("rowHighlightOnHover" in this.config)) {
       this.config.rowHighlightOnHover = true;
     }
