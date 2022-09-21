@@ -111,6 +111,8 @@ export class QmsComponent implements OnInit {
       console.log(error);
       if(error.error.text == "Record Saved Successfully")
       {
+        this.cookie.set('Area_ID',this.qmsform.value.area);
+        this.cookie.set('Counter_ID', this.qmsform.value.counter);
         var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
         var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
         this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");

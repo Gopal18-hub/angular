@@ -205,16 +205,31 @@
           >
             Visit History
           </button>
-          <button
-            mat-raised-button
-            color="primary"
-            class="font-sm ml-2 min-width-initial"
-            type="button"
-            [disabled]="!patient"
-            (click)="clear()"
-          >
-            Clear
-          </button>
+          <ng-container *ngIf="orderId">
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2 min-width-initial"
+              type="button"
+              [disabled]="!patient"
+              routerLink="/acd/investigation-orders"
+              [queryParams]="{ maxId: formGroup.value.maxid, orderId: orderId }"
+            >
+              ACD
+            </button>
+          </ng-container>
+          <ng-container *ngIf="!orderId">
+            <button
+              mat-raised-button
+              color="primary"
+              class="font-sm ml-2 min-width-initial"
+              type="button"
+              [disabled]="!patient"
+              (click)="clear()"
+            >
+              Clear
+            </button>
+          </ng-container>
         </div>
       </div>
       <div [class.isDisabled]="!patient || expiredPatient">

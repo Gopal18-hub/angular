@@ -142,10 +142,20 @@ export namespace CrystalReport {
   };
 
   export const OpenScrollReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/MIS/OpenScrollReport?cmbopenscrolltype=${params.cmbopenscrolltype}&cmbLocation=${params.cmbLocation}&fromdate=${params.fromdate}&todate=${params.todate}&user=${params.user}`;
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/MIS/OpenScrollReport?cmbopenscrolltype=${
+      params.cmbopenscrolltype
+    }&cmbLocation=${params.cmbLocation}&dtpFromDate=${
+      params.dtpFromDate
+    }&dtpToDate=${params.dtpToDate}&openscrolltypename=${
+      params.openscrolltypename
+    }&user=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
 
-  export const ServiceTaxReportDataReports = (params: any) => {
+  export const ServiceTaxReportData = (params: any) => {
     return `${
       environment.ReportsSampleUrl
     }MAXHIS/MIS/ServiceTaxReportData?dtpFromDate=${
@@ -220,4 +230,11 @@ export namespace CrystalReport {
   export const DueReceiptReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
   };
+  export const OpDiscountReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPDiscountReport?ReportChecked=${params.ReportChecked}&ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+  export const OPRefundReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+
 }

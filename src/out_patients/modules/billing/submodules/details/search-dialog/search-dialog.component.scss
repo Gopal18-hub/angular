@@ -92,6 +92,12 @@
                 color: #000 !important;
             }
         }
+        tr.newbill:hover{
+            opacity: 1;
+            td{
+                font-weight: 600;
+            }
+        }
         tr.cancelled{
             background-color: #FF6A6A !important;
             opacity: 0.8;

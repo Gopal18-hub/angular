@@ -124,6 +124,7 @@ import { DisountReasonComponent } from './submodules/billing/prompts/discount-re
 import { DepositDetailsComponent } from './submodules/billing/prompts/deposit-details/deposit-details.component';
 import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-tax.component';
 import { StaffDeptDialogComponent } from './submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component';
+import { PrintduereceiptComponent } from './submodules/details/printduereceipt/printduereceipt.component';
 @NgModule({
   declarations: [
     BillingPaymentMethodsComponent,
@@ -221,6 +222,7 @@ import { StaffDeptDialogComponent } from './submodules/miscellaneous-billing/bil
     DepositDetailsComponent,
     GstTaxComponent,
     StaffDeptDialogComponent,
+    PrintduereceiptComponent,
   ],
   imports: [
     BillingRoutingModule,
