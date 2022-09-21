@@ -1,10 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
 import { Router } from "@angular/router";
+import { ConstantPool } from "@angular/compiler";
+import { MaxTableComponent } from "@shared/ui/table/max-table.component";
 
 @Component({
   selector: "out-patients-cash-scroll-new",
@@ -13,6 +15,7 @@ import { Router } from "@angular/router";
 })
 export class CashScrollNewComponent implements OnInit {
   questions: any;
+  @ViewChild("cashscrollnewtable") cashScrollNewTable!: MaxTableComponent;
   constructor(
     private formService: QuestionControlService,
     private cookie: CookieService,
@@ -260,5 +263,11 @@ export class CashScrollNewComponent implements OnInit {
   }
   opencashscroll() {
     this.router.navigate(["report/cash-scroll", "cash-scroll"]);
+  }
+
+  exportTable() {
+    if (this.cashScrollNewTable) {
+      this.cashScrollNewTable.exportAsExcel();
+    }
   }
 }
