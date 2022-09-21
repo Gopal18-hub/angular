@@ -206,7 +206,7 @@ export class BillComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
         style: {
           width: "100px",
         },
@@ -333,6 +333,7 @@ export class BillComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {});
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
