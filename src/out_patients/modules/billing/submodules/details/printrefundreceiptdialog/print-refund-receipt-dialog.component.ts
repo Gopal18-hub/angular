@@ -80,4 +80,9 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
     this.printrefundform.reset();
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
 }

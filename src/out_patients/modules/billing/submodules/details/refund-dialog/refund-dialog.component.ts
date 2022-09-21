@@ -795,5 +795,9 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this._destroying$.complete();
     this.dueform.reset();
   }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 
 }

@@ -775,21 +775,23 @@ export class BillingComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        let apppatientDetails = result.data.added[0];
-        if (apppatientDetails.iAcode == "") {
-          this.snackbar.open("Invalid Max ID", "error");
-        } else {
-          let maxid =
-            apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
-          this.formGroup.controls["maxid"].setValue(maxid);
-          this.apiProcessing = true;
-          this.patient = false;
-          //this.getPatientDetailsByMaxId();
-          this.router.navigate([], {
-            queryParams: { maxId: this.formGroup.value.maxid },
-            relativeTo: this.route,
-            queryParamsHandling: "merge",
-          });
+        if (result && result.data) {
+          let apppatientDetails = result.data.added[0];
+          if (apppatientDetails.iAcode == "") {
+            this.snackbar.open("Invalid Max ID", "error");
+          } else {
+            let maxid =
+              apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            this.formGroup.controls["maxid"].setValue(maxid);
+            this.apiProcessing = true;
+            this.patient = false;
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
+          }
         }
       });
   }

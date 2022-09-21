@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'out-patients-op-prescription-dialog',
@@ -8,6 +9,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class OpPrescriptionDialogComponent implements OnInit {
 
+  private readonly _destroying$ = new Subject<void>();
   constructor(
     public dialogref: MatDialogRef<OpPrescriptionDialogComponent>
   ) { }
@@ -24,5 +26,9 @@ export class OpPrescriptionDialogComponent implements OnInit {
     {
       this.dialogref.close(str)
     }
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }
