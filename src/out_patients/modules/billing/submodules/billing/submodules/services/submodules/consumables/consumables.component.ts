@@ -106,7 +106,7 @@ export class ConsumablesComponent implements OnInit {
   ngAfterViewInit(): void {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(ConsumableDetailsComponent, {
-        width: "70%",
+        width: "80%",
         height: "50%",
         data: {
           orderSet: res.element,
