@@ -81,6 +81,6 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close({ data: this.tableRows.dataSource.data });
+    this.dialogRef.close({ data: this.tableRows.selection.selected });
   }
 }
