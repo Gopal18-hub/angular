@@ -36,22 +36,27 @@ export class CashScrollModifyComponent implements OnInit {
       employeename: {
         type: "string",
         title: "",
+        readonly: true
       },
       scrollno: {
         type: "number",
         title: "",
+        readonly: true
       },
       takenat: {
         type: "string",
         title: "",
+        readonly: true
       },
       fromdate: {
-        type: "date",
+        type: "string",
         title: "",
+        readonly: true
       },
       todate: {
-        type: "date",
+        type: "string",
         title: "",
+        readonly: true
       },
       totalcash: {
         type: "number",
@@ -374,7 +379,102 @@ export class CashScrollModifyComponent implements OnInit {
       },
     },
   };
-
+  config1: any = {
+    displayedColumns: [
+      "sno",
+      "receiptNo",
+      "billno",
+      "datetime",
+      "billamount",
+      "refund",
+      "depositamount",
+      "discountamount",
+      // "planamount",
+      // "plandiscount",
+      // "netamount",
+    ],
+    rowLayout: { dynamic: { rowClass: "row['forclr']"}},
+    columnsInfo: {
+      sno: {
+        title: "Sl No.",
+        type: "number",
+        style: {
+          width: "5rem",
+        },
+      },
+      receiptNo: {
+        title: "Receipt No.",
+        type: "string",
+        style: {
+          width: "8rem",
+        },
+      },
+      billno: {
+        title: "Bill No.",
+        type: "string",
+        style: {
+          width: "6rem",
+        },
+      },
+      datetime: {
+        title: "Date Time",
+        type: "string",
+        style: {
+          width: "9rem",
+        },
+      },
+      billamount: {
+        title: "Bill Amount",
+        type: "number",
+        style: {
+          width: "9.5rem",
+        },
+      },
+      refund: {
+        title: "Refund",
+        type: "number",
+        style: {
+          width: "8rem",
+        },
+      },
+      depositamount: {
+        title: "Deposit Amount",
+        type: "number",
+        style: {
+          width: "9rem",
+        },
+      },
+      discountamount: {
+        title: "Discount Amount",
+        type: "number",
+        style: {
+          width: "9rem",
+        },
+      },
+      // planamount: {
+      //   title: "Plan Amount",
+      //   type: "number",
+      //   style: {
+      //     width: "9rem",
+      //   },
+      // },
+      // plandiscount: {
+      //   title: "Plan Discount",
+      //   type: "number",
+      //   style: {
+      //     width: "9rem",
+      //   },
+      // },
+      // netamount: {
+      //   title: "Net Amount",
+      //   type: "number",
+      //   style: {
+      //     width: "9rem",
+      //   },
+      // }
+    },
+  };
+  display:boolean = true;
   @ViewChild('table') table: any;
   ackbtn: boolean = false;
   modifybtn: boolean = false;
@@ -397,11 +497,11 @@ export class CashScrollModifyComponent implements OnInit {
     );
     this.cashscrollmodifyForm = formResult.form;
     this.questions = formResult.questions;
-    this.cashscrollmodifyForm.controls["fromdate"].disable();
-    this.cashscrollmodifyForm.controls["todate"].disable();
-    this.cashscrollmodifyForm.controls["employeename"].disable();
-    this.cashscrollmodifyForm.controls["takenat"].disable();
-    this.cashscrollmodifyForm.controls["scrollno"].disable();
+    // this.cashscrollmodifyForm.controls["fromdate"].disable();
+    // this.cashscrollmodifyForm.controls["todate"].disable();
+    // this.cashscrollmodifyForm.controls["employeename"].disable();
+    // this.cashscrollmodifyForm.controls["takenat"].disable();
+    // this.cashscrollmodifyForm.controls["scrollno"].disable();
     this.http
       .get(ApiConstants.getdetaileddataforoldscrollerp(11, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
@@ -415,10 +515,10 @@ export class CashScrollModifyComponent implements OnInit {
           this.scrolldataObject.getERPscrollMainDto[0].name
         );
         this.cashscrollmodifyForm.controls["fromdate"].setValue(
-          this.scrolldataObject.getERPscrollMainDto[0].fromdatetime
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].fromdatetime, 'dd/MM/YYYY hh:mm:ss')
         );
         this.cashscrollmodifyForm.controls["todate"].setValue(
-          this.scrolldataObject.getERPscrollMainDto[0].todatetime
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].todatetime, 'dd/MM/YYYY hh:mm:ss')
         );
         this.cashscrollmodifyForm.controls["takenat"].setValue(
           this.datepipe.transform(
@@ -456,11 +556,13 @@ export class CashScrollModifyComponent implements OnInit {
       this.ackbtn = true;
       this.modifybtn = false;
       this.makereadonly = false;
+      this.display = true;
     }
     else{
       this.ackbtn = true;
       this.modifybtn = true;
       this.makereadonly = true;
+      this.display = false;
       this.dialogservice.info('Items for Scroll No: '+this.scrolldataObject.getERPscrollMainDto[0].stationslno+' Modified Already.');
     }
     var i = 1;
@@ -494,7 +596,10 @@ export class CashScrollModifyComponent implements OnInit {
           item.modifiedOnlinePayment = Number(item.modifiedOnlinePayment).toFixed(2);
           item.upiAmt = Number(item.upiAmt).toFixed(2);
           item.modifiedUPIAmt = Number(item.modifiedUPIAmt).toFixed(2);
-          item.mobilePayment = Number(item.mobilePayment).toFixed(2)
+          item.mobilePayment = Number(item.mobilePayment).toFixed(2);
+          item.chequeNo = this.isNull(item.chequeNo);
+          item.batchno = this.isNull(item.batchno);
+          item.onlinePaymentDetails = this.isNull(item.onlinePaymentDetails);
         })
   }
 
@@ -511,6 +616,13 @@ export class CashScrollModifyComponent implements OnInit {
         item.forclr = '';
       }
     })
+  }
+  isNull(value: any)
+  {
+    if(value == null)
+      return '';
+    else
+      return value;
   }
   navigatetomain() {
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
@@ -708,7 +820,7 @@ export class CashScrollModifyComponent implements OnInit {
       this.http.post(ApiConstants.ackdetailsforscroll, this.modifyrequestbody())
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
-        console.log(res.message);
+        console.log(res);
         // console.log(res['message']);
         if(res.success == true)
         {
@@ -770,10 +882,10 @@ export class CashScrollModifyComponent implements OnInit {
         planAmount: String(item.planamount),
         planDiscount: String(item.plandiscount),
         netAmount: String(item.netamount),
-        cash: String(item.cash),
-        cheque: String(item.cheque),
+        cash: Number(item.modifiedCash)> 0 ? String(item.modifiedCash): String(item.cash),
+        cheque: Number(item.modifiedCheqAmt)> 0 ? String(item.modifiedCheqAmt): String(item.cheque),
         dd: String(item.dd),
-        creaditCard: String(item.creditCard),
+        creaditCard: Number(item.modifiedCCAmt)> 0 ? String(item.modifiedCCAmt): String(item.creditCard),
         cashpaymentbyMobile: String(item.mobilePayment),
         onlinePayment: String(item.onlinePayment),
         dues: String(item.dues),
