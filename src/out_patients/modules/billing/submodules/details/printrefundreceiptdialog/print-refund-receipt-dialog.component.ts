@@ -21,7 +21,9 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
     type: "object",
     properties: {
       receiptNumber: {
+        title:'Receipt Number',
         type: "dropdown",
+        required: true,
         placeholder: "---Select---",
         options: this.getrefundbillnumber
       }

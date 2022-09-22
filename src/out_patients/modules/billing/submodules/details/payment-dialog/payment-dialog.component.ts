@@ -64,7 +64,7 @@ export class PaymentDialogComponent implements OnInit {
         defaultValue: new Date(),
       },
       chequebankname: {
-        type: "dropdown",
+        type: "autocomplete",
         options: this.bankname
       },
       chequebranchname: {
@@ -82,7 +82,7 @@ export class PaymentDialogComponent implements OnInit {
         type: "string"
       },
       creditbankname: {
-        type: 'dropdown',
+        type: 'autocomplete',
         options: this.creditcard
       },
       creditbatchno:{
@@ -115,7 +115,7 @@ export class PaymentDialogComponent implements OnInit {
         defaultValue: new Date(),
       },
       demandbankname: {
-        type: "dropdown",
+        type: "autocomplete",
         options: this.bankname
       },
       demandbranchname: {
@@ -284,8 +284,57 @@ export class PaymentDialogComponent implements OnInit {
   }
   amountcheck()
   {
-    console.log(this);
     this.finalamount = 0;
+    if(Number(this.dueform.controls['cashamount'].value) < 0)
+    {
+      let dialogref = this.messageDialogService.info("Amount can't be Negative");
+      dialogref.afterClosed().subscribe(() => {
+        this.dueform.controls['cashamount'].setValue(0.00);
+        this.amountcheck();
+        this.dueform.controls['cashamount'].setValue(this.reduceamount.toFixed(2));
+        this.amountcheck();
+      })
+    }
+    else if(Number(this.dueform.controls['chequeamount'].value) < 0)
+    {
+      let dialogref = this.messageDialogService.info("Amount can't be Negative");
+      dialogref.afterClosed().subscribe(() => {
+        this.dueform.controls['chequeamount'].setValue(0.00);
+        this.amountcheck();
+        this.dueform.controls['chequeamount'].setValue(this.reduceamount.toFixed(2));
+        this.amountcheck();
+      })
+    }
+    else if(Number(this.dueform.controls['creditamount'].value) < 0)
+    {
+      let dialogref = this.messageDialogService.info("Amount can't be Negative");
+      dialogref.afterClosed().subscribe(() => {
+        this.dueform.controls['creditamount'].setValue(0.00);
+        this.amountcheck();
+        this.dueform.controls['creditamount'].setValue(this.reduceamount.toFixed(2));
+        this.amountcheck();
+      })
+    }
+    else if(Number(this.dueform.controls['demandamount'].value) < 0)
+    {
+      let dialogref = this.messageDialogService.info("Amount can't be Negative");
+      dialogref.afterClosed().subscribe(() => {
+        this.dueform.controls['demandamount'].setValue(0.00);
+        this.amountcheck();
+        this.dueform.controls['demandamount'].setValue(this.reduceamount.toFixed(2));
+        this.amountcheck();
+      })
+    }
+    else if(Number(this.dueform.controls['onlineamount'].value) < 0)
+    {
+      let dialogref = this.messageDialogService.info("Amount can't be Negative");
+      dialogref.afterClosed().subscribe(() => {
+        this.dueform.controls['onlineamount'].setValue(0.00);
+        this.amountcheck();
+        this.dueform.controls['onlineamount'].setValue(this.reduceamount.toFixed(2));
+        this.amountcheck();
+      })
+    }
     this.finalamount += Number(this.dueform.controls['cashamount'].value)
                         +Number(this.dueform.controls['chequeamount'].value)
                         +Number(this.dueform.controls['creditamount'].value)
@@ -362,8 +411,11 @@ export class PaymentDialogComponent implements OnInit {
   onlineflag: any = 0;
   submitbtn()
   {
+    var callflag: any = 0;
+    this.modeOfPayment = [];
     if(Number(this.cashamt) > 0)
     {
+      callflag++;
       this.cashflag = 1;
       this.modeOfPayment.push({
         mop: 'Cash',
@@ -373,54 +425,145 @@ export class PaymentDialogComponent implements OnInit {
     }
     if(Number(this.chequeamt) > 0)
     {
-      this.chequeflag = 2;
-      this.modeOfPayment.push({
-        mop: 'Cheque',
-        flag: 2,
-        amount: this.chequeamt
-      });
+      callflag++;
+      if(this.dueform.controls['chequeno'].value == '')
+      {
+        this.messageDialogService.info('Cheque No is Mandatory');
+        return;
+      }
+      else if(this.dueform.controls['chequevalidity'].value <= new Date())
+      {
+        this.messageDialogService.info("Cheque validity can not be lesser then todays's date");
+        return;
+      }
+      else if(this.dueform.controls['chequebankname'].value == '')
+      {
+        this.messageDialogService.info('Bank Name is Mandatory');
+        return;
+      }
+      else if(this.dueform.controls['chequebranchname'].value == '')
+      {
+        this.messageDialogService.info('Branch Name is Mandatory');
+        return;
+      }
+      else{
+        this.chequeflag = 2;
+        this.modeOfPayment.push({
+          mop: 'Cheque',
+          flag: 2,
+          amount: this.chequeamt
+        });
+      }
     }
     if(Number(this.creditamt) > 0)
     {
-      this.creditflag = 3;
-      this.modeOfPayment.push({
-        mop: 'Credit Card',
-        flag: 3,
-        amount: this.creditamt
-      });
+      callflag++;
+      if(this.dueform.controls['creditcardno'].value == '')
+      {
+        this.messageDialogService.info('Credit Card No is Mandatory');
+        return;
+      }
+      else if(this.dueform.controls['creditapprovalno'].value == '')
+      {
+        this.messageDialogService.info("Please Fill All Mandatory Fields");
+        return;
+      }
+      else if(this.dueform.controls['creditbankname'].value == '')
+      {
+        this.messageDialogService.info('Bank Name is Mandatory');
+        return;
+      }
+      else
+      {
+        this.creditflag = 3;
+        this.modeOfPayment.push({
+          mop: 'Credit Card',
+          flag: 3,
+          amount: this.creditamt
+        });
+      }  
     }
     if(Number(this.demandamt) > 0)
     {
-      this.ddflag = 4;
-      this.modeOfPayment.push({
-        mop : 'Demand Darft',
-        flag: 4,
-        amount: this.demandamt
-      });
+      callflag++;
+      if(this.dueform.controls['demandddno'].value == '')
+      {
+        this.messageDialogService.info('Demand Draft No is Mandatory');
+        return;
+      }
+      else if(this.dueform.controls['demandvalidity'].value <= new Date())
+      {
+        this.messageDialogService.info("Demand Draft validity can not be lesser then todays's date");
+        return;
+      }
+      else if(this.dueform.controls['demandbankname'].value == '')
+      {
+        this.messageDialogService.info('Bank Name is Mandatory');
+        return;
+      }
+      else if(this.dueform.controls['demandbranchname'].value == '')
+      {
+        this.messageDialogService.info('Branch Name is Mandatory');
+        return;
+      }
+      else
+      {
+        this.ddflag = 4;
+        this.modeOfPayment.push({
+          mop : 'Demand Darft',
+          flag: 4,
+          amount: this.demandamt
+        });
+      }
     }
     if(Number(this.onlineamt) > 0)
     {
-      this.onlineflag = 5;
-      this.modeOfPayment.push({
-        mop: 'Online Payment',
-        flag: 5,
-        amount: this.onlineamt
-      });
-    }
-    console.log(this.modeOfPayment);
-    this.duerequestbody();
-    this.http.post(BillDetailsApiConstants.insertdueamount, this.duerequestbody())
-    .subscribe(res => {
-      console.log(res);
-      var data: any = {
-        res: res,
-        mop: this.modeOfPayment
+      callflag++;
+      if(this.dueform.controls['onlinetransacid'].value == '')
+      {
+        this.messageDialogService.info('Transaction ID is Mandatory');
       }
-      let dialogref = this.messageDialogService.success(res[0].returnMessage);
-      dialogref.afterClosed().subscribe(() => {
-        this.dialogRef.close(data);
+      else if(this.dueform.controls['onlinebookingid'].value == '')
+      {
+        this.messageDialogService.info("Booking ID is Mandatory");
+      }
+      else if(this.dueform.controls['onlinecontact'].value == '')
+      {
+        this.messageDialogService.info('Conatct No is Mandatory');
+      }
+      else{
+        this.onlineflag = 5;
+        this.modeOfPayment.push({
+          mop: 'Online Payment',
+          flag: 5,
+          amount: this.onlineamt
+        });
+      }
+      
+    }
+    if(Number(this.finalamount) == 0)
+    {
+      this.messageDialogService.info('Amount could not be zero');
+    }
+    console.log(callflag, this.modeOfPayment);
+    if(callflag == this.modeOfPayment.length)
+    {
+      console.log(this.modeOfPayment);
+      this.duerequestbody();
+      this.http.post(BillDetailsApiConstants.insertdueamount, this.duerequestbody())
+      .subscribe(res => {
+        console.log(res);
+        var data: any = {
+          res: res,
+          mop: this.modeOfPayment
+        }
+        let dialogref = this.messageDialogService.success(res[0].returnMessage);
+        dialogref.afterClosed().subscribe(() => {
+          this.dialogRef.close(data);
+        })
       })
-    })
+    }
+    
   }
 
   duerequestbody()
@@ -468,7 +611,7 @@ export class PaymentDialogComponent implements OnInit {
       this.insertdueamt.ds_paymode.tab_cheque.push({
         chequeNo: this.dueform.controls['chequeno'].value,
         chequeDate: this.dueform.controls['chequeissuedate'].value,
-        bankName: this.dueform.controls['chequebankname'].value,
+        bankName: this.dueform.controls['chequebankname'].value.value,
         branchName: this.dueform.controls['chequebranchname'].value,
         city: '',
         flag: this.chequeflag
@@ -477,7 +620,7 @@ export class PaymentDialogComponent implements OnInit {
 
     //Credit Card
     var credbank = this.creditcard.filter(i => {
-      return i.id == this.dueform.controls['creditbankname'].value;
+      return i.id == this.dueform.controls['creditbankname'].value.value;
     });
     console.log(credbank);
     if(credbank.length == 0)
@@ -519,7 +662,7 @@ export class PaymentDialogComponent implements OnInit {
       this.insertdueamt.ds_paymode.tab_dd.push({
         ddNumber: this.dueform.controls['demandddno'].value,
         ddDate: this.dueform.controls['demandissuedate'].value,
-        bankName: this.dueform.controls['demandbankname'].value,
+        bankName: this.dueform.controls['demandbankname'].value.value,
         branchName: this.dueform.controls['demandbranchname'].value,
         flag: this.ddflag
       })

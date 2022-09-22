@@ -1,4 +1,4 @@
-<div class="flex flex-column h-full relative">
+<div class="flex flex-column h-full relative consumable-details-popup">
   <button
     mat-icon-button
     aria-label="close dialog"
@@ -9,7 +9,10 @@
     <mat-icon>close</mat-icon>
   </button>
   <h2 class="max-health-primary-color">Consumable Details</h2>
-  <div class="h-3/4">
+  <div class="h-3/4 relative">
+    <div class="copy-reason">
+      <button class="copy-reason" (click)="copyReason()">Copy Reason</button>
+    </div>
     <maxhealth-table
       [config]="config"
       [data]="itemsData"
