@@ -17,6 +17,8 @@ export class MiscService {
   cashLimit: any = 0;
   miscFormData: any = [];
   clearForm = false;
+  calcItems: any = [];
+  calculatedBill: any = [];
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
@@ -59,14 +61,58 @@ export class MiscService {
     return this.miscFormData;
   }
 
+  setCalculateBillItems(data: any) {
+    this.calcItems = data;
+  }
+  getCalculateBillItems() {
+    return this.calcItems;
+  }
+  calculateBill() {
+    console.log(this.calcItems, "inserve")
+    this.calcItems = this.getCalculateBillItems();
+
+    if (this.calcItems.depositInput) {
+      if ((this.calcItems.depositInput >= this.calcItems.totalAmount) || ((this.calcItems.depositInput) > this.calcItems.totalDeposit)) {
+        this.calculatedBill.depositInput = this.calcItems.totalAmount;
+        this.calculatedBill.amntPaidBythePatient = 0.00;
+      }
+      else if (this.calcItems.depositInput < this.calcItems.totalAmount) {
+        this.calculatedBill.amntPaidBythePatient = this.calcItems.totalAmount - this.calcItems.depositInput;
+        console.log(this.calcItems.totalAmount - this.calcItems.depositInput, "lo")
+        this.calculatedBill.depositInput = this.calcItems.depositInput;
+      }
+    }
+    if (!this.calcItems.depositInput) {
+      this.calcItems.depositInput = 0;
+    }
+    if (!this.calcItems.totalDeposit) {
+      this.calcItems.totalDeposit = 0
+    }
+    if (!this.calcItems.totalDiscount) {
+      this.calcItems.totalDiscount = 0
+    }
+    if (!this.calcItems.totalGst) {
+      this.calcItems.totalGst = 0
+    }
+    // if (!this.calcItems.depositInput) {
+    //   this.calcItems.depositInput = 0
+    // }
+    let discdepo = this.calcItems.depositInput + this.calcItems.totalDiscount
+    this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - discdepo;
+    this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
+
+    if (this.calculatedBill.totalBillAmount < 0) {
+      this.calculatedBill.totalBillAmount = this.calcItems.totalAmount;
+    }
+    if (this.calculatedBill.amntPaidBythePatient < 0) {
+      this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
+    }
+    return this.calculatedBill;
+  }
+
 
   clearMiscBlling() {
     this.clearAllItems.next(true);
   }
-  // calculateBill(deposit,discount,totalAmount,credit)
 
-  // {
-  //  dr("billamount") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
-  //  dr("PaidByCompany") = Convert.ToDecimal(txttotalamount.Text) + Convert.ToDecimal(txtgsttaxamt.Text)
-  // }
 }
