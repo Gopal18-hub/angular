@@ -40,6 +40,8 @@ export class DiscountAmtDialogComponent implements OnInit {
   reasonID: number = 0;
   reasonName: string = '';
   discPercenatge: number = 0;
+  location = Number(this.cookie.get("HSPLocationId"));
+  //location = 67;
   private readonly _destroying$ = new Subject<void>();
   constructor(private formService: QuestionControlService, private http: HttpService,
     private cookie: CookieService,
@@ -57,12 +59,12 @@ export class DiscountAmtDialogComponent implements OnInit {
     );
     this.discAmtForm = formResult.form;
     this.question = formResult.questions;
-    let location = Number(this.cookie.get("HSPLocationId"));
+
     this.checkdiscountamountforparticularautharisation();
     this.http
       .get(
         ApiConstants.getbilldiscountreasonmainhead(
-          67
+          this.location
         )
 
       )
@@ -77,7 +79,7 @@ export class DiscountAmtDialogComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-          67
+          this.location
         )
 
       )
@@ -94,7 +96,7 @@ export class DiscountAmtDialogComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getauthorisedby(
-          67
+          this.location
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -300,7 +302,7 @@ export class DiscountAmtDialogComponent implements OnInit {
           this.reasonName = value.title;
           this.discAmtForm.controls["percentage"].setValue(this.disc);
           let billAMt = this.data.data;
-          this.discAmount = ((this.disc / 100) * billAMt);
+          this.discAmount = Number((this.disc / 100) * billAMt);
           this.discAmtForm.controls["amt"].setValue(this.discAmount);
           if (this.reasonName.includes("Staff")) {
             this.employeeCode();
@@ -334,12 +336,13 @@ export class DiscountAmtDialogComponent implements OnInit {
   }
   checkdiscountamountforparticularautharisation() {
     this.http
-      .get(
-        ApiConstants.checkdiscountamountforparticularautharisation(89,
-          67, 4000
-        )
-        // ( ApiConstants.checkdiscountamountforparticularautharisation(this.discAmtForm.value.authorise.value,
-        //   67, this.disc)
+      .get
+      // (
+      //   ApiConstants.checkdiscountamountforparticularautharisation(89,
+      //     67, 4000
+      //   )
+      (ApiConstants.checkdiscountamountforparticularautharisation(this.discAmtForm.value.authorise.value,
+        this.location, this.discAmount)
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => { console.log(data, "author") })
@@ -368,7 +371,7 @@ export class DiscountAmtDialogComponent implements OnInit {
   }
 
   applyDiscount() {
-    this.dialogRef.close({ data: this.discountAmtSelected });
+    this.dialogRef.close({ data: this.discAmount });
   }
 
   employeeCode() {
