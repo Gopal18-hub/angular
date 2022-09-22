@@ -596,7 +596,10 @@ export class BillingService {
           serviceName: "Investigations",
           itemName: investigation.title,
           qty: 1,
-          precaution: "",
+          precaution:
+            investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : investigation.precaution,
           procedureDoctor: "",
           credit: 0,
           cash: 0,
@@ -607,6 +610,7 @@ export class BillingService {
           gstValue: 0,
           specialisationID: 0,
           doctorID: 0,
+          patient_Instructions: investigation.patient_Instructions,
         },
       });
     }

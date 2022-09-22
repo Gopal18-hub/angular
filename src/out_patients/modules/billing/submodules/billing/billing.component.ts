@@ -190,6 +190,7 @@ export class BillingComponent implements OnInit {
                 originalTitle: item.testName,
                 docRequired: item.doctorid ? true : false,
                 patient_Instructions: "",
+                item_Instructions: "",
                 serviceid: item.serviceId,
                 doctorid: item.doctorid,
               });
@@ -647,7 +648,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-  planDetailsCheck(dtPatientPastDetails: any) {
+  async planDetailsCheck(dtPatientPastDetails: any) {
     if (
       dtPatientPastDetails[5] &&
       dtPatientPastDetails[5].id == 6 &&
@@ -692,7 +693,7 @@ export class BillingComponent implements OnInit {
           (plan: any, index: number) => {
             data.push({
               sno: index + 1,
-              planType: "OTher",
+              planType: "Other",
               planName: plan.planName,
               serviceId: plan.serviceId,
               planId: plan.planId,
@@ -709,12 +710,23 @@ export class BillingComponent implements OnInit {
         dialogRef
           .afterClosed()
           .pipe(takeUntil(this._destroying$))
-          .subscribe((result) => {
+          .subscribe(async (result) => {
             if (result && result.selected && result.selected.length > 0) {
               const selectedPlan = result.selected[0];
               this.billingService.setOtherPlan(selectedPlan);
-              this.messageDialogService.info(
+              const planSelectDialog = this.messageDialogService.info(
                 "You have selected " + selectedPlan.planName
+              );
+              await planSelectDialog.afterClosed().toPromise();
+              const dialogRefDetails = this.matDialog.open(
+                ShowPlanDetilsComponent,
+                {
+                  width: "60vw",
+                  data: {
+                    planDetails: data,
+                    type: "otherPlanDetails",
+                  },
+                }
               );
             }
           });
