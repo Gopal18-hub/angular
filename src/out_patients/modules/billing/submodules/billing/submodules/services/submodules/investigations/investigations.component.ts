@@ -261,6 +261,9 @@ export class InvestigationsComponent implements OnInit {
                   r.id.toString()
                 ],
               precaution: r.precaution,
+              ngStyle: {
+                color: r.outsourceTest == 1 ? "red" : "",
+              },
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -344,6 +347,9 @@ export class InvestigationsComponent implements OnInit {
               ],
             serviceid: r.serviceid,
             precaution: r.precaution,
+            ngStyle: {
+              color: r.outsourceTest == 1 ? "red" : "",
+            },
           };
         });
         this.questions[1] = { ...this.questions[1] };
