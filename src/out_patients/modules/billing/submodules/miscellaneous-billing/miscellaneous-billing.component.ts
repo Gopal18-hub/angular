@@ -775,9 +775,6 @@ export class MiscellaneousBillingComponent implements OnInit {
   }
 
   getAllCompany() {
-
-
-    this.http
     //let location = 67;
     let location = Number(this.cookie.get("HSPLocationId"));
     this.http
