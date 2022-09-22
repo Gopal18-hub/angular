@@ -503,7 +503,7 @@ export class CashScrollModifyComponent implements OnInit {
     // this.cashscrollmodifyForm.controls["takenat"].disable();
     // this.cashscrollmodifyForm.controls["scrollno"].disable();
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(11, Number(this.cookie.get('StationId'))))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(22, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
