@@ -110,7 +110,7 @@
      
     </div>
     <!-----Third Row-->
-    <div class="h-1/2 mt-1 scroll-table">
+    <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly">
 <maxhealth-table  [config]="config" [data]="billList" #table>
 
 </maxhealth-table>
