@@ -105,13 +105,29 @@ export class ConsumablesComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      this.matDialog.open(ConsumableDetailsComponent, {
+      const dialogConst = this.matDialog.open(ConsumableDetailsComponent, {
         width: "80%",
         height: "50%",
         data: {
           orderSet: res.element,
           items: res.element.items,
         },
+      });
+      dialogConst.afterClosed().subscribe((result) => {
+        if ("data" in result) {
+          let tempAmount = 0;
+          result.data.forEach((selectedItem: any) => {
+            tempAmount += selectedItem.amount;
+          });
+          this.billingService.ConsumableItems[res.index].totalAmount =
+            tempAmount;
+          this.billingService.ConsumableItems[res.index].billItem.totalAmount =
+            tempAmount;
+          this.billingService.ConsumableItems[res.index].billItem.price =
+            tempAmount;
+          this.data = [...this.billingService.ConsumableItems];
+          this.billingService.calculateTotalAmount();
+        }
       });
     });
   }

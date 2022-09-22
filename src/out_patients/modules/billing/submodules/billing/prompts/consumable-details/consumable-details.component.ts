@@ -77,12 +77,18 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.selection.select(...this.tableRows.dataSource.data);
+  }
+
+  copyReason() {
+    const copyText = this.itemsData[0].reason;
     this.itemsData.forEach((item: any) => {
-      this.tableRows.selection.add(item);
+      item.reason = copyText;
     });
+    this.itemsData = [...this.itemsData];
   }
 
   close() {
-    this.dialogRef.close({ data: this.tableRows.dataSource.data });
+    this.dialogRef.close({ data: this.tableRows.selection.selected });
   }
 }

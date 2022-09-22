@@ -321,7 +321,7 @@ clear()
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id);
+    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id.toString());
     
    
     console.log(this.onlinedepositlist = []);
