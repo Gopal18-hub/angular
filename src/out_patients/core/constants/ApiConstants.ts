@@ -1418,4 +1418,33 @@ export namespace ApiConstants {
   };
   export const ackdetailsforscroll =
     environment.BillingApiUrl + "api/outpatientbilling/ackdetailsforscroll";
+
+  export const getdetailsforcashscroll = (
+    operatorid : number,
+    stationid : number
+    ) => {
+      return (
+        environment.BillingApiUrl +
+        "api/outpatientbilling/getdetailsforscroll/" +
+        operatorid +       
+        "/" +
+        stationid
+      );
+    };
+    export const getscrolldetailsforoneuser = (
+      FromDate: string,
+      ToDate:string,
+      operatorid : number,
+      stationid : number,
+      hspLocationId:number
+      ) => {
+        return (
+          environment.BillingApiUrl +
+          "api/outpatientbilling/getscrolldetailsforoneuser/" + FromDate + "/" + ToDate + "/" +
+          operatorid +       
+          "/" +
+          stationid + "/" + hspLocationId
+        );
+      };
+    export const savecashscroll =  environment.BillingApiUrl +  "api/outpatientbilling/savedetailsforscroll";
 }
