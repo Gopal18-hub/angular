@@ -86,4 +86,11 @@
             }
         }
     }
+    
+}
+.makereadonly{
+    ::ng-deep .mat-form-field
+    {
+        pointer-events: none;
+    }  
 }

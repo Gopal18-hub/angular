@@ -15,6 +15,7 @@ interface getERPscrollMainDtoInterface {
 export interface getERPscrollDetailDtoInterface {
   sno?:any;
   forclr?: any;
+  forreadonly?: any;
   ddnumber?: any;
   totalamount?: any;
   internetpaymtamt?: any;
