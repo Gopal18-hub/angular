@@ -537,11 +537,17 @@ export class CashScrollModifyComponent implements OnInit {
       if(event.key == 'Enter')
       {
         console.log(this.cashscrollmodifyForm.controls['billreceiptno'].value);
-        this.filtercall();
+        if(this.cashscrollmodifyForm.controls['billreceiptno'].value != '')
+        {
+          this.filtercall();
+        }
       }
     });
-    this.cashscrollmodifyForm.controls['billreceiptno'].valueChanges.subscribe(() => {
-      this.filtercall();
+    this.cashscrollmodifyForm.controls['billreceiptno'].valueChanges.subscribe((res) => {
+      if(res != '')
+      {
+        this.filtercall();
+      }
     })
     console.log(this.table);
     setTimeout(() => {
