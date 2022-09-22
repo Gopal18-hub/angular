@@ -43,7 +43,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Equipment Schedule",
+            reportName: "equipmentReport",
             reportEntity: "equipmentReport",
           },
         },
@@ -436,7 +436,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ValueFromDate: {
           type: "date",
@@ -690,7 +690,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         dtpfromdate: {
           type: "date",
@@ -967,7 +967,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1029,7 +1029,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1091,7 +1091,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1162,7 +1162,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ValueFromDate: {
           type: "date",
@@ -1225,7 +1225,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ReportChecked: {
           type: "radio",

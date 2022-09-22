@@ -8,6 +8,7 @@ export class MiscService {
   subject = new Subject<any>();
 
   transactionamount: any = 0.0;
+  clearAllItems = new Subject<boolean>();
   MOP: string = "Cash";
   data: any = [];
   patientDetail: any;
@@ -56,6 +57,11 @@ export class MiscService {
 
 
     return this.miscFormData;
+  }
+
+
+  clearMiscBlling() {
+    this.clearAllItems.next(true);
   }
   // calculateBill(deposit,discount,totalAmount,credit)
 

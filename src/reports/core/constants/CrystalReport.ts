@@ -230,4 +230,11 @@ export namespace CrystalReport {
   export const DueReceiptReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
   };
+  export const OpDiscountReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPDiscountReport?ReportChecked=${params.ReportChecked}&ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+  export const OPRefundReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+
 }

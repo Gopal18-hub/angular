@@ -16,6 +16,9 @@ import { CookieService } from "@shared/services/cookie.service";
 import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
 import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
 import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
+import { ApiConstants } from "@core/constants/ApiConstants";
+import { HttpService } from "@shared/services/http.service";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 
 @Component({
   selector: "out-patients-bill",
@@ -148,6 +151,12 @@ export class BillComponent implements OnInit {
         required: false,
         options: [{ title: "Self" }],
       },
+      dipositAmtEdit: {
+        type: "number",
+        required: false,
+        defaultValue: "0.00",
+        readonly: false,
+      },
     },
   };
   @ViewChild("table") tableRows: any;
@@ -197,7 +206,7 @@ export class BillComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
         style: {
           width: "100px",
         },
@@ -219,10 +228,16 @@ export class BillComponent implements OnInit {
       credit: {
         title: "Credit",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       cash: {
         title: "Cash",
         type: "string",
+        style: {
+          width: "100px",
+        },
       },
       disc: {
         title: "Disc %",
@@ -267,6 +282,8 @@ export class BillComponent implements OnInit {
 
   billNo = "";
   billId = "";
+  depositDetails: any = [];
+  totalDeposit = 0;
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -276,7 +293,9 @@ export class BillComponent implements OnInit {
     private matDialog: MatDialog,
     private messageDialogService: MessageDialogService,
     private reportService: ReportService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private http: HttpService,
+    private snackbar: MaxHealthSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -309,11 +328,12 @@ export class BillComponent implements OnInit {
       }
     );
 
-    this.data = [...this.billingservice.consultationItems];
+    this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
   }
 
   ngAfterViewInit() {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {});
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -325,6 +345,24 @@ export class BillComponent implements OnInit {
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.billingservice.totalCost + ".00"
     );
+
+    this.formGroup.controls["dipositAmtcheck"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        // this.enableDiscount = false;
+        ////console.log(value, "dipositAmtcheck");
+        if (value === true) {
+          this.depositdetails();
+        } else {
+          this.formGroup.controls["dipositAmt"].reset();
+          this.formGroup.controls["dipositAmtEdit"].reset();
+          this.formGroup.controls["dipositAmtEdit"].disable();
+          this.formGroup.controls["amtPayByPatient"].setValue(
+            this.billingservice.totalCost + ".00"
+          );
+          this.formGroup.controls["dipositAmtcheck"].setValue(false);
+        }
+      });
   }
 
   makeBill() {
@@ -411,10 +449,10 @@ export class BillComponent implements OnInit {
   }
 
   depositdetails() {
-    this.matDialog.open(DepositDetailsComponent, {
-      width: "60vw",
-      height: "50vh",
-    });
+    this.getDipositedAmountByMaxID(
+      this.billingservice.activeMaxId.iacode,
+      this.billingservice.activeMaxId.regNumber
+    );
   }
 
   gsttaxdialog() {
@@ -422,5 +460,48 @@ export class BillComponent implements OnInit {
       width: "30vw",
       height: "50vh",
     });
+  }
+
+  getDipositedAmountByMaxID(iacode: any, regNumber: any) {
+    this.http
+      .get(
+        ApiConstants.getDipositedAmountByMaxID(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: any) => {
+          if (resultData) {
+            this.depositDetails = resultData;
+            resultData.forEach((element: any) => {
+              this.totalDeposit += element.balanceamount;
+            });
+
+            this.depositDetails = this.depositDetails.filter(
+              (e: any) =>
+                e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
+            );
+            console.log(this.depositDetails);
+
+            const dialogref = this.matDialog.open(DepositDetailsComponent, {
+              width: "60vw",
+              height: "50vh",
+              data: { data: this.depositDetails },
+            });
+
+            dialogref.afterClosed().subscribe((res) => {
+              console.log(res);
+              this.formGroup.controls["dipositAmt"].setValue(res.data);
+              this.formGroup.controls["dipositAmtEdit"].setValue(res.data);
+              if (res.data)
+                this.snackbar.open("Deposit Amount availed successfully!");
+            });
+          }
+        },
+        (error) => {}
+      );
   }
 }

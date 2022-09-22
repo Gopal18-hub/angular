@@ -11,8 +11,7 @@ import { Subject, takeUntil } from "rxjs";
 import { DatePipe } from "@angular/common";
 import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
 import { CookieService } from "@shared/services/cookie.service";
-import { numbers } from "@material/menu";
-
+import { ReportService } from "@shared/services/report.service";
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -119,7 +118,7 @@ export class CashScrollModifyComponent implements OnInit {
       "ddnumber",
       "creditCard",
       "modifiedCCAmt",
-      "creditCardNo",
+      "batchno",
       "mobilePayment",
       "modifiedCashPaymentMobile",
       "onlinePayment",
@@ -133,7 +132,7 @@ export class CashScrollModifyComponent implements OnInit {
       "internetpaymtamt",
       "actualinternetpaymtamt",
     ],
-    rowLayout: { dynamic: { rowClass: "row['forclr']" } },
+    rowLayout: { dynamic: { rowClass: "row['forclr']"}},
     columnsInfo: {
       sno: {
         title: "Sl No.",
@@ -282,7 +281,7 @@ export class CashScrollModifyComponent implements OnInit {
           width: "9rem",
         },
       },
-      creditCardNo: {
+      batchno: {
         title: "Authorization Code",
         type: "input",
         style: {
@@ -379,6 +378,7 @@ export class CashScrollModifyComponent implements OnInit {
   @ViewChild('table') table: any;
   ackbtn: boolean = false;
   modifybtn: boolean = false;
+  makereadonly: boolean = false;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -386,7 +386,8 @@ export class CashScrollModifyComponent implements OnInit {
     private http: HttpClient,
     private datepipe: DatePipe,
     private differservice: KeyValueDiffers,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private reportService: ReportService
   ) {}
 
   ngOnInit(): void {
@@ -402,7 +403,7 @@ export class CashScrollModifyComponent implements OnInit {
     this.cashscrollmodifyForm.controls["takenat"].disable();
     this.cashscrollmodifyForm.controls["scrollno"].disable();
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(3, Number(this.cookie.get('StationId'))))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(11, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -454,14 +455,16 @@ export class CashScrollModifyComponent implements OnInit {
     {
       this.ackbtn = true;
       this.modifybtn = false;
+      this.makereadonly = false;
     }
     else{
       this.ackbtn = true;
       this.modifybtn = true;
+      this.makereadonly = true;
+      this.dialogservice.info('Items for Scroll No: '+this.scrolldataObject.getERPscrollMainDto[0].stationslno+' Modified Already.');
     }
     var i = 1;
         this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
-          // item.forclr = 'rowcolor'
           this.netamount += Number(item.billamount);
           item.sno = i++; 
           item.billamount = Number(item.billamount).toFixed(2);
@@ -530,7 +533,19 @@ export class CashScrollModifyComponent implements OnInit {
   //    return new AckDetailsForScrollModel(this.fromdate, this.todate,);
   // }
 
-  print() {}
+  print() {
+    this.openReportModal('CashScrollReport')
+  }
+  openReportModal(btnname: string) {
+      this.reportService.openWindow(btnname, btnname, {
+        Fromdate: this.scrolldataObject.getERPscrollMainDto[0].fromdatetime,
+        Todate: this.scrolldataObject.getERPscrollMainDto[0].todatetime,
+        Operatorid: this.scrolldataObject.getERPscrollMainDto[0].operatorid,
+        LocationID: this.cookie.get('HSPLocationId'),
+        EmployeeName: this.scrolldataObject.getERPscrollMainDto[0].name,
+        TimeTakenAt: this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime
+      });
+  }
   clear() {
     this.cashscrollmodifyForm.reset();
   }
@@ -643,7 +658,7 @@ export class CashScrollModifyComponent implements OnInit {
       }
 
       //credit card
-      if(Number(item.modifiedCCAmt) > 0 && (item.creditCardNo == '' || item.creditCardNo == null || Number(item.creditCardNo) == 0))
+      if(Number(item.modifiedCCAmt) > 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
       {
         ccflag = 1;
         billforcc = item.billno;
@@ -769,7 +784,7 @@ export class CashScrollModifyComponent implements OnInit {
         modifiedDDAmt: String(item.modifiedDDAmt),
         modifiedCash: String(item.modifiedCash),
         chequeNo: String(item.chequeNo),
-        creditCardNo: String(item.creditCardNo),
+        creditCardNo: String(item.batchno),
         modifiedCashPaymentMobile: String(item.modifiedCashMobileDetails),
         modifiedDDNumber: String(item.ddnumber),
         modifiedOnlinePayment: String(item.modifiedOnlinePayment),

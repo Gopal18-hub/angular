@@ -13,15 +13,10 @@ export class ConsumableDetailsComponent implements OnInit {
     clickedRows: false,
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: false,
-    displayedColumns: [
-      "itemName",
-      "qty",
-      "amount",
-      "include",
-      "procedure",
-      "reason",
-    ],
+    selectBox: true,
+    selectCheckBoxPosition: 4,
+    selectCheckBoxLabel: "Include in Procedure",
+    displayedColumns: ["itemName", "qty", "amount", "procedure", "reason"],
     columnsInfo: {
       itemName: {
         title: "Item Name",
@@ -44,10 +39,10 @@ export class ConsumableDetailsComponent implements OnInit {
           width: "10%",
         },
       },
-      include: {
-        title: "Include in Procedure",
-        type: "checkbox",
-      },
+      // include: {
+      //   title: "Include in Procedure",
+      //   type: "checkbox",
+      // },
       procedure: {
         title: "Procedure",
         type: "string",
@@ -55,6 +50,9 @@ export class ConsumableDetailsComponent implements OnInit {
       reason: {
         title: "Reason",
         type: "textarea",
+        style: {
+          width: "20%",
+        },
       },
     },
   };
@@ -78,7 +76,19 @@ export class ConsumableDetailsComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.tableRows.selection.select(...this.tableRows.dataSource.data);
+  }
+
+  copyReason() {
+    const copyText = this.itemsData[0].reason;
+    this.itemsData.forEach((item: any) => {
+      item.reason = copyText;
+    });
+    this.itemsData = [...this.itemsData];
+  }
+
   close() {
-    this.dialogRef.close({ data: this.tableRows.dataSource.data });
+    this.dialogRef.close({ data: this.tableRows.selection.selected });
   }
 }
