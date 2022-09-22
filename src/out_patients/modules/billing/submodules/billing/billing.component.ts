@@ -606,8 +606,23 @@ export class BillingComponent implements OnInit {
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
               if (result && result.selected && result.selected.length > 0) {
-                const doctors = result.selected;
-                for (let i = 0; i < doctors.length; i++) {}
+                const doctors: any = result.selected;
+                for (let i = 0; i < doctors.length; i++) {
+                  if (doctors[i].paymentStatus == "No") {
+                    this.billingService.procesConsultationAdd(
+                      57,
+                      doctors[i].specialisationid,
+                      {
+                        value: doctors[i].doctorID,
+                        originalTitle: doctors[i].doctorname,
+                        specialisationid: doctors[i].specialisationid,
+                      },
+                      {
+                        value: doctors[i].clinicId,
+                      }
+                    );
+                  }
+                }
               }
             });
         }

@@ -150,6 +150,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       }
     });
     //this.showDmgPopup();
+    this.billingService.consultationItemsAdded.subscribe((added: boolean) => {
+      if (added) {
+        this.data = [...this.billingService.consultationItems];
+        this.billingService.calculateTotalAmount();
+      }
+    });
   }
 
   rowRwmove($event: any) {
@@ -341,7 +347,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             bookingDate: "",
             price: res[0].returnOutPut,
             specialization: this.formGroup.value.specialization.value,
-            clinics: this.formGroup.value.clinics.value,
+            clinics: this.formGroup.value.clinics
+              ? this.formGroup.value.clinics.value
+              : 0,
             billItem: {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
