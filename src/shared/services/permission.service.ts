@@ -83,7 +83,8 @@ export class PermissionService {
         }
         children.childrens.forEach((feature: any, c: number) => {
           if (!this.features.includes(feature.id)) {
-            definedModules[index].childrens[j].childrens[c].disabled = true;
+            if (!feature.allUsersAllow)
+              definedModules[index].childrens[j].childrens[c].disabled = true;
           }
           if (
             "locationSpecific" in masterModule.childrens[j] &&
