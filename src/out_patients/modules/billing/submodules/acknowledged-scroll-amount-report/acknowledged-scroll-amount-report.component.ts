@@ -38,21 +38,23 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
   config: any = {
-    dateformat: "dd/MM/yyyy",
+    clickedRows: true,
+    actionItems: false,
+    dateformat: "dd/MM/YYYY HH:mm:ss.ss",
     displayedColumns: ["stationslno", "ackDateTime", "name", "amount"],
     columnsInfo: {
       stationslno: {
         title: "Scroll.No",
         type: "string",
-        tooltipColumn: "ScrollNo",
+        tooltipColumn: "stationslno",
         style: {
           width: "1.5rem",
         },
       },
       ackDateTime: {
         title: "Acknowledge Date Time",
-        type: "string",
-        tooltipColumn: "AcknowledgeDateTime",
+        type: "date",
+        tooltipColumn: "ackDateTime",
         style: {
           width: "2.5rem",
         },
@@ -60,7 +62,7 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
       name: {
         title: "Employee Name",
         type: "string",
-        tooltipColumn: "EmployeeName",
+        tooltipColumn: "name",
         style: {
           width: "3rem",
         },
@@ -156,10 +158,10 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
             this.acknowledgementForm.controls["todate"].value,
             "YYYY-MM-dd"
           ),
-          Number(this.cookie.get("StationId")),
-          // 12969,
-          // 9923,
-          Number(this.cookie.get("UserId"))
+          // Number(this.cookie.get("StationId")),
+          12969,
+          9923
+          // Number(this.cookie.get("UserId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -168,6 +170,5 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
         console.log(data);
       });
     console.log(this.acknowledgementscroll);
-    console.log("data");
   }
 }

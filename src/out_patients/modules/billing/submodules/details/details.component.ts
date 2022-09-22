@@ -828,6 +828,7 @@ export class DetailsComponent implements OnInit {
   }
   clear() {
     this.BServiceForm.reset();
+    this.categoryIcons = [];
     this.activeLink = this.linkList[0];
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;

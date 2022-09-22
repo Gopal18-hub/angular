@@ -66,41 +66,6 @@ export namespace FormReport {
     // ],
   };
 
-  export const opConsultationReport = {
-    reportName: "Selection Criteria",
-    filterForm: {
-      title: "",
-      type: "object",
-      properties: {
-        fromDate: {
-          type: "date",
-          title: "From Date",
-        },
-        toDate: {
-          type: "date",
-          title: "To Date",
-        },
-        location: {
-          type: "dropdown",
-          placeholder: "---All Location---",
-          title: "Location",
-        },
-      },
-    },
-    form: {
-      layout: {
-        equipmentName: "w-full",
-      },
-      actionItems: [
-        {
-          label: "Perform Query",
-        },
-        {
-          label: "Clear",
-        },
-      ],
-    },
-  };
   export const OnlinePaymentDetailReport = {
     reportName: "Online Payment Detail Report",
     filterForm: {
@@ -436,7 +401,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ValueFromDate: {
           type: "date",
@@ -686,7 +651,7 @@ export namespace FormReport {
   };
 
   export const CRPExpiredPatientDetailReport = {
-    reportName: "Expired Deposits",
+    reportName: "Expired Patient Report",
     filterForm: {
       title: "",
       type: "object",
@@ -729,7 +694,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Expired Deposits",
+            reportName: "Expired Patient Report",
             reportEntity: "CRPExpiredPatientDetailReport",
           },
         },
@@ -967,7 +932,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1029,7 +994,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1091,7 +1056,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
@@ -1162,7 +1127,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ValueFromDate: {
           type: "date",
@@ -1225,7 +1190,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         ReportChecked: {
           type: "radio",
