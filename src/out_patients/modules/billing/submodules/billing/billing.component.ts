@@ -622,6 +622,23 @@ export class BillingComponent implements OnInit {
                         value: doctors[i].clinicId,
                       }
                     );
+                  } else if (
+                    doctors[i].paymentStatus == "Yes" &&
+                    doctors[i].billStatus == "No"
+                  ) {
+                    this.billingService.procesConsultationAddWithOutApi(
+                      57,
+                      doctors[i].specialisationid,
+                      {
+                        value: doctors[i].doctorID,
+                        originalTitle: doctors[i].doctorname,
+                        specialisationid: doctors[i].specialisationid,
+                        price: doctors[i].amount,
+                      },
+                      {
+                        value: doctors[i].clinicId,
+                      }
+                    );
                   }
                 }
               }
