@@ -66,41 +66,6 @@ export namespace FormReport {
     // ],
   };
 
-  export const opConsultationReport = {
-    reportName: "Selection Criteria",
-    filterForm: {
-      title: "",
-      type: "object",
-      properties: {
-        fromDate: {
-          type: "date",
-          title: "From Date",
-        },
-        toDate: {
-          type: "date",
-          title: "To Date",
-        },
-        location: {
-          type: "dropdown",
-          placeholder: "---All Location---",
-          title: "Location",
-        },
-      },
-    },
-    form: {
-      layout: {
-        equipmentName: "w-full",
-      },
-      actionItems: [
-        {
-          label: "Perform Query",
-        },
-        {
-          label: "Clear",
-        },
-      ],
-    },
-  };
   export const OnlinePaymentDetailReport = {
     reportName: "Online Payment Detail Report",
     filterForm: {
@@ -686,11 +651,11 @@ export namespace FormReport {
   };
 
   export const CRPExpiredPatientDetailReport = {
-    reportName: "Expired Deposits",
+    reportName: "Expired Patient Report",
     filterForm: {
       title: "",
       type: "object",
-      defaultValue: moment().format("DD/MM/YYYY"),
+      format: "MM/dd/YYYY",
       properties: {
         dtpfromdate: {
           type: "date",
@@ -729,7 +694,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Expired Deposits",
+            reportName: "Expired Patient Report",
             reportEntity: "CRPExpiredPatientDetailReport",
           },
         },
