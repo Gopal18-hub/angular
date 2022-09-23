@@ -720,8 +720,8 @@ export class CashScrollModifyComponent implements OnInit {
                         + this.totalmobile
                         +this.totalinternet;
     })
-    console.log(this.totalamount);
-    console.log(this.netamount);
+    // console.log(this.totalamount);
+    // console.log(this.netamount);
     this.cashscrollmodifyForm.controls['totalcash'].setValue(this.totalcash.toFixed(2));
     this.cashscrollmodifyForm.controls['totalcheque'].setValue(this.totalcheque.toFixed(2));
     this.cashscrollmodifyForm.controls['totalcc'].setValue(this.totalcredit.toFixed(2));
@@ -740,9 +740,9 @@ export class CashScrollModifyComponent implements OnInit {
       //Cash
       if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
       {
-        console.log(item.modifiedCash, item.netamount);
+        // console.log(item.modifiedCash, item.netamount);
         var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
-        console.log(total, item.netamount)
+        // console.log(total, item.netamount)
         if(Number(total) == Number(item.netamount))
         {
 
@@ -762,7 +762,7 @@ export class CashScrollModifyComponent implements OnInit {
         Number(item.modifiedUPIAmt) > 0)
       {
         var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
-        console.log(total, item.netamount)
+        // console.log(total, item.netamount)
         if(Number(total) == Number(item.netamount))
         {
 
@@ -777,7 +777,7 @@ export class CashScrollModifyComponent implements OnInit {
       //cheque
       if(Number(item.modifiedCheqAmt) > 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
       {
-        console.log(item.modifiedCheqAmt);
+        // console.log(item.modifiedCheqAmt);
         chequeflag = 1;
         billforcheque = item.billno;
       }
@@ -804,7 +804,7 @@ export class CashScrollModifyComponent implements OnInit {
       }
 
     })
-    console.log(cashflag, otherflag, chequeflag, ccflag)
+    // console.log(cashflag, otherflag, chequeflag, ccflag)
     if(cashflag == 1)
     {
       this.dialogservice.info('Cannot save scroll Total Actual Amount Does not match Net Amount for Bill No: '+ billforcash);
