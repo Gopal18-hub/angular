@@ -1,7 +1,7 @@
 import { Component, KeyValueDiffer, KeyValueDiffers, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ModifyCashScrollInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
 import { getERPscrollDetailDtoInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
@@ -487,7 +487,8 @@ export class CashScrollModifyComponent implements OnInit {
     private datepipe: DatePipe,
     private differservice: KeyValueDiffers,
     private cookie: CookieService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -502,8 +503,14 @@ export class CashScrollModifyComponent implements OnInit {
     // this.cashscrollmodifyForm.controls["employeename"].disable();
     // this.cashscrollmodifyForm.controls["takenat"].disable();
     // this.cashscrollmodifyForm.controls["scrollno"].disable();
+    var scrollno: any;
+    this.route.queryParams
+    .subscribe((params:any) => {
+      console.log(params.scrollno);
+      scrollno = params.scrollno
+    })
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(22, Number(this.cookie.get('StationId'))))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(scrollno, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -515,10 +522,10 @@ export class CashScrollModifyComponent implements OnInit {
           this.scrolldataObject.getERPscrollMainDto[0].name
         );
         this.cashscrollmodifyForm.controls["fromdate"].setValue(
-          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].fromdatetime, 'dd/MM/YYYY hh:mm:ss')
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].fromdatetime, 'dd/MM/YYYY hh:mm:ss a')
         );
         this.cashscrollmodifyForm.controls["todate"].setValue(
-          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].todatetime, 'dd/MM/YYYY hh:mm:ss')
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].todatetime, 'dd/MM/YYYY hh:mm:ss a')
         );
         this.cashscrollmodifyForm.controls["takenat"].setValue(
           this.datepipe.transform(
@@ -713,8 +720,8 @@ export class CashScrollModifyComponent implements OnInit {
                         + this.totalmobile
                         +this.totalinternet;
     })
-    console.log(this.totalamount);
-    console.log(this.netamount);
+    // console.log(this.totalamount);
+    // console.log(this.netamount);
     this.cashscrollmodifyForm.controls['totalcash'].setValue(this.totalcash.toFixed(2));
     this.cashscrollmodifyForm.controls['totalcheque'].setValue(this.totalcheque.toFixed(2));
     this.cashscrollmodifyForm.controls['totalcc'].setValue(this.totalcredit.toFixed(2));
@@ -733,9 +740,9 @@ export class CashScrollModifyComponent implements OnInit {
       //Cash
       if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
       {
-        console.log(item.modifiedCash, item.netamount);
+        // console.log(item.modifiedCash, item.netamount);
         var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
-        console.log(total, item.netamount)
+        // console.log(total, item.netamount)
         if(Number(total) == Number(item.netamount))
         {
 
@@ -755,7 +762,7 @@ export class CashScrollModifyComponent implements OnInit {
         Number(item.modifiedUPIAmt) > 0)
       {
         var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt);
-        console.log(total, item.netamount)
+        // console.log(total, item.netamount)
         if(Number(total) == Number(item.netamount))
         {
 
@@ -770,7 +777,7 @@ export class CashScrollModifyComponent implements OnInit {
       //cheque
       if(Number(item.modifiedCheqAmt) > 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
       {
-        console.log(item.modifiedCheqAmt);
+        // console.log(item.modifiedCheqAmt);
         chequeflag = 1;
         billforcheque = item.billno;
       }
@@ -797,7 +804,7 @@ export class CashScrollModifyComponent implements OnInit {
       }
 
     })
-    console.log(cashflag, otherflag, chequeflag, ccflag)
+    // console.log(cashflag, otherflag, chequeflag, ccflag)
     if(cashflag == 1)
     {
       this.dialogservice.info('Cannot save scroll Total Actual Amount Does not match Net Amount for Bill No: '+ billforcash);
