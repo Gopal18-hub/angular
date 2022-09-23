@@ -182,8 +182,8 @@ export class ProcedureOtherComponent implements OnInit {
         tap(() => {}),
         switchMap((value) => {
           if (
-            this.formGroup.value.serviceType &&
-            this.formGroup.value.serviceType.value
+            this.formGroup.value.otherService &&
+            this.formGroup.value.otherService.value
           ) {
             return of([]);
           } else {
