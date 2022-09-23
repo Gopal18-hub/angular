@@ -15,6 +15,7 @@ interface getERPscrollMainDtoInterface {
 export interface getERPscrollDetailDtoInterface {
   sno?:any;
   forclr?: any;
+  forreadonly?: any;
   ddnumber?: any;
   totalamount?: any;
   internetpaymtamt?: any;
@@ -41,12 +42,12 @@ export interface getERPscrollDetailDtoInterface {
   duesrec: any;
   hsPlocationid: any;
   depositamount: any;
-  batchno: string;
+  batchno: any;
   modifiedCheqAmt: any;
   modifiedCCAmt: any;
   modifiedDDAmt: any;
   modifiedCash: any;
-  chequeNo: string;
+  chequeNo: any;
   creditCardNo: string;
   modifiedCashPaymentMobile: any;
   modifiedCashMobileDetails: any;

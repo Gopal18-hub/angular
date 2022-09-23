@@ -47,6 +47,9 @@
 .w-18{
     width:18%
 }
+.w-34{
+    width: 34%;
+}
 .p-0-15{
     padding:0.15rem;
 }
@@ -55,6 +58,12 @@
 }
 .bg-white{
     background: white;
+}
+.w-28{
+    width: 28%;
+}
+.w-49{
+    width: 49%;
 }
 .w-35{
     width:35%;
@@ -86,4 +95,11 @@
             }
         }
     }
+    
+}
+.makereadonly{
+    ::ng-deep .mat-form-field
+    {
+        pointer-events: none;
+    }  
 }

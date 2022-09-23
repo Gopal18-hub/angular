@@ -9,6 +9,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
+import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Interface";
 
 @Component({
   selector: "out-patients-cash-scroll",
@@ -98,9 +99,9 @@ export class CashScrollComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   private readonly _destroying$ = new Subject<void>();  
   
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
   stationId:any = 12969 ;// Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -113,7 +114,8 @@ export class CashScrollComponent implements OnInit {
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.getdetailsforscroll();
   }
-  CashScrolldetails !: GetDataForOldScroll;
+  CashScrolldetails !: getdataForScrollMain;
+  uniquescrollnumber !: GetDataForOldScroll;
 
   ngAfterViewInit() {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
@@ -130,7 +132,7 @@ export class CashScrollComponent implements OnInit {
         .subscribe(
           (resultdata) => 
         {
-         this.CashScrolldetails = resultdata as GetDataForOldScroll;
+         this.uniquescrollnumber = resultdata as GetDataForOldScroll;
         });
        }
       }
@@ -147,11 +149,8 @@ export class CashScrollComponent implements OnInit {
   }
 
   opennewcashscroll() {
-    this.router.navigate(["out-patient-billing/cash-scroll/cash-scroll-new"]);
-    // this.router.navigate([
-    //   "out-patient-billing/cash-scroll",
-    //   "cash-scroll-new",
-    // ]);
+    this.router.navigate(["out-patient-billing/cash-scroll/cash-scroll-new"]); 
+
   }
   cashscrollmodify() {
     this.router.navigate([
@@ -163,21 +162,23 @@ export class CashScrollComponent implements OnInit {
   }
 
   cashscrollColumnClick(event: any) {
-    this.router.navigate(["report/cash-scroll", "cash-scroll-new"]);
+    this.router.navigate(["out-patient-billing/cash-scroll", "cash-scroll-new"]);
   }
 
   clearcashscroll() {
     this.cashscrollForm.reset();
   }
 
+  cashscrollList:any = [];
   getdetailsforscroll(){
-    // this.http
-    // .get(ApiConstants.getdetailsforscroll(, this.stationId))
-    // .pipe(takeUntil(this._destroying$))
-    // .subscribe(
-    //   (resultdata) => 
-    // {
-    //  this.CashScrolldetails = resultdata as GetDataForOldScroll;
-    // });
+    this.http
+    .get(ApiConstants.getdetailsforcashscroll(this.operatorID, this.stationId))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultdata) => 
+    {
+     this.CashScrolldetails = resultdata as getdataForScrollMain;
+     this.cashscrollList = this.CashScrolldetails.getDetailsForMainScrollDetails;
+    });
   }
 }
