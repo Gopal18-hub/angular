@@ -40,7 +40,7 @@
                             <button mat-raised-button color="primary" class="ml-3" (click)="clearcashscroll()" >
                                 Clear
                             </button>
-                           <button mat-raised-button color="primary" class="ml-3" (click)="cashscrollmodify()">
+                           <button mat-raised-button color="primary" class="ml-3" [disabled]="Modifyscollnumber" (click)="cashscrollmodify()">
                                 Modify
                             </button>
                             <button mat-raised-button color="primary" class="ml-3" (click)="opennewcashscroll()">
@@ -54,7 +54,7 @@
   
    <div class="px-3 pt-2 pb-2 w-full h-4/5">
     <ng-container>
-      <maxhealth-table  [config]="cashscrollconfig" [data]="cashscrollList"
+      <maxhealth-table class="cashscroll"  [config]="cashscrollconfig" [data]="cashscrollList"
       (columnClick)="cashscrollColumnClick($event)"  #cashscrolltable></maxhealth-table>
     </ng-container>
   </div>
