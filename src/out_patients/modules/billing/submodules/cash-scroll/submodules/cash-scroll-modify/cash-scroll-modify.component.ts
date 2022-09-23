@@ -668,7 +668,10 @@ export class CashScrollModifyComponent implements OnInit {
         Operatorid: this.scrolldataObject.getERPscrollMainDto[0].operatorid,
         LocationID: this.cookie.get('HSPLocationId'),
         EmployeeName: this.scrolldataObject.getERPscrollMainDto[0].name,
-        TimeTakenAt: this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime
+        TimeTakenAt: this.scrolldataObject.getERPscrollMainDto[0].scrolldatetime,
+        ack: this.scrolldataObject.getERPscrollMainDto[0].ackOperator,
+        IsAckByOperator: this.scrolldataObject.getERPscrollMainDto[0].ackCashier == 1? true: false,
+        ScrollNo: Number(this.scrolldataObject.getERPscrollMainDto[0].stationslno),
       });
   }
   clear() {
