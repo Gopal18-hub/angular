@@ -236,5 +236,8 @@ export namespace CrystalReport {
   export const OPRefundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
   };
+  export const InvestigationReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?LocationId=${params.LocationId}&TestId=${params.TestId}`;
+  };
 
 }
