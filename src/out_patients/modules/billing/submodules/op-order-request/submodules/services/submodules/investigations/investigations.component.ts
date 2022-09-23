@@ -218,9 +218,6 @@ export class OderInvestigationsComponent implements OnInit {
         }
       }
     );
-    if (this.billingService.save == 1) {
-      console.log("save is triggered");
-    }
   }
 
   getSpecialization() {
