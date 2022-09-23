@@ -28,6 +28,11 @@ import { OverlayModule } from "@angular/cdk/overlay";
 
 import { A11yModule } from "@angular/cdk/a11y";
 
+import {
+  NgxMatDatetimePickerModule,
+  NgxMatNativeDateModule,
+} from "@angular-material-components/datetime-picker";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -47,6 +52,8 @@ import { A11yModule } from "@angular/cdk/a11y";
     MatCheckboxModule,
     OverlayModule,
     A11yModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
   ],
   exports: [DynamicFormQuestionComponent, MaskedInputDirective],
   declarations: [
