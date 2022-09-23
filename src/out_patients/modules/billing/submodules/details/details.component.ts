@@ -37,6 +37,7 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
+import { throws } from "assert";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -651,6 +652,7 @@ export class DetailsComponent implements OnInit {
     );
     this.dmsbtn = false;
     this.visithistorybtn = false;
+    this.resendbill = false;
     this.getPatientIcon();
     this.BServiceForm.controls["mobileno"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno
@@ -892,7 +894,10 @@ export class DetailsComponent implements OnInit {
   {
     const printrefunddialog = this.matDialog.open(ResendBillEmailDialogComponent, {
       width: "35vw",
-      height: "40vh"
+      height: "40vh",
+      data: {
+        billno: this.BServiceForm.controls['billNo'].value
+      }
     })
   }
   reportprint(name: any)
