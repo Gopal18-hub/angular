@@ -149,8 +149,8 @@ export class BillingComponent implements OnInit {
         this.patient = false;
         this.getPatientDetailsByMaxId();
       }
-      if (params.orderId) {
-        this.orderId = Number(params.orderId);
+      if (params.orderid) {
+        this.orderId = Number(params.orderid);
       }
     });
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
@@ -181,7 +181,22 @@ export class BillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
-        console.log(res);
+        if (res.tempOrderBreakup.length > 0) {
+          res.tempOrderBreakup.forEach((item: any) => {
+            if (item.serviceType == "Investigation") {
+              this.billingService.processInvestigationAdd(1, item.serviceId, {
+                title: item.testName,
+                value: item.testID,
+                originalTitle: item.testName,
+                docRequired: item.doctorid ? true : false,
+                patient_Instructions: "",
+                item_Instructions: "",
+                serviceid: item.serviceId,
+                doctorid: item.doctorid,
+              });
+            }
+          });
+        }
       });
   }
 
@@ -405,20 +420,24 @@ export class BillingComponent implements OnInit {
                   .afterClosed()
                   .pipe(takeUntil(this._destroying$))
                   .subscribe((result) => {
-                    this.startProcess(
-                      patientDetails,
-                      resultData,
-                      iacode,
-                      regNumber
-                    );
+                    if (!this.orderId) {
+                      this.startProcess(
+                        patientDetails,
+                        resultData,
+                        iacode,
+                        regNumber
+                      );
+                    }
                   });
               } else {
-                this.startProcess(
-                  patientDetails,
-                  resultData,
-                  iacode,
-                  regNumber
-                );
+                if (!this.orderId) {
+                  this.startProcess(
+                    patientDetails,
+                    resultData,
+                    iacode,
+                    regNumber
+                  );
+                }
               }
             }
           } else {
@@ -588,8 +607,40 @@ export class BillingComponent implements OnInit {
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
               if (result && result.selected && result.selected.length > 0) {
-                const doctors = result.selected;
-                for (let i = 0; i < doctors.length; i++) {}
+                const doctors: any = result.selected;
+                for (let i = 0; i < doctors.length; i++) {
+                  if (doctors[i].paymentStatus == "No") {
+                    this.billingService.procesConsultationAdd(
+                      57,
+                      doctors[i].specialisationid,
+                      {
+                        value: doctors[i].doctorID,
+                        originalTitle: doctors[i].doctorname,
+                        specialisationid: doctors[i].specialisationid,
+                      },
+                      {
+                        value: doctors[i].clinicId,
+                      }
+                    );
+                  } else if (
+                    doctors[i].paymentStatus == "Yes" &&
+                    doctors[i].billStatus == "No"
+                  ) {
+                    this.billingService.procesConsultationAddWithOutApi(
+                      57,
+                      doctors[i].specialisationid,
+                      {
+                        value: doctors[i].doctorID,
+                        originalTitle: doctors[i].doctorname,
+                        specialisationid: doctors[i].specialisationid,
+                        price: doctors[i].amount,
+                      },
+                      {
+                        value: doctors[i].clinicId,
+                      }
+                    );
+                  }
+                }
               }
             });
         }
@@ -614,7 +665,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-  planDetailsCheck(dtPatientPastDetails: any) {
+  async planDetailsCheck(dtPatientPastDetails: any) {
     if (
       dtPatientPastDetails[5] &&
       dtPatientPastDetails[5].id == 6 &&
@@ -659,7 +710,7 @@ export class BillingComponent implements OnInit {
           (plan: any, index: number) => {
             data.push({
               sno: index + 1,
-              planType: "OTher",
+              planType: "Other",
               planName: plan.planName,
               serviceId: plan.serviceId,
               planId: plan.planId,
@@ -676,12 +727,23 @@ export class BillingComponent implements OnInit {
         dialogRef
           .afterClosed()
           .pipe(takeUntil(this._destroying$))
-          .subscribe((result) => {
+          .subscribe(async (result) => {
             if (result && result.selected && result.selected.length > 0) {
               const selectedPlan = result.selected[0];
               this.billingService.setOtherPlan(selectedPlan);
-              this.messageDialogService.info(
+              const planSelectDialog = this.messageDialogService.info(
                 "You have selected " + selectedPlan.planName
+              );
+              await planSelectDialog.afterClosed().toPromise();
+              const dialogRefDetails = this.matDialog.open(
+                ShowPlanDetilsComponent,
+                {
+                  width: "60vw",
+                  data: {
+                    planDetails: data,
+                    type: "otherPlanDetails",
+                  },
+                }
               );
             }
           });

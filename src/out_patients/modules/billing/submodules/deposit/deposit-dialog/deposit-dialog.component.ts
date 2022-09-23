@@ -47,10 +47,10 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
+
 
   
   private readonly _destroying$ = new Subject<void>();
@@ -149,7 +149,7 @@ export class DepositDialogComponent implements OnInit {
       else if(this.PaymentTypedepositamount == 0){
         this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
         this.validationexists = true;
-      }
+      }      
     }
 
     //pan card and form 60
@@ -182,7 +182,12 @@ export class DepositDialogComponent implements OnInit {
               this.messageDialogService.success("Deposit Has Been Successfully Saved");            
             }else
            {
-              this.messageDialogService.error(resultData[0].returnMessageDeposit);
+             const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
+             let tempString = "";
+             temp.forEach((element:string) => {
+               tempString += '<p class="text-left">' + element + '</p>'  ; 
+             });
+             this.messageDialogService.error(tempString);
             }                       
           },
           (error) => {

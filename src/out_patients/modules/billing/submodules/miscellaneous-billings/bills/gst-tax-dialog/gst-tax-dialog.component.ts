@@ -6,6 +6,7 @@ import {
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject, takeUntil } from "rxjs";
+import { GstTaxModel } from "../../../../../../core/models/GstTaxModel.Model";
 
 @Component({
   selector: 'out-patients-gst-tax-dialog',
@@ -21,13 +22,8 @@ export class GstTaxDialogComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<GstTaxDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private formService: QuestionControlService) { }
 
-  cgsT_Value = 0.00
-  sgsT_Value = 0.00
-  utgsT_Value = 0.00
-  igsT_Value = 0.00
-  cesS_Value = 0.00
-  totaltaX_Value = 0.00
-  sac = 0;
+
+  gstData!: GstTaxModel;
 
   ngOnInit(): void {
 
@@ -38,17 +34,70 @@ export class GstTaxDialogComponent implements OnInit {
     this.gstTaxForm = formResult.form;
     this.questions = formResult.questions;
 
-
     setTimeout(() => {
-      console.log(this.data.gstdata[0], "popup")
+      console.log(this.data.gstdata[0], "popup");
+      this.gstData = this.data.gstdata[0];
 
-      this.cgsT_Value = this.data.gstdata[0].cgsT_Value
-      this.sgsT_Value = this.data.gstdata[0].sgsT_Value
-      this.utgsT_Value = this.data.gstdata[0].utgsT_Value
-      this.igsT_Value = this.data.gstdata[0].igsT_Value
-      this.cesS_Value = this.data.gstdata[0].cesS_Value
-      this.totaltaX_Value = this.data.gstdata[0].totaltaX_Value
-      this.sac = this.data.gstdata[0].saccode
+      this.taxData.forEach((e: any) => {
+        if (e.services == "CGST") {
+          e.percentage = this.gstData.cgst
+          e.value = this.gstData.cgsT_Value
+        }
+        if (e.services == "SGST") {
+          e.percentage = this.gstData.sgst
+          e.value = this.gstData.sgsT_Value
+        }
+        if (e.services == "UTGST") {
+          e.percentage = this.gstData.utgst
+          e.value = this.gstData.utgsT_Value
+        }
+        if (e.services == "IGST") {
+          e.percentage = this.gstData.igst
+          e.value = this.gstData.igsT_Value
+        }
+        if (e.services == "CESS") {
+          e.percentage = this.gstData.cess
+          e.value = this.gstData.cesS_Value
+        }
+        if (e.services == "TOTAL TAX") {
+          e.percentage = this.gstData.totaltaX_RATE
+          e.value = this.gstData.totaltaX_Value
+        }
+        if (this.gstData.taxratE1 > 0) {
+          e.services = this.gstData.taxratE1DESC
+          e.percentage = this.gstData.taxratE1
+          e.value = this.gstData.taxratE1_Value
+
+        }
+        if (this.gstData.taxratE2 > 0) {
+          e.services = this.gstData.taxratE2DESC
+          e.percentage = this.gstData.taxratE2
+          e.value = this.gstData.taxratE2_Value
+
+        }
+        if (this.gstData.taxratE3 > 0) {
+          e.services = this.gstData.taxratE3DESC
+          e.percentage = this.gstData.taxratE3
+          e.value = this.gstData.taxratE3_Value
+
+        }
+        if (this.gstData.taxratE4 > 0) {
+          e.services = this.gstData.taxratE4DESC
+          e.percentage = this.gstData.taxratE4
+          e.value = this.gstData.taxratE4_Value
+
+        }
+        if (this.gstData.taxratE5 > 0) {
+          e.services = this.gstData.taxratE5DESC
+          e.percentage = this.gstData.taxratE5
+          e.value = this.gstData.taxratE5_Value
+
+        }
+
+
+
+      })
+      this.gstTaxForm.controls["code"].setValue(this.gstData.saccode)
 
     })
 
@@ -70,7 +119,7 @@ export class GstTaxDialogComponent implements OnInit {
 
       code: {
         type: "string",
-        defaultValue: this.sac
+        defaultValue: 0
         //readonly: true,
       },
 
@@ -96,16 +145,16 @@ export class GstTaxDialogComponent implements OnInit {
       },
       percentage: {
         title: 'Percentage',
-        type: 'input',
+        type: 'string',
         style: {
-          width: "20%",
+          width: "14%",
         },
       },
       value: {
         title: 'Value',
         type: 'string',
         style: {
-          width: "10%",
+          width: "14%",
         },
       },
     }
@@ -115,12 +164,17 @@ export class GstTaxDialogComponent implements OnInit {
 
 
   taxData: any = [
-    { services: "CGST", percentage: this.cgsT_Value, value: '0.00' },
-    { services: "SGST", percentage: this.sgsT_Value, value: '0.00' },
-    { services: "UTGST", percentage: this.utgsT_Value, value: '0.00' },
-    { services: "IGST", percentage: this.igsT_Value, value: '0.00' },
-    { services: "CESS", percentage: this.cesS_Value, value: '0.00' },
-    { services: "TOTAL TAX", percentage: this.totaltaX_Value, value: '0.00' }
+    { services: "CGST", percentage: '0.00', value: '0.00' },
+    { services: "SGST", percentage: '0.00', value: '0.00' },
+    { services: "UTGST", percentage: '0.00', value: '0.00' },
+    { services: "IGST", percentage: '0.00', value: '0.00' },
+    { services: "CESS", percentage: '0.00', value: '0.00' },
+    { services: "TOTAL TAX", percentage: '0.00', value: '0.00' },
+    // { services: "TAXRATE1", percentage: this.totaltaX_Value, value: '0.00' },
+    // { services: "TAXRATE2", percentage: this.totaltaX_Value, value: '0.00' },
+    // { services: "TAXRATE3", percentage: this.totaltaX_Value, value: '0.00' },
+    // { services: "TAXRATE4", percentage: this.totaltaX_Value, value: '0.00' },
+    // { services: "TAXRATE5", percentage: this.totaltaX_Value, value: '0.00' }
 
   ]
 }

@@ -37,6 +37,7 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
+import { throws } from "assert";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -261,12 +262,14 @@ export class DetailsComponent implements OnInit {
     });
     
     this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
+    
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
   
 
   ngAfterViewInit(): void {
+    this.questions[0].elementRef.focus();
     this.formEvents();
     this.BServiceForm.controls["datevalidation"].valueChanges.subscribe(
       (value) => {
@@ -649,6 +652,7 @@ export class DetailsComponent implements OnInit {
     );
     this.dmsbtn = false;
     this.visithistorybtn = false;
+    this.resendbill = false;
     this.getPatientIcon();
     this.BServiceForm.controls["mobileno"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno
@@ -826,6 +830,7 @@ export class DetailsComponent implements OnInit {
   }
   clear() {
     this.BServiceForm.reset();
+    this.categoryIcons = [];
     this.activeLink = this.linkList[0];
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
@@ -881,15 +886,18 @@ export class DetailsComponent implements OnInit {
   printrefunddialog()
   {
     const printrefunddialog = this.matDialog.open(PrintRefundReceiptDialogComponent, {
-      width: "35vw",
-      height: "35vh"
+      width: "30vw",
+      height: "30vh"
     })
   }
   resendbilldialog()
   {
     const printrefunddialog = this.matDialog.open(ResendBillEmailDialogComponent, {
       width: "35vw",
-      height: "40vh"
+      height: "40vh",
+      data: {
+        billno: this.BServiceForm.controls['billNo'].value
+      }
     })
   }
   reportprint(name: any)

@@ -154,9 +154,8 @@ export class OrderSetComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.billingService.removeFromBill(
-      this.billingService.consultationItems[$event.index]
+      this.billingService.OrderSetItems[$event.index]
     );
-    console.log($event.index);
     this.billingService.OrderSetItems.splice($event.index, 1);
     this.billingService.OrderSetItems = this.billingService.OrderSetItems.map(
       (item: any, index: number) => {

@@ -21,7 +21,9 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
     type: "object",
     properties: {
       receiptNumber: {
+        title:'Receipt Number',
         type: "dropdown",
+        required: true,
         placeholder: "---Select---",
         options: this.getrefundbillnumber
       }
@@ -78,6 +80,11 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
   clearbtn()
   {
     this.printrefundform.reset();
+  }
+
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 
 }

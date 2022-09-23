@@ -78,7 +78,7 @@ export class InvestigationsComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
       },
       priority: {
         title: "Priority",
@@ -161,10 +161,25 @@ export class InvestigationsComponent implements OnInit {
         return item;
       });
     this.data = [...this.billingService.InvestigationItems];
+    if (this.data.length == 0) {
+      this.defaultPriorityId = 1;
+    }
     this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      console.log(res);
+      if (
+        "patient_Instructions" in res.element.billItem &&
+        res.element.billItem.patient_Instructions
+      ) {
+        this.messageDialogService.info(
+          res.element.billItem.patient_Instructions
+        );
+      }
+    });
+
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -173,6 +188,8 @@ export class InvestigationsComponent implements OnInit {
       }
     });
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
+      console.log(this.tableRows.tableForm);
+      console.log(this.tableRows.tableForm.value);
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -241,11 +258,15 @@ export class InvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
-              patient_Instructions:
+              patient_Instructions: r.patient_Instructions,
+              item_Instructions:
                 BillingStaticConstants.investigationItemBasedInstructions[
                   r.id.toString()
                 ],
               precaution: r.precaution,
+              ngStyle: {
+                color: r.outsourceColor == 2 ? "red" : "",
+              },
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -322,12 +343,16 @@ export class InvestigationsComponent implements OnInit {
             value: r.id,
             originalTitle: r.name,
             docRequired: r.docRequired,
-            patient_Instructions:
+            patient_Instructions: r.patient_Instructions,
+            item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
                 r.id.toString()
               ],
             serviceid: r.serviceid,
             precaution: r.precaution,
+            ngStyle: {
+              color: r.outsourceColor == 2 ? "red" : "",
+            },
           };
         });
         this.questions[1] = { ...this.questions[1] };
@@ -385,9 +410,12 @@ export class InvestigationsComponent implements OnInit {
       this.formGroup.value.investigation
     );
 
-    if (this.formGroup.value.investigation.patient_Instructions) {
+    if (
+      "item_Instructions" in this.formGroup.value.investigation &&
+      this.formGroup.value.investigation.item_Instructions
+    ) {
       this.messageDialogService.info(
-        this.formGroup.value.investigation.patient_Instructions
+        this.formGroup.value.investigation.item_Instructions
       );
     }
 
