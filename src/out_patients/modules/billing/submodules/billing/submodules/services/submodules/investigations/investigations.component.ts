@@ -161,6 +161,9 @@ export class InvestigationsComponent implements OnInit {
         return item;
       });
     this.data = [...this.billingService.InvestigationItems];
+    if (this.data.length == 0) {
+      this.defaultPriorityId = 1;
+    }
     this.billingService.calculateTotalAmount();
   }
 
