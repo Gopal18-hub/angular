@@ -118,11 +118,6 @@ export class OrderServicesComponent implements OnInit {
       }
     });
   }
-  onSaveClick() {
-    this.billingService.save = 1;
-  }
-  onViewClick() {
-    this.billingService.view = true;
-    this.billingService.save = 0;
-  }
+  onSaveClick() {}
+  onViewClick() {}
 }

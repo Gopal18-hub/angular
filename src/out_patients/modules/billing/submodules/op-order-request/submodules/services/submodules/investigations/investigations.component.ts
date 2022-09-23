@@ -339,7 +339,7 @@ export class OderInvestigationsComponent implements OnInit {
         if (response == 1) {
           this.flag++;
           console.log(this.flag);
-          if (this.flag == 2) {
+          if (this.flag == 3) {
             this.addrow();
           }
         } else {
@@ -371,7 +371,7 @@ export class OderInvestigationsComponent implements OnInit {
         console.log(response);
         if (response == 1) {
           this.flag++;
-          if (this.flag == 2) {
+          if (this.flag == 3) {
             this.addrow();
           }
           console.log(this.flag);
@@ -382,7 +382,28 @@ export class OderInvestigationsComponent implements OnInit {
         }
         console.log(this.genderDefined);
       });
-    if (this.flag == 2) {
+    this.http
+      .get(
+        BillingApiConstants.checkModality(
+          this.formGroup.value.investigation.value
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((response) => {
+        console.log(response);
+        if (response == 1) {
+          this.flag++;
+          if (this.flag == 3) {
+            this.addrow();
+          }
+          console.log(this.flag);
+        } else {
+          this.messageDialogService.info(
+            "Modality Code is not defined for the Service"
+          );
+        }
+      });
+    if (this.flag == 3) {
       this.addrow();
     }
 
