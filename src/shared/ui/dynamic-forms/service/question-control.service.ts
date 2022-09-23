@@ -22,6 +22,7 @@ import { AutoCompleteQuestion } from "../types/question-autocomplete";
 import { PasswordQuestion } from "../types/question-password";
 import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
+import { DateTimeQuestion } from "../types/question-datetime";
 
 @Injectable()
 export class QuestionControlService {
@@ -68,6 +69,8 @@ export class QuestionControlService {
       else if (question.type == "autocomplete")
         data.push(new AutoCompleteQuestion(question));
       else if (question.type == "date") data.push(new DateQuestion(question));
+      else if (question.type == "datetime")
+        data.push(new DateTimeQuestion(question));
     }
 
     return data;
