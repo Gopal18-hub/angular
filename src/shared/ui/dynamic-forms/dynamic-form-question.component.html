@@ -627,6 +627,47 @@
           <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
         </mat-form-field>
       </ng-container>
+      <ng-container *ngSwitchCase="'datetime'">
+        <mat-label
+          [attr.for]="question.key"
+          [ngClass]="{ 'mat-form-field-required-marker': question.required }"
+          >{{ question.label }}</mat-label
+        >
+        <mat-form-field
+          class="full-width clearfix clear"
+          appearance="outline"
+          floatLabel="never"
+        >
+          <input
+            matInput
+            placeholder="__/__/____"
+            [formControlName]="question.key"
+            [type]="'text'"
+            [id]="question.key"
+            [required]="question.required"
+            [readonly]="question.readonly"
+            #element
+            [ngxMatDatetimePicker]="picker"
+            [max]="question.maximum"
+            [min]="question.minimum"
+            [disabled]="question.disabled"
+            autocomplete="off"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="$any(picker)"
+          ></mat-datepicker-toggle>
+          <ngx-mat-datetime-picker #picker [enableMeridian]="true">
+          </ngx-mat-datetime-picker>
+          <mat-error *ngIf="!isValid && !isCorrect">
+            {{ question.label }} is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="isCorrect && question.customErrorMessage">
+            {{ question.customErrorMessage }}</mat-error
+          >
+          <mat-hint *ngIf="question.hintText">{{ question.hintText }}</mat-hint>
+        </mat-form-field>
+      </ng-container>
       <ng-container *ngSwitchCase="'checkbox'">
         <mat-label
           [attr.for]="question.key"
