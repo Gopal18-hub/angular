@@ -14,6 +14,7 @@ import { OrderSetComponent } from "@modules/billing/submodules/billing/submodule
 import { ProcedureOtherComponent } from "@modules/billing/submodules/billing/submodules/services/submodules/procedure-other/procedure-other.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
+import { threadId } from "worker_threads";
 import { OderInvestigationsComponent } from "./submodules/investigations/investigations.component";
 import { OrderProcedureOtherComponent } from "./submodules/procedure-other/procedure-other.component";
 
@@ -52,6 +53,7 @@ export class OrderServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeMaxId = this.billingService.activeMaxId;
+    this.activeTab = this.tabs[0];
   }
 
   async tabChange(tab: any) {
@@ -115,5 +117,12 @@ export class OrderServicesComponent implements OnInit {
         this.selectedComponent = new ComponentPortal(this.activeTab.component);
       }
     });
+  }
+  onSaveClick() {
+    this.billingService.save = 1;
+  }
+  onViewClick() {
+    this.billingService.view = true;
+    this.billingService.save = 0;
   }
 }
