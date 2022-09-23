@@ -596,7 +596,10 @@ export class BillingService {
           serviceName: "Investigations",
           itemName: investigation.title,
           qty: 1,
-          precaution: "",
+          precaution:
+            investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : investigation.precaution,
           procedureDoctor: "",
           credit: 0,
           cash: 0,
@@ -607,9 +610,50 @@ export class BillingService {
           gstValue: 0,
           specialisationID: 0,
           doctorID: 0,
+          patient_Instructions: investigation.patient_Instructions,
         },
       });
     }
+  }
+
+  procesConsultationAddWithOutApi(
+    priorityId: number,
+    specialization: any,
+    doctorName: any,
+    clinics: any
+  ) {
+    this.addToConsultation({
+      sno: this.ConsumableItems.length + 1,
+      doctorName: doctorName.originalTitle,
+      doctorId: doctorName.value,
+      type: priorityId,
+      scheduleSlot: "",
+      bookingDate: "",
+      price: doctorName.price,
+      specialization: specialization,
+      clinics: clinics ? clinics.value : 0,
+      billItem: {
+        itemId: doctorName.value,
+        priority: priorityId,
+        serviceId: 25,
+        price: doctorName.price,
+        serviceName: "Consultation Charges",
+        itemName: doctorName.originalTitle,
+        qty: 1,
+        precaution: "",
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: doctorName.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: doctorName.specialisationid,
+        doctorID: doctorName.value,
+      },
+    });
+    this.consultationItemsAdded.next(true);
   }
 
   async procesConsultationAdd(
