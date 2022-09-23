@@ -42,12 +42,12 @@ export interface getERPscrollDetailDtoInterface {
   duesrec: any;
   hsPlocationid: any;
   depositamount: any;
-  batchno: string;
+  batchno: any;
   modifiedCheqAmt: any;
   modifiedCCAmt: any;
   modifiedDDAmt: any;
   modifiedCash: any;
-  chequeNo: string;
+  chequeNo: any;
   creditCardNo: string;
   modifiedCashPaymentMobile: any;
   modifiedCashMobileDetails: any;

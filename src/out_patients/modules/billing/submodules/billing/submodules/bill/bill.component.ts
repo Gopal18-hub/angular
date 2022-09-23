@@ -333,7 +333,14 @@ export class BillComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.tableRows.stringLinkOutput.subscribe((res: any) => {});
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      if (
+        "patient_Instructions" in res.element &&
+        res.element.patient_Instructions
+      ) {
+        this.messageDialogService.info(res.element.patient_Instructions);
+      }
+    });
     this.formGroup.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {

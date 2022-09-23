@@ -37,6 +37,7 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
+import { throws } from "assert";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -180,7 +181,6 @@ export class DetailsComponent implements OnInit {
       reason: {
         type: "dropdown",
         required: false,
-        readonly: true,
         options: this.refundreasonlist,
       },
       paymentMode: {
@@ -261,7 +261,10 @@ export class DetailsComponent implements OnInit {
     });
     
     this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
-    
+    this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
+      console.log(res);
+      this.sendapprovalcheck();
+    })
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -290,7 +293,9 @@ export class DetailsComponent implements OnInit {
       this.sendapprovalcheck();
     })
     this.questions[12].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
+    this.questions[13].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
     this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
+      console.log(res);
       this.sendapprovalcheck();
     })
     this.BServiceForm.controls['paymentMode'].valueChanges.subscribe((res) => {
@@ -314,7 +319,8 @@ export class DetailsComponent implements OnInit {
     console.log(this.BServiceForm.controls['refundAmt'].value, this.BServiceForm.controls['authBy'].value, this.BServiceForm.controls['reason'].value, this.BServiceForm.controls['paymentMode'].value);
     console.log(this.billdetailservice.sendforapproval.length);
     if(this.BServiceForm.controls['authBy'].value != '' && 
-    this.BServiceForm.controls['reason'].value != '' &&
+    this.BServiceForm.controls['reason'].value != '' && 
+    this.BServiceForm.controls['reason'].value != '0' &&
     this.BServiceForm.controls['paymentMode'].value != '' &&
     this.BServiceForm.controls['refundAmt'].value > 0)
     {
@@ -651,6 +657,7 @@ export class DetailsComponent implements OnInit {
     );
     this.dmsbtn = false;
     this.visithistorybtn = false;
+    this.resendbill = false;
     this.getPatientIcon();
     this.BServiceForm.controls["mobileno"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno
@@ -892,7 +899,10 @@ export class DetailsComponent implements OnInit {
   {
     const printrefunddialog = this.matDialog.open(ResendBillEmailDialogComponent, {
       width: "35vw",
-      height: "40vh"
+      height: "40vh",
+      data: {
+        billno: this.BServiceForm.controls['billNo'].value
+      }
     })
   }
   reportprint(name: any)

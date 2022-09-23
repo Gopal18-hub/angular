@@ -63,4 +63,6 @@ export namespace BillDetailsApiConstants{
     ) => { 
            return `${environment.BillingApiUrl}api/outpatientbilling/getduereceiptnumber/${OPBillNo}`
     }
+
+    export const savepdfforemail = `${environment.BillingApiUrl}api/outpatientbilling/savepdfforemail`;
 }
