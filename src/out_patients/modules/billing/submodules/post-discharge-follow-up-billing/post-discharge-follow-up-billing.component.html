@@ -197,19 +197,30 @@
         </div>
         <div [class.isDisabled]="!patient">
           <div class="mt-2">
-            <nav mat-tab-nav-bar>
-              <a
-                mat-tab-link
-                *ngFor="let link of links"
-                [routerLink]="link.path"
-                routerLinkActive
-                #rla="routerLinkActive"
-                (click)="activeLink = link"
-                [active]="rla.isActive || activeLink.path == link.path"
-              >
-                {{ link.title }}
-              </a>
-            </nav>
+            <div class="flex justify-between services-tab-header-container align-items-center pr-3">
+              <nav mat-tab-nav-bar>
+                <a
+                  mat-tab-link
+                  *ngFor="let link of links"
+                  [routerLink]="link.path"
+                  routerLinkActive
+                  #rla="routerLinkActive"
+                  (click)="activeLink = link"
+                  [active]="rla.isActive || activeLink.path == link.path"
+                >
+                  {{ link.title }}
+                </a>
+              </nav>
+              <div class="flex">
+                <div
+                  class="total-cost max-health-primary-color font-bold text-underline" >
+                  <span>Total Estimation:</span>
+                  {{
+                     2000 | currency: "INR":undefined:undefined:"en-IN"
+                  }}
+                </div>
+              </div>
+            </div>
             <div class="overflow-y-auto display-block billing-panel-wrapper">
               <router-outlet></router-outlet>
             </div>

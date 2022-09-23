@@ -429,21 +429,25 @@ export class PaymentDialogComponent implements OnInit {
       if(this.dueform.controls['chequeno'].value == '')
       {
         this.messageDialogService.info('Cheque No is Mandatory');
+        this.selected = 1;
         return;
       }
       else if(this.dueform.controls['chequevalidity'].value <= new Date())
       {
         this.messageDialogService.info("Cheque validity can not be lesser then todays's date");
+        this.selected = 1;
         return;
       }
       else if(this.dueform.controls['chequebankname'].value == '')
       {
         this.messageDialogService.info('Bank Name is Mandatory');
+        this.selected = 1;
         return;
       }
       else if(this.dueform.controls['chequebranchname'].value == '')
       {
         this.messageDialogService.info('Branch Name is Mandatory');
+        this.selected = 1;
         return;
       }
       else{
@@ -461,16 +465,19 @@ export class PaymentDialogComponent implements OnInit {
       if(this.dueform.controls['creditcardno'].value == '')
       {
         this.messageDialogService.info('Credit Card No is Mandatory');
+        this.selected = 2;
         return;
       }
       else if(this.dueform.controls['creditapprovalno'].value == '')
       {
         this.messageDialogService.info("Please Fill All Mandatory Fields");
+        this.selected = 2;
         return;
       }
       else if(this.dueform.controls['creditbankname'].value == '')
       {
         this.messageDialogService.info('Bank Name is Mandatory');
+        this.selected = 2;
         return;
       }
       else
@@ -489,21 +496,25 @@ export class PaymentDialogComponent implements OnInit {
       if(this.dueform.controls['demandddno'].value == '')
       {
         this.messageDialogService.info('Demand Draft No is Mandatory');
+        this.selected = 3;
         return;
       }
       else if(this.dueform.controls['demandvalidity'].value <= new Date())
       {
         this.messageDialogService.info("Demand Draft validity can not be lesser then todays's date");
+        this.selected = 3;
         return;
       }
       else if(this.dueform.controls['demandbankname'].value == '')
       {
         this.messageDialogService.info('Bank Name is Mandatory');
+        this.selected = 3;
         return;
       }
       else if(this.dueform.controls['demandbranchname'].value == '')
       {
         this.messageDialogService.info('Branch Name is Mandatory');
+        this.selected = 3;
         return;
       }
       else
@@ -522,14 +533,22 @@ export class PaymentDialogComponent implements OnInit {
       if(this.dueform.controls['onlinetransacid'].value == '')
       {
         this.messageDialogService.info('Transaction ID is Mandatory');
+        this.selected = 4;
       }
       else if(this.dueform.controls['onlinebookingid'].value == '')
       {
         this.messageDialogService.info("Booking ID is Mandatory");
+        this.selected = 4;
       }
       else if(this.dueform.controls['onlinecontact'].value == '')
       {
         this.messageDialogService.info('Conatct No is Mandatory');
+        this.selected = 4;
+      }
+      else if((this.dueform.controls['onlinecontact'].value).toString().length < 10)
+      {
+        this.messageDialogService.info('Invalid Conatct No');
+        this.selected = 4;
       }
       else{
         this.onlineflag = 5;
