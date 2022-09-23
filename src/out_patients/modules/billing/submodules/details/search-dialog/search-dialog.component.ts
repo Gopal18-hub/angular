@@ -213,6 +213,7 @@ export class SearchDialogComponent implements OnInit {
       this.searchform.controls['todate'].enable();
       this.searchform.controls['fromdate'].setValue(this.formdata.fromdate);
       this.searchform.controls['todate'].setValue(this.formdata.todate);
+      this.search();
     }
     this.searchform.controls['checkbox'].valueChanges.subscribe(value=>{
       console.log(value);
@@ -353,5 +354,9 @@ export class SearchDialogComponent implements OnInit {
     this.searchform.controls['todate'].setValue(new Date());
     this.searchform.controls['maxid'].setValue(this.cookie.get("LocationIACode") + ".");
     this.getsearchopbillslist = [];
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

@@ -238,9 +238,9 @@ export class OnlineDepositReportComponent implements OnInit {
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.questions[1].maximum =
+    this.questions[0].maximum =
       this.onlinedepositForm.controls["enddate"].value;
-    this.questions[0].minimum =
+    this.questions[1].minimum =
       this.onlinedepositForm.controls["startdate"].value;
       this.getdepositstatus();
       setTimeout(() => {
@@ -321,7 +321,7 @@ clear()
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.onlinedepositForm.controls["startdate"].setValue(this.fromdate);
-    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id);
+    this.onlinedepositForm.controls["selecttype"].setValue(this.depositstatus[0].id.toString());
     
    
     console.log(this.onlinedepositlist = []);

@@ -173,21 +173,21 @@ export class MedicineOrdersComponent implements OnInit {
         title: 'Visit Date',
         type: 'date',
         style: {
-          width: "9%",
+          width: "7%",
         },
       },
       mobileNo: {
         title: 'Mobile No.',
         type: 'string',
         style: {
-          width: "9%",
+          width: "8%",
         },
       },
       mrpValue: {
         title: 'Amt',
         type: 'string',
         style: {
-          width: "5%",
+          width: "8%",
         },
       },
       channel: {

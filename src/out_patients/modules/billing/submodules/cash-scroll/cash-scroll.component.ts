@@ -8,6 +8,9 @@ import { Router } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
+import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Interface";
+
 @Component({
   selector: "out-patients-cash-scroll",
   templateUrl: "./cash-scroll.component.html",
@@ -36,6 +39,7 @@ export class CashScrollComponent implements OnInit {
           { title: "Pending", value: "1" },
           { title: "Acknowledge", value: "2" },
         ],
+        defaultValue: "1"
       },
     },
   };
@@ -93,7 +97,11 @@ export class CashScrollComponent implements OnInit {
 
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
-  private readonly _destroying$ = new Subject<void>();
+  private readonly _destroying$ = new Subject<void>();  
+  
+  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
+  stationId:any = 12969 ;// Number(this.cookie.get("StationId"));
+  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -104,35 +112,45 @@ export class CashScrollComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
+    this.getdetailsforscroll();
   }
+  CashScrolldetails !: getdataForScrollMain;
+  uniquescrollnumber !: GetDataForOldScroll;
+
   ngAfterViewInit() {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         event.preventDefault();
-        // this.scrollnoEnter();
+       if(!this.cashscrollForm.value.scrollno){
+        this.dialogservice.error("Please Enter the Scroll Number");
+        this.questions[0].elementRef.focus();
+       }
+       else{
+        this.http
+        .get(ApiConstants.getdetaileddataforoldscroll(this.cashscrollForm.value.scrollno, this.stationId))
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultdata) => 
+        {
+         this.uniquescrollnumber = resultdata as GetDataForOldScroll;
+        });
+       }
       }
     });
   }
   scrollnoSearch() {
-    if (this.cashscrollForm.controls["mainradio"].value != null) {
-      this.http
-        .get(ApiConstants.getdetaileddataforoldscroll(4, 10412))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((data) => {
-          console.log(data);
-        });
-    } else {
-      console.log("radio button not selected");
-      this.dialogservice.info("Please select Pending/Acknowledge");
-    }
+    if (this.cashscrollForm.controls["mainradio"].value != null && this.cashscrollForm.controls["mainradio"].value != "" ) {
+    
+      }
+      else if(this.cashscrollForm.controls["scrollno"].value == null || this.cashscrollForm.controls["scrollno"].value == "" ){
+        this.dialogservice.error("Please Enter the Scroll Number");
+        this.questions[0].elementRef.focus();
+      }
   }
 
   opennewcashscroll() {
-    this.router.navigate(["out-patient-billing/cash-scroll/cash-scroll-new"]);
-    // this.router.navigate([
-    //   "out-patient-billing/cash-scroll",
-    //   "cash-scroll-new",
-    // ]);
+    this.router.navigate(["out-patient-billing/cash-scroll/cash-scroll-new"]); 
+
   }
   cashscrollmodify() {
     this.router.navigate([
@@ -144,10 +162,23 @@ export class CashScrollComponent implements OnInit {
   }
 
   cashscrollColumnClick(event: any) {
-    this.router.navigate(["report/cash-scroll", "cash-scroll-new"]);
+    this.router.navigate(["out-patient-billing/cash-scroll", "cash-scroll-new"]);
   }
 
   clearcashscroll() {
     this.cashscrollForm.reset();
+  }
+
+  cashscrollList:any = [];
+  getdetailsforscroll(){
+    this.http
+    .get(ApiConstants.getdetailsforcashscroll(this.operatorID, this.stationId))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultdata) => 
+    {
+     this.CashScrolldetails = resultdata as getdataForScrollMain;
+     this.cashscrollList = this.CashScrolldetails.getDetailsForMainScrollDetails;
+    });
   }
 }

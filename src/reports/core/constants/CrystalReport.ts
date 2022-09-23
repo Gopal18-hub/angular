@@ -18,7 +18,9 @@ export namespace CrystalReport {
   export const billingreport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
-
+  export const billingreportPDF = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReportPDF?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+  };
   export const DispatchReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Dispatch_Report/DispatchReport?fromdate=${params.fromdate}&todate=${params.todate}&locationid=${params.locationid}&RepType=${params.RepType}`;
   };
@@ -65,7 +67,7 @@ export namespace CrystalReport {
   };
 
   export const HappyFamilyPlanUtilizationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?MemberShipNo=${params.MemberShipNo}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?${params.MemberShipNo}`;
   };
 
   export const GeneralOPDReport = (params: any) => {
@@ -140,10 +142,20 @@ export namespace CrystalReport {
   };
 
   export const OpenScrollReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/MIS/OpenScrollReport?cmbopenscrolltype=${params.cmbopenscrolltype}&cmbLocation=${params.cmbLocation}&fromdate=${params.fromdate}&todate=${params.todate}&user=${params.user}`;
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/MIS/OpenScrollReport?cmbopenscrolltype=${
+      params.cmbopenscrolltype
+    }&cmbLocation=${params.cmbLocation}&dtpFromDate=${
+      params.dtpFromDate
+    }&dtpToDate=${params.dtpToDate}&openscrolltypename=${
+      params.openscrolltypename
+    }&user=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
 
-  export const ServiceTaxReportDataReports = (params: any) => {
+  export const ServiceTaxReportData = (params: any) => {
     return `${
       environment.ReportsSampleUrl
     }MAXHIS/MIS/ServiceTaxReportData?dtpFromDate=${
@@ -179,13 +191,7 @@ export namespace CrystalReport {
       params.Cmb_Equip
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-
-    )}&LocationName=${MaxHealthStorage.getCookie(
-
-      "Location"
-
-    )}`;
-
+    )}&LocationName=${MaxHealthStorage.getCookie("Location")}`;
   };
 
   export const freeOutPatientReport = (params: any) => {
@@ -203,7 +209,7 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}`;
   };
   export const SummaryReportForUtilisationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?membershipno=${params.membershipno}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?${params.membershipno}`;
   };
   export const PHPTracksheet = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
@@ -224,4 +230,11 @@ export namespace CrystalReport {
   export const DueReceiptReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/DueReceiptForOTBilling?receiptnumber=${params.receiptnumber}&locationID=${params.locationID}`;
   };
+  export const OpDiscountReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPDiscountReport?ReportChecked=${params.ReportChecked}&ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+  export const OPRefundReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+
 }

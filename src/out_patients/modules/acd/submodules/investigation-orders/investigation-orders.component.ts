@@ -432,7 +432,7 @@ export class InvestigationOrdersComponent implements OnInit {
     this.invOrderList.forEach((item: any) => {
       if (item.amount !== '' && item.amount !== undefined)
         item.amount = Number(item.amount).toFixed(2);
-      console.log(item.amount)
+      //console.log(item.amount)
     });
   }
   listRowClick(event: any) {
@@ -469,7 +469,7 @@ export class InvestigationOrdersComponent implements OnInit {
                 this.resetRemarksDeny();
                 this.tableSelectedRows = [];
               }
-              console.log(this.invOrderDetailsTable.selection.selected, "res")
+              //console.log(this.invOrderDetailsTable.selection.selected, "res")
             })
         })
       })
@@ -524,7 +524,7 @@ export class InvestigationOrdersComponent implements OnInit {
         this.unselectRow();
       }
       else {
-        console.log(this.selectedRow, "Bill")
+        //console.log(this.selectedRow, "Bill")
         this.snackbar.open("Billed order cannot be denied", "error");
         event.row.sno = true;
         // this.isDisableCancel = false;
@@ -543,7 +543,7 @@ export class InvestigationOrdersComponent implements OnInit {
   unselectRow() {
     setTimeout(() => {
       let unselectRow = this.selectedRow.filter((e: any) => (e.sno === true));
-      console.log(unselectRow, "USR")
+      //console.log(unselectRow, "USR")
       if (unselectRow.length === 0) {
         this.disableBtns()
         this.resetRemarksDeny();
