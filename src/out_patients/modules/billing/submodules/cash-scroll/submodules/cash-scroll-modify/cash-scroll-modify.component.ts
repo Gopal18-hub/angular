@@ -1,7 +1,7 @@
 import { Component, KeyValueDiffer, KeyValueDiffers, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ModifyCashScrollInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
 import { getERPscrollDetailDtoInterface } from "../../../../../../core/types/cashscroll/modifycashscroll.Interface";
@@ -487,7 +487,8 @@ export class CashScrollModifyComponent implements OnInit {
     private datepipe: DatePipe,
     private differservice: KeyValueDiffers,
     private cookie: CookieService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -502,8 +503,14 @@ export class CashScrollModifyComponent implements OnInit {
     // this.cashscrollmodifyForm.controls["employeename"].disable();
     // this.cashscrollmodifyForm.controls["takenat"].disable();
     // this.cashscrollmodifyForm.controls["scrollno"].disable();
+    var scrollno: any;
+    this.route.queryParams
+    .subscribe((params:any) => {
+      console.log(params.scrollno);
+      scrollno = params.scrollno
+    })
     this.http
-      .get(ApiConstants.getdetaileddataforoldscrollerp(22, Number(this.cookie.get('StationId'))))
+      .get(ApiConstants.getdetaileddataforoldscrollerp(scrollno, Number(this.cookie.get('StationId'))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -515,10 +522,10 @@ export class CashScrollModifyComponent implements OnInit {
           this.scrolldataObject.getERPscrollMainDto[0].name
         );
         this.cashscrollmodifyForm.controls["fromdate"].setValue(
-          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].fromdatetime, 'dd/MM/YYYY hh:mm:ss')
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].fromdatetime, 'dd/MM/YYYY hh:mm:ss a')
         );
         this.cashscrollmodifyForm.controls["todate"].setValue(
-          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].todatetime, 'dd/MM/YYYY hh:mm:ss')
+          this.datepipe.transform(this.scrolldataObject.getERPscrollMainDto[0].todatetime, 'dd/MM/YYYY hh:mm:ss a')
         );
         this.cashscrollmodifyForm.controls["takenat"].setValue(
           this.datepipe.transform(
