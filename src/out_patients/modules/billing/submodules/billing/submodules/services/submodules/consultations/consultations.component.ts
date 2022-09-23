@@ -346,7 +346,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             scheduleSlot: "",
             bookingDate: "",
             price: res[0].returnOutPut,
-            specialization: this.formGroup.value.specialization.value,
+            specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
               : 0,
