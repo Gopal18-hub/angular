@@ -28,17 +28,14 @@
           [questions]="questions[1]"
           [index]="1"
           class="w-3/5"
+          [class.fontcolor]="outsource "
+        
         >
         </maxhealth-question>
       </div>
     </form>
     <div class="flex w-36 align-items-center justify-end">
-      <div class="total-cost" *ngIf="billingService.totalCost > 0">
-        <span>Total Estimation:</span>
-        {{
-          billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
-        }}
-      </div>
+
 
       <button
         mat-raised-button
@@ -55,20 +52,22 @@
         color="primary"
         class="font-sm ml-2 min-width-initial"
         type="button"
-        [disabled]="!billingService.checkServicesAdded()"
+        (click)="save()"
+        [disabled]="!data.length"
       >
-        Bill
+        Save
       </button>
       <button
         mat-raised-button
         color="primary"
-        class="font-sm ml-2 min-width-initial print-button"
+        class="font-sm ml-2 mr-1 min-width-initial"
         type="button"
-        [disabled]="!billingService.checkServicesAdded()"
+        (click)="view()"
+        [disabled]="!data.length"
       >
-        <mat-icon>print</mat-icon>
+        View
       </button>
-    </div>
+     </div>
   </div>
   <div class="mt-2 h-full">
     <maxhealth-table
@@ -79,3 +78,5 @@
     ></maxhealth-table>
   </div>
 </div>
+<!-- [ngClass]="fontcolor: variable" -->
+<!-- [ngClass]="fontcolor:questions.options.outsourceTest == 1" -->

@@ -332,4 +332,6 @@ export class OrderProcedureOtherComponent implements OnInit {
         this.formGroup.reset();
       });
   }
+  save() {}
+  view() {}
 }
