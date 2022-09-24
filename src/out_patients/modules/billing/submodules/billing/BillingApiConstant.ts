@@ -208,4 +208,7 @@ export namespace BillingApiConstants {
 
   export const insert_billdetailsgst = () =>
     `${environment.BillingApiUrl}api/outpatientbilling/insert_billdetailsgst`;
+
+  export const getbillingappointmentsearch = (locationId: string) =>
+    `${environment.PatientApiUrl}api/patient/getbillingappointmentsearch`;
 }
