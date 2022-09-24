@@ -626,8 +626,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         qtslno: dtlist[0].qTslno,
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
-        transMode: 0,
-        priority: 1,
+        transMode: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].transportationMode): 0,
+        priority: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].priority): 0,
       })
       console.log(dtlist);
       this.saveforparticularbilllist.objdt.push({
@@ -692,8 +692,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         qtslno: dtlist[0].qTslno,
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
-        transMode: 0,
-        priority: 1,
+        transMode: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].transportationMode): 0,
+        priority: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].priority): 0,
       })
       console.log(dtlist);
       this.billrefundforsingleitem.objDsSave.objdt.push({
@@ -776,8 +776,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         qtslno: dtlist[0].qTslno,
         itemName: item.itemName,
         iaCode: this.data.maxid.split('.')[0],
-        transMode: 0,
-        priority: 1,
+        transMode: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].transportationMode): 0,
+        priority: this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID.length>0? Number(this.billDetailService.patientbilldetaillist.billDetialsForRefund_ServiceItemItemIDPriorityID[0].priority): 0,
       })
       console.log(dtlist);
     })
@@ -785,10 +785,6 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     return this.refundafteracklistforfull;
   }
 
-  mopvalidation()
-  {
-
-  }
   clear()
   {
     this._destroying$.next(undefined);

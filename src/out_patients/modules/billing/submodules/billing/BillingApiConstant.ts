@@ -54,7 +54,18 @@ export namespace BillingApiConstants {
     serviceId: number,
     hspLocationid: string
   ) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getpriceforitemwithtariffid/" +
+      priorityId +
+      "/" +
+      itemId +
+      "/" +
+      serviceId +
+      "/" +
+      hspLocationid
+    );
+    // return `${environment.BillingApiUrl}api/outpatientbilling/getpriceforitemwithtariffid/${priorityId}/${itemId}/${serviceId}/${hspLocationid}`;
   };
 
   export const getcalculateopbill = `${environment.BillingApiUrl}api/outpatientbilling/getcalculateopbill`;
@@ -193,7 +204,7 @@ export namespace BillingApiConstants {
     RegistrationNo: number,
     IACode: string
   ) =>
-    `${environment.PatientApiUrl}api/patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
+    `${environment.PatientApiUrl}}api/patient/getediganosticacdoninvestigationgrid/${locationid}/${orderId}/${RegistrationNo}/${IACode}`;
 
   export const checkPatientSex = (
     testId: string,
@@ -211,4 +222,8 @@ export namespace BillingApiConstants {
 
   export const getbillingappointmentsearch = (locationId: string) =>
     `${environment.PatientApiUrl}api/patient/getbillingappointmentsearch`;
+
+  export const SaveDeleteOpOrderRequest = `${environment.BillingApiUrl}api/outpatientbilling/saveanddeleteoporderrequest`;
+  export const checkModality = (procedureid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkitemmodality/${procedureid}`;
 }
