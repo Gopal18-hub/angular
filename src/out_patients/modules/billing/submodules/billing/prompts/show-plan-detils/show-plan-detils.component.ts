@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { HttpService } from "@shared/services/http.service";
+import { BillingApiConstants } from "../../BillingApiConstant";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-show-plan-detils",
@@ -35,18 +38,37 @@ export class ShowPlanDetilsComponent implements OnInit {
       },
     },
   };
+
+  planType = "healthPlan";
+
+  doctorList: any = [];
+
+  isConsultationExist: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
-    @Inject(MAT_DIALOG_DATA) public inputdata: any
+    @Inject(MAT_DIALOG_DATA) public inputdata: any,
+    private http: HttpService,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
+    this.planType = this.inputdata.type;
+
     this.data = this.inputdata.planDetails;
+  }
+
+  ngAfterViewInit(): void {
+    if (this.planType == "otherPlanDetails") {
+      this.tableRows.selection.changed.subscribe((res: any) => {});
+    }
   }
 
   cancel() {
     this.dialogRef.close();
   }
+
+  getDoctorsList() {}
 
   save() {
     this.dialogRef.close({ selected: this.tableRows.selection.selected });

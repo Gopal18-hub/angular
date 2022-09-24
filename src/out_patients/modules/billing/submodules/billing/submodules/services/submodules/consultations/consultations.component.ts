@@ -191,6 +191,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
       }
     });
+    if (this.billingService.activeMaxId) {
+      this.questions[1].elementRef.focus();
+    }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
         filter((res) => {

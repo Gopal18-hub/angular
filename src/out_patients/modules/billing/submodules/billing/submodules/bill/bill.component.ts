@@ -352,12 +352,18 @@ export class BillComponent implements OnInit {
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.billingservice.totalCost + ".00"
     );
+    this.formGroup.controls["discAmtCheck"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == true) {
+          this.discountreason();
+        } else {
+        }
+      });
 
     this.formGroup.controls["dipositAmtcheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        // this.enableDiscount = false;
-        ////console.log(value, "dipositAmtcheck");
         if (value === true) {
           this.depositdetails();
         } else {
@@ -451,7 +457,6 @@ export class BillComponent implements OnInit {
     this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "67vh",
     });
   }
 
