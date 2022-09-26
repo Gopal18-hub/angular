@@ -27,7 +27,7 @@ import { BillingApiConstants } from "../billing/BillingApiConstant";
 import { AppointmentSearchComponent } from "../billing/prompts/appointment-search/appointment-search.component";
 import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { SimilarPatientDialog } from "../billing/billing.component";
-
+import { Router } from "@angular/router";
 @Component({
   selector: "out-patients-op-order-request",
   templateUrl: "./op-order-request.component.html",
@@ -56,6 +56,8 @@ export class OpOrderRequestComponent implements OnInit {
       },
       mobile: {
         type: "string",
+        title: "Mobile Number",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       bookingId: {
         type: "string",
@@ -116,11 +118,15 @@ export class OpOrderRequestComponent implements OnInit {
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private billingService: BillingService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     // this.getAllCompany();
+    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
+      window.location.reload;
+    });
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
@@ -246,15 +252,11 @@ export class OpOrderRequestComponent implements OnInit {
                 regNumber.toString()
               );
               this.patientDetails = resultData;
-              // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-              //   this.patientDetails
-              // );
-              // console.log(this.categoryIcons);
+              this.patient = true;
               this.setValuesToForm(this.patientDetails);
-
-              this.payDueCheck(resultData.dtPatientPastDetails);
             } else {
               this.snackbar.open("Invalid Max ID", "error");
+              this.apiProcessing = false;
             }
 
             //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
@@ -264,8 +266,6 @@ export class OpOrderRequestComponent implements OnInit {
               this.formGroup.controls["maxid"].setValue(
                 iacode + "." + regNumber
               );
-              //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              //this.questions[0].customErrorMessage = "Invalid Max ID";
               this.snackbar.open("Invalid Max ID", "error");
             }
             this.apiProcessing = false;
@@ -285,6 +285,16 @@ export class OpOrderRequestComponent implements OnInit {
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    this.billingService.patientDemographicdata = {
+      name: patientDetails.firstname + " " + patientDetails.lastname,
+      age: patientDetails.age,
+      agetype: patientDetails.ageTypeName,
+      gender: patientDetails.genderName,
+      dob: patientDetails.dateOfBirth,
+      nationality: patientDetails.nationalityName,
+      ssn: patientDetails.ssn,
+    };
+
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
@@ -302,22 +312,6 @@ export class OpOrderRequestComponent implements OnInit {
   }
 
   doCategoryIconAction(icon: any) {}
-
-  payDueCheck(dtPatientPastDetails: any) {
-    if (
-      dtPatientPastDetails[4] &&
-      dtPatientPastDetails[4].id > 0 &&
-      dtPatientPastDetails[4].data > 0
-    ) {
-      this.matDialog.open(PaydueComponent, {
-        width: "30vw",
-        data: {
-          dueAmount: dtPatientPastDetails[4].data,
-          maxId: this.formGroup.value.maxid,
-        },
-      });
-    }
-  }
 
   appointmentSearch() {
     const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
@@ -370,17 +364,6 @@ export class OpOrderRequestComponent implements OnInit {
       });
   }
 
-  // visitHistory() {
-  //   this.matDialog.open(VisitHistoryComponent, {
-  //     width: "70%",
-  //     height: "50%",
-  //     data: {
-  //       maxid: this.formGroup.value.maxid,
-  //       docid: "",
-  //     },
-  //   });
-  // }
-
   clear() {
     this.apiProcessing = false;
     this.patient = false;
@@ -399,23 +382,11 @@ export class OpOrderRequestComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
+    // this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
+    //   window.location.reload;
+    // });
+    this.activeLink = this.links[0];
   }
-
-  // getAllCompany() {
-  //   this.http
-  //     .get(
-  //       BillingApiConstants.getcompanyandpatientsponsordata(
-  //         Number(this.cookie.get("HSPLocationId"))
-  //       )
-  //     )
-  //     .pipe(takeUntil(this._destroying$))
-  //     .subscribe((data: any) => {
-  //       console.log(data);
-  //       this.questions[3].options = data.map((a: any) => {
-  //         return { title: a.name, value: a.id };
-  //       });
-  //     });
-  // }
 
   getAllCorporate() {
     this.http
@@ -429,84 +400,3 @@ export class OpOrderRequestComponent implements OnInit {
       });
   }
 }
-
-// @Component({
-//   selector: "out-patients-similar-patient-search",
-//   templateUrl: "similarPatient-dialog.html",
-// })
-// export class SimilarPatientDialog {
-//   @ViewChild("patientDetail") tableRows: any;
-//   constructor(
-//     private dialogRef: MatDialogRef<SimilarPatientDialog>,
-//     @Inject(MAT_DIALOG_DATA) public data: any
-//   ) {}
-//   ngOnInit(): void {
-//     console.log(this.data.searchResults);
-//   }
-//   ngAfterViewInit() {
-//     this.getMaxID();
-//   }
-
-//   config: any = {
-//     selectBox: false,
-//     clickedRows: true,
-//     clickSelection: "single",
-//     displayedColumns: [
-//       "maxid",
-//       "firstName",
-//       "lastName",
-//       "phone",
-//       "address",
-//       "age",
-//       "gender",
-//     ],
-//     columnsInfo: {
-//       maxid: {
-//         title: "Max ID",
-//         type: "string",
-//         style: {
-//           width: "120px",
-//         },
-//       },
-//       firstName: {
-//         title: "First Name",
-//         type: "string",
-//       },
-//       lastName: {
-//         title: "Last Name",
-//         type: "string",
-//       },
-//       phone: {
-//         title: "Phone No. ",
-//         type: "string",
-//       },
-//       address: {
-//         title: "Address ",
-//         type: "string",
-//         style: {
-//           width: "150px",
-//         },
-//         tooltipColumn: "address",
-//       },
-//       age: {
-//         title: "Age ",
-//         type: "string",
-//         style: {
-//           width: "90px",
-//         },
-//       },
-//       gender: {
-//         title: "Gender",
-//         type: "string",
-//         style: {
-//           width: "70px",
-//         },
-//       },
-//     },
-//   };
-//   getMaxID() {
-//     this.tableRows.selection.changed.subscribe((res: any) => {
-//       this.dialogRef.close({ data: res });
-//     });
-//   }
-// }

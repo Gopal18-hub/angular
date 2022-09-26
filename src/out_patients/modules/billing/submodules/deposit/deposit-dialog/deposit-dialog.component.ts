@@ -184,8 +184,14 @@ export class DepositDialogComponent implements OnInit {
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
              let tempString = "";
+             let firstline = 0;
              temp.forEach((element:string) => {
-               tempString += '<p class="text-left">' + element + '</p>'  ; 
+               if(firstline == 0){
+                tempString += '<p class="font-base">' + element + '</p>'  ;
+                firstline = 1;
+               }else{
+                tempString += '<p class="text-left">' + element + '</p>'  ; 
+               }
              });
              this.messageDialogService.error(tempString);
             }                       

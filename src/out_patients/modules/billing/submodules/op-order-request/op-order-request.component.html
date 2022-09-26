@@ -20,10 +20,10 @@
     </nav>
     <mat-tab-nav-panel #tabPanel>
       <div
-        class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 billing-page-wrapper"
+        class="shadow-2 flex flex-column h-full w-full h-full px-4 py-0 pb-2 billing-page-wrapper"
       >
         <!-- First Row -->
-        <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
+        <div class=" flex w-full p-1 mt-2 bg-secondary border-radius-xlg">
           <form
             [formGroup]="formGroup"
             autocomplete="off"
@@ -42,7 +42,7 @@
             <mat-label class="max-health-primary-color mr-1"
               >Mobile No.</mat-label
             >
-            <div class="bg-white w-1/10 mr-2">
+            <div class="bg-white w-1/10 mr-2 default-label-none mt-error">
               <maxhealth-question
                 [question]="questions[1]"
                 [form]="formGroup"
@@ -114,7 +114,7 @@
               </maxhealth-question>
             </div> -->
             <div class="flex w-68 ml-3 align-items-center">
-                <div class="w-1/4">
+                <!-- <div class="w-1/4">
                   <mat-label class="max-health-primary-color"
                     >Name:
                     <span class="text-color">{{ patientName }}</span></mat-label
@@ -151,9 +151,52 @@
                     >SSN: <span class="text-color">{{ ssn }}</span></mat-label
                   >
                   <span class="ml-2"></span>
-                </div>
+                </div> -->
+              
+               
+                  <mat-label class="max-health-primary-color"
+                    >Name:
+              </mat-label>
+                   <span class="text-color w-2/10 text-wrap ml-1" matTooltip="{{patientName}}">{{ patientName }}</span>
+                  
+               
+             
+                  <mat-label class="max-health-primary-color ml-3"
+                    >Age: </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{age}}">{{ age }}</span>
+               
+                  <mat-label class="max-health-primary-color ml-3"
+                    >Gender:</mat-label
+                  >
+                   <span class="text-color w-1/10 ml-1" matTooltip="{{gender}}">{{ gender }}</span>
+              
+         
+                  <mat-label class="max-health-primary-color ml-3"
+                    >DOB:</mat-label
+                  >
+                  <span class="text-color w-1/7 ml-1" matTooltip="{{dob}}">{{ dob }}</span>
+          
+              
+                  <mat-label class="max-health-primary-color ml-3 "
+                    >Nationality:
+                   </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{country}}">{{ country }}</span>
+          
+                  <mat-label class="max-health-primary-color ml-3"
+                    >SSN: </mat-label
+                  >
+                  <span class="text-color w-1/15 ml-1" matTooltip="{{ssn}}">{{ ssn }}</span>
+                  <button class="min-width-initial mr-1" color="primary" mat-raised-button (click)="clear()">
+                    Clear
+                  </button>
               </div>
           </form>
+        
+          
+      
+
         </div>
   
         <div
@@ -208,7 +251,7 @@
             </button>
           </div>
         </div> -->
-        <div [class.isDisabled]="!patient">
+        <div [class.isDisabled]="!patient" class="h-full">
          
           <div class="mt-2">
             <nav mat-tab-nav-bar>

@@ -14,7 +14,7 @@ export class ConsumableDetailsComponent implements OnInit {
     actionItems: false,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
-    selectCheckBoxPosition: 4,
+    selectCheckBoxPosition: 3,
     selectCheckBoxLabel: "Include in Procedure",
     displayedColumns: ["itemName", "qty", "amount", "procedure", "reason"],
     columnsInfo: {
@@ -45,7 +45,8 @@ export class ConsumableDetailsComponent implements OnInit {
       // },
       procedure: {
         title: "Procedure",
-        type: "string",
+        type: "dropdown",
+        options: [],
       },
       reason: {
         title: "Reason",
@@ -56,6 +57,7 @@ export class ConsumableDetailsComponent implements OnInit {
       },
     },
   };
+  procedureDataForConsumable: any = [];
 
   constructor(
     public dialogRef: MatDialogRef<ConsumableDetailsComponent>,
@@ -63,6 +65,8 @@ export class ConsumableDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.procedureDataForConsumable = this.data.procedureDataForConsumable;
+
     this.data.items.forEach((item: any, index: number) => {
       this.itemsData.push({
         itemName: item.itemName,
@@ -77,7 +81,7 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.selection.select(...this.tableRows.dataSource.data);
+    //this.tableRows.selection.select(...this.tableRows.dataSource.data);
   }
 
   copyReason() {
