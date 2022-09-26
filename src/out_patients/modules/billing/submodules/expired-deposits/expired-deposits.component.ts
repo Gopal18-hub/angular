@@ -220,6 +220,7 @@ export class ExpiredDepositsComponent implements OnInit {
   OpenCheckdddialog: boolean = false;
   messageDialogService: any;
   sucessflag = false;
+  selectedrowid = 0;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -394,7 +395,8 @@ export class ExpiredDepositsComponent implements OnInit {
             if (this.sucessflag == true) {
               this.tablerow.selection.clear();
               this.ExpiredDepositformlist.forEach((e: any) => {
-                if (this.sucessflag == true) {
+                console.log(e);
+                if (this.sucessflag == true && e.id == this.selectedrowid) {
                   e.isExpdeop = "isExpdeop";
                 }
               });
@@ -462,39 +464,40 @@ export class ExpiredDepositsComponent implements OnInit {
           width: "38vw",
           height: "35vh",
         });
-        dialogRef.afterClosed().subscribe((res) => {
-          console.log(res);
-          if (res == "yes") {
-            console.log("this.OpenCheckdddialog");
-            let dialogRef = this.matDialog.open(
-              ExpdepositCheckddDialogComponent,
-              {
-                width: "30vw",
-                height: "25vh",
-                data: {
-                  id: this.tablerow.selection.selected[0].id,
-                  episode: this.tablerow.selection.selected[0].episode,
-                },
-              }
-            );
-            dialogRef.afterClosed().subscribe((res) => {
-              this.sucessflag = false;
-              console.log(res);
-              this.response = res;
-              console.log(this.response);
-              console.log(this.response.message);
+        (this.selectedrowid = this.tablerow.selection.selected[0].id),
+          dialogRef.afterClosed().subscribe((res) => {
+            console.log(res);
+            if (res == "yes") {
+              console.log("this.OpenCheckdddialog");
+              let dialogRef = this.matDialog.open(
+                ExpdepositCheckddDialogComponent,
+                {
+                  width: "30vw",
+                  height: "25vh",
+                  data: {
+                    id: this.tablerow.selection.selected[0].id,
+                    episode: this.tablerow.selection.selected[0].episode,
+                  },
+                }
+              );
+              dialogRef.afterClosed().subscribe((res) => {
+                this.sucessflag = false;
+                console.log(res);
+                this.response = res;
+                console.log(this.response);
+                console.log(this.response.message);
 
-              if (this.response.message == "Records Updated!") {
-                this.dialogService.success("Saved Sucessfully!");
-                this.sucessflag = true;
-                this.expireddepositsearch();
+                if (this.response.message == "Records Updated!") {
+                  this.dialogService.success("Saved Sucessfully!");
+                  this.sucessflag = true;
+                  this.expireddepositsearch();
 
-                // let getExpiredDepositReportModel: any = [];
-                //this.response.isExpdeop == 1;
-              }
-            });
-          }
-        });
+                  // let getExpiredDepositReportModel: any = [];
+                  //this.response.isExpdeop == 1;
+                }
+              });
+            }
+          });
       }
     });
   }
