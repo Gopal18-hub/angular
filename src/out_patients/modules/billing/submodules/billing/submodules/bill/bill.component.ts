@@ -63,19 +63,20 @@ export class BillComponent implements OnInit {
         type: "checkbox",
         required: false,
         options: [{ title: " Discount  Amount  (  -  ) " }],
+        disabled: false,
       },
       discAmt: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
+        disabled: false,
       },
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
       },
-
       dipositAmt: {
         type: "number",
         required: false,
@@ -140,9 +141,9 @@ export class BillComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
-          { title: "Gen. OPD", value: "Gen OPD" },
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "Credit", value: "credit", disabled: false },
+          { title: "Gen. OPD", value: "Gen OPD", disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -299,6 +300,22 @@ export class BillComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "Credit", value: "credit", disabled: true },
+        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+      ];
+    }
+    if (this.billingservice.selectedHealthPlan) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "Credit", value: "credit", disabled: false },
+        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+      ];
+    }
     let formResult: any = this.formService.createForm(
       this.billDataForm.properties,
       {}

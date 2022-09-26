@@ -100,7 +100,7 @@ export class BillingComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  patientDetails!: Registrationdetails;
+  patientDetails!: any;
 
   apiProcessing: boolean = false;
 
@@ -397,6 +397,14 @@ export class BillingComponent implements OnInit {
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              if (
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                  .pPagerNumber == "ews"
+              ) {
+                this.formGroup.controls["company"].disable();
+                this.formGroup.controls["corporate"].disable();
+                this.links[2].disabled = true;
+              }
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
               );
@@ -693,6 +701,9 @@ export class BillingComponent implements OnInit {
         .subscribe((result) => {
           if (result && result.selected && result.selected.length > 0) {
             const selectedPlan = result.selected[0];
+            this.formGroup.controls["company"].disable();
+            this.formGroup.controls["corporate"].disable();
+            this.links[2].disabled = true;
             this.billingService.setHealthPlan(selectedPlan);
             this.messageDialogService.info(
               "You have selected " + selectedPlan.planName
@@ -924,6 +935,11 @@ export class BillingComponent implements OnInit {
       relativeTo: this.route,
     });
     this.questions[0].elementRef.focus();
+    this.formGroup.controls["company"].enable();
+    this.formGroup.controls["corporate"].enable();
+    this.links[0].disabled = false;
+    this.links[1].disabled = false;
+    this.links[2].disabled = false;
   }
 
   getAllCompany() {
