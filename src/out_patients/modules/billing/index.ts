@@ -120,11 +120,15 @@ import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/c
 import { OpPrescriptionDialogComponent } from "./submodules/details/op-prescription-dialog/op-prescription-dialog.component";
 import { ExpdepositRefundDialogComponent } from "./submodules/expired-deposits/expdeposit-refund-dialog/expdeposit-refund-dialog.component";
 import { ExpdepositCheckddDialogComponent } from "./submodules/expired-deposits/expdeposit-checkdd-dialog/expdeposit-checkdd-dialog.component";
-import { DisountReasonComponent } from './submodules/billing/prompts/discount-reason/disount-reason.component';
-import { DepositDetailsComponent } from './submodules/billing/prompts/deposit-details/deposit-details.component';
-import { GstTaxComponent } from './submodules/billing/prompts/gst-tax-popup/gst-tax.component';
-import { StaffDeptDialogComponent } from './submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component';
-import { PrintduereceiptComponent } from './submodules/details/printduereceipt/printduereceipt.component';
+import { DisountReasonComponent } from "./submodules/billing/prompts/discount-reason/disount-reason.component";
+import { DepositDetailsComponent } from "./submodules/billing/prompts/deposit-details/deposit-details.component";
+import { GstTaxComponent } from "./submodules/billing/prompts/gst-tax-popup/gst-tax.component";
+import { StaffDeptDialogComponent } from "./submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component";
+import { PrintduereceiptComponent } from "./submodules/details/printduereceipt/printduereceipt.component";
+
+import { ReferralModule } from "@core/ui/referral";
+import { PopuptextComponent } from './submodules/billing/prompts/popuptext/popuptext.component';
+
 @NgModule({
   declarations: [
     BillingPaymentMethodsComponent,
@@ -223,6 +227,7 @@ import { PrintduereceiptComponent } from './submodules/details/printduereceipt/p
     GstTaxComponent,
     StaffDeptDialogComponent,
     PrintduereceiptComponent,
+    PopuptextComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -250,9 +255,10 @@ import { PrintduereceiptComponent } from './submodules/details/printduereceipt/p
     MatProgressSpinnerModule,
     EmptyPlaceholderModule,
     MaxHealthSnackBarModule,
+    ReferralModule,
   ],
   exports: [],
   providers: [],
   bootstrap: [],
 })
-export class BillingModule { }
+export class BillingModule {}

@@ -1,15 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
-import { Router } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
 import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Interface";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "out-patients-cash-scroll",
@@ -23,7 +24,8 @@ export class CashScrollComponent implements OnInit {
     private cookie: CookieService,
     private router: Router,
     private http: HttpClient,
-    private dialogservice: MessageDialogService
+    private dialogservice: MessageDialogService,
+    private datepipe: DatePipe,  
   ) {}
   cashscrollformdata = {
     type: "object",
@@ -36,10 +38,10 @@ export class CashScrollComponent implements OnInit {
         type: "radio",
         required: false,
         options: [
-          { title: "Pending", value: "1" },
-          { title: "Acknowledge", value: "2" },
+          { title: "Pending", value: "pending" },
+          { title: "Acknowledge", value: "acknowledge" },
         ],
-        defaultValue: "1"
+        defaultValue: "pending"
       },
     },
   };
@@ -47,44 +49,44 @@ export class CashScrollComponent implements OnInit {
     clickedRows: true,
     clickSelection: "single",
     dateformat: "dd/MM/yyyy - hh:mm:ss",
-    selectBox: false,
+    selectBox: true,
     displayedColumns: [
-      "scrollno",
-      "fromdateTime",
-      "todateTime",
-      "timetakenTime",
-      "employeeName",
+      "stationslno",
+      "fromdatetime",
+      "todatetime",
+      "scrolldatetime",
+      "name",
     ],
     columnsInfo: {
-      scrollno: {
+      stationslno: {
         title: "Scroll No.",
         type: "string",
         style: {
-          width: "3.5rem",
+          width: "3rem",
         },
       },
-      fromdateTime: {
+      fromdatetime: {
         title: "From Date Time",
         type: "number",
         style: {
           width: "6rem",
         },
       },
-      todateTime: {
+      todatetime: {
         title: "To Date Time",
         type: "date",
         style: {
           width: "6rem",
         },
       },
-      timetakenTime: {
+      scrolldatetime: {
         title: "Taken Date Time",
         type: "date",
         style: {
           width: "6rem",
         },
       },
-      employeeName: {
+      name: {
         title: "Employee Name",
         type: "string",
         style: {
@@ -99,9 +101,15 @@ export class CashScrollComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   private readonly _destroying$ = new Subject<void>();  
   
-  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 12969 ;// Number(this.cookie.get("StationId"));
-  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
+
+  Modifyscollnumber: boolean = true;
+  selectedscrollnumber:string = "";
+
+  @ViewChild ("cashscrolltable") cashscrolltable : any;
 
   ngOnInit(): void {
     let formResult = this.formService.createForm(
@@ -126,26 +134,62 @@ export class CashScrollComponent implements OnInit {
         this.questions[0].elementRef.focus();
        }
        else{
-        this.http
-        .get(ApiConstants.getdetaileddataforoldscroll(this.cashscrollForm.value.scrollno, this.stationId))
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultdata) => 
-        {
-         this.uniquescrollnumber = resultdata as GetDataForOldScroll;
-        });
+        this.getoldscroll();
        }
       }
     });
+
+    this.cashscrollForm.controls["mainradio"].valueChanges.subscribe((value:any)=>{
+           if(value == "pending"){
+             this.getdetailsforscroll();
+           }else{
+            this.cashscrollList = [];
+           }
+    })
   }
   scrollnoSearch() {
-    if (this.cashscrollForm.controls["mainradio"].value != null && this.cashscrollForm.controls["mainradio"].value != "" ) {
-    
+   
+       if(this.cashscrollForm.controls["scrollno"].value == null || this.cashscrollForm.controls["scrollno"].value == "" ){
+        if(this.cashscrollForm.controls["mainradio"].value ==  "pending"){
+          this.getdetailsforscroll();
+        }else{
+         this.cashscrollList = [];
+        }
       }
-      else if(this.cashscrollForm.controls["scrollno"].value == null || this.cashscrollForm.controls["scrollno"].value == "" ){
-        this.dialogservice.error("Please Enter the Scroll Number");
-        this.questions[0].elementRef.focus();
+      else if(this.cashscrollForm.controls["scrollno"].value){
+           this.getoldscroll();
       }
+  }
+
+  getoldscroll(){
+    this.http
+    .get(ApiConstants.getdetaileddataforoldscroll(this.cashscrollForm.value.scrollno, this.stationId))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultdata) => 
+    {
+     this.uniquescrollnumber = resultdata as GetDataForOldScroll;
+     this.cashscrollList = this.uniquescrollnumber.getACKDetails;
+     this.cashscrollList = this.cashscrollList.map((item: any) => {
+      item.fromdatetime = this.datepipe.transform( item.fromdatetime, "dd/MM/yyyy hh:mm:ss");
+      return item;
+    });
+    setTimeout(() => {
+      this.cashscrolltable.selection.changed
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (this.cashscrolltable.selection.selected.length > 0) {
+                this.Modifyscollnumber = false; 
+                let scrolldetails =  this.cashscrolltable.selection.selected; 
+                this.selectedscrollnumber = scrolldetails[0].stationslno;
+                             
+              }
+              else{
+                this.Modifyscollnumber = true; 
+              }
+            }); 
+    });
+    });
   }
 
   opennewcashscroll() {
@@ -153,20 +197,26 @@ export class CashScrollComponent implements OnInit {
 
   }
   cashscrollmodify() {
+
     this.router.navigate([
-      // "out-patient-billing",
-      "out-patient-billing",
-      "cash-scroll",
-      "cash-scroll-modify",
-    ]);
+      "out-patient-billing/cash-scroll/cash-scroll-modify",
+    ],{
+      queryParams : {scrollno: this.selectedscrollnumber } 
+    }
+    );
   }
 
   cashscrollColumnClick(event: any) {
-    this.router.navigate(["out-patient-billing/cash-scroll", "cash-scroll-new"]);
+    this.router.navigate(["out-patient-billing/cash-scroll", "cash-scroll-new"], {
+      queryParams : {scrollno: event.row.stationslno }
+    });
   }
 
   clearcashscroll() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();   
     this.cashscrollForm.reset();
+    this.cashscrollForm.controls["mainradio"].setValue("pending");
   }
 
   cashscrollList:any = [];
@@ -179,6 +229,27 @@ export class CashScrollComponent implements OnInit {
     {
      this.CashScrolldetails = resultdata as getdataForScrollMain;
      this.cashscrollList = this.CashScrolldetails.getDetailsForMainScrollDetails;
+     this.cashscrollList = this.cashscrollList.map((item: any) => {
+      item.fromdatetime = this.datepipe.transform( item.fromdatetime, "dd/MM/yyyy hh:mm:ss");
+      return item;
+    });
+   
+    setTimeout(() => {
+      this.cashscrolltable.selection.changed
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((res: any) => {
+              if (this.cashscrolltable.selection.selected.length > 0) {
+                this.Modifyscollnumber = false; 
+                let scrolldetails =  this.cashscrolltable.selection.selected; 
+                this.selectedscrollnumber = scrolldetails[0].stationslno;
+                             
+              }
+              else{
+                this.Modifyscollnumber = true; 
+              }
+            }); 
+    });
+
     });
   }
 }

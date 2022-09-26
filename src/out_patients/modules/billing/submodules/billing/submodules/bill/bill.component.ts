@@ -19,6 +19,7 @@ import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -63,19 +64,20 @@ export class BillComponent implements OnInit {
         type: "checkbox",
         required: false,
         options: [{ title: " Discount  Amount  (  -  ) " }],
+        disabled: false,
       },
       discAmt: {
         type: "number",
         required: false,
         defaultValue: 0.0,
         readonly: true,
+        disabled: false,
       },
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
       },
-
       dipositAmt: {
         type: "number",
         required: false,
@@ -140,9 +142,9 @@ export class BillComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
-          { title: "Gen. OPD", value: "Gen OPD" },
+          { title: "Cash", value: "cash", disabled: false },
+          { title: "Credit", value: "credit", disabled: false },
+          { title: "Gen. OPD", value: "Gen OPD", disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -299,15 +301,46 @@ export class BillComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "Credit", value: "credit", disabled: true },
+        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+      ];
+    }
+    if (this.billingservice.selectedHealthPlan) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: "cash", disabled: false },
+        { title: "Credit", value: "credit", disabled: false },
+        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+      ];
+    }
     let formResult: any = this.formService.createForm(
       this.billDataForm.properties,
       {}
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
       item["sno"] = index + 1;
+      if (item.popuptext) {
+        popuptext.push({
+          name: item.itemName,
+          description: item.popuptext,
+        });
+      }
     });
+    if (popuptext.length > 0) {
+      this.matDialog.open(PopuptextComponent, {
+        width: "80vw",
+        data: {
+          popuptext,
+        },
+      });
+    }
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -352,12 +385,18 @@ export class BillComponent implements OnInit {
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.billingservice.totalCost + ".00"
     );
+    this.formGroup.controls["discAmtCheck"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value == true) {
+          this.discountreason();
+        } else {
+        }
+      });
 
     this.formGroup.controls["dipositAmtcheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        // this.enableDiscount = false;
-        ////console.log(value, "dipositAmtcheck");
         if (value === true) {
           this.depositdetails();
         } else {
@@ -451,7 +490,6 @@ export class BillComponent implements OnInit {
     this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "67vh",
     });
   }
 
@@ -510,5 +548,9 @@ export class BillComponent implements OnInit {
         },
         (error) => {}
       );
+  }
+
+  selectedReferralDoctor(data: any) {
+    this.billingservice.setReferralDoctor(data.docotr);
   }
 }

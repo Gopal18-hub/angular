@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { Router } from "@angular/router";
 @Component({
   selector: "out-patients-view-request",
   templateUrl: "./view-request.component.html",
@@ -142,7 +142,7 @@ export class OPOrderViewRequest implements OnInit {
     clickedRows: false,
     actionItems: false,
     dateformat: "dd/MM/yyyy",
-    selectBox: false,
+    selectBox: true,
     removeRow: true,
     displayedColumns: [
       "sno",
@@ -208,7 +208,10 @@ export class OPOrderViewRequest implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
