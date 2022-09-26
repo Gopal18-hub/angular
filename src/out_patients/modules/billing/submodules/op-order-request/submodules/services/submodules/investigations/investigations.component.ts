@@ -291,6 +291,16 @@ export class OderInvestigationsComponent implements OnInit {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
+            ngStyle: {
+              color:
+                r.outsourceTest == 2
+                  ? "red"
+                  : "" || r.outsourceTest == 1
+                  ? "orange"
+                  : "" || r.isNonDiscountItem == 1
+                  ? "pink"
+                  : "",
+            },
           };
         });
         this.investigationList.forEach((item: any) => {
@@ -326,8 +336,6 @@ export class OderInvestigationsComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.checkpriceforzeroitemid(
-          //"5842",
-          // this.serviceInvestigatationresponse.itemcode,
           this.formGroup.value.investigation.value,
           "67",
           "2"
@@ -438,6 +446,7 @@ export class OderInvestigationsComponent implements OnInit {
           itemid: this.formGroup.value.investigation.value,
         });
         this.data = [...this.billingService.InvestigationItems];
+        this.formGroup.reset();
       });
   }
 
@@ -467,6 +476,7 @@ export class OderInvestigationsComponent implements OnInit {
           item.price +
           "," +
           item.serviceid;
+        console.log(this.reqItemDetail);
       } else {
         this.reqItemDetail =
           this.reqItemDetail +
@@ -478,6 +488,7 @@ export class OderInvestigationsComponent implements OnInit {
           item.doctorname,
           item.price,
           item.serviceid);
+        console.log(this.reqItemDetail);
       }
     });
 
