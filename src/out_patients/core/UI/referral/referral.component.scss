@@ -1,21 +1,66 @@
 ::ng-deep {
   .referral-doctor-menu {
-    border-radius: 0.5px !important;
+    border-radius: 8px !important;
     button {
       height: 26px;
       line-height: 26px;
     }
   }
   .referral-internal-doctor-wrapper {
-    border-radius: 0.5px !important;
-    padding: 1em;
+    border-radius: 8px !important;
     width: 360px;
     height: 400px;
+    background-color: #bfe8e7;
+    border-color: 1px solid #707070;
+    .search {
+      padding: 0 0.25em;
+      mat-form-field {
+        background-color: #fff;
+      }
+    }
+    .header {
+      background-color: #45c0be;
+      width: 100%;
+      padding: 0 0.25em;
+    }
+    .content-body {
+      width: 100%;
+      background-color: #e5e5e5;
+      ul {
+        li {
+          padding: 0 0.25em;
+        }
+      }
+    }
   }
   .referral-external-doctor-wrapper {
-    border-radius: 0.5px !important;
-    padding: 1em;
+    border-radius: 8px !important;
     width: 360px;
     height: 400px;
+    background-color: #bfe8e7;
+    border-color: 1px solid #707070;
+    .search {
+      padding: 0 0.25em;
+      mat-form-field {
+        background-color: #fff;
+        .mat-form-field-wrapper {
+          padding-bottom: 0 !important;
+        }
+      }
+    }
+    .header {
+      background-color: #45c0be;
+      width: 100%;
+      padding: 0 0.25em;
+    }
+    .content-body {
+      width: 100%;
+      background-color: #e5e5e5;
+      ul {
+        li {
+          padding: 0 0.25em;
+        }
+      }
+    }
   }
 }
