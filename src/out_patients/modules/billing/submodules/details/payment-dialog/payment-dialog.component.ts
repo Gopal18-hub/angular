@@ -62,6 +62,7 @@ export class PaymentDialogComponent implements OnInit {
       chequevalidity: {
         type: "date",
         defaultValue: new Date(),
+        minimum: new Date()
       },
       chequebankname: {
         type: "autocomplete",
@@ -113,6 +114,7 @@ export class PaymentDialogComponent implements OnInit {
       demandvalidity: {
         type: "date",
         defaultValue: new Date(),
+        minimum: new Date()
       },
       demandbankname: {
         type: "autocomplete",
