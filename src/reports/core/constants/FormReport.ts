@@ -8,13 +8,13 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
-          defaultValue: "0",
+          // defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
             fields: {
