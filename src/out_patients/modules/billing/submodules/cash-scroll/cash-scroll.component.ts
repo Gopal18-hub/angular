@@ -4,7 +4,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
-import { Router } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
@@ -38,10 +38,10 @@ export class CashScrollComponent implements OnInit {
         type: "radio",
         required: false,
         options: [
-          { title: "Pending", value: "1" },
-          { title: "Acknowledge", value: "2" },
+          { title: "Pending", value: "pending" },
+          { title: "Acknowledge", value: "acknowledge" },
         ],
-        defaultValue: "1"
+        defaultValue: "pending"
       },
     },
   };
@@ -101,9 +101,11 @@ export class CashScrollComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   private readonly _destroying$ = new Subject<void>();  
   
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
+
   Modifyscollnumber: boolean = true;
   selectedscrollnumber:string = "";
 
@@ -138,7 +140,7 @@ export class CashScrollComponent implements OnInit {
     });
 
     this.cashscrollForm.controls["mainradio"].valueChanges.subscribe((value:any)=>{
-           if(value == 1){
+           if(value == "pending"){
              this.getdetailsforscroll();
            }else{
             this.cashscrollList = [];
@@ -148,7 +150,7 @@ export class CashScrollComponent implements OnInit {
   scrollnoSearch() {
    
        if(this.cashscrollForm.controls["scrollno"].value == null || this.cashscrollForm.controls["scrollno"].value == "" ){
-        if(this.cashscrollForm.controls["mainradio"].value ==  1){
+        if(this.cashscrollForm.controls["mainradio"].value ==  "pending"){
           this.getdetailsforscroll();
         }else{
          this.cashscrollList = [];
@@ -212,10 +214,9 @@ export class CashScrollComponent implements OnInit {
 
   clearcashscroll() {
     this._destroying$.next(undefined);
-    this._destroying$.complete(); 
-   // this.cashscrollList = [];
+    this._destroying$.complete();   
     this.cashscrollForm.reset();
-    this.cashscrollForm.controls["mainradio"].setValue("Pending");
+    this.cashscrollForm.controls["mainradio"].setValue("pending");
   }
 
   cashscrollList:any = [];

@@ -63,7 +63,7 @@
                 </div>
                 <div class="w-1/5 flex p-1 justify-content-end mr-2">
                   <div>
-                    <button mat-raised-button color="primary" class="button" type="submit" (click)="viewscrolldetails()">
+                    <button mat-raised-button color="primary" class="button" type="submit" (click)="viewscrolldetails()" [disabled]="queryparamssearch">
                         <img src="assets/lens.svg" class="cashscrollnew-icon">            
                            <span class="ml-4 font-sm">Search</span>             
                         </button> 

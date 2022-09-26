@@ -4,7 +4,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CookieService } from "@shared/services/cookie.service";
-import { Router } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
@@ -13,6 +13,7 @@ import { DatePipe } from "@angular/common";
 import { cashscrollNewDetail } from "@core/models/cashscrollNewModel.Model";
 import { savecashscroll } from "@core/models/savecashscrollModel.Model";
 import { ReportService } from "@shared/services/report.service";
+import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
 
 @Component({
   selector: "out-patients-cash-scroll-new",
@@ -31,7 +32,18 @@ export class CashScrollNewComponent implements OnInit {
     private dialogservice: MessageDialogService,
     private datepipe: DatePipe,    
     private reportService: ReportService,
-  ) {}
+    private route: ActivatedRoute,
+  ) {
+    this.route.queryParams
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (value) => {
+        console.log(Object.keys(value).length);
+        if (Object.keys(value).length > 0) {
+         this.getoldscroll(value["scrollno"]);
+        }
+      });
+  }
+
   cashscrollnewformdata = {
     type: "object",
     title: "",
@@ -258,12 +270,15 @@ export class CashScrollNewComponent implements OnInit {
   lastUpdatedBy: string = "";
   EmployeeName: string = "";
   currentTime: string = new Date().toLocaleString();
+  queryparamssearch:boolean = false;
+  
+  uniquescrollnumber !: GetDataForOldScroll;
 
   private readonly _destroying$ = new Subject<void>();
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
 
@@ -305,7 +320,11 @@ export class CashScrollNewComponent implements OnInit {
     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
     this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
-   
+   if(this.queryparamssearch){
+    this.cashscrollnewForm.controls["todate"].disable();
+    this.printsexists = false;
+    this.excelexists = false;
+   }
   }
   opencashscroll() {
     this.router.navigate(["report/cash-scroll", "cash-scroll"]);
@@ -344,12 +363,15 @@ else
     .pipe(takeUntil(this._destroying$))
     .subscribe(
       (resultdata) => 
-    {      
+    {
+
       this.scrolldetailsList = resultdata as cashscrollNewDetail[];
       if(this.scrolldetailsList.length == 0){
         this.dialogservice.error("No data Found");
      }else{
     this.scrolldetailsexists = false;
+    this.printsexists = false;
+    this.excelexists = false;
     this.cashscrollnewForm.controls["todate"].disable();
   
     for (var i = 0; i < this.scrolldetailsList.length; i++) {
@@ -431,9 +453,11 @@ else
   resetcashscrollnew(){
     //this.cashscrollnewForm.reset();
     this.scrolldetailsexists = true;
+    this.queryparamssearch = false;
     this.printsexists = true;
     this.excelexists = true;
     this.cashscrollnewForm.controls["todate"].enable();
+    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
     this.scrolldetailsList = [];
 
   }
@@ -528,4 +552,89 @@ else
   navigatetomain(){
     this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
+
+  getoldscroll(scrollno:any){
+    this.queryparamssearch = true;
+    this.http
+    .get(ApiConstants.getdetaileddataforoldscroll(scrollno, this.stationId))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultdata) => 
+    {
+     this.uniquescrollnumber = resultdata as GetDataForOldScroll;
+     this.scrolldetailsList = this.uniquescrollnumber.getACKOtherdetails;
+     
+     for (var i = 0; i < this.scrolldetailsList.length; i++) {
+      this.scrolldetailsList[i].sno = i + 1;
+    }
+    this.billamount = this.scrolldetailsList.map((t:any) => t.billamount).reduce((acc: any, value: any) => acc + value, 0);
+    this.refund = this.scrolldetailsList.map((t:any) => t.refund).reduce((acc:any, value:any) => acc + value, 0);
+    this.depositamount = this.scrolldetailsList.map((t:any) => t.depositamount).reduce((acc:any, value:any) => acc + value, 0);
+    this.discountamount = this.scrolldetailsList.map((t:any) => t.discountamount).reduce((acc:any, value:any) => acc + value, 0);
+    this.planamount = this.scrolldetailsList.map((t:any) => t.planamount).reduce((acc:any, value:any) => acc + value, 0);
+    
+    this.plandiscount = this.scrolldetailsList.map((t:any) => t.plandiscount).reduce((acc:any, value:any) => acc + value, 0);
+    this.netamount = this.scrolldetailsList.map((t:any) => t.netamount).reduce((acc:any, value:any) => acc + value, 0);
+    this.cash = this.scrolldetailsList.map((t:any) => t.cash).reduce((acc:any, value:any) => acc + value, 0);
+    this.cheque = this.scrolldetailsList.map((t:any) => t.cheque).reduce((acc:any, value:any) => acc + value, 0);
+    this.duereceved = this.scrolldetailsList.map((t:any) => t.duesrec).reduce((acc:any, value:any) => acc + value, 0);
+    
+    this.dd = this.scrolldetailsList.map((t:any) => t.dd).reduce((acc:any, value:any) => acc + value, 0);
+    this.creditcard = this.scrolldetailsList.map((t:any) => t.creditCard).reduce((acc:any, value:any) => acc + value, 0);
+    this.mobilePayment = this.scrolldetailsList.map((t:any) => t.mobilePayment).reduce((acc:any, value:any) => acc + value, 0);
+    this.OnlinePayment = this.scrolldetailsList.map((t:any) => t.onlinePayment).reduce((acc:any, value:any) => acc + value, 0);
+    this.dues = this.scrolldetailsList.map((t:any) => t.dues).reduce((acc:any, value:any) => acc + value, 0);
+    this.tdsamount = this.scrolldetailsList.map((t:any) => t.tdsamount).reduce((acc:any, value:any) => acc + value, 0);
+    this.DonationAmount = this.scrolldetailsList.map((t:any) => t.donationAmount).reduce((acc:any, value:any) => acc + value, 0);
+    this.UPIAmt = this.scrolldetailsList.map((t:any) => t.upiAmt).reduce((acc:any, value:any) => acc + value, 0);
+   
+    
+
+    this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
+      item.billamount = Number(item.billamount).toFixed(2);
+      item.refund = Number(item.refund).toFixed(2);
+      item.depositamount = Number(item.depositamount).toFixed(2);
+      item.planamount = Number(item.planamount).toFixed(2);
+      item.discountamount = Number(item.discountamount).toFixed(2);
+      item.plandiscount = Number(item.plandiscount).toFixed(2);
+      item.netamount = Number(item.netamount).toFixed(2);
+      item.cash = Number(item.cash).toFixed(2);
+      item.cheque = Number(item.cheque).toFixed(2);
+      item.dd = Number(item.dd).toFixed(2);
+      item.creditcard = item.creditcard == undefined ? "0.000" : Number(item.creditcard).toFixed(2);
+      item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
+      item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
+      item.tdsamount = Number(item.tdsamount).toFixed(2);
+      item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
+      item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
+      item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
+            
+      return item;
+    });
+   
+    this.scrolldetailsList.push({
+      sno: "",
+      receiptNo: "TOTAL",
+      billamount: this.billamount.toFixed(2),
+      refund: this.refund.toFixed(2),
+      discountamount: this.discountamount.toFixed(2),
+      planamount: this.planamount.toFixed(2),
+      plandiscount: this.plandiscount.toFixed(2),
+      depositamount: this.depositamount.toFixed(2),
+      netamount : this.netamount.toFixed(2),
+      cash: this.cash.toFixed(2),
+      cheque: this.cheque.toFixed(2),
+      dd:this.dd.toFixed(2),
+      creditcard: this.creditcard.toFixed(2),
+      mobilePayment: this.mobilePayment.toFixed(2),
+      onlinePayment: this.OnlinePayment.toFixed(2),
+      dues: this.dues,
+      tdsamount: this.tdsamount.toFixed(2),
+      upiamount : this.UPIAmt.toFixed(2),
+      donation: this.DonationAmount.toFixed(2),
+      totalamount: (Number(this.billamount) + Number(this.DonationAmount)).toFixed(2),
+    });
+  });
 }
+}
+
