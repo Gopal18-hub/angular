@@ -1,0 +1,21 @@
+::ng-deep {
+  .referral-doctor-menu {
+    border-radius: 0.5px !important;
+    button {
+      height: 26px;
+      line-height: 26px;
+    }
+  }
+  .referral-internal-doctor-wrapper {
+    border-radius: 0.5px !important;
+    padding: 1em;
+    width: 360px;
+    height: 400px;
+  }
+  .referral-external-doctor-wrapper {
+    border-radius: 0.5px !important;
+    padding: 1em;
+    width: 360px;
+    height: 400px;
+  }
+}

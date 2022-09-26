@@ -219,7 +219,13 @@ export namespace BillingApiConstants {
 
   export const insert_billdetailsgst = () =>
     `${environment.BillingApiUrl}api/outpatientbilling/insert_billdetailsgst`;
+
+  export const getbillingappointmentsearch = (locationId: string) =>
+    `${environment.PatientApiUrl}api/patient/getbillingappointmentsearch`;
+
   export const SaveDeleteOpOrderRequest = `${environment.BillingApiUrl}api/outpatientbilling/saveanddeleteoporderrequest`;
   export const checkModality = (procedureid: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkitemmodality/${procedureid}`;
+  export const checkServiceTax = (testid: number, serviceid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkservicetax/${testid}/${serviceid}`;
 }
