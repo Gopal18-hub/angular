@@ -105,3 +105,9 @@
         display:none;
     }
 }
+.mt-error{
+  ::ng-deep .mat-error{
+      margin-top:7%;
+   
+  }
+}
