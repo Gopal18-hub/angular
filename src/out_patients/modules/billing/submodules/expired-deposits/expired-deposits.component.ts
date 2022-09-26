@@ -308,7 +308,6 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[2].maximum =
       this.ExpiredDepositform.controls["todate"].value;
