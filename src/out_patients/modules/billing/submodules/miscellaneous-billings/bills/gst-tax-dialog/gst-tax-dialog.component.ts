@@ -7,6 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject, takeUntil } from "rxjs";
 import { GstTaxModel } from "../../../../../../core/models/GstTaxModel.Model";
+import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 
 @Component({
   selector: 'out-patients-gst-tax-dialog',
@@ -17,10 +18,10 @@ export class GstTaxDialogComponent implements OnInit {
   //taxData: any = [];
   gstTaxForm!: FormGroup;
   questions: any;
-
+  calcBillData: any = [];
   private readonly _destroying$ = new Subject<void>();
   constructor(private dialogRef: MatDialogRef<GstTaxDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private formService: QuestionControlService) { }
+    @Inject(MAT_DIALOG_DATA) public data: any, private formService: QuestionControlService, private miscPatient: MiscService) { }
 
 
   gstData!: GstTaxModel;
@@ -62,6 +63,9 @@ export class GstTaxDialogComponent implements OnInit {
         if (e.services == "TOTAL TAX") {
           e.percentage = this.gstData.totaltaX_RATE
           e.value = this.gstData.totaltaX_Value
+          this.calcBillData.totalGst = this.gstData.totaltaX_RATE
+          this.miscPatient.setCalculateBillItems(this.calcBillData);
+
         }
         if (this.gstData.taxratE1 > 0) {
           e.services = this.gstData.taxratE1DESC
@@ -98,18 +102,9 @@ export class GstTaxDialogComponent implements OnInit {
 
       })
       this.gstTaxForm.controls["code"].setValue(this.gstData.saccode)
-
+      //this.gstData.taxgrpid
     })
-
-
   }
-
-  // ngAfterViewInit(): void {
-  //   this.data.gstdata.valueChanges.pipe(takeUntil(this._destroying$))
-  //     .subscribe((value: any) => {
-
-  //     })
-  // }
 
 
   gstTaxFormData = {
@@ -122,8 +117,6 @@ export class GstTaxDialogComponent implements OnInit {
         defaultValue: 0
         //readonly: true,
       },
-
-
     }
   }
 
