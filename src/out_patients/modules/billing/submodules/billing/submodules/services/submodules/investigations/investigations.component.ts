@@ -264,6 +264,7 @@ export class InvestigationsComponent implements OnInit {
                   r.id.toString()
                 ],
               precaution: r.precaution,
+              popuptext: r.popuptext,
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
@@ -349,6 +350,7 @@ export class InvestigationsComponent implements OnInit {
                 r.id.toString()
               ],
             serviceid: r.serviceid,
+            popuptext: r.popuptext,
             precaution: r.precaution,
             ngStyle: {
               color: r.outsourceColor == 2 ? "red" : "",
