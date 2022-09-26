@@ -416,23 +416,23 @@ export class PatientService {
     let returnIcons: any = [];
     Object.keys(patient).forEach((e) => {
       if (
-        e == "ppagerNumber" &&
-        this.pageNumberIcons[patient["ppagerNumber"]]
+        e == "pPagerNumber" &&
+        this.pageNumberIcons[patient["pPagerNumber"]]
       ) {
         console.log(patient["ppagerNumber"]);
         let tempPager: any = {
           src:
             "assets/patient-categories/" +
-            this.pageNumberIcons[patient["ppagerNumber"]],
+            this.pageNumberIcons[patient["pPagerNumber"]],
           type: e,
         };
-        if (this.pageNumberIconsTooltip[patient["ppagerNumber"]]) {
+        if (this.pageNumberIconsTooltip[patient["pPagerNumber"]]) {
           if (
-            this.pageNumberIconsTooltip[patient["ppagerNumber"]]["type"] ==
+            this.pageNumberIconsTooltip[patient["pPagerNumber"]]["type"] ==
             "static"
           ) {
             tempPager["tooltip"] =
-              this.pageNumberIconsTooltip[patient["ppagerNumber"]]["value"];
+              this.pageNumberIconsTooltip[patient["pPagerNumber"]]["value"];
           }
         }
         returnIcons.push(tempPager);

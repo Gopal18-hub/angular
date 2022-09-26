@@ -111,6 +111,7 @@ export class ConsumablesComponent implements OnInit {
         data: {
           orderSet: res.element,
           items: res.element.items,
+          procedureDataForConsumable: res.element.procedureDataForConsumable,
         },
       });
       dialogConst.afterClosed().subscribe((result) => {
@@ -156,6 +157,7 @@ export class ConsumablesComponent implements OnInit {
               taxAmount: 0,
               totalAmount: head.amount,
               items: res.consumableServiceDetailsData,
+              procedureDataForConsumable: res.procedureDataForConsumable,
               billItem: {
                 itemId: head.itemId,
                 priority: head.priority,

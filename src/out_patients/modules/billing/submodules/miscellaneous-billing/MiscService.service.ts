@@ -56,8 +56,6 @@ export class MiscService {
     if (this.miscFormData.clear === true) {
       this.clearForm = true;
     }
-
-
     return this.miscFormData;
   }
 
@@ -74,12 +72,13 @@ export class MiscService {
     if (this.calcItems.depositInput) {
       if ((this.calcItems.depositInput >= this.calcItems.totalAmount) || ((this.calcItems.depositInput) > this.calcItems.totalDeposit)) {
         this.calculatedBill.depositInput = this.calcItems.totalAmount;
-        this.calculatedBill.amntPaidBythePatient = 0.00;
+        // this.calculatedBill.amntPaidBythePatient = 0.00;
+
       }
       else if (this.calcItems.depositInput < this.calcItems.totalAmount) {
-        this.calculatedBill.amntPaidBythePatient = this.calcItems.totalAmount - this.calcItems.depositInput;
-        console.log(this.calcItems.totalAmount - this.calcItems.depositInput, "lo")
+        //this.calculatedBill.amntPaidBythePatient = this.calcItems.totalAmount - this.calcItems.depositInput;
         this.calculatedBill.depositInput = this.calcItems.depositInput;
+
       }
     }
     if (!this.calcItems.depositInput) {
@@ -97,19 +96,17 @@ export class MiscService {
     // if (!this.calcItems.depositInput) {
     //   this.calcItems.depositInput = 0
     // }
-    let discdepo = this.calcItems.depositInput + this.calcItems.totalDiscount
-    this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - discdepo;
+    //let discdepo = this.calcItems.depositInput + this.calcItems.totalDiscount
+    this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - this.calcItems.depositInput - this.calcItems.totalDiscount;
     this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
+    this.calculatedBill.txtgsttaxamt = (this.calculatedBill.totalBillAmount * this.calculatedBill.totalGst) / 100;
 
-    if (this.calculatedBill.totalBillAmount < 0) {
-      this.calculatedBill.totalBillAmount = this.calcItems.totalAmount;
-    }
-    if (this.calculatedBill.amntPaidBythePatient < 0) {
-      this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
+    if (this.calcItems.totalAmount - this.calcItems.depositInput === 0) {
+      this.calculatedBill.totalBillAmount = 0;
+      this.calculatedBill.amntPaidBythePatient = 0;
     }
     return this.calculatedBill;
   }
-
 
   clearMiscBlling() {
     this.clearAllItems.next(true);

@@ -76,4 +76,11 @@
             line-height: 1.875rem  !important;
         }
     }  
+    .cashscroll{
+        ::ng-deep .mat-header-cell.cdk-header-cell.cdk-column-select.mat-column-select{
+            width: 20px !important;
+        }
+    }
+   
+   
     }

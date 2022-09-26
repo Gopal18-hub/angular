@@ -17,7 +17,7 @@ export class savecashscroll {
     totplandiscount:number;
     totaltds:number;
     totaldeposit: number;
-    mobilePayment: string;
+    mobilePayment: number;
     onlinePayment: number;
     upiAmt : number;
     donationAmount : number;
@@ -43,7 +43,7 @@ export class savecashscroll {
         totplandiscount:number,
         totaltds:number,
         totaldeposit: number,
-        mobilePayment: string,
+        mobilePayment: number,
         onlinePayment: number,
         upiAmt : number,
         donationAmount : number,
@@ -71,8 +71,8 @@ export class savecashscroll {
       this.totaldeposit = totaldeposit,
       this.mobilePayment = mobilePayment;
       this.onlinePayment = onlinePayment;
-      this.donationAmount = donationAmount;
       this.upiAmt = upiAmt;
+      this.donationAmount = donationAmount;
       this.stationid = stationid;
       this.operatorId = operatorId;
       this.hsplocationId = hsplocationId;
