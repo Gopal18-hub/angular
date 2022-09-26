@@ -27,10 +27,13 @@ export namespace FormReport {
         EquipFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+          
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -406,10 +409,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -662,10 +667,12 @@ export namespace FormReport {
         dtpfromdate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtptodate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         // location: {
         //   type: "dropdown",
@@ -939,10 +946,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1001,10 +1010,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1063,10 +1074,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1134,10 +1147,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         SelectedLocationsId: {
@@ -1206,10 +1221,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         SelectedLocationsId: {
