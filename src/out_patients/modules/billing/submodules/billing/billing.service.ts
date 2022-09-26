@@ -592,6 +592,7 @@ export class BillingService {
         doctorName_required: investigation.docRequired ? true : false,
         price: res[0].returnOutPut,
         billItem: {
+          popuptext: investigation.popuptext,
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
