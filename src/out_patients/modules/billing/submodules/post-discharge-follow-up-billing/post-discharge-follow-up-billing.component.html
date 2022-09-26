@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper op-billing-wrapper">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper post-billing-page-wrapper">
     <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
       <ul class="list-unstyled flex items-end">
         <li class="ml-3">
@@ -26,7 +26,7 @@
           <form
             [formGroup]="formGroup"
             autocomplete="off"
-            class="w-full flex align-items-center"
+            class="w-full flex align-items-center justify-between"
           >
             <mat-label class="max-health-primary-color mr-1 font-semi-bold">Max ID</mat-label>
             <div class="width-9 bg-white mr-2">
@@ -125,7 +125,7 @@
         </div> -->
         <!-- Second Row -->
         <div
-          class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
+          class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary justify-between"
         >
           <div class="flex w-3/4 align-items-center">
             <div class="w-3/10 text-overflow">

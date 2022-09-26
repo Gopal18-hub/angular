@@ -30,7 +30,10 @@
               [index]="0"
             >
             </maxhealth-question> -->
-            <out-patients-referral></out-patients-referral>
+            <mat-label>Referral Doctor</mat-label>
+            <out-patients-referral
+              (selectedDoctorEvent)="selectedReferralDoctor($event)"
+            ></out-patients-referral>
           </div>
           <div class="ml-2 mr-2 mb-4 w-auto">
             <maxhealth-question
