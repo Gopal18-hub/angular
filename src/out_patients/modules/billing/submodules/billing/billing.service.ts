@@ -51,6 +51,8 @@ export class BillingService {
 
   consultationItemsAdded = new Subject<boolean>();
 
+  referralDoctor: any;
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   changeBillTabStatus(status: boolean) {
@@ -590,6 +592,7 @@ export class BillingService {
         doctorName_required: investigation.docRequired ? true : false,
         price: res[0].returnOutPut,
         billItem: {
+          popuptext: investigation.popuptext,
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
@@ -709,5 +712,9 @@ export class BillingService {
       });
       this.consultationItemsAdded.next(true);
     }
+  }
+
+  setReferralDoctor(doctor: any) {
+    this.referralDoctor = doctor;
   }
 }

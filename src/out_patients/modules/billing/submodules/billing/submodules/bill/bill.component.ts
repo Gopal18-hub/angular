@@ -19,6 +19,7 @@ import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -322,9 +323,24 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
       item["sno"] = index + 1;
+      if (item.popuptext) {
+        popuptext.push({
+          name: item.itemName,
+          description: item.popuptext,
+        });
+      }
     });
+    if (popuptext.length > 0) {
+      this.matDialog.open(PopuptextComponent, {
+        width: "80vw",
+        data: {
+          popuptext,
+        },
+      });
+    }
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -532,5 +548,9 @@ export class BillComponent implements OnInit {
         },
         (error) => {}
       );
+  }
+
+  selectedReferralDoctor(data: any) {
+    this.billingservice.setReferralDoctor(data.docotr);
   }
 }
