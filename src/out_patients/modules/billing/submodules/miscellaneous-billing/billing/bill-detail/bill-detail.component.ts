@@ -163,7 +163,8 @@ export class BillDetailComponent implements OnInit {
         type: "autocomplete",
         title: "Procedure Doctor",
         options: this.doctorList,
-        placeholder: "Select"
+        placeholder: "Select",
+        // required: true,
       },
       //6
       remark: {
@@ -182,7 +183,7 @@ export class BillDetailComponent implements OnInit {
       //8
       referralDoctor: {
         type: "dropdown",
-        //required: true,
+        required: true,
         title: "Referral Doctor",
         placeholder: "Select",
       },
@@ -308,8 +309,8 @@ export class BillDetailComponent implements OnInit {
         type: "radio",
         //required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
+          { title: "Cash", value: "1" },
+          { title: "Credit", value: "2" },
           { title: "Gen. OPD", value: "Gen OPD" },
         ],
         defaultValue: "cash",
@@ -476,12 +477,13 @@ export class BillDetailComponent implements OnInit {
 
       });
   }
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     this.formEvents();
     // this.getDipositedAmountByMaxID();
   }
   formEvents() {
     this.getMasterMiscDetail();
+    // this.enableItemsService = false;
     let compId = this.miscPatient.getCompany();
     if (compId) {
       this.getbilltocompany(compId);
@@ -497,14 +499,19 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-
         if (value.value) {
           this.serviceID = value.value;
           this.serviceName = value.title;
+          this.checkService();
+        }
+        else if (!value.title) {
+          this.snackbar.open("Select Service Item", "error");
         }
         this.setServiceItemList();
       });
-
+    // this.question[0].elementRef.addEventListener("Tab",
+    //   this.checkService()
+    // );
 
     this.miscServBillForm.controls["item"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -512,13 +519,47 @@ export class BillDetailComponent implements OnInit {
         if (value.value) {
           this.itemID = value.value;
           this.itemName = value.title;
+          this.checkService();
           this.getservices_byprocedureidnew();
           this.setTarrifItemList();
         }
-
-
+        else if (!value.title) {
+          this.snackbar.open("Enter the Item Description First", "error");
+        }
       });
-
+    this.miscServBillForm.controls["qty"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.checkService();
+        }
+        else if (this.miscServBillForm.value.qty === 0) {
+          this.snackbar.open("Quantity Can Not be Zero", "error");
+        }
+      })
+    this.miscServBillForm.controls["reqAmt"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.checkService();
+        }
+        else if (this.miscServBillForm.value.reqAmt < 0) {
+          this.snackbar.open("Enter the Item Price", "error");
+        }
+        else if (this.miscServBillForm.value.reqAmt === 0) {
+          this.snackbar.open("Item Price Can Not be Zero", "error");
+        }
+      })
+    this.miscServBillForm.controls["remark"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.checkService();
+        }
+        else if (!this.miscServBillForm.value.remark) {
+          this.snackbar.open("Please select remarks!", "error");
+        }
+      })
     this.miscServBillForm.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -555,16 +596,7 @@ export class BillDetailComponent implements OnInit {
         }
       });
 
-    // this.miscServBillForm.controls["billAmt"].valueChanges
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value: any) => {
-    //     this.calcBillData.totalAmount = this.TotalAmount;
-    //     this.miscPatient.setCalculateBillItems(this.calcBillData);
-    //     let calcBill0 = this.miscPatient.calculateBill();
 
-    //     this.miscServBillForm.controls["billAmt"].setValue(calcBill0.totalBillAmount + ".00");
-    //     this.miscServBillForm.controls["amtPayByPatient"].setValue((calcBill0.amntPaidBythePatient) + ".00");
-    //   });
     this.question[27].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -577,7 +609,14 @@ export class BillDetailComponent implements OnInit {
 
       }
     });
-
+  }
+  checkService() {
+    if (this.miscServBillForm.value.serviceType && this.miscServBillForm.value.item && this.miscServBillForm.value.qty > 0 && this.miscServBillForm.value.reqAmt > 0 && this.miscServBillForm.value.remark) {
+      this.enableItemsService = true;
+    }
+    else {
+      this.enableItemsService = false;
+    }
   }
   //Get onload Dropdown
   getMasterMiscDetail() {
@@ -650,21 +689,12 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         this.serviceItemsList = data as ServiceTypeItemModel[];
         if (this.serviceItemsList.length > 0) {
-          this.enableItemsService = true;
           this.question[1].options = [
             ...this.serviceItemsList.map((a) => {
               return { title: a.itemname, value: a.itemId };
             }),
           ];
-
-
-
-
         }
-        else {
-          this.enableItemsService = false;
-        }
-
       })
   }
   //Tarrif Trigger
@@ -1042,6 +1072,9 @@ export class BillDetailComponent implements OnInit {
     );
 
     this.serviceselectedList = [...this.serviceselectedList];
+    if (this.serviceselectedList.length <= 0) {
+      this.isEnableBillBtn = false;
+    }
     // this.billingservice.calculateTotalAmount();
   }  //Dialog
   discAmtDialog() {
@@ -1212,7 +1245,7 @@ export class BillDetailComponent implements OnInit {
       depositAmount: this.miscServBillForm.value.dipositAmtEdit,
       discountAmount: this.discountedAmt,
       stationid: this.stationId, //10475, // Number(this.cookie.get("StationId")),
-      billType: 1, //cash
+      billType: this.miscServBillForm.value.paymentMode, //cash
       categoryId: 0,
       companyId: this.miscCompanyId,
       operatorId: this.userID,// 9923, //Number(this.cookie.get("UserId"))

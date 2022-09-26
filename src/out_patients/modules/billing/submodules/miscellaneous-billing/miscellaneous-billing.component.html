@@ -35,6 +35,11 @@
               [form]="miscForm"
               [questions]="questions[0]"
               [index]="0"
+              accessControl
+              masterModule = "2"
+              moduleId="7"
+              featureId="62"
+              actionId="145"
             >
             </maxhealth-question>
           </div>
@@ -193,7 +198,7 @@
           </button>
         </div>
       </div>
-      <div [class.isDisabled]="!(setItemsToBill.enableBill)">
+      <div [class.isDisabled]="!(setItemsToBill.enableBill)||expiredPatient">
         <div class="mt-2">
           <nav mat-tab-nav-bar>
             <a
