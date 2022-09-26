@@ -107,8 +107,23 @@
             moduleId="7"
             featureId="66"
             actionId="1528"
-            >Modify</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center" (click)="print()" [disabled]="printbtn">Print</button>
+            >
+            Modify
+            </button>
+            <button 
+            mat-raised-button 
+            color="primary" 
+            class="ml-2 button align-items-center" 
+            (click)="print()" 
+            [disabled]="printbtn"
+            accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="561"
+            actionId="1488"
+            >
+            Print
+            </button>
         </div>
      
     </div>
