@@ -12,6 +12,7 @@ import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Inter
 import { DatePipe } from "@angular/common";
 import { cashscrollNewDetail } from "@core/models/cashscrollNewModel.Model";
 import { savecashscroll } from "@core/models/savecashscrollModel.Model";
+import { ReportService } from "@shared/services/report.service";
 
 @Component({
   selector: "out-patients-cash-scroll-new",
@@ -28,7 +29,8 @@ export class CashScrollNewComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private dialogservice: MessageDialogService,
-    private datepipe: DatePipe,
+    private datepipe: DatePipe,    
+    private reportService: ReportService,
   ) {}
   cashscrollnewformdata = {
     type: "object",
@@ -47,11 +49,11 @@ export class CashScrollNewComponent implements OnInit {
         readonly: true,
       },
       fromdate: {
-        type: "date",
+        type: "datetime",
         readonly: true,
       },
       todate: {
-        type: "date",
+        type: "datetime",
       },
     },
   };
@@ -84,7 +86,6 @@ export class CashScrollNewComponent implements OnInit {
       "upiamount",
       "totalamount",
       "compName",
-      "internetpayment",
     ],
     columnsInfo: {
       sno: {
@@ -119,7 +120,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Bill Amount",
         type: "number",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       refund: {
@@ -248,26 +249,23 @@ export class CashScrollNewComponent implements OnInit {
           width: "9rem",
         },
       },
-      internetpayment: {
-        title: "Internet Payment",
-        type: "string",
-        style: {
-          width: "9rem",
-        },
-      },
     },
   };
   cashscrollnewForm!: FormGroup;
   scrolldetailsexists:boolean = true;
+  printsexists:boolean = true;
+  excelexists:boolean = true;
   lastUpdatedBy: string = "";
+  EmployeeName: string = "";
   currentTime: string = new Date().toLocaleString();
+
   private readonly _destroying$ = new Subject<void>();
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any = 67; // Number(this.cookie.get("HSPLocationId"));
-  stationId:any = 12969 ;// Number(this.cookie.get("StationId"));
-  operatorID:any = 60925; // Number(this.cookie.get("UserId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
 
   billamount:number = 0;
   refund:number = 0;
@@ -298,11 +296,15 @@ export class CashScrollNewComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
-    console.log(this.cookie.get("UserName"));
+    this.EmployeeName = this.cookie.get("Name");
+    this.cashscrollnewForm.controls["fromdate"].disable();
+    this.cashscrollnewForm.controls["employeename"].disable();
+    this.cashscrollnewForm.controls["takenat"].disable();
+    this.cashscrollnewForm.controls["scrollno"].disable();
     this.getdetailsfornewscroll();
     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
-    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss"));
-    this.cashscrollnewForm.controls["employeename"].setValue(this.lastUpdatedBy);
+    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
+    this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
    
   }
   opencashscroll() {
@@ -319,28 +321,34 @@ export class CashScrollNewComponent implements OnInit {
       let cashdetails;
       let fromdatetime;
       cashdetails = resultdata as getdataForScrollMain;
-      fromdatetime = cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
-      this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform(fromdatetime, "dd/MM/yyyy hh:mm:ss"));
+      fromdatetime = cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
+      this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss"));
 
     });
   }
 
   viewscrolldetails(){
- if(this.cashscrollnewForm.value.todate.getTime() < this.currentTime){
+    let  todaysdate;  
+    todaysdate = new Date();
+ if(this.cashscrollnewForm.controls["todate"].value > todaysdate){
     this.dialogservice.error("To Date Can Not be greater then Current Date");
  }
- else{
+else
+ {
     this.http
-    .get(ApiConstants.getscrolldetailsforoneuser("2022-05-22 06:27:57", 
-    //this.datepipe.transform(this.cashscrollnewForm.value.fromdate,"yyyy-MM-dd") || "",
-    this.datepipe.transform(this.cashscrollnewForm.value.todate,"yyyy-MM-ddThh:mm:ss") || "",
+    .get(ApiConstants.getscrolldetailsforoneuser(
+      //"2022-05-22 06:27:57", 
+    this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddThh:mm:ss") || "",
+    this.datepipe.transform( this.cashscrollnewForm.controls["todate"].value,"yyyy-MM-ddThh:mm:ss") || "",
       this.operatorID, this.stationId, this.hsplocationId))
     .pipe(takeUntil(this._destroying$))
     .subscribe(
       (resultdata) => 
-    {
+    {      
       this.scrolldetailsList = resultdata as cashscrollNewDetail[];
-
+      if(this.scrolldetailsList.length == 0){
+        this.dialogservice.error("No data Found");
+     }else{
     this.scrolldetailsexists = false;
     this.cashscrollnewForm.controls["todate"].disable();
   
@@ -373,39 +381,58 @@ export class CashScrollNewComponent implements OnInit {
 
     this.scrolldetailsList = this.scrolldetailsList.map((item: any) => {
       item.billamount = Number(item.billamount).toFixed(2);
-      item.refund = Number(item.refund.toFixed(2));
-      item.depositamount = Number(item.depositamount.toFixed(2));
-      item.planamount = Number(item.planamount.toFixed(2));
-      item.discountamount = Number(item.discountamount.toFixed(2));
-      item.plandiscount = Number(item.plandiscount.toFixed(2));
-      item.netamount = Number(item.netamount.toFixed(2));
-      item.cash = Number(item.cash.toFixed(2));
-      item.cheque = Number(item.cheque.toFixed(3));
-      item.dd = Number(item.dd.toFixed(3));
-      item.creditcard = item.creditcard == undefined ? "0.000" : Number(item.creditcard.toFixed(3));
-      item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment.toFixed(2));
-      item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment.toFixed(2));
-      item.tdsamount = Number(item.tdsamount.toFixed(2));
-      item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation.toFixed(2));
-      item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount.toFixed(3));
-      item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount.toFixed(2));
-      
-      
+      item.refund = Number(item.refund).toFixed(2);
+      item.depositamount = Number(item.depositamount).toFixed(2);
+      item.planamount = Number(item.planamount).toFixed(2);
+      item.discountamount = Number(item.discountamount).toFixed(2);
+      item.plandiscount = Number(item.plandiscount).toFixed(2);
+      item.netamount = Number(item.netamount).toFixed(2);
+      item.cash = Number(item.cash).toFixed(2);
+      item.cheque = Number(item.cheque).toFixed(2);
+      item.dd = Number(item.dd).toFixed(2);
+      item.creditcard = item.creditcard == undefined ? "0.000" : Number(item.creditcard).toFixed(2);
+      item.mobilePayment = item.mobilePayment == undefined ? "0.00" : Number(item.mobilePayment).toFixed(2);
+      item.onlinePayment = item.onlinePayment == undefined ? "0.00" : Number(item.onlinePayment).toFixed(2);
+      item.tdsamount = Number(item.tdsamount).toFixed(2);
+      item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
+      item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
+      item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
+            
       return item;
     });
    
     this.scrolldetailsList.push({
       sno: "",
       receiptNo: "TOTAL",
-
+      billamount: this.billamount.toFixed(2),
+      refund: this.refund.toFixed(2),
+      discountamount: this.discountamount.toFixed(2),
+      planamount: this.planamount.toFixed(2),
+      plandiscount: this.plandiscount.toFixed(2),
+      depositamount: this.depositamount.toFixed(2),
+      netamount : this.netamount.toFixed(2),
+      cash: this.cash.toFixed(2),
+      cheque: this.cheque.toFixed(2),
+      dd:this.dd.toFixed(2),
+      creditcard: this.creditcard.toFixed(2),
+      mobilePayment: this.mobilePayment.toFixed(2),
+      onlinePayment: this.OnlinePayment.toFixed(2),
+      dues: this.dues,
+      tdsamount: this.tdsamount.toFixed(2),
+      upiamount : this.UPIAmt.toFixed(2),
+      donation: this.DonationAmount.toFixed(2),
+      totalamount: (Number(this.billamount) + Number(this.DonationAmount)).toFixed(2),
     });
     console.log(resultdata);
+  }
     });
   }
   } 
   resetcashscrollnew(){
     //this.cashscrollnewForm.reset();
     this.scrolldetailsexists = true;
+    this.printsexists = true;
+    this.excelexists = true;
     this.cashscrollnewForm.controls["todate"].enable();
     this.scrolldetailsList = [];
 
@@ -422,23 +449,59 @@ export class CashScrollNewComponent implements OnInit {
       this.dialogservice.error("There is no data to Save");
     }
     else{
-      // this.http
-      // .post(ApiConstants.SavePatientsDepositDetailsGST, this.getcshscrollSubmitRequestBody())
-      // .pipe(takeUntil(this._destroying$))
-      // .subscribe(
-      //   (resultData) => {
-      //   });
+      this.http
+      .post(ApiConstants.savecashscroll, this.getcshscrollSubmitRequestBody())
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData) => {
+          if(resultData > 0){
+            this.dialogservice.success("Scroll has been Saved");
+            this.scrolldetailsexists = true;
+            this.printsexists = false;
+            this.cashscrollnewForm.controls["scrollno"].setValue(resultData);
+          }
+          else{
+            this.dialogservice.error("Invalid Station. Cannot save scroll.");
+            this.scrolldetailsexists = false;
+            this.printsexists = true;
+          }
+        });
+        this.excelexists = false;
      }
   }
 
- // getcshscrollSubmitRequestBody(): savecashscroll {  
-    // return (this.savecashscrollDetails = new savecashscroll(
-    //   this.cashscrollnewForm.value.fromdate,
-    //   this.cashscrollnewForm.value.todate,
+ getcshscrollSubmitRequestBody() {  
+   const tometaken = new Date(this.cashscrollnewForm.value.takenat);
+    return (this.savecashscrollDetails = new savecashscroll(
+      this.cashscrollnewForm.value.fromdate,
+      this.cashscrollnewForm.value.todate,
+      this.discountamount,
+      this.cash,
+      this.creditcard,
+      this.cheque,
+      this.dues,
+      this.refund,
+      this.datepipe.transform(this.cashscrollnewForm.value.takenat, 'YYYY-MM-ddTHH:mm:ss') || '{}',
+      this.billamount,
+      this.netamount,
+      this.duereceved,
+      this.billamount,
+      this.dd,
+      this.planamount,
+      this.planamount,
+      this.tdsamount,
+      this.depositamount,
+      this.mobilePayment,
+      this.OnlinePayment,
+      this.UPIAmt,
+      this.DonationAmount,
+      this.stationId,
+      this.operatorID,
+      this.hsplocationId
 
       
-    // ));
-  //}
+    ));
+  }
     exportTable() {
     if (this.cashScrollNewTable) {
       this.cashScrollNewTable.exportAsExcel();
@@ -447,5 +510,22 @@ export class CashScrollNewComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+  
+  print() {
+    this.openReportModal('CashScrollReport')
+  }
+  openReportModal(btnname: string) {
+      this.reportService.openWindow(btnname, btnname, {
+        Fromdate: this.cashscrollnewForm.value.fromdate,
+        Todate: this.cashscrollnewForm.value.todate,
+        Operatorid: this.operatorID,
+        LocationID: this.hsplocationId,
+        EmployeeName: this.lastUpdatedBy,
+        TimeTakenAt: this.cashscrollnewForm.value.takenat
+      });
+  }
+  navigatetomain(){
+    this.router.navigate(["out-patient-billing", "cash-scroll"]);
   }
 }

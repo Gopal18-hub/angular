@@ -181,7 +181,6 @@ export class DetailsComponent implements OnInit {
       reason: {
         type: "dropdown",
         required: false,
-        readonly: true,
         options: this.refundreasonlist,
       },
       paymentMode: {
@@ -262,7 +261,10 @@ export class DetailsComponent implements OnInit {
     });
     
     this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
-    
+    this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
+      console.log(res);
+      this.sendapprovalcheck();
+    })
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -291,7 +293,9 @@ export class DetailsComponent implements OnInit {
       this.sendapprovalcheck();
     })
     this.questions[12].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
+    this.questions[13].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
     this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
+      console.log(res);
       this.sendapprovalcheck();
     })
     this.BServiceForm.controls['paymentMode'].valueChanges.subscribe((res) => {
@@ -315,7 +319,8 @@ export class DetailsComponent implements OnInit {
     console.log(this.BServiceForm.controls['refundAmt'].value, this.BServiceForm.controls['authBy'].value, this.BServiceForm.controls['reason'].value, this.BServiceForm.controls['paymentMode'].value);
     console.log(this.billdetailservice.sendforapproval.length);
     if(this.BServiceForm.controls['authBy'].value != '' && 
-    this.BServiceForm.controls['reason'].value != '' &&
+    this.BServiceForm.controls['reason'].value != '' && 
+    this.BServiceForm.controls['reason'].value != '0' &&
     this.BServiceForm.controls['paymentMode'].value != '' &&
     this.BServiceForm.controls['refundAmt'].value > 0)
     {
