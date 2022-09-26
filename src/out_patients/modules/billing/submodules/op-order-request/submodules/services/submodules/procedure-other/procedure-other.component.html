@@ -18,17 +18,7 @@
         >
         </maxhealth-question>
 
-        <!-- <mat-label class="max-health-primary-color mr-4 ml-4 font-bold"
-          >Procedure</mat-label
-        >
-        <maxhealth-question
-          [question]="questions[1]"
-          [form]="formGroup"
-          [questions]="questions[1]"
-          [index]="1"
-          class="w-3/5"
-        >
-        </maxhealth-question> -->
+
       </div>
     </form>
     <div class="flex w-36 align-items-center justify-end">
@@ -50,24 +40,26 @@
         Add
       </button>
       <button
-        mat-raised-button
-        color="primary"
-        class="font-sm ml-2 min-width-initial"
-        type="button"
-        [disabled]="!billingService.checkServicesAdded()"
-      >
-        Bill
-      </button>
-      <button
-        mat-raised-button
-        color="primary"
-        class="font-sm ml-2 min-width-initial print-button"
-        type="button"
-        [disabled]="!billingService.checkServicesAdded()"
-      >
-        <mat-icon>print</mat-icon>
-      </button>
-    </div>
+      mat-raised-button
+      color="primary"
+      class="font-sm ml-2 min-width-initial"
+      type="button"
+      [disabled]="!data.length"
+      (click)="save()"
+    >
+      Save
+    </button>
+    <button
+    mat-raised-button
+    color="primary"
+    class="font-sm ml-2 min-width-initial"
+    type="button"
+    [disabled]="!data.length"
+    (click)="view()"
+  >
+    View
+  </button>
+       </div>
   </div>
   <div class="mt-2 h-full">
     <maxhealth-table
