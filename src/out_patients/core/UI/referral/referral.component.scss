@@ -1,9 +1,19 @@
 ::ng-deep {
   .referral-doctor-menu {
     border-radius: 8px !important;
+    min-height: auto !important;
+    &.w-12vw {
+      width: 12vw;
+    }
+    .mat-menu-content {
+      padding: 0 !important;
+    }
     button {
       height: 26px;
       line-height: 26px;
+      &:not(:last-child) {
+        border-bottom: 1px solid #707070;
+      }
     }
   }
   .referral-internal-doctor-wrapper {
@@ -13,6 +23,7 @@
     max-width: 400px !important;
     background-color: #bfe8e7;
     border-color: 1px solid #707070;
+    overflow: hidden !important;
     .search {
       padding: 0 0.25em;
       margin-bottom: 0.5em;
@@ -23,6 +34,11 @@
         }
       }
     }
+    .body-wrapper {
+      height: 362px;
+      overflow-y: auto;
+      background-color: #e5e5e5;
+    }
     .header {
       background-color: #45c0be;
       width: 100%;
@@ -30,7 +46,6 @@
     }
     .content-body {
       width: 100%;
-      background-color: #e5e5e5;
       ul {
         li {
           padding: 0 0.25em;
@@ -46,6 +61,7 @@
     max-width: 400px !important;
     background-color: #bfe8e7;
     border-color: 1px solid #707070;
+    overflow: hidden !important;
     .search {
       padding: 0 0.25em;
       margin-bottom: 0.5em;
@@ -56,6 +72,11 @@
         }
       }
     }
+    .body-wrapper {
+      height: 362px;
+      overflow-y: auto;
+      background-color: #e5e5e5;
+    }
     .header {
       background-color: #45c0be;
       width: 100%;
@@ -63,7 +84,6 @@
     }
     .content-body {
       width: 100%;
-      background-color: #e5e5e5;
       ul {
         li {
           padding: 0 0.25em;

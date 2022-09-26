@@ -1,11 +1,17 @@
 <div class="w-full">
   <div class="search">
     <mat-form-field appearance="outline" class="w-full">
-      <input matInput placeholder="Search" autocomplete="off" />
+      <input
+        matInput
+        placeholder="Search"
+        autocomplete="off"
+        [(ngModel)]="term"
+        (click)="$event.stopPropagation()"
+      />
     </mat-form-field>
   </div>
 
-  <div>
+  <div class="body-wrapper">
     <div class="header flex">
       <span class="w-1/2">Internal Doctor</span>
       <span class="w-1/2">Specialisation</span>
@@ -13,8 +19,8 @@
     <div class="flex content-body h-full">
       <ul class="flex w-full p-0 list-unstyled flex-column">
         <li
-          class="flex w-full"
-          *ngFor="let docotr of doctorsList"
+          class="flex w-full cursor-pointer"
+          *ngFor="let docotr of doctorsList | filter: term"
           (click)="selectedDoctor(docotr)"
         >
           <span class="w-1/2">{{ docotr.name }}</span>

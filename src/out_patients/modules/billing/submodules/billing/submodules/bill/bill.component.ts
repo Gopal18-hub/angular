@@ -533,4 +533,8 @@ export class BillComponent implements OnInit {
         (error) => {}
       );
   }
+
+  selectedReferralDoctor(data: any) {
+    this.billingservice.setReferralDoctor(data.docotr);
+  }
 }

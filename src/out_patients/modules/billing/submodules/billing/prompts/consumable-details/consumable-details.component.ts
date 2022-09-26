@@ -66,7 +66,7 @@ export class ConsumableDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.procedureDataForConsumable = this.data.procedureDataForConsumable;
-
+    //this.config.columnsInfo.procedure.options =
     this.data.items.forEach((item: any, index: number) => {
       this.itemsData.push({
         itemName: item.itemName,
