@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
@@ -44,6 +44,10 @@ export class ExternalDoctorComponent implements OnInit {
 
   doctorsList: any = [];
 
+  term: any;
+
+  @Output() selectedDoctorEvent: EventEmitter<any> = new EventEmitter();
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService
@@ -59,7 +63,9 @@ export class ExternalDoctorComponent implements OnInit {
     });
   }
 
-  selectedDoctor(docotr: any) {}
+  selectedDoctor(docotr: any) {
+    this.selectedDoctorEvent.emit({ docotr });
+  }
 
   initiateForm($event: any) {
     $event.stopPropagation();
