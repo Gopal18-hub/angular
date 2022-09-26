@@ -52,6 +52,11 @@
         -webkit-hyphens: auto;
         hyphens: auto;
         padding-right: 8px;
+        ::ng-deep mat-form-field {
+          .mat-form-field-wrapper {
+            padding-bottom: 0 !important;
+          }
+        }
         &.mat-column-select {
           width: 24px !important;
           flex: 0 0 24px !important;
