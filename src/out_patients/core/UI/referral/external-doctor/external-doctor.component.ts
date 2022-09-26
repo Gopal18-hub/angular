@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
+import { ApiConstants } from "@core/constants/ApiConstants";
 
 @Component({
   selector: "out-patients-referral-external-doctor",
@@ -41,12 +42,24 @@ export class ExternalDoctorComponent implements OnInit {
 
   addDoctor: boolean = false;
 
+  doctorsList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getDoctorsList();
+  }
+
+  getDoctorsList() {
+    this.http.get(ApiConstants.getreferraldoctor(2, "")).subscribe((res) => {
+      this.doctorsList = res;
+    });
+  }
+
+  selectedDoctor(docotr: any) {}
 
   initiateForm($event: any) {
     $event.stopPropagation();

@@ -8,12 +8,14 @@
   }
   .referral-internal-doctor-wrapper {
     border-radius: 8px !important;
-    width: 360px;
+    width: 400px;
     height: 400px;
+    max-width: 400px !important;
     background-color: #bfe8e7;
     border-color: 1px solid #707070;
     .search {
       padding: 0 0.25em;
+      margin-bottom: 0.5em;
       mat-form-field {
         background-color: #fff;
         .mat-form-field-wrapper {
@@ -32,18 +34,21 @@
       ul {
         li {
           padding: 0 0.25em;
+          border-bottom: 1px solid #d7d7d7;
         }
       }
     }
   }
   .referral-external-doctor-wrapper {
     border-radius: 8px !important;
-    width: 360px;
+    width: 400px;
     height: 400px;
+    max-width: 400px !important;
     background-color: #bfe8e7;
     border-color: 1px solid #707070;
     .search {
       padding: 0 0.25em;
+      margin-bottom: 0.5em;
       mat-form-field {
         background-color: #fff;
         .mat-form-field-wrapper {
@@ -62,6 +67,7 @@
       ul {
         li {
           padding: 0 0.25em;
+          border-bottom: 1px solid #d7d7d7;
         }
       }
     }
