@@ -31,15 +31,11 @@ export class OrderProcedureOtherComponent implements OnInit {
         placeholder: "--Select--",
         required: false,
       },
-      procedure: {
-        type: "autocomplete",
-        placeholder: "--Select--",
-        required: true,
-      },
     },
   };
   formGroup!: FormGroup;
   questions: any;
+  flag = 0;
 
   @ViewChild("table") tableRows: any;
   data: any = [];
@@ -158,50 +154,6 @@ export class OrderProcedureOtherComponent implements OnInit {
         );
       }
     });
-    // this.tableRows.selection.changed.subscribe((res: any) => {
-    //   console.log(res);
-    //   const source = res.added[0] || res.removed[0];
-    //   console.log(source);
-    //   this.update(source.sno);
-    // });
-    this.formGroup.controls["procedure"].valueChanges
-      .pipe(
-        filter((res) => {
-          return res !== null && res.length >= 3;
-        }),
-        distinctUntilChanged(),
-        debounceTime(1000),
-        tap(() => {}),
-        switchMap((value) => {
-          if (
-            this.formGroup.value.serviceType &&
-            this.formGroup.value.serviceType.value
-          ) {
-            return of([]);
-          } else {
-            return this.http
-              .get(
-                BillingApiConstants.getotherservicebillingSearch(
-                  Number(this.cookie.get("HSPLocationId")),
-                  value
-                )
-              )
-              .pipe(finalize(() => {}));
-          }
-        })
-      )
-      .subscribe((data: any) => {
-        if (data.length > 0) {
-          this.questions[1].options = data.map((r: any) => {
-            return {
-              title: r.itemNameWithService || r.itemName,
-              value: r.itemID,
-              originalTitle: r.itemName,
-            };
-          });
-          this.questions[1] = { ...this.questions[1] };
-        }
-      });
   }
 
   getSpecialization() {
@@ -233,52 +185,25 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   getOtherService() {
-    this.http.get(BillingApiConstants.getotherservice).subscribe((res) => {
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
+    this.http
+      .get(
+        BillingApiConstants.getotherserviceop(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        console.log(res);
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[0] = { ...this.questions[0] };
       });
-      this.questions[0] = { ...this.questions[0] };
-    });
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {
-          this.getProcedures(val.value);
         }
       }
     );
-  }
-
-  getProcedures(serviceId: number) {
-    this.http
-      .get(
-        BillingApiConstants.getotherservicebilling(
-          Number(this.cookie.get("HSPLocationId")),
-          serviceId
-        )
-      )
-      .subscribe(
-        (res) => {
-          this.formGroup.controls["procedure"].reset();
-          if (Array.isArray(res)) {
-            this.questions[1].options = res.map((r: any) => {
-              return {
-                title: r.itemNameWithService || r.itemName,
-                value: r.itemID,
-                originalTitle: r.itemName,
-              };
-            });
-          } else {
-            this.questions[1].options = [];
-          }
-
-          this.questions[1] = { ...this.questions[1] };
-        },
-        (error) => {
-          this.formGroup.controls["procedure"].reset();
-          this.questions[1].options = [];
-          this.questions[1] = { ...this.questions[1] };
-        }
-      );
   }
 
   update(sno = 0) {
@@ -296,6 +221,7 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   add(priorityId = 1) {
+    this.flag = 0;
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
     });
@@ -307,31 +233,94 @@ export class OrderProcedureOtherComponent implements OnInit {
     }
     this.http
       .get(
-        BillingApiConstants.getPrice(
-          priorityId,
-          this.formGroup.value.procedure.value,
-          this.formGroup.value.otherService.value,
-          this.cookie.get("HSPLocationId")
+        BillingApiConstants.checkpriceforzeroitemid(
+          this.formGroup.value.investigation.value,
+          "67",
+          "9"
         )
       )
-      .subscribe((res: any) => {
-        this.billingService.addToProcedure({
-          sno: this.data.length + 1,
-          procedures: this.formGroup.value.procedure.originalTitle,
-          qty: 1,
-          specialisation: "",
-          doctorName: "",
-          price: res.amount,
-          unitPrice: res.amount,
-          itemid: this.formGroup.value.procedure.value,
-          priorityId: priorityId,
-          serviceId: this.formGroup.value.otherService.value,
-        });
-
-        this.data = [...this.billingService.ProcedureItems];
-        this.formGroup.reset();
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((response) => {
+        console.log(response);
+        if (response == 1) {
+          this.flag++;
+          console.log(this.flag);
+          if (this.flag == 2) {
+            this.addrow();
+          }
+        } else {
+          this.messageDialogService.info(
+            "Price for this service is not defined"
+          );
+        }
       });
+    this.http
+      .get(
+        BillingApiConstants.checkPatientSex(
+          this.formGroup.value.investigation.value,
+          this.billingService.patientDemographicdata.gender,
+          this.formGroup.value.serviceType,
+          "9"
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((response) => {
+        console.log(response);
+        if (response == 1) {
+          this.flag++;
+          if (this.flag == 2) {
+            this.addrow();
+          }
+          console.log(this.flag);
+        } else {
+          this.messageDialogService.info(
+            "This service is not allowed for this sex"
+          );
+        }
+      });
+
+    if (this.flag == 2) {
+      this.addrow();
+    }
+
+    // this.http
+    //   .get(
+    //     BillingApiConstants.getPrice(
+    //       priorityId,
+    //       this.formGroup.value.procedure.value,
+    //       this.formGroup.value.otherService.value,
+    //       this.cookie.get("HSPLocationId")
+    //     )
+    //   )
+    //   .subscribe((res: any) => {
+    //     this.billingService.addToProcedure({
+    //       sno: this.data.length + 1,
+    //       procedures: this.formGroup.value.procedure.originalTitle,
+    //       qty: 1,
+    //       specialisation: "",
+    //       doctorName: "",
+    //       price: res.amount,
+    //       unitPrice: res.amount,
+    //       itemid: this.formGroup.value.procedure.value,
+    //       priorityId: priorityId,
+    //       serviceId: this.formGroup.value.otherService.value,
+    //     });
+
+    //     this.data = [...this.billingService.ProcedureItems];
+    //     this.formGroup.reset();
+    //   });
   }
+  _destroying$(
+    _destroying$: any
+  ): import("rxjs").OperatorFunction<any, unknown> {
+    throw new Error("Method not implemented.");
+  }
+  addrow() {}
   save() {}
   view() {}
+}
+function takeUntil(
+  _destroying$: any
+): import("rxjs").OperatorFunction<any, unknown> {
+  throw new Error("Function not implemented.");
 }
