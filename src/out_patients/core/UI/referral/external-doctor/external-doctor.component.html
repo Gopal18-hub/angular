@@ -14,10 +14,14 @@
       <span class="w-1/2">Specialisation</span>
     </div>
     <div class="flex content-body h-full">
-      <ul class="flex w-full p-0 list-unstyled">
-        <li class="flex w-full">
-          <span class="w-1/2">Veeru</span>
-          <span class="w-1/2">Specialisation</span>
+      <ul class="flex w-full p-0 list-unstyled flex-column">
+        <li
+          class="flex w-full"
+          *ngFor="let docotr of doctorsList"
+          (click)="selectedDoctor(docotr)"
+        >
+          <span class="w-1/2">{{ docotr.name }}</span>
+          <span class="w-1/2">{{ docotr.specialisation }}</span>
         </li>
       </ul>
     </div>
