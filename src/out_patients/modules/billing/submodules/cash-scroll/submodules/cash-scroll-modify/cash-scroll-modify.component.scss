@@ -96,6 +96,27 @@
                 }
             }
         }
+        .modified{
+            ::ng-deep .max-table-wrapper table{
+                tbody tr td:nth-child(5),
+                tbody tr td:nth-child(6),
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8)
+                {
+                    text-align: right !important;
+                }
+                tbody tr td:nth-child(5),
+                tbody tr td:nth-child(6)
+                {
+                    padding-right: 8rem !important
+                }
+                tbody tr td:nth-child(7),
+                tbody tr td:nth-child(8)
+                {
+                    padding-right: 5rem !important
+                }
+            }
+        }
         
     }
     .makereadonly{
