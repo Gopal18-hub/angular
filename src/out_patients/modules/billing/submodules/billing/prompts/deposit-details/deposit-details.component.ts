@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MiscService } from '@modules/billing/submodules/miscellaneous-billing/MiscService.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -13,6 +14,7 @@ export class DepositDetailsComponent implements OnInit {
   totalDeposit = 0;
   tableSelectedRows: any = [];
   depoDetails: any = [];
+  calcBillData: any = [];
   config: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
@@ -46,7 +48,7 @@ export class DepositDetailsComponent implements OnInit {
       },
     }
   }
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<DepositDetailsComponent>,) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<DepositDetailsComponent>, private miscPatient: MiscService,) { }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -76,6 +78,7 @@ export class DepositDetailsComponent implements OnInit {
         });
 
 
+
       })
   }
   listRowClick() {
@@ -83,6 +86,9 @@ export class DepositDetailsComponent implements OnInit {
   }
 
   submit() {
+    console.log(this.tableSelectedRows, "deposittab;es")
+    this.calcBillData.depositSelectedrows = this.tableSelectedRows;
+    this.miscPatient.setCalculateBillItems(this.calcBillData);
     this.dialogRef.close({ data: this.totalDeposit });
   }
 }

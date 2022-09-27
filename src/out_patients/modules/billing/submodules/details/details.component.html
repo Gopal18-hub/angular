@@ -33,6 +33,11 @@
                     [form]="BServiceForm"
                     [questions]="questions[0]"
                     [index]="0"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="63"
+                    actionId="148"
                   >
                   </maxhealth-question>
                 </div>
@@ -151,7 +156,16 @@
          </div>
          <div class="float-right w-1/10 flex mar-left-12">
              <div class="ml-0 searchbtn mr-2" >
-             <button mat-raised-button color="primary" type="submit" (click)="search()">
+             <button 
+             mat-raised-button 
+             color="primary" 
+             type="submit" 
+             (click)="search()"
+             accessControl
+             masterModule = "2"
+             moduleId="7"
+             featureId="63"
+             actionId="148">
                  <img src="assets/lens.svg" class="lens-icon">
          <!-- <span class="p-0 m"> -->
                  Search
@@ -472,6 +486,11 @@
                     type="submit"
                     [disabled]="refundbill"
                     (click)="refunddialog()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="63"
+                    actionId="149"
                     >
                    Refund Bill
                     </button>
@@ -485,6 +504,11 @@
                       type="submit"
                       [disabled]="printbill"
                       (click)="reportprint('billingreport')"
+                      accessControl
+                      masterModule = "2"
+                      moduleId="7"
+                      featureId="63"
+                      actionId="153"
                       >
                       Print Bill
                       </button>
@@ -516,6 +540,11 @@
                     type="submit"
                     [disabled]="printrefund"
                     (click)="printrefunddialog()"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="63"
+                    actionId="150"
                     >
                     Print Refund Receipt
                     </button>
@@ -547,6 +576,11 @@
                       type="submit"
                       [disabled]="phptracksheet"
                       (click)="reportprint('PHPTracksheet')"
+                      accessControl
+                      masterModule = "2"
+                      moduleId="7"
+                      featureId="63"
+                      actionId="1184"
                       >
                       Php Track Sheet
                       </button>
