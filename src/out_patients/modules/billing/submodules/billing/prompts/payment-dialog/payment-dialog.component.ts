@@ -84,7 +84,7 @@ export class BillPaymentDialogComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private billingService: BillingService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -105,7 +105,7 @@ export class BillPaymentDialogComponent implements OnInit {
       },
     };
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   clear() {
     this._destroying$.next(undefined);
@@ -125,6 +125,9 @@ export class BillPaymentDialogComponent implements OnInit {
         }
       }
     });
+    if (this.data.name = "MiscBilling") {
+      this.dialogRef.close("MakeBill");
+    }
   }
 
   breakupTotal() {

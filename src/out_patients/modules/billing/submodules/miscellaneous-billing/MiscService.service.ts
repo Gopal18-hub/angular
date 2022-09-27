@@ -100,6 +100,9 @@ export class MiscService {
     if (!this.calcItems.corporateId) {
       this.calcItems.corporateId = 0
     }
+    if (!this.calcItems.depositSelectedrows || this.calcItems.depositSelectedrows.length === 0) {
+      this.calcItems.depositSelectedrows = []
+    }
     this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - this.calcItems.depositInput - this.calcItems.totalDiscount;
     this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
     this.calculatedBill.txtgsttaxamt = (this.calculatedBill.totalBillAmount * this.calculatedBill.totalGst) / 100;
