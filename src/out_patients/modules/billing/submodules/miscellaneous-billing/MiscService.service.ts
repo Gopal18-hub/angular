@@ -6,6 +6,8 @@ import { Observable, Subject } from "rxjs";
 })
 export class MiscService {
   subject = new Subject<any>();
+  billType = 0;
+  serviceItemsList = [];
 
   transactionamount: any = 0.0;
   clearAllItems = new Subject<boolean>();
@@ -55,6 +57,18 @@ export class MiscService {
   getMiscBillFormData() {
 
     return this.miscFormData;
+  }
+  setBillType(data: any) {
+    this.billType = data
+  }
+  getBillType() {
+    return this.billType
+  }
+  setServiceItemsList(data: any) {
+    this.serviceItemsList = data;
+  }
+  getServiceItemsList() {
+    return this.serviceItemsList
   }
 
   setCalculateBillItems(data: any) {

@@ -498,15 +498,11 @@ export class BillDetailComponent implements OnInit {
   formEvents() {
     this.getMasterMiscDetail();
     // this.enableItemsService = false;
-    let compId = this.miscPatient.getCompany();
-    if (this.miscServBillForm.value.paymentMode == 2) {
-      if (compId) {
-        this.getbilltocompany(compId);
-      }
-    }
+
     this.miscServBillForm.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
+        this.miscPatient.setBillType(value);
         this.setItemsToBill.paymentMode = value;
         this.miscPatient.setMiscBillFormData(this.setItemsToBill);
       });
@@ -526,9 +522,7 @@ export class BillDetailComponent implements OnInit {
         }
         this.setServiceItemList();
       });
-    // this.question[0].elementRef.addEventListener("Tab",
-    //   this.checkService()
-    // );
+
 
     this.miscServBillForm.controls["item"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -625,6 +619,12 @@ export class BillDetailComponent implements OnInit {
 
       }
     });
+    if (this.miscServBillForm.value.paymentMode == 2) {
+      let compId = this.miscPatient.getCompany();
+      if (compId) {
+        this.getbilltocompany(compId);
+      }
+    }
   }
   checkService() {
     if (this.miscServBillForm.value.serviceType && this.miscServBillForm.value.item && this.miscServBillForm.value.qty > 0 && this.miscServBillForm.value.reqAmt > 0 && this.miscServBillForm.value.remark) {
@@ -981,6 +981,7 @@ export class BillDetailComponent implements OnInit {
           e.TotalAmount = e.TotalAmount;
         })
         this.serviceselectedList = [...this.serviceselectedList];
+        this.miscPatient.setServiceItemsList(this.serviceselectedList)
         this.miscPatient.setBillDetail(this.serviceselectedList);
         if (this.serviceselectedList.length > 0) {
           this.isEnableBillBtn = true
@@ -1093,6 +1094,7 @@ export class BillDetailComponent implements OnInit {
     );
 
     this.serviceselectedList = [...this.serviceselectedList];
+    this.miscPatient.setServiceItemsList(this.serviceselectedList)
     if (this.serviceselectedList.length <= 0) {
       this.isEnableBillBtn = false;
     }
