@@ -1,6 +1,6 @@
 <div class="w-full" *ngIf="!addDoctor">
-  <div class="flex align-items-center search">
-    <mat-form-field appearance="outline" class="w-full">
+  <div class="flex align-items-center search justify-between">
+    <mat-form-field appearance="outline" class="w-9/10">
       <input
         matInput
         placeholder="Search"
@@ -35,11 +35,11 @@
 </div>
 <div class="w-full" *ngIf="addDoctor">
   <div>
-    <h2>Enter a new doctor details</h2>
+    <h3 class="pl-2 mb-1">Enter a new doctor details</h3>
     <form
       [formGroup]="formGroup"
       autocomplete="off"
-      class="w-full flex flex-column align-items-center"
+      class="w-full flex flex-column align-items-center create-doctor-form relative"
     >
       <ng-container *ngFor="let question of questions; let i = index">
         <maxhealth-question
@@ -50,7 +50,7 @@
         >
         </maxhealth-question>
       </ng-container>
-      <div class="action-items">
+      <div class="action-items absolute bottom-20-px">
         <button
           mat-stroked-button
           color="primary"
