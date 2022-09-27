@@ -158,10 +158,10 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
             this.acknowledgementForm.controls["todate"].value,
             "YYYY-MM-dd"
           ),
-          // Number(this.cookie.get("StationId")),
-          12969,
-          9923
-          // Number(this.cookie.get("UserId"))
+          Number(this.cookie.get("StationId")),
+          // 12969,
+          // 9923
+          Number(this.cookie.get("UserId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
