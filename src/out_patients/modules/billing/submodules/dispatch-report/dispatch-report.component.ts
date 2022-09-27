@@ -544,7 +544,14 @@ export class DispatchReportComponent implements OnInit {
     this.tableRows.exportAsExcel();
   }
   print() {
-    this.openReportModal("DispatchReport");
+    if(this.dispatchreport.dispatchlist.length == 0)
+    {
+      this.msgdialog.info('No Data Available');
+    }
+    else
+    {
+      this.openReportModal("DispatchReport");
+    }
   }
   openReportModal(btnname: string) {
     console.log(this.dispatchhistoryform.controls["billedlocation"].value.value);

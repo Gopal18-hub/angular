@@ -1,0 +1,17 @@
+<!-- <p>servicetax-popup works!</p> -->
+<section class="h-full" >
+    <div class="h-1/10 float-right">
+<span class="material-icons">close</span>
+    </div>
+    <div class="h-2/5">
+        <span class="max-health-primary-color">Service Tax is applicable on {{data.procedure}}, do you want to proceed with service tax?</span>
+    </div>
+    <div class="h-1/10 flex justify-content-center">
+        <button mat-raised-button color="primary" (click)="proceed('1')" class="min-width-initial button">
+            Yes
+        </button>
+        <button mat-raised-button color="primary" class="min-width-initial button  ml-4" (click)="proceed('0')" >
+            No
+        </button>
+    </div>
+</section>
