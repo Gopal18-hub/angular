@@ -6,6 +6,8 @@ import { Observable, Subject } from "rxjs";
 })
 export class MiscService {
   subject = new Subject<any>();
+  billType = 0;
+  serviceItemsList = [];
 
   transactionamount: any = 0.0;
   clearAllItems = new Subject<boolean>();
@@ -53,10 +55,20 @@ export class MiscService {
     this.miscFormData = data;
   }
   getMiscBillFormData() {
-    if (this.miscFormData.clear === true) {
-      this.clearForm = true;
-    }
+
     return this.miscFormData;
+  }
+  setBillType(data: any) {
+    this.billType = data
+  }
+  getBillType() {
+    return this.billType
+  }
+  setServiceItemsList(data: any) {
+    this.serviceItemsList = data;
+  }
+  getServiceItemsList() {
+    return this.serviceItemsList
   }
 
   setCalculateBillItems(data: any) {
@@ -93,10 +105,18 @@ export class MiscService {
     if (!this.calcItems.totalGst) {
       this.calcItems.totalGst = 0
     }
-    // if (!this.calcItems.depositInput) {
-    //   this.calcItems.depositInput = 0
-    // }
-    //let discdepo = this.calcItems.depositInput + this.calcItems.totalDiscount
+    if (!this.calcItems.totalGst) {
+      this.calcItems.totalGst = 0
+    }
+    if (!this.calcItems.companyId) {
+      this.calcItems.companyId = 0
+    }
+    if (!this.calcItems.corporateId) {
+      this.calcItems.corporateId = 0
+    }
+    if (!this.calcItems.depositSelectedrows || this.calcItems.depositSelectedrows.length === 0) {
+      this.calcItems.depositSelectedrows = []
+    }
     this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - this.calcItems.depositInput - this.calcItems.totalDiscount;
     this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
     this.calculatedBill.txtgsttaxamt = (this.calculatedBill.totalBillAmount * this.calculatedBill.totalGst) / 100;
@@ -105,6 +125,9 @@ export class MiscService {
       this.calculatedBill.totalBillAmount = 0;
       this.calculatedBill.amntPaidBythePatient = 0;
     }
+    this.calculatedBill.selectedDepositRows = this.calcItems.depositSelectedrows;
+    this.calculatedBill.companyId = this.calcItems.companyId;
+    this.calculatedBill.corporateId = this.calcItems.corporateId;
     return this.calculatedBill;
   }
 

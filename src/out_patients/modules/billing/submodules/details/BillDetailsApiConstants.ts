@@ -65,4 +65,12 @@ export namespace BillDetailsApiConstants{
     }
 
     export const savepdfforemail = `${environment.BillingApiUrl}api/outpatientbilling/savepdfforemail`;
+
+    export const GetMachineDetails = (
+        IPAddress : any,
+        HspLocationID : any,
+        operatorID: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getmachinedetails/${IPAddress}/${HspLocationID}/${operatorID}`;
+    }
 }

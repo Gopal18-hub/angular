@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MiscService } from '@modules/billing/submodules/miscellaneous-billing/MiscService.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -12,7 +13,9 @@ export class DepositDetailsComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   totalDeposit = 0;
   tableSelectedRows: any = [];
+  tempTable: any = [];
   depoDetails: any = [];
+  calcBillData: any = [];
   config: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
@@ -46,7 +49,7 @@ export class DepositDetailsComponent implements OnInit {
       },
     }
   }
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<DepositDetailsComponent>,) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<DepositDetailsComponent>, private miscPatient: MiscService,) { }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -74,6 +77,8 @@ export class DepositDetailsComponent implements OnInit {
         this.tableSelectedRows.forEach((element: any) => {
           this.totalDeposit += element.balanceamount;
         });
+        this.tempTable = this.tableSelectedRows;
+
 
 
       })
@@ -83,6 +88,6 @@ export class DepositDetailsComponent implements OnInit {
   }
 
   submit() {
-    this.dialogRef.close({ data: this.totalDeposit });
+    this.dialogRef.close({ data: this.tempTable });
   }
 }

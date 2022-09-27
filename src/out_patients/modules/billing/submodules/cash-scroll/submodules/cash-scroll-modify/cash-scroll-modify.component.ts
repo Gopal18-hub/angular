@@ -578,7 +578,7 @@ export class CashScrollModifyComponent implements OnInit {
       this.modifybtn = true;
       this.makereadonly = true;
       this.display = false;
-      this.dialogservice.info('Items for Scroll No: '+this.scrolldataObject.getERPscrollMainDto[0].stationslno+' Modified Already.');
+      this.dialogservice.info('Scroll has been modified');
     }
         this.cashscrollmodifyForm.controls["employeename"].setValue(
           this.scrolldataObject.getERPscrollMainDto[0].name

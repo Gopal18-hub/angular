@@ -22,7 +22,7 @@
       class="shadow-2 flex flex-column h-full w-full px-4 py-0 pb-2 billing-page-wrapper"
     >
       <!-- First Row -->
-      <div class="w-full p-1 mt-2 bg-secondary border-radius-xlg">
+      <div class="w-full p-1 py-0 mt-2 bg-secondary border-radius-xlg">
         <form
           [formGroup]="miscForm"
           autocomplete="off"
@@ -35,6 +35,11 @@
               [form]="miscForm"
               [questions]="questions[0]"
               [index]="0"
+              accessControl
+              masterModule = "2"
+              moduleId="7"
+              featureId="62"
+              actionId="145"
             >
             </maxhealth-question>
           </div>
@@ -117,7 +122,7 @@
       </div>
 
       <!-- Second Row -->
-      <div class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary">
+      <div class="w-full flex mt-1 border-radius-xlg px-2 py-0 bg-secondary">
         <div class="flex w-80 align-items-center">
           <div class="w-1/4">
             <mat-label class="max-health-primary-color"
@@ -193,7 +198,7 @@
           </button>
         </div>
       </div>
-      <div [class.isDisabled]="!(setItemsToBill.enableBill)">
+      <div [class.isDisabled]="!(setItemsToBill.enableBill)||expiredPatient">
         <div class="mt-2">
           <nav mat-tab-nav-bar>
             <a

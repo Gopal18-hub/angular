@@ -12,7 +12,7 @@ export class MiscellaneousBillingModel {
     tab_Online: tab_Online[];
     tab_UPI: tab_UPI[];
   };
-  dtDeposit_P?: dtDeposit_P;
+  dtDeposit_P?: dtDeposit_P[];
   dtSaveDeposit_P?: dtSaveDeposit_P;
   htParameter_P?: htParameter_P;
   dtGST_Parameter_P?: dtGST_Parameter_P;
@@ -165,6 +165,6 @@ export class dtGST_Parameter_P {
   taxratE5_Percent?: number;
   totaltaX_RATE?: number;
   totaltaX_RATE_VALUE?: number;
-  saccode?: string;
-  taxgrpid?: 0;
+  saccode?: number;
+  taxgrpid?: number;
 }

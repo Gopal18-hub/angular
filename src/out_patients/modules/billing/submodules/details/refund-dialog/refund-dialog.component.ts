@@ -439,6 +439,15 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       if(this.particularbillflag == 1 && this.singleitemflag == 0)
       {
         this.cancelvisitrequestbody();
+        var result = this.getpaymentmode();
+        console.log(result);
+        if(result.length == 1 && this.mop == 6)
+        {
+          if(result[0].amount == result[0].payTmAmtCheck)
+          {
+            this.messageDialogService.info('Payment was made through multiple mop. Bill cannot be refunded through PayTM, Please refund through CASH');
+          }
+        }
         console.log('Full Bill');
         this.http.post(BillDetailsApiConstants.saverefunddetailsforparticularbill, this.fullbillrequestbody())
         .pipe(takeUntil(this._destroying$))
@@ -588,10 +597,13 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   getpaymentmode()
   {
     this.http.get(BillDetailsApiConstants.getpaymentmode(this.data.billno, this.cookie.get('StationId')))
+    // this.http.get(BillDetailsApiConstants.getpaymentmode('HBCS882543', 1))
     .pipe(takeUntil(this._destroying$))
     .subscribe(res => {
       console.log(res);
+      this.paymentMode = res;
     })
+    return this.paymentMode;
   }
   fullbillrequestbody()
   {
@@ -784,7 +796,39 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     console.log(this.refundafteracklistforfull);
     return this.refundafteracklistforfull;
   }
-
+  paytmRefund()
+  {
+    var ds: any = [];
+    var merchantKey;
+    var merchantGUID;
+    var loginname;
+    if(this.mop == 6 )
+    {
+      this.http.get(BillDetailsApiConstants.GetMachineDetails(1, Number(this.cookie.get('HSPLocationId')), Number(this.cookie.get('UserId'))))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(res => {
+        ds = res;
+        console.log(ds);
+        merchantKey = String(ds.oMerchantDetail[0].merchantKey);
+        merchantGUID = String(ds.oMerchantDetail[0].merchantGUID);
+        loginname = String(ds.oLoginNameDetail[0].loginName);
+        if(merchantKey == '' && merchantGUID == '')
+        {
+          this.messageDialogService.info('PayTm is not activated for this Max Hospital Location');
+        }
+        var result = this.getpaymentmode();
+        if(result.length == 1)
+        {
+          var merchantOrderID = String(result[0].merchantOrderId);
+          var walletSystemTxnId = String(result[0].walletSystemTxnId);
+          if(merchantOrderID.length > 0)
+          {
+            var POSTDATA1 = "{'request':{'txnGuid': "+ walletSystemTxnId + ",'amount':" + String(1234) + ",'currencyCode':'INR',' merchantGuid':" + merchantGUID + ", 'merchantOrderId' :" + merchantOrderID + "},'ipAddress':'127.0.0.1','platformName':'PayTM', 'operationType':'REFUND_MONEY','channel':'POS','version':'1.0'}"
+          }
+        }
+      })
+    }
+  }
   clear()
   {
     this._destroying$.next(undefined);

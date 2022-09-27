@@ -71,6 +71,15 @@
           padding-bottom: 0 !important;
         }
       }
+      button {
+        background-color: #fff;
+        border-radius: 8px;
+        height: 32px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
     .body-wrapper {
       height: 362px;
