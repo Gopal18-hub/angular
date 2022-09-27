@@ -271,6 +271,7 @@ export class CashScrollNewComponent implements OnInit {
   EmployeeName: string = "";
   currentTime: string = new Date().toLocaleString();
   queryparamssearch:boolean = false;
+  takenat: any;
   
   uniquescrollnumber !: GetDataForOldScroll;
 
@@ -278,10 +279,11 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
 
+  scrollno: string | undefined;
   billamount:number = 0;
   refund:number = 0;
   depositamount:number = 0;
@@ -320,8 +322,10 @@ export class CashScrollNewComponent implements OnInit {
     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
     this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
+    this.takenat = new Date();
    if(this.queryparamssearch){
-    this.cashscrollnewForm.controls["todate"].disable();
+    this.cashscrollnewForm.controls["todate"].disable();    
+    this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
     this.printsexists = false;
     this.excelexists = false;
    }
@@ -338,11 +342,13 @@ export class CashScrollNewComponent implements OnInit {
       (resultdata) => 
     {
       let cashdetails;
-      let fromdatetime;
+      let fromdatetime,todatetime;
       cashdetails = resultdata as getdataForScrollMain;
       fromdatetime = cashdetails.getDetailsForMainScrollDatetime[0].todatetime;
-      this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss"));
-
+      todatetime = cashdetails.getDetailsForMainScrollDatetime[0].currentDateTime;
+      this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform(fromdatetime, "YYYY-MM-ddTHH:mm:ss.SSS"));
+      this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(todatetime, "YYYY-MM-ddTHH:mm:ss.SSS"));
+   
     });
   }
 
@@ -451,13 +457,12 @@ else
   }
   } 
   resetcashscrollnew(){
-    //this.cashscrollnewForm.reset();
     this.scrolldetailsexists = true;
     this.queryparamssearch = false;
     this.printsexists = true;
     this.excelexists = true;
     this.cashscrollnewForm.controls["todate"].enable();
-    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
+    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(new Date(), "YYYY-MM-ddTHH:mm:ss"));
     this.scrolldetailsList = [];
 
   }
@@ -473,6 +478,7 @@ else
       this.dialogservice.error("There is no data to Save");
     }
     else{
+   
       this.http
       .post(ApiConstants.savecashscroll, this.getcshscrollSubmitRequestBody())
       .pipe(takeUntil(this._destroying$))
@@ -495,8 +501,7 @@ else
   }
 
  getcshscrollSubmitRequestBody() {  
-   const tometaken = new Date(this.cashscrollnewForm.value.takenat);
-    return (this.savecashscrollDetails = new savecashscroll(
+     this.savecashscrollDetails = new savecashscroll(
       this.cashscrollnewForm.value.fromdate,
       this.cashscrollnewForm.value.todate,
       this.discountamount,
@@ -505,7 +510,7 @@ else
       this.cheque,
       this.dues,
       this.refund,
-      this.datepipe.transform(this.cashscrollnewForm.value.takenat, 'YYYY-MM-ddTHH:mm:ss') || '{}',
+      this.datepipe.transform(this.takenat, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
       this.billamount,
       this.netamount,
       this.duereceved,
@@ -521,10 +526,9 @@ else
       this.DonationAmount,
       this.stationId,
       this.operatorID,
-      this.hsplocationId
-
-      
-    ));
+      this.hsplocationId      
+    );
+    return this.savecashscrollDetails;
   }
     exportTable() {
     if (this.cashScrollNewTable) {
@@ -546,7 +550,10 @@ else
         Operatorid: this.operatorID,
         LocationID: this.hsplocationId,
         EmployeeName: this.lastUpdatedBy,
-        TimeTakenAt: this.cashscrollnewForm.value.takenat
+        TimeTakenAt: this.cashscrollnewForm.value.takenat,
+        ack: 1,
+        IsAckByOperator: false,
+        ScrollNo: Number(this.cashscrollnewForm.value.scrollno),
       });
   }
   navigatetomain(){
@@ -555,6 +562,7 @@ else
 
   getoldscroll(scrollno:any){
     this.queryparamssearch = true;
+    this.scrollno = scrollno;
     this.http
     .get(ApiConstants.getdetaileddataforoldscroll(scrollno, this.stationId))
     .pipe(takeUntil(this._destroying$))
