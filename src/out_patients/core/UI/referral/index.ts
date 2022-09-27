@@ -11,11 +11,14 @@ import { MatMenuModule } from "@angular/material/menu";
 import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
 import { MatButtonModule } from "@angular/material/button";
 
+import { Ng2SearchPipe } from "@shared/utilities/pipes/filter";
+
 @NgModule({
   declarations: [
     ReferralComponent,
     InternalDoctorComponent,
     ExternalDoctorComponent,
+    Ng2SearchPipe,
   ],
   imports: [
     CommonModule,
@@ -28,7 +31,7 @@ import { MatButtonModule } from "@angular/material/button";
     DynamicFormsModule,
     MatButtonModule,
   ],
-  exports: [ReferralComponent],
+  exports: [ReferralComponent, Ng2SearchPipe],
   providers: [],
   bootstrap: [],
 })

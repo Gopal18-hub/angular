@@ -124,6 +124,15 @@
   background-color: #45c0be;
   border-radius: 13px 13px 0 0;
   border: 4px solid #45c0be;
-  border-bottom: 0
+  border-bottom: 0;
+  ::ng-deep {
+    .total-cost {
+      color: #5a5a5a;
+      font-weight: 600;
+      span {
+        color: var(--primary-color);
+      }
+    }
+  }
 }
   

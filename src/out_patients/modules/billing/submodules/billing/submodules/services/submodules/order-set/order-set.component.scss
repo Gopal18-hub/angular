@@ -3,6 +3,9 @@
     maxhealth-table {
       table {
         width: 140% !important;
+        .mat-column-precaution {
+          text-align: center;
+        }
       }
     }
   }
