@@ -12,7 +12,7 @@ export class MiscellaneousBillingModel {
     tab_Online: tab_Online[];
     tab_UPI: tab_UPI[];
   };
-  dtDeposit_P?: dtDeposit_P;
+  dtDeposit_P?: dtDeposit_P[];
   dtSaveDeposit_P?: dtSaveDeposit_P;
   htParameter_P?: htParameter_P;
   dtGST_Parameter_P?: dtGST_Parameter_P;

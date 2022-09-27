@@ -103,7 +103,6 @@ export class GstTaxDialogComponent implements OnInit {
 
       })
       this.gstTaxForm.controls["code"].setValue(this.gstData.saccode)
-      this.dialogRef.close({ data: this.gstData })
       //this.gstData.taxgrpid
     })
   }
@@ -155,7 +154,9 @@ export class GstTaxDialogComponent implements OnInit {
     }
   }
 
-
+  close() {
+    this.dialogRef.close({ data: this.gstData })
+  }
 
 
   taxData: any = [

@@ -118,6 +118,10 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   makeBill() {
+    if (this.data.name = "MiscBilling") {
+      this.dialogRef.close({ data: "MakeBill" });
+      return;
+    }
     this.billingService.makeBill().subscribe((res) => {
       if (res.length > 0) {
         if (res[0].billNo) {
@@ -125,9 +129,7 @@ export class BillPaymentDialogComponent implements OnInit {
         }
       }
     });
-    if (this.data.name = "MiscBilling") {
-      this.dialogRef.close("MakeBill");
-    }
+
   }
 
   breakupTotal() {

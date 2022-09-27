@@ -1169,7 +1169,7 @@ export class BillDetailComponent implements OnInit {
             this.depodialogRows = res.data;
             res.data.forEach((element: any) => {
               this.depodialogTotal += element.balanceamount;
-            });;
+            });
 
             this.calcBillData.totalDeposit = this.depodialogTotal;
             this.miscPatient.setCalculateBillItems(this.calcBillData);
@@ -1194,7 +1194,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result.data) {
-          this.gstDataResult = result.data
+          this.gstDataResult = result.data;
         }
       })
   }
@@ -1280,12 +1280,14 @@ export class BillDetailComponent implements OnInit {
       this.txtServiceTaxAmt = ((this.CreditAmtforSrvTax) * srvTax) / 100
     }
 
-    let depositData: any = {};
+    let depositData: any = [];
     if (this.depodialogRows) {
       this.depodialogRows.forEach((e: any) => {
-        depositData.id = e.id;
-        depositData.amount = e.amount;
-        depositData.balanceamount = e.balanceamount;
+        depositData.push({
+          id: e.id,
+          amount: e.amount,
+          balanceamount: e.balanceamount
+        })
       })
     }
     if (this.miscServBillForm.value.credLimit <= 0) {
@@ -1425,7 +1427,7 @@ export class BillDetailComponent implements OnInit {
             RefundDialog.afterClosed()
               .pipe(takeUntil(this._destroying$))
               .subscribe((result) => {
-                if (result == "MakeBill") {
+                if (result.data == "MakeBill") {
                   // this.openDepositdialog();
                   this.generatedBillNo = resultData[0].billId;
                   this.enablePrint = true;
