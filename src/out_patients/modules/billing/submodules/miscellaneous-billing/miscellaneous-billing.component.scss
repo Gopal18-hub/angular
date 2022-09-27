@@ -101,6 +101,10 @@
   {
     width : 80%
   }
+  ::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick
+{
+  color:#ababab;
+}
   .txt-blue
 {   
  color: #45C0BE;
@@ -114,5 +118,8 @@
   margin-left: 0.3rem;
  }
 }
+::ng-deep .mat-error {
+  display: none;
+} 
   
 }

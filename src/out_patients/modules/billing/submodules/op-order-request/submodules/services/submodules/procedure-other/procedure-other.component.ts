@@ -6,6 +6,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { MatDialog } from "@angular/material/dialog";
 import {
   filter,
   distinctUntilChanged,
@@ -14,7 +15,12 @@ import {
   switchMap,
   of,
   finalize,
+  takeUntil,
+  Subject,
 } from "rxjs";
+import { ServicetaxPopupComponent } from "./servicetax-popup/servicetax-popup.component";
+import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -31,11 +37,18 @@ export class OrderProcedureOtherComponent implements OnInit {
         placeholder: "--Select--",
         required: false,
       },
+      procedure: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
+      },
     },
   };
   formGroup!: FormGroup;
   questions: any;
   flag = 0;
+  reqItemDetail: string = "";
+  private readonly _destroying$ = new Subject<void>();
 
   @ViewChild("table") tableRows: any;
   data: any = [];
@@ -111,10 +124,13 @@ export class OrderProcedureOtherComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    public dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    console.log(this.formGroup);
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -154,6 +170,47 @@ export class OrderProcedureOtherComponent implements OnInit {
         );
       }
     });
+    this.formGroup.controls["procedure"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.otherService &&
+            this.formGroup.value.otherService.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getotherservicebillingSearch(
+                  67,
+                  // Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return {
+              title: r.itemNameWithService || r.itemName,
+              value: r.itemID,
+              originalTitle: r.itemName,
+              serviceid: r.serviceID,
+              docRequired: r.proceduredoctor,
+            };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getSpecialization() {
@@ -173,7 +230,8 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
+          67
+          // Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -201,9 +259,47 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {
+          this.getProcedures(val.value, val.isBundle);
         }
       }
     );
+  }
+
+  getProcedures(serviceId: number, isBundle = 0) {
+    this.http
+      .get(
+        BillingApiConstants.getotherservicebilling(
+          67,
+          // Number(this.cookie.get("HSPLocationId")),
+          serviceId,
+          isBundle
+        )
+      )
+      .subscribe(
+        (res) => {
+          this.formGroup.controls["procedure"].reset();
+          if (Array.isArray(res)) {
+            this.questions[1].options = res.map((r: any) => {
+              return {
+                title: r.itemNameWithService || r.itemName,
+                value: r.itemID,
+                originalTitle: r.itemName,
+                docRequired: r.proceduredoctor,
+                serviceid: r.serviceID,
+              };
+            });
+          } else {
+            this.questions[1].options = [];
+          }
+
+          this.questions[1] = { ...this.questions[1] };
+        },
+        (error) => {
+          this.formGroup.controls["procedure"].reset();
+          this.questions[1].options = [];
+          this.questions[1] = { ...this.questions[1] };
+        }
+      );
   }
 
   update(sno = 0) {
@@ -219,8 +315,17 @@ export class OrderProcedureOtherComponent implements OnInit {
       }
     }
   }
-
+  otherserviceId = 0;
   add(priorityId = 1) {
+    if (
+      // this.formGroup.value.otherService.value == undefined ||
+      this.formGroup.value.otherService == null ||
+      this.formGroup.value.otherService == ""
+    ) {
+      this.otherserviceId = 0;
+    } else {
+      this.otherserviceId = this.formGroup.value.otherService.value;
+    }
     this.flag = 0;
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
@@ -234,7 +339,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.checkpriceforzeroitemid(
-          this.formGroup.value.investigation.value,
+          this.formGroup.value.procedure.value,
           "67",
           "9"
         )
@@ -246,7 +351,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.flag++;
           console.log(this.flag);
           if (this.flag == 2) {
-            this.addrow();
+            //this.addrow();
           }
         } else {
           this.messageDialogService.info(
@@ -256,10 +361,10 @@ export class OrderProcedureOtherComponent implements OnInit {
       });
     this.http
       .get(
-        BillingApiConstants.checkPatientSex(
-          this.formGroup.value.investigation.value,
+        BillingApiConstants.checkPatientSexoporder(
+          this.formGroup.value.procedure.value,
           this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.procedure.serviceid,
           "9"
         )
       )
@@ -269,7 +374,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         if (response == 1) {
           this.flag++;
           if (this.flag == 2) {
-            this.addrow();
+            // this.addrow();
           }
           console.log(this.flag);
         } else {
@@ -278,10 +383,43 @@ export class OrderProcedureOtherComponent implements OnInit {
           );
         }
       });
+    this.http
+      .get(
+        BillingApiConstants.checkServiceTax(
+          this.formGroup.value.procedure.value,
+          this.formGroup.value.procedure.serviceid
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((response) => {
+        console.log(response);
+        if (response > 0) {
+          const dialogref = this.dialog.open(ServicetaxPopupComponent, {
+            width: "70vh",
+            height: "30vh",
+            data: {
+              procedure: this.formGroup.value.procedure.title,
+            },
+          });
+          dialogref.afterClosed().subscribe((value) => {
+            console.log(value);
+            if ((value = "true")) {
+              if (this.flag == 2) {
+                this.addrow();
+              }
+            } else if (value == "false") {
+              //open popup , on click of ok from that popup
+              this.addrow();
+            }
+          });
+        } else {
+          this.addrow();
+        }
+      });
 
-    if (this.flag == 2) {
-      this.addrow();
-    }
+    // if (this.flag == 2) {
+    //   this.addrow();
+    // }
 
     // this.http
     //   .get(
@@ -310,17 +448,114 @@ export class OrderProcedureOtherComponent implements OnInit {
     //     this.formGroup.reset();
     //   });
   }
-  _destroying$(
-    _destroying$: any
-  ): import("rxjs").OperatorFunction<any, unknown> {
-    throw new Error("Method not implemented.");
+
+  addrow(priorityId = 1) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.procedure.value,
+          this.otherserviceId,
+          "67"
+          //          this.formGroup.value.otherService.value,
+          //        this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.billingService.addToProcedure({
+          sno: this.data.length + 1,
+          procedures: this.formGroup.value.procedure.originalTitle,
+          qty: 1,
+          specialisation: 0,
+          doctorName: 0,
+          price: res.amount,
+          unitPrice: res.amount,
+          itemid: this.formGroup.value.procedure.value,
+          priorityId: priorityId,
+          serviceId: this.formGroup.value.procedure.serviceid,
+        });
+
+        this.data = [...this.billingService.ProcedureItems];
+        this.formGroup.reset();
+      });
   }
-  addrow() {}
-  save() {}
-  view() {}
-}
-function takeUntil(
-  _destroying$: any
-): import("rxjs").OperatorFunction<any, unknown> {
-  throw new Error("Function not implemented.");
+  getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    this.data.forEach((item: any, index: any) => {
+      console.log(item.specialisation);
+      if (item.specialisation == "") {
+        console.log("specialisation is empty");
+        item.specialisation;
+      }
+      if (this.reqItemDetail == "") {
+        this.reqItemDetail =
+          item.itemid +
+          "," +
+          item.serviceId +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priorityId;
+      } else {
+        this.reqItemDetail =
+          this.reqItemDetail +
+          "~" +
+          item.itemid +
+          "," +
+          item.serviceId +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priorityId;
+      }
+    });
+    console.log(this.reqItemDetail);
+
+    let maxid = this.billingService.activeMaxId.maxId;
+    let userid = Number(this.cookie.get("UserId"));
+    let locationid = Number(this.cookie.get("HSPLocationId"));
+
+    return new SaveandDeleteOpOrderRequest(
+      flag,
+      maxid,
+      this.reqItemDetail,
+      0,
+      60926,
+      67
+      // userid,
+      // locationid
+    );
+  }
+  saveResponsedata: any;
+  save() {
+    this.reqItemDetail = "";
+    console.log("inside save");
+    if (this.data.length > 0) {
+      this.http
+        .post(
+          BillingApiConstants.SaveDeleteOpOrderRequest,
+          this.getSaveDeleteObject(1)
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+          this.saveResponsedata = data;
+          console.log(this.saveResponsedata.success);
+          if (this.saveResponsedata.success == true) {
+            this.messageDialogService.success("Saved Successfully");
+            this.data = [];
+            this.billingService.ProcedureItems = [];
+          }
+        });
+    }
+  }
+
+  view() {
+    this.router.navigate([
+      "/out-patient-billing/op-order-request/view-request",
+    ]);
+  }
 }
