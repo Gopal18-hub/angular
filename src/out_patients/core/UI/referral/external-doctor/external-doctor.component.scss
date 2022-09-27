@@ -1,0 +1,16 @@
+::ng-deep .create-doctor-form {
+  background-color: #ffffff;
+  padding-top: 1em;
+  height: 360px;
+  maxhealth-question {
+    width: 96%;
+    padding: 0.8em 0.5em;
+    > div {
+      display: flex;
+      width: 100%;
+      mat-label {
+        width: 40%;
+      }
+    }
+  }
+}

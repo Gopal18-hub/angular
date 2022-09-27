@@ -41,7 +41,8 @@ export class DiscountAmtDialogComponent implements OnInit {
   reasonName: string = '';
   discPercenatge: number = 0;
   location = Number(this.cookie.get("HSPLocationId"));
-  //location = 67;
+  //ocation = 67;
+  discountPopupData = [];
   private readonly _destroying$ = new Subject<void>();
   constructor(private formService: QuestionControlService, private http: HttpService,
     private cookie: CookieService,
@@ -108,6 +109,7 @@ export class DiscountAmtDialogComponent implements OnInit {
       })
 
   }
+  selectedAuthorise: any;
   discAmtFormData = {
     title: "",
     type: "object",
@@ -321,6 +323,16 @@ export class DiscountAmtDialogComponent implements OnInit {
       })
 
 
+
+    this.discAmtForm.controls["authorise"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        //this.selectedAuthorise = value;
+        this.selectedAuthorise.totalDiscount = value;
+        this.miscPatient.setCalculateBillItems(this.selectedAuthorise);
+      })
+
+
     // this.question[7].elementRef.addEventListener("keypress", (event: any) => {
     //   if (event.key === "Enter") { this.employeeCode }
     // })
@@ -389,6 +401,7 @@ export class DiscountAmtDialogComponent implements OnInit {
 
     dialogref.afterClosed().subscribe(res => {
       this.discAmtForm.controls["empCode"].setValue(res.data);
+      this.dialogRef.close({ data: this.selectedAuthorise });
     })
 
   }

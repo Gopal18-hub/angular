@@ -8,7 +8,7 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { SaveandDeleteOpOrderRequest } from "../../../../../../../../core/models/saveanddeleteoporder.Model";
-
+import { Router } from "@angular/router";
 import {
   filter,
   distinctUntilChanged,
@@ -129,7 +129,8 @@ export class OderInvestigationsComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -166,10 +167,17 @@ export class OderInvestigationsComponent implements OnInit {
       console.log(res);
       // col: "specialisation"
       if (res.data.col == "specialisation") {
+        this.config.columnsInfo.specialisation.value = res.$event.value;
+        console.log(this.config.columnsInfo.specialisation.value);
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
+      } else if (res.data.col == "doctorName") {
+        this.config.columnsInfo.doctorName.value = res.$event.value;
+        console.log(this.config.columnsInfo.doctorName.value);
+      } else if (res.data.col == "priority") {
+        this.config.columnsInfo.priority.value = res.$event.value;
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -285,12 +293,14 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.investigationList = res;
-        // this.formGroup.controls["investigation"].reset();
+        this.formGroup.controls["investigation"].reset();
         this.questions[1].options = this.investigationList.map((r: any) => {
           return {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
+            serviceid: r.serviceid,
+            precaution: r.precaution,
             ngStyle: {
               color:
                 r.outsourceTest == 2
@@ -370,7 +380,7 @@ export class OderInvestigationsComponent implements OnInit {
         BillingApiConstants.checkPatientSex(
           this.formGroup.value.investigation.value,
           this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.investigation.serviceid,
           "2"
         )
       )
@@ -437,60 +447,56 @@ export class OderInvestigationsComponent implements OnInit {
           investigations: this.formGroup.value.investigation.title,
           precaution: "",
           priority: 1,
-          specialisation: "",
-          doctorName: "",
+          specialisation: 0,
+          doctorName: 0,
           price: res.amount,
           serviceid:
             this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           itemid: this.formGroup.value.investigation.value,
+          doctorid: 0,
+          specialisationid: 0,
         });
         this.data = [...this.billingService.InvestigationItems];
+        console.log(this.data);
         this.formGroup.reset();
       });
   }
 
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
     this.data.forEach((item: any, index: any) => {
+      console.log(item.specialisation);
+      if (item.specialisation == "") {
+        console.log("specialisation is empty");
+        item.specialisation;
+      }
       if (this.reqItemDetail == "") {
-        if (item.investigation == undefined || item.investigation == "") {
-          item.investigation = "";
-        }
-        if (item.specialisation == undefined || item.investigation == "") {
-          item.specialisation = "";
-        }
-        if (item.doctorname == undefined || item.investigation == "") {
-          item.doctorname = "";
-        }
         this.reqItemDetail =
-          item.investigation +
+          item.itemid +
           "," +
-          item.precaution +
-          "," +
-          item.priority +
+          item.serviceid +
           "," +
           item.specialisation +
           "," +
-          item.doctorname +
+          item.doctorName +
           "," +
-          item.price +
-          "," +
-          item.serviceid;
-        console.log(this.reqItemDetail);
+          item.priority;
       } else {
         this.reqItemDetail =
           this.reqItemDetail +
+          "~" +
+          item.itemid +
           "," +
-          (item.investigation,
-          item.precaution,
-          item.priority,
-          item.specialisation,
-          item.doctorname,
-          item.price,
-          item.serviceid);
-        console.log(this.reqItemDetail);
+          item.serviceid +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priority;
       }
     });
+    console.log(this.reqItemDetail);
 
     let maxid = this.billingService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
@@ -507,6 +513,7 @@ export class OderInvestigationsComponent implements OnInit {
       // locationid
     );
   }
+  saveResponsedata: any;
   save() {
     this.reqItemDetail = "";
     console.log("inside save");
@@ -519,8 +526,19 @@ export class OderInvestigationsComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
+          this.saveResponsedata = data;
+          console.log(this.saveResponsedata.success);
+          if (this.saveResponsedata.success == true) {
+            this.messageDialogService.success("Saved Successfully");
+            this.data = [];
+            this.billingService.InvestigationItems = [];
+          }
         });
     }
   }
-  view() {}
+  view() {
+    this.router.navigate([
+      "/out-patient-billing/op-order-request/view-request",
+    ]);
+  }
 }
