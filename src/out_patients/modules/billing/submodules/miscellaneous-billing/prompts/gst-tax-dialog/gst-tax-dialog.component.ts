@@ -4,10 +4,11 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { FormGroup } from '@angular/forms';
-import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject, takeUntil } from "rxjs";
 import { GstTaxModel } from "../../../../../../core/models/GstTaxModel.Model";
-import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { MiscService } from "../../MiscService.service";
+
 
 @Component({
   selector: 'out-patients-gst-tax-dialog',
@@ -102,7 +103,6 @@ export class GstTaxDialogComponent implements OnInit {
 
       })
       this.gstTaxForm.controls["code"].setValue(this.gstData.saccode)
-      this.dialogRef.close({ data: this.gstData })
       //this.gstData.taxgrpid
     })
   }
@@ -154,7 +154,9 @@ export class GstTaxDialogComponent implements OnInit {
     }
   }
 
-
+  close() {
+    this.dialogRef.close({ data: this.gstData })
+  }
 
 
   taxData: any = [

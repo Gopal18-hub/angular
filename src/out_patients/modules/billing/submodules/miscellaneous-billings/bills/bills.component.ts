@@ -3,8 +3,9 @@ import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MatDialog } from "@angular/material/dialog";
-import { GstTaxDialogComponent } from "../bills/gst-tax-dialog/gst-tax-dialog.component";
-import { DiscountAmtDialogComponent } from "../bills/discount-amt-dialog/discount-amt-dialog.component";
+import { GstTaxDialogComponent } from "../../miscellaneous-billing/prompts/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "../../miscellaneous-billing/prompts/discount-amt-dialog/discount-amt-dialog.component";
+
 @Component({
   selector: 'out-patients-bills',
   templateUrl: './bills.component.html',

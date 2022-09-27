@@ -85,9 +85,13 @@
               </maxhealth-question>
             </div>
 
-            <maxhealth-question [question]="question[8]" [form]="miscServBillForm" [questions]="question[8]"
+            <!-- <maxhealth-question [question]="question[8]" [form]="miscServBillForm" [questions]="question[8]"
               [index]="8">
-            </maxhealth-question>
+            </maxhealth-question> -->
+            <mat-label>Referral Doctor <span style="color:red">*</span></mat-label>
+            <out-patients-referral
+              (selectedDoctorEvent)="selectedReferralDoctor($event)"
+            ></out-patients-referral>
 
           </div>
 
