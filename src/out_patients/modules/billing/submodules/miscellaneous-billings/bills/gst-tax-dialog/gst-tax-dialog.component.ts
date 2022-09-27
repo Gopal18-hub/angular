@@ -102,6 +102,7 @@ export class GstTaxDialogComponent implements OnInit {
 
       })
       this.gstTaxForm.controls["code"].setValue(this.gstData.saccode)
+      this.dialogRef.close({ data: this.gstData })
       //this.gstData.taxgrpid
     })
   }
@@ -163,11 +164,7 @@ export class GstTaxDialogComponent implements OnInit {
     { services: "IGST", percentage: '0.00', value: '0.00' },
     { services: "CESS", percentage: '0.00', value: '0.00' },
     { services: "TOTAL TAX", percentage: '0.00', value: '0.00' },
-    // { services: "TAXRATE1", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE2", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE3", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE4", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE5", percentage: this.totaltaX_Value, value: '0.00' }
+
 
   ]
 }
