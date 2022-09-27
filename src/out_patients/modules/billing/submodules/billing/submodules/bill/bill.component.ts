@@ -341,6 +341,7 @@ export class BillComponent implements OnInit {
         },
       });
     }
+    this.billingservice.calculateBill();
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
