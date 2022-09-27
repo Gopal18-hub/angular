@@ -12,6 +12,7 @@ import { DatePipe } from "@angular/common";
 import { AckDetailsForScrollModel, dtExcelforScroll } from "../../../../../../core/models/ackdetailsforscroll.Model";
 import { CookieService } from "@shared/services/cookie.service";
 import { ReportService } from "@shared/services/report.service";
+import * as moment from "moment";
 @Component({
   selector: "out-patients-cash-scroll-modify",
   templateUrl: "./cash-scroll-modify.component.html",
@@ -895,7 +896,7 @@ export class CashScrollModifyComponent implements OnInit {
         slNo: Number(item.sno),
         receiptNo: String(item.receiptNo),
         billNo: String(item.billno),
-        dateTime: this.datepipe.transform(item.datetime, 'YYYY-MM-ddTHH:mm:ss'),
+        dateTime: moment(item.datetime.trim(),'DD/MM/YYYY[T]HH:mm:ss').format('YYYY-MM-DD[T]HH:mm:ss'),
         billAmount: String(item.billamount),
         refund: String(item.refund),
         depositamount: String(item.depositamount),
