@@ -1,5 +1,5 @@
 export class cashscrollNewDetail {
-    sno?: number;
+ 
     receiptNo: string;
     billno: string;
     billamount: number;
@@ -42,9 +42,9 @@ export class cashscrollNewDetail {
     maxid:string;
     billDateTime:string;
     compName:string;
-    cashpaymentbymobile:string;
-  
-    constructor(sno:number,
+    modifiedDDNumber:string;
+    sno?: number;
+    constructor(
         receiptNo: string,
         billno: string,
         billamount: number,
@@ -87,8 +87,9 @@ export class cashscrollNewDetail {
         maxid:string,
         billDateTime:string,
         compName:string,
-        cashpaymentbymobile:string) {
-      this.sno = sno;
+        modifiedDDNumber:string,
+        sno:number) {
+      
       this.receiptNo = receiptNo;
       this.billno = billno;
       this.billamount = billamount;
@@ -131,7 +132,8 @@ export class cashscrollNewDetail {
       this.maxid = maxid;
       this.billDateTime = billDateTime;
       this.compName = compName;
-      this.cashpaymentbymobile = cashpaymentbymobile;
+      this.modifiedDDNumber = modifiedDDNumber;
+      this.sno = sno;
     }
   }
   

@@ -127,7 +127,7 @@ import { StaffDeptDialogComponent } from "./submodules/miscellaneous-billing/bil
 import { PrintduereceiptComponent } from "./submodules/details/printduereceipt/printduereceipt.component";
 
 import { ReferralModule } from "@core/ui/referral";
-import { ServicetaxPopupComponent } from './submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component';
+import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popuptext.component";
 
 @NgModule({
   declarations: [
@@ -227,7 +227,7 @@ import { ServicetaxPopupComponent } from './submodules/op-order-request/submodul
     GstTaxComponent,
     StaffDeptDialogComponent,
     PrintduereceiptComponent,
-    ServicetaxPopupComponent,
+    PopuptextComponent,
   ],
   imports: [
     BillingRoutingModule,
