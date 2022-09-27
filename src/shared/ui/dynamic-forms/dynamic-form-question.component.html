@@ -439,9 +439,12 @@
             color="primary"
           >
             <ng-container *ngFor="let opt of question.options">
-              <mat-radio-button [value]="opt.value" class="py-2">{{
-                opt.title
-              }}</mat-radio-button>
+              <mat-radio-button
+                [value]="opt.value"
+                class="py-2"
+                [disabled]="opt.disabled"
+                >{{ opt.title }}</mat-radio-button
+              >
             </ng-container>
           </mat-radio-group>
         </div>
@@ -676,7 +679,11 @@
         >
         <ul class="list-unstyled">
           <li *ngFor="let opt of question.options">
-            <mat-checkbox [formControlName]="question.key" color="primary">
+            <mat-checkbox
+              [formControlName]="question.key"
+              color="primary"
+              [disabled]="question.disabled"
+            >
               {{ opt.title }}
             </mat-checkbox>
           </li>

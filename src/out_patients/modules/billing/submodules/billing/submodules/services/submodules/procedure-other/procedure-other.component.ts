@@ -207,6 +207,7 @@ export class ProcedureOtherComponent implements OnInit {
               originalTitle: r.itemName,
               serviceid: r.serviceID,
               docRequired: r.proceduredoctor,
+              popuptext: r.popuptext,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -284,6 +285,7 @@ export class ProcedureOtherComponent implements OnInit {
                 originalTitle: r.itemName,
                 docRequired: r.proceduredoctor,
                 serviceid: r.serviceID,
+                popuptext: r.popuptext,
               };
             });
           } else {
@@ -355,6 +357,7 @@ export class ProcedureOtherComponent implements OnInit {
             priorityId: priorityId,
             serviceId: this.formGroup.value.procedure.serviceid,
             billItem: {
+              popuptext: this.formGroup.value.procedure.popuptext,
               itemId: this.formGroup.value.procedure.value,
               priority: priorityId,
               serviceId: this.formGroup.value.procedure.serviceid,

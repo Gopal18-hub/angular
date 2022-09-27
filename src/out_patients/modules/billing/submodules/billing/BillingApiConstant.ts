@@ -226,4 +226,6 @@ export namespace BillingApiConstants {
   export const SaveDeleteOpOrderRequest = `${environment.BillingApiUrl}api/outpatientbilling/saveanddeleteoporderrequest`;
   export const checkModality = (procedureid: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkitemmodality/${procedureid}`;
+  export const checkServiceTax = (testid: number, serviceid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkservicetax/${testid}/${serviceid}`;
 }

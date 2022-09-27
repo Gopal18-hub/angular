@@ -5,6 +5,7 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Injectable({
   providedIn: "root",
@@ -51,7 +52,17 @@ export class BillingService {
 
   consultationItemsAdded = new Subject<boolean>();
 
-  constructor(private http: HttpService, private cookie: CookieService) {}
+  referralDoctor: any;
+
+  constructor(
+    private http: HttpService,
+    private cookie: CookieService,
+    private calculateBillService: CalculateBillService
+  ) {}
+
+  calculateBill() {
+    this.calculateBillService.initProcess(this.billItems);
+  }
 
   changeBillTabStatus(status: boolean) {
     this.disableBillTab = status;
@@ -590,6 +601,7 @@ export class BillingService {
         doctorName_required: investigation.docRequired ? true : false,
         price: res[0].returnOutPut,
         billItem: {
+          popuptext: investigation.popuptext,
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
@@ -709,5 +721,9 @@ export class BillingService {
       });
       this.consultationItemsAdded.next(true);
     }
+  }
+
+  setReferralDoctor(doctor: any) {
+    this.referralDoctor = doctor;
   }
 }

@@ -44,7 +44,7 @@
       color="primary"
       class="font-sm ml-2 min-width-initial"
       type="button"
-      [disabled]="!formGroup.valid"
+      [disabled]="!data.length"
       (click)="save()"
     >
       Save
@@ -54,7 +54,7 @@
     color="primary"
     class="font-sm ml-2 min-width-initial"
     type="button"
-    [disabled]="!formGroup.valid"
+    [disabled]="!data.length"
     (click)="view()"
   >
     View
