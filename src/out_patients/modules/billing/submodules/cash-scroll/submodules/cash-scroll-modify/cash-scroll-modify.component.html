@@ -128,12 +128,12 @@
      
     </div>
     <!-----Third Row-->
-    <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="display">
+    <div class="h-1/2 mt-1 scroll-table unmodified" [class.makereadonly]="makereadonly" *ngIf="display">
         <maxhealth-table  [config]="config" [data]="billList" #table></maxhealth-table>
     </div>
 
     <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="!display">
-        <maxhealth-table  [config]="config1" [data]="billList" #table></maxhealth-table>
+        <maxhealth-table class="modified"  [config]="config1" [data]="billList" #table></maxhealth-table>
     </div>
     <!--Fourth row-->
     <div class="h-20 w-full p-3 mt-2 border-class flex  text-wrap bg-lightgray">
