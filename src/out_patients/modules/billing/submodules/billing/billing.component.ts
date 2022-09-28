@@ -964,7 +964,7 @@ export class BillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          67 // Number(this.cookie.get("HSPLocationId"))
+           Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
