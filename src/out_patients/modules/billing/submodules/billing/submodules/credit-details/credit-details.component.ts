@@ -25,21 +25,28 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
   styleUrls: ["./credit-details.component.scss"],
 })
 export class CreditDetailsComponent implements OnInit {
+  private readonly _destroying$ = new Subject<void>();
+  companyList!: GetCompanyDataInterface[];
+  coorporateList: { id: number; name: string }[] = [] as any;
+  today: any;
+   company!: string ;
+
   comapnyFormData = {
     title: "",
     type: "object",
     properties: {
       company: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "",
         placeholder: "-Select-",
         emptySelect: true,
       },
       corporate: {
-        type: "dropdown",
+        type: "autocomplete",
         title: "Corporate",
         placeholder: "-Select-",
         emptySelect: true,
+        options: this.coorporateList,
       },
       companyGSTN: {
         type: "dropdown",
@@ -105,10 +112,7 @@ export class CreditDetailsComponent implements OnInit {
   iommessage: string = "";
   companyexists:boolean =  false;
 
-  private readonly _destroying$ = new Subject<void>();
-  companyList!: GetCompanyDataInterface[];
-  coorporateList: { id: number; name: string }[] = [] as any;
-  today: any;
+
 
   constructor(private formService: QuestionControlService,
     private http: HttpService, public matDialog: MatDialog,
@@ -134,25 +138,20 @@ export class CreditDetailsComponent implements OnInit {
     this.generalQuestions = formResult1.questions;
     this.comapnyFormGroup.controls["letterDate"].setValue(this.today);
     this.comapnyFormGroup.controls["corporate"].disable();
+   
     this.getAllCompany();
     this.getAllCorporate();
+    this.billingservice.companyChangeEvent.subscribe((res:any) => { 
+      this.comapnyFormGroup.controls["company"].setValue(res);
+     });
   }
-
-  getAllCompany() {
-    this.http
-      .get(
-        BillingApiConstants.getcompanydetail(
-        67 // Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((data: GetCompanyDataInterface[]) => {
-        console.log(data);
-        this.companyList = data;
-        this.companyQuestions[0].options = data.map((a: any) => {
-          return { title: a.name, value: a.id };
-        });       
-      });
+ 
+  getAllCompany() {    
+        this.companyList = this.billingservice.companyData;
+        this.companyQuestions[0].options = this.companyList.map((a: any) => {
+          return { title: a.name, value: a.id, company: a };
+        });  
+         this.companyQuestions[0] = { ...this.companyQuestions[0] };     
   }
 
   getAllCorporate() {
@@ -164,6 +163,7 @@ export class CreditDetailsComponent implements OnInit {
         this.companyQuestions[1].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
+        this.companyQuestions[1] = { ...this.companyQuestions[1] };  
       });
   }
   
@@ -182,35 +182,10 @@ export class CreditDetailsComponent implements OnInit {
     let TPA;
     this.comapnyFormGroup.controls["company"].valueChanges.subscribe(
       (res:any) => {
-        if (res != null && res != 0 && res != undefined) {
-          this.companyname = res;
+        if (res.value != null && res.value != 0 && res.value != undefined) {
+          this.companyname = res.value;
           this.companyexists = true;
-        let iomcompany = this.companyList.filter((iom) => iom.id == res);        
-        this.iommessage =   "IOM Validity till : " + this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
-        TPA = iomcompany[0].isTPA;
-        if(TPA == 1){
-         const iomcompanycorporate =  this.matDialog.open(IomCompanyBillingComponent, {
-            width: "25%",
-            height: "28%",           
-           });
-
-           iomcompanycorporate.afterClosed()
-           .pipe(takeUntil(this._destroying$))
-           .subscribe((result) => {
-             if (result.data == "corporate") {
-              this.comapnyFormGroup.controls["corporate"].enable();
-              this.comapnyFormGroup.controls["corporate"].setValue(0);
-             }
-             else{
-               
-          this.comapnyFormGroup.controls["corporate"].setValue(0);
-          this.comapnyFormGroup.controls["corporate"].disable();
-             }
-          });
-        }else{
-          this.comapnyFormGroup.controls["corporate"].setValue(0);
-          this.comapnyFormGroup.controls["corporate"].disable();
-        }
+          this.billingservice.setCompnay(res.value,res,this.comapnyFormGroup)
       }
       else{
         this.companyexists = false;

@@ -10,7 +10,7 @@ import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Interface";
 import { DatePipe } from "@angular/common";
-import { cashscrollNewDetail } from "@core/models/cashscrollNewModel.Model";
+import { CashScrollNewDetail } from "@core/models/cashscrollNewModel.Model";
 import { savecashscroll } from "@core/models/savecashscrollModel.Model";
 import { ReportService } from "@shared/services/report.service";
 import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
@@ -279,9 +279,10 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
+
 
   scrollno: string | undefined;
   billamount:number = 0;
@@ -371,7 +372,7 @@ else
       (resultdata) => 
     {
 
-      this.scrolldetailsList = resultdata as cashscrollNewDetail[];
+      this.scrolldetailsList = resultdata as CashScrollNewDetail[];
       if(this.scrolldetailsList.length == 0){
         this.dialogservice.error("No data Found");
      }else{
