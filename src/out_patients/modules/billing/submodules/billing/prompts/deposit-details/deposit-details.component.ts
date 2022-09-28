@@ -13,6 +13,7 @@ export class DepositDetailsComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   totalDeposit = 0;
   tableSelectedRows: any = [];
+  tempTable: any = [];
   depoDetails: any = [];
   calcBillData: any = [];
   config: any = {
@@ -76,6 +77,7 @@ export class DepositDetailsComponent implements OnInit {
         this.tableSelectedRows.forEach((element: any) => {
           this.totalDeposit += element.balanceamount;
         });
+        this.tempTable = this.tableSelectedRows;
 
 
 
@@ -86,9 +88,6 @@ export class DepositDetailsComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.tableSelectedRows, "deposittab;es")
-    this.calcBillData.depositSelectedrows = this.tableSelectedRows;
-    this.miscPatient.setCalculateBillItems(this.calcBillData);
-    this.dialogRef.close({ data: this.totalDeposit });
+    this.dialogRef.close({ data: this.tempTable });
   }
 }

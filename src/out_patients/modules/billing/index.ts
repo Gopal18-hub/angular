@@ -103,8 +103,8 @@ import { ResendBillEmailDialogComponent } from "./submodules/details/resend-bill
 import { DmgPopupComponent } from "./submodules/billing/prompts/dmg-popup/dmg-popup.component";
 import { ConfigurationBillingComponent } from "./submodules/billing/prompts/configuration-billing/configuration-billing.component";
 import { OnlineAppointmentComponent } from "./submodules/billing/prompts/online-appointment/online-appointment.component";
-import { GstTaxDialogComponent } from "./submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
-import { DiscountAmtDialogComponent } from "./submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
+import { GstTaxDialogComponent } from "./submodules/miscellaneous-billing/prompts/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "./submodules/miscellaneous-billing/prompts/discount-amt-dialog/discount-amt-dialog.component";
 import { AcknowledgedScrollAmountReportComponent } from "./submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 import { IomCompanyBillingComponent } from "./submodules/billing/prompts/iom-company-billing/iom-company-billing.component";
 import { ExpiredDepositsComponent } from "./submodules/expired-deposits/expired-deposits.component";
@@ -263,4 +263,4 @@ import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodul
   providers: [],
   bootstrap: [],
 })
-export class BillingModule {}
+export class BillingModule { }

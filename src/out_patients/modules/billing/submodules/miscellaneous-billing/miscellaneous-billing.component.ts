@@ -209,11 +209,11 @@ export class MiscellaneousBillingComponent implements OnInit {
 
       }
     });
-    this.questions[4].elementRef.addEventListener("keypress", (event: any) => {
-      if (event.key === "Enter") {
-        this.questions[4].elementRef.focus();
-      }
-    });
+    // this.questions[4].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") {
+    //     this.questions[4].elementRef.focus();
+    //   }
+    // });
     this.miscForm.controls["company"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -455,11 +455,11 @@ export class MiscellaneousBillingComponent implements OnInit {
 
 
 
-    const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
-    if (expiredStatus) {
-      this.snackbar.open("Patient is an Expired Patient!", 'error')
-      return;
-    }
+    // const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+    // if (expiredStatus) {
+    //   this.snackbar.open("Patient is an Expired Patient!", 'error')
+    //   return;
+    // }
 
 
 

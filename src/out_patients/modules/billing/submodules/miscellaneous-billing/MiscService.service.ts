@@ -6,6 +6,8 @@ import { Observable, Subject } from "rxjs";
 })
 export class MiscService {
   subject = new Subject<any>();
+  billType = 0;
+  serviceItemsList = [];
 
   transactionamount: any = 0.0;
   clearAllItems = new Subject<boolean>();
@@ -56,6 +58,18 @@ export class MiscService {
 
     return this.miscFormData;
   }
+  setBillType(data: any) {
+    this.billType = data
+  }
+  getBillType() {
+    return this.billType
+  }
+  setServiceItemsList(data: any) {
+    this.serviceItemsList = data;
+  }
+  getServiceItemsList() {
+    return this.serviceItemsList
+  }
 
   setCalculateBillItems(data: any) {
     this.calcItems = data;
@@ -99,6 +113,9 @@ export class MiscService {
     }
     if (!this.calcItems.corporateId) {
       this.calcItems.corporateId = 0
+    }
+    if (!this.calcItems.depositSelectedrows || this.calcItems.depositSelectedrows.length === 0) {
+      this.calcItems.depositSelectedrows = []
     }
     this.calculatedBill.totalBillAmount = this.calcItems.totalAmount - this.calcItems.depositInput - this.calcItems.totalDiscount;
     this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
