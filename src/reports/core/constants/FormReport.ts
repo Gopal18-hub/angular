@@ -264,7 +264,8 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/MM/dd",
+      //format: "YYYY/MM/dd",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         DocID: {
           type: "dropdown",
@@ -294,10 +295,12 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -358,10 +361,12 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -734,10 +739,12 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         cmbLocation: {
           type: "dropdown",
@@ -809,10 +816,12 @@ export namespace FormReport {
         dtpfrom: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpto: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         locationid: {
           type: "dropdown",
@@ -870,10 +879,12 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "FromDate",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpToDate: {
           type: "date",
           title: "ToDate",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         // location: {
         //   type: "dropdown",

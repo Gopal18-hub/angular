@@ -6,7 +6,7 @@
       class="w-3/5 flex align-items-center"
     >
       <div class="flex w-full align-items-center">
-        <mat-label class="max-health-primary-color mr-4 font-bold"
+        <mat-label class="max-health-primary-color mr-4 font-bold text-wrap"
           >Other Services</mat-label
         >
         <maxhealth-question
@@ -17,17 +17,27 @@
           class="w-2/5"
         >
         </maxhealth-question>
-
+        <mat-label class="max-health-primary-color ml-4 font-bold"
+        >Procedure</mat-label
+      >
+      <maxhealth-question
+        [question]="questions[1]"
+        [form]="formGroup"
+        [questions]="questions[1]"
+        [index]="1"
+        class="w-2/5"
+      >
+      </maxhealth-question>
 
       </div>
     </form>
     <div class="flex w-36 align-items-center justify-end">
-      <div class="total-cost" *ngIf="billingService.totalCost > 0">
+      <!-- <div class="total-cost" *ngIf="billingService.totalCost > 0">
         <span>Total Estimation:</span>
         {{
           billingService.totalCost | currency: "INR":undefined:undefined:"en-IN"
         }}
-      </div>
+      </div> -->
 
       <button
         mat-raised-button
@@ -54,7 +64,7 @@
     color="primary"
     class="font-sm ml-2 min-width-initial"
     type="button"
-    [disabled]="!data.length"
+    
     (click)="view()"
   >
     View

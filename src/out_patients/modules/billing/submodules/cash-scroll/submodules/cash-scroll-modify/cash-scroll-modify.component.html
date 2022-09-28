@@ -107,18 +107,33 @@
             moduleId="7"
             featureId="66"
             actionId="1528"
-            >Modify</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center" (click)="print()" [disabled]="printbtn">Print</button>
+            >
+            Modify
+            </button>
+            <button 
+            mat-raised-button 
+            color="primary" 
+            class="ml-2 button align-items-center" 
+            (click)="print()" 
+            [disabled]="printbtn"
+            accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="561"
+            actionId="1488"
+            >
+            Print
+            </button>
         </div>
      
     </div>
     <!-----Third Row-->
-    <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="display">
+    <div class="h-1/2 mt-1 scroll-table unmodified" [class.makereadonly]="makereadonly" *ngIf="display">
         <maxhealth-table  [config]="config" [data]="billList" #table></maxhealth-table>
     </div>
 
     <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="!display">
-        <maxhealth-table  [config]="config1" [data]="billList" #table></maxhealth-table>
+        <maxhealth-table class="modified"  [config]="config1" [data]="billList" #table></maxhealth-table>
     </div>
     <!--Fourth row-->
     <div class="h-20 w-full p-3 mt-2 border-class flex  text-wrap bg-lightgray">
