@@ -29,6 +29,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
 import { PatientService } from "@core/services/patient.service";
 import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-appointment.component";
+import { distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "out-patients-billing",
@@ -113,7 +114,7 @@ export class BillingComponent implements OnInit {
 
   narrationAllowedLocations = ["67", "69"];
 
-  companyData !: GetCompanyDataInterface[];
+  companyData!: GetCompanyDataInterface[];
 
   orderId: number = 0;
 
@@ -167,6 +168,13 @@ export class BillingComponent implements OnInit {
         this.links[1].disabled = false;
       }
     });
+    this.billingService.companyChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.formGroup.controls["company"].setValue(res.company, {
+          emitEvent: false,
+        });
+      }
+    });
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
@@ -202,12 +210,19 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {        
-      if(res){
-        this.billingService.setCompnay(res.value, res, this.formGroup);  
-      }    
-     
-    });
+    this.formGroup.controls["company"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          console.log(res);
+          this.billingService.setCompnay(
+            res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
+      });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
@@ -949,16 +964,18 @@ export class BillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-         67 // Number(this.cookie.get("HSPLocationId"))
+           Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: GetCompanyDataInterface[]) => {
         this.companyData = data;
-        this.billingService.setCompanyData(data) ;  
+        this.formGroup.controls["corporate"].disable();
+        this.billingService.setCompanyData(data);
         this.questions[3].options = data.map((a: any) => {
-          return { title: a.name, value: a.id, company:a };
+          return { title: a.name, value: a.id, company: a };
         });
+        this.questions[3] = { ...this.questions[3] };
       });
   }
 
