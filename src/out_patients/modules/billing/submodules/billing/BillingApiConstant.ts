@@ -235,4 +235,7 @@ export namespace BillingApiConstants {
     type: string
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkPatientSex/${testId}/${gender}/${serviceId}/${type}`;
+
+  export const checkoutsourcetest = (companyId: string) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkoutsourcetest/${companyId}`;
 }
