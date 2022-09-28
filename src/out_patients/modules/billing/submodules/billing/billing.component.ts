@@ -113,7 +113,7 @@ export class BillingComponent implements OnInit {
 
   narrationAllowedLocations = ["67", "69"];
 
-  companyData = [];
+  companyData !: GetCompanyDataInterface[];
 
   orderId: number = 0;
 
@@ -202,8 +202,11 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
-      this.billingService.setCompnay(res.value);
+    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {        
+      if(res){
+        this.billingService.setCompnay(res.value, res, this.formGroup);  
+      }    
+     
     });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
@@ -946,14 +949,15 @@ export class BillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          Number(this.cookie.get("HSPLocationId"))
+         67 // Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
+      .subscribe((data: GetCompanyDataInterface[]) => {
         this.companyData = data;
+        this.billingService.setCompanyData(data) ;  
         this.questions[3].options = data.map((a: any) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: a.id, company:a };
         });
       });
   }
