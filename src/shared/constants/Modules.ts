@@ -271,7 +271,7 @@ export namespace MaxModules {
               allUsersAllow: false,
             },
             {
-              id: 84,
+              id: 66,
               title: "Cash Scroll",
               defaultPath: "/out-patient-billing/cash-scroll",
               globalSearchKey: "global",
