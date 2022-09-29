@@ -7,7 +7,10 @@
       (rowRwmove)="rowRwmove($event)"
     ></maxhealth-table>
   </div>
-  <div class="h-22vh mt-1 mb-1">
+  <div
+    class="h-22vh mt-1 mb-1"
+    [class.isDisabled]="billingservice.totalCost == 0"
+  >
     <form [formGroup]="formGroup" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
         <div
