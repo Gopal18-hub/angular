@@ -189,6 +189,7 @@ export class DisountReasonComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedItems = this.calculateBillService.discountSelectedItems;
+
     let formResult: any = this.formService.createForm(
       this.discAmtFormData.properties,
       {}
@@ -199,15 +200,29 @@ export class DisountReasonComponent implements OnInit {
     this.getBillDiscountReason();
     this.getAuthorisedBy();
     this.billingService.billItems.forEach((item: any) => {
-      if (!this.serviceBasedList[item.serviceId.toString()]) {
-        this.serviceBasedList[item.serviceId.toString()] = {
+      if (!this.serviceBasedList[item.serviceName.toString()]) {
+        this.serviceBasedList[item.serviceName.toString()] = {
           id: item.serviceId,
           name: item.serviceName,
           items: [],
         };
       }
-      this.serviceBasedList[item.serviceId.toString()].items.push(item);
+      this.serviceBasedList[item.serviceName.toString()].items.push(item);
     });
+    if (this.selectedItems.length > 0) {
+      const tempItem = this.selectedItems[0];
+      if (tempItem.discTypeValue == "On-Bill") {
+        this.disableAdd = true;
+      } else if (tempItem.discTypeValue == "On-Service") {
+        if (
+          this.selectedItems.length ==
+          Object.values(this.serviceBasedList).length
+        ) {
+          this.disableAdd = true;
+        }
+      } else if (tempItem.discTypeValue == "On-Item") {
+      }
+    }
   }
 
   ngAfterViewInit() {
@@ -273,6 +288,7 @@ export class DisountReasonComponent implements OnInit {
       head: "",
       reason: "",
       value: "",
+      discTypeValue: "",
     };
   }
 
@@ -289,6 +305,7 @@ export class DisountReasonComponent implements OnInit {
       head: "",
       reason: "",
       value: "",
+      discTypeValue: "",
     };
   }
 
@@ -314,6 +331,7 @@ export class DisountReasonComponent implements OnInit {
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "",
+          discTypeValue: "On-Item",
         };
         this.calculateBillService.discountSelectedItems.push(temp);
       }
@@ -347,6 +365,7 @@ export class DisountReasonComponent implements OnInit {
         head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
         value: "",
+        discTypeValue: "On-Service",
       };
       this.calculateBillService.discountSelectedItems.push(temp);
     }
@@ -382,6 +401,7 @@ export class DisountReasonComponent implements OnInit {
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "",
+      discTypeValue: "On-Bill",
     };
     this.calculateBillService.discountSelectedItems.push(temp);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
