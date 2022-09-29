@@ -449,7 +449,14 @@ export class BillComponent implements OnInit {
       width: "70vw",
       height: "98vh",
       data: {
-        billAmount: this.billingservice.totalCost,
+        totalBillAmount: this.billingservice.totalCost,
+        totalDiscount: this.formGroup.value.discAmt,
+        totalDeposit: this.formGroup.value.dipositAmt,
+        totalRefund: 0,
+        ceditLimit: 0,
+        settlementAmountRefund: 0,
+        settlementAmountReceived: 0,
+        toPaidAmount: this.formGroup.value.amtPayByPatient,
       },
     });
 
