@@ -183,29 +183,12 @@ export class ExpiredDepositsComponent implements OnInit {
       disabledSort: true,
     },
   };
-  // data: any[] = [
-  //   {
-  //     receiptno: "BLDP24512",
-  //     maxid: "BLKH.101",
-  //     datetime: "05/11/2022",
-  //     deposit: "06/11/2022",
-  //     usedop: "0",
-  //     usedip: "0",
-  //     refund: "0",
-  //     balance: "0",
-  //     checkdd: "0.00",
-  //     executeddate: "05/11/2022",
-  //     executedof: "NA",
-  //     episode: "SA12",
-  //   },
-  // ];
+
   searchbtn: boolean = true;
   clearbtn: boolean = true;
   showtable!: boolean;
   iacode: any;
   registrationno: any;
-  // today: any;
-  // fromdate: any;
   apiProcessing: boolean = false;
   pname: any;
   age: any;
@@ -589,7 +572,6 @@ export class ExpiredDepositsComponent implements OnInit {
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid MaxID";
-            // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
           } else if (resultData.length == 0) {
@@ -597,7 +579,6 @@ export class ExpiredDepositsComponent implements OnInit {
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid MaxID";
-            // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
           } else {
@@ -652,23 +633,17 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[0].readonly = false;
     this.ExpiredDepositform.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
     this.patientDetails = [];
-    //this.getExpiredDepositReportModel = [];
     this.ExpiredDepositformlist = [];
     this.searchbtn = true;
     this.patienthistorylist = [];
-    // this.apiProcessing = false;
     this.showtable = true;
     this.clearbtn = true;
-    // this.router.navigate(["expired-deposits"]).then(() => {
-    //   window.location.reload;
-    // });
   }
 
   activeClick(event: any) {
