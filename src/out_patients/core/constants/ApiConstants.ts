@@ -10,7 +10,7 @@ export namespace ApiConstants {
     regno: number
   ) => {
     return (
-      environment.SampleApiUrl +
+      environment.BillingApiUrl +
       "api/outpatientbilling/getformsixtyreport/" +
       LocationId +
       "/" +
