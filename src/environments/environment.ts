@@ -9,6 +9,7 @@ export const environment = {
   //dev environment urls
   CommonApiUrl: "http://172.30.0.16:1009/",
   PatientApiUrl: "http://172.30.0.16:1008/",
+  SampleApiUrl: "http://localhost:7003/",
 
   //IdentityServerUrl: 'https://MaxHIS-Idsrv-dev.maxhealthcare.in/',
   //IentityServerRedirectUrl:'http://172.30.0.16/',
