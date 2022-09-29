@@ -219,7 +219,7 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       paymentType: {
@@ -233,14 +233,14 @@ export class DepositComponent implements OnInit {
         title: "Used(OP)",
         type: "number",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       usedIP: {
         title: "Used(IP)",
         type: "number",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       refund: {
@@ -255,7 +255,7 @@ export class DepositComponent implements OnInit {
         title: "Balance",
         type: "string",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       gst: {
@@ -276,7 +276,7 @@ export class DepositComponent implements OnInit {
         title: "Deposit Head",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
         tooltipColumn: "advanceType",
       },
@@ -284,7 +284,7 @@ export class DepositComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
         tooltipColumn: "serviceTypeName",
       },
@@ -292,7 +292,7 @@ export class DepositComponent implements OnInit {
         title: "Operator Name & ID",
         type: "string",
         style: {
-          width: "10rem",
+          width: "11rem",
         },
         tooltipColumn: "operatorName",
       },
@@ -300,7 +300,7 @@ export class DepositComponent implements OnInit {
         title: "Remarks",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
         tooltipColumn: "remarks",
       },
@@ -588,7 +588,6 @@ export class DepositComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData) => {
-        console.log(resultData);
         if (resultData == CheckPatientDetails.Inpatient) {
           this.messageDialogService.error("This Patient is an InPatient");
         } else if (resultData == CheckPatientDetails.PatientNotReg) {
