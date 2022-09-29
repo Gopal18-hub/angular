@@ -398,6 +398,14 @@ export class BillComponent implements OnInit {
         if (value == true) {
           this.discountreason();
         } else {
+          this.calculateBillService.setDiscountSelectedItems([]);
+          this.calculateBillService.calculateDiscount();
+          this.formGroup.controls["discAmt"].setValue(
+            this.calculateBillService.totalDiscountAmt
+          );
+          this.formGroup.controls["amtPayByPatient"].setValue(
+            this.getAmountPayByPatient()
+          );
         }
       });
 

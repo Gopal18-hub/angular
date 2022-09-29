@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
@@ -7,6 +7,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
   selector: "out-patients-disount-reason",
@@ -181,7 +182,9 @@ export class DisountReasonComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     private billingService: BillingService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    public dialogRef: MatDialogRef<DisountReasonComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit(): void {
@@ -254,7 +257,6 @@ export class DisountReasonComponent implements OnInit {
       default:
         console.log("default");
     }
-    this.calculateBillService.calculateDiscount();
     this.discAmtForm.reset();
   }
 
@@ -356,6 +358,10 @@ export class DisountReasonComponent implements OnInit {
     this.disableAdd = false;
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+  }
+  applyDiscount() {
+    this.calculateBillService.calculateDiscount();
+    this.dialogRef.close();
   }
 
   OnBillItemPrepare() {
