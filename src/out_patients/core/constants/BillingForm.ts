@@ -36,7 +36,7 @@ export namespace BillingForm {
             type: "string"
           },
           creditbankno:{
-            type: "number"
+            type: "string"
           },
           creditbatchno:{
             type: "string"
@@ -46,7 +46,7 @@ export namespace BillingForm {
             defaultValue: "0.00"
           },
           creditapproval: {
-            type: "number"
+            type: "string"
           },
           creditterminal: {
             type: "string"
@@ -195,14 +195,20 @@ export namespace BillingForm {
             maximum: new Date(),
           },
           mobilewallet:{
-            type: "dropdown"
+            type: "dropdown",
           },
           mobileotp:{
-            type: "string"
+            type: "string",
           },
           mobileorderid:{
-            type: "string"
-          } //60
+            type: "string",
+          }, //60
+          posimei:{
+            type: "dropdown",
+          },
+          creditcardtransactionid:{
+            type: "string",
+          }
         },
     };
     
