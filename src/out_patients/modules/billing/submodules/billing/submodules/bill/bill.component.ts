@@ -25,7 +25,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
-
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -296,13 +296,14 @@ export class BillComponent implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private billingservice: BillingService,
+    public billingservice: BillingService,
     private matDialog: MatDialog,
     private messageDialogService: MessageDialogService,
     private reportService: ReportService,
     private cookie: CookieService,
     private http: HttpService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -492,10 +493,22 @@ export class BillComponent implements OnInit {
     );
   }
 
+  getAmountPayByPatient() {
+    return this.billingservice.totalCost - this.formGroup.value.discAmt;
+  }
+
   discountreason() {
-    this.matDialog.open(DisountReasonComponent, {
+    const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
+    });
+    discountReasonPopup.afterClosed().subscribe((res) => {
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt
+      );
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
     });
   }
 
