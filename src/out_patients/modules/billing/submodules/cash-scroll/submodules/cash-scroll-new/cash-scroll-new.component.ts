@@ -111,14 +111,14 @@ export class CashScrollNewComponent implements OnInit {
         title: "Receipt No.",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       billno: {
         title: "Bill No.",
         type: "string",
         style: {
-          width: "8rem",
+          width: "6rem",
         },
       },
       datetime: {
@@ -132,21 +132,21 @@ export class CashScrollNewComponent implements OnInit {
         title: "Bill Amount",
         type: "number",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
       },
       refund: {
         title: "Refund",
         type: "number",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       depositamount: {
         title: "Deposit Amount",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       discountamount: {
@@ -160,63 +160,63 @@ export class CashScrollNewComponent implements OnInit {
         title: "Plan Amount",
         type: "number",
         style: {
-          width: "8rem",
+          width: "10rem",
         },
       },
       plandiscount: {
         title: "Plan Discount",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       netamount: {
         title: "Net Amount",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       cash: {
         title: "Cash",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       cheque: {
         title: "Cheque",
         type: "number",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       dd: {
         title: "DD",
         type: "number",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       creditcard: {
         title: "Credit Card",
         type: "number",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       mobilePayment: {
         title: "Cash Payment by Mobile",
         type: "number",
         style: {
-          width: "10.5rem",
+          width: "12rem",
         },
       },
       onlinePayment: {
         title: "Online Payment",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       dues: {
@@ -230,7 +230,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "TDS Amount",
         type: "number",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       donation: {
@@ -244,14 +244,14 @@ export class CashScrollNewComponent implements OnInit {
         title: "UPI Amount",
         type: "string",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       totalamount: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       compName: {
@@ -279,9 +279,10 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
 
 
   scrollno: string | undefined;
@@ -315,17 +316,21 @@ export class CashScrollNewComponent implements OnInit {
 
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.EmployeeName = this.cookie.get("Name");
-    this.getdetailsfornewscroll();
-    this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
-    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
-    this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
-    this.takenat = new Date();
-   if(this.queryparamssearch){ 
-    this.questions[4].readonly = true;
-    this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
-    this.printsexists = false;
-    this.excelexists = false;
-   }
+    if(this.queryparamssearch){ 
+      this.questions[4].readonly = true;
+      this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
+      this.printsexists = false;
+      this.excelexists = false;
+     }
+     else{
+      this.getdetailsfornewscroll();
+      this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
+      this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
+      this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
+      this.takenat = new Date();
+   
+     }
+   
   }
   opencashscroll() {
     this.router.navigate(["report/cash-scroll", "cash-scroll"]);
@@ -558,6 +563,7 @@ else
   }
 
   getoldscroll(scrollno:any){
+    let ackdetails;
     this.queryparamssearch = true;
     this.scrollno = scrollno;
     this.http
@@ -567,6 +573,13 @@ else
       (resultdata) => 
     {
      this.uniquescrollnumber = resultdata as GetDataForOldScroll;
+     ackdetails = this.uniquescrollnumber.getACKDetails;
+
+     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( ackdetails[0].scrolldatetime, "dd/MM/yyyy hh:mm:ss a"));
+     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( ackdetails[0].todatetime, "YYYY-MM-ddTHH:mm:ss"));
+     this.cashscrollnewForm.controls["fromdate"].setValue(this.datepipe.transform( ackdetails[0].fromdatetime, "YYYY-MM-ddTHH:mm:ss"));
+     this.cashscrollnewForm.controls["employeename"].setValue(ackdetails[0].name);
+   
      this.scrolldetailsList = this.uniquescrollnumber.getACKOtherdetails;
      
      for (var i = 0; i < this.scrolldetailsList.length; i++) {

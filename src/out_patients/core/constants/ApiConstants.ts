@@ -12,9 +12,9 @@ export namespace ApiConstants {
     return (
       environment.BillingApiUrl +
       "api/outpatientbilling/getformsixtyreport/" +
-      LocationId +
-      "/" +
       billno +
+      "/" +
+      LocationId +
       "/" +
       iacode +
       "/" +
@@ -1338,13 +1338,13 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientexpireddepositdetails/" +
+      "api/patient/getpatientexpireddepositdetails?iacode=" +
       iacode +
-      "/" +
+      "&registrationno=" +
       registrationno +
-      "/" +
+      "&fromdate=" +
       fromdate +
-      "/" +
+      "&todate=" +
       todate
     );
   };
