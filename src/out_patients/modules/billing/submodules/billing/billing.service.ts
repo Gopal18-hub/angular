@@ -74,7 +74,7 @@ export class BillingService {
   ) {}
 
   calculateBill() {
-    this.calculateBillService.initProcess(this.billItems);
+    this.calculateBillService.initProcess(this.billItems, this);
   }
 
   changeBillTabStatus(status: boolean) {
