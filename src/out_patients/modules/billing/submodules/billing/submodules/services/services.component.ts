@@ -16,6 +16,7 @@ import { BillingApiConstants } from "../../BillingApiConstant";
 import { InvestigationWarningComponent } from "../../prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "../../prompts/unbilled-investigation/unbilled-investigation.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SpecializationService } from "../../specialization.service";
 
 @Component({
   selector: "out-patients-services",
@@ -31,31 +32,37 @@ export class ServicesComponent implements OnInit {
       id: 1,
       title: "Consultations",
       component: ConsultationsComponent,
+      disabled: false,
     },
     {
       id: 2,
       title: "Investigations",
       component: InvestigationsComponent,
+      disabled: false,
     },
     {
       id: 3,
       title: "Health Checkups",
       component: HealthCheckupsComponent,
+      disabled: false,
     },
     {
       id: 4,
       title: "Procedure & Others",
       component: ProcedureOtherComponent,
+      disabled: false,
     },
     {
       id: 5,
       title: "Order Set",
       component: OrderSetComponent,
+      disabled: false,
     },
     {
       id: 6,
       title: "Consumables",
       component: ConsumablesComponent,
+      disabled: false,
     },
   ];
 
@@ -72,11 +79,28 @@ export class ServicesComponent implements OnInit {
     private matDialog: MatDialog,
     private http: HttpService,
     private cookie: CookieService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
+    this.specializationService.getSpecialization();
+    if (Number(this.cookie.get("HSPLocationId")) != 67) {
+      this.tabs[4].disabled = true;
+    }
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (this.billingService.HealthCheckupItems.length > 0) {
+      this.healthCheckupExist = true;
+      this.consumablesExist = false;
+      this.tabChange(this.tabs[2]);
+    }
+    if (this.billingService.ConsumableItems.length > 0) {
+      this.consumablesExist = true;
+      this.healthCheckupExist = false;
+      this.tabChange(this.tabs[5]);
+    }
+
     this.billingService.servicesTabStatus.subscribe((res: any) => {
       if ("consumables" in res) {
         this.consumablesExist = true;
@@ -87,6 +111,8 @@ export class ServicesComponent implements OnInit {
       } else if ("clear" in res) {
         this.healthCheckupExist = false;
         this.consumablesExist = false;
+      } else if ("disableOrderSet" in res && res.disableOrderSet) {
+        this.tabs[4].disabled = true;
       }
     });
   }
