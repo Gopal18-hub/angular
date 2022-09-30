@@ -221,6 +221,13 @@ export class DisountReasonComponent implements OnInit {
           this.disableAdd = true;
         }
       } else if (tempItem.discTypeValue == "On-Item") {
+        let totalItems = 0;
+        Object.values(this.serviceBasedList).forEach((service: any) => {
+          totalItems += service.items.length;
+        });
+        if (this.selectedItems.length == totalItems) {
+          this.disableAdd = true;
+        }
       }
     }
   }
@@ -323,7 +330,7 @@ export class DisountReasonComponent implements OnInit {
           sno: this.selectedItems.length + 1,
           discType: "On Item",
           service: selecetdServices[i].name,
-          doctor: "",
+          doctor: item.itemName,
           price: item.price * item.qty,
           disc: existReason.discountPer,
           discAmt: discAmt,
