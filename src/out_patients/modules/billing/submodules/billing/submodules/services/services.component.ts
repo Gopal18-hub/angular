@@ -82,7 +82,7 @@ export class ServicesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (Number(this.cookie.get("HSPLocationId")) == 67) {
+    if (Number(this.cookie.get("HSPLocationId")) != 67) {
       this.tabs[4].disabled = true;
     }
     this.activeMaxId = this.billingService.activeMaxId;
