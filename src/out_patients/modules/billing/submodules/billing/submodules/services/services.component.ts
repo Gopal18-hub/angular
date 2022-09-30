@@ -89,6 +89,18 @@ export class ServicesComponent implements OnInit {
       this.tabs[4].disabled = true;
     }
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (this.billingService.HealthCheckupItems.length > 0) {
+      this.healthCheckupExist = true;
+      this.consumablesExist = false;
+      this.tabChange(this.tabs[2]);
+    }
+    if (this.billingService.ConsumableItems.length > 0) {
+      this.consumablesExist = true;
+      this.healthCheckupExist = false;
+      this.tabChange(this.tabs[5]);
+    }
+
     this.billingService.servicesTabStatus.subscribe((res: any) => {
       if ("consumables" in res) {
         this.consumablesExist = true;
