@@ -37,7 +37,8 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
-import { throws } from "assert";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -60,7 +61,9 @@ export class DetailsComponent implements OnInit {
     private patientService: PatientService,
     private msgdialog: MessageDialogService,
     private snackbar: MaxHealthSnackBarService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private searchService: SearchService,
+    private lookupService:LookupService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -265,6 +268,21 @@ export class DetailsComponent implements OnInit {
       console.log(res);
       this.sendapprovalcheck();
     })
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+          }
+        }
+      });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();

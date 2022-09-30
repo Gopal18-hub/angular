@@ -17,6 +17,7 @@ import {
 import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SpecializationService } from "../../../../specialization.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -119,7 +120,8 @@ export class ProcedureOtherComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +132,10 @@ export class ProcedureOtherComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.ProcedureItems;
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.getOtherService();
     this.getSpecialization();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -170,6 +176,18 @@ export class ProcedureOtherComponent implements OnInit {
           res.$event.value,
           res.data.index
         );
+        this.billingService.ProcedureItems[
+          res.data.index
+        ].billItem.specialisationID = res.$event.value;
+      } else if (res.data.col == "doctorName") {
+        this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
+          res.$event.value;
+        const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
+          res.data.index
+        ].find((doc: any) => doc.value == res.$event.value);
+        this.billingService.ProcedureItems[
+          res.data.index
+        ].billItem.procedureDoctor = findDoctor.title;
       }
     });
     this.formGroup.controls["procedure"].valueChanges
@@ -216,31 +234,18 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
+    this.config.columnsInfo.specialisation.options =
+      this.specializationService.specializationData;
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getdoctorlistonSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getOtherService() {
