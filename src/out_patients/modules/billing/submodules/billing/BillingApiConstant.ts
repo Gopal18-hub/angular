@@ -240,4 +240,6 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/checkoutsourcetest/${companyId}`;
   export const fetchoporderrequest = (maxid: string, locationid: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/fetchoporderrequest/${maxid}/${locationid}`;
+
+  export const getinteraction = `${environment.CommonApiUrl}api/lookup/getinteraction`;
 }

@@ -44,7 +44,7 @@ export class BillComponent implements OnInit {
       },
       interactionDetails: {
         type: "dropdown",
-        required: true,
+        required: false,
         title: "Interaction Details",
         placeholder: "--Select--",
       },
@@ -179,7 +179,7 @@ export class BillComponent implements OnInit {
       "serviceName",
       "itemName",
       "precaution",
-      "procedure",
+      "procedureDoctor",
       "qty",
       "credit",
       "cash",
@@ -218,7 +218,7 @@ export class BillComponent implements OnInit {
           width: "100px",
         },
       },
-      procedure: {
+      procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
@@ -306,7 +306,7 @@ export class BillComponent implements OnInit {
     private calculateBillService: CalculateBillService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: "cash", disabled: false },
@@ -329,6 +329,7 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    this.question[1].options = await this.calculateBillService.getinteraction();
     let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
       item["sno"] = index + 1;
@@ -424,9 +425,61 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["dipositAmtcheck"].setValue(false);
         }
       });
+
+    this.formGroup.controls["self"].valueChanges.subscribe((value: boolean) => {
+      if (value) {
+        this.billingservice.setReferralDoctor({
+          id: 2015,
+          name: "",
+          specialisation: "",
+        });
+      }
+    });
+
+    this.question[20].elementRef.addEventListener(
+      "change",
+      this.onModifyDepositAmt.bind(this)
+    );
   }
 
-  makeBill() {
+  onModifyDepositAmt() {
+    if (this.formGroup.value.dipositAmtEdit > 0) {
+      if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      }
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
+    }
+  }
+
+  async makeBill() {
+    if (!this.billingservice.referralDoctor) {
+      const referralErrorRef = this.messageDialogService.error(
+        "Please select Referral Doctor"
+      );
+      await referralErrorRef.afterClosed().toPromise();
+      return;
+    }
     const dialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to make the Bill?`
@@ -509,7 +562,11 @@ export class BillComponent implements OnInit {
   }
 
   getAmountPayByPatient() {
-    return this.billingservice.totalCost - this.formGroup.value.discAmt;
+    return (
+      this.billingservice.totalCost -
+      this.formGroup.value.discAmt -
+      this.formGroup.value.dipositAmtEdit
+    );
   }
 
   discountreason() {
@@ -599,6 +656,11 @@ export class BillComponent implements OnInit {
   }
 
   selectedReferralDoctor(data: any) {
-    this.billingservice.setReferralDoctor(data.docotr);
+    if (data.docotr) {
+      console.log(data.docotr);
+      this.formGroup.controls["self"].setValue(false);
+      this.formGroup.controls["self"].disable();
+      this.billingservice.setReferralDoctor(data.docotr);
+    }
   }
 }
