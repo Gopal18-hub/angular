@@ -118,7 +118,7 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   makeBill() {
-    if ((this.data.name = "MiscBilling")) {
+    if (this.data.name == "MiscBilling") {
       this.dialogRef.close({ data: "MakeBill" });
       return;
     }
