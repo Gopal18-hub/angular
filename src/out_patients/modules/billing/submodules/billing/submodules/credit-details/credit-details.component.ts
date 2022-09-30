@@ -18,6 +18,7 @@ import { ConfigurationBillingComponent } from "../../prompts/configuration-billi
 import { IomCompanyBillingComponent } from "../../prompts/iom-company-billing/iom-company-billing.component";
 import { BillingService } from "../../billing.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "out-patients-credit-details",
@@ -29,7 +30,7 @@ export class CreditDetailsComponent implements OnInit {
   companyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
   today: any;
-   company!: string ;
+  company!: string;
 
   comapnyFormData = {
     title: "",
@@ -46,7 +47,6 @@ export class CreditDetailsComponent implements OnInit {
         title: "Corporate",
         placeholder: "-Select-",
         emptySelect: true,
-        options: this.coorporateList,
       },
       companyGSTN: {
         type: "dropdown",
@@ -110,19 +110,20 @@ export class CreditDetailsComponent implements OnInit {
   companyQuestions: any;
   generalQuestions: any;
   iommessage: string = "";
-  companyexists:boolean =  false;
+  companyexists: boolean = false;
 
-
-
-  constructor(private formService: QuestionControlService,
-    private http: HttpService, public matDialog: MatDialog,
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpService,
+    public matDialog: MatDialog,
     public cookie: CookieService,
     private datepipe: DatePipe,
-    private billingservice: BillingService,    
-    private dialogService: MessageDialogService,) {}
+    public billingservice: BillingService,
+    private dialogService: MessageDialogService
+  ) {}
 
-  ngOnInit(): void { 
-    this.today = new Date();  
+  ngOnInit(): void {
+    this.today = new Date();
     let formResult: any = this.formService.createForm(
       this.comapnyFormData.properties,
       {}
@@ -138,20 +139,25 @@ export class CreditDetailsComponent implements OnInit {
     this.generalQuestions = formResult1.questions;
     this.comapnyFormGroup.controls["letterDate"].setValue(this.today);
     this.comapnyFormGroup.controls["corporate"].disable();
-   
+
     this.getAllCompany();
     this.getAllCorporate();
-    this.billingservice.companyChangeEvent.subscribe((res:any) => { 
-      this.comapnyFormGroup.controls["company"].setValue(res);
-     });
+    this.billingservice.companyChangeEvent.subscribe((res: any) => {
+      this.getAllCompany();
+      if (res.from != "credit") {
+        this.comapnyFormGroup.controls["company"].setValue(res.company, {
+          emitEvent: false,
+        });
+      }
+    });
   }
- 
-  getAllCompany() {    
-        this.companyList = this.billingservice.companyData;
-        this.companyQuestions[0].options = this.companyList.map((a: any) => {
-          return { title: a.name, value: a.id, company: a };
-        });  
-         this.companyQuestions[0] = { ...this.companyQuestions[0] };     
+
+  getAllCompany() {
+    this.companyList = this.billingservice.companyData;
+    this.companyQuestions[0].options = this.companyList.map((a: any) => {
+      return { title: a.name, value: a.id, company: a };
+    });
+    this.companyQuestions[0] = { ...this.companyQuestions[0] };
   }
 
   getAllCorporate() {
@@ -163,10 +169,10 @@ export class CreditDetailsComponent implements OnInit {
         this.companyQuestions[1].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
-        this.companyQuestions[1] = { ...this.companyQuestions[1] };  
+        this.companyQuestions[1] = { ...this.companyQuestions[1] };
       });
   }
-  
+
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
@@ -177,43 +183,45 @@ export class CreditDetailsComponent implements OnInit {
     });
   }
 
-  companyname:string | undefined;
-  ngAfterViewInit(){
+  companyname: string | undefined;
+  ngAfterViewInit() {
     let TPA;
-    this.comapnyFormGroup.controls["company"].valueChanges.subscribe(
-      (res:any) => {
+    this.comapnyFormGroup.controls["company"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
         if (res.value != null && res.value != 0 && res.value != undefined) {
           this.companyname = res.value;
           this.companyexists = true;
-          this.billingservice.setCompnay(res.value,res,this.comapnyFormGroup)
-      }
-      else{
-        this.companyexists = false;
-      }
-       
+          this.billingservice.setCompnay(
+            res.value,
+            res,
+            this.comapnyFormGroup,
+            "credit"
+          );
+        } else {
+          this.companyexists = false;
+        }
       });
   }
 
-  openconfiguration(){
+  openconfiguration() {
     let billtype;
     billtype = this.billingservice.getbilltype();
-    let configurationitems:any = this.billingservice.getconfigurationservice();
-    if(billtype != "credit"){  
+    let configurationitems: any = this.billingservice.getconfigurationservice();
+    if (billtype != "credit") {
       this.dialogService.error("Select credit check first");
-    }
-    else if(configurationitems.length == 0){
+    } else if (configurationitems.length == 0) {
       this.dialogService.error("There is no items for configuration");
-    }
-    else{
+    } else {
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",
         height: "80%",
         data: {
           serviceconfiguration: configurationitems,
           patientdetails: this.billingservice.getPatientDetails(),
-          companyname: this.companyname
+          companyname: this.companyname,
         },
-      });    
+      });
     }
-    }
+  }
 }
