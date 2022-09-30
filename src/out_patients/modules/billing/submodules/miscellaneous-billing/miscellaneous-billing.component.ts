@@ -61,6 +61,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   moment = moment;
   setItemsToBill: any = [];
   expiredPatient = false
+  isenableNarration: boolean = false
   doCategoryIconAction(categoryIcon: any) {
     const patientDetails: any =
       this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -181,6 +182,14 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.questions = formResult.questions;
 
     this.lastUpdatedBy = this.cookie.get("UserName");
+    //Enable narration for BLKH & nanavati
+    if (Number(this.cookie.get("HSPLocationId")) === 67 || Number(this.cookie.get("HSPLocationId")) === 69) {
+      this.isenableNarration = true
+    }
+    else {
+      this.isenableNarration = false;
+    }
+
     this.getssnandmaxid();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
