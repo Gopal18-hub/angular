@@ -245,6 +245,6 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
   };
   export const FormSixty = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?locationid=${params.LocationId}&iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?LocationId=${params.LocationId}&Iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
   };
 }

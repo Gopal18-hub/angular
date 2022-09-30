@@ -1,11 +1,18 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Subject, Observable } from "rxjs";
 import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { IomCompanyBillingComponent } from "./prompts/iom-company-billing/iom-company-billing.component";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { DatePipe } from "@angular/common";
 
 @Injectable({
   providedIn: "root",
@@ -54,14 +61,20 @@ export class BillingService {
 
   referralDoctor: any;
 
+  companyChangeEvent = new Subject<any>();
+  companyData: any = [];
+  iomMessage: string = "";
+
   constructor(
     private http: HttpService,
     private cookie: CookieService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    public matDialog: MatDialog,
+    private datepipe: DatePipe
   ) {}
 
   calculateBill() {
-    this.calculateBillService.initProcess(this.billItems);
+    this.calculateBillService.initProcess(this.billItems, this);
   }
 
   changeBillTabStatus(status: boolean) {
@@ -185,9 +198,47 @@ export class BillingService {
     return false;
   }
 
-  setCompnay(companyid: number) {
+  setCompnay(
+    companyid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"
+  ) {
     this.company = companyid;
+    this.companyChangeEvent.next({ company: res, from });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
+    this.iomMessage =
+      "IOM Validity till : " +
+      (("iomValidity" in res.company && res.company.iomValidity != "") ||
+      res.company.iomValidity != undefined
+        ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+        : "");
+    if (res.company.isTPA == 1) {
+      const iomcompanycorporate = this.matDialog.open(
+        IomCompanyBillingComponent,
+        {
+          width: "25%",
+          height: "28%",
+        }
+      );
+
+      iomcompanycorporate.afterClosed().subscribe((result) => {
+        if (result.data == "corporate") {
+          formGroup.controls["corporate"].enable();
+          formGroup.controls["corporate"].setValue(null);
+        } else {
+          formGroup.controls["corporate"].setValue(null);
+          formGroup.controls["corporate"].disable();
+        }
+      });
+    } else {
+      formGroup.controls["corporate"].setValue(null);
+      formGroup.controls["corporate"].disable();
+    }
+  }
+
+  setCompanyData(data: any) {
+    this.companyData = data;
   }
 
   setBilltype(billtype: string) {

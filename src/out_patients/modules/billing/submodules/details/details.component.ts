@@ -336,6 +336,18 @@ export class DetailsComponent implements OnInit {
   }
   sendforapproval()
   {
+    if(Number(this.BServiceForm.controls['refundAmt'].value) >= 10000 && this.BServiceForm.controls['paymentMode'].value == 'Cash')
+    {
+      console.log('Cash amt greater than 10k')
+      this.msgdialog.info("Refund Amount can't be greater than 10000 for Cash Payment. Please Select Other Payment Method");
+    }
+    else
+    {
+      this.sendforapprovalcall();
+    }
+  }
+  sendforapprovalcall()
+  {
     var reas = this.refundreasonlist.filter(i => {
       return i.id == this.BServiceForm.controls['reason'].value;
     });
