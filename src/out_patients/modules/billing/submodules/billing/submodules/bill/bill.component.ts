@@ -306,7 +306,7 @@ export class BillComponent implements OnInit {
     private calculateBillService: CalculateBillService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: "cash", disabled: false },
@@ -329,6 +329,7 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    this.question[1].options = await this.calculateBillService.getinteraction();
     let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
       item["sno"] = index + 1;
