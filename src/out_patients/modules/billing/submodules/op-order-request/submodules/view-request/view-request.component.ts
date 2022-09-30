@@ -1,8 +1,15 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Router } from "@angular/router";
+import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
+import { HttpService } from "@shared/services/http.service";
+import { BillingService } from "@modules/billing/submodules/billing/billing.service";
+import { CookieService } from "@shared/services/cookie.service";
+import { FetchOpOrderrequest } from "../../../../../../core/types/oporderrequest/fetchoporderrequest.Interface";
+import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-view-request",
   templateUrl: "./view-request.component.html",
@@ -137,21 +144,24 @@ export class OPOrderViewRequest implements OnInit {
     },
   };
   @ViewChild("table") tableRows: any;
-  data: any = [];
+  data: FetchOpOrderrequest[] = [];
+  reqItemDetail = "";
   config: any = {
     clickedRows: false,
     actionItems: false,
-    dateformat: "dd/MM/yyyy",
+    // dateformat: "dd/MM/yyyy",
     selectBox: true,
-    removeRow: true,
+    //removeRow: true,
+    clickSelection: "multiple",
+    rowLayout: { dynamic: { rowClass: "row['unclickable']" } },
     displayedColumns: [
       "sno",
       "serviceName",
       "itemName",
       "orderStatus",
-      "precaution",
-      "procedure",
-      "qty",
+      "billno",
+      "requestedBy",
+      "requestOn",
     ],
     columnsInfo: {
       sno: {
@@ -167,13 +177,15 @@ export class OPOrderViewRequest implements OnInit {
         style: {
           width: "150px",
         },
+        tooltipColumn: "serviceName",
       },
       itemName: {
         title: "Item Name",
         type: "string",
         style: {
-          width: "200px",
+          width: "220px",
         },
+        tooltipColumn: "itemName",
       },
       orderStatus: {
         title: "Order Status",
@@ -181,24 +193,31 @@ export class OPOrderViewRequest implements OnInit {
         style: {
           width: "200px",
         },
+        tooltipColumn: "orderStatus",
       },
-      precaution: {
+      billno: {
         title: "Bill No.",
         type: "string",
+        tooltipColumn: "billno",
+        style: {
+          width: "130px",
+        },
       },
-      procedure: {
+      requestedBy: {
         title: "Requested By",
         type: "string",
         style: {
           width: "130px",
         },
+        tooltipColumn: "requestedBy",
       },
-      qty: {
+      requestOn: {
         title: "Requested On",
         type: "string",
         style: {
-          width: "120px",
+          width: "150px",
         },
+        tooltipColumn: "requestOn",
       },
     },
   };
@@ -210,7 +229,11 @@ export class OPOrderViewRequest implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private router: Router
+    private router: Router,
+    private http: HttpService,
+    private billingservice: BillingService,
+    private cookie: CookieService,
+    private messagedialogservice: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -220,5 +243,95 @@ export class OPOrderViewRequest implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+
+    this.getViewgridDetails();
+  }
+  unchecked: boolean = true;
+  ngAfterViewInit() {
+    console.log(this.tableRows.selection.selected);
+    this.tableRows.selection.changed
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data: any) => {
+        console.log(data);
+        if (this.tableRows.selection.selected.length > 0) {
+          this.unchecked = false;
+        } else {
+          this.unchecked = true;
+        }
+      });
+  }
+  getViewgridDetails() {
+    this.data = [];
+    this.unchecked = true;
+    let maxid = this.billingservice.activeMaxId.maxId;
+    let locationid = Number(this.cookie.get("HSPLocationId"));
+    this.http
+      .get(BillingApiConstants.fetchoporderrequest(maxid, 67))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((response) => {
+        console.log(response);
+        this.data = response as FetchOpOrderrequest[];
+        for (let i = 0; i < this.data.length; i++) {
+          this.data[i].sno = i + 1;
+          if (this.data[i].orderStatus == "Bill prepaired ") {
+            this.data[i].disabled = "unclickable";
+          }
+        }
+      });
+  }
+  oporderrequestid: any = "";
+  getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    this.tableRows.selection.selected.forEach((item: any, index: any) => {
+      if (this.reqItemDetail == "") {
+        this.reqItemDetail = item.itemId;
+      } else {
+        this.reqItemDetail = this.reqItemDetail + "~" + item.itemid;
+      }
+
+      if (this.oporderrequestid == "") {
+        this.oporderrequestid = item.id;
+      } else {
+        this.oporderrequestid = this.oporderrequestid + "~" + item.id;
+      }
+    });
+    console.log(this.reqItemDetail);
+
+    let maxid = this.billingservice.activeMaxId.maxId;
+    let userid = Number(this.cookie.get("UserId"));
+    let locationid = Number(this.cookie.get("HSPLocationId"));
+
+    return new SaveandDeleteOpOrderRequest(
+      flag,
+      maxid,
+      this.reqItemDetail,
+      0,
+      60926,
+      67
+      // userid,
+      // locationid
+    );
+  }
+
+  columnClick(event: any) {
+    console.log(event);
+  }
+  deleteResponsedata: any;
+  delete() {
+    console.log(this.tableRows.selection.selected);
+
+    // this.http
+    //   .post(
+    //     BillingApiConstants.SaveDeleteOpOrderRequest,
+    //     this.getSaveDeleteObject(2)
+    //   )
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((data) => {
+    //     console.log(data);
+    //     this.deleteResponsedata = data;
+    //     if (this.deleteResponsedata.success == true) {
+    //       this.messagedialogservice.success("Deleted Successfully");
+    //       this.getViewgridDetails();
+    //     }
+    //   });
   }
 }
