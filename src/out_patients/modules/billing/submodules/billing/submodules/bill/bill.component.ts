@@ -425,6 +425,7 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["dipositAmtcheck"].setValue(false);
         }
       });
+
     this.formGroup.controls["self"].valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.billingservice.setReferralDoctor({
@@ -434,6 +435,41 @@ export class BillComponent implements OnInit {
         });
       }
     });
+
+    this.question[20].elementRef.addEventListener(
+      "change",
+      this.onModifyDepositAmt.bind(this)
+    );
+  }
+
+  onModifyDepositAmt() {
+    if (this.formGroup.value.dipositAmtEdit > 0) {
+      if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      }
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
+    }
   }
 
   async makeBill() {
@@ -526,7 +562,11 @@ export class BillComponent implements OnInit {
   }
 
   getAmountPayByPatient() {
-    return this.billingservice.totalCost - this.formGroup.value.discAmt;
+    return (
+      this.billingservice.totalCost -
+      this.formGroup.value.discAmt -
+      this.formGroup.value.dipositAmtEdit
+    );
   }
 
   discountreason() {
