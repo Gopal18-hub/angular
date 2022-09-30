@@ -44,7 +44,7 @@ export class BillComponent implements OnInit {
       },
       interactionDetails: {
         type: "dropdown",
-        required: true,
+        required: false,
         title: "Interaction Details",
         placeholder: "--Select--",
       },
