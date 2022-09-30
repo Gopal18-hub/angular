@@ -108,10 +108,8 @@ export class BillComponent implements OnInit {
         readonly: true,
       },
       coupon: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
-        readonly: true,
       },
       coPay: {
         type: "number",
@@ -162,7 +160,7 @@ export class BillComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        readonly: false,
+        readonly: true,
       },
     },
   };
@@ -645,6 +643,10 @@ export class BillComponent implements OnInit {
                   this.totalDeposit
                 );
                 this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+                this.formGroup.controls["dipositAmtEdit"].enable();
+                this.question[20].readonly = false;
+                this.question[20].disable = false;
+                this.question[20] = { ...this.question[20] };
                 if (res.data)
                   this.snackbar.open("Deposit Amount availed successfully!");
               });
