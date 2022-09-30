@@ -382,10 +382,10 @@ export class OpOrderRequestComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    // this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
-    //   window.location.reload;
-    // });
-    this.activeLink = this.links[0];
+    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
+      window.location.reload;
+    });
+    // this.activeLink = this.links[0];
   }
 
   getAllCorporate() {
