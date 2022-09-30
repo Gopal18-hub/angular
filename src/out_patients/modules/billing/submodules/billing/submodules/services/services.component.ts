@@ -16,6 +16,7 @@ import { BillingApiConstants } from "../../BillingApiConstant";
 import { InvestigationWarningComponent } from "../../prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "../../prompts/unbilled-investigation/unbilled-investigation.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SpecializationService } from "../../specialization.service";
 
 @Component({
   selector: "out-patients-services",
@@ -78,14 +79,28 @@ export class ServicesComponent implements OnInit {
     private matDialog: MatDialog,
     private http: HttpService,
     private cookie: CookieService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
+    this.specializationService.getSpecialization();
     if (Number(this.cookie.get("HSPLocationId")) != 67) {
       this.tabs[4].disabled = true;
     }
     this.activeMaxId = this.billingService.activeMaxId;
+
+    if (this.billingService.HealthCheckupItems.length > 0) {
+      this.healthCheckupExist = true;
+      this.consumablesExist = false;
+      this.tabChange(this.tabs[2]);
+    }
+    if (this.billingService.ConsumableItems.length > 0) {
+      this.consumablesExist = true;
+      this.healthCheckupExist = false;
+      this.tabChange(this.tabs[5]);
+    }
+
     this.billingService.servicesTabStatus.subscribe((res: any) => {
       if ("consumables" in res) {
         this.consumablesExist = true;

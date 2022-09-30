@@ -20,6 +20,8 @@ export class CalculateBillService {
 
   totalDiscountAmt: number = 0;
 
+  interactionDetails: any = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -72,5 +74,18 @@ export class CalculateBillService {
       )
       .toPromise();
     console.log(checkResult);
+  }
+
+  async getinteraction() {
+    if (this.interactionDetails.length > 0) {
+      return this.interactionDetails;
+    }
+    const res = await this.http
+      .get(BillingApiConstants.getinteraction)
+      .toPromise();
+    this.interactionDetails = res.map((it: any) => {
+      return { value: it.id, title: it.name };
+    });
+    return this.interactionDetails;
   }
 }
