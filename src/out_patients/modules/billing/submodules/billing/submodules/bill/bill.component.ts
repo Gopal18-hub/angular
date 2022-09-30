@@ -452,6 +452,13 @@ export class BillComponent implements OnInit {
           this.formGroup.value.billAmt
         );
       } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
+        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
         this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
         this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
       ) {
