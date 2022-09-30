@@ -12,7 +12,7 @@
     <!--First row-->
     <div class="flex  w-full text-wrap bg-lightgray border-radius-lg input-padding">
       
-        <div class="flex align-items-center p-2 w-55 font-semi-bold">
+        <div class="flex align-items-center p-2 w-3/5 font-semi-bold">
             <mat-label class="max-health-primary-color"> Employee Name</mat-label>
             <div class="w-28 ml-3 bg-white ">
                 <maxhealth-question
@@ -45,7 +45,7 @@
           
         </div>
       
-        <div class="flex ml-2 p-1 w-37">
+        <div class="flex p-1 w-2/5">
             <div class="flex  align-items-center bg-darkgray border-radius-lg w-full ">
                 <mat-label class="ml-2 max-health-primary-color font-semi-bold"> From Date</mat-label>
                 <div class="w-35 ml-1 bg-white border-radius-md">
@@ -70,10 +70,10 @@
            
      
         </div>
-        <div class=" w-2/10 flex align-items-center  justify-content-end mr-3">
-            <!-- <mat-label class="max-health-primary-color font-semi-bold cursor-pointer" (click)="navigatetomain()">Back to scroll search</mat-label> -->
+        <!-- <div class=" w-2/10 flex align-items-center  justify-content-end mr-3">
+            <mat-label class="max-health-primary-color font-semi-bold cursor-pointer" (click)="navigatetomain()">Back to scroll search</mat-label>
             <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()" [disabled]="clearbtn">Clear</button>
-        </div>
+        </div> -->
         
     </div>
     
@@ -124,12 +124,13 @@
             >
             Print
             </button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()" [disabled]="clearbtn">Clear</button>
         </div>
      
     </div>
     <!-----Third Row-->
-    <div class="h-1/2 mt-1 scroll-table unmodified" [class.makereadonly]="makereadonly" *ngIf="display">
-        <maxhealth-table  [config]="config" [data]="billList" #table></maxhealth-table>
+    <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="display">
+        <maxhealth-table class="unmodified" [config]="config" [data]="billList" #table></maxhealth-table>
     </div>
 
     <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="!display">

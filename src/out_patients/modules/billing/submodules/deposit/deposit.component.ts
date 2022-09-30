@@ -27,6 +27,7 @@ import { ReportService } from "@shared/services/report.service";
 import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
 import { PatientService } from "@core/services/patient.service";
+import { Form60YesOrNoComponent } from "./form60-dialog/form60-yes-or-no.component";
 
 @Component({
   selector: "out-patients-deposit",
@@ -218,7 +219,7 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       paymentType: {
@@ -232,14 +233,14 @@ export class DepositComponent implements OnInit {
         title: "Used(OP)",
         type: "number",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       usedIP: {
         title: "Used(IP)",
         type: "number",
         style: {
-          width: "5rem",
+          width: "6rem",
         },
       },
       refund: {
@@ -254,7 +255,7 @@ export class DepositComponent implements OnInit {
         title: "Balance",
         type: "string",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       gst: {
@@ -275,7 +276,7 @@ export class DepositComponent implements OnInit {
         title: "Deposit Head",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
         tooltipColumn: "advanceType",
       },
@@ -283,7 +284,7 @@ export class DepositComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
         tooltipColumn: "serviceTypeName",
       },
@@ -291,7 +292,7 @@ export class DepositComponent implements OnInit {
         title: "Operator Name & ID",
         type: "string",
         style: {
-          width: "10rem",
+          width: "11rem",
         },
         tooltipColumn: "operatorName",
       },
@@ -299,7 +300,7 @@ export class DepositComponent implements OnInit {
         title: "Remarks",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
         tooltipColumn: "remarks",
       },
@@ -336,6 +337,7 @@ export class DepositComponent implements OnInit {
   vipdb!: string;
   noteRemarkdb!: string;
   hwcRemarkdb!: string;
+  form60: any;
   ewsDetailsdb: {
     bplCardNo: string;
     bplCardAddress: string;
@@ -348,7 +350,7 @@ export class DepositComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
 
   private readonly _destroying$ = new Subject<void>();
-  
+
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
@@ -435,11 +437,11 @@ export class DepositComponent implements OnInit {
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
               this.MaxIDdepositExist = false;
-                this.tableselectionexists = false;
-                this.deposittable.selection.clear();
+              this.tableselectionexists = false;
+              this.deposittable.selection.clear();
               if (result == "Success") {
                 this.getPatientPreviousDepositDetails();
-                
+
                 console.log("Deposit Dialog closed");
               }
             });
@@ -655,12 +657,10 @@ export class DepositComponent implements OnInit {
                 if (this.deposittable.selection.selected.length > 0) {
                   console.log(this.MaxIDdepositExist);
                   if (res.added.length > 0) {
-                   // const childTableExist = this.deposittable.childTable;
-                    this.deposittable.childTable.forEach((childItem:any)=>{
-
-                      childItem.selection.clear()
-                      
-                      })
+                    // const childTableExist = this.deposittable.childTable;
+                    this.deposittable.childTable.forEach((childItem: any) => {
+                      childItem.selection.clear();
+                    });
                     // .find(
                     //   (r: any) =>
                     //     r.childTableRefId == res.added[0].cashTransactionID
@@ -693,8 +693,7 @@ export class DepositComponent implements OnInit {
                   if (res.added.length > 0) {
                     r.parentTable.selection.clear();
                     this.tableselectionexists = true;
-                  }
-                  else{
+                  } else {
                     this.tableselectionexists = false;
                   }
                 });
@@ -792,6 +791,51 @@ export class DepositComponent implements OnInit {
   }
 
   printpatientreceipt() {
+    let regno = Number(this.depositForm.value.maxid.split(".")[1]);
+    let iacode = this.depositForm.value.maxid.split(".")[0];
+    // Number(this.cookie.get("HSPLocationId")),
+
+    let billno = this.deposittable.selection.selected[0].receiptno;
+    this.http
+      .get(
+        ApiConstants.getform60(
+          Number(this.cookie.get("HSPLocationId")),
+          billno,
+
+          iacode,
+          regno
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultdata: any) => {
+          console.log(resultdata);
+          this.form60 = resultdata;
+          console.log(this.form60);
+          if (this.form60 == 1) {
+            const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
+              width: "25vw",
+              height: "30vh",
+            });
+            dialogref.afterClosed().subscribe((res) => {
+              if (res == "yes") {
+                this.depositreport();
+                this.formreport();
+              } else if (res == "no") {
+                this.depositreport();
+              }
+            });
+          } else {
+            this.depositreport();
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    console.log(this.deposittable.selection.selected);
+  }
+  depositreport() {
     this.deposittable.selection.selected.map((s: any) => {
       this.reportService.openWindow("DepositReport", "DepositReport", {
         receiptnumber: s.receiptno,
@@ -800,18 +844,27 @@ export class DepositComponent implements OnInit {
     });
 
     this.deposittable.childTable.map((r: any) => {
-      r.selection.selected
-       .map((res: any) => {
-          if (res) {
-            this.reportService.openWindow("rptRefund", "rptRefund", {
-              receiptno: res.receiptno,
-              locationID: this.hspLocationid,
-            });
-          }
-        });
+      r.selection.selected.map((res: any) => {
+        if (res) {
+          this.reportService.openWindow("rptRefund", "rptRefund", {
+            receiptno: res.receiptno,
+            locationID: this.hspLocationid,
+          });
+        }
+      });
     });
   }
-
+  formreport() {
+    let regno = Number(this.depositForm.value.maxid.split(".")[1]);
+    let iacode = this.depositForm.value.maxid.split(".")[0];
+    let billno = this.deposittable.selection.selected[0].receiptno;
+    this.reportService.openWindow("FormSixty", "FormSixty", {
+      LocationId: Number(this.cookie.get("HSPLocationId")),
+      Iacode: iacode,
+      RegistrationNo: regno,
+      BillNo: billno,
+    });
+  }
   depositCategoryIconAction(categoryIcon: any) {
     const data: any = {
       note: {
