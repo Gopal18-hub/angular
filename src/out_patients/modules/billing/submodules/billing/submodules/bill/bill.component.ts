@@ -426,7 +426,14 @@ export class BillComponent implements OnInit {
       });
   }
 
-  makeBill() {
+  async makeBill() {
+    if (!this.billingservice.referralDoctor) {
+      const referralErrorRef = this.messageDialogService.error(
+        "Please select Referral Doctor"
+      );
+      await referralErrorRef.afterClosed().toPromise();
+      return;
+    }
     const dialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to make the Bill?`
