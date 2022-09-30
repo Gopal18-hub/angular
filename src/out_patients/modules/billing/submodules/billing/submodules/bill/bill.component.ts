@@ -1,4 +1,9 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ɵsetCurrentInjector,
+} from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -20,7 +25,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
-
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -291,13 +296,14 @@ export class BillComponent implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private billingservice: BillingService,
+    public billingservice: BillingService,
     private matDialog: MatDialog,
     private messageDialogService: MessageDialogService,
     private reportService: ReportService,
     private cookie: CookieService,
     private http: HttpService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -392,6 +398,14 @@ export class BillComponent implements OnInit {
         if (value == true) {
           this.discountreason();
         } else {
+          this.calculateBillService.setDiscountSelectedItems([]);
+          this.calculateBillService.calculateDiscount();
+          this.formGroup.controls["discAmt"].setValue(
+            this.calculateBillService.totalDiscountAmt
+          );
+          this.formGroup.controls["amtPayByPatient"].setValue(
+            this.getAmountPayByPatient()
+          );
         }
       });
 
@@ -435,7 +449,14 @@ export class BillComponent implements OnInit {
       width: "70vw",
       height: "98vh",
       data: {
-        billAmount: this.billingservice.totalCost,
+        totalBillAmount: this.billingservice.totalCost,
+        totalDiscount: this.formGroup.value.discAmt,
+        totalDeposit: this.formGroup.value.dipositAmt,
+        totalRefund: 0,
+        ceditLimit: 0,
+        settlementAmountRefund: 0,
+        settlementAmountReceived: 0,
+        toPaidAmount: this.formGroup.value.amtPayByPatient,
       },
     });
 
@@ -487,10 +508,22 @@ export class BillComponent implements OnInit {
     );
   }
 
+  getAmountPayByPatient() {
+    return this.billingservice.totalCost - this.formGroup.value.discAmt;
+  }
+
   discountreason() {
-    this.matDialog.open(DisountReasonComponent, {
+    const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
+    });
+    discountReasonPopup.afterClosed().subscribe((res) => {
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt
+      );
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
     });
   }
 
@@ -521,30 +554,44 @@ export class BillComponent implements OnInit {
       .subscribe(
         (resultData: any) => {
           if (resultData) {
-            this.depositDetails = resultData;
             resultData.forEach((element: any) => {
-              this.totalDeposit += element.balanceamount;
+              if (element.isAdvanceTypeEnabled == false) {
+                this.totalDeposit += element.balanceamount;
+              }
             });
+            this.depositDetails = resultData;
 
-            this.depositDetails = this.depositDetails.filter(
-              (e: any) =>
-                e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
-            );
-            console.log(this.depositDetails);
+            if (this.totalDeposit > 0) {
+              this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+              this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            } else {
+              this.depositDetails = this.depositDetails.filter(
+                (e: any) =>
+                  e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
+              );
+              console.log(this.depositDetails);
 
-            const dialogref = this.matDialog.open(DepositDetailsComponent, {
-              width: "60vw",
-              height: "50vh",
-              data: { data: this.depositDetails },
-            });
+              const dialogref = this.matDialog.open(DepositDetailsComponent, {
+                width: "60vw",
+                height: "50vh",
+                data: { data: this.depositDetails },
+              });
 
-            dialogref.afterClosed().subscribe((res) => {
-              console.log(res);
-              this.formGroup.controls["dipositAmt"].setValue(res.data);
-              this.formGroup.controls["dipositAmtEdit"].setValue(res.data);
-              if (res.data)
-                this.snackbar.open("Deposit Amount availed successfully!");
-            });
+              dialogref.afterClosed().subscribe((res) => {
+                console.log(res);
+                this.totalDeposit = res.data
+                  .map((r: any) => r.balanceamount)
+                  .reduce(function (r: any, s: any) {
+                    return r + s;
+                  });
+                this.formGroup.controls["dipositAmt"].setValue(
+                  this.totalDeposit
+                );
+                this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+                if (res.data)
+                  this.snackbar.open("Deposit Amount availed successfully!");
+              });
+            }
           }
         },
         (error) => {}

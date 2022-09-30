@@ -14,6 +14,12 @@ import { BillingApiConstants } from "../../modules/billing/submodules/billing/Bi
   providedIn: "root",
 })
 export class CalculateBillService {
+  billingServiceRef: any;
+
+  discountSelectedItems: any = [];
+
+  totalDiscountAmt: number = 0;
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -21,20 +27,50 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  initProcess(billItems: any) {
-    billItems.forEach((item: any) => {});
+  initProcess(billItems: any, billingServiceRef: any) {
+    this.billingServiceRef = billingServiceRef;
+    billItems.forEach(async (item: any) => {
+      await this.serviceBasedCheck(item);
+    });
   }
 
-  serviceBasedCheck(item: any) {
+  setDiscountSelectedItems(items: any) {
+    this.discountSelectedItems = items;
+  }
+
+  calculateDiscount() {
+    this.totalDiscountAmt = 0;
+    this.discountSelectedItems.forEach((item: any) => {
+      this.totalDiscountAmt += item.discAmt;
+    });
+  }
+
+  async serviceBasedCheck(item: any) {
     switch (item.serviceId) {
       case 41:
+        if (this.billingServiceRef.company > 0) {
+          await this.CheckOutSourceTest(item);
+        }
+        break;
+      case 65:
+      case 66:
+        break;
+      case 46:
+      case 109:
+        break;
 
       default:
         console.log("default");
     }
   }
 
-  CheckOutSourceTest() {
-    //this.http.get(BillingApiConstants);
+  async CheckOutSourceTest(item: any) {
+    const checkResult = await this.http
+      .post(
+        BillingApiConstants.checkoutsourcetest(this.billingServiceRef.company),
+        [{ id: item.itemId }]
+      )
+      .toPromise();
+    console.log(checkResult);
   }
 }

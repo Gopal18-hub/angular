@@ -23,38 +23,52 @@
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Bill Amount: </mat-label>
           <span>{{
-            data.billAmount | currency: "INR":undefined:undefined:"en-IN"
+            data.totalBillAmount | currency: "INR":undefined:undefined:"en-IN"
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Deposit: </mat-label>
-          <span>{{ prepaidamount }}</span>
+          <span>{{
+            data.totalDeposit | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Refund: </mat-label>
-          <span>{{ depositamount }}</span>
+          <span>{{
+            data.totalRefund | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Total Discount: </mat-label>
-          <span>{{ discountamount }}</span>
+          <span>{{
+            data.totalDiscount | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Credit Limit: </mat-label>
-          <span>{{ due }}</span>
+          <span>{{
+            data.ceditLimit | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <mat-label class="font-base mt-2 flex">On Settlement</mat-label>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Amount Refunded: </mat-label>
-          <span>{{ billamount }}</span>
+          <span>{{
+            data.settlementAmountRefund
+              | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
           <mat-label>Amount Received: </mat-label>
-          <span>{{ prepaidamount }}</span>
+          <span>{{
+            data.settlementAmountReceived
+              | currency: "INR":undefined:undefined:"en-IN"
+          }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between font-bold">
           <mat-label class="">Total: </mat-label>
           <span>{{
-            data.billAmount | currency: "INR":undefined:undefined:"en-IN"
+            data.toPaidAmount | currency: "INR":undefined:undefined:"en-IN"
           }}</span>
         </div>
       </div>

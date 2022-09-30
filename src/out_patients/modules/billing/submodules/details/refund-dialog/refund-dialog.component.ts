@@ -424,8 +424,82 @@ export class BillDetailsRefundDialogComponent implements OnInit {
     this.flagto_set_btnname
     ));
   }
-
   submitbtn()
+  {
+    if(this.mop == 1)
+    {
+      this.submitbtncall();
+    }
+    else if(this.mop == 2) //cheque
+    {
+      if(this.dueform.controls['chequevalidity'].value < new Date())
+      {
+        this.messageDialogService.info('Validity Date Can not be lesser then todays date');
+      }
+      else if(this.dueform.controls['chequeno'].value == '')
+      {
+        this.messageDialogService.info('Please Enter Cheque number.')
+      }
+      else if(this.dueform.controls['chequebankname'].value == '')
+      {
+        this.messageDialogService.info('Please Enter Bank name.')
+      }
+      else{
+        this.submitbtncall();
+      }
+    }
+    else if(this.mop == 4) //credit card
+    {
+      if(this.dueform.controls['creditcardtype'].value == '')
+      {
+        this.messageDialogService.info('Please Enter Card Type.')
+      }
+      else if(this.dueform.controls['creditcardno'].value == '')
+      {
+        this.messageDialogService.info('Please Enter Card Number.')
+      }
+      // else if(this.dueform.controls[''].value < new Date())
+      // {
+      //   this.messageDialogService.info('Validity Date Can not be lesser then todays date');
+      // }
+      else{
+        this.submitbtncall();
+      }
+    }
+    else if(this.mop == 6) //mobile
+    {
+      if(this.dueform.controls['mobiletransactionid'].value == '')
+      {
+        this.messageDialogService.info('TransactionID cannot be blank')
+      }
+      else if(this.dueform.controls['mobilemerchantid'].value == '')
+      {
+        this.messageDialogService.info('Merchant orderID cannot be blank')
+      }
+      // else if(this.dueform.controls[''].value < new Date())
+      // {
+      //   this.messageDialogService.info('Validity Date Can not be lesser then todays date');
+      // }
+      else{
+        this.submitbtncall();
+      }
+    }
+    else if(this.mop == 8) //upi
+    {
+      if(this.dueform.controls['upibatchno'].value == '')
+      {
+        this.messageDialogService.info('batchID cannot be blank')
+      }
+      else if(this.dueform.controls['upino'].value == '')
+      {
+        this.messageDialogService.info('UPI cannot be blank')
+      }
+      else{
+        this.submitbtncall();
+      }
+    }
+  }
+  submitbtncall()
   {
     if(this.dueform.controls['otp'].value.toString().length == 0){
       this.messageDialogService.info('Enter OTP');

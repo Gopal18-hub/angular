@@ -73,18 +73,18 @@ export class PaymentMethodsComponent implements OnInit {
     this.PaymentMethodcashdeposit = this.refundform.value;
 
     if (Number(this.PaymentMethodcashdeposit.cashamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.cashamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.cashamount);
     } else if (Number(this.PaymentMethodcashdeposit.chequeamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.chequeamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.chequeamount);
       this.PaymentType = 2;
     } else if (Number(this.PaymentMethodcashdeposit.creditamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.creditamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.creditamount);
     } else if (Number(this.PaymentMethodcashdeposit.demandamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.demandamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.demandamount);
     } else if (Number(this.PaymentMethodcashdeposit.upiamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.upiamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.upiamount);
     } else if (Number(this.PaymentMethodcashdeposit.internetamount) > 0) {
-      this.depositamount = this.PaymentMethodcashdeposit.internetamount;
+      this.depositamount = Number(this.PaymentMethodcashdeposit.internetamount);
     }
 
     if (this.Refundavalaiblemaount) {

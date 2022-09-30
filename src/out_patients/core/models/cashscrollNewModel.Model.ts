@@ -1,4 +1,4 @@
-export class cashscrollNewDetail {
+export class CashScrollNewDetail {
  
     receiptNo: string;
     billno: string;
@@ -88,7 +88,7 @@ export class cashscrollNewDetail {
         billDateTime:string,
         compName:string,
         modifiedDDNumber:string,
-        sno:number) {
+        sno:number,) {
       
       this.receiptNo = receiptNo;
       this.billno = billno;

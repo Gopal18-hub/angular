@@ -129,6 +129,7 @@ import { PrintduereceiptComponent } from "./submodules/details/printduereceipt/p
 import { ReferralModule } from "@core/ui/referral";
 import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popuptext.component";
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
+import { Form60YesOrNoComponent } from './submodules/deposit/form60-dialog/form60-yes-or-no.component';
 
 @NgModule({
   declarations: [
@@ -230,6 +231,7 @@ import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodul
     PrintduereceiptComponent,
     PopuptextComponent,
     ServicetaxPopupComponent,
+    Form60YesOrNoComponent,
   ],
   imports: [
     BillingRoutingModule,

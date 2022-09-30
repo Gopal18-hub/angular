@@ -10,7 +10,7 @@ import { HttpClient } from "@angular/common/http";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { getdataForScrollMain } from "@core/types/cashscroll/getscrollmain.Interface";
 import { DatePipe } from "@angular/common";
-import { cashscrollNewDetail } from "@core/models/cashscrollNewModel.Model";
+import { CashScrollNewDetail } from "@core/models/cashscrollNewModel.Model";
 import { savecashscroll } from "@core/models/savecashscrollModel.Model";
 import { ReportService } from "@shared/services/report.service";
 import { GetDataForOldScroll } from "@core/types/cashscroll/getdataforoldscroll.Interface";
@@ -153,7 +153,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Discount Amount",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       planamount: {
@@ -181,28 +181,28 @@ export class CashScrollNewComponent implements OnInit {
         title: "Cash",
         type: "string",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       cheque: {
         title: "Cheque",
         type: "number",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       dd: {
         title: "DD",
         type: "number",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       creditcard: {
         title: "Credit Card",
         type: "number",
         style: {
-          width: "8rem",
+          width: "7rem",
         },
       },
       mobilePayment: {
@@ -223,7 +223,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Dues",
         type: "number",
         style: {
-          width: "5rem",
+          width: "4rem",
         },
       },
       tdsamount: {
@@ -258,7 +258,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Company Name",
         type: "string",
         style: {
-          width: "9rem",
+          width: "10rem",
         },
       },
     },
@@ -279,9 +279,10 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
+
 
   scrollno: string | undefined;
   billamount:number = 0;
@@ -314,17 +315,13 @@ export class CashScrollNewComponent implements OnInit {
 
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.EmployeeName = this.cookie.get("Name");
-    this.cashscrollnewForm.controls["fromdate"].disable();
-    this.cashscrollnewForm.controls["employeename"].disable();
-    this.cashscrollnewForm.controls["takenat"].disable();
-    this.cashscrollnewForm.controls["scrollno"].disable();
     this.getdetailsfornewscroll();
     this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
     this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
     this.takenat = new Date();
-   if(this.queryparamssearch){
-    this.cashscrollnewForm.controls["todate"].disable();    
+   if(this.queryparamssearch){ 
+    this.questions[4].readonly = true;
     this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
     this.printsexists = false;
     this.excelexists = false;
@@ -371,14 +368,12 @@ else
       (resultdata) => 
     {
 
-      this.scrolldetailsList = resultdata as cashscrollNewDetail[];
+      this.scrolldetailsList = resultdata as CashScrollNewDetail[];
       if(this.scrolldetailsList.length == 0){
         this.dialogservice.error("No data Found");
      }else{
-    this.scrolldetailsexists = false;
-    this.printsexists = false;
-    this.excelexists = false;
-    this.cashscrollnewForm.controls["todate"].disable();
+    this.scrolldetailsexists = false;  
+    this.questions[4].readonly = true;
   
     for (var i = 0; i < this.scrolldetailsList.length; i++) {
       this.scrolldetailsList[i].sno = i + 1;
@@ -461,7 +456,7 @@ else
     this.queryparamssearch = false;
     this.printsexists = true;
     this.excelexists = true;
-    this.cashscrollnewForm.controls["todate"].enable();
+    this.questions[4].readonly = false;
     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(new Date(), "YYYY-MM-ddTHH:mm:ss"));
     this.scrolldetailsList = [];
 
@@ -488,12 +483,14 @@ else
             this.dialogservice.success("Scroll has been Saved");
             this.scrolldetailsexists = true;
             this.printsexists = false;
+            this.excelexists = false;
             this.cashscrollnewForm.controls["scrollno"].setValue(resultData);
           }
           else{
             this.dialogservice.error("Invalid Station. Cannot save scroll.");
             this.scrolldetailsexists = false;
             this.printsexists = true;
+            this.excelexists = true;
           }
         });
         this.excelexists = false;
