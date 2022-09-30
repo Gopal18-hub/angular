@@ -151,16 +151,18 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Station Name",
           type: "string",
         },
-        statusCode: {
-          title: "Deposit Status",
-          type: "string",
-          
-        },
-        statusDesc:{
+        statusCode:{
           title: "Deposit Status Description",
           type: "string",
 
         },
+        statusDesc: {
+          title: "Deposit Status",
+          type: "string",
+        
+          
+        },
+       
         createDate: {
           title: "Date",
           type: "date",
