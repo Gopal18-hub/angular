@@ -263,6 +263,7 @@ export class OrderSetComponent implements OnInit {
     }
 
     let subItems: any = [];
+    let selectedSubItems: any = [];
 
     this.formGroup.value.items.forEach((subItem: any) => {
       const exist = this.apiData.orderSetBreakup.findIndex((set: any) => {
@@ -270,6 +271,7 @@ export class OrderSetComponent implements OnInit {
       });
       if (exist > -1) {
         const temp = this.apiData.orderSetBreakup[exist];
+        selectedSubItems.push(temp);
         subItems.push({
           serviceID: temp.serviceid,
           itemId: temp.testId,
@@ -300,7 +302,7 @@ export class OrderSetComponent implements OnInit {
           const data1 = {
             sno: existDataCount + index + 1,
             orderSetName: this.formGroup.value.orderSet.title,
-            serviceType: "Investigation",
+            serviceType: selectedSubItems[index].serviceType,
             serviceItemName: resItem.procedureName,
             precaution: "P",
             priority: "Routine",
@@ -318,8 +320,8 @@ export class OrderSetComponent implements OnInit {
               priority: subItems[index].priority,
               serviceId: subItems[index].serviceID,
               price: resItem.returnOutPut,
-              serviceName: this.formGroup.value.orderSet.title,
-              itemName: resItem.procedureNames,
+              serviceName: selectedSubItems[index].serviceType,
+              itemName: resItem.procedureName,
               qty: 1,
               precaution: "",
               procedureDoctor: "",

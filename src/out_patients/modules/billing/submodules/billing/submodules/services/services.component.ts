@@ -31,31 +31,37 @@ export class ServicesComponent implements OnInit {
       id: 1,
       title: "Consultations",
       component: ConsultationsComponent,
+      disabled: false,
     },
     {
       id: 2,
       title: "Investigations",
       component: InvestigationsComponent,
+      disabled: false,
     },
     {
       id: 3,
       title: "Health Checkups",
       component: HealthCheckupsComponent,
+      disabled: false,
     },
     {
       id: 4,
       title: "Procedure & Others",
       component: ProcedureOtherComponent,
+      disabled: false,
     },
     {
       id: 5,
       title: "Order Set",
       component: OrderSetComponent,
+      disabled: false,
     },
     {
       id: 6,
       title: "Consumables",
       component: ConsumablesComponent,
+      disabled: false,
     },
   ];
 
@@ -76,6 +82,9 @@ export class ServicesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (Number(this.cookie.get("HSPLocationId")) != 67) {
+      this.tabs[4].disabled = true;
+    }
     this.activeMaxId = this.billingService.activeMaxId;
     this.billingService.servicesTabStatus.subscribe((res: any) => {
       if ("consumables" in res) {
@@ -87,6 +96,8 @@ export class ServicesComponent implements OnInit {
       } else if ("clear" in res) {
         this.healthCheckupExist = false;
         this.consumablesExist = false;
+      } else if ("disableOrderSet" in res && res.disableOrderSet) {
+        this.tabs[4].disabled = true;
       }
     });
   }

@@ -63,7 +63,7 @@ export class BillPaymentDialogComponent implements OnInit {
       "upi",
     ],
     combopayment: true,
-    totalAmount: this.data.billAmount,
+    totalAmount: this.data.toPaidAmount,
   };
   duelabel: any;
   billamount: any = 0;
@@ -84,7 +84,7 @@ export class BillPaymentDialogComponent implements OnInit {
     private http: HttpService,
     private datepipe: DatePipe,
     private billingService: BillingService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -105,7 +105,7 @@ export class BillPaymentDialogComponent implements OnInit {
       },
     };
   }
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {}
 
   clear() {
     this._destroying$.next(undefined);
@@ -118,7 +118,7 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   makeBill() {
-    if (this.data.name = "MiscBilling") {
+    if (this.data.name == "MiscBilling") {
       this.dialogRef.close({ data: "MakeBill" });
       return;
     }
@@ -129,7 +129,6 @@ export class BillPaymentDialogComponent implements OnInit {
         }
       }
     });
-
   }
 
   breakupTotal() {
