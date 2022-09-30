@@ -424,6 +424,15 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["dipositAmtcheck"].setValue(false);
         }
       });
+    this.formGroup.controls["self"].valueChanges.subscribe((value: boolean) => {
+      if (value) {
+        this.billingservice.setReferralDoctor({
+          id: 2015,
+          name: "",
+          specialisation: "",
+        });
+      }
+    });
   }
 
   async makeBill() {
@@ -606,6 +615,11 @@ export class BillComponent implements OnInit {
   }
 
   selectedReferralDoctor(data: any) {
-    this.billingservice.setReferralDoctor(data.docotr);
+    if (data.docotr) {
+      console.log(data.docotr);
+      this.formGroup.controls["self"].setValue(false);
+      this.formGroup.controls["self"].disable();
+      this.billingservice.setReferralDoctor(data.docotr);
+    }
   }
 }
