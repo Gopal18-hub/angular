@@ -179,7 +179,7 @@ export class BillComponent implements OnInit {
       "serviceName",
       "itemName",
       "precaution",
-      "procedure",
+      "procedureDoctor",
       "qty",
       "credit",
       "cash",
@@ -218,7 +218,7 @@ export class BillComponent implements OnInit {
           width: "100px",
         },
       },
-      procedure: {
+      procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
