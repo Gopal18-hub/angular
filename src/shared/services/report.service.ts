@@ -18,23 +18,32 @@ export class ReportService {
   ) {}
   baseUrl: string | undefined;
 
-  openWindow(reportName: string, reportEntity: string, reportParams: any) {
+  openWindow(
+    reportName: string,
+    reportEntity: string,
+    reportParams: any,
+    x: string | number = "center",
+    y: string | number = "center"
+  ) {
     const params = "?" + new URLSearchParams(reportParams).toString();
-   const winbox:any =   new WinBox(reportName, {
-    url: `${environment.reportTenantUrl}${reportEntity}${params}`,
-    x: "center",
-    y: "center",
-    width: "1100px",
-    height: "85%",
-    id: reportEntity
-  });
-   winbox.addControl({
-    index: 0,
-    class: "material-print-icon",
-    image: "",
-    click: function(event:any, winbox:any){
-      (<any>document.getElementById(reportEntity)).querySelector("iframe").contentWindow.document.querySelector("iframe").contentWindow.print()
-    }
-});
+    const winbox: any = new WinBox(reportName, {
+      url: `${environment.reportTenantUrl}${reportEntity}${params}`,
+      x: x,
+      y: y,
+      width: "1100px",
+      height: "85%",
+      id: reportEntity,
+    });
+    winbox.addControl({
+      index: 0,
+      class: "material-print-icon",
+      image: "",
+      click: function (event: any, winbox: any) {
+        (<any>document.getElementById(reportEntity))
+          .querySelector("iframe")
+          .contentWindow.document.querySelector("iframe")
+          .contentWindow.print();
+      },
+    });
   }
 }
