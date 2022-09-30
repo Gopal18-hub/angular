@@ -152,6 +152,7 @@ export class OderInvestigationsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    console.log($event);
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.InvestigationItems =
       this.billingService.InvestigationItems.map((item: any, index: number) => {
@@ -343,38 +344,22 @@ export class OderInvestigationsComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .get(
-        BillingApiConstants.checkpriceforzeroitemid(
-          this.formGroup.value.investigation.value,
-          "67",
-          "2"
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          console.log(this.flag);
-          if (this.flag == 3) {
-            this.addrow();
-          }
-        } else {
-          this.messageDialogService.info(
-            "Price for this service is not defined"
-          );
-        }
-        console.log(this.priceDefined);
-      });
+
     if (this.formGroup.value.investigation.value == 6085) {
-      this.messageDialogService.info(
+      const dialofref = this.messageDialogService.info(
         "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
       );
+      dialofref.afterClosed().subscribe((data) => {
+        this.genderCheck();
+      });
+    } else {
+      this.genderCheck();
     }
 
     console.log(this.billingService.patientDemographicdata);
-
+    //this.formGroup.reset();
+  }
+  genderCheck() {
     this.http
       .get(
         BillingApiConstants.checkPatientSex(
@@ -389,7 +374,7 @@ export class OderInvestigationsComponent implements OnInit {
         console.log(response);
         if (response == 1) {
           this.flag++;
-          if (this.flag == 3) {
+          if (this.flag == 1) {
             this.addrow();
           }
           console.log(this.flag);
@@ -400,32 +385,6 @@ export class OderInvestigationsComponent implements OnInit {
         }
         console.log(this.genderDefined);
       });
-    this.http
-      .get(
-        BillingApiConstants.checkModality(
-          this.formGroup.value.investigation.value
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 3) {
-            this.addrow();
-          }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "Modality Code is not defined for the Service"
-          );
-        }
-      });
-    if (this.flag == 3) {
-      this.addrow();
-    }
-
-    //this.formGroup.reset();
   }
   list: any = [];
   addrow() {
@@ -445,7 +404,7 @@ export class OderInvestigationsComponent implements OnInit {
         this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
-          precaution: "",
+          precaution: this.formGroup.value.investigation.precaution,
           priority: 1,
           specialisation: 0,
           doctorName: 0,
@@ -454,8 +413,6 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           itemid: this.formGroup.value.investigation.value,
-          doctorid: 0,
-          specialisationid: 0,
         });
         this.data = [...this.billingService.InvestigationItems];
         console.log(this.data);

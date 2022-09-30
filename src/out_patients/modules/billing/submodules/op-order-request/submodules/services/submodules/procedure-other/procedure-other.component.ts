@@ -83,14 +83,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       },
       qty: {
         title: "Qty",
-        type: "dropdown",
-        options: [
-          { title: 1, value: 1 },
-          { title: 2, value: 2 },
-          { title: 3, value: 3 },
-          { title: 4, value: 4 },
-          { title: 5, value: 5 },
-        ],
+        type: "number",
         style: {
           width: "70px",
         },
@@ -269,8 +262,8 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getotherservicebilling(
-          67,
-          // Number(this.cookie.get("HSPLocationId")),
+          // 67,
+          Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
         )
@@ -338,29 +331,6 @@ export class OrderProcedureOtherComponent implements OnInit {
     }
     this.http
       .get(
-        BillingApiConstants.checkpriceforzeroitemid(
-          this.formGroup.value.procedure.value,
-          "67",
-          "9"
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          console.log(this.flag);
-          if (this.flag == 2) {
-            //this.addrow();
-          }
-        } else {
-          this.messageDialogService.info(
-            "Price for this service is not defined"
-          );
-        }
-      });
-    this.http
-      .get(
         BillingApiConstants.checkPatientSexoporder(
           this.formGroup.value.procedure.value,
           this.billingService.patientDemographicdata.gender,
@@ -373,8 +343,8 @@ export class OrderProcedureOtherComponent implements OnInit {
         console.log(response);
         if (response == 1) {
           this.flag++;
-          if (this.flag == 2) {
-            // this.addrow();
+          if (this.flag == 1) {
+            this.addrow();
           }
           console.log(this.flag);
         } else {
@@ -383,70 +353,8 @@ export class OrderProcedureOtherComponent implements OnInit {
           );
         }
       });
-    this.http
-      .get(
-        BillingApiConstants.checkServiceTax(
-          this.formGroup.value.procedure.value,
-          this.formGroup.value.procedure.serviceid
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response > 0) {
-          const dialogref = this.dialog.open(ServicetaxPopupComponent, {
-            width: "70vh",
-            height: "30vh",
-            data: {
-              procedure: this.formGroup.value.procedure.title,
-            },
-          });
-          dialogref.afterClosed().subscribe((value) => {
-            console.log(value);
-            if ((value = "true")) {
-              if (this.flag == 2) {
-                this.addrow();
-              }
-            } else if (value == "false") {
-              //open popup , on click of ok from that popup
-              this.addrow();
-            }
-          });
-        } else {
-          this.addrow();
-        }
-      });
 
-    // if (this.flag == 2) {
-    //   this.addrow();
-    // }
-
-    // this.http
-    //   .get(
-    //     BillingApiConstants.getPrice(
-    //       priorityId,
-    //       this.formGroup.value.procedure.value,
-    //       this.formGroup.value.otherService.value,
-    //       this.cookie.get("HSPLocationId")
-    //     )
-    //   )
-    //   .subscribe((res: any) => {
-    //     this.billingService.addToProcedure({
-    //       sno: this.data.length + 1,
-    //       procedures: this.formGroup.value.procedure.originalTitle,
-    //       qty: 1,
-    //       specialisation: "",
-    //       doctorName: "",
-    //       price: res.amount,
-    //       unitPrice: res.amount,
-    //       itemid: this.formGroup.value.procedure.value,
-    //       priorityId: priorityId,
-    //       serviceId: this.formGroup.value.otherService.value,
-    //     });
-
-    //     this.data = [...this.billingService.ProcedureItems];
-    //     this.formGroup.reset();
-    //   });
+    //this.formGroup.reset();
   }
 
   addrow(priorityId = 1) {
@@ -523,10 +431,10 @@ export class OrderProcedureOtherComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       0,
-      60926,
-      67
-      // userid,
-      // locationid
+      // 60926,
+      //67
+      userid,
+      locationid
     );
   }
   saveResponsedata: any;
@@ -548,6 +456,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
             this.billingService.ProcedureItems = [];
+            this.formGroup.reset();
           }
         });
     }
