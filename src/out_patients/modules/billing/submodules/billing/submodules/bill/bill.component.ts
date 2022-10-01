@@ -145,9 +145,9 @@ export class BillComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash", disabled: false },
-          { title: "Credit", value: "credit", disabled: false },
-          { title: "Gen. OPD", value: "Gen OPD", disabled: false },
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 2, disabled: false },
+          { title: "Gen. OPD", value: 3, disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -307,18 +307,18 @@ export class BillComponent implements OnInit {
   async ngOnInit() {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "Credit", value: "credit", disabled: true },
-        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 2, disabled: true },
+        { title: "Gen. OPD", value: 3, disabled: true },
       ];
     }
     if (this.billingservice.selectedHealthPlan) {
       this.billDataForm.properties.discAmtCheck.disabled = true;
       this.billDataForm.properties.discAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "Credit", value: "credit", disabled: false },
-        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 2, disabled: false },
+        { title: "Gen. OPD", value: 3, disabled: true },
       ];
     }
     let formResult: any = this.formService.createForm(
@@ -513,6 +513,8 @@ export class BillComponent implements OnInit {
       this.formGroup.value.dipositAmt;
     this.billingservice.makeBillPayload.cmbInteraction =
       this.formGroup.value.interactionDetails;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+      this.formGroup.value.paymentMode;
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "70vw",
