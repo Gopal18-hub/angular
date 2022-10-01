@@ -85,6 +85,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
         );
       }
     });
+    console.log(this.tabs);
 
     this.today = new Date();
   }
