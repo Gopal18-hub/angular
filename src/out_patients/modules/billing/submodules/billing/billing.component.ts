@@ -833,17 +833,12 @@ export class BillingComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.billingService.addToProcedure({
-              sno: 1,
-              procedures: "Registration Charge",
-              qty: 1,
-              specialisation: "30632",
-              doctorName: "24",
-              price: 0,
-              unitPrice: 0,
-              itemid: "",
-              priorityId: "",
-              serviceId: "",
+            this.billingService.processProcedureAdd(1, "24", {
+              serviceid: 24,
+              value: 30632,
+              originalTitle: "Registration Charges",
+              docRequired: false,
+              popuptext: "",
             });
             this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
@@ -964,7 +959,7 @@ export class BillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-           Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
