@@ -148,6 +148,7 @@ export class CreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
+        this.companyexists = true;
       }
     });
   }

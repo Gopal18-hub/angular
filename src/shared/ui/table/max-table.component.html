@@ -14,14 +14,17 @@
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
           <div class="flex align-items-center">
-            <mat-checkbox
-              (change)="$event ? masterToggle() : null"
-              [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()"
-              [aria-label]="checkboxLabel()"
-              color="primary"
-            >
-            </mat-checkbox>
+            <ng-container *ngIf="config.clickSelection != 'single'">
+              <mat-checkbox
+                (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                [aria-label]="checkboxLabel()"
+                color="primary"
+              >
+              </mat-checkbox>
+            </ng-container>
+
             <span
               *ngIf="config.selectCheckBoxLabel"
               class="ml-1 max-health-primary-color"
