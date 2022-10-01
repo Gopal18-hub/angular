@@ -507,6 +507,10 @@ export class BillComponent implements OnInit {
   }
 
   makereceipt() {
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+      this.formGroup.value.discAmt;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+      this.formGroup.value.dipositAmt;
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "70vw",
       height: "98vh",
@@ -645,6 +649,17 @@ export class BillComponent implements OnInit {
 
               dialogref.afterClosed().subscribe((res) => {
                 console.log(res);
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
+                  [];
+                res.data.forEach((dItem: any) => {
+                  this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+                    {
+                      id: dItem.id,
+                      amount: dItem.amount,
+                      balanceamount: dItem.balanceamount,
+                    }
+                  );
+                });
                 this.totalDeposit = res.data
                   .map((r: any) => r.balanceamount)
                   .reduce(function (r: any, s: any) {

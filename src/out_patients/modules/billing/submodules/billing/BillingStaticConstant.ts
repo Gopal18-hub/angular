@@ -45,12 +45,7 @@ export namespace BillingStaticConstants {
     orderType: "",
     dtCPRS: {},
     tab_o_opDiscount: {},
-    tab_o_opItemBasePrice: {
-      itemID: 0,
-      serviceID: 0,
-      price: 0,
-      willModify: false,
-    },
+    tab_o_opItemBasePrice: [],
     cmbInteraction: 0,
     htParms: {},
     opBloodGroupFlag: 0,

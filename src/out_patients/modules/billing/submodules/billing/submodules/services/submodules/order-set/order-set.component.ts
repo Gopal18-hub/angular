@@ -342,6 +342,12 @@ export class OrderSetComponent implements OnInit {
             },
           };
           this.billingService.addToOrderSet(data1);
+          this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
+            itemID: subItems[index].itemId,
+            serviceID: subItems[index].serviceID,
+            price: resItem.returnOutPut,
+            willModify: resItem.ret_value == 1 ? true : false,
+          });
         });
 
         this.data = [...this.billingService.OrderSetItems];

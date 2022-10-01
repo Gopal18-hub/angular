@@ -667,6 +667,12 @@ export class BillingService {
           doctorID: 0,
         },
       });
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: procedure.value,
+        serviceID: procedure.serviceid,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
+      });
     }
   }
 
@@ -728,6 +734,12 @@ export class BillingService {
           patient_Instructions: investigation.patient_Instructions,
         },
       });
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: investigation.value,
+        serviceID: serviceType || investigation.serviceid,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
+      });
     }
   }
 
@@ -769,6 +781,12 @@ export class BillingService {
       },
     });
     this.consultationItemsAdded.next(true);
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: doctorName.value,
+      serviceID: 25,
+      price: doctorName.price,
+      willModify: false,
+    });
   }
 
   async procesConsultationAdd(
@@ -822,6 +840,12 @@ export class BillingService {
         },
       });
       this.consultationItemsAdded.next(true);
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: doctorName.value,
+        serviceID: 25,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
+      });
     }
   }
 
