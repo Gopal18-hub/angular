@@ -360,6 +360,10 @@ export class BillComponent implements OnInit {
       this.billingservice.billItems[$event.index]
     );
     this.billingservice.billItems.splice($event.index, 1);
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(
+      $event.index,
+      1
+    );
     this.billingservice.billItems = this.billingservice.billItems.map(
       (item: any, index: number) => {
         item["sno"] = index + 1;
