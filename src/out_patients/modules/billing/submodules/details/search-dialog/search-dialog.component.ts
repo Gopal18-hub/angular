@@ -2,13 +2,14 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CookieService } from '@shared/services/cookie.service';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BillDetailsApiConstants } from '../BillDetailsApiConstants';
 import { HttpService } from '@shared/services/http.service';
 import { DatePipe } from '@angular/common';
 import { getsearchopbills } from "../../../../../core/types/billdetails/getsearchopbill.Interface";
 import { Subject, takeUntil } from 'rxjs';
 import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
+import { MoreThanMonthComponent } from '../../dispatch-report/more-than-month/more-than-month.component';
 @Component({
   selector: 'out-patients-search-dialog',
   templateUrl: './search-dialog.component.html',
@@ -177,6 +178,7 @@ export class SearchDialogComponent implements OnInit {
     private http: HttpService,
     private formService: QuestionControlService,
     private datepipe: DatePipe,
+    private matdialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) private formdata: {
       maxid: any,
       mobileno: any,
@@ -306,6 +308,32 @@ export class SearchDialogComponent implements OnInit {
       this.searchform.value.todate = new Date();
       this.searchform.value.checkbox = false;
     }
+    if(this.searchform.value.checkbox == true)
+    {
+      var fdate = new Date(this.searchform.controls["fromdate"].value);
+      var tdate = new Date(this.searchform.controls["todate"].value);
+      var dif_in_time = tdate.getTime() - fdate.getTime();
+      var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+      if (dif_in_days > 31) {
+        this.matdialog.open(MoreThanMonthComponent, {
+          width: "30vw",
+          height: "30vh",
+        });
+      } 
+      else
+      {
+        this.SearchApi(regno, iacode);
+      }
+    }
+    else
+    {
+      this.SearchApi(regno, iacode);
+    }
+    
+  }
+
+  SearchApi(regno: any, iacode: any)
+  {
     this.http.get(BillDetailsApiConstants.getsearchopbills(
       this.searchform.value.billno,
       regno,
