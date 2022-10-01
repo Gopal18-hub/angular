@@ -34,7 +34,7 @@
   </div>
 </div>
 <div class="w-full" *ngIf="addDoctor">
-  <div>
+  <div [class.display-none]="alreadyDoctorsExist.length > 0">
     <h3 class="pl-2 mb-1">Enter a new doctor details</h3>
     <form
       [formGroup]="formGroup"
@@ -51,7 +51,9 @@
         >
         </maxhealth-question>
       </ng-container>
-      <div class="action-items absolute bottom-20-px">
+      <div
+        class="action-items absolute bottom-20-px w-full flex align-items-center justify-center"
+      >
         <button
           mat-stroked-button
           color="primary"
@@ -73,5 +75,34 @@
         </button>
       </div>
     </form>
+  </div>
+  <div [class.display-none]="alreadyDoctorsExist.length == 0">
+    <maxhealth-table
+      [config]="config"
+      [data]="alreadyDoctorsExist"
+      #table
+    ></maxhealth-table>
+    <div
+      class="action-items absolute bottom-20-px w-full flex align-items-center justify-center"
+    >
+      <button
+        mat-stroked-button
+        color="primary"
+        class="mt-2 mr-2 min-width-initial"
+        type="button"
+        (click)="alreadyDoctorsExist = []; $event.stopPropagation()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="mt-2 min-width-initial"
+        type="button"
+        (click)="selectDoctorFromTable()"
+      >
+        Ok
+      </button>
+    </div>
   </div>
 </div>

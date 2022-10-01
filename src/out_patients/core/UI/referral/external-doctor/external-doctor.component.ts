@@ -1,9 +1,16 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../modules/billing/submodules/billing/BillingApiConstant";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-referral-external-doctor",
@@ -11,6 +18,36 @@ import { BillingApiConstants } from "../../../../modules/billing/submodules/bill
   styleUrls: ["./external-doctor.component.scss"],
 })
 export class ExternalDoctorComponent implements OnInit {
+  @ViewChild("table") tableRows: any;
+
+  config: any = {
+    clickedRows: false,
+    actionItems: false,
+    dateformat: "dd/MM/yyyy",
+    selectBox: true,
+    clickSelection: "single",
+    selectCheckBoxLabel: "",
+    displayedColumns: ["name", "mobile", "speciality", "type"],
+    columnsInfo: {
+      name: {
+        title: "Name",
+        type: "string",
+      },
+      mobile: {
+        title: "Mobile",
+        type: "string",
+      },
+      speciality: {
+        title: "Speciality",
+        type: "string",
+      },
+      type: {
+        title: "Type",
+        type: "string",
+      },
+    },
+  };
+
   formData = {
     title: "",
     type: "object",
@@ -47,11 +84,14 @@ export class ExternalDoctorComponent implements OnInit {
 
   term: any;
 
+  alreadyDoctorsExist: any = [];
+
   @Output() selectedDoctorEvent: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private formService: QuestionControlService,
-    private http: HttpService
+    private http: HttpService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +114,14 @@ export class ExternalDoctorComponent implements OnInit {
 
   selectedDoctor(docotr: any) {
     this.selectedDoctorEvent.emit({ docotr });
+  }
+
+  selectDoctorFromTable() {
+    this.selectedDoctorEvent.emit({
+      docotr: this.tableRows.selection.selected[0],
+    });
+    this.alreadyDoctorsExist = [];
+    this.addDoctor = false;
   }
 
   initiateForm($event: any) {
@@ -101,6 +149,10 @@ export class ExternalDoctorComponent implements OnInit {
         )
         .subscribe((res: any) => {
           if (res.length > 0) {
+            this.alreadyDoctorsExist = res;
+            this.messageDialogService.error(
+              "Referral Doctor with similar name laready exists. Please validate."
+            );
           } else {
           }
         });
