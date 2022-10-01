@@ -212,6 +212,13 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
+      if (res) {
+        this.billingService.makeBillPayload.invoiceType = "B2B";
+      } else {
+        this.billingService.makeBillPayload.invoiceType = "B2C";
+      }
+    });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
@@ -688,7 +695,18 @@ export class BillingComponent implements OnInit {
           maxId: this.formGroup.value.maxid,
         },
       });
-      await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef.afterClosed().toPromise();
+      if (resAction) {
+        if ("paynow" in resAction && resAction.paynow) {
+          this.router.navigate(["/out-patient-billing/details"], {
+            queryParams: { maxID: this.formGroup.value.maxid },
+          });
+          return;
+        }
+        if ("skipReason" in resAction && resAction.skipReason) {
+        }
+      }
+
       this.planDetailsCheck(dtPatientPastDetails);
     } else {
       this.planDetailsCheck(dtPatientPastDetails);

@@ -130,11 +130,12 @@ import { ReferralModule } from "@core/ui/referral";
 import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popuptext.component";
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
 import { Form60YesOrNoComponent } from './submodules/deposit/form60-dialog/form60-yes-or-no.component';
+import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/discount-reason/staff-dept-dialog/staff-dept-dialog.component";
 import { ReasonForDueBillComponent } from './submodules/billing/prompts/reason-for-due-bill/reason-for-due-bill.component';
 import { SendMailDialogComponent } from './submodules/billing/prompts/send-mail-dialog/send-mail-dialog.component';
-
 @NgModule({
   declarations: [
+    BillingStaffDeptDialogComponent,
     BillingPaymentMethodsComponent,
     BillForm60Component,
     BillPaymentDialogComponent,
@@ -269,4 +270,4 @@ import { SendMailDialogComponent } from './submodules/billing/prompts/send-mail-
   providers: [],
   bootstrap: [],
 })
-export class BillingModule { }
+export class BillingModule {}
