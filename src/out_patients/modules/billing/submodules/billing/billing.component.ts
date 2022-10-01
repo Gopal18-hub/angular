@@ -30,6 +30,8 @@ import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-de
 import { PatientService } from "@core/services/patient.service";
 import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-appointment.component";
 import { distinctUntilChanged } from "rxjs/operators";
+import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
+import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
 
 @Component({
   selector: "out-patients-billing",
@@ -210,6 +212,13 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
+      if (res) {
+        this.billingService.makeBillPayload.invoiceType = "B2B";
+      } else {
+        this.billingService.makeBillPayload.invoiceType = "B2C";
+      }
+    });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
@@ -673,7 +682,7 @@ export class BillingComponent implements OnInit {
       });
   }
 
-  payDueCheck(dtPatientPastDetails: any) {
+  async payDueCheck(dtPatientPastDetails: any) {
     if (
       dtPatientPastDetails[4] &&
       dtPatientPastDetails[4].id > 0 &&
@@ -686,6 +695,8 @@ export class BillingComponent implements OnInit {
           maxId: this.formGroup.value.maxid,
         },
       });
+      await dialogRef.afterClosed().toPromise();
+      this.planDetailsCheck(dtPatientPastDetails);
     } else {
       this.planDetailsCheck(dtPatientPastDetails);
     }
@@ -727,6 +738,7 @@ export class BillingComponent implements OnInit {
               "You have selected " + selectedPlan.planName
             );
           }
+          this.checkServicesLogics();
         });
     } else if (
       dtPatientPastDetails[7] &&
@@ -775,9 +787,74 @@ export class BillingComponent implements OnInit {
                 }
               );
             }
+            this.checkServicesLogics();
           });
       }
+    } else {
+      this.checkServicesLogics();
     }
+  }
+
+  async checkServicesLogics() {
+    if (this.billingService.unbilledInvestigations) {
+    } else {
+      let checkinvestigations = await this.http
+        .get(
+          BillingApiConstants.getinvestigationfromphysician(
+            this.billingService.activeMaxId.iacode,
+            this.billingService.activeMaxId.regNumber,
+            this.cookie.get("HSPLocationId")
+          )
+        )
+        .toPromise();
+      if (checkinvestigations.length > 0) {
+        this.investigationCheck(checkinvestigations);
+        return;
+      }
+    }
+  }
+
+  investigationCheck(checkinvestigations: any) {
+    let dialogRef = this.matDialog.open(InvestigationWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.showlist) {
+        let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
+          width: "60vw",
+          height: "50vh",
+          data: {
+            investigations: checkinvestigations,
+          },
+        });
+        uDialogRef.afterClosed().subscribe(async (ures: any) => {
+          if (ures.process == 1) {
+            if (ures.data.length > 0) {
+              for (let i = 0; i < ures.data.length; i++) {
+                const item = ures.data[i];
+                await this.billingService.processInvestigationAdd(
+                  1,
+                  item.serviceId,
+                  {
+                    title: item.testName,
+                    value: item.testID,
+                    originalTitle: item.testName,
+                    docRequired: item.doctorid ? true : false,
+                    patient_Instructions: "",
+                    serviceid: item.serviceId,
+                    doctorid: item.doctorid,
+                  }
+                );
+              }
+            }
+            this.billingService.unbilledInvestigations = true;
+          }
+        });
+      } else {
+        this.billingService.unbilledInvestigations = true;
+      }
+    });
   }
 
   inPatientCheck(dtPatientPastDetails: any) {
@@ -833,17 +910,12 @@ export class BillingComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.billingService.addToProcedure({
-              sno: 1,
-              procedures: "Registration Charge",
-              qty: 1,
-              specialisation: "30632",
-              doctorName: "24",
-              price: 0,
-              unitPrice: 0,
-              itemid: "",
-              priorityId: "",
-              serviceId: "",
+            this.billingService.processProcedureAdd(1, "24", {
+              serviceid: 24,
+              value: 30632,
+              originalTitle: "Registration Charges",
+              docRequired: false,
+              popuptext: "",
             });
             this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
@@ -964,7 +1036,7 @@ export class BillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-           Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))

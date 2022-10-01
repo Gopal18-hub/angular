@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
@@ -26,6 +26,9 @@ export class DisountReasonComponent implements OnInit {
           { title: "On Bill", value: "On-Bill" },
           { title: "On Service", value: "On-Service" },
           { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
         ],
         placeholder: "-Select-",
       },
@@ -177,6 +180,7 @@ export class DisountReasonComponent implements OnInit {
 
   disableAdd: boolean = false;
 
+  @ViewChild("table") tableRows: any;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -233,15 +237,28 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
+      if (val) {
+        const existReason: any = this.discReasonList.find(
+          (rl: any) => rl.id == val
+        );
+        this.discAmtForm.controls["percentage"].setValue(
+          existReason.discountPer
+        );
+      }
+    });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
-      const filterData = this.discReasonList.filter(
-        (rl: any) => rl.mainhead == val
-      );
-      this.question[2].options = filterData.map((a) => {
-        return { title: a.name, value: a.id, discountPer: a.discountPer };
-      });
-      this.discAmtFormConfig.columnsInfo.reason.options =
-        this.question[2].options;
+      if (val) {
+        const filterData = this.discReasonList.filter(
+          (rl: any) => rl.mainhead == val
+        );
+        this.question[2].options = filterData.map((a) => {
+          return { title: a.name, value: a.id, discountPer: a.discountPer };
+        });
+        this.discAmtFormConfig.columnsInfo.reason.options =
+          this.question[2].options;
+        this.discAmtFormConfig = { ...this.discAmtFormConfig };
+      }
     });
   }
 
@@ -286,6 +303,7 @@ export class DisountReasonComponent implements OnInit {
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "",
+      discTypeId: 6,
       service: "",
       doctor: "",
       price: "",
@@ -296,6 +314,25 @@ export class DisountReasonComponent implements OnInit {
       reason: "",
       value: "",
       discTypeValue: "",
+      reasonTitle: "",
+    };
+  }
+  OnPatientPrepare() {
+    let temp = {
+      sno: this.selectedItems.length + 1,
+      discType: "",
+      discTypeId: 4,
+      service: "",
+      doctor: "",
+      price: "",
+      disc: "",
+      discAmt: "",
+      totalAmt: "",
+      head: "",
+      reason: "",
+      value: "",
+      discTypeValue: "",
+      reasonTitle: "",
     };
   }
 
@@ -303,6 +340,7 @@ export class DisountReasonComponent implements OnInit {
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "",
+      discTypeId: 5,
       service: "",
       doctor: "",
       price: "",
@@ -313,6 +351,7 @@ export class DisountReasonComponent implements OnInit {
       reason: "",
       value: "",
       discTypeValue: "",
+      reasonTitle: "",
     };
   }
 
@@ -329,6 +368,7 @@ export class DisountReasonComponent implements OnInit {
         let temp = {
           sno: this.selectedItems.length + 1,
           discType: "On Item",
+          discTypeId: 3,
           service: selecetdServices[i].name,
           doctor: item.itemName,
           price: item.price * item.qty,
@@ -337,8 +377,9 @@ export class DisountReasonComponent implements OnInit {
           totalAmt: price - discAmt,
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
-          value: "",
+          value: "0",
           discTypeValue: "On-Item",
+          reasonTitle: existReason.name,
         };
         this.calculateBillService.discountSelectedItems.push(temp);
       }
@@ -353,7 +394,6 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const selecetdServices: any = Object.values(this.serviceBasedList);
-    console.log(selecetdServices);
     for (let i = 0; i < selecetdServices.length; i++) {
       let price = 0;
       selecetdServices[i].items.forEach((item: any) => {
@@ -363,6 +403,7 @@ export class DisountReasonComponent implements OnInit {
       let temp = {
         sno: this.selectedItems.length + 1,
         discType: "On Service",
+        discTypeId: 2,
         service: selecetdServices[i].name,
         doctor: "",
         price: price,
@@ -371,8 +412,9 @@ export class DisountReasonComponent implements OnInit {
         totalAmt: price - discAmt,
         head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
-        value: "",
+        value: "0",
         discTypeValue: "On-Service",
+        reasonTitle: existReason.name,
       };
       this.calculateBillService.discountSelectedItems.push(temp);
     }
@@ -387,7 +429,9 @@ export class DisountReasonComponent implements OnInit {
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
-    this.dialogRef.close();
+    this.calculateBillService.discountSelectedItems =
+      this.tableRows.selection.selected;
+    this.dialogRef.close({ applyDiscount: true });
   }
 
   OnBillItemPrepare() {
@@ -399,6 +443,7 @@ export class DisountReasonComponent implements OnInit {
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Bill",
+      discTypeId: 1,
       service: "",
       doctor: "",
       price: this.billingService.totalCost,
@@ -407,8 +452,9 @@ export class DisountReasonComponent implements OnInit {
       totalAmt: this.billingService.totalCost - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
-      value: "",
+      value: "0",
       discTypeValue: "On-Bill",
+      reasonTitle: existReason.name,
     };
     this.calculateBillService.discountSelectedItems.push(temp);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];

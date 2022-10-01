@@ -10,6 +10,7 @@ import { OrderSetDetailsComponent } from "../../../../prompts/order-set-details/
 import { MatDialog } from "@angular/material/dialog";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SpecializationService } from "../../../../specialization.service";
 
 @Component({
   selector: "out-patients-order-set",
@@ -132,7 +133,8 @@ export class OrderSetComponent implements OnInit {
     public matDialog: MatDialog,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -143,6 +145,10 @@ export class OrderSetComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.OrderSetItems;
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -174,6 +180,18 @@ export class OrderSetComponent implements OnInit {
           res.$event.value,
           res.data.index
         );
+        this.billingService.OrderSetItems[
+          res.data.index
+        ].billItem.specialisationID = res.$event.value;
+      } else if (res.data.col == "doctorName") {
+        this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
+          res.$event.value;
+        const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
+          res.data.index
+        ].find((doc: any) => doc.value == res.$event.value);
+        this.billingService.OrderSetItems[
+          res.data.index
+        ].billItem.procedureDoctor = findDoctor.title;
       }
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
@@ -190,31 +208,18 @@ export class OrderSetComponent implements OnInit {
   }
 
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.config.columnsInfo.specialization.options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
+    this.config.columnsInfo.specialization.options =
+      this.specializationService.specializationData;
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getdoctorlistonSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getOrserSetData() {
@@ -323,7 +328,7 @@ export class OrderSetComponent implements OnInit {
               serviceName: selectedSubItems[index].serviceType,
               itemName: resItem.procedureName,
               qty: 1,
-              precaution: "",
+              precaution: "P",
               procedureDoctor: "",
               credit: 0,
               cash: 0,
@@ -337,6 +342,12 @@ export class OrderSetComponent implements OnInit {
             },
           };
           this.billingService.addToOrderSet(data1);
+          this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
+            itemID: subItems[index].itemId,
+            serviceID: subItems[index].serviceID,
+            price: resItem.returnOutPut,
+            willModify: resItem.ret_value == 1 ? true : false,
+          });
         });
 
         this.data = [...this.billingService.OrderSetItems];
