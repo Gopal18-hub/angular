@@ -35,6 +35,7 @@ import * as moment from "moment";
 import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { ShowPlanDetilsComponent } from "../billing/prompts/show-plan-detils/show-plan-detils.component";
 import { isTypedRule } from "tslint";
+import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.component";
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -199,6 +200,9 @@ export class MiscellaneousBillingComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
 
   ngAfterViewInit(): void {
+    if (this.miscForm.value.maxid == this.questions[0].defaultValue) {
+      this.questions[0].elementRef.focus();
+    }
     this.formEvents();
   }
 
@@ -350,6 +354,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this._destroying$.next(undefined);
     this._destroying$.complete();
     this.setItemsToBill.enableBill = false;
+    this.disableBtn = false;
     this.Misc.setMiscBillFormData(this.setItemsToBill);
     this.Misc.clearMiscBlling();
 
@@ -788,7 +793,15 @@ export class MiscellaneousBillingComponent implements OnInit {
       });
     }
   }
-
+  openIOM() {
+    this.matDialog.open(IomPopupComponent, {
+      width: "70%",
+      height: "90%",
+      data: {
+        company: this.miscForm.value.company.value,
+      },
+    });
+  }
   getAllCompany() {
     //let location = 67;
     let location = Number(this.cookie.get("HSPLocationId"));
