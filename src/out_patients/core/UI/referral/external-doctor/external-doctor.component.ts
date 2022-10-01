@@ -11,6 +11,7 @@ import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../modules/billing/submodules/billing/BillingApiConstant";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-referral-external-doctor",
@@ -86,12 +87,15 @@ export class ExternalDoctorComponent implements OnInit {
 
   alreadyDoctorsExist: any = [];
 
+  acceptToCreateNew: boolean = false;
+
   @Output() selectedDoctorEvent: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -137,26 +141,58 @@ export class ExternalDoctorComponent implements OnInit {
   }
   createDoctor($event: any) {
     $event.stopPropagation();
-    if (this.formGroup.valid) {
-      this.http
-        .get(
-          ApiConstants.getsimilarsoundreferraldoctor(
-            this.formGroup.value.speciality,
-            this.formGroup.value.firstname,
-            this.formGroup.value.lastname,
-            this.formGroup.value.mobile
+    if (this.acceptToCreateNew) {
+      this.saveDoctor();
+    } else {
+      if (this.formGroup.valid) {
+        this.http
+          .get(
+            ApiConstants.getsimilarsoundreferraldoctor(
+              this.formGroup.value.speciality,
+              this.formGroup.value.firstname,
+              this.formGroup.value.lastname,
+              this.formGroup.value.mobile
+            )
           )
-        )
-        .subscribe((res: any) => {
-          if (res.length > 0) {
-            this.alreadyDoctorsExist = res;
-            this.messageDialogService.error(
-              "Referral Doctor with similar name laready exists. Please validate."
-            );
-          } else {
-          }
-        });
+          .subscribe((res: any) => {
+            if (res.length > 0) {
+              this.alreadyDoctorsExist = res;
+              this.messageDialogService.error(
+                "Referral Doctor with similar name laready exists. Please validate."
+              );
+            } else {
+              this.saveDoctor();
+            }
+          });
+      }
     }
+  }
+
+  saveDoctor() {
+    this.http
+      .post(
+        ApiConstants.referraldoctorsave(
+          this.formGroup.value.firstname + " " + this.formGroup.value.lastname,
+          this.formGroup.value.mobile,
+          this.formGroup.value.speciality,
+          this.cookie.get("UserId")
+        ),
+        {}
+      )
+      .subscribe((res: any) => {
+        this.selectedDoctorEvent.emit({
+          docotr: {
+            id: res,
+            name:
+              this.formGroup.value.firstname +
+              " " +
+              this.formGroup.value.lastname,
+            specialisation: this.formGroup.value.speciality,
+          },
+        });
+        this.alreadyDoctorsExist = [];
+        this.addDoctor = false;
+      });
   }
 
   cancelCreateDoctor($event: any) {
