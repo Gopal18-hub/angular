@@ -55,8 +55,8 @@ export class BillPaymentDialogComponent implements OnInit {
   config = {
     paymentmethods: [
       "cash",
-      "cheque",
       "credit",
+      "cheque",
       "demand",
       "mobilepayment",
       "onlinepayment",
