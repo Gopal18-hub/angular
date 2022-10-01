@@ -352,6 +352,7 @@ export class BillingService {
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(exist, 1);
     }
   }
 
