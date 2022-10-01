@@ -33,7 +33,9 @@
               [index]="0"
             >
             </maxhealth-question> -->
-            <mat-label>Referral Doctor</mat-label>
+            <mat-label class="mat-form-field-required-marker"
+              >Referral Doctor</mat-label
+            >
             <out-patients-referral
               (selectedDoctorEvent)="selectedReferralDoctor($event)"
             ></out-patients-referral>

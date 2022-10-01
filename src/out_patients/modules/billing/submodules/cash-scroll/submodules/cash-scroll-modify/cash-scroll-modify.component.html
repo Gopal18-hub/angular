@@ -322,3 +322,13 @@
 </div>
     </mat-tab-nav-panel>
 </section>
+<div class="flex ml-4 mr-2 justify-between font-xs">
+    <div class="left flex">
+      <span>Last updated by: {{ cookie.get("Name") }} ( id: {{ cookie.get("UserName") }} )</span>
+      <!-- on 07-03-2022 | 10:10:00 -->
+    </div>
+    <div class="right mr-2">
+      Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+      {{ moment().format("LT")}}
+    </div>
+  </div>

@@ -245,4 +245,7 @@ export namespace CrystalReport {
   export const FormSixty = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?LocationId=${params.LocationId}&Iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
   };
+  export const IvestigationInstruction = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?ItemName=${params.item}&Description=${params.description}`;
+  };
 }

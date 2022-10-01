@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-unbilled-investigation",
@@ -44,13 +45,38 @@ export class UnbilledInvestigationComponent implements OnInit {
       },
     },
   };
+
+  disableProcess: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<UnbilledInvestigationComponent>,
-    @Inject(MAT_DIALOG_DATA) public inputdata: any
+    @Inject(MAT_DIALOG_DATA) public inputdata: any,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
     this.data = this.inputdata.investigations;
+  }
+
+  ngAfterViewInit() {
+    this.tableRows.selection.changed.subscribe((res: any) => {
+      this.checkDuplicate();
+    });
+  }
+
+  checkDuplicate() {
+    let temp: any = [];
+    let existProcess = false;
+    for (let i = 0; i < this.tableRows.selection.selected.length; i++) {
+      if (temp.includes(this.tableRows.selection.selected[i].testID)) {
+        this.disableProcess = true;
+        existProcess = true;
+        this.messageDialogService.error("Already selected the test");
+        break;
+      }
+      temp.push(this.tableRows.selection.selected[i].testID);
+    }
+    if (!existProcess) this.disableProcess = false;
   }
 
   process() {
