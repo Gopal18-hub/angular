@@ -591,25 +591,31 @@ export class BillComponent implements OnInit {
       minWidth: "90vw",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
-      this.billingservice.makeBillPayload.tab_o_opDiscount = [];
-
-      this.calculateBillService.discountSelectedItems.forEach(
-        (discItem: any) => {
-          this.billingservice.makeBillPayload.tab_o_opDiscount.push({
-            discOn: discItem.discType,
-            disType: discItem.discTypeId,
-            disPer: discItem.disc,
-            disReason: discItem.reasonTitle,
-            disAmt: discItem.discAmt,
+      if ("applyDiscount" in res && res.applyDiscount) {
+        this.billingservice.makeBillPayload.tab_o_opDiscount = [];
+        this.calculateBillService.discountSelectedItems.forEach(
+          (discItem: any) => {
+            this.billingservice.makeBillPayload.tab_o_opDiscount.push({
+              discOn: discItem.discType,
+              disType: discItem.discTypeId,
+              disPer: discItem.disc,
+              disReason: discItem.reasonTitle,
+              disAmt: discItem.discAmt,
+            });
+          }
+        );
+        this.formGroup.controls["discAmt"].setValue(
+          this.calculateBillService.totalDiscountAmt
+        );
+        this.formGroup.controls["amtPayByPatient"].setValue(
+          this.getAmountPayByPatient()
+        );
+        if (this.calculateBillService.totalDiscountAmt > 0) {
+          this.formGroup.controls["discAmtCheck"].setValue(true, {
+            emitEvent: false,
           });
         }
-      );
-      this.formGroup.controls["discAmt"].setValue(
-        this.calculateBillService.totalDiscountAmt
-      );
-      this.formGroup.controls["amtPayByPatient"].setValue(
-        this.getAmountPayByPatient()
-      );
+      }
     });
   }
 

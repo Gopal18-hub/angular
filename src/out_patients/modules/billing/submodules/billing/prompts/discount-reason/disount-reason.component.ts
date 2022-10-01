@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
@@ -180,6 +180,7 @@ export class DisountReasonComponent implements OnInit {
 
   disableAdd: boolean = false;
 
+  @ViewChild("table") tableRows: any;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -428,7 +429,9 @@ export class DisountReasonComponent implements OnInit {
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
-    this.dialogRef.close();
+    this.calculateBillService.discountSelectedItems =
+      this.tableRows.selection.selected;
+    this.dialogRef.close({ applyDiscount: true });
   }
 
   OnBillItemPrepare() {
