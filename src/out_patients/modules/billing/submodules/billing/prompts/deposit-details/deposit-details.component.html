@@ -16,7 +16,7 @@
     </div>
 
     <div class="w-full mt-3">
-        <button class="float-right" mat-raised-button color="primary" (click)="submit()">Submit</button>
+        <button class="float-right" mat-raised-button color="primary" [disabled]="!enableSubmit" (click)="submit()">Submit</button>
     </div>
 
 </section>

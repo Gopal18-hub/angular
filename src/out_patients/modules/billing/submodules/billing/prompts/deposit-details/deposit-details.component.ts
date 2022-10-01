@@ -16,6 +16,7 @@ export class DepositDetailsComponent implements OnInit {
   tempTable: any = [];
   depoDetails: any = [];
   calcBillData: any = [];
+  enableSubmit = false;
   config: any = {
     actionItems: false,
     dateformat: 'dd/MM/yyyy hh:mm:ss a',
@@ -71,8 +72,11 @@ export class DepositDetailsComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (this.depoTable.selection.selected.length > 0) {
-
+          this.enableSubmit = true;
           this.tableSelectedRows = this.depoTable.selection.selected;
+        }
+        else {
+          this.enableSubmit = false;
         }
         this.tableSelectedRows.forEach((element: any) => {
           this.totalDeposit += element.balanceamount;

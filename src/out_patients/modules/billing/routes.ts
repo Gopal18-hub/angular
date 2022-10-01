@@ -42,6 +42,7 @@ import { OnlineDepositReportComponent } from "./submodules/online-deposit-report
 import { CashScrollComponent } from "./submodules/cash-scroll/cash-scroll.component";
 import { CashScrollNewComponent } from "./submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
+import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -96,7 +97,7 @@ const routes: Routes = [
         component: MiscellaneousBillingComponent,
         children: [
           { path: "", component: BillDetailComponent },
-          { path: "credit-details", component: CreditDetailsComponent },
+          { path: "credit-details", component: MiscCreditDetailsComponent },
           { path: "bill", component: BillDetailComponent },
         ],
       },

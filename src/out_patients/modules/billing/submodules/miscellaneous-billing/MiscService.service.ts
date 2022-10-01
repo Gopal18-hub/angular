@@ -21,6 +21,7 @@ export class MiscService {
   clearForm = false;
   calcItems: any = [];
   calculatedBill: any = [];
+  companyList: any = [];
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }

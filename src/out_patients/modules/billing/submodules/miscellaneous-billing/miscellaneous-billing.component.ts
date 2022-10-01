@@ -191,6 +191,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     }
 
     this.getssnandmaxid();
+    this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
   }
@@ -223,6 +224,12 @@ export class MiscellaneousBillingComponent implements OnInit {
       .subscribe((value: any) => {
 
         if (value.value) {
+          // this.billingService.setCompnay(
+          //   value.value,
+          //   value,
+          //   this.miscForm,
+          //   "header"
+          // );
           this.Misc.setCompany(value.value);
           this.companyId = value.value;
           this.setItemsToBill.enablecompanyId = true;
@@ -788,9 +795,10 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.http
       .get(BillingApiConstants.getcompanydetail(location))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data: GetCompanyDataInterface[]) => {
         //console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
+        this.Misc.setCompanList(data)
         this.questions[2].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
         });

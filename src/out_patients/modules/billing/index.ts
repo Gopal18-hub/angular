@@ -130,6 +130,7 @@ import { ReferralModule } from "@core/ui/referral";
 import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popuptext.component";
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
 import { Form60YesOrNoComponent } from './submodules/deposit/form60-dialog/form60-yes-or-no.component';
+import { MiscCreditDetailsComponent } from './submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component';
 
 @NgModule({
   declarations: [
@@ -232,6 +233,7 @@ import { Form60YesOrNoComponent } from './submodules/deposit/form60-dialog/form6
     PopuptextComponent,
     ServicetaxPopupComponent,
     Form60YesOrNoComponent,
+    MiscCreditDetailsComponent,
   ],
   imports: [
     BillingRoutingModule,
