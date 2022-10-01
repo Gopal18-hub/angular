@@ -695,7 +695,15 @@ export class BillingComponent implements OnInit {
           maxId: this.formGroup.value.maxid,
         },
       });
-      await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef.afterClosed().toPromise();
+      if ("paynow" in resAction && resAction.paynow) {
+        this.router.navigate(["/out-patient-billing/details"], {
+          queryParams: { maxID: this.formGroup.value.maxid },
+        });
+        return;
+      }
+      if ("skipReason" in resAction && resAction.skipReason) {
+      }
       this.planDetailsCheck(dtPatientPastDetails);
     } else {
       this.planDetailsCheck(dtPatientPastDetails);

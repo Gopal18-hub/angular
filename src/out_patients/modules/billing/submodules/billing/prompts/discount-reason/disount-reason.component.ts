@@ -156,6 +156,7 @@ export class DisountReasonComponent implements OnInit {
         style: {
           width: "8rem",
         },
+        moreOptions: {},
       },
       value: {
         title: "Value Based",
@@ -237,6 +238,30 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
+      if (res.data.col == "head") {
+        const filterData = this.discReasonList.filter(
+          (rl: any) => rl.mainhead == res.$event.value
+        );
+        let options = filterData.map((a) => {
+          return { title: a.name, value: a.id, discountPer: a.discountPer };
+        });
+        this.discAmtFormConfig.columnsInfo.reason.moreOptions[res.data.index] =
+          options;
+      } else if (res.data.col == "reason") {
+        const existReason: any = this.discReasonList.find(
+          (rl: any) => rl.id == res.$event.value
+        );
+        let item =
+          this.calculateBillService.discountSelectedItems[res.data.index];
+        const price = item.price;
+        const discAmt = (price * existReason.discountPer) / 100;
+        item.disc = existReason.discountPer;
+        item.discAmt = discAmt;
+        item.totalAmt = price - discAmt;
+        this.calculateBillService.discountSelectedItems[res.data.index] = item;
+      }
+    });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
       if (val) {
         const existReason: any = this.discReasonList.find(
