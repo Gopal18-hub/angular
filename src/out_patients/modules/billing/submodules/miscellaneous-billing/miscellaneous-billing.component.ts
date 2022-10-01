@@ -798,7 +798,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       .subscribe((data: GetCompanyDataInterface[]) => {
         //console.log(data);
         this.complanyList = data as GetCompanyDataInterface[];
-        this.Misc.setCompanList(data)
+        //this.Misc.setCompanList(data)
         this.questions[2].options = this.complanyList.map((a) => {
           return { title: a.name, value: a.id };
         });
