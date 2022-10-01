@@ -40,6 +40,7 @@
       [formGroup]="formGroup"
       autocomplete="off"
       class="w-full flex flex-column align-items-center create-doctor-form relative"
+      (click)="$event.stopPropagation()"
     >
       <ng-container *ngFor="let question of questions; let i = index">
         <maxhealth-question

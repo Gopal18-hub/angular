@@ -108,10 +108,8 @@ export class BillComponent implements OnInit {
         readonly: true,
       },
       coupon: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
-        readonly: true,
       },
       coPay: {
         type: "number",
@@ -162,7 +160,7 @@ export class BillComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        readonly: false,
+        readonly: true,
       },
     },
   };
@@ -362,6 +360,10 @@ export class BillComponent implements OnInit {
       this.billingservice.billItems[$event.index]
     );
     this.billingservice.billItems.splice($event.index, 1);
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(
+      $event.index,
+      1
+    );
     this.billingservice.billItems = this.billingservice.billItems.map(
       (item: any, index: number) => {
         item["sno"] = index + 1;
@@ -447,6 +449,13 @@ export class BillComponent implements OnInit {
       if (
         this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
         this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
+        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.billAmt
@@ -645,6 +654,10 @@ export class BillComponent implements OnInit {
                   this.totalDeposit
                 );
                 this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+                this.formGroup.controls["dipositAmtEdit"].enable();
+                this.question[20].readonly = false;
+                this.question[20].disable = false;
+                this.question[20] = { ...this.question[20] };
                 if (res.data)
                   this.snackbar.open("Deposit Amount availed successfully!");
               });
