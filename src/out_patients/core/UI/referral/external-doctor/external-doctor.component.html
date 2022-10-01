@@ -90,9 +90,13 @@
         color="primary"
         class="mt-2 mr-2 min-width-initial"
         type="button"
-        (click)="alreadyDoctorsExist = []; $event.stopPropagation()"
+        (click)="
+          alreadyDoctorsExist = [];
+          $event.stopPropagation();
+          acceptToCreateNew = true
+        "
       >
-        Cancel
+        Back to Create
       </button>
       <button
         mat-raised-button
@@ -101,7 +105,7 @@
         type="button"
         (click)="selectDoctorFromTable()"
       >
-        Ok
+        Continue
       </button>
     </div>
   </div>

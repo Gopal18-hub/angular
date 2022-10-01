@@ -145,9 +145,9 @@ export class BillComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash", disabled: false },
-          { title: "Credit", value: "credit", disabled: false },
-          { title: "Gen. OPD", value: "Gen OPD", disabled: false },
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 3, disabled: false },
+          { title: "Gen. OPD", value: 4, disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -307,18 +307,18 @@ export class BillComponent implements OnInit {
   async ngOnInit() {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "Credit", value: "credit", disabled: true },
-        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
     if (this.billingservice.selectedHealthPlan) {
       this.billDataForm.properties.discAmtCheck.disabled = true;
       this.billDataForm.properties.discAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: "cash", disabled: false },
-        { title: "Credit", value: "credit", disabled: false },
-        { title: "Gen. OPD", value: "Gen OPD", disabled: true },
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
     let formResult: any = this.formService.createForm(
@@ -389,11 +389,9 @@ export class BillComponent implements OnInit {
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
-    this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCost + ".00"
-    );
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
     this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost + ".00"
+      this.billingservice.totalCost
     );
     this.formGroup.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -422,7 +420,7 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["dipositAmtEdit"].reset();
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
-            this.billingservice.totalCost + ".00"
+            this.billingservice.totalCost
           );
           this.formGroup.controls["dipositAmtcheck"].setValue(false);
         }
@@ -499,7 +497,17 @@ export class BillComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.makereceipt();
+            if (this.formGroup.value.amtPayByPatient > 0) {
+              this.makereceipt();
+            } else {
+              this.billingservice.makeBill().subscribe((res) => {
+                if (res.length > 0) {
+                  if (res[0].billNo) {
+                    this.processBillNo(res[0]);
+                  }
+                }
+              });
+            }
           } else {
           }
         }
@@ -507,6 +515,15 @@ export class BillComponent implements OnInit {
   }
 
   makereceipt() {
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+      this.formGroup.value.discAmt;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+      this.formGroup.value.dipositAmt;
+    this.billingservice.makeBillPayload.cmbInteraction =
+      this.formGroup.value.interactionDetails;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+      this.formGroup.value.paymentMode;
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "70vw",
       height: "98vh",
@@ -526,35 +543,39 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
-          this.billingservice.billNoGenerated.next(true);
-          this.billNo = result.billNo;
-          this.billId = result.billId;
-          this.config.removeRow = false;
-          this.config = { ...this.config };
-          const successInfo = this.messageDialogService.info(
-            `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
-          );
-          successInfo
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result: any) => {
-              const printDialog = this.messageDialogService.confirm(
-                "",
-                `Do you want to print bill?`
-              );
-              printDialog
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result: any) => {
-                  if ("type" in result) {
-                    if (result.type == "yes") {
-                      this.makePrint();
-                    } else {
-                    }
-                  }
-                });
-            });
+          this.processBillNo(result);
         }
+      });
+  }
+
+  processBillNo(result: any) {
+    this.billingservice.billNoGenerated.next(true);
+    this.billNo = result.billNo;
+    this.billId = result.billId;
+    this.config.removeRow = false;
+    this.config = { ...this.config };
+    const successInfo = this.messageDialogService.info(
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+    );
+    successInfo
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result: any) => {
+        const printDialog = this.messageDialogService.confirm(
+          "",
+          `Do you want to print bill?`
+        );
+        printDialog
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result: any) => {
+            if ("type" in result) {
+              if (result.type == "yes") {
+                this.makePrint();
+              } else {
+              }
+            }
+          });
       });
   }
 
@@ -584,12 +605,31 @@ export class BillComponent implements OnInit {
       minWidth: "90vw",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
-      this.formGroup.controls["discAmt"].setValue(
-        this.calculateBillService.totalDiscountAmt
-      );
-      this.formGroup.controls["amtPayByPatient"].setValue(
-        this.getAmountPayByPatient()
-      );
+      if ("applyDiscount" in res && res.applyDiscount) {
+        this.billingservice.makeBillPayload.tab_o_opDiscount = [];
+        this.calculateBillService.discountSelectedItems.forEach(
+          (discItem: any) => {
+            this.billingservice.makeBillPayload.tab_o_opDiscount.push({
+              discOn: discItem.discType,
+              disType: discItem.discTypeId,
+              disPer: discItem.disc,
+              disReason: discItem.reasonTitle,
+              disAmt: discItem.discAmt,
+            });
+          }
+        );
+        this.formGroup.controls["discAmt"].setValue(
+          this.calculateBillService.totalDiscountAmt
+        );
+        this.formGroup.controls["amtPayByPatient"].setValue(
+          this.getAmountPayByPatient()
+        );
+        if (this.calculateBillService.totalDiscountAmt > 0) {
+          this.formGroup.controls["discAmtCheck"].setValue(true, {
+            emitEvent: false,
+          });
+        }
+      }
     });
   }
 
@@ -645,6 +685,17 @@ export class BillComponent implements OnInit {
 
               dialogref.afterClosed().subscribe((res) => {
                 console.log(res);
+                this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
+                  [];
+                res.data.forEach((dItem: any) => {
+                  this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+                    {
+                      id: dItem.id,
+                      amount: dItem.amount,
+                      balanceamount: dItem.balanceamount,
+                    }
+                  );
+                });
                 this.totalDeposit = res.data
                   .map((r: any) => r.balanceamount)
                   .reduce(function (r: any, s: any) {
