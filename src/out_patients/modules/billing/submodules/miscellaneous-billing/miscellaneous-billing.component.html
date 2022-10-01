@@ -90,8 +90,8 @@
             </maxhealth-question>
           </div>
 
-          <mat-label class="max-health-primary-color mr-3">Narration</mat-label>
-          <div class="width-15 bg-white mr-2">
+          <mat-label class="max-health-primary-color mr-3" *ngIf="isenableNarration">Narration</mat-label>
+          <div class="width-15 bg-white mr-2" *ngIf="isenableNarration">
             <maxhealth-question
               [question]="questions[4]"
               [form]="miscForm"
@@ -221,7 +221,7 @@
     </div>
   </mat-tab-nav-panel>
 </section>
-<div class="flex ml-4 mr-4 justify-between font-xs">
+<div class="flex ml-4 mr-4 justify-between ">
   <div class="left flex">
     <span
       >Last updated by: Username ( id: {{ cookie.get("UserName") }} ) on

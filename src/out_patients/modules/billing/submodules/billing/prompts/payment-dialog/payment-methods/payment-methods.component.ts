@@ -76,17 +76,16 @@ export class BillingPaymentMethodsComponent implements OnInit {
         this.paymentForm[method].controls["price"].valueChanges.subscribe(
           (res: any) => {
             this.tabPrices[index] = Number(res);
-            console.log(this.tabPrices);
             const sum = this.tabPrices.reduce(
               (partialSum, a) => partialSum + a,
               0
             );
-            console.log(sum);
             this.remainingAmount = this.totalAmount - sum;
           }
         );
       }
     });
+    console.log(this.tabs);
 
     this.today = new Date();
   }

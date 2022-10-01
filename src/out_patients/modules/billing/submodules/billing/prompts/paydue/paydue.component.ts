@@ -30,8 +30,8 @@ export class PaydueComponent implements OnInit {
   ngOnInit(): void {}
 
   paynow() {
-    this.router.navigate(["details"], {
-      queryParams: { maxId: this.data.maxId },
+    this.router.navigate(["/out-patient-billing/details"], {
+      queryParams: { maxID: this.data.maxId },
     });
   }
 }

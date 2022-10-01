@@ -321,7 +321,7 @@ export class ProcedureOtherComponent implements OnInit {
     }
   }
 
-  add(priorityId = 1) {
+  async add(priorityId = 1) {
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
     });
@@ -331,63 +331,14 @@ export class ProcedureOtherComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .post(BillingApiConstants.getcalculateopbill, {
-        compId: this.billingService.company,
-        priority: priorityId,
-        itemId: this.formGroup.value.procedure.value,
-        serviceId: this.formGroup.value.procedure.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
-        ipoptype: 1,
-        bedType: 0,
-        bundleId: 0,
-      })
-      .subscribe((res: any) => {
-        if (res.length > 0) {
-          this.billingService.addToProcedure({
-            sno: this.data.length + 1,
-            procedures: this.formGroup.value.procedure.originalTitle,
-            qty: 1,
-            specialisation: "",
-            doctorName: "",
-            doctorName_required: this.formGroup.value.procedure.docRequired
-              ? true
-              : false,
-            specialisation_required: this.formGroup.value.procedure.docRequired
-              ? true
-              : false,
-            price: res[0].returnOutPut,
-            unitPrice: res[0].returnOutPut,
-            itemid: this.formGroup.value.procedure.value,
-            priorityId: priorityId,
-            serviceId: this.formGroup.value.procedure.serviceid,
-            billItem: {
-              popuptext: this.formGroup.value.procedure.popuptext,
-              itemId: this.formGroup.value.procedure.value,
-              priority: priorityId,
-              serviceId: this.formGroup.value.procedure.serviceid,
-              price: res[0].returnOutPut,
-              serviceName: "Procedure & Others",
-              itemName: this.formGroup.value.procedure.originalTitle,
-              qty: 1,
-              precaution: "",
-              procedureDoctor: "",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
-              specialisationID: 0,
-              doctorID: 0,
-            },
-          });
-        }
+    await this.billingService.processProcedureAdd(
+      priorityId,
+      this.formGroup.value.procedure.serviceid,
+      this.formGroup.value.procedure
+    );
 
-        this.data = [...this.billingService.ProcedureItems];
-        this.formGroup.reset();
-      });
+    this.data = [...this.billingService.ProcedureItems];
+    this.formGroup.reset();
   }
 
   goToBill() {

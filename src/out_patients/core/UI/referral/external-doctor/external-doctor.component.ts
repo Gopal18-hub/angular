@@ -3,6 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { BillingApiConstants } from "../../../../modules/billing/submodules/billing/BillingApiConstant";
 
 @Component({
   selector: "out-patients-referral-external-doctor",
@@ -63,6 +64,14 @@ export class ExternalDoctorComponent implements OnInit {
     });
   }
 
+  getSpecialization() {
+    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.questions[3].options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+  }
+
   selectedDoctor(docotr: any) {
     this.selectedDoctorEvent.emit({ docotr });
   }
@@ -76,10 +85,25 @@ export class ExternalDoctorComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.getSpecialization();
   }
   createDoctor($event: any) {
     $event.stopPropagation();
     if (this.formGroup.valid) {
+      this.http
+        .get(
+          ApiConstants.getsimilarsoundreferraldoctor(
+            this.formGroup.value.speciality,
+            this.formGroup.value.firstname,
+            this.formGroup.value.lastname,
+            this.formGroup.value.mobile
+          )
+        )
+        .subscribe((res: any) => {
+          if (res.length > 0) {
+          } else {
+          }
+        });
     }
   }
 

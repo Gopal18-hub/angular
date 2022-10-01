@@ -26,6 +26,9 @@ export class DisountReasonComponent implements OnInit {
           { title: "On Bill", value: "On-Bill" },
           { title: "On Service", value: "On-Service" },
           { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
         ],
         placeholder: "-Select-",
       },
@@ -233,15 +236,28 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
+      if (val) {
+        const existReason: any = this.discReasonList.find(
+          (rl: any) => rl.id == val
+        );
+        this.discAmtForm.controls["percentage"].setValue(
+          existReason.discountPer
+        );
+      }
+    });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
-      const filterData = this.discReasonList.filter(
-        (rl: any) => rl.mainhead == val
-      );
-      this.question[2].options = filterData.map((a) => {
-        return { title: a.name, value: a.id, discountPer: a.discountPer };
-      });
-      this.discAmtFormConfig.columnsInfo.reason.options =
-        this.question[2].options;
+      if (val) {
+        const filterData = this.discReasonList.filter(
+          (rl: any) => rl.mainhead == val
+        );
+        this.question[2].options = filterData.map((a) => {
+          return { title: a.name, value: a.id, discountPer: a.discountPer };
+        });
+        this.discAmtFormConfig.columnsInfo.reason.options =
+          this.question[2].options;
+        this.discAmtFormConfig = { ...this.discAmtFormConfig };
+      }
     });
   }
 
@@ -337,7 +353,7 @@ export class DisountReasonComponent implements OnInit {
           totalAmt: price - discAmt,
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
-          value: "",
+          value: "0",
           discTypeValue: "On-Item",
         };
         this.calculateBillService.discountSelectedItems.push(temp);
@@ -371,7 +387,7 @@ export class DisountReasonComponent implements OnInit {
         totalAmt: price - discAmt,
         head: this.discAmtForm.value.head,
         reason: this.discAmtForm.value.reason,
-        value: "",
+        value: "0",
         discTypeValue: "On-Service",
       };
       this.calculateBillService.discountSelectedItems.push(temp);
@@ -407,7 +423,7 @@ export class DisountReasonComponent implements OnInit {
       totalAmt: this.billingService.totalCost - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
-      value: "",
+      value: "0",
       discTypeValue: "On-Bill",
     };
     this.calculateBillService.discountSelectedItems.push(temp);
