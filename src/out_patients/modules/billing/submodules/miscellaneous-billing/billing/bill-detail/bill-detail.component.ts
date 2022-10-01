@@ -384,7 +384,7 @@ export class BillDetailComponent implements OnInit {
       },
       ItemforModify: {
         title: "Item For Modify",
-        type: "string",
+        type: "textarea",
         style: {
           width: "13%",
         },
@@ -468,6 +468,7 @@ export class BillDetailComponent implements OnInit {
         this.resetAmt()
         this.serviceselectedList = [];
         this.clearSelectedService();
+        //  this.billingservice.setReferralDoctor('')
       }
     });
     //Referral Doctor
@@ -514,6 +515,8 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
+        this.miscServBillForm.controls["item"].setValue("");
+        this.setServiceItemList();
         if (value) {
           if (value.value) {
             this.serviceID = value.value;
@@ -522,9 +525,9 @@ export class BillDetailComponent implements OnInit {
           }
         }
         else if (!this.miscServBillForm.value.serviceType && this.clearItem == false) {
-          this.snackbar.open("Select Service Item", "error");
+          //this.snackbar.open("Select Service Item", "error");
+          this.miscServBillForm.controls["item"].setValue("")
         }
-        this.setServiceItemList();
       });
 
 
@@ -541,18 +544,30 @@ export class BillDetailComponent implements OnInit {
           }
         }
         else if (!this.miscServBillForm.value.item && this.clearItem == false) {
-          this.snackbar.open("Enter the Item Description First", "error");
+          //this.snackbar.open("Enter the Item Description First", "error");
         }
       });
     this.miscServBillForm.controls["qty"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value) {
-          this.checkService();
+          if (value < 10 && value > 0) {
+            this.miscServBillForm.controls["qty"].setValue(value)
+            this.checkService();
+          }
+          if (value > 9) {
+            this.snackbar.open("Qty can't exceed 9 ", "error");
+            this.miscServBillForm.controls["qty"].setValue(0)
+          }
+          if (value <= 0) {
+            this.snackbar.open("Quantity Can Not be Zero", "error");
+            this.miscServBillForm.controls["qty"].setValue(0)
+          }
         }
-        else if (this.miscServBillForm.value.qty === 0 && this.clearItem == false) {
-          this.snackbar.open("Quantity Can Not be Zero", "error");
-        }
+        // else {
+        //   this.snackbar.open("Quantity Can Not be empty", "error");
+        //   this.checkService();
+        // }
       })
     this.miscServBillForm.controls["reqAmt"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -596,7 +611,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.enableDiscount = false;
-        if (value === true) {
+        if (value === true && this.depositAvailFlag == false) {
           this.openDepositdialog();
         }
         else {
@@ -631,7 +646,7 @@ export class BillDetailComponent implements OnInit {
     }
   }
   checkService() {
-    if (this.miscServBillForm.value.serviceType && this.miscServBillForm.value.item && this.miscServBillForm.value.qty > 0 && this.miscServBillForm.value.reqAmt > 0 && this.miscServBillForm.value.remark) {
+    if (this.miscServBillForm.value.serviceType && this.miscServBillForm.value.item && this.miscServBillForm.value.qty > 0 && this.miscServBillForm.value.qty !== '' && this.miscServBillForm.value.reqAmt > 0 && this.miscServBillForm.value.remark) {
       this.enableItemsService = true;
     }
     else {
@@ -676,11 +691,10 @@ export class BillDetailComponent implements OnInit {
 
         this.serviceItemsList = data as ServiceTypeItemModel[];
 
-        this.question[1].options = [
-          ...this.serviceItemsList.map((a) => {
+        this.question[1].options =
+          this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
-          }),
-        ];
+          })
 
 
       });
@@ -694,10 +708,10 @@ export class BillDetailComponent implements OnInit {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
       this.serviceName = this.miscServBillForm.value.serviceType.title;
       if (this.serviceID) {
-        this.getallserviceitems();
+        this.getServiceItemBySerivceID();
+        //this.getallserviceitems();
       }
 
-      this.getServiceItemBySerivceID();
     }
   }
   //Filter items based on Service
@@ -950,7 +964,7 @@ export class BillDetailComponent implements OnInit {
     else if (this.miscServBillForm.value.reqAmt === 0) {
       this.snackbar.open("Item Price Can Not be Zero", "error");
     }
-    else if (!this.miscServBillForm.value.remark.value) {
+    else if (!this.miscServBillForm.value.remark) {
       this.snackbar.open("Please select remarks!", "error");
     }
     else if (this.noMap.length === 0) {
@@ -1181,6 +1195,7 @@ export class BillDetailComponent implements OnInit {
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
+        this.depositAvailFlag = true;
         if (result == "Success") {
           const dialogref = this.matDialog.open(DepositDetailsComponent, {
             width: 'full', height: 'auto', data: {
@@ -1199,22 +1214,30 @@ export class BillDetailComponent implements OnInit {
             this.calcBillData.totalDeposit = this.depodialogTotal;
             this.miscPatient.setCalculateBillItems(this.calcBillData);
             let calcBill0 = this.miscPatient.calculateBill();
-            this.miscServBillForm.controls["dipositAmt"].setValue(this.depodialogTotal + ".00");
-            if (res.data)
-              this.depositAvailFlag = true;
-            this.snackbar.open("Deposit Amount availed successfully!");
-            this.miscServBillForm.controls["dipositAmtEdit"].enable();
-            if (this.makebillFlag == true && this.depositAvailFlag == true) {
-              this.openPaymentModeDialog();
-            }
 
+            if (res.data) {
+              this.miscServBillForm.controls["dipositAmtcheck"].setValue(true);
+              this.miscServBillForm.controls["dipositAmt"].setValue(this.depodialogTotal + ".00");
+              this.snackbar.open("Deposit Amount availed successfully!");
+              this.miscServBillForm.controls["dipositAmtEdit"].enable();
+              if (this.makebillFlag == true && this.depositAvailFlag == true) {
+                this.openPaymentModeDialog();
+              }
+            }
           })
+        }
+        else {
+          if (this.makebillFlag == true && this.depositAvailFlag == true) {
+            this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
+            this.openPaymentModeDialog();
+
+          }
         }
       });
   }
   openGstTaxDialog() {
     const gstDialogref = this.matDialog.open(GstTaxDialogComponent, {
-      width: '35vw', height: '70vh', data: {
+      width: '35vw', height: '50vh', data: {
         gstdata: this.gstData,
       },
     });
@@ -1231,33 +1254,39 @@ export class BillDetailComponent implements OnInit {
     this.makebillFlag = true;
     let miscFormData = this.miscPatient.getMiscBillFormData();
 
-
-    if (!this.refDoctor.id) { this.snackbar.open("Please select Referral Doctor", "error") }
-    else if (!miscFormData.companyId.value) { this.snackbar.open("Select the Company", "error") }
-    else if (miscFormData.companyId.value && this.miscServBillForm.value.paymentMode === 2) {
-      this.getbilltocompany(miscFormData.companyId.value)
-      //  if (this.miscServBillForm.value.credLimit <= 0) { this.snackbar.open(" Enter Credit limit", "error") }
-    }
-    else if (!miscFormData.corporateId.value) { this.snackbar.open(" Please select corporate!", "error") }
-    else {
-      const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to make Bill?",
-        },
-      });
-
-      MakeDepositDialogref.afterClosed()
-        .pipe(takeUntil(this._destroying$))
-        .subscribe((result) => {
-          if (result == "Success") {
-            // this.openDepositdialog();
-            this.makeBill();
-          }
+    if (Number(this.miscServBillForm.value.paymentMode) === 1) {
+      if (!this.refDoctor.id) { this.snackbar.open("Please select Referral Doctor", "error") }
+      else {
+        const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+          width: "33vw",
+          height: "40vh",
+          data: {
+            message: "Do you want to make Bill?",
+          },
         });
-      //}
+
+        MakeDepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result == "Success") {
+              // this.openDepositdialog();
+              this.makeBill();
+            }
+          });
+        //}
+      }
     }
+
+    else if (Number(this.miscServBillForm.value.paymentMode) === 2) {
+      if (!miscFormData.companyId.value) { this.snackbar.open("Select the Company", "error") }
+      if (miscFormData.companyId.value && this.miscServBillForm.value.paymentMode === 2) {
+        this.getbilltocompany(miscFormData.companyId.value)
+        //  if (this.miscServBillForm.value.credLimit <= 0) { this.snackbar.open(" Enter Credit limit", "error") }
+      }
+      if (!miscFormData.corporateId.value) { this.snackbar.open(" Please select corporate!", "error") }
+    }
+
+
 
   }
   //NA
@@ -1273,20 +1302,24 @@ export class BillDetailComponent implements OnInit {
   }
 
   openPaymentModeDialog() {
-    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
-      data: {
-        billAmount: this.billAmnt,
-        name: "MiscBilling"
-      },
-    });
+    let calcBill0 = this.miscPatient.calculateBill();
+
+
+
     this.http
       .post(ApiConstants.postMiscBill, this.postBillObj)
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData) => {
           if (resultData[0].successFlag === true) {
+            const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+              width: "70vw",
+              height: "98vh",
+              data: {
+                toPaidAmount: calcBill0.amntPaidBythePatient,
+                name: "MiscBilling"
+              },
+            });
             RefundDialog.afterClosed()
               .pipe(takeUntil(this._destroying$))
               .subscribe((result) => {
@@ -1311,7 +1344,6 @@ export class BillDetailComponent implements OnInit {
                         .subscribe((result: any) => {
                           if ("type" in result) {
                             if (result.type == "yes") {
-
                               this.print();
                             } else {
                             }
@@ -1322,6 +1354,9 @@ export class BillDetailComponent implements OnInit {
               });
             // this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
 
+          }
+          else if (resultData[0].successFlag === false) {
+            this.snackbar.open(resultData[0].returnMessage, "error")
           }
         },
         (error) => {

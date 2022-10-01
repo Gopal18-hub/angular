@@ -352,6 +352,7 @@ export class BillingService {
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(exist, 1);
     }
   }
 
@@ -617,6 +618,62 @@ export class BillingService {
       BillingApiConstants.insert_billdetailsgst(),
       this.makeBillPayload
     );
+  }
+
+  async processProcedureAdd(
+    priorityId: number,
+    serviceType: string,
+    procedure: any
+  ) {
+    const res = await this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.company,
+        priority: priorityId,
+        itemId: procedure.value,
+        serviceId: procedure.serviceid,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .toPromise();
+    if (res.length > 0) {
+      this.addToProcedure({
+        sno: this.ProcedureItems.length + 1,
+        procedures: procedure.originalTitle,
+        qty: 1,
+        specialisation: "",
+        doctorName: "",
+        doctorName_required: procedure.docRequired ? true : false,
+        specialisation_required: procedure.docRequired ? true : false,
+        price: res[0].returnOutPut,
+        unitPrice: res[0].returnOutPut,
+        itemid: procedure.value,
+        priorityId: priorityId,
+        serviceId: procedure.serviceid,
+        billItem: {
+          popuptext: procedure.popuptext,
+          itemId: procedure.value,
+          priority: priorityId,
+          serviceId: procedure.serviceid,
+          price: res[0].returnOutPut,
+          serviceName: "Procedure & Others",
+          itemName: procedure.originalTitle,
+          qty: 1,
+          precaution: "",
+          procedureDoctor: "",
+          credit: 0,
+          cash: 0,
+          disc: 0,
+          discAmount: 0,
+          totalAmount: res[0].returnOutPut,
+          gst: 0,
+          gstValue: 0,
+          specialisationID: 0,
+          doctorID: 0,
+        },
+      });
+    }
   }
 
   async processInvestigationAdd(
