@@ -40,15 +40,13 @@ export namespace CrystalReport {
   export const DailyCollectionReport = (params: any) => {
     return `${
       environment.ReportsSampleUrl
-    }MAXHIS/MIS/DailyCollectionReport?FromDate=${
-      params.FromDate
-    }&ToDate=${moment(params.todate).format(
-      "DD/MM/YYYY"
-    )}&LocationName=${MaxHealthStorage.getCookie(
-      "HSPLocationId"
-    )}&User=${MaxHealthStorage.getCookie(
+    }MAXHIS/MIS/DailyCollectionReport?FromDate=${moment(params.todate).format(
+      "MM/DD/YYYY"
+    )}&ToDate=${params.todate}&LocationName=${
+      params.locationID
+    }&User=${MaxHealthStorage.getCookie(
       "UserName"
-    )}&locationid=${MaxHealthStorage.getCookie("HSPLocationId")}`;
+    )}&locationid=${MaxHealthStorage.getCookie("HSPLocationId")}&exportflag=1`;
   };
   export const OnlinePaymentDetailReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MIS/OnlinePaymentDetailReport?radiovalue=${params.radiovalue}&FromDate=${params.fromdate}&ToDate=${params.Todate}&locationid=${params.locationid}&User=${params.User}`;
