@@ -146,8 +146,8 @@ export class BillComponent implements OnInit {
         required: true,
         options: [
           { title: "Cash", value: 1, disabled: false },
-          { title: "Credit", value: 2, disabled: false },
-          { title: "Gen. OPD", value: 3, disabled: false },
+          { title: "Credit", value: 3, disabled: false },
+          { title: "Gen. OPD", value: 4, disabled: false },
         ],
         defaultValue: "cash",
       },
@@ -308,8 +308,8 @@ export class BillComponent implements OnInit {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 2, disabled: true },
-        { title: "Gen. OPD", value: 3, disabled: true },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
     if (this.billingservice.selectedHealthPlan) {
@@ -317,8 +317,8 @@ export class BillComponent implements OnInit {
       this.billDataForm.properties.discAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 2, disabled: false },
-        { title: "Gen. OPD", value: 3, disabled: true },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
     let formResult: any = this.formService.createForm(
@@ -389,11 +389,9 @@ export class BillComponent implements OnInit {
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
-    this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCost + ".00"
-    );
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
     this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost + ".00"
+      this.billingservice.totalCost
     );
     this.formGroup.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -422,7 +420,7 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["dipositAmtEdit"].reset();
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
-            this.billingservice.totalCost + ".00"
+            this.billingservice.totalCost
           );
           this.formGroup.controls["dipositAmtcheck"].setValue(false);
         }
@@ -499,7 +497,17 @@ export class BillComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.makereceipt();
+            if (this.formGroup.value.amtPayByPatient > 0) {
+              this.makereceipt();
+            } else {
+              this.billingservice.makeBill().subscribe((res) => {
+                if (res.length > 0) {
+                  if (res[0].billNo) {
+                    this.processBillNo(res[0]);
+                  }
+                }
+              });
+            }
           } else {
           }
         }
@@ -535,35 +543,39 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
-          this.billingservice.billNoGenerated.next(true);
-          this.billNo = result.billNo;
-          this.billId = result.billId;
-          this.config.removeRow = false;
-          this.config = { ...this.config };
-          const successInfo = this.messageDialogService.info(
-            `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
-          );
-          successInfo
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result: any) => {
-              const printDialog = this.messageDialogService.confirm(
-                "",
-                `Do you want to print bill?`
-              );
-              printDialog
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result: any) => {
-                  if ("type" in result) {
-                    if (result.type == "yes") {
-                      this.makePrint();
-                    } else {
-                    }
-                  }
-                });
-            });
+          this.processBillNo(result);
         }
+      });
+  }
+
+  processBillNo(result: any) {
+    this.billingservice.billNoGenerated.next(true);
+    this.billNo = result.billNo;
+    this.billId = result.billId;
+    this.config.removeRow = false;
+    this.config = { ...this.config };
+    const successInfo = this.messageDialogService.info(
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+    );
+    successInfo
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result: any) => {
+        const printDialog = this.messageDialogService.confirm(
+          "",
+          `Do you want to print bill?`
+        );
+        printDialog
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result: any) => {
+            if ("type" in result) {
+              if (result.type == "yes") {
+                this.makePrint();
+              } else {
+              }
+            }
+          });
       });
   }
 
