@@ -256,6 +256,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
     this.BServiceForm.controls['paymentMode'].disable();
+    this.questions[5].maximum = this.BServiceForm.controls['toDate'].value;
     this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
