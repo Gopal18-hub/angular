@@ -511,6 +511,9 @@ export class BillComponent implements OnInit {
       this.formGroup.value.discAmt;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
       this.formGroup.value.dipositAmt;
+    this.billingservice.makeBillPayload.cmbInteraction =
+      this.formGroup.value.interactionDetails;
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "70vw",
       height: "98vh",
@@ -588,6 +591,19 @@ export class BillComponent implements OnInit {
       minWidth: "90vw",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
+      this.billingservice.makeBillPayload.tab_o_opDiscount = [];
+
+      this.calculateBillService.discountSelectedItems.forEach(
+        (discItem: any) => {
+          this.billingservice.makeBillPayload.tab_o_opDiscount.push({
+            discOn: discItem.discType,
+            disType: discItem.discTypeId,
+            disPer: discItem.disc,
+            disReason: discItem.reasonTitle,
+            disAmt: discItem.discAmt,
+          });
+        }
+      );
       this.formGroup.controls["discAmt"].setValue(
         this.calculateBillService.totalDiscountAmt
       );

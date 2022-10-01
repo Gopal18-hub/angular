@@ -212,6 +212,13 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
+      if (res) {
+        this.billingService.makeBillPayload.invoiceType = "B2B";
+      } else {
+        this.billingService.makeBillPayload.invoiceType = "B2C";
+      }
+    });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {

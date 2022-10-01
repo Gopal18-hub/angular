@@ -851,5 +851,6 @@ export class BillingService {
 
   setReferralDoctor(doctor: any) {
     this.referralDoctor = doctor;
+    this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
   }
 }

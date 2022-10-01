@@ -44,7 +44,7 @@ export namespace BillingStaticConstants {
     VisitNumber: "",
     orderType: "",
     dtCPRS: {},
-    tab_o_opDiscount: {},
+    tab_o_opDiscount: [],
     tab_o_opItemBasePrice: [],
     cmbInteraction: 0,
     htParms: {},
