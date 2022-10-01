@@ -1475,4 +1475,20 @@ export namespace ApiConstants {
   };
   export const savecashscroll =
     environment.BillingApiUrl + "api/outpatientbilling/savedetailsforscroll";
+
+  export const getsimilarsoundreferraldoctor = (
+    speciality: string,
+    firstName: string,
+    lastName: string,
+    mobile: string
+  ) =>
+    `${environment.CommonApiUrl}api/lookup/getsimilarsoundreferraldoctor/${speciality}?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}`;
+
+  export const referraldoctorsave = (
+    DoctorName: string,
+    MobileNumber: string,
+    SpecialisationId: string,
+    UserId: string
+  ) =>
+    `${environment.CommonApiUrl}api/lookup/referraldoctorsave/${DoctorName}/${MobileNumber}/${SpecialisationId}/${UserId}`;
 }
