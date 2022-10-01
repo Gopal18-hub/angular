@@ -670,14 +670,17 @@ export class BillDetailComponent implements OnInit {
           this.miscMasterDataList.objMiscBillingConfigurationList.map((a) => {
             return { title: a.name, value: a.serviceid };
           });
+        this.question[0] = { ...this.question[0] };
         this.question[5].options =
           this.miscMasterDataList.objMiscDoctorsList.map((a) => {
             return { title: a.name, value: a.id };
           });
+        this.question[5] = { ...this.question[5] };
         this.question[6].options =
           this.miscMasterDataList.objMiscBillingRemarksList.map((a) => {
             return { title: a.name, value: a.id };
           });
+        this.question[6] = { ...this.question[6] };
       });
   }
   //Get Service
@@ -695,6 +698,7 @@ export class BillDetailComponent implements OnInit {
           this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
           })
+        this.question[1] = { ...this.question[1] };
 
 
       });
@@ -1195,7 +1199,6 @@ export class BillDetailComponent implements OnInit {
     MakeDepositDialogref.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        this.depositAvailFlag = true;
         if (result == "Success") {
           const dialogref = this.matDialog.open(DepositDetailsComponent, {
             width: 'full', height: 'auto', data: {
@@ -1205,7 +1208,7 @@ export class BillDetailComponent implements OnInit {
 
 
           dialogref.afterClosed().subscribe(res => {
-
+            this.depositAvailFlag = true;
             this.depodialogRows = res.data;
             res.data.forEach((element: any) => {
               this.depodialogTotal += element.balanceamount;
@@ -1220,6 +1223,11 @@ export class BillDetailComponent implements OnInit {
               this.miscServBillForm.controls["dipositAmt"].setValue(this.depodialogTotal + ".00");
               this.snackbar.open("Deposit Amount availed successfully!");
               this.miscServBillForm.controls["dipositAmtEdit"].enable();
+              if (this.makebillFlag == true && this.depositAvailFlag == true) {
+                this.openPaymentModeDialog();
+              }
+            }
+            else {
               if (this.makebillFlag == true && this.depositAvailFlag == true) {
                 this.openPaymentModeDialog();
               }
