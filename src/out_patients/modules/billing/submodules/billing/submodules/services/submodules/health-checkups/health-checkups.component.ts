@@ -361,6 +361,12 @@ export class HealthCheckupsComponent implements OnInit {
               doctorID: 0,
             },
           });
+          this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
+            itemID: this.formGroup.value.healthCheckup.value,
+            serviceID: 26,
+            price: res[0].returnOutPut,
+            willModify: res[0].ret_value == 1 ? true : false,
+          });
           this.getDoctorsList(this.formGroup.value.healthCheckup.value, "26");
         }
 
