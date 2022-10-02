@@ -120,17 +120,26 @@ export class OPOrderViewRequest implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
         console.log(data);
-        this.data.forEach((item) => {
-          // if(this.data.length == this.tableRows.selection.selected.length){}
-          this.tableRows.selection.selected.forEach((i: any) => {
-            if (i.orderStatus == "Bill Prepaired" && i.sno == item.sno) {
-              //this.tableRows.selection.select(item);
+        if (this.unchecked == true) {
+          this.data.forEach((item) => {
+            if (item.orderStatus == "Bill Prepaired") {
               setTimeout(() => {
                 this.tableRows.selection.deselect(item);
-              }, 100);
+              }, 10);
             }
           });
-        });
+        } else if (
+          this.unchecked == false &&
+          this.tableRows.selection.selected.length == this.data.length
+        ) {
+          console.log(this.tableRows.selection.selected);
+          this.tableRows.selection.selected.forEach((item: any) => {
+            setTimeout(() => {
+              this.tableRows.selection.deselect(item);
+            }, 10);
+          });
+        }
+
         if (this.tableRows.selection.selected.length > 0) {
           this.unchecked = false;
         } else {
@@ -138,6 +147,12 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
+  // if (i.orderStatus == "Bill Prepaired" && i.sno == item.sno) {
+  //   //this.tableRows.selection.select(item);
+  //   setTimeout(() => {
+  //     this.tableRows.selection.deselect(item);
+  //   }, 100);
+  // }
   getViewgridDetails() {
     this.data = [];
     this.unchecked = true;

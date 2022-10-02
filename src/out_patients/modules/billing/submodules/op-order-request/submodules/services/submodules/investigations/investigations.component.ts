@@ -218,6 +218,10 @@ export class OderInvestigationsComponent implements OnInit {
               serviceid: r.serviceid,
               originalTitle: r.name,
               docRequired: r.docRequired,
+              precaution: r.precaution,
+              ngStyle: {
+                color: r.outsourceColor == 2 ? "red" : "",
+              },
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -310,15 +314,18 @@ export class OderInvestigationsComponent implements OnInit {
               BillingStaticConstants.investigationItemBasedInstructions[
                 r.id.toString()
               ],
+            // ngStyle: {
+            //   color:
+            //     r.outsourceTest == 2
+            //       ? "red"
+            //       : "" || r.outsourceTest == 1
+            //       ? "orange"
+            //       : "" || r.isNonDiscountItem == 1
+            //       ? "pink"
+            //       : "",
+            // },
             ngStyle: {
-              color:
-                r.outsourceTest == 2
-                  ? "red"
-                  : "" || r.outsourceTest == 1
-                  ? "orange"
-                  : "" || r.isNonDiscountItem == 1
-                  ? "pink"
-                  : "",
+              color: r.outsourceColor == 2 ? "red" : "",
             },
           };
         });
