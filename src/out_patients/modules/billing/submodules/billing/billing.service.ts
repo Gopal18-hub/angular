@@ -67,6 +67,8 @@ export class BillingService {
 
   maxIdEventFinished = new Subject<any>();
 
+  billingFormGroup: any = { form: "", questions: [] };
+
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -74,6 +76,11 @@ export class BillingService {
     public matDialog: MatDialog,
     private datepipe: DatePipe
   ) {}
+
+  setBillingFormGroup(formgroup: any, questions: any) {
+    this.billingFormGroup.form = formgroup;
+    this.billingFormGroup.questions = questions;
+  }
 
   calculateBill() {
     this.calculateBillService.initProcess(this.billItems, this);

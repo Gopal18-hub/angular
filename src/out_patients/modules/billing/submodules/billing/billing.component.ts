@@ -145,6 +145,7 @@ export class BillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
@@ -212,6 +213,8 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
     this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
       if (res) {
         this.billingService.makeBillPayload.invoiceType = "B2B";
@@ -549,7 +552,7 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
-    this.questions[2].readonly = true;
+    //this.questions[2].readonly = true;
   }
 
   onageCalculator(ageDOB = "") {

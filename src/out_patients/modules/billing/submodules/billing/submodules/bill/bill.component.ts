@@ -487,6 +487,11 @@ export class BillComponent implements OnInit {
       await referralErrorRef.afterClosed().toPromise();
       return;
     }
+    const consulatationStatus =
+      await this.calculateBillService.checkForConsultation();
+    if (!consulatationStatus) {
+      return;
+    }
     const dialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to make the Bill?`

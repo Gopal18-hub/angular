@@ -22,6 +22,8 @@ export class CalculateBillService {
 
   interactionDetails: any = [];
 
+  bookingIdWarningFlag: boolean = false;
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -87,5 +89,30 @@ export class CalculateBillService {
       return { value: it.id, title: it.name };
     });
     return this.interactionDetails;
+  }
+
+  async checkForConsultation() {
+    if (this.billingServiceRef.consultationItems.length > 0) {
+      if (
+        !this.billingServiceRef.billingFormGroup.form.value.bookingId &&
+        !this.bookingIdWarningFlag
+      ) {
+        const bookingIdWarningPopup: any = this.messageDialogService.confirm(
+          "",
+          "Do you have bookingId for this consultation?"
+        );
+        const bookingIdWarning = await bookingIdWarningPopup
+          .afterClosed()
+          .toPromise();
+        if (bookingIdWarning) {
+          this.bookingIdWarningFlag = true;
+          if (bookingIdWarning.type == "yes") {
+            this.billingServiceRef.billingFormGroup.questions[2].elementRef.focus();
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 }
