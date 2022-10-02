@@ -41,7 +41,9 @@ export class BillingService {
   company: number = 0;
   billtype: string = "cash";
 
-  makeBillPayload: any = BillingStaticConstants.makeBillPayload;
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
 
   patientDetailsInfo: any = [];
 
@@ -114,8 +116,11 @@ export class BillingService {
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
-    this.makeBillPayload = BillingStaticConstants.makeBillPayload;
     this.calculateBillService.clear();
+    this.makeBillPayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.makeBillPayload)
+    );
+    console.log(this.makeBillPayload);
   }
 
   calculateTotalAmount() {

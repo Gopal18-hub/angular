@@ -346,6 +346,12 @@ export class BillComponent implements OnInit {
       });
       await popuptextDialogRef.afterClosed().toPromise();
     }
+    if (
+      this.billingservice.referralDoctor &&
+      this.billingservice.referralDoctor.id == 2015
+    ) {
+      this.formGroup.controls["self"].setValue(true);
+    }
     this.billingservice.calculateBill();
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
@@ -506,11 +512,31 @@ export class BillComponent implements OnInit {
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
+      .subscribe(async (result) => {
         if ("type" in result) {
           if (result.type == "yes") {
             if (this.formGroup.value.amtPayByPatient > 0) {
-              this.makereceipt();
+              if (
+                this.calculateBillService.depositDetailsData.length > 0 &&
+                this.totalDeposit == 0
+              ) {
+                const availDepositsPopup = this.messageDialogService.confirm(
+                  "",
+                  `Do you want to avail Deposits?`
+                );
+                const availDepositResult = await availDepositsPopup
+                  .afterClosed()
+                  .toPromise();
+                if (availDepositResult) {
+                  if (availDepositResult.type == "yes") {
+                    this.depositdetails();
+                  } else {
+                    this.makereceipt();
+                  }
+                }
+              } else {
+                this.makereceipt();
+              }
             } else {
               this.billingservice.makeBill().subscribe((res) => {
                 if (res.length > 0) {
@@ -542,7 +568,7 @@ export class BillComponent implements OnInit {
       data: {
         totalBillAmount: this.billingservice.totalCost,
         totalDiscount: this.formGroup.value.discAmt,
-        totalDeposit: this.formGroup.value.dipositAmt,
+        totalDeposit: this.formGroup.value.dipositAmtEdit,
         totalRefund: 0,
         ceditLimit: 0,
         settlementAmountRefund: 0,
@@ -664,6 +690,8 @@ export class BillComponent implements OnInit {
           this.question[20].readonly = false;
           this.question[20].disable = false;
           this.question[20] = { ...this.question[20] };
+          this.question[20].elementRef.focus();
+          this.formGroup.controls["dipositAmtcheck"].setValue(true);
           // if (res.data)
           //   this.snackbar.open("Deposit Amount availed successfully!");
         });
