@@ -418,7 +418,8 @@ export class BillComponent implements OnInit {
         if (value === true) {
           this.depositdetails();
         } else {
-          this.formGroup.controls["dipositAmt"].reset();
+          this.totalDeposit = 0;
+          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
           this.formGroup.controls["dipositAmtEdit"].reset();
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
@@ -611,10 +612,63 @@ export class BillComponent implements OnInit {
   }
 
   depositdetails() {
-    this.getDipositedAmountByMaxID(
-      this.billingservice.activeMaxId.iacode,
-      this.billingservice.activeMaxId.regNumber
-    );
+    let resultData = this.calculateBillService.depositDetailsData;
+    if (resultData) {
+      resultData.forEach((element: any) => {
+        if (element.isAdvanceTypeEnabled == false) {
+          this.totalDeposit += element.balanceamount;
+        }
+      });
+      this.depositDetails = resultData;
+
+      if (this.totalDeposit > 0) {
+        this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+      } else {
+        this.depositDetails = this.depositDetails.filter(
+          (e: any) =>
+            e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
+        );
+        console.log(this.depositDetails);
+
+        const dialogref = this.matDialog.open(DepositDetailsComponent, {
+          width: "60vw",
+          height: "50vh",
+          data: { data: this.depositDetails },
+        });
+
+        dialogref.afterClosed().subscribe((res: any) => {
+          console.log(res);
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
+            [];
+          if (res) {
+            res.data.forEach((dItem: any) => {
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+                {
+                  id: dItem.id,
+                  amount: dItem.amount,
+                  balanceamount: dItem.balanceamount,
+                }
+              );
+            });
+            this.totalDeposit = res.data
+              .map((r: any) => r.balanceamount)
+              .reduce(function (r: any, s: any) {
+                return r + s;
+              });
+          }
+
+          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+          this.formGroup.controls["dipositAmtEdit"].enable();
+          this.question[20].readonly = false;
+          this.question[20].disable = false;
+          this.question[20] = { ...this.question[20] };
+          // if (res.data)
+          //   this.snackbar.open("Deposit Amount availed successfully!");
+        });
+      }
+    }
   }
 
   gsttaxdialog() {
@@ -622,78 +676,6 @@ export class BillComponent implements OnInit {
       width: "30vw",
       height: "50vh",
     });
-  }
-
-  getDipositedAmountByMaxID(iacode: any, regNumber: any) {
-    this.http
-      .get(
-        ApiConstants.getDipositedAmountByMaxID(
-          iacode,
-          regNumber,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData: any) => {
-          if (resultData) {
-            resultData.forEach((element: any) => {
-              if (element.isAdvanceTypeEnabled == false) {
-                this.totalDeposit += element.balanceamount;
-              }
-            });
-            this.depositDetails = resultData;
-
-            if (this.totalDeposit > 0) {
-              this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-              this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
-            } else {
-              this.depositDetails = this.depositDetails.filter(
-                (e: any) =>
-                  e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
-              );
-              console.log(this.depositDetails);
-
-              const dialogref = this.matDialog.open(DepositDetailsComponent, {
-                width: "60vw",
-                height: "50vh",
-                data: { data: this.depositDetails },
-              });
-
-              dialogref.afterClosed().subscribe((res) => {
-                console.log(res);
-                this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
-                  [];
-                res.data.forEach((dItem: any) => {
-                  this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
-                    {
-                      id: dItem.id,
-                      amount: dItem.amount,
-                      balanceamount: dItem.balanceamount,
-                    }
-                  );
-                });
-                this.totalDeposit = res.data
-                  .map((r: any) => r.balanceamount)
-                  .reduce(function (r: any, s: any) {
-                    return r + s;
-                  });
-                this.formGroup.controls["dipositAmt"].setValue(
-                  this.totalDeposit
-                );
-                this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
-                this.formGroup.controls["dipositAmtEdit"].enable();
-                this.question[20].readonly = false;
-                this.question[20].disable = false;
-                this.question[20] = { ...this.question[20] };
-                if (res.data)
-                  this.snackbar.open("Deposit Amount availed successfully!");
-              });
-            }
-          }
-        },
-        (error) => {}
-      );
   }
 
   selectedReferralDoctor(data: any) {
