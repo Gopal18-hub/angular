@@ -11,6 +11,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { BillingApiConstants } from "../../modules/billing/submodules/billing/BillingApiConstant";
 import { Subject } from "rxjs";
 import { DisountReasonComponent } from "../../modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
+import { ApiConstants } from "@core/constants/ApiConstants";
 
 @Injectable({
   providedIn: "root",
@@ -28,6 +29,8 @@ export class CalculateBillService {
 
   seniorCitizen: boolean = false;
 
+  depositDetailsData: any = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -42,10 +45,25 @@ export class CalculateBillService {
     });
   }
 
+  depositDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        ApiConstants.getDipositedAmountByMaxID(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((resultData: any) => {
+        this.depositDetailsData = resultData;
+      });
+  }
+
   clear() {
     this.totalDiscountAmt = 0;
     this.discountSelectedItems = [];
     this.bookingIdWarningFlag = false;
+    this.depositDetailsData = [];
   }
 
   setDiscountSelectedItems(items: any) {

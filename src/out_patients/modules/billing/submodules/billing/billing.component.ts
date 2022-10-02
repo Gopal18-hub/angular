@@ -522,6 +522,7 @@ export class BillingComponent implements OnInit {
       this.inPatientCheck(resultData.dtPatientPastDetails);
     }
     this.getforonlinebilldetails(iacode, regNumber);
+    this.calculateBillService.depositDetails(iacode, regNumber);
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
