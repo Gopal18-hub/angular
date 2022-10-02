@@ -12,6 +12,7 @@ import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
 import { MatButtonModule } from "@angular/material/button";
 
 import { Ng2SearchPipe } from "@shared/utilities/pipes/filter";
+import { MaxHealthTableModule } from "@shared/ui/table";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { Ng2SearchPipe } from "@shared/utilities/pipes/filter";
     MatMenuModule,
     DynamicFormsModule,
     MatButtonModule,
+    MaxHealthTableModule,
   ],
   exports: [ReferralComponent, Ng2SearchPipe],
   providers: [],

@@ -23,7 +23,7 @@ mat-label {
     padding-bottom: 1.24375em;
   }
 }
-mat-label.mat-form-field-required-marker {
+::ng-deep mat-label.mat-form-field-required-marker {
   &:empty {
     display: none;
   }

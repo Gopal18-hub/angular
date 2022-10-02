@@ -1,4 +1,8 @@
-<div class="flex flex-column h-full package-doctor-modification relative">
+<div
+  class="flex flex-column h-full package-doctor-modification relative"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+>
   <button
     mat-icon-button
     aria-label="close dialog"
@@ -8,6 +12,14 @@
   >
     <mat-icon>close</mat-icon>
   </button>
+  <div class="draggable-handle" cdkDragHandle>
+    <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+      <path
+        d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+      ></path>
+      <path d="M0 0h24v24H0z" fill="none"></path>
+    </svg>
+  </div>
   <h2 class="max-health-primary-color">Package Doctor Modification</h2>
   <div class="h-3/4">
     <maxhealth-table

@@ -292,6 +292,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 365);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[2].maximum =
       this.ExpiredDepositform.controls["todate"].value;
@@ -357,6 +358,36 @@ export class ExpiredDepositsComponent implements OnInit {
               this.ExpiredDepositform.controls["maxid"].value.split(".")[0]),
             (this.registrationno =
               this.ExpiredDepositform.controls["maxid"].value.split(".")[1]),
+            "",
+            ""
+          )
+        )
+
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultdata: any) => {
+          console.log(resultdata);
+          if (resultdata.length > 0) {
+            //this.sucessflag = false;
+            console.log("data");
+            this.ExpiredDepositformlist = resultdata;
+            if (this.sucessflag == true) {
+              this.tablerow.selection.clear();
+              this.ExpiredDepositformlist.forEach((e: any) => {
+                console.log(e);
+                if (this.sucessflag == true && e.id == this.selectedrowid) {
+                  e.isExpdeop = "isExpdeop";
+                }
+              });
+              this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
+            }
+          }
+        });
+    } else if (registrationno == 0) {
+      this.http
+        .get(
+          ApiConstants.getPatientExpiredDepositDetails(
+            (this.iacode = ""),
+            (this.registrationno = 0),
             this.datepipe.transform(
               this.ExpiredDepositform.value.fromdate,
               "YYYY-MM-dd"
@@ -633,6 +664,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
+    this.fromdate.setDate(this.fromdate.getDate() - 365);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[0].readonly = false;
     this.ExpiredDepositform.controls["maxid"].setValue(

@@ -16,6 +16,7 @@ import { DatePipe } from "@angular/common";
 import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
 import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { DepositService } from '@core/services/deposit.service';
+import { DepositSuccessComponent } from '../deposit-success/deposit-success.component';
 
 @Component({
   selector: 'out-patients-refund-dialog',
@@ -72,7 +73,7 @@ export class RefundDialogComponent implements OnInit {
   mobileno:number|undefined;
 
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
 
   SendOTP:string="Send OTP";
@@ -172,12 +173,12 @@ export class RefundDialogComponent implements OnInit {
       this.validationexists = false;
       this.PaymentTypedepositamount = 0;
       if(this.RefundcashMode.cashamount > 0 ){
-        this.PaymentTypedepositamount =  this.RefundcashMode.cashamount;
+        this.PaymentTypedepositamount =  Number(this.RefundcashMode.cashamount);
        }
        else if(this.RefundcashMode.chequeamount > 0)
        {
           this.PaymentType = 2;
-          this.PaymentTypedepositamount =  this.RefundcashMode.chequeamount;
+          this.PaymentTypedepositamount = Number( this.RefundcashMode.chequeamount);
           if(this.RefundcashMode.chequeno == "" || this.RefundcashMode.chequebankname == "" || this.RefundcashMode.chequebranchname == ""){
             this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
             this.validationexists = true;
@@ -248,7 +249,16 @@ export class RefundDialogComponent implements OnInit {
               this.clear();
               this.dialogRef.close();
               this.matDialog.closeAll();
-               this.messageDialogService.success("Refund has been done Successfully!");
+              let saverefunddialog = this.matDialog.open(
+                DepositSuccessComponent,
+                {
+                  width: "30vw",          
+                  data: {
+                    message: "Refund has been done Successfully!"                 
+                    },
+                }
+              );
+            //   this.messageDialogService.success("Refund has been done Successfully!");
             }else{
               this.MoreRefunddialog();   
             }
@@ -273,7 +283,7 @@ export class RefundDialogComponent implements OnInit {
       this.refundform.value.remarks,
       this.data.clickedrowdepositdetails.receiptno,
       Number(this.data.clickedrowdepositdetails.uhid.split(".")[1]),
-      this.PaymentTypedepositamount,
+      Number(this.PaymentTypedepositamount),
       this.stationId,
       this.hsplocationId,
       this.operatorID,    
