@@ -516,9 +516,9 @@ export class BillComponent implements OnInit {
 
   makereceipt() {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
-      this.formGroup.value.discAmt;
+      this.formGroup.value.dipositAmtEdit;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
-      this.formGroup.value.dipositAmt;
+      this.formGroup.value.discAmt;
     this.billingservice.makeBillPayload.cmbInteraction =
       this.formGroup.value.interactionDetails;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
