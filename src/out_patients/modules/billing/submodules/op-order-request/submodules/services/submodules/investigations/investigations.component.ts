@@ -8,7 +8,7 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { SaveandDeleteOpOrderRequest } from "../../../../../../../../core/models/saveanddeleteoporder.Model";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   filter,
   distinctUntilChanged,
@@ -22,7 +22,7 @@ import {
   Subject,
   iif,
 } from "rxjs";
-import { textChangeRangeIsUnchanged } from "typescript";
+import { BillingStaticConstants } from "../../../../../billing/BillingStaticConstant";
 
 @Component({
   selector: "out-patients-investigations",
@@ -130,7 +130,8 @@ export class OderInvestigationsComponent implements OnInit {
     private cookie: CookieService,
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -143,6 +144,7 @@ export class OderInvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    // this.data = [];
     this.billingService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
@@ -215,6 +217,7 @@ export class OderInvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
+              docRequired: r.docRequired,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -302,6 +305,11 @@ export class OderInvestigationsComponent implements OnInit {
             originalTitle: r.name,
             serviceid: r.serviceid,
             precaution: r.precaution,
+            docRequired: r.docRequired,
+            item_Instructions:
+              BillingStaticConstants.investigationItemBasedInstructions[
+                r.id.toString()
+              ],
             ngStyle: {
               color:
                 r.outsourceTest == 2
@@ -401,6 +409,7 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res: any) => {
         console.log(res);
         this.serviceInvestigatationresponse = res;
+        //setTimeout(() => {
         this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
@@ -413,8 +422,17 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           itemid: this.formGroup.value.investigation.value,
+          doctorName_required: this.formGroup.value.investigation.docRequired
+            ? true
+            : false,
+          specialisation_required: this.formGroup.value.investigation
+            .docRequired
+            ? true
+            : false,
         });
         this.data = [...this.billingService.InvestigationItems];
+        // }, 1000);
+
         console.log(this.data);
         this.formGroup.reset();
       });
@@ -463,11 +481,11 @@ export class OderInvestigationsComponent implements OnInit {
       flag,
       maxid,
       this.reqItemDetail,
-      0,
-      60926,
-      67
-      // userid,
-      // locationid
+      "0",
+      //60926,
+      //67
+      userid,
+      locationid
     );
   }
   saveResponsedata: any;
@@ -489,13 +507,22 @@ export class OderInvestigationsComponent implements OnInit {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
             this.billingService.InvestigationItems = [];
+            this.formGroup.reset();
           }
         });
     }
   }
   view() {
+    this.billingService.setActiveLink(true);
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);
+    // this.router.navigate(
+    //   ["/out-patient-billing/op-order-request/view-request"],
+    //   {
+    //     queryParamsHandling: "merge",
+    //     relativeTo: this.route,
+    //   }
+    // );
   }
 }
