@@ -162,8 +162,10 @@ export class BillingComponent implements OnInit {
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
         this.links[0].disabled = true;
+        this.links[2].disabled = true;
       } else {
         this.links[0].disabled = false;
+        this.links[2].disabled = false;
       }
     });
     this.billingService.disableBillTabChange.subscribe((res: boolean) => {
@@ -839,7 +841,7 @@ export class BillingComponent implements OnInit {
       data: {},
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result.showlist) {
+      if (result && result.showlist) {
         let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
           width: "60vw",
           height: "50vh",
@@ -864,6 +866,8 @@ export class BillingComponent implements OnInit {
                     patient_Instructions: item.patient_Instructions,
                     serviceid: item.serviceId,
                     doctorid: item.doctorid,
+                    popuptext: item.popuptext,
+                    precaution: item.precaution,
                   }
                 );
                 if (item.doctorid)
@@ -1071,10 +1075,11 @@ export class BillingComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data: GetCompanyDataInterface[]) => {
+      .subscribe((data: any[]) => {
         this.companyData = data;
         this.formGroup.controls["corporate"].disable();
         this.billingService.setCompanyData(data);
+        data.unshift({ name: "Select", id: -1 });
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id, company: a };
         });

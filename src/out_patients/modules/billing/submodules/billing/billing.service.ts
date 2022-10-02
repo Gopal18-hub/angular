@@ -211,6 +211,50 @@ export class BillingService {
     return false;
   }
 
+  updateServiceItemPrice(billItem: any) {
+    const consultationsExist = this.consultationItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (consultationsExist > -1) {
+      this.consultationItems[consultationsExist].price = billItem.price;
+      return;
+    }
+
+    const investigationsExist = this.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.billItem.itemId == billItem.itemId;
+      }
+    );
+    if (investigationsExist > -1) {
+      this.InvestigationItems[investigationsExist].price = billItem.price;
+      return;
+    }
+
+    const proceduresExist = this.ProcedureItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (proceduresExist > -1) {
+      this.ProcedureItems[proceduresExist].price = billItem.price;
+      return;
+    }
+
+    const ordersetExist = this.OrderSetItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (ordersetExist > -1) {
+      this.OrderSetItems[ordersetExist].price = billItem.price;
+      return;
+    }
+
+    const helthcheckupExist = this.HealthCheckupItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (helthcheckupExist > -1) {
+      this.HealthCheckupItems[helthcheckupExist].price = billItem.price;
+      return;
+    }
+  }
+
   refreshPrice() {
     let subItems: any = [];
     this.billItems.forEach((item: any, index: number) => {
@@ -234,8 +278,9 @@ export class BillingService {
           this.billItems[index].price = resItem.returnOutPut;
           this.billItems[index].totalAmount =
             this.billItems[index].qty * resItem.returnOutPut;
+          this.updateServiceItemPrice(this.billItems[index]);
         });
-        this.calculateBill();
+        this.calculateTotalAmount();
       });
   }
 
@@ -245,7 +290,7 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
-    this.company = companyid;
+    this.company = companyid > 0 ? companyid : 0;
     if (this.billItems.length > 0) {
       this.refreshPrice();
     }

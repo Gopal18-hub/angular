@@ -686,8 +686,8 @@ export class BillComponent implements OnInit {
                 this.question[20].readonly = false;
                 this.question[20].disable = false;
                 this.question[20] = { ...this.question[20] };
-                if (res.data)
-                  this.snackbar.open("Deposit Amount availed successfully!");
+                // if (res.data)
+                //   this.snackbar.open("Deposit Amount availed successfully!");
               });
             }
           }
