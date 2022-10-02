@@ -494,3 +494,13 @@ input[type="number"]::-webkit-inner-spin-button {
   background-repeat: no-repeat;
   background-size: contain;
 }
+
+.draggable-handle {
+  position: absolute;
+  top: -3px;
+  right: 26px;
+  color: #ccc;
+  cursor: move;
+  width: 24px;
+  height: 24px;
+}
