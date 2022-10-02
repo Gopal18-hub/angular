@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable } from "rxjs";
+import { Subject } from "rxjs";
 import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
@@ -108,10 +108,14 @@ export class BillingService {
     this.activeMaxId = null;
     this.company = 0;
     this.unbilledInvestigations = false;
+    this.billingFormGroup = { form: "", questions: [] };
+    this.referralDoctor = null;
+    this.iomMessage = "";
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
     this.makeBillPayload = BillingStaticConstants.makeBillPayload;
+    this.calculateBillService.clear();
   }
 
   calculateTotalAmount() {
@@ -207,6 +211,34 @@ export class BillingService {
     return false;
   }
 
+  refreshPrice() {
+    let subItems: any = [];
+    this.billItems.forEach((item: any, index: number) => {
+      subItems.push({
+        serviceID: item.serviceId,
+        itemId: item.itemId,
+        bundleId: 0,
+        priority: item.priority,
+      });
+    });
+    this.http
+      .post(
+        BillingApiConstants.getPriceBulk(
+          this.cookie.get("HSPLocationId"),
+          this.company
+        ),
+        subItems
+      )
+      .subscribe((res: any) => {
+        res.forEach((resItem: any, index: number) => {
+          this.billItems[index].price = resItem.returnOutPut;
+          this.billItems[index].totalAmount =
+            this.billItems[index].qty * resItem.returnOutPut;
+        });
+        this.calculateBill();
+      });
+  }
+
   setCompnay(
     companyid: number,
     res: any,
@@ -214,6 +246,9 @@ export class BillingService {
     from: string = "header"
   ) {
     this.company = companyid;
+    if (this.billItems.length > 0) {
+      this.refreshPrice();
+    }
     this.companyChangeEvent.next({ company: res, from });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
     this.iomMessage =

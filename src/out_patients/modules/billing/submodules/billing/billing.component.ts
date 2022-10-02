@@ -32,6 +32,7 @@ import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-
 import { distinctUntilChanged } from "rxjs/operators";
 import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -133,7 +134,8 @@ export class BillingComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     public messageDialogService: MessageDialogService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -565,6 +567,9 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
+      if (diffYears >= 60) {
+        this.calculateBillService.seniorCitizen = true;
+      }
       if (dobRef.date() == today.date() && dobRef.month() == today.month()) {
         this.billingService.todayPatientBirthday = true;
       }
@@ -845,6 +850,7 @@ export class BillingComponent implements OnInit {
         uDialogRef.afterClosed().subscribe(async (ures: any) => {
           if (ures.process == 1) {
             if (ures.data.length > 0) {
+              let referalDoctor: any = null;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
                 await this.billingService.processInvestigationAdd(
@@ -854,13 +860,23 @@ export class BillingComponent implements OnInit {
                     title: item.testName,
                     value: item.testID,
                     originalTitle: item.testName,
-                    docRequired: item.doctorid ? true : false,
-                    patient_Instructions: "",
+                    docRequired: item.docRequired ? true : false,
+                    patient_Instructions: item.patient_Instructions,
                     serviceid: item.serviceId,
                     doctorid: item.doctorid,
                   }
                 );
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.doctorid,
+                    name: item.docName,
+                    specialisation: "",
+                  };
               }
+              if (referalDoctor) {
+                this.billingService.setReferralDoctor(referalDoctor);
+              }
+              this.billingService.servicesTabStatus.next({ goToTab: 1 });
             }
             this.billingService.unbilledInvestigations = true;
           }
@@ -989,6 +1005,7 @@ export class BillingComponent implements OnInit {
         this.matDialog.open(DMSComponent, {
           width: "100vw",
           maxWidth: "90vw",
+          maxHeight: "80vh",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,

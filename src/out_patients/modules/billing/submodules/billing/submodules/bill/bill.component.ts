@@ -18,7 +18,6 @@ import {
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReportService } from "@shared/services/report.service";
 import { CookieService } from "@shared/services/cookie.service";
-import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
 import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
 import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
@@ -339,12 +338,13 @@ export class BillComponent implements OnInit {
       }
     });
     if (popuptext.length > 0) {
-      this.matDialog.open(PopuptextComponent, {
+      const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
         width: "80vw",
         data: {
           popuptext,
         },
       });
+      await popuptextDialogRef.afterClosed().toPromise();
     }
     this.billingservice.calculateBill();
     this.data = this.billingservice.billItems;
@@ -353,6 +353,8 @@ export class BillComponent implements OnInit {
         this.data = [];
       }
     });
+
+    this.calculateBillService.billTabActiveLogics(this.formGroup, this);
   }
 
   rowRwmove($event: any) {
@@ -397,7 +399,7 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.discountreason();
+          this.calculateBillService.discountreason(this.formGroup, this);
         } else {
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
@@ -440,6 +442,10 @@ export class BillComponent implements OnInit {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
+  }
+
+  discountreason() {
+    this.calculateBillService.discountreason(this.formGroup, this);
   }
 
   onModifyDepositAmt() {
@@ -602,40 +608,6 @@ export class BillComponent implements OnInit {
       this.formGroup.value.discAmt -
       this.formGroup.value.dipositAmtEdit
     );
-  }
-
-  discountreason() {
-    const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
-      width: "80vw",
-      minWidth: "90vw",
-    });
-    discountReasonPopup.afterClosed().subscribe((res) => {
-      if ("applyDiscount" in res && res.applyDiscount) {
-        this.billingservice.makeBillPayload.tab_o_opDiscount = [];
-        this.calculateBillService.discountSelectedItems.forEach(
-          (discItem: any) => {
-            this.billingservice.makeBillPayload.tab_o_opDiscount.push({
-              discOn: discItem.discType,
-              disType: discItem.discTypeId,
-              disPer: discItem.disc,
-              disReason: discItem.reasonTitle,
-              disAmt: discItem.discAmt,
-            });
-          }
-        );
-        this.formGroup.controls["discAmt"].setValue(
-          this.calculateBillService.totalDiscountAmt
-        );
-        this.formGroup.controls["amtPayByPatient"].setValue(
-          this.getAmountPayByPatient()
-        );
-        if (this.calculateBillService.totalDiscountAmt > 0) {
-          this.formGroup.controls["discAmtCheck"].setValue(true, {
-            emitEvent: false,
-          });
-        }
-      }
-    });
   }
 
   depositdetails() {
