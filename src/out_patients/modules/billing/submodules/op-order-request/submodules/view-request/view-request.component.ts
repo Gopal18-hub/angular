@@ -159,7 +159,7 @@ export class OPOrderViewRequest implements OnInit {
     let maxid = this.billingservice.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
-      .get(BillingApiConstants.fetchoporderrequest(maxid, 67))
+      .get(BillingApiConstants.fetchoporderrequest(maxid, locationid))
       .pipe(takeUntil(this._destroying$))
       .subscribe((response) => {
         console.log(response);
