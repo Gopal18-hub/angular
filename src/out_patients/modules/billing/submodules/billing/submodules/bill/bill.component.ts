@@ -73,7 +73,7 @@ export class BillComponent implements OnInit {
       discAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: 0,
         readonly: true,
         disabled: false,
       },
@@ -426,12 +426,14 @@ export class BillComponent implements OnInit {
         } else {
           this.totalDeposit = 0;
           this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-          this.formGroup.controls["dipositAmtEdit"].reset();
+          this.formGroup.controls["dipositAmtEdit"].setValue(0);
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
-            this.billingservice.totalCost
+            this.getAmountPayByPatient()
           );
-          this.formGroup.controls["dipositAmtcheck"].setValue(false);
+          this.formGroup.controls["dipositAmtcheck"].setValue(false, {
+            emitEvent: false,
+          });
         }
       });
 
@@ -632,8 +634,8 @@ export class BillComponent implements OnInit {
   getAmountPayByPatient() {
     return (
       this.billingservice.totalCost -
-      this.formGroup.value.discAmt -
-      this.formGroup.value.dipositAmtEdit
+      (this.formGroup.value.discAmt || 0) -
+      (this.formGroup.value.dipositAmtEdit || 0)
     );
   }
 
@@ -655,7 +657,6 @@ export class BillComponent implements OnInit {
           (e: any) =>
             e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
         );
-        console.log(this.depositDetails);
 
         const dialogref = this.matDialog.open(DepositDetailsComponent, {
           width: "60vw",
@@ -664,10 +665,9 @@ export class BillComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe((res: any) => {
-          console.log(res);
           this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
             [];
-          if (res) {
+          if (res && res.data) {
             res.data.forEach((dItem: any) => {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
                 {
@@ -682,16 +682,22 @@ export class BillComponent implements OnInit {
               .reduce(function (r: any, s: any) {
                 return r + s;
               });
+            this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmtEdit"].enable();
+            this.question[20].readonly = false;
+            this.question[20].disable = false;
+            this.question[20] = { ...this.question[20] };
+            this.question[20].elementRef.focus();
+            this.formGroup.controls["dipositAmtcheck"].setValue(true, {
+              emitEvent: false,
+            });
+          } else {
+            this.formGroup.controls["dipositAmtcheck"].setValue(false, {
+              emitEvent: false,
+            });
           }
 
-          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
-          this.formGroup.controls["dipositAmtEdit"].enable();
-          this.question[20].readonly = false;
-          this.question[20].disable = false;
-          this.question[20] = { ...this.question[20] };
-          this.question[20].elementRef.focus();
-          this.formGroup.controls["dipositAmtcheck"].setValue(true);
           // if (res.data)
           //   this.snackbar.open("Deposit Amount availed successfully!");
         });
