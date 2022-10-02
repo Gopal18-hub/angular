@@ -149,7 +149,7 @@ export class BillComponent implements OnInit {
           { title: "Credit", value: 3, disabled: false },
           { title: "Gen. OPD", value: 4, disabled: false },
         ],
-        defaultValue: "cash",
+        defaultValue: 1,
       },
       self: {
         type: "checkbox",
@@ -521,13 +521,13 @@ export class BillComponent implements OnInit {
 
   makereceipt() {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
-      this.formGroup.value.dipositAmtEdit;
+      Number(this.formGroup.value.dipositAmtEdit) || 0;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
-      this.formGroup.value.discAmt;
+      Number(this.formGroup.value.discAmt) || 0;
     this.billingservice.makeBillPayload.cmbInteraction =
-      this.formGroup.value.interactionDetails;
+      Number(this.formGroup.value.interactionDetails) || 0;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
-      this.formGroup.value.paymentMode;
+      Number(this.formGroup.value.paymentMode);
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "70vw",
