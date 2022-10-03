@@ -145,27 +145,6 @@ export class BillingService {
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
-    this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
-      this.totalCost;
-    this.makeBillPayload.ds_paymode.tab_paymentList = [];
-    this.makeBillPayload.ds_paymode.tab_paymentList.push({
-      slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
-      modeOfPayment: "Cash",
-      amount: this.totalCost,
-      flag: 1,
-    });
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
-      opbillid: 0,
-      billNo: "",
-      amount: this.totalCost,
-      datetime: new Date(),
-      operatorID: Number(this.cookie.get("UserId")),
-      stationID: Number(this.cookie.get("StationId")),
-      posted: false,
-      hspLocationId: Number(this.cookie.get("HSPLocationId")),
-      recNumber: "",
-    });
   }
 
   setHealthPlan(data: any) {
@@ -699,7 +678,45 @@ export class BillingService {
     return this.patientDetailsInfo;
   }
 
-  makeBill() {
+  makeBill(paymentmethod: any = {}) {
+    if ("tabs" in paymentmethod) {
+      let toBePaid =
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount -
+        (this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount +
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount);
+      let collectedAmount = paymentmethod.tabPrices.reduce(
+        (partialSum: number, a: number) => partialSum + a,
+        0
+      );
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
+        collectedAmount;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
+        toBePaid - collectedAmount;
+      this.makeBillPayload.ds_paymode.tab_paymentList = [];
+      paymentmethod.tabs.forEach((payment: any) => {
+        if (paymentmethod.paymentForm[payment.key].value.price > 0) {
+          this.makeBillPayload.ds_paymode.tab_paymentList.push({
+            slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
+            modeOfPayment: "Cash",
+            amount: paymentmethod.paymentForm[payment.key].value.price,
+            flag: 1,
+          });
+        }
+      });
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
+        opbillid: 0,
+        billNo: "",
+        amount: collectedAmount,
+        datetime: new Date(),
+        operatorID: Number(this.cookie.get("UserId")),
+        stationID: Number(this.cookie.get("StationId")),
+        posted: false,
+        hspLocationId: Number(this.cookie.get("HSPLocationId")),
+        recNumber: "",
+      });
+    }
+
     return this.http.post(
       BillingApiConstants.insert_billdetailsgst(),
       this.makeBillPayload

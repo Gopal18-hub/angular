@@ -122,7 +122,7 @@ export class BillPaymentDialogComponent implements OnInit {
       this.dialogRef.close({ data: "MakeBill" });
       return;
     }
-    this.billingService.makeBill().subscribe((res) => {
+    this.billingService.makeBill(this.paymentmethod).subscribe((res) => {
       if (res.length > 0) {
         if (res[0].billNo) {
           this.dialogRef.close(res[0]);
