@@ -40,15 +40,13 @@ export namespace CrystalReport {
   export const DailyCollectionReport = (params: any) => {
     return `${
       environment.ReportsSampleUrl
-    }MAXHIS/MIS/DailyCollectionReport?FromDate=${
-      params.FromDate
-    }&ToDate=${moment(params.todate).format(
-      "DD/MM/YYYY"
-    )}&LocationName=${MaxHealthStorage.getCookie(
-      "HSPLocationId"
-    )}&User=${MaxHealthStorage.getCookie(
+    }MAXHIS/MIS/DailyCollectionReport?FromDate=${moment(params.todate).format(
+      "MM/DD/YYYY"
+    )}&ToDate=${params.todate}&LocationName=${
+      params.locationID
+    }&User=${MaxHealthStorage.getCookie(
       "UserName"
-    )}&locationid=${MaxHealthStorage.getCookie("HSPLocationId")}`;
+    )}&locationid=${MaxHealthStorage.getCookie("HSPLocationId")}&exportflag=1`;
   };
   export const OnlinePaymentDetailReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MIS/OnlinePaymentDetailReport?radiovalue=${params.radiovalue}&FromDate=${params.fromdate}&ToDate=${params.Todate}&locationid=${params.locationid}&User=${params.User}`;
@@ -243,5 +241,11 @@ export namespace CrystalReport {
   };
   export const OPRefundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
+  };
+  export const FormSixty = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?LocationId=${params.LocationId}&Iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
+  };
+  export const IvestigationInstruction = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?ItemName=${params.item}&Description=${params.description}`;
   };
 }

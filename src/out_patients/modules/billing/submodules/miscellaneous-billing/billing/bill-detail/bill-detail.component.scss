@@ -18,6 +18,14 @@
       }
       
     }
+    ::ng-deep .mat-error {
+      display: none;
+  }  
+
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick
+{
+  color:#ababab;
+}
       ::ng-deep .max-table-wrapper {
         table {
           width: 110% !important;        
@@ -148,6 +156,11 @@
   
      
   }
+  ::ng-deep .interaction {
+    mat-label{
+    font-weight: 400;
+  }
+}
   .tableh
   {
     height : 35% !important

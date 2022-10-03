@@ -5,6 +5,17 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { IomCompanyBillingComponent } from "./prompts/iom-company-billing/iom-company-billing.component";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { DatePipe } from "@angular/common";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { of } from "rxjs";
+import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 
 @Injectable({
   providedIn: "root",
@@ -33,7 +44,9 @@ export class BillingService {
   company: number = 0;
   billtype: string = "cash";
 
-  makeBillPayload: any = BillingStaticConstants.makeBillPayload;
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
 
   patientDetailsInfo: any = [];
 
@@ -51,7 +64,35 @@ export class BillingService {
 
   consultationItemsAdded = new Subject<boolean>();
 
-  constructor(private http: HttpService, private cookie: CookieService) {}
+  referralDoctor: any;
+
+  companyChangeEvent = new Subject<any>();
+  companyData: any = [];
+  iomMessage: string = "";
+  activeLink = new Subject<any>();
+  disableServiceTab: boolean = false;
+
+  maxIdEventFinished = new Subject<any>();
+
+  billingFormGroup: any = { form: "", questions: [] };
+
+  constructor(
+    private http: HttpService,
+    private cookie: CookieService,
+    private calculateBillService: CalculateBillService,
+    public matDialog: MatDialog,
+    private datepipe: DatePipe,
+    private messageDialogService: MessageDialogService
+  ) {}
+
+  setBillingFormGroup(formgroup: any, questions: any) {
+    this.billingFormGroup.form = formgroup;
+    this.billingFormGroup.questions = questions;
+  }
+
+  calculateBill() {
+    this.calculateBillService.initProcess(this.billItems, this);
+  }
 
   changeBillTabStatus(status: boolean) {
     this.disableBillTab = status;
@@ -75,10 +116,17 @@ export class BillingService {
     this.activeMaxId = null;
     this.company = 0;
     this.unbilledInvestigations = false;
+    this.billingFormGroup = { form: "", questions: [] };
+    this.referralDoctor = null;
+    this.iomMessage = "";
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
-    this.makeBillPayload = BillingStaticConstants.makeBillPayload;
+    this.calculateBillService.clear();
+    this.makeBillPayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.makeBillPayload)
+    );
+    console.log(this.makeBillPayload);
   }
 
   calculateTotalAmount() {
@@ -103,27 +151,6 @@ export class BillingService {
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
-    this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
-      this.totalCost;
-    this.makeBillPayload.ds_paymode.tab_paymentList = [];
-    this.makeBillPayload.ds_paymode.tab_paymentList.push({
-      slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
-      modeOfPayment: "Cash",
-      amount: this.totalCost,
-      flag: 1,
-    });
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
-      opbillid: 0,
-      billNo: "",
-      amount: this.totalCost,
-      datetime: new Date(),
-      operatorID: Number(this.cookie.get("UserId")),
-      stationID: Number(this.cookie.get("StationId")),
-      posted: false,
-      hspLocationId: Number(this.cookie.get("HSPLocationId")),
-      recNumber: "",
-    });
   }
 
   setHealthPlan(data: any) {
@@ -174,9 +201,123 @@ export class BillingService {
     return false;
   }
 
-  setCompnay(companyid: number) {
-    this.company = companyid;
+  updateServiceItemPrice(billItem: any) {
+    const consultationsExist = this.consultationItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (consultationsExist > -1) {
+      this.consultationItems[consultationsExist].price = billItem.price;
+      return;
+    }
+
+    const investigationsExist = this.InvestigationItems.findIndex(
+      (item: any) => {
+        return item.billItem.itemId == billItem.itemId;
+      }
+    );
+    if (investigationsExist > -1) {
+      this.InvestigationItems[investigationsExist].price = billItem.price;
+      return;
+    }
+
+    const proceduresExist = this.ProcedureItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (proceduresExist > -1) {
+      this.ProcedureItems[proceduresExist].price = billItem.price;
+      return;
+    }
+
+    const ordersetExist = this.OrderSetItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (ordersetExist > -1) {
+      this.OrderSetItems[ordersetExist].price = billItem.price;
+      return;
+    }
+
+    const helthcheckupExist = this.HealthCheckupItems.findIndex((item: any) => {
+      return item.billItem.itemId == billItem.itemId;
+    });
+    if (helthcheckupExist > -1) {
+      this.HealthCheckupItems[helthcheckupExist].price = billItem.price;
+      return;
+    }
+  }
+
+  refreshPrice() {
+    let subItems: any = [];
+    this.billItems.forEach((item: any, index: number) => {
+      subItems.push({
+        serviceID: item.serviceId,
+        itemId: item.itemId,
+        bundleId: 0,
+        priority: item.priority,
+      });
+    });
+    this.http
+      .post(
+        BillingApiConstants.getPriceBulk(
+          this.cookie.get("HSPLocationId"),
+          this.company
+        ),
+        subItems
+      )
+      .subscribe((res: any) => {
+        res.forEach((resItem: any, index: number) => {
+          this.billItems[index].price = resItem.returnOutPut;
+          this.billItems[index].totalAmount =
+            this.billItems[index].qty * resItem.returnOutPut;
+          this.updateServiceItemPrice(this.billItems[index]);
+        });
+        this.calculateTotalAmount();
+      });
+  }
+
+  setCompnay(
+    companyid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"
+  ) {
+    this.company = companyid > 0 ? companyid : 0;
+    if (this.billItems.length > 0) {
+      this.refreshPrice();
+    }
+    this.companyChangeEvent.next({ company: res, from });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
+    this.iomMessage =
+      "IOM Validity till : " +
+      (("iomValidity" in res.company && res.company.iomValidity != "") ||
+      res.company.iomValidity != undefined
+        ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+        : "");
+    if (res.company.isTPA == 1) {
+      const iomcompanycorporate = this.matDialog.open(
+        IomCompanyBillingComponent,
+        {
+          width: "25%",
+          height: "28%",
+        }
+      );
+
+      iomcompanycorporate.afterClosed().subscribe((result) => {
+        if (result.data == "corporate") {
+          formGroup.controls["corporate"].enable();
+          formGroup.controls["corporate"].setValue(null);
+        } else {
+          formGroup.controls["corporate"].setValue(null);
+          formGroup.controls["corporate"].disable();
+        }
+      });
+    } else {
+      formGroup.controls["corporate"].setValue(null);
+      formGroup.controls["corporate"].disable();
+    }
+  }
+
+  setCompanyData(data: any) {
+    this.companyData = data;
   }
 
   setBilltype(billtype: string) {
@@ -199,6 +340,10 @@ export class BillingService {
       regNumber: regNumber,
       gender: genderName,
     };
+  }
+  setActiveLink(value: boolean) {
+    //  this.disableServiceTab=value;
+    this.activeLink.next(value);
   }
 
   deleteFromService(billItem: any) {
@@ -290,15 +435,12 @@ export class BillingService {
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(exist, 1);
     }
   }
 
   addToConsultation(data: any) {
     this.consultationItems.push(data);
-    // this.configurationservice.push({
-    //   itemname: data.billItem.itemName,
-    //   servicename: "Consultation",
-    // });
     if (data.billItem) {
       this.addToBill(data.billItem);
       this.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.push({
@@ -326,10 +468,6 @@ export class BillingService {
 
   addToInvestigations(data: any) {
     this.InvestigationItems.push(data);
-    // this.configurationservice.push({
-    //   itemname: data.billItem.itemName,
-    //   servicename: data.billItem.serviceName,
-    // });
     if (data.billItem) {
       this.addToBill(data.billItem);
       this.makeBillPayload.ds_insert_bill.tab_o_optestList.push({
@@ -550,11 +688,140 @@ export class BillingService {
     return this.patientDetailsInfo;
   }
 
-  makeBill() {
-    return this.http.post(
-      BillingApiConstants.insert_billdetailsgst(),
-      this.makeBillPayload
-    );
+  async makeBill(paymentmethod: any = {}) {
+    if ("tabs" in paymentmethod) {
+      let toBePaid =
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount -
+        (this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount +
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount);
+      let collectedAmount = paymentmethod.tabPrices.reduce(
+        (partialSum: number, a: number) => partialSum + a,
+        0
+      );
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
+        collectedAmount;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
+        toBePaid - collectedAmount;
+      this.makeBillPayload.ds_paymode.tab_paymentList = [];
+      paymentmethod.tabs.forEach((payment: any) => {
+        if (paymentmethod.paymentForm[payment.key].value.price > 0) {
+          this.makeBillPayload.ds_paymode.tab_paymentList.push({
+            slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
+            modeOfPayment: "Cash",
+            amount: paymentmethod.paymentForm[payment.key].value.price,
+            flag: 1,
+          });
+        }
+      });
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
+        opbillid: 0,
+        billNo: "",
+        amount: collectedAmount,
+        datetime: new Date(),
+        operatorID: Number(this.cookie.get("UserId")),
+        stationID: Number(this.cookie.get("StationId")),
+        posted: false,
+        hspLocationId: Number(this.cookie.get("HSPLocationId")),
+        recNumber: "",
+      });
+      if (toBePaid > collectedAmount) {
+        const lessAmountWarningDialog = this.messageDialogService.confirm(
+          "",
+          "Do You Want To Save Less Amount ?"
+        );
+        const lessAmountWarningResult = await lessAmountWarningDialog
+          .afterClosed()
+          .toPromise();
+        if (lessAmountWarningResult) {
+          if (lessAmountWarningResult.type == "yes") {
+            const reasonInfoDialog = this.matDialog.open(
+              ReasonForDueBillComponent,
+              {
+                width: "40vw",
+                height: "50vh",
+              }
+            );
+            const reasonInfoResult = await reasonInfoDialog
+              .afterClosed()
+              .toPromise();
+            if (reasonInfoResult) {
+            } else {
+              return;
+            }
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+    }
+    return this.http
+      .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
+      .toPromise();
+  }
+
+  async processProcedureAdd(
+    priorityId: number,
+    serviceType: string,
+    procedure: any
+  ) {
+    const res = await this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.company,
+        priority: priorityId,
+        itemId: procedure.value,
+        serviceId: procedure.serviceid,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .toPromise();
+    if (res.length > 0) {
+      this.addToProcedure({
+        sno: this.ProcedureItems.length + 1,
+        procedures: procedure.originalTitle,
+        qty: 1,
+        specialisation: "",
+        doctorName: "",
+        doctorName_required: procedure.docRequired ? true : false,
+        specialisation_required: procedure.docRequired ? true : false,
+        price: res[0].returnOutPut,
+        unitPrice: res[0].returnOutPut,
+        itemid: procedure.value,
+        priorityId: priorityId,
+        serviceId: procedure.serviceid,
+        billItem: {
+          popuptext: procedure.popuptext,
+          itemId: procedure.value,
+          priority: priorityId,
+          serviceId: procedure.serviceid,
+          price: res[0].returnOutPut,
+          serviceName: "Procedure & Others",
+          itemName: procedure.originalTitle,
+          qty: 1,
+          precaution: "",
+          procedureDoctor: "",
+          credit: 0,
+          cash: 0,
+          disc: 0,
+          discAmount: 0,
+          totalAmount: res[0].returnOutPut,
+          gst: 0,
+          gstValue: 0,
+          specialisationID: 0,
+          doctorID: 0,
+        },
+      });
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: procedure.value,
+        serviceID: procedure.serviceid,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
+      });
+    }
   }
 
   async processInvestigationAdd(
@@ -590,6 +857,7 @@ export class BillingService {
         doctorName_required: investigation.docRequired ? true : false,
         price: res[0].returnOutPut,
         billItem: {
+          popuptext: investigation.popuptext,
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
@@ -613,6 +881,12 @@ export class BillingService {
           doctorID: 0,
           patient_Instructions: investigation.patient_Instructions,
         },
+      });
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: investigation.value,
+        serviceID: serviceType || investigation.serviceid,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
       });
     }
   }
@@ -655,6 +929,12 @@ export class BillingService {
       },
     });
     this.consultationItemsAdded.next(true);
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: doctorName.value,
+      serviceID: 25,
+      price: doctorName.price,
+      willModify: false,
+    });
   }
 
   async procesConsultationAdd(
@@ -708,6 +988,17 @@ export class BillingService {
         },
       });
       this.consultationItemsAdded.next(true);
+      this.makeBillPayload.tab_o_opItemBasePrice.push({
+        itemID: doctorName.value,
+        serviceID: 25,
+        price: res[0].returnOutPut,
+        willModify: res[0].ret_value == 1 ? true : false,
+      });
     }
+  }
+
+  setReferralDoctor(doctor: any) {
+    this.referralDoctor = doctor;
+    this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
   }
 }

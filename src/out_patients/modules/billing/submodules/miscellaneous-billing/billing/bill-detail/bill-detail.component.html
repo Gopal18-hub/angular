@@ -85,14 +85,18 @@
               </maxhealth-question>
             </div>
 
-            <maxhealth-question [question]="question[8]" [form]="miscServBillForm" [questions]="question[8]"
+            <!-- <maxhealth-question [question]="question[8]" [form]="miscServBillForm" [questions]="question[8]"
               [index]="8">
-            </maxhealth-question>
+            </maxhealth-question> -->
+            <mat-label>Referral Doctor <span style="color:red">*</span></mat-label>
+            <out-patients-referral
+              (selectedDoctorEvent)="selectedReferralDoctor($event)"
+            ></out-patients-referral>
 
           </div>
 
 
-          <div class="ml-2 mr-2 mb-4 w-Reff">
+          <div class="ml-2 mr-2 mb-4 w-Reff interaction">
             <maxhealth-question [question]="question[9]" [form]="miscServBillForm" [questions]="question[9]"
               [index]="9">
             </maxhealth-question>
@@ -253,6 +257,11 @@
                   class="w-5/9 mt-1 mr-1" [index]="24">
                 </maxhealth-question>
                 <button mat-raised-button color="primary" class="btn-md min-width-bill  ml-5" type="submit" [disabled]="!isEnableBillBtn"
+                        accessControl
+                        masterModule = "2"
+                        moduleId="7"
+                        featureId="604"
+                        actionId="1562"
                   (click)="openMakeBilldialog()">
                   Make Bill
                 </button>
@@ -265,7 +274,12 @@
                 <maxhealth-question [question]="question[25]" [form]="miscServBillForm" [questions]="question[25]"
                   class="w-5/9 mt-1 mr-1" [index]="25">
                 </maxhealth-question>
-                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" [disabled]="!enablePrint" (click)="print()">
+                <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" [disabled]="!enablePrint" (click)="print()"
+                        accessControl
+                        masterModule = "2"
+                        moduleId="7"
+                        featureId="62"
+                        actionId="147">
                   Print Bill&nbsp;
                 </button>
               </div>
@@ -280,7 +294,7 @@
             </div> -->
 
             <div
-            class="flex border-radius-lg bg-blue px-1 py-0 align-items-center ml-2 mr-1 shadow-1"
+            class="flex border-radius-lg bg-blue px-1 py-0 align-items-center ml-2 mr-1 mt-1 shadow-1"
           >
             <mat-label class="wt-nowrap mr-6 ml-2 inline"
               >Bill Type</mat-label

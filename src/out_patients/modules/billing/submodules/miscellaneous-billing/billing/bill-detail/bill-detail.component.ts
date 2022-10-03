@@ -9,7 +9,6 @@ import { async, Subject, takeUntil } from "rxjs";
 import { GstComponent } from "../gst/gst.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { MiscMasterDataModel } from "@core/types/miscMasterDataModel.Interface";
-import { objMiscBillingConfigurationList } from "@core/types/miscMasterDataModel.Interface";
 import { objMiscBillingRemarksList } from "@core/types/miscMasterDataModel.Interface";
 import { objMiscDoctorsList } from "@core/types/miscMasterDataModel.Interface";
 import { ServiceTypeItemModel } from "@core/types/billingServiceItemModel.Interface";
@@ -18,13 +17,16 @@ import { MiscellaneousBillingModel } from "../../../../../../core/models/miscBil
 import { MiscService } from "../../MiscService.service";
 import { MakedepositDialogComponent } from "@modules/billing/submodules/deposit/makedeposit-dialog/makedeposit-dialog.component";
 import { MakeBillDialogComponent } from "../../makebill-dialog/makebill-dialog.component";
-import { DiscountAmtDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/discount-amt-dialog/discount-amt-dialog.component";
-import { GstTaxDialogComponent } from "@modules/billing/submodules/miscellaneous-billings/bills/gst-tax-dialog/gst-tax-dialog.component";
+
 import { ReportService } from "@shared/services/report.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { DepositDetailsComponent } from "@modules/billing/submodules/billing/prompts/deposit-details/deposit-details.component";
 import { DisountReasonComponent } from "@modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
 import { BillPaymentDialogComponent } from "@modules/billing/submodules/billing/prompts/payment-dialog/payment-dialog.component";
+import { BillingService } from "@modules/billing/submodules/billing/billing.service";
+import { GstTaxDialogComponent } from "../../prompts/gst-tax-dialog/gst-tax-dialog.component";
+import { DiscountAmtDialogComponent } from "../../prompts/discount-amt-dialog/discount-amt-dialog.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -38,17 +40,18 @@ export class BillDetailComponent implements OnInit {
   discountedAmt = 0;
   newItem!: MiscellaneousBillingModel;
   doctorList!: objMiscDoctorsList[];
-  // serviceList!: objMiscBillingConfigurationList;
   remarkList!: objMiscBillingRemarksList[];
   serviceItemsList!: ServiceTypeItemModel[];
   serviceList!: { title: string; value: number }[];
   miscCompanyId: any;
   generatedBillNo = '';
   enableDiscount: boolean = false;
+  makebillFlag: boolean = false;
+  depositAvailFlag: boolean = false;
   isEnableBillBtn = false
   calcBillData: any = [];
   noMap = [];
-
+  gstDataResult: any = [];
   //Tax info
   taxid = 0;
   taxcode = '';
@@ -59,6 +62,11 @@ export class BillDetailComponent implements OnInit {
   billToCompId = 0;
   enablePrint = false;
   enableItems = false;
+  refDoctor: any = [];
+  depodialogRows = [];
+  depodialogTotal = 0;
+  txtServiceTaxAmt = 0;
+  CreditAmtforSrvTax = 0;
   depositDetails: any = [];
   miscServBillForm!: FormGroup;
   serviceID!: number;
@@ -66,7 +74,15 @@ export class BillDetailComponent implements OnInit {
   stationId = Number(this.cookie.get("StationId"));
   userID = Number(this.cookie.get("UserId"));
 
-  //location = 67;
+  // location = 67;
+  // stationId = 10475
+  // userID = 9923;
+
+
+  marketPrice = 0;
+  selfDoc = false;
+
+
   question: any;
   private readonly _destroying$ = new Subject<void>();
   interactionData: { id: number; name: string }[] = [] as any;
@@ -104,12 +120,14 @@ export class BillDetailComponent implements OnInit {
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
+    private messageDialogService: MessageDialogService,
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
     private miscPatient: MiscService,
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
+    private billingservice: BillingService,
   ) { }
 
 
@@ -163,7 +181,8 @@ export class BillDetailComponent implements OnInit {
         type: "autocomplete",
         title: "Procedure Doctor",
         options: this.doctorList,
-        placeholder: "Select"
+        placeholder: "Select",
+        // required: true,
       },
       //6
       remark: {
@@ -182,7 +201,7 @@ export class BillDetailComponent implements OnInit {
       //8
       referralDoctor: {
         type: "dropdown",
-        //required: true,
+        required: true,
         title: "Referral Doctor",
         placeholder: "Select",
       },
@@ -308,11 +327,11 @@ export class BillDetailComponent implements OnInit {
         type: "radio",
         //required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
+          { title: "Cash", value: "1" },
+          { title: "Credit", value: "3" },
           { title: "Gen. OPD", value: "Gen OPD" },
         ],
-        defaultValue: "cash",
+        defaultValue: "1",
       },
       //27
       dipositAmtEdit: {
@@ -334,14 +353,14 @@ export class BillDetailComponent implements OnInit {
       "ServiceType",
       "ItemDescription",
       "ItemforModify",
-      "TariffPrice",
+      "TariffPriceNo",
       "Qty",
-      "Price",
+      "PriceNo",
       "DoctorName",
-      "Disc",
-      "DiscAmount",
-      "TotalAmnt",
-      "GST",
+      "DiscNo",
+      "DiscAmountNo",
+      "TotalAmntNo",
+      "GSTNo",
     ],
     columnsInfo: {
       Sno: {
@@ -367,12 +386,12 @@ export class BillDetailComponent implements OnInit {
       },
       ItemforModify: {
         title: "Item For Modify",
-        type: "string",
+        type: "textarea",
         style: {
           width: "13%",
         },
       },
-      TariffPrice: {
+      TariffPriceNo: {
         title: "Tariff Price",
         type: "number",
         style: {
@@ -386,7 +405,7 @@ export class BillDetailComponent implements OnInit {
           width: "7%",
         },
       },
-      Price: {
+      PriceNo: {
         title: "Price",
         type: "string",
         style: {
@@ -400,28 +419,28 @@ export class BillDetailComponent implements OnInit {
           width: "8%",
         },
       },
-      Disc: {
+      DiscNo: {
         title: "Disc%",
         type: "string",
         style: {
           width: "4%",
         },
       },
-      DiscAmount: {
+      DiscAmountNo: {
         title: "Disc. Amount",
         type: "string",
         style: {
           width: "8%",
         },
       },
-      TotalAmnt: {
+      TotalAmntNo: {
         title: "Total Amount",
         type: "string",
         style: {
           width: "8%",
         },
       },
-      GST: {
+      GSTNo: {
         title: "GST%",
         type: "string",
         style: {
@@ -430,21 +449,18 @@ export class BillDetailComponent implements OnInit {
       },
     },
   };
+  clearItem = false
   ngOnInit(): void {
-
     let serviceFormResult = this.formService.createForm(
       this.miscBillData.properties,
       {}
     );
-
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
-    //this.getbilltocompany();
-
-
 
     this.miscPatient.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
+        this.clearItem = true;
         this.miscServBillForm.reset();
         this.resetAmt()
         this.serviceselectedList = [];
@@ -476,20 +492,16 @@ export class BillDetailComponent implements OnInit {
 
       });
   }
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     this.formEvents();
-    // this.getDipositedAmountByMaxID();
   }
   formEvents() {
     this.getMasterMiscDetail();
-    let compId = this.miscPatient.getCompany();
-    if (compId) {
-      this.getbilltocompany(compId);
-    }
 
     this.miscServBillForm.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
+        this.miscPatient.setBillType(value);
         this.setItemsToBill.paymentMode = value;
         this.miscPatient.setMiscBillFormData(this.setItemsToBill);
       });
@@ -497,28 +509,87 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["serviceType"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-
-        if (value.value) {
-          this.serviceID = value.value;
-          this.serviceName = value.title;
-        }
+        this.miscServBillForm.controls["item"].setValue("");
         this.setServiceItemList();
+        if (value) {
+          if (value.value) {
+            this.serviceID = value.value;
+            this.serviceName = value.title;
+            this.checkService();
+          }
+        }
+        else if (!this.miscServBillForm.value.serviceType && this.clearItem == false) {
+          //this.snackbar.open("Select Service Item", "error");
+          this.miscServBillForm.controls["item"].setValue("")
+        }
       });
 
 
     this.miscServBillForm.controls["item"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (value.value) {
-          this.itemID = value.value;
-          this.itemName = value.title;
-          this.getservices_byprocedureidnew();
-          this.setTarrifItemList();
+        if (value) {
+          if (value.value) {
+            this.itemID = value.value;
+            this.itemName = value.title;
+            this.checkService();
+            this.getservices_byprocedureidnew();
+            this.setTarrifItemList();
+          }
         }
-
-
+        else if (!this.miscServBillForm.value.item && this.clearItem == false) {
+          //this.snackbar.open("Enter the Item Description First", "error");
+        }
       });
-
+    this.miscServBillForm.controls["qty"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          if (value < 10 && value > 0) {
+            this.miscServBillForm.controls["qty"].setValue(value)
+            this.checkService();
+          }
+          if (value > 9) {
+            this.snackbar.open("Qty can't exceed 9 ", "error");
+            this.miscServBillForm.controls["qty"].setValue(0)
+          }
+          if (value <= 0) {
+            this.snackbar.open("Quantity Can Not be Zero", "error");
+            this.miscServBillForm.controls["qty"].setValue(0)
+          }
+        }
+      })
+    this.miscServBillForm.controls["reqAmt"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.checkService();
+        }
+        else if (this.miscServBillForm.value.reqAmt <= 0 && this.clearItem == false) {
+          this.snackbar.open("Item Price Can Not be Zero", "error");
+        }
+      })
+    this.miscServBillForm.controls["remark"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.checkService();
+        }
+        else if (!this.miscServBillForm.value.remark && this.clearItem == false) {
+          this.snackbar.open("Please select remarks!", "error");
+        }
+      })
+    this.miscServBillForm.controls["self"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((value: any) => {
+        this.enableDiscount = false;
+        if (value === true) {
+          this.selfDoc = true;
+        }
+        else {
+          this.selfDoc = false
+        }
+      })
     this.miscServBillForm.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -541,7 +612,7 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.enableDiscount = false;
-        if (value === true) {
+        if (value === true && this.depositAvailFlag == false) {
           this.openDepositdialog();
         }
         else {
@@ -555,16 +626,7 @@ export class BillDetailComponent implements OnInit {
         }
       });
 
-    // this.miscServBillForm.controls["billAmt"].valueChanges
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe((value: any) => {
-    //     this.calcBillData.totalAmount = this.TotalAmount;
-    //     this.miscPatient.setCalculateBillItems(this.calcBillData);
-    //     let calcBill0 = this.miscPatient.calculateBill();
 
-    //     this.miscServBillForm.controls["billAmt"].setValue(calcBill0.totalBillAmount + ".00");
-    //     this.miscServBillForm.controls["amtPayByPatient"].setValue((calcBill0.amntPaidBythePatient) + ".00");
-    //   });
     this.question[27].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -577,7 +639,24 @@ export class BillDetailComponent implements OnInit {
 
       }
     });
-
+    if (this.miscServBillForm.value.paymentMode == 3) {
+      let compId = this.miscPatient.getCompany();
+      if (compId) {
+        this.getbilltocompany(compId);
+      }
+    }
+  }
+  checkService() {
+    if (this.miscServBillForm.value.serviceType && this.miscServBillForm.value.item && this.miscServBillForm.value.qty > 0 && this.miscServBillForm.value.qty !== '' && this.miscServBillForm.value.remark) {
+      this.enableItemsService = true;
+    }
+    else {
+      this.enableItemsService = false;
+    }
+  }
+  selectedReferralDoctor(data: any) {
+    this.refDoctor = data.docotr;
+    this.billingservice.setReferralDoctor(data.docotr);
   }
   //Get onload Dropdown
   getMasterMiscDetail() {
@@ -592,14 +671,17 @@ export class BillDetailComponent implements OnInit {
           this.miscMasterDataList.objMiscBillingConfigurationList.map((a) => {
             return { title: a.name, value: a.serviceid };
           });
+        this.question[0] = { ...this.question[0] };
         this.question[5].options =
           this.miscMasterDataList.objMiscDoctorsList.map((a) => {
             return { title: a.name, value: a.id };
           });
+        this.question[5] = { ...this.question[5] };
         this.question[6].options =
           this.miscMasterDataList.objMiscBillingRemarksList.map((a) => {
             return { title: a.name, value: a.id };
           });
+        this.question[6] = { ...this.question[6] };
       });
   }
   //Get Service
@@ -613,28 +695,23 @@ export class BillDetailComponent implements OnInit {
 
         this.serviceItemsList = data as ServiceTypeItemModel[];
 
-        this.question[1].options = [
-          ...this.serviceItemsList.map((a) => {
+        this.question[1].options =
+          this.serviceItemsList.map((a) => {
             return { title: a.itemname, value: a.itemId };
-          }),
-        ];
+          })
+        this.question[1] = { ...this.question[1] };
 
 
       });
   }
   setServiceItemList() {
-
-
-    // this.clearDraftedService();
-
     if (this.miscServBillForm.value.serviceType) {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
       this.serviceName = this.miscServBillForm.value.serviceType.title;
       if (this.serviceID) {
-        this.getallserviceitems();
+        this.getServiceItemBySerivceID();
       }
 
-      this.getServiceItemBySerivceID();
     }
   }
   //Filter items based on Service
@@ -650,21 +727,12 @@ export class BillDetailComponent implements OnInit {
       .subscribe((data) => {
         this.serviceItemsList = data as ServiceTypeItemModel[];
         if (this.serviceItemsList.length > 0) {
-          this.enableItemsService = true;
           this.question[1].options = [
             ...this.serviceItemsList.map((a) => {
               return { title: a.itemname, value: a.itemId };
             }),
           ];
-
-
-
-
         }
-        else {
-          this.enableItemsService = false;
-        }
-
       })
   }
   //Tarrif Trigger
@@ -690,6 +758,7 @@ export class BillDetailComponent implements OnInit {
 
           this.terrifDetail = data as TarrifPriceModel;
           if (this.terrifDetail) {
+            this.marketPrice = this.terrifDetail.amount
             this.miscServBillForm.controls["tffPrice"].setValue(
               this.terrifDetail.amount + ".00"
             );
@@ -711,14 +780,17 @@ export class BillDetailComponent implements OnInit {
         this.b2bflag = data.dtBilltocompany[0].checkGSTN_ForB2B;
 
         if (String(this.b2bflag.trim()).toUpperCase() === "Y") {
-          //TotalTaxGST > 0 And creditlimit > 0
+          if (this.totaltaX_Value > 0 && this.miscServBillForm.value.credLimit > 0) {
+            if ((data.dtBilltocompany[0].gstNumber === null) || (data.dtBilltocompany[0].gstNumber === 0)) {
+              this.snackbar.open("Bill To Company GSTN and Address Details are Mandatory for Bill Preparation", "error")
+              return
+            }
+            else if (this.miscCompanyId === 0 || this.miscCompanyId === null) {
+              this.snackbar.open("Please Select Company GSTN!", "error")
+            }
+          }
 
-          if ((data.dtBilltocompany[0].gstNumber === null) || (data.dtBilltocompany[0].gstNumber === 0)) {
-            this.snackbar.open("Bill To Company GSTN and Address Details are Mandatory for Bill Preparation", "error")
-          }
-          else if (this.miscCompanyId === 0 || this.miscCompanyId === null) {
-            this.snackbar.open("Please Select Company GSTN!", "error")
-          }
+
         }
       })
   }
@@ -728,6 +800,7 @@ export class BillDetailComponent implements OnInit {
     let regNumber = miscPatient.registrationno;
     let iacode = miscPatient.iacode;
     this.disabledipositAmtEdit = false;
+    this.totalDeposit = 0;
 
     this.http
       .get
@@ -765,11 +838,8 @@ export class BillDetailComponent implements OnInit {
     }
 
     let PriorityId = 1;
-
     let Hsplocationid = this.location;
-    //let Hsplocationid = 7;
     let CompanyId = this.miscCompanyId;
-    //let CompanyId = Number(this.miscCompany);
 
     let CompanyFlag = 0;
     let intBundleId = 0;
@@ -854,11 +924,6 @@ export class BillDetailComponent implements OnInit {
 
   ///PAN
   setpanno() {
-
-
-    // let regNumber = Number(this.miscForm.value.maxid.split(".")[1]);
-    // let iacode = this.miscForm.value.maxid.split(".")[0];
-
     let miscPatient = this.miscPatient.getFormLsit();
     let regNumber = miscPatient.registrationno;
     let iacode = miscPatient.iacode;
@@ -870,7 +935,6 @@ export class BillDetailComponent implements OnInit {
         this.question[9].options = this.interactionData.map((a) => {
           return { title: a.name, value: a.id };
         });
-
       });
   }
   //Add Service
@@ -885,16 +949,16 @@ export class BillDetailComponent implements OnInit {
     else if (!this.miscServBillForm.value.qty) {
       this.snackbar.open("Enter the Item Quantity", "error");
     }
-    else if (this.miscServBillForm.value.qty === 0) {
+    else if (this.miscServBillForm.value.qty <= 0) {
       this.snackbar.open("Quantity Can Not be Zero", "error");
     }
     else if (!this.miscServBillForm.value.reqAmt) {
       this.snackbar.open("Enter the Item Price", "error");
     }
-    else if (this.miscServBillForm.value.reqAmt === 0) {
+    else if (this.miscServBillForm.value.reqAmt <= 0) {
       this.snackbar.open("Item Price Can Not be Zero", "error");
     }
-    else if (!this.miscServBillForm.value.remark.value) {
+    else if (!this.miscServBillForm.value.remark) {
       this.snackbar.open("Please select remarks!", "error");
     }
     else if (this.noMap.length === 0) {
@@ -916,21 +980,34 @@ export class BillDetailComponent implements OnInit {
       });
       if (!present) {
         this.getgstdata();
+        this.getDipositedAmountByMaxID()
+
         this.pushDataToServiceTable();
         this.serviceselectedList.forEach((e: any) => {
-          e.TariffPrice = Number(e.TariffPrice).toFixed(2);
-          //e.Qty = Number(e.Qty).toFixed(2);
-          e.Price = Number(e.Price).toFixed(2);
-          e.Disc = Number(e.Disc).toFixed(2);
-          e.DiscAmount = Number(e.DiscAmount).toFixed(2);
-          e.TotalAmnt = Number(e.TotalAmount).toFixed(2);
-          e.GST = Number(e.GST).toFixed(2);
-          e.amount = Number(e.amount).toFixed(2);
-          e.discountAmount = Number(e.discount).toFixed(2);
-          e.mPrice = Number(e.mPrice).toFixed(2);
+          e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
+          //e.QtyNo = Number(e.Qty).toFixed(2);
+          e.PriceNo = Number(e.Price).toFixed(2);
+          e.DiscNo = Number(e.Disc).toFixed(2);
+          e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
+          e.TotalAmntNo = Number(e.TotalAmount).toFixed(2);
+          e.GSTNo = Number(e.GST).toFixed(2);
+          e.amountNo = Number(e.amount).toFixed(2);
+          e.discountAmountNo = Number(e.discount).toFixed(2);
+          e.mPriceNo = Number(e.TariffPrice).toFixed(2);
+          //Original
           e.TotalAmount = e.TotalAmount;
+          e.Price = e.Price;
+          e.Disc = e.Disc;
+          e.DiscAmount = e.DiscAmount;
+          e.TotalAmnt = e.TotalAmount;
+          e.GST = e.GST;
+          e.amount = e.amount;
+          e.discountAmount = e.discount;
+          e.mPrice = e.TariffPrice;
+          e.Qty = e.Qty;
         })
         this.serviceselectedList = [...this.serviceselectedList];
+        this.miscPatient.setServiceItemsList(this.serviceselectedList)
         this.miscPatient.setBillDetail(this.serviceselectedList);
         if (this.serviceselectedList.length > 0) {
           this.isEnableBillBtn = true
@@ -945,10 +1022,15 @@ export class BillDetailComponent implements OnInit {
   pushDataToServiceTable() {
     let miscPatient = this.miscPatient.getMiscBillFormData();
     let pDoc = '';
+    let pDocValue = 0;
     if (this.miscServBillForm.value.pDoc === null) {
       pDoc = ''
+      pDocValue = 0
     }
-    else { pDoc = this.miscServBillForm.value.pDoc.title; }
+    else {
+      pDoc = this.miscServBillForm.value.pDoc.title;
+      pDocValue = this.miscServBillForm.value.pDoc.value
+    }
 
 
 
@@ -974,7 +1056,7 @@ export class BillDetailComponent implements OnInit {
       itemModify: this.miscServBillForm.value.item.title,
       discounttype: "",
       disReasonId: 0,
-      docid: 0,
+      docid: pDocValue,
       remarksId: this.miscServBillForm.value.remark.value,
       itemId: this.miscServBillForm.value.item.value,
       mPrice: this.miscServBillForm.value.tffPrice,
@@ -984,9 +1066,6 @@ export class BillDetailComponent implements OnInit {
   }
   //Filter
   filterList(list: any[], control: any): any {
-    // this.genderList.filter(
-    //   (g) => g.id === this.OPRegForm.controls[control"].value
-    // )[0].name;
     list.filter(function (item) {
       return item.name === control.value;
     });
@@ -999,12 +1078,8 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["pDoc"].reset()
     this.miscServBillForm.controls["remark"].reset()
     this.miscServBillForm.controls["reqAmt"].reset()
-    //this.miscServBillForm.controls["serviceType"].reset();
-    //this.miscServBillForm.controls["reqAmt"].reset()
     this.miscServBillForm.controls["serviceType"].reset()
-
-
-    // this.miscServBillForm.reset();
+    this.checkService()
   }
   clearSelectedService() {
     this.miscServBillForm.controls["serviceType"].setValue({
@@ -1029,6 +1104,9 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["amtPayByComp"].setValue(0 + ".00")
     this.miscServBillForm.controls["dipositAmtEdit"].setValue(0 + ".00")
 
+    this.isEnableBillBtn = false;
+    this.enablePrint = false;
+
   }
   //  FOR SETTING PRIORITY
   getPriority() { }
@@ -1042,72 +1120,71 @@ export class BillDetailComponent implements OnInit {
     );
 
     this.serviceselectedList = [...this.serviceselectedList];
-    // this.billingservice.calculateTotalAmount();
-  }  //Dialog
-  discAmtDialog() {
+    this.miscPatient.setServiceItemsList(this.serviceselectedList)
+    if (this.serviceselectedList.length <= 0) {
+      this.isEnableBillBtn = false;
+    }
 
-    let dialogRes;
-    //DisountReasonComponent
-    //DiscountAmtDialogComponent
-    const dialogref = this.matDialog.open(DiscountAmtDialogComponent, {
+  }  //Dialog
+  openDiscountdialog() {
+    const MakeDepositDialogref = this.matDialog.open(
+      MakedepositDialogComponent,
+      {
+        width: "33vw",
+        height: "40vh",
+        data: {
+          message: "Do you want to apply Discounts?",
+        },
+      }
+    );
+
+    MakeDepositDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result == "Success") {
+          this.opendiscAmtDialog();
+        }
+      });
+  }
+  opendiscAmtDialog() {
+    const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: 'full', height: 'auto', data: {
         data: this.billAmnt
       },
     });
 
 
-    dialogref.afterClosed().subscribe(res => {
-      this.calcBillData.totalDiscount = res.data;
-      this.miscPatient.setCalculateBillItems(this.calcBillData);
-      this.discountedAmt = res.data;
-      let calcBill0 = this.miscPatient.calculateBill();
-      this.miscServBillForm.controls["discAmt"].setValue((res.data) + ".00");
-      this.miscServBillForm.controls["billAmt"].setValue((calcBill0.totalBillAmount) + ".00");
-      this.miscServBillForm.controls["amtPayByPatient"].setValue(calcBill0.amntPaidBythePatient + ".00");
+    discountReasonPopup.afterClosed().subscribe((res) => {
+      if ("applyDiscount" in res && res.applyDiscount) {
+        // this.billingservice.makeBillPayload.tab_o_opDiscount = [];
 
-    })
-  }
-  openMakeBilldialog() {
-
-    let miscFormData = this.miscPatient.getMiscBillFormData();
-
-    if (!this.miscServBillForm.value.referralDoctor) { this.snackbar.open("Please select Referral Doctor", "error") }
-    else if (!miscFormData.companyId) { this.snackbar.open("Select the Company", "error") }
-    else if (miscFormData.companyId) {
-      //  this.getbilltocompany(miscFormData.companyId)
-    }
-
-
-    else if (!miscFormData.corporateId) { this.snackbar.open(" Please select corporate!", "error") }
-    else if (this.miscServBillForm.value.credLimit <= 0) { this.snackbar.open(" Enter Credit limit", "error") }
-    // else if (this.billAmnt > this.miscServBillForm.value.credLimit) {
-    //   { this.snackbar.open("Credit limit should not be less than bill amount", "error") }
-    // }
-    else if (this.serviceselectedList.length <= 0) { this.snackbar.open("Nothing to Save", "error") }
-    //else if (this.serviceselectedList.length > 0) {
-    const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
-      width: "33vw",
-      height: "40vh",
-      data: {
-        message: "Do you want to make Bill?",
-      },
+        this.miscServBillForm.controls["discAmt"].setValue(0
+          //  this.calculateBillService.totalDiscountAmt
+        );
+        this.miscServBillForm.controls["amtPayByPatient"].setValue(0
+          // this.getAmountPayByPatient()
+        );
+        // if (this.miscPatient.totalDiscountAmt > 0) {
+        //   this.formGroup.controls["discAmtCheck"].setValue(true, {
+        //     emitEvent: false,
+        //   });
+        // }
+      }
     });
 
-    MakeDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success") {
-          this.openDepositdialog();
-        }
-      });
-    //}
-  }
-  openGstTaxDialog() {
-    this.matDialog.open(GstTaxDialogComponent, {
-      width: '35vw', height: '70vh', data: {
-        gstdata: this.gstData,
-      },
-    });
+
+
+
+    // dialogref.afterClosed().subscribe(res => {
+    //   this.calcBillData.totalDiscount = res.data;
+    //   this.miscPatient.setCalculateBillItems(this.calcBillData);
+    //   this.discountedAmt = res.data;
+    //   let calcBill0 = this.miscPatient.calculateBill();
+    //   this.miscServBillForm.controls["discAmt"].setValue((res.data) + ".00");
+    //   this.miscServBillForm.controls["billAmt"].setValue((calcBill0.totalBillAmount) + ".00");
+    //   this.miscServBillForm.controls["amtPayByPatient"].setValue(calcBill0.amntPaidBythePatient + ".00");
+
+    // })
   }
   openDepositdialog() {
     this.getDipositedAmountByMaxID()
@@ -1134,44 +1211,126 @@ export class BillDetailComponent implements OnInit {
 
 
           dialogref.afterClosed().subscribe(res => {
-            this.calcBillData.totalDeposit = res.data;
+            this.depodialogTotal = 0;
+            this.depositAvailFlag = true;
+            this.depodialogRows = res.data;
+            res.data.forEach((element: any) => {
+              this.depodialogTotal += element.balanceamount;
+            });
+            // this.paymentFlag = true;
+            this.calcBillData.totalDeposit = this.depodialogTotal;
             this.miscPatient.setCalculateBillItems(this.calcBillData);
             let calcBill0 = this.miscPatient.calculateBill();
-            this.miscServBillForm.controls["dipositAmt"].setValue(res.data + ".00");
-            if (res.data)
+
+            if (res.data) {
+              this.miscServBillForm.controls["dipositAmtcheck"].setValue(true);
+              this.miscServBillForm.controls["dipositAmt"].setValue(this.depodialogTotal + ".00");
               this.snackbar.open("Deposit Amount availed successfully!");
-            this.miscServBillForm.controls["dipositAmtEdit"].enable();
-            // const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-            //   width: "70vw",
-            //   height: "98vh",
-            //   data: {
-            //     billAmount: this.billAmnt,
-            //   },
-            // });
+              this.miscServBillForm.controls["dipositAmtEdit"].enable();
+              if (this.makebillFlag == true && this.depositAvailFlag == true) {
+                this.openPaymentModeDialog();
+              }
+            }
+            else {
+              if (this.makebillFlag == true && this.depositAvailFlag == true) {
+                this.openPaymentModeDialog();
+              }
+            }
           })
         }
-      });
-  }
-  openDiscountdialog() {
-    const MakeDepositDialogref = this.matDialog.open(
-      MakedepositDialogComponent,
-      {
-        width: "33vw",
-        height: "40vh",
-        data: {
-          message: "Do you want to apply Discounts?",
-        },
-      }
-    );
+        else {
+          if (this.makebillFlag == true && this.depositAvailFlag == true) {
+            this.miscServBillForm.controls["dipositAmtcheck"].setValue(false)
+            this.openPaymentModeDialog();
 
-    MakeDepositDialogref.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "Success") {
-          this.discAmtDialog();
+          }
         }
       });
   }
+  openGstTaxDialog() {
+    const gstDialogref = this.matDialog.open(GstTaxDialogComponent, {
+      width: '35vw', height: '57vh', data: {
+        gstdata: this.gstData,
+      },
+    });
+
+    gstDialogref.afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result.data) {
+          this.gstDataResult = result.data;
+        }
+      })
+  }
+  openMakeBilldialog() {
+    this.makebillFlag = true;
+    if (Number(this.miscServBillForm.value.paymentMode) === 3) {
+      let miscFormData = this.miscPatient.getCalculateBillItems()
+
+      if (miscFormData.companyId && Number(this.miscServBillForm.value.paymentMode) === 3) {
+        this.getbilltocompany(miscFormData.companyId.value)
+      }
+
+
+      if (!miscFormData.companyId) { this.snackbar.open("Select the Company", "error") }
+      else if (!miscFormData.corporateId) { this.snackbar.open(" Please select corporate!", "error") }
+      else if (!this.refDoctor.id && this.selfDoc === false) { this.snackbar.open("Please select Referral Doctor", "error") }
+      else if (this.miscServBillForm.value.credLimit <= 0) { this.snackbar.open(" Enter Credit limit", "error") }
+      else if (this.miscServBillForm.value.credLimit < this.miscServBillForm.value.amntPaidBythePatient) { this.snackbar.open("Credit limit should not be less than bill amount", "error") }
+
+
+
+      else {
+        const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+          width: "33vw",
+          height: "40vh",
+          data: {
+            message: "Do you want to make Bill?",
+          },
+        });
+
+        MakeDepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result == "Success") {
+              // this.openDepositdialog();
+              this.makeBill();
+            }
+          });
+        //}
+      }
+    }
+    else {
+      if (!this.refDoctor.id && this.selfDoc === false) { this.snackbar.open("Please select Referral Doctor", "error") }
+      else {
+        const MakeDepositDialogref = this.matDialog.open(MakeBillDialogComponent, {
+          width: "33vw",
+          height: "40vh",
+          data: {
+            message: "Do you want to make Bill?",
+          },
+        });
+
+        MakeDepositDialogref.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result) => {
+            if (result == "Success") {
+              // this.openDepositdialog();
+              this.makeBill();
+            }
+          });
+        //}
+      }
+      // }
+
+    }
+
+
+
+
+
+  }
+  //NA
   openGSTDialog() {
     this.matDialog.open(GstComponent, {
       width: "24vw",
@@ -1183,6 +1342,67 @@ export class BillDetailComponent implements OnInit {
     });
   }
 
+  openPaymentModeDialog() {
+    let calcBill0 = this.miscPatient.calculateBill();
+    this.http
+      .post(ApiConstants.postMiscBill, this.postBillObj)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData) => {
+          if (resultData[0].successFlag === true) {
+            const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+              width: "70vw",
+              height: "98vh",
+              data: {
+                toPaidAmount: calcBill0.amntPaidBythePatient,
+                name: "MiscBilling"
+              },
+            });
+            RefundDialog.afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result.data == "MakeBill") {
+                  // this.openDepositdialog();
+                  this.generatedBillNo = resultData[0].billId;
+                  this.enablePrint = true;
+                  this.isEnableBillBtn = false;
+                  const successInfo = this.messageDialogService.info(
+                    `Bill saved with the Bill No ${resultData[0].billNo} and Amount ${this.billAmnt}`
+                  );
+                  successInfo
+                    .afterClosed()
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((result: any) => {
+                      const printDialog = this.messageDialogService.confirm(
+                        "",
+                        `Do you want to print bill?`
+                      );
+                      printDialog
+                        .afterClosed()
+                        .pipe(takeUntil(this._destroying$))
+                        .subscribe((result: any) => {
+                          if ("type" in result) {
+                            if (result.type == "yes") {
+                              this.print();
+                            } else {
+                            }
+                          }
+                        });
+                    });
+                }
+              });
+            // this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
+
+          }
+          else if (resultData[0].successFlag === false) {
+            this.snackbar.open(resultData[0].returnMessage, "error")
+          }
+        },
+        (error) => {
+          this.snackbar.open(error, "error")
+        }
+      );
+  }
   //Calculate TA
   calculateTotalAmount() {
     this.TotalAmount = 0;
@@ -1200,10 +1420,69 @@ export class BillDetailComponent implements OnInit {
 
   //Make Bill Obj
   addNewItem(): any {
+
+    //Payment Cash Popup
     this.miscCompanyId = this.miscPatient.getCompany();
     let miscPatient = this.miscPatient.getFormLsit();
-    this.setpanno();
+    let miscFormData = this.miscPatient.getMiscBillFormData()
+    //this.setpanno();
+    let calcBill0 = this.miscPatient.calculateBill();
+    if (calcBill0.amntPaidBythePatient > 0) {
+      this.CreditAmtforSrvTax = calcBill0.amntPaidBythePatient
+      let srvTax = 10.3;
+      this.txtServiceTaxAmt = ((this.CreditAmtforSrvTax) * srvTax) / 100
+    }
 
+    let depositData: any = [];
+    if (this.depodialogRows) {
+      this.depodialogRows.forEach((e: any) => {
+        depositData.push({
+          id: e.id,
+          amount: e.amount,
+          balanceamount: e.balanceamount
+        })
+      })
+    }
+    let miscellaneousData: any = [];
+    this.serviceselectedList.forEach((e: any) => {
+      miscellaneousData.push({
+        quantity: Number(e.Qty),
+        serviceid: e.serviceid,
+        amount: e.amount,
+        discountAmount: 0,
+        serviceName: e.serviceName,
+        itemModify: e.itemModify,
+        discounttype: 0,
+        disReasonId: 0,
+        docid: e.docid,
+        remarksId: e.remarksId,
+        itemId: e.itemId,
+        mPrice: this.marketPrice,
+        empowerApproverCode: '',
+        couponCode: ""
+      })
+    })
+    if (this.miscServBillForm.value.credLimit <= 0) {
+      this.miscServBillForm.value.credLimit = 0
+    }
+    if (this.miscServBillForm.value.dipositAmtEdit <= 0) {
+      this.miscServBillForm.value.dipositAmtEdit = 0;
+    }
+    if (calcBill0.amntPaidBythePatient <= 0) {
+      calcBill0.amntPaidBythePatient = 0;
+    }
+    if (!calcBill0.selectedAuthorise) {
+      calcBill0.selectedAuthorise = 0
+    }
+    if (this.miscServBillForm.value.interactionDetails <= 0) {
+      this.miscServBillForm.value.interactionDetails = 0
+    }
+    if (!miscPatient.narration) {
+      miscPatient.narration = ""
+    }
+    if (!miscPatient.b2bInvoiceType) {
+      miscPatient.b2bInvoiceType = "B2C"
+    }
     this.postBillObj.dtSaveOBill_P =
     {
       registrationno: miscPatient.registrationno,
@@ -1212,53 +1491,51 @@ export class BillDetailComponent implements OnInit {
       depositAmount: this.miscServBillForm.value.dipositAmtEdit,
       discountAmount: this.discountedAmt,
       stationid: this.stationId, //10475, // Number(this.cookie.get("StationId")),
-      billType: 1, //cash
+      billType: this.miscServBillForm.value.paymentMode, //cash
       categoryId: 0,
-      companyId: this.miscCompanyId,
+      companyId: miscFormData.companyId.value,
       operatorId: this.userID,// 9923, //Number(this.cookie.get("UserId"))
-      collectedamount: 400,
-      balance: 100,
+      collectedamount: 400,//from payment cash net amount
+      balance: 100,//calcBill0.amntPaidBythePatient,
       hsplocationid: this.location, //Number(this.cookie.get("HSPLocationId"))
-      refdoctorid: this.miscServBillForm.value.referralDoctor.value,
-      authorisedid: 0,
-      serviceTax: 0,
-      creditLimit: this.miscServBillForm.value.credLimit.value,
+      refdoctorid: this.refDoctor.id,
+      authorisedid: calcBill0.selectedAuthorise,
+      serviceTax: this.txtServiceTaxAmt,
+      creditLimit: this.miscServBillForm.value.credLimit,
       tpaId: 0,
       paidbyTPA: 0,
-      interactionID: this.miscServBillForm.value.interactionDetails.value,
-      corporateid: miscPatient.corporateid,
-      corporateName: miscPatient.corporateName,
+      interactionID: this.miscServBillForm.value.interactionDetails,
+      corporateid: miscFormData.corporateId.value,
+      corporateName: miscFormData.corporateId.title,
       channelId: 0,
       billToCompany: this.billToCompId,
       invoiceType: miscPatient.b2bInvoiceType,
       narration: miscPatient.narration
     };
-    this.postBillObj.dtMiscellaneous_list = [{
-      quantity: 0,
-      serviceid: 99,
-      amount: 100,
-      discountAmount: 0,
-      serviceName: this.miscServBillForm.value.serviceType.value,
-      itemModify: this.miscServBillForm.value.item.value,
-      discounttype: 0,
-      disReasonId: 0,
-      docid: 20362,
-      remarksId: 4,
-      itemId: 0,
-      mPrice: 50,
-      empowerApproverCode: '',
-      couponCode: ""
-    }];
-    this.postBillObj.dtGST_Parameter_P = this.dtGST_Parameter_P;
+    //Discount values
+    this.postBillObj.dtMiscellaneous_list = miscellaneousData;
+    // this.postBillObj.dtMiscellaneous_list = [{
+    //   quantity: this.miscServBillForm.value.qty,
+    //   serviceid: this.miscServBillForm.value.serviceType.value,
+    //   amount: 100,
+    //   discountAmount: 0,
+    //   serviceName: this.miscServBillForm.value.serviceType.title,
+    //   itemModify: this.miscServBillForm.value.item.title,
+    //   discounttype: 0,
+    //   disReasonId: 0,
+    //   docid: 20362,
+    //   remarksId: 4,
+    //   itemId: this.miscServBillForm.value.item.value,
+    //   mPrice: 50,
+    //   empowerApproverCode: '',
+    //   couponCode: ""
+    // }];
     this.postBillObj.ds_paymode = {
       tab_paymentList: [
         {
           slNo: 1,
-
           modeOfPayment: "Cash",
-
           amount: 400,
-
           flag: 1,
         },
       ],
@@ -1270,47 +1547,67 @@ export class BillDetailComponent implements OnInit {
       tab_Online: [],
       tab_UPI: [],
     };
-    this.postBillObj.dtDeposit_P = {};
+    this.postBillObj.dtGST_Parameter_P = {
+      gsT_value: this.gstDataResult.gst,
+      gsT_percent: 0,
+      cgsT_Value: this.gstDataResult.cgsT_Value,
+      cgsT_Percent: this.gstDataResult.cgst,
+
+      sgsT_value: this.gstDataResult.sgsT_Value,
+      sgsT_percent: this.gstDataResult.sgst,
+
+      utgsT_value: this.gstDataResult.utgsT_Value,
+      utgsT_percent: this.gstDataResult.utgst,
+
+      igsT_Value: this.gstDataResult.igst,
+      igsT_percent: this.gstDataResult.igsT_Value,
+
+      cesS_value: this.gstDataResult.cesS_Value,
+      cesS_percent: this.gstDataResult.cess,
+
+      taxratE1_Value: this.gstDataResult.taxratE1_Value,
+      taxratE1_Percent: this.gstDataResult.taxratE1,
+
+      taxratE2_Value: this.gstDataResult.taxratE2_Value,
+      taxratE2_Percent: this.gstDataResult.taxratE2,
+
+      taxratE3_Value: this.gstDataResult.taxratE3_Value,
+      taxratE3_Percent: this.gstDataResult.taxratE3,
+
+      taxratE4_Value: this.gstDataResult.taxratE4_Value,
+      taxratE4_Percent: this.gstDataResult.taxratE4,
+
+      taxratE5_Value: this.gstDataResult.taxratE5_Value,
+      taxratE5_Percent: this.gstDataResult.taxratE5,
+      totaltaX_RATE: this.gstDataResult.totaltaX_RATE,
+      totaltaX_RATE_VALUE: this.gstDataResult.totaltaX_Value,
+      saccode: this.gstDataResult.saccode,
+      taxgrpid: this.gstDataResult.taxgrpid
+    }
+    this.postBillObj.dtDeposit_P = depositData;
     this.postBillObj.dtSaveDeposit_P = {};
     this.postBillObj.htParameter_P = {};
-    this.postBillObj.dtGST_Parameter_P;
-    this.postBillObj.operatorId = 9923;
+    this.postBillObj.operatorId = this.userID;
     this.postBillObj.locationId = this.location;
+    if (this.totalDeposit > 0) {
+      this.openDepositdialog();
+    }
+    else {
+      this.openPaymentModeDialog();
+    }
   }
   makeBill() {
-
     //Set Gst Values
+    if (this.totaltaX_Value) {
+      let TotalTaxGST = this.totaltaX_Value;
+      let txtgsttaxamt = ((this.billAmnt * TotalTaxGST) / 100)
+      let txttotalamount = this.billAmnt;
+      let billamount = (txttotalamount + txtgsttaxamt);
+      this.miscServBillForm.controls["gstTax"].setValue(txtgsttaxamt);
+    }
+    // if (this.miscServBillForm.value.paymentMode === 1) {
     this.addNewItem();
-
-    let TotalTaxGST = this.totaltaX_Value;
-    let txtgsttaxamt = ((this.billAmnt * TotalTaxGST) / 100)
-    let txttotalamount = this.billAmnt;
-    let billamount = (txttotalamount + txtgsttaxamt);
-    this.miscServBillForm.value.controls["gstTax"].setValue(txtgsttaxamt);
-    //let depositAmount=txtavaileddeposit
-    //  let CreditAmtforSrvTax = CreditAmtforSrvTax + this.billAmnt
-    //  let txtServiceTaxAmt = ((CreditAmtforSrvTax) * srvTax) / 100
-    //  let serviceTax = Convert.ToDecimal(txtServiceTaxAmt.Text)
-
-
-
-
-    this.http
-      .post(ApiConstants.postMiscBill, this.postBillObj)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          if (resultData[0].successFlag === true) {
-            this.snackbar.open(resultData[0].returnMessage + " " + resultData[0].billNo, "success")
-            this.generatedBillNo = resultData[0].billId;
-            this.enablePrint = true;
-          }
-        },
-        (error) => {
-          this.snackbar.open(error, "error")
-        }
-      );
-
+    // }
   }
   //Print Report
   print() {
@@ -1464,7 +1761,9 @@ export class MiscCredDetail implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private Miscservice: MiscService
+    private Miscservice: MiscService,
+
+
   ) { }
 
   ngOnInit(): void {

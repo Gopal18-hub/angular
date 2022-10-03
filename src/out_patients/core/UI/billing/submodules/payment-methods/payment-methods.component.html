@@ -110,7 +110,33 @@
             <mat-tab label="Credit Card" *ngIf="config.paymentmethod.credit">
                 <div class="ml-10">
                     <mat-label class="max-health-primary-color font-base font-medium">Credit Card Details</mat-label>
-                    <div class="flex w-3/4 mt-3">
+                    <div class="flex w-3/4 mt-1">
+                        <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">POS IMEI</mat-label>
+                        </div>
+                        <div class="w-5/9 ml-3">
+                            <maxhealth-question
+                            [question]="questions[60]"
+                            [form]="refundform"
+                            [questions]="questions[60]"
+                            [index]="15"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex w-3/4 mt-1">
+                        <div class="w-2/5">
+                            <mat-label class="max-health-primary-color  font-medium">Transaction ID</mat-label>
+                        </div>
+                        <div class="w-5/9 ml-3">
+                            <maxhealth-question
+                            [question]="questions[61]"
+                            [form]="refundform"
+                            [questions]="questions[61]"
+                            [index]="16"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex w-3/4 mt-1">
                         <div class="w-2/5">
                             <mat-label class="max-health-primary-color  font-medium">Amount</mat-label>
                         </div>
@@ -214,7 +240,7 @@
                             [index]="14"
                             ></maxhealth-question>
                         </div>
-                    </div>
+                    </div>                   
                
                     <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
                         <div class="">

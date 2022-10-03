@@ -228,4 +228,18 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/checkitemmodality/${procedureid}`;
   export const checkServiceTax = (testid: number, serviceid: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkservicetax/${testid}/${serviceid}`;
+  export const checkPatientSexoporder = (
+    testId: string,
+    gender: string,
+    serviceId: number,
+    type: string
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkPatientSex/${testId}/${gender}/${serviceId}/${type}`;
+
+  export const checkoutsourcetest = (companyId: string) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkoutsourcetest/${companyId}`;
+  export const fetchoporderrequest = (maxid: string, locationid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/fetchoporderrequest/${maxid}/${locationid}`;
+
+  export const getinteraction = `${environment.CommonApiUrl}api/lookup/getinteraction`;
 }

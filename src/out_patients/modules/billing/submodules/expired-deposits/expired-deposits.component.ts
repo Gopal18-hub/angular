@@ -183,29 +183,12 @@ export class ExpiredDepositsComponent implements OnInit {
       disabledSort: true,
     },
   };
-  // data: any[] = [
-  //   {
-  //     receiptno: "BLDP24512",
-  //     maxid: "BLKH.101",
-  //     datetime: "05/11/2022",
-  //     deposit: "06/11/2022",
-  //     usedop: "0",
-  //     usedip: "0",
-  //     refund: "0",
-  //     balance: "0",
-  //     checkdd: "0.00",
-  //     executeddate: "05/11/2022",
-  //     executedof: "NA",
-  //     episode: "SA12",
-  //   },
-  // ];
+
   searchbtn: boolean = true;
   clearbtn: boolean = true;
   showtable!: boolean;
   iacode: any;
   registrationno: any;
-  // today: any;
-  // fromdate: any;
   apiProcessing: boolean = false;
   pname: any;
   age: any;
@@ -220,6 +203,7 @@ export class ExpiredDepositsComponent implements OnInit {
   OpenCheckdddialog: boolean = false;
   messageDialogService: any;
   sucessflag = false;
+  selectedrowid = 0;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -308,7 +292,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.fromdate.setDate(this.fromdate.getDate() - 365);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[2].maximum =
       this.ExpiredDepositform.controls["todate"].value;
@@ -374,6 +358,36 @@ export class ExpiredDepositsComponent implements OnInit {
               this.ExpiredDepositform.controls["maxid"].value.split(".")[0]),
             (this.registrationno =
               this.ExpiredDepositform.controls["maxid"].value.split(".")[1]),
+            "",
+            ""
+          )
+        )
+
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((resultdata: any) => {
+          console.log(resultdata);
+          if (resultdata.length > 0) {
+            //this.sucessflag = false;
+            console.log("data");
+            this.ExpiredDepositformlist = resultdata;
+            if (this.sucessflag == true) {
+              this.tablerow.selection.clear();
+              this.ExpiredDepositformlist.forEach((e: any) => {
+                console.log(e);
+                if (this.sucessflag == true && e.id == this.selectedrowid) {
+                  e.isExpdeop = "isExpdeop";
+                }
+              });
+              this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
+            }
+          }
+        });
+    } else if (registrationno == 0) {
+      this.http
+        .get(
+          ApiConstants.getPatientExpiredDepositDetails(
+            (this.iacode = ""),
+            (this.registrationno = 0),
             this.datepipe.transform(
               this.ExpiredDepositform.value.fromdate,
               "YYYY-MM-dd"
@@ -395,7 +409,8 @@ export class ExpiredDepositsComponent implements OnInit {
             if (this.sucessflag == true) {
               this.tablerow.selection.clear();
               this.ExpiredDepositformlist.forEach((e: any) => {
-                if (this.sucessflag == true) {
+                console.log(e);
+                if (this.sucessflag == true && e.id == this.selectedrowid) {
                   e.isExpdeop = "isExpdeop";
                 }
               });
@@ -463,39 +478,40 @@ export class ExpiredDepositsComponent implements OnInit {
           width: "38vw",
           height: "35vh",
         });
-        dialogRef.afterClosed().subscribe((res) => {
-          console.log(res);
-          if (res == "yes") {
-            console.log("this.OpenCheckdddialog");
-            let dialogRef = this.matDialog.open(
-              ExpdepositCheckddDialogComponent,
-              {
-                width: "30vw",
-                height: "25vh",
-                data: {
-                  id: this.tablerow.selection.selected[0].id,
-                  episode: this.tablerow.selection.selected[0].episode,
-                },
-              }
-            );
-            dialogRef.afterClosed().subscribe((res) => {
-              this.sucessflag = false;
-              console.log(res);
-              this.response = res;
-              console.log(this.response);
-              console.log(this.response.message);
+        (this.selectedrowid = this.tablerow.selection.selected[0].id),
+          dialogRef.afterClosed().subscribe((res) => {
+            console.log(res);
+            if (res == "yes") {
+              console.log("this.OpenCheckdddialog");
+              let dialogRef = this.matDialog.open(
+                ExpdepositCheckddDialogComponent,
+                {
+                  width: "30vw",
+                  height: "25vh",
+                  data: {
+                    id: this.tablerow.selection.selected[0].id,
+                    episode: this.tablerow.selection.selected[0].episode,
+                  },
+                }
+              );
+              dialogRef.afterClosed().subscribe((res) => {
+                this.sucessflag = false;
+                console.log(res);
+                this.response = res;
+                console.log(this.response);
+                console.log(this.response.message);
 
-              if (this.response.message == "Records Updated!") {
-                this.dialogService.success("Saved Sucessfully!");
-                this.sucessflag = true;
-                this.expireddepositsearch();
+                if (this.response.message == "Records Updated!") {
+                  this.dialogService.success("Saved Sucessfully!");
+                  this.sucessflag = true;
+                  this.expireddepositsearch();
 
-                // let getExpiredDepositReportModel: any = [];
-                //this.response.isExpdeop == 1;
-              }
-            });
-          }
-        });
+                  // let getExpiredDepositReportModel: any = [];
+                  //this.response.isExpdeop == 1;
+                }
+              });
+            }
+          });
       }
     });
   }
@@ -587,7 +603,6 @@ export class ExpiredDepositsComponent implements OnInit {
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid MaxID";
-            // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
           } else if (resultData.length == 0) {
@@ -595,7 +610,6 @@ export class ExpiredDepositsComponent implements OnInit {
               incorrect: true,
             });
             this.questions[0].customErrorMessage = "Invalid MaxID";
-            // this.msgdialog.info("Registration number does not exist");
             this.apiProcessing = false;
             this.showtable = true;
           } else {
@@ -650,23 +664,18 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 20);
+    this.fromdate.setDate(this.fromdate.getDate() - 365);
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[0].readonly = false;
     this.ExpiredDepositform.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
     this.patientDetails = [];
-    //this.getExpiredDepositReportModel = [];
     this.ExpiredDepositformlist = [];
     this.searchbtn = true;
     this.patienthistorylist = [];
-    // this.apiProcessing = false;
     this.showtable = true;
     this.clearbtn = true;
-    // this.router.navigate(["expired-deposits"]).then(() => {
-    //   window.location.reload;
-    // });
   }
 
   activeClick(event: any) {

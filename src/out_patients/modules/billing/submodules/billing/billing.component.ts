@@ -29,6 +29,10 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { ShowPlanDetilsComponent } from "./prompts/show-plan-detils/show-plan-detils.component";
 import { PatientService } from "@core/services/patient.service";
 import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-appointment.component";
+import { distinctUntilChanged } from "rxjs/operators";
+import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
+import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -100,7 +104,7 @@ export class BillingComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  patientDetails!: Registrationdetails;
+  patientDetails!: any;
 
   apiProcessing: boolean = false;
 
@@ -113,7 +117,7 @@ export class BillingComponent implements OnInit {
 
   narrationAllowedLocations = ["67", "69"];
 
-  companyData = [];
+  companyData!: GetCompanyDataInterface[];
 
   orderId: number = 0;
 
@@ -130,7 +134,8 @@ export class BillingComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     public messageDialogService: MessageDialogService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -142,6 +147,7 @@ export class BillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
@@ -156,8 +162,10 @@ export class BillingComponent implements OnInit {
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
         this.links[0].disabled = true;
+        this.links[2].disabled = true;
       } else {
         this.links[0].disabled = false;
+        this.links[2].disabled = false;
       }
     });
     this.billingService.disableBillTabChange.subscribe((res: boolean) => {
@@ -165,6 +173,13 @@ export class BillingComponent implements OnInit {
         this.links[1].disabled = true;
       } else {
         this.links[1].disabled = false;
+      }
+    });
+    this.billingService.companyChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.formGroup.controls["company"].setValue(res.company, {
+          emitEvent: false,
+        });
       }
     });
   }
@@ -202,9 +217,28 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.formGroup.controls["company"].valueChanges.subscribe((res: any) => {
-      this.billingService.setCompnay(res.value);
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
+    this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
+      if (res) {
+        this.billingService.makeBillPayload.invoiceType = "B2B";
+      } else {
+        this.billingService.makeBillPayload.invoiceType = "B2C";
+      }
     });
+    this.formGroup.controls["company"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          console.log(res);
+          this.billingService.setCompnay(
+            res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
+      });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
@@ -397,6 +431,14 @@ export class BillingComponent implements OnInit {
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
             ) {
+              if (
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                  .pPagerNumber == "ews"
+              ) {
+                this.formGroup.controls["company"].disable();
+                this.formGroup.controls["corporate"].disable();
+                this.links[2].disabled = true;
+              }
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
               );
@@ -480,6 +522,7 @@ export class BillingComponent implements OnInit {
       this.inPatientCheck(resultData.dtPatientPastDetails);
     }
     this.getforonlinebilldetails(iacode, regNumber);
+    this.calculateBillService.depositDetails(iacode, regNumber);
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
@@ -514,7 +557,7 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
-    this.questions[2].readonly = true;
+    //this.questions[2].readonly = true;
   }
 
   onageCalculator(ageDOB = "") {
@@ -527,6 +570,9 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
+      if (diffYears >= 60) {
+        this.calculateBillService.seniorCitizen = true;
+      }
       if (dobRef.date() == today.date() && dobRef.month() == today.month()) {
         this.billingService.todayPatientBirthday = true;
       }
@@ -647,7 +693,7 @@ export class BillingComponent implements OnInit {
       });
   }
 
-  payDueCheck(dtPatientPastDetails: any) {
+  async payDueCheck(dtPatientPastDetails: any) {
     if (
       dtPatientPastDetails[4] &&
       dtPatientPastDetails[4].id > 0 &&
@@ -660,6 +706,19 @@ export class BillingComponent implements OnInit {
           maxId: this.formGroup.value.maxid,
         },
       });
+      const resAction = await dialogRef.afterClosed().toPromise();
+      if (resAction) {
+        if ("paynow" in resAction && resAction.paynow) {
+          this.router.navigate(["/out-patient-billing/details"], {
+            queryParams: { maxID: this.formGroup.value.maxid },
+          });
+          return;
+        }
+        if ("skipReason" in resAction && resAction.skipReason) {
+        }
+      }
+
+      this.planDetailsCheck(dtPatientPastDetails);
     } else {
       this.planDetailsCheck(dtPatientPastDetails);
     }
@@ -693,11 +752,15 @@ export class BillingComponent implements OnInit {
         .subscribe((result) => {
           if (result && result.selected && result.selected.length > 0) {
             const selectedPlan = result.selected[0];
+            this.formGroup.controls["company"].disable();
+            this.formGroup.controls["corporate"].disable();
+            this.links[2].disabled = true;
             this.billingService.setHealthPlan(selectedPlan);
             this.messageDialogService.info(
               "You have selected " + selectedPlan.planName
             );
           }
+          this.checkServicesLogics();
         });
     } else if (
       dtPatientPastDetails[7] &&
@@ -746,9 +809,87 @@ export class BillingComponent implements OnInit {
                 }
               );
             }
+            this.checkServicesLogics();
           });
       }
+    } else {
+      this.checkServicesLogics();
     }
+  }
+
+  async checkServicesLogics() {
+    if (this.billingService.unbilledInvestigations) {
+    } else {
+      let checkinvestigations = await this.http
+        .get(
+          BillingApiConstants.getinvestigationfromphysician(
+            this.billingService.activeMaxId.iacode,
+            this.billingService.activeMaxId.regNumber,
+            this.cookie.get("HSPLocationId")
+          )
+        )
+        .toPromise();
+      if (checkinvestigations.length > 0) {
+        this.investigationCheck(checkinvestigations);
+        return;
+      }
+    }
+  }
+
+  investigationCheck(checkinvestigations: any) {
+    let dialogRef = this.matDialog.open(InvestigationWarningComponent, {
+      width: "30vw",
+      data: {},
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.showlist) {
+        let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
+          width: "60vw",
+          height: "50vh",
+          data: {
+            investigations: checkinvestigations,
+          },
+        });
+        uDialogRef.afterClosed().subscribe(async (ures: any) => {
+          if (ures.process == 1) {
+            if (ures.data.length > 0) {
+              let referalDoctor: any = null;
+              for (let i = 0; i < ures.data.length; i++) {
+                const item = ures.data[i];
+                await this.billingService.processInvestigationAdd(
+                  1,
+                  item.serviceId,
+                  {
+                    title: item.testName,
+                    value: item.testID,
+                    originalTitle: item.testName,
+                    docRequired: item.docRequired ? true : false,
+                    patient_Instructions: item.patient_Instructions,
+                    serviceid: item.serviceId,
+                    doctorid: item.doctorid,
+                    popuptext: item.popuptext,
+                    precaution: item.precaution,
+                  }
+                );
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.doctorid,
+                    name: item.docName,
+                    specialisation: "",
+                  };
+              }
+              if (referalDoctor) {
+                this.billingService.setReferralDoctor(referalDoctor);
+              }
+              this.billingService.servicesTabStatus.next({ goToTab: 1 });
+            }
+            this.billingService.unbilledInvestigations = true;
+          }
+        });
+      } else {
+        this.billingService.unbilledInvestigations = true;
+      }
+    });
   }
 
   inPatientCheck(dtPatientPastDetails: any) {
@@ -804,17 +945,12 @@ export class BillingComponent implements OnInit {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.billingService.addToProcedure({
-              sno: 1,
-              procedures: "Registration Charge",
-              qty: 1,
-              specialisation: "30632",
-              doctorName: "24",
-              price: 0,
-              unitPrice: 0,
-              itemid: "",
-              priorityId: "",
-              serviceId: "",
+            this.billingService.processProcedureAdd(1, "24", {
+              serviceid: 24,
+              value: 30632,
+              originalTitle: "Registration Charges",
+              docRequired: false,
+              popuptext: "",
             });
             this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
@@ -874,6 +1010,7 @@ export class BillingComponent implements OnInit {
         this.matDialog.open(DMSComponent, {
           width: "100vw",
           maxWidth: "90vw",
+          maxHeight: "80vh",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,
@@ -924,6 +1061,11 @@ export class BillingComponent implements OnInit {
       relativeTo: this.route,
     });
     this.questions[0].elementRef.focus();
+    this.formGroup.controls["company"].enable();
+    this.formGroup.controls["corporate"].enable();
+    this.links[0].disabled = false;
+    this.links[1].disabled = false;
+    this.links[2].disabled = false;
   }
 
   getAllCompany() {
@@ -934,11 +1076,15 @@ export class BillingComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
+      .subscribe((data: any[]) => {
         this.companyData = data;
+        this.formGroup.controls["corporate"].disable();
+        this.billingService.setCompanyData(data);
+        data.unshift({ name: "Select", id: -1 });
         this.questions[3].options = data.map((a: any) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: a.id, company: a };
         });
+        this.questions[3] = { ...this.questions[3] };
       });
   }
 

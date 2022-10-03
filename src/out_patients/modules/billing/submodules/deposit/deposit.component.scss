@@ -66,10 +66,8 @@
 }
 .deposittable {
     ::ng-deep .max-table-wrapper {
-        width: 80% !important;
-        //overflow-x: scroll !important;
+        width: 72% !important;
         border: 1px solid #707070 !important;
-        //border-radius: 0.75rem;
         tbody tr td:nth-child(5),
         tbody tr td:nth-child(7),
         tbody tr td:nth-child(8),
@@ -79,9 +77,23 @@
         tbody tr td:nth-child(12)
         {
             text-align: right !important;
-            
-            padding-right: 20px !important
         }
+        tbody tr td:nth-child(5),
+        tbody tr td:nth-child(7),
+        tbody tr td:nth-child(8){
+            padding-right: 2rem !important;
+        }
+
+        tbody tr td:nth-child(9){      
+            padding-right: 3rem !important;
+        }
+        tbody tr td:nth-child(10){
+            padding-right: 2.3rem !important;
+        }
+        tbody tr td:nth-child(11),
+        tbody tr td:nth-child(12){
+            padding-right: 1rem !important;
+        }      
     }
     ::ng-deep th.mat-header-cell:first-of-type {
         padding-left: 30px !important;
@@ -109,7 +121,10 @@
  
   ::ng-deep .child-element-detail {
     position: relative;
-    width: 125.6%;
+    width: 139.5%;
+    ::ng-deep .mat-sort-header-content{
+        white-space: nowrap;
+    }
     .max-table-wrapper{
         border-radius: 0px !important; 
         border:none !important;
@@ -127,52 +142,52 @@
       }
 
            .mat-cell.cdk-cell.cdk-column-select.mat-column-select{
-            width: 3.5% !important;
+            width: 3.3% !important;
            }
            .mat-cell.cdk-cell.cdk-column-depositRefund.mat-column-depositRefund{
-            width: 6.5% !important;
+            width: 6.1% !important;
            }
            .mat-cell.cdk-cell.cdk-column-receiptno.mat-column-receiptno{
-            width: 5.5% !important;
+            width: 5.2% !important;
            }
            .mat-cell.cdk-cell.cdk-column-dateTime.mat-column-dateTime{
-            width: 7.3% !important;
+            width: 6.9% !important;
            }
            .mat-cell.cdk-cell.cdk-column-deposit.mat-column-deposit{
-            width: 5.6% !important;
+            width: 6.07% !important;
            }
            .mat-cell.cdk-cell.cdk-column-paymentType.mat-column-paymentType{
-            width: 6.5% !important;
+            width: 6.2% !important;
            }
            .mat-cell.cdk-cell.cdk-column-usedOP.mat-column-usedOP{
-            width: 4.6% !important;
+            width: 5.2% !important;
            }
            .mat-cell.cdk-cell.cdk-column-usedIP.mat-column-usedIP{
-            width: 4.6% !important;
+            width: 5.23% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-refund.mat-column-refund{
-            width: 5.6% !important;
+            width: 5.22% !important;
            }
            .mat-cell.cdk-cell.cdk-column-balance.mat-column-balance{
-            width: 5.5% !important;
+            width: 6% !important;
            }
            .mat-cell.cdk-cell.cdk-column-gst.mat-column-gst{
-            width: 3.4% !important;
+            width: 3.3% !important;
            }
            .mat-cell.cdk-cell.cdk-column-gstValue.mat-column-gstValue{
-            width: 6.4% !important;
+            width: 6% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-advanceType.mat-column-advanceType{
-            width: 6.5% !important;
+            width: 7% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-serviceTypeName.mat-column-serviceTypeName{
-            width: 6.5% !important;
+            width: 8.7% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-operatorName.mat-column-operatorName{
-            width: 9.1% !important;
+            width: 9.5% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-remarks.mat-column-remarks{
-            width: 6.45% !important;
+            width: 7% !important;
            }           
     }
 }

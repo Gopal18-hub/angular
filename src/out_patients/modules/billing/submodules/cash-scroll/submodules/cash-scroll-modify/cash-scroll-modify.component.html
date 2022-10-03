@@ -1,4 +1,4 @@
-<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel">
+<section class="ml-4 shadow-1 mr-4 max-body-wrapper whitePanel cash-scroll-modify">
     <nav mat-tab-nav-bar  class="banner">
         <ul class="list-unstyled flex items-end">
             <li class="ml-3">
@@ -12,7 +12,7 @@
     <!--First row-->
     <div class="flex  w-full text-wrap bg-lightgray border-radius-lg input-padding">
       
-        <div class="flex align-items-center p-2 w-55 font-semi-bold">
+        <div class="flex align-items-center p-2 w-3/5 font-semi-bold">
             <mat-label class="max-health-primary-color"> Employee Name</mat-label>
             <div class="w-28 ml-3 bg-white ">
                 <maxhealth-question
@@ -45,7 +45,7 @@
           
         </div>
       
-        <div class="flex ml-2 p-1 w-37">
+        <div class="flex p-1 w-2/5">
             <div class="flex  align-items-center bg-darkgray border-radius-lg w-full ">
                 <mat-label class="ml-2 max-health-primary-color font-semi-bold"> From Date</mat-label>
                 <div class="w-35 ml-1 bg-white border-radius-md">
@@ -70,10 +70,10 @@
            
      
         </div>
-        <div class=" w-2/10 flex align-items-center  justify-content-end mr-3">
-            <!-- <mat-label class="max-health-primary-color font-semi-bold cursor-pointer" (click)="navigatetomain()">Back to scroll search</mat-label> -->
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()">Clear</button>
-        </div>
+        <!-- <div class=" w-2/10 flex align-items-center  justify-content-end mr-3">
+            <mat-label class="max-health-primary-color font-semi-bold cursor-pointer" (click)="navigatetomain()">Back to scroll search</mat-label>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()" [disabled]="clearbtn">Clear</button>
+        </div> -->
         
     </div>
     
@@ -107,18 +107,34 @@
             moduleId="7"
             featureId="66"
             actionId="1528"
-            >Modify</button>
-            <button mat-raised-button color="primary" class="ml-2 button align-items-center" (click)="print()">Print</button>
+            >
+            Modify
+            </button>
+            <button 
+            mat-raised-button 
+            color="primary" 
+            class="ml-2 button align-items-center" 
+            (click)="print()" 
+            [disabled]="printbtn"
+            accessControl
+            masterModule = "2"
+            moduleId="7"
+            featureId="561"
+            actionId="1488"
+            >
+            Print
+            </button>
+            <button mat-raised-button color="primary" class="ml-2 button align-items-center"(click)="clear()" [disabled]="clearbtn">Clear</button>
         </div>
      
     </div>
     <!-----Third Row-->
     <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="display">
-        <maxhealth-table  [config]="config" [data]="billList" #table></maxhealth-table>
+        <maxhealth-table class="unmodified" [config]="config" [data]="billList" #table></maxhealth-table>
     </div>
 
     <div class="h-1/2 mt-1 scroll-table" [class.makereadonly]="makereadonly" *ngIf="!display">
-        <maxhealth-table  [config]="config1" [data]="billList" #table></maxhealth-table>
+        <maxhealth-table class="modified"  [config]="config1" [data]="billList" #table></maxhealth-table>
     </div>
     <!--Fourth row-->
     <div class="h-20 w-full p-3 mt-2 border-class flex  text-wrap bg-lightgray">
@@ -202,8 +218,8 @@
         </div> -->
         <div class="w-2/10 pt-0-5 scroll-input" >
             <div class="flex input-padding">
-                <mat-label class="ml-1"> Total Cash</mat-label>
-            <div class="w-1/2 ml-16 bg-white">
+                <mat-label class="ml-1"> Total Cash (Rs.)</mat-label>
+            <div class="w-1/2 ml-6 bg-white">
                 <maxhealth-question
                 [question]="questions[6]"
                 [form]="cashscrollmodifyForm"
@@ -306,3 +322,13 @@
 </div>
     </mat-tab-nav-panel>
 </section>
+<div class="flex ml-4 mr-2 justify-between font-xs">
+    <div class="left flex">
+      <span>Last updated by: {{ cookie.get("Name") }} ( id: {{ cookie.get("UserName") }} )</span>
+      <!-- on 07-03-2022 | 10:10:00 -->
+    </div>
+    <div class="right mr-2">
+      Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+      {{ moment().format("LT")}}
+    </div>
+  </div>

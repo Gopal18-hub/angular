@@ -37,7 +37,8 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
-import { throws } from "assert";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -60,7 +61,9 @@ export class DetailsComponent implements OnInit {
     private patientService: PatientService,
     private msgdialog: MessageDialogService,
     private snackbar: MaxHealthSnackBarService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private searchService: SearchService,
+    private lookupService:LookupService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -253,6 +256,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
     this.BServiceForm.controls['paymentMode'].disable();
+    this.questions[5].maximum = this.BServiceForm.controls['toDate'].value;
     this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
@@ -265,6 +269,24 @@ export class DetailsComponent implements OnInit {
       console.log(res);
       this.sendapprovalcheck();
     })
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          this.BServiceForm.controls['maxid'].setValue(lookupdata[0].maxid);
+        }
+        else if(lookupdata.length > 1)
+        {
+          this.BServiceForm.controls['mobileno'].setValue(lookupdata[0].phone);
+        }
+      });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -335,6 +357,18 @@ export class DetailsComponent implements OnInit {
     }
   }
   sendforapproval()
+  {
+    if(Number(this.BServiceForm.controls['refundAmt'].value) >= 10000 && this.BServiceForm.controls['paymentMode'].value == 'Cash')
+    {
+      console.log('Cash amt greater than 10k')
+      this.msgdialog.info("Refund Amount can't be greater than 10000 for Cash Payment. Please Select Other Payment Method");
+    }
+    else
+    {
+      this.sendforapprovalcall();
+    }
+  }
+  sendforapprovalcall()
   {
     var reas = this.refundreasonlist.filter(i => {
       return i.id == this.BServiceForm.controls['reason'].value;

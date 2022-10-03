@@ -5,17 +5,26 @@
     color: #000;
     font-weight: 400;
   }
-  .iom-color {
-    color: #45c0be;
-    font-weight: 500;
-  }
+  // .iom-color {
+  //   color: #45c0be;
+  //   font-weight: 500;
+  // }
   .special-checkbox {
     ::ng-deep .mat-checkbox-label {
       color: #45c0be !important;
       text-decoration: underline;
     }
   }
-
+  .iom-button {
+    padding: 0;
+    min-width: initial;
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
+  }
   .isDisabled {
     pointer-events: none;
     opacity: 0.7;
@@ -101,6 +110,10 @@
   {
     width : 80%
   }
+  ::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick
+{
+  color:#ababab;
+}
   .txt-blue
 {   
  color: #45C0BE;
@@ -114,5 +127,8 @@
   margin-left: 0.3rem;
  }
 }
+::ng-deep .mat-error {
+  display: none;
+} 
   
 }

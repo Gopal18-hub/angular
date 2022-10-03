@@ -25,7 +25,12 @@
       text-decoration: underline;
     }
   }
-
+  .iom-message {
+    position: absolute;
+    top: 24.5%;
+    color: red;
+    left: 45.7%;
+  }
   .special-checkbox {
     ::ng-deep .mat-checkbox-label {
       color: #45c0be !important;
@@ -33,7 +38,7 @@
     }
   }
 
-  .isDisabled {
+  ::ng-deep .isDisabled {
     pointer-events: none;
     opacity: 0.7;
   }

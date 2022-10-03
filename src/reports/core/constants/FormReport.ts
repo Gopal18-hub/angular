@@ -8,13 +8,13 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
           type: "dropdown",
           placeholder: "---Equipment---",
           title: "Equipment Name",
-          defaultValue: "0",
+          // defaultValue: "0",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getequipmentmaster`,
             fields: {
@@ -27,10 +27,12 @@ export namespace FormReport {
         EquipFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -96,6 +98,7 @@ export namespace FormReport {
         },
         RepType: {
           type: "radio",
+          defaultValue: "",
           options: [
             { title: "OP", value: "OP" },
             { title: "PreAdmission", value: "PreAdmission" },
@@ -145,13 +148,13 @@ export namespace FormReport {
       // todate: moment("dd/MM/YYYY"),
       properties: {
         FromDate: {
-          type: "hidden",
-          defaultValue: moment().format("DD/MM/YYYY"),
-          // format: moment("dd/MM/YYYY"),
-        },
-        todate: {
           type: "date",
           title: "Date",
+        },
+        todate: {
+          type: "hidden",
+          defaultValue: moment().format("MM/DD/YYYY"),
+          // format: moment("dd/MM/YYYY"),
         },
         locationID: {
           type: "dropdown",
@@ -167,11 +170,22 @@ export namespace FormReport {
             },
           },
         },
+        locationName: {
+          type: "hidden",
+          defaultValue: MaxHealthStorage.getCookie("Location"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "name",
+            },
+          },
+        },
       },
     },
     form: {
       layout: {
-        LocationName: "w-screen",
+        locationID: "w-screen",
       },
       actionItems: [
         {
@@ -261,7 +275,8 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/MM/dd",
+      //format: "YYYY/MM/dd",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         DocID: {
           type: "dropdown",
@@ -291,10 +306,12 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -355,10 +372,12 @@ export namespace FormReport {
         dtpStartDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -406,10 +425,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
       },
     },
@@ -662,10 +683,12 @@ export namespace FormReport {
         dtpfromdate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtptodate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         // location: {
         //   type: "dropdown",
@@ -727,10 +750,12 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         cmbLocation: {
           type: "dropdown",
@@ -802,10 +827,12 @@ export namespace FormReport {
         dtpfrom: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpto: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         locationid: {
           type: "dropdown",
@@ -863,10 +890,12 @@ export namespace FormReport {
         dtpFromDate: {
           type: "date",
           title: "FromDate",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         dtpToDate: {
           type: "date",
           title: "ToDate",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         // location: {
         //   type: "dropdown",
@@ -939,10 +968,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1001,10 +1032,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1063,10 +1096,12 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         locationID: {
@@ -1134,10 +1169,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         SelectedLocationsId: {
@@ -1206,10 +1243,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
         },
 
         SelectedLocationsId: {

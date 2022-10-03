@@ -6,6 +6,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { MatDialog } from "@angular/material/dialog";
 import {
   filter,
   distinctUntilChanged,
@@ -14,7 +15,12 @@ import {
   switchMap,
   of,
   finalize,
+  takeUntil,
+  Subject,
 } from "rxjs";
+import { ServicetaxPopupComponent } from "./servicetax-popup/servicetax-popup.component";
+import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -31,11 +37,19 @@ export class OrderProcedureOtherComponent implements OnInit {
         placeholder: "--Select--",
         required: false,
       },
+      procedure: {
+        type: "autocomplete",
+        placeholder: "--Select--",
+        required: true,
+      },
     },
   };
   formGroup!: FormGroup;
   questions: any;
   flag = 0;
+  reqItemDetail: string = "";
+  locationid = Number(this.cookie.get("HSPLocationId"));
+  private readonly _destroying$ = new Subject<void>();
 
   @ViewChild("table") tableRows: any;
   data: any = [];
@@ -70,14 +84,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       },
       qty: {
         title: "Qty",
-        type: "dropdown",
-        options: [
-          { title: 1, value: 1 },
-          { title: 2, value: 2 },
-          { title: 3, value: 3 },
-          { title: 4, value: 4 },
-          { title: 5, value: 5 },
-        ],
+        type: "number",
         style: {
           width: "70px",
         },
@@ -111,10 +118,13 @@ export class OrderProcedureOtherComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    public dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    console.log(this.formGroup);
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -154,6 +164,47 @@ export class OrderProcedureOtherComponent implements OnInit {
         );
       }
     });
+    this.formGroup.controls["procedure"].valueChanges
+      .pipe(
+        filter((res) => {
+          return res !== null && res.length >= 3;
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {}),
+        switchMap((value) => {
+          if (
+            this.formGroup.value.otherService &&
+            this.formGroup.value.otherService.value
+          ) {
+            return of([]);
+          } else {
+            return this.http
+              .get(
+                BillingApiConstants.getotherservicebillingSearch(
+                  this.locationid,
+                  // Number(this.cookie.get("HSPLocationId")),
+                  value
+                )
+              )
+              .pipe(finalize(() => {}));
+          }
+        })
+      )
+      .subscribe((data: any) => {
+        if (data.length > 0) {
+          this.questions[1].options = data.map((r: any) => {
+            return {
+              title: r.itemNameWithService || r.itemName,
+              value: r.itemID,
+              originalTitle: r.itemName,
+              serviceid: r.serviceID,
+              docRequired: r.proceduredoctor,
+            };
+          });
+          this.questions[1] = { ...this.questions[1] };
+        }
+      });
   }
 
   getSpecialization() {
@@ -173,7 +224,9 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
+          this.locationid
+          // 67
+          // Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -201,9 +254,48 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.formGroup.controls["otherService"].valueChanges.subscribe(
       (val: any) => {
         if (val && val.value) {
+          this.getProcedures(val.value, val.isBundle);
         }
       }
     );
+  }
+
+  getProcedures(serviceId: number, isBundle = 0) {
+    this.http
+      .get(
+        BillingApiConstants.getotherservicebilling(
+          this.locationid,
+          // 67,
+          // Number(this.cookie.get("HSPLocationId")),
+          serviceId,
+          isBundle
+        )
+      )
+      .subscribe(
+        (res) => {
+          this.formGroup.controls["procedure"].reset();
+          if (Array.isArray(res)) {
+            this.questions[1].options = res.map((r: any) => {
+              return {
+                title: r.itemNameWithService || r.itemName,
+                value: r.itemID,
+                originalTitle: r.itemName,
+                docRequired: r.proceduredoctor,
+                serviceid: r.serviceID,
+              };
+            });
+          } else {
+            this.questions[1].options = [];
+          }
+
+          this.questions[1] = { ...this.questions[1] };
+        },
+        (error) => {
+          this.formGroup.controls["procedure"].reset();
+          this.questions[1].options = [];
+          this.questions[1] = { ...this.questions[1] };
+        }
+      );
   }
 
   update(sno = 0) {
@@ -219,8 +311,17 @@ export class OrderProcedureOtherComponent implements OnInit {
       }
     }
   }
-
+  otherserviceId = 0;
   add(priorityId = 1) {
+    if (
+      // this.formGroup.value.otherService.value == undefined ||
+      this.formGroup.value.otherService == null ||
+      this.formGroup.value.otherService == ""
+    ) {
+      this.otherserviceId = 0;
+    } else {
+      this.otherserviceId = this.formGroup.value.otherService.value;
+    }
     this.flag = 0;
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
@@ -233,33 +334,10 @@ export class OrderProcedureOtherComponent implements OnInit {
     }
     this.http
       .get(
-        BillingApiConstants.checkpriceforzeroitemid(
-          this.formGroup.value.investigation.value,
-          "67",
-          "9"
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          console.log(this.flag);
-          if (this.flag == 2) {
-            this.addrow();
-          }
-        } else {
-          this.messageDialogService.info(
-            "Price for this service is not defined"
-          );
-        }
-      });
-    this.http
-      .get(
-        BillingApiConstants.checkPatientSex(
-          this.formGroup.value.investigation.value,
+        BillingApiConstants.checkPatientSexoporder(
+          this.formGroup.value.procedure.value,
           this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.procedure.serviceid,
           "9"
         )
       )
@@ -268,7 +346,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         console.log(response);
         if (response == 1) {
           this.flag++;
-          if (this.flag == 2) {
+          if (this.flag == 1) {
             this.addrow();
           }
           console.log(this.flag);
@@ -279,48 +357,124 @@ export class OrderProcedureOtherComponent implements OnInit {
         }
       });
 
-    if (this.flag == 2) {
-      this.addrow();
+    //this.formGroup.reset();
+  }
+
+  addrow(priorityId = 1) {
+    this.http
+      .get(
+        BillingApiConstants.getPrice(
+          priorityId,
+          this.formGroup.value.procedure.value,
+          this.otherserviceId,
+          this.cookie.get("HSPLocationId")
+          ///"67"
+          //          this.formGroup.value.otherService.value,
+          //        this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.billingService.addToProcedure({
+          sno: this.data.length + 1,
+          procedures: this.formGroup.value.procedure.originalTitle,
+          qty: 1,
+          specialisation: 0,
+          doctorName: 0,
+          price: res.amount,
+          unitPrice: res.amount,
+          itemid: this.formGroup.value.procedure.value,
+          priorityId: priorityId,
+          serviceId: this.formGroup.value.procedure.serviceid,
+          doctorName_required: this.formGroup.value.procedure.docRequired
+            ? true
+            : false,
+          specialisation_required: this.formGroup.value.procedure.docRequired
+            ? true
+            : false,
+        });
+
+        this.data = [...this.billingService.ProcedureItems];
+        this.formGroup.reset();
+      });
+  }
+  getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    this.data.forEach((item: any, index: any) => {
+      console.log(item.specialisation);
+      if (item.specialisation == "") {
+        console.log("specialisation is empty");
+        item.specialisation;
+      }
+      if (this.reqItemDetail == "") {
+        this.reqItemDetail =
+          item.itemid +
+          "," +
+          item.serviceId +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priorityId;
+      } else {
+        this.reqItemDetail =
+          this.reqItemDetail +
+          "~" +
+          item.itemid +
+          "," +
+          item.serviceId +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priorityId;
+      }
+    });
+    console.log(this.reqItemDetail);
+
+    let maxid = this.billingService.activeMaxId.maxId;
+    let userid = Number(this.cookie.get("UserId"));
+
+    return new SaveandDeleteOpOrderRequest(
+      flag,
+      maxid,
+      this.reqItemDetail,
+      "0",
+      // 60926,
+      // 67
+      userid,
+      this.locationid
+    );
+  }
+  saveResponsedata: any;
+  save() {
+    this.reqItemDetail = "";
+    console.log("inside save");
+    if (this.data.length > 0) {
+      this.http
+        .post(
+          BillingApiConstants.SaveDeleteOpOrderRequest,
+          this.getSaveDeleteObject(1)
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((data) => {
+          console.log(data);
+          this.saveResponsedata = data;
+          console.log(this.saveResponsedata.success);
+          if (this.saveResponsedata.success == true) {
+            this.messageDialogService.success("Saved Successfully");
+            this.data = [];
+            this.billingService.ProcedureItems = [];
+            this.formGroup.reset();
+          }
+        });
     }
-
-    // this.http
-    //   .get(
-    //     BillingApiConstants.getPrice(
-    //       priorityId,
-    //       this.formGroup.value.procedure.value,
-    //       this.formGroup.value.otherService.value,
-    //       this.cookie.get("HSPLocationId")
-    //     )
-    //   )
-    //   .subscribe((res: any) => {
-    //     this.billingService.addToProcedure({
-    //       sno: this.data.length + 1,
-    //       procedures: this.formGroup.value.procedure.originalTitle,
-    //       qty: 1,
-    //       specialisation: "",
-    //       doctorName: "",
-    //       price: res.amount,
-    //       unitPrice: res.amount,
-    //       itemid: this.formGroup.value.procedure.value,
-    //       priorityId: priorityId,
-    //       serviceId: this.formGroup.value.otherService.value,
-    //     });
-
-    //     this.data = [...this.billingService.ProcedureItems];
-    //     this.formGroup.reset();
-    //   });
   }
-  _destroying$(
-    _destroying$: any
-  ): import("rxjs").OperatorFunction<any, unknown> {
-    throw new Error("Method not implemented.");
+
+  view() {
+    this.billingService.setActiveLink(true);
+    this.router.navigate([
+      "/out-patient-billing/op-order-request/view-request",
+    ]);
   }
-  addrow() {}
-  save() {}
-  view() {}
-}
-function takeUntil(
-  _destroying$: any
-): import("rxjs").OperatorFunction<any, unknown> {
-  throw new Error("Function not implemented.");
 }

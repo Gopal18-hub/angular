@@ -1,4 +1,9 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ɵsetCurrentInjector,
+} from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -13,13 +18,13 @@ import {
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReportService } from "@shared/services/report.service";
 import { CookieService } from "@shared/services/cookie.service";
-import { DisountReasonComponent } from "../../prompts/discount-reason/disount-reason.component";
 import { DepositDetailsComponent } from "../../prompts/deposit-details/deposit-details.component";
 import { GstTaxComponent } from "../../prompts/gst-tax-popup/gst-tax.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
-
+import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -38,7 +43,7 @@ export class BillComponent implements OnInit {
       },
       interactionDetails: {
         type: "dropdown",
-        required: true,
+        required: false,
         title: "Interaction Details",
         placeholder: "--Select--",
       },
@@ -63,19 +68,20 @@ export class BillComponent implements OnInit {
         type: "checkbox",
         required: false,
         options: [{ title: " Discount  Amount  (  -  ) " }],
+        disabled: false,
       },
       discAmt: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: 0,
         readonly: true,
+        disabled: false,
       },
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
       },
-
       dipositAmt: {
         type: "number",
         required: false,
@@ -101,10 +107,8 @@ export class BillComponent implements OnInit {
         readonly: true,
       },
       coupon: {
-        type: "number",
+        type: "string",
         required: false,
-        defaultValue: 0.0,
-        readonly: true,
       },
       coPay: {
         type: "number",
@@ -140,11 +144,11 @@ export class BillComponent implements OnInit {
         type: "radio",
         required: true,
         options: [
-          { title: "Cash", value: "cash" },
-          { title: "Credit", value: "credit" },
-          { title: "Gen. OPD", value: "Gen OPD" },
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 3, disabled: false },
+          { title: "Gen. OPD", value: 4, disabled: false },
         ],
-        defaultValue: "cash",
+        defaultValue: 1,
       },
       self: {
         type: "checkbox",
@@ -155,7 +159,7 @@ export class BillComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        readonly: false,
+        readonly: true,
       },
     },
   };
@@ -172,7 +176,7 @@ export class BillComponent implements OnInit {
       "serviceName",
       "itemName",
       "precaution",
-      "procedure",
+      "procedureDoctor",
       "qty",
       "credit",
       "cash",
@@ -211,7 +215,7 @@ export class BillComponent implements OnInit {
           width: "100px",
         },
       },
-      procedure: {
+      procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
@@ -289,31 +293,74 @@ export class BillComponent implements OnInit {
 
   constructor(
     private formService: QuestionControlService,
-    private billingservice: BillingService,
+    public billingservice: BillingService,
     private matDialog: MatDialog,
     private messageDialogService: MessageDialogService,
     private reportService: ReportService,
     private cookie: CookieService,
     private http: HttpService,
-    private snackbar: MaxHealthSnackBarService
+    private snackbar: MaxHealthSnackBarService,
+    private calculateBillService: CalculateBillService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    }
+    if (this.billingservice.selectedHealthPlan) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    }
     let formResult: any = this.formService.createForm(
       this.billDataForm.properties,
       {}
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    this.question[1].options = await this.calculateBillService.getinteraction();
+    let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
       item["sno"] = index + 1;
+      if (item.popuptext) {
+        popuptext.push({
+          name: item.itemName,
+          description: item.popuptext,
+        });
+      }
     });
+    if (popuptext.length > 0) {
+      const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
+        width: "80vw",
+        data: {
+          popuptext,
+        },
+      });
+      await popuptextDialogRef.afterClosed().toPromise();
+    }
+    if (
+      this.billingservice.referralDoctor &&
+      this.billingservice.referralDoctor.id == 2015
+    ) {
+      this.formGroup.controls["self"].setValue(true);
+    }
+    this.billingservice.calculateBill();
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
     });
+
+    this.calculateBillService.billTabActiveLogics(this.formGroup, this);
   }
 
   rowRwmove($event: any) {
@@ -321,6 +368,10 @@ export class BillComponent implements OnInit {
       this.billingservice.billItems[$event.index]
     );
     this.billingservice.billItems.splice($event.index, 1);
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(
+      $event.index,
+      1
+    );
     this.billingservice.billItems = this.billingservice.billItems.map(
       (item: any, index: number) => {
         item["sno"] = index + 1;
@@ -346,18 +397,24 @@ export class BillComponent implements OnInit {
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
       });
-    this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCost + ".00"
-    );
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
     this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost + ".00"
+      this.billingservice.totalCost
     );
     this.formGroup.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.discountreason();
+          this.calculateBillService.discountreason(this.formGroup, this);
         } else {
+          this.calculateBillService.setDiscountSelectedItems([]);
+          this.calculateBillService.calculateDiscount();
+          this.formGroup.controls["discAmt"].setValue(
+            this.calculateBillService.totalDiscountAmt
+          );
+          this.formGroup.controls["amtPayByPatient"].setValue(
+            this.getAmountPayByPatient()
+          );
         }
       });
 
@@ -367,18 +424,89 @@ export class BillComponent implements OnInit {
         if (value === true) {
           this.depositdetails();
         } else {
-          this.formGroup.controls["dipositAmt"].reset();
-          this.formGroup.controls["dipositAmtEdit"].reset();
+          this.totalDeposit = 0;
+          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+          this.formGroup.controls["dipositAmtEdit"].setValue(0);
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
-            this.billingservice.totalCost + ".00"
+            this.getAmountPayByPatient()
           );
-          this.formGroup.controls["dipositAmtcheck"].setValue(false);
+          this.formGroup.controls["dipositAmtcheck"].setValue(false, {
+            emitEvent: false,
+          });
         }
       });
+
+    this.formGroup.controls["self"].valueChanges.subscribe((value: boolean) => {
+      if (value) {
+        this.billingservice.setReferralDoctor({
+          id: 2015,
+          name: "",
+          specialisation: "",
+        });
+      }
+    });
+
+    this.question[20].elementRef.addEventListener(
+      "change",
+      this.onModifyDepositAmt.bind(this)
+    );
   }
 
-  makeBill() {
+  discountreason() {
+    this.calculateBillService.discountreason(this.formGroup, this);
+  }
+
+  onModifyDepositAmt() {
+    if (this.formGroup.value.dipositAmtEdit > 0) {
+      if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
+        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.billAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      } else if (
+        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
+        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+      ) {
+        this.formGroup.controls["dipositAmtEdit"].setValue(
+          this.formGroup.value.dipositAmt
+        );
+      }
+      this.formGroup.controls["amtPayByPatient"].setValue(
+        this.getAmountPayByPatient()
+      );
+    }
+  }
+
+  async makeBill() {
+    if (!this.billingservice.referralDoctor) {
+      const referralErrorRef = this.messageDialogService.error(
+        "Please select Referral Doctor"
+      );
+      await referralErrorRef.afterClosed().toPromise();
+      return;
+    }
+    const consulatationStatus =
+      await this.calculateBillService.checkForConsultation();
+    if (!consulatationStatus) {
+      return;
+    }
     const dialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to make the Bill?`
@@ -386,10 +514,39 @@ export class BillComponent implements OnInit {
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
+      .subscribe(async (result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.makereceipt();
+            if (this.formGroup.value.amtPayByPatient > 0) {
+              if (
+                this.calculateBillService.depositDetailsData.length > 0 &&
+                this.totalDeposit == 0
+              ) {
+                const availDepositsPopup = this.messageDialogService.confirm(
+                  "",
+                  `Do you want to avail Deposits?`
+                );
+                const availDepositResult = await availDepositsPopup
+                  .afterClosed()
+                  .toPromise();
+                if (availDepositResult) {
+                  if (availDepositResult.type == "yes") {
+                    this.depositdetails();
+                  } else {
+                    this.makereceipt();
+                  }
+                }
+              } else {
+                this.makereceipt();
+              }
+            } else {
+              const res = await this.billingservice.makeBill();
+              if (res.length > 0) {
+                if (res[0].billNo) {
+                  this.processBillNo(res[0]);
+                }
+              }
+            }
           } else {
           }
         }
@@ -397,11 +554,27 @@ export class BillComponent implements OnInit {
   }
 
   makereceipt() {
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+      Number(this.formGroup.value.dipositAmtEdit) || 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+      Number(this.formGroup.value.discAmt) || 0;
+    this.billingservice.makeBillPayload.cmbInteraction =
+      Number(this.formGroup.value.interactionDetails) || 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+      Number(this.formGroup.value.paymentMode);
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "65vw",
+      height: "96vh",
       data: {
-        billAmount: this.billingservice.totalCost,
+        totalBillAmount: this.billingservice.totalCost,
+        totalDiscount: this.formGroup.value.discAmt,
+        totalDeposit: this.formGroup.value.dipositAmtEdit,
+        totalRefund: 0,
+        ceditLimit: 0,
+        settlementAmountRefund: 0,
+        settlementAmountReceived: 0,
+        toPaidAmount: this.formGroup.value.amtPayByPatient,
       },
     });
 
@@ -409,35 +582,39 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
-          this.billingservice.billNoGenerated.next(true);
-          this.billNo = result.billNo;
-          this.billId = result.billId;
-          this.config.removeRow = false;
-          this.config = { ...this.config };
-          const successInfo = this.messageDialogService.info(
-            `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
-          );
-          successInfo
-            .afterClosed()
-            .pipe(takeUntil(this._destroying$))
-            .subscribe((result: any) => {
-              const printDialog = this.messageDialogService.confirm(
-                "",
-                `Do you want to print bill?`
-              );
-              printDialog
-                .afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe((result: any) => {
-                  if ("type" in result) {
-                    if (result.type == "yes") {
-                      this.makePrint();
-                    } else {
-                    }
-                  }
-                });
-            });
+          this.processBillNo(result);
         }
+      });
+  }
+
+  processBillNo(result: any) {
+    this.billingservice.billNoGenerated.next(true);
+    this.billNo = result.billNo;
+    this.billId = result.billId;
+    this.config.removeRow = false;
+    this.config = { ...this.config };
+    const successInfo = this.messageDialogService.info(
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+    );
+    successInfo
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result: any) => {
+        const printDialog = this.messageDialogService.confirm(
+          "",
+          `Do you want to print bill?`
+        );
+        printDialog
+          .afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((result: any) => {
+            if ("type" in result) {
+              if (result.type == "yes") {
+                this.makePrint();
+              } else {
+              }
+            }
+          });
       });
   }
 
@@ -453,18 +630,78 @@ export class BillComponent implements OnInit {
     );
   }
 
-  discountreason() {
-    this.matDialog.open(DisountReasonComponent, {
-      width: "80vw",
-      minWidth: "90vw",
-    });
+  getAmountPayByPatient() {
+    return (
+      this.billingservice.totalCost -
+      (this.formGroup.value.discAmt || 0) -
+      (this.formGroup.value.dipositAmtEdit || 0)
+    );
   }
 
   depositdetails() {
-    this.getDipositedAmountByMaxID(
-      this.billingservice.activeMaxId.iacode,
-      this.billingservice.activeMaxId.regNumber
-    );
+    let resultData = this.calculateBillService.depositDetailsData;
+    if (resultData) {
+      resultData.forEach((element: any) => {
+        if (element.isAdvanceTypeEnabled == false) {
+          this.totalDeposit += element.balanceamount;
+        }
+      });
+      this.depositDetails = resultData;
+
+      if (this.totalDeposit > 0) {
+        this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+      } else {
+        this.depositDetails = this.depositDetails.filter(
+          (e: any) =>
+            e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
+        );
+
+        const dialogref = this.matDialog.open(DepositDetailsComponent, {
+          width: "60vw",
+          height: "50vh",
+          data: { data: this.depositDetails },
+        });
+
+        dialogref.afterClosed().subscribe((res: any) => {
+          this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList =
+            [];
+          if (res && res.data) {
+            res.data.forEach((dItem: any) => {
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_getdepositList.push(
+                {
+                  id: dItem.id,
+                  amount: dItem.amount,
+                  balanceamount: dItem.balanceamount,
+                }
+              );
+            });
+            this.totalDeposit = res.data
+              .map((r: any) => r.balanceamount)
+              .reduce(function (r: any, s: any) {
+                return r + s;
+              });
+            this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
+            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmtEdit"].enable();
+            this.question[20].readonly = false;
+            this.question[20].disable = false;
+            this.question[20] = { ...this.question[20] };
+            this.question[20].elementRef.focus();
+            this.formGroup.controls["dipositAmtcheck"].setValue(true, {
+              emitEvent: false,
+            });
+          } else {
+            this.formGroup.controls["dipositAmtcheck"].setValue(false, {
+              emitEvent: false,
+            });
+          }
+
+          // if (res.data)
+          //   this.snackbar.open("Deposit Amount availed successfully!");
+        });
+      }
+    }
   }
 
   gsttaxdialog() {
@@ -474,46 +711,12 @@ export class BillComponent implements OnInit {
     });
   }
 
-  getDipositedAmountByMaxID(iacode: any, regNumber: any) {
-    this.http
-      .get(
-        ApiConstants.getDipositedAmountByMaxID(
-          iacode,
-          regNumber,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData: any) => {
-          if (resultData) {
-            this.depositDetails = resultData;
-            resultData.forEach((element: any) => {
-              this.totalDeposit += element.balanceamount;
-            });
-
-            this.depositDetails = this.depositDetails.filter(
-              (e: any) =>
-                e.isAdvanceTypeEnabled == true && e.isSecurityDeposit == false
-            );
-            console.log(this.depositDetails);
-
-            const dialogref = this.matDialog.open(DepositDetailsComponent, {
-              width: "60vw",
-              height: "50vh",
-              data: { data: this.depositDetails },
-            });
-
-            dialogref.afterClosed().subscribe((res) => {
-              console.log(res);
-              this.formGroup.controls["dipositAmt"].setValue(res.data);
-              this.formGroup.controls["dipositAmtEdit"].setValue(res.data);
-              if (res.data)
-                this.snackbar.open("Deposit Amount availed successfully!");
-            });
-          }
-        },
-        (error) => {}
-      );
+  selectedReferralDoctor(data: any) {
+    if (data.docotr) {
+      console.log(data.docotr);
+      this.formGroup.controls["self"].setValue(false);
+      this.formGroup.controls["self"].disable();
+      this.billingservice.setReferralDoctor(data.docotr);
+    }
   }
 }

@@ -196,6 +196,7 @@ export class HealthCheckupsComponent implements OnInit {
               title: r.nameWithDepartment || r.name,
               value: r.id,
               originalTitle: r.name,
+              popuptext: r.popuptext,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -230,7 +231,12 @@ export class HealthCheckupsComponent implements OnInit {
           this.formGroup.controls["healthCheckup"].reset();
           if (Array.isArray(res)) {
             this.questions[1].options = res.map((r: any) => {
-              return { title: r.name, value: r.id, originalTitle: r.name };
+              return {
+                title: r.name,
+                value: r.id,
+                originalTitle: r.name,
+                popuptext: r.popuptext,
+              };
             });
           } else {
             this.questions[1].options = [];
@@ -334,6 +340,7 @@ export class HealthCheckupsComponent implements OnInit {
             serviceid: 26,
             priorityId: priorityId,
             billItem: {
+              popuptext: this.formGroup.value.healthCheckup.popuptext,
               itemId: this.formGroup.value.healthCheckup.value,
               priority: priorityId,
               serviceId: 26,
@@ -353,6 +360,12 @@ export class HealthCheckupsComponent implements OnInit {
               specialisationID: 0,
               doctorID: 0,
             },
+          });
+          this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
+            itemID: this.formGroup.value.healthCheckup.value,
+            serviceID: 26,
+            price: res[0].returnOutPut,
+            willModify: res[0].ret_value == 1 ? true : false,
           });
           this.getDoctorsList(this.formGroup.value.healthCheckup.value, "26");
         }

@@ -55,15 +55,15 @@ export class BillPaymentDialogComponent implements OnInit {
   config = {
     paymentmethods: [
       "cash",
-      "cheque",
       "credit",
+      "cheque",
       "demand",
       "mobilepayment",
       "onlinepayment",
       "upi",
     ],
     combopayment: true,
-    totalAmount: this.data.billAmount,
+    totalAmount: this.data.toPaidAmount,
   };
   duelabel: any;
   billamount: any = 0;
@@ -117,14 +117,17 @@ export class BillPaymentDialogComponent implements OnInit {
     });
   }
 
-  makeBill() {
-    this.billingService.makeBill().subscribe((res) => {
-      if (res.length > 0) {
-        if (res[0].billNo) {
-          this.dialogRef.close(res[0]);
-        }
+  async makeBill() {
+    if (this.data.name == "MiscBilling") {
+      this.dialogRef.close({ data: "MakeBill" });
+      return;
+    }
+    const res = await this.billingService.makeBill(this.paymentmethod);
+    if (res.length > 0) {
+      if (res[0].billNo) {
+        this.dialogRef.close(res[0]);
       }
-    });
+    }
   }
 
   breakupTotal() {

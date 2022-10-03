@@ -102,8 +102,10 @@ export class CashScrollComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();  
   
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
+
+
 
 
   Modifyscollnumber: boolean = true;

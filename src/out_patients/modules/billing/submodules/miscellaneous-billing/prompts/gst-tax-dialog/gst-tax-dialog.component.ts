@@ -4,10 +4,11 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { FormGroup } from '@angular/forms';
-import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { Subject, takeUntil } from "rxjs";
 import { GstTaxModel } from "../../../../../../core/models/GstTaxModel.Model";
-import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
+import { MiscService } from "../../MiscService.service";
+
 
 @Component({
   selector: 'out-patients-gst-tax-dialog',
@@ -153,7 +154,9 @@ export class GstTaxDialogComponent implements OnInit {
     }
   }
 
-
+  close() {
+    this.dialogRef.close({ data: this.gstData })
+  }
 
 
   taxData: any = [
@@ -163,11 +166,7 @@ export class GstTaxDialogComponent implements OnInit {
     { services: "IGST", percentage: '0.00', value: '0.00' },
     { services: "CESS", percentage: '0.00', value: '0.00' },
     { services: "TOTAL TAX", percentage: '0.00', value: '0.00' },
-    // { services: "TAXRATE1", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE2", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE3", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE4", percentage: this.totaltaX_Value, value: '0.00' },
-    // { services: "TAXRATE5", percentage: this.totaltaX_Value, value: '0.00' }
+
 
   ]
 }

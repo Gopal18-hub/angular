@@ -17,6 +17,7 @@ import {
 import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SpecializationService } from "../../../../specialization.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -119,7 +120,8 @@ export class ProcedureOtherComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +132,10 @@ export class ProcedureOtherComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.ProcedureItems;
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.getOtherService();
     this.getSpecialization();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -170,6 +176,18 @@ export class ProcedureOtherComponent implements OnInit {
           res.$event.value,
           res.data.index
         );
+        this.billingService.ProcedureItems[
+          res.data.index
+        ].billItem.specialisationID = res.$event.value;
+      } else if (res.data.col == "doctorName") {
+        this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
+          res.$event.value;
+        const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
+          res.data.index
+        ].find((doc: any) => doc.value == res.$event.value);
+        this.billingService.ProcedureItems[
+          res.data.index
+        ].billItem.procedureDoctor = findDoctor.title;
       }
     });
     this.formGroup.controls["procedure"].valueChanges
@@ -207,6 +225,7 @@ export class ProcedureOtherComponent implements OnInit {
               originalTitle: r.itemName,
               serviceid: r.serviceID,
               docRequired: r.proceduredoctor,
+              popuptext: r.popuptext,
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -215,31 +234,18 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
+    this.config.columnsInfo.specialisation.options =
+      this.specializationService.specializationData;
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getdoctorlistonSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getOtherService() {
@@ -284,6 +290,7 @@ export class ProcedureOtherComponent implements OnInit {
                 originalTitle: r.itemName,
                 docRequired: r.proceduredoctor,
                 serviceid: r.serviceID,
+                popuptext: r.popuptext,
               };
             });
           } else {
@@ -314,7 +321,7 @@ export class ProcedureOtherComponent implements OnInit {
     }
   }
 
-  add(priorityId = 1) {
+  async add(priorityId = 1) {
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
     });
@@ -324,62 +331,14 @@ export class ProcedureOtherComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .post(BillingApiConstants.getcalculateopbill, {
-        compId: this.billingService.company,
-        priority: priorityId,
-        itemId: this.formGroup.value.procedure.value,
-        serviceId: this.formGroup.value.procedure.serviceid,
-        locationId: this.cookie.get("HSPLocationId"),
-        ipoptype: 1,
-        bedType: 0,
-        bundleId: 0,
-      })
-      .subscribe((res: any) => {
-        if (res.length > 0) {
-          this.billingService.addToProcedure({
-            sno: this.data.length + 1,
-            procedures: this.formGroup.value.procedure.originalTitle,
-            qty: 1,
-            specialisation: "",
-            doctorName: "",
-            doctorName_required: this.formGroup.value.procedure.docRequired
-              ? true
-              : false,
-            specialisation_required: this.formGroup.value.procedure.docRequired
-              ? true
-              : false,
-            price: res[0].returnOutPut,
-            unitPrice: res[0].returnOutPut,
-            itemid: this.formGroup.value.procedure.value,
-            priorityId: priorityId,
-            serviceId: this.formGroup.value.procedure.serviceid,
-            billItem: {
-              itemId: this.formGroup.value.procedure.value,
-              priority: priorityId,
-              serviceId: this.formGroup.value.procedure.serviceid,
-              price: res[0].returnOutPut,
-              serviceName: "Procedure & Others",
-              itemName: this.formGroup.value.procedure.originalTitle,
-              qty: 1,
-              precaution: "",
-              procedureDoctor: "",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
-              specialisationID: 0,
-              doctorID: 0,
-            },
-          });
-        }
+    await this.billingService.processProcedureAdd(
+      priorityId,
+      this.formGroup.value.procedure.serviceid,
+      this.formGroup.value.procedure
+    );
 
-        this.data = [...this.billingService.ProcedureItems];
-        this.formGroup.reset();
-      });
+    this.data = [...this.billingService.ProcedureItems];
+    this.formGroup.reset();
   }
 
   goToBill() {

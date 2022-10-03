@@ -8,7 +8,7 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { SaveandDeleteOpOrderRequest } from "../../../../../../../../core/models/saveanddeleteoporder.Model";
-
+import { ActivatedRoute, Router } from "@angular/router";
 import {
   filter,
   distinctUntilChanged,
@@ -22,7 +22,7 @@ import {
   Subject,
   iif,
 } from "rxjs";
-import { textChangeRangeIsUnchanged } from "typescript";
+import { BillingStaticConstants } from "../../../../../billing/BillingStaticConstant";
 
 @Component({
   selector: "out-patients-investigations",
@@ -129,7 +129,9 @@ export class OderInvestigationsComponent implements OnInit {
     private http: HttpService,
     private cookie: CookieService,
     public billingService: BillingService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -142,6 +144,7 @@ export class OderInvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
+    // this.data = [];
     this.billingService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
@@ -151,6 +154,7 @@ export class OderInvestigationsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    console.log($event);
     this.billingService.InvestigationItems.splice($event.index, 1);
     this.billingService.InvestigationItems =
       this.billingService.InvestigationItems.map((item: any, index: number) => {
@@ -166,10 +170,17 @@ export class OderInvestigationsComponent implements OnInit {
       console.log(res);
       // col: "specialisation"
       if (res.data.col == "specialisation") {
+        this.config.columnsInfo.specialisation.value = res.$event.value;
+        console.log(this.config.columnsInfo.specialisation.value);
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
+      } else if (res.data.col == "doctorName") {
+        this.config.columnsInfo.doctorName.value = res.$event.value;
+        console.log(this.config.columnsInfo.doctorName.value);
+      } else if (res.data.col == "priority") {
+        this.config.columnsInfo.priority.value = res.$event.value;
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -206,6 +217,11 @@ export class OderInvestigationsComponent implements OnInit {
               value: r.id,
               serviceid: r.serviceid,
               originalTitle: r.name,
+              docRequired: r.docRequired,
+              precaution: r.precaution,
+              ngStyle: {
+                color: r.outsourceColor == 2 ? "red" : "",
+              },
             };
           });
           this.questions[1] = { ...this.questions[1] };
@@ -285,21 +301,31 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.investigationList = res;
-        // this.formGroup.controls["investigation"].reset();
+        this.formGroup.controls["investigation"].reset();
         this.questions[1].options = this.investigationList.map((r: any) => {
           return {
             title: r.testNameWithService || r.name,
             value: r.id,
             originalTitle: r.name,
+            serviceid: r.serviceid,
+            precaution: r.precaution,
+            docRequired: r.docRequired,
+            item_Instructions:
+              BillingStaticConstants.investigationItemBasedInstructions[
+                r.id.toString()
+              ],
+            // ngStyle: {
+            //   color:
+            //     r.outsourceTest == 2
+            //       ? "red"
+            //       : "" || r.outsourceTest == 1
+            //       ? "orange"
+            //       : "" || r.isNonDiscountItem == 1
+            //       ? "pink"
+            //       : "",
+            // },
             ngStyle: {
-              color:
-                r.outsourceTest == 2
-                  ? "red"
-                  : "" || r.outsourceTest == 1
-                  ? "orange"
-                  : "" || r.isNonDiscountItem == 1
-                  ? "pink"
-                  : "",
+              color: r.outsourceColor == 2 ? "red" : "",
             },
           };
         });
@@ -333,44 +359,28 @@ export class OderInvestigationsComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .get(
-        BillingApiConstants.checkpriceforzeroitemid(
-          this.formGroup.value.investigation.value,
-          "67",
-          "2"
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          console.log(this.flag);
-          if (this.flag == 3) {
-            this.addrow();
-          }
-        } else {
-          this.messageDialogService.info(
-            "Price for this service is not defined"
-          );
-        }
-        console.log(this.priceDefined);
-      });
+
     if (this.formGroup.value.investigation.value == 6085) {
-      this.messageDialogService.info(
+      const dialofref = this.messageDialogService.info(
         "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
       );
+      dialofref.afterClosed().subscribe((data) => {
+        this.genderCheck();
+      });
+    } else {
+      this.genderCheck();
     }
 
     console.log(this.billingService.patientDemographicdata);
-
+    //this.formGroup.reset();
+  }
+  genderCheck() {
     this.http
       .get(
         BillingApiConstants.checkPatientSex(
           this.formGroup.value.investigation.value,
           this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.serviceType,
+          this.formGroup.value.investigation.serviceid,
           "2"
         )
       )
@@ -379,7 +389,7 @@ export class OderInvestigationsComponent implements OnInit {
         console.log(response);
         if (response == 1) {
           this.flag++;
-          if (this.flag == 3) {
+          if (this.flag == 1) {
             this.addrow();
           }
           console.log(this.flag);
@@ -390,32 +400,6 @@ export class OderInvestigationsComponent implements OnInit {
         }
         console.log(this.genderDefined);
       });
-    this.http
-      .get(
-        BillingApiConstants.checkModality(
-          this.formGroup.value.investigation.value
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 3) {
-            this.addrow();
-          }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "Modality Code is not defined for the Service"
-          );
-        }
-      });
-    if (this.flag == 3) {
-      this.addrow();
-    }
-
-    //this.formGroup.reset();
   }
   list: any = [];
   addrow() {
@@ -432,65 +416,69 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res: any) => {
         console.log(res);
         this.serviceInvestigatationresponse = res;
+        //setTimeout(() => {
         this.billingService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
-          precaution: "",
+          precaution: this.formGroup.value.investigation.precaution,
           priority: 1,
-          specialisation: "",
-          doctorName: "",
+          specialisation: 0,
+          doctorName: 0,
           price: res.amount,
           serviceid:
             this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           itemid: this.formGroup.value.investigation.value,
+          doctorName_required: this.formGroup.value.investigation.docRequired
+            ? true
+            : false,
+          specialisation_required: this.formGroup.value.investigation
+            .docRequired
+            ? true
+            : false,
         });
         this.data = [...this.billingService.InvestigationItems];
+        // }, 1000);
+
+        console.log(this.data);
         this.formGroup.reset();
       });
   }
 
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
     this.data.forEach((item: any, index: any) => {
+      console.log(item.specialisation);
+      if (item.specialisation == "") {
+        console.log("specialisation is empty");
+        item.specialisation;
+      }
       if (this.reqItemDetail == "") {
-        if (item.investigation == undefined || item.investigation == "") {
-          item.investigation = "";
-        }
-        if (item.specialisation == undefined || item.investigation == "") {
-          item.specialisation = "";
-        }
-        if (item.doctorname == undefined || item.investigation == "") {
-          item.doctorname = "";
-        }
         this.reqItemDetail =
-          item.investigation +
+          item.itemid +
           "," +
-          item.precaution +
-          "," +
-          item.priority +
+          item.serviceid +
           "," +
           item.specialisation +
           "," +
-          item.doctorname +
+          item.doctorName +
           "," +
-          item.price +
-          "," +
-          item.serviceid;
-        console.log(this.reqItemDetail);
+          item.priority;
       } else {
         this.reqItemDetail =
           this.reqItemDetail +
+          "~" +
+          item.itemid +
           "," +
-          (item.investigation,
-          item.precaution,
-          item.priority,
-          item.specialisation,
-          item.doctorname,
-          item.price,
-          item.serviceid);
-        console.log(this.reqItemDetail);
+          item.serviceid +
+          "," +
+          item.specialisation +
+          "," +
+          item.doctorName +
+          "," +
+          item.priority;
       }
     });
+    console.log(this.reqItemDetail);
 
     let maxid = this.billingService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
@@ -500,13 +488,14 @@ export class OderInvestigationsComponent implements OnInit {
       flag,
       maxid,
       this.reqItemDetail,
-      0,
-      60926,
-      67
-      // userid,
-      // locationid
+      "0",
+      //60926,
+      //67
+      userid,
+      locationid
     );
   }
+  saveResponsedata: any;
   save() {
     this.reqItemDetail = "";
     console.log("inside save");
@@ -519,8 +508,28 @@ export class OderInvestigationsComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
           console.log(data);
+          this.saveResponsedata = data;
+          console.log(this.saveResponsedata.success);
+          if (this.saveResponsedata.success == true) {
+            this.messageDialogService.success("Saved Successfully");
+            this.data = [];
+            this.billingService.InvestigationItems = [];
+            this.formGroup.reset();
+          }
         });
     }
   }
-  view() {}
+  view() {
+    this.billingService.setActiveLink(true);
+    this.router.navigate([
+      "/out-patient-billing/op-order-request/view-request",
+    ]);
+    // this.router.navigate(
+    //   ["/out-patient-billing/op-order-request/view-request"],
+    //   {
+    //     queryParamsHandling: "merge",
+    //     relativeTo: this.route,
+    //   }
+    // );
+  }
 }

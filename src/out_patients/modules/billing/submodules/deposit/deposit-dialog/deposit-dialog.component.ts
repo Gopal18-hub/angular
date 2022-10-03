@@ -17,6 +17,7 @@ import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patien
 import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "@core/UI/billing/submodules/form60/form-sixty.component";
 import { DepositService } from "@core/services/deposit.service";
+import { DepositSuccessComponent } from "../deposit-success/deposit-success.component";
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -47,9 +48,10 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
 
 
   
@@ -125,26 +127,26 @@ export class DepositDialogComponent implements OnInit {
     else if(this.DepositcashMode){
       
       if(this.DepositcashMode.cashamount > 0 ){
-        this.PaymentTypedepositamount =  this.DepositcashMode.cashamount;
+        this.PaymentTypedepositamount =  Number(this.DepositcashMode.cashamount);
        }
        else if(this.DepositcashMode.chequeamount > 0){
           this.PaymentType = 2;
-          this.PaymentTypedepositamount =  this.DepositcashMode.chequeamount;
+          this.PaymentTypedepositamount =  Number(this.DepositcashMode.chequeamount);
        }
        else if(this.DepositcashMode.creditamount > 0){
           this.PaymentType = 4;
-          this.PaymentTypedepositamount =  this.DepositcashMode.creditamount;
+          this.PaymentTypedepositamount =  Number(this.DepositcashMode.creditamount);
       }
       else if(this.DepositcashMode.demandamount > 0){
         this.PaymentType = 3;
-        this.PaymentTypedepositamount =  this.DepositcashMode.demandamount;
+        this.PaymentTypedepositamount =  Number(this.DepositcashMode.demandamount);
       }
       else if(this.DepositcashMode.upiamount > 0){
         this.PaymentType = 8;
-        this.PaymentTypedepositamount =  this.DepositcashMode.upiamount;
+        this.PaymentTypedepositamount =  Number(this.DepositcashMode.upiamount);
       }
       else if(this.DepositcashMode.internetamount > 0){
-        this.PaymentTypedepositamount =  this.DepositcashMode.internetamount;
+        this.PaymentTypedepositamount =  Number(this.DepositcashMode.internetamount);
       }
       else if(this.PaymentTypedepositamount == 0){
         this.messageDialogService.error("Amount Zero or Negative number is not Allowed");
@@ -179,7 +181,16 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              this.messageDialogService.success("Deposit Has Been Successfully Saved");            
+              let savedepositdialog = this.matDialog.open(
+                DepositSuccessComponent,
+                {
+                  width: "30vw",          
+                  data: {
+                    message: "Deposit Has Been Successfully Saved"                 
+                    },
+                }
+              );
+                       
             }else
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
@@ -209,7 +220,7 @@ export class DepositDialogComponent implements OnInit {
     return (this.patientSaveDepositDetails = new PatientSaveDepositDetailGST(
       this.data.patientinfo.iacode,
       this.data.patientinfo.registrationno,
-      this.PaymentTypedepositamount,
+      Number(this.PaymentTypedepositamount),
       this.stationId,
       this.hsplocationId,
       String(this.operatorID),

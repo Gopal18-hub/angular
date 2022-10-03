@@ -1,6 +1,27 @@
 import { environment } from "@environments/environment";
 
 export namespace ApiConstants {
+  //Form60
+  export const getform60 = (
+    LocationId: number,
+    billno: string,
+
+    iacode: string,
+    regno: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getformsixtyreport/" +
+      billno +
+      "/" +
+      LocationId +
+      "/" +
+      iacode +
+      "/" +
+      regno
+    );
+  };
+
   //PATIENT AGE RESPONSE TYPE ageTypeModel[]
   export const ageTypeLookUp =
     environment.CommonApiUrl + "api/lookup/agetypelookup/0";
@@ -1317,13 +1338,13 @@ export namespace ApiConstants {
   ) => {
     return (
       environment.PatientApiUrl +
-      "api/patient/getpatientexpireddepositdetails/" +
+      "api/patient/getpatientexpireddepositdetails?iacode=" +
       iacode +
-      "/" +
+      "&registrationno=" +
       registrationno +
-      "/" +
+      "&fromdate=" +
       fromdate +
-      "/" +
+      "&todate=" +
       todate
     );
   };
@@ -1420,31 +1441,54 @@ export namespace ApiConstants {
     environment.BillingApiUrl + "api/outpatientbilling/ackdetailsforscroll";
 
   export const getdetailsforcashscroll = (
-    operatorid : number,
-    stationid : number
-    ) => {
-      return (
-        environment.BillingApiUrl +
-        "api/outpatientbilling/getdetailsforscroll/" +
-        operatorid +       
-        "/" +
-        stationid
-      );
-    };
-    export const getscrolldetailsforoneuser = (
-      FromDate: string,
-      ToDate:string,
-      operatorid : number,
-      stationid : number,
-      hspLocationId:number
-      ) => {
-        return (
-          environment.BillingApiUrl +
-          "api/outpatientbilling/getscrolldetailsforoneuser/" + FromDate + "/" + ToDate + "/" +
-          operatorid +       
-          "/" +
-          stationid + "/" + hspLocationId
-        );
-      };
-    export const savecashscroll =  environment.BillingApiUrl +  "api/outpatientbilling/savedetailsforscroll";
+    operatorid: number,
+    stationid: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getdetailsforscroll/" +
+      operatorid +
+      "/" +
+      stationid
+    );
+  };
+  export const getscrolldetailsforoneuser = (
+    FromDate: string,
+    ToDate: string,
+    operatorid: number,
+    stationid: number,
+    hspLocationId: number
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/getscrolldetailsforoneuser/" +
+      FromDate +
+      "/" +
+      ToDate +
+      "/" +
+      operatorid +
+      "/" +
+      stationid +
+      "/" +
+      hspLocationId
+    );
+  };
+  export const savecashscroll =
+    environment.BillingApiUrl + "api/outpatientbilling/savedetailsforscroll";
+
+  export const getsimilarsoundreferraldoctor = (
+    speciality: string,
+    firstName: string,
+    lastName: string,
+    mobile: string
+  ) =>
+    `${environment.CommonApiUrl}api/lookup/getsimilarsoundreferraldoctor/${speciality}?firstName=${firstName}&lastName=${lastName}&mobile=${mobile}`;
+
+  export const referraldoctorsave = (
+    DoctorName: string,
+    MobileNumber: string,
+    SpecialisationId: string,
+    UserId: string
+  ) =>
+    `${environment.CommonApiUrl}api/lookup/referraldoctorsave/${DoctorName}/${MobileNumber}/${SpecialisationId}/${UserId}`;
 }
