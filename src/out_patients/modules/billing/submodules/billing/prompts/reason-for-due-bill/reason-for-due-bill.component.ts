@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
+import { Component, OnInit } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 
 @Component({
-  selector: 'out-patients-reason-for-due-bill',
-  templateUrl: './reason-for-due-bill.component.html',
-  styleUrls: ['./reason-for-due-bill.component.scss']
+  selector: "out-patients-reason-for-due-bill",
+  templateUrl: "./reason-for-due-bill.component.html",
+  styleUrls: ["./reason-for-due-bill.component.scss"],
 })
 export class ReasonForDueBillComponent implements OnInit {
   reasonForDueBillData = {
@@ -15,23 +15,22 @@ export class ReasonForDueBillComponent implements OnInit {
       reason: {
         type: "dropdown",
         placeholder: "---Select---",
+        required: true,
       },
       remarks: {
         type: "textarea",
-        placeholder: "Write note"
+        placeholder: "Write note",
       },
       authorisedby: {
         type: "dropdown",
         placeholder: "---Select---",
+        required: true,
       },
-
     },
   };
   reasonForDueBillForm!: FormGroup;
   question: any;
-  constructor(
-    private formService: QuestionControlService
-  ) { }
+  constructor(private formService: QuestionControlService) {}
 
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -41,5 +40,4 @@ export class ReasonForDueBillComponent implements OnInit {
     this.reasonForDueBillForm = formResult.form;
     this.question = formResult.questions;
   }
-
 }
