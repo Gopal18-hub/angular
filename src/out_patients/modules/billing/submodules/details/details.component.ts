@@ -280,8 +280,11 @@ export class DetailsComponent implements OnInit {
         const lookupdata = await this.lookupService.searchPatient(formdata);
         console.log(lookupdata);
         if (lookupdata.length == 1) {
-          if (lookupdata[0] && "maxid" in lookupdata[0]) {
-          }
+          this.BServiceForm.controls['maxid'].setValue(lookupdata[0].maxid);
+        }
+        else if(lookupdata.length > 1)
+        {
+          this.BServiceForm.controls['mobileno'].setValue(lookupdata[0].phone);
         }
       });
   }
