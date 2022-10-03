@@ -14,6 +14,7 @@ import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanyd
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { PatientService } from "@core/services/patient.service";
+import { OpOrderRequestService } from "./op-order-request.service";
 
 import {
   MatDialog,
@@ -129,12 +130,13 @@ export class OpOrderRequestComponent implements OnInit {
     private billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
-    private patientservice: PatientService
+    private patientservice: PatientService,
+    private opOrderRequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
     // this.getAllCompany();
-    this.billingService.activeLink.subscribe((data) => {
+    this.opOrderRequestService.activeLink.subscribe((data) => {
       console.log(data);
       if (data == true) {
         this.activeLink = this.links[1];
@@ -265,7 +267,7 @@ export class OpOrderRequestComponent implements OnInit {
           (resultData: Registrationdetails) => {
             console.log(resultData);
             if (resultData) {
-              this.billingService.setActiveMaxId(
+              this.opOrderRequestService.setActiveMaxId(
                 this.formGroup.value.maxid,
                 iacode,
                 regNumber.toString()
@@ -305,7 +307,7 @@ export class OpOrderRequestComponent implements OnInit {
       return;
     }
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    this.billingService.patientDemographicdata = {
+    this.opOrderRequestService.patientDemographicdata = {
       name: patientDetails.firstname + " " + patientDetails.lastname,
       age: patientDetails.age,
       agetype: patientDetails.ageTypeName,
@@ -446,7 +448,7 @@ export class OpOrderRequestComponent implements OnInit {
     this.country = "";
     this.gender = "";
     this.age = "";
-    this.billingService.clear();
+    this.opOrderRequestService.clear();
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
@@ -459,7 +461,7 @@ export class OpOrderRequestComponent implements OnInit {
       .then(() => {
         window.location.reload;
       });
-    this.billingService.setActiveLink(false);
+    this.opOrderRequestService.setActiveLink(false);
     this.activeLink = this.links[0];
   }
 
