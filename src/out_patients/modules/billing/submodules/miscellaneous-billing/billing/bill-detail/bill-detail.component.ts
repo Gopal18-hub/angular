@@ -149,7 +149,6 @@ export class BillDetailComponent implements OnInit {
       tffPrice: {
         type: "number",
         title: "Tarrif Price",
-        //required: true,
         readonly: true,
         defaultValue: "0.00",
       },
@@ -176,7 +175,6 @@ export class BillDetailComponent implements OnInit {
         title: "Procedure Doctor",
         options: this.doctorList,
         placeholder: "Select",
-        // required: true,
       },
       //6
       remark: {
@@ -202,7 +200,6 @@ export class BillDetailComponent implements OnInit {
       //9
       interactionDetails: {
         type: "dropdown",
-        //required: true,
         title: "Interaction Details",
         placeholder: "Select",
       },
@@ -293,7 +290,6 @@ export class BillDetailComponent implements OnInit {
         type: "number",
         required: false,
         defaultValue: "0.00",
-        //readonly: true,
       },
       //23
       gstTax: {
@@ -319,7 +315,6 @@ export class BillDetailComponent implements OnInit {
       //26
       paymentMode: {
         type: "radio",
-        //required: true,
         options: [
           { title: "Cash", value: "1" },
           { title: "Credit", value: "3" },
@@ -904,8 +899,6 @@ export class BillDetailComponent implements OnInit {
   //Fetch GST Data
   getgstdata() {
     let location = this.location;
-    //let company =this.miscServBillForm.controls["company"].value;
-    //let location = 7;
     let company = this.miscCompanyId;
     if (company >= 0) {
       this.http
@@ -989,7 +982,6 @@ export class BillDetailComponent implements OnInit {
         this.pushDataToServiceTable();
         this.serviceselectedList.forEach((e: any) => {
           e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
-          //e.QtyNo = Number(e.Qty).toFixed(2);
           e.PriceNo = Number(e.Price).toFixed(2);
           e.DiscNo = Number(e.Disc).toFixed(2);
           e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
@@ -1271,8 +1263,8 @@ export class BillDetailComponent implements OnInit {
       } else if (this.miscServBillForm.value.credLimit <= 0) {
         this.snackbar.open(" Enter Credit limit", "error");
       } else if (
-        this.miscServBillForm.value.credLimit <
-        this.miscServBillForm.value.amntPaidBythePatient
+        this.miscServBillForm.value.amntPaidBythePatient >
+        this.miscServBillForm.value.credLimit
       ) {
         this.snackbar.open(
           "Credit limit should not be less than bill amount",
@@ -1417,7 +1409,6 @@ export class BillDetailComponent implements OnInit {
 
   //Make Bill Obj
   addNewItem(): any {
-    //Payment Cash Popup
     let miscFormData = this.miscPatient.getCalculateBillItems();
     let miscPatient = this.miscPatient.getFormLsit();
     this.miscCompanyId = miscFormData.companyId.value;
