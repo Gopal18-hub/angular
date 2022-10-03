@@ -15,6 +15,7 @@ import {
 import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { of } from "rxjs";
+import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 
 @Injectable({
   providedIn: "root",
@@ -68,6 +69,8 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   companyData: any = [];
   iomMessage: string = "";
+  activeLink = new Subject<any>();
+  disableServiceTab: boolean = false;
 
   maxIdEventFinished = new Subject<any>();
 
@@ -337,6 +340,10 @@ export class BillingService {
       regNumber: regNumber,
       gender: genderName,
     };
+  }
+  setActiveLink(value: boolean) {
+    //  this.disableServiceTab=value;
+    this.activeLink.next(value);
   }
 
   deleteFromService(billItem: any) {
@@ -615,7 +622,7 @@ export class BillingService {
       cashierId: Number(this.cookie.get("UserId")),
       settledBy: 0,
       settledDateTime: new Date(),
-      cancelledDateTime: "",
+      cancelledDateTime: new Date(),
       cancelledBy: 0,
       doctorId: 1912,
       doctortype: 0,
@@ -728,20 +735,20 @@ export class BillingService {
           .toPromise();
         if (lessAmountWarningResult) {
           if (lessAmountWarningResult.type == "yes") {
-            // const reasonInfoDialog = this.matDialog.open(
-            //   ReasonForDueBillComponent,
-            //   {
-            //     width: "40vw",
-            //     height: "50vh",
-            //   }
-            // );
-            // const reasonInfoResult = await reasonInfoDialog
-            //   .afterClosed()
-            //   .toPromise();
-            // if (reasonInfoResult) {
-            // } else {
-            //   return;
-            // }
+            const reasonInfoDialog = this.matDialog.open(
+              ReasonForDueBillComponent,
+              {
+                width: "40vw",
+                height: "50vh",
+              }
+            );
+            const reasonInfoResult = await reasonInfoDialog
+              .afterClosed()
+              .toPromise();
+            if (reasonInfoResult) {
+            } else {
+              return;
+            }
           } else {
             return;
           }

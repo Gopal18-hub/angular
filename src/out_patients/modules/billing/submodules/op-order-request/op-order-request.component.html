@@ -14,7 +14,7 @@
           width="45px"
           class="mt-1 cursor-pointer"
           [matTooltip]="icon['tooltip']"
-          (click)="doCategoryIconAction(icon)"
+         (click)="doCategoryIconAction(icon)" 
         />
       </div>
     </nav>
@@ -188,7 +188,7 @@
                     >SSN: </mat-label
                   >
                   <span class="text-color w-1/15 ml-1" matTooltip="{{ssn}}">{{ ssn }}</span>
-                  <button class="min-width-initial mr-1" color="primary" mat-raised-button (click)="clear()">
+                  <button class="min-width-initial mr-1" color="primary" mat-raised-button (click)="clear()"[disabled]="!formGroup.dirty">
                     Clear
                   </button>
               </div>
