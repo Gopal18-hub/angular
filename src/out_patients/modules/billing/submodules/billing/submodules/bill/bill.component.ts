@@ -564,8 +564,8 @@ export class BillComponent implements OnInit {
       Number(this.formGroup.value.paymentMode);
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
+      width: "65vw",
+      height: "96vh",
       data: {
         totalBillAmount: this.billingservice.totalCost,
         totalDiscount: this.formGroup.value.discAmt,
