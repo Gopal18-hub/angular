@@ -125,21 +125,21 @@ export class CashScrollNewComponent implements OnInit {
         title: "Date Time",
         type: "date",
         style: {
-          width: "10rem",
+          width: "9rem",
         },
       },
       billamount: {
         title: "Bill Amount",
         type: "number",
         style: {
-          width: "10rem",
+          width: "9rem",
         },
       },
       refund: {
         title: "Refund",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       depositamount: {
@@ -160,7 +160,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Plan Amount",
         type: "number",
         style: {
-          width: "10rem",
+          width: "9rem",
         },
       },
       plandiscount: {
@@ -181,7 +181,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Cash",
         type: "string",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       cheque: {
@@ -195,7 +195,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "DD",
         type: "number",
         style: {
-          width: "8rem",
+          width: "9rem",
         },
       },
       creditcard: {
@@ -237,7 +237,7 @@ export class CashScrollNewComponent implements OnInit {
         title: "Donation",
         type: "number",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       upiamount: {
