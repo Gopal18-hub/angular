@@ -133,7 +133,8 @@ import { Form60YesOrNoComponent } from "./submodules/deposit/form60-dialog/form6
 import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/discount-reason/staff-dept-dialog/staff-dept-dialog.component";
 
 import { DragDropModule } from "@angular/cdk/drag-drop";
-
+import { ReasonForDueBillComponent } from './submodules/billing/prompts/reason-for-due-bill/reason-for-due-bill.component';
+import { SendMailDialogComponent } from './submodules/billing/prompts/send-mail-dialog/send-mail-dialog.component';
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -236,6 +237,8 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
     PopuptextComponent,
     ServicetaxPopupComponent,
     Form60YesOrNoComponent,
+    ReasonForDueBillComponent,
+    SendMailDialogComponent,
   ],
   imports: [
     BillingRoutingModule,
