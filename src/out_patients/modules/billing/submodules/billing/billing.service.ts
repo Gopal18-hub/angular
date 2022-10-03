@@ -15,6 +15,7 @@ import {
 import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { of } from "rxjs";
+import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 
 @Injectable({
   providedIn: "root",
@@ -621,7 +622,7 @@ export class BillingService {
       cashierId: Number(this.cookie.get("UserId")),
       settledBy: 0,
       settledDateTime: new Date(),
-      cancelledDateTime: "",
+      cancelledDateTime: new Date(),
       cancelledBy: 0,
       doctorId: 1912,
       doctortype: 0,
@@ -734,20 +735,20 @@ export class BillingService {
           .toPromise();
         if (lessAmountWarningResult) {
           if (lessAmountWarningResult.type == "yes") {
-            // const reasonInfoDialog = this.matDialog.open(
-            //   ReasonForDueBillComponent,
-            //   {
-            //     width: "40vw",
-            //     height: "50vh",
-            //   }
-            // );
-            // const reasonInfoResult = await reasonInfoDialog
-            //   .afterClosed()
-            //   .toPromise();
-            // if (reasonInfoResult) {
-            // } else {
-            //   return;
-            // }
+            const reasonInfoDialog = this.matDialog.open(
+              ReasonForDueBillComponent,
+              {
+                width: "40vw",
+                height: "50vh",
+              }
+            );
+            const reasonInfoResult = await reasonInfoDialog
+              .afterClosed()
+              .toPromise();
+            if (reasonInfoResult) {
+            } else {
+              return;
+            }
           } else {
             return;
           }
