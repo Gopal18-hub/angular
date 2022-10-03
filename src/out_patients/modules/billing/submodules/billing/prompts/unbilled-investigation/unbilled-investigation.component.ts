@@ -71,7 +71,11 @@ export class UnbilledInvestigationComponent implements OnInit {
       if (temp.includes(this.tableRows.selection.selected[i].testID)) {
         this.disableProcess = true;
         existProcess = true;
-        this.messageDialogService.error("Already selected the test");
+        this.messageDialogService.error(
+          "Already selected the test - <b>" +
+            this.tableRows.selection.selected[i].testName +
+            "</b>"
+        );
         break;
       }
       temp.push(this.tableRows.selection.selected[i].testID);

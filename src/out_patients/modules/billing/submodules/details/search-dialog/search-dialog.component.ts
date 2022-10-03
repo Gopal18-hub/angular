@@ -44,13 +44,11 @@ export class SearchDialogComponent implements OnInit {
       },
       fromdate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
         disabled: true,
       },
       todate: {
         type: "date",
-        maximum: new Date(),
         defaultValue: new Date(),
         disabled: true,
       }
@@ -197,6 +195,8 @@ export class SearchDialogComponent implements OnInit {
     );
     this.searchform = formResult.form;
     this.questions = formResult.questions;
+    this.questions[4].maximum = this.searchform.controls['todate'].value;
+    this.questions[5].minimum = this.searchform.controls['fromdate'].value;
   }
   ngAfterViewInit(): void {
     console.log(this.formdata);

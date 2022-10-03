@@ -111,6 +111,8 @@ export class ServicesComponent implements OnInit {
         this.consumablesExist = false;
       } else if ("disableOrderSet" in res && res.disableOrderSet) {
         this.tabs[4].disabled = true;
+      } else if ("goToTab" in res && res.goToTab) {
+        this.tabChange(this.tabs[res.goToTab]);
       }
     });
   }
