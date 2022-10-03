@@ -1,0 +1,18 @@
+.send-mail-wrapper{
+    .input{
+        ::ng-deep mat-label{
+            color: #004084;
+        }
+        ::ng-deep mat-form-field{
+            margin-top: 0.25rem;
+        }
+    }
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    .gap-05{
+        gap: 0.5rem;
+    }
+}

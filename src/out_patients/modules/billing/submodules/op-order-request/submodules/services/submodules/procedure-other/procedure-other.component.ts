@@ -48,6 +48,7 @@ export class OrderProcedureOtherComponent implements OnInit {
   questions: any;
   flag = 0;
   reqItemDetail: string = "";
+  locationid = Number(this.cookie.get("HSPLocationId"));
   private readonly _destroying$ = new Subject<void>();
 
   @ViewChild("table") tableRows: any;
@@ -181,7 +182,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
-                  67,
+                  this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
                 )
@@ -223,7 +224,8 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          67
+          this.locationid
+          // 67
           // Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -262,8 +264,9 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getotherservicebilling(
+          this.locationid,
           // 67,
-          Number(this.cookie.get("HSPLocationId")),
+          // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
         )
@@ -364,7 +367,8 @@ export class OrderProcedureOtherComponent implements OnInit {
           priorityId,
           this.formGroup.value.procedure.value,
           this.otherserviceId,
-          "67"
+          this.cookie.get("HSPLocationId")
+          ///"67"
           //          this.formGroup.value.otherService.value,
           //        this.cookie.get("HSPLocationId")
         )
@@ -381,6 +385,12 @@ export class OrderProcedureOtherComponent implements OnInit {
           itemid: this.formGroup.value.procedure.value,
           priorityId: priorityId,
           serviceId: this.formGroup.value.procedure.serviceid,
+          doctorName_required: this.formGroup.value.procedure.docRequired
+            ? true
+            : false,
+          specialisation_required: this.formGroup.value.procedure.docRequired
+            ? true
+            : false,
         });
 
         this.data = [...this.billingService.ProcedureItems];
@@ -424,17 +434,16 @@ export class OrderProcedureOtherComponent implements OnInit {
 
     let maxid = this.billingService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
-    let locationid = Number(this.cookie.get("HSPLocationId"));
 
     return new SaveandDeleteOpOrderRequest(
       flag,
       maxid,
       this.reqItemDetail,
-      0,
+      "0",
       // 60926,
-      //67
+      // 67
       userid,
-      locationid
+      this.locationid
     );
   }
   saveResponsedata: any;
@@ -463,6 +472,7 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   view() {
+    this.billingService.setActiveLink(true);
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);

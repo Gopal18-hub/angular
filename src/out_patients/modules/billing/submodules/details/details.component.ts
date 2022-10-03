@@ -256,6 +256,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls['authBy'].disable();
     this.BServiceForm.controls['reason'].disable();
     this.BServiceForm.controls['paymentMode'].disable();
+    this.questions[5].maximum = this.BServiceForm.controls['toDate'].value;
     this.questions[6].minimum = this.BServiceForm.controls['fromDate'].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
@@ -279,8 +280,11 @@ export class DetailsComponent implements OnInit {
         const lookupdata = await this.lookupService.searchPatient(formdata);
         console.log(lookupdata);
         if (lookupdata.length == 1) {
-          if (lookupdata[0] && "maxid" in lookupdata[0]) {
-          }
+          this.BServiceForm.controls['maxid'].setValue(lookupdata[0].maxid);
+        }
+        else if(lookupdata.length > 1)
+        {
+          this.BServiceForm.controls['mobileno'].setValue(lookupdata[0].phone);
         }
       });
   }

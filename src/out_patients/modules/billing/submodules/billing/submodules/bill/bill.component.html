@@ -38,6 +38,7 @@
             >
             <out-patients-referral
               (selectedDoctorEvent)="selectedReferralDoctor($event)"
+              [referralDoctorName]="billingservice.referralDoctor?.name"
             ></out-patients-referral>
           </div>
           <div class="ml-2 mr-2 mb-4 w-auto">
