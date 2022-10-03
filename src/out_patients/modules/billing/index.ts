@@ -131,6 +131,9 @@ import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popup
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
 import { Form60YesOrNoComponent } from "./submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/discount-reason/staff-dept-dialog/staff-dept-dialog.component";
+
+import { DragDropModule } from "@angular/cdk/drag-drop";
+
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -261,6 +264,7 @@ import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/di
     EmptyPlaceholderModule,
     MaxHealthSnackBarModule,
     ReferralModule,
+    DragDropModule,
   ],
   exports: [],
   providers: [],

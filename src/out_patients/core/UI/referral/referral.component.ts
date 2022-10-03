@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 
 @Component({
   selector: "out-patients-referral",
@@ -8,7 +8,7 @@ import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 export class ReferralComponent implements OnInit {
   arrowIcon = "arrow_drop_down";
 
-  referralDoctorName: string = "";
+  @Input() referralDoctorName: string = "";
 
   @Output() selectedDoctorEvent: EventEmitter<any> = new EventEmitter();
 
