@@ -23,6 +23,7 @@ export class SpecializationService {
   }
 
   async getdoctorlistonSpecialization(specializationId: number) {
+    if (!specializationId) return;
     if (this.specializationDocotorsList[specializationId.toString()]) {
       return this.specializationDocotorsList[specializationId.toString()];
     } else {

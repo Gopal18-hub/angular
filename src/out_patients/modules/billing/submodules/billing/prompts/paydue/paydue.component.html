@@ -45,8 +45,8 @@
     color="primary"
     class="font-sm min-width-initial"
     type="button"
-    mat-dialog-close
     [disabled]="!skipReason"
+    (click)="saveReason()"
   >
     Save
   </button>

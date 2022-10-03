@@ -156,6 +156,7 @@ export class DisountReasonComponent implements OnInit {
         style: {
           width: "8rem",
         },
+        moreOptions: {},
       },
       value: {
         title: "Value Based",
@@ -237,6 +238,30 @@ export class DisountReasonComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
+      if (res.data.col == "head") {
+        const filterData = this.discReasonList.filter(
+          (rl: any) => rl.mainhead == res.$event.value
+        );
+        let options = filterData.map((a) => {
+          return { title: a.name, value: a.id, discountPer: a.discountPer };
+        });
+        this.discAmtFormConfig.columnsInfo.reason.moreOptions[res.data.index] =
+          options;
+      } else if (res.data.col == "reason") {
+        const existReason: any = this.discReasonList.find(
+          (rl: any) => rl.id == res.$event.value
+        );
+        let item =
+          this.calculateBillService.discountSelectedItems[res.data.index];
+        const price = item.price;
+        const discAmt = (price * existReason.discountPer) / 100;
+        item.disc = existReason.discountPer;
+        item.discAmt = discAmt;
+        item.totalAmt = price - discAmt;
+        this.calculateBillService.discountSelectedItems[res.data.index] = item;
+      }
+    });
     this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
       if (val) {
         const existReason: any = this.discReasonList.find(
@@ -360,8 +385,10 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const selecetdServices: any = Object.values(this.serviceBasedList);
+    let k = 0;
     for (let i = 0; i < selecetdServices.length; i++) {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
+        k++;
         let item = selecetdServices[i].items[j];
         let price = item.price * item.qty;
         const discAmt = (price * existReason.discountPer) / 100;
@@ -381,6 +408,8 @@ export class DisountReasonComponent implements OnInit {
           discTypeValue: "On-Item",
           reasonTitle: existReason.name,
         };
+        this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
+          this.discAmtFormConfig.columnsInfo.reason.options;
         this.calculateBillService.discountSelectedItems.push(temp);
       }
     }
@@ -416,6 +445,8 @@ export class DisountReasonComponent implements OnInit {
         discTypeValue: "On-Service",
         reasonTitle: existReason.name,
       };
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
+        this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
     }
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
@@ -456,7 +487,10 @@ export class DisountReasonComponent implements OnInit {
       discTypeValue: "On-Bill",
       reasonTitle: existReason.name,
     };
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+      this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
+
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
