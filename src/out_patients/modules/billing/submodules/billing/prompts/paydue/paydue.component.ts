@@ -30,8 +30,10 @@ export class PaydueComponent implements OnInit {
   ngOnInit(): void {}
 
   paynow() {
-    this.router.navigate(["details"], {
-      queryParams: { maxId: this.data.maxId },
-    });
+    this.dialogRef.close({ paynow: true });
+  }
+
+  saveReason() {
+    this.dialogRef.close({ skipReason: this.skipReason });
   }
 }

@@ -55,8 +55,8 @@ export class BillPaymentDialogComponent implements OnInit {
   config = {
     paymentmethods: [
       "cash",
-      "cheque",
       "credit",
+      "cheque",
       "demand",
       "mobilepayment",
       "onlinepayment",
@@ -117,18 +117,17 @@ export class BillPaymentDialogComponent implements OnInit {
     });
   }
 
-  makeBill() {
-    if ((this.data.name = "MiscBilling")) {
+  async makeBill() {
+    if (this.data.name == "MiscBilling") {
       this.dialogRef.close({ data: "MakeBill" });
       return;
     }
-    this.billingService.makeBill().subscribe((res) => {
-      if (res.length > 0) {
-        if (res[0].billNo) {
-          this.dialogRef.close(res[0]);
-        }
+    const res = await this.billingService.makeBill(this.paymentmethod);
+    if (res.length > 0) {
+      if (res[0].billNo) {
+        this.dialogRef.close(res[0]);
       }
-    });
+    }
   }
 
   breakupTotal() {

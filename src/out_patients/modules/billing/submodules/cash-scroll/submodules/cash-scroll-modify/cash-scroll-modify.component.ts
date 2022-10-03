@@ -26,6 +26,9 @@ export class CashScrollModifyComponent implements OnInit {
   billList: getERPscrollDetailDtoInterface[] = [];
   differ!: KeyValueDiffer<any, any>;
   ackdetailsreqbody: AckDetailsForScrollModel = new AckDetailsForScrollModel();
+  lastUpdatedBy: string = this.cookie.get("UserName");
+  currentTime: string = new Date().toLocaleString();
+  moment = moment;
   cashscrollModifyData = {
     type: "object",
     title: "",
@@ -489,7 +492,7 @@ export class CashScrollModifyComponent implements OnInit {
     private http: HttpClient,
     private datepipe: DatePipe,
     private differservice: KeyValueDiffers,
-    private cookie: CookieService,
+    public cookie: CookieService,
     private reportService: ReportService,
     private route: ActivatedRoute
   ) {}
@@ -579,7 +582,7 @@ export class CashScrollModifyComponent implements OnInit {
       this.modifybtn = true;
       this.makereadonly = true;
       this.display = false;
-      this.dialogservice.info('Scroll has been modified');
+      // this.dialogservice.info('Scroll has been modified');
     }
         this.cashscrollmodifyForm.controls["employeename"].setValue(
           this.scrolldataObject.getERPscrollMainDto[0].name
@@ -644,12 +647,21 @@ export class CashScrollModifyComponent implements OnInit {
       if(item.billno == value || item.receiptNo == value)
       {
         item.forclr = 'rowcolorchange';
+        // var tab = document.getElementsByTagName('tr');
+        // var cls = document.getElementsByClassName('rowcolorchange');
+        // setTimeout(() => {
+        //   tab[item.sno - 1].scrollIntoView({
+        //     behavior: 'smooth',
+        //     block: 'center'
+        //   })
+        // }, 100);
       }
       else
       {
         item.forclr = '';
       }
     })
+
   }
   isNull(value: any)
   {
@@ -785,28 +797,28 @@ export class CashScrollModifyComponent implements OnInit {
       }
 
       //cheque
-      if(Number(item.modifiedCheqAmt) > 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
+      if(Number(item.modifiedCheqAmt) != 0 && (item.chequeNo == '' || item.chequeNo == null || Number(item.chequeNo) == 0))
       {
         chequeflag = 1;
         billforcheque = item.billno;
       }
 
       //credit card
-      if(Number(item.modifiedCCAmt) > 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
+      if(Number(item.modifiedCCAmt) != 0 && (item.batchno == '' || item.batchno == null || Number(item.batchno) == 0))
       {
         ccflag = 1;
         billforcc = item.billno;
       }
 
       //DD
-      if(Number(item.modifiedDDAmt) > 0 && (item.ddnumber == '' || item.ddnumber == null || Number(item.ddnumber) == 0))
+      if(Number(item.modifiedDDAmt) != 0 && (item.ddnumber == '' || item.ddnumber == null || Number(item.ddnumber) == 0))
       {
         ddflag = 1;
         billfordd = item.billno;
       }
 
       //Online
-      if(Number(item.modifiedOnlinePayment) > 0 && (item.onlinePaymentDetails == '' || item.onlinePaymentDetails == null || Number(item.onlinePaymentDetails) == 0))
+      if(Number(item.modifiedOnlinePayment) != 0 && (item.onlinePaymentDetails == '' || item.onlinePaymentDetails == null || Number(item.onlinePaymentDetails) == 0))
       {
         onlineflag = 1;
         billforonline = item.billno;

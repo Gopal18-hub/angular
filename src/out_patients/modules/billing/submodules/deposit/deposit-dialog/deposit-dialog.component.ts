@@ -17,6 +17,7 @@ import { PatientIdentityInfoComponent } from "@core/UI/billing/submodules/patien
 import { PaymentMethodsComponent } from "@core/UI/billing/submodules/payment-methods/payment-methods.component";
 import { FormSixtyComponent } from "@core/UI/billing/submodules/form60/form-sixty.component";
 import { DepositService } from "@core/services/deposit.service";
+import { DepositSuccessComponent } from "../deposit-success/deposit-success.component";
 
 @Component({
   selector: "out-patients-deposit-dialog",
@@ -47,9 +48,10 @@ export class DepositDialogComponent implements OnInit {
   makedepositdialogForm!: FormGroup;
   questions: any;
   
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
+
 
 
   
@@ -179,7 +181,16 @@ export class DepositDialogComponent implements OnInit {
             if(resultData[0].returnFlag == 0){
               this.matDialog.closeAll();
               this.dialogRef.close("Success");
-              this.messageDialogService.success("Deposit Has Been Successfully Saved");            
+              let savedepositdialog = this.matDialog.open(
+                DepositSuccessComponent,
+                {
+                  width: "30vw",          
+                  data: {
+                    message: "Deposit Has Been Successfully Saved"                 
+                    },
+                }
+              );
+                       
             }else
            {
              const temp =  resultData[0].returnMessageDeposit.split(/\r\n/);
