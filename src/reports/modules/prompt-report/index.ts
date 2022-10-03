@@ -4,7 +4,7 @@ import { BasicComponent } from "./submodules/basic/basic.component";
 import { PromptReportRoutingModule } from "./routes";
 import { MaxHealthTableModule } from "@shared/ui/table";
 import { DynamicFormsModule } from "@shared/ui/dynamic-forms";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatToolbarModule } from "@angular/material/toolbar";
@@ -30,5 +30,6 @@ import { MatTabsModule } from "@angular/material/tabs";
     MatToolbarModule,
     MatTabsModule,
   ],
+  providers: [DatePipe],
 })
 export class PromptReportModule {}

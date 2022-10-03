@@ -18,6 +18,7 @@ import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BillingStaticConstants } from "../../../../BillingStaticConstant";
+import { SpecializationService } from "../../../../specialization.service";
 
 @Component({
   selector: "out-patients-investigations",
@@ -123,7 +124,8 @@ export class InvestigationsComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -141,6 +143,10 @@ export class InvestigationsComponent implements OnInit {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
     this.data = this.billingService.InvestigationItems;
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.getServiceTypes();
     this.getSpecialization();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -169,7 +175,6 @@ export class InvestigationsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
-      console.log(res);
       if (
         "patient_Instructions" in res.element.billItem &&
         res.element.billItem.patient_Instructions
@@ -188,8 +193,6 @@ export class InvestigationsComponent implements OnInit {
       }
     });
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
-      console.log(this.tableRows.tableForm);
-      console.log(this.tableRows.tableForm.value);
       if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -202,6 +205,12 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.doctorID = res.$event.value;
+        const findDoctor = this.config.columnsInfo.doctorName.moreOptions[
+          res.data.index
+        ].find((doc: any) => doc.value == res.$event.value);
+        this.billingService.InvestigationItems[
+          res.data.index
+        ].billItem.procedureDoctor = findDoctor.title;
       } else if (res.data.col == "priority") {
         if (this.data.length == 1) {
           this.defaultPriorityId = res.$event.value;
@@ -283,31 +292,18 @@ export class InvestigationsComponent implements OnInit {
           return { title: r.name, value: r.id };
         });
       });
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      this.config.columnsInfo.specialisation.options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
-      });
-    });
+    this.config.columnsInfo.specialisation.options =
+      this.specializationService.specializationData;
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getdoctorlistonSpecialization(
+        clinicSpecializationId
+      );
   }
 
   getServiceTypes() {
@@ -405,25 +401,53 @@ export class InvestigationsComponent implements OnInit {
       );
       return;
     }
-    await this.billingService.processInvestigationAdd(
-      priorityId,
+    this.checkPatientSex(
+      this.formGroup.value.investigation.value,
+      this.billingService.activeMaxId.gender,
       this.formGroup.value.serviceType ||
         this.formGroup.value.investigation.serviceid,
-      this.formGroup.value.investigation
+      "1",
+      priorityId
     );
-
-    if (
-      "item_Instructions" in this.formGroup.value.investigation &&
-      this.formGroup.value.investigation.item_Instructions
-    ) {
-      this.messageDialogService.info(
-        this.formGroup.value.investigation.item_Instructions
-      );
-    }
-
-    this.data = [...this.billingService.InvestigationItems];
-    this.formGroup.reset();
   }
+
+  checkPatientSex(
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string,
+    priorityId: number
+  ) {
+    this.http
+      .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
+      .subscribe(async (res) => {
+        if (res == 1) {
+          await this.billingService.processInvestigationAdd(
+            priorityId,
+            this.formGroup.value.serviceType ||
+              this.formGroup.value.investigation.serviceid,
+            this.formGroup.value.investigation
+          );
+          if (
+            "item_Instructions" in this.formGroup.value.investigation &&
+            this.formGroup.value.investigation.item_Instructions
+          ) {
+            this.messageDialogService.info(
+              this.formGroup.value.investigation.item_Instructions
+            );
+          }
+
+          this.data = [...this.billingService.InvestigationItems];
+          this.formGroup.reset();
+        } else {
+          this.messageDialogService.error(
+            "This plan can not assign for this sex"
+          );
+          this.formGroup.reset();
+        }
+      });
+  }
+
   goToBill() {
     this.router.navigate(["../bill"], {
       queryParamsHandling: "merge",

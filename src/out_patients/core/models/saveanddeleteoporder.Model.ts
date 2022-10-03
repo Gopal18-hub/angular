@@ -2,14 +2,14 @@ export class SaveandDeleteOpOrderRequest {
   flag: number;
   maxid: string;
   reqItemDetail: string;
-  opOrderRequestId: number;
+  opOrderRequestId: string;
   userId: number;
   hsplocationid: number;
   constructor(
     flag: number,
     maxid: string,
     reqItemDetail: string,
-    opOrderRequestId: number,
+    opOrderRequestId: string,
     userId: number,
     hsplocationid: number
   ) {
