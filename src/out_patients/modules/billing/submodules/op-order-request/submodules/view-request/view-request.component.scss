@@ -1,9 +1,4 @@
 .sub-bill-overall {
-  ::ng-deep .max-table-wrapper {
-    table {
-      width: 110% !important;
-    }
-  }
   .w-12 {
     width: 12%;
   }
@@ -80,13 +75,26 @@
       margin-bottom:2px !important
   }
 }
-// ::ng-deep .max-table-wrapper table{
-//   tr.unclickable{
-//       background-color: #fff !important;
-//       pointer-events: none;
-//        }
-// }
+.table{
+  ::ng-deep .max-table-wrapper table{
+    tr.unclickable{
+      // opacity:0.8;
+      //  background-color: #fff !important;
+        td:nth-child(1){
+          opacity: 0.5;
+          pointer-events: none;
+        }
+       
+         }
+        
+  }
+}
+
 
 .gridheight{
   height:85%;
 }
+// ::ng-deep ::-webkit-scrollbar-thumb {
+//          // background-color: #35b6b4;
+//           border-radius: 0 0 4px 0;
+//       }

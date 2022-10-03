@@ -68,8 +68,18 @@
             </maxhealth-question>
           </div> -->
           <mat-label class="max-health-primary-color mr-1"
-            >Company <span class="txt-blue"><a> IOM</a></span></mat-label
+          >Company
+          <button
+            mat-button
+            class="iom-button"
+            [disabled]="!miscForm.value.company"
+            (click)="openIOM()"
           >
+            <i class="iom-color">IOM</i>
+          </button>
+          <!-- <span class="iom-message font-semi-bold font-xs" [hidden]="!miscForm.value.company">{{billingService.iomMessage}}</span> -->
+          </mat-label
+        >
           <div class="width-13 bg-white mr-2">
             <maxhealth-question
               [question]="questions[2]"

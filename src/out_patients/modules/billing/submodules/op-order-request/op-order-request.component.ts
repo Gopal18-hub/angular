@@ -13,6 +13,7 @@ import { ActivatedRoute } from "@angular/router";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { DMSComponent } from "../../../registration/submodules/dms/dms.component";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
+import { PatientService } from "@core/services/patient.service";
 
 import {
   MatDialog,
@@ -28,6 +29,7 @@ import { AppointmentSearchComponent } from "../billing/prompts/appointment-searc
 import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { SimilarPatientDialog } from "../billing/billing.component";
 import { Router } from "@angular/router";
+import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 @Component({
   selector: "out-patients-op-order-request",
   templateUrl: "./op-order-request.component.html",
@@ -109,6 +111,13 @@ export class OpOrderRequestComponent implements OnInit {
   moment = moment;
 
   narrationAllowedLocations = ["67", "69"];
+  noteRemarkdb: any;
+  vipdb: any;
+  hwcRemarkdb: any;
+  hotlistReasondb: any;
+  hotlistRemarkdb: any;
+  bplcardNo: any;
+  bplCardAddress: any;
 
   constructor(
     public matDialog: MatDialog,
@@ -119,14 +128,24 @@ export class OpOrderRequestComponent implements OnInit {
     private route: ActivatedRoute,
     private billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
-    private router: Router
+    private router: Router,
+    private patientservice: PatientService
   ) {}
 
   ngOnInit(): void {
     // this.getAllCompany();
-    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
-      window.location.reload;
+    this.billingService.activeLink.subscribe((data) => {
+      console.log(data);
+      if (data == true) {
+        this.activeLink = this.links[1];
+      }
     });
+    this.router
+      .navigate(["out-patient-billing/op-order-request/services"])
+      .then(() => {
+        window.location.reload;
+      });
+    this.activeLink = this.links[0];
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
@@ -253,6 +272,7 @@ export class OpOrderRequestComponent implements OnInit {
               );
               this.patientDetails = resultData;
               this.patient = true;
+              this.getPatientIcon();
               this.setValuesToForm(this.patientDetails);
             } else {
               this.snackbar.open("Invalid Max ID", "error");
@@ -311,7 +331,59 @@ export class OpOrderRequestComponent implements OnInit {
     this.questions[2].readonly = true;
   }
 
-  doCategoryIconAction(icon: any) {}
+  patientDetailsforicon!: PatientDetails;
+  getPatientIcon() {
+    let iacode = this.formGroup.value.maxid.split(".")[0];
+    let regNumber = this.formGroup.value.maxid.split(".")[1];
+    this.http
+      .get(ApiConstants.patientDetails(regNumber, iacode))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: PatientDetails) => {
+          // this.clear();
+          this.patientDetailsforicon = resultData;
+          this.noteRemarkdb = resultData.notereason;
+          this.vipdb = resultData.vipreason;
+          this.hwcRemarkdb = resultData.hwcRemarks;
+          this.hotlistReasondb = resultData.hotlistreason;
+          this.hotlistRemarkdb = resultData.hotlistcomments;
+          this.bplcardNo = resultData.bplcardNo;
+          this.bplCardAddress = resultData.addressOnCard;
+          this.categoryIcons = this.patientservice.getCategoryIconsForPatient(
+            this.patientDetailsforicon
+          );
+        },
+        (error) => {}
+      );
+  }
+  doCategoryIconAction(categoryIcon: any) {
+    const data: any = {
+      note: {
+        notes: this.noteRemarkdb,
+      },
+      vip: {
+        notes: this.vipdb,
+      },
+      hwc: {
+        notes: this.hwcRemarkdb,
+      },
+      ppagerNumber: {
+        bplCardNo: this.bplcardNo,
+        BPLAddress: this.bplCardAddress,
+      },
+      hotlist: {
+        hotlistTitle: this.hotlistReasondb,
+        reason: this.hotlistRemarkdb,
+      },
+    };
+    if (
+      categoryIcon.tooltip != "CASH" &&
+      categoryIcon.tooltip != "INS" &&
+      categoryIcon.tooltip != "PSU"
+    ) {
+      this.patientservice.doAction(categoryIcon.type, data[categoryIcon.type]);
+    }
+  }
 
   appointmentSearch() {
     const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
@@ -382,10 +454,13 @@ export class OpOrderRequestComponent implements OnInit {
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
-      window.location.reload;
-    });
-    // this.activeLink = this.links[0];
+    this.router
+      .navigate(["out-patient-billing/op-order-request/services"])
+      .then(() => {
+        window.location.reload;
+      });
+    this.billingService.setActiveLink(false);
+    this.activeLink = this.links[0];
   }
 
   getAllCorporate() {
