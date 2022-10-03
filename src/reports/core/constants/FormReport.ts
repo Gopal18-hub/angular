@@ -28,7 +28,6 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          
         },
         EquipToDate: {
           type: "date",
@@ -99,6 +98,7 @@ export namespace FormReport {
         },
         RepType: {
           type: "radio",
+          defaultValue: "",
           options: [
             { title: "OP", value: "OP" },
             { title: "PreAdmission", value: "PreAdmission" },
@@ -148,13 +148,13 @@ export namespace FormReport {
       // todate: moment("dd/MM/YYYY"),
       properties: {
         FromDate: {
-          type: "hidden",
-          defaultValue: moment().format("DD/MM/YYYY"),
-          // format: moment("dd/MM/YYYY"),
-        },
-        todate: {
           type: "date",
           title: "Date",
+        },
+        todate: {
+          type: "hidden",
+          defaultValue: moment().format("MM/DD/YYYY"),
+          // format: moment("dd/MM/YYYY"),
         },
         locationID: {
           type: "dropdown",
@@ -170,11 +170,22 @@ export namespace FormReport {
             },
           },
         },
+        locationName: {
+          type: "hidden",
+          defaultValue: MaxHealthStorage.getCookie("Location"),
+          optionsModelConfig: {
+            uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
+            fields: {
+              title: "name",
+              value: "name",
+            },
+          },
+        },
       },
     },
     form: {
       layout: {
-        LocationName: "w-screen",
+        locationID: "w-screen",
       },
       actionItems: [
         {

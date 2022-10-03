@@ -67,43 +67,100 @@
     }
     tbody tr td:nth-child(5)
     {
-        padding-right: 5rem !important;
+        padding-right: 1rem !important;
     }
     tbody tr td:nth-child(6){
-        padding-right: 5rem !important;
+        padding-right: 1.8rem !important;
     }
     tbody tr td:nth-child(7){
-        padding-right: 3rem !important;
+        padding-right: 1.8rem !important;
     }
     tbody tr td:nth-child(8){
          padding-right: 2rem !important;
     }
     
-    tbody tr td:nth-child(13),
-    tbody tr td:nth-child(12){
+    tbody tr td:nth-child(13)
+   {
         
         padding-right: 3rem !important;
     }
     tbody tr td:nth-child(9){
-        padding-right: 5rem !important;
+        padding-right: 2rem !important;
     }
-    tbody tr td:nth-child(10),
-    tbody tr td:nth-child(11),
-
+    tbody tr td:nth-child(10){
+        padding-right: 2.4rem !important;
+    }
+   
     tbody tr td:nth-child(14)
     {
-        padding-right: 4rem !important;
+        padding-right: 2.5rem !important;
     }
-    tbody tr td:nth-child(15),
+    tbody tr td:nth-child(12),
+    tbody tr td:nth-child(13)
+    {
+        padding-right: 2rem !important;
+    }
+    
+    tbody tr td:nth-child(19),
     tbody tr td:nth-child(16),
+    tbody tr td:nth-child(15),
+        tbody tr td:nth-child(22)
+        {
+        padding-right: 2.5rem !important;
+    }
+   
     tbody tr td:nth-child(17),
     tbody tr td:nth-child(18),
-    tbody tr td:nth-child(19),
     tbody tr td:nth-child(20),
-    tbody tr td:nth-child(21),
-    tbody tr td:nth-child(22)
+    tbody tr td:nth-child(21)
+   
     {
         padding-right: 3rem !important;
+    }
+
+    tbody tr td:nth-child(11){
+        padding-right: 1rem !important;
+    }
+    tbody tr td:nth-child(11){
+        padding-right: 1rem !important;
+    }
+    
+    thead tr th:nth-child(12),
+    thead tr th:nth-child(14){
+        padding-left: 5rem;
+    }
+    
+    thead tr th:nth-child(13){
+        padding-left: 4rem;
+    }
+    thead tr th:nth-child(5),
+    thead tr th:nth-child(11)
+    {
+        padding-left: 3.3rem;
+    }
+    thead tr th:nth-child(6)
+    {
+        padding-left:4.4rem;
+    }
+    thead tr th:nth-child(7),
+    thead tr th:nth-child(8)
+    {
+        padding-left: 1rem;
+    }
+    thead tr th:nth-child(9),
+    thead tr th:nth-child(15){
+        padding-left: 2rem;
+    }
+    thead tr th:nth-child(10)
+    {
+        padding-left: 1rem;
+    }
+    
+    thead tr th:nth-child(19),
+    thead tr th:nth-child(20),
+    thead tr th:nth-child(21),
+    thead tr th:nth-child(22){
+        padding-left: 1.5rem;
     }
 }
 }  
