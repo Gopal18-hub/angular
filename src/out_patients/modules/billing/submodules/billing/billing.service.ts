@@ -68,6 +68,8 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   companyData: any = [];
   iomMessage: string = "";
+  activeLink = new Subject<any>();
+  disableServiceTab: boolean = false;
 
   maxIdEventFinished = new Subject<any>();
 
@@ -337,6 +339,10 @@ export class BillingService {
       regNumber: regNumber,
       gender: genderName,
     };
+  }
+  setActiveLink(value: boolean) {
+    //  this.disableServiceTab=value;
+    this.activeLink.next(value);
   }
 
   deleteFromService(billItem: any) {

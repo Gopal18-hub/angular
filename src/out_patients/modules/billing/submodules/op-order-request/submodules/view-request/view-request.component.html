@@ -10,8 +10,8 @@
     </div>
     
   </div>
-  <div class="mt-1 w-full sub-bill-ovrall-table gridheight mb-2 ">
-    <maxhealth-table [config]="config" [data]="data" #table class="gridcheckbox-margin-bottom"(columnClick)="columnClick($event)"></maxhealth-table>
+  <div class="mt-1 w-full sub-bill-ovrall-table gridheight mb-2 " *ngIf="showtable">
+    <maxhealth-table [config]="config" [data]="data" #table class="gridcheckbox-margin-bottom table"(columnClick)="columnClick($event)"></maxhealth-table>
   </div>
 
 </div>
