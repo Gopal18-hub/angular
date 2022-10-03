@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MiscService } from '@modules/billing/submodules/miscellaneous-billing/MiscService.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
-  selector: 'out-patients-deposit-details',
-  templateUrl: './deposit-details.component.html',
-  styleUrls: ['./deposit-details.component.scss']
+  selector: "out-patients-deposit-details",
+  templateUrl: "./deposit-details.component.html",
+  styleUrls: ["./deposit-details.component.scss"],
 })
 export class DepositDetailsComponent implements OnInit {
   @ViewChild("depoTable") depoTable: any;
@@ -16,55 +16,63 @@ export class DepositDetailsComponent implements OnInit {
   tempTable: any = [];
   depoDetails: any = [];
   calcBillData: any = [];
-  enableSubmit = false;
   config: any = {
     actionItems: false,
-    dateformat: 'dd/MM/yyyy hh:mm:ss a',
+    dateformat: "dd/MM/yyyy hh:mm:ss a",
     selectBox: true,
-    displayedColumns: ['datetime', 'advanceType', 'receiptno', 'takenBy', 'balAmount'],
+    displayedColumns: [
+      "datetime",
+      "advanceType",
+      "receiptno",
+      "takenBy",
+      "balAmount",
+    ],
     clickedRows: true,
     //clickSelection: "single",
     columnsInfo: {
       datetime: {
-        title: 'Date and Time',
-        type: 'date',
+        title: "Date and Time",
+        type: "date",
       },
       advanceType: {
-        title: 'Deposit Head',
-        type: 'string',
+        title: "Deposit Head",
+        type: "string",
       },
       receiptno: {
-        title: 'Receipt No.',
-        type: 'string',
+        title: "Receipt No.",
+        type: "string",
       },
       takenBy: {
-        title: 'Deposit Taken By',
-        type: 'string',
+        title: "Deposit Taken By",
+        type: "string",
       },
       balAmount: {
-        title: 'Amount Available',
-        type: 'string',
+        title: "Amount Available",
+        type: "string",
         style: {
-          width: "10rem"
-        }
+          width: "10rem",
+        },
       },
-    }
-  }
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<DepositDetailsComponent>, private miscPatient: MiscService,) { }
+    },
+  };
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<DepositDetailsComponent>,
+    private miscPatient: MiscService
+  ) { }
 
   ngOnInit(): void {
     setTimeout(() => {
-      console.log(this.data, "depo")
+      console.log(this.data, "depo");
       this.depoDetails = this.data.data;
 
-      this.depoDetails
+      this.depoDetails;
       this.depoDetails.forEach((e: any) => {
         e.balAmount = Number(e.balanceamount).toFixed(2);
         e.balanceamount = e.balanceamount;
-      })
+      });
       this.depoDetails = [...this.depoDetails];
-
-    })
+    });
   }
   ngAfterViewInit(): void {
     this.depoTable.selection.clear();
@@ -72,24 +80,15 @@ export class DepositDetailsComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         if (this.depoTable.selection.selected.length > 0) {
-          this.enableSubmit = true;
           this.tableSelectedRows = this.depoTable.selection.selected;
-        }
-        else {
-          this.enableSubmit = false;
         }
         this.tableSelectedRows.forEach((element: any) => {
           this.totalDeposit += element.balanceamount;
         });
         this.tempTable = this.tableSelectedRows;
-
-
-
-      })
+      });
   }
-  listRowClick() {
-
-  }
+  listRowClick() { }
 
   submit() {
     this.dialogRef.close({ data: this.tempTable });

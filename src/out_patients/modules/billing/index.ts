@@ -129,11 +129,14 @@ import { PrintduereceiptComponent } from "./submodules/details/printduereceipt/p
 import { ReferralModule } from "@core/ui/referral";
 import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popuptext.component";
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
-import { Form60YesOrNoComponent } from './submodules/deposit/form60-dialog/form60-yes-or-no.component';
-import { MiscCreditDetailsComponent } from './submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component';
+import { Form60YesOrNoComponent } from "./submodules/deposit/form60-dialog/form60-yes-or-no.component";
+import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/discount-reason/staff-dept-dialog/staff-dept-dialog.component";
+
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
+    BillingStaffDeptDialogComponent,
     BillingPaymentMethodsComponent,
     BillForm60Component,
     BillPaymentDialogComponent,
@@ -233,7 +236,6 @@ import { MiscCreditDetailsComponent } from './submodules/miscellaneous-billing/b
     PopuptextComponent,
     ServicetaxPopupComponent,
     Form60YesOrNoComponent,
-    MiscCreditDetailsComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -262,6 +264,7 @@ import { MiscCreditDetailsComponent } from './submodules/miscellaneous-billing/b
     EmptyPlaceholderModule,
     MaxHealthSnackBarModule,
     ReferralModule,
+    DragDropModule,
   ],
   exports: [],
   providers: [],
