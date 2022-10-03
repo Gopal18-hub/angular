@@ -131,6 +131,7 @@ import { PopuptextComponent } from "./submodules/billing/prompts/popuptext/popup
 import { ServicetaxPopupComponent } from "./submodules/op-order-request/submodules/services/submodules/procedure-other/servicetax-popup/servicetax-popup.component";
 import { Form60YesOrNoComponent } from "./submodules/deposit/form60-dialog/form60-yes-or-no.component";
 import { BillingStaffDeptDialogComponent } from "./submodules/billing/prompts/discount-reason/staff-dept-dialog/staff-dept-dialog.component";
+import { MiscCreditDetailsComponent } from './submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component';
 
 import { DragDropModule } from "@angular/cdk/drag-drop";
 
@@ -236,6 +237,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
     PopuptextComponent,
     ServicetaxPopupComponent,
     Form60YesOrNoComponent,
+    MiscCreditDetailsComponent,
   ],
   imports: [
     BillingRoutingModule,
@@ -270,4 +272,4 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
   providers: [],
   bootstrap: [],
 })
-export class BillingModule {}
+export class BillingModule { }
