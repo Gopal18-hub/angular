@@ -270,4 +270,4 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
   providers: [],
   bootstrap: [],
 })
-export class BillingModule { }
+export class BillingModule {}

@@ -401,25 +401,53 @@ export class InvestigationsComponent implements OnInit {
       );
       return;
     }
-    await this.billingService.processInvestigationAdd(
-      priorityId,
+    this.checkPatientSex(
+      this.formGroup.value.investigation.value,
+      this.billingService.activeMaxId.gender,
       this.formGroup.value.serviceType ||
         this.formGroup.value.investigation.serviceid,
-      this.formGroup.value.investigation
+      "1",
+      priorityId
     );
-
-    if (
-      "item_Instructions" in this.formGroup.value.investigation &&
-      this.formGroup.value.investigation.item_Instructions
-    ) {
-      this.messageDialogService.info(
-        this.formGroup.value.investigation.item_Instructions
-      );
-    }
-
-    this.data = [...this.billingService.InvestigationItems];
-    this.formGroup.reset();
   }
+
+  checkPatientSex(
+    testId: string,
+    gender: string,
+    serviceId: string,
+    type: string,
+    priorityId: number
+  ) {
+    this.http
+      .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
+      .subscribe(async (res) => {
+        if (res == 1) {
+          await this.billingService.processInvestigationAdd(
+            priorityId,
+            this.formGroup.value.serviceType ||
+              this.formGroup.value.investigation.serviceid,
+            this.formGroup.value.investigation
+          );
+          if (
+            "item_Instructions" in this.formGroup.value.investigation &&
+            this.formGroup.value.investigation.item_Instructions
+          ) {
+            this.messageDialogService.info(
+              this.formGroup.value.investigation.item_Instructions
+            );
+          }
+
+          this.data = [...this.billingService.InvestigationItems];
+          this.formGroup.reset();
+        } else {
+          this.messageDialogService.error(
+            "This plan can not assign for this sex"
+          );
+          this.formGroup.reset();
+        }
+      });
+  }
+
   goToBill() {
     this.router.navigate(["../bill"], {
       queryParamsHandling: "merge",

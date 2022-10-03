@@ -32,6 +32,7 @@ import { OnlineAppointmentComponent } from "./prompts/online-appointment/online-
 import { distinctUntilChanged } from "rxjs/operators";
 import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -133,7 +134,8 @@ export class BillingComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     public messageDialogService: MessageDialogService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -145,6 +147,7 @@ export class BillingComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+
     this.route.queryParams.subscribe((params: any) => {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
@@ -159,8 +162,10 @@ export class BillingComponent implements OnInit {
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
         this.links[0].disabled = true;
+        this.links[2].disabled = true;
       } else {
         this.links[0].disabled = false;
+        this.links[2].disabled = false;
       }
     });
     this.billingService.disableBillTabChange.subscribe((res: boolean) => {
@@ -212,6 +217,8 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
     this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
       if (res) {
         this.billingService.makeBillPayload.invoiceType = "B2B";
@@ -515,6 +522,7 @@ export class BillingComponent implements OnInit {
       this.inPatientCheck(resultData.dtPatientPastDetails);
     }
     this.getforonlinebilldetails(iacode, regNumber);
+    this.calculateBillService.depositDetails(iacode, regNumber);
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
@@ -549,7 +557,7 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
-    this.questions[2].readonly = true;
+    //this.questions[2].readonly = true;
   }
 
   onageCalculator(ageDOB = "") {
@@ -562,6 +570,9 @@ export class BillingComponent implements OnInit {
       const diffYears = today.diff(dobRef, "years");
       const diffMonths = today.diff(dobRef, "months");
       const diffDays = today.diff(dobRef, "days");
+      if (diffYears >= 60) {
+        this.calculateBillService.seniorCitizen = true;
+      }
       if (dobRef.date() == today.date() && dobRef.month() == today.month()) {
         this.billingService.todayPatientBirthday = true;
       }
@@ -695,7 +706,18 @@ export class BillingComponent implements OnInit {
           maxId: this.formGroup.value.maxid,
         },
       });
-      await dialogRef.afterClosed().toPromise();
+      const resAction = await dialogRef.afterClosed().toPromise();
+      if (resAction) {
+        if ("paynow" in resAction && resAction.paynow) {
+          this.router.navigate(["/out-patient-billing/details"], {
+            queryParams: { maxID: this.formGroup.value.maxid },
+          });
+          return;
+        }
+        if ("skipReason" in resAction && resAction.skipReason) {
+        }
+      }
+
       this.planDetailsCheck(dtPatientPastDetails);
     } else {
       this.planDetailsCheck(dtPatientPastDetails);
@@ -820,7 +842,7 @@ export class BillingComponent implements OnInit {
       data: {},
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result.showlist) {
+      if (result && result.showlist) {
         let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
           width: "60vw",
           height: "50vh",
@@ -831,6 +853,7 @@ export class BillingComponent implements OnInit {
         uDialogRef.afterClosed().subscribe(async (ures: any) => {
           if (ures.process == 1) {
             if (ures.data.length > 0) {
+              let referalDoctor: any = null;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
                 await this.billingService.processInvestigationAdd(
@@ -840,13 +863,25 @@ export class BillingComponent implements OnInit {
                     title: item.testName,
                     value: item.testID,
                     originalTitle: item.testName,
-                    docRequired: item.doctorid ? true : false,
-                    patient_Instructions: "",
+                    docRequired: item.docRequired ? true : false,
+                    patient_Instructions: item.patient_Instructions,
                     serviceid: item.serviceId,
                     doctorid: item.doctorid,
+                    popuptext: item.popuptext,
+                    precaution: item.precaution,
                   }
                 );
+                if (item.doctorid)
+                  referalDoctor = {
+                    id: item.doctorid,
+                    name: item.docName,
+                    specialisation: "",
+                  };
               }
+              if (referalDoctor) {
+                this.billingService.setReferralDoctor(referalDoctor);
+              }
+              this.billingService.servicesTabStatus.next({ goToTab: 1 });
             }
             this.billingService.unbilledInvestigations = true;
           }
@@ -975,6 +1010,7 @@ export class BillingComponent implements OnInit {
         this.matDialog.open(DMSComponent, {
           width: "100vw",
           maxWidth: "90vw",
+          maxHeight: "80vh",
           data: {
             list: resultData,
             maxid: patientDetails.iacode + "." + patientDetails.registrationno,
@@ -1040,10 +1076,11 @@ export class BillingComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data: GetCompanyDataInterface[]) => {
+      .subscribe((data: any[]) => {
         this.companyData = data;
         this.formGroup.controls["corporate"].disable();
         this.billingService.setCompanyData(data);
+        data.unshift({ name: "Select", id: -1 });
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id, company: a };
         });
