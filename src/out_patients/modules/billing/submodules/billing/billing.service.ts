@@ -615,7 +615,7 @@ export class BillingService {
       cashierId: Number(this.cookie.get("UserId")),
       settledBy: 0,
       settledDateTime: new Date(),
-      cancelledDateTime: "",
+      cancelledDateTime: null,
       cancelledBy: 0,
       doctorId: 1912,
       doctortype: 0,
