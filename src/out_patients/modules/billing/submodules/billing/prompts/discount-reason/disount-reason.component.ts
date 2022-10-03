@@ -385,8 +385,10 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const selecetdServices: any = Object.values(this.serviceBasedList);
+    let k = 0;
     for (let i = 0; i < selecetdServices.length; i++) {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
+        k++;
         let item = selecetdServices[i].items[j];
         let price = item.price * item.qty;
         const discAmt = (price * existReason.discountPer) / 100;
@@ -406,6 +408,8 @@ export class DisountReasonComponent implements OnInit {
           discTypeValue: "On-Item",
           reasonTitle: existReason.name,
         };
+        this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
+          this.discAmtFormConfig.columnsInfo.reason.options;
         this.calculateBillService.discountSelectedItems.push(temp);
       }
     }
@@ -441,6 +445,8 @@ export class DisountReasonComponent implements OnInit {
         discTypeValue: "On-Service",
         reasonTitle: existReason.name,
       };
+      this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
+        this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
     }
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
@@ -481,7 +487,10 @@ export class DisountReasonComponent implements OnInit {
       discTypeValue: "On-Bill",
       reasonTitle: existReason.name,
     };
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+      this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
+
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }

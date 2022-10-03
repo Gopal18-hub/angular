@@ -125,7 +125,7 @@ export class CalculateBillService {
       minWidth: "90vw",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
-      if ("applyDiscount" in res && res.applyDiscount) {
+      if (res && "applyDiscount" in res && res.applyDiscount) {
         this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
         this.discountSelectedItems.forEach((discItem: any) => {
           this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({

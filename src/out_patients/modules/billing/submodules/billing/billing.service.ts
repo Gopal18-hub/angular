@@ -13,6 +13,8 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { DatePipe } from "@angular/common";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { of } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -41,7 +43,9 @@ export class BillingService {
   company: number = 0;
   billtype: string = "cash";
 
-  makeBillPayload: any = BillingStaticConstants.makeBillPayload;
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
 
   patientDetailsInfo: any = [];
 
@@ -76,7 +80,8 @@ export class BillingService {
     private cookie: CookieService,
     private calculateBillService: CalculateBillService,
     public matDialog: MatDialog,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private messageDialogService: MessageDialogService
   ) {}
 
   setBillingFormGroup(formgroup: any, questions: any) {
@@ -116,8 +121,11 @@ export class BillingService {
     this.clearAllItems.next(true);
     this.billNoGenerated.next(false);
     this.servicesTabStatus.next({ clear: true });
-    this.makeBillPayload = BillingStaticConstants.makeBillPayload;
     this.calculateBillService.clear();
+    this.makeBillPayload = JSON.parse(
+      JSON.stringify(BillingStaticConstants.makeBillPayload)
+    );
+    console.log(this.makeBillPayload);
   }
 
   calculateTotalAmount() {
@@ -142,27 +150,6 @@ export class BillingService {
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
-    this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
-      this.totalCost;
-    this.makeBillPayload.ds_paymode.tab_paymentList = [];
-    this.makeBillPayload.ds_paymode.tab_paymentList.push({
-      slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
-      modeOfPayment: "Cash",
-      amount: this.totalCost,
-      flag: 1,
-    });
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
-    this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
-      opbillid: 0,
-      billNo: "",
-      amount: this.totalCost,
-      datetime: new Date(),
-      operatorID: Number(this.cookie.get("UserId")),
-      stationID: Number(this.cookie.get("StationId")),
-      posted: false,
-      hspLocationId: Number(this.cookie.get("HSPLocationId")),
-      recNumber: "",
-    });
   }
 
   setHealthPlan(data: any) {
@@ -634,7 +621,7 @@ export class BillingService {
       cashierId: Number(this.cookie.get("UserId")),
       settledBy: 0,
       settledDateTime: new Date(),
-      cancelledDateTime: new Date(),
+      cancelledDateTime: "",
       cancelledBy: 0,
       doctorId: 1912,
       doctortype: 0,
@@ -700,11 +687,78 @@ export class BillingService {
     return this.patientDetailsInfo;
   }
 
-  makeBill() {
-    return this.http.post(
-      BillingApiConstants.insert_billdetailsgst(),
-      this.makeBillPayload
-    );
+  async makeBill(paymentmethod: any = {}) {
+    if ("tabs" in paymentmethod) {
+      let toBePaid =
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount -
+        (this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount +
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount);
+      let collectedAmount = paymentmethod.tabPrices.reduce(
+        (partialSum: number, a: number) => partialSum + a,
+        0
+      );
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
+        collectedAmount;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
+        toBePaid - collectedAmount;
+      this.makeBillPayload.ds_paymode.tab_paymentList = [];
+      paymentmethod.tabs.forEach((payment: any) => {
+        if (paymentmethod.paymentForm[payment.key].value.price > 0) {
+          this.makeBillPayload.ds_paymode.tab_paymentList.push({
+            slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
+            modeOfPayment: "Cash",
+            amount: paymentmethod.paymentForm[payment.key].value.price,
+            flag: 1,
+          });
+        }
+      });
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
+      this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
+        opbillid: 0,
+        billNo: "",
+        amount: collectedAmount,
+        datetime: new Date(),
+        operatorID: Number(this.cookie.get("UserId")),
+        stationID: Number(this.cookie.get("StationId")),
+        posted: false,
+        hspLocationId: Number(this.cookie.get("HSPLocationId")),
+        recNumber: "",
+      });
+      if (toBePaid > collectedAmount) {
+        const lessAmountWarningDialog = this.messageDialogService.confirm(
+          "",
+          "Do You Want To Save Less Amount ?"
+        );
+        const lessAmountWarningResult = await lessAmountWarningDialog
+          .afterClosed()
+          .toPromise();
+        if (lessAmountWarningResult) {
+          if (lessAmountWarningResult.type == "yes") {
+            // const reasonInfoDialog = this.matDialog.open(
+            //   ReasonForDueBillComponent,
+            //   {
+            //     width: "40vw",
+            //     height: "50vh",
+            //   }
+            // );
+            // const reasonInfoResult = await reasonInfoDialog
+            //   .afterClosed()
+            //   .toPromise();
+            // if (reasonInfoResult) {
+            // } else {
+            //   return;
+            // }
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
+    }
+    return this.http
+      .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
+      .toPromise();
   }
 
   async processProcedureAdd(
