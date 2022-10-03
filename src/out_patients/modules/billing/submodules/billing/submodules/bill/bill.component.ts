@@ -540,13 +540,12 @@ export class BillComponent implements OnInit {
                 this.makereceipt();
               }
             } else {
-              this.billingservice.makeBill().subscribe((res) => {
-                if (res.length > 0) {
-                  if (res[0].billNo) {
-                    this.processBillNo(res[0]);
-                  }
+              const res = await this.billingservice.makeBill();
+              if (res.length > 0) {
+                if (res[0].billNo) {
+                  this.processBillNo(res[0]);
                 }
-              });
+              }
             }
           } else {
           }

@@ -13,6 +13,8 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { DatePipe } from "@angular/common";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { of } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -76,7 +78,8 @@ export class BillingService {
     private cookie: CookieService,
     private calculateBillService: CalculateBillService,
     public matDialog: MatDialog,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private messageDialogService: MessageDialogService
   ) {}
 
   setBillingFormGroup(formgroup: any, questions: any) {
@@ -678,7 +681,7 @@ export class BillingService {
     return this.patientDetailsInfo;
   }
 
-  makeBill(paymentmethod: any = {}) {
+  async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
       let toBePaid =
         this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount -
@@ -715,12 +718,41 @@ export class BillingService {
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         recNumber: "",
       });
+      if (toBePaid > collectedAmount) {
+        const lessAmountWarningDialog = this.messageDialogService.confirm(
+          "",
+          "Do You Want To Save Less Amount ?"
+        );
+        const lessAmountWarningResult = await lessAmountWarningDialog
+          .afterClosed()
+          .toPromise();
+        if (lessAmountWarningResult) {
+          if (lessAmountWarningResult.type == "yes") {
+            // const reasonInfoDialog = this.matDialog.open(
+            //   ReasonForDueBillComponent,
+            //   {
+            //     width: "40vw",
+            //     height: "50vh",
+            //   }
+            // );
+            // const reasonInfoResult = await reasonInfoDialog
+            //   .afterClosed()
+            //   .toPromise();
+            // if (reasonInfoResult) {
+            // } else {
+            //   return;
+            // }
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      }
     }
-
-    return this.http.post(
-      BillingApiConstants.insert_billdetailsgst(),
-      this.makeBillPayload
-    );
+    return this.http
+      .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
+      .toPromise();
   }
 
   async processProcedureAdd(
