@@ -59,7 +59,7 @@ export class DepositDetailsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<DepositDetailsComponent>,
     private miscPatient: MiscService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -88,7 +88,7 @@ export class DepositDetailsComponent implements OnInit {
         this.tempTable = this.tableSelectedRows;
       });
   }
-  listRowClick() { }
+  listRowClick() {}
 
   submit() {
     this.dialogRef.close({ data: this.tempTable });
