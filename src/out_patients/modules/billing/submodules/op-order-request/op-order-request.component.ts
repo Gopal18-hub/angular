@@ -441,6 +441,7 @@ export class OpOrderRequestComponent implements OnInit {
   clear() {
     this.apiProcessing = false;
     this.patient = false;
+    this.categoryIcons = [];
     this.formGroup.reset();
     this.patientName = "";
     this.ssn = "";
