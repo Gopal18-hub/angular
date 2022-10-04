@@ -36,9 +36,9 @@ export class MiscellaneousBillingsComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private db: DbService,
     private Misc: MiscService
-  ) { }
+  ) {}
   categoryIcons: any;
-  doCategoryIconAction(icon: any) { }
+  doCategoryIconAction(icon: any) {}
   @ViewChild("selectedServices") selectedServicesTable: any;
   items: any[] = [];
   addItem(newItem: any) {
@@ -358,7 +358,6 @@ export class MiscellaneousBillingsComponent implements OnInit {
     this.ssn = patientDetails.ssn;
     this.dob =
       "" + this.datepipe.transform(patientDetails.dateOfBirth, "dd/MM/yyyy");
-    this.setCompany(patientDetails);
     this.setCorporate(patientDetails);
   }
 
@@ -487,7 +486,6 @@ export class MiscellaneousBillingsComponent implements OnInit {
       return item.id === id;
     });
   }
-
 
   //Sep 03
 
