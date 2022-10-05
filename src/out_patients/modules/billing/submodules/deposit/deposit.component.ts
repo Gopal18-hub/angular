@@ -863,7 +863,8 @@ export class DepositComponent implements OnInit {
       Iacode: iacode,
       RegistrationNo: regno,
       BillNo: billno,
-    });
+    },"right","center"
+    );
   }
   depositCategoryIconAction(categoryIcon: any) {
     const data: any = {
