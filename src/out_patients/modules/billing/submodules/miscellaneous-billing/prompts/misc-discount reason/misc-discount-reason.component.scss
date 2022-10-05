@@ -1,0 +1,19 @@
+.discount-reason-wrapper{
+    ::ng-deep .mat-raised-button{
+        min-width: fit-content !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+    ::ng-deep .mat-form-field-infix input{
+        color: #000;
+    }
+    .height-3{
+        height: 3rem;
+    }
+    .height-4{
+        height: 4rem;
+    }
+    .gap-5{
+        gap: 0.5rem;
+    }
+}
