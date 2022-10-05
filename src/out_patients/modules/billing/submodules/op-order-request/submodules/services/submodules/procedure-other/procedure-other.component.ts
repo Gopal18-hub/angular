@@ -21,6 +21,7 @@ import {
 import { ServicetaxPopupComponent } from "./servicetax-popup/servicetax-popup.component";
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { Router } from "@angular/router";
+import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -48,6 +49,8 @@ export class OrderProcedureOtherComponent implements OnInit {
   questions: any;
   flag = 0;
   reqItemDetail: string = "";
+  otherserviceId = 0;
+  saveResponsedata: any;
   locationid = Number(this.cookie.get("HSPLocationId"));
   private readonly _destroying$ = new Subject<void>();
 
@@ -120,7 +123,8 @@ export class OrderProcedureOtherComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private opOrderrequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
@@ -134,7 +138,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.opOrderrequestService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
@@ -142,15 +146,16 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
-    this.billingService.ProcedureItems.splice($event.index, 1);
-    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
-      (item: any, index: number) => {
-        item["sno"] = index + 1;
-        return item;
-      }
-    );
-    this.data = [...this.billingService.ProcedureItems];
-    this.billingService.calculateTotalAmount();
+    this.opOrderrequestService.procedureItems.splice($event.index, 1);
+    this.opOrderrequestService.procedureItems =
+      this.opOrderrequestService.procedureItems.map(
+        (item: any, index: number) => {
+          item["sno"] = index + 1;
+          return item;
+        }
+      );
+    this.data = [...this.opOrderrequestService.procedureItems];
+    // this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
@@ -182,6 +187,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
+                  //,
                   this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
@@ -225,7 +231,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           false,
           clinicSpecializationId,
           this.locationid
-          // 67
+          //67
           // Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -311,7 +317,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       }
     }
   }
-  otherserviceId = 0;
+
   add(priorityId = 1) {
     if (
       // this.formGroup.value.otherService.value == undefined ||
@@ -323,9 +329,11 @@ export class OrderProcedureOtherComponent implements OnInit {
       this.otherserviceId = this.formGroup.value.otherService.value;
     }
     this.flag = 0;
-    let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
-      return item.itemid == this.formGroup.value.procedure.value;
-    });
+    let exist = this.opOrderrequestService.procedureItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.procedure.value;
+      }
+    );
     if (exist > -1) {
       this.messageDialogService.error(
         "Procedure already added to the service list"
@@ -368,13 +376,13 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.formGroup.value.procedure.value,
           this.otherserviceId,
           this.cookie.get("HSPLocationId")
-          ///"67"
+          //"67"
           //          this.formGroup.value.otherService.value,
           //        this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
-        this.billingService.addToProcedure({
+        this.opOrderrequestService.addToProcedure({
           sno: this.data.length + 1,
           procedures: this.formGroup.value.procedure.originalTitle,
           qty: 1,
@@ -393,7 +401,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             : false,
         });
 
-        this.data = [...this.billingService.ProcedureItems];
+        this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
       });
   }
@@ -432,7 +440,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     });
     console.log(this.reqItemDetail);
 
-    let maxid = this.billingService.activeMaxId.maxId;
+    let maxid = this.opOrderrequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
 
     return new SaveandDeleteOpOrderRequest(
@@ -440,13 +448,13 @@ export class OrderProcedureOtherComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      // 60926,
-      // 67
+      //  60926,
+      //  67
       userid,
       this.locationid
     );
   }
-  saveResponsedata: any;
+
   save() {
     this.reqItemDetail = "";
     console.log("inside save");
@@ -464,7 +472,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           if (this.saveResponsedata.success == true) {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
-            this.billingService.ProcedureItems = [];
+            this.opOrderrequestService.procedureItems = [];
             this.formGroup.reset();
           }
         });
@@ -472,7 +480,7 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   view() {
-    this.billingService.setActiveLink(true);
+    this.opOrderrequestService.setActiveLink(true);
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);

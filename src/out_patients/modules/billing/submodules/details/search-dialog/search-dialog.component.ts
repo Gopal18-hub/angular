@@ -200,10 +200,17 @@ export class SearchDialogComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     console.log(this.formdata);
-    this.searchform.controls['maxid'].setValue(this.formdata.maxid);
-    this.searchform.controls['mobile'].setValue(this.formdata.mobileno);
-    this.searchform.controls['checkbox'].setValue(this.formdata.check);
-    this.search();
+    if((this.formdata.check != '' && this.formdata.check != null) ||
+    (this.formdata.fromdate != '' && this.formdata.fromdate != undefined) ||
+    this.formdata.maxid != this.cookie.get('LocationIACode')+'.' ||
+    (this.formdata.mobileno != '' && this.formdata.mobileno != null) || 
+    (this.formdata.todate != '' && this.formdata.todate != undefined))
+    {
+      this.searchform.controls['maxid'].setValue(this.formdata.maxid);
+      this.searchform.controls['mobile'].setValue(this.formdata.mobileno);
+      this.searchform.controls['checkbox'].setValue(this.formdata.check);
+      this.search();
+    }
     if(this.formdata.check == false)
     {
       this.searchform.controls['fromdate'].disable();
@@ -218,7 +225,6 @@ export class SearchDialogComponent implements OnInit {
       this.search();
     }
     this.searchform.controls['checkbox'].valueChanges.subscribe(value=>{
-      console.log(value);
       if(value == true)
       {
         this.searchform.controls['fromdate'].enable();
@@ -325,9 +331,16 @@ export class SearchDialogComponent implements OnInit {
         this.SearchApi(regno, iacode);
       }
     }
-    else
+    else if(this.searchform.value.checkbox == false)
     {
-      this.SearchApi(regno, iacode);
+      if(regno != '' ||
+        iacode != '' ||
+        this.searchform.value.mobile != ''
+        )
+        {
+          this.SearchApi(regno, iacode);
+        }
+      
     }
     
   }
@@ -346,10 +359,9 @@ export class SearchDialogComponent implements OnInit {
     ))
     .pipe(takeUntil(this._destroying$))
     .subscribe(res=>{
-      console.log(res);
-      this.getsearchopbillslist = res;
-      if(res.length > 0) 
+      if(res.length > 0 && res != null) 
       {
+        this.getsearchopbillslist = res;
         for(var i = 0 ; i < res.length; i++)
         {
           this.getsearchopbillslist[i].sno = i + 1;
@@ -373,7 +385,6 @@ export class SearchDialogComponent implements OnInit {
         console.log(this.getsearchopbillslist);
       }
     })
-    console.log(this.table);
   }
   clear()
   {
