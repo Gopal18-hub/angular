@@ -452,6 +452,7 @@ export class OderInvestigationsComponent implements OnInit {
   }
 
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    this.reqItemDetail = "";
     this.data.forEach((item: any, index: any) => {
       console.log(item.specialisation);
       if (item.specialisation == "") {
@@ -496,7 +497,7 @@ export class OderInvestigationsComponent implements OnInit {
       this.reqItemDetail,
       "0",
       // 60926,
-      // 67
+      //67
       userid,
       locationid
     );

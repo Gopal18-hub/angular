@@ -19,7 +19,8 @@ import { OpOrderRequestService } from "../../op-order-request.service";
 export class OPOrderViewRequest implements OnInit {
   @ViewChild("table") tableRows: any;
   data: FetchOpOrderrequest[] = [];
-  reqItemDetail = "";
+  reqItemDetail!: string;
+  oporderrequestid!: string;
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -169,19 +170,19 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  oporderrequestid: any = "";
+
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
     this.reqItemDetail = "";
     this.oporderrequestid = "";
     this.tableRows.selection.selected.forEach((item: any, index: any) => {
       if (this.reqItemDetail == "") {
-        this.reqItemDetail = item.itemId;
+        this.reqItemDetail = item.itemId.toString();
       } else {
         this.reqItemDetail = this.reqItemDetail + "~" + item.itemId;
       }
 
       if (this.oporderrequestid == "") {
-        this.oporderrequestid = item.id;
+        this.oporderrequestid = item.id.toString();
       } else {
         this.oporderrequestid = this.oporderrequestid + "," + item.id;
       }
@@ -198,8 +199,8 @@ export class OPOrderViewRequest implements OnInit {
       maxid,
       this.reqItemDetail,
       this.oporderrequestid,
-      // 60926,
-      // 67
+      //60926,
+      //67
       userid,
       locationid
     );
