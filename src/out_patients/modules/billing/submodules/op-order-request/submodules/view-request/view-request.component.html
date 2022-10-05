@@ -10,7 +10,7 @@
     </div>
     
   </div>
-  <div class="mt-1 w-full sub-bill-ovrall-table gridheight mb-2 " *ngIf="showtable">
+  <div class="mt-1 w-full sub-bill-ovrall-table gridheight mb-2 ">
     <maxhealth-table [config]="config" [data]="data" #table class="gridcheckbox-margin-bottom table"(columnClick)="columnClick($event)"></maxhealth-table>
   </div>
   <!-- <div
@@ -22,15 +22,5 @@
 </div>
 </div>
 </div>
-<!-- <div  class="justify-end float-right mt-1 " >
-  <button
-  mat-raised-button
-  color="primary"
-  class="font-sm min-width-initial mr-1"
-  type="button"
 
->
-Clear
-</button>
-</div> -->
 <!-- [disabled]="unChecked" -->

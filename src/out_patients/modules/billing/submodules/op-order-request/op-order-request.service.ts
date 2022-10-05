@@ -38,5 +38,6 @@ export class OpOrderRequestService {
     this.investigationItems = [];
     this.procedureItems = [];
     this.activeMaxId = null;
+    this.patientDemographicdata = {};
   }
 }

@@ -379,6 +379,10 @@ export class BillComponent implements OnInit {
       }
     );
 
+    this.refreshTable();
+  }
+
+  refreshTable() {
     this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
   }
@@ -717,6 +721,21 @@ export class BillComponent implements OnInit {
       this.formGroup.controls["self"].setValue(false);
       this.formGroup.controls["self"].disable();
       this.billingservice.setReferralDoctor(data.docotr);
+    }
+  }
+
+  validateCoupon() {
+    if (this.formGroup.value.coupon) {
+      if (this.billingservice.company > 0) {
+        // popup to show MECP only for CASH
+      } else {
+        if (this.billingservice.getbilltype() == "1") {
+        } else {
+          //popup to show validation only for CASH
+        }
+      }
+    } else {
+      // validation to show coupon required
     }
   }
 }
