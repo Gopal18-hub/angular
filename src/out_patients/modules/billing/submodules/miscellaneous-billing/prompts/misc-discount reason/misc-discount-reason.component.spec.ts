@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ServicetaxPopupComponent } from './servicetax-popup.component';
+import { MiscDiscountReasonComponent } from './misc-discount-reason.component';
 
-describe('ServicetaxPopupComponent', () => {
-  let component: ServicetaxPopupComponent;
-  let fixture: ComponentFixture<ServicetaxPopupComponent>;
+describe('MiscDiscountReasonComponent', () => {
+  let component: MiscDiscountReasonComponent;
+  let fixture: ComponentFixture<MiscDiscountReasonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServicetaxPopupComponent ]
+      declarations: [ MiscDiscountReasonComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ServicetaxPopupComponent);
+    fixture = TestBed.createComponent(MiscDiscountReasonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

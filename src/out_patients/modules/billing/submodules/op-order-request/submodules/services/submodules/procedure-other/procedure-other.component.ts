@@ -18,7 +18,6 @@ import {
   takeUntil,
   Subject,
 } from "rxjs";
-import { ServicetaxPopupComponent } from "./servicetax-popup/servicetax-popup.component";
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { Router } from "@angular/router";
 import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
@@ -135,7 +134,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.ProcedureItems;
+    this.data = this.opOrderrequestService.procedureItems;
     this.getOtherService();
     this.getSpecialization();
     this.opOrderrequestService.clearAllItems.subscribe((clearItems) => {
@@ -155,14 +154,11 @@ export class OrderProcedureOtherComponent implements OnInit {
         }
       );
     this.data = [...this.opOrderrequestService.procedureItems];
-    // this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "qty") {
-        this.update(res.data.element.sno);
-      } else if (res.data.col == "specialisation") {
+      if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
@@ -187,7 +183,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
-                  //,
+                  //67,
                   this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
@@ -271,7 +267,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       .get(
         BillingApiConstants.getotherservicebilling(
           this.locationid,
-          // 67,
+          //67,
           // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
@@ -304,20 +300,6 @@ export class OrderProcedureOtherComponent implements OnInit {
       );
   }
 
-  update(sno = 0) {
-    if (sno > 0) {
-      const index = this.billingService.ProcedureItems.findIndex(
-        (c: any) => c.sno == sno
-      );
-      if (index > -1) {
-        this.billingService.ProcedureItems[index].price =
-          this.billingService.ProcedureItems[index].unitPrice *
-          this.billingService.ProcedureItems[index].qty;
-        this.data = [...this.billingService.ProcedureItems];
-      }
-    }
-  }
-
   add(priorityId = 1) {
     if (
       // this.formGroup.value.otherService.value == undefined ||
@@ -340,30 +322,37 @@ export class OrderProcedureOtherComponent implements OnInit {
       );
       return;
     }
-    this.http
-      .get(
-        BillingApiConstants.checkPatientSexoporder(
-          this.formGroup.value.procedure.value,
-          this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.procedure.serviceid,
-          "9"
+    if (
+      this.formGroup.value.procedure.value != undefined &&
+      this.formGroup.value.procedure.serviceid != undefined
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.checkPatientSexoporder(
+            this.formGroup.value.procedure.value,
+            this.opOrderrequestService.patientDemographicdata.gender,
+            this.formGroup.value.procedure.serviceid,
+            "9"
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 1) {
-            this.addrow();
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((response) => {
+          console.log(response);
+          if (response == 1) {
+            this.flag++;
+            if (this.flag == 1) {
+              this.addrow();
+            }
+            console.log(this.flag);
+          } else {
+            this.messageDialogService.info(
+              "This service is not allowed for this sex"
+            );
           }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "This service is not allowed for this sex"
-          );
-        }
-      });
+        });
+    } else {
+      this.messageDialogService.info("Please Select Procedure");
+    }
 
     //this.formGroup.reset();
   }
@@ -448,8 +437,8 @@ export class OrderProcedureOtherComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      //  60926,
-      //  67
+      // 60926,
+      // 67
       userid,
       this.locationid
     );
