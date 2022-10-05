@@ -61,8 +61,7 @@ export class CashScrollNewComponent implements OnInit {
         readonly: true,
       },
       fromdate: {
-        type: "datetime",
-        readonly: true,
+        type: "datetime"
       },
       todate: {
         type: "datetime",
@@ -72,7 +71,7 @@ export class CashScrollNewComponent implements OnInit {
   cashscrollnewconfig: any = {
     clickedRows: true,
     clickSelection: "single",
-    dateformat: "dd/MM/yyyy - hh:mm:ss",
+    dateformat: "dd/MM/yyyy - HH:mm:ss",
     selectBox: false,
     displayedColumns: [
       "sno",
@@ -279,12 +278,13 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
 
 
-
+  fromdatedisable:boolean = false;
+  todatedisable:boolean = false;
   scrollno: string | undefined;
   billamount:number = 0;
   refund:number = 0;
@@ -316,19 +316,23 @@ export class CashScrollNewComponent implements OnInit {
 
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.EmployeeName = this.cookie.get("Name");
+    this.cashscrollnewForm.controls["fromdate"].disable();
+    this.fromdatedisable = true;
+    this.todatedisable = false;
     if(this.queryparamssearch){ 
-      this.questions[4].readonly = true;
+      this.todatedisable = true;      
+    this.cashscrollnewForm.controls["todate"].disable();
       this.cashscrollnewForm.controls["scrollno"].setValue(this.scrollno);
       this.printsexists = false;
       this.excelexists = false;
      }
      else{
-      this.getdetailsfornewscroll();
+      this.getdetailsfornewscroll();      
+    this.cashscrollnewForm.controls["todate"].enable();
       this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
       this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
       this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
-      this.takenat = new Date();
-   
+      this.takenat = new Date();   
      }
    
   }
@@ -365,8 +369,8 @@ else
     this.http
     .get(ApiConstants.getscrolldetailsforoneuser(
       //"2022-05-22 06:27:57", 
-    this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddThh:mm:ss") || "",
-    this.datepipe.transform( this.cashscrollnewForm.controls["todate"].value,"yyyy-MM-ddThh:mm:ss") || "",
+    this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
+    this.datepipe.transform( this.cashscrollnewForm.controls["todate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
       this.operatorID, this.stationId, this.hsplocationId))
     .pipe(takeUntil(this._destroying$))
     .subscribe(
@@ -378,8 +382,8 @@ else
         this.dialogservice.error("No data Found");
      }else{
     this.scrolldetailsexists = false;  
-    this.questions[4].readonly = true;
-  
+    this.todatedisable = true;
+    this.cashscrollnewForm.controls["todate"].disable();
     for (var i = 0; i < this.scrolldetailsList.length; i++) {
       this.scrolldetailsList[i].sno = i + 1;
     }
@@ -461,7 +465,9 @@ else
     this.queryparamssearch = false;
     this.printsexists = true;
     this.excelexists = true;
-    this.questions[4].readonly = false;
+    this.todatedisable = false;
+    this.fromdatedisable = true;
+    this.cashscrollnewForm.controls["todate"].enable();
     this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(new Date(), "YYYY-MM-ddTHH:mm:ss"));
     this.scrolldetailsList = [];
 

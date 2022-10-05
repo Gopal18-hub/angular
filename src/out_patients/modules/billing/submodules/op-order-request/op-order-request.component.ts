@@ -62,26 +62,6 @@ export class OpOrderRequestComponent implements OnInit {
         title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
-      bookingId: {
-        type: "string",
-      },
-      company: {
-        type: "dropdown",
-        options: [],
-        placeholder: "--Select--",
-      },
-      corporate: {
-        type: "dropdown",
-        options: [],
-        placeholder: "--Select--",
-      },
-      narration: {
-        type: "string",
-      },
-      b2bInvoice: {
-        type: "checkbox",
-        options: [{ title: "B2B Invoice" }],
-      },
     },
   };
   formGroup!: FormGroup;
@@ -119,6 +99,7 @@ export class OpOrderRequestComponent implements OnInit {
   hotlistRemarkdb: any;
   bplcardNo: any;
   bplCardAddress: any;
+  patientDetailsforicon!: PatientDetails;
 
   constructor(
     public matDialog: MatDialog,
@@ -148,7 +129,6 @@ export class OpOrderRequestComponent implements OnInit {
         window.location.reload;
       });
     this.activeLink = this.links[0];
-    this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -180,12 +160,10 @@ export class OpOrderRequestComponent implements OnInit {
     });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
-        //if (!this.formGroup.value.maxid) {
         event.preventDefault();
         this.apiProcessing = true;
         this.patient = false;
         this.searchByMobileNumber();
-        //}
       }
     });
   }
@@ -330,10 +308,8 @@ export class OpOrderRequestComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
-    this.questions[2].readonly = true;
   }
 
-  patientDetailsforicon!: PatientDetails;
   getPatientIcon() {
     let iacode = this.formGroup.value.maxid.split(".")[0];
     let regNumber = this.formGroup.value.maxid.split(".")[1];
@@ -387,61 +363,12 @@ export class OpOrderRequestComponent implements OnInit {
     }
   }
 
-  appointmentSearch() {
-    const appointmentSearch = this.matDialog.open(AppointmentSearchComponent, {
-      maxWidth: "100vw",
-      width: "98vw",
-    });
-
-    appointmentSearch
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        let apppatientDetails = result.data.added[0];
-        if (apppatientDetails.iAcode == "") {
-          this.snackbar.open("Invalid Max ID", "error");
-        } else {
-          let maxid =
-            apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
-          this.formGroup.controls["maxid"].setValue(maxid);
-          this.apiProcessing = true;
-          this.patient = false;
-          this.getPatientDetailsByMaxId();
-        }
-      });
-  }
-  dms() {
-    if (this.dmsProcessing) return;
-    this.dmsProcessing = true;
-    const patientDetails =
-      this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
-    this.http
-      .get(
-        ApiConstants.PatientDMSDetail(
-          patientDetails.iacode,
-          patientDetails.registrationno
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: DMSrefreshModel[]) => {
-        this.matDialog.open(DMSComponent, {
-          width: "100vw",
-          maxWidth: "90vw",
-          data: {
-            list: resultData,
-            maxid: patientDetails.iacode + "." + patientDetails.registrationno,
-            firstName: patientDetails.firstname,
-            lastName: patientDetails.lastname,
-          },
-        });
-        this.dmsProcessing = false;
-      });
-  }
-
   clear() {
     this.apiProcessing = false;
     this.patient = false;
     this.categoryIcons = [];
+    this.questions[0].readonly = false;
+    this.questions[1].readonly = false;
     this.formGroup.reset();
     this.patientName = "";
     this.ssn = "";
@@ -450,9 +377,7 @@ export class OpOrderRequestComponent implements OnInit {
     this.gender = "";
     this.age = "";
     this.opOrderRequestService.clear();
-    this.questions[0].readonly = false;
-    this.questions[1].readonly = false;
-    this.questions[2].readonly = false;
+
     this.formGroup.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
@@ -464,17 +389,5 @@ export class OpOrderRequestComponent implements OnInit {
       });
     this.opOrderRequestService.setActiveLink(false);
     this.activeLink = this.links[0];
-  }
-
-  getAllCorporate() {
-    this.http
-      .get(ApiConstants.getCorporate)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;
-        this.questions[4].options = this.coorporateList.map((l) => {
-          return { title: l.name, value: l.id };
-        });
-      });
   }
 }
