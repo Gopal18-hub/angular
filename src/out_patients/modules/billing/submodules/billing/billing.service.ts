@@ -1001,4 +1001,13 @@ export class BillingService {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
   }
+
+  async getServicesForCoupon(CouponNo: any, locationId: any) {
+    const res = await this.http
+      .get(BillingApiConstants.getServicesForCoupon(CouponNo, locationId))
+      .toPromise();
+    console.log(res);
+    if (res.length > 0) {
+    }
+  }
 }

@@ -719,4 +719,19 @@ export class BillComponent implements OnInit {
       this.billingservice.setReferralDoctor(data.docotr);
     }
   }
+
+  validateCoupon() {
+    if (this.formGroup.value.coupon) {
+      if (this.billingservice.company > 0) {
+        // popup to show MECP only for CASH
+      } else {
+        if (this.billingservice.getbilltype() == "1") {
+        } else {
+          //popup to show validation only for CASH
+        }
+      }
+    } else {
+      // validation to show coupon required
+    }
+  }
 }

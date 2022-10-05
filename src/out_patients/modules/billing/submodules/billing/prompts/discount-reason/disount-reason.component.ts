@@ -57,6 +57,7 @@ export class DisountReasonComponent implements OnInit {
       authorise: {
         type: "dropdown",
         placeholder: "-Select-",
+        required: true,
       },
       coupon: {
         type: "string",
