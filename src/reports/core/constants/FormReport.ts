@@ -150,12 +150,13 @@ export namespace FormReport {
         FromDate: {
           type: "date",
           title: "Date",
-        },
-        todate: {
-          type: "hidden",
           defaultValue: moment().format("MM/DD/YYYY"),
-          // format: moment("dd/MM/YYYY"),
         },
+        // todate: {
+        //   type: "hidden",
+        //   defaultValue: moment().format("MM/DD/YYYY"),
+        //   // format: moment("dd/MM/YYYY"),
+        // },
         locationID: {
           type: "dropdown",
           placeholder: "---Location---",
