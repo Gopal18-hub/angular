@@ -136,6 +136,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
 import { ReasonForDueBillComponent } from './submodules/billing/prompts/reason-for-due-bill/reason-for-due-bill.component';
 import { SendMailDialogComponent } from './submodules/billing/prompts/send-mail-dialog/send-mail-dialog.component';
 import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component";
+import { MiscDiscountReasonComponent } from './submodules/miscellaneous-billing/prompts/misc-discount reason/misc-discount-reason.component';
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -241,6 +242,7 @@ import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/b
     ReasonForDueBillComponent,
     SendMailDialogComponent,
     MiscCreditDetailsComponent,
+    MiscDiscountReasonComponent,
   ],
   imports: [
     BillingRoutingModule,
