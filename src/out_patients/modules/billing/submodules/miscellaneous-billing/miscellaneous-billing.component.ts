@@ -188,9 +188,20 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
-    // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
-    //   this.miscForm.controls["company"].setValue(res);
-    // });
+    this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
+      if (res.companyIdComp != "Misc") {
+        if (res.companyId) {
+          this.miscForm.controls["company"].setValue(res.companyId, {
+            emitEvent: false,
+          });
+        }
+        if (res.corporateId) {
+          this.miscForm.controls["corporate"].setValue(res.corporateId, {
+            emitEvent: false,
+          });
+        }
+      }
+    });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -225,6 +236,7 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.companyId = value.value;
           this.setItemsToBill.enablecompanyId = true;
           this.setItemsToBill.companyId = this.miscForm.value.company;
+          this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
         }
@@ -236,6 +248,7 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.corporateId = value.value;
           this.Misc.setPatientDetail(this.patientDetail);
           this.setItemsToBill.corporateId = this.miscForm.value.corporate;
+          this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
         }
       });
@@ -491,7 +504,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         async (resultData: Registrationdetails) => {
-          console.log(resultData);
           if (resultData) {
             this.patientDetails = resultData;
             this.getAllCompany();
@@ -684,6 +696,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.miscForm.controls["company"].setValue({
         title: company.name,
         value: company.id,
+        isTPA: company.isTPA,
       });
     }
   }
