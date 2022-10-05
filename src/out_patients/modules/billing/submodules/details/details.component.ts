@@ -39,6 +39,7 @@ import { DMSComponent } from "@modules/registration/submodules/dms/dms.component
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
 import { SearchService } from "@shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
+import { MoreThanMonthComponent } from "../dispatch-report/more-than-month/more-than-month.component";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -783,6 +784,29 @@ export class DetailsComponent implements OnInit {
     });
   }
   search() {
+    if(this.BServiceForm.value.datevalidation == true)
+    {
+      var fdate = new Date(this.BServiceForm.controls["fromDate"].value);
+      var tdate = new Date(this.BServiceForm.controls["toDate"].value);
+      var dif_in_time = tdate.getTime() - fdate.getTime();
+      var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+      if (dif_in_days > 31) {
+        this.matDialog.open(MoreThanMonthComponent, {
+          width: "30vw",
+          height: "30vh",
+        });
+      }
+      else
+      {
+        this.searchdialog();
+      } 
+    }
+    else{
+      this.searchdialog();
+    }
+  }
+  searchdialog()
+  {
     let dialogref = this.matDialog.open(SearchDialogComponent, {
       maxWidth: "90vw",
       height: "85%",
