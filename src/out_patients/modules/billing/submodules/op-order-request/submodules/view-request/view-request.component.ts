@@ -10,7 +10,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { FetchOpOrderrequest } from "../../../../../../core/types/oporderrequest/fetchoporderrequest.Interface";
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { threadId } from "worker_threads";
+import { OpOrderRequestService } from "../../op-order-request.service";
 @Component({
   selector: "out-patients-view-request",
   templateUrl: "./view-request.component.html",
@@ -99,6 +99,7 @@ export class OPOrderViewRequest implements OnInit {
   formGroup!: FormGroup;
   question: any;
   showtable: boolean = true;
+  unchecked: boolean = true;
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -107,13 +108,14 @@ export class OPOrderViewRequest implements OnInit {
     private http: HttpService,
     private billingservice: BillingService,
     private cookie: CookieService,
-    private messagedialogservice: MessageDialogService
+    private messagedialogservice: MessageDialogService,
+    private opOrderRequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
     this.getViewgridDetails();
   }
-  unchecked: boolean = true;
+
   ngAfterViewInit() {
     console.log(this.tableRows.selection.selected);
     this.tableRows.selection.changed
@@ -156,7 +158,7 @@ export class OPOrderViewRequest implements OnInit {
   getViewgridDetails() {
     this.data = [];
     this.unchecked = true;
-    let maxid = this.billingservice.activeMaxId.maxId;
+    let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
       .get(BillingApiConstants.fetchoporderrequest(maxid, locationid))
@@ -192,7 +194,7 @@ export class OPOrderViewRequest implements OnInit {
     console.log(this.reqItemDetail);
     console.log(this.oporderrequestid);
 
-    let maxid = this.billingservice.activeMaxId.maxId;
+    let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
     let locationid = Number(this.cookie.get("HSPLocationId"));
 
@@ -201,8 +203,8 @@ export class OPOrderViewRequest implements OnInit {
       maxid,
       this.reqItemDetail,
       this.oporderrequestid,
-      //60926,
-      //67
+      // 60926,
+      // 67
       userid,
       locationid
     );
@@ -214,6 +216,7 @@ export class OPOrderViewRequest implements OnInit {
   deleteResponsedata: any;
   delete() {
     console.log(this.tableRows.selection.selected);
+    console.log(this.getSaveDeleteObject(2));
 
     this.http
       .post(
@@ -226,6 +229,7 @@ export class OPOrderViewRequest implements OnInit {
         this.deleteResponsedata = data;
         if (this.deleteResponsedata.success == true) {
           this.messagedialogservice.success("Deleted Successfully");
+          this.data = [];
           this.showtable = false;
           setTimeout(() => {
             this.showtable = true;

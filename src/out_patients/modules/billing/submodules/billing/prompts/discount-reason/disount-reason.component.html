@@ -141,6 +141,7 @@
         mat-raised-button
         color="primary"
         (click)="applyDiscount()"
+        [disabled]="!discAmtForm.valid"
       >
         Apply Discount
       </button>

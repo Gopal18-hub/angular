@@ -242,4 +242,7 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/fetchoporderrequest/${maxid}/${locationid}`;
 
   export const getinteraction = `${environment.CommonApiUrl}api/lookup/getinteraction`;
+
+  export const getServicesForCoupon = (CouponNo: string, locationid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getallservicesforcoupon/${CouponNo}/${locationid}`;
 }
