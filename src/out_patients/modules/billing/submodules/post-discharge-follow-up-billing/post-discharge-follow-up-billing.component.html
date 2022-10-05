@@ -26,7 +26,7 @@
           <form
             [formGroup]="formGroup"
             autocomplete="off"
-            class="w-full flex align-items-center justify-between"
+            class="w-full flex align-items-center"
           >
             <mat-label class="max-health-primary-color mr-1 font-semi-bold">Max ID</mat-label>
             <div class="width-9 bg-white mr-2">
@@ -93,18 +93,20 @@
               >
               </maxhealth-question>
             </div>
-  
-            <mat-label class="max-health-primary-color mr-1 font-semi-bold">Narration</mat-label>
-            <div class="width-8 bg-white mr-2">
-              <maxhealth-question
-                [question]="questions[5]"
-                [form]="formGroup"
-                [questions]="questions[5]"
-                [index]="5"
-              >
-              </maxhealth-question>
+            <ng-container
+              *ngIf="narrationAllowedLocations.includes(cookie.get('HSPLocationId'))"
+            >
+              <mat-label class="max-health-primary-color mr-1 font-semi-bold">Narration</mat-label>
+             <div class="width-8 bg-white mr-2">
+               <maxhealth-question
+                 [question]="questions[5]"
+                 [form]="formGroup"
+                 [questions]="questions[5]"
+                 [index]="5"
+               >
+               </maxhealth-question>
             </div>
-  
+          </ng-container>
             <div class="ml-2 clr-blue">
               <maxhealth-question
                 [question]="questions[6]"
@@ -125,7 +127,7 @@
         </div> -->
         <!-- Second Row -->
         <div
-          class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary justify-between"
+          class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary"
         >
           <div class="flex w-3/4 align-items-center">
             <div class="w-3/10 text-overflow">
@@ -216,7 +218,8 @@
                   class="total-cost max-health-primary-color font-bold text-underline" >
                   <span>Total Estimation:</span>
                   {{
-                     2000 | currency: "INR":undefined:undefined:"en-IN"
+                    billingService.totalCost
+                    | currency: "INR":undefined:undefined:"en-IN"
                   }}
                 </div>
               </div>
