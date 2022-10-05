@@ -117,6 +117,7 @@ export class OPOrderViewRequest implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.showtable = true;
     console.log(this.tableRows.selection.selected);
     this.tableRows.selection.changed
       .pipe(takeUntil(this._destroying$))
@@ -149,15 +150,9 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  // if (i.orderStatus == "Bill Prepaired" && i.sno == item.sno) {
-  //   //this.tableRows.selection.select(item);
-  //   setTimeout(() => {
-  //     this.tableRows.selection.deselect(item);
-  //   }, 100);
-  // }
   getViewgridDetails() {
     this.data = [];
-    this.unchecked = true;
+    //this.unchecked = true;
     let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
@@ -230,10 +225,11 @@ export class OPOrderViewRequest implements OnInit {
         if (this.deleteResponsedata.success == true) {
           this.messagedialogservice.success("Deleted Successfully");
           this.data = [];
-          this.showtable = false;
-          setTimeout(() => {
-            this.showtable = true;
-          }, 1000);
+          this.tableRows.selection.clear();
+          // this.showtable = false;
+          // setTimeout(() => {
+          //   this.showtable = true;
+          // }, 1000);
           this.getViewgridDetails();
         }
       });

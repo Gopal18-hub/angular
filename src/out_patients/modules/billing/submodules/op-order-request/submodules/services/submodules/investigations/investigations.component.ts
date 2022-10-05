@@ -148,10 +148,11 @@ export class OderInvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.InvestigationItems;
+    this.data = this.opOrderRequestService.investigationItems;
     this.getServiceTypes();
     this.getSpecialization();
     this.opOrderRequestService.clearAllItems.subscribe((clearItems) => {
+      console.log(clearItems);
       if (clearItems) {
         this.data = [];
       }
@@ -271,7 +272,7 @@ export class OderInvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          //67
+          // 67
           Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -372,31 +373,38 @@ export class OderInvestigationsComponent implements OnInit {
     //this.formGroup.reset();
   }
   genderCheck() {
-    this.http
-      .get(
-        BillingApiConstants.checkPatientSex(
-          this.formGroup.value.investigation.value,
-          this.opOrderRequestService.patientDemographicdata.gender,
-          this.formGroup.value.investigation.serviceid,
-          "2"
+    if (
+      this.formGroup.value.investigation.value != undefined &&
+      this.formGroup.value.investigation.serviceid != undefined
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.checkPatientSex(
+            this.formGroup.value.investigation.value,
+            this.opOrderRequestService.patientDemographicdata.gender,
+            this.formGroup.value.investigation.serviceid,
+            "2"
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 1) {
-            this.addrow();
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((response) => {
+          console.log(response);
+          if (response == 1) {
+            this.flag++;
+            if (this.flag == 1) {
+              this.addrow();
+            }
+            console.log(this.flag);
+          } else {
+            this.messageDialogService.info(
+              "This investigation is not allowed for this sex"
+            );
+            this.formGroup.reset();
           }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "This investigation is not allowed for this sex"
-          );
-          this.formGroup.reset();
-        }
-      });
+        });
+    } else {
+      this.messageDialogService.info("Please Select Investigation");
+    }
   }
 
   addrow() {
@@ -408,14 +416,14 @@ export class OderInvestigationsComponent implements OnInit {
           this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
-          // "67"
+          //"67"
         )
       )
       .subscribe((res: any) => {
         console.log(res);
         this.serviceInvestigatationresponse = res;
         console.log(this.formGroup.value.investigation.docRequired);
-        //setTimeout(() => {
+
         this.opOrderRequestService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
@@ -438,8 +446,6 @@ export class OderInvestigationsComponent implements OnInit {
         });
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
-        // }, 1000);
-
         console.log(this.data);
         this.formGroup.reset();
       });
