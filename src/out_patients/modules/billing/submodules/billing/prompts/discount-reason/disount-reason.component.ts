@@ -389,7 +389,6 @@ export class DisountReasonComponent implements OnInit {
     let k = 0;
     for (let i = 0; i < selecetdServices.length; i++) {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
-        k++;
         let item = selecetdServices[i].items[j];
         let price = item.price * item.qty;
         const discAmt = (price * existReason.discountPer) / 100;
@@ -398,6 +397,7 @@ export class DisountReasonComponent implements OnInit {
           discType: "On Item",
           discTypeId: 3,
           service: selecetdServices[i].name,
+          itemId: item.itemId,
           doctor: item.itemName,
           price: item.price * item.qty,
           disc: existReason.discountPer,
@@ -411,6 +411,8 @@ export class DisountReasonComponent implements OnInit {
         };
         this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
           this.discAmtFormConfig.columnsInfo.reason.options;
+        k++;
+
         this.calculateBillService.discountSelectedItems.push(temp);
       }
     }
