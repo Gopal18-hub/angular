@@ -119,6 +119,33 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
+  applyDiscount() {
+    if (
+      this.discountSelectedItems.length == 1 &&
+      this.discountSelectedItems[0].discTypeId == 1
+    ) {
+      const discItem = this.discountSelectedItems[0];
+      this.billingServiceRef.billItems.forEach((item: any) => {
+        item.disc = discItem.disc;
+        item.discAmount = (item.price * item.qty * discItem.disc) / 100;
+        item.totalAmount = item.price * item.qty - item.discAmount;
+      });
+    } else {
+      this.discountSelectedItems.forEach((ditem: any) => {
+        if (ditem.discTypeId == 3) {
+          const item = this.billingServiceRef.billItems.find(
+            (it: any) => it.itemId == ditem.itemId
+          );
+          if (item) {
+            item.disc = ditem.disc;
+            item.discAmount = (item.price * item.qty * ditem.disc) / 100;
+            item.totalAmount = item.price * item.qty - item.discAmount;
+          }
+        }
+      });
+    }
+  }
+
   discountreason(formGroup: any, componentRef: any) {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
@@ -127,10 +154,12 @@ export class CalculateBillService {
     discountReasonPopup.afterClosed().subscribe((res) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
         this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
+
+        this.applyDiscount();
         this.discountSelectedItems.forEach((discItem: any) => {
           this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
             discOn: discItem.discType,
-            disType: discItem.discTypeId,
+            disType: discItem.discTypeId.toString(),
             disPer: discItem.disc,
             disReason: discItem.reasonTitle,
             disAmt: discItem.discAmt,
@@ -144,6 +173,7 @@ export class CalculateBillService {
           formGroup.controls["discAmtCheck"].setValue(true, {
             emitEvent: false,
           });
+          componentRef.refreshTable();
         }
       }
     });
