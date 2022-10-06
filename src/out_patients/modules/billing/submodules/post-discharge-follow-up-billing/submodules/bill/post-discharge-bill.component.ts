@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
 import { PostDischargeServiceService } from '../../post-discharge-service.service';
+import { MaxHealthSnackBarService } from '@shared/ui/snack-bar';
+import { ApiConstants } from '@core/constants/ApiConstants';
+import { HttpService } from '@shared/services/http.service';
+import { CookieService } from '@shared/services/cookie.service';
+import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
 @Component({
   selector: 'out-patients-post-discharge-bill',
   templateUrl: './post-discharge-bill.component.html',
@@ -10,117 +15,118 @@ import { PostDischargeServiceService } from '../../post-discharge-service.servic
 export class PostDischargeBillComponent implements OnInit {
 
   config: any = {
-    clickedRows: true,
+    clickedRows: false,
     actionItems: false,
-    dateformat: "dd/MM/YYYY HH:mm:ss.ss",
+    dateformat: "dd/MM/yyyy",
     selectBox: false,
+    removeRow: true,
     displayedColumns: [
       "sno",
-      "services_name",
-      "item_name",
+      "serviceName",
+      "itemName",
       "precaution",
-      "procedure_doctor",
-      "qty_type",
+      "procedureDoctor",
+      "qty",
       "credit",
       "cash",
       "disc",
-      "disc_amount",
-      "total_amount",
+      "discAmount",
+      "totalAmount",
       "gst",
-      "gst_value"
+      "gstValue",
     ],
     columnsInfo: {
       sno: {
-        title: "S.No",
-        type: "string",
+        title: "S.No.",
+        type: "number",
         style: {
-          width: "5rem"
-        }
+          width: "80px",
+        },
       },
-      services_name: {
+      serviceName: {
         title: "Services Name",
         type: "string",
         style: {
-          width: "9rem"
-        }
+          width: "150px",
+        },
       },
-      item_name: {
-        title: "Items Name/ Doctors Name",
+      itemName: {
+        title: "Item Name / Doctor Name",
         type: "string",
         style: {
-          width: "14rem"
-        }
+          width: "200px",
+        },
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
         style: {
-          width: "8rem"
-        }
+          width: "100px",
+        },
       },
-      procedure_doctor: {
+      procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
-          width: "10rem"
-        }
+          width: "130px",
+        },
       },
-      qty_type: {
-        title: "Qty/ Type",
+      qty: {
+        title: "Qty / Type",
         type: "string",
         style: {
-          width: "7rem"
-        }
+          width: "120px",
+        },
       },
       credit: {
         title: "Credit",
         type: "string",
         style: {
-          width: "5rem"
-        }
+          width: "100px",
+        },
       },
       cash: {
         title: "Cash",
         type: "string",
         style: {
-          width: "5rem"
-        }
+          width: "100px",
+        },
       },
       disc: {
-        title: "Disc%",
+        title: "Disc %",
         type: "string",
         style: {
-          width: "5rem"
-        }
+          width: "80px",
+        },
       },
-      disc_amount: {
+      discAmount: {
         title: "Disc Amount",
-        type: "string",
+        type: "number",
         style: {
-          width: "7rem"
-        }
+          width: "120px",
+        },
       },
-      total_amount: {
+      totalAmount: {
         title: "Total Amount",
-        type: "string",
+        type: "number",
         style: {
-          width: "7rem"
-        }
+          width: "130px",
+        },
       },
       gst: {
         title: "GST%",
-        type: "string",
+        type: "number",
         style: {
-          width: "5rem"
-        }
+          width: "80px",
+        },
       },
-      gst_value: {
+      gstValue: {
         title: "GST Value",
-        type: "string",
+        type: "number",
         style: {
-          width: "5rem"
-        }
-      }
+          width: "130px",
+        },
+      },
     },
   };
   billFormData = {
@@ -128,16 +134,23 @@ export class PostDischargeBillComponent implements OnInit {
     type: "object",
     properties: {
       coupon: {
-        type: "string"
+        type: "string",
+        readonly: true
       }
     }
   }
   billform!: FormGroup;
   questions: any;
   data: any = [];
+  IsValidateCoupon: boolean = false;
+  printbill: boolean = true;
   constructor( 
     private formservice: QuestionControlService,
-    public service: PostDischargeServiceService
+    public service: PostDischargeServiceService,
+    private snackbar: MaxHealthSnackBarService,
+    private http: HttpService,
+    public cookie: CookieService,
+    private msgdialog: MessageDialogService
     ) { }
 
   ngOnInit(): void {
@@ -148,10 +161,93 @@ export class PostDischargeBillComponent implements OnInit {
     this.billform = formresult.form;
     this.questions = formresult.questions; 
     this.data = this.service.billItems;
+    let popuptext: any = [];
+    this.service.billItems.forEach((item: any, index: number) => {
+      item["sno"] = index + 1;
+      if (item.popuptext) {
+        popuptext.push({
+          name: item.itemName,
+          description: item.popuptext,
+        });
+      }
+    });
+    console.log(this.data);
+    if(this.data.length != 0)
+    {
+      this.questions[0].readonly = false;
+    }
     this.service.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
     }); 
+  }
+
+  ngAfterViewInit(): void{
+    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+      console.log(event);
+      if(event.key == 'Enter')
+      {
+        console.log('event trigger')
+        this.validatecoupon();
+      }
+    })
+  }
+
+  rowRwmove($event: any) {
+    this.service.deleteFromService(
+      this.service.billItems[$event.index]
+    );
+    this.service.billItems.splice($event.index, 1);
+    // this.service.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(
+    //   $event.index,
+    //   1
+    // );
+    this.service.billItems = this.service.billItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
+
+    this.refreshTable();
+  }
+
+  refreshTable() {
+    this.data = [...this.service.billItems];
+    this.service.calculateTotalAmount();
+    this.billform.reset();
+    this.IsValidateCoupon = false;
+    this.questions[0].readonly = true;
+  }
+
+  validatecoupon()
+  {
+    console.log('coupon validate');
+    if(!this.billform.value.coupon)
+    {
+      this.snackbar.open('Please Enter Coupon');
+    }
+    else{
+      console.log(this.service.activeMaxId);
+      this.http.get(ApiConstants.validateCoupon(
+        this.billform.value.coupon,
+        Number(this.cookie.get('HSPLocationId')),
+        this.service.activeMaxId.iacode,
+        Number(this.service.activeMaxId.regNumber),
+        Number(this.data[0].specialisationID)
+      ))
+      .subscribe(res => {
+        console.log(res);
+        if(res.length == 0)
+        {
+          this.msgdialog.info("Either Invalid Coupon or already used");
+        }
+        else
+        {
+          this.IsValidateCoupon = true;
+        }
+      })
+    }
   }
 }
