@@ -28,6 +28,7 @@ import { GstTaxDialogComponent } from "../../prompts/gst-tax-dialog/gst-tax-dial
 import { DiscountAmtDialogComponent } from "../../prompts/discount-amt-dialog/discount-amt-dialog.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { MiscDiscountReasonComponent } from "../../prompts/misc-discount reason/misc-discount-reason.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -123,7 +124,8 @@ export class BillDetailComponent implements OnInit {
     private miscPatient: MiscService,
     private reportService: ReportService,
     private snackbar: MaxHealthSnackBarService,
-    private billingservice: BillingService
+    private billingservice: BillingService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   miscBillData = {
@@ -998,7 +1000,14 @@ export class BillDetailComponent implements OnInit {
           e.amountNo = Number(e.amount).toFixed(2);
           e.discountAmountNo = Number(e.discount).toFixed(2);
           e.mPriceNo = Number(e.TariffPrice).toFixed(2);
-          //e.qty = e.Qty;
+          e.qty = e.Qty;
+          //For Discount Reason
+          e.serviceId = e.serviceid;
+          e.itemId = e.itemId;
+          e.amount = e.totalAmount;
+          e.discountamount = e.discount;
+          e.serviceName = e.ServiceType;
+          e.itemName = e.ItemDescription;
           //Original
           e.TotalAmount = e.TotalAmount;
           e.Price = e.Price;
@@ -1032,7 +1041,28 @@ export class BillDetailComponent implements OnInit {
       pDoc = this.miscServBillForm.value.pDoc.title;
       pDocValue = this.miscServBillForm.value.pDoc.value;
     }
-
+    let billItem = {
+      itemId: this.miscServBillForm.value.item.value,
+      priority: 1,
+      serviceId: this.serviceID,
+      price: this.miscServBillForm.value.reqAmt,
+      serviceName: this.serviceName,
+      itemName: this.miscServBillForm.value.item.title,
+      qty: this.miscServBillForm.value.qty,
+      precaution: "",
+      procedureDoctor: pDoc,
+      credit: 0,
+      cash: 0,
+      disc: 0,
+      discAmount: 0,
+      totalAmount:
+        this.miscServBillForm.value.reqAmt * this.miscServBillForm.value.qty,
+      gst: 0,
+      gstValue: 0,
+      specialisationID: 0,
+      doctorID: pDocValue,
+    };
+    this.billingservice.addToBill(billItem);
     this.serviceselectedList.push({
       Sno: this.count,
       ServiceType: this.serviceName,
@@ -1142,7 +1172,6 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result == "Success") {
-          // this.billingservice.addToBill(this.serviceselectedList);
           this.opendiscAmtDialog();
         }
       });
@@ -1155,21 +1184,20 @@ export class BillDetailComponent implements OnInit {
 
     discountReasonPopup.afterClosed().subscribe((res) => {
       if ("applyDiscount" in res && res.applyDiscount) {
-        // this.billingservice.makeBillPayload.tab_o_opDiscount = [];
-
+        let test = this.calculateBillService.discountSelectedItems;
         this.miscServBillForm.controls["discAmt"].setValue(
-          0
-          //  this.calculateBillService.totalDiscountAmt
+          this.calculateBillService.totalDiscountAmt
+        );
+        this.calcBillData.totalDiscount =
+          this.calculateBillService.totalDiscountAmt;
+        this.miscPatient.setCalculateBillItems(this.calcBillData);
+        let calcBill0 = this.miscPatient.calculateBill();
+        this.miscServBillForm.controls["billAmt"].setValue(
+          calcBill0.totalBillAmount + ".00"
         );
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
-          0
-          // this.getAmountPayByPatient()
+          calcBill0.amntPaidBythePatient + ".00"
         );
-        // if (this.miscPatient.totalDiscountAmt > 0) {
-        //   this.formGroup.controls["discAmtCheck"].setValue(true, {
-        //     emitEvent: false,
-        //   });
-        // }
       }
     });
   }
