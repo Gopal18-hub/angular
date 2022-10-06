@@ -16,7 +16,11 @@
     }
     
 }
-
+.categoryIcons{
+    img{
+        object-fit: cover;
+    }
+}
 .BServiceForm {   
     ::ng-deep .input1 .mat-form-field-infix{
         text-align: right !important;  
