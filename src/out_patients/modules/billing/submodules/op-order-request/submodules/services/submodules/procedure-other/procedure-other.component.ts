@@ -159,10 +159,17 @@ export class OrderProcedureOtherComponent implements OnInit {
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
       if (res.data.col == "specialisation") {
+        this.opOrderrequestService.procedureItems[
+          res.data.index
+        ].specialisationId = res.$event.value;
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
+      } else if (res.data.col == "doctorName") {
+        this.opOrderrequestService.procedureItems[res.data.index].doctorId =
+          res.$event.value;
+        console.log(this.config.columnsInfo.doctorName.value);
       }
     });
     this.formGroup.controls["procedure"].valueChanges
@@ -183,7 +190,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
-                  //67,
+                  // 67,
                   this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
@@ -267,7 +274,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       .get(
         BillingApiConstants.getotherservicebilling(
           this.locationid,
-          //67,
+          // 67,
           // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
@@ -365,7 +372,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.formGroup.value.procedure.value,
           this.otherserviceId,
           this.cookie.get("HSPLocationId")
-          //"67"
+          // "67"
           //          this.formGroup.value.otherService.value,
           //        this.cookie.get("HSPLocationId")
         )
@@ -375,13 +382,15 @@ export class OrderProcedureOtherComponent implements OnInit {
           sno: this.data.length + 1,
           procedures: this.formGroup.value.procedure.originalTitle,
           qty: 1,
-          specialisation: 0,
-          doctorName: 0,
+          specialisation: "",
+          doctorName: "",
           price: res.amount,
           unitPrice: res.amount,
           itemid: this.formGroup.value.procedure.value,
           priorityId: priorityId,
           serviceId: this.formGroup.value.procedure.serviceid,
+          specialisationId: 0,
+          doctorId: 0,
           doctorName_required: this.formGroup.value.procedure.docRequired
             ? true
             : false,
@@ -407,9 +416,9 @@ export class OrderProcedureOtherComponent implements OnInit {
           "," +
           item.serviceId +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priorityId;
       } else {
@@ -420,9 +429,9 @@ export class OrderProcedureOtherComponent implements OnInit {
           "," +
           item.serviceId +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priorityId;
       }
@@ -437,7 +446,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      // 60926,
+      //60926,
       // 67
       userid,
       this.locationid
@@ -463,6 +472,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.data = [];
             this.opOrderrequestService.procedureItems = [];
             this.formGroup.reset();
+            this.config.columnsInfo.doctorName.moreOptions = {};
           }
         });
     }

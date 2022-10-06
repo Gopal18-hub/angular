@@ -8,6 +8,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { ConsultationWarningComponent } from "@modules/billing/submodules/billing/prompts/consultation-warning/consultation-warning.component";
 import { MatDialog } from "@angular/material/dialog";
 import { PostDischargeServiceService } from "../../../../post-discharge-service.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -121,7 +122,8 @@ export class PostDischargeConsultationsComponent implements OnInit {
     private http: HttpService,
     private router: Router,
     private route: ActivatedRoute,
-    public service: PostDischargeServiceService
+    public service: PostDischargeServiceService,
+    private msgdialog: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +133,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.service.setBillingFormGroup(this.formGroup, this.questions);
     this.getSpecialization();
     this.data = this.service.consultationItems;
     this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
@@ -160,7 +163,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
     this.formGroup.controls["specialization"].valueChanges.subscribe((res) => {
       console.log(res);
       this.questions[1].options = [];
-      this.getdoctorlistonSpecializationClinic(res.value);
+      if(res != null)
+      {
+        this.getdoctorlistonSpecializationClinic(res.value);
+      }
     });
 
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -171,10 +177,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
       }
     });
 
-    if (this.billingService.activeMaxId) {
-      this.questions[1].elementRef.focus();
-    }
-
+    // if (this.billingService.activeMaxId) {
+    //   this.questions[1].elementRef.focus();
+    // }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
         filter((res) => {
@@ -259,10 +264,11 @@ export class PostDischargeConsultationsComponent implements OnInit {
 
   add(priorityId = 57) {
     if (this.service.consultationItems.length == 1) {
-      this.matDialog.open(ConsultationWarningComponent, {
-        width: "30vw",
-        data: {},
-      });
+      // this.matDialog.open(ConsultationWarningComponent, {
+      //   width: "30vw",
+      //   data: {},
+      // });
+      this.msgdialog.info("Coupon is allow only single consultation");
       return;
     }
     this.http
@@ -286,7 +292,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
             type: priorityId,
             scheduleSlot: "",
             bookingDate: "",
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut.toFixed(2),
             specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
@@ -295,19 +301,19 @@ export class PostDischargeConsultationsComponent implements OnInit {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
               serviceId: 25,
-              price: res[0].returnOutPut,
+              price: res[0].returnOutPut.toFixed(2),
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
               precaution: "",
               procedureDoctor: "",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              credit: Number(0).toFixed(2),
+              cash: Number(0).toFixed(2),
+              disc: Number(0).toFixed(2),
+              discAmount: Number(0).toFixed(2),
+              totalAmount: res[0].returnOutPut.toFixed(2),
+              gst: Number(0).toFixed(2),
+              gstValue: Number(0).toFixed(2),
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
@@ -320,8 +326,8 @@ export class PostDischargeConsultationsComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
-    this.billingService.removeFromBill(
-      this.billingService.consultationItems[$event.index]
+    this.service.removeFromBill(
+      this.service.consultationItems[$event.index]
     );
     this.service.consultationItems.splice($event.index, 1);
     this.service.consultationItems =
@@ -359,7 +365,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
+    this.router.navigate(["/out-patient-billing/post-discharge-follow-up-billing/bill"], {
       queryParamsHandling: "merge",
       relativeTo: this.route,
     });
