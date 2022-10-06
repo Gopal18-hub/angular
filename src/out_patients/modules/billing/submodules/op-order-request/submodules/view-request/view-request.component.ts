@@ -19,7 +19,8 @@ import { OpOrderRequestService } from "../../op-order-request.service";
 export class OPOrderViewRequest implements OnInit {
   @ViewChild("table") tableRows: any;
   data: FetchOpOrderrequest[] = [];
-  reqItemDetail = "";
+  reqItemDetail!: string;
+  oporderrequestid!: string;
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -117,6 +118,7 @@ export class OPOrderViewRequest implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.showtable = true;
     console.log(this.tableRows.selection.selected);
     this.tableRows.selection.changed
       .pipe(takeUntil(this._destroying$))
@@ -149,15 +151,9 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  // if (i.orderStatus == "Bill Prepaired" && i.sno == item.sno) {
-  //   //this.tableRows.selection.select(item);
-  //   setTimeout(() => {
-  //     this.tableRows.selection.deselect(item);
-  //   }, 100);
-  // }
   getViewgridDetails() {
     this.data = [];
-    this.unchecked = true;
+    //this.unchecked = true;
     let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
@@ -174,19 +170,19 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  oporderrequestid: any = "";
+
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
     this.reqItemDetail = "";
     this.oporderrequestid = "";
     this.tableRows.selection.selected.forEach((item: any, index: any) => {
       if (this.reqItemDetail == "") {
-        this.reqItemDetail = item.itemId;
+        this.reqItemDetail = item.itemId.toString();
       } else {
         this.reqItemDetail = this.reqItemDetail + "~" + item.itemId;
       }
 
       if (this.oporderrequestid == "") {
-        this.oporderrequestid = item.id;
+        this.oporderrequestid = item.id.toString();
       } else {
         this.oporderrequestid = this.oporderrequestid + "," + item.id;
       }
@@ -203,8 +199,8 @@ export class OPOrderViewRequest implements OnInit {
       maxid,
       this.reqItemDetail,
       this.oporderrequestid,
-      // 60926,
-      // 67
+      //60926,
+      //67
       userid,
       locationid
     );
@@ -230,10 +226,11 @@ export class OPOrderViewRequest implements OnInit {
         if (this.deleteResponsedata.success == true) {
           this.messagedialogservice.success("Deleted Successfully");
           this.data = [];
-          this.showtable = false;
-          setTimeout(() => {
-            this.showtable = true;
-          }, 1000);
+          this.tableRows.selection.clear();
+          // this.showtable = false;
+          // setTimeout(() => {
+          //   this.showtable = true;
+          // }, 1000);
           this.getViewgridDetails();
         }
       });
