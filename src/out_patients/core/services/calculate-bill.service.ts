@@ -129,6 +129,8 @@ export class CalculateBillService {
         item.disc = discItem.disc;
         item.discAmount = (item.price * item.qty * discItem.disc) / 100;
         item.totalAmount = item.price * item.qty - item.discAmount;
+        item.discountType = 1;
+        item.discountReason = discItem.reason
       });
     } else {
       this.discountSelectedItems.forEach((ditem: any) => {
@@ -140,6 +142,8 @@ export class CalculateBillService {
             item.disc = ditem.disc;
             item.discAmount = (item.price * item.qty * ditem.disc) / 100;
             item.totalAmount = item.price * item.qty - item.discAmount;
+            item.discountType = 2;
+            item.discountReason = ditem.reason
           }
         }
       });

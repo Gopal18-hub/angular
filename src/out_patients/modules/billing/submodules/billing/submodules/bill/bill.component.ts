@@ -391,10 +391,10 @@ export class BillComponent implements OnInit {
       ].discountamount = item.discAmount;
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
-      ].discountType = 0;
+      ].discountType = item.discountType || 0;
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
-      ].oldOPBillId = 0;
+      ].oldOPBillId = item.discountReason || 0;
     });
   }
 
