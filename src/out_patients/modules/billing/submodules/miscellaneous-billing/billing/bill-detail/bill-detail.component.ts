@@ -998,6 +998,7 @@ export class BillDetailComponent implements OnInit {
           e.amountNo = Number(e.amount).toFixed(2);
           e.discountAmountNo = Number(e.discount).toFixed(2);
           e.mPriceNo = Number(e.TariffPrice).toFixed(2);
+          //e.qty = e.Qty;
           //Original
           e.TotalAmount = e.TotalAmount;
           e.Price = e.Price;
@@ -1141,21 +1142,16 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result == "Success") {
+          // this.billingservice.addToBill(this.serviceselectedList);
           this.opendiscAmtDialog();
         }
       });
   }
   opendiscAmtDialog() {
-    const discountReasonPopup = this.matDialog.open(
-      MiscDiscountReasonComponent,
-      {
-        width: "full",
-        height: "auto",
-        data: {
-          data: this.billAmnt,
-        },
-      }
-    );
+    const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
+      width: "80vw",
+      minWidth: "90vw",
+    });
 
     discountReasonPopup.afterClosed().subscribe((res) => {
       if ("applyDiscount" in res && res.applyDiscount) {
