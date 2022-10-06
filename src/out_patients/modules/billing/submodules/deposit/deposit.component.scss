@@ -66,7 +66,7 @@
 }
 .deposittable {
     ::ng-deep .max-table-wrapper {
-        width: 72% !important;
+        width: 61.3% !important;
         border: 1px solid #707070 !important;
         tbody tr td:nth-child(5),
         tbody tr td:nth-child(7),
@@ -78,22 +78,43 @@
         {
             text-align: right !important;
         }
-        tbody tr td:nth-child(5),
-        tbody tr td:nth-child(7),
-        tbody tr td:nth-child(8){
+        tbody tr td:nth-child(5){
             padding-right: 2rem !important;
         }
-
         tbody tr td:nth-child(9){      
-            padding-right: 3rem !important;
+            padding-right: 1rem !important;
         }
         tbody tr td:nth-child(10){
-            padding-right: 2.3rem !important;
+            padding-right: 1rem !important;
         }
         tbody tr td:nth-child(11),
-        tbody tr td:nth-child(12){
+        tbody tr td:nth-child(12),
+        tbody tr td:nth-child(8){
             padding-right: 1rem !important;
         }      
+        thead tr th:nth-child(5){
+            padding-left:5rem;
+        }
+        thead tr th:nth-child(9){
+            padding-left:5.3rem;
+        }
+        
+        thead tr th:nth-child(10){
+            padding-left:5.8rem;
+        }
+        thead tr th:nth-child(7){
+            padding-left:3rem;
+        }
+        thead tr th:nth-child(8)
+        {
+            padding-left:4rem;
+        }
+        thead tr th:nth-child(11){
+            padding-left:1.6rem;
+        }
+        thead tr th:nth-child(12){
+            padding-left:2rem;
+        }
     }
     ::ng-deep th.mat-header-cell:first-of-type {
         padding-left: 30px !important;
@@ -121,7 +142,7 @@
  
   ::ng-deep .child-element-detail {
     position: relative;
-    width: 139.5%;
+    width: 163.7%;
     ::ng-deep .mat-sort-header-content{
         white-space: nowrap;
     }
@@ -142,52 +163,52 @@
       }
 
            .mat-cell.cdk-cell.cdk-column-select.mat-column-select{
-            width: 3.3% !important;
+            width: 2.67% !important;
            }
            .mat-cell.cdk-cell.cdk-column-depositRefund.mat-column-depositRefund{
-            width: 6.1% !important;
+            width: 4.95% !important;
            }
            .mat-cell.cdk-cell.cdk-column-receiptno.mat-column-receiptno{
-            width: 5.2% !important;
+            width: 4.3% !important;
            }
            .mat-cell.cdk-cell.cdk-column-dateTime.mat-column-dateTime{
-            width: 6.9% !important;
+            width: 5.67% !important;
            }
            .mat-cell.cdk-cell.cdk-column-deposit.mat-column-deposit{
-            width: 6.07% !important;
+            width: 7.07% !important;
            }
            .mat-cell.cdk-cell.cdk-column-paymentType.mat-column-paymentType{
-            width: 6.2% !important;
+            width: 5% !important;
            }
            .mat-cell.cdk-cell.cdk-column-usedOP.mat-column-usedOP{
-            width: 5.2% !important;
+            width: 5% !important;
            }
            .mat-cell.cdk-cell.cdk-column-usedIP.mat-column-usedIP{
-            width: 5.23% !important;
+            width: 5.7% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-refund.mat-column-refund{
-            width: 5.22% !important;
+            width: 6.4% !important;
            }
            .mat-cell.cdk-cell.cdk-column-balance.mat-column-balance{
-            width: 6% !important;
+            width: 7.11% !important;
            }
            .mat-cell.cdk-cell.cdk-column-gst.mat-column-gst{
-            width: 3.3% !important;
+            width: 3.55% !important;
            }
            .mat-cell.cdk-cell.cdk-column-gstValue.mat-column-gstValue{
-            width: 6% !important;
+            width: 6.35% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-advanceType.mat-column-advanceType{
-            width: 7% !important;
+            width: 6.75% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-serviceTypeName.mat-column-serviceTypeName{
-            width: 8.7% !important;
+            width: 7.8% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-operatorName.mat-column-operatorName{
-            width: 9.5% !important;
+            width: 9.3% !important;
            }
            .mat-cell.cdk-cell.mat-tooltip-trigger.cdk-column-remarks.mat-column-remarks{
-            width: 7% !important;
+            width: 6% !important;
            }           
     }
 }
