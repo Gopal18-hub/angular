@@ -455,6 +455,11 @@ export class BillComponent implements OnInit {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
+
+    this.question[12].elementRef.addEventListener(
+      "blur",
+      this.validateCoupon.bind(this)
+    );
   }
 
   discountreason() {
@@ -729,7 +734,11 @@ export class BillComponent implements OnInit {
       if (this.billingservice.company > 0) {
         // popup to show MECP only for CASH
       } else {
-        if (this.billingservice.getbilltype() == "1") {
+        if (this.formGroup.value.paymentMode == 1) {
+          this.billingservice.getServicesForCoupon(
+            this.formGroup.value.coupon,
+            Number(this.cookie.get("HSPLocationId"))
+          );
         } else {
           //popup to show validation only for CASH
         }
