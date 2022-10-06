@@ -462,7 +462,7 @@ export class DisountReasonComponent implements OnInit {
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
     this.calculateBillService.discountSelectedItems =
-      this.tableRows.selection.selected;
+      this.tableRows.dataSource.data;
     this.dialogRef.close({ applyDiscount: true });
   }
 
@@ -529,6 +529,22 @@ export class DisountReasonComponent implements OnInit {
         });
         this.discAmtFormConfig.columnsInfo.reason.options =
           this.question[2].options;
+        if (this.selectedItems.length > 0) {
+          this.selectedItems.forEach((item: any, index: number) => {
+            const filterData = this.discReasonList.filter(
+              (rl: any) => rl.mainhead == item.head
+            );
+            let options = filterData.map((a) => {
+              return {
+                title: a.name,
+                value: a.id,
+                discountPer: a.discountPer,
+              };
+            });
+            this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
+              options;
+          });
+        }
       });
   }
 

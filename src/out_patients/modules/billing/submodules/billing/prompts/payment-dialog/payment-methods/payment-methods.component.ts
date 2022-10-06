@@ -67,6 +67,7 @@ export class BillingPaymentMethodsComponent implements OnInit {
       this.questions[method] = formResult.questions;
       if (index == 0) {
         this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+        this.questions[method][0].maximum = this.totalAmount;
         this.tabPrices.push(this.totalAmount);
         this.remainingAmount = 0;
         this.activeTab = this.tabs[0];
