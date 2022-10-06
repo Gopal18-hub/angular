@@ -24,6 +24,8 @@ export class MiscService {
   calculatedBill: any = [];
   companyList: any = [];
   cacheServitem: any = [];
+  cacheCreditTabdata: any = [];
+  cacheBillTabdata: any = [];
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
@@ -46,7 +48,7 @@ export class MiscService {
   }
   setCalculateBillItems(data: any) {
     this.calcItems = data;
-    this.companyChangeMiscEvent.next(this.calcItems.companyId);
+    this.companyChangeMiscEvent.next(this.calcItems);
   }
   getCalculateBillItems() {
     return this.calcItems;
@@ -119,7 +121,10 @@ export class MiscService {
   clearMiscBlling() {
     this.clearAllItems.next(true);
   }
-  miscGenCompany(data: any) {
-    this.selectedCompanyVal = data;
+  cacheCreditTab(data: any) {
+    this.cacheCreditTabdata = data;
+  }
+  cacheBillTab(data: any) {
+    this.cacheBillTabdata = data;
   }
 }

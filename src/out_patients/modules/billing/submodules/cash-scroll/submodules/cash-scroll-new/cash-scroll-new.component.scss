@@ -34,13 +34,29 @@
     background: white;
     color: rgba(0, 0, 0, 0.87);
 }
+.bgwhite{
+    ::ng-deep .mat-form-field-appearance-outline.mat-form-field-disabled{     
+        .mat-form-field-outline{
+            background: white !important;            
+    } 
+    }
+    ::ng-deep .mat-input-element:disabled{
+        color: rgba(0, 0, 0, 0.87);
+    }
+}
+
+
 .cashscrollnew-icon{
     position: absolute;
     left: 2px;
     top: 2px;
     height: 90%;
     width: 25%;
-}  
+}
+
+.receiptNostyle{
+    font-weight: 600 !important;
+}
 .cashsscrolltable{
     ::ng-deep .max-table-wrapper {
         border: 1px solid #707070 !important;
@@ -161,6 +177,10 @@
     thead tr th:nth-child(21),
     thead tr th:nth-child(22){
         padding-left: 1.5rem;
+    }
+    tbody tr:last-child{
+       font-weight: 700 !important;
+       font-size: 17px !important;
     }
 }
 }  
