@@ -186,6 +186,10 @@
          </div>
           </div>
         </div>
+
+        <div *ngIf="apiProcessing" class="flex align-items-center justify-center h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+          <mat-spinner strokeWidth="3"></mat-spinner>
+        </div>
           <!---------------------------------SECOND ROW----------------------------------------------------->
   
         <div class="ml-2 m-pannel flex mr-2 mt-1 border-radius-lg items-center w-auto bg-deposit">

@@ -6,11 +6,27 @@
         white-space: nowrap !important;
     }
     .table{
-        ::ng-deep .mat-form-field{
-            display: block !important;
-            background-color: #fff;
-            color: #000;
-            border-radius: 6px;
+        ::ng-deep{
+            .mat-form-field{
+                display: block !important;
+                background-color: #fff;
+                color: #000;
+                border-radius: 6px;
+            }
+            .max-table-wrapper {
+                table {
+                  .mat-row {
+                    &:hover {
+                      background-color: transparent !important;
+                      .mat-cell {
+                        color: initial !important;
+                      }
+                    }
+                  }
+                }
+            }
         }
+        
     }
+    
 }
