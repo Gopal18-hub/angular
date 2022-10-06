@@ -16,12 +16,16 @@ export class PostDischargeServiceService {
   consultationItemsAdded = new Subject<boolean>();
   clearAllItems = new Subject<boolean>();
   billItemsTrigger = new Subject<any>();
+  billingFormGroup: any = { form: "", questions: [] };
   constructor(
     private http: HttpService,
     private cookie: CookieService,
     private calculateBillService: CalculateBillService,
   ) { }
-
+  setBillingFormGroup(formgroup: any, questions: any) {
+    this.billingFormGroup.form = formgroup;
+    this.billingFormGroup.questions = questions;
+  }
   calculateTotalAmount() {
     this.totalCost = 0;
     this.consultationItems.forEach((item: any) => {
@@ -232,5 +236,29 @@ export class PostDischargeServiceService {
     //   couponCode: "",
     // });
   }
-
+  removeFromBill(data: any) {
+    let exist = this.billItems.findIndex((item: any) => {
+      return (item.itemId = data.billItem && data.billItem.itemId);
+    });
+    if (exist > -1) {
+      this.billItems.splice(exist, 1);
+      // this.makeBillPayload.ds_insert_bill.tab_d_opbillList.splice(exist, 1);
+    }
+  }
+  clear() {
+    // this.todayPatientBirthday = false;
+    this.billItems = [];
+    this.consultationItems = [];
+    this.totalCost = 0;
+    this.activeMaxId = null;
+    this.billingFormGroup = { form: "", questions: [] };
+    this.clearAllItems.next(true);
+    // this.billNoGenerated.next(false);
+    // this.servicesTabStatus.next({ clear: true });
+    this.calculateBillService.clear();
+    // this.makeBillPayload = JSON.parse(
+    //   JSON.stringify(BillingStaticConstants.makeBillPayload)
+    // );
+    // console.log(this.makeBillPayload);
+  }
 }
