@@ -319,6 +319,7 @@ export class OpOrderRequestComponent implements OnInit {
       .subscribe(
         (resultData: PatientDetails) => {
           // this.clear();
+          console.log(resultData);
           this.patientDetailsforicon = resultData;
           this.noteRemarkdb = resultData.notereason;
           this.vipdb = resultData.vipreason;
