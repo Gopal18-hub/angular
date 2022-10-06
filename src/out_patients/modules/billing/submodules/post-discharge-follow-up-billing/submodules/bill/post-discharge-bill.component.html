@@ -2,6 +2,9 @@
     <div class="h-85">
         <maxhealth-table
         [config]="config"
+        [data]="data"
+        #table
+        (rowRwmove)="rowRwmove($event)"
         ></maxhealth-table>
     </div>
     <div class="h-15 bg-grey flex justify-between align-items-center mt-2 border-radius-lg">
@@ -18,11 +21,11 @@
               </div>
         </div>
         <div class="flex">
-            <div class="mr-4">
-                <button mat-raised-button color="primary" type="submit">Make Bill</button>
+            <div class="mr-2">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!IsValidateCoupon">Make Bill</button>
             </div>
             <div class="mr-1">
-                <button mat-raised-button color="primary" type="submit">Print Bill</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="printbill">Print Bill</button>
             </div>
         </div>
     </div>

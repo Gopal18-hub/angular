@@ -29,6 +29,7 @@ export class BillingService {
   ProcedureItems: any = [];
   OrderSetItems: any = [];
   ConsumableItems: any = [];
+  CouponServices: any = [];
   patientDemographicdata: any = {};
   billItemsTrigger = new Subject<any>();
   configurationservice: [{ itemname: string; servicename: string }] = [] as any;
@@ -1008,6 +1009,15 @@ export class BillingService {
       .toPromise();
     console.log(res);
     if (res.length > 0) {
+      console.log(res[0].id);
+      if ((res[0].id = 0)) {
+        //coupon already used message
+      } else {
+        console.log(this.consultationItems);
+        console.log(this.InvestigationItems);
+      }
+    } else {
+      //Invalid Coupon
     }
   }
 }
