@@ -7,7 +7,12 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { StaffDeptDialogComponent } from "@modules/billing/submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component";
 
 @Component({
   selector: "out-patients-disount-reason",
@@ -190,6 +195,7 @@ export class DisountReasonComponent implements OnInit {
     private billingService: BillingService,
     private calculateBillService: CalculateBillService,
     public dialogRef: MatDialogRef<DisountReasonComponent>,
+    public matDialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -271,6 +277,23 @@ export class DisountReasonComponent implements OnInit {
         this.discAmtForm.controls["percentage"].setValue(
           existReason.discountPer
         );
+        const mainHead: any = this.mainHeadList.find(
+          (rl: any) => rl.id == existReason.mainhead
+        );
+        if (
+          mainHead.name.includes("Staff Discount") &&
+          existReason.empflag === 1
+        ) {
+          const dialogref = this.matDialog.open(StaffDeptDialogComponent, {
+            width: "55vw",
+            height: "80vh",
+          });
+
+          dialogref.afterClosed().subscribe((res) => {
+            this.discAmtForm.controls["empCode"].setValue(res.data);
+            //   this.dialogRef.close({ data: this.selectedAuthorise });
+          });
+        }
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
