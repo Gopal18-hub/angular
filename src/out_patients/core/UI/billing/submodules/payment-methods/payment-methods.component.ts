@@ -173,4 +173,11 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.controls["creditterminal"].setValue("");
     this.refundform.controls["creditamount"].setValue("");
   }
+  savecheque(){
+
+  }
+
+  resetchequedetails(){
+    
+  }
 }

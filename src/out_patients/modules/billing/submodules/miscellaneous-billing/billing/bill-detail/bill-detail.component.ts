@@ -1115,6 +1115,7 @@ export class BillDetailComponent implements OnInit {
       title: "",
       value: 0,
     });
+    this.miscServBillForm.controls["paymentMode"].setValue("1");
     this.clearDraftedService();
   }
 

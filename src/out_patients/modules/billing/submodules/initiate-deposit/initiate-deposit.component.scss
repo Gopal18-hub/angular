@@ -68,5 +68,20 @@
         height: 1.875rem !important;
         line-height: 1.875rem  !important;
     }
+}
+
+.initiate-deposit{
+::ng-deep mat-label{
+    display:none;
 }    
+} 
+.w-52{
+    width: 52% !important;
+}
+.w-86{
+    width: 86% !important;
+}
+.initiatelabel{
+    color: red;
+}
 }
