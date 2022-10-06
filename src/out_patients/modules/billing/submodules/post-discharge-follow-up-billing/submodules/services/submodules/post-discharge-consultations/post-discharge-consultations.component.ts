@@ -163,7 +163,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
     this.formGroup.controls["specialization"].valueChanges.subscribe((res) => {
       console.log(res);
       this.questions[1].options = [];
-      this.getdoctorlistonSpecializationClinic(res.value);
+      if(res != null)
+      {
+        this.getdoctorlistonSpecializationClinic(res.value);
+      }
     });
 
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
