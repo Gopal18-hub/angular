@@ -40,8 +40,9 @@ import { ActivatedRoute } from "@angular/router";
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { DMSComponent } from "@modules/registration/submodules/dms/dms.component";
 import { OpPrescriptionDialogComponent } from "./op-prescription-dialog/op-prescription-dialog.component";
-import { throws } from "assert";
-import { Form60YesOrNoComponent } from "../deposit/form60-dialog/form60-yes-or-no.component";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
+import { MoreThanMonthComponent } from "../dispatch-report/more-than-month/more-than-month.component";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -64,7 +65,9 @@ export class DetailsComponent implements OnInit {
     private patientService: PatientService,
     private msgdialog: MessageDialogService,
     private snackbar: MaxHealthSnackBarService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private searchService: SearchService,
+    private lookupService: LookupService
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
@@ -230,7 +233,6 @@ export class DetailsComponent implements OnInit {
   dmsbtn: boolean = true;
   visithistorybtn: boolean = true;
   doxperurl: any;
-  form60: any;
 
   billexist: boolean = true;
   ngOnInit(): void {
@@ -254,6 +256,7 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm.controls["authBy"].disable();
     this.BServiceForm.controls["reason"].disable();
     this.BServiceForm.controls["paymentMode"].disable();
+    this.questions[5].maximum = this.BServiceForm.controls["toDate"].value;
     this.questions[6].minimum = this.BServiceForm.controls["fromDate"].value;
     this.getrefundreason();
     this.paymentmode = this.billdetailservice.paymentmode;
@@ -268,6 +271,22 @@ export class DetailsComponent implements OnInit {
       console.log(res);
       this.sendapprovalcheck();
     });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          this.BServiceForm.controls["maxid"].setValue(lookupdata[0].maxid);
+        } else if (lookupdata.length > 1) {
+          this.BServiceForm.controls["mobileno"].setValue(lookupdata[0].phone);
+        }
+      });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -803,6 +822,24 @@ export class DetailsComponent implements OnInit {
     });
   }
   search() {
+    if (this.BServiceForm.value.datevalidation == true) {
+      var fdate = new Date(this.BServiceForm.controls["fromDate"].value);
+      var tdate = new Date(this.BServiceForm.controls["toDate"].value);
+      var dif_in_time = tdate.getTime() - fdate.getTime();
+      var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+      if (dif_in_days > 31) {
+        this.matDialog.open(MoreThanMonthComponent, {
+          width: "30vw",
+          height: "30vh",
+        });
+      } else {
+        this.searchdialog();
+      }
+    } else {
+      this.searchdialog();
+    }
+  }
+  searchdialog() {
     let dialogref = this.matDialog.open(SearchDialogComponent, {
       maxWidth: "90vw",
       height: "85%",
@@ -990,49 +1027,7 @@ export class DetailsComponent implements OnInit {
     );
   }
   reportprint(name: any) {
-    if (name == "billingreport") {
-      let regno = Number(this.BServiceForm.value.maxid.split(".")[1]);
-      let iacode = this.BServiceForm.value.maxid.split(".")[0];
-      let billno = this.BServiceForm.controls["billNo"].value;
-      this.http
-        .get(
-          ApiConstants.getform60(
-            Number(this.cookie.get("HSPLocationId")),
-            billno,
-            iacode,
-            regno
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (resultdata: any) => {
-            console.log(resultdata);
-            this.form60 = resultdata;
-            console.log(this.form60);
-            if (this.form60 == 1) {
-              const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
-                width: "30vw",
-                height: "35vh",
-              });
-              dialogref.afterClosed().subscribe((res) => {
-                if (res == "yes") {
-                  this.openReportModal("billingreport");
-                  this.formreport();
-                } else if (res == "no") {
-                  this.openReportModal("billingreport");
-                }
-              });
-            } else {
-              this.openReportModal("name");
-            }
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-    } else {
-      this.openReportModal(name);
-    }
+    this.openReportModal(name);
   }
   openReportModal(btnname: string) {
     if (btnname == "PHPTracksheet") {
@@ -1068,17 +1063,6 @@ export class DetailsComponent implements OnInit {
         }
       });
     }
-  }
-  formreport() {
-    let regno = Number(this.BServiceForm.value.maxid.split(".")[1]);
-    let iacode = this.BServiceForm.value.maxid.split(".")[0];
-    let billno = this.billno;
-    this.reportService.openWindow("FormSixty", "FormSixty", {
-      LocationId: Number(this.cookie.get("HSPLocationId")),
-      Iacode: iacode,
-      RegistrationNo: regno,
-      BillNo: billno,
-    });
   }
   ngDoCheck(): void {
     const changes = this.check.diff(this.billdetailservice.sendforapproval);
