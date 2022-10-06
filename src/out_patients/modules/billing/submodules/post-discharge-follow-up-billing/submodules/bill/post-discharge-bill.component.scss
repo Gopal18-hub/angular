@@ -17,10 +17,20 @@
     ::ng-deep .mat-table thead{
         white-space: nowrap !important;
     }
-    ::ng-deep .max-table-wrapper {
-        border: 1px solid #707070 !important;
-        table{
-            width: max-content !important;
+    ::ng-deep{
+        .max-table-wrapper {
+            border: 1px solid #707070 !important;
+            table{
+                width: max-content !important;
+                .mat-row {
+                    &:hover {
+                      background-color: transparent !important;
+                      .mat-cell {
+                        color: initial !important;
+                      }
+                    }
+                  }
+            }
         }
     }
 }
