@@ -48,10 +48,12 @@
                     <div class="flex w-full">
                         <div class="flex w-1/5">
                             <div class="font-semi-bold">
-                                <mat-label>Select Patient</mat-label>
+                                <mat-label>Select Patient 
+                                    <span class="initiatelabel">*</span>
+                                </mat-label>
                             </div>
 
-                            <div class="ml-2 w-3/5 bg-white">
+                            <div class="ml-2 w-3/5 bg-white initiate-deposit">
                                 <maxhealth-question [question]="questions[2]" [form]="initiatedepositForm"
                                     [questions]="questions[2]" [index]="2">
                                 </maxhealth-question>
@@ -72,10 +74,11 @@
 
                         <div class="flex w-1/4 font-semi-bold">
                             <div>
-                                <mat-label>Email ID</mat-label>
+                                <mat-label>Email ID 
+                                <span class="initiatelabel">*</span></mat-label>
                             </div>
 
-                            <div class="ml-3 w-3/4 bg-white">
+                            <div class="ml-3 w-3/4 bg-white  initiate-deposit">
                                 <maxhealth-question [question]="questions[3]" [form]="initiatedepositForm"
                                     [questions]="questions[3]" [index]="3">
                                 </maxhealth-question>
@@ -84,10 +87,11 @@
 
                         <div class="flex w-1/5 font-semi-bold">
                             <div>
-                                <mat-label>Mobile Number</mat-label>
+                                <mat-label>Mobile Number
+                                <span class="initiatelabel">*</span>  </mat-label>
                             </div>
 
-                            <div class="ml-2 float-right w-5/9 bg-white">
+                            <div class="ml-2 float-right w-52 bg-white  initiate-deposit">
                                 <maxhealth-question [question]="questions[4]" [form]="initiatedepositForm"
                                     [questions]="questions[4]" [index]="4">
                                 </maxhealth-question>
@@ -100,10 +104,12 @@
                     <div class="flex w-full">
                         <div class="flex w-1/5">
                             <div class="font-semi-bold">
-                                <mat-label>Deposit Type</mat-label>
+                                <mat-label>Deposit Type
+                                    <span class="initiatelabel">*</span> 
+                                </mat-label>
                             </div>
 
-                            <div class="w-3/5 ml-3 bg-white">
+                            <div class="w-3/5 ml-3 bg-white  initiate-deposit">
                                 <maxhealth-question [question]="questions[5]" [form]="initiatedepositForm"
                                     [questions]="questions[5]" [index]="5">
                                 </maxhealth-question>
@@ -112,10 +118,12 @@
 
                         <div class="flex w-3/10 ml-2">
                             <div class="font-semi-bold">
-                                <mat-label>Deposit Amount</mat-label>
+                                <mat-label>Deposit Amount
+                                    <span class="initiatelabel">*</span> 
+                                </mat-label>
                             </div>
 
-                            <div class="w-3/5 ml-2 bg-white">
+                            <div class="w-3/5 ml-2 bg-white  initiate-deposit">
                                 <maxhealth-question [question]="questions[6]" [form]="initiatedepositForm"
                                     [questions]="questions[6]" [index]="6">
                                 </maxhealth-question>
@@ -127,10 +135,12 @@
                         <div class="mx-2">&nbsp;</div>
                         <div class="w-1/2 float-right flex">
                             <div class="font-semi-bold">
-                                <mat-label>Remarks</mat-label>
+                                <mat-label>Remarks
+                                    <span class="initiatelabel">*</span> 
+                                </mat-label>
                             </div>
 
-                            <div class="w-7/8 ml-2 bg-white">
+                            <div class="w-86 ml-2 bg-white  initiate-deposit">
                                 <maxhealth-question [question]="questions[7]" [form]="initiatedepositForm"
                                     [questions]="questions[7]" [index]="7">
                                 </maxhealth-question>
@@ -146,7 +156,7 @@
                 <div class="mt-3">&nbsp;</div>
                 
                 <div class="float-right initiatedepositbutton">
-                    <button mat-raised-button color="primary" class="mr-5" (click)="saveinitaitedeposit()" >
+                    <button mat-raised-button color="primary" class="mr-5" (click)="saveinitaitedeposit()"  [disabled]="!initiatedepositForm.valid" >
                         Save
                     </button>
                     <button mat-raised-button color="primary" class="mr-4" (click)="resetinitiatedeposit()">
