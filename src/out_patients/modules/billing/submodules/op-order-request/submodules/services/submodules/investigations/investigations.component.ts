@@ -178,17 +178,21 @@ export class OderInvestigationsComponent implements OnInit {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
       console.log(res);
       if (res.data.col == "specialisation") {
-        this.config.columnsInfo.specialisation.value = res.$event.value;
+        this.opOrderRequestService.investigationItems[
+          res.data.index
+        ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
       } else if (res.data.col == "doctorName") {
-        this.config.columnsInfo.doctorName.value = res.$event.value;
+        this.opOrderRequestService.investigationItems[res.data.index].doctorId =
+          res.$event.value;
         console.log(this.config.columnsInfo.doctorName.value);
       } else if (res.data.col == "priority") {
-        this.config.columnsInfo.priority.value = res.$event.value;
+        this.opOrderRequestService.investigationItems[res.data.index].priority =
+          res.$event.value;
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -272,7 +276,7 @@ export class OderInvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          // 67
+          //67
           Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -429,8 +433,10 @@ export class OderInvestigationsComponent implements OnInit {
           investigations: this.formGroup.value.investigation.title,
           precaution: this.formGroup.value.investigation.precaution,
           priority: 1,
-          specialisation: 0,
-          doctorName: 0,
+          specialisation: "",
+          doctorName: "",
+          specialisationId: 0,
+          doctorId: 0,
           price: res.amount,
           serviceid:
             this.formGroup.value.serviceType ||
@@ -455,19 +461,15 @@ export class OderInvestigationsComponent implements OnInit {
     this.reqItemDetail = "";
     this.data.forEach((item: any, index: any) => {
       console.log(item.specialisation);
-      if (item.specialisation == "") {
-        console.log("specialisation is empty");
-        item.specialisation;
-      }
       if (this.reqItemDetail == "") {
         this.reqItemDetail =
           item.itemid +
           "," +
           item.serviceid +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priority;
       } else {
@@ -478,9 +480,9 @@ export class OderInvestigationsComponent implements OnInit {
           "," +
           item.serviceid +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priority;
       }
@@ -496,14 +498,15 @@ export class OderInvestigationsComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      // 60926,
-      //67
+      //  60926,
+      // 67
       userid,
       locationid
     );
   }
 
   save() {
+    console.log(this.data);
     this.reqItemDetail = "";
     console.log("inside save");
     if (this.data.length > 0) {
@@ -522,6 +525,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.data = [];
             this.opOrderRequestService.investigationItems = [];
             this.formGroup.reset();
+            this.config.columnsInfo.doctorName.moreOptions = {};
           }
         });
     }
