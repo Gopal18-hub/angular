@@ -1382,6 +1382,13 @@ export class BillDetailComponent implements OnInit {
                 data: {
                   toPaidAmount: calcBill0.amntPaidBythePatient,
                   name: "MiscBilling",
+                  totalBillAmount: this.billAmnt,
+                  totalDiscount: this.miscServBillForm.value.discAmt,
+                  totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
+                  totalRefund: 0,
+                  ceditLimit: 0,
+                  settlementAmountRefund: 0,
+                  settlementAmountReceived: 0,
                 },
               }
             );

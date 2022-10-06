@@ -17,6 +17,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject, takeUntil } from "rxjs";
 import { BillingService } from "../../billing.service";
+import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -83,7 +84,8 @@ export class BillPaymentDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private http: HttpService,
     private datepipe: DatePipe,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private Miscservice: MiscService
   ) {}
 
   ngOnInit(): void {
@@ -104,6 +106,15 @@ export class BillPaymentDialogComponent implements OnInit {
         mobileno: this.billingService.patientDetailsInfo.pCellNo,
       },
     };
+
+    if (this.data.name == "MiscBilling") {
+      this.patientInfo = {
+        patientinfo: {
+          emailId: this.Miscservice.patientDetail.mail,
+          mobileno: this.Miscservice.patientDetail.cellNo,
+        },
+      };
+    }
   }
   ngAfterViewInit(): void {}
 
