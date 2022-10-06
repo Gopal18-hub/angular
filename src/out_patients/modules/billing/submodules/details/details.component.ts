@@ -528,6 +528,7 @@ export class DetailsComponent implements OnInit {
           this.patientDetailsforicon
         );
       });
+    console.log(this.categoryIcons);
   }
 
   doCategoryIconAction(categoryIcon: any) {
