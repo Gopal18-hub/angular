@@ -145,6 +145,19 @@ export class CalculateBillService {
             item.discountType = 2;
             item.discountReason = ditem.reason
           }
+        } else if (ditem.discTypeId == 2) {
+          const items = this.billingServiceRef.billItems.find(
+            (it: any) => it.serviceName == ditem.service
+          );
+          if (items) {
+          items.forEach((item:any)=>{
+              item.disc = ditem.disc;
+              item.discAmount = (item.price * item.qty * ditem.disc) / 100;
+              item.totalAmount = item.price * item.qty - item.discAmount;
+              item.discountType = 2;
+              item.discountReason = ditem.reason
+            })
+          }
         }
       });
     }
