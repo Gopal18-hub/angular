@@ -229,11 +229,13 @@ export class SearchDialogComponent implements OnInit {
       {
         this.searchform.controls['fromdate'].enable();
         this.searchform.controls['todate'].enable();
+        this.search();
       }
       else
       {
         this.searchform.controls['fromdate'].disable();
         this.searchform.controls['todate'].disable();
+        this.getsearchopbillslist = [];
       }
     })
     this.table.selection.changed.subscribe((res:any)=>{

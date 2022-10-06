@@ -278,9 +278,10 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
   operatorID:any = Number(this.cookie.get("UserId"));
+
 
 
   fromdatedisable:boolean = false;
@@ -327,14 +328,18 @@ export class CashScrollNewComponent implements OnInit {
       this.excelexists = false;
      }
      else{
-      this.getdetailsfornewscroll();      
+       this.formint();
+     }
+   
+  }
+
+  formint(){
+    this.getdetailsfornewscroll();      
     this.cashscrollnewForm.controls["todate"].enable();
       this.cashscrollnewForm.controls["takenat"].setValue(this.datepipe.transform( this.currentTime, "dd/MM/yyyy hh:mm:ss a"));
       this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform( this.currentTime, "YYYY-MM-ddTHH:mm:ss"));
       this.cashscrollnewForm.controls["employeename"].setValue(this.EmployeeName);
       this.takenat = new Date();   
-     }
-   
   }
   opencashscroll() {
     this.router.navigate(["report/cash-scroll", "cash-scroll"]);
@@ -467,10 +472,9 @@ else
     this.excelexists = true;
     this.todatedisable = false;
     this.fromdatedisable = true;
-    this.cashscrollnewForm.controls["todate"].enable();
-    this.cashscrollnewForm.controls["todate"].setValue(this.datepipe.transform(new Date(), "YYYY-MM-ddTHH:mm:ss"));
+    this.cashscrollnewForm.controls["scrollno"].setValue("");
     this.scrolldetailsList = [];
-
+    this.formint();
   }
   savecashscrollDetails: savecashscroll | undefined;
   savecashscroll(){
@@ -510,8 +514,8 @@ else
 
  getcshscrollSubmitRequestBody() {  
      this.savecashscrollDetails = new savecashscroll(
-      this.cashscrollnewForm.value.fromdate,
-      this.cashscrollnewForm.value.todate,
+      this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
+      this.datepipe.transform(this.cashscrollnewForm.controls["todate"].value, 'YYYY-MM-ddTHH:mm:ss.SSS') || '{}',
       this.discountamount,
       this.cash,
       this.creditcard,
