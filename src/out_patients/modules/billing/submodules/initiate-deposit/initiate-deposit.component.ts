@@ -113,28 +113,39 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
       },
       selectpatient:{
         type:"dropdown",   
-        options: this.selectpatientLsit,    
+        options: this.selectpatientLsit,
+        required: true,
+        title: "Select Patient", 
       },
       emailid:{
         type:"string",
         pattern:  "^[A-Za-z0-9._%+-]{1}[A-Za-z0-9._%+-]+@(([a-zA-Z-0-9]+\\.+[a-zA-Z]{2,4}))$",
+        required: true,
+        title: "Email Id", 
       },     
       mobilenoinput:{
         type:"string",  
         pattern: "^[1-9]{1}[0-9]{9}",
+        required: true,
+        title: "Mobile No.",
       },
       deposittype:{
         type:"dropdown",  
         options: this.deposittypeList,
-        required: false,
+        required: true,
         emptySelect: true,
         placeholder: "Select",   
+        title: "Deposit Type",
       },
       depositamount:{
-        type:"string",      
+        type:"string",    
+        required: true, 
+        title: "Deposit Amount",
       },
       remarks:{
-        type:"textarea",      
+        type:"textarea",  
+        required: true,
+        title: "Remarks",    
       },
     }
   }
