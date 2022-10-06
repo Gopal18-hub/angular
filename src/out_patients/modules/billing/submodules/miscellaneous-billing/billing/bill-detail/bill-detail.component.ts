@@ -50,7 +50,7 @@ export class BillDetailComponent implements OnInit {
   enableDiscount: boolean = false;
   makebillFlag: boolean = false;
   depositAvailFlag: boolean = false;
-  isEnableBillBtn = false;
+  isEnableBillBtn: boolean = false;
   calcBillData: any = [];
   noMap = [];
   gstDataResult: any = [];
@@ -683,7 +683,7 @@ export class BillDetailComponent implements OnInit {
   }
   selectedReferralDoctor(data: any) {
     this.refDoctor = data.docotr;
-    this.billingservice.setReferralDoctor(data.docotr);
+    // this.billingservice.setReferralDoctor(data.docotr);
   }
   //Get onload Dropdown
   getMasterMiscDetail() {
@@ -1237,7 +1237,7 @@ export class BillDetailComponent implements OnInit {
               });
               this.calcBillData.totalDeposit = this.depodialogTotal;
               this.miscPatient.setCalculateBillItems(this.calcBillData);
-              this.miscServBillForm.controls["dipositAmtcheck"].setValue(true);
+              //   this.miscServBillForm.controls["dipositAmtcheck"].setValue(true);
               this.miscServBillForm.controls["dipositAmt"].setValue(
                 this.depodialogTotal + ".00"
               );
@@ -1515,6 +1515,12 @@ export class BillDetailComponent implements OnInit {
     if (!miscPatient.b2bInvoiceType) {
       miscPatient.b2bInvoiceType = "B2C";
     }
+    let refDocId = 0;
+    if (this.selfDoc === true) {
+      refDocId = 2015;
+    } else {
+      refDocId = this.refDoctor.id;
+    }
     this.postBillObj.dtSaveOBill_P = {
       registrationno: miscPatient.registrationno,
       iacode: miscPatient.iacode,
@@ -1529,12 +1535,12 @@ export class BillDetailComponent implements OnInit {
       collectedamount: 400, //from payment cash net amount
       balance: 100, //calcBill0.amntPaidBythePatient,
       hsplocationid: this.location, //Number(this.cookie.get("HSPLocationId"))
-      refdoctorid: this.refDoctor.id,
+      refdoctorid: refDocId,
       authorisedid: calcBill0.selectedAuthorise,
       serviceTax: this.txtServiceTaxAmt,
       creditLimit: this.miscServBillForm.value.credLimit,
       tpaId: miscFormData.companyId.paidbyTPA,
-      paidbyTPA: 0,
+      paidbyTPA: miscFormData.companyId.paidbyTPA,
       interactionID: this.miscServBillForm.value.interactionDetails,
       corporateid: miscFormData.corporateId.value,
       corporateName: miscFormData.corporateId.title,
