@@ -379,6 +379,10 @@ export class BillComponent implements OnInit {
       }
     );
 
+    this.refreshTable();
+  }
+
+  refreshTable() {
     this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
   }
