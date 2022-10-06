@@ -199,7 +199,7 @@ export class OPOrderViewRequest implements OnInit {
       maxid,
       this.reqItemDetail,
       this.oporderrequestid,
-      //60926,
+      // 60926,
       //67
       userid,
       locationid
@@ -208,6 +208,15 @@ export class OPOrderViewRequest implements OnInit {
 
   columnClick(event: any) {
     console.log(event);
+    console.log(this.tableRows.selection);
+    this.data.forEach((item: any, index: any) => {
+      if (item.orderStatus == "Bill Prepaired") {
+        console.log(this.tableRows.selection);
+        setTimeout(() => {
+          this.tableRows.selection.deselect(item);
+        }, 10);
+      }
+    });
   }
   deleteResponsedata: any;
   delete() {
