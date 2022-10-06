@@ -157,7 +157,7 @@ export class OPOrderViewRequest implements OnInit {
     let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
-      .get(BillingApiConstants.fetchoporderrequest(maxid, locationid))
+      .get(BillingApiConstants.fetchoporderrequest(maxid, 67))
       .pipe(takeUntil(this._destroying$))
       .subscribe((response) => {
         console.log(response);
@@ -199,15 +199,24 @@ export class OPOrderViewRequest implements OnInit {
       maxid,
       this.reqItemDetail,
       this.oporderrequestid,
-      //60926,
-      //67
-      userid,
-      locationid
+      60926,
+      67
+      //userid,
+      //locationid
     );
   }
 
   columnClick(event: any) {
     console.log(event);
+    console.log(this.tableRows.selection);
+    this.data.forEach((item: any, index: any) => {
+      if (item.orderStatus == "Bill Prepaired") {
+        console.log(this.tableRows.selection);
+        setTimeout(() => {
+          this.tableRows.selection.deselect(item);
+        }, 10);
+      }
+    });
   }
   deleteResponsedata: any;
   delete() {

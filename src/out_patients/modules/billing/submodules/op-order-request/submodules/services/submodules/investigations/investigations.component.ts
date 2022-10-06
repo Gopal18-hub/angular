@@ -209,7 +209,7 @@ export class OderInvestigationsComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getinvestigationSearch(
-                  /// 67,
+                  //67,
                   Number(this.cookie.get("HSPLocationId")),
                   value
                 )
@@ -437,12 +437,12 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.investigation.serviceid,
           itemid: this.formGroup.value.investigation.value,
           doctorName_required: this.formGroup.value.investigation.docRequired
-            ? 1
-            : 0,
+            ? true
+            : false,
           specialisation_required: this.formGroup.value.investigation
             .docRequired
-            ? 1
-            : 0,
+            ? true
+            : false,
         });
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
