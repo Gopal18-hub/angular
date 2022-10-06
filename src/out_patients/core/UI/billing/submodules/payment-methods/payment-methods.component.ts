@@ -88,7 +88,7 @@ export class PaymentMethodsComponent implements OnInit {
     }
 
     if (this.Refundavalaiblemaount) {
-      let cashlimit = this.depositservice.getcashlimit();
+      let cashlimit = this.depositservice.refundcashlimit;
       if (
         Number(this.depositamount) >
           Number(this.Refundavalaiblemaount.avalaiblemaount) &&
