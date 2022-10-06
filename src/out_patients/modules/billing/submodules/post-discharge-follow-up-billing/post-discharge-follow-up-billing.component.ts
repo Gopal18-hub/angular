@@ -13,20 +13,24 @@ import { Registrationdetails } from "@core/types/registeredPatientDetial.Interfa
 import { DMSrefreshModel } from "@core/models/DMSrefresh.Model";
 import { GetCompanyDataInterface } from "@core/types/employeesponsor/getCompanydata.Interface";
 import { PatientService } from "@core/services/patient.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
 
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.component";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
-
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
+import { BillingService } from "../billing/billing.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SimilarPatientDialog } from "../billing/billing.component";
+import { PostDischargeServiceService } from "./post-discharge-service.service";
 @Component({
   selector: "out-patients-post-discharge-follow-up-billing",
   templateUrl: "./post-discharge-follow-up-billing.component.html",
   styleUrls: ["./post-discharge-follow-up-billing.component.scss"],
 })
 export class PostDischargeFollowUpBillingComponent implements OnInit {
-  links = [
+  links: any = [
     {
       title: "Services",
       path: "services",
@@ -52,7 +56,6 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       },
       mobile: {
         type: "number",
-        readonly: true,
       },
       bookingId: {
         type: "string",
@@ -97,18 +100,24 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   apiProcessing: boolean = false;
   complanyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
-
+  narrationAllowedLocations = ["67", "69"];
   constructor(
-    private cookie: CookieService,
+    public cookie: CookieService,
     private formService: QuestionControlService,
+    private snackbar: MaxHealthSnackBarService,
+    public billingService: BillingService,
     private matdialog: MatDialog,
     private http: HttpService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
-    private patientService: PatientService
+    private patientService: PatientService,
+    public messageDialogService: MessageDialogService,
+    private router: Router,
+    public service: PostDischargeServiceService
   ) {}
 
   ngOnInit(): void {
+    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
     this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
@@ -128,11 +137,30 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.apiProcessing = true;
         this.patient = false;
         this.getPatientDetailsByMaxId();
+        this.formGroup.markAsDirty();
       }
     });
   }
+  iomMessage: any;
   ngAfterViewInit(): void {
     this.formEvents();
+    this.formGroup.controls['company'].valueChanges.subscribe((res) => {
+      if(res.value)
+      {
+        console.log(res);
+        var result = this.complanyList.filter( i=> {
+          return i.id == res.value;
+        })
+        console.log(result)
+        this.iomMessage =
+      "IOM Validity till : " +
+      (("iomValidity" in result[0] && result[0].iomValidity != "") ||
+      result[0].iomValidity != undefined
+        ? this.datepipe.transform(result[0].iomValidity, "dd-MMM-yyyy")
+        : "");
+      }
+      console.log(this.iomMessage)
+    })
   }
   formEvents() {
     //ON MAXID CHANGE
@@ -144,7 +172,12 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.getPatientDetailsByMaxId();
       }
     });
-
+    this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.searchByMobileNumber();
+      }
+    });
   }
   getPatientDetailsByMaxId() {
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
@@ -162,23 +195,75 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe(
-          (resultData: Registrationdetails) => {
-            console.log(resultData);
-            // this.clear();
-            // this.flushAllObjects();
-            this.patientDetails = resultData;
-            console.log(this.patientDetails);
-            // this.categoryIcons = this.patientService.getCategoryIconsForPatient(
-            //   this.patientDetails
-            // );
-            // this.MaxIDExist = true;
-            // console.log(this.categoryIcons);
-            // this.checkForMaxID();
-            //RESOPONSE DATA BINDING WITH CONTROLS
+          async (resultData: Registrationdetails) => {
+            if (resultData) {
+              this.router.navigate([], {
+                queryParams: { maxId: this.formGroup.value.maxid },
+                relativeTo: this.route,
+                queryParamsHandling: "merge",
+              });
+              this.patientDetails = resultData;
 
-            this.setValuesToMiscForm(this.patientDetails);
+              this.setValuesToMiscForm(this.patientDetails);
+              if (this.billingService.todayPatientBirthday) {
+                const birthdayDialog = this.messageDialogService.info(
+                  "It’s their birthday today"
+                );
+                await birthdayDialog.afterClosed().toPromise();
+              }
 
-            //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+              if (
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1
+                  .length > 0
+              ) {
+                this.billingService.setPatientDetails(
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                );
+                this.categoryIcons =
+                  this.patientService.getCategoryIconsForPatientAny(
+                    this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                  );
+                const patientDetails =
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+                this.billingService.setActiveMaxId(
+                  this.formGroup.value.maxid,
+                  iacode,
+                  regNumber.toString(),
+                  patientDetails.genderName
+                );
+                // if (patientDetails.nationality != 149) {
+                //   const dialogRef = this.messageDialogService.info(
+                //     "Please Ensure International Tariff Is Applied!"
+                //   );
+                //   dialogRef
+                //     .afterClosed()
+                //     .pipe(takeUntil(this._destroying$))
+                //     .subscribe((result) => {
+                //       if (!this.orderId) {
+                //         this.startProcess(
+                //           patientDetails,
+                //           resultData,
+                //           iacode,
+                //           regNumber
+                //         );
+                //       }
+                //     });
+                // } else {
+                //   if (!this.orderId) {
+                //     this.startProcess(
+                //       patientDetails,
+                //       resultData,
+                //       iacode,
+                //       regNumber
+                //     );
+                //   }
+                // }
+              }
+            } else {
+              this.apiProcessing = false;
+              this.patient = false;
+              this.snackbar.open("Invalid Max ID", "error");
+            }
           },
           (error) => {
             if (error.error == "Patient Not found") {
@@ -195,6 +280,66 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       this.apiProcessing = false;
       this.patient = false;
     }
+  }
+
+  searchByMobileNumber() {
+    if (!this.formGroup.value.mobile) {
+      this.apiProcessing = false;
+      this.patient = false;
+      return;
+    }
+    this.http
+      .post(ApiConstants.similarSoundPatientDetail, {
+        phone: this.formGroup.value.mobile,
+      })
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res: any) => {
+        if (res.length == 0) {
+        } else {
+          if (res.length == 1) {
+            const maxID = res[0].maxid;
+            this.formGroup.controls["maxid"].setValue(maxID);
+            this.apiProcessing = true;
+            this.patient = false;
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
+          } else {
+            const similarSoundDialogref = this.matdialog.open(
+              SimilarPatientDialog,
+              {
+                width: "60vw",
+                height: "62vh",
+                data: {
+                  searchResults: res,
+                },
+              }
+            );
+            similarSoundDialogref
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((result) => {
+                if (result) {
+                  let maxID = result.data["added"][0].maxid;
+                  this.formGroup.controls["maxid"].setValue(maxID);
+                  this.apiProcessing = true;
+                  this.patient = false;
+                  //this.getPatientDetailsByMaxId();
+                  this.router.navigate([], {
+                    queryParams: { maxId: this.formGroup.value.maxid },
+                    relativeTo: this.route,
+                    queryParamsHandling: "merge",
+                  });
+                }
+              });
+          }
+        }
+        this.apiProcessing = false;
+        this.patient = false;
+      });
   }
   setValuesToMiscForm(pDetails: Registrationdetails) {
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
@@ -214,10 +359,37 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   doCategoryIconAction(icon: any) {}
   appointment_popup() {
     console.log("appointment");
-    this.matdialog.open(AppointmentSearchDialogComponent, {
-      maxWidth: "100vw",
-      width: "98vw",
-    });
+    const appointmentSearch = this.matdialog.open(
+      AppointmentSearchDialogComponent,
+      {
+        maxWidth: "100vw",
+        width: "98vw",
+      }
+    );
+
+    appointmentSearch
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if (result && result.data) {
+          let apppatientDetails = result.data.added[0];
+          if (apppatientDetails.iAcode == "") {
+            this.snackbar.open("Invalid Max ID", "error");
+          } else {
+            let maxid =
+              apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            this.formGroup.controls["maxid"].setValue(maxid);
+            this.apiProcessing = true;
+            this.patient = false;
+            //this.getPatientDetailsByMaxId();
+            this.router.navigate([], {
+              queryParams: { maxId: this.formGroup.value.maxid },
+              relativeTo: this.route,
+              queryParamsHandling: "merge",
+            });
+          }
+        }
+      });
   }
   dms() {
     if (this.dmsProcessing) return;
@@ -265,6 +437,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     });
   }
   clear() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
     this.apiProcessing = false;
     this.patient = false;
     this.formGroup.reset();
@@ -277,6 +451,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.gender = "";
     this.country = "";
     this.dob = "";
+    this.categoryIcons = [];
+    // this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
+    this.router.navigate(["services"], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.questions[0].elementRef.focus();
   }
 
   getAllCompany() {
@@ -288,6 +469,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
+        console.log("company", data);
         this.complanyList = data;
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };

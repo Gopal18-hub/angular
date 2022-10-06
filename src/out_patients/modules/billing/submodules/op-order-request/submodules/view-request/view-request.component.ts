@@ -10,7 +10,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { FetchOpOrderrequest } from "../../../../../../core/types/oporderrequest/fetchoporderrequest.Interface";
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { threadId } from "worker_threads";
+import { OpOrderRequestService } from "../../op-order-request.service";
 @Component({
   selector: "out-patients-view-request",
   templateUrl: "./view-request.component.html",
@@ -19,7 +19,8 @@ import { threadId } from "worker_threads";
 export class OPOrderViewRequest implements OnInit {
   @ViewChild("table") tableRows: any;
   data: FetchOpOrderrequest[] = [];
-  reqItemDetail = "";
+  reqItemDetail!: string;
+  oporderrequestid!: string;
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -99,6 +100,7 @@ export class OPOrderViewRequest implements OnInit {
   formGroup!: FormGroup;
   question: any;
   showtable: boolean = true;
+  unchecked: boolean = true;
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -107,14 +109,16 @@ export class OPOrderViewRequest implements OnInit {
     private http: HttpService,
     private billingservice: BillingService,
     private cookie: CookieService,
-    private messagedialogservice: MessageDialogService
+    private messagedialogservice: MessageDialogService,
+    private opOrderRequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
     this.getViewgridDetails();
   }
-  unchecked: boolean = true;
+
   ngAfterViewInit() {
+    this.showtable = true;
     console.log(this.tableRows.selection.selected);
     this.tableRows.selection.changed
       .pipe(takeUntil(this._destroying$))
@@ -147,16 +151,10 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  // if (i.orderStatus == "Bill Prepaired" && i.sno == item.sno) {
-  //   //this.tableRows.selection.select(item);
-  //   setTimeout(() => {
-  //     this.tableRows.selection.deselect(item);
-  //   }, 100);
-  // }
   getViewgridDetails() {
     this.data = [];
-    this.unchecked = true;
-    let maxid = this.billingservice.activeMaxId.maxId;
+    //this.unchecked = true;
+    let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
       .get(BillingApiConstants.fetchoporderrequest(maxid, locationid))
@@ -172,19 +170,19 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
-  oporderrequestid: any = "";
+
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
     this.reqItemDetail = "";
     this.oporderrequestid = "";
     this.tableRows.selection.selected.forEach((item: any, index: any) => {
       if (this.reqItemDetail == "") {
-        this.reqItemDetail = item.itemId;
+        this.reqItemDetail = item.itemId.toString();
       } else {
         this.reqItemDetail = this.reqItemDetail + "~" + item.itemId;
       }
 
       if (this.oporderrequestid == "") {
-        this.oporderrequestid = item.id;
+        this.oporderrequestid = item.id.toString();
       } else {
         this.oporderrequestid = this.oporderrequestid + "," + item.id;
       }
@@ -192,7 +190,7 @@ export class OPOrderViewRequest implements OnInit {
     console.log(this.reqItemDetail);
     console.log(this.oporderrequestid);
 
-    let maxid = this.billingservice.activeMaxId.maxId;
+    let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
     let locationid = Number(this.cookie.get("HSPLocationId"));
 
@@ -214,6 +212,7 @@ export class OPOrderViewRequest implements OnInit {
   deleteResponsedata: any;
   delete() {
     console.log(this.tableRows.selection.selected);
+    console.log(this.getSaveDeleteObject(2));
 
     this.http
       .post(
@@ -226,10 +225,12 @@ export class OPOrderViewRequest implements OnInit {
         this.deleteResponsedata = data;
         if (this.deleteResponsedata.success == true) {
           this.messagedialogservice.success("Deleted Successfully");
-          this.showtable = false;
-          setTimeout(() => {
-            this.showtable = true;
-          }, 1000);
+          this.data = [];
+          this.tableRows.selection.clear();
+          // this.showtable = false;
+          // setTimeout(() => {
+          //   this.showtable = true;
+          // }, 1000);
           this.getViewgridDetails();
         }
       });

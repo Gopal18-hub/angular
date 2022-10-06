@@ -5,21 +5,16 @@ import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
-import { BillingService } from "../../billing.service";
-import { CalculateBillService } from "@core/services/calculate-bill.service";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
-import { StaffDeptDialogComponent } from "@modules/billing/submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component";
 
+import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { BillingService } from "@modules/billing/submodules/billing/billing.service";
 @Component({
-  selector: "out-patients-disount-reason",
-  templateUrl: "./disount-reason.component.html",
-  styleUrls: ["./disount-reason.component.scss"],
+  selector: "out-patients-misc-discount-reason",
+  templateUrl: "./misc-discount-reason.component.html",
+  styleUrls: ["./misc-discount-reason.component.scss"],
 })
-export class DisountReasonComponent implements OnInit {
+export class MiscDiscountReasonComponent implements OnInit {
   discAmtFormData = {
     title: "",
     type: "object",
@@ -62,7 +57,6 @@ export class DisountReasonComponent implements OnInit {
       authorise: {
         type: "dropdown",
         placeholder: "-Select-",
-        required: true,
       },
       coupon: {
         type: "string",
@@ -194,8 +188,7 @@ export class DisountReasonComponent implements OnInit {
     private cookie: CookieService,
     private billingService: BillingService,
     private calculateBillService: CalculateBillService,
-    public dialogRef: MatDialogRef<DisountReasonComponent>,
-    public matDialog: MatDialog,
+    public dialogRef: MatDialogRef<MiscDiscountReasonComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
@@ -277,23 +270,6 @@ export class DisountReasonComponent implements OnInit {
         this.discAmtForm.controls["percentage"].setValue(
           existReason.discountPer
         );
-        const mainHead: any = this.mainHeadList.find(
-          (rl: any) => rl.id == existReason.mainhead
-        );
-        if (
-          mainHead.name.includes("Staff Discount") &&
-          existReason.empflag === 1
-        ) {
-          const dialogref = this.matDialog.open(StaffDeptDialogComponent, {
-            width: "55vw",
-            height: "80vh",
-          });
-
-          dialogref.afterClosed().subscribe((res) => {
-            this.discAmtForm.controls["empCode"].setValue(res.data);
-            //   this.dialogRef.close({ data: this.selectedAuthorise });
-          });
-        }
       }
     });
     this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
@@ -412,6 +388,7 @@ export class DisountReasonComponent implements OnInit {
     let k = 0;
     for (let i = 0; i < selecetdServices.length; i++) {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
+        k++;
         let item = selecetdServices[i].items[j];
         let price = item.price * item.qty;
         const discAmt = (price * existReason.discountPer) / 100;
@@ -420,7 +397,6 @@ export class DisountReasonComponent implements OnInit {
           discType: "On Item",
           discTypeId: 3,
           service: selecetdServices[i].name,
-          itemId: item.itemId,
           doctor: item.itemName,
           price: item.price * item.qty,
           disc: existReason.discountPer,
@@ -434,8 +410,6 @@ export class DisountReasonComponent implements OnInit {
         };
         this.discAmtFormConfig.columnsInfo.reason.moreOptions[k] =
           this.discAmtFormConfig.columnsInfo.reason.options;
-        k++;
-
         this.calculateBillService.discountSelectedItems.push(temp);
       }
     }
@@ -487,7 +461,7 @@ export class DisountReasonComponent implements OnInit {
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
     this.calculateBillService.discountSelectedItems =
-      this.tableRows.dataSource.data;
+      this.tableRows.selection.selected;
     this.dialogRef.close({ applyDiscount: true });
   }
 
@@ -554,22 +528,6 @@ export class DisountReasonComponent implements OnInit {
         });
         this.discAmtFormConfig.columnsInfo.reason.options =
           this.question[2].options;
-        if (this.selectedItems.length > 0) {
-          this.selectedItems.forEach((item: any, index: number) => {
-            const filterData = this.discReasonList.filter(
-              (rl: any) => rl.mainhead == item.head
-            );
-            let options = filterData.map((a) => {
-              return {
-                title: a.name,
-                value: a.id,
-                discountPer: a.discountPer,
-              };
-            });
-            this.discAmtFormConfig.columnsInfo.reason.moreOptions[index] =
-              options;
-          });
-        }
       });
   }
 
