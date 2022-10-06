@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from '@shared/ui/dynamic-forms/service/question-control.service';
+import { PostDischargeServiceService } from '../../post-discharge-service.service';
 @Component({
   selector: 'out-patients-post-discharge-bill',
   templateUrl: './post-discharge-bill.component.html',
@@ -133,7 +134,11 @@ export class PostDischargeBillComponent implements OnInit {
   }
   billform!: FormGroup;
   questions: any;
-  constructor( private formservice: QuestionControlService) { }
+  data: any = [];
+  constructor( 
+    private formservice: QuestionControlService,
+    public service: PostDischargeServiceService
+    ) { }
 
   ngOnInit(): void {
     let formresult = this.formservice.createForm(
@@ -141,6 +146,12 @@ export class PostDischargeBillComponent implements OnInit {
       {}
     );
     this.billform = formresult.form;
-    this.questions = formresult.questions;  
+    this.questions = formresult.questions; 
+    this.data = this.service.billItems;
+    this.service.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.data = [];
+      }
+    }); 
   }
 }

@@ -7,6 +7,7 @@ import { BillingService } from "@modules/billing/submodules/billing/billing.serv
 import { CookieService } from "@shared/services/cookie.service";
 import { ConsultationWarningComponent } from "@modules/billing/submodules/billing/prompts/consultation-warning/consultation-warning.component";
 import { MatDialog } from "@angular/material/dialog";
+import { PostDischargeServiceService } from "../../../../post-discharge-service.service";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -38,6 +39,11 @@ export class PostDischargeConsultationsComponent implements OnInit {
         options: [],
         required: true,
       },
+      clinics: {
+        type: "autocomplete",
+        required: false,
+        placeholder: "--Select--",
+      },
     },
   };
   formGroup!: FormGroup;
@@ -48,6 +54,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -103,6 +110,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
       },
     },
   };
+  locationId = Number(this.cookie.get("HSPLocationId"));
+  excludeClinicsLocations = [67, 69];
+  consultationTypes = [];
   constructor(
     private formService: QuestionControlService,
     public billingService: BillingService,
@@ -110,7 +120,8 @@ export class PostDischargeConsultationsComponent implements OnInit {
     private matDialog: MatDialog,
     private http: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public service: PostDischargeServiceService
   ) {}
 
   ngOnInit(): void {
@@ -120,19 +131,24 @@ export class PostDischargeConsultationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.formGroup.controls["doctorName"].disable();
     this.getSpecialization();
-    this.data = this.billingService.consultationItems;
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.data = this.service.consultationItems;
+    this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
+      this.consultationTypes = res;
+      this.config.columnsInfo.type.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+    this.service.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
     });
 
-    this.billingService.consultationItemsAdded.subscribe((added: boolean) => {
+    this.service.consultationItemsAdded.subscribe((added: boolean) => {
       if (added) {
-        this.data = [...this.billingService.consultationItems];
-        this.billingService.calculateTotalAmount();
+        this.data = [...this.service.consultationItems];
+        this.service.calculateTotalAmount();
       }
     });
   }
@@ -144,7 +160,6 @@ export class PostDischargeConsultationsComponent implements OnInit {
     this.formGroup.controls["specialization"].valueChanges.subscribe((res) => {
       console.log(res);
       this.questions[1].options = [];
-      this.formGroup.controls["doctorName"].enable();
       this.getdoctorlistonSpecializationClinic(res.value);
     });
 
@@ -243,7 +258,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
   }
 
   add(priorityId = 57) {
-    if (this.billingService.consultationItems.length == 1) {
+    if (this.service.consultationItems.length == 1) {
       this.matDialog.open(ConsultationWarningComponent, {
         width: "30vw",
         data: {},
@@ -264,7 +279,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
       .subscribe((res: any) => {
         console.log("Add--", res);
         if (res.length > 0) {
-          this.billingService.addToConsultation({
+          this.service.addToConsultation({
             sno: this.data.length + 1,
             doctorName: this.formGroup.value.doctorName.originalTitle,
             doctorId: this.formGroup.value.doctorName.value,
@@ -299,7 +314,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
             },
           });
         }
-        this.data = [...this.billingService.consultationItems];
+        this.data = [...this.service.consultationItems];
         this.formGroup.reset();
       });
   }
@@ -308,14 +323,14 @@ export class PostDischargeConsultationsComponent implements OnInit {
     this.billingService.removeFromBill(
       this.billingService.consultationItems[$event.index]
     );
-    this.billingService.consultationItems.splice($event.index, 1);
-    this.billingService.consultationItems =
-      this.billingService.consultationItems.map((item: any, index: number) => {
+    this.service.consultationItems.splice($event.index, 1);
+    this.service.consultationItems =
+      this.service.consultationItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
         return item;
       });
-    this.data = [...this.billingService.consultationItems];
-    this.billingService.calculateTotalAmount();
+    this.data = [...this.service.consultationItems];
+    this.service.calculateTotalAmount();
   }
 
   update(priorityId = 57, sno = 0, doctorId: number) {
@@ -330,16 +345,16 @@ export class PostDischargeConsultationsComponent implements OnInit {
       )
       .subscribe((res: any) => {
         if (sno > 0) {
-          const index = this.billingService.consultationItems.findIndex(
+          const index = this.service.consultationItems.findIndex(
             (c: any) => c.sno == sno
           );
-          this.billingService.consultationItems[index].price = res.amount;
-          this.billingService.consultationItems[index].type = priorityId;
-          this.data = [...this.billingService.consultationItems];
+          this.service.consultationItems[index].price = res.amount;
+          this.service.consultationItems[index].type = priorityId;
+          this.data = [...this.service.consultationItems];
         }
 
-        this.data = [...this.billingService.consultationItems];
-        this.billingService.calculateTotalAmount();
+        this.data = [...this.service.consultationItems];
+        this.service.calculateTotalAmount();
       });
   }
 
