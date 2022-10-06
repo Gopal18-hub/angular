@@ -2,19 +2,21 @@
     <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="banner justify-between">
       <ul class="list-unstyled flex items-end">
         <li class="ml-3">
-          <a mat-tab-link [active]="true">Post Discharge Follow Up Billing</a>
+          <a class="post-tab" mat-tab-link [active]="true">Post Discharge Follow Up Billing</a>
         </li>
       </ul>
       <div class="maxhealth-spacer"></div>
-      <div *ngFor="let icon of categoryIcons" class="flex">
-        <img
-          [src]="icon['src']"
-          [alt]="icon['tooltip']"
-          width="45px"
-          class="mt-1 cursor-pointer"
-          [matTooltip]="icon['tooltip']"
-          (click)="doCategoryIconAction(icon)"
-        />
+      <div class="mr-3 flex">
+        <div *ngFor="let icon of categoryIcons" class="flex category-icons">
+          <img
+            [src]="icon['src']"
+            [alt]="icon['tooltip']"
+            width="45px"
+            class="mt-1 cursor-pointer"
+            [matTooltip]="icon['tooltip']"
+            (click)="doCategoryIconAction(icon)"
+          />
+        </div>
       </div>
     </nav>
     <mat-tab-nav-panel #tabPanel>
@@ -72,6 +74,7 @@
             >
               <i class="iom-color">IOM</i>
             </button> 
+            <span class="iom-message font-semi-bold font-xs" [hidden]="!formGroup.value.company">{{iomMessage}}</span>
               </mat-label
             >
             <div class="w-11 bg-white mr-2">
@@ -191,7 +194,7 @@
               class="font-sm ml-2 min-width-initial"
               type="button"
               (click)="clear()"
-              [disabled]="!patient"
+              [disabled]="!formGroup.dirty"
             >
               Clear
             </button>
@@ -215,10 +218,11 @@
               </nav>
               <div class="flex">
                 <div
-                  class="total-cost max-health-primary-color font-bold text-underline" >
+                  class="total-cost max-health-primary-color font-bold text-underline" 
+                  *ngIf="service.totalCost > 0">
                   <span>Total Estimation:</span>
                   {{
-                    billingService.totalCost
+                    service.totalCost
                     | currency: "INR":undefined:undefined:"en-IN"
                   }}
                 </div>
@@ -238,7 +242,7 @@
         <p>Last Update By: {{ userName }} (id: {{lastUpdatedBy}})</p>
       </div>
       <div class="flex justify-around">
-        <p class="clr-red font-xs font-bold">* Apply Patient/Company Discount after final calculation <span class="ml-3">* Need special approval for red highlighted investigations in case of PSU patients</span></p>
+        <p class="clr-red font-xs font-bold">* Apply Patient/Company Discount after final calculation </p>
       </div>
       <div>
         <P> Date: {{ currentDate }} | Time: {{currentTime}}</P>

@@ -5,19 +5,39 @@
         autocomplete="off"
         class="w-2/3 flex align-items-center"
       >
-        <div class="flex">
-          <mat-label class="max-health-primary-color mr-2 font-semi-bold"
-            >Specialisation</mat-label
-          >
-          <maxhealth-question
-            [question]="questions[0]"
-            [form]="formGroup"
-            [questions]="questions[0]"
-            [index]="0"
-            class="w-3/5"
-          >
-          </maxhealth-question>
-        </div>
+      <div
+      class="flex align-items-center"
+      *ngIf="excludeClinicsLocations.includes(locationId)"
+    >
+      <mat-label class="max-health-primary-color mr-2 font-bold"
+        >Specialisation</mat-label
+      >
+      <maxhealth-question
+        [question]="questions[0]"
+        [form]="formGroup"
+        [questions]="questions[0]"
+        [index]="0"
+        class="w-3/5"
+      >
+      </maxhealth-question>
+    </div>
+
+    <div
+      class="flex align-items-center"
+      *ngIf="!excludeClinicsLocations.includes(locationId)"
+    >
+      <mat-label class="max-health-primary-color mr-2 font-bold"
+        >Clinics</mat-label
+      >
+      <maxhealth-question
+        [question]="questions[2]"
+        [form]="formGroup"
+        [questions]="questions[2]"
+        [index]="2"
+        class="w-3/5"
+      >
+      </maxhealth-question>
+    </div>
         <div class="flex ml-4 w-1/2 align-items-center">
           <mat-label class="max-health-primary-color mr-2 font-semi-bold">Doctor Name</mat-label>
           <maxhealth-question
@@ -31,14 +51,6 @@
         </div>
       </form>
       <div>
-      <button
-        mat-raised-button
-        color="primary"
-        class="font-sm ml-2 min-width-initial"
-        type="button"
-      >
-        Print
-      </button>
         <button
           mat-raised-button
           color="primary"
@@ -54,6 +66,8 @@
           color="primary"
           class="font-sm ml-2 min-width-initial"
           type="button"
+          [disabled]="
+          !service.checkServicesAdded()"
           (click)="goToBill()"
         >
             Bill
@@ -69,7 +83,11 @@
       </div>
     </div>
     <div class="mt-2 h-full table">
-      <maxhealth-table [config]="config" [data]="data" #table  (rowRwmove)="rowRwmove($event)"></maxhealth-table >
+      <maxhealth-table 
+      [config]="config" 
+      [data]="data" 
+      #table  
+      (rowRwmove)="rowRwmove($event)"></maxhealth-table >
     </div>
 </div>
   

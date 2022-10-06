@@ -11,9 +11,6 @@
     .bg-white{
         background-color: #fff;
     }
-    ::ng-deep .max-table-wrapper{
-        border: 1px solid #707070;
-    }
     // ::ng-deep .mat-table-fixed-layout{
     //     table-layout: auto !important;
     // }
@@ -21,8 +18,9 @@
         white-space: nowrap !important;
     }
     ::ng-deep .max-table-wrapper {
-        width: auto !important;
-        overflow-x: scroll !important;
         border: 1px solid #707070 !important;
+        table{
+            width: max-content !important;
+        }
     }
 }

@@ -385,6 +385,17 @@ export class BillComponent implements OnInit {
   refreshTable() {
     this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
+    this.billingservice.billItems.forEach((item: any, index: number) => {
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+        index
+      ].discountamount = item.discAmount;
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+        index
+      ].discountType = item.discountType || 0;
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+        index
+      ].oldOPBillId = item.discountReason || 0;
+    });
   }
 
   ngAfterViewInit() {
@@ -454,6 +465,11 @@ export class BillComponent implements OnInit {
     this.question[20].elementRef.addEventListener(
       "change",
       this.onModifyDepositAmt.bind(this)
+    );
+
+    this.question[12].elementRef.addEventListener(
+      "blur",
+      this.validateCoupon.bind(this)
     );
   }
 
@@ -729,7 +745,11 @@ export class BillComponent implements OnInit {
       if (this.billingservice.company > 0) {
         // popup to show MECP only for CASH
       } else {
-        if (this.billingservice.getbilltype() == "1") {
+        if (this.formGroup.value.paymentMode == 1) {
+          this.billingservice.getServicesForCoupon(
+            this.formGroup.value.coupon,
+            Number(this.cookie.get("HSPLocationId"))
+          );
         } else {
           //popup to show validation only for CASH
         }
