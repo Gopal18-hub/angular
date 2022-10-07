@@ -182,6 +182,14 @@ export class BillingComponent implements OnInit {
         });
       }
     });
+    this.billingService.corporateChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.formGroup.controls["corporate"].setValue(res.corporate, {
+          emitEvent: false,
+        });
+        this.formGroup.controls["corporate"].enable();
+      }
+    });
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
@@ -232,6 +240,20 @@ export class BillingComponent implements OnInit {
         if (res && res.value) {
           console.log(res);
           this.billingService.setCompnay(
+            res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
+      });
+
+      this.formGroup.controls["corporate"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          console.log(res);
+          this.billingService.setCorporate(
             res.value,
             res,
             this.formGroup,
@@ -1124,9 +1146,12 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
         this.coorporateList = resultData;
+        this.billingService.setCorporateData(resultData);
+        resultData.unshift({ name: "Select", id: -1 });
         this.questions[4].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
+        this.questions[4] = { ...this.questions[4] };
       });
   }
 }
