@@ -63,8 +63,8 @@ export class OprefundApprovalComponent implements OnInit {
   oprefundConfig: any = {
     actionItems: true,
     selectBox: true,
-    dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy HH:MM",
+   // dateformat: "dd/MM/yyyy",
+    datetimeformat: "dd/MM/yyyy HH:mm:ss",
     actionItemList: [
       {
         title: "OP Billing",
@@ -222,7 +222,7 @@ export class OprefundApprovalComponent implements OnInit {
     actionItems: true,
     //selectBox: true,
     // dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy hh:mm:ss",
+    datetimeformat: "dd/MM/yyyy HH:mm:ss",
     actionItemList: [
       {
         title: "OP Billing",
@@ -300,7 +300,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "datetime",
         tooltipColumn: "billDatetime",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
       },
       serviceName: {
@@ -308,7 +308,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "serviceName",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
       },
       itemName: {
@@ -340,7 +340,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "datetime",
         tooltipColumn: "approvalRequestDateTime",
         style: {
-          width: "8rem",
+          width: "11rem",
         },
       },
       authorisedby: {
@@ -372,7 +372,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "approvalDoneBy",
         style: {
-          width: "11rem",
+          width: "13rem",
         },
       },
       approvalDoneDateTime: {
@@ -389,7 +389,7 @@ export class OprefundApprovalComponent implements OnInit {
     actionItems: true,
     selectBox: false,
     //dateformat: "dd/MM/yyyy",
-    datetimeformat: "dd/MM/yyyy hh:mm:ss",
+    datetimeformat: "dd/MM/yyyy HH:mm:ss",
     actionItemList: [
       {
         title: "OP Billing",
@@ -468,7 +468,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "datetime",
         tooltipColumn: "billDatetime",
         style: {
-          width: "8rem",
+          width: "10rem",
         },
       },
       serviceName: {
@@ -476,7 +476,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "string",
         tooltipColumn: "serviceName",
         style: {
-          width: "8rem",
+          width: "10rem",
         },
       },
       itemName: {
@@ -508,7 +508,7 @@ export class OprefundApprovalComponent implements OnInit {
         type: "datetime",
         tooltipColumn: "approvalRequestDateTime",
         style: {
-          width: "8rem",
+          width: "11rem",
         },
       },
       authorisedby: {
