@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
+import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 
 @Component({
   selector: "out-patients-referral",
@@ -12,9 +13,15 @@ export class ReferralComponent implements OnInit {
 
   @Output() selectedDoctorEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor() {}
+  constructor(private Miscservice: MiscService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.Miscservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+        this.referralDoctorName = "";
+      }
+    });
+  }
 
   selectedDoctor(data: any) {
     this.referralDoctorName = data.docotr.name;

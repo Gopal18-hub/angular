@@ -84,8 +84,6 @@ export class BillPaymentDialogComponent implements OnInit {
       this.dueFormData.properties,
       {}
     );
-    console.log(this.data);
-
     this.dueform = formResult.form;
     this.questions = formResult.questions;
     this.totaldue = this.due;
@@ -109,10 +107,6 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
-    if (this.data.name == "MiscBilling") {
-      this.dialogRef.close({ data: "MakeBill" });
-      return;
-    }
     const res = await this.billingService.makeBill(this.paymentmethod);
     if (res.length > 0) {
       if (res[0].billNo) {
