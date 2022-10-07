@@ -388,7 +388,7 @@ export class BillComponent implements OnInit {
     this.billingservice.billItems.forEach((item: any, index: number) => {
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
-      ].discountamount = item.discAmount;
+      ].discountamount = parseFloat(item.discAmount);
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
       ].discountType = item.discountType || 0;
