@@ -220,18 +220,18 @@
 .deposittablewidth{
     height: 83% !important;
 }
-   ::ng-deep .relative.table-height {
-    height: 50vh !important;
-}
+//    ::ng-deep .relative.table-height {
+//     height: 50vh !important;
+// }
 
-::ng-deep .second-row-depositbutton{
+.second-row-depositbutton{
     .mat-raised-button{
         min-width: initial !important;
         height: 1.875rem !important;
         line-height: 1.875rem  !important;
     }
   }
-  ::ng-deep .clearwidth{
+  .clearwidth{
     width: 12% !important;
   }
 }

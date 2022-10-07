@@ -234,6 +234,7 @@ export class DetailsComponent implements OnInit {
   doxperurl: any;
 
   billexist: boolean = true;
+  apiProcessing: boolean = false;
   ngOnInit(): void {
 
     // this.router.navigate(["out-patient-billing/details"]).then(() => {
@@ -547,14 +548,16 @@ export class DetailsComponent implements OnInit {
   getpatientbilldetails() {
     this.billdetailservice.clear();
     this.BServiceForm.controls['refundAmt'].setValue('0.00');
+    this.apiProcessing = true;
     this.http
       .get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {
           console.log(resultdata);
-          if (resultdata == null) {
+          if (resultdata == null || resultdata.billDetialsForRefund_Table0.length == 0) {
             this.snackbar.open("Invalid Bill No");
+            this.apiProcessing = false;
           } 
           else 
           {
@@ -572,6 +575,7 @@ export class DetailsComponent implements OnInit {
             this.billdetailservice.patientbilldetaillist = resultdata;
             console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
             var printrefundflag = 0;
+            this.apiProcessing = false;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(k => {
               if(k.cancelled == 1)
               {
@@ -680,6 +684,7 @@ export class DetailsComponent implements OnInit {
         }),
         (error:any) => {
           console.log(error);
+          this.apiProcessing = false;
         }
   }
   billFormfill() {
