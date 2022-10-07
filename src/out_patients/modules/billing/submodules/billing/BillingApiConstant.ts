@@ -149,7 +149,7 @@ export namespace BillingApiConstants {
     RegistrationNo: number,
     planId: string
   ) =>
-    `${environment.BillingApiUrl}api/outpatientbilling/getotherplanretrieve/${planId}/${IACode}/${RegistrationNo}`;
+    `${environment.BillingApiUrl}api/outpatientbilling/getotherplanretrieve/${planId}/${RegistrationNo}/${IACode}`;
 
   export const getselectedhappyfamilyplandetail = (
     IACode: string,

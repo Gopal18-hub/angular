@@ -1,0 +1,9 @@
+.other-plan-details {
+  ::ng-deep {
+    table {
+      .cdk-column-availnooftimes {
+        text-align: center;
+      }
+    }
+  }
+}
