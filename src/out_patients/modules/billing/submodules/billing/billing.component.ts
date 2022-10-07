@@ -798,16 +798,36 @@ export class BillingComponent implements OnInit {
                 "You have selected " + selectedPlan.planName
               );
               await planSelectDialog.afterClosed().toPromise();
-              const dialogRefDetails = this.matDialog.open(
-                ShowPlanDetilsComponent,
-                {
-                  width: "60vw",
-                  data: {
-                    planDetails: data,
-                    type: "otherPlanDetails",
-                  },
+              const ores = await this.http
+                .get(
+                  BillingApiConstants.getotherplanretrieve(
+                    this.billingService.activeMaxId.iacode,
+                    this.billingService.activeMaxId.regNumber,
+                    selectedPlan.planId
+                  )
+                )
+                .toPromise();
+              if (ores.length > 0) {
+                const dialogRefDetails = this.matDialog.open(
+                  ShowPlanDetilsComponent,
+                  {
+                    width: "70vw",
+                    data: {
+                      planDetails: ores,
+                      type: "otherPlanDetails",
+                    },
+                  }
+                );
+                const selectedServices = await dialogRefDetails
+                  .afterClosed()
+                  .toPromise();
+                if (
+                  selectedServices &&
+                  selectedServices.selected &&
+                  selectedServices.selected.length > 0
+                ) {
                 }
-              );
+              }
             }
             this.checkServicesLogics();
           });
