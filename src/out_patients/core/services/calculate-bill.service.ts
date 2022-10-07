@@ -64,6 +64,7 @@ export class CalculateBillService {
     this.discountSelectedItems = [];
     this.bookingIdWarningFlag = false;
     this.depositDetailsData = [];
+    this.seniorCitizen = false;
   }
 
   setDiscountSelectedItems(items: any) {
@@ -122,7 +123,7 @@ export class CalculateBillService {
   applyDiscount() {
     if (
       this.discountSelectedItems.length == 1 &&
-      this.discountSelectedItems[0].discTypeId == 1
+      [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
     ) {
       const discItem = this.discountSelectedItems[0];
       this.billingServiceRef.billItems.forEach((item: any) => {
@@ -130,7 +131,7 @@ export class CalculateBillService {
         item.discAmount = (item.price * item.qty * discItem.disc) / 100;
         item.totalAmount = item.price * item.qty - item.discAmount;
         item.discountType = 1;
-        item.discountReason = discItem.reason
+        item.discountReason = discItem.reason;
       });
     } else {
       this.discountSelectedItems.forEach((ditem: any) => {
@@ -143,20 +144,20 @@ export class CalculateBillService {
             item.discAmount = (item.price * item.qty * ditem.disc) / 100;
             item.totalAmount = item.price * item.qty - item.discAmount;
             item.discountType = 2;
-            item.discountReason = ditem.reason
+            item.discountReason = ditem.reason;
           }
         } else if (ditem.discTypeId == 2) {
           const items = this.billingServiceRef.billItems.find(
             (it: any) => it.serviceName == ditem.service
           );
           if (items) {
-          items.forEach((item:any)=>{
+            items.forEach((item: any) => {
               item.disc = ditem.disc;
               item.discAmount = (item.price * item.qty * ditem.disc) / 100;
               item.totalAmount = item.price * item.qty - item.discAmount;
               item.discountType = 2;
-              item.discountReason = ditem.reason
-            })
+              item.discountReason = ditem.reason;
+            });
           }
         }
       });
@@ -167,6 +168,7 @@ export class CalculateBillService {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
+      height: "60vh",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
