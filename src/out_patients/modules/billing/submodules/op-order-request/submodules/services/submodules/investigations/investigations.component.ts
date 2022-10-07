@@ -92,7 +92,7 @@ export class OderInvestigationsComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
       },
       priority: {
         title: "Priority",
@@ -195,6 +195,16 @@ export class OderInvestigationsComponent implements OnInit {
           res.$event.value;
       }
     });
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      if (
+        "patient_Instructions" in res.element.billItem &&
+        res.element.billItem.patient_Instructions
+      ) {
+        this.messageDialogService.info(
+          res.element.billItem.patient_Instructions
+        );
+      }
+    });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
         filter((res) => {
@@ -213,7 +223,7 @@ export class OderInvestigationsComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getinvestigationSearch(
-                  //67,
+                  // 67,
                   Number(this.cookie.get("HSPLocationId")),
                   value
                 )
@@ -232,6 +242,7 @@ export class OderInvestigationsComponent implements OnInit {
               originalTitle: r.name,
               docRequired: r.docRequired,
               precaution: r.precaution,
+              patient_Instructions: r.patient_Instructions,
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
@@ -276,7 +287,7 @@ export class OderInvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          //67
+          // 67
           Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -327,17 +338,21 @@ export class OderInvestigationsComponent implements OnInit {
             serviceid: r.serviceid,
             precaution: r.precaution,
             docRequired: r.docRequired,
+            patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
                 r.id.toString()
               ],
+            // ngStyle: {
+            //   color:
+            //     r.outsourceTest == 1
+            //       ? "red"
+            //       : "" || r.isNonDiscountItem == 1
+            //       ? "pink"
+            //       : "",
+            // },
             ngStyle: {
-              color:
-                r.outsourceTest == 1
-                  ? "red"
-                  : "" || r.isNonDiscountItem == 1
-                  ? "pink"
-                  : "",
+              color: r.outsourceColor == 2 ? "red" : "",
             },
           };
         });
@@ -420,7 +435,7 @@ export class OderInvestigationsComponent implements OnInit {
           this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
           this.cookie.get("HSPLocationId")
-          //"67"
+          // "67"
         )
       )
       .subscribe((res: any) => {
@@ -431,7 +446,11 @@ export class OderInvestigationsComponent implements OnInit {
         this.opOrderRequestService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
-          precaution: this.formGroup.value.investigation.precaution,
+          //precaution: this.formGroup.value.investigation.precaution,
+          precaution:
+            this.formGroup.value.investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : this.formGroup.value.investigation.precaution,
           priority: 1,
           specialisation: "",
           doctorName: "",
@@ -449,6 +468,16 @@ export class OderInvestigationsComponent implements OnInit {
             .docRequired
             ? true
             : false,
+          patient_Instructions:
+            this.formGroup.value.investigation.patient_Instructions,
+          billItem: {
+            patient_Instructions:
+              this.formGroup.value.investigation.patient_Instructions,
+            precaution:
+              this.formGroup.value.investigation.precaution == "P"
+                ? '<span class="max-health-red-color">P</span>'
+                : this.formGroup.value.investigation.precaution,
+          },
         });
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
@@ -498,7 +527,7 @@ export class OderInvestigationsComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      //  60926,
+      // 60926,
       // 67
       userid,
       locationid
