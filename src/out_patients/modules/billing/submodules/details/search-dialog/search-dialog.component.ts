@@ -319,7 +319,7 @@ export class SearchDialogComponent implements OnInit {
     this.http.get(BillDetailsApiConstants.getsearchopbills(
       this.searchform.value.billno?this.searchform.value.billno:'',
       this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[1]:'',
-      this.searchform.value.maxid.split('.')[0]?this.searchform.value.maxid.split('.')[0]:'',
+      this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[0]:'',
       this.searchform.value.mobileno?this.searchform.value.mobileno: '',
       this.searchform.value.checkbox==true?true:false,
       this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),

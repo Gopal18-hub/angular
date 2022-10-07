@@ -68,7 +68,12 @@ export class BillingService {
   referralDoctor: any;
 
   companyChangeEvent = new Subject<any>();
+  corporateChangeEvent = new Subject<any>();
+
   companyData: any = [];
+  corporateData: any = [];
+  selectedcompanydetails: any = [];
+  selectedcorporatedetails: any = [];
   iomMessage: string = "";
   activeLink = new Subject<any>();
   disableServiceTab: boolean = false;
@@ -285,6 +290,8 @@ export class BillingService {
     if (this.billItems.length > 0) {
       this.refreshPrice();
     }
+    this.selectedcompanydetails =  res;
+    this.selectedcorporatedetails = [];
     this.companyChangeEvent.next({ company: res, from });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
     this.iomMessage =
@@ -317,8 +324,20 @@ export class BillingService {
     }
   }
 
+  setCorporate(corporateid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"){
+     this.selectedcorporatedetails = res; 
+     this.corporateChangeEvent.next({ corporate: res, from });   
+  }
+
   setCompanyData(data: any) {
     this.companyData = data;
+  }
+
+  setCorporateData(data: any){
+    this.corporateData = data;
   }
 
   setBilltype(billtype: string) {
