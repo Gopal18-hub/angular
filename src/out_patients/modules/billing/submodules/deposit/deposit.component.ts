@@ -815,8 +815,8 @@ export class DepositComponent implements OnInit {
           console.log(this.form60);
           if (this.form60 == 1) {
             const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
-              width: "25vw",
-              height: "30vh",
+              width: "30vw",
+              height: "35vh",
             });
             dialogref.afterClosed().subscribe((res) => {
               if (res == "yes") {
