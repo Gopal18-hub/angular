@@ -239,6 +239,18 @@ export class DynamicFormQuestionComponent
         inputElement: this.element.nativeElement,
         ...this.dateMaskConfig,
       });
+    } else if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "currency"
+    ) {
+      this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+        if (!value) value = "0.00";
+        const temp = Number.parseFloat(value).toFixed(2);
+        this.form.controls[this.question.key].setValue(temp, {
+          emitEvent: false,
+        });
+      });
     }
   }
 

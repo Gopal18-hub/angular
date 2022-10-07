@@ -49,9 +49,9 @@ export class BillComponent implements OnInit {
         placeholder: "--Select--",
       },
       billAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       availDiscCheck: {
@@ -60,9 +60,9 @@ export class BillComponent implements OnInit {
         options: [{ title: "Avail Plan Disc ( - )" }],
       },
       availDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       discAmtCheck: {
@@ -72,9 +72,9 @@ export class BillComponent implements OnInit {
         disabled: false,
       },
       discAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0,
+        defaultValue: "0.00",
         readonly: true,
         disabled: false,
       },
@@ -84,27 +84,27 @@ export class BillComponent implements OnInit {
         options: [{ title: "Deposit Amount ( - )" }],
       },
       dipositAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       patientDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       compDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       planAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       coupon: {
@@ -112,33 +112,33 @@ export class BillComponent implements OnInit {
         required: false,
       },
       coPay: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       credLimit: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       gstTax: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByPatient: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByComp: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       paymentMode: {
@@ -157,7 +157,7 @@ export class BillComponent implements OnInit {
         options: [{ title: "Self" }],
       },
       dipositAmtEdit: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
@@ -390,7 +390,7 @@ export class BillComponent implements OnInit {
     this.billingservice.billItems.forEach((item: any, index: number) => {
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
-      ].discountamount = item.discAmount;
+      ].discountamount = parseFloat(item.discAmount);
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
       ].discountType = item.discountType || 0;

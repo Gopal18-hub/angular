@@ -26,10 +26,14 @@ export class PopuptextComponent implements OnInit {
 
   printbtn()
   {
-    this.reportService.openWindow('IvestigationInstruction', 'IvestigationInstruction', {
-      ItemName: btoa(JSON.stringify(this.item)),
-      description: btoa(JSON.stringify(this.description))
-    });
+    this.dialogRef.close();
+    this.dialogRef.afterClosed().subscribe(()=>{
+      this.reportService.openWindow('IvestigationInstruction', 'IvestigationInstruction', {
+        ItemName: btoa(JSON.stringify(this.item)),
+        description: btoa(JSON.stringify(this.description))
+      });
+    })
+    
   }
 
 }

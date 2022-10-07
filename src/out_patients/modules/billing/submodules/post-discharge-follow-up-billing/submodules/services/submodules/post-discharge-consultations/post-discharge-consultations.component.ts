@@ -222,12 +222,27 @@ export class PostDischargeConsultationsComponent implements OnInit {
       });
   }
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      console.log(res);
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
+    if (!this.excludeClinicsLocations.includes(this.locationId)) {
+      this.http
+        .get(BillingApiConstants.getclinics(this.locationId))
+        .subscribe((res) => {
+          this.questions[2].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[2] = { ...this.questions[2] };
+        });
+      this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
+        if (val && val.value) {
+          this.getdoctorlistonSpecializationClinic(val.value, true);
+        }
       });
-      this.questions[0] = { ...this.questions[0] };
+    } else {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[0] = { ...this.questions[0] };
+      });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
           if (val && val.value) {
@@ -235,16 +250,19 @@ export class PostDischargeConsultationsComponent implements OnInit {
           }
         }
       );
-    });
+    }
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    isClinic = false
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
+          isClinic,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
