@@ -132,6 +132,7 @@
         type="submit"
         class="mt-1 btn"
         (click)="makeBill()"
+        [disabled]="!checkToProceed()"
       >
         Submit
       </button>
