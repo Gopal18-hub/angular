@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from "@angular/core";
+import { Component, OnInit, ViewChild, Inject, OnDestroy } from "@angular/core";
 import { PaymentModeComponent } from "./payment-mode/payment-mode.component";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
@@ -39,7 +39,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
   templateUrl: "./billing.component.html",
   styleUrls: ["./billing.component.scss"],
 })
-export class BillingComponent implements OnInit {
+export class BillingComponent implements OnInit, OnDestroy {
   links: any = [
     {
       title: "Services",
@@ -264,6 +264,10 @@ export class BillingComponent implements OnInit {
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.clear();
   }
 
   formEvents() {
