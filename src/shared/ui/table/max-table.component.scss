@@ -105,6 +105,10 @@
   }
   .cdk-column-maxRemoveRow {
     text-align: right;
+    button {
+      height: 1.875rem;
+      line-height: 1.875rem;
+    }
   }
 }
 ::ng-deep .table-more-actions {
