@@ -122,7 +122,7 @@ export class CalculateBillService {
   applyDiscount() {
     if (
       this.discountSelectedItems.length == 1 &&
-      this.discountSelectedItems[0].discTypeId == 1
+      [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
     ) {
       const discItem = this.discountSelectedItems[0];
       this.billingServiceRef.billItems.forEach((item: any) => {
