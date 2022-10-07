@@ -84,14 +84,7 @@ export class OpOrderRequestComponent implements OnInit {
 
   apiProcessing: boolean = false;
 
-  complanyList!: GetCompanyDataInterface[];
-  coorporateList: { id: number; name: string }[] = [] as any;
-
-  dmsProcessing: boolean = false;
-
   moment = moment;
-
-  narrationAllowedLocations = ["67", "69"];
   noteRemarkdb: any;
   vipdb: any;
   hwcRemarkdb: any;
@@ -117,6 +110,8 @@ export class OpOrderRequestComponent implements OnInit {
 
   ngOnInit(): void {
     // this.getAllCompany();
+    this.opOrderRequestService.investigationItems = [];
+    this.opOrderRequestService.procedureItems = [];
     this.opOrderRequestService.activeLink.subscribe((data) => {
       console.log(data);
       if (data == true) {
