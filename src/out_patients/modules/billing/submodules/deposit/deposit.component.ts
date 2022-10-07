@@ -327,7 +327,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any =   Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -796,62 +796,66 @@ export class DepositComponent implements OnInit {
     let iacode = this.depositForm.value.maxid.split(".")[0];
     // Number(this.cookie.get("HSPLocationId")),
 
-    let billno = this.deposittable.selection.selected[0].receiptno;
+    if(this.deposittable.selection.selected[0]){
+      let billno = this.deposittable.selection.selected[0].receiptno;
+      
     this.http
-      .get(
-        ApiConstants.getform60(
-          Number(this.cookie.get("HSPLocationId")),
-          billno,
-
-          iacode,
-          regno
-        )
+    .get(
+      ApiConstants.getform60(
+      this.hspLocationid,
+        billno,
+        iacode,
+        regno
       )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultdata: any) => {
-          console.log(resultdata);
-          this.form60 = resultdata;
-          console.log(this.form60);
-          if (this.form60 == 1) {
-            const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
-              width: "25vw",
-              height: "30vh",
-            });
-            dialogref.afterClosed().subscribe((res) => {
-              if (res == "yes") {
-                this.depositreport();
-                this.formreport();
-              } else if (res == "no") {
-                this.depositreport();
-              }
-            });
-          } else {
-            this.depositreport();
-          }
-        },
-        (error) => {
-          console.log(error);
+    )
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(
+      (resultdata: any) => {
+        console.log(resultdata);
+        this.form60 = resultdata;
+        console.log(this.form60);
+        if (this.form60 == 1) {
+          const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
+            width: "25vw",
+            height: "30vh",
+          });
+          dialogref.afterClosed().subscribe((res) => {
+            if (res == "yes") {
+              this.depositreport();
+              this.formreport();
+            } else if (res == "no") {
+              this.depositreport();
+            }
+          });
+        } else {
+          this.depositreport();
         }
-      );
-    console.log(this.deposittable.selection.selected);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  console.log(this.deposittable.selection.selected);
+    }else{
+
+      this.deposittable.childTable.map((r: any) => {
+        r.selection.selected.map((res: any) => {
+          if (res) {
+            this.reportService.openWindow("rptRefund", "rptRefund", {
+              receiptno: res.receiptno,
+              locationID: this.hspLocationid,
+            });
+          }
+        });
+      });
+    }
+   
   }
   depositreport() {
     this.deposittable.selection.selected.map((s: any) => {
       this.reportService.openWindow("DepositReport", "DepositReport", {
         receiptnumber: s.receiptno,
         locationID: this.hspLocationid,
-      });
-    });
-
-    this.deposittable.childTable.map((r: any) => {
-      r.selection.selected.map((res: any) => {
-        if (res) {
-          this.reportService.openWindow("rptRefund", "rptRefund", {
-            receiptno: res.receiptno,
-            locationID: this.hspLocationid,
-          });
-        }
       });
     });
   }
