@@ -29,6 +29,7 @@ import { DiscountAmtDialogComponent } from "../../prompts/discount-amt-dialog/di
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { MiscDiscountReasonComponent } from "../../prompts/misc-discount reason/misc-discount-reason.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { GstTaxComponent } from "@modules/billing/submodules/billing/prompts/gst-tax-popup/gst-tax.component";
 
 @Component({
   selector: "out-patients-bill-detail",
@@ -611,6 +612,7 @@ export class BillDetailComponent implements OnInit {
           this.calcBillData.totalDiscount = 0;
           this.miscPatient.setCalculateBillItems(this.calcBillData);
           let calcBill0 = this.miscPatient.calculateBill();
+          this.miscServBillForm.controls["discAmtCheck"].setValue(false);
           this.miscServBillForm.controls["discAmt"].setValue(0 + ".00");
           this.miscServBillForm.controls["billAmt"].setValue(
             calcBill0.totalBillAmount + ".00"
@@ -630,6 +632,7 @@ export class BillDetailComponent implements OnInit {
         } else {
           this.calcBillData.totalDeposit = 0;
           this.miscPatient.setCalculateBillItems(this.calcBillData);
+          this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
           let calcBill0 = this.miscPatient.calculateBill();
           this.miscServBillForm.controls["dipositAmt"].setValue(0 + ".00");
           this.miscServBillForm.controls["dipositAmtEdit"].setValue(0 + ".00");
@@ -1174,6 +1177,8 @@ export class BillDetailComponent implements OnInit {
       .subscribe((result) => {
         if (result == "Success") {
           this.opendiscAmtDialog();
+        } else {
+          this.miscServBillForm.controls["discAmtCheck"].setValue(false);
         }
       });
   }
@@ -1181,6 +1186,7 @@ export class BillDetailComponent implements OnInit {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
+      height: "75%",
     });
 
     discountReasonPopup.afterClosed().subscribe((res) => {
@@ -1221,7 +1227,7 @@ export class BillDetailComponent implements OnInit {
         if (result == "Success") {
           const dialogref = this.matDialog.open(DepositDetailsComponent, {
             width: "full",
-            height: "auto",
+            height: "75%",
             data: {
               data: this.depositDetails,
             },
@@ -1252,31 +1258,41 @@ export class BillDetailComponent implements OnInit {
               }
             }
           });
+        } else if (
+          this.makebillFlag == true &&
+          this.depodialogRows.length <= 0
+        ) {
+          this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
+          this.openPaymentModeDialog();
         } else {
-          if (this.makebillFlag == true && this.depodialogRows.length <= 0) {
-            this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
-            this.openPaymentModeDialog();
-          }
+          this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
         }
       });
   }
   openGstTaxDialog() {
-    const gstDialogref = this.matDialog.open(GstTaxDialogComponent, {
-      width: "35vw",
-      height: "57vh",
-      data: {
-        gstdata: this.gstData,
-      },
-    });
-
-    gstDialogref
-      .afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result.data) {
-          this.gstDataResult = result.data;
-        }
+    if (this.serviceselectedList.length <= 0) {
+      this.matDialog.open(GstTaxComponent, {
+        width: "30vw",
+        height: "50vh",
       });
+    } else {
+      const gstDialogref = this.matDialog.open(GstTaxDialogComponent, {
+        width: "35vw",
+        height: "57vh",
+        data: {
+          gstdata: this.gstData,
+        },
+      });
+
+      gstDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          if (result.data) {
+            this.gstDataResult = result.data;
+          }
+        });
+    }
   }
   openMakeBilldialog() {
     this.makebillFlag = true;
