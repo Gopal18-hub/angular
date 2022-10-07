@@ -552,7 +552,7 @@ export class BillingService {
       itemId: data.billItem.itemId,
       itemName: data.billItem.itemName,
       testId: 0,
-      testName: "string",
+      testName: "",
       amount: data.billItem.totalAmount,
       planAmount: 0,
       discountType: 0,
