@@ -1,14 +1,6 @@
-<div
-  class="flex flex-column h-full relative"
-  *ngIf="planType != 'otherPlanDetails'"
->
-  <button
-    mat-icon-button
-    aria-label="close dialog"
-    mat-dialog-close
-    class="absolute max-dialog-close-icon"
-    type="button"
-  >
+<div class="flex flex-column h-full relative" *ngIf="planType != 'otherPlanDetails'">
+  <button mat-icon-button aria-label="close dialog" mat-dialog-close class="absolute max-dialog-close-icon"
+    type="button">
     <mat-icon>close</mat-icon>
   </button>
   <h2 class="max-health-primary-color">Plan Details</h2>
@@ -16,56 +8,27 @@
     <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
   </div>
   <div class="flex mt-4 flex-row-reverse">
-    <button
-      mat-raised-button
-      color="primary"
-      class="font-sm min-width-initial"
-      type="button"
-      (click)="cancel()"
-    >
+    <button mat-raised-button color="primary" class="font-sm min-width-initial" type="button" (click)="cancel()">
       Cancel
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      class="font-sm min-width-initial mr-5"
-      type="button"
-      (click)="save()"
-    >
+    <button mat-raised-button color="primary" class="font-sm min-width-initial mr-5" type="button" (click)="save()">
       Ok
     </button>
   </div>
 </div>
 
-<div
-  class="flex flex-column h-full relative"
-  *ngIf="planType == 'otherPlanDetails'"
->
-  <button
-    mat-icon-button
-    aria-label="close dialog"
-    mat-dialog-close
-    class="absolute max-dialog-close-icon"
-    type="button"
-  >
+<div class="flex flex-column h-full relative" *ngIf="planType == 'otherPlanDetails'">
+  <button mat-icon-button aria-label="close dialog" mat-dialog-close class="absolute max-dialog-close-icon"
+    type="button">
     <mat-icon>close</mat-icon>
   </button>
   <h2 class="max-health-primary-color">Other Health Plan Utilization</h2>
   <div class="h-3/4">
-    <maxhealth-table [config]="config" [data]="data" #table></maxhealth-table>
+    <maxhealth-table [config]="otherPlanConfig" [data]="data" #table></maxhealth-table>
     <ng-container *ngIf="isConsultationExist">
       <div>
-        <mat-form-field
-          appearance="outline"
-          floatLabel="never"
-          class="table-select-dropdown"
-        >
-          <mat-select
-            [panelClass]="'im-select-dropdown'"
-            disableOptionCentering
-            controlDirty
-            placeholder="--Select--"
-          >
+        <mat-form-field appearance="outline" floatLabel="never" class="table-select-dropdown">
+          <mat-select [panelClass]="'im-select-dropdown'" disableOptionCentering controlDirty placeholder="--Select--">
             <ng-container *ngFor="let opt of doctorList">
               <mat-option [value]="opt.value">
                 {{ opt.title }}
@@ -77,22 +40,10 @@
     </ng-container>
   </div>
   <div class="flex mt-4 flex-row-reverse">
-    <button
-      mat-raised-button
-      color="primary"
-      class="font-sm min-width-initial"
-      type="button"
-      (click)="cancel()"
-    >
+    <button mat-raised-button color="primary" class="font-sm min-width-initial" type="button" (click)="cancel()">
       Cancel
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      class="font-sm min-width-initial mr-5"
-      type="button"
-      (click)="save()"
-    >
+    <button mat-raised-button color="primary" class="font-sm min-width-initial mr-5" type="button" (click)="save()">
       Ok
     </button>
   </div>
