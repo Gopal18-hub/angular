@@ -250,4 +250,7 @@ export namespace CrystalReport {
   export const IvestigationInstruction = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?ItemName=${params.ItemName}&description=${params.description}`;
   };
+  export const PostDischargeFollowUpReport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/VisitingOTBilling?Opbillid=${params.opbillid}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&flag=${params.flag}`;
+  };
 }
