@@ -46,7 +46,15 @@ export class ShowPlanDetilsComponent implements OnInit {
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     clickSelection: "single",
-    displayedColumns: ["stepNo", "serviceName", "itemName", "noOfTimes", "price", "availnooftimes"],
+    selectCheckBoxLabel: "Select",
+    displayedColumns: [
+      "stepNo",
+      "serviceName",
+      "itemName",
+      "noOfTimes",
+      "price",
+      "availnooftimes",
+    ],
     columnsInfo: {
       stepNo: {
         title: "Step",
@@ -59,19 +67,22 @@ export class ShowPlanDetilsComponent implements OnInit {
         title: "Services Name",
         type: "string",
         style: {
-          width: "15%"
-        }
+          width: "15%",
+        },
       },
       itemName: {
         title: "Item Name",
         type: "string",
         style: {
-          width: "30%"
-        }
+          width: "30%",
+        },
       },
       noOfTimes: {
         title: "Limit",
         type: "number",
+        style: {
+          width: "80px",
+        },
       },
       price: {
         title: "App Amount",
