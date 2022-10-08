@@ -25,6 +25,7 @@ import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { CouponDiscountService } from "../../coupondiscount.service";
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -300,7 +301,8 @@ export class BillComponent implements OnInit {
     private cookie: CookieService,
     private http: HttpService,
     private snackbar: MaxHealthSnackBarService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private couponDiscountService: CouponDiscountService
   ) {}
 
   async ngOnInit() {
@@ -740,22 +742,37 @@ export class BillComponent implements OnInit {
     }
   }
 
-  validateCoupon() {
+  async validateCoupon() {
     if (this.formGroup.value.coupon) {
       if (this.billingservice.company > 0) {
         // popup to show MECP only for CASH
+        const CouponErrorRef = this.messageDialogService.error(
+          "MECP discount applicable on CASH Patient only"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        return;
       } else {
         if (this.formGroup.value.paymentMode == 1) {
-          this.billingservice.getServicesForCoupon(
+          this.couponDiscountService.getServicesForCoupon(
             this.formGroup.value.coupon,
             Number(this.cookie.get("HSPLocationId"))
           );
         } else {
           //popup to show validation only for CASH
+          const CouponErrorRef = this.messageDialogService.error(
+            "MECP discount applicable on CASH Patient only"
+          );
+          await CouponErrorRef.afterClosed().toPromise();
+          return;
         }
       }
     } else {
       // validation to show coupon required
+      const CouponErrorRef = this.messageDialogService.error(
+        "Please Enter Coupon"
+      );
+      await CouponErrorRef.afterClosed().toPromise();
+      return;
     }
   }
 }

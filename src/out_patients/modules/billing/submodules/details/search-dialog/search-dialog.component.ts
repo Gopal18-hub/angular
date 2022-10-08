@@ -171,7 +171,7 @@ export class SearchDialogComponent implements OnInit {
   public getsearchopbillslist: getsearchopbills[] = [];
   private readonly _destroying$ = new Subject<void>();
   @ViewChild('table') table: any;
-  // apiProcessing: boolean = false;
+  apiProcessing: boolean = false;
   constructor(
     private cookie: CookieService,
     private http: HttpService,
@@ -230,6 +230,7 @@ export class SearchDialogComponent implements OnInit {
       {
         this.searchform.controls['fromdate'].enable();
         this.searchform.controls['todate'].enable();
+        this.getsearchopbillslist = [];
         this.search();
       }
       else
@@ -315,7 +316,7 @@ export class SearchDialogComponent implements OnInit {
   SearchApi()
   {
     this.getsearchopbillslist= [];
-    // this.apiProcessing = true;
+    this.apiProcessing = true;
     this.http.get(BillDetailsApiConstants.getsearchopbills(
       this.searchform.value.billno?this.searchform.value.billno:'',
       this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[1]:'',
@@ -351,8 +352,12 @@ export class SearchDialogComponent implements OnInit {
           e.balance = e.balance.toFixed(2);
           e.billamount = e.billamount.toFixed(2);
         })
-        // this.apiProcessing = false;
+        this.apiProcessing = false;
         console.log(this.getsearchopbillslist);
+      }
+      else
+      {
+        this.apiProcessing = false;
       }
     })
   }
