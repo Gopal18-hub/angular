@@ -423,6 +423,13 @@ export class BillComponent implements OnInit {
         if (value == true) {
           this.calculateBillService.discountreason(this.formGroup, this);
         } else {
+          this.billingservice.billItems.forEach((item: any) => {
+            item.disc = 0;
+            item.discAmount = 0;
+            item.totalAmount = item.price * item.qty;
+            item.discountType = 2;
+            item.discountReason = 0;
+          });
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
           this.formGroup.controls["discAmt"].setValue(
@@ -431,6 +438,7 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
           );
+          this.formGroup.controls["coupon"].setValue("");
         }
       });
 

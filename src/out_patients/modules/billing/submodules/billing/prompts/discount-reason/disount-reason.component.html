@@ -69,7 +69,7 @@
         class="float-right mr-4"
         mat-raised-button
         color="primary"
-        [disabled]="disableAdd"
+        [disabled]="disableAdd || data?.disableAdd"
         (click)="prepareData()"
       >
         Add
@@ -79,7 +79,7 @@
         mat-raised-button
         color="primary"
         (click)="clear()"
-        [disabled]="selectedItems.length == 0"
+        [disabled]="selectedItems.length == 0 || data?.disableClear"
       >
         Clear
       </button>

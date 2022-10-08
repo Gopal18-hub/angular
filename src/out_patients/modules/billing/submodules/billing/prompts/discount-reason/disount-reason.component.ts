@@ -200,6 +200,9 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if ("removeRow" in this.data) {
+      this.discAmtFormConfig.removeRow = this.data.removeRow;
+    }
     this.selectedItems = this.calculateBillService.discountSelectedItems;
 
     let formResult: any = this.formService.createForm(
@@ -207,7 +210,18 @@ export class DisountReasonComponent implements OnInit {
       {}
     );
     this.discAmtForm = formResult.form;
+    this.calculateBillService.setDiscountForm(this.discAmtForm);
     this.question = formResult.questions;
+    if (
+      "disableHeaderControls" in this.data &&
+      this.data.disableHeaderControls
+    ) {
+      this.discAmtForm.controls["types"].disable();
+      this.discAmtForm.controls["head"].disable();
+      this.discAmtForm.controls["reason"].disable();
+      this.discAmtForm.controls["percentage"].disable();
+      this.discAmtForm.controls["amt"].disable();
+    }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
     this.getAuthorisedBy();
@@ -408,7 +422,7 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnCompanyPrepare() {
-     const existReason: any = this.discReasonList.find(
+    const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const discAmt =
