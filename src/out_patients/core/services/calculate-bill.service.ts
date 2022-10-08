@@ -9,7 +9,7 @@ import { BillingService } from "../../modules/billing/submodules/billing/billing
 import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingApiConstants } from "../../modules/billing/submodules/billing/BillingApiConstant";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { DisountReasonComponent } from "../../modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
 
@@ -30,6 +30,8 @@ export class CalculateBillService {
   seniorCitizen: boolean = false;
 
   depositDetailsData: any = [];
+
+  private readonly _destroying$ = new Subject<void>();
 
   constructor(
     public matDialog: MatDialog,
@@ -168,7 +170,7 @@ export class CalculateBillService {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "60vh",
+      height: "67vh",
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
@@ -255,4 +257,208 @@ export class CalculateBillService {
     }
     return true;
   }
+
+  //#region Coupon discount
+  async getServicesForCoupon(
+    formGroup: any,
+    locationId: any,
+    componentRef: any
+  ) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getServicesForCoupon(
+          formGroup.value.coupon,
+          locationId
+        )
+      )
+      .toPromise();
+    console.log(res);
+    if (res.length > 0) {
+      console.log(res[0].id);
+      if ((res[0].id = 0)) {
+        //coupon already used message
+        const CouponErrorRef = this.messageDialogService.error(
+          "Coupon already used"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        return;
+      } else {
+        const CouponConfirmationRef = this.messageDialogService.confirm(
+          "",
+          "Coupon Accepted, Do you want to proceed with MECP discount ?"
+        );
+
+        CouponConfirmationRef.afterClosed()
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(async (result) => {
+            if ("type" in result) {
+              if (result.type == "yes") {
+                this.discountSelectedItems = this.processDiscount(res);
+                if (this.discountSelectedItems) {
+                  if (this.discountSelectedItems.length > 0) {
+                    this.discountreason(formGroup, componentRef);
+                  }
+                }
+              } else {
+              }
+            }
+          });
+      }
+    } else {
+      //Invalid Coupon
+      const CouponErrorRef =
+        this.messageDialogService.error("Invalid Coupon !");
+      await CouponErrorRef.afterClosed().toPromise();
+      return;
+    }
+  }
+
+  processDiscount(couponServices: any): any {
+    let discountper = 0;
+    let Sno = 0;
+    let discountReasonItems = [];
+
+    if (this.billingServiceRef.billItems) {
+      if (this.billingServiceRef.billItems.length > 0) {
+        //for each bill item
+        for (var item of this.billingServiceRef.billItems) {
+          //get discount on basis of service Id, itemId and discounper
+          let couponService = this.getDiscounts(
+            item,
+            couponServices,
+            discountper
+          );
+          //got discount then add row to discount rrason list
+          if (couponService && couponService.length > 0) {
+            //preparing a array for service/item based CouponService
+            let couponItem = this.setCouponItem(
+              item,
+              couponService,
+              discountper,
+              Sno
+            );
+            //array to populate all couponServices in discount popup
+            discountReasonItems.push(couponItem);
+          }
+        }
+        console.log(discountReasonItems);
+        return discountReasonItems;
+      }
+    }
+  }
+
+  getDiscounts(billItem: any, couponServices: any, discountper = 0): any {
+    //get discount on basis of service Id, itemId and discounper
+    let itemdiscount = couponServices.filter(
+      (x: any) =>
+        x.serviceID === billItem.serviceId &&
+        x.itemID === billItem.itemId &&
+        x.discountper > discountper
+    );
+    if (!itemdiscount || itemdiscount.length <= 0) {
+      //get discount  for consultations
+      if (billItem.serviceId == 15 || billItem.serviceId == 25) {
+        if (billItem.specialisationID == 0) {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              (x.specialisationID === billItem.specialisationID ||
+                x.specialisationID === 0 ||
+                x.specialisationID == null)
+          );
+        } else {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              x.specialisationID === billItem.specialisationID
+          );
+        }
+        //get discount  for consultations for service Id
+        if (!itemdiscount || itemdiscount.length <= 0) {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              (x.itemID === 0 || x.itemID == null)
+          );
+        }
+      } else {
+        //get discount for other services that consultation
+        itemdiscount = couponServices.filter(
+          (x: any) =>
+            x.serviceID === billItem.serviceId &&
+            (x.itemID === 0 || x.itemID == null)
+        );
+      }
+    } else if (itemdiscount[0].discountper <= 0) {
+      if (billItem.serviceId == 15 || billItem.serviceId == 25) {
+        if (billItem.specialisationID == 0) {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              (x.specialisationID === billItem.specialisationID ||
+                x.specialisationID === 0 ||
+                x.specialisationID == null)
+          );
+        } else {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              x.specialisationID === billItem.specialisationID
+          );
+        }
+
+        if (!itemdiscount || itemdiscount.length <= 0) {
+          itemdiscount = couponServices.filter(
+            (x: any) =>
+              x.serviceID === billItem.serviceId &&
+              (x.itemID === 0 || x.itemID == null)
+          );
+        }
+      } else {
+        itemdiscount = couponServices.filter(
+          (x: any) =>
+            x.serviceID === billItem.serviceId &&
+            (x.itemID === 0 || x.itemID == null)
+        );
+      }
+    }
+    return itemdiscount;
+  }
+
+  setCouponItem(
+    billItem: any,
+    couponService: any,
+    discountper = 0,
+    Sno = 0
+  ): any {
+    Sno += 1;
+    discountper = couponService[0].discountper;
+    let discAmt = (billItem.price * discountper) / 100;
+    let totalAmt = billItem.price - discAmt;
+    let serviceName = billItem.serviceName;
+    let itemName = billItem.itemName;
+    let price = billItem.price;
+
+    let disType = "On-Item";
+    let valuebased = 0;
+
+    let couponItem = {
+      sno: Sno,
+      discType: "On Item",
+      discTypeId: 3,
+      service: serviceName,
+      doctor: itemName,
+      price: price,
+      disc: discountper,
+      discAmt: discAmt,
+      totalAmt: totalAmt,
+      head: couponService[0].mainhead,
+      reason: couponService[0].id,
+      value: "0",
+      discTypeValue: disType,
+      reasonTitle: couponService[0].name,
+    };
+    return couponItem;
+  }
+  //#endregion
 }

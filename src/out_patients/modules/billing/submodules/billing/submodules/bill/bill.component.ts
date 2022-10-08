@@ -25,7 +25,7 @@ import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
-import { CouponDiscountService } from "../../coupondiscount.service";
+
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -301,8 +301,7 @@ export class BillComponent implements OnInit {
     private cookie: CookieService,
     private http: HttpService,
     private snackbar: MaxHealthSnackBarService,
-    private calculateBillService: CalculateBillService,
-    private couponDiscountService: CouponDiscountService
+    private calculateBillService: CalculateBillService
   ) {}
 
   async ngOnInit() {
@@ -753,9 +752,10 @@ export class BillComponent implements OnInit {
         return;
       } else {
         if (this.formGroup.value.paymentMode == 1) {
-          this.couponDiscountService.getServicesForCoupon(
-            this.formGroup.value.coupon,
-            Number(this.cookie.get("HSPLocationId"))
+          this.calculateBillService.getServicesForCoupon(
+            this.formGroup,
+            Number(this.cookie.get("HSPLocationId")),
+            this
           );
         } else {
           //popup to show validation only for CASH
