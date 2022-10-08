@@ -447,6 +447,7 @@ export class CalculateBillService {
       discType: "On Item",
       discTypeId: 3,
       service: serviceName,
+      itemId: billItem.itemId,
       doctor: itemName,
       price: price,
       disc: discountper,
