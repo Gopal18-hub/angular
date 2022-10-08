@@ -172,30 +172,33 @@ export class CalculateBillService {
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
-        this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
-
-        this.applyDiscount();
-        this.discountSelectedItems.forEach((discItem: any) => {
-          this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
-            discOn: discItem.discType,
-            disType: discItem.discTypeId.toString(),
-            disPer: discItem.disc,
-            disReason: discItem.reasonTitle,
-            disAmt: discItem.discAmt,
-          });
-        });
-        formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
-        formGroup.controls["amtPayByPatient"].setValue(
-          componentRef.getAmountPayByPatient()
-        );
-        if (this.totalDiscountAmt > 0) {
-          formGroup.controls["discAmtCheck"].setValue(true, {
-            emitEvent: false,
-          });
-          componentRef.refreshTable();
-        }
+        this.processDiscountLogics(formGroup, componentRef);
       }
     });
+  }
+
+  processDiscountLogics(formGroup: any, componentRef: any) {
+    this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
+    this.applyDiscount();
+    this.discountSelectedItems.forEach((discItem: any) => {
+      this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
+        discOn: discItem.discType,
+        disType: discItem.discTypeId.toString(),
+        disPer: discItem.disc,
+        disReason: discItem.reasonTitle,
+        disAmt: discItem.discAmt,
+      });
+    });
+    formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
+    formGroup.controls["amtPayByPatient"].setValue(
+      componentRef.getAmountPayByPatient()
+    );
+    if (this.totalDiscountAmt > 0) {
+      formGroup.controls["discAmtCheck"].setValue(true, {
+        emitEvent: false,
+      });
+      componentRef.refreshTable();
+    }
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
