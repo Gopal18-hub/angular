@@ -281,6 +281,9 @@ export class CalculateBillService {
           "Coupon already used"
         );
         await CouponErrorRef.afterClosed().toPromise();
+        formGroup.controls["coupon"].setValue("", {
+          emitEvent: false,
+        });
         return;
       } else {
         const CouponConfirmationRef = this.messageDialogService.confirm(
@@ -297,7 +300,25 @@ export class CalculateBillService {
                 if (this.discountSelectedItems) {
                   if (this.discountSelectedItems.length > 0) {
                     this.discountreason(formGroup, componentRef);
+                  } else {
+                    const CouponErrorRef = this.messageDialogService.error(
+                      "Coupon cannot be applied on selected Services or Items"
+                    );
+                    await CouponErrorRef.afterClosed().toPromise();
+                    formGroup.controls["coupon"].setValue("", {
+                      emitEvent: false,
+                    });
+                    return;
                   }
+                } else {
+                  const CouponErrorRef = this.messageDialogService.error(
+                    "Coupon cannot be applied on selected Services or Items"
+                  );
+                  await CouponErrorRef.afterClosed().toPromise();
+                  formGroup.controls["coupon"].setValue("", {
+                    emitEvent: false,
+                  });
+                  return;
                 }
               } else {
               }
@@ -309,6 +330,9 @@ export class CalculateBillService {
       const CouponErrorRef =
         this.messageDialogService.error("Invalid Coupon !");
       await CouponErrorRef.afterClosed().toPromise();
+      formGroup.controls["coupon"].setValue("", {
+        emitEvent: false,
+      });
       return;
     }
   }

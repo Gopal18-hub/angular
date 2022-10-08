@@ -467,11 +467,12 @@ export class BillComponent implements OnInit {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-
-    this.question[12].elementRef.addEventListener(
-      "blur",
-      this.validateCoupon.bind(this)
-    );
+    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.validateCoupon();
+      }
+    });
   }
 
   discountreason() {
@@ -749,6 +750,7 @@ export class BillComponent implements OnInit {
           "MECP discount applicable on CASH Patient only"
         );
         await CouponErrorRef.afterClosed().toPromise();
+        this.formGroup.controls["coupon"].setValue("");
         return;
       } else {
         if (this.formGroup.value.paymentMode == 1) {
@@ -763,6 +765,7 @@ export class BillComponent implements OnInit {
             "MECP discount applicable on CASH Patient only"
           );
           await CouponErrorRef.afterClosed().toPromise();
+          this.formGroup.controls["coupon"].setValue("");
           return;
         }
       }
