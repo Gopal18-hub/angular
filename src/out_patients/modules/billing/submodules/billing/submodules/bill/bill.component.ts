@@ -421,8 +421,17 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.calculateBillService.discountreason(this.formGroup, this);
+          if (this.calculateBillService.validCoupon) {
+            this.calculateBillService.discountreason(
+              this.formGroup,
+              this,
+              "coupon"
+            );
+          } else {
+            this.calculateBillService.discountreason(this.formGroup, this);
+          }
         } else {
+          this.calculateBillService.validCoupon = false;
           this.billingservice.billItems.forEach((item: any) => {
             item.disc = 0;
             item.discAmount = 0;
@@ -484,7 +493,11 @@ export class BillComponent implements OnInit {
   }
 
   discountreason() {
-    this.calculateBillService.discountreason(this.formGroup, this);
+    if (this.calculateBillService.validCoupon) {
+      this.calculateBillService.discountreason(this.formGroup, this, "coupon");
+    } else {
+      this.calculateBillService.discountreason(this.formGroup, this);
+    }
   }
 
   onModifyDepositAmt() {

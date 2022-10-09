@@ -33,6 +33,8 @@ export class CalculateBillService {
 
   discountForm: any;
 
+  validCoupon: boolean = false;
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -316,6 +318,7 @@ export class CalculateBillService {
                 this.discountSelectedItems = this.processDiscount(res);
                 if (this.discountSelectedItems) {
                   if (this.discountSelectedItems.length > 0) {
+                    this.validCoupon = true;
                     this.discountreason(formGroup, componentRef, "coupon");
                   } else {
                     const CouponErrorRef = this.messageDialogService.error(
