@@ -632,7 +632,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { title: a.name, value: a.id } };
         });
       });
   }

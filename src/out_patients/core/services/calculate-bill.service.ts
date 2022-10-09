@@ -184,7 +184,7 @@ export class CalculateBillService {
         disableClear: true,
         disableHeaderControls: true,
         formData: {
-          authorise: 4,
+          authorise: { title: "As Per Policy", value: 4 },
         },
       };
     }
