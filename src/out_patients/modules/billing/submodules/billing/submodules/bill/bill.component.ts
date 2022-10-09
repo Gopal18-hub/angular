@@ -448,6 +448,8 @@ export class BillComponent implements OnInit {
             this.getAmountPayByPatient()
           );
           this.formGroup.controls["coupon"].setValue("");
+          this.formGroup.controls["compDisc"].setValue("");
+          this.formGroup.controls["patientDisc"].setValue("");
         }
       });
 

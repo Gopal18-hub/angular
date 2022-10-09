@@ -130,7 +130,7 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
-  applyDiscount(from: string) {
+  applyDiscount(from: string, formGroup: any) {
     if (
       this.discountSelectedItems.length == 1 &&
       [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
@@ -143,6 +143,11 @@ export class CalculateBillService {
         item.discountType = this.discountSelectedItems[0].discTypeId;
         item.discountReason = discItem.reason;
       });
+      if (this.discountSelectedItems[0].discTypeId == 5) {
+        formGroup.controls["compDisc"].setValue(discItem.discAmt);
+      } else if (this.discountSelectedItems[0].discTypeId == 4) {
+        formGroup.controls["patientDisc"].setValue(discItem.discAmt);
+      }
     } else {
       this.discountSelectedItems.forEach((ditem: any) => {
         if (ditem.discTypeId == 3) {
@@ -203,7 +208,7 @@ export class CalculateBillService {
 
   processDiscountLogics(formGroup: any, componentRef: any, from: string) {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
-    this.applyDiscount(from);
+    this.applyDiscount(from, formGroup);
     this.discountSelectedItems.forEach((discItem: any) => {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
         discOn: discItem.discType,
