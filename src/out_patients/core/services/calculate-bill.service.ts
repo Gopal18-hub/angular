@@ -183,6 +183,9 @@ export class CalculateBillService {
         disableAdd: true,
         disableClear: true,
         disableHeaderControls: true,
+        formData: {
+          authorise: 4,
+        },
       };
     }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {

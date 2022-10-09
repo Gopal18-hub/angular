@@ -222,6 +222,9 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtForm.controls["percentage"].disable();
       this.discAmtForm.controls["amt"].disable();
     }
+    if ("formData" in this.data) {
+      this.discAmtForm.patchValue(this.data.formData);
+    }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
     this.getAuthorisedBy();
