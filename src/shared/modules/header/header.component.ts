@@ -102,8 +102,8 @@ export class HeaderComponent implements OnInit {
     }
 
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
-      this.cookieService.delete("accessToken");
-      this.cookieService.set("accessToken", accessToken);
+      this.cookieService.delete("accessToken", "/");
+      this.cookieService.set("accessToken", accessToken, { path: "/" });
     }
   }
 
