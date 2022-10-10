@@ -303,6 +303,7 @@ export class OpOrderRequestComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.router.navigate(["out-patient-billing/op-order-request/services"]);
   }
 
   getPatientIcon() {
@@ -372,19 +373,17 @@ export class OpOrderRequestComponent implements OnInit {
     this.country = "";
     this.gender = "";
     this.age = "";
-    this.opOrderRequestService.clear();
 
     this.formGroup.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router
-      .navigate(["out-patient-billing/op-order-request/services"])
-      .then(() => {
-        window.location.reload;
-      });
+    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
+      window.location.reload;
+    });
     this.opOrderRequestService.setActiveLink(false);
     this.activeLink = this.links[0];
     console.log(this.opOrderRequestService.investigationFormGroup);
+    this.opOrderRequestService.clear();
   }
 }

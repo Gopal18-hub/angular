@@ -123,7 +123,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     public dialog: MatDialog,
     private router: Router,
-    private opOrderrequestService: OpOrderRequestService
+    public opOrderrequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
@@ -279,7 +279,6 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getotherservicebilling(
           this.locationid,
           // 67,
-          // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
         )
@@ -313,7 +312,6 @@ export class OrderProcedureOtherComponent implements OnInit {
 
   add(priorityId = 1) {
     if (
-      // this.formGroup.value.otherService.value == undefined ||
       this.formGroup.value.otherService == null ||
       this.formGroup.value.otherService == ""
     ) {
@@ -364,11 +362,14 @@ export class OrderProcedureOtherComponent implements OnInit {
     } else {
       this.messageDialogService.info("Please Select Procedure");
     }
-
-    //this.formGroup.reset();
   }
 
   addrow(priorityId = 1) {
+    if (this.formGroup.value.procedure.docRequired == 1) {
+      this.opOrderrequestService.docRequiredStatusvalue(true);
+    } else {
+      this.opOrderrequestService.docRequiredStatusvalue(false);
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -376,9 +377,6 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.formGroup.value.procedure.value,
           this.otherserviceId,
           this.cookie.get("HSPLocationId")
-          // "67"
-          //          this.formGroup.value.otherService.value,
-          //        this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {

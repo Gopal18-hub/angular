@@ -40,6 +40,7 @@ export class OderInvestigationsComponent implements OnInit {
   data: any = [];
   flag = 0;
   list: any = [];
+  defaultPriorityId = 1;
   formData = {
     title: "",
     type: "object",
@@ -128,6 +129,7 @@ export class OderInvestigationsComponent implements OnInit {
   hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   serviceInvestigatationresponse: any;
   outsource!: boolean;
+  precautionExcludeLocations = [69];
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -138,10 +140,17 @@ export class OderInvestigationsComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     private router: Router,
     private route: ActivatedRoute,
-    private opOrderRequestService: OpOrderRequestService
+    public opOrderRequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
+    if (
+      this.precautionExcludeLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
+    ) {
+      this.config.displayedColumns.splice(2, 1);
+    }
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -161,6 +170,12 @@ export class OderInvestigationsComponent implements OnInit {
         this.data = [];
       }
     });
+    this.opOrderRequestService.disableSaveButtonStatus.subscribe(
+      (value: boolean) => {
+        if (value) {
+        }
+      }
+    );
     console.log(this.opOrderRequestService.patientDemographicdata);
   }
 
@@ -174,12 +189,15 @@ export class OderInvestigationsComponent implements OnInit {
           return item;
         }
       );
+    if (this.data.length == 0) {
+      this.defaultPriorityId = 1;
+    }
     this.data = [...this.opOrderRequestService.investigationItems];
     //  this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       console.log(res);
       if (res.data.col == "specialisation") {
         this.opOrderRequestService.investigationItems[
@@ -194,9 +212,28 @@ export class OderInvestigationsComponent implements OnInit {
         this.opOrderRequestService.investigationItems[res.data.index].doctorId =
           res.$event.value;
         console.log(this.config.columnsInfo.doctorName.value);
+        this.opOrderRequestService.docRequiredStatusvalue(false);
+        console.log(
+          this.opOrderRequestService.getSaveButtonondocrequiredStatus()
+        );
       } else if (res.data.col == "priority") {
-        this.opOrderRequestService.investigationItems[res.data.index].priority =
-          res.$event.value;
+        if (this.data.length == 1) {
+          this.defaultPriorityId = res.$event.value;
+        } else {
+          if (this.defaultPriorityId != res.$event.value) {
+            this.opOrderRequestService.changeSaveButtonStatus(true);
+            const errorDialog = this.messageDialogService.error(
+              "Investigations can not have different priorities"
+            );
+            await errorDialog.afterClosed().toPromise();
+          } else {
+            this.opOrderRequestService.investigationItems[
+              res.data.index
+            ].priority = res.$event.value;
+            this.opOrderRequestService.changeSaveButtonStatus(false);
+          }
+        }
+        console.log(this.opOrderRequestService.getSaveButtonStatus());
       }
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
@@ -347,14 +384,6 @@ export class OderInvestigationsComponent implements OnInit {
               BillingStaticConstants.investigationItemBasedInstructions[
                 r.id.toString()
               ],
-            // ngStyle: {
-            //   color:
-            //     r.outsourceTest == 1
-            //       ? "red"
-            //       : "" || r.isNonDiscountItem == 1
-            //       ? "pink"
-            //       : "",
-            // },
             ngStyle: {
               color: r.outsourceColor == 2 ? "red" : "",
             },
@@ -382,18 +411,14 @@ export class OderInvestigationsComponent implements OnInit {
     }
 
     if (this.formGroup.value.investigation.value == 6085) {
-      const dialofref = this.messageDialogService.info(
+      this.messageDialogService.info(
         "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
       );
-      dialofref.afterClosed().subscribe((data) => {
-        this.genderCheck();
-      });
+      this.genderCheck();
     } else {
       this.genderCheck();
     }
-
     console.log(this.opOrderRequestService.patientDemographicdata);
-    //this.formGroup.reset();
   }
   genderCheck() {
     if (
@@ -431,6 +456,7 @@ export class OderInvestigationsComponent implements OnInit {
   }
 
   addrow() {
+    const priorityid = this.defaultPriorityId;
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -446,7 +472,11 @@ export class OderInvestigationsComponent implements OnInit {
         console.log(res);
         this.serviceInvestigatationresponse = res;
         console.log(this.formGroup.value.investigation.docRequired);
-
+        if (this.formGroup.value.investigation.docRequired == 1) {
+          this.opOrderRequestService.docRequiredStatusvalue(true);
+        } else {
+          this.opOrderRequestService.docRequiredStatusvalue(false);
+        }
         this.opOrderRequestService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
@@ -455,7 +485,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.investigation.precaution == "P"
               ? '<span class="max-health-red-color">P</span>'
               : this.formGroup.value.investigation.precaution,
-          priority: 1,
+          priority: this.defaultPriorityId,
           specialisation: "",
           doctorName: "",
           specialisationId: 0,
@@ -568,12 +598,5 @@ export class OderInvestigationsComponent implements OnInit {
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);
-    // this.router.navigate(
-    //   ["/out-patient-billing/op-order-request/view-request"],
-    //   {
-    //     queryParamsHandling: "merge",
-    //     relativeTo: this.route,
-    //   }
-    // );
   }
 }

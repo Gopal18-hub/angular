@@ -21,6 +21,7 @@ export class OPOrderViewRequest implements OnInit {
   data: FetchOpOrderrequest[] = [];
   reqItemDetail!: string;
   oporderrequestid!: string;
+  maxid!: string;
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -154,10 +155,13 @@ export class OPOrderViewRequest implements OnInit {
   getViewgridDetails() {
     this.data = [];
     //this.unchecked = true;
-    let maxid = this.opOrderRequestService.activeMaxId.maxId;
+    if (this.opOrderRequestService.activeMaxId != undefined) {
+      this.maxid = this.opOrderRequestService.activeMaxId.maxId;
+    }
+    //let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let locationid = Number(this.cookie.get("HSPLocationId"));
     this.http
-      .get(BillingApiConstants.fetchoporderrequest(maxid, locationid))
+      .get(BillingApiConstants.fetchoporderrequest(this.maxid, locationid))
       .pipe(takeUntil(this._destroying$))
       .subscribe((response) => {
         console.log(response);
