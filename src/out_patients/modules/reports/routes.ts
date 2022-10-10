@@ -2,12 +2,14 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AcknowledgedScrollAmountReportComponent } from "@modules/billing/submodules/acknowledged-scroll-amount-report/acknowledged-scroll-amount-report.component";
 import { BillingComponent } from "@modules/billing/submodules/billing/billing.component";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ReportsComponent } from "./reports.component";
 
 const routes: Routes = [
   {
     path: "report",
     component: ReportsComponent,
+    canActivate: [AuthGuardService],
     loadChildren: () =>
       import("../../../reports/modules/prompt-report").then(
         (m) => m.PromptReportModule
@@ -17,10 +19,12 @@ const routes: Routes = [
   {
     path: "report/Acknowledgement-Scroll-Amount-Report",
     component: AcknowledgedScrollAmountReportComponent,
+    canActivate: [AuthGuardService],
   },
   {
     path: "report-multiple",
     component: ReportsComponent,
+    canActivate: [AuthGuardService],
     loadChildren: () =>
       import("../../../reports/modules/prompt-report").then(
         (m) => m.PromptReportModule

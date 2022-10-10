@@ -3,11 +3,13 @@ import { RouterModule, Routes } from "@angular/router";
 import { CrystalReportComponent } from "./crystal-report.component";
 import { PopupComponent } from "./submodules/popup/popup.component";
 import { IframeComponent } from "./submodules/iframe/iframe.component";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 
 const routes: Routes = [
   {
     path: "crystal-report",
     component: CrystalReportComponent,
+    canActivate: [AuthGuardService],
     children: [
       {
         path: "popup/:reportName",

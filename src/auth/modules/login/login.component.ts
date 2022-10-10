@@ -10,6 +10,7 @@ import { AuthService } from "@shared/services/auth.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "@environments/environment";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "auth-login",
@@ -63,31 +64,61 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private readonly _destroying$ = new Subject<void>();
 
+  showLoginForm: boolean = false;
+
   constructor(
     private formService: QuestionControlService,
     private adauth: ADAuthService,
     private cookie: CookieService,
-    private authService: AuthService
-  ) {
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
+
+  async ngOnInit() {
+    console.log(this.authService.manager);
     const query = window.location.search.substring(1);
     const pathname = window.location.pathname;
-
-    if (query == null || query == "") {
-      if (
-        window.location.href == window.origin + "/" ||
-        pathname.includes("/login")
-      )
+    if (this.route.snapshot.queryParams["ReturnUrl"]) {
+      await this.authService.manager.clearStaleState();
+      let checkingState = new URLSearchParams(
+        new URL(
+          decodeURIComponent(this.route.snapshot.queryParams["ReturnUrl"])
+        ).search
+      );
+      let stateId = checkingState.get("state");
+      if (localStorage.getItem("oidc." + stateId)) {
+        this.showLoginForm = true;
+        this.processLoginForm();
+      } else {
         this.authService.startAuthentication();
+      }
+    } else {
+      await this.authService.manager.clearStaleState();
+      this.authService.startAuthentication();
     }
+
+    //   if (query == null || query == "") {
+    //     if (
+    //       window.location.href == window.origin + "/" ||
+    //       pathname.includes("/login")
+    //     )
+    //       this.authService.startAuthentication();
+    //   } else {
+    //     // await this.authService.signOutRedirect();
+    //     // await this.authService.startAuthentication();
+    //   }
   }
 
-  ngOnInit(): void {
+  processLoginForm() {
     let formResult: any = this.formService.createForm(
       this.loginFormData.properties,
       {}
     );
     this.loginForm = formResult.form;
     this.questions = formResult.questions;
+    setTimeout(() => {
+      this.processEvents();
+    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -95,7 +126,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this._destroying$.complete();
   }
 
-  ngAfterViewInit(): void {
+  processEvents() {
     this.questions[0].elementRef.addEventListener(
       "blur",
       this.validateUserName.bind(this)
@@ -116,6 +147,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.questions[0].elementRef.focus();
     this.loginForm.controls["location"].disable();
     this.loginForm.controls["station"].disable();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.showLoginForm) {
+    }
   }
 
   reLoginForm() {
