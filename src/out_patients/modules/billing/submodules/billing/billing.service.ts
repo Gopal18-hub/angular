@@ -290,7 +290,7 @@ export class BillingService {
     if (this.billItems.length > 0) {
       this.refreshPrice();
     }
-    this.selectedcompanydetails =  res;
+    this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
     this.companyChangeEvent.next({ company: res, from });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
@@ -324,19 +324,21 @@ export class BillingService {
     }
   }
 
-  setCorporate(corporateid: number,
+  setCorporate(
+    corporateid: number,
     res: any,
     formGroup: any,
-    from: string = "header"){
-     this.selectedcorporatedetails = res; 
-     this.corporateChangeEvent.next({ corporate: res, from });   
+    from: string = "header"
+  ) {
+    this.selectedcorporatedetails = res;
+    this.corporateChangeEvent.next({ corporate: res, from });
   }
 
   setCompanyData(data: any) {
     this.companyData = data;
   }
 
-  setCorporateData(data: any){
+  setCorporateData(data: any) {
     this.corporateData = data;
   }
 
@@ -463,6 +465,10 @@ export class BillingService {
     this.consultationItems.push(data);
     if (data.billItem) {
       this.addToBill(data.billItem);
+      this.makeBillPayload.selectedservice.push({
+        id: 0,
+        flag: true,
+      });
       this.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.push({
         referDoctorId: 0,
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
@@ -480,6 +486,7 @@ export class BillingService {
         specialisationId: data.specialization || 0,
         hcuId: 0,
         clinicId: data.clinics || 0,
+        ConsultationTypeId: data.billItem.priorityId,
       });
     }
 
@@ -490,6 +497,10 @@ export class BillingService {
     this.InvestigationItems.push(data);
     if (data.billItem) {
       this.addToBill(data.billItem);
+      this.makeBillPayload.selectedservice.push({
+        id: 1,
+        flag: true,
+      });
       this.makeBillPayload.ds_insert_bill.tab_o_optestList.push({
         remarks: "",
         orderDatetime: new Date(),
@@ -534,6 +545,24 @@ export class BillingService {
     if (data.billItem) {
       this.addToBill(data.billItem);
     }
+    this.makeBillPayload.ds_insert_bill.tab_d_packagebillList.push({
+      opBillId: 0,
+      orderId: 0,
+      serviceId: data.serviceid,
+      serviceName: data.billItem.serviceName,
+      itemId: data.billItem.itemId,
+      itemName: data.billItem.itemName,
+      testId: 0,
+      testName: "",
+      amount: data.billItem.totalAmount,
+      planAmount: 0,
+      discountType: 0,
+      discountAmount: 0,
+      planDiscount: 0,
+      refund: 0,
+      isProfile: 0,
+      itemServiceId: 0,
+    });
     this.servicesTabStatus.next({ healthCheckup: true });
 
     this.calculateTotalAmount();
@@ -711,15 +740,21 @@ export class BillingService {
   async makeBill(paymentmethod: any = {}) {
     if ("tabs" in paymentmethod) {
       let toBePaid =
-        this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount -
-        (this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount +
-          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount);
+        parseFloat(
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount
+        ) -
+        (parseFloat(
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount
+        ) +
+          parseFloat(
+            this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+          ));
       let collectedAmount = paymentmethod.tabPrices.reduce(
         (partialSum: number, a: number) => partialSum + a,
         0
       );
       this.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount =
-        collectedAmount;
+        parseFloat(collectedAmount);
       this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
         toBePaid - collectedAmount;
       this.makeBillPayload.ds_paymode.tab_paymentList = [];
@@ -728,7 +763,9 @@ export class BillingService {
           this.makeBillPayload.ds_paymode.tab_paymentList.push({
             slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
             modeOfPayment: "Cash",
-            amount: paymentmethod.paymentForm[payment.key].value.price,
+            amount: parseFloat(
+              paymentmethod.paymentForm[payment.key].value.price
+            ),
             flag: 1,
           });
         }
@@ -737,7 +774,7 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
         opbillid: 0,
         billNo: "",
-        amount: collectedAmount,
+        amount: parseFloat(collectedAmount),
         datetime: new Date(),
         operatorID: Number(this.cookie.get("UserId")),
         stationID: Number(this.cookie.get("StationId")),
@@ -745,6 +782,19 @@ export class BillingService {
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         recNumber: "",
       });
+
+      if (
+        this.calculateBillService.discountSelectedItems.length > 0 &&
+        parseFloat(
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+        ) > 0
+      ) {
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.disAuthorised =
+          this.calculateBillService.discountForm.value.authorise.title;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.authorisedid =
+          this.calculateBillService.discountForm.value.authorise.value;
+      }
+
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
@@ -1020,23 +1070,5 @@ export class BillingService {
   setReferralDoctor(doctor: any) {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
-  }
-
-  async getServicesForCoupon(CouponNo: any, locationId: any) {
-    const res = await this.http
-      .get(BillingApiConstants.getServicesForCoupon(CouponNo, locationId))
-      .toPromise();
-    console.log(res);
-    if (res.length > 0) {
-      console.log(res[0].id);
-      if ((res[0].id = 0)) {
-        //coupon already used message
-      } else {
-        console.log(this.consultationItems);
-        console.log(this.InvestigationItems);
-      }
-    } else {
-      //Invalid Coupon
-    }
   }
 }
