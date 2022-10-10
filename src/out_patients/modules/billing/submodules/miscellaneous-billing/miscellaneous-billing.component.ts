@@ -645,6 +645,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       return;
     }
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
+    this.Misc.setPatientDetail(patientDetails);
     this.miscForm.controls["mobileNo"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
@@ -817,7 +818,9 @@ export class MiscellaneousBillingComponent implements OnInit {
       0,
       "",
       this.miscForm.value.narration,
-      0
+      0,
+      patientDetail.peMail,
+      patientDetail.pCellNo
     );
     this.Misc.setPatientDetail(this.patientDetail);
     localStorage.setItem("patientDetail", this.patientDetail.toString());

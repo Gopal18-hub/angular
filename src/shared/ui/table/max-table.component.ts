@@ -120,6 +120,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.config.rowHighlightOnHover = true;
     }
     if (this.config.groupby) {
+      this.childrensData = [];
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
           if (!this.childrensData[item[this.config.groupby.childcolumn]]) {
@@ -170,6 +171,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.config.rowHighlightOnHover = true;
     }
     if (this.config.groupby) {
+      this.childrensData = [];
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
           if (!this.childrensData[item[this.config.groupby.childcolumn]]) {

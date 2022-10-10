@@ -39,6 +39,62 @@ export class ShowPlanDetilsComponent implements OnInit {
     },
   };
 
+  otherPlanConfig: any = {
+    clickedRows: false,
+    actionItems: false,
+    selectCheckBoxPosition: 6,
+    dateformat: "dd/MM/yyyy",
+    selectBox: true,
+    clickSelection: "single",
+    selectCheckBoxLabel: "Select",
+    displayedColumns: [
+      "stepNo",
+      "serviceName",
+      "itemName",
+      "noOfTimes",
+      "price",
+      "availnooftimes",
+    ],
+    columnsInfo: {
+      stepNo: {
+        title: "Step",
+        type: "number",
+        style: {
+          width: "80px",
+        },
+      },
+      serviceName: {
+        title: "Services Name",
+        type: "string",
+        style: {
+          width: "15%",
+        },
+      },
+      itemName: {
+        title: "Item Name",
+        type: "string",
+        style: {
+          width: "30%",
+        },
+      },
+      noOfTimes: {
+        title: "Limit",
+        type: "number",
+        style: {
+          width: "80px",
+        },
+      },
+      price: {
+        title: "App Amount",
+        type: "string",
+      },
+      availnooftimes: {
+        title: "Avail no.of time",
+        type: "number",
+      },
+    },
+  };
+
   planType = "healthPlan";
 
   doctorList: any = [];

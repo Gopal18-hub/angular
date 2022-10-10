@@ -200,6 +200,9 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if ("removeRow" in this.data) {
+      this.discAmtFormConfig.removeRow = this.data.removeRow;
+    }
     this.selectedItems = this.calculateBillService.discountSelectedItems;
 
     let formResult: any = this.formService.createForm(
@@ -207,7 +210,21 @@ export class DisountReasonComponent implements OnInit {
       {}
     );
     this.discAmtForm = formResult.form;
+    this.calculateBillService.setDiscountForm(this.discAmtForm);
     this.question = formResult.questions;
+    if (
+      "disableHeaderControls" in this.data &&
+      this.data.disableHeaderControls
+    ) {
+      this.discAmtForm.controls["types"].disable();
+      this.discAmtForm.controls["head"].disable();
+      this.discAmtForm.controls["reason"].disable();
+      this.discAmtForm.controls["percentage"].disable();
+      this.discAmtForm.controls["amt"].disable();
+    }
+    if ("formData" in this.data) {
+      this.discAmtForm.patchValue(this.data.formData);
+    }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
     this.getAuthorisedBy();
@@ -349,59 +366,92 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnCampaignPrepare() {
+    const existReason: any = this.discReasonList.find(
+      (rl: any) => rl.id == this.discAmtForm.value.reason
+    );
+    const discAmt =
+      (this.billingService.totalCost * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
-      discType: "",
+      discType: "On Campaign",
       discTypeId: 6,
       service: "",
       doctor: "",
-      price: "",
-      disc: "",
-      discAmt: "",
-      totalAmt: "",
-      head: "",
-      reason: "",
-      value: "",
-      discTypeValue: "",
-      reasonTitle: "",
+      price: this.billingService.totalCost,
+      disc: existReason.discountPer,
+      discAmt: discAmt,
+      totalAmt: this.billingService.totalCost - discAmt,
+      head: this.discAmtForm.value.head,
+      reason: this.discAmtForm.value.reason,
+      value: "0",
+      discTypeValue: "On-Campaign",
+      reasonTitle: existReason.name,
     };
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+      this.discAmtFormConfig.columnsInfo.reason.options;
+    this.calculateBillService.discountSelectedItems.push(temp);
+
+    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    this.disableAdd = true;
   }
   OnPatientPrepare() {
+    const existReason: any = this.discReasonList.find(
+      (rl: any) => rl.id == this.discAmtForm.value.reason
+    );
+    const discAmt =
+      (this.billingService.totalCost * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
-      discType: "",
+      discType: "On Patient",
       discTypeId: 4,
       service: "",
       doctor: "",
-      price: "",
-      disc: "",
-      discAmt: "",
-      totalAmt: "",
-      head: "",
-      reason: "",
-      value: "",
-      discTypeValue: "",
-      reasonTitle: "",
+      price: this.billingService.totalCost,
+      disc: existReason.discountPer,
+      discAmt: discAmt,
+      totalAmt: this.billingService.totalCost - discAmt,
+      head: this.discAmtForm.value.head,
+      reason: this.discAmtForm.value.reason,
+      value: "0",
+      discTypeValue: "On-Patient",
+      reasonTitle: existReason.name,
     };
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+      this.discAmtFormConfig.columnsInfo.reason.options;
+    this.calculateBillService.discountSelectedItems.push(temp);
+
+    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    this.disableAdd = true;
   }
 
   OnCompanyPrepare() {
+    const existReason: any = this.discReasonList.find(
+      (rl: any) => rl.id == this.discAmtForm.value.reason
+    );
+    const discAmt =
+      (this.billingService.totalCost * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
-      discType: "",
+      discType: "On Company",
       discTypeId: 5,
       service: "",
       doctor: "",
-      price: "",
-      disc: "",
-      discAmt: "",
-      totalAmt: "",
-      head: "",
-      reason: "",
-      value: "",
-      discTypeValue: "",
-      reasonTitle: "",
+      price: this.billingService.totalCost,
+      disc: existReason.discountPer,
+      discAmt: discAmt,
+      totalAmt: this.billingService.totalCost - discAmt,
+      head: this.discAmtForm.value.head,
+      reason: this.discAmtForm.value.reason,
+      value: "0",
+      discTypeValue: "On-Company",
+      reasonTitle: existReason.name,
     };
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
+      this.discAmtFormConfig.columnsInfo.reason.options;
+    this.calculateBillService.discountSelectedItems.push(temp);
+
+    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    this.disableAdd = true;
   }
 
   OnItemPrepare() {
@@ -582,7 +632,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { title: a.name, value: a.id } };
         });
       });
   }
