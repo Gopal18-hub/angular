@@ -230,6 +230,7 @@ export class SearchDialogComponent implements OnInit {
       {
         this.searchform.controls['fromdate'].enable();
         this.searchform.controls['todate'].enable();
+        this.getsearchopbillslist = [];
         this.search();
       }
       else
@@ -289,34 +290,6 @@ export class SearchDialogComponent implements OnInit {
   }
   search()
   {
-    var arr: any;
-    var regno: any;
-    var iacode: any;
-    if(this.searchform.value.maxid != '')
-    {
-      arr = this.searchform.value.maxid.split('.');
-      regno = arr[1];
-      iacode = arr[0];
-    }
-    if(regno == '' || regno == undefined || regno == null)
-    {
-      regno = '';
-      iacode = ''
-    }
-    if(this.searchform.value.billno == null || this.searchform.value.billno == '' || this.searchform.value.billno == undefined)
-    {
-      this.searchform.value.billno = '';
-    }
-    if(this.searchform.value.mobileno == null || this.searchform.value.mobileno == '' || this.searchform.value.mobileno == undefined)
-    {
-      this.searchform.value.mobileno = '';
-    }
-    if(this.searchform.value.checkbox == false || this.searchform.value.checkbox == '' || this.searchform.value.checkbox == null)
-    {
-      this.searchform.value.fromdate = new Date();
-      this.searchform.value.todate = new Date();
-      this.searchform.value.checkbox = false;
-    }
     if(this.searchform.value.checkbox == true)
     {
       var fdate = new Date(this.searchform.controls["fromdate"].value);
@@ -331,35 +304,27 @@ export class SearchDialogComponent implements OnInit {
       } 
       else
       {
-        this.SearchApi(regno, iacode);
+        this.SearchApi();
       }
     }
-    else if(this.searchform.value.checkbox == false)
-    {
-      if(regno != '' ||
-        iacode != '' ||
-        this.searchform.value.mobile != ''
-        )
-        {
-          this.SearchApi(regno, iacode);
-        }
-      
+    else{
+      this.SearchApi();
     }
     
   }
 
-  SearchApi(regno: any, iacode: any)
+  SearchApi()
   {
     this.getsearchopbillslist= [];
     this.apiProcessing = true;
     this.http.get(BillDetailsApiConstants.getsearchopbills(
-      this.searchform.value.billno,
-      regno,
-      iacode,
-      this.searchform.value.mobile,
-      this.searchform.value.checkbox,
-      this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"),
-      this.datepipe.transform(this.searchform.value.todate, "YYYY-MM-dd"),
+      this.searchform.value.billno?this.searchform.value.billno:'',
+      this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[1]:'',
+      this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[0]:'',
+      this.searchform.value.mobileno?this.searchform.value.mobileno: '',
+      this.searchform.value.checkbox==true?true:false,
+      this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.todate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
       this.hsplocationId
     ))
     .pipe(takeUntil(this._destroying$))
@@ -389,6 +354,10 @@ export class SearchDialogComponent implements OnInit {
         })
         this.apiProcessing = false;
         console.log(this.getsearchopbillslist);
+      }
+      else
+      {
+        this.apiProcessing = false;
       }
     })
   }

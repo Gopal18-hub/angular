@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
@@ -7,14 +6,10 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { ApiConstants } from "@core/constants/ApiConstants";
-import { sendotpforpatientrefund } from "@core/models/patientsaveotprefunddetailModel.Model";
-import { savepatientRefunddetailModel } from "@core/models/savepatientRefundDetailModel.Model";
-import { PatientDepositCashLimitLocationDetail } from "@core/types/depositcashlimitlocation.Interface";
 import { BillingPaymentMethodsComponent } from "./payment-methods/payment-methods.component";
 import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject, takeUntil } from "rxjs";
 import { BillingService } from "../../billing.service";
 @Component({
@@ -78,11 +73,9 @@ export class BillPaymentDialogComponent implements OnInit {
     public matDialog: MatDialog,
     private formService: QuestionControlService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private messageDialogService: MessageDialogService,
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private http: HttpService,
-    private datepipe: DatePipe,
     private billingService: BillingService
   ) {}
 
@@ -91,12 +84,8 @@ export class BillPaymentDialogComponent implements OnInit {
       this.dueFormData.properties,
       {}
     );
-    console.log(this.data);
-
     this.dueform = formResult.form;
     this.questions = formResult.questions;
-    this.getdepositcashlimit();
-    // this.patientIdentityInfo = { type: "Refund", patientinfo: this.data.patientinfo };
     this.totaldue = this.due;
     this.patientInfo = {
       patientinfo: {
@@ -118,10 +107,6 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
-    if (this.data.name == "MiscBilling") {
-      this.dialogRef.close({ data: "MakeBill" });
-      return;
-    }
     const res = await this.billingService.makeBill(this.paymentmethod);
     if (res.length > 0) {
       if (res[0].billNo) {
@@ -141,17 +126,14 @@ export class BillPaymentDialogComponent implements OnInit {
     }
   }
 
-  getdepositcashlimit() {
-    this.http
-      .get(
-        ApiConstants.getcashlimitwithlocationsmsdetailsoflocation(
-          this.hsplocationId
-        )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: PatientDepositCashLimitLocationDetail) => {
-        this.depositcashlimitationdetails = resultData.cashLimitOfLocation;
-        console.log(resultData);
-      });
+  checkToProceed() {
+    const collectedAmount = this.breakupTotal();
+
+    if (
+      !(collectedAmount <= 0) &&
+      Number(this.data.toPaidAmount) >= collectedAmount
+    )
+      return true;
+    return false;
   }
 }
