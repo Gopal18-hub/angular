@@ -164,6 +164,12 @@ export class CreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["corporate"].enable();
       }
     });
+    this.billingservice.clearAllItems.subscribe((clearItems) => {
+      if (clearItems) {
+      this.comapnyFormGroup.reset();
+      this.generalFormGroup.reset();
+      }
+    });
   }
 
   getAllCompany() {
@@ -172,7 +178,7 @@ export class CreditDetailsComponent implements OnInit {
       return { title: a.name, value: a.id, company: a };
     });
     let selectedcompany = this.billingservice.selectedcompanydetails;
-    if(!this.companyexists){
+    if(!this.companyexists && selectedcompany){
       this.comapnyFormGroup.controls["company"].setValue(selectedcompany);
     }
    
@@ -185,7 +191,7 @@ export class CreditDetailsComponent implements OnInit {
           return { title: l.name, value: l.id };
         });
         let selectedcorporate = this.billingservice.selectedcorporatedetails;
-        if(!this.corporateexists && selectedcorporate.length > 0){
+        if(!this.corporateexists && selectedcorporate){
           this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
           this.comapnyFormGroup.controls["corporate"].enable();
         }

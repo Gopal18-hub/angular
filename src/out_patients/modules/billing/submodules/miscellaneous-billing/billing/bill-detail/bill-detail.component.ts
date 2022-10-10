@@ -455,6 +455,7 @@ export class BillDetailComponent implements OnInit {
         this.clearItem = true;
         this.miscServBillForm.reset();
         this.resetAmt();
+        this.miscServBillForm.controls["paymentMode"].setValue("1");
         this.serviceselectedList = [];
         this.clearSelectedService();
       }
@@ -686,7 +687,7 @@ export class BillDetailComponent implements OnInit {
   }
   selectedReferralDoctor(data: any) {
     this.refDoctor = data.docotr;
-    // this.billingservice.setReferralDoctor(data.docotr);
+    //this.billingservice.setReferralDoctor(data.docotr);
   }
   //Get onload Dropdown
   getMasterMiscDetail() {
@@ -851,7 +852,7 @@ export class BillDetailComponent implements OnInit {
   getPriceforitemwithTariffId() {
     let miscFormData = this.miscPatient.getCalculateBillItems();
     this.miscCompanyId = miscFormData.companyId.value;
-    if (!this.miscCompanyId) {
+    if (!miscFormData.companyId.value) {
       this.miscCompanyId = 0;
     }
 
@@ -922,7 +923,7 @@ export class BillDetailComponent implements OnInit {
             location,
             this.TotalAmount
           )
-          //ApiConstants.getgstdata(229, 19535, 7, 1000)
+          // ApiConstants.getgstdata(229, 19535, 7, 1000)
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
@@ -1118,7 +1119,6 @@ export class BillDetailComponent implements OnInit {
       title: "",
       value: 0,
     });
-    this.miscServBillForm.controls["paymentMode"].setValue("1");
     this.clearDraftedService();
   }
 
@@ -1306,7 +1306,10 @@ export class BillDetailComponent implements OnInit {
         this.getbilltocompany(miscFormData.companyId.value);
       }
 
-      if (!this.miscPatient.cacheCreditTabdata.creditCompany) {
+      if (
+        !this.miscPatient.cacheCreditTabdata.creditCompany &&
+        !miscFormData.companyId.value
+      ) {
         this.snackbar.open("Select the Company", "error");
       } else if (
         Number(this.miscPatient.cacheCreditTabdata.isChannel) === 1 &&
