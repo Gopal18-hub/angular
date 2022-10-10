@@ -55,7 +55,7 @@ export class OPOrderViewRequest implements OnInit {
         tooltipColumn: "serviceName",
       },
       itemName: {
-        title: "Item Name",
+        title: "Items Name",
         type: "string",
         style: {
           width: "220px",

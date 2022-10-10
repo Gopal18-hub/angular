@@ -385,5 +385,6 @@ export class OpOrderRequestComponent implements OnInit {
       });
     this.opOrderRequestService.setActiveLink(false);
     this.activeLink = this.links[0];
+    console.log(this.opOrderRequestService.investigationFormGroup);
   }
 }

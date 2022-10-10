@@ -134,6 +134,10 @@ export class OrderProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.opOrderrequestService.setProcedureFormGroup(
+      this.formGroup,
+      this.questions
+    );
     this.data = this.opOrderrequestService.procedureItems;
     this.getOtherService();
     this.getSpecialization();

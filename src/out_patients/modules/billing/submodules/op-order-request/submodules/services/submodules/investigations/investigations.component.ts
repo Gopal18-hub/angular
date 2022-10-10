@@ -148,6 +148,10 @@ export class OderInvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.opOrderRequestService.setInvestigationFormGroup(
+      this.formGroup,
+      this.questions
+    );
     this.data = this.opOrderRequestService.investigationItems;
     this.getServiceTypes();
     this.getSpecialization();
