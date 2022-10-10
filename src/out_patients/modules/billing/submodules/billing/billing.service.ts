@@ -132,6 +132,10 @@ export class BillingService {
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
+    this.companyData = [];
+    this.corporateData = [];
+    this.selectedcompanydetails = [];
+    this.selectedcorporatedetails = [];
     console.log(this.makeBillPayload);
   }
 
