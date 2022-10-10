@@ -421,8 +421,24 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.calculateBillService.discountreason(this.formGroup, this);
+          if (this.calculateBillService.validCoupon) {
+            this.calculateBillService.discountreason(
+              this.formGroup,
+              this,
+              "coupon"
+            );
+          } else {
+            this.calculateBillService.discountreason(this.formGroup, this);
+          }
         } else {
+          this.calculateBillService.validCoupon = false;
+          this.billingservice.billItems.forEach((item: any) => {
+            item.disc = 0;
+            item.discAmount = 0;
+            item.totalAmount = item.price * item.qty;
+            item.discountType = 2;
+            item.discountReason = 0;
+          });
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
           this.formGroup.controls["discAmt"].setValue(
@@ -431,6 +447,9 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
           );
+          this.formGroup.controls["coupon"].setValue("");
+          this.formGroup.controls["compDisc"].setValue("");
+          this.formGroup.controls["patientDisc"].setValue("");
         }
       });
 
@@ -476,7 +495,11 @@ export class BillComponent implements OnInit {
   }
 
   discountreason() {
-    this.calculateBillService.discountreason(this.formGroup, this);
+    if (this.calculateBillService.validCoupon) {
+      this.calculateBillService.discountreason(this.formGroup, this, "coupon");
+    } else {
+      this.calculateBillService.discountreason(this.formGroup, this);
+    }
   }
 
   onModifyDepositAmt() {

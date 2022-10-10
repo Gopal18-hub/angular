@@ -31,6 +31,10 @@ export class CalculateBillService {
 
   depositDetailsData: any = [];
 
+  discountForm: any;
+
+  validCoupon: boolean = false;
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -45,6 +49,10 @@ export class CalculateBillService {
     billItems.forEach(async (item: any) => {
       await this.serviceBasedCheck(item);
     });
+  }
+
+  setDiscountForm(form: any) {
+    this.discountForm = form;
   }
 
   depositDetails(iacode: string, regNumber: number) {
@@ -122,7 +130,7 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
-  applyDiscount() {
+  applyDiscount(from: string, formGroup: any) {
     if (
       this.discountSelectedItems.length == 1 &&
       [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
@@ -135,6 +143,11 @@ export class CalculateBillService {
         item.discountType = this.discountSelectedItems[0].discTypeId;
         item.discountReason = discItem.reason;
       });
+      if (this.discountSelectedItems[0].discTypeId == 5) {
+        formGroup.controls["compDisc"].setValue(discItem.discAmt);
+      } else if (this.discountSelectedItems[0].discTypeId == 4) {
+        formGroup.controls["patientDisc"].setValue(discItem.discAmt);
+      }
     } else {
       this.discountSelectedItems.forEach((ditem: any) => {
         if (ditem.discTypeId == 3) {
@@ -166,22 +179,36 @@ export class CalculateBillService {
     }
   }
 
-  discountreason(formGroup: any, componentRef: any) {
+  discountreason(formGroup: any, componentRef: any, from: string = "discount") {
+    let data = {};
+    if (from == "coupon") {
+      data = {
+        removeRow: false,
+        disabledRowControls: true,
+        disableAdd: true,
+        disableClear: true,
+        disableHeaderControls: true,
+        formData: {
+          authorise: { title: "As Per Policy", value: 4 },
+        },
+      };
+    }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
       height: "67vh",
+      data: data,
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
-        this.processDiscountLogics(formGroup, componentRef);
+        this.processDiscountLogics(formGroup, componentRef, from);
       }
     });
   }
 
-  processDiscountLogics(formGroup: any, componentRef: any) {
+  processDiscountLogics(formGroup: any, componentRef: any, from: string) {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
-    this.applyDiscount();
+    this.applyDiscount(from, formGroup);
     this.discountSelectedItems.forEach((discItem: any) => {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
         discOn: discItem.discType,
@@ -299,7 +326,8 @@ export class CalculateBillService {
                 this.discountSelectedItems = this.processDiscount(res);
                 if (this.discountSelectedItems) {
                   if (this.discountSelectedItems.length > 0) {
-                    this.discountreason(formGroup, componentRef);
+                    this.validCoupon = true;
+                    this.discountreason(formGroup, componentRef, "coupon");
                   } else {
                     const CouponErrorRef = this.messageDialogService.error(
                       "Coupon cannot be applied on selected Services or Items"

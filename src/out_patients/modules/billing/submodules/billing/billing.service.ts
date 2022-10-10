@@ -486,6 +486,7 @@ export class BillingService {
         specialisationId: data.specialization || 0,
         hcuId: 0,
         clinicId: data.clinics || 0,
+        ConsultationTypeId: data.billItem.priorityId,
       });
     }
 
@@ -781,6 +782,19 @@ export class BillingService {
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         recNumber: "",
       });
+
+      if (
+        this.calculateBillService.discountSelectedItems.length > 0 &&
+        parseFloat(
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+        ) > 0
+      ) {
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.disAuthorised =
+          this.calculateBillService.discountForm.value.authorise.title;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.authorisedid =
+          this.calculateBillService.discountForm.value.authorise.value;
+      }
+
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
