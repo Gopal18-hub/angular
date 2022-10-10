@@ -39,19 +39,19 @@ export class CreditDetailsComponent implements OnInit {
       company: {
         type: "autocomplete",
         title: "",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
       },
       corporate: {
         type: "autocomplete",
         title: "Corporate",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
       },
       companyGSTN: {
         type: "dropdown",
         title: "Company GSTN",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
       },
       letterDate: {
@@ -111,6 +111,7 @@ export class CreditDetailsComponent implements OnInit {
   generalQuestions: any;
   iommessage: string = "";
   companyexists: boolean = false;
+  corporateexists: boolean = false;
 
   constructor(
     private formService: QuestionControlService,
@@ -142,13 +143,25 @@ export class CreditDetailsComponent implements OnInit {
 
     this.getAllCompany();
     this.getAllCorporate();
-    this.billingservice.companyChangeEvent.subscribe((res: any) => {
-      this.getAllCompany();
+    this.billingservice.companyChangeEvent.subscribe((res: any) => {     
       if (res.from != "credit") {
+        this.companyexists = true;
+        this.getAllCompany();
         this.comapnyFormGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
-        this.companyexists = true;
+      
+      }
+    });
+
+    this.billingservice.corporateChangeEvent.subscribe((res: any) => {     
+      if (res.from != "credit") {
+        this.corporateexists = true;
+        this.getAllCorporate();
+        this.comapnyFormGroup.controls["corporate"].setValue(res.corporate, {
+          emitEvent: false,
+        });
+        this.comapnyFormGroup.controls["corporate"].enable();
       }
     });
   }
@@ -158,20 +171,25 @@ export class CreditDetailsComponent implements OnInit {
     this.companyQuestions[0].options = this.companyList.map((a: any) => {
       return { title: a.name, value: a.id, company: a };
     });
+    let selectedcompany = this.billingservice.selectedcompanydetails;
+    if(!this.companyexists){
+      this.comapnyFormGroup.controls["company"].setValue(selectedcompany);
+    }
+   
     this.companyQuestions[0] = { ...this.companyQuestions[0] };
   }
 
   getAllCorporate() {
-    this.http
-      .get(ApiConstants.getCorporate)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;
+        this.coorporateList = this.billingservice.corporateData;;
         this.companyQuestions[1].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
+        let selectedcorporate = this.billingservice.selectedcorporatedetails;
+        if(!this.corporateexists && selectedcorporate.length > 0){
+          this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
+          this.comapnyFormGroup.controls["corporate"].enable();
+        }
         this.companyQuestions[1] = { ...this.companyQuestions[1] };
-      });
   }
 
   openIOM() {
@@ -201,6 +219,22 @@ export class CreditDetailsComponent implements OnInit {
           );
         } else {
           this.companyexists = false;
+        }
+      });
+
+      this.comapnyFormGroup.controls["corporate"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res.value != null && res.value != 0 && res.value != undefined) {
+          this.corporateexists = true;
+          this.billingservice.setCorporate(
+            res.value,
+            res,
+            this.comapnyFormGroup,
+            "credit"
+          );
+        } else {
+          this.corporateexists = false;
         }
       });
   }

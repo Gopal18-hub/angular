@@ -25,6 +25,7 @@ import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
@@ -48,9 +49,9 @@ export class BillComponent implements OnInit {
         placeholder: "--Select--",
       },
       billAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       availDiscCheck: {
@@ -59,9 +60,9 @@ export class BillComponent implements OnInit {
         options: [{ title: "Avail Plan Disc ( - )" }],
       },
       availDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       discAmtCheck: {
@@ -71,9 +72,9 @@ export class BillComponent implements OnInit {
         disabled: false,
       },
       discAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0,
+        defaultValue: "0.00",
         readonly: true,
         disabled: false,
       },
@@ -83,27 +84,27 @@ export class BillComponent implements OnInit {
         options: [{ title: "Deposit Amount ( - )" }],
       },
       dipositAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       patientDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       compDisc: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       planAmt: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       coupon: {
@@ -111,33 +112,33 @@ export class BillComponent implements OnInit {
         required: false,
       },
       coPay: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       credLimit: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       gstTax: {
         type: "number",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByPatient: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       amtPayByComp: {
-        type: "number",
+        type: "currency",
         required: false,
-        defaultValue: 0.0,
+        defaultValue: "0.00",
         readonly: true,
       },
       paymentMode: {
@@ -156,7 +157,7 @@ export class BillComponent implements OnInit {
         options: [{ title: "Self" }],
       },
       dipositAmtEdit: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
@@ -388,7 +389,7 @@ export class BillComponent implements OnInit {
     this.billingservice.billItems.forEach((item: any, index: number) => {
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
-      ].discountamount = item.discAmount;
+      ].discountamount = parseFloat(item.discAmount);
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
       ].discountType = item.discountType || 0;
@@ -420,8 +421,24 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.calculateBillService.discountreason(this.formGroup, this);
+          if (this.calculateBillService.validCoupon) {
+            this.calculateBillService.discountreason(
+              this.formGroup,
+              this,
+              "coupon"
+            );
+          } else {
+            this.calculateBillService.discountreason(this.formGroup, this);
+          }
         } else {
+          this.calculateBillService.validCoupon = false;
+          this.billingservice.billItems.forEach((item: any) => {
+            item.disc = 0;
+            item.discAmount = 0;
+            item.totalAmount = item.price * item.qty;
+            item.discountType = 2;
+            item.discountReason = 0;
+          });
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
           this.formGroup.controls["discAmt"].setValue(
@@ -430,6 +447,9 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
           );
+          this.formGroup.controls["coupon"].setValue("");
+          this.formGroup.controls["compDisc"].setValue("");
+          this.formGroup.controls["patientDisc"].setValue("");
         }
       });
 
@@ -466,15 +486,20 @@ export class BillComponent implements OnInit {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-
-    this.question[12].elementRef.addEventListener(
-      "blur",
-      this.validateCoupon.bind(this)
-    );
+    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.validateCoupon();
+      }
+    });
   }
 
   discountreason() {
-    this.calculateBillService.discountreason(this.formGroup, this);
+    if (this.calculateBillService.validCoupon) {
+      this.calculateBillService.discountreason(this.formGroup, this, "coupon");
+    } else {
+      this.calculateBillService.discountreason(this.formGroup, this);
+    }
   }
 
   onModifyDepositAmt() {
@@ -740,22 +765,40 @@ export class BillComponent implements OnInit {
     }
   }
 
-  validateCoupon() {
+  async validateCoupon() {
     if (this.formGroup.value.coupon) {
       if (this.billingservice.company > 0) {
         // popup to show MECP only for CASH
+        const CouponErrorRef = this.messageDialogService.error(
+          "MECP discount applicable on CASH Patient only"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        this.formGroup.controls["coupon"].setValue("");
+        return;
       } else {
         if (this.formGroup.value.paymentMode == 1) {
-          this.billingservice.getServicesForCoupon(
-            this.formGroup.value.coupon,
-            Number(this.cookie.get("HSPLocationId"))
+          this.calculateBillService.getServicesForCoupon(
+            this.formGroup,
+            Number(this.cookie.get("HSPLocationId")),
+            this
           );
         } else {
           //popup to show validation only for CASH
+          const CouponErrorRef = this.messageDialogService.error(
+            "MECP discount applicable on CASH Patient only"
+          );
+          await CouponErrorRef.afterClosed().toPromise();
+          this.formGroup.controls["coupon"].setValue("");
+          return;
         }
       }
     } else {
       // validation to show coupon required
+      const CouponErrorRef = this.messageDialogService.error(
+        "Please Enter Coupon"
+      );
+      await CouponErrorRef.afterClosed().toPromise();
+      return;
     }
   }
 }

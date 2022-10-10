@@ -19,7 +19,8 @@ import {
 import { of } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DmgPopupComponent } from "../../../../prompts/dmg-popup/dmg-popup.component";
-
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { TwiceConsultationReasonComponent } from "../../../../prompts/twice-consultation-reason/twice-consultation-reason.component";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
@@ -126,7 +127,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     public billingService: BillingService,
     private matDialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -320,7 +322,24 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  add(priorityId = 57) {
+  async checkTwiceConsultation() {
+    const twiceConsultationWarningDialog = this.messageDialogService.confirm(
+      "",
+      "You can not bill the same doctor consultation on the same date of this patient. Still do you want to continue ?"
+    );
+    const twiceConsultationWarningResult = await twiceConsultationWarningDialog
+      .afterClosed()
+      .toPromise();
+    if (
+      twiceConsultationWarningResult &&
+      twiceConsultationWarningResult.type == "yes"
+    ) {
+    } else {
+      return;
+    }
+  }
+
+  async add(priorityId = 57) {
     if (this.billingService.consultationItems.length == 1) {
       this.matDialog.open(ConsultationWarningComponent, {
         width: "30vw",
@@ -328,6 +347,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
       return;
     }
+
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,
