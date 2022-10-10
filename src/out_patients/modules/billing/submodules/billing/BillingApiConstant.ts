@@ -149,7 +149,7 @@ export namespace BillingApiConstants {
     RegistrationNo: number,
     planId: string
   ) =>
-    `${environment.BillingApiUrl}api/outpatientbilling/getotherplanretrieve/${planId}/${IACode}/${RegistrationNo}`;
+    `${environment.BillingApiUrl}api/outpatientbilling/getotherplanretrieve/${planId}/${RegistrationNo}/${IACode}`;
 
   export const getselectedhappyfamilyplandetail = (
     IACode: string,
@@ -242,4 +242,7 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/fetchoporderrequest/${maxid}/${locationid}`;
 
   export const getinteraction = `${environment.CommonApiUrl}api/lookup/getinteraction`;
+
+  export const getServicesForCoupon = (CouponNo: string, locationid: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getallservicesforcoupon/${CouponNo}/${locationid}`;
 }

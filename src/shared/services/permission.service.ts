@@ -74,24 +74,30 @@ export class PermissionService {
     });
     definedModules.forEach((masterModule: any, index: number) => {
       masterModule.childrens.forEach((children: any, j: number) => {
-        if (
-          "locationSpecific" in masterModule.childrens[j] &&
-          masterModule.childrens[j].locationSpecific !=
-            this.cookieService.get("LocationIACode")
-        ) {
-          definedModules[index].childrens[j].disabled = true;
+        if ("locationSpecific" in masterModule.childrens[j]) {
+          const location = masterModule.childrens[j].locationSpecific.filter(
+            (l: any) =>
+              l.loc === Number(this.cookieService.get("HSPLocationId"))
+          );
+          if (location.length <= 0) {
+            definedModules[index].childrens[j].disabled = true;
+          }
         }
         children.childrens.forEach((feature: any, c: number) => {
           if (!this.features.includes(feature.id)) {
             if (!feature.allUsersAllow)
               definedModules[index].childrens[j].childrens[c].disabled = true;
           }
-          if (
-            "locationSpecific" in masterModule.childrens[j] &&
-            masterModule.childrens[j].locationSpecific !=
-              this.cookieService.get("LocationIACode")
-          ) {
-            definedModules[index].childrens[j].childrens[c].disabled = true;
+          if ("locationSpecific" in masterModule.childrens[j].childrens[c]) {
+            const location = masterModule.childrens[j].childrens[
+              c
+            ].locationSpecific.filter(
+              (l: any) =>
+                l.loc === Number(this.cookieService.get("HSPLocationId"))
+            );
+            if (location.length <= 0) {
+              definedModules[index].childrens[j].childrens[c].disabled = true;
+            }
           }
         });
       });

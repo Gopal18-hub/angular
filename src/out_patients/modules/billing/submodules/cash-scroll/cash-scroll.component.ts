@@ -48,7 +48,7 @@ export class CashScrollComponent implements OnInit {
   cashscrollconfig: any = {
     clickedRows: true,
     clickSelection: "single",
-    dateformat: "dd/MM/yyyy - hh:mm:ss",
+    dateformat: "dd/MM/yyyy - HH:mm:ss",
     selectBox: true,
     displayedColumns: [
       "stationslno",
@@ -101,12 +101,9 @@ export class CashScrollComponent implements OnInit {
   currentTime: string = new Date().toLocaleString();
   private readonly _destroying$ = new Subject<void>();  
   
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
-  stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
-
-
-
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
+  stationId:any = Number(this.cookie.get("StationId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
 
   Modifyscollnumber: boolean = true;
   selectedscrollnumber:string = "";

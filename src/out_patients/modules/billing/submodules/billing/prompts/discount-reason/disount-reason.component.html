@@ -14,7 +14,7 @@
     >
   </div>
   <!-- First Row -->
-  <div class="w-full height-4 max-health-primary-color mt-2">
+  <div class="w-full height-4 max-health-primary-color mt-2 head-section">
     <div class="flex float-left w-4/5">
       <div class="w-2/10">
         <maxhealth-question
@@ -69,7 +69,7 @@
         class="float-right mr-4"
         mat-raised-button
         color="primary"
-        [disabled]="disableAdd"
+        [disabled]="disableAdd || data?.disableAdd"
         (click)="prepareData()"
       >
         Add
@@ -79,7 +79,7 @@
         mat-raised-button
         color="primary"
         (click)="clear()"
-        [disabled]="selectedItems.length == 0"
+        [disabled]="selectedItems.length == 0 || data?.disableClear"
       >
         Clear
       </button>
@@ -96,7 +96,7 @@
     ></maxhealth-table>
   </div>
 
-  <div class="flex mt-2 justify-between">
+  <div class="flex mt-2 justify-between footer-section">
     <div class="flex mt-1 gap-5">
       <mat-label class="max-health-primary-color font-semi-bold"
         >Authorised By</mat-label
@@ -141,6 +141,7 @@
         mat-raised-button
         color="primary"
         (click)="applyDiscount()"
+        [disabled]="!discAmtForm.valid"
       >
         Apply Discount
       </button>

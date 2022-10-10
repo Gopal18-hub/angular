@@ -7,6 +7,8 @@ import { BillingService } from "@modules/billing/submodules/billing/billing.serv
 import { CookieService } from "@shared/services/cookie.service";
 import { ConsultationWarningComponent } from "@modules/billing/submodules/billing/prompts/consultation-warning/consultation-warning.component";
 import { MatDialog } from "@angular/material/dialog";
+import { PostDischargeServiceService } from "../../../../post-discharge-service.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -38,6 +40,11 @@ export class PostDischargeConsultationsComponent implements OnInit {
         options: [],
         required: true,
       },
+      clinics: {
+        type: "autocomplete",
+        required: false,
+        placeholder: "--Select--",
+      },
     },
   };
   formGroup!: FormGroup;
@@ -48,6 +55,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
   config: any = {
     clickedRows: false,
     actionItems: false,
+    removeRow: true,
     dateformat: "dd/MM/yyyy",
     selectBox: false,
     displayedColumns: [
@@ -103,6 +111,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
       },
     },
   };
+  locationId = Number(this.cookie.get("HSPLocationId"));
+  excludeClinicsLocations = [67, 69];
+  consultationTypes = [];
   constructor(
     private formService: QuestionControlService,
     public billingService: BillingService,
@@ -110,7 +121,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
     private matDialog: MatDialog,
     private http: HttpService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public service: PostDischargeServiceService,
+    private msgdialog: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -120,19 +133,25 @@ export class PostDischargeConsultationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.formGroup.controls["doctorName"].disable();
+    this.service.setBillingFormGroup(this.formGroup, this.questions);
     this.getSpecialization();
-    this.data = this.billingService.consultationItems;
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.data = this.service.consultationItems;
+    this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
+      this.consultationTypes = res;
+      this.config.columnsInfo.type.options = res.map((r: any) => {
+        return { title: r.name, value: r.id };
+      });
+    });
+    this.service.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
     });
 
-    this.billingService.consultationItemsAdded.subscribe((added: boolean) => {
+    this.service.consultationItemsAdded.subscribe((added: boolean) => {
       if (added) {
-        this.data = [...this.billingService.consultationItems];
-        this.billingService.calculateTotalAmount();
+        this.data = [...this.service.consultationItems];
+        this.service.calculateTotalAmount();
       }
     });
   }
@@ -144,8 +163,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
     this.formGroup.controls["specialization"].valueChanges.subscribe((res) => {
       console.log(res);
       this.questions[1].options = [];
-      this.formGroup.controls["doctorName"].enable();
-      this.getdoctorlistonSpecializationClinic(res.value);
+      if(res != null)
+      {
+        this.getdoctorlistonSpecializationClinic(res.value);
+      }
     });
 
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
@@ -156,10 +177,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
       }
     });
 
-    if (this.billingService.activeMaxId) {
-      this.questions[1].elementRef.focus();
-    }
-
+    // if (this.billingService.activeMaxId) {
+    //   this.questions[1].elementRef.focus();
+    // }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
         filter((res) => {
@@ -202,12 +222,27 @@ export class PostDischargeConsultationsComponent implements OnInit {
       });
   }
   getSpecialization() {
-    this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
-      console.log(res);
-      this.questions[0].options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
+    if (!this.excludeClinicsLocations.includes(this.locationId)) {
+      this.http
+        .get(BillingApiConstants.getclinics(this.locationId))
+        .subscribe((res) => {
+          this.questions[2].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[2] = { ...this.questions[2] };
+        });
+      this.formGroup.controls["clinics"].valueChanges.subscribe((val: any) => {
+        if (val && val.value) {
+          this.getdoctorlistonSpecializationClinic(val.value, true);
+        }
       });
-      this.questions[0] = { ...this.questions[0] };
+    } else {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+        this.questions[0].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[0] = { ...this.questions[0] };
+      });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
           if (val && val.value) {
@@ -215,16 +250,19 @@ export class PostDischargeConsultationsComponent implements OnInit {
           }
         }
       );
-    });
+    }
   }
 
-  getdoctorlistonSpecializationClinic(clinicSpecializationId: number) {
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    isClinic = false
+  ) {
     this.http
       .get(
         BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
+          isClinic,
           clinicSpecializationId,
-          1
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -243,11 +281,12 @@ export class PostDischargeConsultationsComponent implements OnInit {
   }
 
   add(priorityId = 57) {
-    if (this.billingService.consultationItems.length == 1) {
-      this.matDialog.open(ConsultationWarningComponent, {
-        width: "30vw",
-        data: {},
-      });
+    if (this.service.consultationItems.length == 1) {
+      // this.matDialog.open(ConsultationWarningComponent, {
+      //   width: "30vw",
+      //   data: {},
+      // });
+      this.msgdialog.info("Coupon is allow only single consultation");
       return;
     }
     this.http
@@ -264,14 +303,14 @@ export class PostDischargeConsultationsComponent implements OnInit {
       .subscribe((res: any) => {
         console.log("Add--", res);
         if (res.length > 0) {
-          this.billingService.addToConsultation({
+          this.service.addToConsultation({
             sno: this.data.length + 1,
             doctorName: this.formGroup.value.doctorName.originalTitle,
             doctorId: this.formGroup.value.doctorName.value,
             type: priorityId,
             scheduleSlot: "",
             bookingDate: "",
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut.toFixed(2),
             specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
@@ -280,42 +319,42 @@ export class PostDischargeConsultationsComponent implements OnInit {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
               serviceId: 25,
-              price: res[0].returnOutPut,
+              price: res[0].returnOutPut.toFixed(2),
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
               precaution: "",
               procedureDoctor: "",
-              credit: 0,
-              cash: 0,
-              disc: 0,
-              discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              credit: Number(0).toFixed(2),
+              cash: Number(0).toFixed(2),
+              disc: Number(0).toFixed(2),
+              discAmount: Number(0).toFixed(2),
+              totalAmount: res[0].returnOutPut.toFixed(2),
+              gst: Number(0).toFixed(2),
+              gstValue: Number(0).toFixed(2),
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
             },
           });
         }
-        this.data = [...this.billingService.consultationItems];
+        this.data = [...this.service.consultationItems];
         this.formGroup.reset();
       });
   }
 
   rowRwmove($event: any) {
-    this.billingService.removeFromBill(
-      this.billingService.consultationItems[$event.index]
+    this.service.removeFromBill(
+      this.service.consultationItems[$event.index]
     );
-    this.billingService.consultationItems.splice($event.index, 1);
-    this.billingService.consultationItems =
-      this.billingService.consultationItems.map((item: any, index: number) => {
+    this.service.consultationItems.splice($event.index, 1);
+    this.service.consultationItems =
+      this.service.consultationItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
         return item;
       });
-    this.data = [...this.billingService.consultationItems];
-    this.billingService.calculateTotalAmount();
+    this.data = [...this.service.consultationItems];
+    this.service.calculateTotalAmount();
   }
 
   update(priorityId = 57, sno = 0, doctorId: number) {
@@ -330,21 +369,21 @@ export class PostDischargeConsultationsComponent implements OnInit {
       )
       .subscribe((res: any) => {
         if (sno > 0) {
-          const index = this.billingService.consultationItems.findIndex(
+          const index = this.service.consultationItems.findIndex(
             (c: any) => c.sno == sno
           );
-          this.billingService.consultationItems[index].price = res.amount;
-          this.billingService.consultationItems[index].type = priorityId;
-          this.data = [...this.billingService.consultationItems];
+          this.service.consultationItems[index].price = res.amount;
+          this.service.consultationItems[index].type = priorityId;
+          this.data = [...this.service.consultationItems];
         }
 
-        this.data = [...this.billingService.consultationItems];
-        this.billingService.calculateTotalAmount();
+        this.data = [...this.service.consultationItems];
+        this.service.calculateTotalAmount();
       });
   }
 
   goToBill() {
-    this.router.navigate(["../bill"], {
+    this.router.navigate(["/out-patient-billing/post-discharge-follow-up-billing/bill"], {
       queryParamsHandling: "merge",
       relativeTo: this.route,
     });

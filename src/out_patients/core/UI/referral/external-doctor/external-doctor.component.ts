@@ -65,8 +65,9 @@ export class ExternalDoctorComponent implements OnInit {
       },
       mobile: {
         title: "Mobile",
-        type: "string",
+        type: "tel",
         required: true,
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       speciality: {
         type: "dropdown",

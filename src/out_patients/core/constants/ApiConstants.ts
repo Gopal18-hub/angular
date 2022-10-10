@@ -1491,4 +1491,14 @@ export namespace ApiConstants {
     UserId: string
   ) =>
     `${environment.CommonApiUrl}api/lookup/referraldoctorsave/${DoctorName}/${MobileNumber}/${SpecialisationId}/${UserId}`;
+
+  export const validateCoupon = (
+    CouponNo : string,
+    Locationid : number,
+    Iacode: string,
+    Registration: number,
+    SpecializationId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/validatecoupon/${CouponNo}/${Locationid}/${Iacode}/${Registration}/${SpecializationId}`
+  }
 }
