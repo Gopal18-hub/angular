@@ -225,7 +225,6 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
 
     this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
       if (res) {
@@ -248,7 +247,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.formGroup.controls["corporate"].valueChanges
+    this.formGroup.controls["corporate"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res && res.value) {
@@ -583,6 +582,8 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
     //this.questions[2].readonly = true;
   }
 

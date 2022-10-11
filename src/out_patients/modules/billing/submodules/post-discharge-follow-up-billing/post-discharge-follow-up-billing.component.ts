@@ -117,7 +117,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing/']);
+    this.router.navigate([
+      "/out-patient-billing/post-discharge-follow-up-billing/",
+    ]);
     this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
@@ -130,37 +132,36 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.currentDate = this.datepipe.transform(new Date(), "dd-MM-YYYY");
     this.currentTime = new Date().toLocaleTimeString("en-US", { hour12: true });
-    // this.currentTime = this.datepipe.transform(new Date(), 'HH:MM:ss a')
-    // this.route.queryParams.subscribe((params: any) => {
-    //   if (params.maxId) {
-    //     this.formGroup.controls["maxid"].setValue(params.maxId);
-    //     this.apiProcessing = true;
-    //     this.patient = false;
-    //     this.getPatientDetailsByMaxId();
-    //     this.formGroup.markAsDirty();
-    //   }
-    // });
+    this.currentTime = this.datepipe.transform(new Date(), "HH:MM:ss a");
+    this.route.queryParams.subscribe((params: any) => {
+      if (params.maxId) {
+        this.formGroup.controls["maxid"].setValue(params.maxId);
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getPatientDetailsByMaxId();
+        this.formGroup.markAsDirty();
+      }
+    });
   }
   iomMessage: any;
   ngAfterViewInit(): void {
     this.formEvents();
-    this.formGroup.controls['company'].valueChanges.subscribe((res) => {
-      if(res.value)
-      {
+    this.formGroup.controls["company"].valueChanges.subscribe((res) => {
+      if (res.value) {
         console.log(res);
-        var result = this.complanyList.filter( i=> {
+        var result = this.complanyList.filter((i) => {
           return i.id == res.value;
-        })
-        console.log(result)
+        });
+        console.log(result);
         this.iomMessage =
-      "IOM Validity till : " +
-      (("iomValidity" in result[0] && result[0].iomValidity != "") ||
-      result[0].iomValidity != undefined
-        ? this.datepipe.transform(result[0].iomValidity, "dd-MMM-yyyy")
-        : "");
+          "IOM Validity till : " +
+          (("iomValidity" in result[0] && result[0].iomValidity != "") ||
+          result[0].iomValidity != undefined
+            ? this.datepipe.transform(result[0].iomValidity, "dd-MMM-yyyy")
+            : "");
       }
-      console.log(this.iomMessage)
-    })
+      console.log(this.iomMessage);
+    });
   }
   formEvents() {
     //ON MAXID CHANGE
@@ -301,7 +302,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
             this.formGroup.controls["maxid"].setValue(maxID);
             this.apiProcessing = true;
             this.patient = false;
-            //this.getPatientDetailsByMaxId();
+            this.getPatientDetailsByMaxId();
             this.router.navigate([], {
               queryParams: { maxId: this.formGroup.value.maxid },
               relativeTo: this.route,
@@ -327,7 +328,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
                   this.formGroup.controls["maxid"].setValue(maxID);
                   this.apiProcessing = true;
                   this.patient = false;
-                  //this.getPatientDetailsByMaxId();
+                  this.getPatientDetailsByMaxId();
                   this.router.navigate([], {
                     queryParams: { maxId: this.formGroup.value.maxid },
                     relativeTo: this.route,
