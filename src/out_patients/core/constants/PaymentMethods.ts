@@ -62,7 +62,7 @@ export namespace PaymentMethods {
   };
 
   export const creditForm = {
-    title: "",
+    title: "Credit Card Details",
     type: "object",
     properties: {
       price: {
@@ -103,7 +103,7 @@ export namespace PaymentMethods {
   };
 
   export const demandDraftForm = {
-    title: "",
+    title: "Demand Draft Details",
     type: "object",
     properties: {
       price: {
@@ -137,7 +137,7 @@ export namespace PaymentMethods {
   };
 
   export const mobilePaymentForm = {
-    title: "",
+    title: "Mobile Payment Details",
     type: "object",
     properties: {
       mobilesendermobile: {
@@ -176,7 +176,7 @@ export namespace PaymentMethods {
   };
 
   export const onlinePaymentForm = {
-    title: "",
+    title: "Online Payment Details",
     type: "object",
     properties: {
       price: {
@@ -238,7 +238,7 @@ export namespace PaymentMethods {
   };
 
   export const upiForm = {
-    title: "",
+    title: "UPI Payment Details",
     type: "object",
     properties: {
       price: {
