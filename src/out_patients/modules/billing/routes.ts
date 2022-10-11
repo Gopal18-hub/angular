@@ -47,7 +47,7 @@ const routes: Routes = [
   {
     path: "out-patient-billing",
     component: BillingComponent,
-    //  canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService],
     children: [
       {
         path: "",
@@ -172,4 +172,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BillingRoutingModule { }
+export class BillingRoutingModule {}

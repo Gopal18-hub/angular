@@ -136,6 +136,7 @@ import { ReasonForDueBillComponent } from "./submodules/billing/prompts/reason-f
 import { SendMailDialogComponent } from "./submodules/billing/prompts/send-mail-dialog/send-mail-dialog.component";
 import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component";
 import { MiscDiscountReasonComponent } from './submodules/miscellaneous-billing/prompts/misc-discount reason/misc-discount-reason.component';
+import { TwiceConsultationReasonComponent } from './submodules/billing/prompts/twice-consultation-reason/twice-consultation-reason.component';
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -241,6 +242,7 @@ import { MiscDiscountReasonComponent } from './submodules/miscellaneous-billing/
     SendMailDialogComponent,
     MiscCreditDetailsComponent,
     MiscDiscountReasonComponent,
+    TwiceConsultationReasonComponent,
   ],
   imports: [
     BillingRoutingModule,

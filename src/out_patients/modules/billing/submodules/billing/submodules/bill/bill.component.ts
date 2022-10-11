@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ɵsetCurrentInjector,
-} from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -25,12 +20,13 @@ import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+
 @Component({
   selector: "out-patients-bill",
   templateUrl: "./bill.component.html",
   styleUrls: ["./bill.component.scss"],
 })
-export class BillComponent implements OnInit {
+export class BillComponent implements OnInit, OnDestroy {
   billDataForm = {
     type: "object",
     title: "",
@@ -303,6 +299,13 @@ export class BillComponent implements OnInit {
     private calculateBillService: CalculateBillService
   ) {}
 
+  ngOnDestroy(): void {
+    this.billingservice.makeBillPayload.cmbInteraction =
+      Number(this.formGroup.value.interactionDetails) || 0;
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+      Number(this.formGroup.value.paymentMode);
+  }
+
   async ngOnInit() {
     if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
       this.billDataForm.properties.paymentMode.options = [
@@ -326,6 +329,19 @@ export class BillComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    if (this.billingservice.makeBillPayload.cmbInteraction) {
+      this.formGroup.controls["interactionDetails"].setValue(
+        this.billingservice.makeBillPayload.cmbInteraction
+      );
+    }
+    if (
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType
+    ) {
+      this.formGroup.controls["paymentMode"].setValue(
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+          .billType
+      );
+    }
     this.question[1].options = await this.calculateBillService.getinteraction();
     let popuptext: any = [];
     this.billingservice.billItems.forEach((item: any, index: number) => {
@@ -420,8 +436,24 @@ export class BillComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (value == true) {
-          this.calculateBillService.discountreason(this.formGroup, this);
+          if (this.calculateBillService.validCoupon) {
+            this.calculateBillService.discountreason(
+              this.formGroup,
+              this,
+              "coupon"
+            );
+          } else {
+            this.calculateBillService.discountreason(this.formGroup, this);
+          }
         } else {
+          this.calculateBillService.validCoupon = false;
+          this.billingservice.billItems.forEach((item: any) => {
+            item.disc = 0;
+            item.discAmount = 0;
+            item.totalAmount = item.price * item.qty;
+            item.discountType = 2;
+            item.discountReason = 0;
+          });
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
           this.formGroup.controls["discAmt"].setValue(
@@ -430,6 +462,9 @@ export class BillComponent implements OnInit {
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
           );
+          this.formGroup.controls["coupon"].setValue("");
+          this.formGroup.controls["compDisc"].setValue("");
+          this.formGroup.controls["patientDisc"].setValue("");
         }
       });
 
@@ -466,15 +501,20 @@ export class BillComponent implements OnInit {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-
-    this.question[12].elementRef.addEventListener(
-      "blur",
-      this.validateCoupon.bind(this)
-    );
+    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        this.validateCoupon();
+      }
+    });
   }
 
   discountreason() {
-    this.calculateBillService.discountreason(this.formGroup, this);
+    if (this.calculateBillService.validCoupon) {
+      this.calculateBillService.discountreason(this.formGroup, this, "coupon");
+    } else {
+      this.calculateBillService.discountreason(this.formGroup, this);
+    }
   }
 
   onModifyDepositAmt() {
@@ -535,7 +575,7 @@ export class BillComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (result) => {
-        if ("type" in result) {
+        if (result && "type" in result) {
           if (result.type == "yes") {
             if (this.formGroup.value.amtPayByPatient > 0) {
               if (
@@ -740,22 +780,40 @@ export class BillComponent implements OnInit {
     }
   }
 
-  validateCoupon() {
+  async validateCoupon() {
     if (this.formGroup.value.coupon) {
       if (this.billingservice.company > 0) {
         // popup to show MECP only for CASH
+        const CouponErrorRef = this.messageDialogService.error(
+          "MECP discount applicable on CASH Patient only"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        this.formGroup.controls["coupon"].setValue("");
+        return;
       } else {
         if (this.formGroup.value.paymentMode == 1) {
-          this.billingservice.getServicesForCoupon(
-            this.formGroup.value.coupon,
-            Number(this.cookie.get("HSPLocationId"))
+          this.calculateBillService.getServicesForCoupon(
+            this.formGroup,
+            Number(this.cookie.get("HSPLocationId")),
+            this
           );
         } else {
           //popup to show validation only for CASH
+          const CouponErrorRef = this.messageDialogService.error(
+            "MECP discount applicable on CASH Patient only"
+          );
+          await CouponErrorRef.afterClosed().toPromise();
+          this.formGroup.controls["coupon"].setValue("");
+          return;
         }
       }
     } else {
       // validation to show coupon required
+      const CouponErrorRef = this.messageDialogService.error(
+        "Please Enter Coupon"
+      );
+      await CouponErrorRef.afterClosed().toPromise();
+      return;
     }
   }
 }
