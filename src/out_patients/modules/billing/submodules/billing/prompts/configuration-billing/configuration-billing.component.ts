@@ -15,6 +15,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-configuration-billing",
@@ -32,7 +33,8 @@ export class ConfigurationBillingComponent implements OnInit {
       serviceconfiguration: any;
       patientdetails: any;
       companyname: string;
-    }
+    },
+    private calculateBillService: CalculateBillService
   ) {}
   questions: any;
   Configurationbilling!: FormGroup;
@@ -114,12 +116,12 @@ export class ConfigurationBillingComponent implements OnInit {
     this.creditlimit = "";
   }
   saveconfiguration() {
-    const savedialogRef = this.messageDialogService.confirm(
+    const saveDialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to Save Services Configuration!`
     );
 
-    savedialogRef.afterClosed().subscribe((value) => {
+    saveDialogRef.afterClosed().subscribe((value) => {
       if (value.type == "yes") {
         this.dialogRef.close();
       }
@@ -133,7 +135,6 @@ export class ConfigurationBillingComponent implements OnInit {
         if (this.companybillingtable.selection.selected.length > 0) {
           this.tableselectionexists = true;
           this.companyselectedservice.push(res.added);
-          console.log(this.companyselectedservice);
         } else {
           this.tableselectionexists = false;
         }

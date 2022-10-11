@@ -575,7 +575,7 @@ export class BillComponent implements OnInit, OnDestroy {
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (result) => {
-        if ("type" in result) {
+        if (result && "type" in result) {
           if (result.type == "yes") {
             if (this.formGroup.value.amtPayByPatient > 0) {
               if (
