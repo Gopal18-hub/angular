@@ -565,7 +565,6 @@ export class BillComponent implements OnInit, OnDestroy {
           );
         } else {
           this.formGroup.controls["amtPayByComp"].setValue(amountToBePaid);
-          this.formGroup.controls["credLimit"].setValue(amountToBePaid);
         }
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
@@ -767,12 +766,16 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   getAmountPayByPatient() {
-    return (
+    const temp =
       this.billingservice.totalCost -
       (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.dipositAmtEdit || 0) -
-      (this.formGroup.value.credLimit || 0)
-    );
+      (this.formGroup.value.dipositAmtEdit || 0);
+
+    if (this.formGroup.value.credLimit > temp) {
+      return 0;
+    } else {
+      return temp - this.formGroup.value.credLimit;
+    }
   }
 
   depositdetails() {
