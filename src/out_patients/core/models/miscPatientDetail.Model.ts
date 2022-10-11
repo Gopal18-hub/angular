@@ -28,6 +28,7 @@ export class miscPatientDetail {
   authorisedid?: number;
   mail?: string;
   cellNo?: string;
+  paNno?: string;
   constructor(
     registrationno?: number,
     iacode?: string,
@@ -57,7 +58,8 @@ export class miscPatientDetail {
     narration?: string,
     authorisedid?: number,
     mail?: string,
-    cellNo?: string
+    cellNo?: string,
+    paNno?: string
   ) {
     this.registrationno = registrationno;
     this.iacode = iacode;
@@ -88,5 +90,6 @@ export class miscPatientDetail {
     this.authorisedid = authorisedid;
     this.mail = mail;
     this.cellNo = cellNo;
+    this.paNno = paNno;
   }
 }

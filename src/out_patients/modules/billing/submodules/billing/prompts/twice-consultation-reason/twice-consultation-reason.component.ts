@@ -32,5 +32,12 @@ export class TwiceConsultationReasonComponent implements OnInit {
     this.questions[0].elementRef.focus();
   }
 
-  save() {}
+  save() {
+    if (this.form.valid) {
+      this.dialogRef.close({ data: this.form.value });
+    }
+  }
+  close() {
+    this.dialogRef.close();
+  }
 }

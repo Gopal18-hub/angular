@@ -88,6 +88,13 @@
     line-height: 1.25 !important;
     }
     }
+    .paymentdialogbutton{
+        .mat-raised-button{    
+            min-width: auto !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+    }
 }
 
 ::ng-deep .mat-dialog-container{
