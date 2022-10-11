@@ -162,7 +162,7 @@ export class CalculateBillService {
             item.discountReason = ditem.reason;
           }
         } else if (ditem.discTypeId == 2) {
-          const items = this.billingServiceRef.billItems.find(
+          const items = this.billingServiceRef.billItems.filter(
             (it: any) => it.serviceName == ditem.service
           );
           if (items) {

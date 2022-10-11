@@ -250,7 +250,7 @@ export class CreditDetailsComponent implements OnInit {
   openconfiguration() {
     let billtype;
     billtype = this.billingservice.getbilltype();
-    let configurationitems: any = this.billingservice.getconfigurationservice();
+    let configurationitems: any = this.billingservice.billItems;
     if (billtype != 3) {
       this.dialogService.error("Select credit check first");
     } else if (configurationitems.length == 0) {
