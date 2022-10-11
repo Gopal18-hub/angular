@@ -46,7 +46,7 @@ export class BillDetailComponent implements OnInit {
   remarkList!: objMiscBillingRemarksList[];
   serviceItemsList!: ServiceTypeItemModel[];
   serviceList!: { title: string; value: number }[];
-  miscCompanyId: any;
+  miscCompanyId: number = 0;
   generatedBillNo = "";
   enableDiscount: boolean = false;
   makebillFlag: boolean = false;
@@ -851,10 +851,10 @@ export class BillDetailComponent implements OnInit {
   // Bill amt based on service
   getPriceforitemwithTariffId() {
     let miscFormData = this.miscPatient.getCalculateBillItems();
-    this.miscCompanyId = miscFormData.companyId.value;
-    if (!miscFormData.companyId.value) {
-      this.miscCompanyId = 0;
-    }
+    this.miscCompanyId = miscFormData.companyId == 0 ? 0 :  miscFormData.companyId.value;
+    // if (!miscFormData.companyId.value) {
+    //   this.miscCompanyId = 0;
+    // }
 
     let PriorityId = 1;
     let Hsplocationid = this.location;
@@ -927,17 +927,20 @@ export class BillDetailComponent implements OnInit {
         )
         .pipe(takeUntil(this._destroying$))
         .subscribe((data) => {
-          this.gstData = data;
-          this.totaltaX_Value = data[0].totaltaX_Value;
-          this.miscServBillForm.controls["gstTax"].setValue(
-            this.totaltaX_Value + ".00"
-          );
-          this.calcBillData.totalGst = this.totaltaX_Value;
-          this.miscPatient.setCalculateBillItems(this.calcBillData);
-          let calcBill0 = this.miscPatient.calculateBill();
-          this.miscServBillForm.controls["amtPayByPatient"].setValue(
-            calcBill0.amntPaidBythePatient + ".00"
-          );
+          if(data){
+            this.gstData = data;
+            this.totaltaX_Value = data[0].totaltaX_Value;
+            this.miscServBillForm.controls["gstTax"].setValue(
+              this.totaltaX_Value + ".00"
+            );
+            this.calcBillData.totalGst = this.totaltaX_Value;
+            this.miscPatient.setCalculateBillItems(this.calcBillData);
+            let calcBill0 = this.miscPatient.calculateBill();
+            this.miscServBillForm.controls["amtPayByPatient"].setValue(
+              calcBill0.amntPaidBythePatient + ".00"
+            ); 
+          }
+        
         });
     }
   }
@@ -1008,7 +1011,7 @@ export class BillDetailComponent implements OnInit {
           //For Discount Reason
           e.serviceId = e.serviceid;
           e.itemId = e.itemId;
-          e.amount = e.totalAmount;
+          e.amount = e.TotalAmount;
           e.discountamount = e.discount;
           e.serviceName = e.ServiceType;
           e.itemName = e.ItemDescription;
@@ -1060,7 +1063,7 @@ export class BillDetailComponent implements OnInit {
       disc: 0,
       discAmount: 0,
       totalAmount:
-        this.miscServBillForm.value.reqAmt * this.miscServBillForm.value.qty,
+       Number(this.miscServBillForm.value.reqAmt) * Number(this.miscServBillForm.value.qty),
       gst: 0,
       gstValue: 0,
       specialisationID: 0,
@@ -1476,7 +1479,7 @@ export class BillDetailComponent implements OnInit {
   addNewItem(): any {
     let miscFormData = this.miscPatient.getCalculateBillItems();
     let miscPatient = this.miscPatient.getFormLsit();
-    this.miscCompanyId = miscFormData.companyId.value;
+    this.miscCompanyId = miscFormData.companyId == 0 ? 0 : miscFormData.companyId.value;
     let calcBill0 = this.miscPatient.calculateBill();
     if (calcBill0.amntPaidBythePatient > 0) {
       this.CreditAmtforSrvTax = calcBill0.amntPaidBythePatient;
