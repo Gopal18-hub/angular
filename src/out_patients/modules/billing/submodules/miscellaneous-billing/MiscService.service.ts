@@ -1,5 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
+import { DatePipe } from "@angular/common";import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { IomCompanyBillingComponent } from "../billing/prompts/iom-company-billing/iom-company-billing.component";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +20,7 @@ export class MiscService {
   clearAllItems = new Subject<boolean>();
   MOP: string = "Cash";
   data: any = [];
-  patientDetail: any;
+  patientDetail: any = [];
   company: any;
   billDetail: any;
   cashLimit: any = 0;
@@ -26,6 +32,21 @@ export class MiscService {
   cacheServitem: any = [];
   cacheCreditTabdata: any = [];
   cacheBillTabdata: any = [];
+  companyChangeEvent = new Subject<any>();
+  corporateChangeEvent = new Subject<any>();
+
+  companyData: any = [];
+  corporateData: any = [];
+  selectedcompanydetails: any = [];
+  selectedcorporatedetails: any = [];
+  iomMessage: string = "";
+
+  constructor(
+    
+    public matDialog: MatDialog,
+    private datepipe: DatePipe,
+  ) {}
+
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
@@ -127,4 +148,66 @@ export class MiscService {
   cacheBillTab(data: any) {
     this.cacheBillTabdata = data;
   }
+
+  setCompnay(
+    companyid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"
+  ) {
+    this.selectedcompanydetails = res;
+    this.selectedcorporatedetails = [];
+    this.companyChangeEvent.next({ company: res, from });
+    this.iomMessage =
+      "IOM Validity till : " +
+      (("iomValidity" in res.company && res.company.iomValidity != "") ||
+      res.company.iomValidity != undefined
+        ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+        : "");
+    if (res.company.isTPA == 1) {
+      const iomcompanycorporate = this.matDialog.open(
+        IomCompanyBillingComponent,
+        {
+          width: "25%",
+          height: "28%",
+        }
+      );
+
+      iomcompanycorporate.afterClosed().subscribe((result) => {
+        if (result.data == "corporate") {         
+          // this.setItemsToBill.isChannel = 1;          
+          // this.setCalculateBillItems(this.setItemsToBill);
+          formGroup.controls["corporate"].enable();
+          formGroup.controls["corporate"].setValue(0);
+        } else {
+          // this.setItemsToBill.isChannel = 0;
+          // this.setCalculateBillItems(this.setItemsToBill);
+          formGroup.controls["corporate"].setValue(0);
+          formGroup.controls["corporate"].disable();
+        }
+      });
+    } else {
+      formGroup.controls["corporate"].setValue(0);
+      formGroup.controls["corporate"].disable();
+    }
+  }
+
+  setCorporate(
+    corporateid: number,
+    res: any,
+    formGroup: any,
+    from: string = "header"
+  ) {
+    this.selectedcorporatedetails = res;
+    this.corporateChangeEvent.next({ corporate: res, from });
+  }
+
+  setCompanyData(data: any) {
+    this.companyData = data;
+  }
+
+  setCorporateData(data: any) {
+    this.corporateData = data;
+  }
+
 }

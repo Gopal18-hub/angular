@@ -246,6 +246,14 @@ export class PostDischargeBillComponent implements OnInit {
         else
         {
           this.IsValidateCoupon = true;
+          this.questions[0].readonly = true;
+          console.log(this.data);
+          console.log(this.service.consultationItems);
+          this.data[0].price = "0.00";
+          this.data[0].totalAmount = "0.00";
+          this.service.consultationItems[0].price = "0.00";
+          this.service.calculateTotalAmount();
+          this.service.modified();
         }
       })
     }
