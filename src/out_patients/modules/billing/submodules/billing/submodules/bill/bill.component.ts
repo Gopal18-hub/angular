@@ -375,6 +375,7 @@ export class BillComponent implements OnInit, OnDestroy {
     }
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
+    this.billTypeChange(this.formGroup.value.paymentMode);
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
@@ -438,6 +439,25 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
+    this.billTypeChange(this.formGroup.value.paymentMode);
+  }
+
+  billTypeChange(value: any) {
+    if (value == 1) {
+      this.data = this.data.map((dItem: any) => {
+        dItem.cash = dItem.totalAmount;
+        dItem.credit = 0;
+        return dItem;
+      });
+      this.data = [...this.data];
+    } else if (value == 3) {
+      this.data = this.data.map((dItem: any) => {
+        dItem.cash = 0;
+        dItem.credit = dItem.totalAmount;
+        return dItem;
+      });
+      this.data = [...this.data];
+    }
   }
 
   ngAfterViewInit() {
@@ -458,6 +478,12 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
           this.question[14].readonly = true;
         }
+        this.billTypeChange(value);
+        this.formGroup.controls["amtPayByComp"].setValue("0.00");
+        this.formGroup.controls["credLimit"].setValue("0.00");
+        this.formGroup.controls["amtPayByPatient"].setValue(
+          this.getAmountPayByPatient()
+        );
       });
     this.refreshForm();
     this.formGroup.controls["discAmtCheck"].valueChanges
@@ -522,6 +548,28 @@ export class BillComponent implements OnInit, OnDestroy {
           name: "",
           specialisation: "",
         });
+      }
+    });
+
+    this.question[14].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const amountToBePaid =
+          this.billingservice.totalCost -
+          (this.formGroup.value.discAmt || 0) -
+          (this.formGroup.value.dipositAmtEdit || 0);
+
+        if (parseFloat(this.formGroup.value.credLimit) <= amountToBePaid) {
+          this.formGroup.controls["amtPayByComp"].setValue(
+            this.formGroup.value.credLimit
+          );
+        } else {
+          this.formGroup.controls["amtPayByComp"].setValue(amountToBePaid);
+          this.formGroup.controls["credLimit"].setValue(amountToBePaid);
+        }
+        this.formGroup.controls["amtPayByPatient"].setValue(
+          this.getAmountPayByPatient()
+        );
       }
     });
 
