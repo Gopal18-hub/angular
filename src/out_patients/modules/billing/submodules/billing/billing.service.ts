@@ -43,7 +43,7 @@ export class BillingService {
   totalCost = 0;
 
   company: number = 0;
-  billtype: string = "cash";
+  billtype: number = 1;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -346,7 +346,7 @@ export class BillingService {
     this.corporateData = data;
   }
 
-  setBilltype(billtype: string) {
+  setBilltype(billtype: number) {
     this.billtype = billtype;
   }
 
