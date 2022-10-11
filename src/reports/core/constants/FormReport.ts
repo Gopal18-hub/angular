@@ -1298,4 +1298,65 @@ export namespace FormReport {
     layout: "single",
     resultType: "table",
   };
+
+  export const MiscellaneousReportMIS = {
+    reportName: "Miscellaneous Billing Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      defaultValue: moment().format("DD/MM/YYYY"),
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+
+
+        ChkAllLocation: {
+          type: "checkbox",
+          options: [
+            { title: "Location", value: 1 },
+          
+          ],
+         
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Miscellaneous Billing Report",
+            reportEntity: "MiscellaneousReportMIS",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+  };
 }

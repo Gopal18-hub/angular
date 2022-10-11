@@ -253,4 +253,6 @@ export namespace CrystalReport {
   export const PostDischargeFollowUpReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/VisitingOTBilling?Opbillid=${params.opbillid}&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&flag=${params.flag}`;
   };
+  export const MiscellaneousReportMIS = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/MiscellaneousReportMIS/MiscellaneousReportMIS?FromDate=${params.FromDate}&ToDate=${params.ToDate}&ChkAllLocation=${params.ChkAllLocation?1:0}&CmbLocation=${MaxHealthStorage.getCookie("HSPLocationId")}`;  };
 }
