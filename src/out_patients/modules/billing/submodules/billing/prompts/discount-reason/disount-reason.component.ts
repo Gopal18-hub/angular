@@ -353,6 +353,9 @@ export class DisountReasonComponent implements OnInit {
       case "On-Item":
         this.OnItemPrepare();
         break;
+      case "On-Patient":
+        this.OnPatientPrepare();
+        break;
       case "On-Company":
         this.OnCompanyPrepare();
         break;

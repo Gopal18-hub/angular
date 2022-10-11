@@ -35,6 +35,10 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
+  companyCreditItems: any = [];
+
+  billFormGroup: any;
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -44,7 +48,22 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  initProcess(billItems: any, billingServiceRef: any) {
+  setCompanyCreditItems(items: any) {
+    this.companyCreditItems = items;
+  }
+
+  initProcess(
+    billItems: any,
+    billingServiceRef: any,
+    formGroup?: any,
+    question?: any
+  ) {
+    if (formGroup && question) {
+      this.billFormGroup = {
+        form: formGroup,
+        questions: question,
+      };
+    }
     this.billingServiceRef = billingServiceRef;
     billItems.forEach(async (item: any) => {
       await this.serviceBasedCheck(item);
@@ -162,7 +181,7 @@ export class CalculateBillService {
             item.discountReason = ditem.reason;
           }
         } else if (ditem.discTypeId == 2) {
-          const items = this.billingServiceRef.billItems.find(
+          const items = this.billingServiceRef.billItems.filter(
             (it: any) => it.serviceName == ditem.service
           );
           if (items) {
@@ -231,30 +250,32 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (this.billingServiceRef.todayPatientBirthday) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Today is Patient Birthday, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+    if (!this.billingServiceRef.company) {
+      if (this.billingServiceRef.todayPatientBirthday) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Today is Patient Birthday, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
-      }
-    } else if (this.seniorCitizen) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Patient is senior citizen, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+      } else if (this.seniorCitizen) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Patient is senior citizen, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
       }
     }

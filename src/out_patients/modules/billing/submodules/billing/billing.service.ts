@@ -43,7 +43,7 @@ export class BillingService {
   totalCost = 0;
 
   company: number = 0;
-  billtype: string = "cash";
+  billtype: number = 1;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -96,8 +96,13 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill() {
-    this.calculateBillService.initProcess(this.billItems, this);
+  calculateBill(formGroup: any, question: any) {
+    this.calculateBillService.initProcess(
+      this.billItems,
+      this,
+      formGroup,
+      question
+    );
   }
 
   changeBillTabStatus(status: boolean) {
@@ -132,6 +137,10 @@ export class BillingService {
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
+    this.companyData = [];
+    this.corporateData = [];
+    this.selectedcompanydetails = [];
+    this.selectedcorporatedetails = [];
     console.log(this.makeBillPayload);
   }
 
@@ -342,7 +351,7 @@ export class BillingService {
     this.corporateData = data;
   }
 
-  setBilltype(billtype: string) {
+  setBilltype(billtype: number) {
     this.billtype = billtype;
   }
 

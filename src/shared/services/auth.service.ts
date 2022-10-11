@@ -25,7 +25,7 @@ export class AuthService {
 
   userProfileUpdated = new Subject<any>();
 
-  private manager = new UserManager(getClientSettings());
+  manager = new UserManager(getClientSettings());
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +68,10 @@ export class AuthService {
 
   startAuthentication(): Promise<void> {
     return this.manager.signinRedirect();
+  }
+
+  signOutRedirect(): Promise<void> {
+    return this.manager.signoutRedirect();
   }
 
   completeAuthentication(): Promise<User> {
@@ -159,5 +163,7 @@ export function getClientSettings(): UserManagerSettings {
       environment.IentityServerRedirectUrl + "silent-refresh",
     silentRequestTimeout: 60,
     userStore: new WebStorageStateStore({ store: window.localStorage }),
+    extraQueryParams: { new: 1 },
+    monitorSession: true,
   };
 }
