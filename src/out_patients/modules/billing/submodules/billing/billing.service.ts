@@ -96,8 +96,13 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill() {
-    this.calculateBillService.initProcess(this.billItems, this);
+  calculateBill(formGroup: any, question: any) {
+    this.calculateBillService.initProcess(
+      this.billItems,
+      this,
+      formGroup,
+      question
+    );
   }
 
   changeBillTabStatus(status: boolean) {

@@ -244,7 +244,8 @@ export class DynamicFormQuestionComponent
       this.question.type &&
       this.question.type == "currency"
     ) {
-      this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+      this.question.elementRef.addEventListener("blur", (event: any) => {
+        let value = this.form.controls[this.question.key].value;
         if (!value) value = "0.00";
         const temp = Number.parseFloat(value).toFixed(2);
         this.form.controls[this.question.key].setValue(temp, {

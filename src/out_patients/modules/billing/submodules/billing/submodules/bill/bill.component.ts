@@ -323,12 +323,17 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
+    if (this.calculateBillService.companyCreditItems.length > 0) {
+      this.billDataForm.properties["credLimit"].readonly = false;
+    }
     let formResult: any = this.formService.createForm(
       this.billDataForm.properties,
       {}
     );
+
     this.formGroup = formResult.form;
     this.question = formResult.questions;
+    console.log(this.question);
     if (this.billingservice.makeBillPayload.cmbInteraction) {
       this.formGroup.controls["interactionDetails"].setValue(
         this.billingservice.makeBillPayload.cmbInteraction
@@ -368,7 +373,7 @@ export class BillComponent implements OnInit, OnDestroy {
     ) {
       this.formGroup.controls["self"].setValue(true);
     }
-    this.billingservice.calculateBill();
+    this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {

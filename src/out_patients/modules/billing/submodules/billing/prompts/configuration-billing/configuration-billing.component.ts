@@ -120,9 +120,11 @@ export class ConfigurationBillingComponent implements OnInit {
       "",
       `Do you want to Save Services Configuration!`
     );
-
     saveDialogRef.afterClosed().subscribe((value) => {
-      if (value.type == "yes") {
+      if (value && value.type == "yes") {
+        this.calculateBillService.setCompanyCreditItems(
+          this.companybillingtable.selection.selected
+        );
         this.dialogRef.close();
       }
     });
