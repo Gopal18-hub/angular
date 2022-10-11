@@ -13,6 +13,6 @@ export class AppointmentSearchComponent implements OnInit {
   ngOnInit(): void {}
 
   openDialog() {
-    this.matDialog.open(AppointmentSearchDialogComponent, { width: "85vw" });
+    this.matDialog.open(AppointmentSearchDialogComponent, { width: "98vw" });
   }
 }

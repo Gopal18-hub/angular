@@ -12,6 +12,8 @@ import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { Subject, takeUntil } from "rxjs";
 import { BillingService } from "../../billing.service";
+import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
+
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -38,6 +40,11 @@ export class BillPaymentDialogComponent implements OnInit {
   hsplocationId: any = Number(this.cookie.get("HSPLocationId"));
   stationId: any = Number(this.cookie.get("StationId"));
   operatorID: any = Number(this.cookie.get("UserId"));
+
+  // hsplocationId = 67;
+  // stationId = 10475;
+  // operatorID = 9923;
+
   depositcashlimitationdetails: any;
 
   patientInfo: any;
@@ -58,7 +65,7 @@ export class BillPaymentDialogComponent implements OnInit {
       "upi",
     ],
     combopayment: true,
-    totalAmount: this.data.toPaidAmount,
+    totalAmount: this.data.toPaidAmount.toFixed(2),
   };
   duelabel: any;
   billamount: any = 0;
@@ -76,7 +83,8 @@ export class BillPaymentDialogComponent implements OnInit {
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
     private http: HttpService,
-    private billingService: BillingService
+    private billingService: BillingService,
+    private miscService: MiscService
   ) {}
 
   ngOnInit(): void {
@@ -89,8 +97,9 @@ export class BillPaymentDialogComponent implements OnInit {
     this.totaldue = this.due;
     this.patientInfo = {
       patientinfo: {
-        emailId: this.billingService.patientDetailsInfo.peMail,
-        mobileno: this.billingService.patientDetailsInfo.pCellNo,
+        emailId: this.billingService.patientDetailsInfo.peMail == undefined ? this.miscService.patientDetail.mail : this.billingService.patientDetailsInfo.peMail,
+        mobileno: this.billingService.patientDetailsInfo.pCellNo  == undefined ? this.miscService.patientDetail.cellNo : this.billingService.patientDetailsInfo.pCellNo ,
+        panno : this.billingService.patientDetailsInfo.paNno == undefined ?  this.miscService.patientDetail.paNno : this.billingService.patientDetailsInfo.paNno
       },
     };
   }

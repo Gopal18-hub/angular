@@ -35,6 +35,10 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
+  companyCreditItems: any = [];
+
+  billFormGroup: any;
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -44,7 +48,22 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  initProcess(billItems: any, billingServiceRef: any) {
+  setCompanyCreditItems(items: any) {
+    this.companyCreditItems = items;
+  }
+
+  initProcess(
+    billItems: any,
+    billingServiceRef: any,
+    formGroup?: any,
+    question?: any
+  ) {
+    if (formGroup && question) {
+      this.billFormGroup = {
+        form: formGroup,
+        questions: question,
+      };
+    }
     this.billingServiceRef = billingServiceRef;
     billItems.forEach(async (item: any) => {
       await this.serviceBasedCheck(item);
