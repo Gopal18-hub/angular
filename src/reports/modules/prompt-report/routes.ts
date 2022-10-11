@@ -8,7 +8,6 @@ const routes: Routes = [
   {
     path: "prompt-report",
     component: PromptReportComponent,
-    canActivate: [AuthGuardService],
     children: [
       {
         path: ":reportName",
