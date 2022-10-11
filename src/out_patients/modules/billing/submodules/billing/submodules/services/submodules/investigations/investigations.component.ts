@@ -441,7 +441,7 @@ export class InvestigationsComponent implements OnInit {
           this.formGroup.reset();
         } else {
           this.messageDialogService.error(
-            "This plan can not assign for this sex"
+            "This investigation can not assign for this sex"
           );
           this.formGroup.reset();
         }
