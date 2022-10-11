@@ -382,6 +382,14 @@ export class BillComponent implements OnInit, OnDestroy {
     });
 
     this.calculateBillService.billTabActiveLogics(this.formGroup, this);
+    this.billingservice.refreshBillTab
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((event: boolean) => {
+        if (event) {
+          this.refreshForm();
+          this.refreshTable();
+        }
+      });
   }
 
   rowRwmove($event: any) {
@@ -401,6 +409,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
 
     this.refreshTable();
+    this.refreshForm();
   }
 
   refreshTable() {
@@ -419,6 +428,18 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
 
+  refreshForm() {
+    this.calculateBillService.refreshDiscount();
+    this.calculateBillService.calculateDiscount();
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["discAmt"].setValue(
+      this.calculateBillService.totalDiscountAmt
+    );
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
+  }
+
   ngAfterViewInit() {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       if (
@@ -432,11 +453,13 @@ export class BillComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
+        if (value == 3) {
+          this.question[14].readonly = false;
+        } else {
+          this.question[14].readonly = true;
+        }
       });
-    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
-    this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost
-    );
+    this.refreshForm();
     this.formGroup.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -456,7 +479,7 @@ export class BillComponent implements OnInit, OnDestroy {
             item.disc = 0;
             item.discAmount = 0;
             item.totalAmount = item.price * item.qty;
-            item.discountType = 2;
+            item.discountType = 0;
             item.discountReason = 0;
           });
           this.calculateBillService.setDiscountSelectedItems([]);
@@ -699,7 +722,8 @@ export class BillComponent implements OnInit, OnDestroy {
     return (
       this.billingservice.totalCost -
       (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.dipositAmtEdit || 0)
+      (this.formGroup.value.dipositAmtEdit || 0) -
+      (this.formGroup.value.credLimit || 0)
     );
   }
 
