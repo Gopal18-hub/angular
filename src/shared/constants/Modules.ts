@@ -281,7 +281,7 @@ export namespace MaxModules {
               id: 85,
               title: "Happy Family Report",
               defaultPath:
-                "report-multiple/prompt-report/HappyFamilyPlanAllocationReport",
+                "/report-multiple/prompt-report/HappyFamilyPlanAllocationReport",
               globalSearchKey: "global",
               allUsersAllow: false,
             },
@@ -302,14 +302,16 @@ export namespace MaxModules {
             {
               id: 916,
               title: "Expired Patient Report",
-              defaultPath: "report/prompt-report/CRPExpiredPatientDetailReport",
+              defaultPath:
+                "/report/prompt-report/CRPExpiredPatientDetailReport",
               globalSearchKey: "global",
               allUsersAllow: true,
             },
             {
               id: 917,
               title: "Monthly OP Consultation Report",
-              defaultPath: "out-patient-billing/monthly-op-consultation-report",
+              defaultPath:
+                "/out-patient-billing/monthly-op-consultation-report",
               globalSearchKey: "global",
               allUsersAllow: true,
             },
@@ -317,14 +319,14 @@ export namespace MaxModules {
               id: 918,
               title: "Acknowledge Scroll Amount Report",
               defaultPath:
-                "out-patient-billing/acknowledged-scroll-amount-report",
+                "/out-patient-billing/acknowledged-scroll-amount-report",
               globalSearchKey: "global",
               allUsersAllow: true,
             },
             {
               id: 579,
               title: "Expired Deposits",
-              defaultPath: "out-patient-billing/expired-deposits",
+              defaultPath: "/out-patient-billing/expired-deposits",
               globalSearchKey: "global",
               allUsersAllow: false,
             },

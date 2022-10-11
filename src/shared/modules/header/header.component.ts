@@ -102,8 +102,8 @@ export class HeaderComponent implements OnInit {
     }
 
     if (accessToken != "" && accessToken != null && accessToken != undefined) {
-      this.cookieService.delete("accessToken");
-      this.cookieService.set("accessToken", accessToken);
+      this.cookieService.delete("accessToken", "/");
+      this.cookieService.set("accessToken", accessToken, { path: "/" });
     }
   }
 
@@ -141,7 +141,12 @@ export class HeaderComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
         if (result) {
-          window.location.reload();
+          this.router.navigate([], {
+            queryParams: {},
+            relativeTo: this.route,
+          });
+          window.location.href =
+            window.location.origin + window.location.pathname;
         }
       });
   }

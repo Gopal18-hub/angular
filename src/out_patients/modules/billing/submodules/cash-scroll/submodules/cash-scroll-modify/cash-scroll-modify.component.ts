@@ -179,7 +179,7 @@ export class CashScrollModifyComponent implements OnInit {
         },
       },
       refund: {
-        title: "Refund",
+        title: "Refund Amount",
         type: "number",
         style: {
           width: "8rem",
@@ -435,7 +435,7 @@ export class CashScrollModifyComponent implements OnInit {
         },
       },
       refund: {
-        title: "Refund",
+        title: "Refund Amount",
         type: "number",
         style: {
           width: "8rem",

@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 
@@ -86,6 +86,7 @@ export class DetailsComponent implements OnInit {
   async loadGrid(formdata: any): Promise<any> {    
      this.maxid = formdata.maxID;
   }
+
   moment = moment;
   @ViewChild("selectedServices") selectedServicesTable: any;
   public refundreasonlist: getrefundreason[] = [];
@@ -234,11 +235,9 @@ export class DetailsComponent implements OnInit {
 
   billexist: boolean = true;
   apiProcessing: boolean = false;
-  ngOnInit(): void {
-
-    // this.router.navigate(["out-patient-billing/details"]).then(() => {
-    //   window.location.reload;
-    // });
+  result: any = [];
+  ngOnInit(){
+    this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
       this.BDetailFormData.properties,
       {}
@@ -246,10 +245,12 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    console.log(this.maxid);
     if(this.maxid != '' && this.maxid != undefined)
     {
       this.BServiceForm.controls['maxid'].setValue(this.maxid);
-      this.search();
+      this.searchbillapi(this.maxid);
+      console.log(this.result);
       this.maxid = '';
     }
     this.BServiceForm.controls['fromDate'].disable();
@@ -289,6 +290,37 @@ export class DetailsComponent implements OnInit {
           this.search();
         }
       });
+      this.billdetailservice.onload();
+  }
+
+  searchbillapi(maxid: any ='', mobileno: any = '')
+  {
+    console.log(maxid);
+    this.http.get(BillDetailsApiConstants.getsearchopbills(
+      '',
+      maxid?maxid.split('.')[1]:'',
+      maxid?maxid.split('.')[0]:'',
+      mobileno,
+      false,
+      this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      Number(this.cookie.get('HSPLocationId'))
+    ))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (res) => {
+      console.log(res);
+      this.result = res;
+      this.BServiceForm.markAsDirty();
+      if(this.result.length > 1)
+      {
+        this.search();
+      }
+      else if(this.result.length == 1)
+      {
+        this.BServiceForm.controls['billNo'].setValue(this.result[0].billno);
+        this.getpatientbilldetails();
+      }
+    })
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -653,7 +685,9 @@ export class DetailsComponent implements OnInit {
                 this.refundbill == true;
               }
               this.printbill = false;
-              this.router.navigate(["out-patient-billing/details", "services"]);
+              this.router.navigate(["out-patient-billing/details", "services"],
+              {queryParams: {maxid: this.BServiceForm.controls['maxid'].value},
+              queryParamsHandling: 'merge'});
             }
           }
         }),
@@ -664,7 +698,7 @@ export class DetailsComponent implements OnInit {
   billFormfill() {
     this.billexist = false;
     this.BServiceForm.markAsDirty();
-    this.BServiceForm.controls['billNo'].setValue(this.billno);
+    this.BServiceForm.controls['billNo'].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno);
     this.BServiceForm.controls["maxid"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
     );

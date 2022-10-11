@@ -122,6 +122,7 @@ export class SearchService {
         maxid: {
           type: "string",
           title: "Max ID",
+          defaultValue: this.cookie.get("LocationIACode") + ".",
         },
         phone: {
           type: "string",
