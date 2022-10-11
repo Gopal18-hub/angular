@@ -231,30 +231,32 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (this.billingServiceRef.todayPatientBirthday) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Today is Patient Birthday, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+    if (!this.billingServiceRef.company) {
+      if (this.billingServiceRef.todayPatientBirthday) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Today is Patient Birthday, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
-      }
-    } else if (this.seniorCitizen) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Patient is senior citizen, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+      } else if (this.seniorCitizen) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Patient is senior citizen, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
       }
     }
