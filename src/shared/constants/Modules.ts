@@ -365,7 +365,7 @@ export namespace MaxModules {
             {
               id: 67,
               title: "Visit Report",
-              defaultPath: "",
+              defaultPath: "/report/prompt-report/VisitReport",
               globalSearchKey: "global",
               allUsersAllow: false,
               locationSpecific: [
