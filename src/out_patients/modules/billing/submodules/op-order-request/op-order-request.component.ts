@@ -31,6 +31,7 @@ import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { SimilarPatientDialog } from "../billing/billing.component";
 import { Router } from "@angular/router";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-op-order-request",
   templateUrl: "./op-order-request.component.html",
@@ -84,6 +85,8 @@ export class OpOrderRequestComponent implements OnInit {
 
   apiProcessing: boolean = false;
 
+  expiredPatient: boolean = false;
+
   moment = moment;
   noteRemarkdb: any;
   vipdb: any;
@@ -93,6 +96,7 @@ export class OpOrderRequestComponent implements OnInit {
   bplcardNo: any;
   bplCardAddress: any;
   patientDetailsforicon!: PatientDetails;
+  // messageDialogService: any;
 
   constructor(
     public matDialog: MatDialog,
@@ -105,7 +109,8 @@ export class OpOrderRequestComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     private patientservice: PatientService,
-    private opOrderRequestService: OpOrderRequestService
+    private opOrderRequestService: OpOrderRequestService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -174,46 +179,76 @@ export class OpOrderRequestComponent implements OnInit {
         phone: this.formGroup.value.mobile,
       })
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        if (res.length == 0) {
-        } else {
-          if (res.length == 1) {
-            const maxID = res[0].maxid;
-            this.formGroup.controls["maxid"].setValue(maxID);
-            this.apiProcessing = true;
-            this.patient = false;
-            this.getPatientDetailsByMaxId();
+      .subscribe(
+        (res: any) => {
+          if (res.length == 0) {
           } else {
-            const similarSoundDialogref = this.matDialog.open(
-              SimilarPatientDialog,
-              {
-                width: "60vw",
-                height: "62vh",
-                data: {
-                  searchResults: res,
-                },
-              }
-            );
-            similarSoundDialogref
-              .afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((result) => {
-                if (result) {
-                  let maxID = result.data["added"][0].maxid;
-                  this.formGroup.controls["maxid"].setValue(maxID);
-                  this.apiProcessing = true;
-                  this.patient = false;
-                  this.getPatientDetailsByMaxId();
+            if (res.length == 1) {
+              const maxID = res[0].maxid;
+              this.formGroup.controls["maxid"].setValue(maxID);
+              this.apiProcessing = true;
+              this.patient = false;
+              this.getPatientDetailsByMaxId();
+            } else {
+              const similarSoundDialogref = this.matDialog.open(
+                SimilarPatientDialog,
+                {
+                  width: "60vw",
+                  height: "62vh",
+                  data: {
+                    searchResults: res,
+                  },
                 }
-              });
+              );
+              similarSoundDialogref
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result) => {
+                  if (result) {
+                    let maxID = result.data["added"][0].maxid;
+                    this.formGroup.controls["maxid"].setValue(maxID);
+                    this.apiProcessing = true;
+                    this.patient = false;
+                    this.getPatientDetailsByMaxId();
+                  }
+                });
+            }
+          }
+          this.apiProcessing = false;
+          this.patient = false;
+        },
+        (error: any) => {
+          console.log(error);
+          if (error.status == 400) {
+            this.apiProcessing = false;
+            this.messageDialogService.error(
+              "There is an error occured while processing your transaction, check with administrator"
+            );
           }
         }
-        this.apiProcessing = false;
-        this.patient = false;
-      });
+      );
   }
 
-  getPatientDetailsByMaxId() {
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res == null) {
+      return;
+    }
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+  async getPatientDetailsByMaxId() {
     if (!this.formGroup.value.maxid) {
       this.apiProcessing = false;
       this.patient = false;
@@ -223,6 +258,14 @@ export class OpOrderRequestComponent implements OnInit {
 
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        this.expiredPatient = true;
+        const dialogRef = this.messageDialogService.error(
+          "Patient is an Expired Patient!"
+        );
+        await dialogRef.afterClosed().toPromise();
+      }
       this.http
         .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
         .pipe(takeUntil(this._destroying$))
@@ -303,6 +346,7 @@ export class OpOrderRequestComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.router.navigate(["out-patient-billing/op-order-request/services"]);
   }
 
   getPatientIcon() {
@@ -372,18 +416,18 @@ export class OpOrderRequestComponent implements OnInit {
     this.country = "";
     this.gender = "";
     this.age = "";
-    this.opOrderRequestService.clear();
+    this.expiredPatient = false;
 
     this.formGroup.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
     this.questions[0].elementRef.focus();
-    this.router
-      .navigate(["out-patient-billing/op-order-request/services"])
-      .then(() => {
-        window.location.reload;
-      });
+    this.router.navigate(["out-patient-billing/op-order-request"]).then(() => {
+      window.location.reload;
+    });
     this.opOrderRequestService.setActiveLink(false);
     this.activeLink = this.links[0];
+    console.log(this.opOrderRequestService.investigationFormGroup);
+    this.opOrderRequestService.clear();
   }
 }
