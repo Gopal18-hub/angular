@@ -106,7 +106,7 @@
         </div>
   
       
-        <div [class.isDisabled]="!patient" class="h-full">
+        <div [class.isDisabled]="!patient || expiredPatient" class="h-full">
          
           <div class="mt-2">
             <nav mat-tab-nav-bar>

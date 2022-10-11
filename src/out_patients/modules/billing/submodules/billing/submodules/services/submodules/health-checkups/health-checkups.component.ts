@@ -135,7 +135,7 @@ export class HealthCheckupsComponent implements OnInit {
       }
     );
     dialogPopup.afterClosed().subscribe((res1: any) => {
-      if (res1.itemId) {
+      if (res1 && res1.itemId) {
         this.doctorsList = [];
         res1.data.forEach((doctor: any) => {
           if (doctor.doctorName) {
