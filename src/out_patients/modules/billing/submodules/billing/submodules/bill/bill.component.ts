@@ -107,9 +107,9 @@ export class BillComponent implements OnInit, OnDestroy {
         required: false,
       },
       coPay: {
-        type: "currency",
+        type: "number",
         required: false,
-        defaultValue: "0.00",
+        defaultValue: "0",
         readonly: true,
       },
       credLimit: {
@@ -475,12 +475,15 @@ export class BillComponent implements OnInit, OnDestroy {
         this.billingservice.setBilltype(value);
         if (value == 3) {
           this.question[14].readonly = false;
+          this.question[13].readonly = false;
         } else {
           this.question[14].readonly = true;
+          this.question[13].readonly = true;
         }
         this.billTypeChange(value);
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
+        this.formGroup.controls["coPay"].setValue(0);
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
@@ -558,11 +561,15 @@ export class BillComponent implements OnInit, OnDestroy {
           this.billingservice.totalCost -
           (this.formGroup.value.discAmt || 0) -
           (this.formGroup.value.dipositAmtEdit || 0);
+        let tempAmount = this.formGroup.value.credLimit;
+        if (this.formGroup.value.coPay > 0) {
+          tempAmount =
+            this.formGroup.value.credLimit -
+            (this.formGroup.value.credLimit * this.formGroup.value.coPay) / 100;
+        }
 
-        if (parseFloat(this.formGroup.value.credLimit) <= amountToBePaid) {
-          this.formGroup.controls["amtPayByComp"].setValue(
-            this.formGroup.value.credLimit
-          );
+        if (parseFloat(tempAmount) <= amountToBePaid) {
+          this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
         } else {
           this.formGroup.controls["amtPayByComp"].setValue(amountToBePaid);
         }
@@ -769,13 +776,10 @@ export class BillComponent implements OnInit, OnDestroy {
     const temp =
       this.billingservice.totalCost -
       (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.dipositAmtEdit || 0);
+      (this.formGroup.value.dipositAmtEdit || 0) -
+      (this.formGroup.value.amtPayByComp || 0);
 
-    if (this.formGroup.value.credLimit > temp) {
-      return 0;
-    } else {
-      return temp - this.formGroup.value.credLimit;
-    }
+    return temp;
   }
 
   depositdetails() {
