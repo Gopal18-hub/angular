@@ -43,7 +43,7 @@ export class BillingService {
   totalCost = 0;
 
   company: number = 0;
-  billtype: string = "cash";
+  billtype: number = 1;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -132,6 +132,10 @@ export class BillingService {
     this.makeBillPayload = JSON.parse(
       JSON.stringify(BillingStaticConstants.makeBillPayload)
     );
+    this.companyData = [];
+    this.corporateData = [];
+    this.selectedcompanydetails = [];
+    this.selectedcorporatedetails = [];
     console.log(this.makeBillPayload);
   }
 
@@ -342,7 +346,7 @@ export class BillingService {
     this.corporateData = data;
   }
 
-  setBilltype(billtype: string) {
+  setBilltype(billtype: number) {
     this.billtype = billtype;
   }
 
@@ -486,6 +490,7 @@ export class BillingService {
         specialisationId: data.specialization || 0,
         hcuId: 0,
         clinicId: data.clinics || 0,
+        ConsultationTypeId: data.billItem.priorityId,
       });
     }
 
@@ -781,6 +786,19 @@ export class BillingService {
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         recNumber: "",
       });
+
+      if (
+        this.calculateBillService.discountSelectedItems.length > 0 &&
+        parseFloat(
+          this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+        ) > 0
+      ) {
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.disAuthorised =
+          this.calculateBillService.discountForm.value.authorise.title;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.authorisedid =
+          this.calculateBillService.discountForm.value.authorise.value;
+      }
+
       if (toBePaid > collectedAmount) {
         const lessAmountWarningDialog = this.messageDialogService.confirm(
           "",
@@ -1056,23 +1074,5 @@ export class BillingService {
   setReferralDoctor(doctor: any) {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
-  }
-
-  async getServicesForCoupon(CouponNo: any, locationId: any) {
-    const res = await this.http
-      .get(BillingApiConstants.getServicesForCoupon(CouponNo, locationId))
-      .toPromise();
-    console.log(res);
-    if (res.length > 0) {
-      console.log(res[0].id);
-      if ((res[0].id = 0)) {
-        //coupon already used message
-      } else {
-        console.log(this.consultationItems);
-        console.log(this.InvestigationItems);
-      }
-    } else {
-      //Invalid Coupon
-    }
   }
 }
