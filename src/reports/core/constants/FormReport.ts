@@ -1,8 +1,10 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
 import * as moment from "moment";
+import { Reportconstants } from "../../../reports/core/constants/reportconstant";
 
 export namespace FormReport {
+  // mindate : Date = new Date(Date.now()).setMonth(new Date(Date.now()).getMonth() - 1);
   export const equipmentSchedule = {
     reportName: "Equipment Schedule",
     filterForm: {
@@ -280,10 +282,10 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         DocID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
-          defaultValue: "0",
+          //defaultValue: "0",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -308,11 +310,14 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          minimum: Reportconstants.minimumDate["oneMonth"],
+          maximum: new Date(),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          maximum: new Date(),
         },
       },
     },
@@ -469,7 +474,8 @@ export namespace FormReport {
             { title: "PlanName", value: "PlanName" },
             { title: "Membership", value: "Membership" },
           ],
-          //defaultValue: "Transaction Date",
+
+          defaultValue: "PlanName",
           conditions: [
             {
               expression: "self == 'PlanName'",
@@ -545,11 +551,11 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "id",
             },
           },
 
-          defaultValue: "0",
+          defaultValue: "membershipno",
         },
       },
     },
