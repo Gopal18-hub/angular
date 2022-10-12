@@ -4,7 +4,6 @@ import * as moment from "moment";
 import { Reportconstants } from "../../../reports/core/constants/reportconstant";
 
 export namespace FormReport {
-  // mindate : Date = new Date(Date.now()).setMonth(new Date(Date.now()).getMonth() - 1);
   export const equipmentSchedule = {
     reportName: "Equipment Schedule",
     filterForm: {
@@ -318,6 +317,7 @@ export namespace FormReport {
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
           maximum: new Date(),
+          minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
