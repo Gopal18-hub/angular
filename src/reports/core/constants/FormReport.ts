@@ -342,7 +342,7 @@ export namespace FormReport {
   };
 
   export const DoctorSheduleReportBySpecilialisation = {
-    reportName: "Specilialisation",
+    reportName: "Specialisation",
     filterForm: {
       title: "",
       type: "object",
@@ -350,7 +350,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "dropdown",
-          placeholder: "---Specilialisation---",
+          placeholder: "---Specialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
