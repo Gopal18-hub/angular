@@ -254,4 +254,7 @@ export namespace BillingApiConstants {
     LocationID: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getisopbillingexists/${IaCodeDon}/${RegNoDon}/${sid}/${DoctorID}/${LocationID}`;
+
+  export const getOPReasonsAndAuthorisedBy = (locationId: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getopreasonsandauthorizedby/${locationId}`;
 }

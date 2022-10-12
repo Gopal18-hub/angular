@@ -716,7 +716,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ceditLimit: 0,
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
-        toPaidAmount: this.formGroup.value.amtPayByPatient,
+        toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
       },
     });
 
