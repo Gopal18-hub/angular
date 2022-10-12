@@ -1327,7 +1327,17 @@ export namespace FormReport {
           defaultValue: "",
         },
         Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
           title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
         },
         Referal: {
           type: "dropdown",
@@ -1407,7 +1417,17 @@ export namespace FormReport {
           title: "SSN",
         },
         Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
           title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
         },
         Referal: {
           type: "dropdown",
@@ -1466,7 +1486,7 @@ export namespace FormReport {
     reportName: "Visit Report",
     childrens: [{ ...DetailedReport }, { ...SummaryReport }],
   };
-  
+
   export const MiscellaneousReportMIS = {
     reportName: "Miscellaneous Billing Report",
     filterForm: {
@@ -1485,14 +1505,9 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
 
-
         ChkAllLocation: {
           type: "checkbox",
-          options: [
-            { title: "Location", value: 1 },
-          
-          ],
-         
+          options: [{ title: "Location", value: 1 }],
         },
       },
     },
