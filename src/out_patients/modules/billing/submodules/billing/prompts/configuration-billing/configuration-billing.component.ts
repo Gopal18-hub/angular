@@ -96,6 +96,7 @@ export class ConfigurationBillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.companyservice = this.data.serviceconfiguration;
+    this.patientservice = this.data.serviceconfiguration;
     this.maxid =
       this.data.patientdetails.iacode +
       "." +
