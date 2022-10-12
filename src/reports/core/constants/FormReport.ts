@@ -1298,4 +1298,248 @@ export namespace FormReport {
     layout: "single",
     resultType: "table",
   };
+  export const DetailedReport = {
+    reportName: "Detailed Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      //format: "YYYY/MM/dd",
+      defaultValue: moment().format("DD/MM/YYYY"),
+      properties: {
+        dtpStartDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        dtpEndDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        MaxID: {
+          type: "",
+          title: "MaxID",
+          defaultValue: "",
+        },
+        SSN: {
+          type: "",
+          title: "SSN",
+          defaultValue: "",
+        },
+        Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        Referal: {
+          type: "dropdown",
+          placeholder: "--- Select---",
+          title: "Referal",
+          optionsModelConfig: {
+            uri: `${environment.BillingApiUrl}api/outpatientbilling/getreferraldoctor/1`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        Doctor: {
+          type: "dropdown",
+          placeholder: "--- Select ---",
+          title: "Doctor",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        SetOrder: {
+          title: "SetOrder",
+        },
+      },
+    },
+    form: {
+      layout: {},
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Detailed Report",
+            reportEntity: "DetailedReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+
+    layout: "single",
+    resultType: "table",
+  };
+
+  export const SummaryReport = {
+    reportName: "Summary Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "YYYY/MM/dd",
+      properties: {
+        dtpStartDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        dtpEndDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        MaxID: {
+          type: "String",
+          title: "MaxID",
+        },
+        SSN: {
+          type: "String",
+          title: "SSN",
+        },
+        Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        Referal: {
+          type: "dropdown",
+          placeholder: "--- Select---",
+          title: "Referal",
+          optionsModelConfig: {
+            uri: `${environment.BillingApiUrl}api/outpatientbilling/getreferraldoctor/1`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        Doctor: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Doctor",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        SetOrder: {
+          title: "SetOrder",
+        },
+      },
+    },
+    form: {
+      layout: {},
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Summary Report",
+            reportEntity: "SummaryReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+
+    layout: "single",
+    resultType: "table",
+  };
+
+  export const VisitReport = {
+    layout: "tabs",
+    reportName: "Visit Report",
+    childrens: [{ ...DetailedReport }, { ...SummaryReport }],
+  };
+
+  export const MiscellaneousReportMIS = {
+    reportName: "Miscellaneous Billing Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      defaultValue: moment().format("DD/MM/YYYY"),
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+
+        ChkAllLocation: {
+          type: "checkbox",
+          options: [{ title: "Location", value: 1 }],
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Miscellaneous Billing Report",
+            reportEntity: "MiscellaneousReportMIS",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
+  };
 }

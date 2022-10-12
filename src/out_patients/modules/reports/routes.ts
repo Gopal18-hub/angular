@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: "report",
     component: ReportsComponent,
-    canActivate: [AuthGuardService],
+
     loadChildren: () =>
       import("../../../reports/modules/prompt-report").then(
         (m) => m.PromptReportModule
@@ -19,12 +19,11 @@ const routes: Routes = [
   {
     path: "report/Acknowledgement-Scroll-Amount-Report",
     component: AcknowledgedScrollAmountReportComponent,
-    canActivate: [AuthGuardService],
   },
   {
     path: "report-multiple",
     component: ReportsComponent,
-    canActivate: [AuthGuardService],
+
     loadChildren: () =>
       import("../../../reports/modules/prompt-report").then(
         (m) => m.PromptReportModule

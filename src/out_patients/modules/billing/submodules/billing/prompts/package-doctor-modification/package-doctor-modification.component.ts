@@ -122,6 +122,7 @@ export class PackageDoctorModificationComponent implements OnInit {
   }
 
   close() {
+    console.log(this.tableRows.tableForm);
     this.dialogRef.close({
       data: this.itemsData,
       itemId: this.data.orderSet.itemid,

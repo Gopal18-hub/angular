@@ -43,7 +43,7 @@ export class BillingService {
   totalCost = 0;
 
   company: number = 0;
-  billtype: string = "cash";
+  billtype: number = 1;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -80,6 +80,8 @@ export class BillingService {
 
   maxIdEventFinished = new Subject<any>();
 
+  refreshBillTab = new Subject<any>();
+
   billingFormGroup: any = { form: "", questions: [] };
 
   constructor(
@@ -96,8 +98,13 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill() {
-    this.calculateBillService.initProcess(this.billItems, this);
+  calculateBill(formGroup: any, question: any) {
+    this.calculateBillService.initProcess(
+      this.billItems,
+      this,
+      formGroup,
+      question
+    );
   }
 
   changeBillTabStatus(status: boolean) {
@@ -281,6 +288,7 @@ export class BillingService {
           this.updateServiceItemPrice(this.billItems[index]);
         });
         this.calculateTotalAmount();
+        this.refreshBillTab.next(true);
       });
   }
 
@@ -293,6 +301,10 @@ export class BillingService {
     this.company = companyid > 0 ? companyid : 0;
     if (this.billItems.length > 0) {
       this.refreshPrice();
+      this.calculateBillService.setCompanyCreditItems([]);
+      this.calculateBillService.billFormGroup.form.controls[
+        "credLimit"
+      ].setValue("0.00");
     }
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
@@ -346,7 +358,7 @@ export class BillingService {
     this.corporateData = data;
   }
 
-  setBilltype(billtype: string) {
+  setBilltype(billtype: number) {
     this.billtype = billtype;
   }
 
