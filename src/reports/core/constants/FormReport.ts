@@ -354,7 +354,7 @@ export namespace FormReport {
       format: "YYYY/MM/dd",
       properties: {
         Cmb_Special: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Specialisation---",
           title: "",
           defaultValue: "0",
