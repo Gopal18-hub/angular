@@ -80,6 +80,8 @@ export class BillingService {
 
   maxIdEventFinished = new Subject<any>();
 
+  refreshBillTab = new Subject<any>();
+
   billingFormGroup: any = { form: "", questions: [] };
 
   constructor(
@@ -286,6 +288,7 @@ export class BillingService {
           this.updateServiceItemPrice(this.billItems[index]);
         });
         this.calculateTotalAmount();
+        this.refreshBillTab.next(true);
       });
   }
 
@@ -298,6 +301,10 @@ export class BillingService {
     this.company = companyid > 0 ? companyid : 0;
     if (this.billItems.length > 0) {
       this.refreshPrice();
+      this.calculateBillService.setCompanyCreditItems([]);
+      this.calculateBillService.billFormGroup.form.controls[
+        "credLimit"
+      ].setValue("0.00");
     }
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];

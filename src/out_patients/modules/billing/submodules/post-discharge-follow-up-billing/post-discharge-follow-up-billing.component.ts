@@ -63,11 +63,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       company: {
         type: "autocomplete",
         placeholder: "--Select--",
+        readonly: true,
         options: [],
       },
       corporate: {
         type: "autocomplete",
         placeholder: "--Select--",
+        readonly: true,
         options: [],
       },
       narration: {
@@ -118,7 +120,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.navigate([
-      "/out-patient-billing/post-discharge-follow-up-billing/",
+      "/out-patient-billing/post-discharge-follow-up-billing/"
     ]);
     this.getAllCompany();
     this.getAllCorporate();
@@ -133,15 +135,15 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.currentDate = this.datepipe.transform(new Date(), "dd-MM-YYYY");
     this.currentTime = new Date().toLocaleTimeString("en-US", { hour12: true });
     this.currentTime = this.datepipe.transform(new Date(), "HH:MM:ss a");
-    this.route.queryParams.subscribe((params: any) => {
-      if (params.maxId) {
-        this.formGroup.controls["maxid"].setValue(params.maxId);
-        this.apiProcessing = true;
-        this.patient = false;
-        this.getPatientDetailsByMaxId();
-        this.formGroup.markAsDirty();
-      }
-    });
+    // this.route.queryParams.subscribe((params: any) => {
+    //   if (params.maxId) {
+    //     this.formGroup.controls["maxid"].setValue(params.maxId);
+    //     this.apiProcessing = true;
+    //     this.patient = false;
+    //     this.getPatientDetailsByMaxId();
+    //     this.formGroup.markAsDirty();
+    //   }
+    // });
   }
   iomMessage: any;
   ngAfterViewInit(): void {
@@ -197,8 +199,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           async (resultData: Registrationdetails) => {
+            console.log(resultData);
             if (resultData) {
-              this.router.navigate([], {
+              this.router.navigate(['services'], {
                 queryParams: { maxId: this.formGroup.value.maxid },
                 relativeTo: this.route,
                 queryParamsHandling: "merge",
@@ -346,6 +349,8 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
+    this.formGroup.controls['company'].setValue(pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid);
+    this.formGroup.controls['corporate'].setValue(pDetails.dsPersonalDetails.dtPersonalDetails1[0].corporateid);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + " " + patientDetails.ageTypeName;
@@ -455,11 +460,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.country = "";
     this.dob = "";
     this.categoryIcons = [];
-    // this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
-    this.router.navigate(["services"], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
+    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
+    // this.router.navigate(["services"], {
+    //   queryParams: {},
+    //   relativeTo: this.route,
+    // });
     this.questions[0].elementRef.focus();
     this.service.clear();
     this.questions[0].readonly = false;
