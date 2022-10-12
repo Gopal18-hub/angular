@@ -1,7 +1,7 @@
 export namespace Reportconstants {
+  var d = new Date();
+  //d.setMonth(d.getMonth() - 3)
   export const minimumDate = {
-    oneMonth: new Date(Date.now()).setMonth(
-      new Date(Date.now()).getMonth() - 1
-    ),
+    oneMonth: new Date(d.setMonth(d.getMonth() - 1)),
   };
 }
