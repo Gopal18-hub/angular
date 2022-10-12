@@ -342,7 +342,7 @@ export namespace FormReport {
   };
 
   export const DoctorSheduleReportBySpecilialisation = {
-    reportName: "Specilialisation",
+    reportName: "Specialisation",
     filterForm: {
       title: "",
       type: "object",
@@ -350,7 +350,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "dropdown",
-          placeholder: "---Specilialisation---",
+          placeholder: "---Specialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -1317,14 +1317,15 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         MaxID: {
-          type: "",
+          type: "string",
           title: "MaxID",
           defaultValue: "",
         },
         SSN: {
-          type: "",
+          type: "string",
           title: "SSN",
           defaultValue: "",
+          readonly: true,
         },
         Clinic: {
           type: "dropdown",
@@ -1409,12 +1410,15 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         MaxID: {
-          type: "String",
+          type: "string",
           title: "MaxID",
+          defaultValue: "",
         },
         SSN: {
-          type: "String",
+          type: "string",
           title: "SSN",
+          defaultValue: "",
+          readonly: true,
         },
         Clinic: {
           type: "dropdown",
