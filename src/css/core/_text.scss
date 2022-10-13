@@ -2,7 +2,7 @@
   .#{$prefix-with-bname}text {
     @each $value in (center, left, right, justify) { 
       &-#{$value} {
-        text-align: $value;
+        text-align: $value !important;
       }
     }
 

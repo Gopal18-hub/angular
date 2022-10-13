@@ -1,6 +1,7 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
 import * as moment from "moment";
+import { Reportconstants } from "../../../reports/core/constants/reportconstant";
 
 export namespace FormReport {
   export const equipmentSchedule = {
@@ -280,10 +281,10 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         DocID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
-          defaultValue: "0",
+          //defaultValue: "0",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -308,11 +309,15 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          minimum: Reportconstants.minimumDate["oneMonth"],
+          maximum: new Date(),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          maximum: new Date(),
+          minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
@@ -342,15 +347,15 @@ export namespace FormReport {
   };
 
   export const DoctorSheduleReportBySpecilialisation = {
-    reportName: "Specilialisation",
+    reportName: "Specialisation",
     filterForm: {
       title: "",
       type: "object",
       format: "YYYY/MM/dd",
       properties: {
         Cmb_Special: {
-          type: "dropdown",
-          placeholder: "---Specilialisation---",
+          type: "autocomplete",
+          placeholder: "---Specialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -469,7 +474,8 @@ export namespace FormReport {
             { title: "PlanName", value: "PlanName" },
             { title: "Membership", value: "Membership" },
           ],
-          //defaultValue: "Transaction Date",
+
+          defaultValue: "PlanName",
           conditions: [
             {
               expression: "self == 'PlanName'",
@@ -545,11 +551,11 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "membershipno",
+              value: "id",
             },
           },
 
-          defaultValue: "0",
+          defaultValue: "membershipno",
         },
       },
     },
@@ -1317,14 +1323,15 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         MaxID: {
-          type: "",
+          type: "string",
           title: "MaxID",
           defaultValue: "",
         },
         SSN: {
-          type: "",
+          type: "string",
           title: "SSN",
           defaultValue: "",
+          readonly: true,
         },
         Clinic: {
           type: "dropdown",
@@ -1409,12 +1416,15 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         MaxID: {
-          type: "String",
+          type: "string",
           title: "MaxID",
+          defaultValue: "",
         },
         SSN: {
-          type: "String",
+          type: "string",
           title: "SSN",
+          defaultValue: "",
+          readonly: true,
         },
         Clinic: {
           type: "dropdown",
