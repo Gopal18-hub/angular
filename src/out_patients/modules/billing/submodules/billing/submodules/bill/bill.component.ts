@@ -451,6 +451,8 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       this.data = [...this.data];
     } else if (value == 3) {
+      this.question[14].readonly = false;
+      this.question[13].readonly = false;
       let exceptions = this.calculateBillService.companyNonCreditItems.map(
         (cnci: any) => cnci.itemId
       );
@@ -528,9 +530,8 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["discAmt"].setValue(
             this.calculateBillService.totalDiscountAmt
           );
-          this.formGroup.controls["amtPayByPatient"].setValue(
-            this.getAmountPayByPatient()
-          );
+          this.billTypeChange(this.formGroup.value.paymentMode);
+          this.applyCreditLimit();
           this.formGroup.controls["coupon"].setValue("");
           this.formGroup.controls["compDisc"].setValue("");
           this.formGroup.controls["patientDisc"].setValue("");
@@ -569,39 +570,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        let cashAmount = 0;
-        let cashDiscount = 0;
-        let creditAmount = 0;
-        let creditDiscount = 0;
-        this.billingservice.billItems.forEach((bItem: any) => {
-          if (parseFloat(bItem.cash) > 0) {
-            cashAmount += parseFloat(bItem.cash);
-            cashDiscount += parseFloat(bItem.discAmount);
-          } else if (parseFloat(bItem.credit) > 0) {
-            creditAmount += parseFloat(bItem.credit);
-            creditDiscount += parseFloat(bItem.discAmount);
-          }
-        });
-        const amtPayByComp = creditAmount - creditDiscount;
-        // const amountToBePaid =
-        //   this.billingservice.totalCost -
-        //   (this.formGroup.value.discAmt || 0) -
-        //   (this.formGroup.value.dipositAmtEdit || 0);
-        let tempAmount = this.formGroup.value.credLimit;
-        if (this.formGroup.value.coPay > 0) {
-          tempAmount =
-            this.formGroup.value.credLimit -
-            (this.formGroup.value.credLimit * this.formGroup.value.coPay) / 100;
-        }
-
-        if (parseFloat(tempAmount) <= amtPayByComp) {
-          this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
-        } else {
-          this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
-        }
-        this.formGroup.controls["amtPayByPatient"].setValue(
-          this.getAmountPayByPatient()
-        );
+        this.applyCreditLimit();
       }
     });
 
@@ -609,7 +578,6 @@ export class BillComponent implements OnInit, OnDestroy {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-
 
     this.question[12].elementRef.addEventListener(
       "blur",
@@ -622,6 +590,43 @@ export class BillComponent implements OnInit, OnDestroy {
     //     this.validateCoupon();
     //   }
     // });
+  }
+
+  applyCreditLimit() {
+    let cashAmount = 0;
+    let cashDiscount = 0;
+    let creditAmount = 0;
+    let creditDiscount = 0;
+    this.billingservice.billItems.forEach((bItem: any) => {
+      if (parseFloat(bItem.cash) > 0) {
+        cashAmount += parseFloat(bItem.cash);
+        cashDiscount += parseFloat(bItem.discAmount);
+      } else if (parseFloat(bItem.credit) > 0) {
+        creditAmount += parseFloat(bItem.credit);
+        creditDiscount += parseFloat(bItem.discAmount);
+      }
+    });
+    const amtPayByComp = creditAmount;
+    // const amountToBePaid =
+    //   this.billingservice.totalCost -
+    //   (this.formGroup.value.discAmt || 0) -
+    //   (this.formGroup.value.dipositAmtEdit || 0);
+    let tempAmount = this.formGroup.value.credLimit;
+
+    if (parseFloat(tempAmount) <= amtPayByComp) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
+    }
+    if (this.formGroup.value.coPay > 0) {
+      tempAmount =
+        this.formGroup.value.amtPayByComp -
+        (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    }
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
   }
 
   discountreason() {
@@ -819,12 +824,9 @@ export class BillComponent implements OnInit, OnDestroy {
         creditDiscount += parseFloat(bItem.discAmount);
       }
     });
-    console.log(cashAmount);
-    console.log(creditAmount);
     const temp =
       cashAmount +
       creditAmount -
-      (cashDiscount + creditDiscount) -
       (this.formGroup.value.dipositAmtEdit || 0) -
       (this.formGroup.value.amtPayByComp || 0);
 
@@ -915,7 +917,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
   async validateCoupon() {
     if (this.formGroup.value.coupon) {
-      if(this.formGroup.value.coupon.lenght >4){
+      if (this.formGroup.value.coupon.lenght > 4) {
         if (this.billingservice.company > 0) {
           // popup to show MECP only for CASH
           const CouponErrorRef = this.messageDialogService.error(
@@ -941,16 +943,14 @@ export class BillComponent implements OnInit, OnDestroy {
             return;
           }
         }
+      } else if (this.formGroup.value.coupon.lenght > 3) {
+        // validation to show coupon required
+        const CouponErrorRef = this.messageDialogService.error(
+          "Please Enter Proper Coupon"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        return;
       }
-      else  if(this.formGroup.value.coupon.lenght >3){
-         // validation to show coupon required
-      const CouponErrorRef = this.messageDialogService.error(
-        "Please Enter Proper Coupon"
-      );
-      await CouponErrorRef.afterClosed().toPromise();
-      return;
-      }
-     
     } else {
       // // validation to show coupon required
       // const CouponErrorRef = this.messageDialogService.error(
