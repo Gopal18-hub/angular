@@ -18,9 +18,9 @@ import {
   takeUntil,
   Subject,
 } from "rxjs";
-import { ServicetaxPopupComponent } from "./servicetax-popup/servicetax-popup.component";
 import { SaveandDeleteOpOrderRequest } from "@core/models/saveanddeleteoporder.Model";
 import { Router } from "@angular/router";
+import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -48,6 +48,8 @@ export class OrderProcedureOtherComponent implements OnInit {
   questions: any;
   flag = 0;
   reqItemDetail: string = "";
+  otherserviceId = 0;
+  saveResponsedata: any;
   locationid = Number(this.cookie.get("HSPLocationId"));
   private readonly _destroying$ = new Subject<void>();
 
@@ -120,7 +122,8 @@ export class OrderProcedureOtherComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    public opOrderrequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
@@ -131,10 +134,14 @@ export class OrderProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.ProcedureItems;
+    this.opOrderrequestService.setProcedureFormGroup(
+      this.formGroup,
+      this.questions
+    );
+    this.data = this.opOrderrequestService.procedureItems;
     this.getOtherService();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.opOrderrequestService.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
       }
@@ -142,26 +149,31 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
-    this.billingService.ProcedureItems.splice($event.index, 1);
-    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
-      (item: any, index: number) => {
-        item["sno"] = index + 1;
-        return item;
-      }
-    );
-    this.data = [...this.billingService.ProcedureItems];
-    this.billingService.calculateTotalAmount();
+    this.opOrderrequestService.procedureItems.splice($event.index, 1);
+    this.opOrderrequestService.procedureItems =
+      this.opOrderrequestService.procedureItems.map(
+        (item: any, index: number) => {
+          item["sno"] = index + 1;
+          return item;
+        }
+      );
+    this.data = [...this.opOrderrequestService.procedureItems];
   }
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "qty") {
-        this.update(res.data.element.sno);
-      } else if (res.data.col == "specialisation") {
+      if (res.data.col == "specialisation") {
+        this.opOrderrequestService.procedureItems[
+          res.data.index
+        ].specialisationId = res.$event.value;
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
+      } else if (res.data.col == "doctorName") {
+        this.opOrderrequestService.procedureItems[res.data.index].doctorId =
+          res.$event.value;
+        console.log(this.config.columnsInfo.doctorName.value);
       }
     });
     this.formGroup.controls["procedure"].valueChanges
@@ -182,6 +194,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
+                  // 67,
                   this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
@@ -225,7 +238,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           false,
           clinicSpecializationId,
           this.locationid
-          // 67
+          //67
           // Number(this.cookie.get("HSPLocationId"))
         )
       )
@@ -266,7 +279,6 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getotherservicebilling(
           this.locationid,
           // 67,
-          // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
         )
@@ -298,23 +310,8 @@ export class OrderProcedureOtherComponent implements OnInit {
       );
   }
 
-  update(sno = 0) {
-    if (sno > 0) {
-      const index = this.billingService.ProcedureItems.findIndex(
-        (c: any) => c.sno == sno
-      );
-      if (index > -1) {
-        this.billingService.ProcedureItems[index].price =
-          this.billingService.ProcedureItems[index].unitPrice *
-          this.billingService.ProcedureItems[index].qty;
-        this.data = [...this.billingService.ProcedureItems];
-      }
-    }
-  }
-  otherserviceId = 0;
   add(priorityId = 1) {
     if (
-      // this.formGroup.value.otherService.value == undefined ||
       this.formGroup.value.otherService == null ||
       this.formGroup.value.otherService == ""
     ) {
@@ -323,44 +320,56 @@ export class OrderProcedureOtherComponent implements OnInit {
       this.otherserviceId = this.formGroup.value.otherService.value;
     }
     this.flag = 0;
-    let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
-      return item.itemid == this.formGroup.value.procedure.value;
-    });
+    let exist = this.opOrderrequestService.procedureItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.procedure.value;
+      }
+    );
     if (exist > -1) {
       this.messageDialogService.error(
         "Procedure already added to the service list"
       );
       return;
     }
-    this.http
-      .get(
-        BillingApiConstants.checkPatientSexoporder(
-          this.formGroup.value.procedure.value,
-          this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.procedure.serviceid,
-          "9"
+    if (
+      this.formGroup.value.procedure.value != undefined &&
+      this.formGroup.value.procedure.serviceid != undefined
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.checkPatientSexoporder(
+            this.formGroup.value.procedure.value,
+            this.opOrderrequestService.patientDemographicdata.gender,
+            this.formGroup.value.procedure.serviceid,
+            "9"
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 1) {
-            this.addrow();
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((response) => {
+          console.log(response);
+          if (response == 1) {
+            this.flag++;
+            if (this.flag == 1) {
+              this.addrow();
+            }
+            console.log(this.flag);
+          } else {
+            this.messageDialogService.info(
+              "This service is not allowed for this sex"
+            );
           }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "This service is not allowed for this sex"
-          );
-        }
-      });
-
-    //this.formGroup.reset();
+        });
+    } else {
+      this.messageDialogService.info("Please Select Procedure");
+    }
   }
 
   addrow(priorityId = 1) {
+    if (this.formGroup.value.procedure.docRequired == 1) {
+      this.opOrderrequestService.docRequiredStatusvalue(true);
+    } else {
+      this.opOrderrequestService.docRequiredStatusvalue(false);
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -368,23 +377,22 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.formGroup.value.procedure.value,
           this.otherserviceId,
           this.cookie.get("HSPLocationId")
-          ///"67"
-          //          this.formGroup.value.otherService.value,
-          //        this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
-        this.billingService.addToProcedure({
+        this.opOrderrequestService.addToProcedure({
           sno: this.data.length + 1,
           procedures: this.formGroup.value.procedure.originalTitle,
           qty: 1,
-          specialisation: 0,
-          doctorName: 0,
+          specialisation: "",
+          doctorName: "",
           price: res.amount,
           unitPrice: res.amount,
           itemid: this.formGroup.value.procedure.value,
           priorityId: priorityId,
           serviceId: this.formGroup.value.procedure.serviceid,
+          specialisationId: 0,
+          doctorId: 0,
           doctorName_required: this.formGroup.value.procedure.docRequired
             ? true
             : false,
@@ -393,7 +401,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             : false,
         });
 
-        this.data = [...this.billingService.ProcedureItems];
+        this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
       });
   }
@@ -410,9 +418,9 @@ export class OrderProcedureOtherComponent implements OnInit {
           "," +
           item.serviceId +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priorityId;
       } else {
@@ -423,16 +431,16 @@ export class OrderProcedureOtherComponent implements OnInit {
           "," +
           item.serviceId +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priorityId;
       }
     });
     console.log(this.reqItemDetail);
 
-    let maxid = this.billingService.activeMaxId.maxId;
+    let maxid = this.opOrderrequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
 
     return new SaveandDeleteOpOrderRequest(
@@ -440,13 +448,13 @@ export class OrderProcedureOtherComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      // 60926,
+      //60926,
       // 67
       userid,
       this.locationid
     );
   }
-  saveResponsedata: any;
+
   save() {
     this.reqItemDetail = "";
     console.log("inside save");
@@ -464,15 +472,16 @@ export class OrderProcedureOtherComponent implements OnInit {
           if (this.saveResponsedata.success == true) {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
-            this.billingService.ProcedureItems = [];
+            this.opOrderrequestService.procedureItems = [];
             this.formGroup.reset();
+            this.config.columnsInfo.doctorName.moreOptions = {};
           }
         });
     }
   }
 
   view() {
-    this.billingService.setActiveLink(true);
+    this.opOrderrequestService.setActiveLink(true);
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);

@@ -171,6 +171,7 @@ export class SearchDialogComponent implements OnInit {
   public getsearchopbillslist: getsearchopbills[] = [];
   private readonly _destroying$ = new Subject<void>();
   @ViewChild('table') table: any;
+  apiProcessing: boolean = false;
   constructor(
     private cookie: CookieService,
     private http: HttpService,
@@ -200,10 +201,17 @@ export class SearchDialogComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     console.log(this.formdata);
-    this.searchform.controls['maxid'].setValue(this.formdata.maxid);
-    this.searchform.controls['mobile'].setValue(this.formdata.mobileno);
-    this.searchform.controls['checkbox'].setValue(this.formdata.check);
-    this.search();
+    if((this.formdata.check != '' && this.formdata.check != null) ||
+    (this.formdata.fromdate != '' && this.formdata.fromdate != undefined) ||
+    this.formdata.maxid != this.cookie.get('LocationIACode')+'.' ||
+    (this.formdata.mobileno != '' && this.formdata.mobileno != null) || 
+    (this.formdata.todate != '' && this.formdata.todate != undefined))
+    {
+      this.searchform.controls['maxid'].setValue(this.formdata.maxid);
+      this.searchform.controls['mobile'].setValue(this.formdata.mobileno);
+      this.searchform.controls['checkbox'].setValue(this.formdata.check);
+      this.search();
+    }
     if(this.formdata.check == false)
     {
       this.searchform.controls['fromdate'].disable();
@@ -218,16 +226,18 @@ export class SearchDialogComponent implements OnInit {
       this.search();
     }
     this.searchform.controls['checkbox'].valueChanges.subscribe(value=>{
-      console.log(value);
       if(value == true)
       {
         this.searchform.controls['fromdate'].enable();
         this.searchform.controls['todate'].enable();
+        this.getsearchopbillslist = [];
+        this.search();
       }
       else
       {
         this.searchform.controls['fromdate'].disable();
         this.searchform.controls['todate'].disable();
+        this.getsearchopbillslist = [];
       }
     })
     this.table.selection.changed.subscribe((res:any)=>{
@@ -280,34 +290,6 @@ export class SearchDialogComponent implements OnInit {
   }
   search()
   {
-    var arr: any;
-    var regno: any;
-    var iacode: any;
-    if(this.searchform.value.maxid != '')
-    {
-      arr = this.searchform.value.maxid.split('.');
-      regno = arr[1];
-      iacode = arr[0];
-    }
-    if(regno == '' || regno == undefined || regno == null)
-    {
-      regno = '';
-      iacode = ''
-    }
-    if(this.searchform.value.billno == null || this.searchform.value.billno == '' || this.searchform.value.billno == undefined)
-    {
-      this.searchform.value.billno = '';
-    }
-    if(this.searchform.value.mobileno == null || this.searchform.value.mobileno == '' || this.searchform.value.mobileno == undefined)
-    {
-      this.searchform.value.mobileno = '';
-    }
-    if(this.searchform.value.checkbox == false || this.searchform.value.checkbox == '' || this.searchform.value.checkbox == null)
-    {
-      this.searchform.value.fromdate = new Date();
-      this.searchform.value.todate = new Date();
-      this.searchform.value.checkbox = false;
-    }
     if(this.searchform.value.checkbox == true)
     {
       var fdate = new Date(this.searchform.controls["fromdate"].value);
@@ -322,34 +304,34 @@ export class SearchDialogComponent implements OnInit {
       } 
       else
       {
-        this.SearchApi(regno, iacode);
+        this.SearchApi();
       }
     }
-    else
-    {
-      this.SearchApi(regno, iacode);
+    else{
+      this.SearchApi();
     }
     
   }
 
-  SearchApi(regno: any, iacode: any)
+  SearchApi()
   {
+    this.getsearchopbillslist= [];
+    this.apiProcessing = true;
     this.http.get(BillDetailsApiConstants.getsearchopbills(
-      this.searchform.value.billno,
-      regno,
-      iacode,
-      this.searchform.value.mobile,
-      this.searchform.value.checkbox,
-      this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"),
-      this.datepipe.transform(this.searchform.value.todate, "YYYY-MM-dd"),
+      this.searchform.value.billno?this.searchform.value.billno:'',
+      this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[1]:'',
+      this.searchform.value.maxid.split('.')[1]?this.searchform.value.maxid.split('.')[0]:'',
+      this.searchform.value.mobileno?this.searchform.value.mobileno: '',
+      this.searchform.value.checkbox==true?true:false,
+      this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.fromdate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      this.searchform.value.checkbox==true?this.datepipe.transform(this.searchform.value.todate, "YYYY-MM-dd"):this.datepipe.transform(new Date(), "YYYY-MM-dd"),
       this.hsplocationId
     ))
     .pipe(takeUntil(this._destroying$))
     .subscribe(res=>{
-      console.log(res);
-      this.getsearchopbillslist = res;
-      if(res.length > 0) 
+      if(res.length > 0 && res != null) 
       {
+        this.getsearchopbillslist = res;
         for(var i = 0 ; i < res.length; i++)
         {
           this.getsearchopbillslist[i].sno = i + 1;
@@ -370,10 +352,14 @@ export class SearchDialogComponent implements OnInit {
           e.balance = e.balance.toFixed(2);
           e.billamount = e.billamount.toFixed(2);
         })
+        this.apiProcessing = false;
         console.log(this.getsearchopbillslist);
       }
+      else
+      {
+        this.apiProcessing = false;
+      }
     })
-    console.log(this.table);
   }
   clear()
   {

@@ -86,7 +86,7 @@
       color="primary"
       class="font-sm ml-2 min-width-initial"
       type="button"
-      [disabled]="!data.length"
+      [disabled]="!data.length || opOrderrequestService.getSaveButtonondocrequiredStatus()"
       (click)="save()"
     >
       Save
@@ -103,7 +103,7 @@
   </button>
        </div>
   </div>
-  <div class="mt-2 h-full">
+  <div class="mt-2 gridheight">
     <maxhealth-table
       [config]="config"
       [data]="data"

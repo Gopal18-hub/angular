@@ -31,36 +31,36 @@
           width: 110% !important;        
         }
       }
-      .w-12 {
+      ::ng-deep .w-12 {
         width: 12%;
       }
-      .w-13 {
+      ::ng-deep .w-13 {
         width: 13%;
       }
-      .w-86 {
+      ::ng-deep .w-86 {
         width: 87.25%;
       }
-      .w-26 {
+      ::ng-deep  .w-26 {
         width: 26%;
       }
-      .h-30vh {
+      ::ng-deep .h-30vh {
       
        height:50% !important;
       // overflow-y:scroll !important;       
       }
-      .h-22vh {
+      ::ng-deep  .h-22vh {
         height: 22vh;
       }
-      .w-44 {
+      ::ng-deep  .w-44 {
         width: 44%;
       }
-      .bg-blue {
+      ::ng-deep .bg-blue {
         background-color: #bfe8e7;
       }
-      .pr5int-button {
+      ::ng-deep .pr5int-button {
         background-color: #5a5a5a;
       }
-      .bg-deposit {
+      ::ng-deep .bg-deposit {
         background-color: #f6f6f6;
       }
       ::ng-deep {
@@ -141,11 +141,11 @@
       // {
       //   width : 8% !important
       // }
-      .w-Reff
+      ::ng-deep .w-Reff
       {
         width: 93%
       }
-      .icon-more
+      ::ng-deep  .icon-more
   {   
    
           background-color:#D2D0D0;
@@ -161,19 +161,19 @@
     font-weight: 400;
   }
 }
-  .tableh
+::ng-deep .tableh
   {
     height : 35% !important
   }
-  .min-width-bill {
+  ::ng-deep .min-width-bill {
     min-width: 100px !important;
   }
-  .addbtn
+  ::ng-deep  .addbtn
   {
     min-width: fit-content !important;
     min-height: fit-content !important;
   }
-  .input-align{
+  ::ng-deep .input-align{
     
     ::ng-deep .max-table-wrapper table tbody tr td:nth-child(5){
      

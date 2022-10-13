@@ -248,6 +248,45 @@ export namespace CrystalReport {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?LocationId=${params.LocationId}&Iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
   };
   export const IvestigationInstruction = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?ItemName=${params.item}&Description=${params.description}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/InvestigationPrint?ItemName=${params.ItemName}&description=${params.description}`;
   };
+  export const PostDischargeFollowUpReport = (params: any) => {
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/Billing/VisitingOTBilling?Opbillid=${
+      params.opbillid
+    }&locationID=${MaxHealthStorage.getCookie("HSPLocationId")}&flag=${
+      params.flag
+    }`;
+  };
+  export const DetailedReport = (params: any) => {
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/Opd_Registration/VisitReport?LocationId=${MaxHealthStorage.getCookie(
+      "HSPLocationId"
+    )}&dtpfrmdate=${params.frmdate}&dtpToDate=${params.ToDate}&txtSSN=${
+      params.SSN
+    }&rbDetail=${params.IsDetailReport}&cmbClinicId=${
+      params.ClinicId
+    }&cmbDoctorId=${params.DoctorId}&cmbReferalDocId=${
+      params.ReferalDocId
+    }&cmbSortOrder_Enabled=${params.SortOrderEnabled}&cmbSortOrderId=${
+      params.SortOrderId
+    }`;
+  };
+  export const SummaryReport = (params: any) => {
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/Opd_Registration/VisitReport?LocationId=${MaxHealthStorage.getCookie(
+      "HSPLocationId"
+    )}&dtpfrmdate=${params.frmdate}&dtpToDate=${params.ToDate}&txtSSN=${
+      params.SSN
+    }&cmbClinicId=${params.ClinicId}&cmbDoctorId=${
+      params.DoctorId
+    }&cmbReferalDocId=${params.ReferalDocId}&cmbSortOrder_Enabled=${
+      params.SortOrderEnabled
+    }&cmbSortOrderId=${params.SortOrderId}`;
+  };
+  export const MiscellaneousReportMIS = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/MiscellaneousReportMIS/MiscellaneousReportMIS?FromDate=${params.FromDate}&ToDate=${params.ToDate}&ChkAllLocation=${params.ChkAllLocation?1:0}&CmbLocation=${MaxHealthStorage.getCookie("HSPLocationId")}`;  };
 }

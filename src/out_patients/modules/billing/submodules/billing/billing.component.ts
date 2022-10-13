@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from "@angular/core";
+import { Component, OnInit, ViewChild, Inject, OnDestroy } from "@angular/core";
 import { PaymentModeComponent } from "./payment-mode/payment-mode.component";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
@@ -39,7 +39,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
   templateUrl: "./billing.component.html",
   styleUrls: ["./billing.component.scss"],
 })
-export class BillingComponent implements OnInit {
+export class BillingComponent implements OnInit, OnDestroy {
   links: any = [
     {
       title: "Services",
@@ -182,6 +182,18 @@ export class BillingComponent implements OnInit {
         });
       }
     });
+    this.billingService.corporateChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.formGroup.controls["corporate"].setValue(res.corporate, {
+          emitEvent: false,
+        });
+        if(res.corporate === 0){
+          this.formGroup.controls["corporate"].disable();
+        }else{
+          this.formGroup.controls["corporate"].enable();
+        }
+      }
+    });
   }
 
   getediganosticacdoninvestigationgrid(iacode: string, regNumber: number) {
@@ -217,7 +229,6 @@ export class BillingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
 
     this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
       if (res) {
@@ -238,10 +249,43 @@ export class BillingComponent implements OnInit {
             "header"
           );
         }
+        else{
+          this.billingService.setCompnay(
+            res,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
+      });
+
+    this.formGroup.controls["corporate"].valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          console.log(res);
+          this.billingService.setCorporate(
+            res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }else{
+          this.billingService.setCorporate(
+            res,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
       });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
       this.questions[0].elementRef.focus();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.clear();
   }
 
   formEvents() {
@@ -557,6 +601,8 @@ export class BillingComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
     //this.questions[2].readonly = true;
   }
 
@@ -798,16 +844,36 @@ export class BillingComponent implements OnInit {
                 "You have selected " + selectedPlan.planName
               );
               await planSelectDialog.afterClosed().toPromise();
-              const dialogRefDetails = this.matDialog.open(
-                ShowPlanDetilsComponent,
-                {
-                  width: "60vw",
-                  data: {
-                    planDetails: data,
-                    type: "otherPlanDetails",
-                  },
+              const ores = await this.http
+                .get(
+                  BillingApiConstants.getotherplanretrieve(
+                    this.billingService.activeMaxId.iacode,
+                    this.billingService.activeMaxId.regNumber,
+                    selectedPlan.planId
+                  )
+                )
+                .toPromise();
+              if (ores.length > 0) {
+                const dialogRefDetails = this.matDialog.open(
+                  ShowPlanDetilsComponent,
+                  {
+                    width: "70vw",
+                    data: {
+                      planDetails: ores,
+                      type: "otherPlanDetails",
+                    },
+                  }
+                );
+                const selectedServices = await dialogRefDetails
+                  .afterClosed()
+                  .toPromise();
+                if (
+                  selectedServices &&
+                  selectedServices.selected &&
+                  selectedServices.selected.length > 0
+                ) {
                 }
-              );
+              }
             }
             this.checkServicesLogics();
           });
@@ -1104,9 +1170,12 @@ export class BillingComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
         this.coorporateList = resultData;
+        this.billingService.setCorporateData(resultData);
+        resultData.unshift({ name: "Select", id: -1 });
         this.questions[4].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
+        this.questions[4] = { ...this.questions[4] };
       });
   }
 }

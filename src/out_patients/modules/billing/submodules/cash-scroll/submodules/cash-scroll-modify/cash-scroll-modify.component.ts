@@ -179,7 +179,7 @@ export class CashScrollModifyComponent implements OnInit {
         },
       },
       refund: {
-        title: "Refund",
+        title: "Refund Amount",
         type: "number",
         style: {
           width: "8rem",
@@ -435,7 +435,7 @@ export class CashScrollModifyComponent implements OnInit {
         },
       },
       refund: {
-        title: "Refund",
+        title: "Refund Amount",
         type: "number",
         style: {
           width: "8rem",
@@ -718,6 +718,7 @@ export class CashScrollModifyComponent implements OnInit {
   totalmobile: any = 0;
   totalinternet: any = 0;
   totalamount: any = 0;
+  dues: any = 0;
   totalvaluecheck()
   {
     this.totalcash = 0;
@@ -728,6 +729,7 @@ export class CashScrollModifyComponent implements OnInit {
     this.totalupi = 0;
     this.totalmobile = 0;
     this.totalinternet = 0;
+    this.dues = 0;
     this.scrolldataObject.getERPscrollDetailDto.forEach(item => {
       this.totalcash += Number(item.modifiedCash);
       this.totalcheque += Number(item.modifiedCheqAmt);
@@ -737,14 +739,16 @@ export class CashScrollModifyComponent implements OnInit {
       this.totalupi += Number(item.modifiedUPIAmt);
       this.totalmobile += Number(item.modifiedCashPaymentMobile);
       this.totalinternet += Number(item.modifiedDonationAmount);
+      this.dues += Number(item.dues);
       this.totalamount = this.totalcash 
                         +this.totalcheque 
                         +this.totalcredit 
                         +this.totaldemand 
                         +this.totalonline 
                         +this.totalupi 
-                        + this.totalmobile
-                        +this.totalinternet;
+                        +this.totalmobile
+                        +this.totalinternet
+                        +this.dues;
     })
     this.cashscrollmodifyForm.controls['totalcash'].setValue(this.totalcash.toFixed(2));
     this.cashscrollmodifyForm.controls['totalcheque'].setValue(this.totalcheque.toFixed(2));
@@ -764,7 +768,7 @@ export class CashScrollModifyComponent implements OnInit {
       //Cash
       if(item.modifiedCash < item.netamount || item.modifiedCash > item.netamount) 
       {
-        var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+        var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
         if(Number(total) == Number(item.netamount))
         {
 
@@ -784,7 +788,7 @@ export class CashScrollModifyComponent implements OnInit {
         Number(item.modifiedUPIAmt) > 0 ||
         Number(item.modifiedDonationAmount) > 0)
       {
-        var total = Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
+        var total = Number(item.dues) + Number(item.modifiedCash) + Number(item.modifiedCCAmt) + Number(item.modifiedCheqAmt) + Number(item.modifiedDDAmt) + Number(item.modifiedCashPaymentMobile) + Number(item.modifiedOnlinePayment) + Number(item.modifiedUPIAmt) + Number(item.modifiedDonationAmount);
         if(Number(total) == Number(item.netamount))
         {
 

@@ -29,7 +29,13 @@ import {
   trigger,
 } from "@angular/animations";
 import { DatePipe } from "@angular/common";
-import { FormGroup } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  FormArray,
+  FormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "maxhealth-table",
@@ -111,15 +117,19 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private _ngZone: NgZone,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private _formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.tableForm = new FormGroup({});
+    this.tableForm = this._formBuilder.group({
+      data: this._formBuilder.array([]),
+    });
     if (!("rowHighlightOnHover" in this.config)) {
       this.config.rowHighlightOnHover = true;
     }
     if (this.config.groupby) {
+      this.childrensData = [];
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
           if (!this.childrensData[item[this.config.groupby.childcolumn]]) {
@@ -166,10 +176,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.tableForm = this._formBuilder.group({
+      data: this._formBuilder.array([]),
+    });
     if (!("rowHighlightOnHover" in this.config)) {
       this.config.rowHighlightOnHover = true;
     }
     if (this.config.groupby) {
+      this.childrensData = [];
       this.data.forEach((item: any) => {
         if (item[this.config.groupby.childcolumn]) {
           if (!this.childrensData[item[this.config.groupby.childcolumn]]) {
@@ -189,6 +203,20 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.dataSource = new MatTableDataSource<any>(this.data);
     if (this.sort) this.dataSource.sort = this.sort;
+    let formData: any = [];
+    this.data.forEach((it: any) => {
+      let group: any = {};
+      Object.keys(it).forEach((itk) => {
+        if (itk + "_required" in it && it[itk + "_required"]) {
+          group[itk] = new FormControl(it[itk], Validators.required);
+        } else {
+          group[itk] = new FormControl(it[itk]);
+        }
+      });
+      const fg = new FormGroup(group);
+      formData.push(fg);
+    });
+    this.tableForm.setControl("data", new FormArray(formData));
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {

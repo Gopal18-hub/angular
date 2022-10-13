@@ -83,7 +83,7 @@
             *ngIf="paymentmethod.paymentForm[tab.key].value.price > 0"
           >
             <mat-label>{{ tab.method.label }}: </mat-label>
-            <span>{{ paymentmethod.paymentForm[tab.key].value.price }}</span>
+            <span>{{ paymentmethod.paymentForm[tab.key].value.price | currency: "INR":undefined:undefined:"en-IN" }}</span>
           </div>
         </ng-container>
 
@@ -124,7 +124,7 @@
   </div>
 
   <!-- button -->
-  <div class="flex float-right">
+  <div class="flex float-right paymentdialogbutton">
     <div class="mr-3">
       <button
         mat-raised-button
@@ -132,6 +132,7 @@
         type="submit"
         class="mt-1 btn"
         (click)="makeBill()"
+        [disabled]="!checkToProceed()"
       >
         Submit
       </button>

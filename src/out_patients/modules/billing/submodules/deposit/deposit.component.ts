@@ -169,7 +169,7 @@ export class DepositComponent implements OnInit {
   depositconfig: any = {
     clickedRows: true,
     clickSelection: "single",
-    dateformat: "dd/MM/yyyy - hh:mm",
+    dateformat: "dd/MM/yyyy - HH:mm",
     selectBox: true,
     groupby: {
       parentcolumn: "cashTransactionID",
@@ -219,7 +219,7 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "modifiedPtnName",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
       },
       paymentType: {
@@ -233,14 +233,14 @@ export class DepositComponent implements OnInit {
         title: "Used(OP)",
         type: "number",
         style: {
-          width: "6rem",
+          width: "7rem",
         },
       },
       usedIP: {
         title: "Used(IP)",
         type: "number",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       refund: {
@@ -248,35 +248,35 @@ export class DepositComponent implements OnInit {
         type: "string",
         tooltipColumn: "uEmail",
         style: {
-          width: "6rem",
+          width: "9rem",
         },
       },
       balance: {
         title: "Balance",
         type: "string",
         style: {
-          width: "7rem",
+          width: "10rem",
         },
       },
       gst: {
         title: "Tax %",
         type: "number",
         style: {
-          width: "3.7rem",
+          width: "5rem",
         },
       },
       gstValue: {
         title: "Total Tax Value",
         type: "number",
         style: {
-          width: "7rem",
+          width: "9rem",
         },
       },
       advanceType: {
         title: "Deposit Head",
         type: "string",
         style: {
-          width: "8rem",
+          width: "9.5rem",
         },
         tooltipColumn: "advanceType",
       },
@@ -284,7 +284,7 @@ export class DepositComponent implements OnInit {
         title: "Service Type",
         type: "string",
         style: {
-          width: "10rem",
+          width: "11rem",
         },
         tooltipColumn: "serviceTypeName",
       },
@@ -292,7 +292,7 @@ export class DepositComponent implements OnInit {
         title: "Operator Name & ID",
         type: "string",
         style: {
-          width: "11rem",
+          width: "13rem",
         },
         tooltipColumn: "operatorName",
       },
@@ -300,7 +300,7 @@ export class DepositComponent implements OnInit {
         title: "Remarks",
         type: "string",
         style: {
-          width: "8rem",
+          width: "8.5rem",
         },
         tooltipColumn: "remarks",
       },
@@ -327,7 +327,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -643,6 +643,7 @@ export class DepositComponent implements OnInit {
             item.deposit = item.deposit.toFixed(2);
             item.gst = item.gst.toFixed(2);
             item.gstValue = item.gstValue.toFixed(2);
+            item.paymentType = item.paymentType.toCapitalize();
             return item;
           });
 
@@ -814,8 +815,8 @@ export class DepositComponent implements OnInit {
           console.log(this.form60);
           if (this.form60 == 1) {
             const dialogref = this.matDialog.open(Form60YesOrNoComponent, {
-              width: "25vw",
-              height: "30vh",
+              width: "30vw",
+              height: "35vh",
             });
             dialogref.afterClosed().subscribe((res) => {
               if (res == "yes") {
@@ -863,7 +864,8 @@ export class DepositComponent implements OnInit {
       Iacode: iacode,
       RegistrationNo: regno,
       BillNo: billno,
-    });
+    },"right","center"
+    );
   }
   depositCategoryIconAction(categoryIcon: any) {
     const data: any = {

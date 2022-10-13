@@ -23,7 +23,7 @@ import { PasswordQuestion } from "../types/question-password";
 import { AuthService } from "../../../services/auth.service";
 import { TelQuestion } from "../types/question-tel";
 import { DateTimeQuestion } from "../types/question-datetime";
-
+import { CurrencyQuestion } from "../types/question-currency";
 @Injectable()
 export class QuestionControlService {
   formGroup: FormGroup | undefined;
@@ -50,7 +50,11 @@ export class QuestionControlService {
       else if (question.type == "tel") data.push(new TelQuestion(question));
       else if (question.type == "number")
         data.push(new NumberQuestion(question));
-      else if (question.type == "textarea")
+      else if (question.type == "currency") {
+        if (question.value)
+          question.value = Number.parseFloat(question.value).toFixed(2);
+        data.push(new CurrencyQuestion(question));
+      } else if (question.type == "textarea")
         data.push(new TextboxQuestion(question));
       else if (question.type == "buttonTextarea")
         data.push(new TextboxQuestion(question));
@@ -67,7 +71,7 @@ export class QuestionControlService {
       else if (question.type == "password")
         data.push(new PasswordQuestion(question));
       else if (question.type == "autocomplete")
-        data.push(new AutoCompleteQuestion(question));
+        data.push(new AutoCompleteQuestion(question, this.http));
       else if (question.type == "date") data.push(new DateQuestion(question));
       else if (question.type == "datetime")
         data.push(new DateTimeQuestion(question));

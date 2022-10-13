@@ -1,0 +1,40 @@
+.miscellaneous-credit-details-wrapper{
+.iom-button {
+    padding: 0;
+    min-width: 32px;
+    .iom-color {
+      color: #45c0be;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
+  }
+  .iom-message{
+    position: absolute;
+    margin-left: 7%;
+    top: 49%;
+    color: red;
+}
+.width-49 {
+    width: 49%;
+  }
+  ::ng-deep {
+    maxhealth-question {
+      mat-label {
+        color: var(--primary-color);
+      }
+    }
+  }
+  .creditoutpatientbill{
+    .mat-raised-button{
+    //  min-width: initial !important;
+      height: 1.875rem !important;
+      line-height: 1.875rem  !important;
+  }
+  }
+  .corporate{
+    ::ng-deep .mat-form-field{
+      margin-top: 3% !important;
+    }
+  }    
+}

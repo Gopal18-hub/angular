@@ -170,6 +170,13 @@ export class DynamicFormQuestionComponent
     if (this.question)
       this.question.label = this.question.label.replace(/_/gi, " ");
     if (this.question.conditions.length > 0) {
+      if (this.question.defaultValue) {
+        this.excuteCondition(
+          this.question.conditions,
+          this.question.defaultValue,
+          this.form.value
+        );
+      }
       this.form.controls[this.question.key].valueChanges.subscribe((value) => {
         this.excuteCondition(this.question.conditions, value, this.form.value);
       });
@@ -238,6 +245,19 @@ export class DynamicFormQuestionComponent
       maskInput({
         inputElement: this.element.nativeElement,
         ...this.dateMaskConfig,
+      });
+    } else if (
+      this.question &&
+      this.question.type &&
+      this.question.type == "currency"
+    ) {
+      this.question.elementRef.addEventListener("blur", (event: any) => {
+        let value = this.form.controls[this.question.key].value;
+        if (!value) value = "0.00";
+        const temp = Number.parseFloat(value).toFixed(2);
+        this.form.controls[this.question.key].setValue(temp, {
+          emitEvent: false,
+        });
       });
     }
   }

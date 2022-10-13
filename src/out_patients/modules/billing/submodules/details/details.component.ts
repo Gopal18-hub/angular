@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 
@@ -39,6 +39,7 @@ import { DMSComponent } from "@modules/registration/submodules/dms/dms.component
 import { OpPrescriptionDialogComponent } from './op-prescription-dialog/op-prescription-dialog.component'
 import { SearchService } from "@shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
+import { MoreThanMonthComponent } from "../dispatch-report/more-than-month/more-than-month.component";
 @Component({
   selector: "out-patients-details",
   templateUrl: "./details.component.html",
@@ -73,8 +74,8 @@ export class DetailsComponent implements OnInit {
           const lookupdata = await this.loadGrid(value); 
         }
         else{
-          this.ngOnInit();
-          this.clear();
+          // this.ngOnInit();
+          // this.clear();
         }
         });
     this.check = this.differ
@@ -83,9 +84,9 @@ export class DetailsComponent implements OnInit {
     
   }
   async loadGrid(formdata: any): Promise<any> {    
-     console.log(formdata.maxID);
      this.maxid = formdata.maxID;
   }
+
   moment = moment;
   @ViewChild("selectedServices") selectedServicesTable: any;
   public refundreasonlist: getrefundreason[] = [];
@@ -233,11 +234,10 @@ export class DetailsComponent implements OnInit {
   doxperurl: any;
 
   billexist: boolean = true;
-  ngOnInit(): void {
-
-    // this.router.navigate(["out-patient-billing/details"]).then(() => {
-    //   window.location.reload;
-    // });
+  apiProcessing: boolean = false;
+  result: any = [];
+  ngOnInit(){
+    this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
       this.BDetailFormData.properties,
       {}
@@ -245,10 +245,12 @@ export class DetailsComponent implements OnInit {
     this.BServiceForm = formResult.form;
     this.questions = formResult.questions;
     this.lastUpdatedBy = this.cookie.get("UserName");
+    console.log(this.maxid);
     if(this.maxid != '' && this.maxid != undefined)
     {
       this.BServiceForm.controls['maxid'].setValue(this.maxid);
-      this.search();
+      this.searchbillapi(this.maxid);
+      console.log(this.result);
       this.maxid = '';
     }
     this.BServiceForm.controls['fromDate'].disable();
@@ -265,14 +267,13 @@ export class DetailsComponent implements OnInit {
     });
     
     this.BServiceForm.controls['paymentMode'].setValue(this.paymentmode[0].title);
-    this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
-      console.log(res);
+    this.BServiceForm.controls['reason'].valueChanges.subscribe(() => {
       this.sendapprovalcheck();
     })
+
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (formdata: any) => {
-        console.log(formdata);
         this.router.navigate([], {
           queryParams: {},
           relativeTo: this.route,
@@ -281,12 +282,45 @@ export class DetailsComponent implements OnInit {
         console.log(lookupdata);
         if (lookupdata.length == 1) {
           this.BServiceForm.controls['maxid'].setValue(lookupdata[0].maxid);
+          this.search();
         }
         else if(lookupdata.length > 1)
         {
           this.BServiceForm.controls['mobileno'].setValue(lookupdata[0].phone);
+          this.search();
         }
       });
+      this.billdetailservice.onload();
+  }
+
+  searchbillapi(maxid: any ='', mobileno: any = '')
+  {
+    console.log(maxid);
+    this.http.get(BillDetailsApiConstants.getsearchopbills(
+      '',
+      maxid?maxid.split('.')[1]:'',
+      maxid?maxid.split('.')[0]:'',
+      mobileno,
+      false,
+      this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      this.datepipe.transform(new Date(), "YYYY-MM-dd"),
+      Number(this.cookie.get('HSPLocationId'))
+    ))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(async (res) => {
+      console.log(res);
+      this.result = res;
+      this.BServiceForm.markAsDirty();
+      if(this.result.length > 1)
+      {
+        this.search();
+      }
+      else if(this.result.length == 1)
+      {
+        this.BServiceForm.controls['billNo'].setValue(this.result[0].billno);
+        this.getpatientbilldetails();
+      }
+    })
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -297,7 +331,6 @@ export class DetailsComponent implements OnInit {
     this.formEvents();
     this.BServiceForm.controls["datevalidation"].valueChanges.subscribe(
       (value) => {
-        console.log(value);
         if (value == true) {
           this.BServiceForm.controls["fromDate"].enable();
           this.BServiceForm.controls["toDate"].enable();
@@ -307,7 +340,6 @@ export class DetailsComponent implements OnInit {
         }
       }
     );
-    console.log(this.billdetailservice.sendforapproval);
     this.BServiceForm.controls['fromDate'].valueChanges.subscribe( (val) => {
       this.questions[6].minimum = val;
     })
@@ -315,9 +347,8 @@ export class DetailsComponent implements OnInit {
       this.sendapprovalcheck();
     })
     this.questions[12].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
-    this.questions[13].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
+    // this.questions[13].elementRef.addEventListener('blur',this.sendapprovalcheck.bind(this));
     this.BServiceForm.controls['reason'].valueChanges.subscribe((res) => {
-      console.log(res);
       this.sendapprovalcheck();
     })
     this.BServiceForm.controls['paymentMode'].valueChanges.subscribe((res) => {
@@ -329,7 +360,6 @@ export class DetailsComponent implements OnInit {
       .get(BillDetailsApiConstants.getrefundreason)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resuldata) => {
-        console.log(resuldata);
         this.refundreasonlist = resuldata;
         this.questions[13].options = this.refundreasonlist.map((l) => {
           return { title: l.name, value: l.id };
@@ -338,8 +368,6 @@ export class DetailsComponent implements OnInit {
   }
   sendapprovalcheck()
   {
-    console.log(this.BServiceForm.controls['refundAmt'].value, this.BServiceForm.controls['authBy'].value, this.BServiceForm.controls['reason'].value, this.BServiceForm.controls['paymentMode'].value);
-    console.log(this.billdetailservice.sendforapproval.length);
     if(this.BServiceForm.controls['authBy'].value != '' && 
     this.BServiceForm.controls['reason'].value != '' && 
     this.BServiceForm.controls['reason'].value != '0' &&
@@ -360,7 +388,6 @@ export class DetailsComponent implements OnInit {
   {
     if(Number(this.BServiceForm.controls['refundAmt'].value) >= 10000 && this.BServiceForm.controls['paymentMode'].value == 'Cash')
     {
-      console.log('Cash amt greater than 10k')
       this.msgdialog.info("Refund Amount can't be greater than 10000 for Cash Payment. Please Select Other Payment Method");
     }
     else
@@ -380,7 +407,6 @@ export class DetailsComponent implements OnInit {
     });
     this.http.post(BillDetailsApiConstants.sendapproval('Gavs', this.cookie.get('HSPLocationId'), this.cookie.get('UserId')), this.approvelist())
     .subscribe(res => {
-      console.log(res);
       if(res.length > 0)
       {
         if(res[0].successFlag == true)
@@ -405,7 +431,6 @@ export class DetailsComponent implements OnInit {
   {
     this.sendforapprovallist.objSendApprovalTableList = [] as Array<objSendApprovalTableList>
     this.billdetailservice.sendforapproval.forEach( (i: any) => {
-      console.log(i);
       this.sendforapprovallist.objSendApprovalTableList.push({
         ssn : i.ssn,
         maxid : i.maxid,
@@ -432,7 +457,6 @@ export class DetailsComponent implements OnInit {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        console.log("event triggered");
         this.billno = this.BServiceForm.controls['billNo'].value;
         this.getpatientbilldetails();
       }
@@ -440,7 +464,6 @@ export class DetailsComponent implements OnInit {
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        console.log("event triggered");
         if(this.BServiceForm.value.maxid == this.cookie.get("LocationIACode") + ".")
         {
           this.snackbar.open('Invalid Max ID');
@@ -459,7 +482,6 @@ export class DetailsComponent implements OnInit {
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        console.log("event triggered");
         if(this.BServiceForm.value.mobileno.toString().length < 10)
         {
           this.snackbar.open('Invalid Mobile No');
@@ -489,10 +511,7 @@ export class DetailsComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: Registrationdetails) => {
-          console.log(resultData);
-          // this.clear();
           this.patientDetails = resultData;
-          console.log(this.patientDetails)
         },
         (error) => {}
       );
@@ -500,7 +519,6 @@ export class DetailsComponent implements OnInit {
       this.http.get(ApiConstants.patientDetails(regNumber, iacode))
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: PatientDetails) => {
-        console.log(res);
         this.patientDetailsforicon = res;
         this.noteRemarkdb = res.notereason;
         this.vipdb = res.vipreason;
@@ -546,14 +564,15 @@ export class DetailsComponent implements OnInit {
   getpatientbilldetails() {
     this.billdetailservice.clear();
     this.BServiceForm.controls['refundAmt'].setValue('0.00');
+    this.apiProcessing = true;
     this.http
       .get(BillDetailsApiConstants.getpatientbilldetails(this.BServiceForm.controls["billNo"].value))
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultdata) => {
-          console.log(resultdata);
-          if (resultdata == null) {
+          if (resultdata == null || resultdata.billDetialsForRefund_Table0.length == 0) {
             this.snackbar.open("Invalid Bill No");
+            this.apiProcessing = false;
           } 
           else 
           {
@@ -567,10 +586,9 @@ export class DetailsComponent implements OnInit {
               item.discountamount = item.discountamount.toFixed(2);
               item.planAmount = item.planAmount.toFixed(2);
             })
-            console.log(this.patientbilldetaillist)
             this.billdetailservice.patientbilldetaillist = resultdata;
-            console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
             var printrefundflag = 0;
+            this.apiProcessing = false;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(k => {
               if(k.cancelled == 1)
               {
@@ -593,7 +611,6 @@ export class DetailsComponent implements OnInit {
                 var errtxt = "Bill Number " + this.BServiceForm.value.billNo + " Has Been Cancelled";
                 this.msgdialog.info(errtxt);
               }
-              console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[1]);
               this.BServiceForm.controls["billNo"].setValue(this.billno);
               this.billFormfill();
               if(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
@@ -615,20 +632,16 @@ export class DetailsComponent implements OnInit {
               var consultlist = 0; 
               var consumablelist = 0; 
               this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach( (item: any) => {
-                console.log(item);
                 if(item.servicename == 'Health Checkups')
                 {
-                  console.log('health')
                   healthlist++;
                 }
                 else if(item.servicename == 'Consultations')
                 {
-                  console.log('consultation')
                   consultlist++;
                 }
                 else if(item.servicename == "Consumable")
                 {
-                  console.log('consumable')
                   consumablelist++;
                 }
               })
@@ -672,20 +685,20 @@ export class DetailsComponent implements OnInit {
                 this.refundbill == true;
               }
               this.printbill = false;
-              console.log(this.billdetailservice.serviceList);
-              this.router.navigate(["out-patient-billing/details", "services"]);
+              this.router.navigate(["out-patient-billing/details", "services"],
+              {queryParams: {maxid: this.BServiceForm.controls['maxid'].value},
+              queryParamsHandling: 'merge'});
             }
           }
         }),
         (error:any) => {
-          console.log(error);
+          this.apiProcessing = false;
         }
   }
   billFormfill() {
     this.billexist = false;
     this.BServiceForm.markAsDirty();
-    this.BServiceForm.controls['billNo'].setValue(this.billno);
-    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0);
+    this.BServiceForm.controls['billNo'].setValue(this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno);
     this.BServiceForm.controls["maxid"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid
     );
@@ -738,16 +751,13 @@ export class DetailsComponent implements OnInit {
       return id.title == this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].paymentMode;
     })
     this.BServiceForm.controls['reason'].setValue(reasonid?.id);
-    console.log(payid);
     if(payid != undefined)
     {
       this.BServiceForm.controls['paymentMode'].setValue(payid.title);
-      console.log(this.BServiceForm.controls['paymentMode'].value);
     }
     this.sendapprovalcheck();
   }
   dms() {
-    console.log(this.patientDetails)
     const patientDetails =
       this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
     this.http
@@ -783,6 +793,29 @@ export class DetailsComponent implements OnInit {
     });
   }
   search() {
+    if(this.BServiceForm.value.datevalidation == true)
+    {
+      var fdate = new Date(this.BServiceForm.controls["fromDate"].value);
+      var tdate = new Date(this.BServiceForm.controls["toDate"].value);
+      var dif_in_time = tdate.getTime() - fdate.getTime();
+      var dif_in_days = dif_in_time / (1000 * 3600 * 24);
+      if (dif_in_days > 31) {
+        this.matDialog.open(MoreThanMonthComponent, {
+          width: "30vw",
+          height: "30vh",
+        });
+      }
+      else
+      {
+        this.searchdialog();
+      } 
+    }
+    else{
+      this.searchdialog();
+    }
+  }
+  searchdialog()
+  {
     let dialogref = this.matDialog.open(SearchDialogComponent, {
       maxWidth: "90vw",
       height: "85%",
@@ -795,22 +828,17 @@ export class DetailsComponent implements OnInit {
       },
     });
     dialogref.afterClosed().subscribe((res) => {
-      console.log(res);
       if (res) {
         this.BServiceForm.controls["billNo"].setValue(res);
         this.billno = this.BServiceForm.controls["billNo"].value;
-        console.log(this.BServiceForm.controls["billNo"].value)
         this.getpatientbilldetails();
       } else {
-        // console.log('res')
-        // this.clear();
       }
     });
     this.BServiceForm.markAsDirty();
   }
   refunddialog()
   { 
-    console.log(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0]);
     if(this.patientbilldetaillist.billDetialsForRefund_Table0[0].age.split(' ')[0] > '65')
     {
       var dialogref = this.msgdialog.info('Patient is Senior Citizen.');
@@ -829,7 +857,6 @@ export class DetailsComponent implements OnInit {
     var reas = this.refundreasonlist.filter(i => {
       return i.id == this.BServiceForm.controls['reason'].value;
     });
-    console.log(this.BServiceForm.value.paymentMode);
       const RefundDialog = this.matDialog.open(BillDetailsRefundDialogComponent, {
       panelClass: 'refund-bill-dialog',
       width: "70vw",
@@ -853,9 +880,7 @@ export class DetailsComponent implements OnInit {
     });
     RefundDialog.afterClosed()
     .pipe(takeUntil(this._destroying$))
-    .subscribe((result) => {
-      //if(result == "Success"){        
-        console.log(result);
+    .subscribe((result) => {      
         if(result == 'success')
         {
           var billno = this.BServiceForm.controls['billNo'].value;
@@ -863,8 +888,7 @@ export class DetailsComponent implements OnInit {
           this.billdetailservice.clear();
           this.BServiceForm.controls['billNo'].setValue(billno);
           this.getpatientbilldetails();
-        }
-      //}    
+        }   
     });
   }
   clear() {
@@ -910,15 +934,12 @@ export class DetailsComponent implements OnInit {
     // this.ngOnInit();
   }
   doxperredirect() {
-    console.log(this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken);
-    console.log(this.BServiceForm.controls['maxid'].value);
     var maxid = this.BServiceForm.controls['maxid'].value;
     var visitid = this.patientbilldetaillist.billDetialsForRefund_ServiceDetail[0].id;
     var token = this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[0].token;
     var config = this.patientbilldetaillist.billDetialsForRefund_ConfigValueToken[0].configValue.split('?')[0];
     var iacode = maxid.split(".")[0];
     var location = this.cookie.get('Location').split('%');
-    console.log(location[0].split(' ')[0])
     this.doxperurl = config+'?patient_id='+maxid+'&visit_id='+visitid+'&organisation='+location[0].split(' ')[0]+'&token='+token;
     window.open(this.doxperurl, "_blank");
   }
@@ -972,7 +993,6 @@ export class DetailsComponent implements OnInit {
         height: '35vh'
       })
       dialogref.afterClosed().subscribe( res => {
-        console.log(res);
         if(res == 'yes')
         {
           this.reportService.openWindow(btnname, btnname, {
@@ -988,8 +1008,6 @@ export class DetailsComponent implements OnInit {
   ngDoCheck(): void {
     const changes = this.check.diff(this.billdetailservice.sendforapproval);
     if (changes) {
-      console.log(this.billdetailservice.totalrefund);
-      console.log(this.billdetailservice.sendforapproval);
       var approvedlist;
       if(this.billdetailservice.totalrefund > 0 &&
         this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].authorisedby == '' &&
@@ -1018,14 +1036,11 @@ export class DetailsComponent implements OnInit {
       if(this.billdetailservice.sendforapproval.length > 0)
       {
         this.billdetailservice.sendforapproval.forEach((j: any) => {
-          console.log(j);
           forenablerefundbill = this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.filter(k => {
             return k.itemId == j.itemid;
           })
         })
-        
-        console.log(forenablerefundbill);
-  
+      
         forenablerefundbill.forEach((k: any) => {
           if(k.notApproved == 1 && this.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 0)
           {
@@ -1044,26 +1059,15 @@ export class DetailsComponent implements OnInit {
         this.refundbill = true;
       }
       
-      // this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((i: any) => {
-      //   console.log(i);
         this.billdetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund.forEach((j: any) => {
-          console.log(j);
           approvedlist = this.billdetailservice.sendforapproval.filter( (e: any) => {
             return e.itemId = j.itemId;
           })
-        // })
       })
-      console.log(approvedlist);
-      console.log(changes);
       this.BServiceForm.controls["refundAmt"].setValue(
         this.billdetailservice.totalrefund.toFixed(2)
       );
       this.sendapprovalcheck();
-      // if (this.billdetailservice.sendforapproval.length > 0) {
-      //   this.approvalsend = false;
-      // } else if (this.billdetailservice.sendforapproval.length == 0) {
-      //   this.approvalsend = true;
-      // }
     }
   }
 

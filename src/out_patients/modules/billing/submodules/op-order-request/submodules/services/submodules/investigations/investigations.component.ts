@@ -23,6 +23,7 @@ import {
   iif,
 } from "rxjs";
 import { BillingStaticConstants } from "../../../../../billing/BillingStaticConstant";
+import { OpOrderRequestService } from "../../../../../op-order-request/op-order-request.service";
 
 @Component({
   selector: "out-patients-investigations",
@@ -35,6 +36,11 @@ export class OderInvestigationsComponent implements OnInit {
   investigationList: any = [];
   reqItemDetail: string = "";
   variable = true;
+  saveResponsedata: any;
+  data: any = [];
+  flag = 0;
+  list: any = [];
+  defaultPriorityId = 1;
   formData = {
     title: "",
     type: "object",
@@ -54,7 +60,7 @@ export class OderInvestigationsComponent implements OnInit {
   };
 
   @ViewChild("table") tableRows: any;
-  data: any = [];
+
   config: any = {
     clickedRows: false,
     actionItems: false,
@@ -87,7 +93,7 @@ export class OderInvestigationsComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
       },
       priority: {
         title: "Priority",
@@ -122,6 +128,8 @@ export class OderInvestigationsComponent implements OnInit {
   };
   hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   serviceInvestigatationresponse: any;
+  outsource!: boolean;
+  precautionExcludeLocations = [69];
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -131,56 +139,111 @@ export class OderInvestigationsComponent implements OnInit {
     public billingService: BillingService,
     public messageDialogService: MessageDialogService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public opOrderRequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
+    if (
+      this.precautionExcludeLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
+    ) {
+      this.config.displayedColumns.splice(2, 1);
+    }
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.InvestigationItems;
+    this.opOrderRequestService.setInvestigationFormGroup(
+      this.formGroup,
+      this.questions
+    );
+    this.data = this.opOrderRequestService.investigationItems;
     this.getServiceTypes();
     this.getSpecialization();
-    // this.data = [];
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.opOrderRequestService.clearAllItems.subscribe((clearItems) => {
+      console.log(clearItems);
       if (clearItems) {
         this.data = [];
       }
     });
-    console.log(this.billingService.patientDemographicdata);
+    this.opOrderRequestService.disableSaveButtonStatus.subscribe(
+      (value: boolean) => {
+        if (value) {
+        }
+      }
+    );
+    console.log(this.opOrderRequestService.patientDemographicdata);
   }
 
   rowRwmove($event: any) {
     console.log($event);
-    this.billingService.InvestigationItems.splice($event.index, 1);
-    this.billingService.InvestigationItems =
-      this.billingService.InvestigationItems.map((item: any, index: number) => {
-        item["sno"] = index + 1;
-        return item;
-      });
-    this.data = [...this.billingService.InvestigationItems];
-    this.billingService.calculateTotalAmount();
+    this.opOrderRequestService.investigationItems.splice($event.index, 1);
+    this.opOrderRequestService.investigationItems =
+      this.opOrderRequestService.investigationItems.map(
+        (item: any, index: number) => {
+          item["sno"] = index + 1;
+          return item;
+        }
+      );
+    if (this.data.length == 0) {
+      this.defaultPriorityId = 1;
+    }
+    this.data = [...this.opOrderRequestService.investigationItems];
+    //  this.billingService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       console.log(res);
-      // col: "specialisation"
       if (res.data.col == "specialisation") {
-        this.config.columnsInfo.specialisation.value = res.$event.value;
+        this.opOrderRequestService.investigationItems[
+          res.data.index
+        ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
         );
       } else if (res.data.col == "doctorName") {
-        this.config.columnsInfo.doctorName.value = res.$event.value;
+        this.opOrderRequestService.investigationItems[res.data.index].doctorId =
+          res.$event.value;
         console.log(this.config.columnsInfo.doctorName.value);
+        this.opOrderRequestService.docRequiredStatusvalue(false);
+        console.log(
+          this.opOrderRequestService.getSaveButtonondocrequiredStatus()
+        );
       } else if (res.data.col == "priority") {
-        this.config.columnsInfo.priority.value = res.$event.value;
+        if (this.data.length == 1) {
+          this.defaultPriorityId = res.$event.value;
+        } else {
+          if (this.defaultPriorityId != res.$event.value) {
+            this.opOrderRequestService.changeSaveButtonStatus(true);
+            const errorDialog = this.messageDialogService.error(
+              "Investigations can not have different priorities"
+            );
+            await errorDialog.afterClosed().toPromise();
+          } else {
+            this.opOrderRequestService.investigationItems[
+              res.data.index
+            ].priority = res.$event.value;
+            this.opOrderRequestService.changeSaveButtonStatus(false);
+          }
+        }
+        console.log(this.opOrderRequestService.getSaveButtonStatus());
+      }
+    });
+    this.tableRows.stringLinkOutput.subscribe((res: any) => {
+      if (
+        "patient_Instructions" in res.element.billItem &&
+        res.element.billItem.patient_Instructions
+      ) {
+        this.messageDialogService.info(
+          res.element.billItem.patient_Instructions
+        );
       }
     });
     this.formGroup.controls["investigation"].valueChanges
@@ -201,6 +264,7 @@ export class OderInvestigationsComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getinvestigationSearch(
+                  // 67,
                   Number(this.cookie.get("HSPLocationId")),
                   value
                 )
@@ -219,12 +283,16 @@ export class OderInvestigationsComponent implements OnInit {
               originalTitle: r.name,
               docRequired: r.docRequired,
               precaution: r.precaution,
+              patient_Instructions: r.patient_Instructions,
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
             };
           });
           this.questions[1] = { ...this.questions[1] };
+          console.log(this.questions[1]);
+          console.log(this.formGroup.value.investigation.docRequired);
+          console.log(this.formGroup.controls["investigation"].value);
         }
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
@@ -260,7 +328,8 @@ export class OderInvestigationsComponent implements OnInit {
         BillingApiConstants.getdoctorlistonSpecializationClinic(
           false,
           clinicSpecializationId,
-          67
+          // 67
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .subscribe((res) => {
@@ -289,7 +358,7 @@ export class OderInvestigationsComponent implements OnInit {
       }
     );
   }
-  outsource!: boolean;
+
   getInvestigations(serviceId: number) {
     this.http
       .get(
@@ -310,45 +379,26 @@ export class OderInvestigationsComponent implements OnInit {
             serviceid: r.serviceid,
             precaution: r.precaution,
             docRequired: r.docRequired,
+            patient_Instructions: r.patient_Instructions,
             item_Instructions:
               BillingStaticConstants.investigationItemBasedInstructions[
                 r.id.toString()
               ],
-            // ngStyle: {
-            //   color:
-            //     r.outsourceTest == 2
-            //       ? "red"
-            //       : "" || r.outsourceTest == 1
-            //       ? "orange"
-            //       : "" || r.isNonDiscountItem == 1
-            //       ? "pink"
-            //       : "",
-            // },
             ngStyle: {
               color: r.outsourceColor == 2 ? "red" : "",
             },
           };
         });
-        this.investigationList.forEach((item: any) => {
-          if (item.outsourceTest == 1) {
-            this.outsource = true;
-          }
-        });
         console.log(this.questions[1].options);
+        console.log(this.questions[1]);
         this.questions[1] = { ...this.questions[1] };
       });
   }
-  priceDefined = true;
-  genderDefined = true;
-  modalityDefined = true;
-  flag = 0;
+
   add(priorityId = 1) {
     this.flag = 0;
-    this.priceDefined = true;
-    this.genderDefined = true;
-    this.modalityDefined = true;
     console.log(this.hspLocationid);
-    let exist = this.billingService.InvestigationItems.findIndex(
+    let exist = this.opOrderRequestService.investigationItems.findIndex(
       (item: any) => {
         return item.itemid == this.formGroup.value.investigation.value;
       }
@@ -361,48 +411,52 @@ export class OderInvestigationsComponent implements OnInit {
     }
 
     if (this.formGroup.value.investigation.value == 6085) {
-      const dialofref = this.messageDialogService.info(
+      this.messageDialogService.info(
         "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC"
       );
-      dialofref.afterClosed().subscribe((data) => {
-        this.genderCheck();
-      });
+      this.genderCheck();
     } else {
       this.genderCheck();
     }
-
-    console.log(this.billingService.patientDemographicdata);
-    //this.formGroup.reset();
+    console.log(this.opOrderRequestService.patientDemographicdata);
   }
   genderCheck() {
-    this.http
-      .get(
-        BillingApiConstants.checkPatientSex(
-          this.formGroup.value.investigation.value,
-          this.billingService.patientDemographicdata.gender,
-          this.formGroup.value.investigation.serviceid,
-          "2"
+    if (
+      this.formGroup.value.investigation.value != undefined &&
+      this.formGroup.value.investigation.serviceid != undefined
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.checkPatientSex(
+            this.formGroup.value.investigation.value,
+            this.opOrderRequestService.patientDemographicdata.gender,
+            this.formGroup.value.investigation.serviceid,
+            "2"
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        if (response == 1) {
-          this.flag++;
-          if (this.flag == 1) {
-            this.addrow();
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((response) => {
+          console.log(response);
+          if (response == 1) {
+            this.flag++;
+            if (this.flag == 1) {
+              this.addrow();
+            }
+            console.log(this.flag);
+          } else {
+            this.messageDialogService.info(
+              "This investigation is not allowed for this sex"
+            );
+            this.formGroup.reset();
           }
-          console.log(this.flag);
-        } else {
-          this.messageDialogService.info(
-            "This investigation is not allowed for this sex"
-          );
-        }
-        console.log(this.genderDefined);
-      });
+        });
+    } else {
+      this.messageDialogService.info("Please Select Investigation");
+    }
   }
-  list: any = [];
+
   addrow() {
+    const priorityid = this.defaultPriorityId;
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -410,20 +464,32 @@ export class OderInvestigationsComponent implements OnInit {
           this.formGroup.value.investigation.value,
           this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
-          "67"
+          this.cookie.get("HSPLocationId")
+          // "67"
         )
       )
       .subscribe((res: any) => {
         console.log(res);
         this.serviceInvestigatationresponse = res;
-        //setTimeout(() => {
-        this.billingService.addToInvestigations({
+        console.log(this.formGroup.value.investigation.docRequired);
+        if (this.formGroup.value.investigation.docRequired == 1) {
+          this.opOrderRequestService.docRequiredStatusvalue(true);
+        } else {
+          this.opOrderRequestService.docRequiredStatusvalue(false);
+        }
+        this.opOrderRequestService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
-          precaution: this.formGroup.value.investigation.precaution,
-          priority: 1,
-          specialisation: 0,
-          doctorName: 0,
+          //precaution: this.formGroup.value.investigation.precaution,
+          precaution:
+            this.formGroup.value.investigation.precaution == "P"
+              ? '<span class="max-health-red-color">P</span>'
+              : this.formGroup.value.investigation.precaution,
+          priority: this.defaultPriorityId,
+          specialisation: "",
+          doctorName: "",
+          specialisationId: 0,
+          doctorId: 0,
           price: res.amount,
           serviceid:
             this.formGroup.value.serviceType ||
@@ -436,31 +502,37 @@ export class OderInvestigationsComponent implements OnInit {
             .docRequired
             ? true
             : false,
+          patient_Instructions:
+            this.formGroup.value.investigation.patient_Instructions,
+          billItem: {
+            patient_Instructions:
+              this.formGroup.value.investigation.patient_Instructions,
+            precaution:
+              this.formGroup.value.investigation.precaution == "P"
+                ? '<span class="max-health-red-color">P</span>'
+                : this.formGroup.value.investigation.precaution,
+          },
         });
-        this.data = [...this.billingService.InvestigationItems];
-        // }, 1000);
-
+        console.log(this.opOrderRequestService.investigationItems);
+        this.data = [...this.opOrderRequestService.investigationItems];
         console.log(this.data);
         this.formGroup.reset();
       });
   }
 
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    this.reqItemDetail = "";
     this.data.forEach((item: any, index: any) => {
       console.log(item.specialisation);
-      if (item.specialisation == "") {
-        console.log("specialisation is empty");
-        item.specialisation;
-      }
       if (this.reqItemDetail == "") {
         this.reqItemDetail =
           item.itemid +
           "," +
           item.serviceid +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priority;
       } else {
@@ -471,16 +543,16 @@ export class OderInvestigationsComponent implements OnInit {
           "," +
           item.serviceid +
           "," +
-          item.specialisation +
+          item.specialisationId +
           "," +
-          item.doctorName +
+          item.doctorId +
           "," +
           item.priority;
       }
     });
     console.log(this.reqItemDetail);
 
-    let maxid = this.billingService.activeMaxId.maxId;
+    let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
     let locationid = Number(this.cookie.get("HSPLocationId"));
 
@@ -489,14 +561,15 @@ export class OderInvestigationsComponent implements OnInit {
       maxid,
       this.reqItemDetail,
       "0",
-      //60926,
-      //67
+      // 60926,
+      // 67
       userid,
       locationid
     );
   }
-  saveResponsedata: any;
+
   save() {
+    console.log(this.data);
     this.reqItemDetail = "";
     console.log("inside save");
     if (this.data.length > 0) {
@@ -513,23 +586,17 @@ export class OderInvestigationsComponent implements OnInit {
           if (this.saveResponsedata.success == true) {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
-            this.billingService.InvestigationItems = [];
+            this.opOrderRequestService.investigationItems = [];
             this.formGroup.reset();
+            this.config.columnsInfo.doctorName.moreOptions = {};
           }
         });
     }
   }
   view() {
-    this.billingService.setActiveLink(true);
+    this.opOrderRequestService.setActiveLink(true);
     this.router.navigate([
       "/out-patient-billing/op-order-request/view-request",
     ]);
-    // this.router.navigate(
-    //   ["/out-patient-billing/op-order-request/view-request"],
-    //   {
-    //     queryParamsHandling: "merge",
-    //     relativeTo: this.route,
-    //   }
-    // );
   }
 }

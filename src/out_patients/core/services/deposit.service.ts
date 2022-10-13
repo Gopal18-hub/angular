@@ -165,10 +165,7 @@ export class DepositService {
         });
     }
 
-    getFormLsit() {
-        return this.data;
-    }
-
+  
     getCategoryIconsForDeposit(deposit:DepositPatientDetailInterface) {
         let returnIcons: any = [];
         Object.keys(deposit).forEach((e) => {
@@ -222,8 +219,5 @@ export class DepositService {
     refundcashlimit:any=[];
     setcashlimitation(cashlimitlist:any){
        this.refundcashlimit = cashlimitlist;
-    }
-    getcashlimit(){
-      return this.refundcashlimit;
     }
 }

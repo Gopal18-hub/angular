@@ -25,7 +25,10 @@ export class miscPatientDetail {
   billToCompany?: number;
   invoiceType?: string;
   narration?: string;
-  authorisedid?: number
+  authorisedid?: number;
+  mail?: string;
+  cellNo?: string;
+  paNno?: string;
   constructor(
     registrationno?: number,
     iacode?: string,
@@ -53,7 +56,10 @@ export class miscPatientDetail {
     billToCompany?: number,
     invoiceType?: string,
     narration?: string,
-    authorisedid?: number
+    authorisedid?: number,
+    mail?: string,
+    cellNo?: string,
+    paNno?: string
   ) {
     this.registrationno = registrationno;
     this.iacode = iacode;
@@ -82,5 +88,8 @@ export class miscPatientDetail {
     this.invoiceType = invoiceType;
     this.narration = narration;
     this.authorisedid = authorisedid;
+    this.mail = mail;
+    this.cellNo = cellNo;
+    this.paNno = paNno;
   }
 }

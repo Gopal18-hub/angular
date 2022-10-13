@@ -84,12 +84,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void
   {
-    this.DepositPaymentMethod = this.depositservice.getFormLsit();   
+  
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
-      {       
+      { 
+        this.DepositPaymentMethod = this.depositservice.data;         
         {
-         const form60dialog = this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "98vh", 
+         const form60dialog = this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "94vh", 
           data: {from60data:this.form60PatientInfo,
                 paymentamount: this.DepositPaymentMethod[0]
               }
