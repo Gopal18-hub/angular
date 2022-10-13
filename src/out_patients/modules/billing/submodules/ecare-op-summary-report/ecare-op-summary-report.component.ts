@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { LookupService } from "@core/services/lookup.service";
 import { MatDialog } from "@angular/material/dialog";
 import { SimilarPatientDialog } from "@modules/registration/submodules/op-registration/op-registration.component";
+import { HttpService } from "@shared/services/http.service";
+import { BillingApiConstants } from "../billing/BillingApiConstant";
 
 @Component({
   selector: "out-patients-ecare-op-summary-report",
@@ -34,16 +36,16 @@ export class EcareOpSummaryReportComponent implements OnInit {
       todate: {
         type: "date",
       },
+      clinics: {
+        type: "autocomplete",
+        required: false,
+        placeholder: "--Select--",
+      },
       doctorName: {
         type: "autocomplete",
         placeholder: "--Select--",
         options: [],
         required: true,
-      },
-      clinics: {
-        type: "autocomplete",
-        required: false,
-        placeholder: "--Select--",
       },
     },
   };
@@ -56,6 +58,7 @@ export class EcareOpSummaryReportComponent implements OnInit {
   clearbtn: boolean = true;
   apiProcessing: boolean = false;
   showtable: boolean = true;
+  locationId = Number(this.cookie.get("HSPLocationId"));
   private readonly _destroying$ = new Subject<void>();
 
   config: any = {
@@ -143,7 +146,8 @@ export class EcareOpSummaryReportComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private lookupService: LookupService,
-    public matDialog: MatDialog
+    public matDialog: MatDialog,
+    private http: HttpService
   ) {}
 
   ngOnInit(): void {
@@ -151,7 +155,6 @@ export class EcareOpSummaryReportComponent implements OnInit {
       this.ecareOpSummaryReportFormData.properties,
       {}
     );
-
     this.tableData = this.setimage(this.tableData);
     console.log("ec--", this.tableData);
     this.ecareOpSummaryReportForm = formResult.form;
@@ -162,57 +165,152 @@ export class EcareOpSummaryReportComponent implements OnInit {
     this.fromdate = new Date(this.today);
     this.fromdate.setDate(this.fromdate.getDate() - 20);
     this.ecareOpSummaryReportForm.controls["fromdate"].setValue(this.fromdate);
-    // this.questions[1] = "";
-    // this.questions[2].maximum =
-    //   this.ecareOpSummaryReportForm.controls["todate"].value;
-    // this.questions[3].minimum =
-    //   this.ecareOpSummaryReportForm.controls["fromdate"].value;
+    this.questions[2].maximum =
+      this.ecareOpSummaryReportForm.controls["todate"].value;
+    this.questions[3].minimum =
+      this.ecareOpSummaryReportForm.controls["fromdate"].value;
+    this.getClinics();
     // this.questions[4] = "";
     // this.questions[5] = "";
-    // this.searchService.searchTrigger
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe(async (formdata: any) => {
-    //     console.log(formdata);
-    //     this.router.navigate([], {
-    //       queryParams: {},
-    //       relativeTo: this.route,
-    //     });
-    //     const lookupdata = await this.lookupService.searchPatient(formdata);
-    //     console.log(lookupdata);
-    //     if (lookupdata.length == 1) {
-    //       if (lookupdata[0] && "maxid" in lookupdata[0]) {
-    //         this.ecareOpSummaryReportForm.controls["maxid"].setValue(
-    //           lookupdata[0]["maxid"]
-    //         );
-    //         this.ecareOpSummaryReportForm.value.maxid = lookupdata[0]["maxid"];
-    //         //this.getPatientDetails();
-    //       }
-    //     } else {
-    //       const similarSoundDialogref = this.matDialog.open(
-    //         SimilarPatientDialog,
-    //         {
-    //           width: "60vw",
-    //           height: "65vh",
-    //           data: {
-    //             searchResults: lookupdata,
-    //           },
-    //         }
-    //       );
-    //       similarSoundDialogref
-    //         .afterClosed()
-    //         .pipe(takeUntil(this._destroying$))
-    //         .subscribe((result) => {
-    //           if (result) {
-    //             console.log(result.data["added"][0].maxid);
-    //             let maxID = result.data["added"][0].maxid;
-    //             this.ecareOpSummaryReportForm.controls["maxid"].setValue(maxID);
-    //             //this.getPatientDetails();
-    //             this.clearbtn = false;
-    //           }
-    //           //this.similarContactPatientList = [];
-    //         });
-    //     }
-    //   });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+        console.log("lookup--", lookupdata);
+        if (lookupdata.length == 1) {
+          if (lookupdata[0] && "maxid" in lookupdata[0]) {
+            this.ecareOpSummaryReportForm.controls["maxid"].setValue(
+              lookupdata[0]["maxid"]
+            );
+            this.ecareOpSummaryReportForm.value.maxid = lookupdata[0]["maxid"];
+            //this.getPatientDetails();
+          }
+        } else {
+          const similarSoundDialogref = this.matDialog.open(
+            SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "65vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.ecareOpSummaryReportForm.controls["maxid"].setValue(maxID);
+                //this.getPatientDetails();
+                this.clearbtn = false;
+              }
+              //this.similarContactPatientList = [];
+            });
+        }
+      });
+  }
+
+  ngAfterViewInit(): void {
+    //this.getClinics();
+  }
+
+  subScribeClinicChanges() {}
+
+  // subScribeDoctorChanges(){
+  //   this.formGroup.controls["doctorName"].valueChanges
+  //     .pipe(
+  //       filter((res) => {
+  //         return res !== null && res.length >= 3;
+  //       }),
+  //       distinctUntilChanged(),
+  //       debounceTime(1000),
+  //       tap(() => {}),
+  //       switchMap((value) => {
+  //         if (
+  //           this.formGroup.value.specialization &&
+  //           this.formGroup.value.specialization.value
+  //         ) {
+  //           return of([]);
+  //         } else {
+  //           return this.http
+  //             .get(
+  //               BillingApiConstants.getbillingdoctorsonsearch(
+  //                 value,
+  //                 Number(this.cookie.get("HSPLocationId"))
+  //               )
+  //             )
+  //             .pipe(finalize(() => {}));
+  //         }
+  //       })
+  //     )
+  //     .subscribe((data: any) => {
+  //       if (data.length > 0) {
+  //         this.questions[1].options = data.map((r: any) => {
+  //           return {
+  //             title: r.doctorNameWithSpecialization || r.doctorName,
+  //             value: r.doctorId,
+  //             originalTitle: r.doctorName,
+  //             specialisationid: r.specialisationid,
+  //             clinicID: r.clinicID,
+  //           };
+  //         });
+  //         this.questions[1] = { ...this.questions[1] };
+  //       }
+  //     });
+  // }
+  getClinics() {
+    this.http
+      .get(BillingApiConstants.getclinics(this.locationId))
+      .subscribe((res) => {
+        this.questions[4].options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+        this.questions[4] = { ...this.questions[4] };
+      });
+
+    this.ecareOpSummaryReportForm.controls["clinics"].valueChanges.subscribe(
+      (val: any) => {
+        console.log("changed clicnic", val);
+        if (val && val.value) {
+          this.getdoctorlistonSpecializationClinic(val.value, true);
+        }
+      }
+    );
+  }
+
+  getdoctorlistonSpecializationClinic(
+    clinicSpecializationId: number,
+    isClinic = false
+  ) {
+    this.http
+      .get(
+        BillingApiConstants.getdoctorlistonSpecializationClinic(
+          isClinic,
+          clinicSpecializationId,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.ecareOpSummaryReportForm.controls["doctorName"].reset();
+        this.questions[5].options = res.map((r: any) => {
+          return {
+            title: r.doctorNameWithSpecialization || r.doctorName,
+            value: r.doctorId,
+            originalTitle: r.doctorName,
+            specialisationid: r.specialisationid,
+            clinicID: r.clinicID,
+          };
+        });
+        this.questions[5] = { ...this.questions[5] };
+      });
   }
 
   setimage(tableData: any[]) {

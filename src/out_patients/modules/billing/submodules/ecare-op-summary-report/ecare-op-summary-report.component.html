@@ -109,33 +109,31 @@
 
       <!-- Second Row -->
       <div class="w-full flex mt-1 border-radius-xlg p-1 bg-secondary">
-        <div class="flex w-9/10 align-items-center">
-          <div class="flex align-items-center">
-            <mat-label class="max-health-primary-color mr-2 font-bold"
-              >Clinics</mat-label
-            >
-            <maxhealth-question
-              [question]="questions[4]"
-              [form]="ecareOpSummaryReportForm"
-              [questions]="questions[4]"
-              [index]="4"
-              class="w-3/5"
-            >
-            </maxhealth-question>
-          </div>
-          <div class="flex align-items-center">
-            <mat-label class="max-health-primary-color mr-2 font-semi-bold"
-              >Doctor Name</mat-label
-            >
-            <maxhealth-question
-              [question]="questions[5]"
-              [form]="ecareOpSummaryReportForm"
-              [questions]="questions[5]"
-              [index]="5"
-              class="w-3/5"
-            >
-            </maxhealth-question>
-          </div>
+        <div class="flex w-3/8 align-items-center">
+          <mat-label class="max-health-primary-color mr-2 font-bold"
+            >Clinics</mat-label
+          >
+          <maxhealth-question
+            [question]="questions[4]"
+            [form]="ecareOpSummaryReportForm"
+            [questions]="questions[4]"
+            [index]="4"
+            class="w-4/5"
+          >
+          </maxhealth-question>
+        </div>
+        <div class="flex w-3/8 align-items-center">
+          <mat-label class="max-health-primary-color mr-2 font-semi-bold"
+            >Doctor Name</mat-label
+          >
+          <maxhealth-question
+            [question]="questions[5]"
+            [form]="ecareOpSummaryReportForm"
+            [questions]="questions[5]"
+            [index]="5"
+            class="w-4/5"
+          >
+          </maxhealth-question>
         </div>
       </div>
 
@@ -147,9 +145,11 @@
         <mat-spinner strokeWidth="2"></mat-spinner>
       </div>
       <div class="mt-2 h-74" *ngIf="showtable">
-        <mat-label class="max-health-primary-color mr-2 font-semi-bold">
-          No of visit(s): {{ tableData.length }}</mat-label
-        >
+        <div class="flex-column mb-3">
+          <h3 class="max-health-primary-color font-semi-bold">
+            No of visit(s): {{ tableData.length }}
+          </h3>
+        </div>
         <maxhealth-table
           [config]="config"
           [data]="tableData"
