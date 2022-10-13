@@ -30,7 +30,8 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
       },
       scrollno: {
         type: "number",
-        required: true,
+        required: false,
+        readonly: true,
       },
     },
   };

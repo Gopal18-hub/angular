@@ -16,4 +16,5 @@ export interface FetchOpOrderrequest {
   orderStatus: string;
   sno: number;
   disabled?: any;
+  disablecheckbox: boolean;
 }
