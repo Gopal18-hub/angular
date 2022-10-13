@@ -82,6 +82,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
   @ViewChild("stringLink") stringLinkTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
+  @ViewChild("currency") currencyTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
@@ -92,6 +93,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
   @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
   @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
+  
 
   initiateTable: boolean = false;
 
@@ -311,6 +313,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     if (col.type == "string") return this.stringTemplate;
     else if (col.type == "string_link") return this.stringLinkTemplate;
     else if (col.type == "number") return this.numberTemplate;
+    else if (col.type == "currency") return this.currencyTemplate;
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "datetime") return this.dateTimeTemplate;
     else if (col.type == "image") return this.imageTemplate;

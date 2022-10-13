@@ -227,14 +227,14 @@ export class BillComponent implements OnInit, OnDestroy {
       },
       credit: {
         title: "Credit",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
       },
       cash: {
         title: "Cash",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
@@ -248,14 +248,14 @@ export class BillComponent implements OnInit, OnDestroy {
       },
       discAmount: {
         title: "Disc Amount",
-        type: "number",
+        type: "currency",
         style: {
           width: "120px",
         },
       },
       totalAmount: {
         title: "Total Amount",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },
@@ -269,7 +269,7 @@ export class BillComponent implements OnInit, OnDestroy {
       },
       gstValue: {
         title: "GST Value",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },

@@ -80,6 +80,7 @@
             mat-sort-header
             [disabled]="config?.columnsInfo[col]?.disabledSort"
             [style.width]="config?.columnsInfo[col]?.style?.width"
+            class="header-type-{{ displayColumnsInfo[col]?.type }}"
           >
             {{ displayColumnsInfo[col].title }}
           </th>
@@ -404,6 +405,11 @@
 </ng-template>
 <ng-template #number let-data>
   <span>{{ data?.output }}</span>
+</ng-template>
+<ng-template #currency let-data>
+  <span class="currency-data">{{
+    data?.output | currency: "INR":undefined:undefined:"en-IN"
+  }}</span>
 </ng-template>
 <ng-template #date let-data>
   <span *ngIf="data?.output">{{
