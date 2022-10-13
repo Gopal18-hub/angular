@@ -436,10 +436,10 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt
     );
-    this.formGroup.controls["amtPayByPatient"].setValue(
-      this.getAmountPayByPatient()
-    );
     this.billTypeChange(this.formGroup.value.paymentMode);
+    // this.formGroup.controls["amtPayByPatient"].setValue(
+    //   this.getAmountPayByPatient()
+    // );
   }
 
   billTypeChange(value: any) {
@@ -467,6 +467,9 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       this.data = [...this.data];
     }
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
   }
 
   ngAfterViewInit() {
@@ -796,9 +799,25 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   getAmountPayByPatient() {
+    let cashAmount = 0;
+    let cashDiscount = 0;
+    let creditAmount = 0;
+    let creditDiscount = 0;
+    this.data.forEach((bItem: any) => {
+      if (parseFloat(bItem.cash) > 0) {
+        cashAmount += parseFloat(bItem.cash);
+        cashDiscount += parseFloat(bItem.discAmount);
+      } else if (parseFloat(bItem.credit) > 0) {
+        creditAmount += parseFloat(bItem.credit);
+        creditDiscount += parseFloat(bItem.discAmount);
+      }
+    });
+    console.log(cashAmount);
+    console.log(creditAmount);
     const temp =
-      this.billingservice.totalCost -
-      (this.formGroup.value.discAmt || 0) -
+      cashAmount +
+      creditAmount -
+      (cashDiscount + creditDiscount) -
       (this.formGroup.value.dipositAmtEdit || 0) -
       (this.formGroup.value.amtPayByComp || 0);
 
