@@ -10,7 +10,7 @@
     <div class="h-15 bg-grey flex justify-between align-items-center mt-2 border-radius-lg">
         <div class="flex ml-2">
             <mat-label>Coupon</mat-label>
-            <div class="ml-4 w-1/2 bg-white">
+            <div class="ml-4 w-full bg-white flex relative">
                 <maxhealth-question
                   [question]="questions[0]"
                   [form]="billform"
@@ -18,14 +18,27 @@
                   [index]="0"
                 >
                 </maxhealth-question>
+                <div class="ml-2 check absolute right-5">
+                    <mat-checkbox [ngModel]="couponcheck"></mat-checkbox>
+                </div>
+              </div>
+              <div class="ml-2 check">
+                <!-- <maxhealth-question
+                [question]="questions[1]"
+                [form]="billform"
+                [questions]="questions[1]"
+                [index]="1"
+              >
+              </maxhealth-question> -->
+              
               </div>
         </div>
         <div class="flex">
             <div class="mr-2">
-                <button mat-raised-button color="primary" type="submit" [disabled]="!IsValidateCoupon">Make Bill</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!IsValidateCoupon" (click)="makebill()">Make Bill</button>
             </div>
             <div class="mr-1">
-                <button mat-raised-button color="primary" type="submit" [disabled]="printbill">Print Bill</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="printbill" (click)="print()">Print Bill</button>
             </div>
         </div>
     </div>
