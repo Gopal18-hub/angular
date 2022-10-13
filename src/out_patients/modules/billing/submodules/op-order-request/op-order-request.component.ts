@@ -474,4 +474,8 @@ export class OpOrderRequestComponent implements OnInit {
     console.log(this.opOrderRequestService.investigationFormGroup);
     this.opOrderRequestService.clear();
   }
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
