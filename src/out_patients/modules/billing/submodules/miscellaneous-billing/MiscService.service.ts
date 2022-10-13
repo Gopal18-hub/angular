@@ -78,16 +78,42 @@ export class MiscService {
     this.calcItems = this.getCalculateBillItems();
 
     if (this.calcItems.depositInput) {
+      // if (
+      //   this.calcItems.depositInput >= this.calcItems.totalAmount ||
+      //   this.calcItems.depositInput > this.calcItems.totalDeposit
+      // ) {
+      //   this.calculatedBill.depositInput = this.calcItems.totalDeposit;
+      //   // this.calculatedBill.amntPaidBythePatient = 0.00;
+      // } else if (this.calcItems.depositInput < this.calcItems.totalAmount) {
+      //   //this.calculatedBill.amntPaidBythePatient = this.calcItems.totalAmount - this.calcItems.depositInput;
+      //   this.calculatedBill.depositInput = this.calcItems.depositInput;
+      // }
+
       if (
-        this.calcItems.depositInput >= this.calcItems.totalAmount ||
+        this.calcItems.depositInput > this.calcItems.totalAmount &&
+        this.calcItems.totalDeposit >= this.calcItems.totalAmount
+      ) {
+        this.calculatedBill.depositInput =  this.calcItems.totalAmount;
+      } else if (
+        this.calcItems.depositInput > this.calcItems.totalDeposit &&
+        this.calcItems.totalDeposit > this.calcItems.totalAmount
+      ) {
+        this.calculatedBill.depositInput = this.calcItems.totalAmount
+      } else if (
+        this.calcItems.depositInput > this.calcItems.totalAmount &&
+        this.calcItems.totalDeposit < this.calcItems.totalAmount
+      ) {
+        this.calculatedBill.depositInput =   this.calcItems.totalDeposit;
+      } else if (
+        this.calcItems.totalDeposit < this.calcItems.totalAmount &&
         this.calcItems.depositInput > this.calcItems.totalDeposit
       ) {
-        this.calculatedBill.depositInput = this.calcItems.totalAmount;
-        // this.calculatedBill.amntPaidBythePatient = 0.00;
-      } else if (this.calcItems.depositInput < this.calcItems.totalAmount) {
-        //this.calculatedBill.amntPaidBythePatient = this.calcItems.totalAmount - this.calcItems.depositInput;
-        this.calculatedBill.depositInput = this.calcItems.depositInput;
+        this.calculatedBill.depositInput =   this.calcItems.totalDeposit;
+      }else{
+        this.calculatedBill.depositInput =   this.calcItems.depositInput;
       }
+
+
     }
     if (!this.calcItems.depositInput) {
       this.calcItems.depositInput = 0;
@@ -116,22 +142,16 @@ export class MiscService {
     ) {
       this.calcItems.depositSelectedrows = [];
     }
-    this.calculatedBill.totalBillAmount =
-      this.calcItems.totalAmount -
-      this.calcItems.depositInput -
-      this.calcItems.totalDiscount;
-    this.calculatedBill.amntPaidBythePatient =
-      this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
-    this.calculatedBill.txtgsttaxamt =
-      (this.calculatedBill.totalBillAmount * this.calculatedBill.totalGst) /
+    this.calculatedBill.totalBillAmount =  this.calcItems.totalAmount -  this.calcItems.depositInput -  this.calcItems.totalDiscount;
+    this.calculatedBill.amntPaidBythePatient = this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
+    this.calculatedBill.txtgsttaxamt =  (this.calculatedBill.totalBillAmount * this.calculatedBill.totalGst) /
       100;
 
     if (this.calcItems.totalAmount - this.calcItems.depositInput === 0) {
       this.calculatedBill.totalBillAmount = 0;
       this.calculatedBill.amntPaidBythePatient = 0;
     }
-    this.calculatedBill.selectedDepositRows =
-      this.calcItems.depositSelectedrows;
+    this.calculatedBill.selectedDepositRows =  this.calcItems.depositSelectedrows;
     this.calculatedBill.companyId = this.calcItems.companyId;
     this.calculatedBill.corporateId = this.calcItems.corporateId;
     return this.calculatedBill;
@@ -141,6 +161,10 @@ export class MiscService {
   }
   clearMiscBlling() {
     this.clearAllItems.next(true);
+    this.companyData = [];
+    this.corporateData = [];
+    this.selectedcompanydetails = [];
+    this.selectedcorporatedetails = [];
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
@@ -155,6 +179,10 @@ export class MiscService {
     formGroup: any,
     from: string = "header"
   ) {
+    if(res === "" || res == null){
+      this.companyChangeEvent.next({ company: null, from });
+      this.selectedcorporatedetails = [];
+    }else{   
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
     this.companyChangeEvent.next({ company: res, from });
@@ -178,18 +206,27 @@ export class MiscService {
           // this.setItemsToBill.isChannel = 1;          
           // this.setCalculateBillItems(this.setItemsToBill);
           formGroup.controls["corporate"].enable();
-          formGroup.controls["corporate"].setValue(0);
+          formGroup.controls["corporate"].setValue(null);
+          this.corporateChangeEvent.next({ corporate: null, from });
         } else {
           // this.setItemsToBill.isChannel = 0;
           // this.setCalculateBillItems(this.setItemsToBill);
           formGroup.controls["corporate"].setValue(0);
           formGroup.controls["corporate"].disable();
+          this.corporateChangeEvent.next({ corporate: 0, from });
         }
       });
     } else {
-      formGroup.controls["corporate"].setValue(0);
-      formGroup.controls["corporate"].disable();
-    }
+      this.corporateChangeEvent.next({ corporate: 0, from });
+      // if(from == "credit"){
+        formGroup.controls["corporate"].setValue(0);
+        formGroup.controls["corporate"].disable();
+      // }
+      // else{
+      //   this.corporateChangeEvent.next({ corporate: 0, from });
+      // }
+    }       
+   }
   }
 
   setCorporate(
@@ -198,8 +235,13 @@ export class MiscService {
     formGroup: any,
     from: string = "header"
   ) {
+    if(res === ""){
+      this.corporateChangeEvent.next({ corporate: null, from });
+      this.selectedcorporatedetails = [];
+    }else{ 
     this.selectedcorporatedetails = res;
     this.corporateChangeEvent.next({ corporate: res, from });
+    }
   }
 
   setCompanyData(data: any) {
