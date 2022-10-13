@@ -245,4 +245,16 @@ export namespace BillingApiConstants {
 
   export const getServicesForCoupon = (CouponNo: string, locationid: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getallservicesforcoupon/${CouponNo}/${locationid}`;
+
+  export const getFollowupConsultation = (
+    IaCodeDon: string,
+    RegNoDon: number,
+    sid: number,
+    DoctorID: number,
+    LocationID: number
+  ) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getisopbillingexists/${IaCodeDon}/${RegNoDon}/${sid}/${DoctorID}/${LocationID}`;
+
+  export const getOPReasonsAndAuthorisedBy = (locationId: number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/getopreasonsandauthorizedby/${locationId}`;
 }

@@ -226,7 +226,7 @@
             matInput
             placeholder=""
             [formControlName]="question.key"
-            [type]="question.type"
+            [type]="'text'"
             [id]="question.key"
             [required]="question.required"
             [min]="question.minimum"
@@ -238,6 +238,7 @@
             [pattern]="question.pattern"
             #element
             autocomplete="off"
+            class="text-right"
           />
           <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>

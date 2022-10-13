@@ -174,7 +174,7 @@ export namespace MaxModules {
               allUsersAllow: false,
             },
             {
-              id: 220,
+              id: 62,
               title: "Post Discharge Follow Up Billing",
               defaultPath:
                 "/out-patient-billing/post-discharge-follow-up-billing",
@@ -365,7 +365,7 @@ export namespace MaxModules {
             {
               id: 67,
               title: "Visit Report",
-              defaultPath: "",
+              defaultPath: "/report/prompt-report/VisitReport",
               globalSearchKey: "global",
               allUsersAllow: false,
               locationSpecific: [

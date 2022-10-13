@@ -43,7 +43,7 @@ export class BillingService {
   totalCost = 0;
 
   company: number = 0;
-  billtype: string = "cash";
+  billtype: number = 1;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -66,6 +66,7 @@ export class BillingService {
   consultationItemsAdded = new Subject<boolean>();
 
   referralDoctor: any;
+  twiceConsultationReason: any = "";
 
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
@@ -79,6 +80,8 @@ export class BillingService {
   disableServiceTab: boolean = false;
 
   maxIdEventFinished = new Subject<any>();
+
+  refreshBillTab = new Subject<any>();
 
   billingFormGroup: any = { form: "", questions: [] };
 
@@ -96,8 +99,13 @@ export class BillingService {
     this.billingFormGroup.questions = questions;
   }
 
-  calculateBill() {
-    this.calculateBillService.initProcess(this.billItems, this);
+  calculateBill(formGroup: any, question: any) {
+    this.calculateBillService.initProcess(
+      this.billItems,
+      this,
+      formGroup,
+      question
+    );
   }
 
   changeBillTabStatus(status: boolean) {
@@ -281,6 +289,7 @@ export class BillingService {
           this.updateServiceItemPrice(this.billItems[index]);
         });
         this.calculateTotalAmount();
+        this.refreshBillTab.next(true);
       });
   }
 
@@ -293,7 +302,16 @@ export class BillingService {
     this.company = companyid > 0 ? companyid : 0;
     if (this.billItems.length > 0) {
       this.refreshPrice();
+      this.calculateBillService.setCompanyNonCreditItems([]);
+      this.calculateBillService.billFormGroup.form.controls[
+        "credLimit"
+      ].setValue("0.00");
     }
+    if(res === "" || res == null){
+      this.companyChangeEvent.next({ company: null, from });
+      this.selectedcorporatedetails = [];
+      this.iomMessage = "";
+    }else{  
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
     this.companyChangeEvent.next({ company: res, from });
@@ -317,15 +335,19 @@ export class BillingService {
         if (result.data == "corporate") {
           formGroup.controls["corporate"].enable();
           formGroup.controls["corporate"].setValue(null);
+          this.corporateChangeEvent.next({ corporate: null, from });
         } else {
           formGroup.controls["corporate"].setValue(null);
           formGroup.controls["corporate"].disable();
+          this.corporateChangeEvent.next({ corporate: 0, from });
         }
       });
     } else {
+      this.corporateChangeEvent.next({ corporate: 0, from });
       formGroup.controls["corporate"].setValue(null);
       formGroup.controls["corporate"].disable();
     }
+  }
   }
 
   setCorporate(
@@ -334,8 +356,13 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
+    if(res === ""){
+      this.corporateChangeEvent.next({ corporate: null, from });
+      this.selectedcorporatedetails = [];
+    }else{
     this.selectedcorporatedetails = res;
     this.corporateChangeEvent.next({ corporate: res, from });
+    }
   }
 
   setCompanyData(data: any) {
@@ -346,7 +373,7 @@ export class BillingService {
     this.corporateData = data;
   }
 
-  setBilltype(billtype: string) {
+  setBilltype(billtype: number) {
     this.billtype = billtype;
   }
 
@@ -445,7 +472,7 @@ export class BillingService {
       oldorderId: 0,
       consultid: 0,
       discrtype_dr: 0,
-      pharma: 1,
+      pharma: data.priorityId,
       specialisationID: data.specialisationID || 0,
       doctorID: data.doctorID || 0,
       isServiceTax: 0,
@@ -482,7 +509,7 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.push({
         orderId: 0,
         doctorId: data.billItem.itemId,
-        type: data.billItem.serviceId,
+        type: data.billItem.priorityId,
         visited: 0,
         scheduleSlot: "",
         scheduleId: 0,
@@ -490,7 +517,7 @@ export class BillingService {
         specialisationId: data.specialization || 0,
         hcuId: 0,
         clinicId: data.clinics || 0,
-        ConsultationTypeId: data.billItem.priorityId,
+        //ConsultationTypeId: data.billItem.priorityId,
       });
     }
 
@@ -718,7 +745,7 @@ export class BillingService {
       srfID: 0,
       donationAmount: 0,
       narrationOnBill: "",
-      twiceConsultationReason: "",
+      twiceConsultationReason: this.twiceConsultationReason,
       hostID: "GAVS-HIS-4",
       serviceTax: 0,
       authorisedid: 0,
@@ -774,6 +801,8 @@ export class BillingService {
           });
         }
       });
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
+        this.twiceConsultationReason;
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList = [];
       this.makeBillPayload.ds_insert_bill.tab_l_receiptList.push({
         opbillid: 0,
@@ -820,6 +849,19 @@ export class BillingService {
               .afterClosed()
               .toPromise();
             if (reasonInfoResult) {
+              console.log(reasonInfoResult);
+              if (reasonInfoResult.data) {
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.auth =
+                  reasonInfoResult.data.authorisedby;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.reasonId =
+                  reasonInfoResult.data.reason;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.reason =
+                  reasonInfoResult.reason;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.remarks =
+                  reasonInfoResult.data.remarks;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
+                  toBePaid - collectedAmount;
+              }
             } else {
               return;
             }

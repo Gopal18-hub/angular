@@ -16,6 +16,7 @@ export class PostDischargeServiceService {
   consultationItemsAdded = new Subject<boolean>();
   clearAllItems = new Subject<boolean>();
   billItemsTrigger = new Subject<any>();
+  billModified!: boolean;
   billingFormGroup: any = { form: "", questions: [] };
   constructor(
     private http: HttpService,
@@ -260,5 +261,9 @@ export class PostDischargeServiceService {
     //   JSON.stringify(BillingStaticConstants.makeBillPayload)
     // );
     // console.log(this.makeBillPayload);
+  }
+  modified()
+  {
+    this.billModified = true;
   }
 }

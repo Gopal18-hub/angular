@@ -3933,7 +3933,7 @@ export class OpRegistrationComponent implements OnInit {
       AppointmentSearchDialogComponent,
       {
         maxWidth: "100vw",
-        width: "95vw",
+        width: "98vw",
       }
     );
     appointmentSearchDialogref

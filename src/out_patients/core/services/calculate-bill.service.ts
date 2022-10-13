@@ -35,7 +35,13 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
+  companyNonCreditItems: any = [];
+
+  billFormGroup: any;
+
   private readonly _destroying$ = new Subject<void>();
+
+  serviceBasedListItems: any = [];
 
   constructor(
     public matDialog: MatDialog,
@@ -44,8 +50,33 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  initProcess(billItems: any, billingServiceRef: any) {
+  setCompanyNonCreditItems(items: any) {
+    this.companyNonCreditItems = items;
+  }
+
+  initProcess(
+    billItems: any,
+    billingServiceRef: any,
+    formGroup?: any,
+    question?: any
+  ) {
+    if (formGroup && question) {
+      this.billFormGroup = {
+        form: formGroup,
+        questions: question,
+      };
+    }
     this.billingServiceRef = billingServiceRef;
+    this.billingServiceRef.billItems.forEach((item: any) => {
+      if (!this.serviceBasedListItems[item.serviceName.toString()]) {
+        this.serviceBasedListItems[item.serviceName.toString()] = {
+          id: item.serviceId,
+          name: item.serviceName,
+          items: [],
+        };
+      }
+      this.serviceBasedListItems[item.serviceName.toString()].items.push(item);
+    });
     billItems.forEach(async (item: any) => {
       await this.serviceBasedCheck(item);
     });
@@ -130,6 +161,35 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
+  refreshDiscount() {
+    this.discountSelectedItems.forEach((disIt: any) => {
+      if ([1, 4, 5, 6].includes(disIt.discTypeId)) {
+        disIt.price = this.billingServiceRef.totalCost;
+        disIt.discAmt = (disIt.price * disIt.disc) / 100;
+        disIt.totalAmt = disIt.price - disIt.discAmt;
+      } else if (disIt.discTypeId == 2) {
+        const serviceItem = this.serviceBasedListItems.find(
+          (sbli: any) => sbli.name == disIt.service
+        );
+        let price = 0;
+        serviceItem.items.forEach((item: any) => {
+          price += item.price * item.qty;
+        });
+        const discAmt = (price * disIt.disc) / 100;
+        disIt.price = price;
+        disIt.discAmt = discAmt;
+        disIt.totalAmt = price - discAmt;
+      } else if (disIt.discTypeId == 3) {
+        const billItem = this.billingServiceRef.billItems.find(
+          (it: any) => it.itemId == disIt.itemId
+        );
+        disIt.price = billItem.price * billItem.qty;
+        disIt.discAmt = (disIt.price * disIt.disc) / 100;
+        disIt.totalAmt = disIt.price - disIt.discAmt;
+      }
+    });
+  }
+
   applyDiscount(from: string, formGroup: any) {
     if (
       this.discountSelectedItems.length == 1 &&
@@ -162,7 +222,7 @@ export class CalculateBillService {
             item.discountReason = ditem.reason;
           }
         } else if (ditem.discTypeId == 2) {
-          const items = this.billingServiceRef.billItems.find(
+          const items = this.billingServiceRef.billItems.filter(
             (it: any) => it.serviceName == ditem.service
           );
           if (items) {
@@ -231,30 +291,32 @@ export class CalculateBillService {
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {
-    if (this.billingServiceRef.todayPatientBirthday) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Today is Patient Birthday, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+    if (!this.billingServiceRef.company) {
+      if (this.billingServiceRef.todayPatientBirthday) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Today is Patient Birthday, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
-      }
-    } else if (this.seniorCitizen) {
-      const birthdayDialogRef = this.messageDialogService.confirm(
-        "",
-        "Patient is senior citizen, Do you want to Give Discount...?"
-      );
-      const birthdayDialogResult = await birthdayDialogRef
-        .afterClosed()
-        .toPromise();
-      if (birthdayDialogResult) {
-        if (birthdayDialogResult.type == "yes") {
-          this.discountreason(formGroup, componentRef);
+      } else if (this.seniorCitizen) {
+        const birthdayDialogRef = this.messageDialogService.confirm(
+          "",
+          "Patient is senior citizen, Do you want to Give Discount...?"
+        );
+        const birthdayDialogResult = await birthdayDialogRef
+          .afterClosed()
+          .toPromise();
+        if (birthdayDialogResult) {
+          if (birthdayDialogResult.type == "yes") {
+            this.discountreason(formGroup, componentRef);
+          }
         }
       }
     }
