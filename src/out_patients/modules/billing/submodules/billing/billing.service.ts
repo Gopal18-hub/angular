@@ -302,7 +302,7 @@ export class BillingService {
     this.company = companyid > 0 ? companyid : 0;
     if (this.billItems.length > 0) {
       this.refreshPrice();
-      this.calculateBillService.setCompanyCreditItems([]);
+      this.calculateBillService.setCompanyNonCreditItems([]);
       this.calculateBillService.billFormGroup.form.controls[
         "credLimit"
       ].setValue("0.00");
