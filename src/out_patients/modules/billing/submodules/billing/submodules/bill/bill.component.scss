@@ -1,7 +1,13 @@
 .sub-bill-overall {
   ::ng-deep .max-table-wrapper {
     table {
-      width: 125% !important;
+      width: 120% !important;
+
+      .mat-column-qty,
+      .mat-column-disc,
+      .mat-column-gst {
+        text-align: center;
+      }
     }
   }
   .w-12 {
@@ -37,8 +43,8 @@
   .w-42 {
     width: 38%;
   }
-  .mr-24{
-    margin-right:2.40rem !important;
+  .mr-24 {
+    margin-right: 2.4rem !important;
   }
   .bg-blue {
     background-color: #bfe8e7;
@@ -83,5 +89,4 @@
       }
     }
   }
-
 }

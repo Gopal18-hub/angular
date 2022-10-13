@@ -187,7 +187,7 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "S.No.",
         type: "number",
         style: {
-          width: "80px",
+          width: "65px",
         },
       },
       serviceName: {
@@ -208,7 +208,7 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Precaution",
         type: "string_link",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       procedureDoctor: {
@@ -219,10 +219,10 @@ export class BillComponent implements OnInit, OnDestroy {
         },
       },
       qty: {
-        title: "Qty / Type",
+        title: "Qty/Type",
         type: "string",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       credit: {
@@ -243,14 +243,14 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Disc %",
         type: "string",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       discAmount: {
         title: "Disc Amount",
         type: "currency",
         style: {
-          width: "120px",
+          width: "100px",
         },
       },
       totalAmount: {
@@ -264,7 +264,7 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "GST%",
         type: "number",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       gstValue: {
