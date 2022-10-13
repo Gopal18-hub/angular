@@ -4,4 +4,11 @@
         text-align:right;
         padding-right: 46px !important;
       }
+      .depositbutton{
+        .mat-raised-button{
+            min-width: initial !important;
+            height: 1.875rem !important;
+            line-height: 1.875rem  !important;
+        }
+      }
 }
