@@ -17,7 +17,7 @@ export class OpOrderRequestService {
   disablesaveOndoctorreqStatus = new Subject<boolean>();
   investigationFormGroup: any = { form: "", questions: [] };
   procedureFormGroup: any = { form: "", questions: [] };
-  totalCost: number = 0;
+  totalCost: any;
   addToInvestigations(data: any) {
     this.investigationItems.push(data);
   }
@@ -65,12 +65,19 @@ export class OpOrderRequestService {
   }
   calculateTotalAmount() {
     this.totalCost = 0;
-    this.investigationItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.procedureItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
+    if (
+      this.investigationItems.length > 0 &&
+      this.investigationItems != undefined
+    ) {
+      this.investigationItems.forEach((item: any) => {
+        this.totalCost = Number(this.totalCost) + Number(item.price);
+      });
+    }
+    if (this.procedureItems.length > 0 && this.procedureItems != undefined) {
+      this.procedureItems.forEach((item: any) => {
+        this.totalCost = Number(this.totalCost) + Number(item.price);
+      });
+    }
   }
   clear() {
     console.log(this.investigationFormGroup);

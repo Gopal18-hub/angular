@@ -158,6 +158,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           return item;
         }
       );
+    this.opOrderrequestService.calculateTotalAmount();
     this.data = [...this.opOrderrequestService.procedureItems];
   }
 
@@ -401,7 +402,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             ? true
             : false,
         });
-
+        this.opOrderrequestService.calculateTotalAmount();
         this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
       });

@@ -23,7 +23,7 @@ export class OPOrderViewRequest implements OnInit {
   oporderrequestid!: string;
   maxid!: string;
   config: any = {
-    clickedRows: false,
+    clickedRows: true,
     actionItems: false,
     // dateformat: "dd/MM/yyyy",
     selectBox: true,
