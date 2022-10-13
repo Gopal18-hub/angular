@@ -215,14 +215,14 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Procedure Doctor",
         type: "string",
         style: {
-          width: "130px",
+          width: "150px",
         },
       },
       qty: {
         title: "Qty / Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "100px",
         },
       },
       credit: {
