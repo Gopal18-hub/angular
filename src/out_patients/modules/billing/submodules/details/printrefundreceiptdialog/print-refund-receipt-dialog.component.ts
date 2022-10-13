@@ -72,7 +72,7 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
     this.openReportModal('refundReport');
   }
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
+    this.reportService.openWindow('Refund Report - '+this.printrefundform.controls['receiptNumber'].value, btnname, {
       refundBill: this.printrefundform.controls['receiptNumber'].value,
       locationID: this.cookie.get('HSPLocationId')
     });
