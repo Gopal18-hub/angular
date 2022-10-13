@@ -34,6 +34,8 @@ import { PaydueComponent } from "../billing/prompts/paydue/paydue.component";
 import { ShowPlanDetilsComponent } from "../billing/prompts/show-plan-detils/show-plan-detils.component";
 import { isTypedRule } from "tslint";
 import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.component";
+import { distinctUntilChanged } from "rxjs/operators";
+
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -49,7 +51,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private datepipe: DatePipe,
     private messageDialogService: MessageDialogService,
     private db: DbService,
-    private Misc: MiscService,
+    public Misc: MiscService,
     public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private patientService: PatientService
@@ -107,7 +109,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     },
   ];
   activeLink = this.links[0];
-  complanyList!: GetCompanyDataInterface[];
+  companyList!: GetCompanyDataInterface[];
   corporateId = "";
   companyId = "";
   coorporateList: { id: number; name: string }[] = [] as any;
@@ -126,7 +128,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       },
       company: {
         type: "autocomplete",
-        options: this.complanyList,
+        options: this.companyList,
         placeholder: "Select",
       },
       corporate: {
@@ -188,17 +190,36 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
-    this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
-      if (res.companyIdComp != "Misc") {
-        if (res.companyId) {
-          this.miscForm.controls["company"].setValue(res.companyId, {
-            emitEvent: false,
-          });
-        }
-        if (res.corporateId) {
-          this.miscForm.controls["corporate"].setValue(res.corporateId, {
-            emitEvent: false,
-          });
+    // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
+    //   if (res.companyIdComp != "Misc") {
+    //     if (res.companyId) {
+    //       this.miscForm.controls["company"].setValue(res.companyId, {
+    //         emitEvent: false,
+    //       });
+    //     }
+    //     if (res.corporateId) {
+    //       this.miscForm.controls["corporate"].setValue(res.corporateId, {
+    //         emitEvent: false,
+    //       });
+    //     }
+    //   }
+    // });
+    this.Misc.companyChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.miscForm.controls["company"].setValue(res.company, {
+          emitEvent: false,
+        });
+      }
+    });
+    this.Misc.corporateChangeEvent.subscribe((res: any) => {
+      if (res.from != "header") {
+        this.miscForm.controls["corporate"].setValue(res.corporate, {
+          emitEvent: false,
+        });
+        if(res.corporate === 0){
+          this.miscForm.controls["corporate"].disable();
+        }else{
+          this.miscForm.controls["corporate"].enable();
         }
       }
     });
@@ -230,26 +251,52 @@ export class MiscellaneousBillingComponent implements OnInit {
       }
     });
     this.miscForm.controls["company"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value.value) {
-          this.companyId = value.value;
+    .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          this.Misc.setCompnay(
+            res.value,
+            res,
+            this.miscForm,
+            "header"
+          );
+          this.companyId = res.value;
           this.setItemsToBill.enablecompanyId = true;
           this.setItemsToBill.companyId = this.miscForm.value.company;
           this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
+        }else{
+          this.Misc.setCompnay(
+            res,
+            res,
+            this.miscForm,
+            "header"
+          );
         }
       });
     this.miscForm.controls["corporate"].valueChanges
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((value: any) => {
-        if (value.value) {
-          this.corporateId = value.value;
+    .pipe(distinctUntilChanged())
+      .subscribe((res: any) => {
+        if (res && res.value) {
+          this.Misc.setCorporate(
+            res.value,
+            res,
+            this.miscForm,
+            "header"
+          );
+          this.corporateId = res.value;
           this.Misc.setPatientDetail(this.patientDetail);
           this.setItemsToBill.corporateId = this.miscForm.value.corporate;
           this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
+        }else{
+          this.Misc.setCorporate(
+            res,
+            res,
+            this.miscForm,
+            "header"
+          );
         }
       });
     this.miscForm.controls["b2bInvoiceType"].valueChanges
@@ -691,7 +738,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setCompany(patientDetails: PatientDetail) {
     if (patientDetails.companyid != 0) {
       let company = this.filterList(
-        this.complanyList,
+        this.companyList,
         patientDetails.companyid
       )[0];
       this.miscForm.controls["company"].setValue({
@@ -724,17 +771,20 @@ export class MiscellaneousBillingComponent implements OnInit {
     });
   }
   getAllCompany() {
-    //let location = 67;
-    let location = Number(this.cookie.get("HSPLocationId"));
+    let location = 67;
+  //  let location = Number(this.cookie.get("HSPLocationId"));
     this.http
       .get(BillingApiConstants.getcompanydetail(location))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: GetCompanyDataInterface[]) => {
-        this.complanyList = data;
-        this.questions[2].options = this.complanyList.map((a) => {
-          return { title: a.name, value: a.id };
+        this.companyList = data;        
+        this.Misc.setCompanyData(data);        
+        this.miscForm.controls["corporate"].disable();
+        this.questions[2].options = this.companyList.map((a) => {
+          return { title: a.name, value: a.id, company: a };
         });
-        this.questions[2] = { ...this.questions[2] };
+        this.questions[2] = { ...this.questions[2] };     
+       
       });
   }
 
@@ -743,7 +793,9 @@ export class MiscellaneousBillingComponent implements OnInit {
       .get(ApiConstants.getCorporate)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;
+        this.coorporateList = resultData;        
+        this.Misc.setCorporateData(resultData);
+        resultData.unshift({ name: "Select", id: -1 });
         this.questions[3].options = this.coorporateList.map((l) => {
           return { title: l.name, value: l.id };
         });
@@ -820,7 +872,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.miscForm.value.narration,
       0,
       patientDetail.peMail,
-      patientDetail.pCellNo
+      patientDetail.pCellNo,
+      patientDetail.paNno
     );
     this.Misc.setPatientDetail(this.patientDetail);
     localStorage.setItem("patientDetail", this.patientDetail.toString());

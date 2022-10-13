@@ -45,10 +45,14 @@ export class SingleComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: any): void {
-    if (
-      changes.reportConfig.currentValue.reportName !=
-      changes.reportConfig.previousValue.reportName
-    ) {
+    if (changes.reportConfig.previousValue) {
+      if (
+        changes.reportConfig.currentValue.reportName !=
+        changes.reportConfig.previousValue.reportName
+      ) {
+        this.init();
+      }
+    } else {
       this.init();
     }
   }
@@ -62,8 +66,7 @@ export class SingleComponent implements OnInit, OnChanges {
     debugger;
     if (button.type == "clear") {
       this.formGroup.reset();
-    } 
-    else if (button.type == "crystalReport") {
+    } else if (button.type == "crystalReport") {
       for (var i = 0; i < this.questions.length; i++) {
         console.log(this.reportConfig.filterForm);
         if (this.questions[i].type == "date") {
@@ -114,8 +117,7 @@ export class SingleComponent implements OnInit, OnChanges {
               }
             }
           });
-      } 
-      else if (button.reportConfig.reportEntity == "OpenScrollReport") {
+      } else if (button.reportConfig.reportEntity == "OpenScrollReport") {
         let openscrolltypename;
         this.http
           .get(`${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`)
@@ -152,8 +154,7 @@ export class SingleComponent implements OnInit, OnChanges {
               }
             }
           });
-      } 
-      else {
+      } else {
         this.reportService.openWindow(
           button.reportConfig.reportName,
           button.reportConfig.reportEntity,

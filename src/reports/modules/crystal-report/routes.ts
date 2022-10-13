@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: "crystal-report",
     component: CrystalReportComponent,
-    canActivate: [AuthGuardService],
+
     children: [
       {
         path: "popup/:reportName",

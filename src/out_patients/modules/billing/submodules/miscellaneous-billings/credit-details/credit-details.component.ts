@@ -22,14 +22,12 @@ import { IomCompanyBillingComponent } from "../../billing/prompts/iom-company-bi
 import { ConfigurationBillingComponent } from "../../billing/prompts/configuration-billing/configuration-billing.component";
 import { BillingService } from "../../billing/billing.service";
 
-
 @Component({
-  selector: 'out-patients-credit-details',
-  templateUrl: './credit-details.component.html',
-  styleUrls: ['./credit-details.component.scss']
+  selector: "out-patients-credit-details",
+  templateUrl: "./credit-details.component.html",
+  styleUrls: ["./credit-details.component.scss"],
 })
 export class CreditDetailComponent implements OnInit {
-
   staffDependentTypeList: any = [];
   comapnyFormData = {
     title: "",
@@ -116,12 +114,15 @@ export class CreditDetailComponent implements OnInit {
   coorporateList: { id: number; name: string }[] = [] as any;
   today: any;
 
-  constructor(private formService: QuestionControlService,
-    private http: HttpService, public matDialog: MatDialog,
+  constructor(
+    private formService: QuestionControlService,
+    private http: HttpService,
+    public matDialog: MatDialog,
     public cookie: CookieService,
     private datepipe: DatePipe,
     private billingservice: BillingService,
-    private dialogService: MessageDialogService,) { }
+    private dialogService: MessageDialogService
+  ) {}
 
   ngOnInit(): void {
     this.today = new Date();
@@ -143,14 +144,13 @@ export class CreditDetailComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
 
-    this.http.get(ApiConstants.getstaffdependentdetails(0, '', ''))
+    this.http
+      .get(ApiConstants.getstaffdependentdetails(0, "", ""))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
+      .subscribe((res: any) => {});
 
-      })
-
-
-    this.http.get(ApiConstants.getstaffdependentsearchtype())
+    this.http
+      .get(ApiConstants.getstaffdependentsearchtype())
       .pipe(takeUntil(this._destroying$))
       .subscribe((res: any) => {
         this.staffDependentTypeList = res;
@@ -208,23 +208,27 @@ export class CreditDetailComponent implements OnInit {
           this.companyname = res;
           this.companyexists = true;
           let iomcompany = this.companyList.filter((iom) => iom.id == res);
-          this.iommessage = "IOM Validity till : " + this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
+          this.iommessage =
+            "IOM Validity till : " +
+            this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
           TPA = iomcompany[0].isTPA;
           if (TPA == 1) {
-            const iomcompanycorporate = this.matDialog.open(IomCompanyBillingComponent, {
-              width: "25%",
-              height: "28%",
-            });
+            const iomcompanycorporate = this.matDialog.open(
+              IomCompanyBillingComponent,
+              {
+                width: "25%",
+                height: "28%",
+              }
+            );
 
-            iomcompanycorporate.afterClosed()
+            iomcompanycorporate
+              .afterClosed()
               .pipe(takeUntil(this._destroying$))
               .subscribe((result) => {
                 if (result.data == "corporate") {
                   this.comapnyFormGroup.controls["corporate"].enable();
                   this.comapnyFormGroup.controls["corporate"].setValue(0);
-                }
-                else {
-
+                } else {
                   this.comapnyFormGroup.controls["corporate"].setValue(0);
                   this.comapnyFormGroup.controls["corporate"].disable();
                 }
@@ -233,32 +237,29 @@ export class CreditDetailComponent implements OnInit {
             this.comapnyFormGroup.controls["corporate"].setValue(0);
             this.comapnyFormGroup.controls["corporate"].disable();
           }
-        }
-        else {
+        } else {
           this.companyexists = false;
         }
-
-      });
+      }
+    );
   }
 
   openconfiguration() {
     let billtype;
     billtype = this.billingservice.getbilltype();
     let configurationitems: any = this.billingservice.getconfigurationservice();
-    if (billtype != "credit") {
+    if (billtype != 3) {
       this.dialogService.error("Select credit check first");
-    }
-    else if (configurationitems.length == 0) {
+    } else if (configurationitems.length == 0) {
       this.dialogService.error("There is no items for configuration");
-    }
-    else {
+    } else {
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",
         height: "80%",
         data: {
           serviceconfiguration: configurationitems,
           patientdetails: this.billingservice.getPatientDetails(),
-          companyname: this.companyname
+          companyname: this.companyname,
         },
       });
     }
