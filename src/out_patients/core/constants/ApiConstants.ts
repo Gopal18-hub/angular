@@ -1501,4 +1501,6 @@ export namespace ApiConstants {
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/validatecoupon/${CouponNo}/${Locationid}/${Iacode}/${Registration}/${SpecializationId}`
   }
+
+  export const savepostdischarge = environment.BillingApiUrl + "api/outpatientbilling/createpostdischargeconsultbill";
 }
