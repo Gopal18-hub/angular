@@ -7,6 +7,9 @@ import { ApiConstants } from '@core/constants/ApiConstants';
 import { HttpService } from '@shared/services/http.service';
 import { CookieService } from '@shared/services/cookie.service';
 import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.service';
+import { createpostdischargeconsultbill } from '@core/models/createpostdischargeconsultbill.Model';
+import { Subject, takeUntil } from 'rxjs';
+import { ReportService } from '@shared/services/report.service';
 @Component({
   selector: 'out-patients-post-discharge-bill',
   templateUrl: './post-discharge-bill.component.html',
@@ -136,6 +139,10 @@ export class PostDischargeBillComponent implements OnInit {
       coupon: {
         type: "string",
         readonly: true
+      },
+      couponvalidate: {
+        type: "checkbox",
+        options: [{ title: "" }],
       }
     }
   }
@@ -144,13 +151,17 @@ export class PostDischargeBillComponent implements OnInit {
   data: any = [];
   IsValidateCoupon: boolean = false;
   printbill: boolean = true;
+  couponcheck: boolean = false;
+  postdischagesave!: createpostdischargeconsultbill;
+  private readonly _destroying$ = new Subject<void>();
   constructor( 
     private formservice: QuestionControlService,
     public service: PostDischargeServiceService,
     private snackbar: MaxHealthSnackBarService,
     private http: HttpService,
     public cookie: CookieService,
-    private msgdialog: MessageDialogService
+    private msgdialog: MessageDialogService,
+    private reportService: ReportService
     ) { }
 
   ngOnInit(): void {
@@ -181,6 +192,14 @@ export class PostDischargeBillComponent implements OnInit {
         this.data = [];
       }
     }); 
+    console.log(this.service.billModified);
+    if(this.service.billModified)
+    {
+      this.billform.controls['coupon'].setValue(this.service.activecoupon);
+      this.couponcheck = true;
+      this.questions[0].readonly = true;
+      this.IsValidateCoupon = true;
+    }
   }
 
   ngAfterViewInit(): void{
@@ -219,6 +238,7 @@ export class PostDischargeBillComponent implements OnInit {
     this.billform.reset();
     this.IsValidateCoupon = false;
     this.questions[0].readonly = true;
+    this.couponcheck = false;
   }
 
   validatecoupon()
@@ -241,7 +261,10 @@ export class PostDischargeBillComponent implements OnInit {
         console.log(res);
         if(res.length == 0)
         {
-          this.msgdialog.info("Either Invalid Coupon or already used");
+          const dialogref = this.msgdialog.info("Either Invalid Coupon or already used");
+          dialogref.afterClosed().subscribe(() => {
+            this.billform.controls['coupon'].reset();
+          })
         }
         else
         {
@@ -254,8 +277,71 @@ export class PostDischargeBillComponent implements OnInit {
           this.service.consultationItems[0].price = "0.00";
           this.service.calculateTotalAmount();
           this.service.modified();
+          // this.billform.controls['couponvalidate'].setValue(true);
+          this.couponcheck = true;
+          this.questions[0].elementRef.blur();
+          this.service.setactivecoupon(this.billform.controls['coupon'].value);
         }
       })
     }
+  }
+  billid: any;
+  flag: any;
+  makebill()
+  {
+    this.http.post(ApiConstants.savepostdischarge, this.makebillreqbody())
+    .pipe(takeUntil(this._destroying$))
+    .subscribe((res) => {
+      console.log(this.postdischagesave);
+      console.log(res);
+      if(res[0].successFlag)
+      {
+        this.service.setBilledStatus();
+        const dialogref =  this.msgdialog.success('Visit has been done successfully');
+        dialogref.afterClosed().subscribe(() => {
+          const yesorno = this.msgdialog.confirm(
+            '',
+            'Do you want to print report?'
+          );
+          yesorno.afterClosed().subscribe((res) => {
+            if(res && 'type' in res) 
+            {
+              if(res.type == 'yes')
+              {
+                this.print();
+              }
+            }
+          })
+        })
+        this.printbill = false;
+        this.billid = res[0].billId;
+        this.flag = res[0].returnflagToken;
+      }
+    })
+  }
+  makebillreqbody()
+  {
+    return (this.postdischagesave = new createpostdischargeconsultbill(
+      Number(this.service.activeMaxId.regNumber),
+      this.service.activeMaxId.iacode,
+      Number(this.cookie.get('HSPLocationId')),
+      Number(this.billform.controls['coupon'].value),
+      Number(this.cookie.get('UserId')),
+      Number(this.cookie.get('StationId')),
+      10484,
+      Number(this.service.consultationItems[0].doctorId),
+      Number(this.service.consultationItems[0].specialization)
+    ))
+  }
+  print()
+  {
+    console.log(this.billid, this.flag);
+    this.openReportModal('PostDischargeFollowUpReport')
+  }
+  openReportModal(btnname: string) {
+    this.reportService.openWindow(btnname, btnname, {
+      opbillid: this.billid,
+      flag: this.flag,
+    });
   }
 }

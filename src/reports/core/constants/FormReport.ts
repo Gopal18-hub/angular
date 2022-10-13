@@ -592,7 +592,7 @@ export namespace FormReport {
       type: "object",
       properties: {
         MemberShipNo: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
@@ -607,6 +607,7 @@ export namespace FormReport {
             },
           },
         },
+        defaultValue: "value",
       },
     },
     form: {
@@ -640,13 +641,13 @@ export namespace FormReport {
       type: "object",
       properties: {
         membershipno: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/$${MaxHealthStorage.getCookie(
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
               "HSPLocationId"
             )}`,
             fields: {
