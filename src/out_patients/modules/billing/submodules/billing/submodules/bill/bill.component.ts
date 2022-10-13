@@ -609,12 +609,19 @@ export class BillComponent implements OnInit, OnDestroy {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        this.validateCoupon();
-      }
-    });
+
+
+    this.question[12].elementRef.addEventListener(
+      "blur",
+      this.validateCoupon.bind(this)
+    );
+
+    // this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") {
+    //     event.preventDefault();
+    //     this.validateCoupon();
+    //   }
+    // });
   }
 
   discountreason() {
@@ -908,38 +915,49 @@ export class BillComponent implements OnInit, OnDestroy {
 
   async validateCoupon() {
     if (this.formGroup.value.coupon) {
-      if (this.billingservice.company > 0) {
-        // popup to show MECP only for CASH
-        const CouponErrorRef = this.messageDialogService.error(
-          "MECP discount applicable on CASH Patient only"
-        );
-        await CouponErrorRef.afterClosed().toPromise();
-        this.formGroup.controls["coupon"].setValue("");
-        return;
-      } else {
-        if (this.formGroup.value.paymentMode == 1) {
-          this.calculateBillService.getServicesForCoupon(
-            this.formGroup,
-            Number(this.cookie.get("HSPLocationId")),
-            this
-          );
-        } else {
-          //popup to show validation only for CASH
+      if(this.formGroup.value.coupon.lenght >4){
+        if (this.billingservice.company > 0) {
+          // popup to show MECP only for CASH
           const CouponErrorRef = this.messageDialogService.error(
             "MECP discount applicable on CASH Patient only"
           );
           await CouponErrorRef.afterClosed().toPromise();
           this.formGroup.controls["coupon"].setValue("");
           return;
+        } else {
+          if (this.formGroup.value.paymentMode == 1) {
+            this.calculateBillService.getServicesForCoupon(
+              this.formGroup,
+              Number(this.cookie.get("HSPLocationId")),
+              this
+            );
+          } else {
+            //popup to show validation only for CASH
+            const CouponErrorRef = this.messageDialogService.error(
+              "MECP discount applicable on CASH Patient only"
+            );
+            await CouponErrorRef.afterClosed().toPromise();
+            this.formGroup.controls["coupon"].setValue("");
+            return;
+          }
         }
       }
-    } else {
-      // validation to show coupon required
+      else  if(this.formGroup.value.coupon.lenght >3){
+         // validation to show coupon required
       const CouponErrorRef = this.messageDialogService.error(
-        "Please Enter Coupon"
+        "Please Enter Proper Coupon"
       );
       await CouponErrorRef.afterClosed().toPromise();
       return;
+      }
+     
+    } else {
+      // // validation to show coupon required
+      // const CouponErrorRef = this.messageDialogService.error(
+      //   "Please Enter Coupon"
+      // );
+      // await CouponErrorRef.afterClosed().toPromise();
+      // return;
     }
   }
 }
