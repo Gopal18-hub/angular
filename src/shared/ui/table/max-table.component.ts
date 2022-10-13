@@ -267,8 +267,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection.clear();
       return;
     }
-
     this.selection.select(...this.dataSource.data);
+    //If mastercheck includes deselection,
+    //the mastercheckbox has to change from indeterminate to checked status
+    this.selection.selected.length = this.dataSource.data.length;
   }
 
   /** The label for the checkbox on the passed row */

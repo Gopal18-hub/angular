@@ -76,6 +76,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         style: {
           width: "80px",
         },
+        disabledSort: "true",
       },
       procedures: {
         title: "Procedures",

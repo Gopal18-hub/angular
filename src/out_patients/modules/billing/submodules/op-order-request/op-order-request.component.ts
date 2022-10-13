@@ -32,6 +32,8 @@ import { SimilarPatientDialog } from "../billing/billing.component";
 import { Router } from "@angular/router";
 import { PatientDetails } from "@core/models/patientDetailsModel.Model";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 @Component({
   selector: "out-patients-op-order-request",
   templateUrl: "./op-order-request.component.html",
@@ -96,6 +98,7 @@ export class OpOrderRequestComponent implements OnInit {
   bplcardNo: any;
   bplCardAddress: any;
   patientDetailsforicon!: PatientDetails;
+
   // messageDialogService: any;
 
   constructor(
@@ -109,12 +112,13 @@ export class OpOrderRequestComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private router: Router,
     private patientservice: PatientService,
-    private opOrderRequestService: OpOrderRequestService,
-    private messageDialogService: MessageDialogService
+    public opOrderRequestService: OpOrderRequestService,
+    private messageDialogService: MessageDialogService,
+    private searchService: SearchService,
+    private lookupservice: LookupService
   ) {}
 
   ngOnInit(): void {
-    // this.getAllCompany();
     this.opOrderRequestService.investigationItems = [];
     this.opOrderRequestService.procedureItems = [];
     this.opOrderRequestService.activeLink.subscribe((data) => {
@@ -143,6 +147,45 @@ export class OpOrderRequestComponent implements OnInit {
         this.getPatientDetailsByMaxId();
       }
     });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata.data.SearchTerm);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+
+        const lookupdata = await this.lookupservice.searchPatient(formdata);
+        console.log(lookupdata);
+        if (lookupdata.length == 1) {
+          this.formGroup.value.maxid = lookupdata[0]["maxid"];
+          console.log(this.formGroup.value.maxid);
+          this.getPatientDetailsByMaxId();
+        } else if (lookupdata.length > 1) {
+          const similarSoundDialogref = this.matDialog.open(
+            SimilarPatientDialog,
+            {
+              width: "60vw",
+              height: "65vh",
+              data: {
+                searchResults: lookupdata,
+              },
+            }
+          );
+          similarSoundDialogref
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result) {
+                console.log(result.data["added"][0].maxid);
+                let maxID = result.data["added"][0].maxid;
+                this.formGroup.controls["maxid"].setValue(maxID);
+                this.getPatientDetailsByMaxId();
+              }
+            });
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -346,6 +389,7 @@ export class OpOrderRequestComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.formGroup.markAsDirty();
     this.router.navigate(["out-patient-billing/op-order-request/services"]);
   }
 
