@@ -307,6 +307,11 @@ export class BillingService {
         "credLimit"
       ].setValue("0.00");
     }
+    if(res === "" || res == null){
+      this.companyChangeEvent.next({ company: null, from });
+      this.selectedcorporatedetails = [];
+      this.iomMessage = "";
+    }else{  
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
     this.companyChangeEvent.next({ company: res, from });
@@ -330,15 +335,19 @@ export class BillingService {
         if (result.data == "corporate") {
           formGroup.controls["corporate"].enable();
           formGroup.controls["corporate"].setValue(null);
+          this.corporateChangeEvent.next({ corporate: null, from });
         } else {
           formGroup.controls["corporate"].setValue(null);
           formGroup.controls["corporate"].disable();
+          this.corporateChangeEvent.next({ corporate: 0, from });
         }
       });
     } else {
+      this.corporateChangeEvent.next({ corporate: 0, from });
       formGroup.controls["corporate"].setValue(null);
       formGroup.controls["corporate"].disable();
     }
+  }
   }
 
   setCorporate(
@@ -347,8 +356,13 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
+    if(res === ""){
+      this.corporateChangeEvent.next({ corporate: null, from });
+      this.selectedcorporatedetails = [];
+    }else{
     this.selectedcorporatedetails = res;
     this.corporateChangeEvent.next({ corporate: res, from });
+    }
   }
 
   setCompanyData(data: any) {

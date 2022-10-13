@@ -284,7 +284,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
-          //defaultValue: "0",
+          defaultValue: "0",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -355,7 +355,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "autocomplete",
-          placeholder: "---Specialisation---",
+          placeholder: "---AllSpecialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -463,7 +463,7 @@ export namespace FormReport {
     resultType: "table",
   };
   export const HappyFamilyPlanAllocationReport = {
-    reportName: "Happy Family Plan",
+    reportName: "Happy Family Plan Allocation",
     filterForm: {
       title: "",
       type: "object",
@@ -471,39 +471,39 @@ export namespace FormReport {
         Flag: {
           type: "radio",
           options: [
-            { title: "PlanName", value: "PlanName" },
-            { title: "Membership", value: "Membership" },
+            { title: "Plan Name", value: "Plan Name" },
+            { title: "Membership No", value: "Membership No" },
           ],
 
-          defaultValue: "PlanName",
+          defaultValue: "Plan Name",
           conditions: [
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "planID",
               type: "show",
             },
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "Location",
               type: "hide",
             },
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "MemberShipNo",
               type: "hide",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "MemberShipNo",
               type: "show",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "planID",
               type: "hide",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "Location",
               type: "show",
             },
@@ -525,7 +525,7 @@ export namespace FormReport {
         },
 
         Location: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           questionClasses: "max-hide",
@@ -551,7 +551,7 @@ export namespace FormReport {
             )}`,
             fields: {
               title: "membershipno",
-              value: "id",
+              value: "membershipno",
             },
           },
 
@@ -592,7 +592,7 @@ export namespace FormReport {
       type: "object",
       properties: {
         MemberShipNo: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
@@ -607,6 +607,7 @@ export namespace FormReport {
             },
           },
         },
+        defaultValue: "value",
       },
     },
     form: {
@@ -640,13 +641,13 @@ export namespace FormReport {
       type: "object",
       properties: {
         membershipno: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/$${MaxHealthStorage.getCookie(
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
               "HSPLocationId"
             )}`,
             fields: {

@@ -21,6 +21,7 @@
                 [indeterminate]="selection.hasValue() && !isAllSelected()"
                 [aria-label]="checkboxLabel()"
                 color="primary"
+               
               >
               </mat-checkbox>
             </ng-container>
@@ -62,6 +63,7 @@
             [checked]="selection.isSelected(row)"
             [aria-label]="checkboxLabel(row)"
             color="primary"
+            [disabled]="row.disablecheckbox"
           >
           </mat-checkbox>
         </td>

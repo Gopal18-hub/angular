@@ -58,6 +58,9 @@
         text-decoration: underline;
       }
     }
+    .api-loader {
+      background: rgba(0, 0, 0, 0.15);
+    }
     .iom-message {
       position: absolute;
       top: 24.5%;
@@ -67,6 +70,9 @@
     .category-icons {
       img {
         object-fit: cover;
+      }
+      ::ng-deep .bg-vilot {
+        background-color: violet;
       }
     }
     ::ng-deep {
