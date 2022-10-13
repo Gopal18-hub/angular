@@ -151,7 +151,8 @@
             color="primary"
             type="button"
             class="ml-7"
-            [disabled]=true          
+            [disabled]="!companyexists"
+            (click)="openmiscconfiguration()"        
           >
             Configuration
           </button>
