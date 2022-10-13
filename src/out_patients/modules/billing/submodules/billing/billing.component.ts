@@ -187,7 +187,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        this.formGroup.controls["corporate"].enable();
+        if(res.corporate === 0){
+          this.formGroup.controls["corporate"].disable();
+        }else{
+          this.formGroup.controls["corporate"].enable();
+        }
       }
     });
   }
@@ -245,6 +249,14 @@ export class BillingComponent implements OnInit, OnDestroy {
             "header"
           );
         }
+        else{
+          this.billingService.setCompnay(
+            res,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }
       });
 
     this.formGroup.controls["corporate"].valueChanges
@@ -254,6 +266,13 @@ export class BillingComponent implements OnInit, OnDestroy {
           console.log(res);
           this.billingService.setCorporate(
             res.value,
+            res,
+            this.formGroup,
+            "header"
+          );
+        }else{
+          this.billingService.setCorporate(
+            res,
             res,
             this.formGroup,
             "header"

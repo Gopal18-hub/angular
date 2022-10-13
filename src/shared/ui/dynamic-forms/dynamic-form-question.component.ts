@@ -170,6 +170,13 @@ export class DynamicFormQuestionComponent
     if (this.question)
       this.question.label = this.question.label.replace(/_/gi, " ");
     if (this.question.conditions.length > 0) {
+      if (this.question.defaultValue) {
+        this.excuteCondition(
+          this.question.conditions,
+          this.question.defaultValue,
+          this.form.value
+        );
+      }
       this.form.controls[this.question.key].valueChanges.subscribe((value) => {
         this.excuteCondition(this.question.conditions, value, this.form.value);
       });
