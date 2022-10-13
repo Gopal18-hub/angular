@@ -835,6 +835,19 @@ export class BillingService {
               .afterClosed()
               .toPromise();
             if (reasonInfoResult) {
+              console.log(reasonInfoResult);
+              if (reasonInfoResult.data) {
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.auth =
+                  reasonInfoResult.data.authorisedby;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.reasonId =
+                  reasonInfoResult.data.reason;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.reason =
+                  reasonInfoResult.reason;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.remarks =
+                  reasonInfoResult.data.remarks;
+                this.makeBillPayload.ds_insert_bill.tab_insertbill.balance =
+                  toBePaid - collectedAmount;
+              }
             } else {
               return;
             }
