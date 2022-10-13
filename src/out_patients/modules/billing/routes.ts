@@ -43,6 +43,7 @@ import { CashScrollComponent } from "./submodules/cash-scroll/cash-scroll.compon
 import { CashScrollNewComponent } from "./submodules/cash-scroll/submodules/cash-scroll-new/cash-scroll-new.component";
 import { CashScrollModifyComponent } from "./submodules/cash-scroll/submodules/cash-scroll-modify/cash-scroll-modify.component";
 import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/billing/credit-details/misc-credit-details.component";
+import { EcareOpSummaryReportComponent } from "./submodules/ecare-op-summary-report/ecare-op-summary-report.component";
 const routes: Routes = [
   {
     path: "out-patient-billing",
@@ -129,6 +130,10 @@ const routes: Routes = [
       {
         path: "monthly-op-consultation-report",
         component: MonthlyOpConsultationReportComponent,
+      },
+      {
+        path: "ecare-op-summary-report",
+        component: EcareOpSummaryReportComponent,
       },
       {
         path: "online-deposit-report",
