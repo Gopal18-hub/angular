@@ -370,7 +370,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           if (result) {
             if (result.data) {
               //need to add result into makebill payload
-              //result.data.twiceConsultationReason
+              this.billingService.twiceConsultationReason =
+                result.data.twiceConsultationReason;
               this.getCalculateOpBill(priorityId);
             } else {
               return;

@@ -71,7 +71,7 @@ export class QuestionControlService {
       else if (question.type == "password")
         data.push(new PasswordQuestion(question));
       else if (question.type == "autocomplete")
-        data.push(new AutoCompleteQuestion(question));
+        data.push(new AutoCompleteQuestion(question, this.http));
       else if (question.type == "date") data.push(new DateQuestion(question));
       else if (question.type == "datetime")
         data.push(new DateTimeQuestion(question));

@@ -35,7 +35,7 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
-  companyCreditItems: any = [];
+  companyNonCreditItems: any = [];
 
   billFormGroup: any;
 
@@ -50,8 +50,8 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  setCompanyCreditItems(items: any) {
-    this.companyCreditItems = items;
+  setCompanyNonCreditItems(items: any) {
+    this.companyNonCreditItems = items;
   }
 
   initProcess(
