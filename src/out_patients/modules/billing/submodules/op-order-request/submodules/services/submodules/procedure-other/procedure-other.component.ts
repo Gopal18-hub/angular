@@ -76,6 +76,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         style: {
           width: "80px",
         },
+        disabledSort: "true",
       },
       procedures: {
         title: "Procedures",
@@ -386,7 +387,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           qty: 1,
           specialisation: "",
           doctorName: "",
-          price: res.amount,
+          price: res.amount.toFixed(2),
           unitPrice: res.amount,
           itemid: this.formGroup.value.procedure.value,
           priorityId: priorityId,
