@@ -333,18 +333,12 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.formGroup = formResult.form;
     this.question = formResult.questions;
-    console.log(this.question);
-    if (this.billingservice.makeBillPayload.cmbInteraction) {
-      this.formGroup.controls["interactionDetails"].setValue(
-        this.billingservice.makeBillPayload.cmbInteraction
-      );
-    }
     if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType
+      this.calculateBillService.billFormGroup &&
+      this.calculateBillService.billFormGroup.form
     ) {
-      this.formGroup.controls["paymentMode"].setValue(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .billType
+      this.formGroup.patchValue(
+        this.calculateBillService.billFormGroup.form.value
       );
     }
     this.question[1].options = await this.calculateBillService.getinteraction();
@@ -366,12 +360,6 @@ export class BillComponent implements OnInit, OnDestroy {
         },
       });
       await popuptextDialogRef.afterClosed().toPromise();
-    }
-    if (
-      this.billingservice.referralDoctor &&
-      this.billingservice.referralDoctor.id == 2015
-    ) {
-      this.formGroup.controls["self"].setValue(true);
     }
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
