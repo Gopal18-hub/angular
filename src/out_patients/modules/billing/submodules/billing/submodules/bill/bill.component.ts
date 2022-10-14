@@ -774,7 +774,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.config.removeRow = false;
     this.config = { ...this.config };
     const successInfo = this.messageDialogService.info(
-      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo
       .afterClosed()
