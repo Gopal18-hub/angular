@@ -773,6 +773,7 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   processBillNo(result: any) {
+    this.calculateBillService.blockActions.next(false);
     this.billingservice.billNoGenerated.next(true);
     this.billNo = result.billNo;
     this.billId = result.billId;

@@ -472,7 +472,7 @@ export class BillingService {
       oldorderId: 0,
       consultid: 0,
       discrtype_dr: 0,
-      pharma: data.priorityId,
+      pharma: data.priority || 0,
       specialisationID: data.specialisationID || 0,
       doctorID: data.doctorID || 0,
       isServiceTax: 0,
@@ -509,7 +509,7 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.push({
         orderId: 0,
         doctorId: data.billItem.itemId,
-        type: data.billItem.priorityId,
+        type: data.billItem.priority,
         visited: 0,
         scheduleSlot: "",
         scheduleId: 0,
@@ -876,6 +876,7 @@ export class BillingService {
         }
       }
     }
+    this.calculateBillService.blockActions.next(true);
     return this.http
       .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
       .toPromise();
