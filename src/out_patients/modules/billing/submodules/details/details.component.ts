@@ -95,7 +95,7 @@ export class DetailsComponent implements OnInit {
   public patientDetailsforicon!: PatientDetails;
   categoryIcons: [] = [];
 
-  linkList = [
+  linkList: any = [
     {
       title: "Services",
       path: "services",
@@ -611,6 +611,9 @@ export class DetailsComponent implements OnInit {
               {
                 var errtxt = "Bill Number " + this.BServiceForm.value.billNo + " Has Been Cancelled";
                 this.msgdialog.info(errtxt);
+                this.linkList[1].disabled = true;
+                this.linkList[2].disabled = true;
+                this.linkList[3].disabled = true;
               }
               this.BServiceForm.controls["billNo"].setValue(this.billno);
               this.billFormfill();
@@ -933,6 +936,9 @@ export class DetailsComponent implements OnInit {
     this.visithistorybtn = true;
     this.billexist = true;
     this.billdetailservice.clear();
+    this.linkList[1].disabled = false;
+    this.linkList[2].disabled = false;
+    this.linkList[3].disabled = false;
     // this.ngOnInit();
   }
   doxperredirect() {

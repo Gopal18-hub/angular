@@ -547,6 +547,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
+        this.questions[3] = {...this.questions[3]};
       });
   }
 

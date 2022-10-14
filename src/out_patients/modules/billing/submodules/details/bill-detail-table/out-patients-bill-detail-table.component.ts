@@ -334,10 +334,18 @@ export class BillDetailTableComponent implements OnInit {
     {
       this.headercheck = false;
     }
-    if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 0)
+    var acklist = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
+      return i.ackby > 1;
+    })
+    console.log(acklist);
+    if(acklist.length > 0)
     {
       this.headercheck = true;
     }
+    // if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 1)
+    // {
+    //   this.headercheck = true;
+    // }
     // else if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby == 0)
     // {
     //   this.headercheck = false;
@@ -387,18 +395,12 @@ export class BillDetailTableComponent implements OnInit {
       
       if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
       {
-        this.data.forEach((item: any) => {
-          console.log(item);
-          this.tableRows.selection.selected.forEach((i: any) =>{ 
-            console.log(i)
-            if(item.itemid == i.itemid)
-            {
-              this.msgdialog.info('This Bill Have some Due Amount');
-              setTimeout(() => {
-                this.tableRows.selection.deselect(item);
-              }, 100);
-            }
-          })
+        this.tableRows.selection.selected.forEach((i: any) =>{ 
+          console.log(i);
+          this.msgdialog.info('This Bill Have some Due Amount');
+          setTimeout(() => {
+            this.tableRows.selection.deselect(i);
+          }, 100);
         })
       }
       else if(this.tableRows.selection.selected.length > 0)
@@ -417,7 +419,7 @@ export class BillDetailTableComponent implements OnInit {
             console.log(list);
             for(var z = 0; z < list.length; z++)
             {
-              if(list[z].ackby > 0)
+              if(list[z].ackby > 1)
               {
                 var acklist = this.billDetailservice.serviceList.filter((a: any) => {
                   console.log(a);
@@ -470,7 +472,7 @@ export class BillDetailTableComponent implements OnInit {
               operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
               authorisedby: '',
               reason: '',
-              refundAmt: this.tableRows.selection.selected[i].amount,
+              refundAmt: (Number(this.tableRows.selection.selected[i].amount) - Number(this.tableRows.selection.selected[i].discountamount)).toFixed(2),
               mop: '',
               serviceId: this.tableRows.selection.selected[i].serviceid,
               itemid: this.tableRows.selection.selected[i].itemid,
@@ -499,7 +501,7 @@ export class BillDetailTableComponent implements OnInit {
                     operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
                     authorisedby: '',
                     reason: '',
-                    refundAmt: this.tableRows.selection.selected[i].amount,
+                    refundAmt: (Number(this.tableRows.selection.selected[i].amount) - Number(this.tableRows.selection.selected[i].discountamount)).toFixed(2),
                     mop: '',
                     serviceId: this.tableRows.selection.selected[i].serviceid,
                     itemId: this.tableRows.selection.selected[i].itemid,
