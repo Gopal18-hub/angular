@@ -239,6 +239,7 @@ export class PostDischargeBillComponent implements OnInit {
     this.IsValidateCoupon = false;
     this.questions[0].readonly = true;
     this.couponcheck = false;
+    this.service.billModified = false;
   }
 
   validatecoupon()

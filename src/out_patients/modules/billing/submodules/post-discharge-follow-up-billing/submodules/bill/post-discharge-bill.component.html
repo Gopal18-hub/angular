@@ -19,7 +19,7 @@
                 >
                 </maxhealth-question>
                 <div class="ml-2 check absolute right-5">
-                    <mat-checkbox [ngModel]="couponcheck"></mat-checkbox>
+                    <mat-checkbox [ngModel]="couponcheck" *ngIf="IsValidateCoupon"></mat-checkbox>
                 </div>
               </div>
               <div class="ml-2 check">
