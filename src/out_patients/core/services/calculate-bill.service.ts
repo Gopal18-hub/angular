@@ -43,6 +43,8 @@ export class CalculateBillService {
 
   serviceBasedListItems: any = [];
 
+  blockActions = new Subject<boolean>();
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
