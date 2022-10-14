@@ -570,7 +570,12 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.applyCreditLimit();
+        if (
+          this.formGroup.value.credLimit &&
+          this.formGroup.value.credLimit > 0
+        ) {
+          this.applyCreditLimit();
+        }
       }
     });
 
