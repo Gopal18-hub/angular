@@ -718,6 +718,11 @@ export class BillComponent implements OnInit, OnDestroy {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
                 }
+                else{
+                 if(!res[0].successFlag){
+                   this.messageDialogService.error(res[0].returnMessage);
+                 }
+                }
               }
             }
           } else {
@@ -756,6 +761,12 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
+        }
+        else if(result && "successFlag" in result && !result.successFlag){
+          if(result && "returnMessage" in result && result.returnMessage){
+            this.messageDialogService.error(result.returnMessage);
+          }
+         
         }
       });
   }
