@@ -363,22 +363,7 @@ export class BillDetailTableComponent implements OnInit {
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
-      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
-      {
-        this.data.forEach((item: any) => {
-          console.log(item);
-          this.tableRows.selection.selected.forEach((i: any) =>{ 
-            console.log(i)
-            if(item.itemid == i.itemid)
-            {
-              this.msgdialog.info('This Bill Have some Due Amount');
-              setTimeout(() => {
-                this.tableRows.selection.deselect(item);
-              }, 100);
-            }
-          })
-        })
-      }
+      
       if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Cancelled[0].cancelled == 1)
       {
         this.data.forEach((item: any) => {
@@ -398,7 +383,24 @@ export class BillDetailTableComponent implements OnInit {
           // this.msgdialog.info(errtxt);
           
         })
-      }            
+      }  
+      
+      if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
+      {
+        this.data.forEach((item: any) => {
+          console.log(item);
+          this.tableRows.selection.selected.forEach((i: any) =>{ 
+            console.log(i)
+            if(item.itemid == i.itemid)
+            {
+              this.msgdialog.info('This Bill Have some Due Amount');
+              setTimeout(() => {
+                this.tableRows.selection.deselect(item);
+              }, 100);
+            }
+          })
+        })
+      }
       else if(this.tableRows.selection.selected.length > 0)
         {  
           this.billDetailservice.sendforapproval = [];

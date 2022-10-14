@@ -236,6 +236,7 @@ export class DetailsComponent implements OnInit {
   billexist: boolean = true;
   apiProcessing: boolean = false;
   result: any = [];
+  locationexclude: any = [67,69];
   ngOnInit(){
     this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
@@ -636,7 +637,7 @@ export class DetailsComponent implements OnInit {
                 {
                   healthlist++;
                 }
-                else if(item.servicename == 'Consultations')
+                else if((item.servicename == 'Consultations' || item.servicename == 'Consultation Charges') && this.locationexclude.includes(Number(this.cookie.get('HSPLocationId'))))
                 {
                   consultlist++;
                 }
@@ -645,6 +646,7 @@ export class DetailsComponent implements OnInit {
                   consumablelist++;
                 }
               })
+              console.log(healthlist, consultlist, consumablelist, consultlist);
               if(healthlist > 0)
               {
                 this.phptracksheet = false;
