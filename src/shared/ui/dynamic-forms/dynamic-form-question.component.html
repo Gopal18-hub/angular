@@ -238,6 +238,7 @@
             [pattern]="question.pattern"
             #element
             autocomplete="off"
+            class="text-right"
           />
           <mat-error *ngIf="form.get(question.key)?.hasError('required')">
             {{ question.label }} is <strong>required</strong>

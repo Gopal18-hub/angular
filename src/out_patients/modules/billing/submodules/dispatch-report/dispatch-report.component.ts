@@ -555,7 +555,7 @@ export class DispatchReportComponent implements OnInit {
   }
   openReportModal(btnname: string) {
     console.log(this.dispatchhistoryform.controls["billedlocation"].value.value);
-    this.reportService.openWindow(btnname, btnname, {
+    this.reportService.openWindow('Dispatch Report', btnname, {
       fromdate: this.datepipe.transform(this.dispatchhistoryform.controls["fromdate"].value, "YYYY-MM-dd"),
       todate: this.datepipe.transform(this.dispatchhistoryform.controls["todate"].value, "YYYY-MM-dd"),
       locationid: this.dispatchhistoryform.controls["billedlocation"].value.value,

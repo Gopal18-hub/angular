@@ -35,7 +35,7 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
-  companyCreditItems: any = [];
+  companyNonCreditItems: any = [];
 
   billFormGroup: any;
 
@@ -50,8 +50,8 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  setCompanyCreditItems(items: any) {
-    this.companyCreditItems = items;
+  setCompanyNonCreditItems(items: any) {
+    this.companyNonCreditItems = items;
   }
 
   initProcess(
@@ -269,6 +269,7 @@ export class CalculateBillService {
   processDiscountLogics(formGroup: any, componentRef: any, from: string) {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
     this.applyDiscount(from, formGroup);
+    componentRef.billTypeChange(formGroup.value.paymentMode);
     this.discountSelectedItems.forEach((discItem: any) => {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
         discOn: discItem.discType,
@@ -279,15 +280,16 @@ export class CalculateBillService {
       });
     });
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
-    formGroup.controls["amtPayByPatient"].setValue(
-      componentRef.getAmountPayByPatient()
-    );
+    componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {
         emitEvent: false,
       });
       componentRef.refreshTable();
     }
+    formGroup.controls["amtPayByPatient"].setValue(
+      componentRef.getAmountPayByPatient()
+    );
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {

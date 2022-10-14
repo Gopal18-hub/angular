@@ -216,7 +216,11 @@ export class MiscellaneousBillingComponent implements OnInit {
         this.miscForm.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        this.miscForm.controls["corporate"].enable();
+        if(res.corporate === 0){
+          this.miscForm.controls["corporate"].disable();
+        }else{
+          this.miscForm.controls["corporate"].enable();
+        }
       }
     });
   }
@@ -262,6 +266,13 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
+        }else{
+          this.Misc.setCompnay(
+            res,
+            res,
+            this.miscForm,
+            "header"
+          );
         }
       });
     this.miscForm.controls["corporate"].valueChanges
@@ -279,6 +290,13 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.setItemsToBill.corporateId = this.miscForm.value.corporate;
           this.setItemsToBill.companyIdComp = "Misc";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
+        }else{
+          this.Misc.setCorporate(
+            res,
+            res,
+            this.miscForm,
+            "header"
+          );
         }
       });
     this.miscForm.controls["b2bInvoiceType"].valueChanges
@@ -763,7 +781,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         this.Misc.setCompanyData(data);        
         this.miscForm.controls["corporate"].disable();
         this.questions[2].options = this.companyList.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: a.id, company: a };
         });
         this.questions[2] = { ...this.questions[2] };     
        
