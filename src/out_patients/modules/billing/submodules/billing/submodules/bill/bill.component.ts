@@ -917,7 +917,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
   async validateCoupon() {
     if (this.formGroup.value.coupon) {
-      if (this.formGroup.value.coupon.lenght > 4) {
+      if (this.formGroup.value.coupon.length > 4) {
         if (this.billingservice.company > 0) {
           // popup to show MECP only for CASH
           const CouponErrorRef = this.messageDialogService.error(
@@ -943,7 +943,7 @@ export class BillComponent implements OnInit, OnDestroy {
             return;
           }
         }
-      } else if (this.formGroup.value.coupon.lenght > 3) {
+      } else if (this.formGroup.value.coupon.length > 3) {
         // validation to show coupon required
         const CouponErrorRef = this.messageDialogService.error(
           "Please Enter Proper Coupon"
