@@ -193,6 +193,7 @@ export class OrderSetComponent implements OnInit {
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
       }
+      this.checkTableValidation();
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       this.matDialog.open(OrderSetDetailsComponent, {
@@ -220,6 +221,14 @@ export class OrderSetComponent implements OnInit {
       await this.specializationService.getdoctorlistonSpecialization(
         clinicSpecializationId
       );
+  }
+
+  checkTableValidation() {
+    if (this.tableRows.tableForm.valid) {
+      this.billingService.changeBillTabStatus(false);
+    } else {
+      this.billingService.changeBillTabStatus(true);
+    }
   }
 
   getOrserSetData() {
@@ -352,6 +361,7 @@ export class OrderSetComponent implements OnInit {
 
         this.data = [...this.billingService.OrderSetItems];
         this.formGroup.reset();
+        this.checkTableValidation();
       });
   }
 
