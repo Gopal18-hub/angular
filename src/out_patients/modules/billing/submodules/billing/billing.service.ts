@@ -315,7 +315,7 @@ export class BillingService {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
       this.companyChangeEvent.next({ company: res, from });
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = companyid;
       this.iomMessage =
         "IOM Validity till : " +
         (("iomValidity" in res.company && res.company.iomValidity != "") ||
