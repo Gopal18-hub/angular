@@ -570,7 +570,12 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.applyCreditLimit();
+        if (
+          this.formGroup.value.credLimit &&
+          this.formGroup.value.credLimit > 0
+        ) {
+          this.applyCreditLimit();
+        }
       }
     });
 
@@ -785,7 +790,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.config.removeRow = false;
     this.config = { ...this.config };
     const successInfo = this.messageDialogService.info(
-      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo
       .afterClosed()
