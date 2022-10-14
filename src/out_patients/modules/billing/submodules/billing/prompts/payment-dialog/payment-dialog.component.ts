@@ -121,6 +121,9 @@ export class BillPaymentDialogComponent implements OnInit {
       if (res[0].billNo) {
         this.dialogRef.close(res[0]);
       }
+      else{
+        this.dialogRef.close(res[0]);
+      }
     }
   }
 
