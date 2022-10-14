@@ -26,7 +26,7 @@
     height: 72%;
 }
 .ml-2{
-    margin-left: 14.5rem !important;
+    margin-left: 18.5rem !important;
 }
 .text-overflow{
     white-space: nowrap;
@@ -135,6 +135,11 @@
     background-color: #FFCCD5 !important;
   }
   .ml-13{
-      margin-left: 45.5rem !important;
+      margin-left: 47.5rem !important;
+  }
+  .button{
+    min-width: 95px !important;
+    height: 1.875rem;
+    line-height: 1.875rem;  
   }
 }

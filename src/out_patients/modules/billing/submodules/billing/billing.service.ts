@@ -873,6 +873,7 @@ export class BillingService {
         }
       }
     }
+    this.calculateBillService.blockActions.next(true);
     return this.http
       .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
       .toPromise();
