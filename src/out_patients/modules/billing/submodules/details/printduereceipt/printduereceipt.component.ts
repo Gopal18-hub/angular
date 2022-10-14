@@ -72,7 +72,7 @@ export class PrintduereceiptComponent implements OnInit {
     this.openReportModal('DueReceiptReport');
   }
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
+    this.reportService.openWindow('Due Receipt Report - '+this.printdueform.controls['receiptNumber'].value.value, btnname, {
       receiptnumber: this.printdueform.controls['receiptNumber'].value.value,
       locationID: this.cookie.get('HSPLocationId'),
     });

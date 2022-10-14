@@ -96,14 +96,15 @@ export class ConfigurationBillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.companyservice = this.data.serviceconfiguration;
+    if (this.calculateBillService.companyNonCreditItems.length > 0) {
+      this.patientservice = this.calculateBillService.companyNonCreditItems;
+    }
     this.maxid =
       this.data.patientdetails.iacode +
       "." +
       this.data.patientdetails.registrationno;
     this.companyname = this.data.companyname;
     this.patientname = this.data.patientdetails.firstname;
-    if (this.companyselectedservice)
-      this.patientservice = this.companyselectedservice;
   }
 
   clearconfiguration() {
@@ -122,7 +123,7 @@ export class ConfigurationBillingComponent implements OnInit {
     );
     saveDialogRef.afterClosed().subscribe((value) => {
       if (value && value.type == "yes") {
-        this.calculateBillService.setCompanyCreditItems(
+        this.calculateBillService.setCompanyNonCreditItems(
           this.companybillingtable.selection.selected
         );
         this.dialogRef.close();

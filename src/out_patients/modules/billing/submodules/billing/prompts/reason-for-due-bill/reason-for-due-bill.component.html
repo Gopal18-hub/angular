@@ -60,9 +60,10 @@
       mat-raised-button
       color="primary"
       [disabled]="!reasonForDueBillForm.valid"
+      (click)="authorize()"
     >
       Save
     </button>
-    <button mat-raised-button color="primary">Cancel</button>
+    <button mat-raised-button color="primary"  (click)="Close()">Cancel</button>
   </div>
 </section>

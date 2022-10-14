@@ -107,9 +107,9 @@ export class BillComponent implements OnInit, OnDestroy {
         required: false,
       },
       coPay: {
-        type: "currency",
+        type: "number",
         required: false,
-        defaultValue: "0.00",
+        defaultValue: "0",
         readonly: true,
       },
       credLimit: {
@@ -187,7 +187,7 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "S.No.",
         type: "number",
         style: {
-          width: "80px",
+          width: "65px",
         },
       },
       serviceName: {
@@ -208,33 +208,33 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Precaution",
         type: "string_link",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
-          width: "130px",
+          width: "150px",
         },
       },
       qty: {
-        title: "Qty / Type",
+        title: "Qty/Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "80px",
         },
       },
       credit: {
         title: "Credit",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
       },
       cash: {
         title: "Cash",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
@@ -243,19 +243,19 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Disc %",
         type: "string",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       discAmount: {
         title: "Disc Amount",
-        type: "number",
+        type: "currency",
         style: {
-          width: "120px",
+          width: "100px",
         },
       },
       totalAmount: {
         title: "Total Amount",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },
@@ -264,12 +264,12 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "GST%",
         type: "number",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       gstValue: {
         title: "GST Value",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },
@@ -323,7 +323,7 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
-    if (this.calculateBillService.companyCreditItems.length > 0) {
+    if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
     let formResult: any = this.formService.createForm(
@@ -333,18 +333,12 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.formGroup = formResult.form;
     this.question = formResult.questions;
-    console.log(this.question);
-    if (this.billingservice.makeBillPayload.cmbInteraction) {
-      this.formGroup.controls["interactionDetails"].setValue(
-        this.billingservice.makeBillPayload.cmbInteraction
-      );
-    }
     if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType
+      this.calculateBillService.billFormGroup &&
+      this.calculateBillService.billFormGroup.form
     ) {
-      this.formGroup.controls["paymentMode"].setValue(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .billType
+      this.formGroup.patchValue(
+        this.calculateBillService.billFormGroup.form.value
       );
     }
     this.question[1].options = await this.calculateBillService.getinteraction();
@@ -367,14 +361,9 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       await popuptextDialogRef.afterClosed().toPromise();
     }
-    if (
-      this.billingservice.referralDoctor &&
-      this.billingservice.referralDoctor.id == 2015
-    ) {
-      this.formGroup.controls["self"].setValue(true);
-    }
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
+    this.billTypeChange(this.formGroup.value.paymentMode);
     this.billingservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.data = [];
@@ -382,6 +371,14 @@ export class BillComponent implements OnInit, OnDestroy {
     });
 
     this.calculateBillService.billTabActiveLogics(this.formGroup, this);
+    this.billingservice.refreshBillTab
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((event: boolean) => {
+        if (event) {
+          this.refreshForm();
+          this.refreshTable();
+        }
+      });
   }
 
   rowRwmove($event: any) {
@@ -401,6 +398,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
 
     this.refreshTable();
+    this.refreshForm();
   }
 
   refreshTable() {
@@ -419,6 +417,51 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
 
+  refreshForm() {
+    this.calculateBillService.refreshDiscount();
+    this.calculateBillService.calculateDiscount();
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["discAmt"].setValue(
+      this.calculateBillService.totalDiscountAmt
+    );
+    this.billTypeChange(this.formGroup.value.paymentMode);
+    // this.formGroup.controls["amtPayByPatient"].setValue(
+    //   this.getAmountPayByPatient()
+    // );
+  }
+
+  billTypeChange(value: any) {
+    if (value == 1) {
+      this.data = this.data.map((dItem: any) => {
+        dItem.cash = dItem.totalAmount;
+        dItem.credit = 0;
+        return dItem;
+      });
+      this.data = [...this.data];
+    } else if (value == 3) {
+      this.question[14].readonly = false;
+      this.question[13].readonly = false;
+      let exceptions = this.calculateBillService.companyNonCreditItems.map(
+        (cnci: any) => cnci.itemId
+      );
+      this.data = this.data.map((dItem: any) => {
+        if (exceptions.includes(dItem.itemId)) {
+          dItem.cash = dItem.totalAmount;
+          dItem.credit = 0;
+        } else {
+          dItem.cash = 0;
+          dItem.credit = dItem.totalAmount;
+        }
+
+        return dItem;
+      });
+      this.data = [...this.data];
+    }
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
+  }
+
   ngAfterViewInit() {
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
       if (
@@ -432,11 +475,22 @@ export class BillComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         this.billingservice.setBilltype(value);
+        if (value == 3) {
+          this.question[14].readonly = false;
+          this.question[13].readonly = false;
+        } else {
+          this.question[14].readonly = true;
+          this.question[13].readonly = true;
+        }
+        this.billTypeChange(value);
+        this.formGroup.controls["amtPayByComp"].setValue("0.00");
+        this.formGroup.controls["credLimit"].setValue("0.00");
+        this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["amtPayByPatient"].setValue(
+          this.getAmountPayByPatient()
+        );
       });
-    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
-    this.formGroup.controls["amtPayByPatient"].setValue(
-      this.billingservice.totalCost
-    );
+    this.refreshForm();
     this.formGroup.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -456,7 +510,7 @@ export class BillComponent implements OnInit, OnDestroy {
             item.disc = 0;
             item.discAmount = 0;
             item.totalAmount = item.price * item.qty;
-            item.discountType = 2;
+            item.discountType = 0;
             item.discountReason = 0;
           });
           this.calculateBillService.setDiscountSelectedItems([]);
@@ -464,9 +518,8 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["discAmt"].setValue(
             this.calculateBillService.totalDiscountAmt
           );
-          this.formGroup.controls["amtPayByPatient"].setValue(
-            this.getAmountPayByPatient()
-          );
+          this.billTypeChange(this.formGroup.value.paymentMode);
+          this.applyCreditLimit();
           this.formGroup.controls["coupon"].setValue("");
           this.formGroup.controls["compDisc"].setValue("");
           this.formGroup.controls["patientDisc"].setValue("");
@@ -502,16 +555,71 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.question[14].elementRef.addEventListener("keypress", (event: any) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (
+          this.formGroup.value.credLimit &&
+          this.formGroup.value.credLimit > 0
+        ) {
+          this.applyCreditLimit();
+        }
+      }
+    });
+
     this.question[20].elementRef.addEventListener(
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        this.validateCoupon();
+
+    this.question[12].elementRef.addEventListener(
+      "blur",
+      this.validateCoupon.bind(this)
+    );
+
+    // this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") {
+    //     event.preventDefault();
+    //     this.validateCoupon();
+    //   }
+    // });
+  }
+
+  applyCreditLimit() {
+    let cashAmount = 0;
+    let cashDiscount = 0;
+    let creditAmount = 0;
+    let creditDiscount = 0;
+    this.billingservice.billItems.forEach((bItem: any) => {
+      if (parseFloat(bItem.cash) > 0) {
+        cashAmount += parseFloat(bItem.cash);
+        cashDiscount += parseFloat(bItem.discAmount);
+      } else if (parseFloat(bItem.credit) > 0) {
+        creditAmount += parseFloat(bItem.credit);
+        creditDiscount += parseFloat(bItem.discAmount);
       }
     });
+    const amtPayByComp = creditAmount;
+    // const amountToBePaid =
+    //   this.billingservice.totalCost -
+    //   (this.formGroup.value.discAmt || 0) -
+    //   (this.formGroup.value.dipositAmtEdit || 0);
+    let tempAmount = this.formGroup.value.credLimit;
+
+    if (parseFloat(tempAmount) <= amtPayByComp) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
+    }
+    if (this.formGroup.value.coPay > 0) {
+      tempAmount =
+        this.formGroup.value.amtPayByComp -
+        (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    }
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
   }
 
   discountreason() {
@@ -610,6 +718,11 @@ export class BillComponent implements OnInit, OnDestroy {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
                 }
+                else{
+                 if(!res[0].successFlag){
+                   this.messageDialogService.error(res[0].returnMessage);
+                 }
+                }
               }
             }
           } else {
@@ -639,7 +752,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ceditLimit: 0,
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
-        toPaidAmount: this.formGroup.value.amtPayByPatient,
+        toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
       },
     });
 
@@ -648,6 +761,12 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
+        }
+        else if(result && "successFlag" in result && !result.successFlag){
+          if(result && "returnMessage" in result && result.returnMessage){
+            this.messageDialogService.error(result.returnMessage);
+          }
+         
         }
       });
   }
@@ -659,7 +778,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.config.removeRow = false;
     this.config = { ...this.config };
     const successInfo = this.messageDialogService.info(
-      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo
       .afterClosed()
@@ -696,11 +815,26 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   getAmountPayByPatient() {
-    return (
-      this.billingservice.totalCost -
-      (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.dipositAmtEdit || 0)
-    );
+    let cashAmount = 0;
+    let cashDiscount = 0;
+    let creditAmount = 0;
+    let creditDiscount = 0;
+    this.data.forEach((bItem: any) => {
+      if (parseFloat(bItem.cash) > 0) {
+        cashAmount += parseFloat(bItem.cash);
+        cashDiscount += parseFloat(bItem.discAmount);
+      } else if (parseFloat(bItem.credit) > 0) {
+        creditAmount += parseFloat(bItem.credit);
+        creditDiscount += parseFloat(bItem.discAmount);
+      }
+    });
+    const temp =
+      cashAmount +
+      creditAmount -
+      (this.formGroup.value.dipositAmtEdit || 0) -
+      (this.formGroup.value.amtPayByComp || 0);
+
+    return temp;
   }
 
   depositdetails() {
@@ -787,38 +921,47 @@ export class BillComponent implements OnInit, OnDestroy {
 
   async validateCoupon() {
     if (this.formGroup.value.coupon) {
-      if (this.billingservice.company > 0) {
-        // popup to show MECP only for CASH
-        const CouponErrorRef = this.messageDialogService.error(
-          "MECP discount applicable on CASH Patient only"
-        );
-        await CouponErrorRef.afterClosed().toPromise();
-        this.formGroup.controls["coupon"].setValue("");
-        return;
-      } else {
-        if (this.formGroup.value.paymentMode == 1) {
-          this.calculateBillService.getServicesForCoupon(
-            this.formGroup,
-            Number(this.cookie.get("HSPLocationId")),
-            this
-          );
-        } else {
-          //popup to show validation only for CASH
+      if (this.formGroup.value.coupon.length > 4) {
+        if (this.billingservice.company > 0) {
+          // popup to show MECP only for CASH
           const CouponErrorRef = this.messageDialogService.error(
             "MECP discount applicable on CASH Patient only"
           );
           await CouponErrorRef.afterClosed().toPromise();
           this.formGroup.controls["coupon"].setValue("");
           return;
+        } else {
+          if (this.formGroup.value.paymentMode == 1) {
+            this.calculateBillService.getServicesForCoupon(
+              this.formGroup,
+              Number(this.cookie.get("HSPLocationId")),
+              this
+            );
+          } else {
+            //popup to show validation only for CASH
+            const CouponErrorRef = this.messageDialogService.error(
+              "MECP discount applicable on CASH Patient only"
+            );
+            await CouponErrorRef.afterClosed().toPromise();
+            this.formGroup.controls["coupon"].setValue("");
+            return;
+          }
         }
+      } else if (this.formGroup.value.coupon.length > 3) {
+        // validation to show coupon required
+        const CouponErrorRef = this.messageDialogService.error(
+          "Please Enter Proper Coupon"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        return;
       }
     } else {
-      // validation to show coupon required
-      const CouponErrorRef = this.messageDialogService.error(
-        "Please Enter Coupon"
-      );
-      await CouponErrorRef.afterClosed().toPromise();
-      return;
+      // // validation to show coupon required
+      // const CouponErrorRef = this.messageDialogService.error(
+      //   "Please Enter Coupon"
+      // );
+      // await CouponErrorRef.afterClosed().toPromise();
+      // return;
     }
   }
 }

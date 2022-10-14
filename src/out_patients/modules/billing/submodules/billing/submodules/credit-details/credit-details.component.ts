@@ -144,8 +144,10 @@ export class CreditDetailsComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
     this.billingservice.companyChangeEvent.subscribe((res: any) => {
+      console.log(res);
       if (res.from != "credit") {
         this.companyexists = true;
+        this.companyname = res.company.title;
         this.getAllCompany();
         this.comapnyFormGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
@@ -160,7 +162,11 @@ export class CreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        this.comapnyFormGroup.controls["corporate"].enable();
+        if(res.corporate == 0){
+          this.comapnyFormGroup.controls["corporate"].disable();
+        }else{
+          this.comapnyFormGroup.controls["corporate"].enable();
+        }
       }
     });
     this.billingservice.clearAllItems.subscribe((clearItems) => {
@@ -176,8 +182,8 @@ export class CreditDetailsComponent implements OnInit {
     this.companyQuestions[0].options = this.companyList.map((a: any) => {
       return { title: a.name, value: a.id, company: a };
     });
-    let selectedcompany = this.billingservice.company;
-    if (!this.companyexists && selectedcompany) {
+    let selectedcompany = this.billingservice.selectedcompanydetails;
+    if (!this.companyexists && selectedcompany.length > 0) {
       this.comapnyFormGroup.controls["company"].setValue(
         this.billingservice.selectedcompanydetails
       );
@@ -193,7 +199,7 @@ export class CreditDetailsComponent implements OnInit {
       return { title: l.name, value: l.id };
     });
     let selectedcorporate = this.billingservice.selectedcorporatedetails;
-    if (!this.corporateexists && selectedcorporate) {
+    if (!this.corporateexists && selectedcorporate.length > 0) {
       this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
       this.comapnyFormGroup.controls["corporate"].enable();
     }
@@ -217,7 +223,10 @@ export class CreditDetailsComponent implements OnInit {
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res.value != null && res.value != 0 && res.value != undefined) {
-          this.companyname = res.value;
+          var comarr = this.companyList.filter(i => {
+            return i.id == res.value;
+          });
+          this.companyname = comarr[0].name;
           this.companyexists = true;
           this.billingservice.setCompnay(
             res.value,
@@ -227,22 +236,37 @@ export class CreditDetailsComponent implements OnInit {
           );
         } else {
           this.companyexists = false;
+          this.billingservice.setCompnay(
+            res,
+            res,
+            this.comapnyFormGroup,
+            "credit"
+          );
         }
       });
 
     this.comapnyFormGroup.controls["corporate"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
-        if (res.value != null && res.value != 0 && res.value != undefined) {
-          this.corporateexists = true;
+        if(res != "" && res != null){
+          if (res.value != null && res.value != 0 && res.value != undefined) {
+            this.corporateexists = true;
+            this.billingservice.setCorporate(
+              res.value,
+              res,
+              this.comapnyFormGroup,
+              "credit"
+            );
+          }
+        }
+        else {
+          this.corporateexists = false;
           this.billingservice.setCorporate(
-            res.value,
+            res,
             res,
             this.comapnyFormGroup,
             "credit"
           );
-        } else {
-          this.corporateexists = false;
         }
       });
   }

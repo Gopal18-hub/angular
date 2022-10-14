@@ -35,11 +35,13 @@ export class CalculateBillService {
 
   validCoupon: boolean = false;
 
-  companyCreditItems: any = [];
+  companyNonCreditItems: any = [];
 
   billFormGroup: any;
 
   private readonly _destroying$ = new Subject<void>();
+
+  serviceBasedListItems: any = [];
 
   constructor(
     public matDialog: MatDialog,
@@ -48,8 +50,8 @@ export class CalculateBillService {
     public messageDialogService: MessageDialogService
   ) {}
 
-  setCompanyCreditItems(items: any) {
-    this.companyCreditItems = items;
+  setCompanyNonCreditItems(items: any) {
+    this.companyNonCreditItems = items;
   }
 
   initProcess(
@@ -65,6 +67,16 @@ export class CalculateBillService {
       };
     }
     this.billingServiceRef = billingServiceRef;
+    this.billingServiceRef.billItems.forEach((item: any) => {
+      if (!this.serviceBasedListItems[item.serviceName.toString()]) {
+        this.serviceBasedListItems[item.serviceName.toString()] = {
+          id: item.serviceId,
+          name: item.serviceName,
+          items: [],
+        };
+      }
+      this.serviceBasedListItems[item.serviceName.toString()].items.push(item);
+    });
     billItems.forEach(async (item: any) => {
       await this.serviceBasedCheck(item);
     });
@@ -149,6 +161,35 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
+  refreshDiscount() {
+    this.discountSelectedItems.forEach((disIt: any) => {
+      if ([1, 4, 5, 6].includes(disIt.discTypeId)) {
+        disIt.price = this.billingServiceRef.totalCost;
+        disIt.discAmt = (disIt.price * disIt.disc) / 100;
+        disIt.totalAmt = disIt.price - disIt.discAmt;
+      } else if (disIt.discTypeId == 2) {
+        const serviceItem = this.serviceBasedListItems.find(
+          (sbli: any) => sbli.name == disIt.service
+        );
+        let price = 0;
+        serviceItem.items.forEach((item: any) => {
+          price += item.price * item.qty;
+        });
+        const discAmt = (price * disIt.disc) / 100;
+        disIt.price = price;
+        disIt.discAmt = discAmt;
+        disIt.totalAmt = price - discAmt;
+      } else if (disIt.discTypeId == 3) {
+        const billItem = this.billingServiceRef.billItems.find(
+          (it: any) => it.itemId == disIt.itemId
+        );
+        disIt.price = billItem.price * billItem.qty;
+        disIt.discAmt = (disIt.price * disIt.disc) / 100;
+        disIt.totalAmt = disIt.price - disIt.discAmt;
+      }
+    });
+  }
+
   applyDiscount(from: string, formGroup: any) {
     if (
       this.discountSelectedItems.length == 1 &&
@@ -228,6 +269,7 @@ export class CalculateBillService {
   processDiscountLogics(formGroup: any, componentRef: any, from: string) {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
     this.applyDiscount(from, formGroup);
+    componentRef.billTypeChange(formGroup.value.paymentMode);
     this.discountSelectedItems.forEach((discItem: any) => {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
         discOn: discItem.discType,
@@ -238,15 +280,16 @@ export class CalculateBillService {
       });
     });
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
-    formGroup.controls["amtPayByPatient"].setValue(
-      componentRef.getAmountPayByPatient()
-    );
+    componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {
         emitEvent: false,
       });
       componentRef.refreshTable();
     }
+    formGroup.controls["amtPayByPatient"].setValue(
+      componentRef.getAmountPayByPatient()
+    );
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {

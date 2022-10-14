@@ -967,20 +967,20 @@ export class DetailsComponent implements OnInit {
   openReportModal(btnname: string) {
     if(btnname == 'PHPTracksheet')
     {
-      this.reportService.openWindow(btnname, btnname, {
+      this.reportService.openWindow('PHP Tracksheet - '+ this.BServiceForm.value.billNo, btnname, {
         BillNo: this.BServiceForm.value.billNo,
       });
     }
     else if(btnname == 'billingreport')
     {
-      this.reportService.openWindow(btnname, btnname, {
+      this.reportService.openWindow('Billing Report - '+ this.BServiceForm.value.billNo, btnname, {
         opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
         locationID: this.cookie.get('HSPLocationId')
       });
     }
     else if(btnname == 'ConsumabaleEntryDetailsReport')
     {
-      this.reportService.openWindow(btnname, btnname, {
+      this.reportService.openWindow('Consumable Report - '+ this.BServiceForm.value.billNo, btnname, {
         billno: this.BServiceForm.value.billNo,
         locationID: this.cookie.get('HSPLocationId'),
         MAXID: this.BServiceForm.value.maxid
@@ -995,7 +995,7 @@ export class DetailsComponent implements OnInit {
       dialogref.afterClosed().subscribe( res => {
         if(res == 'yes')
         {
-          this.reportService.openWindow(btnname, btnname, {
+          this.reportService.openWindow('OP Prescription Report - '+ this.BServiceForm.value.billNo, btnname, {
           opbillid: this.patientbilldetaillist.billDetialsForRefund_Table1[0].opBillID,
           locationID: this.cookie.get('HSPLocationId'),
           });
