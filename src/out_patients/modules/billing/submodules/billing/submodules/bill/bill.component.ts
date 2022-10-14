@@ -717,11 +717,10 @@ export class BillComponent implements OnInit, OnDestroy {
               if (res.length > 0) {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
-                }
-                else{
-                 if(!res[0].successFlag){
-                   this.messageDialogService.error(res[0].returnMessage);
-                 }
+                } else {
+                  if (!res[0].successFlag) {
+                    this.messageDialogService.error(res[0].returnMessage);
+                  }
                 }
               }
             }
@@ -741,6 +740,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
       Number(this.formGroup.value.paymentMode);
 
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+      parseFloat(this.formGroup.value.credLimit) || 0;
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "65vw",
       height: "96vh",
@@ -749,10 +751,11 @@ export class BillComponent implements OnInit, OnDestroy {
         totalDiscount: this.formGroup.value.discAmt,
         totalDeposit: this.formGroup.value.dipositAmtEdit,
         totalRefund: 0,
-        ceditLimit: 0,
+        ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
         toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+        amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
       },
     });
 
@@ -761,12 +764,10 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
-        }
-        else if(result && "successFlag" in result && !result.successFlag){
-          if(result && "returnMessage" in result && result.returnMessage){
+        } else if (result && "successFlag" in result && !result.successFlag) {
+          if (result && "returnMessage" in result && result.returnMessage) {
             this.messageDialogService.error(result.returnMessage);
           }
-         
         }
       });
   }

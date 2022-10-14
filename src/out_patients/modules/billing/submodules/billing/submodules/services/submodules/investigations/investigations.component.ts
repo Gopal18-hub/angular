@@ -232,6 +232,7 @@ export class InvestigationsComponent implements OnInit {
           res.data.index
         );
       }
+      this.checkTableValidation();
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
@@ -283,6 +284,17 @@ export class InvestigationsComponent implements OnInit {
           this.questions[1] = { ...this.questions[1] };
         }
       });
+  }
+
+  checkTableValidation() {
+    setTimeout(() => {
+      console.log(this.tableRows.tableForm);
+      if (this.tableRows.tableForm.valid) {
+        this.billingService.changeBillTabStatus(false);
+      } else {
+        this.billingService.changeBillTabStatus(true);
+      }
+    }, 200);
   }
 
   getSpecialization() {
@@ -448,6 +460,7 @@ export class InvestigationsComponent implements OnInit {
           this.formGroup.reset();
         }
         this.calculateBillService.blockActions.next(false);
+        this.checkTableValidation();
       });
   }
 
