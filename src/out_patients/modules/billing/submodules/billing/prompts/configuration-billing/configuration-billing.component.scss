@@ -27,11 +27,23 @@
       .h-40{
         height:43%;
     }
+    .w-31
+    {
+        width: 31%;
+    }
     .secondcolumn{
         margin-left: 40% !important;
     }
     .secondrowsecondcolumn
     {
         margin-left: 45% !important;
+    }
+    .companysecondspan{
+        margin-left: 20% !important;
+    }
+    .text-overflow{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

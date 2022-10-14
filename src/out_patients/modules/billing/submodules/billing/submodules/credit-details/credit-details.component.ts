@@ -144,8 +144,10 @@ export class CreditDetailsComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
     this.billingservice.companyChangeEvent.subscribe((res: any) => {
+      console.log(res);
       if (res.from != "credit") {
         this.companyexists = true;
+        this.companyname = res.company.title;
         this.getAllCompany();
         this.comapnyFormGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
@@ -221,7 +223,10 @@ export class CreditDetailsComponent implements OnInit {
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res.value != null && res.value != 0 && res.value != undefined) {
-          this.companyname = res.value;
+          var comarr = this.companyList.filter(i => {
+            return i.id == res.value;
+          });
+          this.companyname = comarr[0].name;
           this.companyexists = true;
           this.billingservice.setCompnay(
             res.value,
