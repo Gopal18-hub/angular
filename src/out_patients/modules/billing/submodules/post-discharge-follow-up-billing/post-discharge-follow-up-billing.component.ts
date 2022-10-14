@@ -381,6 +381,12 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       });
   }
   setValuesToForm(pDetails: Registrationdetails) {
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.snackbar.open("Invalid Max ID", "error");
+      this.patient = false;
+      this.apiProcessing = false;
+      return;
+    }
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
