@@ -108,6 +108,7 @@ export class CalculateBillService {
     this.bookingIdWarningFlag = false;
     this.depositDetailsData = [];
     this.seniorCitizen = false;
+    this.billFormGroup = null;
   }
 
   setDiscountSelectedItems(items: any) {
