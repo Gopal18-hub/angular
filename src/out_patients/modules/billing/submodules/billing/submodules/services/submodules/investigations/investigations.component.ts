@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
-import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
@@ -19,6 +18,7 @@ import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.s
 import { ActivatedRoute, Router } from "@angular/router";
 import { BillingStaticConstants } from "../../../../BillingStaticConstant";
 import { SpecializationService } from "../../../../specialization.service";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-investigations",
@@ -125,7 +125,8 @@ export class InvestigationsComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     private router: Router,
     private route: ActivatedRoute,
-    private specializationService: SpecializationService
+    private specializationService: SpecializationService,
+    private calculateBillService: CalculateBillService
   ) {}
 
   ngOnInit(): void {
@@ -389,6 +390,7 @@ export class InvestigationsComponent implements OnInit {
   }
 
   async add() {
+    this.calculateBillService.blockActions.next(true);
     const priorityId = this.defaultPriorityId;
     let exist = this.billingService.InvestigationItems.findIndex(
       (item: any) => {
@@ -445,6 +447,7 @@ export class InvestigationsComponent implements OnInit {
           );
           this.formGroup.reset();
         }
+        this.calculateBillService.blockActions.next(false);
       });
   }
 
