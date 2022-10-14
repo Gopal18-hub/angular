@@ -17,6 +17,7 @@ export class OpOrderRequestService {
   disablesaveOndoctorreqStatus = new Subject<boolean>();
   investigationFormGroup: any = { form: "", questions: [] };
   procedureFormGroup: any = { form: "", questions: [] };
+  totalCost: any;
   addToInvestigations(data: any) {
     this.investigationItems.push(data);
   }
@@ -62,6 +63,22 @@ export class OpOrderRequestService {
   getSaveButtonondocrequiredStatus() {
     return this.disablesaveOndoctorreq;
   }
+  calculateTotalAmount() {
+    this.totalCost = 0;
+    if (
+      this.investigationItems.length > 0 &&
+      this.investigationItems != undefined
+    ) {
+      this.investigationItems.forEach((item: any) => {
+        this.totalCost = Number(this.totalCost) + Number(item.price);
+      });
+    }
+    if (this.procedureItems.length > 0 && this.procedureItems != undefined) {
+      this.procedureItems.forEach((item: any) => {
+        this.totalCost = Number(this.totalCost) + Number(item.price);
+      });
+    }
+  }
   clear() {
     console.log(this.investigationFormGroup);
     console.log(this.procedureFormGroup);
@@ -72,6 +89,7 @@ export class OpOrderRequestService {
     this.patientDemographicdata = {};
     this.investigationFormGroup = { form: "", questions: [] };
     this.procedureFormGroup = { form: "", questions: [] };
+    this.totalCost = 0;
     console.log(this.investigationFormGroup);
   }
 }

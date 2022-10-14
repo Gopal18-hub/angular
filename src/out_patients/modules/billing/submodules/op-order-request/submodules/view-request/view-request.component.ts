@@ -23,7 +23,7 @@ export class OPOrderViewRequest implements OnInit {
   oporderrequestid!: string;
   maxid!: string;
   config: any = {
-    clickedRows: false,
+    clickedRows: true,
     actionItems: false,
     // dateformat: "dd/MM/yyyy",
     selectBox: true,
@@ -44,14 +44,15 @@ export class OPOrderViewRequest implements OnInit {
         title: "S.No.",
         type: "number",
         style: {
-          width: "80px",
+          width: "45px",
         },
+        disabledSort: "true",
       },
       serviceName: {
         title: "Services Name",
         type: "string",
         style: {
-          width: "150px",
+          width: "125px",
         },
         tooltipColumn: "serviceName",
       },
@@ -59,7 +60,7 @@ export class OPOrderViewRequest implements OnInit {
         title: "Items Name",
         type: "string",
         style: {
-          width: "220px",
+          width: "240px",
         },
         tooltipColumn: "itemName",
       },
@@ -67,7 +68,7 @@ export class OPOrderViewRequest implements OnInit {
         title: "Order Status",
         type: "string",
         style: {
-          width: "200px",
+          width: "130px",
         },
         tooltipColumn: "orderStatus",
       },
@@ -76,7 +77,7 @@ export class OPOrderViewRequest implements OnInit {
         type: "string",
         tooltipColumn: "billno",
         style: {
-          width: "130px",
+          width: "100px",
         },
       },
       reqBy: {
@@ -102,6 +103,9 @@ export class OPOrderViewRequest implements OnInit {
   question: any;
   showtable: boolean = true;
   unchecked: boolean = true;
+  flag = 0;
+  regularCheck = false;
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -117,34 +121,59 @@ export class OPOrderViewRequest implements OnInit {
   ngOnInit(): void {
     this.getViewgridDetails();
   }
-
+  checkflag: any = 0;
   ngAfterViewInit() {
     this.showtable = true;
     console.log(this.tableRows.selection.selected);
     this.tableRows.selection.changed
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: any) => {
-        console.log(data);
-        if (this.unchecked == true) {
-          this.data.forEach((item) => {
+        //console.log(data);
+        this.flag = 0;
+        this.regularCheck == false;
+
+        //mastercheck
+        if (data.removed.length == 0 && data.added.length == this.data.length) {
+          console.log("first if");
+          this.data.forEach((item: any, index: any) => {
             if (item.orderStatus == "Bill Prepaired") {
-              setTimeout(() => {
-                this.tableRows.selection.deselect(item);
-              }, 10);
+              this.tableRows.selection.deselect(item);
+            } else {
             }
           });
-        } else if (
-          this.unchecked == false &&
-          this.tableRows.selection.selected.length == this.data.length
-        ) {
           console.log(this.tableRows.selection.selected);
-          this.tableRows.selection.selected.forEach((item: any) => {
-            setTimeout(() => {
-              this.tableRows.selection.deselect(item);
-            }, 10);
+          //masteruncheck
+        } else {
+          this.data.forEach((item: any) => {
+            if (item.orderStatus == "Bill Prepaired") {
+              this.flag++;
+            }
           });
+          console.log(this.flag);
+          if (data.removed.length == 0 && data.added.length == this.flag) {
+            console.log(this.tableRows.selection.selected);
+            console.log("second if");
+            this.data.forEach((item: any) => {
+              this.tableRows.selection.deselect(item);
+            });
+          } else if (
+            this.tableRows.selection.selected.length !=
+              this.tableRows.selection._selectedToEmit.length &&
+            this.tableRows.selection.selected.length == this.data.length
+          ) {
+            console.log(this.tableRows.selection.selected);
+            console.log("third else");
+            console.log(data);
+            this.tableRows.selection.selected.forEach(
+              (item: any, index: any) => {
+                if (item.orderStatus == "Bill Prepaired") {
+                  this.tableRows.selection.deselect(item);
+                }
+              }
+            );
+            //console.log(data);
+          }
         }
-
         if (this.tableRows.selection.selected.length > 0) {
           this.unchecked = false;
         } else {
@@ -152,9 +181,9 @@ export class OPOrderViewRequest implements OnInit {
         }
       });
   }
+  disableCheckboxList: any[] = [];
   getViewgridDetails() {
     this.data = [];
-    //this.unchecked = true;
     if (this.opOrderRequestService.activeMaxId != undefined) {
       this.maxid = this.opOrderRequestService.activeMaxId.maxId;
     }
@@ -169,7 +198,11 @@ export class OPOrderViewRequest implements OnInit {
         for (let i = 0; i < this.data.length; i++) {
           this.data[i].sno = i + 1;
           if (this.data[i].orderStatus == "Bill Prepaired") {
-            this.data[i].disabled = "unclickable";
+            //this.data[i].disabled = "unclickable";
+            this.data[i].disablecheckbox = true;
+            this.checkflag++;
+          } else {
+            this.data[i].disablecheckbox = false;
           }
         }
       });
