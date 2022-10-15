@@ -187,7 +187,7 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "S.No.",
         type: "number",
         style: {
-          width: "80px",
+          width: "65px",
         },
       },
       serviceName: {
@@ -208,33 +208,33 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Precaution",
         type: "string_link",
         style: {
-          width: "100px",
+          width: "80px",
         },
       },
       procedureDoctor: {
         title: "Procedure Doctor",
         type: "string",
         style: {
-          width: "130px",
+          width: "150px",
         },
       },
       qty: {
-        title: "Qty / Type",
+        title: "Qty/Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "80px",
         },
       },
       credit: {
         title: "Credit",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
       },
       cash: {
         title: "Cash",
-        type: "string",
+        type: "currency",
         style: {
           width: "100px",
         },
@@ -243,19 +243,19 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "Disc %",
         type: "string",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       discAmount: {
         title: "Disc Amount",
-        type: "number",
+        type: "currency",
         style: {
-          width: "120px",
+          width: "100px",
         },
       },
       totalAmount: {
         title: "Total Amount",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },
@@ -264,12 +264,12 @@ export class BillComponent implements OnInit, OnDestroy {
         title: "GST%",
         type: "number",
         style: {
-          width: "80px",
+          width: "60px",
         },
       },
       gstValue: {
         title: "GST Value",
-        type: "number",
+        type: "currency",
         style: {
           width: "130px",
         },
@@ -333,18 +333,12 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.formGroup = formResult.form;
     this.question = formResult.questions;
-    console.log(this.question);
-    if (this.billingservice.makeBillPayload.cmbInteraction) {
-      this.formGroup.controls["interactionDetails"].setValue(
-        this.billingservice.makeBillPayload.cmbInteraction
-      );
-    }
     if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType
+      this.calculateBillService.billFormGroup &&
+      this.calculateBillService.billFormGroup.form
     ) {
-      this.formGroup.controls["paymentMode"].setValue(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .billType
+      this.formGroup.patchValue(
+        this.calculateBillService.billFormGroup.form.value
       );
     }
     this.question[1].options = await this.calculateBillService.getinteraction();
@@ -366,12 +360,6 @@ export class BillComponent implements OnInit, OnDestroy {
         },
       });
       await popuptextDialogRef.afterClosed().toPromise();
-    }
-    if (
-      this.billingservice.referralDoctor &&
-      this.billingservice.referralDoctor.id == 2015
-    ) {
-      this.formGroup.controls["self"].setValue(true);
     }
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
@@ -451,6 +439,8 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       this.data = [...this.data];
     } else if (value == 3) {
+      this.question[14].readonly = false;
+      this.question[13].readonly = false;
       let exceptions = this.calculateBillService.companyNonCreditItems.map(
         (cnci: any) => cnci.itemId
       );
@@ -528,9 +518,8 @@ export class BillComponent implements OnInit, OnDestroy {
           this.formGroup.controls["discAmt"].setValue(
             this.calculateBillService.totalDiscountAmt
           );
-          this.formGroup.controls["amtPayByPatient"].setValue(
-            this.getAmountPayByPatient()
-          );
+          this.billTypeChange(this.formGroup.value.paymentMode);
+          this.applyCreditLimit();
           this.formGroup.controls["coupon"].setValue("");
           this.formGroup.controls["compDisc"].setValue("");
           this.formGroup.controls["patientDisc"].setValue("");
@@ -569,39 +558,12 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        let cashAmount = 0;
-        let cashDiscount = 0;
-        let creditAmount = 0;
-        let creditDiscount = 0;
-        this.billingservice.billItems.forEach((bItem: any) => {
-          if (parseFloat(bItem.cash) > 0) {
-            cashAmount += parseFloat(bItem.cash);
-            cashDiscount += parseFloat(bItem.discAmount);
-          } else if (parseFloat(bItem.credit) > 0) {
-            creditAmount += parseFloat(bItem.credit);
-            creditDiscount += parseFloat(bItem.discAmount);
-          }
-        });
-        const amtPayByComp = creditAmount - creditDiscount;
-        // const amountToBePaid =
-        //   this.billingservice.totalCost -
-        //   (this.formGroup.value.discAmt || 0) -
-        //   (this.formGroup.value.dipositAmtEdit || 0);
-        let tempAmount = this.formGroup.value.credLimit;
-        if (this.formGroup.value.coPay > 0) {
-          tempAmount =
-            this.formGroup.value.credLimit -
-            (this.formGroup.value.credLimit * this.formGroup.value.coPay) / 100;
+        if (
+          this.formGroup.value.credLimit &&
+          this.formGroup.value.credLimit > 0
+        ) {
+          this.applyCreditLimit();
         }
-
-        if (parseFloat(tempAmount) <= amtPayByComp) {
-          this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
-        } else {
-          this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
-        }
-        this.formGroup.controls["amtPayByPatient"].setValue(
-          this.getAmountPayByPatient()
-        );
       }
     });
 
@@ -609,12 +571,55 @@ export class BillComponent implements OnInit, OnDestroy {
       "change",
       this.onModifyDepositAmt.bind(this)
     );
-    this.question[12].elementRef.addEventListener("keypress", (event: any) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        this.validateCoupon();
+
+    this.question[12].elementRef.addEventListener(
+      "blur",
+      this.validateCoupon.bind(this)
+    );
+
+    // this.question[12].elementRef.addEventListener("keypress", (event: any) => {
+    //   if (event.key === "Enter") {
+    //     event.preventDefault();
+    //     this.validateCoupon();
+    //   }
+    // });
+  }
+
+  applyCreditLimit() {
+    let cashAmount = 0;
+    let cashDiscount = 0;
+    let creditAmount = 0;
+    let creditDiscount = 0;
+    this.billingservice.billItems.forEach((bItem: any) => {
+      if (parseFloat(bItem.cash) > 0) {
+        cashAmount += parseFloat(bItem.cash);
+        cashDiscount += parseFloat(bItem.discAmount);
+      } else if (parseFloat(bItem.credit) > 0) {
+        creditAmount += parseFloat(bItem.credit);
+        creditDiscount += parseFloat(bItem.discAmount);
       }
     });
+    const amtPayByComp = creditAmount;
+    // const amountToBePaid =
+    //   this.billingservice.totalCost -
+    //   (this.formGroup.value.discAmt || 0) -
+    //   (this.formGroup.value.dipositAmtEdit || 0);
+    let tempAmount = this.formGroup.value.credLimit;
+
+    if (parseFloat(tempAmount) <= amtPayByComp) {
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    } else {
+      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
+    }
+    if (this.formGroup.value.coPay > 0) {
+      tempAmount =
+        this.formGroup.value.amtPayByComp -
+        (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+    }
+    this.formGroup.controls["amtPayByPatient"].setValue(
+      this.getAmountPayByPatient()
+    );
   }
 
   discountreason() {
@@ -712,6 +717,10 @@ export class BillComponent implements OnInit, OnDestroy {
               if (res.length > 0) {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
+                } else {
+                  if (!res[0].successFlag) {
+                    this.messageDialogService.error(res[0].returnMessage);
+                  }
                 }
               }
             }
@@ -731,6 +740,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
       Number(this.formGroup.value.paymentMode);
 
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+      parseFloat(this.formGroup.value.credLimit) || 0;
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "65vw",
       height: "96vh",
@@ -739,10 +751,11 @@ export class BillComponent implements OnInit, OnDestroy {
         totalDiscount: this.formGroup.value.discAmt,
         totalDeposit: this.formGroup.value.dipositAmtEdit,
         totalRefund: 0,
-        ceditLimit: 0,
+        ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
         toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+        amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
       },
     });
 
@@ -751,18 +764,23 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
+        } else if (result && "successFlag" in result && !result.successFlag) {
+          if (result && "returnMessage" in result && result.returnMessage) {
+            this.messageDialogService.error(result.returnMessage);
+          }
         }
       });
   }
 
   processBillNo(result: any) {
+    this.calculateBillService.blockActions.next(false);
     this.billingservice.billNoGenerated.next(true);
     this.billNo = result.billNo;
     this.billId = result.billId;
     this.config.removeRow = false;
     this.config = { ...this.config };
     const successInfo = this.messageDialogService.info(
-      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo
       .afterClosed()
@@ -812,12 +830,9 @@ export class BillComponent implements OnInit, OnDestroy {
         creditDiscount += parseFloat(bItem.discAmount);
       }
     });
-    console.log(cashAmount);
-    console.log(creditAmount);
     const temp =
       cashAmount +
       creditAmount -
-      (cashDiscount + creditDiscount) -
       (this.formGroup.value.dipositAmtEdit || 0) -
       (this.formGroup.value.amtPayByComp || 0);
 
@@ -908,38 +923,47 @@ export class BillComponent implements OnInit, OnDestroy {
 
   async validateCoupon() {
     if (this.formGroup.value.coupon) {
-      if (this.billingservice.company > 0) {
-        // popup to show MECP only for CASH
-        const CouponErrorRef = this.messageDialogService.error(
-          "MECP discount applicable on CASH Patient only"
-        );
-        await CouponErrorRef.afterClosed().toPromise();
-        this.formGroup.controls["coupon"].setValue("");
-        return;
-      } else {
-        if (this.formGroup.value.paymentMode == 1) {
-          this.calculateBillService.getServicesForCoupon(
-            this.formGroup,
-            Number(this.cookie.get("HSPLocationId")),
-            this
-          );
-        } else {
-          //popup to show validation only for CASH
+      if (this.formGroup.value.coupon.length > 4) {
+        if (this.billingservice.company > 0) {
+          // popup to show MECP only for CASH
           const CouponErrorRef = this.messageDialogService.error(
             "MECP discount applicable on CASH Patient only"
           );
           await CouponErrorRef.afterClosed().toPromise();
           this.formGroup.controls["coupon"].setValue("");
           return;
+        } else {
+          if (this.formGroup.value.paymentMode == 1) {
+            this.calculateBillService.getServicesForCoupon(
+              this.formGroup,
+              Number(this.cookie.get("HSPLocationId")),
+              this
+            );
+          } else {
+            //popup to show validation only for CASH
+            const CouponErrorRef = this.messageDialogService.error(
+              "MECP discount applicable on CASH Patient only"
+            );
+            await CouponErrorRef.afterClosed().toPromise();
+            this.formGroup.controls["coupon"].setValue("");
+            return;
+          }
         }
+      } else if (this.formGroup.value.coupon.length > 3) {
+        // validation to show coupon required
+        const CouponErrorRef = this.messageDialogService.error(
+          "Please Enter Proper Coupon"
+        );
+        await CouponErrorRef.afterClosed().toPromise();
+        return;
       }
     } else {
-      // validation to show coupon required
-      const CouponErrorRef = this.messageDialogService.error(
-        "Please Enter Coupon"
-      );
-      await CouponErrorRef.afterClosed().toPromise();
-      return;
+      // // validation to show coupon required
+      // const CouponErrorRef = this.messageDialogService.error(
+      //   "Please Enter Coupon"
+      // );
+      // await CouponErrorRef.afterClosed().toPromise();
+      // return;
     }
   }
 }

@@ -82,6 +82,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
   @ViewChild("stringLink") stringLinkTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
+  @ViewChild("currency") currencyTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
@@ -207,11 +208,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.data.forEach((it: any) => {
       let group: any = {};
       Object.keys(it).forEach((itk) => {
-        if (itk + "_required" in it && it[itk + "_required"]) {
-          group[itk] = new FormControl(it[itk], Validators.required);
-        } else {
-          group[itk] = new FormControl(it[itk]);
-        }
+        //if (this.config.columnsInfo[itk] == "dropdown") {
+          if (itk + "_required" in it && it[itk + "_required"]) {
+            group[itk] = new FormControl(it[itk], Validators.required);
+          } else {
+            group[itk] = new FormControl(it[itk]);
+          }
+        //}
       });
       const fg = new FormGroup(group);
       formData.push(fg);
@@ -293,8 +296,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection.clear();
       return;
     }
-
     this.selection.select(...this.dataSource.data);
+    //If mastercheck includes deselection,
+    //the mastercheckbox has to change from indeterminate to checked status
+    this.selection.selected.length = this.dataSource.data.length;
   }
 
   /** The label for the checkbox on the passed row */
@@ -311,6 +316,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     if (col.type == "string") return this.stringTemplate;
     else if (col.type == "string_link") return this.stringLinkTemplate;
     else if (col.type == "number") return this.numberTemplate;
+    else if (col.type == "currency") return this.currencyTemplate;
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "datetime") return this.dateTimeTemplate;
     else if (col.type == "image") return this.imageTemplate;

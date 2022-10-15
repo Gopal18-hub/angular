@@ -189,6 +189,7 @@ export class ProcedureOtherComponent implements OnInit {
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
       }
+      this.checkTableValidation();
     });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
@@ -333,6 +334,14 @@ export class ProcedureOtherComponent implements OnInit {
     }
   }
 
+  checkTableValidation() {
+    if (this.tableRows.tableForm.valid) {
+      this.billingService.changeBillTabStatus(false);
+    } else {
+      this.billingService.changeBillTabStatus(true);
+    }
+  }
+
   async add(priorityId = 1) {
     let exist = this.billingService.ProcedureItems.findIndex((item: any) => {
       return item.itemid == this.formGroup.value.procedure.value;
@@ -351,6 +360,7 @@ export class ProcedureOtherComponent implements OnInit {
 
     this.data = [...this.billingService.ProcedureItems];
     this.formGroup.reset();
+    this.checkTableValidation();
   }
 
   goToBill() {

@@ -43,6 +43,8 @@ export class CalculateBillService {
 
   serviceBasedListItems: any = [];
 
+  blockActions = new Subject<boolean>();
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -106,6 +108,7 @@ export class CalculateBillService {
     this.bookingIdWarningFlag = false;
     this.depositDetailsData = [];
     this.seniorCitizen = false;
+    this.billFormGroup = null;
   }
 
   setDiscountSelectedItems(items: any) {
@@ -269,6 +272,7 @@ export class CalculateBillService {
   processDiscountLogics(formGroup: any, componentRef: any, from: string) {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
     this.applyDiscount(from, formGroup);
+    componentRef.billTypeChange(formGroup.value.paymentMode);
     this.discountSelectedItems.forEach((discItem: any) => {
       this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
         discOn: discItem.discType,
@@ -279,15 +283,16 @@ export class CalculateBillService {
       });
     });
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
-    formGroup.controls["amtPayByPatient"].setValue(
-      componentRef.getAmountPayByPatient()
-    );
+    componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {
         emitEvent: false,
       });
       componentRef.refreshTable();
     }
+    formGroup.controls["amtPayByPatient"].setValue(
+      componentRef.getAmountPayByPatient()
+    );
   }
 
   async billTabActiveLogics(formGroup: any, componentRef: any) {

@@ -83,6 +83,7 @@ export class OderInvestigationsComponent implements OnInit {
         style: {
           width: "80px",
         },
+        disabledSort: "true",
       },
       investigations: {
         title: "Investigations",
@@ -193,17 +194,30 @@ export class OderInvestigationsComponent implements OnInit {
       this.defaultPriorityId = 1;
     }
     this.data = [...this.opOrderRequestService.investigationItems];
-    //  this.billingService.calculateTotalAmount();
+    this.opOrderRequestService.calculateTotalAmount();
   }
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       console.log(res);
+      console.log(this.tableRows);
       if (res.data.col == "specialisation") {
+        console.log(this.tableRows);
         this.opOrderRequestService.investigationItems[
           res.data.index
         ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
+        if (res.data.element.specialisation_required == true) {
+          console.log("specialization changed 2nd time");
+          this.opOrderRequestService.investigationItems[
+            res.data.index
+          ].doctorName_required = true;
+          console.log(
+            this.opOrderRequestService.investigationItems[res.data.index]
+              .doctorName_required
+          );
+        }
+
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
@@ -490,7 +504,7 @@ export class OderInvestigationsComponent implements OnInit {
           doctorName: "",
           specialisationId: 0,
           doctorId: 0,
-          price: res.amount,
+          price: res.amount.toFixed(2),
           serviceid:
             this.formGroup.value.serviceType ||
             this.formGroup.value.investigation.serviceid,
@@ -513,6 +527,7 @@ export class OderInvestigationsComponent implements OnInit {
                 : this.formGroup.value.investigation.precaution,
           },
         });
+        this.opOrderRequestService.calculateTotalAmount();
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
         console.log(this.data);
