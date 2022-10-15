@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
-import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
@@ -22,7 +21,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { DmgPopupComponent } from "../../../../prompts/dmg-popup/dmg-popup.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { TwiceConsultationReasonComponent } from "../../../../prompts/twice-consultation-reason/twice-consultation-reason.component";
-import { Console } from "console";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
