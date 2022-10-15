@@ -93,7 +93,6 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("inputDate") inputboxDateTemplate!: TemplateRef<any>;
   @ViewChild("inputDateTime") inputboxDateTimeTemplate!: TemplateRef<any>;
   @ViewChild("dropdown") dropdownTemplate!: TemplateRef<any>;
-  
 
   initiateTable: boolean = false;
 
@@ -209,11 +208,13 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.data.forEach((it: any) => {
       let group: any = {};
       Object.keys(it).forEach((itk) => {
-        if (itk + "_required" in it && it[itk + "_required"]) {
-          group[itk] = new FormControl(it[itk], Validators.required);
-        } else {
-          group[itk] = new FormControl(it[itk]);
-        }
+        //if (this.config.columnsInfo[itk] == "dropdown") {
+          if (itk + "_required" in it && it[itk + "_required"]) {
+            group[itk] = new FormControl(it[itk], Validators.required);
+          } else {
+            group[itk] = new FormControl(it[itk]);
+          }
+        //}
       });
       const fg = new FormGroup(group);
       formData.push(fg);

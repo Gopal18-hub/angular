@@ -43,6 +43,8 @@ export class CalculateBillService {
 
   serviceBasedListItems: any = [];
 
+  blockActions = new Subject<boolean>();
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -106,6 +108,7 @@ export class CalculateBillService {
     this.bookingIdWarningFlag = false;
     this.depositDetailsData = [];
     this.seniorCitizen = false;
+    this.billFormGroup = null;
   }
 
   setDiscountSelectedItems(items: any) {
