@@ -668,6 +668,13 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async makeBill() {
+    if (this.formGroup.value.paymentMode == 3 && !this.billingservice.company) {
+      const referralErrorRef = this.messageDialogService.error(
+        "Please select Company Name"
+      );
+      await referralErrorRef.afterClosed().toPromise();
+      return;
+    }
     if (!this.billingservice.referralDoctor) {
       const referralErrorRef = this.messageDialogService.error(
         "Please select Referral Doctor"
