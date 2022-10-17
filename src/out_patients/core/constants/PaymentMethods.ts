@@ -19,6 +19,10 @@ export namespace PaymentMethods {
     title: "Cash Details",
     type: "object",
     properties: {
+      modeOfPayment: {
+        type: "hidden",
+        value: "Cash",
+      },
       price: {
         type: "number",
         defaultValue: "0.00",
@@ -31,6 +35,10 @@ export namespace PaymentMethods {
     title: "Cheque Details",
     type: "object",
     properties: {
+      modeOfPayment: {
+        type: "hidden",
+        value: "Cheque",
+      },
       price: {
         type: "number",
         defaultValue: "0.00",
@@ -106,6 +114,10 @@ export namespace PaymentMethods {
     title: "Demand Draft Details",
     type: "object",
     properties: {
+      modeOfPayment: {
+        type: "hidden",
+        value: "Demand Draft",
+      },
       price: {
         type: "number",
         defaultValue: "0.00",
