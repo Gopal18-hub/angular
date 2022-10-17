@@ -110,10 +110,7 @@ export class DispatchReportComponent implements OnInit {
       r_collection_location: {
         title: "Dispatch Place",
         type: "dropdown",
-        options: {
-          title: "",
-          value: this.billedlocation,
-        },
+        options: [],
         style: {
           width: "10rem",
         },
@@ -337,7 +334,7 @@ export class DispatchReportComponent implements OnInit {
             for (var i = 0; i < this.dispatchreport.dispatchlist.length; i++) {
               this.dispatchreport.dispatchlist[i].sNo = i + 1;
             }
-            this.tableRows.config.columnsInfo.r_collection_location.options =
+            this.config.columnsInfo.r_collection_location.options =
               this.billedlocation.map((l) => {
                 return { title: l.address3, value: l.hspLocationId };
               });  

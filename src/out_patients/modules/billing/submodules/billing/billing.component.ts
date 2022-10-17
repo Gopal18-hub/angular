@@ -869,6 +869,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   selectedServices.selected &&
                   selectedServices.selected.length > 0
                 ) {
+                  console.log(selectedServices);
                 }
               }
             }

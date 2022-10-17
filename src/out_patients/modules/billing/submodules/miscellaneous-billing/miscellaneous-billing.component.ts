@@ -35,6 +35,8 @@ import { ShowPlanDetilsComponent } from "../billing/prompts/show-plan-detils/sho
 import { isTypedRule } from "tslint";
 import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.component";
 import { distinctUntilChanged } from "rxjs/operators";
+import { OnlineAppointmentComponent } from "../billing/prompts/online-appointment/online-appointment.component";
+import { CalculateBillService } from "@core/services/calculate-bill.service";
 
 @Component({
   selector: "out-patients-miscellaneous-billing",
@@ -54,7 +56,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     public Misc: MiscService,
     public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private calculateBillService: CalculateBillService
   ) {}
   totalDeposit = 0;
   categoryIcons: any;
@@ -204,14 +207,14 @@ export class MiscellaneousBillingComponent implements OnInit {
     //     }
     //   }
     // });
-    this.Misc.companyChangeEvent.subscribe((res: any) => {
+    this.Misc.misccompanyChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
         this.miscForm.controls["company"].setValue(res.company, {
           emitEvent: false,
         });
       }
     });
-    this.Misc.corporateChangeEvent.subscribe((res: any) => {
+    this.Misc.misccorporateChangeEvent.subscribe((res: any) => {
       if (res.from != "header") {
         this.miscForm.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
@@ -262,8 +265,8 @@ export class MiscellaneousBillingComponent implements OnInit {
           );
           this.companyId = res.value;
           this.setItemsToBill.enablecompanyId = true;
-          this.setItemsToBill.companyId = this.miscForm.value.company;
-          this.setItemsToBill.companyIdComp = "Misc";
+          this.setItemsToBill.companyId =  res;
+          this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
         }else{
@@ -287,8 +290,8 @@ export class MiscellaneousBillingComponent implements OnInit {
           );
           this.corporateId = res.value;
           this.Misc.setPatientDetail(this.patientDetail);
-          this.setItemsToBill.corporateId = this.miscForm.value.corporate;
-          this.setItemsToBill.companyIdComp = "Misc";
+          this.setItemsToBill.corporateId =  res;
+          this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
         }else{
           this.Misc.setCorporate(
@@ -558,17 +561,17 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.setValuesToMiscForm(this.patientDetails);
-            if (this.billingService.todayPatientBirthday) {
-              const birthdayDialog = this.messageDialogService.info(
-                "It’s their birthday today"
-              );
-              await birthdayDialog.afterClosed().toPromise();
-            }
-            if (this.patientDetails.dtPatientPastDetails.length > 1) {
-              this.checkPastPatientDetails(
-                this.patientDetails.dtPatientPastDetails
-              );
-            }
+            // if (this.billingService.todayPatientBirthday) {
+            //   const birthdayDialog = this.messageDialogService.info(
+            //     "It’s their birthday today"
+            //   );
+            //   await birthdayDialog.afterClosed().toPromise();
+            // }
+            // if (this.patientDetails.dtPatientPastDetails.length > 1) {
+            //   this.checkPastPatientDetails(
+            //     this.patientDetails.dtPatientPastDetails
+            //   );
+            // }
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
               0
@@ -594,29 +597,13 @@ export class MiscellaneousBillingComponent implements OnInit {
                 regNumber.toString(),
                 patientDetails.genderName
               );
-              if (patientDetails.nationality != 149) {
-                const dialogRef = this.messageDialogService.info(
-                  "Please Ensure International Tariff Is Applied!"
-                );
-                dialogRef
-                  .afterClosed()
-                  .pipe(takeUntil(this._destroying$))
-                  .subscribe((result) => {
-                    this.startProcess(
-                      patientDetails,
-                      resultData,
-                      iacode,
-                      regNumber
-                    );
-                  });
-              } else {
                 this.startProcess(
                   patientDetails,
                   resultData,
                   iacode,
                   regNumber
                 );
-              }
+              
             }
           } else {
             this.apiProcessing = false;
@@ -632,42 +619,50 @@ export class MiscellaneousBillingComponent implements OnInit {
         }
       );
   }
-  startProcess(
-    patientDetails: any,
-    resultData: any,
-    iacode: any,
-    regNumber: any
-  ) {
-    if (!patientDetails.isAvailRegCard) {
-      this.questions[0].questionClasses = "bg-vilot";
-      this.questions[0] = { ...this.questions[0] };
-    }
+ 
+async  startProcess(patientDetails: any, resultData: any, iacode: any,  regNumber: any) {
     if (
-      !patientDetails.isAvailRegCard &&
-      moment().diff(moment(patientDetails.regdatetime), "days") == 0
+      resultData.dtPatientPastDetails[0] &&
+      resultData.dtPatientPastDetails[0].id > 0 &&
+      resultData.dtPatientPastDetails[0].data == 1
     ) {
+      this.messageDialogService.info("This Patient is an InPatient");     
     }
-  }
-
-  checkPastPatientDetails(dtPatientPastDetails: any) {
-    if (dtPatientPastDetails[0].data == 1) {
-      // In Patient Check
-      this.messageDialogService.info("This Patient is an InPatient");
-    }
-    // if (dtPatientPastDetails[2].data == 1) //Deposit check
-    // {
-    //this.depositAmt()
-    // }
-    if (dtPatientPastDetails[4].data > 0) {
-      // Due amont
+    else if (
+      resultData.dtPatientPastDetails[4] &&
+      resultData.dtPatientPastDetails[4].id > 0 &&
+      resultData.dtPatientPastDetails[4].data > 0
+    ){
       const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
         data: {
-          dueAmount: dtPatientPastDetails[4].data,
+          dueAmount: resultData.dtPatientPastDetails[4].data,
           maxId: this.miscForm.value.maxid,
         },
       });
+      const resAction = await dialogRef.afterClosed().toPromise();
+      if (resAction) {
+        if ("paynow" in resAction && resAction.paynow) {
+          this.router.navigate(["/out-patient-billing/details"], {
+            queryParams: { maxID: this.miscForm.value.maxid },
+          });
+          return;
+        }
+        if ("skipReason" in resAction && resAction.skipReason) {
+        }
+      }
+    }     
+    else if (
+      resultData.dtPatientPastDetails[2] &&
+      resultData.dtPatientPastDetails[2].id > 0 &&
+      resultData.dtPatientPastDetails[2].data > 0
+    ){
+      this.Misc.depositDetails(iacode, regNumber);      
     }
+  }
+ 
+  ngOnDestroy(): void {
+    this.clearForm();
   }
 
   //SETTING ERROR FOR MAX ID
@@ -771,10 +766,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     });
   }
   getAllCompany() {
-    let location = 67;
-  //  let location = Number(this.cookie.get("HSPLocationId"));
     this.http
-      .get(BillingApiConstants.getcompanydetail(location))
+      .get(BillingApiConstants.getcompanydetail(Number(this.cookie.get("HSPLocationId"))))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: GetCompanyDataInterface[]) => {
         this.companyList = data;        

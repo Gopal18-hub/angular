@@ -6,7 +6,7 @@ import { HttpClient } from "@angular/common/http";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { GetConfigureMessageInterface } from "../../../../core/types/configure/getConfiguremessage.Interface";
-
+import { Generatehl7outboundmessagerisModel } from "../../../../core/models/generatehl7outboundmessage.Model";
 @Component({
   selector: "out-patients-configure-ris",
   templateUrl: "./configure-ris.component.html",
@@ -16,6 +16,7 @@ export class ConfigureRisComponent implements OnInit {
   questions: any;
   risconfigureform!: FormGroup;
   risconfigurelist: GetConfigureMessageInterface[] = [];
+  recreateList: Generatehl7outboundmessagerisModel[] = [];
   private readonly _destroying$ = new Subject<void>();
   config: any = {
     actionItems: false,
@@ -23,7 +24,7 @@ export class ConfigureRisComponent implements OnInit {
     clickedRows: false,
     selectBox: true,
     // selectCheckBoxPosition: 10,
-    clickSelection: "single",
+    clickSelection: "multiple",
     displayedColumns: ["testName", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
       testName: {
@@ -137,8 +138,9 @@ export class ConfigureRisComponent implements OnInit {
   ];
 
   getdata() {
+    console.log("getdata");
     this.http
-      .get(ApiConstants.getconfiguremessage("RIS", "SKCS3760202"))
+      .get(ApiConstants.gethl7outboundmessageris("RIS", "SKCS3760202"))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
@@ -149,9 +151,41 @@ export class ConfigureRisComponent implements OnInit {
         // });
       });
   }
+  // getRecreateobject():Generatehl7outboundmessagerisModel{
+  //   this.risconfigurelist.forEach((item:any,index:any)=>{
+  //     this.recreateList.push({
+  //       opbillid: number;
+  //       id: number;
+  //       testName: string;
+  //       billid: number;
+  //       itemId: number;
+  //       orderId: number;
+  //       optestorderid: number;
+  //       ssn: string;
+  //       vistaID: number;
+  //       orderdatetime: string;
+  //       procedureid: number;
+  //       messagestatus: string;
+  //       reprocess: boolean;
+  //       operatorId: number;
+  //       stationid: number;
+  //       iaCode: string;
+  //       regNo: number;
+  //       userID: number;
+  //       locationID: number;
+  //       visitNo: string;
+  //       priority: string;
+  //       serviceID: number;
+  //     })
+  //   })
+
+  //   //return this.recreateList
+  // }
+  recreateClick() {}
+
   cleardata() {
     console.log("inside cleardata");
-    this.dataconfig = [];
+    this.risconfigurelist = [];
     this.risconfigureform.reset();
   }
 }
