@@ -33,16 +33,16 @@
                 
                 <div class="w-40 flex ml-34 ">
                    
-                    <button mat-raised-button color="primary" type="submit" class="button-height">
-                        <img src="assets/lens.svg" class="lens-icon">
+                    <button mat-raised-button color="primary" type="submit" class="button-height" (click)="getdata()">
+                        <img src="assets/lens.svg" class="lens-icon" >
         
                     <span class="text-position">  Search</span>  
         
                     </button>
                      
                     
-                     <button mat-raised-button color="primary" class="button-height2 ml-2"><span class="text-position2">Refresh</span></button>
-                     <button mat-raised-button color="primary" class="ml-2 button-height2 "><span class="text-position2">Recreate</span></button>
+                     <button mat-raised-button color="primary" class="button-height2 ml-2" (click)="getdata()"><span class="text-position2">Refresh</span></button>
+                     <button mat-raised-button color="primary" class="ml-2 button-height2 "(click)="recreateClick()"><span class="text-position2">Recreate</span></button>
                      <button mat-raised-button color="primary" class="button-height2  ml-2" (click)="cleardata()"><span class="text-position2">Clear</span></button>
                     
                 </div> 
