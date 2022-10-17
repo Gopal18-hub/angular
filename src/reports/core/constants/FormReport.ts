@@ -593,7 +593,7 @@ export namespace FormReport {
       type: "object",
       properties: {
         MemberShipNo: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
@@ -641,7 +641,7 @@ export namespace FormReport {
       type: "object",
       properties: {
         membershipno: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
           optionsModelConfig: {
