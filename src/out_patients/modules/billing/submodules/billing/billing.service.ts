@@ -803,6 +803,11 @@ export class BillingService {
             ),
             flag: 1,
           });
+          if ("payloadKey" in payment.method) {
+            this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
+              { ...paymentmethod.paymentForm[payment.key].value },
+            ];
+          }
         }
       });
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =

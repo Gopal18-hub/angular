@@ -7,9 +7,14 @@ export namespace PaymentMethods {
     cheque: {
       label: "Cheque",
       form: "chequeForm",
+      payloadKey: "tab_cheque",
     },
     credit: { label: "Credit Card", form: "creditForm" },
-    demand: { label: "Demand Draft", form: "demandDraftForm" },
+    demand: {
+      label: "Demand Draft",
+      form: "demandDraftForm",
+      payloadKey: "tab_dd",
+    },
     mobilepayment: { label: "Mobile Payment", form: "mobilePaymentForm" },
     onlinepayment: { label: "Online Payment", form: "onlinePaymentForm" },
     upi: { label: "UPI", form: "upiForm" },
@@ -47,25 +52,24 @@ export namespace PaymentMethods {
           defaultValue: "0.00",
           label: "Amount",
         },
-        chequeno: {
+        chequeNo: {
           type: "number",
           label: "Cheque No",
         },
-        chequeissuedate: {
+        chequeDate: {
           type: "date",
           maximum: new Date(),
           label: "Issue Date",
         },
-        chequebankname: {
+        bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
         },
-        chequebranchname: {
+        branchName: {
           type: "string",
           label: "Branch Name",
         },
-
         chequeauth: {
           type: "string",
           label: "Authorised By",
@@ -131,25 +135,24 @@ export namespace PaymentMethods {
           defaultValue: "0.00",
           label: "Amount",
         },
-        demandddno: {
+        ddNumber: {
           type: "string",
           label: "DD No.",
         },
-        demandissuedate: {
+        ddDate: {
           type: "date",
           maximum: new Date(),
           label: "Issue Date",
         },
-        demandbankname: {
+        bankName: {
           type: "autocomplete",
           label: "Bank Name",
           options: options.bankList,
         },
-        demandbranchname: {
+        branchName: {
           type: "string",
           label: "Branch Name",
         },
-
         demandauth: {
           type: "string",
           label: "Authorised By",
