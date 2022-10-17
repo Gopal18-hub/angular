@@ -10,6 +10,7 @@ import { MessageDialogService } from '@shared/ui/message-dialog/message-dialog.s
 import { createpostdischargeconsultbill } from '@core/models/createpostdischargeconsultbill.Model';
 import { Subject, takeUntil } from 'rxjs';
 import { ReportService } from '@shared/services/report.service';
+import { isNumeric } from 'tslint';
 @Component({
   selector: 'out-patients-post-discharge-bill',
   templateUrl: './post-discharge-bill.component.html',
@@ -137,7 +138,7 @@ export class PostDischargeBillComponent implements OnInit {
     type: "object",
     properties: {
       coupon: {
-        type: "string",
+        type: "tel",
         readonly: true
       },
       couponvalidate: {
@@ -260,7 +261,7 @@ export class PostDischargeBillComponent implements OnInit {
       ))
       .subscribe(res => {
         console.log(res);
-        if(res.length == 0)
+        if(res.length == 0 || res == null)
         {
           const dialogref = this.msgdialog.info("Either Invalid Coupon or already used");
           dialogref.afterClosed().subscribe(() => {
@@ -283,6 +284,9 @@ export class PostDischargeBillComponent implements OnInit {
           this.questions[0].elementRef.blur();
           this.service.setactivecoupon(this.billform.controls['coupon'].value);
         }
+      },
+      (error) => {
+        console.log("error",error);
       })
     }
   }

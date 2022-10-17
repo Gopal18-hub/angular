@@ -67,7 +67,7 @@
   <div class="w-full mt-1  h-30vh">
     <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" #selectedServices -->
     <!-- <ng-container class="w-full h-table"> -->
-    <maxhealth-table [data]="serviceselectedList" [config]="config" class="input-align" (rowRwmove)="rowRwmove($event)"></maxhealth-table>
+    <maxhealth-table [data]="serviceselectedList" [config]="config" class = billdetailtable (rowRwmove)="rowRwmove($event)"></maxhealth-table>
     <!-- </ng-container> -->
 
   </div>
@@ -91,6 +91,7 @@
             <mat-label>Referral Doctor <span style="color:red">*</span></mat-label>
             <out-patients-referral
               (selectedDoctorEvent)="selectedReferralDoctor($event)"
+              [referralDoctorName]="miscPatient.referralDoctor?.name"
             ></out-patients-referral>
 
           </div>

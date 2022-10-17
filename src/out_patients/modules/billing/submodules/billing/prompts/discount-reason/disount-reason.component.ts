@@ -26,15 +26,7 @@ export class DisountReasonComponent implements OnInit {
     properties: {
       types: {
         type: "dropdown",
-        title: "Discount Types",
-        options: [
-          { title: "On Bill", value: "On-Bill" },
-          { title: "On Service", value: "On-Service" },
-          { title: "On Item", value: "On-Item" },
-          { title: "On Patient", value: "On-Patient" },
-          { title: "On Company", value: "On-Company" },
-          { title: "On Campaign", value: "On-Campaign" },
-        ],
+        title: "Discount Types",       
         placeholder: "-Select-",
       },
       head: {
@@ -110,6 +102,7 @@ export class DisountReasonComponent implements OnInit {
       service: {
         title: "Service Name",
         type: "string",
+        tooltipColumn: "service",
         style: {
           width: "7rem",
         },
@@ -117,6 +110,7 @@ export class DisountReasonComponent implements OnInit {
       doctor: {
         title: "Item/Doctor Name",
         type: "string",
+        tooltipColumn: "doctor",
         style: {
           width: "9rem",
         },
@@ -125,7 +119,7 @@ export class DisountReasonComponent implements OnInit {
         title: "Price",
         type: "string",
         style: {
-          width: "4rem",
+          width: "8rem",
         },
       },
       disc: {
@@ -139,14 +133,14 @@ export class DisountReasonComponent implements OnInit {
         title: "Dis. Amount",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       totalAmt: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       head: {
@@ -180,6 +174,7 @@ export class DisountReasonComponent implements OnInit {
   authorisedBy: { id: number; name: number }[] = [] as any;
   discReasonList: { id: number; name: string; discountPer: number }[] =
     [] as any;
+  discounttypes: any = [];
 
   serviceBasedList: any = {};
 
@@ -224,6 +219,12 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("formData" in this.data) {
       this.discAmtForm.patchValue(this.data.formData);
+    }
+    if ("discounttypes" in this.data) {
+      this.discounttypes = this.data.discounttypes;
+      this.question[0].options = this.discounttypes.map((a:any) => {
+        return { title: a.title, value: a.value };
+      });
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -308,7 +309,6 @@ export class DisountReasonComponent implements OnInit {
 
           dialogref.afterClosed().subscribe((res) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
-            //   this.dialogRef.close({ data: this.selectedAuthorise });
           });
         }
       }
@@ -596,7 +596,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-          Number(this.cookie.get("HSPLocationId"))
+         Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
