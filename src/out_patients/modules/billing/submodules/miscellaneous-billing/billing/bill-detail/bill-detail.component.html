@@ -3,9 +3,9 @@
     <div class="flex flex-column h-full w-full">
 
       <div class="w-full bg-secondary border-radius-xlg align-items-center">
-        <div class="flex w-full mt-0">
+        <div class="flex w-full mt-0 bill-label">
           <!-- Service Type -->
-          <div class=" w-1/4  h-dropdown max-health-primary-color">
+          <div class=" w-1/4  h-dropdown">
 
             <maxhealth-question [question]="question[0]" [form]="miscServBillForm" [questions]="question[0]" [index]="0"
               class="bg-white">
@@ -13,41 +13,41 @@
 
           </div>
           <!-- Item -->
-          <div class="ml-1  w-1/4 h-dropdown max-health-primary-color">
+          <div class="ml-1  w-1/4 h-dropdown">
             <maxhealth-question [question]="question[1]" [form]="miscServBillForm" [questions]="question[1]" 
               [index]="1">
             </maxhealth-question>
           </div>
 
           <!-- TARRIF PRICE BLOCK -->
-          <div class="ml-1 w-tarrif h-full max-health-primary-color">
+          <div class="ml-1 w-tarrif h-full">
             <maxhealth-question [question]="question[2]" [form]="miscServBillForm" [questions]="question[2]"
               [index]="2">
             </maxhealth-question>
           </div>
 
           <!-- QTY BLOCK -->
-          <div class="ml-1  w-tarrif h-full max-health-primary-color">
+          <div class="ml-1  w-tarrif h-full">
             <maxhealth-question [question]="question[3]" [form]="miscServBillForm" [questions]="question[3]"
               [index]="3">
             </maxhealth-question>
           </div>
           <!-- REQUIRED AMOUNT BLOCK -->
-          <div class="ml-1  w-tarrif h-full max-health-primary-color">
+          <div class="ml-1  w-tarrif h-full">
             <maxhealth-question [question]="question[4]" [form]="miscServBillForm" [questions]="question[4]"
               [index]="4">
             </maxhealth-question>
           </div>
 
           <!-- PROCEDURE DOCTOR BLOCK-->
-          <div class="ml-1 w-1/6 h-dropdown max-health-primary-color">
+          <div class="ml-1 w-1/6 h-dropdown">
             <maxhealth-question [question]="question[5]" [form]="miscServBillForm" [questions]="question[5]"
               [index]="5">
             </maxhealth-question>
           </div>
 
           <!-- REMARK BLOCK -->
-          <div class="ml-1 w-1/6 h-dropdown max-health-primary-color">
+          <div class="ml-1 w-1/6 h-dropdown">
             <maxhealth-question [question]="question[6]" [form]="miscServBillForm" [questions]="question[6]"
               [index]="6">
             </maxhealth-question>
@@ -64,7 +64,7 @@
     </div>
   </form>
 
-  <div class="w-full mt-1  h-30vh">
+  <div class="w-full mt-1 billdetailtable-table h-30vh">
     <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" #selectedServices -->
     <!-- <ng-container class="w-full h-table"> -->
     <maxhealth-table [data]="serviceselectedList" [config]="config" class = billdetailtable (rowRwmove)="rowRwmove($event)"></maxhealth-table>
