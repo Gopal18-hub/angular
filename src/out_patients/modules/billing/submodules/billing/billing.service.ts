@@ -796,7 +796,8 @@ export class BillingService {
         if (paymentmethod.paymentForm[payment.key].value.price > 0) {
           this.makeBillPayload.ds_paymode.tab_paymentList.push({
             slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
-            modeOfPayment: "Cash",
+            modeOfPayment:
+              paymentmethod.paymentForm[payment.key].value.modeOfPayment,
             amount: parseFloat(
               paymentmethod.paymentForm[payment.key].value.price
             ),
