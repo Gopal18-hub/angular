@@ -141,6 +141,12 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
     this.questions = formResult.questions;
     this.today = new Date();
     this.acknowledgedFormData = formResult.form;
+    this.acknowledgementForm.controls["fromdate"].setValue(this.today);
+    this.acknowledgementForm.controls["todate"].setValue(this.today);
+    this.questions[1].minimum =
+      this.acknowledgementForm.controls["fromdate"].value;
+    this.questions[0].maximum =
+      this.acknowledgementForm.controls["todate"].value;
   }
   Viewbtn() {
     this.acknowledgementlist1();
@@ -171,5 +177,9 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
         console.log(data);
       });
     console.log(this.acknowledgementscroll);
+  }
+  clear() {
+    this.acknowledgementscroll = [];
+    this.acknowledgementForm.reset();
   }
 }
