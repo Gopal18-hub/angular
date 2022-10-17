@@ -6,6 +6,10 @@ import { DatePipe } from "@angular/common";import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { IomCompanyBillingComponent } from "../billing/prompts/iom-company-billing/iom-company-billing.component";
+import { HttpService } from "@shared/services/http.service";
+import { CookieService } from "@shared/services/cookie.service";
+import { BillingApiConstants } from "../billing/BillingApiConstant";
+import { ApiConstants } from "@core/constants/ApiConstants";
 
 @Injectable({
   providedIn: "root",
@@ -32,25 +36,29 @@ export class MiscService {
   cacheServitem: any = [];
   cacheCreditTabdata: any = [];
   cacheBillTabdata: any = [];
-  companyChangeEvent = new Subject<any>();
-  corporateChangeEvent = new Subject<any>();
+  misccompanyChangeEvent = new Subject<any>();
+  misccorporateChangeEvent = new Subject<any>();
+  miscdepositdetailsEvent = new Subject<any>();
+  miscdepositDetailsData: any = [];
 
   companyData: any = [];
   corporateData: any = [];
   selectedcompanydetails: any = [];
   selectedcorporatedetails: any = [];
   iomMessage: string = "";
+  referralDoctor: any;
+  interactionDetails: any = [];
 
   constructor(
-    
+    private http: HttpService,
     public matDialog: MatDialog,
-    private datepipe: DatePipe,
+    private datepipe: DatePipe,    
+    public cookie: CookieService,
   ) {}
 
   setPatientDetail(dataList: any) {
     this.patientDetail = dataList;
   }
-  companyChangeMiscEvent = new Subject<any>();
 
   getFormLsit() {
     return this.patientDetail;
@@ -69,7 +77,7 @@ export class MiscService {
   }
   setCalculateBillItems(data: any) {
     this.calcItems = data;
-    this.companyChangeMiscEvent.next(this.calcItems);
+   // this.companyChangeMiscEvent.next(this.calcItems);
   }
   getCalculateBillItems() {
     return this.calcItems;
@@ -165,6 +173,7 @@ export class MiscService {
     this.corporateData = [];
     this.selectedcompanydetails = [];
     this.selectedcorporatedetails = [];
+    this.referralDoctor = null;
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
@@ -180,12 +189,13 @@ export class MiscService {
     from: string = "header"
   ) {
     if(res === "" || res == null){
-      this.companyChangeEvent.next({ company: null, from });
+      this.misccompanyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
     }else{   
     this.selectedcompanydetails = res;
     this.selectedcorporatedetails = [];
-    this.companyChangeEvent.next({ company: res, from });
+    this.misccompanyChangeEvent.next({ company: res, from });
+    this.calcItems.companyId = res.value;
     this.iomMessage =
       "IOM Validity till : " +
       (("iomValidity" in res.company && res.company.iomValidity != "") ||
@@ -203,21 +213,21 @@ export class MiscService {
 
       iomcompanycorporate.afterClosed().subscribe((result) => {
         if (result.data == "corporate") {         
-          // this.setItemsToBill.isChannel = 1;          
-          // this.setCalculateBillItems(this.setItemsToBill);
+          this.cacheCreditTabdata.isCorporateChannel = 1; 
+          this.cacheCreditTab(this.cacheCreditTabdata);      
           formGroup.controls["corporate"].enable();
           formGroup.controls["corporate"].setValue(null);
-          this.corporateChangeEvent.next({ corporate: null, from });
+          this.misccorporateChangeEvent.next({ corporate: null, from });
         } else {
-          // this.setItemsToBill.isChannel = 0;
-          // this.setCalculateBillItems(this.setItemsToBill);
+          this.cacheCreditTabdata.isCorporateChannel = 0;
+          this.cacheCreditTab(this.cacheCreditTabdata);  
           formGroup.controls["corporate"].setValue(0);
           formGroup.controls["corporate"].disable();
-          this.corporateChangeEvent.next({ corporate: 0, from });
+          this.misccorporateChangeEvent.next({ corporate: 0, from });
         }
       });
     } else {
-      this.corporateChangeEvent.next({ corporate: 0, from });
+      this.misccorporateChangeEvent.next({ corporate: 0, from });
       // if(from == "credit"){
         formGroup.controls["corporate"].setValue(0);
         formGroup.controls["corporate"].disable();
@@ -236,11 +246,12 @@ export class MiscService {
     from: string = "header"
   ) {
     if(res === ""){
-      this.corporateChangeEvent.next({ corporate: null, from });
+      this.misccorporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
     }else{ 
     this.selectedcorporatedetails = res;
-    this.corporateChangeEvent.next({ corporate: res, from });
+    this.misccorporateChangeEvent.next({ corporate: res, from });
+    this.calcItems.corporateId = res.value
     }
   }
 
@@ -252,4 +263,34 @@ export class MiscService {
     this.corporateData = data;
   }
 
+  setReferralDoctor(doctor: any) {
+    this.referralDoctor = doctor;
+  }
+  async getinteraction() {
+    if (this.interactionDetails.length > 0) {
+      return this.interactionDetails;
+    }
+    const res = await this.http
+      .get(BillingApiConstants.getinteraction)
+      .toPromise();
+    this.interactionDetails = res.map((it: any) => {
+      return { value: it.id, title: it.name };
+    });
+    return this.interactionDetails;
+  }
+
+  depositDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        ApiConstants.getDipositedAmountByMaxID(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((resultData: any) => {
+        this.miscdepositDetailsData = resultData;
+        this.miscdepositdetailsEvent.next({ deposit: resultData});
+      });
+  }
 }

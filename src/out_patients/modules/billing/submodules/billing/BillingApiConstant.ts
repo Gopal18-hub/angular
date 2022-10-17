@@ -257,4 +257,9 @@ export namespace BillingApiConstants {
 
   export const getOPReasonsAndAuthorisedBy = (locationId: number) =>
     `${environment.BillingApiUrl}api/outpatientbilling/getopreasonsandauthorizedby/${locationId}`;
+
+  export const getalldoctorname = (locationId: number) =>
+    `${environment.CommonApiUrl}api/lookup/getalldoctorname/${locationId}`;
+
+  export const getbanknames = `${environment.CommonApiUrl}api/lookup/getbankname`;
 }

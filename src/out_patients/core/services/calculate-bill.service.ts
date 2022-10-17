@@ -108,6 +108,7 @@ export class CalculateBillService {
     this.bookingIdWarningFlag = false;
     this.depositDetailsData = [];
     this.seniorCitizen = false;
+    this.billFormGroup = null;
   }
 
   setDiscountSelectedItems(items: any) {
@@ -253,6 +254,16 @@ export class CalculateBillService {
         formData: {
           authorise: { title: "As Per Policy", value: 4 },
         },
+        discounttypes:
+          [
+            { title: "On Bill", value: "On-Bill" },
+            { title: "On Service", value: "On-Service" },
+            { title: "On Item", value: "On-Item" },
+            { title: "On Patient", value: "On-Patient" },
+            { title: "On Company", value: "On-Company" },
+            { title: "On Campaign", value: "On-Campaign" },
+          ],
+        
       };
     }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
