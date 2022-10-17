@@ -67,7 +67,7 @@ export class BillingService {
 
   companyData: any = [];
   corporateData: any = [];
-  selectedcompanydetails: any = [];
+  selectedcompanydetails: any = {};
   selectedcorporatedetails: any = [];
   iomMessage: string = "";
   activeLink = new Subject<any>();
@@ -136,7 +136,7 @@ export class BillingService {
     );
     this.companyData = [];
     this.corporateData = [];
-    this.selectedcompanydetails = [];
+    this.selectedcompanydetails = {};
     this.selectedcorporatedetails = [];
   }
 
