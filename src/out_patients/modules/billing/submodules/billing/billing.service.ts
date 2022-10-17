@@ -144,7 +144,6 @@ export class BillingService {
     this.corporateData = [];
     this.selectedcompanydetails = [];
     this.selectedcorporatedetails = [];
-    console.log(this.makeBillPayload);
   }
 
   calculateTotalAmount() {
@@ -177,6 +176,7 @@ export class BillingService {
 
   setOtherPlan(data: any) {
     this.selectedOtherPlan = data;
+    this.servicesTabStatus.next({ disableAll: true });
   }
 
   checkServicesAdded() {

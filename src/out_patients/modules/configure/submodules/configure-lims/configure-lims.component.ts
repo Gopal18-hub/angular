@@ -80,7 +80,7 @@ export class ConfigureLimsComponent implements OnInit {
   }
   ngAfterViewInit() {
     this.http
-      .get(ApiConstants.getconfiguremessage("LIMS", "SKCS3760202"))
+      .get(ApiConstants.gethl7outboundmessageris("1", "SKCS3760202"))
       .pipe(takeUntil(this._destroying$))
       .subscribe((data) => {
         console.log(data);
