@@ -109,10 +109,17 @@ export class ServicesComponent implements OnInit {
       } else if ("clear" in res) {
         this.healthCheckupExist = false;
         this.consumablesExist = false;
+        this.tabs.forEach((tab: any) => {
+          tab.disabled = false;
+        });
       } else if ("disableOrderSet" in res && res.disableOrderSet) {
         this.tabs[4].disabled = true;
       } else if ("goToTab" in res && res.goToTab) {
         this.tabChange(this.tabs[res.goToTab]);
+      } else if ("disableAll" in res && res.disableAll) {
+        this.tabs.forEach((tab: any) => {
+          tab.disabled = true;
+        });
       }
     });
   }
