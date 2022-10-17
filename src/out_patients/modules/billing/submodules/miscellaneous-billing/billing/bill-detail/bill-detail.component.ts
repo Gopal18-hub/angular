@@ -360,7 +360,7 @@ export class BillDetailComponent implements OnInit {
         title: "S.No.",
         type: "number",
         style: {
-          width: "5%",
+          width: "64px",
         },
       },
       ServiceType: {
@@ -368,7 +368,7 @@ export class BillDetailComponent implements OnInit {
         type: "string",
         tooltipColumn: "ServiceType",
         style: {
-          width: "11%",
+          width: "170px",
         },
       },
       ItemDescription: {
@@ -376,7 +376,7 @@ export class BillDetailComponent implements OnInit {
         type: "string",
         tooltipColumn: "ItemDescription",
         style: {
-          width: "13%",
+          width: "180px",
         },
       },
       ItemforModify: {
@@ -384,28 +384,28 @@ export class BillDetailComponent implements OnInit {
         type: "textarea",
         tooltipColumn: "ItemforModify",
         style: {
-          width: "13%",
+          width: "180px",
         },
       },
       TariffPriceNo: {
         title: "Tariff Price",
         type: "number",
         style: {
-          width: "10%",
+          width: "160px",
         },
       },
       Qty: {
         title: "Qty",
         type: "string",
         style: {
-          width: "2.5%",
+          width: "30px",
         },
       },
       PriceNo: {
         title: "Price",
         type: "string",
         style: {
-          width: "10%",
+          width: "160px",
         },
       },
       DoctorName: {
@@ -413,35 +413,35 @@ export class BillDetailComponent implements OnInit {
         type: "string",
         tooltipColumn: "DoctorName",
         style: {
-          width: "10%",
+          width: "160px",
         },
       },
       DiscNo: {
         title: "Disc%",
         type: "string",
         style: {
-          width: "5%",
+          width: "60px",
         },
       },
       DiscAmountNo: {
         title: "Disc. Amount",
         type: "string",
         style: {
-          width: "10%",
+          width: "160px",
         },
       },
       TotalAmntNo: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "10%",
+          width: "160px",
         },
       },
       GSTNo: {
         title: "GST%",
         type: "string",
         style: {
-          width: "6%",
+          width: "70px",
         },
       },
     },

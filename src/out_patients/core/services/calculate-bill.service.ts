@@ -266,6 +266,19 @@ export class CalculateBillService {
         
       };
     }
+    else{
+      data = {
+        discounttypes:
+        [
+          { title: "On Bill", value: "On-Bill" },
+          { title: "On Service", value: "On-Service" },
+          { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
+        ],
+      }
+    }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
