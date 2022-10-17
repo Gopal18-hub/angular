@@ -1,22 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { IomCompanyBillingComponent } from "./prompts/iom-company-billing/iom-company-billing.component";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { of } from "rxjs";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
-
+import { PaymentMethods } from "@core/constants/PaymentMethods";
 @Injectable({
   providedIn: "root",
 })
@@ -803,6 +797,13 @@ export class BillingService {
             ),
             flag: 1,
           });
+          if ("payloadKey" in payment.method) {
+            this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
+              PaymentMethods[
+                payment.method.payloadKey as keyof typeof PaymentMethods
+              ](paymentmethod.paymentForm[payment.key].value),
+            ];
+          }
         }
       });
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =
