@@ -144,7 +144,6 @@ export class BillingService {
     this.corporateData = [];
     this.selectedcompanydetails = [];
     this.selectedcorporatedetails = [];
-    console.log(this.makeBillPayload);
   }
 
   calculateTotalAmount() {
@@ -177,6 +176,7 @@ export class BillingService {
 
   setOtherPlan(data: any) {
     this.selectedOtherPlan = data;
+    this.servicesTabStatus.next({ disableAll: true });
   }
 
   checkServicesAdded() {
@@ -307,47 +307,47 @@ export class BillingService {
         "credLimit"
       ].setValue("0.00");
     }
-    if(res === "" || res == null){
+    if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
-    }else{  
-    this.selectedcompanydetails = res;
-    this.selectedcorporatedetails = [];
-    this.companyChangeEvent.next({ company: res, from });
-    this.makeBillPayload.ds_insert_bill.tab_insertbill.company = companyid;
-    this.iomMessage =
-      "IOM Validity till : " +
-      (("iomValidity" in res.company && res.company.iomValidity != "") ||
-      res.company.iomValidity != undefined
-        ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
-        : "");
-    if (res.company.isTPA == 1) {
-      const iomcompanycorporate = this.matDialog.open(
-        IomCompanyBillingComponent,
-        {
-          width: "25%",
-          height: "28%",
-        }
-      );
-
-      iomcompanycorporate.afterClosed().subscribe((result) => {
-        if (result.data == "corporate") {
-          formGroup.controls["corporate"].enable();
-          formGroup.controls["corporate"].setValue(null);
-          this.corporateChangeEvent.next({ corporate: null, from });
-        } else {
-          formGroup.controls["corporate"].setValue(null);
-          formGroup.controls["corporate"].disable();
-          this.corporateChangeEvent.next({ corporate: 0, from });
-        }
-      });
     } else {
-      this.corporateChangeEvent.next({ corporate: 0, from });
-      formGroup.controls["corporate"].setValue(null);
-      formGroup.controls["corporate"].disable();
+      this.selectedcompanydetails = res;
+      this.selectedcorporatedetails = [];
+      this.companyChangeEvent.next({ company: res, from });
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = companyid;
+      this.iomMessage =
+        "IOM Validity till : " +
+        (("iomValidity" in res.company && res.company.iomValidity != "") ||
+        res.company.iomValidity != undefined
+          ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+          : "");
+      if (res.company.isTPA == 1) {
+        const iomcompanycorporate = this.matDialog.open(
+          IomCompanyBillingComponent,
+          {
+            width: "25%",
+            height: "28%",
+          }
+        );
+
+        iomcompanycorporate.afterClosed().subscribe((result) => {
+          if (result.data == "corporate") {
+            formGroup.controls["corporate"].enable();
+            formGroup.controls["corporate"].setValue(null);
+            this.corporateChangeEvent.next({ corporate: null, from });
+          } else {
+            formGroup.controls["corporate"].setValue(null);
+            formGroup.controls["corporate"].disable();
+            this.corporateChangeEvent.next({ corporate: 0, from });
+          }
+        });
+      } else {
+        this.corporateChangeEvent.next({ corporate: 0, from });
+        formGroup.controls["corporate"].setValue(null);
+        formGroup.controls["corporate"].disable();
+      }
     }
-  }
   }
 
   setCorporate(
@@ -356,12 +356,12 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
-    if(res === ""){
+    if (res === "") {
       this.corporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
-    }else{
-    this.selectedcorporatedetails = res;
-    this.corporateChangeEvent.next({ corporate: res, from });
+    } else {
+      this.selectedcorporatedetails = res;
+      this.corporateChangeEvent.next({ corporate: res, from });
     }
   }
 
@@ -472,7 +472,7 @@ export class BillingService {
       oldorderId: 0,
       consultid: 0,
       discrtype_dr: 0,
-      pharma: data.priorityId,
+      pharma: data.priority || 0,
       specialisationID: data.specialisationID || 0,
       doctorID: data.doctorID || 0,
       isServiceTax: 0,
@@ -509,7 +509,7 @@ export class BillingService {
       this.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.push({
         orderId: 0,
         doctorId: data.billItem.itemId,
-        type: data.billItem.priorityId,
+        type: data.billItem.priority,
         visited: 0,
         scheduleSlot: "",
         scheduleId: 0,
@@ -779,6 +779,9 @@ export class BillingService {
         ) +
           parseFloat(
             this.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount
+          ) +
+          parseFloat(
+            this.calculateBillService.billFormGroup.form.value.amtPayByComp
           ));
       let collectedAmount = paymentmethod.tabPrices.reduce(
         (partialSum: number, a: number) => partialSum + a,
@@ -873,6 +876,7 @@ export class BillingService {
         }
       }
     }
+    this.calculateBillService.blockActions.next(true);
     return this.http
       .post(BillingApiConstants.insert_billdetailsgst(), this.makeBillPayload)
       .toPromise();

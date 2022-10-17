@@ -13,9 +13,9 @@
 }
 .online-deposit-wrapper{
     ::ng-deep .max-table-wrapper table{
-        width: auto !important;
+        // width: auto !important;
         white-space: nowrap !important;
-        table-layout: auto !important;
+         table-layout: auto !important;
     }
 
     ::ng-deep .mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper {

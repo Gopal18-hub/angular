@@ -333,18 +333,12 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.formGroup = formResult.form;
     this.question = formResult.questions;
-    console.log(this.question);
-    if (this.billingservice.makeBillPayload.cmbInteraction) {
-      this.formGroup.controls["interactionDetails"].setValue(
-        this.billingservice.makeBillPayload.cmbInteraction
-      );
-    }
     if (
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType
+      this.calculateBillService.billFormGroup &&
+      this.calculateBillService.billFormGroup.form
     ) {
-      this.formGroup.controls["paymentMode"].setValue(
-        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
-          .billType
+      this.formGroup.patchValue(
+        this.calculateBillService.billFormGroup.form.value
       );
     }
     this.question[1].options = await this.calculateBillService.getinteraction();
@@ -366,12 +360,6 @@ export class BillComponent implements OnInit, OnDestroy {
         },
       });
       await popuptextDialogRef.afterClosed().toPromise();
-    }
-    if (
-      this.billingservice.referralDoctor &&
-      this.billingservice.referralDoctor.id == 2015
-    ) {
-      this.formGroup.controls["self"].setValue(true);
     }
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
@@ -570,7 +558,12 @@ export class BillComponent implements OnInit, OnDestroy {
     this.question[14].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.applyCreditLimit();
+        if (
+          this.formGroup.value.credLimit &&
+          this.formGroup.value.credLimit > 0
+        ) {
+          this.applyCreditLimit();
+        }
       }
     });
 
@@ -675,6 +668,13 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async makeBill() {
+    if (this.formGroup.value.paymentMode == 3 && !this.billingservice.company) {
+      const referralErrorRef = this.messageDialogService.error(
+        "Please select Company Name"
+      );
+      await referralErrorRef.afterClosed().toPromise();
+      return;
+    }
     if (!this.billingservice.referralDoctor) {
       const referralErrorRef = this.messageDialogService.error(
         "Please select Referral Doctor"
@@ -724,6 +724,10 @@ export class BillComponent implements OnInit, OnDestroy {
               if (res.length > 0) {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
+                } else {
+                  if (!res[0].successFlag) {
+                    this.messageDialogService.error(res[0].returnMessage);
+                  }
                 }
               }
             }
@@ -743,6 +747,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
       Number(this.formGroup.value.paymentMode);
 
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+      parseFloat(this.formGroup.value.credLimit) || 0;
+
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "65vw",
       height: "96vh",
@@ -751,10 +758,11 @@ export class BillComponent implements OnInit, OnDestroy {
         totalDiscount: this.formGroup.value.discAmt,
         totalDeposit: this.formGroup.value.dipositAmtEdit,
         totalRefund: 0,
-        ceditLimit: 0,
+        ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
         toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+        amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
       },
     });
 
@@ -763,18 +771,23 @@ export class BillComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
+        } else if (result && "successFlag" in result && !result.successFlag) {
+          if (result && "returnMessage" in result && result.returnMessage) {
+            this.messageDialogService.error(result.returnMessage);
+          }
         }
       });
   }
 
   processBillNo(result: any) {
+    this.calculateBillService.blockActions.next(false);
     this.billingservice.billNoGenerated.next(true);
     this.billNo = result.billNo;
     this.billId = result.billId;
     this.config.removeRow = false;
     this.config = { ...this.config };
     const successInfo = this.messageDialogService.info(
-      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.totalCost}`
+      `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     successInfo
       .afterClosed()

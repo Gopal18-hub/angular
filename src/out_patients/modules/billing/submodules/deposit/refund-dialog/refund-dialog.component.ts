@@ -72,9 +72,10 @@ export class RefundDialogComponent implements OnInit {
   PaymentTypedepositamount:number = 0;
   mobileno:number|undefined;
 
-  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =  Number(this.cookie.get("UserId"));
+
 
   SendOTP:string="Send OTP";
   ResendOTP: string="Send OTP to Manager";
@@ -279,8 +280,8 @@ export class RefundDialogComponent implements OnInit {
   getPatientRefundSubmitRequestBody(): savepatientRefunddetailModel {  
     return (this.patientSaveRefundDetails = new savepatientRefunddetailModel(
       this.data.clickedrowdepositdetails.uhid.split(".")[0], 
-      this.refundform.value.payable_name,
-      this.refundform.value.remarks,
+      this.refundform.value.payable_name == null ? "" :  this.refundform.value.payable_name,
+      this.refundform.value.remarks == null ? "" :  this.refundform.value.remarks,
       this.data.clickedrowdepositdetails.receiptno,
       Number(this.data.clickedrowdepositdetails.uhid.split(".")[1]),
       Number(this.PaymentTypedepositamount),

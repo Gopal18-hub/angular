@@ -51,8 +51,11 @@ export class PrintduereceiptComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
-
+  ngAfterViewInit(): void{
+    this.printdueform.controls['receiptNumber'].markAsDirty();
+  }
   getreceiptnumber()
   {
     var billno = this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno;
@@ -64,6 +67,7 @@ export class PrintduereceiptComponent implements OnInit {
       this.questions[0].options = this.receiptnumberList.map((l) => {
         return { title: l.recNumber, value: l.recNumber}
       })
+      this.questions[0] = {...this.questions[0]};
     })
   }
   printbtn()
