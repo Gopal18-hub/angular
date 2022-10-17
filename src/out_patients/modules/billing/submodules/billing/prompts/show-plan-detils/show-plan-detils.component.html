@@ -73,6 +73,7 @@
               disableOptionCentering
               controlDirty
               placeholder="--Select--"
+              [(ngModel)]="selectedDoctor"
             >
               <ng-container *ngFor="let opt of doctorList">
                 <mat-option [value]="opt.value">
@@ -101,7 +102,10 @@
         class="font-sm min-width-initial mr-5"
         type="button"
         (click)="save()"
-        [disabled]="tableRows && tableRows.selection.selected == 0"
+        [disabled]="
+          (tableRows && tableRows.selection.selected == 0) ||
+          (isConsultationExist && !selectedDoctor)
+        "
       >
         Ok
       </button>

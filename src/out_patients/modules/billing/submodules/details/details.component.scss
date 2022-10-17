@@ -135,6 +135,9 @@
                color: #08504f;
                font-weight: 600;
              }
+             &.mat-tab-disabled {
+                opacity: 0.7;
+            }
            }
          }
          .mat-ink-bar {
