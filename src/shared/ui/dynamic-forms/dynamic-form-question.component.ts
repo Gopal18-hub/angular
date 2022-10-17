@@ -304,7 +304,9 @@ export class DynamicFormQuestionComponent
             .map((option: any) => option.value)
             .find(
               (option: any) =>
-                option === this.form.controls[this.question.key].value.value
+                option ===
+                (this.form.controls[this.question.key].value &&
+                  this.form.controls[this.question.key].value.value)
             );
           if (selected == null) {
             this.form.controls[this.question.key].setValue(null);

@@ -28,7 +28,7 @@ export class PopuptextComponent implements OnInit {
   {
     this.dialogRef.close();
     this.dialogRef.afterClosed().subscribe(()=>{
-      this.reportService.openWindow('IvestigationInstruction', 'IvestigationInstruction', {
+      this.reportService.openWindow('InvestigationInstruction', 'InvestigationInstruction', {
         ItemName: btoa(JSON.stringify(this.item)),
         description: btoa(JSON.stringify(this.description))
       });

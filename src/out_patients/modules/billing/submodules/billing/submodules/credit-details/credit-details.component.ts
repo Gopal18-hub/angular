@@ -162,9 +162,9 @@ export class CreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.corporate == 0){
+        if (res.corporate == 0) {
           this.comapnyFormGroup.controls["corporate"].disable();
-        }else{
+        } else {
           this.comapnyFormGroup.controls["corporate"].enable();
         }
       }
@@ -183,7 +183,7 @@ export class CreditDetailsComponent implements OnInit {
       return { title: a.name, value: a.id, company: a };
     });
     let selectedcompany = this.billingservice.selectedcompanydetails;
-    if (!this.companyexists && selectedcompany.length > 0) {
+    if (!this.companyexists && selectedcompany && selectedcompany.value) {
       this.comapnyFormGroup.controls["company"].setValue(
         this.billingservice.selectedcompanydetails
       );
@@ -223,7 +223,7 @@ export class CreditDetailsComponent implements OnInit {
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res.value != null && res.value != 0 && res.value != undefined) {
-          var comarr = this.companyList.filter(i => {
+          var comarr = this.companyList.filter((i) => {
             return i.id == res.value;
           });
           this.companyname = comarr[0].name;
@@ -248,7 +248,7 @@ export class CreditDetailsComponent implements OnInit {
     this.comapnyFormGroup.controls["corporate"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
-        if(res != "" && res != null){
+        if (res != "" && res != null) {
           if (res.value != null && res.value != 0 && res.value != undefined) {
             this.corporateexists = true;
             this.billingservice.setCorporate(
@@ -258,8 +258,7 @@ export class CreditDetailsComponent implements OnInit {
               "credit"
             );
           }
-        }
-        else {
+        } else {
           this.corporateexists = false;
           this.billingservice.setCorporate(
             res,
