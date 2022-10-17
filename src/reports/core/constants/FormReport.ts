@@ -12,7 +12,8 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
-          type: "dropdown",
+           type: "dropdown",
+        
           placeholder: "---Equipment---",
           title: "Equipment Name",
           // defaultValue: "0",
@@ -21,7 +22,7 @@ export namespace FormReport {
             fields: {
               title: "name",
 
-              value: "id",
+              value: "name",
             },
           },
         },
@@ -422,7 +423,7 @@ export namespace FormReport {
   };
 
   export const GeneralOPDReport = {
-    reportName: "General OPD Scroll Report",
+    reportName: "Selection Criteria",
     filterForm: {
       title: "",
       type: "object",
