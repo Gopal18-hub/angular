@@ -7,7 +7,7 @@ import { ApiConstants } from '@core/constants/ApiConstants';
 import { Subject, takeUntil } from 'rxjs';
 import {onlinedeposit} from "@core/types/getOnlineDepositModel.Interface";
 import { DatePipe } from '@angular/common';
-
+import { CookieService } from '@shared/services/cookie.service';
 
 @Component({
   selector: 'out-patients-online-deposit-report',
@@ -22,7 +22,11 @@ export class OnlineDepositReportComponent implements OnInit {
 
  
 
-  constructor( private formService:QuestionControlService, private http: HttpService, private datepipe: DatePipe) { }
+  constructor( 
+    private formService:QuestionControlService, 
+    private http: HttpService, 
+    private datepipe: DatePipe,
+    private cookie: CookieService) { }
   // @ViewChild("onlinedeposittable") onlinedeposittable: any;
   onlineDepositformdata = {
     type:"object",
@@ -35,7 +39,8 @@ export class OnlineDepositReportComponent implements OnInit {
         type:"date",
       },
       selecttype:{
-        type:"dropdown",
+        type: "dropdown",
+        // type:"dropdown",
         //placeholder: '--All--',  
         options: this.depositstatus,
         value:0,     
@@ -108,106 +113,161 @@ export class OnlineDepositReportComponent implements OnInit {
         "mobileNo",
         "depositType",
         "amount",
-        "stationName",
-        "statusCode",
-        "statusDesc",
-        "createDate",
+         "stationName",
+         "statusDesc",
+        // "statusCode",
+        // "statusDesc",
+         "createDate",
         "depositSource",
-        "initDep_DateTime",
+         "initDep_DateTime",
         "initDep_Response_ID",
-        "pay_Or_PayCheck_Date",
-        "pay_reference_no",    
-        "pay_bank_ref_no",
+         "pay_Or_PayCheck_Date",
+         "pay_reference_no",    
+         "pay_bank_ref_no",
         "hiS_UpdateDateTime",
         "hiS_DepositID",
         "receiptNo",
-        "initDep_OtherDetail"
+        // "initDep_OtherDetail"
 
       ],
       columnsInfo: {
         maxid: {
           title: "Max ID",
           type: "string",
-          
+          style: {
+            width: "7rem"
+          }
         },
         eMailID: {
           title: "Email ID",
           type: "string",
+          style: {
+            width: "7rem"
+          }
         },
         mobileNo: {
           title: "Mobile No",
           type: "number",
+          style: {
+            width: "7rem"
+          }
         },
         depositType: {
           title: "Deposit Type",
           type: "string",
+          style: {
+            width: "7rem"
+          }
           
         },
         amount: {
           title: "Amount",
           type: "number",
+          style: {
+            width: "4rem"
+          }
         },
         stationName: {
           title: "Station Name",
           type: "string",
+          style: {
+            width: "7rem"
+          }
         },
-        statusCode:{
-          title: "Deposit Status Description",
+        statusDesc:{
+          title: "Deposit Status ",
           type: "string",
+          style: {
+            width: "6rem"
+          }
 
         },
-        statusDesc: {
-          title: "Deposit Status",
-          type: "string",
-        
-          
-        },
+        // statusDesc: {
+        //   title: "Deposit Statu",
+        //   type: "string",
+        //   style: {
+        //     width: "6rem"
+        //   } 
+        // },
        
         createDate: {
           title: "Date",
           type: "date",
+          style: {
+            width: "6rem"
+          }
         },
         depositSource:{
           title: "Deposit Source",
           type: "string",
+          style: {
+            width: "7rem"
+          }
         },
         
         initDep_DateTime: {
           title: "Init Dep Date Time",
           type: "date",
+          style: {
+            width: "7rem"
+          }
         },
         initDep_Response_ID: {
           title: "Init Deposit Response Time",
           type: "date",
+          style: {
+            width: "8rem"
+          }
         },
         pay_Or_PayCheck_Date: {
           title: "Pay Or Pay Check Date",
           type: "string",
+          style: {
+            width: "7rem"
+          }
         },
         pay_reference_no: {
           title: "Pay Reference No",
           type: "number",
+          style: {
+            width: "7rem"
+          }
         },
         pay_bank_ref_no: {
           title: "Pay Bank Reference No",
           type: "number",
+          style: {
+            width: "7rem"
+          }
         },
         hiS_UpdateDateTime: {
           title: "HIS Update Date Time",
           type: "date",
+          style: {
+            width: "7rem"
+          }
         },
         hiS_DepositID: {
           title: "HIS Deposit ID",
           type: "string",
+          style: {
+            width: "7rem"
+          }
         },
         receiptNo: {
           title: "Receipt No",
           type: "number",
+          style: {
+            width: "7rem"
+          }
         },
-        initDep_OtherDetail: {
-          title: "Initial Deposit Other Detail",
-          type: "string",
-        },
+        // initDep_OtherDetail: {
+        //   title: "Initial Deposit Other Detail",
+        //   type: "string",
+        //   style: {
+        //     width: "8rem"
+        //   }
+        // },
       },
     }
 
@@ -247,9 +307,7 @@ export class OnlineDepositReportComponent implements OnInit {
       this.getdepositstatus();
       setTimeout(() => {
         this.onlinedepositsearch();
-      }, 500);
-      
-      
+      }, 1000);
       
 
 
@@ -267,7 +325,9 @@ export class OnlineDepositReportComponent implements OnInit {
     // this.getdepositstatus();
 
 }
-
+ngAfterViewInit(){
+  
+}
 getdepositstatus()
   {
     this.http.get(ApiConstants.getdepositstatus)
@@ -291,13 +351,14 @@ getdepositstatus()
 
   onlinedepositsearch(){
     console.log(this.onlinedepositForm);
+    this.onlinedepositlist = [];
     this.http.get(ApiConstants.getonlinedepositreportdata(
       'S',
       'hdfc',
       this.onlinedepositForm.controls["selecttype"].value,
       this.datepipe.transform(this.onlinedepositForm.value.startdate, 'YYYY-MM-dd'),
       this.datepipe.transform(this.onlinedepositForm.value.enddate, "YYYY-MM-dd"),
-      67
+      Number(this.cookie.get('HSPLocationId'))
     
     ))
     .pipe(takeUntil(this._destroying$))

@@ -63,6 +63,7 @@ export class PrintRefundReceiptDialogComponent implements OnInit {
         this.questions[0].options = this.getrefundbillnumber.map((l) => {
           return { title: l.rfbillno, value: l.rfbillno }
         })
+        this.questions[0] = {...this.questions[0]};
       }
     })
   }

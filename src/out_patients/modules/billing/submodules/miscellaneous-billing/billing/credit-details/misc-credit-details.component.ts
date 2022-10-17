@@ -41,21 +41,21 @@ export class MiscCreditDetailsComponent implements OnInit {
       company: {
         type: "autocomplete",
         title: "",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
         options: this.companyList,
       },
       corporate: {
         type: "autocomplete",
         title: "Corporate",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
         options: this.coorporateList,
       },
       companyGSTN: {
         type: "dropdown",
         title: "Company GSTN",
-        placeholder: "-Select-",
+        placeholder: "--Select--",
         emptySelect: true,
       },
       letterDate: {
@@ -117,7 +117,6 @@ export class MiscCreditDetailsComponent implements OnInit {
   companyexists: boolean = false;
   corporateexists: boolean = false;
   setItemsToBill: any = [];
-  isChannel = 0;
   cacheCreditTabdata: any = {};
 
   constructor(
@@ -151,16 +150,16 @@ export class MiscCreditDetailsComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
 
-    if (this.Miscservice.cacheCreditTabdata.creditCompany) {
-      this.comapnyFormGroup.controls["company"].setValue(
-        this.Miscservice.cacheCreditTabdata.creditCompany
-      );
-    }
-    if (this.Miscservice.cacheCreditTabdata.creditCorporate) {
-      this.comapnyFormGroup.controls["corporate"].setValue(
-        this.Miscservice.cacheCreditTabdata.creditCorporate
-      );
-    }
+    // if (this.Miscservice.cacheCreditTabdata.creditCompany) {
+    //   this.comapnyFormGroup.controls["company"].setValue(
+    //     this.Miscservice.cacheCreditTabdata.creditCompany
+    //   );
+    // }
+    // if (this.Miscservice.cacheCreditTabdata.creditCorporate) {
+    //   this.comapnyFormGroup.controls["corporate"].setValue(
+    //     this.Miscservice.cacheCreditTabdata.creditCorporate
+    //   );
+    // }
     // this.Miscservice.companyChangeMiscEvent.subscribe((res: any) => {
     //   if (res.companyIdComp != "MiscCredit") {
     //     if (res.companyId) {
@@ -183,7 +182,7 @@ export class MiscCreditDetailsComponent implements OnInit {
     //     }
     //   }
     // });
-    this.Miscservice.companyChangeEvent.subscribe((res: any) => {     
+    this.Miscservice.misccompanyChangeEvent.subscribe((res: any) => {     
       if (res.from != "credit") {
         this.companyexists = true;
         this.getAllCompany();
@@ -195,7 +194,7 @@ export class MiscCreditDetailsComponent implements OnInit {
       }
     });
 
-    this.Miscservice.corporateChangeEvent.subscribe((res: any) => {     
+    this.Miscservice.misccorporateChangeEvent.subscribe((res: any) => {     
       if (res.from != "credit") {
         this.corporateexists = true;
         this.getAllCorporate();
@@ -355,7 +354,8 @@ export class MiscCreditDetailsComponent implements OnInit {
       });
       let selectedcompany = this.Miscservice.selectedcompanydetails;
       if(!this.companyexists && selectedcompany){
-        this.comapnyFormGroup.controls["company"].setValue(selectedcompany);       
+        this.comapnyFormGroup.controls["company"].setValue(selectedcompany);
+        this.Miscservice.cacheCreditTabdata.creditCompany = selectedcompany;   
       }
       this.companyexists = true;
       this.companyQuestions[0] = { ...this.companyQuestions[0] };
@@ -373,6 +373,7 @@ export class MiscCreditDetailsComponent implements OnInit {
     if(!this.corporateexists && selectedcorporate.length > 0){
       this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
       this.comapnyFormGroup.controls["corporate"].enable();
+      this.Miscservice.cacheCreditTabdata.creditCorporate = selectedcorporate;
     }
     this.companyQuestions[1] = { ...this.companyQuestions[1] };
   }

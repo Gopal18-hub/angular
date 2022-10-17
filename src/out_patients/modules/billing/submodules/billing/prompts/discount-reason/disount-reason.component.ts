@@ -26,15 +26,7 @@ export class DisountReasonComponent implements OnInit {
     properties: {
       types: {
         type: "dropdown",
-        title: "Discount Types",
-        options: [
-          { title: "On Bill", value: "On-Bill" },
-          { title: "On Service", value: "On-Service" },
-          { title: "On Item", value: "On-Item" },
-          { title: "On Patient", value: "On-Patient" },
-          { title: "On Company", value: "On-Company" },
-          { title: "On Campaign", value: "On-Campaign" },
-        ],
+        title: "Discount Types",       
         placeholder: "-Select-",
       },
       head: {
@@ -110,6 +102,7 @@ export class DisountReasonComponent implements OnInit {
       service: {
         title: "Service Name",
         type: "string",
+        tooltipColumn: "service",
         style: {
           width: "7rem",
         },
@@ -117,15 +110,16 @@ export class DisountReasonComponent implements OnInit {
       doctor: {
         title: "Item/Doctor Name",
         type: "string",
+        tooltipColumn: "doctor",
         style: {
           width: "9rem",
         },
       },
       price: {
         title: "Price",
-        type: "string",
+        type: "currency",
         style: {
-          width: "4rem",
+          width: "8rem",
         },
       },
       disc: {
@@ -137,16 +131,16 @@ export class DisountReasonComponent implements OnInit {
       },
       discAmt: {
         title: "Dis. Amount",
-        type: "string",
+        type: "currency",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       totalAmt: {
         title: "Total Amount",
-        type: "string",
+        type: "currency",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       head: {
@@ -166,7 +160,7 @@ export class DisountReasonComponent implements OnInit {
       },
       value: {
         title: "Value Based",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -180,6 +174,7 @@ export class DisountReasonComponent implements OnInit {
   authorisedBy: { id: number; name: number }[] = [] as any;
   discReasonList: { id: number; name: string; discountPer: number }[] =
     [] as any;
+  discounttypes: any = [];
 
   serviceBasedList: any = {};
 
@@ -224,6 +219,13 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("formData" in this.data) {
       this.discAmtForm.patchValue(this.data.formData);
+    }
+    if ("discounttypes" in this.data) {
+      this.discounttypes = this.data.discounttypes;
+      this.question[0].options = this.discounttypes.map((a:any) => {
+        return { title: a.title, value: a.value };
+      });
+      this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -308,7 +310,6 @@ export class DisountReasonComponent implements OnInit {
 
           dialogref.afterClosed().subscribe((res) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
-            //   this.dialogRef.close({ data: this.selectedAuthorise });
           });
         }
       }
@@ -339,6 +340,12 @@ export class DisountReasonComponent implements OnInit {
       );
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.calculateBillService.calculateDiscount();
+    if(this.selectedItems.length === 0){
+       this.disableAdd = false;
+    }
+    if(!this.discAmtForm.value.types){
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }    
   }
 
   prepareData() {
@@ -475,10 +482,10 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: item.price * item.qty,
-          disc: existReason.discountPer,
-          discAmt: discAmt,
-          totalAmt: price - discAmt,
+          price: (item.price * item.qty).toFixed(2),
+          disc: (existReason.discountPer).toFixed(2),
+          discAmt: discAmt.toFixed(2),
+          totalAmt: (price - discAmt).toFixed(2),
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
@@ -490,10 +497,11 @@ export class DisountReasonComponent implements OnInit {
         k++;
 
         this.calculateBillService.discountSelectedItems.push(temp);
+        
+    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
       }
     }
 
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
 
@@ -527,8 +535,9 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
         this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
-    }
+      
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    }
     this.disableAdd = true;
   }
 
@@ -536,6 +545,10 @@ export class DisountReasonComponent implements OnInit {
     this.disableAdd = false;
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    if(!this.discAmtForm.value.types){
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }
+    
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
@@ -578,7 +591,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreasonmainhead(
-          Number(this.cookie.get("HSPLocationId"))
+         Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -596,7 +609,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-          Number(this.cookie.get("HSPLocationId"))
+        Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))

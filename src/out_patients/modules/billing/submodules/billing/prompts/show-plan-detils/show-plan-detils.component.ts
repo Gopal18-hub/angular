@@ -45,7 +45,6 @@ export class ShowPlanDetilsComponent implements OnInit {
     selectCheckBoxPosition: 6,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
-    clickSelection: "single",
     selectCheckBoxLabel: "Select",
     displayedColumns: [
       "stepNo",
@@ -101,6 +100,8 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   isConsultationExist: boolean = false;
 
+  selectedDoctor: any = "";
+
   constructor(
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
     @Inject(MAT_DIALOG_DATA) public inputdata: any,
@@ -117,32 +118,39 @@ export class ShowPlanDetilsComponent implements OnInit {
   ngAfterViewInit(): void {
     if (this.planType == "otherPlanDetails") {
       this.tableRows.selection.changed.subscribe((res: any) => {
-        if (res.added[0].serviceid == 25) {
-          this.getDoctorsListInfo();
-        }
+        this.isConsultationExist = false;
+        this.tableRows.selection.selected.forEach((sItem: any) => {
+          if (sItem.serviceid == 25) {
+            this.getDoctorsListInfo();
+          }
+        });
       });
     }
   }
 
   getDoctorsListInfo() {
-    this.http
-      .get(
-        BillingApiConstants.getalldoctorname(
-          Number(this.cookie.get("HSPLocationId"))
+    if (this.doctorList.length == 0) {
+      this.http
+        .get(
+          BillingApiConstants.getalldoctorname(
+            Number(this.cookie.get("HSPLocationId"))
+          )
         )
-      )
-      .subscribe((res) => {
-        this.doctorList = res.map((r: any) => {
-          return {
-            title: r.doctorname + " (" + r.specialityname + ")",
-            value: r.doctorId,
-            originalTitle: r.doctorName,
-            specialisationid: r.specialisationid,
-            //clinicID: r.clinicID,
-          };
+        .subscribe((res) => {
+          this.doctorList = res.map((r: any) => {
+            return {
+              title: r.doctorname + " (" + r.specialityname + ")",
+              value: r.doctorId,
+              originalTitle: r.doctorName,
+              specialisationid: r.specialisationid,
+              //clinicID: r.clinicID,
+            };
+          });
+          this.isConsultationExist = true;
         });
-        this.isConsultationExist = true;
-      });
+    } else {
+      this.isConsultationExist = true;
+    }
   }
 
   cancel() {
