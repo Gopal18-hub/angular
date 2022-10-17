@@ -95,7 +95,7 @@ export class DetailsComponent implements OnInit {
   public patientDetailsforicon!: PatientDetails;
   categoryIcons: [] = [];
 
-  linkList = [
+  linkList: any = [
     {
       title: "Services",
       path: "services",
@@ -236,6 +236,7 @@ export class DetailsComponent implements OnInit {
   billexist: boolean = true;
   apiProcessing: boolean = false;
   result: any = [];
+  locationexclude: any = [67,69];
   ngOnInit(){
     this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
@@ -610,6 +611,9 @@ export class DetailsComponent implements OnInit {
               {
                 var errtxt = "Bill Number " + this.BServiceForm.value.billNo + " Has Been Cancelled";
                 this.msgdialog.info(errtxt);
+                this.linkList[1].disabled = true;
+                this.linkList[2].disabled = true;
+                this.linkList[3].disabled = true;
               }
               this.BServiceForm.controls["billNo"].setValue(this.billno);
               this.billFormfill();
@@ -636,7 +640,7 @@ export class DetailsComponent implements OnInit {
                 {
                   healthlist++;
                 }
-                else if(item.servicename == 'Consultations')
+                else if((item.servicename == 'Consultations' || item.servicename == 'Consultation Charges') && this.locationexclude.includes(Number(this.cookie.get('HSPLocationId'))))
                 {
                   consultlist++;
                 }
@@ -645,6 +649,7 @@ export class DetailsComponent implements OnInit {
                   consumablelist++;
                 }
               })
+              console.log(healthlist, consultlist, consumablelist, consultlist);
               if(healthlist > 0)
               {
                 this.phptracksheet = false;
@@ -931,6 +936,9 @@ export class DetailsComponent implements OnInit {
     this.visithistorybtn = true;
     this.billexist = true;
     this.billdetailservice.clear();
+    this.linkList[1].disabled = false;
+    this.linkList[2].disabled = false;
+    this.linkList[3].disabled = false;
     // this.ngOnInit();
   }
   doxperredirect() {

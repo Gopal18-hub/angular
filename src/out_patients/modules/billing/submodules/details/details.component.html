@@ -302,6 +302,7 @@
                 #rla="routerLinkActive"
                 (click)="activeLink = link"
                 [active]="rla.isActive || activeLink.path == link.path"
+                [disabled]="link.disabled"
               >
                 {{ link.title }}
               </a>
