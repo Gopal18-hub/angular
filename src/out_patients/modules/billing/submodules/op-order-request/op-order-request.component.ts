@@ -89,6 +89,8 @@ export class OpOrderRequestComponent implements OnInit {
 
   expiredPatient: boolean = false;
 
+  enableTotalestimate: boolean = false;
+
   moment = moment;
   noteRemarkdb: any;
   vipdb: any;
@@ -119,12 +121,21 @@ export class OpOrderRequestComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.enableTotalestimate);
     this.opOrderRequestService.investigationItems = [];
     this.opOrderRequestService.procedureItems = [];
     this.opOrderRequestService.activeLink.subscribe((data) => {
       console.log(data);
       if (data == true) {
         this.activeLink = this.links[1];
+      }
+    });
+    this.opOrderRequestService.serviceTab.subscribe((data) => {
+      if (data == true) {
+        console.log("inside service tab subscription");
+        this.enableTotalestimate = true;
+      } else {
+        this.enableTotalestimate = false;
       }
     });
     this.router
