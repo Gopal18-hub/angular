@@ -310,15 +310,15 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          minimum: Reportconstants.minimumDate["oneMonth"],
-          maximum: new Date(),
+          //minimum: Reportconstants.minimumDate["oneMonth"],
+          //maximum: new Date(),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          maximum: new Date(),
-          minimum: Reportconstants.minimumDate["oneMonth"],
+          //maximum: new Date(),
+          //minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
@@ -512,7 +512,7 @@ export namespace FormReport {
         },
         planID: {
           type: "autocomplete",
-          placeholder: "---PlanName---",
+          placeholder: "---Plan Name---",
           title: "",
           questionClasses: "max-hide",
           optionsModelConfig: {
@@ -682,7 +682,7 @@ export namespace FormReport {
   };
 
   export const CRPExpiredPatientDetailReport = {
-    reportName: "Expired Patient Report",
+    reportName: "Selection Criteria",
     filterForm: {
       title: "",
       type: "object",
@@ -893,7 +893,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         dtpFromDate: {
           type: "date",
@@ -911,7 +911,7 @@ export namespace FormReport {
         //   title: "Location",
         // },
         locationid: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
           //defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
