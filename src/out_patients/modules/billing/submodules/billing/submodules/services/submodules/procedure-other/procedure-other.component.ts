@@ -189,6 +189,7 @@ export class ProcedureOtherComponent implements OnInit {
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
       }
+      this.checkTableValidation();
     });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
@@ -317,7 +318,27 @@ export class ProcedureOtherComponent implements OnInit {
           this.billingService.ProcedureItems[index].unitPrice *
           this.billingService.ProcedureItems[index].qty;
         this.data = [...this.billingService.ProcedureItems];
+        const billItemIndexExist = this.billingService.billItems.findIndex(
+          (it: any) =>
+            it.itemId == this.billingService.ProcedureItems[index].itemid
+        );
+        if (billItemIndexExist > -1) {
+          this.billingService.billItems[billItemIndexExist].qty =
+            this.billingService.ProcedureItems[index].qty;
+          this.billingService.billItems[billItemIndexExist].totalAmount =
+            this.billingService.ProcedureItems[index].unitPrice *
+            this.billingService.ProcedureItems[index].qty;
+        }
+        this.billingService.calculateTotalAmount();
       }
+    }
+  }
+
+  checkTableValidation() {
+    if (this.tableRows.tableForm.valid) {
+      this.billingService.changeBillTabStatus(false);
+    } else {
+      this.billingService.changeBillTabStatus(true);
     }
   }
 
@@ -339,6 +360,7 @@ export class ProcedureOtherComponent implements OnInit {
 
     this.data = [...this.billingService.ProcedureItems];
     this.formGroup.reset();
+    this.checkTableValidation();
   }
 
   goToBill() {

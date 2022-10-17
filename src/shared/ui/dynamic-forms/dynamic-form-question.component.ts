@@ -170,6 +170,13 @@ export class DynamicFormQuestionComponent
     if (this.question)
       this.question.label = this.question.label.replace(/_/gi, " ");
     if (this.question.conditions.length > 0) {
+      if (this.question.defaultValue) {
+        this.excuteCondition(
+          this.question.conditions,
+          this.question.defaultValue,
+          this.form.value
+        );
+      }
       this.form.controls[this.question.key].valueChanges.subscribe((value) => {
         this.excuteCondition(this.question.conditions, value, this.form.value);
       });
@@ -244,7 +251,8 @@ export class DynamicFormQuestionComponent
       this.question.type &&
       this.question.type == "currency"
     ) {
-      this.form.controls[this.question.key].valueChanges.subscribe((value) => {
+      this.question.elementRef.addEventListener("blur", (event: any) => {
+        let value = this.form.controls[this.question.key].value;
         if (!value) value = "0.00";
         const temp = Number.parseFloat(value).toFixed(2);
         this.form.controls[this.question.key].setValue(temp, {
@@ -296,7 +304,9 @@ export class DynamicFormQuestionComponent
             .map((option: any) => option.value)
             .find(
               (option: any) =>
-                option === this.form.controls[this.question.key].value.value
+                option ===
+                (this.form.controls[this.question.key].value &&
+                  this.form.controls[this.question.key].value.value)
             );
           if (selected == null) {
             this.form.controls[this.question.key].setValue(null);

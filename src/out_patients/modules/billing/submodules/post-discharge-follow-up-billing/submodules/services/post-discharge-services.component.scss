@@ -7,6 +7,7 @@
         background-color: #bfe8e7;
         height: 32px;
         line-height: 32px;
+        min-width: initial !important;
         &.active {
           background-color: #fff;
         }

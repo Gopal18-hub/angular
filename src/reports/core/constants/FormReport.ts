@@ -1,6 +1,7 @@
 import { environment } from "@environments/environment";
 import { MaxHealthStorage } from "@shared/services/storage";
 import * as moment from "moment";
+import { Reportconstants } from "../../../reports/core/constants/reportconstant";
 
 export namespace FormReport {
   export const equipmentSchedule = {
@@ -11,7 +12,8 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
-          type: "dropdown",
+           type: "dropdown",
+        
           placeholder: "---Equipment---",
           title: "Equipment Name",
           // defaultValue: "0",
@@ -20,7 +22,7 @@ export namespace FormReport {
             fields: {
               title: "name",
 
-              value: "id",
+              value: "name",
             },
           },
         },
@@ -280,7 +282,7 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         DocID: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---All Doctors---",
           title: "",
           defaultValue: "0",
@@ -308,11 +310,15 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          minimum: Reportconstants.minimumDate["oneMonth"],
+          maximum: new Date(),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          maximum: new Date(),
+          minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
@@ -342,15 +348,15 @@ export namespace FormReport {
   };
 
   export const DoctorSheduleReportBySpecilialisation = {
-    reportName: "Specilialisation",
+    reportName: "Specialisation",
     filterForm: {
       title: "",
       type: "object",
       format: "YYYY/MM/dd",
       properties: {
         Cmb_Special: {
-          type: "dropdown",
-          placeholder: "---Specilialisation---",
+          type: "autocomplete",
+          placeholder: "---AllSpecialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -417,7 +423,7 @@ export namespace FormReport {
   };
 
   export const GeneralOPDReport = {
-    reportName: "General OPD Scroll Report",
+    reportName: "Selection Criteria",
     filterForm: {
       title: "",
       type: "object",
@@ -458,7 +464,7 @@ export namespace FormReport {
     resultType: "table",
   };
   export const HappyFamilyPlanAllocationReport = {
-    reportName: "Happy Family Plan",
+    reportName: "Happy Family Plan Allocation",
     filterForm: {
       title: "",
       type: "object",
@@ -466,38 +472,39 @@ export namespace FormReport {
         Flag: {
           type: "radio",
           options: [
-            { title: "PlanName", value: "PlanName" },
-            { title: "Membership", value: "Membership" },
+            { title: "Plan Name", value: "Plan Name" },
+            { title: "Membership No", value: "Membership No" },
           ],
-          //defaultValue: "Transaction Date",
+
+          defaultValue: "Plan Name",
           conditions: [
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "planID",
               type: "show",
             },
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "Location",
               type: "hide",
             },
             {
-              expression: "self == 'PlanName'",
+              expression: "self == 'Plan Name'",
               controlKey: "MemberShipNo",
               type: "hide",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "MemberShipNo",
               type: "show",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "planID",
               type: "hide",
             },
             {
-              expression: "self == 'Membership'",
+              expression: "self == 'Membership No'",
               controlKey: "Location",
               type: "show",
             },
@@ -519,7 +526,7 @@ export namespace FormReport {
         },
 
         Location: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           questionClasses: "max-hide",
@@ -549,7 +556,7 @@ export namespace FormReport {
             },
           },
 
-          defaultValue: "0",
+          defaultValue: "membershipno",
         },
       },
     },
@@ -640,7 +647,7 @@ export namespace FormReport {
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
-            }api/lookup/getmembershipnumberforreport/$${MaxHealthStorage.getCookie(
+            }api/lookup/getmembershipnumberforreport/${MaxHealthStorage.getCookie(
               "HSPLocationId"
             )}`,
             fields: {
@@ -1297,5 +1304,253 @@ export namespace FormReport {
     ],
     layout: "single",
     resultType: "table",
+  };
+  export const DetailedReport = {
+    reportName: "Detailed Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      //format: "YYYY/MM/dd",
+      defaultValue: moment().format("DD/MM/YYYY"),
+      properties: {
+        dtpStartDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        dtpEndDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        MaxID: {
+          type: "string",
+          title: "MaxID",
+          defaultValue: "",
+        },
+        SSN: {
+          type: "string",
+          title: "SSN",
+          defaultValue: "",
+          readonly: true,
+        },
+        Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        Referal: {
+          type: "dropdown",
+          placeholder: "--- Select---",
+          title: "Referal",
+          optionsModelConfig: {
+            uri: `${environment.BillingApiUrl}api/outpatientbilling/getreferraldoctor/1`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        Doctor: {
+          type: "dropdown",
+          placeholder: "--- Select ---",
+          title: "Doctor",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        SetOrder: {
+          title: "SetOrder",
+        },
+      },
+    },
+    form: {
+      layout: {},
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Detailed Report",
+            reportEntity: "DetailedReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+
+    layout: "single",
+    resultType: "table",
+  };
+
+  export const SummaryReport = {
+    reportName: "Summary Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      format: "YYYY/MM/dd",
+      properties: {
+        dtpStartDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        dtpEndDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        MaxID: {
+          type: "string",
+          title: "MaxID",
+          defaultValue: "",
+        },
+        SSN: {
+          type: "string",
+          title: "SSN",
+          defaultValue: "",
+          readonly: true,
+        },
+        Clinic: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Clinic",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getclinicdoctor/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        Referal: {
+          type: "dropdown",
+          placeholder: "--- Select---",
+          title: "Referal",
+          optionsModelConfig: {
+            uri: `${environment.BillingApiUrl}api/outpatientbilling/getreferraldoctor/1`,
+            fields: {
+              title: "name",
+              value: "id",
+            },
+          },
+        },
+        Doctor: {
+          type: "dropdown",
+          placeholder: "--Select--",
+          title: "Doctor",
+          defaultValue: "0",
+          optionsModelConfig: {
+            uri: `${
+              environment.CommonApiUrl
+            }api/lookup/getalldoctorname/${MaxHealthStorage.getCookie(
+              "HSPLocationId"
+            )}`,
+          },
+        },
+        SetOrder: {
+          title: "SetOrder",
+        },
+      },
+    },
+    form: {
+      layout: {},
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Summary Report",
+            reportEntity: "SummaryReport",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+
+    layout: "single",
+    resultType: "table",
+  };
+
+  export const VisitReport = {
+    layout: "tabs",
+    reportName: "Visit Report",
+    childrens: [{ ...DetailedReport }, { ...SummaryReport }],
+  };
+
+  export const MiscellaneousReportMIS = {
+    reportName: "Miscellaneous Billing Report",
+    filterForm: {
+      title: "",
+      type: "object",
+      defaultValue: moment().format("DD/MM/YYYY"),
+      properties: {
+        FromDate: {
+          type: "date",
+          title: "From Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+        ToDate: {
+          type: "date",
+          title: "To Date",
+          defaultValue: new Date().toISOString().slice(0, 10),
+        },
+
+        ChkAllLocation: {
+          type: "checkbox",
+          options: [{ title: "Location", value: 1 }],
+        },
+      },
+    },
+    form: {
+      layout: {
+        location: "w-full",
+        locationID: "w-full",
+      },
+      actionItems: [
+        {
+          label: "Preview",
+          type: "crystalReport",
+          reportConfig: {
+            reportName: "Miscellaneous Billing Report",
+            reportEntity: "MiscellaneousReportMIS",
+          },
+        },
+        {
+          label: "Clear",
+          type: "clear",
+        },
+      ],
+    },
+    layout: "single",
+    resultType: "table",
+    resultActionItems: [
+      {
+        title: "Print",
+      },
+      {
+        title: "Export",
+      },
+    ],
   };
 }

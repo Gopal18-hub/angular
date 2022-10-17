@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
-import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingApiConstants } from "../../../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingService } from "../../../../billing.service";
@@ -15,17 +14,20 @@ import {
   finalize,
   distinctUntilChanged,
   filter,
+  takeUntil,
 } from "rxjs/operators";
-import { of } from "rxjs";
+import { of, Subject } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DmgPopupComponent } from "../../../../prompts/dmg-popup/dmg-popup.component";
-
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { TwiceConsultationReasonComponent } from "../../../../prompts/twice-consultation-reason/twice-consultation-reason.component";
 @Component({
   selector: "out-patients-consultations",
   templateUrl: "./consultations.component.html",
   styleUrls: ["./consultations.component.scss"],
 })
 export class ConsultationsComponent implements OnInit, AfterViewInit {
+  private readonly _destroying$ = new Subject<void>();
   formData = {
     title: "",
     type: "object",
@@ -126,7 +128,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     public billingService: BillingService,
     private matDialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageDialogService: MessageDialogService
   ) {}
 
   ngOnInit(): void {
@@ -320,7 +323,99 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  add(priorityId = 57) {
+  //Twice consultation popup
+  async checkTwiceConsultation(priorityId = 57) {
+    const twiceConsultationWarningDialog = this.messageDialogService.confirm(
+      "",
+      "You can not bill the same doctor consultation on the same date of this patient. Still do you want to continue ?"
+    );
+    const twiceConsultationWarningResult = await twiceConsultationWarningDialog
+      .afterClosed()
+      .toPromise();
+    if (
+      twiceConsultationWarningResult &&
+      twiceConsultationWarningResult.type == "yes"
+    ) {
+      const twiceConsultationReasonRef = this.matDialog.open(
+        TwiceConsultationReasonComponent,
+        {
+          width: "28vw",
+          // height: "45vh",
+          data: {
+            title: "",
+            form: {
+              title: "",
+              type: "object",
+              properties: {
+                twiceConsultationReason: {
+                  type: "textarea",
+                  //title: "HWC Remarks",
+                  required: true,
+                  pattern: "^S*$",
+                },
+              },
+            },
+            layout: "single",
+            buttonLabel: "Save",
+          },
+        }
+      );
+      twiceConsultationReasonRef
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          console.log(result);
+          if (result) {
+            if (result.data) {
+              //need to add result into makebill payload
+              this.billingService.twiceConsultationReason =
+                result.data.twiceConsultationReason;
+              this.getCalculateOpBill(priorityId);
+            } else {
+              return;
+            }
+          } else {
+            return;
+          }
+          console.log("twice consultation Reason dialog was closed");
+        });
+    } else {
+      return;
+    }
+  }
+
+  //api call to check whether patient had consultation with same doscotr on same date or not
+  //api call returns number 0 or 1 if 1 then twice consultation reason is mandatory
+  //and only after adding reason user can add consultation with type as Followup
+  checkFollowupConsultation(priorityId = 57) {
+    if (this.billingService.activeMaxId) {
+      console.log(
+        this.billingService.activeMaxId.iacode +
+          this.billingService.activeMaxId.regNumber
+      );
+      console.log(this.formGroup.value);
+      this.http
+        .get(
+          BillingApiConstants.getFollowupConsultation(
+            this.billingService.activeMaxId.iacode,
+            this.billingService.activeMaxId.regNumber,
+            this.formGroup.value.doctorName.specialisationid,
+            this.formGroup.value.doctorName.value,
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .subscribe((res: any) => {
+          //
+          if (res == 1) {
+            this.checkTwiceConsultation(priorityId);
+          } else {
+            this.getCalculateOpBill(priorityId);
+          }
+        });
+    }
+  }
+
+  async add(priorityId = 57) {
     if (this.billingService.consultationItems.length == 1) {
       this.matDialog.open(ConsultationWarningComponent, {
         width: "30vw",
@@ -328,6 +423,10 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       });
       return;
     }
+    this.checkFollowupConsultation(priorityId);
+  }
+
+  getCalculateOpBill(priorityId = 57) {
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,

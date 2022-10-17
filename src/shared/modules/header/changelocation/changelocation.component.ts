@@ -97,23 +97,34 @@ export class ChangelocationComponent implements OnInit, AfterViewInit {
             (e) => e.hspLocationId === this.form.value.location.value
           )[0].iaCode;
           console.log(selectedACode);
-          this.cookieService.delete("Location");
-          this.cookieService.set("Location", this.form.value.location.title);
-          this.cookieService.delete("HSPLocationId");
+          this.cookieService.delete("Location", "/");
+          this.cookieService.set("Location", this.form.value.location.title, {
+            path: "/",
+          });
+          this.cookieService.delete("HSPLocationId", "/");
           this.cookieService.set(
             "HSPLocationId",
-            this.form.value.location.value
+            this.form.value.location.value,
+            {
+              path: "/",
+            }
           );
-          this.cookieService.delete("LocationIACode");
-          this.cookieService.set("LocationIACode", selectedACode);
+          this.cookieService.delete("LocationIACode", "/");
+          this.cookieService.set("LocationIACode", selectedACode, {
+            path: "/",
+          });
         }
         if (this.form.value.station) {
           console.log(this.form.value.station.title);
           console.log(this.form.value.station.value);
-          this.cookieService.delete("Station");
-          this.cookieService.set("Station", this.form.value.station.title);
-          this.cookieService.delete("StationId");
-          this.cookieService.set("StationId", this.form.value.station.value);
+          this.cookieService.delete("Station", "/");
+          this.cookieService.set("Station", this.form.value.station.title, {
+            path: "/",
+          });
+          this.cookieService.delete("StationId", "/");
+          this.cookieService.set("StationId", this.form.value.station.value, {
+            path: "/",
+          });
         }
       }
       this.dialogRef.close({ data: this.form.value });

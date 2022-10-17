@@ -63,11 +63,13 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       company: {
         type: "autocomplete",
         placeholder: "--Select--",
+        readonly: true,
         options: [],
       },
       corporate: {
         type: "autocomplete",
         placeholder: "--Select--",
+        readonly: true,
         options: [],
       },
       narration: {
@@ -98,6 +100,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
   patientDetails!: Registrationdetails;
   apiProcessing: boolean = false;
+  expiredPatient: boolean = false;
   complanyList!: GetCompanyDataInterface[];
   coorporateList: { id: number; name: string }[] = [] as any;
   narrationAllowedLocations = ["67", "69"];
@@ -117,7 +120,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing/']);
+    this.router.navigate([
+      "/out-patient-billing/post-discharge-follow-up-billing/"
+    ]);
     this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
@@ -130,7 +135,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.lastUpdatedBy = this.cookie.get("UserName");
     this.currentDate = this.datepipe.transform(new Date(), "dd-MM-YYYY");
     this.currentTime = new Date().toLocaleTimeString("en-US", { hour12: true });
-    // this.currentTime = this.datepipe.transform(new Date(), 'HH:MM:ss a')
+    this.currentTime = this.datepipe.transform(new Date(), "HH:MM:ss a");
     // this.route.queryParams.subscribe((params: any) => {
     //   if (params.maxId) {
     //     this.formGroup.controls["maxid"].setValue(params.maxId);
@@ -140,27 +145,36 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     //     this.formGroup.markAsDirty();
     //   }
     // });
+    this.service.billedtrigger.subscribe((res) => {
+      if(res)
+      {
+        this.links[0].disabled = true;
+      }
+      else
+      {
+        this.links[0].disabled = false;
+      }
+    })
   }
   iomMessage: any;
   ngAfterViewInit(): void {
     this.formEvents();
-    this.formGroup.controls['company'].valueChanges.subscribe((res) => {
-      if(res.value)
-      {
+    this.formGroup.controls["company"].valueChanges.subscribe((res) => {
+      if (res.value) {
         console.log(res);
-        var result = this.complanyList.filter( i=> {
+        var result = this.complanyList.filter((i) => {
           return i.id == res.value;
-        })
-        console.log(result)
+        });
+        console.log(result);
         this.iomMessage =
-      "IOM Validity till : " +
-      (("iomValidity" in result[0] && result[0].iomValidity != "") ||
-      result[0].iomValidity != undefined
-        ? this.datepipe.transform(result[0].iomValidity, "dd-MMM-yyyy")
-        : "");
+          "IOM Validity till : " +
+          (("iomValidity" in result[0] && result[0].iomValidity != "") ||
+          result[0].iomValidity != undefined
+            ? this.datepipe.transform(result[0].iomValidity, "dd-MMM-yyyy")
+            : "");
       }
-      console.log(this.iomMessage)
-    })
+      console.log(this.iomMessage);
+    });
   }
   formEvents() {
     //ON MAXID CHANGE
@@ -179,109 +193,134 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
       }
     });
   }
-  getPatientDetailsByMaxId() {
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res == null) {
+      return;
+    }
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+  async getPatientDetailsByMaxId() {
+    if (!this.formGroup.value.maxid) {
+      this.apiProcessing = false;
+      this.patient = false;
+      return;
+    }
     let regNumber = Number(this.formGroup.value.maxid.split(".")[1]);
 
-    //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.formGroup.value.maxid.split(".")[0];
-      this.http
-        .get(
-          ApiConstants.getregisteredpatientdetailsForBilling(
-            iacode,
-            regNumber,
-            Number(this.cookie.get("HSPLocationId"))
-          )
-        )
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          async (resultData: Registrationdetails) => {
-            if (resultData) {
-              this.router.navigate([], {
-                queryParams: { maxId: this.formGroup.value.maxid },
-                relativeTo: this.route,
-                queryParamsHandling: "merge",
-              });
-              this.patientDetails = resultData;
-
-              this.setValuesToMiscForm(this.patientDetails);
-              if (this.billingService.todayPatientBirthday) {
-                const birthdayDialog = this.messageDialogService.info(
-                  "It’s their birthday today"
-                );
-                await birthdayDialog.afterClosed().toPromise();
-              }
-
-              if (
-                this.patientDetails.dsPersonalDetails.dtPersonalDetails1
-                  .length > 0
-              ) {
-                this.billingService.setPatientDetails(
-                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-                );
-                this.categoryIcons =
-                  this.patientService.getCategoryIconsForPatientAny(
-                    this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
-                  );
-                const patientDetails =
-                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
-                this.service.setActiveMaxId(
-                  this.formGroup.value.maxid,
-                  iacode,
-                  regNumber.toString(),
-                  patientDetails.genderName
-                );
-                // if (patientDetails.nationality != 149) {
-                //   const dialogRef = this.messageDialogService.info(
-                //     "Please Ensure International Tariff Is Applied!"
-                //   );
-                //   dialogRef
-                //     .afterClosed()
-                //     .pipe(takeUntil(this._destroying$))
-                //     .subscribe((result) => {
-                //       if (!this.orderId) {
-                //         this.startProcess(
-                //           patientDetails,
-                //           resultData,
-                //           iacode,
-                //           regNumber
-                //         );
-                //       }
-                //     });
-                // } else {
-                //   if (!this.orderId) {
-                //     this.startProcess(
-                //       patientDetails,
-                //       resultData,
-                //       iacode,
-                //       regNumber
-                //     );
-                //   }
-                // }
-              }
-            } else {
-              this.apiProcessing = false;
-              this.patient = false;
-              this.snackbar.open("Invalid Max ID", "error");
-            }
-          },
-          (error) => {
-            if (error.error == "Patient Not found") {
-              this.formGroup.controls["maxid"].setValue(
-                iacode + "." + regNumber
-              );
-              this.formGroup.controls["maxid"].setErrors({ incorrect: true });
-              this.questions[0].customErrorMessage = "Invalid Max ID";
-            }
-            this.apiProcessing = false;
-          }
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        this.expiredPatient = true;
+        const dialogRef = this.messageDialogService.error(
+          "Patient is an Expired Patient!"
         );
+        await dialogRef.afterClosed().toPromise();
+      }
+      this.getSimilarSoundDetails(iacode, regNumber);
     } else {
       this.apiProcessing = false;
       this.patient = false;
     }
   }
+  getSimilarSoundDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(BillingApiConstants.getsimilarsoundopbilling(iacode, regNumber))
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (resultData: any) => {
+          if (resultData && resultData.length > 0) {
+            this.linkedMaxId(
+              resultData[0].iaCode + "." + resultData[0].registrationNo,
+              iacode,
+              regNumber
+            );
+          } else {
+            this.registrationDetails(iacode, regNumber);
+          }
+        },
+        (error) => {
+          this.snackbar.open("Invalid Max ID", "error");
+          this.apiProcessing = false;
+          this.patient = false;
+        }
+      );
+  }
 
+  registrationDetails(iacode: string, regNumber: number) {
+    this.http
+      .get(
+        ApiConstants.getregisteredpatientdetailsForBilling(
+          iacode,
+          regNumber,
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        async (resultData: Registrationdetails) => {
+          console.log(resultData);
+          if (resultData) {
+            this.patientDetails = resultData;
+
+            this.setValuesToForm(this.patientDetails);
+            if (this.billingService.todayPatientBirthday) {
+              const birthdayDialog = this.messageDialogService.info(
+                "It’s their birthday today"
+              );
+              await birthdayDialog.afterClosed().toPromise();
+            }
+
+            if (
+              this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length >
+              0
+            ) {
+              this.categoryIcons =
+                this.patientService.getCategoryIconsForPatientAny(
+                  this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
+                );
+              const patientDetails =
+                this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0];
+              this.service.setActiveMaxId(
+                this.formGroup.value.maxid,
+                iacode,
+                regNumber.toString(),
+                patientDetails.genderName
+              );
+            }
+          } else {
+            this.apiProcessing = false;
+            this.patient = false;
+            this.snackbar.open("Invalid Max ID", "error");
+          }
+
+          //SETTING PATIENT DETAILS TO MODIFIEDPATIENTDETAILOBJ
+        },
+        (error) => {
+          if (error.error == "Patient Not found") {
+            this.formGroup.controls["maxid"].setValue(iacode + "." + regNumber);
+            //this.formGroup.controls["maxid"].setErrors({ incorrect: true });
+            //this.questions[0].customErrorMessage = "Invalid Max ID";
+            this.snackbar.open("Invalid Max ID", "error");
+          }
+          this.apiProcessing = false;
+          this.patient = false;
+        }
+      );
+  }
   searchByMobileNumber() {
     if (!this.formGroup.value.mobile) {
       this.apiProcessing = false;
@@ -301,7 +340,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
             this.formGroup.controls["maxid"].setValue(maxID);
             this.apiProcessing = true;
             this.patient = false;
-            //this.getPatientDetailsByMaxId();
+            this.getPatientDetailsByMaxId();
             this.router.navigate([], {
               queryParams: { maxId: this.formGroup.value.maxid },
               relativeTo: this.route,
@@ -327,7 +366,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
                   this.formGroup.controls["maxid"].setValue(maxID);
                   this.apiProcessing = true;
                   this.patient = false;
-                  //this.getPatientDetailsByMaxId();
+                  this.getPatientDetailsByMaxId();
                   this.router.navigate([], {
                     queryParams: { maxId: this.formGroup.value.maxid },
                     relativeTo: this.route,
@@ -341,10 +380,18 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.patient = false;
       });
   }
-  setValuesToMiscForm(pDetails: Registrationdetails) {
+  setValuesToForm(pDetails: Registrationdetails) {
+    if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
+      this.snackbar.open("Invalid Max ID", "error");
+      this.patient = false;
+      this.apiProcessing = false;
+      return;
+    }
     let patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     console.log(patientDetails.pCellNo);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
+    this.formGroup.controls['company'].setValue(pDetails.dsPersonalDetails.dtPersonalDetails1[0].companyid);
+    this.formGroup.controls['corporate'].setValue(pDetails.dsPersonalDetails.dtPersonalDetails1[0].corporateid);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
     this.age = patientDetails.age + " " + patientDetails.ageTypeName;
@@ -357,6 +404,27 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+  }
+  linkedMaxId(maxId: string, iacode: string, regNumber: number) {
+    const dialogRef = this.messageDialogService.confirm(
+      "",
+      `This Record has been mapped with ${maxId}. Do you want to Pick this number for further transaction ?`
+    );
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((result) => {
+        if ("type" in result) {
+          if (result.type == "yes") {
+            this.formGroup.controls["maxid"].setValue(maxId);
+            let regNumber = Number(maxId.split(".")[1]);
+            let iacode = maxId.split(".")[0];
+            this.registrationDetails(iacode, regNumber);
+          } else {
+            this.registrationDetails(iacode, regNumber);
+          }
+        }
+      });
   }
   doCategoryIconAction(icon: any) {}
   appointment_popup() {
@@ -454,11 +522,11 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.country = "";
     this.dob = "";
     this.categoryIcons = [];
-    // this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
-    this.router.navigate(["services"], {
-      queryParams: {},
-      relativeTo: this.route,
-    });
+    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
+    // this.router.navigate(["services"], {
+    //   queryParams: {},
+    //   relativeTo: this.route,
+    // });
     this.questions[0].elementRef.focus();
     this.service.clear();
     this.questions[0].readonly = false;
@@ -479,6 +547,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
+        this.questions[3] = {...this.questions[3]};
       });
   }
 

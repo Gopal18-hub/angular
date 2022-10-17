@@ -26,15 +26,7 @@ export class DisountReasonComponent implements OnInit {
     properties: {
       types: {
         type: "dropdown",
-        title: "Discount Types",
-        options: [
-          { title: "On Bill", value: "On-Bill" },
-          { title: "On Service", value: "On-Service" },
-          { title: "On Item", value: "On-Item" },
-          { title: "On Patient", value: "On-Patient" },
-          { title: "On Company", value: "On-Company" },
-          { title: "On Campaign", value: "On-Campaign" },
-        ],
+        title: "Discount Types",       
         placeholder: "-Select-",
       },
       head: {
@@ -110,6 +102,7 @@ export class DisountReasonComponent implements OnInit {
       service: {
         title: "Service Name",
         type: "string",
+        tooltipColumn: "service",
         style: {
           width: "7rem",
         },
@@ -117,6 +110,7 @@ export class DisountReasonComponent implements OnInit {
       doctor: {
         title: "Item/Doctor Name",
         type: "string",
+        tooltipColumn: "doctor",
         style: {
           width: "9rem",
         },
@@ -125,7 +119,7 @@ export class DisountReasonComponent implements OnInit {
         title: "Price",
         type: "string",
         style: {
-          width: "4rem",
+          width: "8rem",
         },
       },
       disc: {
@@ -139,14 +133,14 @@ export class DisountReasonComponent implements OnInit {
         title: "Dis. Amount",
         type: "string",
         style: {
-          width: "6rem",
+          width: "8rem",
         },
       },
       totalAmt: {
         title: "Total Amount",
         type: "string",
         style: {
-          width: "7rem",
+          width: "8rem",
         },
       },
       head: {
@@ -180,6 +174,7 @@ export class DisountReasonComponent implements OnInit {
   authorisedBy: { id: number; name: number }[] = [] as any;
   discReasonList: { id: number; name: string; discountPer: number }[] =
     [] as any;
+  discounttypes: any = [];
 
   serviceBasedList: any = {};
 
@@ -200,6 +195,9 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if ("removeRow" in this.data) {
+      this.discAmtFormConfig.removeRow = this.data.removeRow;
+    }
     this.selectedItems = this.calculateBillService.discountSelectedItems;
 
     let formResult: any = this.formService.createForm(
@@ -207,7 +205,27 @@ export class DisountReasonComponent implements OnInit {
       {}
     );
     this.discAmtForm = formResult.form;
+    this.calculateBillService.setDiscountForm(this.discAmtForm);
     this.question = formResult.questions;
+    if (
+      "disableHeaderControls" in this.data &&
+      this.data.disableHeaderControls
+    ) {
+      this.discAmtForm.controls["types"].disable();
+      this.discAmtForm.controls["head"].disable();
+      this.discAmtForm.controls["reason"].disable();
+      this.discAmtForm.controls["percentage"].disable();
+      this.discAmtForm.controls["amt"].disable();
+    }
+    if ("formData" in this.data) {
+      this.discAmtForm.patchValue(this.data.formData);
+    }
+    if ("discounttypes" in this.data) {
+      this.discounttypes = this.data.discounttypes;
+      this.question[0].options = this.discounttypes.map((a:any) => {
+        return { title: a.title, value: a.value };
+      });
+    }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
     this.getAuthorisedBy();
@@ -291,7 +309,6 @@ export class DisountReasonComponent implements OnInit {
 
           dialogref.afterClosed().subscribe((res) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
-            //   this.dialogRef.close({ data: this.selectedAuthorise });
           });
         }
       }
@@ -335,6 +352,9 @@ export class DisountReasonComponent implements OnInit {
         break;
       case "On-Item":
         this.OnItemPrepare();
+        break;
+      case "On-Patient":
+        this.OnPatientPrepare();
         break;
       case "On-Company":
         this.OnCompanyPrepare();
@@ -408,7 +428,7 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnCompanyPrepare() {
-     const existReason: any = this.discReasonList.find(
+    const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const discAmt =
@@ -576,7 +596,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-          Number(this.cookie.get("HSPLocationId"))
+         Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -615,7 +635,7 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
-          return { title: a.name, value: a.id };
+          return { title: a.name, value: { title: a.name, value: a.id } };
         });
       });
   }

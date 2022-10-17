@@ -186,6 +186,7 @@ export class ExpiredDepositsComponent implements OnInit {
 
   searchbtn: boolean = true;
   clearbtn: boolean = true;
+  exportbtn = true;
   showtable!: boolean;
   iacode: any;
   registrationno: any;
@@ -337,6 +338,7 @@ export class ExpiredDepositsComponent implements OnInit {
                 this.ExpiredDepositform.controls["maxid"].setValue(maxID);
                 this.getPatientDetails();
                 this.clearbtn = false;
+                this.exportbtn = true;
               }
               this.similarContactPatientList = [];
             });
@@ -370,6 +372,7 @@ export class ExpiredDepositsComponent implements OnInit {
             //this.sucessflag = false;
             console.log("data");
             this.ExpiredDepositformlist = resultdata;
+            this.exportbtn = false;
             if (this.sucessflag == true) {
               this.tablerow.selection.clear();
               this.ExpiredDepositformlist.forEach((e: any) => {
@@ -406,6 +409,7 @@ export class ExpiredDepositsComponent implements OnInit {
             //this.sucessflag = false;
             console.log("data");
             this.ExpiredDepositformlist = resultdata;
+            this.exportbtn = true;
             if (this.sucessflag == true) {
               this.tablerow.selection.clear();
               this.ExpiredDepositformlist.forEach((e: any) => {
@@ -505,7 +509,7 @@ export class ExpiredDepositsComponent implements OnInit {
                   this.dialogService.success("Saved Sucessfully!");
                   this.sucessflag = true;
                   this.expireddepositsearch();
-
+                  this.exportbtn = false;
                   // let getExpiredDepositReportModel: any = [];
                   //this.response.isExpdeop == 1;
                 }

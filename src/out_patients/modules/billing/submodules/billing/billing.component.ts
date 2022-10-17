@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Inject, OnDestroy } from "@angular/core";
-import { PaymentModeComponent } from "./payment-mode/payment-mode.component";
 import { FormGroup } from "@angular/forms";
 import { CookieService } from "@shared/services/cookie.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
@@ -139,6 +138,13 @@ export class BillingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.calculateBillService.blockActions.subscribe((status: boolean) => {
+      if (status) {
+        this.apiProcessing = true;
+      } else {
+        this.apiProcessing = false;
+      }
+    });
     this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
@@ -187,7 +193,11 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        this.formGroup.controls["corporate"].enable();
+        if (res.corporate === 0) {
+          this.formGroup.controls["corporate"].disable();
+        } else {
+          this.formGroup.controls["corporate"].enable();
+        }
       }
     });
   }
@@ -225,15 +235,16 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.formEvents();
-    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
 
-    this.formGroup.controls["b2bInvoice"].valueChanges.subscribe((res) => {
-      if (res) {
-        this.billingService.makeBillPayload.invoiceType = "B2B";
-      } else {
-        this.billingService.makeBillPayload.invoiceType = "B2C";
-      }
-    });
+    this.formGroup.controls["b2bInvoice"].valueChanges
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((res) => {
+        if (res) {
+          this.billingService.makeBillPayload.invoiceType = "B2B";
+        } else {
+          this.billingService.makeBillPayload.invoiceType = "B2C";
+        }
+      });
     this.formGroup.controls["company"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
@@ -245,10 +256,12 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.formGroup,
             "header"
           );
+        } else {
+          this.billingService.setCompnay(res, res, this.formGroup, "header");
         }
       });
 
-      this.formGroup.controls["corporate"].valueChanges
+    this.formGroup.controls["corporate"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res && res.value) {
@@ -259,6 +272,8 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.formGroup,
             "header"
           );
+        } else {
+          this.billingService.setCorporate(res, res, this.formGroup, "header");
         }
       });
     if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
@@ -583,6 +598,8 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.apiProcessing = false;
     this.questions[0].readonly = true;
     this.questions[1].readonly = true;
+    this.billingService.setBillingFormGroup(this.formGroup, this.questions);
+
     //this.questions[2].readonly = true;
   }
 
@@ -852,6 +869,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   selectedServices.selected &&
                   selectedServices.selected.length > 0
                 ) {
+                  console.log(selectedServices);
                 }
               }
             }

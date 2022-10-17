@@ -67,11 +67,20 @@
             color: var(--primary-color);
           }
         }
+        .currency-data {
+          display: flex;
+          justify-content: flex-end;
+        }
       }
     }
     .mat-header-row {
       .mat-column-select {
         width: 60px;
+      }
+      ::ng-deep .header-type-currency {
+        .mat-sort-header-container {
+          justify-content: flex-end;
+        }
       }
     }
 

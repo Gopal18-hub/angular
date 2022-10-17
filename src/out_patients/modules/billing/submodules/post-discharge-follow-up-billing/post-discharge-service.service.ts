@@ -13,9 +13,12 @@ export class PostDischargeServiceService {
   billItems: any = [];
   activeLink = new Subject<any>();
   activeMaxId: any;
+  activecoupon: any;
   consultationItemsAdded = new Subject<boolean>();
   clearAllItems = new Subject<boolean>();
   billItemsTrigger = new Subject<any>();
+  billedtrigger = new Subject<any>();
+  billModified!: boolean;
   billingFormGroup: any = { form: "", questions: [] };
   constructor(
     private http: HttpService,
@@ -256,9 +259,23 @@ export class PostDischargeServiceService {
     // this.billNoGenerated.next(false);
     // this.servicesTabStatus.next({ clear: true });
     this.calculateBillService.clear();
+    this.billModified = false;
+    this.billedtrigger.next(false);
     // this.makeBillPayload = JSON.parse(
     //   JSON.stringify(BillingStaticConstants.makeBillPayload)
     // );
     // console.log(this.makeBillPayload);
+  }
+  modified()
+  {
+    this.billModified = true;
+  }
+  setactivecoupon(coupon: any)
+  {
+    this.activecoupon = coupon;
+  }
+  setBilledStatus()
+  {
+    this.billedtrigger.next(true);
   }
 }

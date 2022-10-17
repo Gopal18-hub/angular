@@ -106,11 +106,12 @@
         </div>
   
       
-        <div [class.isDisabled]="!patient" class="h-full">
+        <div [class.isDisabled]="!patient || expiredPatient" class="h-full w-full">
          
-          <div class="mt-2">
-            <nav mat-tab-nav-bar>
-              <a
+          <div class="mt-2 w-full">
+            <nav mat-tab-nav-bar class="w-full">
+              <div class="w-4/5">
+                <a
                 mat-tab-link
                 *ngFor="let link of links"
                 [routerLink]="link.path"
@@ -121,9 +122,24 @@
               >
                 {{ link.title }}
               </a>
+              </div>
+             
+              <div
+              class="max-health-primary-color font-bold float-right text-underline w-2/10 ml-13"
+              *ngIf="opOrderRequestService.totalCost > 0"
+            >
+              <span>Total Estimation:</span>
+              {{
+                opOrderRequestService.totalCost
+                  | currency: "INR":undefined:undefined:"en-IN"
+              }}
+            </div>
+             
             </nav>
             
-           
+ 
+            
+          
               <router-outlet></router-outlet>
            
             <!-- *ngIf="activeLink==View Request" -->

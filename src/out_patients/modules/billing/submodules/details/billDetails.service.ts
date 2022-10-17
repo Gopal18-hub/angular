@@ -29,6 +29,11 @@ export class billDetailService{
     {
 
     }
+    onload()
+    {
+        this.serviceList = [];
+        this.patientbilldetaillist = [];
+    }
     clear()
     {
         this.serviceList = [];

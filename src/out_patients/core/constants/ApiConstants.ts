@@ -1321,15 +1321,6 @@ export namespace ApiConstants {
     );
   };
 
-  export const getconfiguremessage = (requesttype: string, value: string) => {
-    return (
-      environment.BillingApiUrl +
-      "api/outpatientbilling/gethl7outboundmessageris/" +
-      requesttype +
-      "/" +
-      value
-    );
-  };
   export const getPatientExpiredDepositDetails = (
     iacode: string,
     registrationno: number,
@@ -1493,12 +1484,32 @@ export namespace ApiConstants {
     `${environment.CommonApiUrl}api/lookup/referraldoctorsave/${DoctorName}/${MobileNumber}/${SpecialisationId}/${UserId}`;
 
   export const validateCoupon = (
-    CouponNo : string,
-    Locationid : number,
+    CouponNo: string,
+    Locationid: number,
     Iacode: string,
     Registration: number,
     SpecializationId: number
   ) => {
-    return `${environment.BillingApiUrl}api/outpatientbilling/validatecoupon/${CouponNo}/${Locationid}/${Iacode}/${Registration}/${SpecializationId}`
-  }
+    return `${environment.BillingApiUrl}api/outpatientbilling/validatecoupon/${CouponNo}/${Locationid}/${Iacode}/${Registration}/${SpecializationId}`;
+  };
+
+  export const savepostdischarge =
+    environment.BillingApiUrl +
+    "api/outpatientbilling/createpostdischargeconsultbill";
+
+  export const gethl7outboundmessageris = (
+    requesttype: string,
+    value: string
+  ) => {
+    return (
+      environment.BillingApiUrl +
+      "api/outpatientbilling/gethl7outboundmessageris/" +
+      requesttype +
+      "/" +
+      value
+    );
+  };
+
+  export const generatehl7outboundmessageris =
+    "api/outpatientbilling/generatehl7outboundmessageris";
 }

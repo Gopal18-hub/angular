@@ -29,7 +29,13 @@ import {
   trigger,
 } from "@angular/animations";
 import { DatePipe } from "@angular/common";
-import { FormGroup } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  FormArray,
+  FormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "maxhealth-table",
@@ -76,6 +82,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild("string") stringTemplate!: TemplateRef<any>;
   @ViewChild("stringLink") stringLinkTemplate!: TemplateRef<any>;
   @ViewChild("number") numberTemplate!: TemplateRef<any>;
+  @ViewChild("currency") currencyTemplate!: TemplateRef<any>;
   @ViewChild("date") dateTemplate!: TemplateRef<any>;
   @ViewChild("datetime") dateTimeTemplate!: TemplateRef<any>;
   @ViewChild("image") imageTemplate!: TemplateRef<any>;
@@ -111,11 +118,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private _ngZone: NgZone,
-    private datepipe: DatePipe
+    private datepipe: DatePipe,
+    private _formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.tableForm = new FormGroup({});
+    this.tableForm = this._formBuilder.group({
+      data: this._formBuilder.array([]),
+    });
     if (!("rowHighlightOnHover" in this.config)) {
       this.config.rowHighlightOnHover = true;
     }
@@ -167,6 +177,9 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.tableForm = this._formBuilder.group({
+      data: this._formBuilder.array([]),
+    });
     if (!("rowHighlightOnHover" in this.config)) {
       this.config.rowHighlightOnHover = true;
     }
@@ -191,6 +204,22 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.dataSource = new MatTableDataSource<any>(this.data);
     if (this.sort) this.dataSource.sort = this.sort;
+    let formData: any = [];
+    this.data.forEach((it: any) => {
+      let group: any = {};
+      Object.keys(it).forEach((itk) => {
+        if (this.config.columnsInfo[itk] == "dropdown") {
+          if (itk + "_required" in it && it[itk + "_required"]) {
+            group[itk] = new FormControl(it[itk], Validators.required);
+          } else {
+            group[itk] = new FormControl(it[itk]);
+          }
+        }
+      });
+      const fg = new FormGroup(group);
+      formData.push(fg);
+    });
+    this.tableForm.setControl("data", new FormArray(formData));
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
@@ -267,8 +296,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection.clear();
       return;
     }
-
     this.selection.select(...this.dataSource.data);
+    //If mastercheck includes deselection,
+    //the mastercheckbox has to change from indeterminate to checked status
+    this.selection.selected.length = this.dataSource.data.length;
   }
 
   /** The label for the checkbox on the passed row */
@@ -285,6 +316,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     if (col.type == "string") return this.stringTemplate;
     else if (col.type == "string_link") return this.stringLinkTemplate;
     else if (col.type == "number") return this.numberTemplate;
+    else if (col.type == "currency") return this.currencyTemplate;
     else if (col.type == "date") return this.dateTemplate;
     else if (col.type == "datetime") return this.dateTimeTemplate;
     else if (col.type == "image") return this.imageTemplate;

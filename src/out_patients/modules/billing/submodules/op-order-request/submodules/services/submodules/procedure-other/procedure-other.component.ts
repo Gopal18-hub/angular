@@ -76,6 +76,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         style: {
           width: "80px",
         },
+        disabledSort: "true",
       },
       procedures: {
         title: "Procedures",
@@ -123,7 +124,7 @@ export class OrderProcedureOtherComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     public dialog: MatDialog,
     private router: Router,
-    private opOrderrequestService: OpOrderRequestService
+    public opOrderrequestService: OpOrderRequestService
   ) {}
 
   ngOnInit(): void {
@@ -134,6 +135,10 @@ export class OrderProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
+    this.opOrderrequestService.setProcedureFormGroup(
+      this.formGroup,
+      this.questions
+    );
     this.data = this.opOrderrequestService.procedureItems;
     this.getOtherService();
     this.getSpecialization();
@@ -153,6 +158,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           return item;
         }
       );
+    this.opOrderrequestService.calculateTotalAmount();
     this.data = [...this.opOrderrequestService.procedureItems];
   }
 
@@ -275,7 +281,6 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getotherservicebilling(
           this.locationid,
           // 67,
-          // Number(this.cookie.get("HSPLocationId")),
           serviceId,
           isBundle
         )
@@ -309,7 +314,6 @@ export class OrderProcedureOtherComponent implements OnInit {
 
   add(priorityId = 1) {
     if (
-      // this.formGroup.value.otherService.value == undefined ||
       this.formGroup.value.otherService == null ||
       this.formGroup.value.otherService == ""
     ) {
@@ -360,11 +364,14 @@ export class OrderProcedureOtherComponent implements OnInit {
     } else {
       this.messageDialogService.info("Please Select Procedure");
     }
-
-    //this.formGroup.reset();
   }
 
   addrow(priorityId = 1) {
+    if (this.formGroup.value.procedure.docRequired == 1) {
+      this.opOrderrequestService.docRequiredStatusvalue(true);
+    } else {
+      this.opOrderrequestService.docRequiredStatusvalue(false);
+    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -372,9 +379,6 @@ export class OrderProcedureOtherComponent implements OnInit {
           this.formGroup.value.procedure.value,
           this.otherserviceId,
           this.cookie.get("HSPLocationId")
-          // "67"
-          //          this.formGroup.value.otherService.value,
-          //        this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
@@ -384,7 +388,7 @@ export class OrderProcedureOtherComponent implements OnInit {
           qty: 1,
           specialisation: "",
           doctorName: "",
-          price: res.amount,
+          price: res.amount.toFixed(2),
           unitPrice: res.amount,
           itemid: this.formGroup.value.procedure.value,
           priorityId: priorityId,
@@ -398,7 +402,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             ? true
             : false,
         });
-
+        this.opOrderrequestService.calculateTotalAmount();
         this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
       });

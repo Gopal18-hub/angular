@@ -17,6 +17,7 @@ import {
 import { SearchService } from "../../../services/search.service";
 import { APP_BASE_HREF } from "@angular/common";
 import { map, filter } from "rxjs/operators";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "maxhealth-sub-header",
@@ -45,7 +46,8 @@ export class SubComponent implements OnInit, OnChanges {
     @Inject(APP_BASE_HREF) public baseHref: string,
     private formService: QuestionControlService,
     private router: Router,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -118,6 +120,11 @@ export class SubComponent implements OnInit, OnChanges {
       if (this.searchFormProperties.resetFormOnSubmit == false) {
       } else {
         this.searchForm.reset();
+        if ("maxID" in this.searchForm.controls) {
+          this.searchForm.controls["maxID"].setValue(
+            this.cookie.get("LocationIACode") + "."
+          );
+        }
       }
     }, 800);
   }

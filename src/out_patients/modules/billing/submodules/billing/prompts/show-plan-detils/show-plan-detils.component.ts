@@ -45,7 +45,6 @@ export class ShowPlanDetilsComponent implements OnInit {
     selectCheckBoxPosition: 6,
     dateformat: "dd/MM/yyyy",
     selectBox: true,
-    clickSelection: "single",
     selectCheckBoxLabel: "Select",
     displayedColumns: [
       "stepNo",
@@ -101,6 +100,8 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   isConsultationExist: boolean = false;
 
+  selectedDoctor: any = "";
+
   constructor(
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
     @Inject(MAT_DIALOG_DATA) public inputdata: any,
@@ -116,7 +117,39 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     if (this.planType == "otherPlanDetails") {
-      this.tableRows.selection.changed.subscribe((res: any) => {});
+      this.tableRows.selection.changed.subscribe((res: any) => {
+        this.isConsultationExist = false;
+        this.tableRows.selection.selected.forEach((sItem: any) => {
+          if (sItem.serviceid == 25) {
+            this.getDoctorsListInfo();
+          }
+        });
+      });
+    }
+  }
+
+  getDoctorsListInfo() {
+    if (this.doctorList.length == 0) {
+      this.http
+        .get(
+          BillingApiConstants.getalldoctorname(
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .subscribe((res) => {
+          this.doctorList = res.map((r: any) => {
+            return {
+              title: r.doctorname + " (" + r.specialityname + ")",
+              value: r.doctorId,
+              originalTitle: r.doctorName,
+              specialisationid: r.specialisationid,
+              //clinicID: r.clinicID,
+            };
+          });
+          this.isConsultationExist = true;
+        });
+    } else {
+      this.isConsultationExist = true;
     }
   }
 

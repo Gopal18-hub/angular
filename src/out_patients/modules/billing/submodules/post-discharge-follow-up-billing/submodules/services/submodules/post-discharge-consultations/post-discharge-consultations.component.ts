@@ -68,52 +68,98 @@ export class PostDischargeConsultationsComponent implements OnInit {
     ],
     columnsInfo: {
       sno: {
-        title: "S.No",
-        type: "string",
+        title: "S.No.",
+        type: "number",
         style: {
-          width: "5rem",
+          width: "80px",
         },
       },
       doctorName: {
         title: "Doctor Name",
         type: "string",
         style: {
-          width: "16rem",
+          width: "36%",
         },
       },
       type: {
         title: "Type",
         type: "dropdown",
+        options: [],
         style: {
-          width: "10rem",
+          width: "20%",
         },
       },
       scheduleSlot: {
         title: "Schedule Slot",
         type: "string",
         style: {
-          width: "10rem",
+          width: "10%",
         },
       },
       bookingDate: {
         title: "Booking Date",
-        type: "string",
+        type: "date",
         style: {
-          width: "10rem",
+          width: "10%",
         },
       },
       price: {
         title: "Price",
-        type: "string",
+        type: "number",
         style: {
-          width: "8rem",
+          width: "10%",
         },
       },
     },
+    // columnsInfo: {
+    //   sno: {
+    //     title: "S.No",
+    //     type: "string",
+    //     style: {
+    //       width: "5rem",
+    //     },
+    //   },
+    //   doctorName: {
+    //     title: "Doctor Name",
+    //     type: "string",
+    //     style: {
+    //       width: "16rem",
+    //     },
+    //   },
+    //   type: {
+    //     title: "Type",
+    //     type: "dropdown",
+    //     style: {
+    //       width: "10rem",
+    //     },
+    //   },
+    //   scheduleSlot: {
+    //     title: "Schedule Slot",
+    //     type: "string",
+    //     style: {
+    //       width: "10rem",
+    //     },
+    //   },
+    //   bookingDate: {
+    //     title: "Booking Date",
+    //     type: "string",
+    //     style: {
+    //       width: "10rem",
+    //     },
+    //   },
+    //   price: {
+    //     title: "Price",
+    //     type: "string",
+    //     style: {
+    //       width: "8rem",
+    //     },
+    //   },
+    // },
   };
   locationId = Number(this.cookie.get("HSPLocationId"));
   excludeClinicsLocations = [67, 69];
   consultationTypes = [];
+  apiProcessing: boolean = false;
   constructor(
     private formService: QuestionControlService,
     public billingService: BillingService,
@@ -177,9 +223,6 @@ export class PostDischargeConsultationsComponent implements OnInit {
       }
     });
 
-    // if (this.billingService.activeMaxId) {
-    //   this.questions[1].elementRef.focus();
-    // }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
         filter((res) => {
@@ -286,7 +329,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
       //   width: "30vw",
       //   data: {},
       // });
-      this.msgdialog.info("Coupon is allow only single consultation");
+      this.msgdialog.info("Coupon allow only single consultation");
       return;
     }
     this.http
