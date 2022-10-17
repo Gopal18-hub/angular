@@ -116,8 +116,33 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     if (this.planType == "otherPlanDetails") {
-      this.tableRows.selection.changed.subscribe((res: any) => {});
+      this.tableRows.selection.changed.subscribe((res: any) => {
+        if (res.added[0].serviceid == 25) {
+          this.getDoctorsListInfo();
+        }
+      });
     }
+  }
+
+  getDoctorsListInfo() {
+    this.http
+      .get(
+        BillingApiConstants.getalldoctorname(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
+      .subscribe((res) => {
+        this.doctorList = res.map((r: any) => {
+          return {
+            title: r.doctorname + " (" + r.specialityname + ")",
+            value: r.doctorId,
+            originalTitle: r.doctorName,
+            specialisationid: r.specialisationid,
+            //clinicID: r.clinicID,
+          };
+        });
+        this.isConsultationExist = true;
+      });
   }
 
   cancel() {

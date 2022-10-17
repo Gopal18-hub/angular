@@ -1,3 +1,10 @@
 .service-table-height {
   height: calc(100% - 38px);
+  ::ng-deep .max-table-wrapper {
+    table {
+      .mat-column-precaution {
+        text-align: center;
+      }
+    }
+  }
 }
