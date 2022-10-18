@@ -44,6 +44,7 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
   questions: any;
   msgresponse: any;
   private readonly _destroying$ = new Subject<void>();
+  snackbar: any;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -104,11 +105,10 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         }
       }),
       (error: any) => {
-        error;
-        // this.OpConsultform.controls["Location"].setErrors({
-        //   incorrect: true,
-        // });
-        // this.questions[2].customErrorMessage = "Location is Required";
+        if (error.error == null) {
+          this.OpConsultform.controls["Location"];
+          this.snackbar.open("Location is Required", "error");
+        }
       };
   }
   clickbtn() {

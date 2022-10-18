@@ -42,6 +42,7 @@ export class ExpiredDepositsComponent implements OnInit {
     properties: {
       maxid: {
         type: "string",
+        required: false,
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
