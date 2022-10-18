@@ -740,6 +740,8 @@ export class PaymentDialogComponent implements OnInit {
         return { title: l.name, value: l.name}
       })
     })
+    this.questions[7] = {...this.questions[7]};
+    this.questions[21] = {...this.questions[21]};
   }
   getcreditcard()
   {
@@ -752,6 +754,7 @@ export class PaymentDialogComponent implements OnInit {
         return { title: l.name, value: l.id}
       })
     })
+    this.questions[12] = {...this.questions[12]};
   }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);

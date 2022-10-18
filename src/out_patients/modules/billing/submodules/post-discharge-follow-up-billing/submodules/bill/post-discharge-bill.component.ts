@@ -128,7 +128,7 @@ export class PostDischargeBillComponent implements OnInit {
         title: "GST Value",
         type: "number",
         style: {
-          width: "130px",
+          width: "100px",
         },
       },
     },
