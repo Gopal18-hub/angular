@@ -300,10 +300,12 @@
                 [routerLink]="link.path"
                 routerLinkActive
                 #rla="routerLinkActive"
-                (click)="activeLink = link"
-                [active]="rla.isActive || activeLink.path == link.path"
+                queryParamsHandling="merge"
+                [active]="rla.isActive"
                 [disabled]="link.disabled"
               >
+              <!-- (click)="activeLink = link" -->
+              <!-- || activeLink.path == link.path -->
                 {{ link.title }}
               </a>
             </nav>
