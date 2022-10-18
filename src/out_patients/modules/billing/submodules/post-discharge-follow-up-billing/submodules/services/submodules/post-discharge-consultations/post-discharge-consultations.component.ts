@@ -158,7 +158,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
   };
   locationId = Number(this.cookie.get("HSPLocationId"));
   excludeClinicsLocations = [67, 69];
-  consultationTypes = [];
+  consultationTypes: any = [];
   apiProcessing: boolean = false;
   constructor(
     private formService: QuestionControlService,
@@ -336,6 +336,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
       this.msgdialog.info("Coupon allow only single consultation");
       return;
     }
+    this.apiProcessing = true;
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,
@@ -370,6 +371,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
+              type: this.consultationTypes.filter((res: any) => { return res.id == priorityId})[0].name,
               precaution: "",
               procedureDoctor: "",
               credit: Number(0).toFixed(2),
@@ -386,7 +388,9 @@ export class PostDischargeConsultationsComponent implements OnInit {
           });
         }
         this.data = [...this.service.consultationItems];
+        this.apiProcessing = false;
         this.formGroup.reset();
+        console.log(this.service.consultationItems);
       });
   }
 
@@ -421,6 +425,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
           );
           this.service.consultationItems[index].price = res.amount.toFixed(2);
           this.service.consultationItems[index].type = priorityId;
+          this.service.billItems[0].price = res.amount.toFixed(2);
+          this.service.billItems[0].priority = priorityId;
+          this.service.billItems[0].totalAmount = res.amount.toFixed(2);
+          this.service.billItems[0].type = this.consultationTypes.filter((res: any) => { return res.id == priorityId})[0].name,
           this.data = [...this.service.consultationItems];
         }
 
