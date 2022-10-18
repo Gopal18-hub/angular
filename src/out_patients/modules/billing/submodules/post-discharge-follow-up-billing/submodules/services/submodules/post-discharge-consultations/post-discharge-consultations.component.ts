@@ -263,6 +263,10 @@ export class PostDischargeConsultationsComponent implements OnInit {
           this.questions[1] = { ...this.questions[1] };
         }
       });
+
+      this.tableRows.controlValueChangeTrigger.subscribe( (res: any) => {
+        this.update(res.$event.value, res.data.element.sno, res.data.element.doctorId);
+      })
   }
   getSpecialization() {
     if (!this.excludeClinicsLocations.includes(this.locationId)) {
@@ -415,7 +419,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
           const index = this.service.consultationItems.findIndex(
             (c: any) => c.sno == sno
           );
-          this.service.consultationItems[index].price = res.amount;
+          this.service.consultationItems[index].price = res.amount.toFixed(2);
           this.service.consultationItems[index].type = priorityId;
           this.data = [...this.service.consultationItems];
         }
