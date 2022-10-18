@@ -188,6 +188,10 @@ export class PaymentDialogComponent implements OnInit {
   finalamount: number = 0;
   reduceamount: number = 0;
   selected: any = 0 ;
+
+  manualbtn: boolean = true;
+  retrybtn: boolean = true;
+  approvalbtn: boolean = true;
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -242,6 +246,55 @@ export class PaymentDialogComponent implements OnInit {
     this.questions[9].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[17].elementRef.addEventListener('blur', this.amountcheck.bind(this));
     this.questions[23].elementRef.addEventListener('blur', this.amountcheck.bind(this));
+    this.disablecc();
+  }
+  disablecc()
+  {
+    this.dueform.controls['creditcardno'].disable();
+    this.dueform.controls['creditcardholdername'].disable();
+    this.dueform.controls['creditbankname'].disable();
+    this.dueform.controls['creditbatchno'].disable();
+    this.dueform.controls['creditapprovalno'].disable();
+    this.dueform.controls['creditterminalid'].disable();
+    this.dueform.controls['creditacquiringbank'].disable();
+  }
+  enablecc()
+  {
+    this.dueform.controls['creditcardno'].enable();
+    this.dueform.controls['creditcardholdername'].enable();
+    this.dueform.controls['creditbankname'].enable();
+    this.dueform.controls['creditbatchno'].enable();
+    this.dueform.controls['creditapprovalno'].enable();
+    this.dueform.controls['creditterminalid'].enable();
+    this.dueform.controls['creditacquiringbank'].enable();
+  }
+  getmanual()
+  {
+    if(Number(this.dueform.controls['creditamount'].value) == 0)
+    {
+      this.messageDialogService.info('Please Give Proper Amount.');
+    }
+    else
+    {
+      this.enablecc();
+      this.manualbtn = false;
+      this.retrybtn = false;
+      this.approvalbtn = false;
+    } 
+  }
+  retry()
+  {
+    this.disablecc();
+    this.manualbtn = true;
+    this.retrybtn = true;
+    this.approvalbtn = true;
+    this.dueform.controls['creditcardno'].reset();
+    this.dueform.controls['creditcardholdername'].reset();
+    this.dueform.controls['creditbankname'].reset();
+    this.dueform.controls['creditbatchno'].reset();
+    this.dueform.controls['creditapprovalno'].reset();
+    this.dueform.controls['creditterminalid'].reset();
+    this.dueform.controls['creditacquiringbank'].reset();
   }
   tabchange(event: MatTabChangeEvent)
   {

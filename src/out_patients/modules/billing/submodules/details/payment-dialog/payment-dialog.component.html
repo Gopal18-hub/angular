@@ -230,9 +230,9 @@
                                 </div>
                             </div>
                             <div class="flex mt-4 btn">
-                                <button mat-raised-button color="primary">Manual</button>
-                                <button mat-raised-button color="primary" class="ml-2">Get Approval</button>
-                                <button mat-raised-button color="primary" class="ml-2">Retry</button>
+                                <button mat-raised-button color="primary" (click)="getmanual()" [disabled]="!manualbtn">Manual</button>
+                                <button mat-raised-button color="primary" class="ml-2" [disabled]="!approvalbtn">Get Approval</button>
+                                <button mat-raised-button color="primary" class="ml-2" (click)="retry()" [disabled]="retrybtn">Retry</button>
                             </div> 
                         </div>
                     </mat-tab>
