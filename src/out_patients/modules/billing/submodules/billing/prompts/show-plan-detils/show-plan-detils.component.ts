@@ -3,6 +3,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
+import { Observable } from "rxjs";
+import { FormControl } from "@angular/forms";
+import { map, startWith } from "rxjs/operators";
 
 @Component({
   selector: "out-patients-show-plan-detils",
@@ -100,7 +103,11 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   isConsultationExist: boolean = false;
 
-  selectedDoctor: any = "";
+  selectedDoctor = new FormControl();
+
+  arrowIcon = "arrow_drop_down";
+
+  filteredOptions!: Observable<any>;
 
   constructor(
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
@@ -147,10 +154,39 @@ export class ShowPlanDetilsComponent implements OnInit {
             };
           });
           this.isConsultationExist = true;
+          this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
+            startWith(""),
+            map((value: any) =>
+              typeof value === "string" ? value : value?.title
+            ),
+            map((title: any) =>
+              title ? this._filter(title) : this.doctorList.slice()
+            )
+          );
         });
     } else {
       this.isConsultationExist = true;
     }
+  }
+
+  private _filter(title: string): any[] {
+    const filterValue = title.toLowerCase();
+
+    return this.doctorList.filter((option: any) =>
+      option.title.toLowerCase().includes(filterValue)
+    );
+  }
+
+  displayFn(option: any): string {
+    let strOption = "";
+    if (option && option.title) {
+      if (option.title.includes("/")) {
+        strOption = option.title.split("/")[0];
+      } else {
+        strOption = option.title;
+      }
+    }
+    return strOption.trimEnd();
   }
 
   cancel() {

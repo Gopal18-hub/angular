@@ -26,7 +26,7 @@ export class DisountReasonComponent implements OnInit {
     properties: {
       types: {
         type: "dropdown",
-        title: "Discount Types",       
+        title: "Discount Types",
         placeholder: "-Select-",
       },
       head: {
@@ -183,6 +183,9 @@ export class DisountReasonComponent implements OnInit {
   disableAdd: boolean = false;
 
   @ViewChild("table") tableRows: any;
+
+  dualList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -222,7 +225,7 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes.map((a:any) => {
+      this.question[0].options = this.discounttypes.map((a: any) => {
         return { title: a.title, value: a.value };
       });
     }
@@ -393,7 +396,6 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
-
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
@@ -422,9 +424,11 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
-
+    this.dualList.push(4);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
+    if (this.dualList.includes(5)) {
+      this.disableAdd = true;
+    }
   }
 
   OnCompanyPrepare() {
@@ -452,9 +456,12 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
+    this.dualList.push(5);
 
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
+    if (this.dualList.includes(4)) {
+      this.disableAdd = true;
+    }
   }
 
   OnItemPrepare() {
@@ -596,7 +603,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-         Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))

@@ -64,23 +64,34 @@
       <ng-container *ngIf="isConsultationExist">
         <div>
           <mat-form-field
+            class="full-width clearfix clear"
             appearance="outline"
             floatLabel="never"
-            class="table-select-dropdown"
           >
-            <mat-select
-              [panelClass]="'im-select-dropdown'"
-              disableOptionCentering
-              controlDirty
-              placeholder="--Select--"
+            <input
+              matInput
+              placeholder=""
               [(ngModel)]="selectedDoctor"
+              required="true"
+              [matAutocomplete]="auto"
+              autocomplete="off"
+            />
+            <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayFn"
+              (opened)="arrowIcon = 'arrow_drop_up'"
+              (closed)="arrowIcon = 'arrow_drop_down'"
+              panelWidth="auto"
             >
-              <ng-container *ngFor="let opt of doctorList">
-                <mat-option [value]="opt.value">
-                  {{ opt.title }}
-                </mat-option>
-              </ng-container>
-            </mat-select>
+              <mat-option
+                *ngFor="let opt of filteredOptions | async"
+                [value]="opt"
+                [ngStyle]="opt.ngStyle"
+              >
+                {{ opt.title }}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
       </ng-container>
