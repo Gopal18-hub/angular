@@ -659,15 +659,15 @@ export class PaymentDialogComponent implements OnInit {
     {
       this.insertdueamt.ds_paymode.tab_credit.push({
         ccNumber: this.dueform.controls['creditcardno'].value,
-        cCvalidity: '',
-        cardType: this.dueform.controls['creditbankname'].value,
-        approvalno: '',
-        cType: 0,
+        cCvalidity: new Date(),
+        cardType: this.dueform.controls['creditbankname'].value.value,
+        approvalno: this.dueform.controls['creditapprovalno'].value,
+        cType: 1,
         flag: this.creditflag,
-        approvalcode: this.dueform.controls['creditapprovalno'].value,
+        approvalcode: '',
         terminalID: this.dueform.controls['creditterminalid'].value,
         acquirer: this.dueform.controls['creditacquiringbank'].value,
-        flagman: '',
+        flagman: '1',
         cardholdername: this.dueform.controls['creditcardholdername'].value,
         bankname: credbank[0].name
       })
@@ -736,12 +736,12 @@ export class PaymentDialogComponent implements OnInit {
       this.questions[7].options = this.bankname.map(l => {
         return { title: l.name, value: l.name}
       })
+      this.questions[7] = {...this.questions[7]};
       this.questions[21].options = this.bankname.map(l => {
         return { title: l.name, value: l.name}
       })
+      this.questions[21] = {...this.questions[21]};
     })
-    this.questions[7] = {...this.questions[7]};
-    this.questions[21] = {...this.questions[21]};
   }
   getcreditcard()
   {
@@ -753,8 +753,9 @@ export class PaymentDialogComponent implements OnInit {
       this.questions[12].options = this.creditcard.map(l => {
         return { title: l.name, value: l.id}
       })
+      this.questions[12] = {...this.questions[12]};
     })
-    this.questions[12] = {...this.questions[12]};
+    
   }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);

@@ -323,27 +323,27 @@
                 <mat-label class="font-base">Refund Summary</mat-label>
                 <div class="mt-2 w-full flex justify-between">
                     <mat-label>Total Bill Amount: </mat-label>
-                    <span>{{billamount}}</span>
+                    <span>{{billamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
                 <div class="mt-2 w-full flex justify-between">
                     <mat-label>Pre-Paid Amount: </mat-label>
-                    <span>{{prepaidamount}}</span>
+                    <span>{{prepaidamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
                 <div class="mt-2 w-full flex justify-between">
                     <mat-label>Deposit Amount: </mat-label>
-                    <span>{{depositamount}}</span>
+                    <span>{{depositamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
                 <div class="mt-2 w-full flex justify-between">
                     <mat-label>Discount Amount: </mat-label>
-                    <span>{{discountamount}}</span>
+                    <span>{{discountamount | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
                 <div class="mt-2 w-full flex justify-between">
                     <mat-label>Patient Due: </mat-label>
-                    <span>{{due}}</span>
+                    <span>{{due | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
                 <div class="mt-5 w-full flex justify-between">
                     <mat-label>Total: </mat-label>
-                    <span>{{totaldue}}</span>
+                    <span>{{totaldue | currency: "INR":undefined:undefined:"en-IN"}}</span>
                 </div>
             </div>
 

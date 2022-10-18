@@ -137,7 +137,7 @@ export class tab_dd{
 
 export class tab_credit{
     ccNumber: string;
-    cCvalidity: string;
+    cCvalidity: any;
     cardType: any;
     approvalno: string;
     cType: any;

@@ -336,6 +336,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
       this.msgdialog.info("Coupon allow only single consultation");
       return;
     }
+    this.apiProcessing = true;
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,
@@ -387,6 +388,7 @@ export class PostDischargeConsultationsComponent implements OnInit {
           });
         }
         this.data = [...this.service.consultationItems];
+        this.apiProcessing = false;
         this.formGroup.reset();
         console.log(this.service.consultationItems);
       });
