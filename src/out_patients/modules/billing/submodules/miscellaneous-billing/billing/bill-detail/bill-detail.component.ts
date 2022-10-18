@@ -1270,6 +1270,9 @@ export class BillDetailComponent implements OnInit {
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
           calcBill0.amntPaidBythePatient.toFixed(2)
         );
+        if (Number(this.miscServBillForm.value.paymentMode) === 3 && this.miscServBillForm.value.coPay > 0) {
+          this.amtByComp();
+        }
       }
     });
   }
@@ -1723,6 +1726,19 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.coPay > 0) {
       const amtPayByComp = this.billAmnt;
       let tempAmount = this.miscServBillForm.value.credLimit;
+      if (Number(tempAmount) <= this.billAmnt) {
+        this.snackbar.open(
+          "Credit limit should not be less than bill amount",
+          "error"
+        );
+        let calcBill0 = this.miscPatient.calculateBill();
+        this.miscServBillForm.controls["amtPayByPatient"].setValue(
+          calcBill0.amntPaidBythePatient.toFixed(2)
+        );
+        this.miscServBillForm.controls["amtPayByComp"].setValue(0.0);
+
+        return;
+      }
       if (parseFloat(tempAmount) <= amtPayByComp) {
         this.miscServBillForm.controls["amtPayByComp"].setValue(tempAmount);
       } else {
@@ -1740,13 +1756,19 @@ export class BillDetailComponent implements OnInit {
     );
   }
   getAmountPayByPatient() {
-    const temp =
+    let temp =
       this.billAmnt -
       (this.miscServBillForm.value.discAmt || 0) -
       (this.miscServBillForm.value.dipositAmtEdit || 0) -
       (this.miscServBillForm.value.amtPayByComp || 0);
 
-    return temp;
+    this.calcBillData.totalAmount = temp;
+    this.miscPatient.setCalculateBillItems(this.calcBillData);
+
+    let calcBill0 = this.miscPatient.calculateBill();
+    let tempo = calcBill0.amntPaidBythePatient.toFixed(2);
+
+    return tempo;
   }
   makeBill() {
     //Set Gst Values
