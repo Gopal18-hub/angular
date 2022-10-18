@@ -1330,9 +1330,9 @@ export class BillDetailComponent implements OnInit {
                 emitEvent: false,
               });
               this.snackbar.open("Deposit Amount availed successfully!");
-              if (this.makebillFlag == true && this.depositAvailFlag == true) {
-                this.openPaymentModeDialog();
-              }
+              // if (this.makebillFlag == true && this.depositAvailFlag == true) {
+              //   this.openPaymentModeDialog();
+              // }
             } else {
               this.miscServBillForm.controls["dipositAmtcheck"].setValue(
                 false,
@@ -1357,6 +1357,7 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["dipositAmtcheck"].setValue(false, {
             emitEvent: false,
           });
+          this.openPaymentModeDialog();
         }
       });
   }
@@ -1436,7 +1437,7 @@ export class BillDetailComponent implements OnInit {
             }
           });
       }
-    } else {
+    } else if (Number(this.miscServBillForm.value.paymentMode) === 1) {
       if (!this.refDoctor.id && this.selfDoc === false) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
@@ -1544,7 +1545,7 @@ export class BillDetailComponent implements OnInit {
   calculateTotalAmount() {
     this.TotalAmount = 0;
     this.getgstdata();
-    // this.getDipositedAmountByMaxID();
+    this.getDipositedAmountByMaxID();
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount = Number(this.TotalAmount) + Number(element.TotalAmount);
     });
@@ -1718,7 +1719,10 @@ export class BillDetailComponent implements OnInit {
     this.postBillObj.htParameter_P = {};
     this.postBillObj.operatorId = this.userID;
     this.postBillObj.locationId = this.location;
-    if (this.totalDeposit > 0) {
+    if (
+      this.depositDetails.length > 0 &&
+      this.miscServBillForm.value.dipositAmtEdit == 0
+    ) {
       this.openDepositdialog();
     } else {
       this.openPaymentModeDialog();
