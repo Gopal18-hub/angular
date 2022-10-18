@@ -30,7 +30,7 @@ export class PostDischargeBillComponent implements OnInit {
       "itemName",
       "precaution",
       "procedureDoctor",
-      "qty",
+      "type",
       "credit",
       "cash",
       "disc",
@@ -75,11 +75,11 @@ export class PostDischargeBillComponent implements OnInit {
           width: "130px",
         },
       },
-      qty: {
+      type: {
         title: "Qty / Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "190px",
         },
       },
       credit: {
