@@ -140,6 +140,7 @@ export class OrderProcedureOtherComponent implements OnInit {
       this.questions
     );
     this.data = this.opOrderrequestService.procedureItems;
+    this.opOrderrequestService.onServiceTab(true);
     this.getOtherService();
     this.getSpecialization();
     this.opOrderrequestService.clearAllItems.subscribe((clearItems) => {
@@ -475,6 +476,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
             this.opOrderrequestService.procedureItems = [];
+            this.opOrderrequestService.calculateTotalAmount();
             this.formGroup.reset();
             this.config.columnsInfo.doctorName.moreOptions = {};
           }
