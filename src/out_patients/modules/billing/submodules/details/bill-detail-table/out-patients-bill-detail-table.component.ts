@@ -343,13 +343,13 @@ export class BillDetailTableComponent implements OnInit {
       this.headercheck = true;
     }
     // consultation done
-    // var consulted = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
-    //   return Number(i.serviceId) == 25 && i.visited > 0;
-    // })
-    // if(consulted.length > 0)
-    // {
-    //   this.headercheck = true;
-    // }
+    var consulted = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((i: any) => {
+      return Number(i.serviceId) == 25 && i.visited > 0;
+    })
+    if(consulted.length > 0)
+    {
+      this.headercheck = true;
+    }
 
     // if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID[0].ackby > 1)
     // {
@@ -414,20 +414,21 @@ export class BillDetailTableComponent implements OnInit {
       }
 
       //For Consultation Done
-      // else if(s.added.length == 1 && s.added[0].serviceid == 25)
-      // {
-      //   var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-      //     return a.itemid == s.added[0].itemid;
-      //   }) 
-      //   if(list[0].visited > 0)
-      //   {
-      //     this.msgdialog.info('Consultation Has Been Done . This item Can not be Refunded');
-      //     setTimeout(() => {
-      //       this.tableRows.selection.deselect(s.added[0]);
-      //     }, 100);
-      //     return;
-      //   }
-      // }
+      else if(s.added.length == 1 && s.added[0].serviceid == 25)
+      {
+        var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+          return a.itemid == s.added[0].itemid;
+        }) 
+        if(list[0].visited > 0)
+        {
+          this.msgdialog.info('Consultation Has Been Done . This item Can not be Refunded');
+          setTimeout(() => {
+            this.tableRows.selection.deselect(s.added[0]);
+          }, 100);
+          return;
+        }
+      }
+
       //For Acknowledged Items
       if(this.tableRows.selection.selected.length > 0)
       {  

@@ -1270,7 +1270,10 @@ export class BillDetailComponent implements OnInit {
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
           calcBill0.amntPaidBythePatient.toFixed(2)
         );
-        if (Number(this.miscServBillForm.value.paymentMode) === 3 && this.miscServBillForm.value.coPay > 0) {
+        if (
+          Number(this.miscServBillForm.value.paymentMode) === 3 &&
+          this.miscServBillForm.value.coPay >= 0
+        ) {
           this.amtByComp();
         }
       }
@@ -1327,9 +1330,9 @@ export class BillDetailComponent implements OnInit {
                 emitEvent: false,
               });
               this.snackbar.open("Deposit Amount availed successfully!");
-              if (this.makebillFlag == true && this.depositAvailFlag == true) {
-                this.openPaymentModeDialog();
-              }
+              // if (this.makebillFlag == true && this.depositAvailFlag == true) {
+              //   this.openPaymentModeDialog();
+              // }
             } else {
               this.miscServBillForm.controls["dipositAmtcheck"].setValue(
                 false,
@@ -1354,6 +1357,7 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["dipositAmtcheck"].setValue(false, {
             emitEvent: false,
           });
+          this.openPaymentModeDialog();
         }
       });
   }
@@ -1433,7 +1437,7 @@ export class BillDetailComponent implements OnInit {
             }
           });
       }
-    } else {
+    } else if (Number(this.miscServBillForm.value.paymentMode) === 1) {
       if (!this.refDoctor.id && this.selfDoc === false) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
@@ -1472,34 +1476,31 @@ export class BillDetailComponent implements OnInit {
 
   openPaymentModeDialog() {
     let calcBill0 = this.miscPatient.calculateBill();
-    this.http
-      .post(ApiConstants.postMiscBill, this.postBillObj)
+    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+      width: "70vw",
+      height: "98vh",
+      data: {
+        toPaidAmount: calcBill0.amntPaidBythePatient,
+        name: "MiscBilling",
+        totalBillAmount: this.billAmnt,
+        totalDiscount: this.miscServBillForm.value.discAmt,
+        totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
+        totalRefund: 0,
+        ceditLimit: 0,
+        settlementAmountRefund: 0,
+        settlementAmountReceived: 0,
+      },
+    });
+    RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          if (resultData[0].successFlag === true) {
-            const RefundDialog = this.matDialog.open(
-              BillPaymentDialogComponent,
-              {
-                width: "70vw",
-                height: "98vh",
-                data: {
-                  toPaidAmount: calcBill0.amntPaidBythePatient,
-                  name: "MiscBilling",
-                  totalBillAmount: this.billAmnt,
-                  totalDiscount: this.miscServBillForm.value.discAmt,
-                  totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
-                  totalRefund: 0,
-                  ceditLimit: 0,
-                  settlementAmountRefund: 0,
-                  settlementAmountReceived: 0,
-                },
-              }
-            );
-            RefundDialog.afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((result) => {
-                if (result.data == "MakeBill") {
+      .subscribe((result) => {
+        if (result.data == "MakeBill") {
+          this.http
+            .post(ApiConstants.postMiscBill, this.postBillObj)
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (resultData) => {
+                if (resultData[0].successFlag === true) {
                   this.generatedBillNo = resultData[0].billId;
                   this.enablePrint = true;
                   this.isEnableBillBtn = false;
@@ -1526,22 +1527,22 @@ export class BillDetailComponent implements OnInit {
                           }
                         });
                     });
+                } else if (resultData[0].successFlag === false) {
+                  this.snackbar.open(resultData[0].returnMessage, "error");
                 }
-              });
-          } else if (resultData[0].successFlag === false) {
-            this.snackbar.open(resultData[0].returnMessage, "error");
-          }
-        },
-        (error) => {
-          this.snackbar.open(error, "error");
+              },
+              (error) => {
+                this.snackbar.open(error, "error");
+              }
+            );
         }
-      );
+      });
   }
   //Calculate TA
   calculateTotalAmount() {
     this.TotalAmount = 0;
     this.getgstdata();
-    // this.getDipositedAmountByMaxID();
+    this.getDipositedAmountByMaxID();
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount = Number(this.TotalAmount) + Number(element.TotalAmount);
     });
@@ -1715,7 +1716,10 @@ export class BillDetailComponent implements OnInit {
     this.postBillObj.htParameter_P = {};
     this.postBillObj.operatorId = this.userID;
     this.postBillObj.locationId = this.location;
-    if (this.totalDeposit > 0) {
+    if (
+      this.depositDetails.length > 0 &&
+      this.miscServBillForm.value.dipositAmtEdit == 0
+    ) {
       this.openDepositdialog();
     } else {
       this.openPaymentModeDialog();
@@ -1723,19 +1727,19 @@ export class BillDetailComponent implements OnInit {
   }
 
   amtByComp() {
-    if (this.miscServBillForm.value.coPay > 0) {
+    if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = this.billAmnt;
       let tempAmount = this.miscServBillForm.value.credLimit;
-      if (Number(tempAmount) <= this.billAmnt) {
+      if (Number(tempAmount) < this.billAmnt) {
         this.snackbar.open(
           "Credit limit should not be less than bill amount",
           "error"
         );
         let calcBill0 = this.miscPatient.calculateBill();
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
-          calcBill0.amntPaidBythePatient.toFixed(2)
+          this.billAmnt.toFixed(2)
         );
-        this.miscServBillForm.controls["amtPayByComp"].setValue(0.0);
+        this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
 
         return;
       }
@@ -1749,7 +1753,9 @@ export class BillDetailComponent implements OnInit {
         (this.miscServBillForm.value.amtPayByComp *
           this.miscServBillForm.value.coPay) /
           100;
-      this.miscServBillForm.controls["amtPayByComp"].setValue(tempAmount);
+      this.miscServBillForm.controls["amtPayByComp"].setValue(
+        tempAmount.toFixed(2)
+      );
     }
     this.miscServBillForm.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
