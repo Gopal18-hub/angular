@@ -1270,7 +1270,10 @@ export class BillDetailComponent implements OnInit {
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
           calcBill0.amntPaidBythePatient.toFixed(2)
         );
-        if (Number(this.miscServBillForm.value.paymentMode) === 3 && this.miscServBillForm.value.coPay > 0) {
+        if (
+          Number(this.miscServBillForm.value.paymentMode) === 3 &&
+          this.miscServBillForm.value.coPay >= 0
+        ) {
           this.amtByComp();
         }
       }
@@ -1723,19 +1726,19 @@ export class BillDetailComponent implements OnInit {
   }
 
   amtByComp() {
-    if (this.miscServBillForm.value.coPay > 0) {
+    if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = this.billAmnt;
       let tempAmount = this.miscServBillForm.value.credLimit;
-      if (Number(tempAmount) <= this.billAmnt) {
+      if (Number(tempAmount) < this.billAmnt) {
         this.snackbar.open(
           "Credit limit should not be less than bill amount",
           "error"
         );
         let calcBill0 = this.miscPatient.calculateBill();
         this.miscServBillForm.controls["amtPayByPatient"].setValue(
-          calcBill0.amntPaidBythePatient.toFixed(2)
+          this.billAmnt.toFixed(2)
         );
-        this.miscServBillForm.controls["amtPayByComp"].setValue(0.0);
+        this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
 
         return;
       }
@@ -1749,7 +1752,9 @@ export class BillDetailComponent implements OnInit {
         (this.miscServBillForm.value.amtPayByComp *
           this.miscServBillForm.value.coPay) /
           100;
-      this.miscServBillForm.controls["amtPayByComp"].setValue(tempAmount);
+      this.miscServBillForm.controls["amtPayByComp"].setValue(
+        tempAmount.toFixed(2)
+      );
     }
     this.miscServBillForm.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
