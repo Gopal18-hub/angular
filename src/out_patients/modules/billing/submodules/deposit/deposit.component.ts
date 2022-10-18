@@ -327,7 +327,7 @@ export class DepositComponent implements OnInit {
   patientdeposittype: any;
   regNumber: number = 0;
   iacode: string | undefined;
-  hspLocationid: any =  Number(this.cookie.get("HSPLocationId"));
+  hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
   MaxIDdepositExist: boolean = false;
@@ -794,15 +794,14 @@ export class DepositComponent implements OnInit {
   printpatientreceipt() {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
     let iacode = this.depositForm.value.maxid.split(".")[0];
-    // Number(this.cookie.get("HSPLocationId")),
-
-    let billno = this.deposittable.selection.selected[0].receiptno;
-    this.http
+   
+    if(this.deposittable.selection.selected[0]){
+      let billno = this.deposittable.selection.selected[0].receiptno;
+      this.http
       .get(
         ApiConstants.getform60(
-          Number(this.cookie.get("HSPLocationId")),
+          this.hspLocationid,
           billno,
-
           iacode,
           regno
         )
@@ -834,16 +833,9 @@ export class DepositComponent implements OnInit {
           console.log(error);
         }
       );
-    console.log(this.deposittable.selection.selected);
-  }
-  depositreport() {
-    this.deposittable.selection.selected.map((s: any) => {
-      this.reportService.openWindow("DepositReport", "DepositReport", {
-        receiptnumber: s.receiptno,
-        locationID: this.hspLocationid,
-      });
-    });
 
+    }
+   else{
     this.deposittable.childTable.map((r: any) => {
       r.selection.selected.map((res: any) => {
         if (res) {
@@ -854,6 +846,18 @@ export class DepositComponent implements OnInit {
         }
       });
     });
+   }
+  
+    console.log(this.deposittable.selection.selected);
+  }
+  depositreport() {
+    this.deposittable.selection.selected.map((s: any) => {
+      this.reportService.openWindow("DepositReport", "DepositReport", {
+        receiptnumber: s.receiptno,
+        locationID: this.hspLocationid,
+      });
+    });
+
   }
   formreport() {
     let regno = Number(this.depositForm.value.maxid.split(".")[1]);
