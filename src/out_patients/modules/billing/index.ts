@@ -29,6 +29,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatButtonModule } from "@angular/material/button";
 import { MatListModule } from "@angular/material/list";
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { VisitHistoryDialogComponent } from "./submodules/details/visit-history-dialog/visit-history-dialog.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
@@ -274,6 +275,7 @@ import { EcareOpSummaryReportComponent } from './submodules/ecare-op-summary-rep
     MaxHealthSnackBarModule,
     ReferralModule,
     DragDropModule,
+    MatAutocompleteModule
   ],
   exports: [],
   providers: [],

@@ -356,6 +356,8 @@ export class BillingService {
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
     }
   }
 
