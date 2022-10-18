@@ -68,8 +68,13 @@ export class DetailsComponent implements OnInit {
   ) {
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
-      .subscribe(async (value) => {
+      .subscribe(async (value: any) => {
         console.log(Object.keys(value).length);
+        console.log(value);
+        if(value.billno)
+        {
+          this.getpatientbilldetails();
+        }
         if (Object.keys(value).length > 0) {         
           const lookupdata = await this.loadGrid(value); 
         }
@@ -760,6 +765,7 @@ export class DetailsComponent implements OnInit {
     {
       this.BServiceForm.controls['paymentMode'].setValue(payid.title);
     }
+    this.billdetailservice.setActiveBillnNo(this.BServiceForm.controls['billNo'].value);
     this.sendapprovalcheck();
   }
   dms() {
