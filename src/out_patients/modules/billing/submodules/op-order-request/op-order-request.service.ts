@@ -17,6 +17,7 @@ export class OpOrderRequestService {
   disablesaveOndoctorreqStatus = new Subject<boolean>();
   investigationFormGroup: any = { form: "", questions: [] };
   procedureFormGroup: any = { form: "", questions: [] };
+  serviceTab = new Subject<boolean>();
   totalCost: any;
   addToInvestigations(data: any) {
     this.investigationItems.push(data);
@@ -78,6 +79,10 @@ export class OpOrderRequestService {
         this.totalCost = Number(this.totalCost) + Number(item.price);
       });
     }
+  }
+  onServiceTab(value: boolean) {
+    console.log("inside service tab service");
+    this.serviceTab.next(value);
   }
   clear() {
     console.log(this.investigationFormGroup);
