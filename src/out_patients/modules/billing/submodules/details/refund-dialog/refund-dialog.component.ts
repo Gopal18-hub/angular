@@ -261,6 +261,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         return { title: l.name, value: l.id}
       })
     })
+    this.questions[6] = {...this.questions[6]};
   }
   getcreditcard()
   {
@@ -273,6 +274,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         return { title: l.name, value: l.id}
       })
     })
+    this.questions[9] = {...this.questions[9]};
   }
   mopcheck()
   {

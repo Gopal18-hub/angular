@@ -22,6 +22,7 @@ export class OPOrderViewRequest implements OnInit {
   reqItemDetail!: string;
   oporderrequestid!: string;
   maxid!: string;
+  apiprocessing: boolean = false;
   config: any = {
     clickedRows: true,
     actionItems: false,
@@ -104,7 +105,6 @@ export class OPOrderViewRequest implements OnInit {
   showtable: boolean = true;
   unchecked: boolean = true;
   flag = 0;
-  regularCheck = false;
 
   private readonly _destroying$ = new Subject<void>();
 
@@ -120,6 +120,7 @@ export class OPOrderViewRequest implements OnInit {
 
   ngOnInit(): void {
     this.getViewgridDetails();
+    this.opOrderRequestService.onServiceTab(false);
   }
   checkflag: any = 0;
   ngAfterViewInit() {
@@ -130,7 +131,6 @@ export class OPOrderViewRequest implements OnInit {
       .subscribe((data: any) => {
         //console.log(data);
         this.flag = 0;
-        this.regularCheck == false;
 
         //mastercheck
         if (data.removed.length == 0 && data.added.length == this.data.length) {
@@ -183,6 +183,7 @@ export class OPOrderViewRequest implements OnInit {
   }
   disableCheckboxList: any[] = [];
   getViewgridDetails() {
+    this.apiprocessing = true;
     this.data = [];
     if (this.opOrderRequestService.activeMaxId != undefined) {
       this.maxid = this.opOrderRequestService.activeMaxId.maxId;
@@ -192,20 +193,26 @@ export class OPOrderViewRequest implements OnInit {
     this.http
       .get(BillingApiConstants.fetchoporderrequest(this.maxid, locationid))
       .pipe(takeUntil(this._destroying$))
-      .subscribe((response) => {
-        console.log(response);
-        this.data = response as FetchOpOrderrequest[];
-        for (let i = 0; i < this.data.length; i++) {
-          this.data[i].sno = i + 1;
-          if (this.data[i].orderStatus == "Bill Prepaired") {
-            //this.data[i].disabled = "unclickable";
-            this.data[i].disablecheckbox = true;
-            this.checkflag++;
-          } else {
-            this.data[i].disablecheckbox = false;
+      .subscribe(
+        (response) => {
+          console.log(response);
+          this.data = response as FetchOpOrderrequest[];
+          this.apiprocessing = false;
+          for (let i = 0; i < this.data.length; i++) {
+            this.data[i].sno = i + 1;
+            if (this.data[i].orderStatus == "Bill Prepaired") {
+              //this.data[i].disabled = "unclickable";
+              this.data[i].disablecheckbox = true;
+              this.checkflag++;
+            } else {
+              this.data[i].disablecheckbox = false;
+            }
           }
+        },
+        (error) => {
+          this.apiprocessing = false;
         }
-      });
+      );
   }
 
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
