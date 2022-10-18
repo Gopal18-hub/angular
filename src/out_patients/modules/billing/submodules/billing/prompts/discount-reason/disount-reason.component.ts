@@ -345,6 +345,7 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.calculateDiscount();
     if (this.selectedItems.length === 0) {
       this.disableAdd = false;
+      this.dualList = [];
     }
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
