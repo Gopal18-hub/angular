@@ -94,7 +94,6 @@
 .gridheight{
   height:85%;
 }
-// ::ng-deep ::-webkit-scrollbar-thumb {
-//          // background-color: #35b6b4;
-//           border-radius: 0 0 4px 0;
-//       }
+.api-loader{
+  background: rgba(0, 0, 0, 0.15);
+}

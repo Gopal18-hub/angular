@@ -117,7 +117,7 @@ export class DisountReasonComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -131,14 +131,14 @@ export class DisountReasonComponent implements OnInit {
       },
       discAmt: {
         title: "Dis. Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
       },
       totalAmt: {
         title: "Total Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -160,7 +160,7 @@ export class DisountReasonComponent implements OnInit {
       },
       value: {
         title: "Value Based",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -228,6 +228,7 @@ export class DisountReasonComponent implements OnInit {
       this.question[0].options = this.discounttypes.map((a: any) => {
         return { title: a.title, value: a.value };
       });
+      this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -342,6 +343,12 @@ export class DisountReasonComponent implements OnInit {
       );
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.calculateBillService.calculateDiscount();
+    if (this.selectedItems.length === 0) {
+      this.disableAdd = false;
+    }
+    if (!this.discAmtForm.value.types) {
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }
   }
 
   prepareData() {
@@ -482,10 +489,10 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: item.price * item.qty,
-          disc: existReason.discountPer,
-          discAmt: discAmt,
-          totalAmt: price - discAmt,
+          price: (item.price * item.qty).toFixed(2),
+          disc: existReason.discountPer.toFixed(2),
+          discAmt: discAmt.toFixed(2),
+          totalAmt: (price - discAmt).toFixed(2),
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
@@ -497,10 +504,13 @@ export class DisountReasonComponent implements OnInit {
         k++;
 
         this.calculateBillService.discountSelectedItems.push(temp);
+
+        this.selectedItems = [
+          ...this.calculateBillService.discountSelectedItems,
+        ];
       }
     }
 
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
 
@@ -534,8 +544,9 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
         this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
+
+      this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     }
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
 
@@ -543,6 +554,9 @@ export class DisountReasonComponent implements OnInit {
     this.disableAdd = false;
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    if (!this.discAmtForm.value.types) {
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();

@@ -11,6 +11,7 @@ export class billDetailService{
     billafterrefund: any = [];
     patientbilldetaillist: any = [];
     sendforapproval: any= [];
+    activeBillNo: any;
     totalrefund: any;
     authorisedby: any;
     reason: any;
@@ -57,5 +58,9 @@ export class billDetailService{
         this.sendforapproval.forEach((i: any)=>{
             this.totalrefund += Number(i.refundAmt);
         })
+    }
+    setActiveBillnNo(billno: any)
+    {
+        this.activeBillNo = billno;
     }
 }
