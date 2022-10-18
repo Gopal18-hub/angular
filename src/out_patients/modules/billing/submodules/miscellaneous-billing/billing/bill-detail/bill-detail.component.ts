@@ -1476,34 +1476,31 @@ export class BillDetailComponent implements OnInit {
 
   openPaymentModeDialog() {
     let calcBill0 = this.miscPatient.calculateBill();
-    this.http
-      .post(ApiConstants.postMiscBill, this.postBillObj)
+    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+      width: "70vw",
+      height: "98vh",
+      data: {
+        toPaidAmount: calcBill0.amntPaidBythePatient,
+        name: "MiscBilling",
+        totalBillAmount: this.billAmnt,
+        totalDiscount: this.miscServBillForm.value.discAmt,
+        totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
+        totalRefund: 0,
+        ceditLimit: 0,
+        settlementAmountRefund: 0,
+        settlementAmountReceived: 0,
+      },
+    });
+    RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (resultData) => {
-          if (resultData[0].successFlag === true) {
-            const RefundDialog = this.matDialog.open(
-              BillPaymentDialogComponent,
-              {
-                width: "70vw",
-                height: "98vh",
-                data: {
-                  toPaidAmount: calcBill0.amntPaidBythePatient,
-                  name: "MiscBilling",
-                  totalBillAmount: this.billAmnt,
-                  totalDiscount: this.miscServBillForm.value.discAmt,
-                  totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
-                  totalRefund: 0,
-                  ceditLimit: 0,
-                  settlementAmountRefund: 0,
-                  settlementAmountReceived: 0,
-                },
-              }
-            );
-            RefundDialog.afterClosed()
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((result) => {
-                if (result.data == "MakeBill") {
+      .subscribe((result) => {
+        if (result.data == "MakeBill") {
+          this.http
+            .post(ApiConstants.postMiscBill, this.postBillObj)
+            .pipe(takeUntil(this._destroying$))
+            .subscribe(
+              (resultData) => {
+                if (resultData[0].successFlag === true) {
                   this.generatedBillNo = resultData[0].billId;
                   this.enablePrint = true;
                   this.isEnableBillBtn = false;
@@ -1530,16 +1527,16 @@ export class BillDetailComponent implements OnInit {
                           }
                         });
                     });
+                } else if (resultData[0].successFlag === false) {
+                  this.snackbar.open(resultData[0].returnMessage, "error");
                 }
-              });
-          } else if (resultData[0].successFlag === false) {
-            this.snackbar.open(resultData[0].returnMessage, "error");
-          }
-        },
-        (error) => {
-          this.snackbar.open(error, "error");
+              },
+              (error) => {
+                this.snackbar.open(error, "error");
+              }
+            );
         }
-      );
+      });
   }
   //Calculate TA
   calculateTotalAmount() {
