@@ -219,9 +219,9 @@ export class MiscellaneousBillingComponent implements OnInit {
         this.miscForm.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.corporate === 0){
+        if(res.from == "disable"){
           this.miscForm.controls["corporate"].disable();
-        }else{
+        } else if(this.miscForm.value.company.value) {
           this.miscForm.controls["corporate"].enable();
         }
       }

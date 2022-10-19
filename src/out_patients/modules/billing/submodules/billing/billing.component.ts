@@ -193,9 +193,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if (res.corporate === 0) {
+        if(res.from == "disable"){
           this.formGroup.controls["corporate"].disable();
-        } else {
+        } else if(this.formGroup.value.company.value) {
           this.formGroup.controls["corporate"].enable();
         }
       }

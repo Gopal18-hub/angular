@@ -278,11 +278,9 @@ export class CashScrollNewComponent implements OnInit {
   fromdatedetails: string | undefined;
   scrolldetailsList:any= [];
 
-  hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
-  stationId:any = Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
-
-
+  hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
+  stationId:any =  Number(this.cookie.get("StationId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
 
   fromdatedisable:boolean = false;
   todatedisable:boolean = false;
@@ -373,7 +371,6 @@ else
  {
     this.http
     .get(ApiConstants.getscrolldetailsforoneuser(
-      //"2022-05-22 06:27:57", 
     this.datepipe.transform(this.cashscrollnewForm.controls["fromdate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
     this.datepipe.transform( this.cashscrollnewForm.controls["todate"].value,"yyyy-MM-ddTHH:mm:ss") || "",
       this.operatorID, this.stationId, this.hsplocationId))
@@ -384,7 +381,7 @@ else
 
       this.scrolldetailsList = resultdata as CashScrollNewDetail[];
       if(this.scrolldetailsList.length == 0){
-        this.dialogservice.error("No data Found");
+        this.scrolldetailsList = [];
      }else{
     this.scrolldetailsexists = false;  
     this.todatedisable = true;
