@@ -79,7 +79,7 @@ export class DisountReasonComponent implements OnInit {
       "totalAmt",
       "head",
       "reason",
-      "value",
+      //"value",
     ],
     clickedRows: false,
     clickSelection: "single",
@@ -158,13 +158,13 @@ export class DisountReasonComponent implements OnInit {
         },
         moreOptions: {},
       },
-      value: {
-        title: "Value Based",
-        type: "currency",
-        style: {
-          width: "8rem",
-        },
-      },
+      // value: {
+      //   title: "Value Based",
+      //   type: "currency",
+      //   style: {
+      //     width: "8rem",
+      //   },
+      // },
     },
   };
   discAmtForm!: FormGroup;
