@@ -1434,14 +1434,6 @@ export class BillDetailComponent implements OnInit {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else if (this.miscServBillForm.value.credLimit <= 0) {
         this.snackbar.open(" Enter Credit limit", "error");
-      } else if (
-        this.miscServBillForm.value.amntPaidBythePatient >
-        this.miscServBillForm.value.credLimit
-      ) {
-        this.snackbar.open(
-          "Credit limit should not be less than bill amount",
-          "error"
-        );
       } else {
         const MakeDepositDialogref = this.matDialog.open(
           MakeBillDialogComponent,
@@ -1511,7 +1503,7 @@ export class BillDetailComponent implements OnInit {
         totalDiscount: this.miscServBillForm.value.discAmt,
         totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
         totalRefund: 0,
-        ceditLimit: 0,
+        ceditLimit: this.miscServBillForm.value.creditLimit,
         settlementAmountRefund: 0,
         settlementAmountReceived: 0,
       },
@@ -1590,11 +1582,11 @@ export class BillDetailComponent implements OnInit {
     this.miscCompanyId =
       miscFormData.companyId == 0 ? 0 : miscFormData.companyId.value;
     let calcBill0 = this.miscPatient.calculateBill();
-    if (calcBill0.amntPaidBythePatient > 0) {
-      this.CreditAmtforSrvTax = calcBill0.amntPaidBythePatient;
-      let srvTax = 10.3;
-      this.txtServiceTaxAmt = (this.CreditAmtforSrvTax * srvTax) / 100;
-    }
+    // if (calcBill0.amntPaidBythePatient > 0) {
+    //   this.CreditAmtforSrvTax = calcBill0.amntPaidBythePatient;
+    //   let srvTax = 10.3;
+    //   this.txtServiceTaxAmt = (this.CreditAmtforSrvTax * srvTax) / 100;
+    // }
 
     let depositData: any = [];
     if (this.depodialogRows) {
@@ -1663,8 +1655,8 @@ export class BillDetailComponent implements OnInit {
       categoryId: 0,
       companyId: miscFormData.companyId.value,
       operatorId: this.userID, // 9923, //Number(this.cookie.get("UserId"))
-      collectedamount: 400, //from payment cash net amount
-      balance: 100, //calcBill0.amntPaidBythePatient,
+      collectedamount: this.miscServBillForm.value.amtPayByComp, //from payment cash net amount
+      balance: this.miscServBillForm.value.amtPayByPatient, //calcBill0.amntPaidBythePatient,
       hsplocationid: this.location, //Number(this.cookie.get("HSPLocationId"))
       refdoctorid: refDocId,
       authorisedid: calcBill0.selectedAuthorise,
@@ -1675,7 +1667,7 @@ export class BillDetailComponent implements OnInit {
       interactionID: this.miscServBillForm.value.interactionDetails,
       corporateid: miscFormData.corporateId.value,
       corporateName: miscFormData.corporateId.title,
-      channelId: 0,
+      channelId: Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel),
       billToCompany: this.billToCompId,
       invoiceType: miscPatient.b2bInvoiceType,
       narration: miscPatient.narration,
@@ -1761,13 +1753,16 @@ export class BillDetailComponent implements OnInit {
         "Credit limit should not be less than bill amount",
         "error"
       );
-
+      this.isEnableBillBtn = false;
       this.miscServBillForm.controls["amtPayByPatient"].setValue(
         balance.toFixed(2)
       );
       this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
       return;
+    } else {
+      this.isEnableBillBtn = true;
     }
+
     if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = balance;
       let tempAmount = this.miscServBillForm.value.credLimit;
@@ -1807,17 +1802,17 @@ export class BillDetailComponent implements OnInit {
     // let calcBill0 = this.miscPatient.calculateBill();
     // let tempo = calcBill0.amntPaidBythePatient.toFixed(2);
 
-    return temp;
+    return temp.toFixed(2);
   }
   makeBill() {
     //Set Gst Values
-    if (this.totaltaX_Value) {
-      let TotalTaxGST = this.totaltaX_Value;
-      let txtgsttaxamt = (this.billAmnt * TotalTaxGST) / 100;
-      let txttotalamount = this.billAmnt;
-      let billamount = Number(txttotalamount) + Number(txtgsttaxamt);
-      this.miscServBillForm.controls["gstTax"].setValue(txtgsttaxamt);
-    }
+    // if (this.totaltaX_Value) {
+    //   let TotalTaxGST = this.totaltaX_Value;
+    //   let txtgsttaxamt = (this.billAmnt * TotalTaxGST) / 100;
+    //   // let txttotalamount = this.billAmnt;
+    //   // let billamount = Number(txttotalamount) + Number(txtgsttaxamt);
+    //   //this.miscServBillForm.controls["gstTax"].setValue(txtgsttaxamt);
+    // }
     this.addNewItem();
   }
   //Print Report
