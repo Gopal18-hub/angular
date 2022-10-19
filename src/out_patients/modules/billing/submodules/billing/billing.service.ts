@@ -353,11 +353,19 @@ export class BillingService {
     if (res === "") {
       this.corporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
+      if(corporateid){
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
+      }
+      else{
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = "";
+      }
+     
     }
   }
 
