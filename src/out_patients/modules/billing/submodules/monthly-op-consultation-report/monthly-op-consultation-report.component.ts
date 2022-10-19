@@ -103,13 +103,13 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
           });
           this.questions[2].customErrorMessage = "Location is Required";
         }
-      }),
-      (error: any) => {
-        if (error.error == null) {
-          this.OpConsultform.controls["Location"];
-          this.snackbar.open("Location is Required", "error");
-        }
-      };
+      });
+    // (error: any) => {
+    //   if (error.error == null) {
+    //     this.OpConsultform.controls["Location"];
+    //     this.snackbar.open("Location is Required", "error");
+    //   }
+    // };
   }
   clickbtn() {
     this.OpConsultform.reset();
