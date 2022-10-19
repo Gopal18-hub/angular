@@ -72,6 +72,8 @@ export class BillingService {
   iomMessage: string = "";
   activeLink = new Subject<any>();
   disableServiceTab: boolean = false;
+  disablecorporatedropdown: boolean = false;
+  creditLimit:number = 0;
 
   maxIdEventFinished = new Subject<any>();
 
@@ -287,6 +289,9 @@ export class BillingService {
       });
   }
 
+  setCreditLimit(data:any){
+   this.creditLimit = data;
+  }
   setCompnay(
     companyid: number,
     res: any,
@@ -305,7 +310,7 @@ export class BillingService {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
-    } else {
+    } else if(res.title) {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
       this.companyChangeEvent.next({ company: res, from });
@@ -329,15 +334,16 @@ export class BillingService {
           if (result.data == "corporate") {
             formGroup.controls["corporate"].enable();
             formGroup.controls["corporate"].setValue(null);
-            this.corporateChangeEvent.next({ corporate: null, from });
+            this.corporateChangeEvent.next({ corporate: null, from });  
+            this.disablecorporatedropdown = true;      
           } else {
             formGroup.controls["corporate"].setValue(null);
             formGroup.controls["corporate"].disable();
-            this.corporateChangeEvent.next({ corporate: 0, from });
+            this.corporateChangeEvent.next({ corporate: null, from:"disable" });           
           }
         });
       } else {
-        this.corporateChangeEvent.next({ corporate: 0, from });
+        this.corporateChangeEvent.next({ corporate: null, from:"disable" });
         formGroup.controls["corporate"].setValue(null);
         formGroup.controls["corporate"].disable();
       }
@@ -350,7 +356,7 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
-    if (res === "") {
+    if (res === "" || res == null) {
       this.corporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
       this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
@@ -371,6 +377,7 @@ export class BillingService {
 
   setCompanyData(data: any) {
     this.companyData = data;
+    this.companyChangeEvent.next({company: null,from: "header"});
   }
 
   setCorporateData(data: any) {
