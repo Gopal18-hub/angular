@@ -10,6 +10,7 @@ export class billDetailService{
     serviceList: any = [];
     billafterrefund: any = [];
     patientbilldetaillist: any = [];
+    paymentBreakuplist: any;
     sendforapproval: any= [];
     activeBillNo: any;
     totalrefund: any;

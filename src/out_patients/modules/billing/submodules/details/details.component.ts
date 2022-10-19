@@ -242,6 +242,7 @@ export class DetailsComponent implements OnInit {
   apiProcessing: boolean = false;
   result: any = [];
   locationexclude: any = [67,69];
+  paymentBreakuplist: any;
   ngOnInit(){
     this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
@@ -586,6 +587,7 @@ export class DetailsComponent implements OnInit {
             this.questions[1].readonly = true;
             this.questions[2].readonly = true;
             this.activeLink = this.linkList[0];
+            this.getpatientandbilldetailsforrefund();
             this.patientbilldetaillist = resultdata as getPatientPersonalandBillDetails;
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(item => {
               item.amount = item.amount.toFixed(2);
@@ -595,6 +597,10 @@ export class DetailsComponent implements OnInit {
             this.billdetailservice.patientbilldetaillist = resultdata;
             var printrefundflag = 0;
             this.apiProcessing = false;
+            if(this.patientbilldetaillist.billDetialsForRefund_IdName.length > 0)
+            {
+              this.resendbill = false;
+            }
             this.patientbilldetaillist.billDetialsForRefund_ServiceDetail.forEach(k => {
               if(k.cancelled == 1)
               {
@@ -705,6 +711,17 @@ export class DetailsComponent implements OnInit {
           this.apiProcessing = false;
         }
   }
+  getpatientandbilldetailsforrefund()
+  {
+    this.http
+    .get(BillDetailsApiConstants.getpatientandbilldetailsforrefund(this.BServiceForm.controls["billNo"].value))
+    .pipe(takeUntil(this._destroying$))
+    .subscribe(res => {
+      console.log(res);
+      this.paymentBreakuplist = res;
+      this.billdetailservice.paymentBreakuplist = this.paymentBreakuplist;
+    })
+  }
   billFormfill() {
     this.billexist = false;
     this.BServiceForm.markAsDirty();
@@ -714,7 +731,6 @@ export class DetailsComponent implements OnInit {
     );
     this.dmsbtn = false;
     this.visithistorybtn = false;
-    this.resendbill = false;
     this.getPatientIcon();
     this.BServiceForm.controls["mobileno"].setValue(
       this.patientbilldetaillist.billDetialsForRefund_Table0[0].pcellno
