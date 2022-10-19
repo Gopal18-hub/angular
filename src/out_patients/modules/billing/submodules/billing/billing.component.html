@@ -74,9 +74,12 @@
             >
               <i class="iom-color">IOM</i>
             </button>
-            <span class="iom-message font-semi-bold font-xs" [hidden]="!formGroup.value.company">{{billingService.iomMessage}}</span>
-            </mat-label
-          >
+            <span
+              class="iom-message font-semi-bold font-xs"
+              [hidden]="!formGroup.value.company"
+              >{{ billingService.iomMessage }}</span
+            >
+          </mat-label>
           <div class="width-8 bg-white mr-2">
             <maxhealth-question
               [question]="questions[3]"
@@ -234,7 +237,7 @@
           </ng-container>
         </div>
       </div>
-      <div [class.isDisabled]="!patient || expiredPatient">
+      <div [class.isDisabled]="!patient || expiredPatient || secondaryMaxId">
         <div class="mt-2">
           <div
             class="flex justify-between services-tab-header-container align-items-center pr-3"
