@@ -217,6 +217,7 @@ export class DetailsComponent implements OnInit {
   ssn: any;
   operator: any;
   billdate: any;
+  form60: any;
 
   // BTN
   otpbtn: boolean = true;
@@ -238,7 +239,6 @@ export class DetailsComponent implements OnInit {
   billexist: boolean = true;
   apiProcessing: boolean = false;
   result: any = [];
-  form60: any;
   locationexclude: any = [67, 69];
   ngOnInit() {
     this.router.navigate(["out-patient-billing/details"]);
