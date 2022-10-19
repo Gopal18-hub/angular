@@ -75,12 +75,14 @@ export class DetailsComponent implements OnInit {
       .subscribe(async (value: any) => {
         console.log(Object.keys(value).length);
         console.log(value);
-        if (value.billno) {
+        if(value.billno)
+        {
           this.getpatientbilldetails();
         }
-        if (Object.keys(value).length > 0) {
-          const lookupdata = await this.loadGrid(value);
-        } else {
+        if (Object.keys(value).length > 0) {         
+          const lookupdata = await this.loadGrid(value); 
+        }
+        else{
           // this.ngOnInit();
           // this.clear();
         }
@@ -89,8 +91,8 @@ export class DetailsComponent implements OnInit {
       .find(this.billdetailservice.sendforapproval)
       .create();
   }
-  async loadGrid(formdata: any): Promise<any> {
-    this.maxid = formdata.maxID;
+  async loadGrid(formdata: any): Promise<any> {    
+     this.maxid = formdata.maxID;
   }
 
   moment = moment;
@@ -222,6 +224,7 @@ export class DetailsComponent implements OnInit {
   operator: any;
   billdate: any;
   form60: any;
+
   // BTN
   otpbtn: boolean = true;
   managerotpbtn: boolean = true;
@@ -242,8 +245,8 @@ export class DetailsComponent implements OnInit {
   billexist: boolean = true;
   apiProcessing: boolean = false;
   result: any = [];
-  locationexclude: any = [67, 69];
-  ngOnInit() {
+  locationexclude: any = [67,69];
+  ngOnInit(){
     this.router.navigate(["out-patient-billing/details"]);
     let formResult = this.formService.createForm(
       this.BDetailFormData.properties,
@@ -487,6 +490,7 @@ export class DetailsComponent implements OnInit {
         } else {
           this.search();
         }
+        
       }
     });
     this.questions[2].elementRef.addEventListener("keypress", (event: any) => {
@@ -767,19 +771,16 @@ export class DetailsComponent implements OnInit {
       "dd/MM/YYYY"
     );
     this.BServiceForm.controls["billAmt"].setValue(
-      this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(
-        2
-      )
+      this.patientbilldetaillist
+        .billDetialsForRefund_DepositRefundAmountDetail[0].billamount.toFixed(2)
     );
     this.BServiceForm.controls["dipositrAmt"].setValue(
-      this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(
-        2
-      )
+      this.patientbilldetaillist
+        .billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2)
     );
     this.BServiceForm.controls["discAmt"].setValue(
-      this.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(
-        2
-      )
+      this.patientbilldetaillist
+        .billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2)
     );
     this.BServiceForm.controls["discAftBill"].setValue(Number(0).toFixed(2));
     // this.BServiceForm.controls["refundAmt"].setValue(this.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
@@ -805,9 +806,7 @@ export class DetailsComponent implements OnInit {
     if (payid != undefined) {
       this.BServiceForm.controls["paymentMode"].setValue(payid.title);
     }
-    this.billdetailservice.setActiveBillnNo(
-      this.BServiceForm.controls["billNo"].value
-    );
+    this.billdetailservice.setActiveBillnNo(this.BServiceForm.controls['billNo'].value);
     this.sendapprovalcheck();
   }
   dms() {
@@ -1141,7 +1140,6 @@ export class DetailsComponent implements OnInit {
       BillNo: billno,
     });
   }
-
   ngDoCheck(): void {
     const changes = this.check.diff(this.billdetailservice.sendforapproval);
     if (changes) {
