@@ -7,6 +7,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { GetConfigureMessageInterface } from "../../../../core/types/configure/getConfiguremessage.Interface";
 import { Generatehl7outboundmessagerisModel } from "../../../../core/models/generatehl7outboundmessage.Model";
+import { CookieService } from "@shared/services/cookie.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-configure-ris",
   templateUrl: "./configure-ris.component.html",
@@ -20,12 +22,11 @@ export class ConfigureRisComponent implements OnInit {
   risconfigurelist: GetConfigureMessageInterface[] = [];
   recreateList: Generatehl7outboundmessagerisModel[] = [];
   private readonly _destroying$ = new Subject<void>();
+  userId = Number(this.cookie.get("UserId"));
   config: any = {
     actionItems: false,
-    /// dateformat: "dd/MM/yyyy",
     clickedRows: true,
     selectBox: true,
-    // selectCheckBoxPosition: 10,
     clickSelection: "multiple",
     displayedColumns: ["testName", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
@@ -53,14 +54,6 @@ export class ConfigureRisComponent implements OnInit {
         },
         tooltipColumn: "orderdatetime",
       },
-      // ordertime: {
-      //   title: "Order Time",
-      //   type: "string",
-      //   style: {
-      //     width: "6rem",
-      //   },
-      //   tooltipColumn: "",
-      // },
       messagestatus: {
         title: "Message Status",
         type: "string",
@@ -71,10 +64,13 @@ export class ConfigureRisComponent implements OnInit {
       },
     },
   };
+
   @ViewChild("ristable") tableRows: any;
   constructor(
     private formService: QuestionControlService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cookie: CookieService,
+    private dialogService: MessageDialogService
   ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -212,52 +208,41 @@ export class ConfigureRisComponent implements OnInit {
           console.log(data);
           this.apiprocessing = false;
           this.risconfigurelist = data as GetConfigureMessageInterface[];
+          this.risconfigurelist.forEach((item, index) => {
+            if (item.messagestatus == "created") {
+              item.disablecheckbox = true;
+            } else {
+              item.disablecheckbox = false;
+            }
+          });
         },
         (error) => {
           console.log(error);
         }
       );
   }
-  getRecreateobject() {
+
+  recreateClick() {
+    this.recreateList = [];
     this.tableRows.selection.selected.forEach((item: any, index: any) => {
       this.recreateList.push({
         opbillid: item.billid,
-        id: item.id,
-        testName: item.testName,
-        billid: item.billid,
+        serviceId: item.serviceID,
         itemId: item.itemId,
         orderId: item.orderId,
-        optestorderid: item.optestorderid,
-        ssn: item.ssn,
-        vistaID: item.vistaID,
-        orderdatetime: item.orderdatetime,
-        procedureid: item.procedureid,
-        messagestatus: item.messagestatus,
-        reprocess: item.reprocess,
-        operatorId: item.operatorId,
-        stationid: item.stationid,
-        iaCode: item.iaCode,
-        regNo: item.regNo,
-        userID: item.userID,
-        locationID: item.locationID,
-        visitNo: item.visitNo,
-        priority: item.priority,
-        serviceID: item.serviceID,
+        operatorid: this.userId,
       });
     });
-    return this.recreateList;
-  }
-  recreateClick() {
-    console.log(this.getRecreateobject());
+    console.log(this.recreateList);
     this.http
-      .post(
-        ApiConstants.generatehl7outboundmessageris,
-        this.getRecreateobject()
-      )
+      .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (result) => {
           console.log(result);
+          if (result == "done") {
+            this.dialogService.success("Order Successfully Generated");
+          }
         },
         (error) => {
           console.log(error);
