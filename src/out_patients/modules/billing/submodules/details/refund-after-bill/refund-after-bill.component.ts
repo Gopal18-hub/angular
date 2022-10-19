@@ -355,6 +355,44 @@ export class RefundAfterBillComponent implements OnInit {
             console.log(list);
             for(var z = 0; z < list.length; z++)
             {
+              if(list[z].serviceId != 25 && list[z].serviceId != 41 && list[z].serviceId != 26 && this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].radiologyCancellation == 1)
+              {
+                this.msgdialog.info('Item cannot be refunded from this Tab Kindly unacknowledge first / Refund this item from Service Tab');
+                console.log(this.tableRows.selection);
+                setTimeout(() => {
+                  this.tableRows.selection.deselect(s.added[0]);
+                }, 100);
+                return;
+              }
+              if(list[z].serviceId == 42 && list[z].risCan == 0)
+              {
+                const dialogref = this.msgdialog.confirm('' ,'An automated email will be sent to the Radiology department, as this order has not been cancelled from the Radiology Department. Do you want to proceed?');
+                dialogref.afterClosed().subscribe(res => {
+                  if(res && "type" in res)
+                  {
+                    if(res.type == 'yes')
+                    {
+                      
+                    }
+                    else
+                    {
+                      setTimeout(() => {
+                        this.tableRows.selection.deselect(s.added[0]);
+                      }, 100);
+                    }
+                  }
+                })
+                return;
+              }
+              if(list[z].visited <= 0 && list[z].serviceId == 25)
+              {
+                this.msgdialog.info('Consultation is not acknowledge. Refund this item from Service Tab');
+                console.log(this.tableRows.selection);
+                setTimeout(() => {
+                  this.tableRows.selection.deselect(s.added[0]);
+                }, 100);
+                return;
+              }
               if(list[z].ackby <= 1)
               {
                 this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
@@ -362,7 +400,8 @@ export class RefundAfterBillComponent implements OnInit {
                 setTimeout(() => {
                   this.tableRows.selection.deselect(s.added[0]);
                 }, 100);
-                }
+                return;
+              }
             }
             if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {

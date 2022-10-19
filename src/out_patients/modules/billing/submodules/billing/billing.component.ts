@@ -870,6 +870,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   selectedServices.selected.length > 0
                 ) {
                   console.log(selectedServices);
+                  selectedServices.forEach((slItem: any) => {});
                 }
               }
             }

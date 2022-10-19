@@ -30,7 +30,7 @@ export class PostDischargeBillComponent implements OnInit {
       "itemName",
       "precaution",
       "procedureDoctor",
-      "qty",
+      "type",
       "credit",
       "cash",
       "disc",
@@ -75,11 +75,11 @@ export class PostDischargeBillComponent implements OnInit {
           width: "130px",
         },
       },
-      qty: {
+      type: {
         title: "Qty / Type",
         type: "string",
         style: {
-          width: "120px",
+          width: "190px",
         },
       },
       credit: {
@@ -151,6 +151,7 @@ export class PostDischargeBillComponent implements OnInit {
   questions: any;
   data: any = [];
   IsValidateCoupon: boolean = false;
+  makebillbtn: boolean = false;
   printbill: boolean = true;
   couponcheck: boolean = false;
   postdischagesave!: createpostdischargeconsultbill;
@@ -238,6 +239,7 @@ export class PostDischargeBillComponent implements OnInit {
     this.service.calculateTotalAmount();
     this.billform.reset();
     this.IsValidateCoupon = false;
+    this.makebillbtn = false;
     this.questions[0].readonly = true;
     this.couponcheck = false;
     this.service.billModified = false;
@@ -271,6 +273,7 @@ export class PostDischargeBillComponent implements OnInit {
         else
         {
           this.IsValidateCoupon = true;
+          this.makebillbtn = true;
           this.questions[0].readonly = true;
           console.log(this.data);
           console.log(this.service.consultationItems);
@@ -302,6 +305,9 @@ export class PostDischargeBillComponent implements OnInit {
       if(res[0].successFlag)
       {
         this.service.setBilledStatus();
+        this.makebillbtn = false;
+        this.config.removeRow = false;
+        this.config = { ...this.config };
         const dialogref =  this.msgdialog.success('Visit has been done successfully');
         dialogref.afterClosed().subscribe(() => {
           const yesorno = this.msgdialog.confirm(
@@ -344,7 +350,7 @@ export class PostDischargeBillComponent implements OnInit {
     this.openReportModal('PostDischargeFollowUpReport')
   }
   openReportModal(btnname: string) {
-    this.reportService.openWindow(btnname, btnname, {
+    this.reportService.openWindow('Post Discharge Follow Up Visit Report - '+ this.billid, btnname, {
       opbillid: this.billid,
       flag: this.flag,
     });
