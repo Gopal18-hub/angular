@@ -604,4 +604,23 @@ export class CalculateBillService {
     return couponItem;
   }
   //#endregion
+
+  //#region TaxableBill
+
+  async getServiceTypeByCode(codeId=1356): Promise<Number>{
+    let cstype =0;
+     const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
+
+     if(res){
+       if(res.length > 0){
+        cstype =  res[0].value;
+       }
+     }
+     return cstype;
+  }
+
+  
+
+  //#endregion TaxableBill
+
 }
