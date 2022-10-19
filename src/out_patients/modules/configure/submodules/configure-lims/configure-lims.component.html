@@ -7,52 +7,11 @@
             </li>
         </ul>
     </nav>
-    <!-- <mat-tab-nav-panel #tabPanel>
-        <div class="p-1 h-full w-full">
-            <div class="p-2 bg-lightgray flex  input-padding ">
-                <div class="w-4/5 flex">
-                    <mat-label class="max-health-primary-color font-base font-semi-bold">
-                        Create RIS Requests
-                    </mat-label>
-                    <mat-label class="ml-4 max-health-primary-color">
-                        Request Type Bill No
-                    </mat-label>
-                    <maxhealth-question
-                    [question]="questions[0]"
-                    [form]="limsconfigureform"
-                    [questions]="questions[0]"
-                    [index]="0"
-                    class="ml-4"
-                    >
-    
-                    </maxhealth-question>
-                </div>
-                
-                <div class="w-1/10 ">
-                    <div class="float-right" >
-                    <button mat-raised-button color="primary" type="submit" class="button-height">
-                        <img src="assets/lens.svg" class="lens-icon">
-        
-                    <span class="text-position">  Search</span>  
-        
-                    </button>
-                     </div>
-                </div> 
-                
-            </div>
-            <div class="h-3/4 mt-2">
-                <maxhealth-table #risconfiguretable [config]="config"></maxhealth-table>
-            </div>
-            <div class="float-right mt-2 ">
-                <button mat-raised-button color="primary" class="button-height"><span class="text-position">Refresh</span></button>
-                <button mat-raised-button color="primary" class="ml-4 button-height"><span class="text-position"     >Recreate</span></button>
-            </div>
-        </div>
-    </mat-tab-nav-panel> -->
+
     <mat-tab-nav-panel #tabPanel>
         <div class="p-1 h-full w-full">
-            <div class="p-2 bg-lightgray flex  input-padding ">
-                <div class="w-60 flex">
+            <div class="p-2 bg-lightgray flex input-padding ">
+                <div class="w-60 flex align-items-center">
                     <!-- <div class="flex"> -->
                         <mat-label class="max-health-primary-color font-semi-bold">
                             Create LIMS Requests
@@ -82,20 +41,18 @@
         
                     </button>
                      
+                     
+                     <button mat-raised-button color="primary" class="button-height2 ml-2"[disabled]="limsconfigureList.length == 0"><span class="text-position2">Refresh</span></button>
+                     <button mat-raised-button color="primary" class="ml-2 button-height2 " [disabled]="limsconfigureList.length == 0"><span class="text-position2">Recreate</span></button>
                      <button mat-raised-button color="primary" class="button-height2  ml-2"><span class="text-position2">Clear</span></button>
-                     <button mat-raised-button color="primary" class="button-height2 ml-2"><span class="text-position2">Refresh</span></button>
-                     <button mat-raised-button color="primary" class="ml-2 button-height2 "><span class="text-position2">Recreate</span></button>
                     
                 </div> 
                 
             </div>
             <div class="h-80 mt-2">
-                <maxhealth-table #limsconfiguretable [config]="config" [data]="limsconfigureList"></maxhealth-table>
+                <maxhealth-table #limstable [config]="config" [data]="limsconfigureList"></maxhealth-table>
             </div>
-            <!-- <div class="float-right mt-2"> -->
-                <!-- <button mat-raised-button color="primary" class="button-height"><span class="text-position">Refresh</span></button>
-                <button mat-raised-button color="primary" class="ml-4 button-height"><span class="text-position"     >Recreate</span></button> -->
-            <!-- </div> -->
+ 
         </div>
     </mat-tab-nav-panel>    
 </section> 
