@@ -285,7 +285,7 @@ export class BillDetailComponent implements OnInit {
       },
       //21
       coPay: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
       },
@@ -297,7 +297,7 @@ export class BillDetailComponent implements OnInit {
       },
       //23
       gstTax: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
@@ -1434,6 +1434,14 @@ export class BillDetailComponent implements OnInit {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else if (this.miscServBillForm.value.credLimit <= 0) {
         this.snackbar.open(" Enter Credit limit", "error");
+      } else if (
+        Number(this.miscServBillForm.value.credLimit) <
+        this.miscServBillForm.value.amtPayByPatient
+      ) {
+        this.snackbar.open(
+          "Credit limit should not be less than bill amount",
+          "error"
+        );
       } else {
         const MakeDepositDialogref = this.matDialog.open(
           MakeBillDialogComponent,
@@ -1650,14 +1658,14 @@ export class BillDetailComponent implements OnInit {
       billAmount: this.billAmnt,
       depositAmount: this.miscServBillForm.value.dipositAmtEdit,
       discountAmount: this.discountedAmt,
-      stationid: this.stationId, //10475, // Number(this.cookie.get("StationId")),
-      billType: this.miscServBillForm.value.paymentMode, //cash
+      stationid: this.stationId, //10475,
+      billType: this.miscServBillForm.value.paymentMode,
       categoryId: 0,
       companyId: miscFormData.companyId.value,
-      operatorId: this.userID, // 9923, //Number(this.cookie.get("UserId"))
-      collectedamount: this.miscServBillForm.value.amtPayByComp, //from payment cash net amount
-      balance: this.miscServBillForm.value.amtPayByPatient, //calcBill0.amntPaidBythePatient,
-      hsplocationid: this.location, //Number(this.cookie.get("HSPLocationId"))
+      operatorId: this.userID, // 9923,
+      collectedamount: this.miscServBillForm.value.amtPayByComp,
+      balance: this.miscServBillForm.value.amtPayByPatient,
+      hsplocationid: this.location,
       refdoctorid: refDocId,
       authorisedid: calcBill0.selectedAuthorise,
       serviceTax: this.txtServiceTaxAmt,
@@ -1679,7 +1687,7 @@ export class BillDetailComponent implements OnInit {
         {
           slNo: 1,
           modeOfPayment: "Cash",
-          amount: 400,
+          amount: this.miscServBillForm.value.amntPaidBythePatient,
           flag: 1,
         },
       ],
@@ -1753,14 +1761,14 @@ export class BillDetailComponent implements OnInit {
         "Credit limit should not be less than bill amount",
         "error"
       );
-      this.isEnableBillBtn = false;
+      // this.isEnableBillBtn = false;
       this.miscServBillForm.controls["amtPayByPatient"].setValue(
         balance.toFixed(2)
       );
       this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
       return;
     } else {
-      this.isEnableBillBtn = true;
+      //this.isEnableBillBtn = true;
     }
 
     if (this.miscServBillForm.value.coPay >= 0) {
