@@ -528,10 +528,21 @@ export class BillDetailComponent implements OnInit {
           if (this.serviceselectedList.length > 0) {
             this.isEnableBillBtn = true;
             this.enablePrint = false;
+            this.amtByComp();
           } else {
             this.isEnableBillBtn = false;
             this.enablePrint = false;
           }
+        } else {
+          let balance =
+            this.billAmnt -
+            (this.miscServBillForm.value.discAmt || 0) -
+            (this.miscServBillForm.value.dipositAmtEdit || 0);
+
+          this.miscServBillForm.controls["amtPayByPatient"].setValue(
+            balance.toFixed(2)
+          );
+          this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
         }
         this.miscPatient.setBillType(value);
         this.miscPatient.cacheBillTabdata.billType = value;
@@ -683,6 +694,10 @@ export class BillDetailComponent implements OnInit {
       "change",
       this.onModifyMiscDepositAmt.bind(this)
     );
+    this.question[21].elementRef.addEventListener(
+      "change",
+      this.copayClick.bind(this)
+    );
     // this.question[27].elementRef.addEventListener("keypress", (event: any) => {
     //   if (event.key === "Enter") {
     //     event.preventDefault();
@@ -696,7 +711,11 @@ export class BillDetailComponent implements OnInit {
       }
     }
   }
-
+  copayClick() {
+    if (Number(this.miscServBillForm.value.paymentMode) === 3) {
+      this.amtByComp();
+    }
+  }
   onModifyMiscDepositAmt() {
     this.calcBillData.depositInput = Number(
       this.miscServBillForm.value.dipositAmtEdit
