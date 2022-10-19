@@ -122,7 +122,7 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
-    if ((this.data.name = "Misc Billing")) {
+    if ((this.data.name == "Misc Billing")) {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
       return;
