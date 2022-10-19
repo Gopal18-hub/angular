@@ -793,17 +793,20 @@ export class BillingComponent implements OnInit, OnDestroy {
         .afterClosed()
         .pipe(takeUntil(this._destroying$))
         .subscribe((result) => {
-          if (result && result.selected && result.selected.length > 0) {
-            const selectedPlan = result.selected[0];
-            this.formGroup.controls["company"].disable();
-            this.formGroup.controls["corporate"].disable();
-            this.links[2].disabled = true;
-            this.billingService.setHealthPlan(selectedPlan);
-            this.messageDialogService.info(
-              "You have selected " + selectedPlan.planName
-            );
-          }
-          this.checkServicesLogics();
+          //check added for expired patient check GAV-936
+          if(!this.expiredPatient){
+            if (result && result.selected && result.selected.length > 0) {
+              const selectedPlan = result.selected[0];
+              this.formGroup.controls["company"].disable();
+              this.formGroup.controls["corporate"].disable();
+              this.links[2].disabled = true;
+              this.billingService.setHealthPlan(selectedPlan);
+              this.messageDialogService.info(
+                "You have selected " + selectedPlan.planName
+              );
+            }
+            this.checkServicesLogics();
+          }         
         });
     } else if (
       dtPatientPastDetails[7] &&
@@ -834,47 +837,51 @@ export class BillingComponent implements OnInit, OnDestroy {
           .afterClosed()
           .pipe(takeUntil(this._destroying$))
           .subscribe(async (result) => {
-            if (result && result.selected && result.selected.length > 0) {
-              const selectedPlan = result.selected[0];
-              this.billingService.setOtherPlan(selectedPlan);
-              const planSelectDialog = this.messageDialogService.info(
-                "You have selected " + selectedPlan.planName
-              );
-              await planSelectDialog.afterClosed().toPromise();
-              const ores = await this.http
-                .get(
-                  BillingApiConstants.getotherplanretrieve(
-                    this.billingService.activeMaxId.iacode,
-                    this.billingService.activeMaxId.regNumber,
-                    selectedPlan.planId
-                  )
-                )
-                .toPromise();
-              if (ores.length > 0) {
-                const dialogRefDetails = this.matDialog.open(
-                  ShowPlanDetilsComponent,
-                  {
-                    width: "70vw",
-                    data: {
-                      planDetails: ores,
-                      type: "otherPlanDetails",
-                    },
-                  }
+             //check added for expired patient check GAV-936
+            if(!this.expiredPatient){
+              if (result && result.selected && result.selected.length > 0) {
+                const selectedPlan = result.selected[0];
+                this.billingService.setOtherPlan(selectedPlan);
+                const planSelectDialog = this.messageDialogService.info(
+                  "You have selected " + selectedPlan.planName
                 );
-                const selectedServices = await dialogRefDetails
-                  .afterClosed()
+                await planSelectDialog.afterClosed().toPromise();
+                const ores = await this.http
+                  .get(
+                    BillingApiConstants.getotherplanretrieve(
+                      this.billingService.activeMaxId.iacode,
+                      this.billingService.activeMaxId.regNumber,
+                      selectedPlan.planId
+                    )
+                  )
                   .toPromise();
-                if (
-                  selectedServices &&
-                  selectedServices.selected &&
-                  selectedServices.selected.length > 0
-                ) {
-                  console.log(selectedServices);
-                  selectedServices.forEach((slItem: any) => {});
+                if (ores.length > 0) {
+                  const dialogRefDetails = this.matDialog.open(
+                    ShowPlanDetilsComponent,
+                    {
+                      width: "70vw",
+                      data: {
+                        planDetails: ores,
+                        type: "otherPlanDetails",
+                      },
+                    }
+                  );
+                  const selectedServices = await dialogRefDetails
+                    .afterClosed()
+                    .toPromise();
+                  if (
+                    selectedServices &&
+                    selectedServices.selected &&
+                    selectedServices.selected.length > 0
+                  ) {
+                    console.log(selectedServices);
+                    selectedServices.forEach((slItem: any) => {});
+                  }
                 }
               }
+              this.checkServicesLogics();
             }
-            this.checkServicesLogics();
+           
           });
       }
     } else {
@@ -883,22 +890,25 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   async checkServicesLogics() {
-    if (this.billingService.unbilledInvestigations) {
-    } else {
-      let checkinvestigations = await this.http
-        .get(
-          BillingApiConstants.getinvestigationfromphysician(
-            this.billingService.activeMaxId.iacode,
-            this.billingService.activeMaxId.regNumber,
-            this.cookie.get("HSPLocationId")
+    //check added for expired patient check GAV-936
+    if(!this.expiredPatient){
+      if (this.billingService.unbilledInvestigations) {
+      } else {
+        let checkinvestigations = await this.http
+          .get(
+            BillingApiConstants.getinvestigationfromphysician(
+              this.billingService.activeMaxId.iacode,
+              this.billingService.activeMaxId.regNumber,
+              this.cookie.get("HSPLocationId")
+            )
           )
-        )
-        .toPromise();
-      if (checkinvestigations.length > 0) {
-        this.investigationCheck(checkinvestigations);
-        return;
+          .toPromise();
+        if (checkinvestigations.length > 0) {
+          this.investigationCheck(checkinvestigations);
+          return;
+        }
       }
-    }
+    }   
   }
 
   investigationCheck(checkinvestigations: any) {
@@ -1010,13 +1020,16 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-            this.billingService.processProcedureAdd(1, "24", {
-              serviceid: 24,
-              value: 30632,
-              originalTitle: "Registration Charges",
-              docRequired: false,
-              popuptext: "",
-            });
+             //check added for expired patient check GAV-936
+            if(!this.expiredPatient){
+              this.billingService.processProcedureAdd(1, "24", {
+                serviceid: 24,
+                value: 30632,
+                originalTitle: "Registration Charges",
+                docRequired: false,
+                popuptext: "",
+              });
+            }          
             this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
             this.inPatientCheck(resultData.dtPatientPastDetails);
