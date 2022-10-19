@@ -740,7 +740,9 @@ export class BillComponent implements OnInit, OnDestroy {
                   this.processBillNo(res[0]);
                 } else {
                   if (!res[0].successFlag) {
-                    this.messageDialogService.error(res[0].returnMessage);
+                   const messageRef = this.messageDialogService.error(res[0].returnMessage);                   
+                   await messageRef.afterClosed().toPromise();
+                   return;
                   }
                 }
               }
