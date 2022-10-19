@@ -266,6 +266,19 @@ export class CalculateBillService {
         
       };
     }
+    else{
+      data = {
+        discounttypes:
+        [
+          { title: "On Bill", value: "On-Bill" },
+          { title: "On Service", value: "On-Service" },
+          { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
+        ],
+      }
+    }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
@@ -591,4 +604,23 @@ export class CalculateBillService {
     return couponItem;
   }
   //#endregion
+
+  //#region TaxableBill
+
+  async getServiceTypeByCode(codeId=1356): Promise<Number>{
+    let cstype =0;
+     const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
+
+     if(res){
+       if(res.length > 0){
+        cstype =  res[0].value;
+       }
+     }
+     return cstype;
+  }
+
+  
+
+  //#endregion TaxableBill
+
 }

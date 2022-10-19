@@ -720,6 +720,20 @@ export class BillComponent implements OnInit, OnDestroy {
                 this.makereceipt();
               }
             } else {
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+              Number(this.formGroup.value.dipositAmtEdit) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+              Number(this.formGroup.value.discAmt) || 0;
+            this.billingservice.makeBillPayload.cmbInteraction =
+              Number(this.formGroup.value.interactionDetails) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+              Number(this.formGroup.value.paymentMode);
+        
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+              parseFloat(this.formGroup.value.credLimit) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
+              parseFloat(this.formGroup.value.amtPayByComp) || 0;
+
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
                 if (res[0].billNo) {
@@ -749,6 +763,9 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
       parseFloat(this.formGroup.value.credLimit) || 0;
+    
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
+              parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "65vw",

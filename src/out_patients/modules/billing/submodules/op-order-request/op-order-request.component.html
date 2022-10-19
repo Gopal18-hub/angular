@@ -126,7 +126,7 @@
              
               <div
               class="max-health-primary-color font-bold float-right text-underline w-2/10 ml-13"
-              *ngIf="opOrderRequestService.totalCost > 0"
+              *ngIf="opOrderRequestService.totalCost > 0 && enableTotalestimate "
             >
               <span>Total Estimation:</span>
               {{
