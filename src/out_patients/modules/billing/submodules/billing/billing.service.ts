@@ -1,22 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { IomCompanyBillingComponent } from "./prompts/iom-company-billing/iom-company-billing.component";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { of } from "rxjs";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
-
+import { PaymentMethods } from "@core/constants/PaymentMethods";
 @Injectable({
   providedIn: "root",
 })
@@ -73,7 +67,7 @@ export class BillingService {
 
   companyData: any = [];
   corporateData: any = [];
-  selectedcompanydetails: any = [];
+  selectedcompanydetails: any = {};
   selectedcorporatedetails: any = [];
   iomMessage: string = "";
   activeLink = new Subject<any>();
@@ -142,7 +136,7 @@ export class BillingService {
     );
     this.companyData = [];
     this.corporateData = [];
-    this.selectedcompanydetails = [];
+    this.selectedcompanydetails = {};
     this.selectedcorporatedetails = [];
   }
 
@@ -359,9 +353,19 @@ export class BillingService {
     if (res === "") {
       this.corporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
+      if(corporateid){
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
+      }
+      else{
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = "";
+      }
+     
     }
   }
 
@@ -805,7 +809,9 @@ export class BillingService {
           });
           if ("payloadKey" in payment.method) {
             this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
-              { ...paymentmethod.paymentForm[payment.key].value },
+              PaymentMethods[
+                payment.method.payloadKey as keyof typeof PaymentMethods
+              ](paymentmethod.paymentForm[payment.key].value),
             ];
           }
         }

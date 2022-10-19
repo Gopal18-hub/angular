@@ -12,8 +12,8 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
-           type: "dropdown",
-        
+          type: "dropdown",
+
           placeholder: "---Equipment---",
           title: "Equipment Name",
           // defaultValue: "0",
@@ -310,15 +310,15 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          minimum: Reportconstants.minimumDate["oneMonth"],
-          maximum: new Date(),
+          //minimum: Reportconstants.minimumDate["oneMonth"],
+          //maximum: new Date(),
         },
         dtpEndDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          maximum: new Date(),
-          minimum: Reportconstants.minimumDate["oneMonth"],
+          //maximum: new Date(),
+          //minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
@@ -356,7 +356,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "autocomplete",
-          placeholder: "---AllSpecialisation---",
+          placeholder: "---All Specialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -511,8 +511,8 @@ export namespace FormReport {
           ],
         },
         planID: {
-          type: "dropdown",
-          placeholder: "---PlanName---",
+          type: "autocomplete",
+          placeholder: "---Plan Name---",
           title: "",
           questionClasses: "max-hide",
           optionsModelConfig: {
@@ -540,7 +540,7 @@ export namespace FormReport {
           },
         },
         MemberShipNo: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "",
           questionClasses: "max-hide",
@@ -682,7 +682,7 @@ export namespace FormReport {
   };
 
   export const CRPExpiredPatientDetailReport = {
-    reportName: "Expired Patient Report",
+    reportName: "Selection Criteria",
     filterForm: {
       title: "",
       type: "object",
@@ -704,7 +704,7 @@ export namespace FormReport {
         //   title: "Location",
         // },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           optionsModelConfig: {
@@ -766,7 +766,7 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         cmbLocation: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
@@ -779,7 +779,7 @@ export namespace FormReport {
           },
         },
         cmbopenscrolltype: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
           defaultValue: "0",
@@ -843,7 +843,7 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
@@ -893,7 +893,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
+      defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         dtpFromDate: {
           type: "date",

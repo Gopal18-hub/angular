@@ -28,7 +28,7 @@ export class UnbilledInvestigationComponent implements OnInit {
         type: "number",
       },
       docName: {
-        title: "Docotr Name",
+        title: "Doctor Name",
         type: "string",
       },
       visitDateTime: {

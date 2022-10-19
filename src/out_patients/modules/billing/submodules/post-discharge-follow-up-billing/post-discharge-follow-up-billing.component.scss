@@ -8,7 +8,7 @@
       font-weight: 500;
     }
     .width-8 {
-      width: 8%;
+      width: 9%;
     }
     .width-9 {
         width: 9%;
@@ -40,7 +40,10 @@
       background-color: #fff;
     }
     .clr-blue{
-        color: #00B2A9;
+      ::ng-deep .mat-checkbox-label {
+        color: #45c0be !important;
+        text-decoration: underline;
+      }
     }
     ::ng-deep mat-form-field {
       .mat-form-field-wrapper {

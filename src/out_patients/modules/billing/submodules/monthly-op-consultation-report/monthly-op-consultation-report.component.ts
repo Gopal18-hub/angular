@@ -32,10 +32,11 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       },
       Location: {
         title: "",
-        type: "dropdown",
+        type: "autocomplete",
         required: true,
         placeholder: "--Select--",
-        Option: this.locationmaster,
+        //Option: this.locationmaster,
+        defaultValue: this.locationmaster,
       },
     },
   };
@@ -43,6 +44,7 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
   questions: any;
   msgresponse: any;
   private readonly _destroying$ = new Subject<void>();
+  snackbar: any;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -93,13 +95,28 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       )
       .subscribe((result) => {
         console.log(result);
-        this.msgresponse = "Total No. of OP Consultation: " + result;
-      });
+        if (result != null) {
+          this.msgresponse = "Total No. of OP Consultation: " + result;
+        } else {
+          this.OpConsultform.controls["Location"].setErrors({
+            incorrect: true,
+          });
+          this.questions[2].customErrorMessage = "Location is Required";
+        }
+      }),
+      (error: any) => {
+        if (error.error == null) {
+          this.OpConsultform.controls["Location"];
+          this.snackbar.open("Location is Required", "error");
+        }
+      };
   }
   clickbtn() {
     this.OpConsultform.reset();
     this.msgresponse = "";
-    this.ngOnInit();
+    //this.ngOnInit();
+    this.OpConsultform.controls["todate"].setValue(new Date());
+    this.OpConsultform.controls["fromdate"].setValue(new Date());
   }
   ngOnDestroy(): void {
     this._destroying$.next(undefined);

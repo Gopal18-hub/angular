@@ -145,6 +145,7 @@ export class OderInvestigationsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.opOrderRequestService.onServiceTab(true);
     if (
       this.precautionExcludeLocations.includes(
         Number(this.cookie.get("HSPLocationId"))
@@ -163,6 +164,7 @@ export class OderInvestigationsComponent implements OnInit {
       this.questions
     );
     this.data = this.opOrderRequestService.investigationItems;
+
     this.getServiceTypes();
     this.getSpecialization();
     this.opOrderRequestService.clearAllItems.subscribe((clearItems) => {
@@ -601,7 +603,9 @@ export class OderInvestigationsComponent implements OnInit {
           if (this.saveResponsedata.success == true) {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
+
             this.opOrderRequestService.investigationItems = [];
+            this.opOrderRequestService.calculateTotalAmount();
             this.formGroup.reset();
             this.config.columnsInfo.doctorName.moreOptions = {};
           }

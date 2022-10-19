@@ -20,6 +20,27 @@ export namespace PaymentMethods {
     upi: { label: "UPI", form: "upiForm" },
   };
 
+  export const tab_cheque = (values: any) => {
+    return {
+      chequeNo: values.chequeNo,
+      chequeDate: values.chequeDate,
+      bankName: values.bankName.title,
+      branchName: values.branchName,
+      city: "",
+      flag: 1,
+    };
+  };
+
+  export const tab_dd = (values: any) => {
+    return {
+      ddNumber: values.ddNumber,
+      ddDate: values.ddDate,
+      bankName: values.bankName.title,
+      branchName: values.branchName,
+      flag: 1,
+    };
+  };
+
   export const cashForm = (options: any) => {
     return {
       title: "Cash Details",

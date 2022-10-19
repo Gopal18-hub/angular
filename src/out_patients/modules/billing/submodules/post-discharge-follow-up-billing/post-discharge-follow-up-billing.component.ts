@@ -159,6 +159,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
   iomMessage: any;
   ngAfterViewInit(): void {
     this.formEvents();
+    if (this.formGroup.value.maxid == this.questions[0].defaultValue) {
+      this.questions[0].elementRef.focus();
+    }
     this.formGroup.controls["company"].valueChanges.subscribe((res) => {
       if (res.value) {
         console.log(res);
