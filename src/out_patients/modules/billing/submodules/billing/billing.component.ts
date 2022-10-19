@@ -121,6 +121,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   orderId: number = 0;
 
   expiredPatient: boolean = false;
+  secondaryMaxId: boolean = false;
 
   constructor(
     public matDialog: MatDialog,
@@ -695,42 +696,46 @@ export class BillingComponent implements OnInit, OnDestroy {
             .afterClosed()
             .pipe(takeUntil(this._destroying$))
             .subscribe((result) => {
-              if (result && result.selected && result.selected.length > 0) {
-                const doctors: any = result.selected;
-                for (let i = 0; i < doctors.length; i++) {
-                  if (doctors[i].paymentStatus == "No") {
-                    this.billingService.procesConsultationAdd(
-                      57,
-                      doctors[i].specialisationid,
-                      {
-                        value: doctors[i].doctorID,
-                        originalTitle: doctors[i].doctorname,
-                        specialisationid: doctors[i].specialisationid,
-                      },
-                      {
-                        value: doctors[i].clinicId,
-                      }
-                    );
-                  } else if (
-                    doctors[i].paymentStatus == "Yes" &&
-                    doctors[i].billStatus == "No"
-                  ) {
-                    this.billingService.procesConsultationAddWithOutApi(
-                      57,
-                      doctors[i].specialisationid,
-                      {
-                        value: doctors[i].doctorID,
-                        originalTitle: doctors[i].doctorname,
-                        specialisationid: doctors[i].specialisationid,
-                        price: doctors[i].amount,
-                      },
-                      {
-                        value: doctors[i].clinicId,
-                      }
-                    );
+              //check for expired patient GAV-936
+              //check for mreged max Id
+              if(!this.expiredPatient || !this.secondaryMaxId){
+                if (result && result.selected && result.selected.length > 0) {
+                  const doctors: any = result.selected;
+                  for (let i = 0; i < doctors.length; i++) {
+                    if (doctors[i].paymentStatus == "No") {
+                      this.billingService.procesConsultationAdd(
+                        57,
+                        doctors[i].specialisationid,
+                        {
+                          value: doctors[i].doctorID,
+                          originalTitle: doctors[i].doctorname,
+                          specialisationid: doctors[i].specialisationid,
+                        },
+                        {
+                          value: doctors[i].clinicId,
+                        }
+                      );
+                    } else if (
+                      doctors[i].paymentStatus == "Yes" &&
+                      doctors[i].billStatus == "No"
+                    ) {
+                      this.billingService.procesConsultationAddWithOutApi(
+                        57,
+                        doctors[i].specialisationid,
+                        {
+                          value: doctors[i].doctorID,
+                          originalTitle: doctors[i].doctorname,
+                          specialisationid: doctors[i].specialisationid,
+                          price: doctors[i].amount,
+                        },
+                        {
+                          value: doctors[i].clinicId,
+                        }
+                      );
+                    }
                   }
                 }
-              }
+              }             
             });
         }
       });
@@ -794,7 +799,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroying$))
         .subscribe((result) => {
           //check added for expired patient check GAV-936
-          if(!this.expiredPatient){
+          //check for merged Max Id
+          if(!this.expiredPatient || !this.secondaryMaxId){
             if (result && result.selected && result.selected.length > 0) {
               const selectedPlan = result.selected[0];
               this.formGroup.controls["company"].disable();
@@ -838,7 +844,8 @@ export class BillingComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this._destroying$))
           .subscribe(async (result) => {
              //check added for expired patient check GAV-936
-            if(!this.expiredPatient){
+             //check for merged max Id
+            if(!this.expiredPatient || !this.secondaryMaxId){
               if (result && result.selected && result.selected.length > 0) {
                 const selectedPlan = result.selected[0];
                 this.billingService.setOtherPlan(selectedPlan);
@@ -891,7 +898,8 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   async checkServicesLogics() {
     //check added for expired patient check GAV-936
-    if(!this.expiredPatient){
+    //check for mreged Max Id
+    if(!this.expiredPatient || !this.secondaryMaxId){
       if (this.billingService.unbilledInvestigations) {
       } else {
         let checkinvestigations = await this.http
@@ -1001,8 +1009,10 @@ export class BillingComponent implements OnInit, OnDestroy {
             this.formGroup.controls["maxid"].setValue(maxId);
             let regNumber = Number(maxId.split(".")[1]);
             let iacode = maxId.split(".")[0];
+            this.secondaryMaxId = false;
             this.registrationDetails(iacode, regNumber);
           } else {
+            this.secondaryMaxId = true;
             this.registrationDetails(iacode, regNumber);
           }
         }
@@ -1021,7 +1031,8 @@ export class BillingComponent implements OnInit, OnDestroy {
         if ("type" in result) {
           if (result.type == "yes") {
              //check added for expired patient check GAV-936
-            if(!this.expiredPatient){
+             //check for mergedMaxId
+            if(!this.expiredPatient || !this.secondaryMaxId){
               this.billingService.processProcedureAdd(1, "24", {
                 serviceid: 24,
                 value: 30632,
@@ -1116,6 +1127,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this._destroying$.complete();
     this.apiProcessing = false;
     this.patient = false;
+    this.secondaryMaxId = false;
     this.formGroup.reset();
     this.patientName = "";
     this.ssn = "";
