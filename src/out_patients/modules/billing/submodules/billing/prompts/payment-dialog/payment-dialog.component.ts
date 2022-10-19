@@ -122,6 +122,11 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
+    if ((this.data.name = "Misc Billing")) {
+      this.miscService.makeBill(this.paymentmethod);
+      this.dialogRef.close("MakeBill");
+      return;
+    }
     const res = await this.billingService.makeBill(this.paymentmethod);
     if (res.length > 0) {
       if (res[0].billNo) {
