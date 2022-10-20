@@ -140,6 +140,10 @@ export class OrderProcedureOtherComponent implements OnInit {
       this.questions
     );
     this.data = this.opOrderrequestService.procedureItems;
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.opOrderrequestService.onServiceTab(true);
     this.getOtherService();
     this.getSpecialization();
@@ -378,11 +382,13 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.procedure.value,
-          this.otherserviceId,
+          this.formGroup.value.procedure.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
+        console.log(res);
+        console.log(this.otherserviceId);
         this.opOrderrequestService.addToProcedure({
           sno: this.data.length + 1,
           procedures: this.formGroup.value.procedure.originalTitle,
@@ -409,12 +415,9 @@ export class OrderProcedureOtherComponent implements OnInit {
       });
   }
   getSaveDeleteObject(flag: any): SaveandDeleteOpOrderRequest {
+    console.log(this.data);
     this.data.forEach((item: any, index: any) => {
       console.log(item.specialisation);
-      if (item.specialisation == "") {
-        console.log("specialisation is empty");
-        item.specialisation;
-      }
       if (this.reqItemDetail == "") {
         this.reqItemDetail =
           item.itemid +
@@ -441,6 +444,35 @@ export class OrderProcedureOtherComponent implements OnInit {
           item.priorityId;
       }
     });
+    if (this.opOrderrequestService.investigationItems.length > 0) {
+      this.opOrderrequestService.investigationItems.forEach((item: any) => {
+        if (this.reqItemDetail == "") {
+          this.reqItemDetail =
+            item.itemid +
+            "," +
+            item.serviceid +
+            "," +
+            item.specialisationId +
+            "," +
+            item.doctorId +
+            "," +
+            item.priority;
+        } else {
+          this.reqItemDetail =
+            this.reqItemDetail +
+            "~" +
+            item.itemid +
+            "," +
+            item.serviceid +
+            "," +
+            item.specialisationId +
+            "," +
+            item.doctorId +
+            "," +
+            item.priority;
+        }
+      });
+    }
     console.log(this.reqItemDetail);
 
     let maxid = this.opOrderrequestService.activeMaxId.maxId;
@@ -476,6 +508,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.messageDialogService.success("Saved Successfully");
             this.data = [];
             this.opOrderrequestService.procedureItems = [];
+            this.opOrderrequestService.investigationItems = [];
             this.opOrderrequestService.calculateTotalAmount();
             this.formGroup.reset();
             this.config.columnsInfo.doctorName.moreOptions = {};
