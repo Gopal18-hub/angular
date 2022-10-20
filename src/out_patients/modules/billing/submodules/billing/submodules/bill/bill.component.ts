@@ -740,6 +740,7 @@ export class BillComponent implements OnInit, OnDestroy {
                   this.processBillNo(res[0]);
                 } else {
                   if (!res[0].successFlag) {
+                    this.calculateBillService.blockActions.next(false);
                    const messageRef = this.messageDialogService.error(res[0].returnMessage);                   
                    await messageRef.afterClosed().toPromise();
                    return;
@@ -787,12 +788,15 @@ export class BillComponent implements OnInit, OnDestroy {
 
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result: any) => {
+      .subscribe(async (result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
         } else if (result && "successFlag" in result && !result.successFlag) {
           if (result && "returnMessage" in result && result.returnMessage) {
-            this.messageDialogService.error(result.returnMessage);
+            this.calculateBillService.blockActions.next(false);
+            const messageRef = this.messageDialogService.error(result.returnMessage);                   
+            await messageRef.afterClosed().toPromise();
+            return;
           }
         }
       });

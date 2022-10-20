@@ -282,7 +282,7 @@ export class CalculateBillService {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "67vh",
+      height: "68vh",
       data: data,
     });
     discountReasonPopup.afterClosed().subscribe((res) => {
@@ -607,6 +607,17 @@ export class CalculateBillService {
 
   //#region TaxableBill
 
+  async checkTaxableBill(){
+    let cstype = await this.getServiceTypeByCode(1356);
+    let countProc = 0;
+    if(this.billingServiceRef.ProcedureItems.length > 0){
+      this.billingServiceRef.ProcedureItems.forEach((item: any) => {
+        
+      });
+    }
+
+  }
+
   async getServiceTypeByCode(codeId=1356): Promise<Number>{
     let cstype =0;
      const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
@@ -619,7 +630,7 @@ export class CalculateBillService {
      return cstype;
   }
 
-  
+
 
   //#endregion TaxableBill
 

@@ -556,8 +556,9 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (!this.discAmtForm.value.types) {
-      this.discAmtForm.controls["types"].setValue("On-Bill");
+      this.discAmtForm.controls["types"].setValue("On-Bill");      
     }
+    this.discAmtForm.controls["authorise"].setValue(null);
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
