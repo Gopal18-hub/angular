@@ -52,7 +52,7 @@ export class OrderSetComponent implements OnInit {
       "serviceItemName",
       "precaution",
       "priority",
-      "specialization",
+      "specialisation",
       "doctorName",
       "price",
     ],
@@ -100,7 +100,7 @@ export class OrderSetComponent implements OnInit {
         },
       },
       specialization: {
-        title: "Specialization",
+        title: "Specialisation",
         type: "dropdown",
         options: [],
         style: {

@@ -15,14 +15,23 @@
                         <mat-label class="max-health-primary-color font-semi-bold">
                             Create RIS Requests
                         </mat-label>
-                        <mat-label class="ml-4 max-health-primary-color">
+                        <!-- <mat-label class="ml-4 max-health-primary-color">
                             Request Type Bill No
-                        </mat-label>
+                        </mat-label> -->
+                        <maxhealth-question
+                        [question]="questions[1]"
+                        [form]="risconfigureform"
+                        [questions]="questions[1]"
+                        [index]="0"
+                        class="ml-4 w-1/4"
+                        >
+        
+                        </maxhealth-question>
                         <maxhealth-question
                         [question]="questions[0]"
                         [form]="risconfigureform"
                         [questions]="questions[0]"
-                        [index]="0"
+                        [index]="1"
                         class="ml-4 w-1/4"
                         >
         

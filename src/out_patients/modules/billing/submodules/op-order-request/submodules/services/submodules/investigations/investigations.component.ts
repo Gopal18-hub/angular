@@ -164,7 +164,10 @@ export class OderInvestigationsComponent implements OnInit {
       this.questions
     );
     this.data = this.opOrderRequestService.investigationItems;
-
+    this.data.forEach((item: any, index: number) => {
+      this.config.columnsInfo.doctorName.moreOptions[index] =
+        this.getdoctorlistonSpecializationClinic(item.specialisation, index);
+    });
     this.getServiceTypes();
     this.getSpecialization();
     this.opOrderRequestService.clearAllItems.subscribe((clearItems) => {
@@ -386,6 +389,9 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.investigationList = res;
+        this.investigationList.forEach((item: any) => {
+          item.name = item.name.trim();
+        });
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = this.investigationList.map((r: any) => {
           return {
@@ -567,8 +573,36 @@ export class OderInvestigationsComponent implements OnInit {
           item.priority;
       }
     });
+    if (this.opOrderRequestService.procedureItems.length > 0) {
+      this.opOrderRequestService.procedureItems.forEach((item: any) => {
+        if (this.reqItemDetail == "") {
+          this.reqItemDetail =
+            item.itemid +
+            "," +
+            item.serviceId +
+            "," +
+            item.specialisationId +
+            "," +
+            item.doctorId +
+            "," +
+            item.priorityId;
+        } else {
+          this.reqItemDetail =
+            this.reqItemDetail +
+            "~" +
+            item.itemid +
+            "," +
+            item.serviceId +
+            "," +
+            item.specialisationId +
+            "," +
+            item.doctorId +
+            "," +
+            item.priorityId;
+        }
+      });
+    }
     console.log(this.reqItemDetail);
-
     let maxid = this.opOrderRequestService.activeMaxId.maxId;
     let userid = Number(this.cookie.get("UserId"));
     let locationid = Number(this.cookie.get("HSPLocationId"));
@@ -590,6 +624,7 @@ export class OderInvestigationsComponent implements OnInit {
     this.reqItemDetail = "";
     console.log("inside save");
     if (this.data.length > 0) {
+      // if (this.opOrderRequestService.investigationItems.length > 0)
       this.http
         .post(
           BillingApiConstants.SaveDeleteOpOrderRequest,
@@ -607,6 +642,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.opOrderRequestService.investigationItems = [];
             this.opOrderRequestService.calculateTotalAmount();
             this.formGroup.reset();
+            this.opOrderRequestService.procedureItems = [];
             this.config.columnsInfo.doctorName.moreOptions = {};
           }
         });
