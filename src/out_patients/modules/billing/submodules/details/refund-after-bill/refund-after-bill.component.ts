@@ -329,6 +329,8 @@ export class RefundAfterBillComponent implements OnInit {
     this.tableRows.selection.changed.subscribe((s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
+
+      //For Due Amount
       if(this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance > 0)
       {
         this.tableRows.selection.selected.forEach((i: any) =>{ 
@@ -339,82 +341,68 @@ export class RefundAfterBillComponent implements OnInit {
           }, 100);
         })
       }
+
+      //For Acknowledged Items
       else if(this.tableRows.selection.selected.length > 0)
       {  
           this.billDetailservice.sendforapproval = [];
           this.billDetailservice.totalrefund = 0;
-          for(var j = 0; j < this.tableRows.selection.selected.length; j++)
-          {
-            if(this.tableRows.selection.selected[j].cancelled == 'notcancelledrefund')
-            {
-              var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-                return a.itemid == this.tableRows.selection.selected[j].itemid;
-              })
-            } 
-          } 
-          console.log(list) 
           for(var i = 0; i < this.tableRows.selection.selected.length; i++)
           {
-            if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
+            var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
+              return a.itemid == this.tableRows.selection.selected[i].itemid;
+            })
+            console.log(list);
+            for(var z = 0; z < list.length; z++)
             {
-              for(var z = 0; z < list.length; z++)
+              if(list[z].serviceId != 25 && list[z].serviceId != 41 && list[z].serviceId != 26 && this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].radiologyCancellation == 1)
               {
-                console.log(list[z]);
-                if(list[z].ackby <= 1)
-                {
-                  var acklist = this.billDetailservice.serviceList.filter((a: any) => {
-                  console.log(a);
-                  return a.itemid == list[z].itemid;
-                  })
-                  
-                }
+                this.msgdialog.info('Item cannot be refunded from this Tab Kindly unacknowledge first / Refund this item from Service Tab');
+                console.log(this.tableRows.selection);
+                setTimeout(() => {
+                  this.tableRows.selection.deselect(s.added[0]);
+                }, 100);
+                return;
               }
-              console.log(acklist);
-              console.log(list[z]);
-              if(acklist != undefined)
+              if(list[z].serviceId == 42 && list[z].risCan == 0)
               {
-                for(var m = 0; m < acklist.length; m++)
-                {
-                this.data.forEach((item: any) => {
-                  if(item.itemid == acklist[m].itemid)
+                const dialogref = this.msgdialog.confirm('' ,'An automated email will be sent to the Radiology department, as this order has not been cancelled from the Radiology Department. Do you want to proceed?');
+                dialogref.afterClosed().subscribe(res => {
+                  if(res && "type" in res)
                   {
-                    flag++;
-                    this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
-                    setTimeout(() => {
-                      this.tableRows.selection.deselect(item);
-                    }, 100);
+                    if(res.type == 'yes')
+                    {
+                      
+                    }
+                    else
+                    {
+                      setTimeout(() => {
+                        this.tableRows.selection.deselect(s.added[0]);
+                      }, 100);
+                    }
                   }
                 })
-                }
+                return;
               }
-              
-                // this.data.forEach((item: any) => {
-                //   console.log(item)
-                //   for(var x = 0; x < acklist.length, flag < 1; x++)
-                //   {
-                //     console.log((item.itemid, acklist[x].itemid));
-                //     if(item.itemid == acklist[x].itemid && item.cancelled == 'notcancelledrefund')
-                //     {
-                //       flag++;
-                //       this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
-                //       console.log(this.tableRows.selection);
-                //       setTimeout(() => {
-                //       this.tableRows.selection.deselect(item);
-                //     }, 100);
-                //     break;                      
-                //     }
-                //     return;
-                //   }
-                  
-                //   console.log(flag);
-                // })
+              if(list[z].visited <= 0 && list[z].serviceId == 25)
+              {
+                this.msgdialog.info('Consultation is not acknowledge. Refund this item from Service Tab');
+                console.log(this.tableRows.selection);
+                setTimeout(() => {
+                  this.tableRows.selection.deselect(s.added[0]);
+                }, 100);
+                return;
+              }
+              if(list[z].ackby <= 1)
+              {
+                this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
+                console.log(this.tableRows.selection);
+                setTimeout(() => {
+                  this.tableRows.selection.deselect(s.added[0]);
+                }, 100);
+                return;
+              }
             }
-            // if(flag == 1)
-            // {
-            //   this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
-            //   break;
-            // }
-            // console.log(this.tableRows.selection.selected[i])
             if(this.tableRows.selection.selected[i].cancelled == 'notcancelledrefund')
             {
               console.log(this.tableRows.selection.selected[i].itemid);
@@ -439,12 +427,7 @@ export class RefundAfterBillComponent implements OnInit {
             this.billDetailservice.calculateTotalRefund();
             console.log(this.billDetailservice.sendforapproval);
             }
-          } 
-          // console.log(flag);
-          // if(flag >= 1)
-          // {
-          //   this.msgdialog.info('Sample is Not Acknowledged, Refund Item from the Service Tab');
-          // }                   
+          }                  
         }
         else
         {
@@ -479,11 +462,9 @@ export class RefundAfterBillComponent implements OnInit {
           if(item.cancelled == 'cancelledrefund')
           {
             console.log(item);
-            // this.msgdialog.info('Item in this list Already Refunded');
             setTimeout(() => {
               this.tableRows.selection.select(item);
             }, 1);
-            // this.tableRows.selection.select(item);
           }
         })
       }

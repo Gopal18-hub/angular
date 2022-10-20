@@ -221,27 +221,27 @@
                 </div>
             </div>
         </div> -->
-        <div class="payment-mode w-1/15 float-left ml-4 mt-1 border-radius-lg px-2 py-1">
+        <div class="payment-mode w-17 float-left ml-4 mt-1 border-radius-lg px-2 py-1">
             <mat-label>Payment Mode</mat-label>
             <div class="flex justify-between font-400 margin-top-1">
                 <mat-label>Cash</mat-label>
-                <span>0.00</span>
+                <span>{{billDetailService.paymentBreakuplist.paymentBreakup[0].amount.toFixed(2) | currency: "INR":undefined:undefined:"en-IN"}}</span>
             </div>
             <div class="flex justify-between font-400 margin-top-1">
                 <mat-label>Cheque</mat-label>
-                <span>0.00</span>
+                <span>{{billDetailService.paymentBreakuplist.paymentBreakup[1].amount.toFixed(2) | currency: "INR":undefined:undefined:"en-IN"}}</span>
             </div>
             <div class="flex justify-between font-400 margin-top-1">
                 <mat-label>Credit Card</mat-label>
-                <span>0.00</span>
+                <span>{{billDetailService.paymentBreakuplist.paymentBreakup[2].amount.toFixed(2) | currency: "INR":undefined:undefined:"en-IN"}}</span>
             </div>
             <div class="flex justify-between font-400 margin-top-1">
                 <mat-label>Demand Draft</mat-label>
-                <span>0.00</span>
+                <span>{{billDetailService.paymentBreakuplist.paymentBreakup[3].amount.toFixed(2) | currency: "INR":undefined:undefined:"en-IN"}}</span>
             </div>
             <div class="flex justify-between font-400 margin-top-1">
                 <mat-label>Online Payment</mat-label>
-                <span>0.00</span>
+                <span>{{billDetailService.paymentBreakuplist.paymentBreakup[5].amount.toFixed(2) | currency: "INR":undefined:undefined:"en-IN"}}</span>
             </div>
         </div>
        

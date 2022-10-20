@@ -54,7 +54,7 @@
         </div>    
     </div>
     <div class="mt-4 flex btn justify-content-end">
-        <button mat-raised-button color="primary" type="submit" (click)="printbtn()">Print</button>
+        <button mat-raised-button color="primary" type="submit" (click)="printbtn()" [disabled]="!resendbillform.valid">Print</button>
         <button mat-raised-button color="primary" class="ml-2" type="submit" (click)="clearbtn()" [disabled]="!resendbillform.dirty">Clear</button>
     </div>
 

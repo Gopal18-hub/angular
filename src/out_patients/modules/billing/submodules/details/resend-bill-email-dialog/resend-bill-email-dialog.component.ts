@@ -23,10 +23,12 @@ export class ResendBillEmailDialogComponent implements OnInit {
         placeholder: "---Select---"
       },
       email: {
-        type: "string"
+        type: "string",
+        required: true,
       },
       mobileno: {
-        type: "string"
+        type: "string",
+        required: true,
       },
       Onlinecheckbox: {
         type: "checkbox",
@@ -76,7 +78,7 @@ export class ResendBillEmailDialogComponent implements OnInit {
       emailSendId: 1,
       billno: this.data.billno,
       emailID: this.resendbillform.controls['email'].value,
-      mobileNo: this.resendbillform.controls['email'].value,
+      mobileNo: this.resendbillform.controls['mobileno'].value,
       onlineServiceId: 1,
       operatorId: this.cookie.get('UserId'),
       hsplocationId: this.cookie.get('HSPLocationId')
