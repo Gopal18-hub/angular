@@ -287,12 +287,14 @@ export class BillDetailComponent implements OnInit {
         type: "currency",
         required: false,
         defaultValue: "0.00",
+        readonly: true,
       },
       //22
       credLimit: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
+        readonly: true,
       },
       //23
       gstTax: {
@@ -524,6 +526,8 @@ export class BillDetailComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
         if (Number(value) === 3) {
+          this.question[21].readonly = false;
+          this.question[22].readonly = false;
           if (this.serviceselectedList.length > 0) {
             this.isEnableBillBtn = true;
             this.enablePrint = false;
@@ -533,6 +537,8 @@ export class BillDetailComponent implements OnInit {
             this.enablePrint = false;
           }
         } else {
+          this.question[21].readonly = true;
+          this.question[22].readonly = true;
           let balance =
             this.billAmnt -
             (this.miscServBillForm.value.discAmt || 0) -
@@ -697,6 +703,10 @@ export class BillDetailComponent implements OnInit {
       "change",
       this.copayClick.bind(this)
     );
+    this.question[22].elementRef.addEventListener(
+      "change",
+      this.creditClick.bind(this)
+    );
     // this.question[27].elementRef.addEventListener("keypress", (event: any) => {
     //   if (event.key === "Enter") {
     //     event.preventDefault();
@@ -708,6 +718,15 @@ export class BillDetailComponent implements OnInit {
       if (miscFormData.companyId.value) {
         this.getbilltocompany(miscFormData.companyId.value);
       }
+    }
+  }
+  creditClick() {
+    if (
+      Number(this.miscServBillForm.value.paymentMode) === 3 &&
+      this.miscServBillForm.value.credLimit &&
+      this.miscServBillForm.value.credLimit > 0
+    ) {
+      this.amtByComp();
     }
   }
   copayClick() {
@@ -1421,17 +1440,7 @@ export class BillDetailComponent implements OnInit {
       ) {
         this.getbilltocompany(miscFormData.companyId.value);
       }
-
-      if (!miscFormData.companyId) {
-        this.snackbar.open("Select the Company", "error");
-      } else if (
-        Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
-        !miscFormData.corporateId
-      ) {
-        this.snackbar.open(" Please select corporate!", "error");
-      } else if (!this.refDoctor.id && this.selfDoc === false) {
-        this.snackbar.open("Please select Referral Doctor", "error");
-      } else if (this.miscServBillForm.value.credLimit <= 0) {
+      if (this.miscServBillForm.value.credLimit <= 0) {
         this.snackbar.open(" Enter Credit limit", "error");
       } else if (
         Number(this.miscServBillForm.value.credLimit) <
@@ -1441,6 +1450,15 @@ export class BillDetailComponent implements OnInit {
           "Credit limit should not be less than bill amount",
           "error"
         );
+      } else if (!miscFormData.companyId) {
+        this.snackbar.open("Select the Company", "error");
+      } else if (
+        Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
+        !miscFormData.corporateId
+      ) {
+        this.snackbar.open(" Please select corporate!", "error");
+      } else if (!this.refDoctor.id && this.selfDoc === false) {
+        this.snackbar.open("Please select Referral Doctor", "error");
       } else {
         const MakeDepositDialogref = this.matDialog.open(
           MakeBillDialogComponent,
@@ -1767,20 +1785,20 @@ export class BillDetailComponent implements OnInit {
       this.billAmnt -
       (this.miscServBillForm.value.discAmt || 0) -
       (this.miscServBillForm.value.dipositAmtEdit || 0);
-    if (Number(this.miscServBillForm.value.credLimit) < balance) {
-      this.snackbar.open(
-        "Credit limit should not be less than bill amount",
-        "error"
-      );
-      // this.isEnableBillBtn = false;
-      this.miscServBillForm.controls["amtPayByPatient"].setValue(
-        balance.toFixed(2)
-      );
-      this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
-      return;
-    } else {
-      //this.isEnableBillBtn = true;
-    }
+    // if (Number(this.miscServBillForm.value.credLimit) < balance) {
+    //   this.snackbar.open(
+    //     "Credit limit should not be less than bill amount",
+    //     "error"
+    //   );
+    //   // this.isEnableBillBtn = false;
+    //   this.miscServBillForm.controls["amtPayByPatient"].setValue(
+    //     balance.toFixed(2)
+    //   );
+    //   this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
+    //   return;
+    // } else {
+    //   //this.isEnableBillBtn = true;
+    // }
 
     if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = balance;

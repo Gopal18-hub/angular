@@ -262,4 +262,14 @@ export namespace BillingApiConstants {
     `${environment.CommonApiUrl}api/lookup/getalldoctorname/${locationId}`;
 
   export const getbanknames = `${environment.CommonApiUrl}api/lookup/getbankname`;
+
+ // #region QMS 
+
+ export const getnextqueueno=(locationid:number,stationId:number,counterId:number)=>
+ `${environment.BillingApiUrl}api/outpatientbilling/getnextqueueno/${locationid}/${stationId}/${counterId}`;
+
+ export const donequeueno=(queueId:number,counterId:number)=>
+    `${environment.BillingApiUrl}api/outpatientbilling/DoneQueueNo/${queueId}/${counterId}`;
+
+ //#endregion
 }

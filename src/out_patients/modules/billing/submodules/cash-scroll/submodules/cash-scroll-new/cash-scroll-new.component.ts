@@ -98,6 +98,7 @@ export class CashScrollNewComponent implements OnInit {
       "totalamount",
       "compName",
     ],
+    rowLayout: { dynamic: { rowClass: "row['rowhighlight']" } },
     columnsInfo: {
       sno: {
         title: "S.No",
@@ -431,7 +432,7 @@ else
       item.donation = item.donation  == undefined ?  "0.00" : Number(item.donation).toFixed(2);
       item.upiamount = item.upiamount  == undefined ?  "0.00" : Number(item.upiamount).toFixed(2);
       item.totalamount = item.totalamount  == undefined ?  "0.00" : Number(item.totalamount).toFixed(2);
-            
+      item.rowhighlight = '';     
       return item;
     });
    
@@ -456,6 +457,7 @@ else
       upiamount : this.UPIAmt.toFixed(2),
       donation: this.DonationAmount.toFixed(2),
       totalamount: (Number(this.billamount) + Number(this.DonationAmount)).toFixed(2),
+      rowhighlight: 'highlight'
     });
     console.log(resultdata);
   }
