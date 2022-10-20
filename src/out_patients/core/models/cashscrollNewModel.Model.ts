@@ -44,6 +44,7 @@ export class CashScrollNewDetail {
     compName:string;
     modifiedDDNumber:string;
     sno?: number;
+    rowhighlight?:string;
     constructor(
         receiptNo: string,
         billno: string,
@@ -88,7 +89,8 @@ export class CashScrollNewDetail {
         billDateTime:string,
         compName:string,
         modifiedDDNumber:string,
-        sno:number,) {
+        sno:number,
+        rowhighlight:string) {
       
       this.receiptNo = receiptNo;
       this.billno = billno;
@@ -134,6 +136,7 @@ export class CashScrollNewDetail {
       this.compName = compName;
       this.modifiedDDNumber = modifiedDDNumber;
       this.sno = sno;
+      this.rowhighlight = rowhighlight;
     }
   }
   
