@@ -282,7 +282,7 @@ export class CalculateBillService {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "67vh",
+      height: "68vh",
       data: data,
     });
     discountReasonPopup.afterClosed().subscribe((res) => {

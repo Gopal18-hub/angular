@@ -143,11 +143,12 @@ export class InvestigationsComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.InvestigationItems;
-    this.data.forEach((item: any, index: number) => {
-      this.config.columnsInfo.doctorName.moreOptions[index] =
+    this.billingService.InvestigationItems.forEach(
+      (item: any, index: number) => {
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
-    });
+      }
+    );
+    this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
     this.billingService.clearAllItems.subscribe((clearItems) => {
