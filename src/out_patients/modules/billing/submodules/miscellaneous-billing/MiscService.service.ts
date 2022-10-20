@@ -11,6 +11,9 @@ import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { PaymentMethods } from "@core/constants/PaymentMethods";
+import { ReasonForDueBillComponent } from "../billing/prompts/reason-for-due-bill/reason-for-due-bill.component";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 
 @Injectable({
   providedIn: "root",
@@ -42,7 +45,7 @@ export class MiscService {
   miscdepositdetailsEvent = new Subject<any>();
   miscdepositDetailsData: any = [];
   disablecorporatedropdown: boolean = false;
-  creditLimit:number = 0;
+  creditLimit: number = 0;
 
   companyData: any = [];
   corporateData: any = [];
@@ -56,7 +59,8 @@ export class MiscService {
     private http: HttpService,
     public matDialog: MatDialog,
     private datepipe: DatePipe,
-    public cookie: CookieService
+    public cookie: CookieService,
+    private messageDialogService: MessageDialogService
   ) {}
 
   setPatientDetail(dataList: any) {
@@ -182,6 +186,7 @@ export class MiscService {
     this.selectedcorporatedetails = [];
     this.serviceItemsList = [];
     this.referralDoctor = null;
+    this.cacheServitem = [];
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
@@ -189,9 +194,9 @@ export class MiscService {
   cacheBillTab(data: any) {
     this.cacheBillTabdata = data;
   }
-  setCreditLimit(data:any){
+  setCreditLimit(data: any) {
     this.creditLimit = data;
-   }
+  }
 
   setCompnay(
     companyid: number,
@@ -199,48 +204,54 @@ export class MiscService {
     formGroup: any,
     from: string = "header"
   ) {
-    if(res === "" || res == null){
+    if (res === "" || res == null) {
       this.misccompanyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
-    } else if(res.title) { 
-    this.selectedcompanydetails = res;
-    this.selectedcorporatedetails = [];
-    this.misccompanyChangeEvent.next({ company: res, from });
-    this.calcItems.companyId = res.value;
-    this.iomMessage =
-      "IOM Validity till : " +
-      (("iomValidity" in res.company && res.company.iomValidity != "") ||
-      res.company.iomValidity != undefined
-        ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
-        : "");
-    if (res.company.isTPA == 1) {
-      const iomcompanycorporate = this.matDialog.open(
-        IomCompanyBillingComponent,
-        {
-          width: "25%",
-          height: "28%",
-        }
-      );
+    } else if (res.title) {
+      this.selectedcompanydetails = res;
+      this.selectedcorporatedetails = [];
+      this.misccompanyChangeEvent.next({ company: res, from });
+      this.calcItems.companyId = res.value;
+      this.iomMessage =
+        "IOM Validity till : " +
+        (("iomValidity" in res.company && res.company.iomValidity != "") ||
+        res.company.iomValidity != undefined
+          ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+          : "");
+      if (res.company.isTPA == 1) {
+        const iomcompanycorporate = this.matDialog.open(
+          IomCompanyBillingComponent,
+          {
+            width: "25%",
+            height: "28%",
+          }
+        );
 
-      iomcompanycorporate.afterClosed().subscribe((result) => {
-        if (result.data == "corporate") {         
-          this.cacheCreditTabdata.isCorporateChannel = 1; 
-          this.cacheCreditTab(this.cacheCreditTabdata);      
-          formGroup.controls["corporate"].enable();
-          formGroup.controls["corporate"].setValue(null);
-          this.misccorporateChangeEvent.next({ corporate: null, from });
-          this.disablecorporatedropdown = true;   
-        } else {
-          this.cacheCreditTabdata.isCorporateChannel = 0;
-          this.cacheCreditTab(this.cacheCreditTabdata);  
-          formGroup.controls["corporate"].setValue(null);
-          formGroup.controls["corporate"].disable();
-          this.misccorporateChangeEvent.next({ corporate: null, from:"disable" });
-        }
-      });
-    } else {
-      this.misccorporateChangeEvent.next({ corporate: null, from:"disable" });
-      // if(from == "credit"){
+        iomcompanycorporate.afterClosed().subscribe((result) => {
+          if (result.data == "corporate") {
+            this.cacheCreditTabdata.isCorporateChannel = 1;
+            this.cacheCreditTab(this.cacheCreditTabdata);
+            formGroup.controls["corporate"].enable();
+            formGroup.controls["corporate"].setValue(null);
+            this.misccorporateChangeEvent.next({ corporate: null, from });
+            this.disablecorporatedropdown = true;
+          } else {
+            this.cacheCreditTabdata.isCorporateChannel = 0;
+            this.cacheCreditTab(this.cacheCreditTabdata);
+            formGroup.controls["corporate"].setValue(null);
+            formGroup.controls["corporate"].disable();
+            this.misccorporateChangeEvent.next({
+              corporate: null,
+              from: "disable",
+            });
+          }
+        });
+      } else {
+        this.misccorporateChangeEvent.next({
+          corporate: null,
+          from: "disable",
+        });
+        // if(from == "credit"){
         formGroup.controls["corporate"].setValue(null);
         formGroup.controls["corporate"].disable();
         // }
@@ -269,7 +280,7 @@ export class MiscService {
 
   setCompanyData(data: any) {
     this.companyData = data;
-    this.misccompanyChangeEvent.next({company: null,from: "header"});
+    this.misccompanyChangeEvent.next({ company: null, from: "header" });
   }
 
   setCorporateData(data: any) {
@@ -305,5 +316,73 @@ export class MiscService {
         this.miscdepositDetailsData = resultData;
         this.miscdepositdetailsEvent.next({ deposit: resultData });
       });
+  }
+
+  async makeBill(paymentmethod: any = {}) {
+    if ("tabs" in paymentmethod) {
+      this.calculatedBill.toBePaid = this.calculatedBill.amntPaidBythePatient;
+      this.calculatedBill.collectedAmount = paymentmethod.tabPrices.reduce(
+        (partialSum: number, a: number) => partialSum + a,
+        0
+      );
+      let tab_paymentList = [];
+
+      paymentmethod.tabs.forEach((payment: any) => {
+        if (paymentmethod.paymentForm[payment.key].value.price > 0) {
+          this.calculatedBill.tab_paymentList.push({
+            slNo: tab_paymentList.length + 1,
+            modeOfPayment:
+              paymentmethod.paymentForm[payment.key].value.modeOfPayment,
+            amount: parseFloat(
+              paymentmethod.paymentForm[payment.key].value.price
+            ),
+            flag: 1,
+          });
+          if ("payloadKey" in payment.method) {
+            this.calculatedBill.tab_paymentList[payment.method.payloadKey] = [
+              PaymentMethods[
+                payment.method.payloadKey as keyof typeof PaymentMethods
+              ](paymentmethod.paymentForm[payment.key].value),
+            ];
+          }
+        }
+      });
+
+      if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
+        const lessAmountWarningDialog = this.messageDialogService.confirm(
+          "",
+          "Do You Want To Save Less Amount ?"
+        );
+        const lessAmountWarningResult = await lessAmountWarningDialog
+          .afterClosed()
+          .toPromise();
+        if (lessAmountWarningResult) {
+          if (lessAmountWarningResult.type == "yes") {
+            const reasonInfoDialog = this.matDialog.open(
+              ReasonForDueBillComponent,
+              {
+                width: "40vw",
+                height: "50vh",
+              }
+            );
+            const reasonInfoResult = await reasonInfoDialog
+              .afterClosed()
+              .toPromise();
+            if (reasonInfoResult) {
+              this.calculatedBill.balance =
+                this.calculatedBill.toBePaid -
+                this.calculatedBill.collectedAmount;
+            }
+          } else {
+            return;
+          }
+        } else {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+    return this.calculatedBill;
   }
 }
