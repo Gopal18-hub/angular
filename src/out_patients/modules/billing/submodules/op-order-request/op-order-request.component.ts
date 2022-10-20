@@ -412,19 +412,21 @@ export class OpOrderRequestComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: PatientDetails) => {
-          // this.clear();
           console.log(resultData);
-          this.patientDetailsforicon = resultData;
-          this.noteRemarkdb = resultData.notereason;
-          this.vipdb = resultData.vipreason;
-          this.hwcRemarkdb = resultData.hwcRemarks;
-          this.hotlistReasondb = resultData.hotlistreason;
-          this.hotlistRemarkdb = resultData.hotlistcomments;
-          this.bplcardNo = resultData.bplcardNo;
-          this.bplCardAddress = resultData.addressOnCard;
-          this.categoryIcons = this.patientservice.getCategoryIconsForPatient(
-            this.patientDetailsforicon
-          );
+          if (resultData != null) {
+            this.patientDetailsforicon = resultData;
+            this.noteRemarkdb = resultData.notereason;
+            this.vipdb = resultData.vipreason;
+            this.hwcRemarkdb = resultData.hwcRemarks;
+            this.hotlistReasondb = resultData.hotlistreason;
+            this.hotlistRemarkdb = resultData.hotlistcomments;
+            this.bplcardNo = resultData.bplcardNo;
+            this.bplCardAddress = resultData.addressOnCard;
+            this.categoryIcons = this.patientservice.getCategoryIconsForPatient(
+              this.patientDetailsforicon
+            );
+          }
+          // this.clear();
         },
         (error) => {}
       );
