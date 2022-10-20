@@ -26,7 +26,7 @@ export class PartialCredBillComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailService: billDetailService,
+    public billDetailService: billDetailService,
     private reportService:ReportService
   ) {}
 

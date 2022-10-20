@@ -21,6 +21,7 @@ import { LookupService } from "@core/services/lookup.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { MatDialog } from "@angular/material/dialog";
+import * as moment from "moment";
 
 @Component({
   selector: "find-patient",
@@ -187,6 +188,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
                 resultData = resultData.map((item: any) => {
                   item.fullname = item.firstName + " " + item.lastName;
                   item.notereason = item.noteReason;
+                  item.age= this.onageCalculator(item.dob);
                   return item;
                 });
                 this.patientList = resultData as PatientSearchModel[];
@@ -359,6 +361,7 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
     const resultData = lookupdata.map((item: any) => {
       item.fullname = item.firstName + " " + item.lastName;
       item.notereason = item.noteReason;
+      item.age= this.onageCalculator(item.dob);
       return item;
     });
     this.patientList = resultData;
@@ -415,6 +418,34 @@ export class FindPatientComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+
+  onageCalculator(ageDOB = "") {
+    if (ageDOB) {
+      let dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+     
+      let returnAge = "";
+      if (diffYears > 0) {
+        returnAge = diffYears + " Year(s)";
+      } else if (diffMonths > 0) {
+        returnAge = diffYears + " Month(s)";
+      } else if (diffDays > 0) {
+        returnAge = diffYears + " Day(s)";
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        returnAge = "N/A";
+      } else if (diffDays == 0) {
+        returnAge = "1 Day(s)";
+      }
+      return returnAge;
+    }
+    return "N/A";
   }
 
   getAllpatients() {

@@ -9,7 +9,7 @@ export namespace PaymentMethods {
       form: "chequeForm",
       payloadKey: "tab_cheque",
     },
-    credit: { label: "Credit Card", form: "creditForm" },
+    credit: { label: "Credit / Debit Card", form: "creditForm" },
     demand: {
       label: "Demand Draft",
       form: "demandDraftForm",
@@ -101,7 +101,7 @@ export namespace PaymentMethods {
 
   export const creditForm = (options: any) => {
     return {
-      title: "Credit Card Details",
+      title: "Credit / Debit Card Details",
       type: "object",
       properties: {
         price: {
