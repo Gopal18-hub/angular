@@ -10,7 +10,7 @@
   >
     <div
       *ngFor="let question of questions; let i = index"
-      class="form-control-element mb-2 w-145 w-1/45 {{
+      class="form-control-element mb-2 w-145 w-1/45 mt-error {{
         reportConfig.form?.layout && reportConfig.form?.layout[question.key]
       }}"
       [ngClass]="{
