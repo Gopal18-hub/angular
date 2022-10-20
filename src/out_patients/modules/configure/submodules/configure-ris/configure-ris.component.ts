@@ -9,6 +9,7 @@ import { GetConfigureMessageInterface } from "../../../../core/types/configure/g
 import { Generatehl7outboundmessagerisModel } from "../../../../core/models/generatehl7outboundmessage.Model";
 import { CookieService } from "@shared/services/cookie.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { DropdownQuestion } from "@shared/ui/dynamic-forms/types/question-dropdown";
 @Component({
   selector: "out-patients-configure-ris",
   templateUrl: "./configure-ris.component.html",
@@ -23,6 +24,25 @@ export class ConfigureRisComponent implements OnInit {
   recreateList: Generatehl7outboundmessagerisModel[] = [];
   private readonly _destroying$ = new Subject<void>();
   userId = Number(this.cookie.get("UserId"));
+  risconfigureformData = {
+    title: "",
+    type: "object",
+    properties: {
+      billno: {
+        type: "string",
+      },
+      billdropdown: {
+        type: "dropdown",
+        options: [
+          {
+            title: "Bill No",
+            value: 1,
+          },
+        ],
+        //  defaultValue: 1,
+      },
+    },
+  };
   config: any = {
     actionItems: false,
     clickedRows: true,
@@ -79,6 +99,7 @@ export class ConfigureRisComponent implements OnInit {
     );
     this.risconfigureform = formResult.form;
     this.questions = formResult.questions;
+    this.risconfigureform.controls["billdropdown"].setValue(1);
   }
   ngAfterViewInit() {
     this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
@@ -139,15 +160,6 @@ export class ConfigureRisComponent implements OnInit {
         }
       });
   }
-  risconfigureformData = {
-    title: "",
-    type: "object",
-    properties: {
-      billno: {
-        type: "string",
-      },
-    },
-  };
 
   dataconfig: any = [
     {
