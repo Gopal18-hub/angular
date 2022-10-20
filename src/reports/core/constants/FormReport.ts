@@ -30,11 +30,13 @@ export namespace FormReport {
           type: "date",
           title: "From Date",
           defaultValue: new Date(),
+          required: true,
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
           defaultValue: new Date(),
+          required: true,
         },
       },
     },
