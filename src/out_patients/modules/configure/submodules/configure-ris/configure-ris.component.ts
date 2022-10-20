@@ -9,7 +9,6 @@ import { GetConfigureMessageInterface } from "../../../../core/types/configure/g
 import { Generatehl7outboundmessagerisModel } from "../../../../core/models/generatehl7outboundmessage.Model";
 import { CookieService } from "@shared/services/cookie.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { DropdownQuestion } from "@shared/ui/dynamic-forms/types/question-dropdown";
 @Component({
   selector: "out-patients-configure-ris",
   templateUrl: "./configure-ris.component.html",
