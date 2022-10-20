@@ -604,4 +604,34 @@ export class CalculateBillService {
     return couponItem;
   }
   //#endregion
+
+  //#region TaxableBill
+
+  async checkTaxableBill(){
+    let cstype = await this.getServiceTypeByCode(1356);
+    let countProc = 0;
+    if(this.billingServiceRef.ProcedureItems.length > 0){
+      this.billingServiceRef.ProcedureItems.forEach((item: any) => {
+        
+      });
+    }
+
+  }
+
+  async getServiceTypeByCode(codeId=1356): Promise<Number>{
+    let cstype =0;
+     const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
+
+     if(res){
+       if(res.length > 0){
+        cstype =  res[0].value;
+       }
+     }
+     return cstype;
+  }
+
+
+
+  //#endregion TaxableBill
+
 }

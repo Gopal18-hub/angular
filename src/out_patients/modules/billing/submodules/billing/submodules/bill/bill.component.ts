@@ -605,7 +605,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //   (this.formGroup.value.discAmt || 0) -
     //   (this.formGroup.value.dipositAmtEdit || 0);
     let tempAmount = this.formGroup.value.credLimit;
-
+    this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
     if (parseFloat(tempAmount) <= amtPayByComp) {
       this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
     } else {
@@ -720,13 +720,30 @@ export class BillComponent implements OnInit, OnDestroy {
                 this.makereceipt();
               }
             } else {
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
+              Number(this.formGroup.value.dipositAmtEdit) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
+              Number(this.formGroup.value.discAmt) || 0;
+            this.billingservice.makeBillPayload.cmbInteraction =
+              Number(this.formGroup.value.interactionDetails) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.billType =
+              Number(this.formGroup.value.paymentMode);
+        
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
+              parseFloat(this.formGroup.value.credLimit) || 0;
+            this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
+              parseFloat(this.formGroup.value.amtPayByComp) || 0;
+
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
                 if (res[0].billNo) {
                   this.processBillNo(res[0]);
                 } else {
                   if (!res[0].successFlag) {
-                    this.messageDialogService.error(res[0].returnMessage);
+                    this.calculateBillService.blockActions.next(false);
+                   const messageRef = this.messageDialogService.error(res[0].returnMessage);                   
+                   await messageRef.afterClosed().toPromise();
+                   return;
                   }
                 }
               }
@@ -749,6 +766,9 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.creditLimit =
       parseFloat(this.formGroup.value.credLimit) || 0;
+    
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
+              parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
       width: "65vw",
@@ -768,12 +788,15 @@ export class BillComponent implements OnInit, OnDestroy {
 
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe((result: any) => {
+      .subscribe(async (result: any) => {
         if (result && "billNo" in result && result.billNo) {
           this.processBillNo(result);
         } else if (result && "successFlag" in result && !result.successFlag) {
           if (result && "returnMessage" in result && result.returnMessage) {
-            this.messageDialogService.error(result.returnMessage);
+            this.calculateBillService.blockActions.next(false);
+            const messageRef = this.messageDialogService.error(result.returnMessage);                   
+            await messageRef.afterClosed().toPromise();
+            return;
           }
         }
       });

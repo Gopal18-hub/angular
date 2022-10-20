@@ -23,4 +23,5 @@ export interface GetConfigureMessageInterface {
   serviceID: number;
   orderdate: string;
   ordertime: string;
+  disablecheckbox: boolean;
 }

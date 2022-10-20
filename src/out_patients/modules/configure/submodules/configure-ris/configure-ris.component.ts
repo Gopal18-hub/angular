@@ -7,6 +7,8 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { Subject, takeUntil } from "rxjs";
 import { GetConfigureMessageInterface } from "../../../../core/types/configure/getConfiguremessage.Interface";
 import { Generatehl7outboundmessagerisModel } from "../../../../core/models/generatehl7outboundmessage.Model";
+import { CookieService } from "@shared/services/cookie.service";
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-configure-ris",
   templateUrl: "./configure-ris.component.html",
@@ -15,15 +17,16 @@ import { Generatehl7outboundmessagerisModel } from "../../../../core/models/gene
 export class ConfigureRisComponent implements OnInit {
   questions: any;
   risconfigureform!: FormGroup;
+  apiprocessing: boolean = false;
+  flag = 0;
   risconfigurelist: GetConfigureMessageInterface[] = [];
   recreateList: Generatehl7outboundmessagerisModel[] = [];
   private readonly _destroying$ = new Subject<void>();
+  userId = Number(this.cookie.get("UserId"));
   config: any = {
     actionItems: false,
-    /// dateformat: "dd/MM/yyyy",
-    clickedRows: false,
+    clickedRows: true,
     selectBox: true,
-    // selectCheckBoxPosition: 10,
     clickSelection: "multiple",
     displayedColumns: ["testName", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
@@ -51,14 +54,6 @@ export class ConfigureRisComponent implements OnInit {
         },
         tooltipColumn: "orderdatetime",
       },
-      // ordertime: {
-      //   title: "Order Time",
-      //   type: "string",
-      //   style: {
-      //     width: "6rem",
-      //   },
-      //   tooltipColumn: "",
-      // },
       messagestatus: {
         title: "Message Status",
         type: "string",
@@ -69,10 +64,13 @@ export class ConfigureRisComponent implements OnInit {
       },
     },
   };
-  @ViewChild("ristable") risconfiguretable: any;
+
+  @ViewChild("ristable") tableRows: any;
   constructor(
     private formService: QuestionControlService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cookie: CookieService,
+    private dialogService: MessageDialogService
   ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -88,6 +86,58 @@ export class ConfigureRisComponent implements OnInit {
         this.getdata();
       }
     });
+    this.tableRows.selection.changed
+      .pipe(takeUntil(this._destroying$))
+      .subscribe((data: any) => {
+        this.flag = 0;
+
+        //mastercheck
+        if (
+          data.removed.length == 0 &&
+          data.added.length == this.risconfigurelist.length
+        ) {
+          console.log("first if");
+          this.risconfigurelist.forEach((item: any, index: any) => {
+            if (item.messagestatus == "created") {
+              this.tableRows.selection.deselect(item);
+            } else {
+            }
+          });
+          console.log(this.tableRows.selection.selected);
+          //masteruncheck
+        } else {
+          this.risconfigurelist.forEach((item: any) => {
+            if (item.messagestatus == "created") {
+              this.flag++;
+            }
+          });
+          console.log(this.flag);
+          if (data.removed.length == 0 && data.added.length == this.flag) {
+            console.log(this.tableRows.selection.selected);
+            console.log("second if");
+            this.risconfigurelist.forEach((item: any) => {
+              this.tableRows.selection.deselect(item);
+            });
+          } else if (
+            this.tableRows.selection.selected.length !=
+              this.tableRows.selection._selectedToEmit.length &&
+            this.tableRows.selection.selected.length ==
+              this.risconfigurelist.length
+          ) {
+            console.log(this.tableRows.selection.selected);
+            console.log("third else");
+            console.log(data);
+            this.tableRows.selection.selected.forEach(
+              (item: any, index: any) => {
+                if (item.messagestatus == "created") {
+                  this.tableRows.selection.deselect(item);
+                }
+              }
+            );
+            //console.log(data);
+          }
+        }
+      });
   }
   risconfigureformData = {
     title: "",
@@ -101,87 +151,104 @@ export class ConfigureRisComponent implements OnInit {
 
   dataconfig: any = [
     {
-      testname: "xray-abdomen",
+      testName: "xray-abdomen",
       ssn: "6700000009",
-      orderdate: "26-05-2002",
-      ordertime: "16:10:00",
+      orderdatetime: "26-05-2002",
+      //ordertime: "16:10:00",
       messagestatus: "Not created",
+      disablecheckbox: false,
     },
     {
-      testname: "xray-abdomen",
+      testName: "xray-abdomen",
       ssn: "6700000009",
-      orderdate: "26-05-2002",
-      ordertime: "16:10:00",
-      messagestatus: "Not created",
+      orderdatetime: "26-05-2002",
+      //ordertime: "16:10:00",
+      messagestatus: "created",
+      disablecheckbox: true,
     },
     {
-      testname: "xray-abdomen",
+      testName: "xray-abdomen",
       ssn: "6700000009",
-      orderdate: "26-05-2002",
-      ordertime: "16:10:00",
+      orderdatetime: "26-05-2002",
+      // ordertime: "16:10:00",
       messagestatus: "Not created",
+      disablecheckbox: false,
     },
     {
-      testname: "xray-abdomen",
+      testName: "xray-abdomen",
       ssn: "6700000009",
-      orderdate: "26-05-2002",
-      ordertime: "16:10:00",
-      messagestatus: "Not created",
+      orderdatetime: "26-05-2002",
+      // ordertime: "16:10:00",
+      messagestatus: "created",
+      disablecheckbox: true,
     },
     {
-      testname: "xray-abdomen",
+      testName: "xray-abdomen",
       ssn: "6700000009",
-      orderdate: "26-05-2002",
-      ordertime: "16:10:00",
+      orderdatetime: "26-05-2002",
+      //ordertime: "16:10:00",
       messagestatus: "Not created",
+      disablecheckbox: false,
     },
   ];
 
   getdata() {
     console.log("getdata");
+    this.apiprocessing = true;
     this.http
-      .get(ApiConstants.gethl7outboundmessageris("RIS", "SKCS3760202"))
+      .get(
+        ApiConstants.gethl7outboundmessageris(
+          "RIS",
+          this.risconfigureform.controls["billno"].value
+        )
+      )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
-        console.log(data);
-        this.risconfigurelist = data as GetConfigureMessageInterface[];
-        // this.risconfigurelist.forEach((item) => {
-        //   item.orderdate = item.orderdatetime.split("T")[0];
-        //   item.ordertime = item.orderdatetime.split("T")[1];
-        // });
-      });
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.apiprocessing = false;
+          this.risconfigurelist = data as GetConfigureMessageInterface[];
+          this.risconfigurelist.forEach((item, index) => {
+            if (item.messagestatus == "created") {
+              item.disablecheckbox = true;
+            } else {
+              item.disablecheckbox = false;
+            }
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   }
-  // getRecreateobject():Generatehl7outboundmessagerisModel{
-  //   this.risconfigurelist.forEach((item:any,index:any)=>{
-  //     this.recreateList.push({
-  //       opbillid: number;
-  //       id: number;
-  //       testName: string;
-  //       billid: number;
-  //       itemId: number;
-  //       orderId: number;
-  //       optestorderid: number;
-  //       ssn: string;
-  //       vistaID: number;
-  //       orderdatetime: string;
-  //       procedureid: number;
-  //       messagestatus: string;
-  //       reprocess: boolean;
-  //       operatorId: number;
-  //       stationid: number;
-  //       iaCode: string;
-  //       regNo: number;
-  //       userID: number;
-  //       locationID: number;
-  //       visitNo: string;
-  //       priority: string;
-  //       serviceID: number;
-  //     })
-  //   })
 
-  //   //return this.recreateList
-  // }
-  recreateClick() {}
+  recreateClick() {
+    this.recreateList = [];
+    this.tableRows.selection.selected.forEach((item: any, index: any) => {
+      this.recreateList.push({
+        opbillid: item.billid,
+        serviceId: item.serviceID,
+        itemId: item.itemId,
+        orderId: item.orderId,
+        operatorid: this.userId,
+      });
+    });
+    console.log(this.recreateList);
+    this.http
+      .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(
+        (result) => {
+          console.log(result);
+          if (result == "done") {
+            this.dialogService.success("Order Successfully Generated");
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }
 
   cleardata() {
     console.log("inside cleardata");
@@ -189,3 +256,4 @@ export class ConfigureRisComponent implements OnInit {
     this.risconfigureform.reset();
   }
 }
+// "SKCS3760202"

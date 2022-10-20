@@ -148,6 +148,18 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
     this.questions[0].maximum =
       this.acknowledgementForm.controls["todate"].value;
   }
+  ngAfterViewInit(): void {
+    this.acknowledgementForm.controls["fromdate"].valueChanges.subscribe(
+      (value) => {
+        this.questions[1].minimum = value;
+      }
+    );
+    this.acknowledgementForm.controls["todate"].valueChanges.subscribe(
+      (value) => {
+        this.questions[0].maximum = value;
+      }
+    );
+  }
   Viewbtn() {
     this.acknowledgementlist1();
     // "2022-09-16",
@@ -166,6 +178,8 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
             "YYYY-MM-dd"
           ),
           Number(this.cookie.get("StationId")),
+          // "2022-09-16",
+          // "2022-09-17",
           // 12969,
           // 9923
           Number(this.cookie.get("UserId"))
@@ -180,6 +194,7 @@ export class AcknowledgedScrollAmountReportComponent implements OnInit {
   }
   clear() {
     this.acknowledgementscroll = [];
-    this.acknowledgementForm.reset();
+    this.acknowledgementForm.controls["fromdate"].setValue(this.today);
+    this.acknowledgementForm.controls["todate"].setValue(this.today);
   }
 }

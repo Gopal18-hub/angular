@@ -203,9 +203,9 @@ export class MiscCreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.corporate == 0){
+        if(res.from == "disable"){
           this.comapnyFormGroup.controls["corporate"].disable();
-        }else{
+        } else if(this.comapnyFormGroup.value.company.value) {
           this.comapnyFormGroup.controls["corporate"].enable();
         }
       }
@@ -370,10 +370,13 @@ export class MiscCreditDetailsComponent implements OnInit {
       return { title: l.name, value: l.id };
     });
     let selectedcorporate = this.Miscservice.selectedcorporatedetails;
-    if(!this.corporateexists && selectedcorporate.length > 0){
+    if (!this.corporateexists && (selectedcorporate != null && selectedcorporate.title)) {
       this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
       this.comapnyFormGroup.controls["corporate"].enable();
       this.Miscservice.cacheCreditTabdata.creditCorporate = selectedcorporate;
+    }
+    else if(this.billingservice.disablecorporatedropdown){
+      this.comapnyFormGroup.controls["corporate"].enable();
     }
     this.companyQuestions[1] = { ...this.companyQuestions[1] };
   }
@@ -381,9 +384,9 @@ export class MiscCreditDetailsComponent implements OnInit {
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
-      height: "50%",
+      height: "90%",
       data: {
-        company: this.comapnyFormGroup.value.company,
+        company: this.comapnyFormGroup.value.company.value,
       },
     });
   }
@@ -413,8 +416,9 @@ export class MiscCreditDetailsComponent implements OnInit {
         height: "80%",
         data: {
           serviceconfiguration: miscServiceitemsConfig,
-          patientdetails: this.Miscservice.getFormLsit(),
-          companyname: this.companyname,
+          patientdetails: this.billingservice.patientDetailsInfo,
+          companyname: this.comapnyFormGroup.value.company.title,
+          creditLimit: this.billingservice.creditLimit,      
         },
       });
   }

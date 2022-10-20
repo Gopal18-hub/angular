@@ -1512,4 +1512,8 @@ export namespace ApiConstants {
 
   export const generatehl7outboundmessageris =
     "api/outpatientbilling/generatehl7outboundmessageris";
+
+  export const  getservicestypebycodeid =(codeId:number)=>{
+    return  `environment.BillingApiUrl + "api/outpatientbilling/getservicestype_bycodeid/${codeId}`;
+  };
 }
