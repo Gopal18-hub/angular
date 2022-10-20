@@ -73,4 +73,10 @@ export namespace BillDetailsApiConstants{
     ) => {
         return `${environment.BillingApiUrl}api/outpatientbilling/getmachinedetails/${IPAddress}/${HspLocationID}/${operatorID}`;
     }
+
+    export const getpatientandbilldetailsforrefund = (
+        billno: any
+    ) => {
+        return `${environment.BillingApiUrl}api/outpatientbilling/getpatientandbilldetailsforrefund/${billno}`;
+    }
 }
