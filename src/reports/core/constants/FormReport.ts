@@ -598,6 +598,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
+          required: true,
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl
@@ -610,7 +611,6 @@ export namespace FormReport {
             },
           },
         },
-        defaultValue: "value",
       },
     },
     form: {
@@ -647,6 +647,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Membership---",
           title: "Membership",
+          required: true,
           optionsModelConfig: {
             uri: `${
               environment.CommonApiUrl

@@ -219,9 +219,9 @@ export class MiscellaneousBillingComponent implements OnInit {
         this.miscForm.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.from == "disable"){
+        if (res.from == "disable") {
           this.miscForm.controls["corporate"].disable();
-        } else if(this.miscForm.value.company.value) {
+        } else if (this.miscForm.value.company.value) {
           this.miscForm.controls["corporate"].enable();
         }
       }
@@ -254,52 +254,34 @@ export class MiscellaneousBillingComponent implements OnInit {
       }
     });
     this.miscForm.controls["company"].valueChanges
-    .pipe(distinctUntilChanged())
+      .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res && res.value) {
-          this.Misc.setCompnay(
-            res.value,
-            res,
-            this.miscForm,
-            "header"
-          );
+          this.Misc.setCompnay(res.value, res, this.miscForm, "header");
           this.companyId = res.value;
           this.setItemsToBill.enablecompanyId = true;
-          this.setItemsToBill.companyId =  res;
+          this.setItemsToBill.companyId = res;
           this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
           this.Misc.setPatientDetail(this.patientDetail);
-        }else{
-          this.Misc.setCompnay(
-            res,
-            res,
-            this.miscForm,
-            "header"
-          );
+        } else {
+          this.Misc.setCompnay(res, res, this.miscForm, "header");
+          this.setItemsToBill.companyId = 0;
         }
       });
     this.miscForm.controls["corporate"].valueChanges
-    .pipe(distinctUntilChanged())
+      .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res && res.value) {
-          this.Misc.setCorporate(
-            res.value,
-            res,
-            this.miscForm,
-            "header"
-          );
+          this.Misc.setCorporate(res.value, res, this.miscForm, "header");
           this.corporateId = res.value;
           this.Misc.setPatientDetail(this.patientDetail);
-          this.setItemsToBill.corporateId =  res;
+          this.setItemsToBill.corporateId = res;
           this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
-        }else{
-          this.Misc.setCorporate(
-            res,
-            res,
-            this.miscForm,
-            "header"
-          );
+        } else {
+          this.Misc.setCorporate(res, res, this.miscForm, "header");
+          this.setItemsToBill.corporateId = 0;
         }
       });
     this.miscForm.controls["b2bInvoiceType"].valueChanges
@@ -597,13 +579,7 @@ export class MiscellaneousBillingComponent implements OnInit {
                 regNumber.toString(),
                 patientDetails.genderName
               );
-                this.startProcess(
-                  patientDetails,
-                  resultData,
-                  iacode,
-                  regNumber
-                );
-              
+              this.startProcess(patientDetails, resultData, iacode, regNumber);
             }
           } else {
             this.apiProcessing = false;
@@ -619,20 +595,24 @@ export class MiscellaneousBillingComponent implements OnInit {
         }
       );
   }
- 
-async  startProcess(patientDetails: any, resultData: any, iacode: any,  regNumber: any) {
+
+  async startProcess(
+    patientDetails: any,
+    resultData: any,
+    iacode: any,
+    regNumber: any
+  ) {
     if (
       resultData.dtPatientPastDetails[0] &&
       resultData.dtPatientPastDetails[0].id > 0 &&
       resultData.dtPatientPastDetails[0].data == 1
     ) {
-      this.messageDialogService.info("This Patient is an InPatient");     
-    }
-    else if (
+      this.messageDialogService.info("This Patient is an InPatient");
+    } else if (
       resultData.dtPatientPastDetails[4] &&
       resultData.dtPatientPastDetails[4].id > 0 &&
       resultData.dtPatientPastDetails[4].data > 0
-    ){
+    ) {
       const dialogRef = this.matDialog.open(PaydueComponent, {
         width: "30vw",
         data: {
@@ -651,16 +631,15 @@ async  startProcess(patientDetails: any, resultData: any, iacode: any,  regNumbe
         if ("skipReason" in resAction && resAction.skipReason) {
         }
       }
-    }     
-    else if (
+    } else if (
       resultData.dtPatientPastDetails[2] &&
       resultData.dtPatientPastDetails[2].id > 0 &&
       resultData.dtPatientPastDetails[2].data > 0
-    ){
-      this.Misc.depositDetails(iacode, regNumber);      
+    ) {
+      this.Misc.depositDetails(iacode, regNumber);
     }
   }
- 
+
   ngOnDestroy(): void {
     this.clearForm();
   }
@@ -767,17 +746,20 @@ async  startProcess(patientDetails: any, resultData: any, iacode: any,  regNumbe
   }
   getAllCompany() {
     this.http
-      .get(BillingApiConstants.getcompanydetail(Number(this.cookie.get("HSPLocationId"))))
+      .get(
+        BillingApiConstants.getcompanydetail(
+          Number(this.cookie.get("HSPLocationId"))
+        )
+      )
       .pipe(takeUntil(this._destroying$))
       .subscribe((data: GetCompanyDataInterface[]) => {
-        this.companyList = data;        
-        this.Misc.setCompanyData(data);        
+        this.companyList = data;
+        this.Misc.setCompanyData(data);
         this.miscForm.controls["corporate"].disable();
         this.questions[2].options = this.companyList.map((a) => {
           return { title: a.name, value: a.id, company: a };
         });
-        this.questions[2] = { ...this.questions[2] };     
-       
+        this.questions[2] = { ...this.questions[2] };
       });
   }
 
@@ -786,7 +768,7 @@ async  startProcess(patientDetails: any, resultData: any, iacode: any,  regNumbe
       .get(ApiConstants.getCorporate)
       .pipe(takeUntil(this._destroying$))
       .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;        
+        this.coorporateList = resultData;
         this.Misc.setCorporateData(resultData);
         resultData.unshift({ name: "Select", id: -1 });
         this.questions[3].options = this.coorporateList.map((l) => {

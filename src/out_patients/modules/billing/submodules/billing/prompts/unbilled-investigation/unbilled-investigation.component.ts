@@ -20,7 +20,7 @@ export class UnbilledInvestigationComponent implements OnInit {
       "docName",
       "visitDateTime",
       "labItemPriority",
-      "specialisation",
+      "specialization",
     ],
     columnsInfo: {
       testName: {
@@ -40,7 +40,7 @@ export class UnbilledInvestigationComponent implements OnInit {
         type: "string",
       },
       specialization: {
-        title: "Specialization",
+        title: "Specialisation",
         type: "string",
       },
     },

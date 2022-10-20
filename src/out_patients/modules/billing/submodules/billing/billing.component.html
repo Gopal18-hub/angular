@@ -267,16 +267,18 @@
                     | currency: "INR":undefined:undefined:"en-IN"
                 }}
               </div>
-              <!-- <div class="qms-container ml-3">
+              <div class="qms-container ml-3" *ngIf="enableQMSManagement">
                 <span class="text-white">Counter No. </span
-                ><span class="ml-1 max-health-primary-color font-semi-bold"
-                  >2</span
-                >
+                ><span class="ml-1 max-health-primary-color font-semi-bold">{{
+                  counterId
+                }}</span>
                 <span class="ml-2 text-white">Queue No.</span>
-                <span class="ml-1 max-health-primary-color font-semi-bold"
-                  >23</span
-                >
-              </div> -->
+                <span class="ml-1 max-health-primary-color font-semi-bold">{{
+                  qmsSeqNo
+                }}</span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </div>
 

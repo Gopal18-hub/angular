@@ -52,7 +52,7 @@ export class OrderSetComponent implements OnInit {
       "serviceItemName",
       "precaution",
       "priority",
-      "specialisation",
+      "specialization",
       "doctorName",
       "price",
     ],
@@ -144,11 +144,11 @@ export class OrderSetComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.OrderSetItems;
-    this.data.forEach((item: any, index: number) => {
+    this.billingService.OrderSetItems.forEach((item: any, index: number) => {
       this.config.columnsInfo.doctorName.moreOptions[index] =
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
+    this.data = this.billingService.OrderSetItems;
     this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -175,7 +175,8 @@ export class OrderSetComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "specialization") {
+      if (res.data.col == "specialisation") {
+        res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index

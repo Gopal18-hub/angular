@@ -21,7 +21,6 @@
                 [indeterminate]="selection.hasValue() && !isAllSelected()"
                 [aria-label]="checkboxLabel()"
                 color="primary"
-               
               >
               </mat-checkbox>
             </ng-container>
@@ -549,56 +548,58 @@
 </ng-template>
 
 <ng-template #dropdown let-data>
-  <div [formGroup]="tableForm">
-    <mat-form-field
-      appearance="outline"
-      floatLabel="never"
-      class="table-select-dropdown"
-    >
-      <mat-select
-        [(ngModel)]="data.element[data.col]"
-        [value]="data.element[data.col]"
-        [panelClass]="'im-select-dropdown'"
-        disableOptionCentering
-        (selectionChange)="controlValueChange($event, data)"
-        [required]="data.element[data.col + '_required']"
-        controlDirty
-        placeholder="--Select--"
-        ngModel
-        name="dropdown{{ data.col }}{{ data.index }}"
-        [ngModelOptions]="{ standalone: true }"
-      >
-        <ng-container
-          *ngIf="
-            data.config.columnsInfo[data.col]?.moreOptions &&
-            data.config.columnsInfo[data.col]?.moreOptions[data.index]
-          "
+  <ng-container [formGroup]="tableForm">
+    <ng-container *ngIf="data?.index > -1" formArrayName="data">
+      <div [formGroupName]="data.index">
+        <mat-form-field
+          appearance="outline"
+          floatLabel="never"
+          class="table-select-dropdown"
         >
-          <ng-container
-            *ngFor="
-              let opt of data.config.columnsInfo[data.col].moreOptions[
-                data.index
-              ]
-            "
+          <mat-select
+            [formControlName]="data.col"
+            [value]="data.element[data.col]"
+            [panelClass]="'im-select-dropdown'"
+            disableOptionCentering
+            (selectionChange)="controlValueChange($event, data)"
+            [required]="data.element[data.col + '_required']"
+            placeholder="--Select--"
           >
-            <mat-option [value]="opt.value">
-              {{ opt.title }}
-            </mat-option>
-          </ng-container>
-        </ng-container>
+            <ng-container
+              *ngIf="
+                data.config.columnsInfo[data.col]?.moreOptions &&
+                data.config.columnsInfo[data.col]?.moreOptions[data.index]
+              "
+            >
+              <ng-container
+                *ngFor="
+                  let opt of data.config.columnsInfo[data.col].moreOptions[
+                    data.index
+                  ]
+                "
+              >
+                <mat-option [value]="opt.value">
+                  {{ opt.title }}
+                </mat-option>
+              </ng-container>
+            </ng-container>
 
-        <ng-container *ngIf="!data.config.columnsInfo[data.col]?.moreOptions">
-          <ng-container
-            *ngFor="let opt of data.config.columnsInfo[data.col].options"
-          >
-            <mat-option [value]="opt.value">
-              {{ opt.title }}
-            </mat-option>
-          </ng-container>
-        </ng-container>
-      </mat-select>
-    </mat-form-field>
-  </div>
+            <ng-container
+              *ngIf="!data.config.columnsInfo[data.col]?.moreOptions"
+            >
+              <ng-container
+                *ngFor="let opt of data.config.columnsInfo[data.col].options"
+              >
+                <mat-option [value]="opt.value">
+                  {{ opt.title }}
+                </mat-option>
+              </ng-container>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </ng-container>
+  </ng-container>
 </ng-template>
 
 <ng-template #button let-data>

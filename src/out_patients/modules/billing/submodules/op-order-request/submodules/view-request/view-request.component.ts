@@ -136,7 +136,7 @@ export class OPOrderViewRequest implements OnInit {
         if (data.removed.length == 0 && data.added.length == this.data.length) {
           console.log("first if");
           this.data.forEach((item: any, index: any) => {
-            if (item.orderStatus == "Bill Prepaired") {
+            if (item.orderStatus == "Bill Prepared") {
               this.tableRows.selection.deselect(item);
             } else {
             }
@@ -145,7 +145,7 @@ export class OPOrderViewRequest implements OnInit {
           //masteruncheck
         } else {
           this.data.forEach((item: any) => {
-            if (item.orderStatus == "Bill Prepaired") {
+            if (item.orderStatus == "Bill Prepared") {
               this.flag++;
             }
           });
@@ -166,7 +166,7 @@ export class OPOrderViewRequest implements OnInit {
             console.log(data);
             this.tableRows.selection.selected.forEach(
               (item: any, index: any) => {
-                if (item.orderStatus == "Bill Prepaired") {
+                if (item.orderStatus == "Bill Prepared") {
                   this.tableRows.selection.deselect(item);
                 }
               }
@@ -198,14 +198,16 @@ export class OPOrderViewRequest implements OnInit {
           console.log(response);
           this.data = response as FetchOpOrderrequest[];
           this.apiprocessing = false;
-          for (let i = 0; i < this.data.length; i++) {
-            this.data[i].sno = i + 1;
-            if (this.data[i].orderStatus == "Bill Prepaired") {
-              //this.data[i].disabled = "unclickable";
-              this.data[i].disablecheckbox = true;
-              this.checkflag++;
-            } else {
-              this.data[i].disablecheckbox = false;
+          if (this.data != null && this.data != undefined) {
+            for (let i = 0; i < this.data.length; i++) {
+              this.data[i].sno = i + 1;
+              if (this.data[i].orderStatus == "Bill Prepared") {
+                //this.data[i].disabled = "unclickable";
+                this.data[i].disablecheckbox = true;
+                this.checkflag++;
+              } else {
+                this.data[i].disablecheckbox = false;
+              }
             }
           }
         },
@@ -254,7 +256,7 @@ export class OPOrderViewRequest implements OnInit {
     console.log(event);
     console.log(this.tableRows.selection);
     this.data.forEach((item: any, index: any) => {
-      if (item.orderStatus == "Bill Prepaired") {
+      if (item.orderStatus == "Bill Prepared") {
         console.log(this.tableRows.selection);
         setTimeout(() => {
           this.tableRows.selection.deselect(item);
