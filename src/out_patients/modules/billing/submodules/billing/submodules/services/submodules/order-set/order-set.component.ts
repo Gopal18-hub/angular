@@ -52,7 +52,7 @@ export class OrderSetComponent implements OnInit {
       "serviceItemName",
       "precaution",
       "priority",
-      "specialisation",
+      "specialization",
       "doctorName",
       "price",
     ],
@@ -175,7 +175,7 @@ export class OrderSetComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "specialization") {
+      if (res.data.col == "specialisation") {
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
