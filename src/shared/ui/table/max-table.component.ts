@@ -442,7 +442,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.stringLinkOutput.emit(data);
   }
   controlValueChange($event: any, data: any) {
-    console.log($event, data);
+    data.element[data.col] = $event.value;
     this.controlValueChangeTrigger.emit({ $event, data });
   }
   actionItemClick(item: any, data: any) {
