@@ -28,6 +28,7 @@ import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
 import { PatientService } from "@core/services/patient.service";
 import { Form60YesOrNoComponent } from "./form60-dialog/form60-yes-or-no.component";
+import { BillingApiConstants } from "../billing/BillingApiConstant";
 
 @Component({
   selector: "out-patients-deposit",
@@ -74,6 +75,13 @@ export class DepositComponent implements OnInit {
         this.depositForm.value.maxid = lookupdata[0]["maxid"];
         this.iacode = this.depositForm.value.maxid.split(".")[0];
         this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
+        const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
+        if (expiredStatus) {
+          const dialogRef = this.messageDialogService.error(
+            "Patient is an Expired Patient!"
+          );
+          await dialogRef.afterClosed().toPromise();
+        }
         this.getPatientDetailsForDeposit();
       }
     } else if (lookupdata.length > 1) {
@@ -88,7 +96,7 @@ export class DepositComponent implements OnInit {
       similarSoundDialogref
         .afterClosed()
         .pipe(takeUntil(this._destroying$))
-        .subscribe((result: any) => {
+        .subscribe(async (result: any) => {
           if (result) {
             console.log(result.data["added"][0].maxid);
             let maxID = result.data["added"][0].maxid;
@@ -96,10 +104,15 @@ export class DepositComponent implements OnInit {
 
             this.iacode = maxID.split(".")[0];
             this.regNumber = Number(maxID.split(".")[1]);
+            const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
+            if ( expiredStatus) {
+              const dialogRef = this.messageDialogService.error(
+                "Patient is an Expired Patient!"
+              );
+               dialogRef.afterClosed().toPromise();
+            }
             this.getPatientDetailsForDeposit();
           }
-
-          //this.similarContactPatientList = [];
         });
     }
   }
@@ -326,7 +339,7 @@ export class DepositComponent implements OnInit {
   patientservicetype: any;
   patientdeposittype: any;
   regNumber: number = 0;
-  iacode: string | undefined;
+  iacode: string = "";
   hspLocationid: any = Number(this.cookie.get("HSPLocationId"));
   depoistList: any = [];
   MaxIDExist: boolean = false;
@@ -456,7 +469,7 @@ export class DepositComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
+    this.questions[0].elementRef.addEventListener("keypress", async (event: any) => {
       // If the user presses the "Enter" key on the keyboard
 
       if (event.key === "Enter") {
@@ -474,6 +487,13 @@ export class DepositComponent implements OnInit {
             this.regNumber != 0 &&
             !Number.isNaN(Number(this.regNumber))
           ) {
+            const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
+            if ( expiredStatus) {
+              const dialogRef = this.messageDialogService.error(
+                "Patient is an Expired Patient!"
+              );
+               dialogRef.afterClosed().toPromise();
+            }
             this.getDepositType();
             this.getPatientDetailsForDeposit();
           } else {
@@ -764,13 +784,20 @@ export class DepositComponent implements OnInit {
               similarSoundDialogref
                 .afterClosed()
                 .pipe(takeUntil(this._destroying$))
-                .subscribe((result) => {
+                .subscribe(async (result) => {
                   if (result) {
                     console.log(result.data["added"][0].maxid);
                     let maxID = result.data["added"][0].maxid;
                     this.iacode = maxID.split(".")[0];
                     this.regNumber = Number(maxID.split(".")[1]);
                     this.depositForm.controls["maxid"].setValue(maxID);
+                    const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
+                    if ( expiredStatus) {
+                      const dialogRef = this.messageDialogService.error(
+                        "Patient is an Expired Patient!"
+                      );
+                       dialogRef.afterClosed().toPromise();
+                    }
                     this.getPatientDetailsForDeposit();
                   }
                   this.similarContactPatientList = [];
@@ -905,6 +932,26 @@ export class DepositComponent implements OnInit {
         );
       }
     }
+  }
+
+ async checkPatientExpired(iacode: string , regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res == null) {
+      return;
+    }
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
