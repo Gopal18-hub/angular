@@ -22,16 +22,18 @@
         <mat-label class="max-health-primary-color mr-2 font-bold"
           >Investigations</mat-label
         >
-        <maxhealth-question
+        <!-- <div class="max-width"> -->
+          <maxhealth-question
           [question]="questions[1]"
           [form]="formGroup"
           [questions]="questions[1]"
           [index]="1"
-          class="w-9/10"
-          [class.fontcolor]="outsource"
-        
+          class="w-9/10 max-width"
+          [class.fontcolor]="outsource" 
         >
         </maxhealth-question>
+        <!-- </div> -->
+       
       </div>
     </form>
     <div class="flex w-36 align-items-center justify-end">
