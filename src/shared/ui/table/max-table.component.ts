@@ -143,6 +143,25 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
         return !item[this.config.groupby.childcolumn];
       });
     }
+    let formData: any = [];
+    this.data.forEach((it: any) => {
+      let group: any = {};
+      Object.keys(it).forEach((itk) => {
+        if (
+          this.config.columnsInfo[itk] &&
+          this.config.columnsInfo[itk].type == "dropdown"
+        ) {
+          if (itk + "_required" in it && it[itk + "_required"]) {
+            group[itk] = new FormControl(it[itk], Validators.required);
+          } else {
+            group[itk] = new FormControl(it[itk]);
+          }
+        }
+      });
+      const fg = new FormGroup(group);
+      formData.push(fg);
+    });
+    this.tableForm.setControl("data", new FormArray(formData));
     this.dataSource = new MatTableDataSource<any>(this.data);
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
@@ -202,13 +221,14 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
 
-    this.dataSource = new MatTableDataSource<any>(this.data);
-    if (this.sort) this.dataSource.sort = this.sort;
     let formData: any = [];
     this.data.forEach((it: any) => {
       let group: any = {};
       Object.keys(it).forEach((itk) => {
-        if (this.config.columnsInfo[itk] == "dropdown") {
+        if (
+          this.config.columnsInfo[itk] &&
+          this.config.columnsInfo[itk].type == "dropdown"
+        ) {
           if (itk + "_required" in it && it[itk + "_required"]) {
             group[itk] = new FormControl(it[itk], Validators.required);
           } else {
@@ -220,6 +240,10 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       formData.push(fg);
     });
     this.tableForm.setControl("data", new FormArray(formData));
+
+    this.dataSource = new MatTableDataSource<any>(this.data);
+    if (this.sort) this.dataSource.sort = this.sort;
+
     this.displayColumnsInfo = this.config.columnsInfo;
     this.displayedColumns = this.config.displayedColumns;
     if (this.config.selectBox && !this.displayedColumns.includes("select")) {
