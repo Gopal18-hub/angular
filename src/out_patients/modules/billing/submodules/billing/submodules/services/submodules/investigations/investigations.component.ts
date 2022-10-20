@@ -196,6 +196,7 @@ export class InvestigationsComponent implements OnInit {
     });
     this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialisation") {
+        res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
