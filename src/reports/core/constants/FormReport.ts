@@ -609,7 +609,6 @@ export namespace FormReport {
             },
           },
         },
-        defaultValue: "value",
       },
     },
     form: {
