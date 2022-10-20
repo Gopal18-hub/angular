@@ -33,6 +33,7 @@ export class ConfigurationBillingComponent implements OnInit {
       serviceconfiguration: any;
       patientdetails: any;
       companyname: string;
+      creditLimit: string;
     },
     private calculateBillService: CalculateBillService
   ) {}
@@ -92,7 +93,7 @@ export class ConfigurationBillingComponent implements OnInit {
   maxid: string | undefined;
   companyname: string | undefined;
   tpa: string | undefined;
-  creditlimit: string | undefined;
+  creditLimit: string | undefined;
 
   ngOnInit(): void {
     this.companyservice = this.data.serviceconfiguration;
@@ -105,6 +106,7 @@ export class ConfigurationBillingComponent implements OnInit {
       this.data.patientdetails.registrationno;
     this.companyname = this.data.companyname;
     this.patientname = this.data.patientdetails.firstname;
+    this.creditLimit = this.data.creditLimit;
   }
 
   clearconfiguration() {
@@ -114,7 +116,7 @@ export class ConfigurationBillingComponent implements OnInit {
     this.patientname = "";
     this.companyname = "";
     this.tpa = "";
-    this.creditlimit = "";
+    this.creditLimit = "";
   }
   saveconfiguration() {
     const saveDialogRef = this.messageDialogService.confirm(

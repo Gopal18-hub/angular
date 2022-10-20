@@ -12,8 +12,8 @@ export namespace FormReport {
       defaultValue: moment().format("DD/MM/YYYY"),
       properties: {
         Cmb_Equip: {
-          type: "dropdown",
-
+          // type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Equipment---",
           title: "Equipment Name",
           // defaultValue: "0",
@@ -29,12 +29,12 @@ export namespace FormReport {
         EquipFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
         EquipToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
       },
     },
@@ -356,7 +356,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "autocomplete",
-          placeholder: "---All Specialisation---",
+          placeholder: "---AllSpecialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -432,12 +432,12 @@ export namespace FormReport {
         ValueFromDate: {
           type: "date",
           title: "From Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
         ValueToDate: {
           type: "date",
           title: "To Date",
-          defaultValue: new Date().toISOString().slice(0, 10),
+          defaultValue: new Date(),
         },
       },
     },
@@ -540,7 +540,7 @@ export namespace FormReport {
           },
         },
         MemberShipNo: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Membership---",
           title: "",
           questionClasses: "max-hide",
@@ -609,6 +609,7 @@ export namespace FormReport {
             },
           },
         },
+        defaultValue: "value",
       },
     },
     form: {
@@ -706,7 +707,7 @@ export namespace FormReport {
         //   title: "Location",
         // },
         locationid: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
           optionsModelConfig: {
@@ -768,7 +769,7 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         cmbLocation: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
@@ -781,7 +782,7 @@ export namespace FormReport {
           },
         },
         cmbopenscrolltype: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Open Scroll---",
           title: "Open Scroll For",
           defaultValue: "0",
@@ -845,7 +846,7 @@ export namespace FormReport {
           defaultValue: new Date().toISOString().slice(0, 10),
         },
         locationid: {
-          type: "autocomplete",
+          type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
