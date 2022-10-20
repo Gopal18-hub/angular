@@ -416,9 +416,9 @@ export class MiscCreditDetailsComponent implements OnInit {
         height: "80%",
         data: {
           serviceconfiguration: miscServiceitemsConfig,
-          patientdetails: this.billingservice.patientDetailsInfo,
+          patientdetails: this.Miscservice.patientDetail,
           companyname: this.comapnyFormGroup.value.company.title,
-          creditLimit: this.billingservice.creditLimit,      
+          creditLimit: this.Miscservice.creditLimit,      
         },
       });
   }
