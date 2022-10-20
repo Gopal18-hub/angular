@@ -382,11 +382,13 @@ export class OrderProcedureOtherComponent implements OnInit {
         BillingApiConstants.getPrice(
           priorityId,
           this.formGroup.value.procedure.value,
-          this.otherserviceId,
+          this.formGroup.value.procedure.serviceid,
           this.cookie.get("HSPLocationId")
         )
       )
       .subscribe((res: any) => {
+        console.log(res);
+        console.log(this.otherserviceId);
         this.opOrderrequestService.addToProcedure({
           sno: this.data.length + 1,
           procedures: this.formGroup.value.procedure.originalTitle,
