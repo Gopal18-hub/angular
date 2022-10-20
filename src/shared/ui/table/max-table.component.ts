@@ -277,6 +277,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.displayedColumns.splice(-1);
       }
     }
+    this.tableForm.markAllAsTouched();
   }
 
   ngAfterViewInit() {
