@@ -15,6 +15,8 @@ import { takeUntil } from "rxjs/operators";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { DepositService } from "@core/services/deposit.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { HttpService } from "@shared/services/http.service";
+import { BillingApiConstants } from "../../../BillingApiConstant";
 
 @Component({
   selector: "billing-payment-methods",
@@ -39,23 +41,38 @@ export class BillingPaymentMethodsComponent implements OnInit {
 
   activeTab: any;
 
+  bankList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private depositservice: DepositService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private http: HttpService
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.config.totalAmount) {
       this.totalAmount = this.config.totalAmount;
     }
+    const bankNames = await this.http
+      .get(BillingApiConstants.getbanknames)
+      .toPromise();
+    this.bankList = bankNames.map((bn: any) => {
+      return {
+        title: bn.name,
+        value: bn.id,
+      };
+    });
+    const formOptions = {
+      bankList: this.bankList,
+    };
     this.config.paymentmethods.forEach((method: string, index: number) => {
       const form: any =
         PaymentMethods[
           PaymentMethods.methods[method].form as keyof typeof PaymentMethods
-        ];
+        ](formOptions);
       const temp: any = {
         key: method,
         form: form,
@@ -96,9 +113,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
-        this.paymentForm[this.activeTab.key].controls["price"].setValue(
-          this.remainingAmount
-        );
+        // this.paymentForm[this.activeTab.key].controls["price"].setValue(
+        //   this.remainingAmount
+        // );
       }
     }
   }

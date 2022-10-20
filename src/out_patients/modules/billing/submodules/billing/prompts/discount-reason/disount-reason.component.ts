@@ -26,7 +26,7 @@ export class DisountReasonComponent implements OnInit {
     properties: {
       types: {
         type: "dropdown",
-        title: "Discount Types",       
+        title: "Discount Types",
         placeholder: "-Select-",
       },
       head: {
@@ -79,7 +79,7 @@ export class DisountReasonComponent implements OnInit {
       "totalAmt",
       "head",
       "reason",
-      "value",
+      //"value",
     ],
     clickedRows: false,
     clickSelection: "single",
@@ -117,7 +117,7 @@ export class DisountReasonComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -131,14 +131,14 @@ export class DisountReasonComponent implements OnInit {
       },
       discAmt: {
         title: "Dis. Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
       },
       totalAmt: {
         title: "Total Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "8rem",
         },
@@ -158,13 +158,13 @@ export class DisountReasonComponent implements OnInit {
         },
         moreOptions: {},
       },
-      value: {
-        title: "Value Based",
-        type: "string",
-        style: {
-          width: "8rem",
-        },
-      },
+      // value: {
+      //   title: "Value Based",
+      //   type: "currency",
+      //   style: {
+      //     width: "8rem",
+      //   },
+      // },
     },
   };
   discAmtForm!: FormGroup;
@@ -183,6 +183,9 @@ export class DisountReasonComponent implements OnInit {
   disableAdd: boolean = false;
 
   @ViewChild("table") tableRows: any;
+
+  dualList: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -222,9 +225,10 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes.map((a:any) => {
+      this.question[0].options = this.discounttypes.map((a: any) => {
         return { title: a.title, value: a.value };
       });
+      this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.getDiscountReasonHead();
     this.getBillDiscountReason();
@@ -339,6 +343,13 @@ export class DisountReasonComponent implements OnInit {
       );
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.calculateBillService.calculateDiscount();
+    if (this.selectedItems.length === 0) {
+      this.disableAdd = false;
+      this.dualList = [];
+    }
+    if (!this.discAmtForm.value.types) {
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }
   }
 
   prepareData() {
@@ -393,7 +404,6 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
-
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
@@ -422,9 +432,11 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
-
+    this.dualList.push(4);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
+    if (this.dualList.includes(5)) {
+      this.disableAdd = true;
+    }
   }
 
   OnCompanyPrepare() {
@@ -452,9 +464,12 @@ export class DisountReasonComponent implements OnInit {
     this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
       this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
+    this.dualList.push(5);
 
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
-    this.disableAdd = true;
+    if (this.dualList.includes(4)) {
+      this.disableAdd = true;
+    }
   }
 
   OnItemPrepare() {
@@ -475,10 +490,10 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: item.price * item.qty,
-          disc: existReason.discountPer,
-          discAmt: discAmt,
-          totalAmt: price - discAmt,
+          price: (item.price * item.qty).toFixed(2),
+          disc: existReason.discountPer.toFixed(2),
+          discAmt: discAmt.toFixed(2),
+          totalAmt: (price - discAmt).toFixed(2),
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
@@ -490,10 +505,13 @@ export class DisountReasonComponent implements OnInit {
         k++;
 
         this.calculateBillService.discountSelectedItems.push(temp);
+
+        this.selectedItems = [
+          ...this.calculateBillService.discountSelectedItems,
+        ];
       }
     }
 
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
 
@@ -527,8 +545,9 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtFormConfig.columnsInfo.reason.moreOptions[i] =
         this.discAmtFormConfig.columnsInfo.reason.options;
       this.calculateBillService.discountSelectedItems.push(temp);
+
+      this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     }
-    this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
   }
 
@@ -536,6 +555,9 @@ export class DisountReasonComponent implements OnInit {
     this.disableAdd = false;
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
+    if (!this.discAmtForm.value.types) {
+      this.discAmtForm.controls["types"].setValue("On-Bill");
+    }
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
@@ -596,7 +618,7 @@ export class DisountReasonComponent implements OnInit {
     this.http
       .get(
         ApiConstants.getbilldiscountreason(
-         Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))

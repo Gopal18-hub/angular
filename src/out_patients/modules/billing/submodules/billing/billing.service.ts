@@ -1,22 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { Registrationdetails } from "@core/types/registeredPatientDetial.Interface";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "./BillingApiConstant";
 import { BillingStaticConstants } from "./BillingStaticConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { IomCompanyBillingComponent } from "./prompts/iom-company-billing/iom-company-billing.component";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
-import { of } from "rxjs";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
-
+import { PaymentMethods } from "@core/constants/PaymentMethods";
 @Injectable({
   providedIn: "root",
 })
@@ -73,11 +67,13 @@ export class BillingService {
 
   companyData: any = [];
   corporateData: any = [];
-  selectedcompanydetails: any = [];
+  selectedcompanydetails: any = {};
   selectedcorporatedetails: any = [];
   iomMessage: string = "";
   activeLink = new Subject<any>();
   disableServiceTab: boolean = false;
+  disablecorporatedropdown: boolean = false;
+  creditLimit:number = 0;
 
   maxIdEventFinished = new Subject<any>();
 
@@ -142,7 +138,7 @@ export class BillingService {
     );
     this.companyData = [];
     this.corporateData = [];
-    this.selectedcompanydetails = [];
+    this.selectedcompanydetails = {};
     this.selectedcorporatedetails = [];
   }
 
@@ -293,6 +289,9 @@ export class BillingService {
       });
   }
 
+  setCreditLimit(data:any){
+   this.creditLimit = data;
+  }
   setCompnay(
     companyid: number,
     res: any,
@@ -311,7 +310,7 @@ export class BillingService {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
-    } else {
+    } else if(res.title) {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
       this.companyChangeEvent.next({ company: res, from });
@@ -335,15 +334,16 @@ export class BillingService {
           if (result.data == "corporate") {
             formGroup.controls["corporate"].enable();
             formGroup.controls["corporate"].setValue(null);
-            this.corporateChangeEvent.next({ corporate: null, from });
+            this.corporateChangeEvent.next({ corporate: null, from });  
+            this.disablecorporatedropdown = true;      
           } else {
             formGroup.controls["corporate"].setValue(null);
             formGroup.controls["corporate"].disable();
-            this.corporateChangeEvent.next({ corporate: 0, from });
+            this.corporateChangeEvent.next({ corporate: null, from:"disable" });           
           }
         });
       } else {
-        this.corporateChangeEvent.next({ corporate: 0, from });
+        this.corporateChangeEvent.next({ corporate: null, from:"disable" });
         formGroup.controls["corporate"].setValue(null);
         formGroup.controls["corporate"].disable();
       }
@@ -356,17 +356,28 @@ export class BillingService {
     formGroup: any,
     from: string = "header"
   ) {
-    if (res === "") {
+    if (res === "" || res == null) {
       this.corporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
+      this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
+      if(corporateid){
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
+      }
+      else{
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = "";
+      }
+     
     }
   }
 
   setCompanyData(data: any) {
     this.companyData = data;
+    this.companyChangeEvent.next({company: null,from: "header"});
   }
 
   setCorporateData(data: any) {
@@ -796,12 +807,20 @@ export class BillingService {
         if (paymentmethod.paymentForm[payment.key].value.price > 0) {
           this.makeBillPayload.ds_paymode.tab_paymentList.push({
             slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
-            modeOfPayment: "Cash",
+            modeOfPayment:
+              paymentmethod.paymentForm[payment.key].value.modeOfPayment,
             amount: parseFloat(
               paymentmethod.paymentForm[payment.key].value.price
             ),
             flag: 1,
           });
+          if ("payloadKey" in payment.method) {
+            this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
+              PaymentMethods[
+                payment.method.payloadKey as keyof typeof PaymentMethods
+              ](paymentmethod.paymentForm[payment.key].value),
+            ];
+          }
         }
       });
       this.makeBillPayload.ds_insert_bill.tab_insertbill.twiceConsultationReason =

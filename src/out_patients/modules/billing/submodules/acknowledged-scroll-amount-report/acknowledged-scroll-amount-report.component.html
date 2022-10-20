@@ -43,7 +43,8 @@
                     <mat-label class="max-health-primary-color font-semi-bold wt-nowrap">Scroll No.</mat-label>
                 </div>
                 <div class="ml-1 w-5/9 bg-white border-radius-md">
-                    <maxhealth-question  [question]="questions[2]"
+                    <maxhealth-question  
+                    [question]="questions[2]"
                     [form]="acknowledgementForm"
                     [questions]="questions[2]"
                     [index]="0">
@@ -77,7 +78,7 @@
                     <button mat-raised-button color="primary" [disabled]="true" type="submit">Excel</button>
                 </div>
                 <div class="ml-3">
-                    <button mat-raised-button color="primary" type="submit">Clear</button>
+                    <button mat-raised-button color="primary" [disabled]="!acknowledgementForm.dirty" (click)="clear()" type="submit">Clear</button>
                 </div>
             </div>
     </div>

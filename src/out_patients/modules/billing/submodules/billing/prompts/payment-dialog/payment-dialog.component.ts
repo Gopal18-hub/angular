@@ -5,12 +5,10 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
-import { ApiConstants } from "@core/constants/ApiConstants";
 import { BillingPaymentMethodsComponent } from "./payment-methods/payment-methods.component";
 import { CookieService } from "@shared/services/cookie.service";
-import { HttpService } from "@shared/services/http.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-import { Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
 
@@ -82,7 +80,6 @@ export class BillPaymentDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
-    private http: HttpService,
     private billingService: BillingService,
     private miscService: MiscService
   ) {}
@@ -97,9 +94,18 @@ export class BillPaymentDialogComponent implements OnInit {
     this.totaldue = this.due;
     this.patientInfo = {
       patientinfo: {
-        emailId: this.billingService.patientDetailsInfo.peMail == undefined ? this.miscService.patientDetail.mail : this.billingService.patientDetailsInfo.peMail,
-        mobileno: this.billingService.patientDetailsInfo.pCellNo  == undefined ? this.miscService.patientDetail.cellNo : this.billingService.patientDetailsInfo.pCellNo ,
-        panno : this.billingService.patientDetailsInfo.paNno == undefined ?  this.miscService.patientDetail.paNno : this.billingService.patientDetailsInfo.paNno
+        emailId:
+          this.billingService.patientDetailsInfo.peMail == undefined
+            ? this.miscService.patientDetail.mail
+            : this.billingService.patientDetailsInfo.peMail,
+        mobileno:
+          this.billingService.patientDetailsInfo.pCellNo == undefined
+            ? this.miscService.patientDetail.cellNo
+            : this.billingService.patientDetailsInfo.pCellNo,
+        panno:
+          this.billingService.patientDetailsInfo.paNno == undefined
+            ? this.miscService.patientDetail.paNno
+            : this.billingService.patientDetailsInfo.paNno,
       },
     };
   }
@@ -116,12 +122,16 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
+    if ((this.data.name == "Misc Billing")) {
+      this.miscService.makeBill(this.paymentmethod);
+      this.dialogRef.close("MakeBill");
+      return;
+    }
     const res = await this.billingService.makeBill(this.paymentmethod);
     if (res.length > 0) {
       if (res[0].billNo) {
         this.dialogRef.close(res[0]);
-      }
-      else{
+      } else {
         this.dialogRef.close(res[0]);
       }
     }

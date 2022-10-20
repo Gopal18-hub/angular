@@ -147,7 +147,7 @@ export class CreditDetailsComponent implements OnInit {
       console.log(res);
       if (res.from != "credit") {
         this.companyexists = true;
-        this.companyname = res.company.title;
+        this.companyname = res.company != null ? res.company.title : "";
         this.getAllCompany();
         this.comapnyFormGroup.controls["company"].setValue(res.company, {
           emitEvent: false,
@@ -162,9 +162,9 @@ export class CreditDetailsComponent implements OnInit {
         this.comapnyFormGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.corporate == 0){
+        if(res.from == "disable"){
           this.comapnyFormGroup.controls["corporate"].disable();
-        }else{
+        } else if(this.comapnyFormGroup.value.company.value) {
           this.comapnyFormGroup.controls["corporate"].enable();
         }
       }
@@ -183,7 +183,7 @@ export class CreditDetailsComponent implements OnInit {
       return { title: a.name, value: a.id, company: a };
     });
     let selectedcompany = this.billingservice.selectedcompanydetails;
-    if (!this.companyexists && selectedcompany.length > 0) {
+    if (!this.companyexists && selectedcompany && selectedcompany.value) {
       this.comapnyFormGroup.controls["company"].setValue(
         this.billingservice.selectedcompanydetails
       );
@@ -199,8 +199,11 @@ export class CreditDetailsComponent implements OnInit {
       return { title: l.name, value: l.id };
     });
     let selectedcorporate = this.billingservice.selectedcorporatedetails;
-    if (!this.corporateexists && selectedcorporate.length > 0) {
+    if (!this.corporateexists && (selectedcorporate != null && selectedcorporate.title)) {
       this.comapnyFormGroup.controls["corporate"].setValue(selectedcorporate);
+      this.comapnyFormGroup.controls["corporate"].enable();
+    }
+    else if(this.billingservice.disablecorporatedropdown){
       this.comapnyFormGroup.controls["corporate"].enable();
     }
     this.companyQuestions[1] = { ...this.companyQuestions[1] };
@@ -209,9 +212,9 @@ export class CreditDetailsComponent implements OnInit {
   openIOM() {
     this.matDialog.open(IomPopupComponent, {
       width: "70%",
-      height: "50%",
+      height: "90%",
       data: {
-        company: this.comapnyFormGroup.value.company,
+        company: this.comapnyFormGroup.value.company.value,
       },
     });
   }
@@ -223,7 +226,7 @@ export class CreditDetailsComponent implements OnInit {
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
         if (res.value != null && res.value != 0 && res.value != undefined) {
-          var comarr = this.companyList.filter(i => {
+          var comarr = this.companyList.filter((i) => {
             return i.id == res.value;
           });
           this.companyname = comarr[0].name;
@@ -248,7 +251,7 @@ export class CreditDetailsComponent implements OnInit {
     this.comapnyFormGroup.controls["corporate"].valueChanges
       .pipe(distinctUntilChanged())
       .subscribe((res: any) => {
-        if(res != "" && res != null){
+        if (res != "" && res != null) {
           if (res.value != null && res.value != 0 && res.value != undefined) {
             this.corporateexists = true;
             this.billingservice.setCorporate(
@@ -258,8 +261,7 @@ export class CreditDetailsComponent implements OnInit {
               "credit"
             );
           }
-        }
-        else {
+        } else {
           this.corporateexists = false;
           this.billingservice.setCorporate(
             res,
@@ -285,8 +287,9 @@ export class CreditDetailsComponent implements OnInit {
         height: "80%",
         data: {
           serviceconfiguration: configurationitems,
-          patientdetails: this.billingservice.getPatientDetails(),
-          companyname: this.companyname,
+          patientdetails: this.billingservice.patientDetailsInfo,
+          companyname: this.comapnyFormGroup.value.company.title,
+          creditLimit: this.billingservice.creditLimit,
         },
       });
     }

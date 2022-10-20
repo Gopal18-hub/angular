@@ -23,6 +23,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { VisitHistoryComponent } from "@shared/modules/visit-history/visit-history.component";
 import { MatDialog } from "@angular/material/dialog";
+import * as moment from "moment";
 
 @Component({
   selector: "out-patients-registration-unmerging",
@@ -228,6 +229,7 @@ export class RegistrationUnmergingComponent implements OnInit {
           this.showunmergespinner = false;
           resultData = resultData.map((item: any) => {
             item.notereason = item.noteReason;
+            item.age= this.onageCalculator(item.dob);
             return item;
           });
           this.unmergingList = resultData;
@@ -294,6 +296,34 @@ export class RegistrationUnmergingComponent implements OnInit {
     return this.http.get(
       ApiConstants.mergePatientSearchApi(this.maxid, this.ssn)
     );
+  }
+
+  onageCalculator(ageDOB = "") {
+    if (ageDOB) {
+      let dobRef = moment(ageDOB);
+      if (!dobRef.isValid()) {
+        return;
+      }
+      const today = moment();
+      const diffYears = today.diff(dobRef, "years");
+      const diffMonths = today.diff(dobRef, "months");
+      const diffDays = today.diff(dobRef, "days");
+     
+      let returnAge = "";
+      if (diffYears > 0) {
+        returnAge = diffYears + " Year(s)";
+      } else if (diffMonths > 0) {
+        returnAge = diffYears + " Month(s)";
+      } else if (diffDays > 0) {
+        returnAge = diffYears + " Day(s)";
+      } else if (diffYears < 0 || diffMonths < 0 || diffDays < 0) {
+        returnAge = "N/A";
+      } else if (diffDays == 0) {
+        returnAge = "1 Day(s)";
+      }
+      return returnAge;
+    }
+    return "N/A";
   }
 
   unMergePatient(unmergeJSONObject: PatientmergeModel[]) {

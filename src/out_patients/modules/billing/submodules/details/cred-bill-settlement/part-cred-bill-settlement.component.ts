@@ -26,7 +26,7 @@ export class PartialCredBillComponent implements OnInit {
     private router: Router,
     private http: HttpService,
     private cookie: CookieService,
-    private billDetailService: billDetailService,
+    public billDetailService: billDetailService,
     private reportService:ReportService
   ) {}
 
@@ -220,6 +220,9 @@ export class PartialCredBillComponent implements OnInit {
           this.getreceiptnumber();     
           console.log("Refund Dialog closed");
           console.log(result);
+          this.router.navigate(
+            ["out-patient-billing/details", "services"],
+            { queryParams: {billno: this.billDetailService.activeBillNo}});
         //}    
       });
     }
