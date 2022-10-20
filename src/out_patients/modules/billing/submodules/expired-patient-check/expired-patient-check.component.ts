@@ -349,7 +349,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
     if (this.expiredpatientForm.value.checkbox == false) {
       this.dialog.open(SaveexpiredpatientDialogComponent, {
         width: "25vw",
-        height: "30vh",
+        height: "37vh",
       });
     } else if (this.expiredpatientForm.value.remarks == "") {
       this.messagedialogservice.info("Please enter remarks");
@@ -440,14 +440,14 @@ export class ExpiredPatientCheckComponent implements OnInit {
     if (this.expiredpatientForm.value.checkbox == false) {
       this.dialog.open(SaveexpiredpatientDialogComponent, {
         width: "25vw",
-        height: "30vh",
+        height: "37vh",
       });
     } else if (this.expiredpatientForm.value.remarks == "") {
       this.messagedialogservice.info("Please enter remarks");
     } else {
       let dialogRef = this.dialog.open(DeleteexpiredpatientDialogComponent, {
         width: "25vw",
-        height: "30vh",
+        height: "37vh",
       });
 
       dialogRef.afterClosed().subscribe((result) => {

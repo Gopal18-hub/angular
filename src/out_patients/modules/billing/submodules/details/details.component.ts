@@ -651,6 +651,12 @@ export class DetailsComponent implements OnInit {
               this.linkList[2].disabled = true;
               this.linkList[3].disabled = true;
             }
+            else
+            {
+              this.linkList[1].disabled = false;
+              this.linkList[2].disabled = false;
+              this.linkList[3].disabled = false;
+            }
             this.BServiceForm.controls["billNo"].setValue(this.billno);
             this.billFormfill();
             if (
