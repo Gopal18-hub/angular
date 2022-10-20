@@ -326,7 +326,12 @@ export class OnlineDepositReportComponent implements OnInit {
 
 }
 ngAfterViewInit(){
-  
+  this.onlinedepositForm.controls['startdate'].valueChanges.subscribe(value => {
+    this.questions[1].minimum = value;
+  })
+  this.onlinedepositForm.controls['enddate'].valueChanges.subscribe(value => {
+    this.questions[0].maximum = value;
+  })
 }
 getdepositstatus()
   {

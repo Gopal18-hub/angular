@@ -176,6 +176,13 @@ export class BillDetailsRefundDialogComponent implements OnInit {
   billrefundforsingleitem: billRefundforSingleItem = new billRefundforSingleItem();
   cancelVisitNumberinRefundList: cancelVisitNumberinRefund = new cancelVisitNumberinRefund();
   refundafteracklistforfull: refundbillafteracknowledgementforfull = new refundbillafteracknowledgementforfull();
+
+
+  bankid: any;
+  valid_date: any;
+  priority: any;
+  transMode: any;
+
   constructor(
     public matDialog: MatDialog, 
     private formService: QuestionControlService, 
@@ -198,7 +205,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       this.dueFormData.properties,
       {}
     );
-    if(this.router.url == '/out-patient-billing/details/services')
+    if(this.router.url.split('?')[0] == '/out-patient-billing/details/services')
     {
       this.simpleRefund = 1;
       this.AckRefund = 0;
@@ -447,6 +454,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         this.messageDialogService.info('Please Enter Bank name.')
       }
       else{
+        this.bankid = this.dueform.controls['chequebankname'].value;
+        this.valid_date = this.dueform.controls['chequevalidity'].value;
         this.submitbtncall();
       }
     }
@@ -465,6 +474,8 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       //   this.messageDialogService.info('Validity Date Can not be lesser then todays date');
       // }
       else{
+        this.bankid = this.dueform.controls['creditcardtype'].value;
+        this.valid_date = new Date();
         this.submitbtncall();
       }
     }
@@ -483,6 +494,7 @@ export class BillDetailsRefundDialogComponent implements OnInit {
       //   this.messageDialogService.info('Validity Date Can not be lesser then todays date');
       // }
       else{
+        this.valid_date = new Date();
         this.submitbtncall();
       }
     }
@@ -497,6 +509,23 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         this.messageDialogService.info('UPI cannot be blank')
       }
       else{
+        this.valid_date = new Date();
+        this.submitbtncall();
+      }
+    }
+    else if(this.mop == 7) //Online Payment
+    {
+      console.log('Online Paymnet - submit')
+      if(this.dueform.controls['onlinetransacid'].value == '')
+      {
+        this.messageDialogService.info('TransactionID cannot be blank')
+      }
+      else if(this.dueform.controls['onlinebookingid'].value == '')
+      {
+        this.messageDialogService.info('BookingID cannot be blank')
+      }
+      else{
+        this.valid_date = new Date();
         this.submitbtncall();
       }
     }
@@ -702,11 +731,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         reason: this.data.reasonname,
         chequeno: this.dueform.controls['chequeno'].value,
         chequedate: this.dueform.controls['chequeissuedate'].value,
-        bankid: Number(this.dueform.controls['chequebankname'].value),
+        bankid: this.bankid,
         branchname: this.dueform.controls['chequebranchname'].value,
-        validity: this.dueform.controls['chequevalidity'].value,
+        validity: this.valid_date,
         cardtype: Number(this.dueform.controls['creditcardtype'].value),
-        approvalno: '',
+        approvalno: this.dueform.controls['creditbatchno'].value,
         stationid: Number(this.cookie.get('StationId')),
         itemid: item.itemid,
         orderid: item.itemOrderId,
@@ -768,11 +797,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         reason: this.data.reasonname,
         chequeno: this.dueform.controls['chequeno'].value,
         chequedate: this.dueform.controls['chequeissuedate'].value,
-        bankid: Number(this.dueform.controls['chequebankname'].value),
+        bankid: this.bankid,
         branchname: this.dueform.controls['chequebranchname'].value,
-        validity: this.dueform.controls['chequevalidity'].value,
+        validity: this.valid_date,
         cardtype: Number(this.dueform.controls['creditcardtype'].value),
-        approvalno: '',
+        approvalno: this.dueform.controls['creditbatchno'].value,
         stationid: Number(this.cookie.get('StationId')),
         itemid: item.itemid,
         orderid: item.itemOrderId,
@@ -852,11 +881,11 @@ export class BillDetailsRefundDialogComponent implements OnInit {
         reason: this.data.reasonname,
         chequeno: this.dueform.controls['chequeno'].value,
         chequedate: this.dueform.controls['chequeissuedate'].value,
-        bankid: Number(this.dueform.controls['chequebankname'].value),
+        bankid: this.bankid,
         branchname: this.dueform.controls['chequebranchname'].value,
-        validity: this.dueform.controls['chequevalidity'].value,
+        validity: this.valid_date,
         cardtype: Number(this.dueform.controls['creditcardtype'].value),
-        approvalno: '',
+        approvalno: this.dueform.controls['creditbatchno'].value,
         stationid: Number(this.cookie.get('StationId')),
         itemid: item.itemid,
         orderid: item.itemOrderId,
