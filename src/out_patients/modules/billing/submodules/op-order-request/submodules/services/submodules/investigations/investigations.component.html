@@ -53,7 +53,7 @@
         class="font-sm ml-2 min-width-initial"
         type="button"
         (click)="save()"
-        [disabled]="!data.length || opOrderRequestService.getSaveButtonStatus() || opOrderRequestService.getSaveButtonondocrequiredStatus()"
+        [disabled]="!(opOrderRequestService.investigationItems.length || opOrderRequestService.procedureItems.length) || opOrderRequestService.getSaveButtononPriority() || opOrderRequestService.getSaveButtonondocrequiredStatus()"
       >
         Save
       </button>
