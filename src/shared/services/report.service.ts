@@ -40,10 +40,9 @@ export class ReportService {
       class: "material-print-icon",
       image: "",
       click: function (event: any, winbox: any) {
-        // (<any>document.getElementById(reportEntity))
-        //   .querySelector("iframe")
-        //   .contentWindow.document.querySelector("iframe")
-        //   .contentWindow.print();
+        const iframeReportUrl = (<any>document.getElementById(reportEntity))
+          .querySelector("iframe")
+          .contentWindow.document.querySelector("iframe").src;
         // Create a new iframe for the print job
         const printFrame = document.createElement("iframe");
         printFrame.setAttribute(
@@ -85,7 +84,7 @@ export class ReportService {
           };
         });
 
-        req.open("GET", reportUrl + "&printflag=1", true);
+        req.open("GET", iframeReportUrl + "&printflag=1", true);
         req.send();
       },
     });
