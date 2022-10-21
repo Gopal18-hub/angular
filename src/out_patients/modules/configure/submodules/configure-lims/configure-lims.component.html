@@ -44,7 +44,9 @@
             <div class="h-80 mt-2">
                 <maxhealth-table #limstable [config]="config" [data]="limsconfigureList"></maxhealth-table>
             </div>
- 
+            <div *ngIf="apiprocessing"  class="flex align-items-center justify-center  h-full w-full fixed left-0-% top-0-% z-50 api-loader">
+                <mat-spinner strokeWidth="2"></mat-spinner>
+            </div>
         </div>
     </mat-tab-nav-panel>    
 </section> 

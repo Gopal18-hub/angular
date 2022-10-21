@@ -235,34 +235,46 @@ export class ConfigureRisComponent implements OnInit {
 
   recreateClick() {
     this.recreateList = [];
-    this.tableRows.selection.selected.forEach((item: any, index: any) => {
-      this.recreateList.push({
-        opbillid: item.billid,
-        serviceId: item.serviceID,
-        itemId: item.itemId,
-        orderId: item.orderId,
-        operatorid: this.userId,
+    if (this.tableRows.selection.selected.length == 0) {
+      this.dialogService.info("Please select atleast one item from the list");
+      return;
+    } else {
+      this.tableRows.selection.selected.forEach((item: any, index: any) => {
+        this.recreateList.push({
+          opbillid: item.billid,
+          serviceId: item.serviceID,
+          itemId: item.itemId,
+          orderId: item.orderId,
+          operatorid: this.userId,
+        });
       });
-    });
-    console.log(this.recreateList);
-    this.http
-      .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (result) => {
-          console.log(result);
-          if (result == "done") {
-            this.dialogService.success("Order Successfully Generated");
+      console.log(this.recreateList);
+      this.http
+        .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (result) => {
+            console.log(result);
+            if (result == "Done") {
+              this.dialogService.success("Order Successfully Generated");
+              this.risconfigurelist = [];
+            }
+          },
+          (error) => {
+            console.log(error);
+            if (error.error.text == "Done") {
+              // this.dialogService.success("Order Successfully Generated");
+              // this.risconfigurelist = [];
+              // this.tableRows.selection.clear();
+            }
           }
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+        );
+    }
   }
 
   cleardata() {
     console.log("inside cleardata");
+    this.tableRows.selection.clear();
     this.risconfigurelist = [];
     this.risconfigureform.reset();
     this.risconfigureform.controls["billdropdown"].setValue(1);
