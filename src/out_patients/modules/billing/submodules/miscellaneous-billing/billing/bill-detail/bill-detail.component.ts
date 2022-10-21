@@ -350,8 +350,8 @@ export class BillDetailComponent implements OnInit {
       "Qty",
       "PriceNo",
       "DoctorName",
-      "DiscNo",
-      "DiscAmountNo",
+      "Disc",
+      "DiscAmount",
       "TotalAmntNo",
       "GSTNo",
     ],
@@ -389,7 +389,7 @@ export class BillDetailComponent implements OnInit {
       },
       TariffPriceNo: {
         title: "Tariff Price",
-        type: "number",
+        type: "currency",
         style: {
           width: "160px",
         },
@@ -403,7 +403,7 @@ export class BillDetailComponent implements OnInit {
       },
       PriceNo: {
         title: "Price",
-        type: "string",
+        type: "currency",
         style: {
           width: "160px",
         },
@@ -416,30 +416,30 @@ export class BillDetailComponent implements OnInit {
           width: "160px",
         },
       },
-      DiscNo: {
+      Disc: {
         title: "Disc%",
         type: "string",
         style: {
           width: "60px",
         },
       },
-      DiscAmountNo: {
+      DiscAmount: {
         title: "Disc. Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "160px",
         },
       },
       TotalAmntNo: {
         title: "Total Amount",
-        type: "string",
+        type: "currency",
         style: {
           width: "160px",
         },
       },
       GSTNo: {
         title: "GST%",
-        type: "string",
+        type: "currency",
         style: {
           width: "70px",
         },
@@ -1090,8 +1090,8 @@ export class BillDetailComponent implements OnInit {
         this.serviceselectedList.forEach((e: any) => {
           e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
           e.PriceNo = Number(e.Price).toFixed(2);
-          e.DiscNo = Number(e.Disc).toFixed(2);
-          e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
+          // e.DiscNo = Number(e.Disc).toFixed(2);
+          // e.DiscAmountNo = Number(e.DiscAmount).toFixed(2);
           e.TotalAmntNo = Number(e.TotalAmount).toFixed(2);
           e.GSTNo = Number(e.GST).toFixed(2);
           e.amountNo = Number(e.amount).toFixed(2);
@@ -1172,8 +1172,8 @@ export class BillDetailComponent implements OnInit {
       Qty: this.miscServBillForm.value.qty,
       Price: this.miscServBillForm.value.reqAmt,
       DoctorName: pDoc,
-      Disc: 1,
-      DiscAmount: 1,
+      Disc: "0.00",
+      DiscAmount: "0.00",
       TotalAmount:
         Number(this.miscServBillForm.value.reqAmt) *
         Number(this.miscServBillForm.value.qty),
@@ -1299,12 +1299,24 @@ export class BillDetailComponent implements OnInit {
 
     discountReasonPopup.afterClosed().subscribe((res) => {
       if ("applyDiscount" in res && res.applyDiscount) {
-        let test = this.calculateBillService.discountSelectedItems;
+        let discountedAmount = 0;
+        let discountRow = this.calculateBillService.discountSelectedItems;
+        this.serviceselectedList.forEach((e: any) => {
+          discountRow.forEach((d: any) => {
+            if (e.ItemDescription == d.doctor) {
+              e.Disc = Number(d.disc);
+              e.DiscAmount = Number(d.discAmt).toFixed(2);
+            }
+          });
+        });
+        this.serviceselectedList = [...this.serviceselectedList];
+        this.calculateBillService.discountSelectedItems.forEach((e: any) => {
+          discountedAmount += Number(e.discAmt);
+        });
         this.miscServBillForm.controls["discAmt"].setValue(
-          this.calculateBillService.totalDiscountAmt.toFixed(2)
+          discountedAmount.toFixed(2)
         );
-        this.calcBillData.totalDiscount =
-          this.calculateBillService.totalDiscountAmt;
+        this.calcBillData.totalDiscount = discountedAmount;
         this.miscPatient.setCalculateBillItems(this.calcBillData);
         let calcBill0 = this.miscPatient.calculateBill();
         // this.miscServBillForm.controls["billAmt"].setValue(
