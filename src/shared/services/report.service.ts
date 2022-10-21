@@ -80,7 +80,7 @@ export class ReportService {
           const iframeElement: any = document.getElementById("report-print");
 
           iframeElement.onload = () => {
-            setTimeout(() => this.performPrint(iframeElement, params), 1000);
+            setTimeout(() => this.performPrint(iframeElement), 1000);
             return;
           };
         });
