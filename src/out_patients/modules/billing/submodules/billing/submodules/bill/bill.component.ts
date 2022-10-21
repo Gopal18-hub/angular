@@ -20,6 +20,7 @@ import { HttpService } from "@shared/services/http.service";
 import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/details/op-prescription-dialog/op-prescription-dialog.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -27,6 +28,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
   styleUrls: ["./bill.component.scss"],
 })
 export class BillComponent implements OnInit, OnDestroy {
+  locationexclude: any = [67,69];
   billDataForm = {
     type: "object",
     title: "",
@@ -827,15 +829,38 @@ export class BillComponent implements OnInit, OnDestroy {
           .afterClosed()
           .pipe(takeUntil(this._destroying$))
           .subscribe((result: any) => {
-            if ("type" in result) {
-              if (result.type == "yes") {
-                this.makePrint();
-              } else {
+           if(this.locationexclude.includes(
+            Number(this.cookie.get("HSPLocationId"))
+          )) {
+            const dialogref = this.matDialog.open(OpPrescriptionDialogComponent, {
+              width: "30vw",
+              height: "35vh",
+            });
+            dialogref.afterClosed().subscribe((res) => {
+              if (res == "yes") {
+                this.reportService.openWindow(
+                  "OP Prescription Report - " + this.billNo,
+                  "PrintOPPrescriptionReport",
+                  {
+                    opbillid:
+                    this.billId,
+                    locationID: this.cookie.get("HSPLocationId"),
+                  }
+                );
               }
-            }
           });
+          }
+          
+          if ("type" in result) {
+
+            if (result.type == "yes") {
+              this.makePrint();
+            } else {
+            }
+          }
       });
-  }
+  });
+}
 
   makePrint() {
     this.reportService.openWindow(

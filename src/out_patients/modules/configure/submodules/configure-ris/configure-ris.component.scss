@@ -3,9 +3,9 @@
      
 }
 .input-padding{
-   ::ng-deep .mat-form-field{
-    padding-bottom:0 rem !important;
-   } 
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
 }
 .text-position{
     position:relative;
@@ -19,13 +19,9 @@
   
 }
 .button-height{
- //   ::ng-deep button{
         height:1.875rem;
-        // ::ng-deep {
-            // .min-width-initial {
               min-width: 92px !important;
-            // }
-  //  }
+      
 }
 .button-height2{
     height:1.875rem;
