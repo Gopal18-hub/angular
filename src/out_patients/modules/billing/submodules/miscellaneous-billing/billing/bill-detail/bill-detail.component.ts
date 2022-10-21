@@ -819,6 +819,16 @@ export class BillDetailComponent implements OnInit {
         this.question[1] = { ...this.question[1] };
       });
   }
+  tablerow(event: any) {
+    if (event.column === "ItemforModify") {
+      this.serviceselectedList.forEach((e: any) => {
+        if (e.ItemDescription == event.row.ItemDescription) {
+          e.ItemforModify = event.row.ItemforModify;
+        }
+      });
+      this.serviceselectedList = [...this.serviceselectedList];
+    }
+  }
   setServiceItemList() {
     if (this.miscServBillForm.value.serviceType) {
       this.serviceID = this.miscServBillForm.value.serviceType.value;
@@ -1644,7 +1654,7 @@ export class BillDetailComponent implements OnInit {
         amount: e.amount,
         discountAmount: 0,
         serviceName: e.serviceName,
-        itemModify: e.itemModify,
+        itemModify: e.ItemforModify,
         discounttype: 0,
         disReasonId: 0,
         docid: e.docid,
