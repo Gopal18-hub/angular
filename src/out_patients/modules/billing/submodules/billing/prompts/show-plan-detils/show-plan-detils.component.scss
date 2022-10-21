@@ -7,3 +7,11 @@
     }
   }
 }
+
+.health-plan-details {
+  ::ng-deep {
+    .mat-column-select {
+      text-align: center;
+    }
+  }
+}
