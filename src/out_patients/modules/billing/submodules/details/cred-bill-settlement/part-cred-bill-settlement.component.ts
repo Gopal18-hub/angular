@@ -177,6 +177,7 @@ export class PartialCredBillComponent implements OnInit {
     this.BServiceForm.controls["prePaidAMt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount.toFixed(2));
     if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billtype == 3)
     {
+      this.makereceiptbtn = true;
       this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2));
     }
     else
@@ -194,7 +195,7 @@ export class PartialCredBillComponent implements OnInit {
     {
       this.BServiceForm.controls["paymentMode"].setValue('companyDue');
       this.BServiceForm.controls["paymentMode"].disable();
-      this.makereceiptbtn = false;
+      this.makereceiptbtn = true;
       this.flagfordue = this.BServiceForm.controls["paymentMode"].value;
     }
     else if(this.BServiceForm.controls["patienDue"].value > 0 && this.BServiceForm.controls["companyDue"].value == 0)
