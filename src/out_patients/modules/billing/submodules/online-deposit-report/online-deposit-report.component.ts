@@ -251,14 +251,14 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "HIS Deposit ID",
           type: "string",
           style: {
-            width: "8rem"
+            width: "10rem"
           }
         },
         receiptNo: {
           title: "Receipt No",
           type: "number",
           style: {
-            width: "5rem"
+            width: "3rem"
           }
         },
         // initDep_OtherDetail: {
