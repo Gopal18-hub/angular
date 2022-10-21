@@ -39,15 +39,15 @@ export class ConfigureLimsComponent implements OnInit {
     selectBox: true,
     // selectCheckBoxPosition: 10,
     clickSelection: "multiple",
-    displayedColumns: ["testname", "ssn", "orderdatetime", "messagestatus"],
+    displayedColumns: ["testName", "ssn", "orderdatetime", "messagestatus"],
     columnsInfo: {
-      testname: {
+      testName: {
         title: "Test Name",
         type: "string",
         style: {
           width: "5rem",
         },
-        tooltipColumn: "testname",
+        tooltipColumn: "testName",
       },
       ssn: {
         title: "SSN",
@@ -106,7 +106,7 @@ export class ConfigureLimsComponent implements OnInit {
           data.added.length == this.dataconfig.length
         ) {
           console.log("first if");
-          this.dataconfig.forEach((item: any, index: any) => {
+          this.limsconfigureList.forEach((item: any, index: any) => {
             if (item.messagestatus == "created") {
               this.tableRows.selection.deselect(item);
             } else {
@@ -115,7 +115,7 @@ export class ConfigureLimsComponent implements OnInit {
           console.log(this.tableRows.selection.selected);
           //masteruncheck
         } else {
-          this.dataconfig.forEach((item: any) => {
+          this.limsconfigureList.forEach((item: any) => {
             if (item.messagestatus == "created") {
               this.flag++;
             }
@@ -124,13 +124,14 @@ export class ConfigureLimsComponent implements OnInit {
           if (data.removed.length == 0 && data.added.length == this.flag) {
             console.log(this.tableRows.selection.selected);
             console.log("second if");
-            this.dataconfig.forEach((item: any) => {
+            this.limsconfigureList.forEach((item: any) => {
               this.tableRows.selection.deselect(item);
             });
           } else if (
             this.tableRows.selection.selected.length !=
               this.tableRows.selection._selectedToEmit.length &&
-            this.tableRows.selection.selected.length == this.dataconfig.length
+            this.tableRows.selection.selected.length ==
+              this.limsconfigureList.length
           ) {
             console.log(this.tableRows.selection.selected);
             console.log("third else");
@@ -152,7 +153,7 @@ export class ConfigureLimsComponent implements OnInit {
     this.http
       .get(
         ApiConstants.gethl7outboundmessageris(
-          "1",
+          "LIMS",
           this.limsconfigureform.controls["billno"].value
         )
       )
@@ -170,34 +171,47 @@ export class ConfigureLimsComponent implements OnInit {
   }
   recreateClick() {
     this.recreateList = [];
-    this.tableRows.selection.selected.forEach((item: any, index: any) => {
-      this.recreateList.push({
-        opbillid: item.billid,
-        serviceId: item.serviceID,
-        itemId: item.itemId,
-        orderId: item.orderId,
-        operatorid: this.userId,
+    if (this.tableRows.selection.selected.length == 0) {
+      this.dialogService.info("Please select atleast one item from the list");
+      return;
+    } else {
+      this.tableRows.selection.selected.forEach((item: any, index: any) => {
+        this.recreateList.push({
+          opbillid: item.billid,
+          serviceId: item.serviceID,
+          itemId: item.itemId,
+          orderId: item.orderId,
+          operatorid: this.userId,
+        });
       });
-    });
-    console.log(this.recreateList);
-    this.http
-      .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (result) => {
-          console.log(result);
-          if (result == "done") {
-            this.dialogService.success("Order Successfully Generated");
+      console.log(this.recreateList);
+      this.http
+        .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (result) => {
+            console.log(result);
+            if (result == "Done") {
+              this.dialogService.success("Order Successfully Generated");
+              this.limsconfigureList = [];
+              this.tableRows.selection.clear();
+            }
+          },
+          (error) => {
+            console.log(error);
+            if (error.error.text == "Done") {
+              // this.dialogService.success("Order Successfully Generated");
+              // this.limsconfigureList = [];
+              // this.tableRows.selection.clear();
+            }
           }
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+        );
+    }
   }
 
   cleardata() {
     console.log("inside cleardata");
+    this.tableRows.selection.clear();
     this.limsconfigureList = [];
     this.limsconfigureform.reset();
   }

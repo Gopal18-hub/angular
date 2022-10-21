@@ -1,8 +1,8 @@
 .gridheight{
     height:90%;
   }
-  .max-width{
+  .dropdown-width{
     ::ng-deep .mat-autocomplete-panel{
-      max-width:500px !important;
+      max-width:300px !important;
     }
  }
