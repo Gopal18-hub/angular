@@ -352,7 +352,7 @@ export class BillDetailComponent implements OnInit {
       "DoctorName",
       "Disc",
       "DiscAmount",
-      "TotalAmntNo",
+      "TotalAmount",
       "GSTNo",
     ],
     columnsInfo: {
@@ -430,7 +430,7 @@ export class BillDetailComponent implements OnInit {
           width: "160px",
         },
       },
-      TotalAmntNo: {
+      TotalAmount: {
         title: "Total Amount",
         type: "currency",
         style: {
@@ -651,7 +651,8 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["discAmtCheck"].setValue(false);
           this.miscServBillForm.controls["discAmt"].setValue(0 + ".00");
           this.miscServBillForm.controls["billAmt"].setValue(
-            calcBill0.totalBillAmount.toFixed(2)
+            //  calcBill0.totalBillAmount.toFixed(2)
+            this.TotalAmount.toFixed(2)
           );
           this.miscServBillForm.controls["amtPayByPatient"].setValue(
             calcBill0.amntPaidBythePatient.toFixed(2)
@@ -675,7 +676,8 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["dipositAmt"].setValue(0 + ".00");
           this.miscServBillForm.controls["dipositAmtEdit"].setValue(0 + ".00");
           this.miscServBillForm.controls["billAmt"].setValue(
-            calcBill0.totalBillAmount.toFixed(2)
+            //calcBill0.totalBillAmount.toFixed(2)
+            this.TotalAmount.toFixed(2)
           );
           this.miscServBillForm.controls["amtPayByPatient"].setValue(
             calcBill0.amntPaidBythePatient.toFixed(2)
@@ -1316,6 +1318,7 @@ export class BillDetailComponent implements OnInit {
             if (e.ItemDescription == d.doctor) {
               e.Disc = Number(d.disc);
               e.DiscAmount = Number(d.discAmt).toFixed(2);
+              e.TotalAmount = Number(d.totalAmt).toFixed(2);
             }
           });
         });
@@ -1609,14 +1612,16 @@ export class BillDetailComponent implements OnInit {
     this.getgstdata();
     this.getDipositedAmountByMaxID();
     this.serviceselectedList.forEach((element) => {
-      this.TotalAmount = Number(this.TotalAmount) + Number(element.TotalAmount);
+      this.TotalAmount =
+        Number(this.TotalAmount) +
+        Number(element.PriceNo) * Number(element.Qty);
     });
     this.calcBillData.totalAmount = this.TotalAmount;
     this.miscPatient.setCalculateBillItems(this.calcBillData);
     this.billAmnt = this.TotalAmount;
     let calcBill0 = this.miscPatient.calculateBill();
     this.miscServBillForm.controls["billAmt"].setValue(
-      calcBill0.totalBillAmount.toFixed(2)
+      this.TotalAmount.toFixed(2)
     );
     this.miscServBillForm.controls["amtPayByPatient"].setValue(
       calcBill0.amntPaidBythePatient.toFixed(2)
