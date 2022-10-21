@@ -162,9 +162,6 @@ export class BillingComponent implements OnInit, OnDestroy {
     {
       this.enableQMSManagement = true;
     }
-
-    this.getAllCompany();
-    this.getAllCorporate();
     let formResult: any = this.formService.createForm(
       this.formData.properties,
       {}
@@ -176,7 +173,9 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
         this.apiProcessing = true;
-        this.patient = false;
+        this.patient = false;        
+        this.getAllCompany();
+        this.getAllCorporate();
         this.getPatientDetailsByMaxId();
       }
       if (params.orderid) {
@@ -359,7 +358,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "62vh",
+                height: "63vh",
                 data: {
                   searchResults: res,
                 },

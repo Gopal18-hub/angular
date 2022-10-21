@@ -1,4 +1,4 @@
-<section class="configurationbillingbanner">
+<section class="configurationbillingbanner h-full w-full">
   <div class="relative max-health-primary-color">
     <label class="max-health-primary-color font-base font-semi-bold"
       >Patient's Service Configuration</label
@@ -57,7 +57,7 @@
             <label class="max-health-primary-color font-base font-semi-bold"
               >All Items (Paid by Company)
             </label>
-            <div class="mt-1 h-1/2">
+            <div class="mt-1 h-40">
               <ng-container>
                 <maxhealth-table
                   class="w-full"
@@ -74,7 +74,7 @@
             <label class="max-health-primary-color font-base font-semi-bold"
               >Deductible Items (Paid by Patient)
             </label>
-            <div class="mt-1 h-40 w-full">
+            <div class="mt-1 h-40">
               <maxhealth-table
                 [config]="patientbillingconfig"
                 [data]="patientservice"
@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <div class="float-right configbillingbutton mt-3">
+        <div class="float-right configbillingbutton mt-1">
           <button
             mat-raised-button
             color="primary"
