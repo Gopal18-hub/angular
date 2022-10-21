@@ -108,7 +108,7 @@ export class InvestigationsComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
       },
     },
   };
