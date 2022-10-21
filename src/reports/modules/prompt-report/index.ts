@@ -11,7 +11,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { SingleComponent } from "./submodules/single/single.component";
 import { TabsComponent } from "./submodules/tabs/tabs.component";
 import { MatTabsModule } from "@angular/material/tabs";
-
+import { MatIconModule } from "@angular/material/icon";
 @NgModule({
   declarations: [
     PromptReportComponent,
@@ -29,6 +29,7 @@ import { MatTabsModule } from "@angular/material/tabs";
     MatButtonModule,
     MatToolbarModule,
     MatTabsModule,
+    MatIconModule
   ],
   providers: [DatePipe],
 })

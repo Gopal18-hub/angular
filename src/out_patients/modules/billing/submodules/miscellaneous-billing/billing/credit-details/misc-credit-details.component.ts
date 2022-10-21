@@ -205,7 +205,7 @@ export class MiscCreditDetailsComponent implements OnInit {
         });
         if(res.from == "disable"){
           this.comapnyFormGroup.controls["corporate"].disable();
-        } else if(this.comapnyFormGroup.value.company.value) {
+        } else if(this.comapnyFormGroup.value.company) {
           this.comapnyFormGroup.controls["corporate"].enable();
         }
       }
