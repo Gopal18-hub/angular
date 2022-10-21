@@ -31,11 +31,10 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         defaultValue: new Date(),
       },
       Location: {
-        title: "",
         type: "autocomplete",
+        title: "",
         required: true,
         placeholder: "--Select--",
-        //Option: this.locationmaster,
         defaultValue: this.locationmaster,
       },
     },
@@ -45,6 +44,7 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
   msgresponse: any;
   private readonly _destroying$ = new Subject<void>();
   snackbar: any;
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -59,6 +59,8 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
     this.OpConsultform = formResult.form;
     this.questions = formResult.questions;
     this.getLocationMasterdropdown();
+    // this.OpConsultform.controls["Location"].setErrors({ required: true });
+    // this.questions[0].customErrorMessage = "Location Required";
   }
   getLocationMasterdropdown() {
     this.http
@@ -76,8 +78,13 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         this.OpConsultform.controls["Location"].setValue(
           this.locationmaster[0]["id"]
         );
+        this.OpConsultform.controls["Location"].setErrors({
+          incorrect: true,
+        });
+        this.questions[2] = { ...this.questions[2] };
       });
   }
+
   PerformQuery() {
     this.http
       .get(
@@ -90,26 +97,21 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
             this.OpConsultform.controls["todate"].value,
             "YYYY-MM-dd"
           ),
-          this.OpConsultform.controls["Location"].value
+          this.OpConsultform.controls["Location"].value.value
         )
       )
       .subscribe((result) => {
         console.log(result);
-        if (result != null) {
+        if (result) {
           this.msgresponse = "Total No. of OP Consultation: " + result;
-        } else {
-          this.OpConsultform.controls["Location"].setErrors({
-            incorrect: true,
-          });
-          this.questions[2].customErrorMessage = "Location is Required";
         }
+        //else {
+        //   this.OpConsultform.controls["Location"].setErrors({
+        //     incorrect: true,
+        //   });
+        //   this.questions[2].snackbar = "Location is Required";
+        // }
       });
-    // (error: any) => {
-    //   if (error.error == null) {
-    //     this.OpConsultform.controls["Location"];
-    //     this.snackbar.open("Location is Required", "error");
-    //   }
-    // };
   }
   clickbtn() {
     this.OpConsultform.reset();

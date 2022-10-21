@@ -3,7 +3,9 @@
      
 }
 .input-padding{
-    padding-bottom:0px !important;
+   ::ng-deep .mat-form-field{
+    padding-bottom:0 rem !important;
+   } 
 }
 .text-position{
     position:relative;

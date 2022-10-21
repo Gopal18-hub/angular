@@ -6,3 +6,8 @@ width:75px;
 height:75px;
 
 }
+.dialog-height{
+    ::ng-deep .mat-dialog-container{
+        height:96% !important;
+    }
+}
