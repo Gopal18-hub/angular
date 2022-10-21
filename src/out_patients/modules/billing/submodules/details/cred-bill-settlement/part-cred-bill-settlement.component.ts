@@ -175,7 +175,14 @@ export class PartialCredBillComponent implements OnInit {
     this.BServiceForm.controls["dipositrAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].depositamount.toFixed(2));
     this.BServiceForm.controls["discAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].discountamount.toFixed(2));
     this.BServiceForm.controls["prePaidAMt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].collectedamount.toFixed(2));
-    this.BServiceForm.controls["patienDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2));
+    if(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billtype == 3)
+    {
+      this.BServiceForm.controls["companyDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2));
+    }
+    else
+    {
+      this.BServiceForm.controls["patienDue"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].balance.toFixed(2));
+    }
     // this.BServiceForm.controls["refundAmt"].setValue(this.billDetailService.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAmt);
     console.log(this.BServiceForm.controls["prePaidAMt"].value, this.BServiceForm.controls["companyDue"].value)
     if(this.BServiceForm.controls["patienDue"].value == 0 && this.BServiceForm.controls["companyDue"].value == 0)
@@ -216,14 +223,14 @@ export class PartialCredBillComponent implements OnInit {
       RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        //if(result == "Success"){  
+        if(result){  
           this.getreceiptnumber();     
           console.log("Refund Dialog closed");
           console.log(result);
           this.router.navigate(
             ["out-patient-billing/details", "services"],
             { queryParams: {billno: this.billDetailService.activeBillNo}});
-        //}    
+        }    
       });
     }
 
