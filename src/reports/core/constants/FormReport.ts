@@ -358,7 +358,7 @@ export namespace FormReport {
       properties: {
         Cmb_Special: {
           type: "autocomplete",
-          placeholder: "---AllSpecialisation---",
+          placeholder: "---All Specialisation---",
           title: "",
           defaultValue: "0",
           optionsModelConfig: {
@@ -516,6 +516,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Plan Name---",
           title: "",
+          required: true,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
@@ -531,6 +532,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
@@ -545,6 +547,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Membership---",
           title: "",
+          required: true,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${
@@ -708,9 +711,10 @@ export namespace FormReport {
         //   title: "Location",
         // },
         locationid: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
+          required: true,
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
