@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ApiConstants } from "@core/constants/ApiConstants";
 import { SimilarSoundPatientResponse } from "@core/models/getsimilarsound.Model";
 import { patientRegistrationModel } from "@core/models/patientRegistrationModel.Model";
@@ -57,7 +57,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     public billingService: BillingService,
     private snackbar: MaxHealthSnackBarService,
     private patientService: PatientService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private route: ActivatedRoute,
   ) {}
   totalDeposit = 0;
   categoryIcons: any;
@@ -221,7 +222,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         });
         if (res.from == "disable") {
           this.miscForm.controls["corporate"].disable();
-        } else if (this.miscForm.value.company.value) {
+        } else if (this.miscForm.value.company) {
           this.miscForm.controls["corporate"].enable();
         }
       }
@@ -379,6 +380,11 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.miscForm.controls["maxid"].setValue(
       this.cookie.get("LocationIACode") + "."
     );
+    this.router.navigate(["bill"], {
+      queryParams: {},
+      relativeTo: this.route,
+    });
+    this.activeLink = this.links[0];
   }
 
   getssnandmaxid() {
@@ -430,7 +436,7 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.MaxIDExist = true;
 
               this.setValuesToMiscForm(this.patientDetails);
-              this.putCachePatientDetail(this.patientDetails);
+             // this.putCachePatientDetail(this.patientDetails);
 
               this.dsPersonalDetails = resultData.dsPersonalDetails;
               this.dtPatientPastDetails = resultData.dtPatientPastDetails;
@@ -559,7 +565,7 @@ export class MiscellaneousBillingComponent implements OnInit {
               0
             ) {
               this.setValuesToMiscForm(this.patientDetails);
-              this.putCachePatientDetail(this.patientDetails);
+             // this.putCachePatientDetail(this.patientDetails);
               if (
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
                   .pPagerNumber == "ews"
@@ -748,7 +754,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-          Number(this.cookie.get("HSPLocationId"))
+        Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
