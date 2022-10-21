@@ -187,6 +187,7 @@ export class MiscService {
     this.serviceItemsList = [];
     this.referralDoctor = null;
     this.cacheServitem = [];
+    this.creditLimit = 0;
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
