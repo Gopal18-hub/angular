@@ -181,6 +181,7 @@ export class OrderProcedureOtherComponent implements OnInit {
         this.opOrderrequestService.procedureItems[res.data.index].doctorId =
           res.$event.value;
         console.log(this.config.columnsInfo.doctorName.value);
+        this.opOrderrequestService.docRequiredStatusvalue();
       }
     });
     this.formGroup.controls["procedure"].valueChanges
@@ -372,11 +373,6 @@ export class OrderProcedureOtherComponent implements OnInit {
   }
 
   addrow(priorityId = 1) {
-    if (this.formGroup.value.procedure.docRequired == 1) {
-      this.opOrderrequestService.docRequiredStatusvalue(true);
-    } else {
-      this.opOrderrequestService.docRequiredStatusvalue(false);
-    }
     this.http
       .get(
         BillingApiConstants.getPrice(
@@ -408,7 +404,13 @@ export class OrderProcedureOtherComponent implements OnInit {
           specialisation_required: this.formGroup.value.procedure.docRequired
             ? true
             : false,
+          docRequired: this.formGroup.value.procedure.docRequired,
         });
+        if (this.formGroup.value.procedure.docRequired == 1) {
+          this.opOrderrequestService.docRequiredStatusvalue();
+        } else {
+          this.opOrderrequestService.docRequiredStatusvalue();
+        }
         this.opOrderrequestService.calculateTotalAmount();
         this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
@@ -493,7 +495,10 @@ export class OrderProcedureOtherComponent implements OnInit {
   save() {
     this.reqItemDetail = "";
     console.log("inside save");
-    if (this.data.length > 0) {
+    if (
+      this.opOrderrequestService.procedureItems.length > 0 ||
+      this.opOrderrequestService.investigationItems.length > 0
+    ) {
       this.http
         .post(
           BillingApiConstants.SaveDeleteOpOrderRequest,
