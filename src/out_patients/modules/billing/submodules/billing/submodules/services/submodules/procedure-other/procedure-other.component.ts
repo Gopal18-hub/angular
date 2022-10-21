@@ -131,11 +131,11 @@ export class ProcedureOtherComponent implements OnInit {
     );
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
-    this.data = this.billingService.ProcedureItems;
-    this.data.forEach((item: any, index: number) => {
+    this.billingService.ProcedureItems.forEach((item: any, index: number) => {
       this.config.columnsInfo.doctorName.moreOptions[index] =
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
+    this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
     this.billingService.clearAllItems.subscribe((clearItems) => {
@@ -172,6 +172,7 @@ export class ProcedureOtherComponent implements OnInit {
       if (res.data.col == "qty") {
         this.update(res.data.element.sno);
       } else if (res.data.col == "specialisation") {
+        res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
