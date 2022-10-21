@@ -173,7 +173,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
         this.apiProcessing = true;
-        this.patient = false;        
+        this.patient = false;
         this.getAllCompany();
         this.getAllCorporate();
         this.getPatientDetailsByMaxId();
@@ -945,7 +945,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (result && result.showlist) {
         let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
           width: "60vw",
-          height: "50vh",
+          height: "55vh",
           data: {
             investigations: checkinvestigations,
           },
