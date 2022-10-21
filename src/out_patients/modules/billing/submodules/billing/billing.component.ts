@@ -127,6 +127,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   enableQMSManagement:boolean=false;
   queueId:number=0;
   qmsSeqNo:any="";
+  
 
   constructor(
     public matDialog: MatDialog,
@@ -1228,12 +1229,6 @@ export class BillingComponent implements OnInit, OnDestroy {
     if(queuedetail){
       this.queueId = queuedetail.id;
       this.qmsSeqNo = queuedetail.seqNo;
-      if(queuedetail.id == 0){
-        //disable DoneQueue button
-      }
-      else{
-        //enable DoneQueue button
-      }
     }    
   }
 
@@ -1245,7 +1240,6 @@ export class BillingComponent implements OnInit, OnDestroy {
     if(res){
       this.queueId = 0;
       this.qmsSeqNo = "";
-      //disable DoneQueue button
     }
   }
 }

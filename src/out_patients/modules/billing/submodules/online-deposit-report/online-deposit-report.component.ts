@@ -135,21 +135,21 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Max ID",
           type: "string",
           style: {
-            width: "7rem"
+            width: "5rem"
           }
         },
         eMailID: {
           title: "Email ID",
           type: "string",
           style: {
-            width: "7rem"
+            width: "8rem"
           }
         },
         mobileNo: {
           title: "Mobile No",
           type: "number",
           style: {
-            width: "7rem"
+            width: "6rem"
           }
         },
         depositType: {
@@ -171,14 +171,14 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Station Name",
           type: "string",
           style: {
-            width: "7rem"
+            width: "12rem"
           }
         },
         statusDesc:{
           title: "Deposit Status ",
           type: "string",
           style: {
-            width: "6rem"
+            width: "7rem"
           }
 
         },
@@ -194,14 +194,14 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Date",
           type: "date",
           style: {
-            width: "6rem"
+            width: "7rem"
           }
         },
         depositSource:{
           title: "Deposit Source",
           type: "string",
           style: {
-            width: "7rem"
+            width: "8rem"
           }
         },
         
@@ -209,56 +209,56 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Init Dep Date Time",
           type: "date",
           style: {
-            width: "7rem"
+            width: "10rem"
           }
         },
         initDep_Response_ID: {
           title: "Init Deposit Response Time",
           type: "date",
           style: {
-            width: "8rem"
+            width: "13rem"
           }
         },
         pay_Or_PayCheck_Date: {
           title: "Pay Or Pay Check Date",
           type: "string",
           style: {
-            width: "7rem"
+            width: "10rem"
           }
         },
         pay_reference_no: {
           title: "Pay Reference No",
           type: "number",
           style: {
-            width: "7rem"
+            width: "10rem"
           }
         },
         pay_bank_ref_no: {
           title: "Pay Bank Reference No",
           type: "number",
           style: {
-            width: "7rem"
+            width: "10rem"
           }
         },
         hiS_UpdateDateTime: {
           title: "HIS Update Date Time",
           type: "date",
           style: {
-            width: "7rem"
+            width: "10rem"
           }
         },
         hiS_DepositID: {
           title: "HIS Deposit ID",
           type: "string",
           style: {
-            width: "7rem"
+            width: "8rem"
           }
         },
         receiptNo: {
           title: "Receipt No",
           type: "number",
           style: {
-            width: "7rem"
+            width: "5rem"
           }
         },
         // initDep_OtherDetail: {

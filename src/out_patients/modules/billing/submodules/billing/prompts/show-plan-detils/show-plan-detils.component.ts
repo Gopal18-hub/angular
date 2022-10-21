@@ -19,6 +19,7 @@ export class ShowPlanDetilsComponent implements OnInit {
     clickedRows: false,
     actionItems: false,
     selectCheckBoxPosition: 3,
+    selectCheckBoxLabel: "Select*",
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     clickSelection: "single",

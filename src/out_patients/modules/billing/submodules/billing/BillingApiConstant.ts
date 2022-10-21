@@ -263,6 +263,12 @@ export namespace BillingApiConstants {
 
   export const getbanknames = `${environment.CommonApiUrl}api/lookup/getbankname`;
 
+  export const checkopgroupdoctor =(unitDocId:number,locationId:number)=>
+  `${environment.BillingApiUrl}api/outpatientbilling/opcheckdoctorforgroupdoctor/${unitDocId}/${locationId}`;
+
+  export const getlastgrpdocselected =(Regno:number,Iacode:string,locationId:number,docId:number)=>
+  `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${Regno}/${Iacode}/${locationId}/${docId}`;
+
  // #region QMS 
 
  export const getnextqueueno=(locationid:number,stationId:number,counterId:number)=>

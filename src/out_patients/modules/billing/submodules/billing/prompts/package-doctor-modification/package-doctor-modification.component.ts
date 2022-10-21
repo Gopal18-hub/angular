@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
+import { SpecializationService } from "../../specialization.service";
 
 @Component({
   selector: "out-patients-package-doctor-modification",
@@ -47,7 +48,8 @@ export class PackageDoctorModificationComponent implements OnInit {
     public dialogRef: MatDialogRef<PackageDoctorModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private specializationService: SpecializationService
   ) {}
 
   getData(hid: string, serviceid: string) {
@@ -76,24 +78,29 @@ export class PackageDoctorModificationComponent implements OnInit {
       });
   }
 
-  getdoctorlistonSpecializationClinic(
+  async getdoctorlistonSpecializationClinic(
     clinicSpecializationId: number,
     index: number
   ) {
-    this.http
-      .get(
-        BillingApiConstants.getdoctorlistonSpecializationClinic(
-          false,
-          clinicSpecializationId,
-          Number(this.cookie.get("HSPLocationId"))
-        )
-      )
-      .subscribe((res) => {
-        let options = res.map((r: any) => {
-          return { title: r.doctorName, value: r.doctorId };
-        });
-        this.config.columnsInfo.doctorName.moreOptions[index] = options;
-      });
+    this.config.columnsInfo.doctorName.moreOptions[index] =
+      await this.specializationService.getdoctorlistonSpecialization(
+        clinicSpecializationId
+      );
+
+    // this.http
+    //   .get(
+    //     BillingApiConstants.getdoctorlistonSpecializationClinic(
+    //       false,
+    //       clinicSpecializationId,
+    //       Number(this.cookie.get("HSPLocationId"))
+    //     )
+    //   )
+    //   .subscribe((res) => {
+    //     let options = res.map((r: any) => {
+    //       return { title: r.doctorName, value: r.doctorId };
+    //     });
+    //     this.config.columnsInfo.doctorName.moreOptions[index] = options;
+    //   });
   }
 
   ngOnInit(): void {
