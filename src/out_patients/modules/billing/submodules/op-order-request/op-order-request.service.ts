@@ -12,9 +12,9 @@ export class OpOrderRequestService {
   activeLink = new Subject<any>();
   clearAllItems = new Subject<boolean>();
   disableSaveButtonStatus = new Subject<boolean>();
-  disableSavebutton: boolean = false;
-  disablesaveOndoctorreq: boolean = false;
   disablesaveOndoctorreqStatus = new Subject<boolean>();
+  disableSaveonPriority: boolean = false;
+  disablesaveOndoctorreq: boolean = false;
   investigationFormGroup: any = { form: "", questions: [] };
   procedureFormGroup: any = { form: "", questions: [] };
   serviceTab = new Subject<boolean>();
@@ -50,16 +50,37 @@ export class OpOrderRequestService {
     this.procedureFormGroup.form = formgroup;
     this.procedureFormGroup.questions = questions;
   }
-  changeSaveButtonStatus(value: boolean) {
-    this.disableSavebutton = value;
+  saveOnPriority(value: boolean) {
+    this.disableSaveonPriority = value;
     this.disableSaveButtonStatus.next(value);
   }
-  getSaveButtonStatus() {
-    return this.disableSavebutton;
+  getSaveButtononPriority() {
+    return this.disableSaveonPriority;
   }
-  docRequiredStatusvalue(value: boolean) {
-    this.disablesaveOndoctorreq = value;
-    this.disablesaveOndoctorreqStatus.next(value);
+  // docRequiredStatusvalue(value: boolean) {
+  //   this.disablesaveOndoctorreq = value;
+  //   this.disablesaveOndoctorreqStatus.next(value);
+  // }
+  docRequiredStatusvalue() {
+    console.log(this.investigationItems);
+    console.log(this.procedureItems);
+    this.investigationItems.forEach((item: any) => {
+      console.log(item);
+      if (item.docRequired == 1 && item.doctorId == 0) {
+        console.log("inisde inv item docr required loop");
+        this.disablesaveOndoctorreq = true;
+      } else {
+        this.disablesaveOndoctorreq = false;
+      }
+    });
+    this.procedureItems.forEach((item: any) => {
+      if (item.docRequired == 1 && item.doctorId == 0) {
+        this.disablesaveOndoctorreq = true;
+      } else {
+        this.disablesaveOndoctorreq = false;
+      }
+    });
+    console.log(this.disablesaveOndoctorreq);
   }
   getSaveButtonondocrequiredStatus() {
     return this.disablesaveOndoctorreq;
@@ -95,6 +116,8 @@ export class OpOrderRequestService {
     this.investigationFormGroup = { form: "", questions: [] };
     this.procedureFormGroup = { form: "", questions: [] };
     this.totalCost = 0;
+    this.disablesaveOndoctorreq = false;
+    this.disableSaveonPriority = false;
     console.log(this.investigationFormGroup);
   }
 }

@@ -231,7 +231,8 @@ export class OderInvestigationsComponent implements OnInit {
         this.opOrderRequestService.investigationItems[res.data.index].doctorId =
           res.$event.value;
         console.log(this.config.columnsInfo.doctorName.value);
-        this.opOrderRequestService.docRequiredStatusvalue(false);
+        this.opOrderRequestService.docRequiredStatusvalue();
+        //this.opOrderRequestService.docRequiredStatusvalue();
         console.log(
           this.opOrderRequestService.getSaveButtonondocrequiredStatus()
         );
@@ -240,7 +241,8 @@ export class OderInvestigationsComponent implements OnInit {
           this.defaultPriorityId = res.$event.value;
         } else {
           if (this.defaultPriorityId != res.$event.value) {
-            this.opOrderRequestService.changeSaveButtonStatus(true);
+            this.opOrderRequestService.saveOnPriority(true);
+            this.opOrderRequestService.docRequiredStatusvalue();
             const errorDialog = this.messageDialogService.error(
               "Investigations can not have different priorities"
             );
@@ -249,10 +251,10 @@ export class OderInvestigationsComponent implements OnInit {
             this.opOrderRequestService.investigationItems[
               res.data.index
             ].priority = res.$event.value;
-            this.opOrderRequestService.changeSaveButtonStatus(false);
+            this.opOrderRequestService.saveOnPriority(false);
           }
         }
-        console.log(this.opOrderRequestService.getSaveButtonStatus());
+        console.log(this.opOrderRequestService.getSaveButtononPriority());
       }
     });
     this.tableRows.stringLinkOutput.subscribe((res: any) => {
@@ -494,11 +496,7 @@ export class OderInvestigationsComponent implements OnInit {
         console.log(res);
         this.serviceInvestigatationresponse = res;
         console.log(this.formGroup.value.investigation.docRequired);
-        if (this.formGroup.value.investigation.docRequired == 1) {
-          this.opOrderRequestService.docRequiredStatusvalue(true);
-        } else {
-          this.opOrderRequestService.docRequiredStatusvalue(false);
-        }
+
         this.opOrderRequestService.addToInvestigations({
           sno: this.data.length + 1,
           investigations: this.formGroup.value.investigation.title,
@@ -534,7 +532,14 @@ export class OderInvestigationsComponent implements OnInit {
                 ? '<span class="max-health-red-color">P</span>'
                 : this.formGroup.value.investigation.precaution,
           },
+          docRequired: this.formGroup.value.investigation.docRequired,
         });
+        if (this.formGroup.value.investigation.docRequired == 1) {
+          this.opOrderRequestService.docRequiredStatusvalue();
+        } else {
+          this.opOrderRequestService.docRequiredStatusvalue();
+        }
+
         this.opOrderRequestService.calculateTotalAmount();
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
@@ -623,7 +628,10 @@ export class OderInvestigationsComponent implements OnInit {
     console.log(this.data);
     this.reqItemDetail = "";
     console.log("inside save");
-    if (this.data.length > 0) {
+    if (
+      this.opOrderRequestService.procedureItems.length > 0 ||
+      this.opOrderRequestService.investigationItems.length > 0
+    ) {
       // if (this.opOrderRequestService.investigationItems.length > 0)
       this.http
         .post(
