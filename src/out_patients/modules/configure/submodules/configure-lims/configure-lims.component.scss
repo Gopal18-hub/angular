@@ -3,7 +3,9 @@
      
 }
 .input-padding{
-    padding-bottom:0px !important;
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+        padding-bottom: 0rem !important;  
+    }
 }
 .text-position{
     position:relative;
@@ -50,4 +52,7 @@
 }
 .ml-34{
     margin-left:34%
+}
+.bg-white{
+    background:white;
 }

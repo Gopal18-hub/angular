@@ -265,6 +265,7 @@ export class ConfigureRisComponent implements OnInit {
     console.log("inside cleardata");
     this.risconfigurelist = [];
     this.risconfigureform.reset();
+    this.risconfigureform.controls["billdropdown"].setValue(1);
   }
 }
 // "SKCS3760202"

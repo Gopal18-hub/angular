@@ -152,7 +152,7 @@ export class ConfigureLimsComponent implements OnInit {
     this.http
       .get(
         ApiConstants.gethl7outboundmessageris(
-          "1",
+          "LIMS",
           this.limsconfigureform.controls["billno"].value
         )
       )
