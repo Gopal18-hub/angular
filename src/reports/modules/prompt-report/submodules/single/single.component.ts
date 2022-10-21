@@ -66,6 +66,13 @@ export class SingleComponent implements OnInit, OnChanges {
     debugger;
     if (button.type == "clear") {
       this.formGroup.reset();
+      for (var i = 0; i < this.questions.length; i++) {
+        console.log(this.reportConfig.filterForm);
+        if (this.questions[i].type == "date") {
+          this.formGroup.controls[this.questions[i].key].setValue(new Date());
+        }
+        
+      }
     } else if (button.type == "crystalReport") {
       for (var i = 0; i < this.questions.length; i++) {
         console.log(this.reportConfig.filterForm);

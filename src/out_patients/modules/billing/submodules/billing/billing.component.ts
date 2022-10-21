@@ -115,6 +115,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   moment = moment;
 
   narrationAllowedLocations = ["67", "69"];
+  qmsManagementLocations= ["3","8","5","12","20","17","18","21","29"]
 
   companyData!: GetCompanyDataInterface[];
 
@@ -122,6 +123,11 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
+  counterId:number=0;
+  enableQMSManagement:boolean=false;
+  queueId:number=0;
+  qmsSeqNo:any="";
+  
 
   constructor(
     public matDialog: MatDialog,
@@ -146,6 +152,17 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.apiProcessing = false;
       }
     });
+    if(this.cookie.check("Counter_ID")){
+      if(this.cookie.get("Counter_ID")){
+        this.counterId = Number(this.cookie.get("Counter_ID"));
+      }
+    }
+    if(this.counterId > 0 &&
+      this.qmsManagementLocations.includes(this.cookie.get("HSPLocationId")))
+    {
+      this.enableQMSManagement = true;
+    }
+
     this.getAllCompany();
     this.getAllCorporate();
     let formResult: any = this.formService.createForm(
@@ -1201,6 +1218,29 @@ export class BillingComponent implements OnInit, OnDestroy {
         });
         this.questions[4] = { ...this.questions[4] };
       });
+  }
+
+  async getNextQueue(){   
+    let queuedetail = await this.http.get(BillingApiConstants.getnextqueueno(
+        Number(this.cookie.get("HSPLocationId")),
+        Number(this.cookie.get("StationId")),
+        this.counterId)).toPromise();
+
+    if(queuedetail){
+      this.queueId = queuedetail.id;
+      this.qmsSeqNo = queuedetail.seqNo;
+    }    
+  }
+
+  async doneQueue(){
+   let res = await this.http.get(
+     BillingApiConstants.donequeueno(
+      this.queueId,this.counterId)).toPromise();
+
+    if(res){
+      this.queueId = 0;
+      this.qmsSeqNo = "";
+    }
   }
 }
 

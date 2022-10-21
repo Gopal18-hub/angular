@@ -42,7 +42,7 @@ export class ExpiredDepositsComponent implements OnInit {
     properties: {
       maxid: {
         type: "string",
-        required: false,
+        //required: false,
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
@@ -408,17 +408,15 @@ export class ExpiredDepositsComponent implements OnInit {
             //this.sucessflag = false;
             console.log("data");
             this.ExpiredDepositformlist = resultdata;
-            this.exportbtn = true;
-            if (this.sucessflag == true) {
-              this.tablerow.selection.clear();
-              this.ExpiredDepositformlist.forEach((e: any) => {
-                console.log(e);
-                if (this.sucessflag == true && e.id == this.selectedrowid) {
-                  e.isExpdeop = "isExpdeop";
-                }
-              });
-              this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
-            }
+            this.exportbtn = false;
+            this.tablerow.selection.clear();
+            this.ExpiredDepositformlist.forEach((e: any) => {
+              console.log(e);
+              if (e.checkDD != "") {
+                e.isExpdeop = "isExpdeop";
+              }
+            });
+            this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
           }
         });
     }
@@ -679,6 +677,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.patienthistorylist = [];
     this.showtable = true;
     this.clearbtn = true;
+    this.exportbtn = true;
   }
 
   activeClick(event: any) {
