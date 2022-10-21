@@ -771,8 +771,8 @@ export class BillComponent implements OnInit, OnDestroy {
               parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
     const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "65vw",
-      height: "96vh",
+      width: "70vw",
+      height: "99vh",
       data: {
         totalBillAmount: this.billingservice.totalCost,
         totalDiscount: this.formGroup.value.discAmt,
@@ -798,6 +798,9 @@ export class BillComponent implements OnInit, OnDestroy {
             await messageRef.afterClosed().toPromise();
             return;
           }
+        }
+        else{
+            this.calculateBillService.blockActions.next(false);
         }
       });
   }
