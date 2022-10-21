@@ -135,6 +135,7 @@ export class ConsumablesComponent implements OnInit {
 
   getData() {
     this.billingService.ConsumableItems = [];
+    this.billingService.billItems = [];
     return this.http
       .get(
         BillingApiConstants.consumableData(
