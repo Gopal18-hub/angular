@@ -108,7 +108,7 @@ export class ProcedureOtherComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
       },
     },
   };

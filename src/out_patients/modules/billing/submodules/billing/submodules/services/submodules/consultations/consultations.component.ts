@@ -107,7 +107,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
         style: {
           width: "10%",
         },
@@ -413,7 +413,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           if (res == 1) {
             this.checkTwiceConsultation(priorityId);
           } else {
-              //need to call DMG popup then only getcalculateopbill
+            //need to call DMG popup then only getcalculateopbill
             this.checkOpGropupDoctor();
             this.getCalculateOpBill(priorityId);
           }
@@ -433,36 +433,43 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   //API call for group doctor Check
-  async checkOpGropupDoctor(){
-    let dsGroupDoc = await this.http.get(
-      BillingApiConstants.checkopgroupdoctor(
-        this.formGroup.value.doctorName.value,
-       this.locationId)
-    ).toPromise();
-   
-    let dsGroupDocprevious = await this.http.get(
-      BillingApiConstants.getlastgrpdocselected(
-        this.billingService.activeMaxId.regNumber,
-        this.billingService.activeMaxId.iacode,      
-        this.locationId,
-        this.formGroup.value.doctorName.value)
-    ).toPromise();
+  async checkOpGropupDoctor() {
+    let dsGroupDoc = await this.http
+      .get(
+        BillingApiConstants.checkopgroupdoctor(
+          this.formGroup.value.doctorName.value,
+          this.locationId
+        )
+      )
+      .toPromise();
 
-    if(dsGroupDoc){
-      if(dsGroupDoc.isOPGroupDoctor[0].isOPGroupDoctor==1 &&
-          this.userSelectedDMG== 0){
-           const DMGInforef = this.messageDialogService.info("Please select organ (DMG)");
-           await DMGInforef.afterClosed().toPromise();
-            if(dsGroupDoc.dtGrpDoc.length > 0){
-              ///
-            }
-      }
-      else{
-///
+    let dsGroupDocprevious = await this.http
+      .get(
+        BillingApiConstants.getlastgrpdocselected(
+          this.billingService.activeMaxId.regNumber,
+          this.billingService.activeMaxId.iacode,
+          this.locationId,
+          this.formGroup.value.doctorName.value
+        )
+      )
+      .toPromise();
+
+    if (dsGroupDoc) {
+      if (
+        dsGroupDoc.isOPGroupDoctor[0].isOPGroupDoctor == 1 &&
+        this.userSelectedDMG == 0
+      ) {
+        const DMGInforef = this.messageDialogService.info(
+          "Please select organ (DMG)"
+        );
+        await DMGInforef.afterClosed().toPromise();
+        if (dsGroupDoc.dtGrpDoc.length > 0) {
+          ///
+        }
+      } else {
+        ///
       }
     }
-
-
   }
 
   getCalculateOpBill(priorityId = 57) {
