@@ -108,7 +108,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
         style: {
           width: "10%",
         },
