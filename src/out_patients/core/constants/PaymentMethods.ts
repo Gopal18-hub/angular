@@ -9,7 +9,8 @@ export namespace PaymentMethods {
       form: "chequeForm",
       payloadKey: "tab_cheque",
     },
-    credit: { label: "Credit / Debit Card", form: "creditForm", payloadKey: "tab_credit", },
+    credit: { label: "Credit Card", form: "creditForm", payloadKey: "tab_credit", },
+    debit: { label: "Debit Card", form: "debitForm", payloadKey: "tab_debit", },
     demand: {
       label: "Demand Draft",
       form: "demandDraftForm",
@@ -45,7 +46,7 @@ export namespace PaymentMethods {
     return {
       posimei:values.posimei,
       transactionid:values.transactionid,
-      creditcardno: values.creditcardno,
+      ccnumber: values.ccnumber,
       creditholdername: values.creditholdername,
       ccvalidity:values.ccvalidity,
       bankName: values.bankName.title,
@@ -56,6 +57,23 @@ export namespace PaymentMethods {
       banktid:values.banktid,
     };
   };
+
+   export const tab_debit = (values: any) => {
+    return {
+      posimei:values.posimei,
+      transactionid:values.transactionid,
+      ccnumber: values.ccnumber,
+      creditholdername: values.creditholdername,
+      ccvalidity:values.ccvalidity,
+      bankName: values.bankName.title,
+      creditbatchno: values.creditbatchno,
+      creditapproval:values.creditapproval,
+      creditterminal:values.creditterminal,
+      creditacquiring:values.creditacquiring,
+      banktid:values.banktid,
+    };
+  };
+
 
   export const tab_Mobile = (values: any) => {
     return {
@@ -150,7 +168,7 @@ export namespace PaymentMethods {
 
   export const creditForm = (options: any) => {
     return {
-      title: "Credit / Debit Card Details",
+      title: "Credit Card Details",
       type: "object",
       properties: {
          modeOfPayment: {
@@ -170,7 +188,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Transaction ID",
         },
-        creditcardno: {
+        ccnumber: {
           type: "number",
           label: "Card No.",
         },
@@ -211,6 +229,71 @@ export namespace PaymentMethods {
       },
     };
   };
+
+   export const debitForm = (options: any) => {
+    return {
+      title: "Debit Card Details",
+      type: "object",
+      properties: {
+         modeOfPayment: {
+          type: "hidden",
+          value: "Debit Card",
+        },
+        price: {
+          type: "number",
+          defaultValue: "0.00",
+          label: "Amount",
+        },
+        posimei: {
+          type: "dropdown",
+          label: "POS IMEI",
+        },
+         transactionid: {
+          type: "string",
+          label: "Transaction ID",
+        },
+        ccnumber: {
+          type: "number",
+          label: "Card No.",
+        },
+        creditholdername: {
+          type: "string",
+          label: "Card Holder Name",
+        },
+         ccvalidity: {
+          type: "date",        
+          label: "Validity",
+        },
+        bankName: {
+          type: "autocomplete",
+          label: "Bank Name",
+          options: options.bankList,
+        },
+        creditbatchno: {
+          type: "string",
+          label: "Batch No.",
+        }, //10
+
+        creditapproval: {
+          type: "number",
+          label: "Approval Code",
+        },
+        creditterminal: {
+          type: "string",
+          label: "Terminal ID",
+        },
+        creditacquiring: {
+          type: "string",
+          label: "Acquiring Bank",
+        },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
+        },
+      },
+    };
+  };
+
 
   export const demandDraftForm = (options: any) => {
     return {
