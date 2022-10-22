@@ -529,6 +529,8 @@ export class ExpiredDepositsComponent implements OnInit {
                     //this.response.isExpdeop == 1;
                   }
                 });
+              } else {
+                this.tablerow.selection.clear();
               }
             });
         }
