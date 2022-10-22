@@ -1,0 +1,19 @@
+.dmg-btn{
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+}
+.dmg-radio{
+    ::ng-deep mat-radio-button{
+        padding: 0 !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .full-width{
+        width: min-content !important;
+    }
+}
+.h-85{
+    height: 85% !important;
+}

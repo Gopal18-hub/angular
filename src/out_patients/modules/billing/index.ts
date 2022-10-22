@@ -139,6 +139,7 @@ import { MiscCreditDetailsComponent } from "./submodules/miscellaneous-billing/b
 import { MiscDiscountReasonComponent } from "./submodules/miscellaneous-billing/prompts/misc-discount reason/misc-discount-reason.component";
 import { TwiceConsultationReasonComponent } from "./submodules/billing/prompts/twice-consultation-reason/twice-consultation-reason.component";
 import { EcareOpSummaryReportComponent } from './submodules/ecare-op-summary-report/ecare-op-summary-report.component';
+import { DmgOthergrpDocPopupComponent } from './submodules/billing/prompts/dmg-othergrp-doc-popup/dmg-othergrp-doc-popup.component';
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -246,6 +247,7 @@ import { EcareOpSummaryReportComponent } from './submodules/ecare-op-summary-rep
     MiscDiscountReasonComponent,
     TwiceConsultationReasonComponent,
     EcareOpSummaryReportComponent,
+    DmgOthergrpDocPopupComponent,
   ],
   imports: [
     BillingRoutingModule,
