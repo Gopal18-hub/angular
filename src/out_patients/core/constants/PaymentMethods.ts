@@ -46,14 +46,14 @@ export namespace PaymentMethods {
     return {
       posimei:values.posimei,
       transactionid:values.transactionid,
-      ccnumber: values.ccnumber,
+      ccNumber: values.ccNumber,
       creditholdername: values.creditholdername,
-      ccvalidity:values.ccvalidity,
+      cCvalidity:values.cCvalidity,
       bankName: values.bankName.title,
-      creditbatchno: values.creditbatchno,
-      creditapproval:values.creditapproval,
-      creditterminal:values.creditterminal,
-      creditacquiring:values.creditacquiring,
+      approvalno: values.approvalno,
+      approvalcode:values.approvalcode,
+      terminalID:values.terminalID,
+      acquirer:values.acquirer,
       banktid:values.banktid,
     };
   };
@@ -62,9 +62,9 @@ export namespace PaymentMethods {
     return {
       posimei:values.posimei,
       transactionid:values.transactionid,
-      ccnumber: values.ccnumber,
+      ccNumber: values.ccNumber,
       creditholdername: values.creditholdername,
-      ccvalidity:values.ccvalidity,
+      cCvalidity:values.cCvalidity,
       bankName: values.bankName.title,
       creditbatchno: values.creditbatchno,
       creditapproval:values.creditapproval,
@@ -188,7 +188,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Transaction ID",
         },
-        ccnumber: {
+        ccNumber: {
           type: "number",
           label: "Card No.",
         },
@@ -196,7 +196,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Card Holder Name",
         },
-         ccvalidity: {
+         cCvalidity: {
           type: "date",        
           label: "Validity",
         },
@@ -205,20 +205,20 @@ export namespace PaymentMethods {
           label: "Bank Name",
           options: options.bankList,
         },
-        creditbatchno: {
+        approvalno: {
           type: "string",
           label: "Batch No.",
         }, //10
 
-        creditapproval: {
+        approvalcode: {
           type: "number",
           label: "Approval Code",
         },
-        creditterminal: {
+        terminalID: {
           type: "string",
           label: "Terminal ID",
         },
-        creditacquiring: {
+        acquirer: {
           type: "string",
           label: "Acquiring Bank",
         },
@@ -252,7 +252,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Transaction ID",
         },
-        ccnumber: {
+        ccNumber: {
           type: "number",
           label: "Card No.",
         },
@@ -260,7 +260,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Card Holder Name",
         },
-         ccvalidity: {
+         cCvalidity: {
           type: "date",        
           label: "Validity",
         },
