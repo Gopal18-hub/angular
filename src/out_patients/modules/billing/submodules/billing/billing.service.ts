@@ -129,6 +129,7 @@ export class BillingService {
     this.ConsumableItems = [];
     this.totalCost = 0;
     this.activeMaxId = null;
+    this.PaidAppointments=null;
     this.company = 0;
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
