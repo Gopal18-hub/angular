@@ -21,6 +21,7 @@ import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/details/op-prescription-dialog/op-prescription-dialog.component";
+import { BillingApiConstants } from "../../BillingApiConstant";
 
 @Component({
   selector: "out-patients-bill",
@@ -432,7 +433,7 @@ export class BillComponent implements OnInit, OnDestroy {
     // );
   }
 
-  billTypeChange(value: any) {
+  async billTypeChange(value: any) {
     if (value == 1) {
       this.data = this.data.map((dItem: any) => {
         dItem.cash = dItem.totalAmount;
@@ -459,9 +460,46 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       this.data = [...this.data];
     }
+    else if(value == 4){
+      if(this.billingservice.billItems.length > 0){      
+        if(! this.billingservice.billItems[0].serviceName.includes("General OPD PPG")){
+          this.formGroup.controls["paymentMode"].setValue(1);
+          this.messageDialogService.info("You have Selected Dosn't come Under Free OPD");          
+        }
+        else{
+         await this.checkFreeOPD(this.billingservice.billItems[0].itemId);
+        }        
+      }
+      else{
+        const errorRef = this.messageDialogService.error("There is No Item Selected");
+        await errorRef.afterClosed().toPromise();
+        return;
+      }
+     
+    }
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
+  }
+
+  async checkFreeOPD(itemId:any){
+    const res = await this.http.get(
+      BillingApiConstants.checkfreeopdflag(
+        this.billingservice.activeMaxId.regNumber,
+        this.billingservice.activeMaxId.iaCode,
+        itemId
+        )).toPromise();
+    if(res){
+      if(res[0].expfreeopdflag == 1){
+        const expfreeopdRef = this.messageDialogService.info("Registration For Free OPD Expired");
+         await expfreeopdRef.afterClosed().toPromise();      
+      }
+      if(res[0].betweenfreeopflag == 1){
+         const expfreeopdRef = this.messageDialogService.info("Patient already have Free OPD Registration");
+         await expfreeopdRef.afterClosed().toPromise();
+          return;
+      }
+    }
   }
 
   ngAfterViewInit() {
