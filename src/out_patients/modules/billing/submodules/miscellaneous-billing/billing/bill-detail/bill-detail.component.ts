@@ -1622,6 +1622,16 @@ export class BillDetailComponent implements OnInit {
                 this.snackbar.open(error, "error");
               }
             );
+          this.miscPatient.makeBillPayload.ds_paymode = {
+            tab_paymentList: [],
+            tab_cheque: [],
+            tab_dd: [],
+            tab_credit: [],
+            tab_debit: [],
+            tab_Mobile: [],
+            tab_Online: [],
+            tab_UPI: [],
+          };
         }
       });
   }
@@ -1749,24 +1759,8 @@ export class BillDetailComponent implements OnInit {
     };
     //Discount values
     this.postBillObj.dtMiscellaneous_list = miscellaneousData;
-    this.postBillObj.ds_paymode = {
-      tab_paymentList: [
-        {
-          slNo: 1,
-          modeOfPayment: "Cash",
-          amount: Number(this.miscServBillForm.value.amtPayByPatient),
-          flag: 1,
-        },
-      ],
-      tab_cheque: [],
-      tab_dd: [],
-      tab_credit: [],
-      tab_debit: [],
-      tab_Mobile: [],
-      tab_Online: [],
-      tab_UPI: [],
-    };
-    // this.postBillObj.ds_paymode = {
+    this.postBillObj.ds_paymode = this.miscPatient.makeBillPayload.ds_paymode;
+    // {
     //   tab_paymentList: [
     //     {
     //       slNo: 1,
@@ -1776,6 +1770,23 @@ export class BillDetailComponent implements OnInit {
     //     },
     //   ],
     //   tab_cheque: [],
+    //   tab_dd: [],
+    //   tab_credit: [],
+    //   tab_debit: [],
+    //   tab_Mobile: [],
+    //   tab_Online: [],
+    //   tab_UPI: [],
+    // };
+    // this.postBillObj.ds_paymode = {
+    //   tab_paymentList: [
+    //     {
+    //       slNo: 1,
+    //       modeOfPayment: "Cash",
+    //       amount: Number(this.miscServBillForm.value.amtPayByPatient),
+    //       flag: 1,
+    //     },
+    //   ],
+    //   tab_cheque: [],tionid
     //   tab_dd: [],
     //   tab_credit: [],
     //   tab_debit: [],
