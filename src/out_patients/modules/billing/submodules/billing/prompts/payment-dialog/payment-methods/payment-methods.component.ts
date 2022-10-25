@@ -109,13 +109,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
   }
 
   tabChanged(event: MatTabChangeEvent) {
-    this.activeTab = this.tabs[1];
+    this.activeTab = this.tabs[event.index];
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
-        // this.paymentForm[this.activeTab.key].controls["price"].setValue(
-        //   this.remainingAmount
-        // );
+        this.paymentForm[this.activeTab.key].controls["price"].setValue(
+          this.remainingAmount
+        );
       }
     }
   }

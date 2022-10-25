@@ -55,7 +55,7 @@ import {
 export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() config: any;
 
-  @Input() data: any;
+  @Input() data: any=[];
 
   @Input() childTableRefId: any = -1;
 

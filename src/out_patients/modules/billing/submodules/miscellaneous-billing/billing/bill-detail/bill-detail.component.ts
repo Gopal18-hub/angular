@@ -521,7 +521,7 @@ export class BillDetailComponent implements OnInit {
   }
   formEvents() {
     this.getMasterMiscDetail();
-
+    this.refreshForm();
     this.miscServBillForm.controls["paymentMode"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
@@ -736,6 +736,13 @@ export class BillDetailComponent implements OnInit {
       this.amtByComp();
     }
   }
+  refreshForm(){
+    this.miscServBillForm.controls["credLimit"].setValue(this.miscPatient.creditLimit);
+    if(this.serviceselectedList.length > 0){
+      this.miscServBillForm.controls["discAmtCheck"].enable();
+      this.miscServBillForm.controls["dipositAmtcheck"].enable();
+    }
+  }
   onModifyMiscDepositAmt() {
     this.calcBillData.depositInput = Number(
       this.miscServBillForm.value.dipositAmtEdit
@@ -874,7 +881,7 @@ export class BillDetailComponent implements OnInit {
             this.miscPatient.getPriority(this.serviceName),
             this.miscServBillForm.value.item.value,
             this.serviceID,
-            Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
           )
         )
         .pipe(takeUntil(this._destroying$))
@@ -1827,6 +1834,7 @@ export class BillDetailComponent implements OnInit {
     //   //this.isEnableBillBtn = true;
     // }
 
+    this.miscPatient.setCreditLimit(Number(this.miscServBillForm.value.credLimit).toFixed(2));
     if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = balance;
       let tempAmount = this.miscServBillForm.value.credLimit;

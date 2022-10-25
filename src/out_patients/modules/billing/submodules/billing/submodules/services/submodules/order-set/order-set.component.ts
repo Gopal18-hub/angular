@@ -118,7 +118,7 @@ export class OrderSetComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
       },
     },
   };

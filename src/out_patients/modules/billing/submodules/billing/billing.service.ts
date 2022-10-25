@@ -11,6 +11,7 @@ import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
+import { threadId } from "worker_threads";
 @Injectable({
   providedIn: "root",
 })
@@ -311,7 +312,23 @@ export class BillingService {
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
     } else if(res.title) {
-      this.selectedcompanydetails = res;
+      let iscompanyprocess= true;
+      //fix for Staff company validation
+      if(res.company.isStaffcompany){
+        if(this.patientDetailsInfo.companyid > 0){
+          if(res.value != this.patientDetailsInfo.companyid){
+            iscompanyprocess = false;
+            this.resetCompany(res,formGroup,from);
+          }
+        }
+        else{
+          iscompanyprocess = false;  
+          this.resetCompany(res,formGroup,from);         
+        }
+      }
+      
+      if(iscompanyprocess){
+           this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
       this.companyChangeEvent.next({ company: res, from });
       this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = companyid;
@@ -347,7 +364,22 @@ export class BillingService {
         formGroup.controls["corporate"].setValue(null);
         formGroup.controls["corporate"].disable();
       }
+      }  
     }
+  }
+
+  //fix for Staff company validation
+  resetCompany( res: any,
+    formGroup: any,
+    from: string = "header"){
+    formGroup.controls["corporate"].setValue(null);
+    this.corporateChangeEvent.next({ corporate: null, from });
+    formGroup.controls["company"].setValue(null);
+    this.corporateChangeEvent.next({ company: null, from });
+      this.messageDialogService.info(
+              "Selected Patient is not entitled for "+ 
+              res.title+ 
+              " company.Please Contact HR Dept.");
   }
 
   setCorporate(

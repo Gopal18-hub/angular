@@ -35,15 +35,16 @@ export class ReportService {
       height: "85%",
       id: reportEntity,
     });
+    const that = this;
     winbox.addControl({
       index: 0,
       class: "material-print-icon",
       image: "",
       click: function (event: any, winbox: any) {
-        // (<any>document.getElementById(reportEntity))
-        //   .querySelector("iframe")
-        //   .contentWindow.document.querySelector("iframe")
-        //   .contentWindow.print();
+         const iframeReportUrl = (<any>document.getElementById(reportEntity))
+           .querySelector("iframe")
+           .contentWindow.document.querySelector("iframe").src;
+       // const iframeReportUrl = 'http://localhost:55746/MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=Oct 21, 2022&dtpEndDate=Oct 21, 2022&datetype=0&DocID=0&DocID1=true&location=false&Rd_Special=false&LocationName=false';
         // Create a new iframe for the print job
         const printFrame = document.createElement("iframe");
         printFrame.setAttribute(
@@ -80,12 +81,12 @@ export class ReportService {
           const iframeElement: any = document.getElementById("report-print");
 
           iframeElement.onload = () => {
-            setTimeout(() => this.performPrint(iframeElement), 1000);
+            setTimeout(() => that.performPrint(iframeElement), 1000);
             return;
           };
         });
 
-        req.open("GET", reportUrl + "&printflag=1", true);
+        req.open("GET", iframeReportUrl + "&printflag=1", true);
         req.send();
       },
     });

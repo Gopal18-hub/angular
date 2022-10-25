@@ -54,7 +54,7 @@ export class InvestigationOrdersComponent implements OnInit {
 
   invOrderList: any = [];
   invOrderListMain: any;
-  invOrderDetails: any;
+  invOrderDetails: any =[];
   saveInvestigationOrderModel: SaveInvestigationOrderModel | undefined;
   physicianOrderList: any = [];
   objPhyOrder: any = [];
