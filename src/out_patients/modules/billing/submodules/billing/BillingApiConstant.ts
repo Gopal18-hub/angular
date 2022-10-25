@@ -278,4 +278,10 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/DoneQueueNo/${queueId}/${counterId}`;
 
  //#endregion
+
+ export const getgroupdoctormappedwithdmg = (DmgID : number, SpecID : number, HspLocationID: any) => 
+    `${environment.BillingApiUrl}api/outpatientbilling/getgroupdoctormappedwithdmg/${DmgID}/${SpecID}/${HspLocationID}`;
+
+ export const GetClinicDoctorsDMGRota = (DmgID: number, SpecID: number, HspLocationID: any) => 
+    `${environment.BillingApiUrl}api/outpatientbilling/getclinicdoctorsdmgrota/${DmgID}/${SpecID}/${HspLocationID}`;
 }
