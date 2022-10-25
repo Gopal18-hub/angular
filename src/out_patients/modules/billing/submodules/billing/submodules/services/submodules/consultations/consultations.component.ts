@@ -548,12 +548,12 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         data: {
           dmgdata: dmgdata,
           selectedgrpdoc: SelectedGroupDoc,
-          specialization: this.formGroup.value.specialization.value
+          specialization: this.formGroup.value.specialization.value,
+          unitdocid: this.formGroup.value.doctorName.value,
+          reason: OtherGroupDoc?OtherGroupDoc:''
         }
       })
-      const res = await dialogref.afterClosed().toPromise();
-      console.log(res);
-      return res;
+      await dialogref.afterClosed().toPromise();
     }
     
   }
@@ -610,7 +610,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         this.formGroup.reset();
       });
   }
-  
+
   goToBill() {
     this.router.navigate(["../bill"], {
       queryParamsHandling: "merge",

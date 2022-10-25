@@ -83,7 +83,9 @@ export class BillingService {
   refreshBillTab = new Subject<any>();
 
   billingFormGroup: any = { form: "", questions: [] };
-
+  dtCheckedItem: any = {};
+  txtOtherGroupDoc: any = '';
+  dtFinalGrpDoc: any  = {};
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -575,8 +577,11 @@ export class BillingService {
         clinicId: data.clinics || 0,
         //ConsultationTypeId: data.billItem.priorityId,
       });
+      this.makeBillPayload.dtFinalGrpDoc = this.dtFinalGrpDoc;
+      this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
+      this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
-
+    console.log(this.makeBillPayload)
     this.calculateTotalAmount();
   }
 
