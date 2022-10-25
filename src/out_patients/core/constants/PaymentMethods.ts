@@ -9,7 +9,8 @@ export namespace PaymentMethods {
       form: "chequeForm",
       payloadKey: "tab_cheque",
     },
-    credit: { label: "Credit / Debit Card", form: "creditForm", payloadKey: "tab_credit", },
+    credit: { label: "Credit Card", form: "creditForm", payloadKey: "tab_credit", },
+    debit: { label: "Debit Card", form: "debitForm", payloadKey: "tab_debit", },
     demand: {
       label: "Demand Draft",
       form: "demandDraftForm",
@@ -45,9 +46,25 @@ export namespace PaymentMethods {
     return {
       posimei:values.posimei,
       transactionid:values.transactionid,
-      creditcardno: values.creditcardno,
+      ccNumber: values.ccNumber,
       creditholdername: values.creditholdername,
-      ccvalidity:values.ccvalidity,
+      cCvalidity:values.cCvalidity,
+      bankName: values.bankName.title,
+      approvalno: values.approvalno,
+      approvalcode:values.approvalcode,
+      terminalID:values.terminalID,
+      acquirer:values.acquirer,
+      banktid:values.banktid,
+    };
+  };
+
+   export const tab_debit = (values: any) => {
+    return {
+      posimei:values.posimei,
+      transactionid:values.transactionid,
+      ccNumber: values.ccNumber,
+      creditholdername: values.creditholdername,
+      cCvalidity:values.cCvalidity,
       bankName: values.bankName.title,
       creditbatchno: values.creditbatchno,
       creditapproval:values.creditapproval,
@@ -56,6 +73,7 @@ export namespace PaymentMethods {
       banktid:values.banktid,
     };
   };
+
 
   export const tab_Mobile = (values: any) => {
     return {
@@ -150,7 +168,7 @@ export namespace PaymentMethods {
 
   export const creditForm = (options: any) => {
     return {
-      title: "Credit / Debit Card Details",
+      title: "Credit Card Details",
       type: "object",
       properties: {
          modeOfPayment: {
@@ -170,7 +188,7 @@ export namespace PaymentMethods {
           type: "string",
           label: "Transaction ID",
         },
-        creditcardno: {
+        ccNumber: {
           type: "number",
           label: "Card No.",
         },
@@ -178,7 +196,71 @@ export namespace PaymentMethods {
           type: "string",
           label: "Card Holder Name",
         },
-         ccvalidity: {
+         cCvalidity: {
+          type: "date",        
+          label: "Validity",
+        },
+        bankName: {
+          type: "autocomplete",
+          label: "Bank Name",
+          options: options.bankList,
+        },
+        approvalno: {
+          type: "string",
+          label: "Batch No.",
+        }, //10
+
+        approvalcode: {
+          type: "number",
+          label: "Approval Code",
+        },
+        terminalID: {
+          type: "string",
+          label: "Terminal ID",
+        },
+        acquirer: {
+          type: "string",
+          label: "Acquiring Bank",
+        },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
+        },
+      },
+    };
+  };
+
+   export const debitForm = (options: any) => {
+    return {
+      title: "Debit Card Details",
+      type: "object",
+      properties: {
+         modeOfPayment: {
+          type: "hidden",
+          value: "Debit Card",
+        },
+        price: {
+          type: "number",
+          defaultValue: "0.00",
+          label: "Amount",
+        },
+        posimei: {
+          type: "dropdown",
+          label: "POS IMEI",
+        },
+         transactionid: {
+          type: "string",
+          label: "Transaction ID",
+        },
+        ccNumber: {
+          type: "number",
+          label: "Card No.",
+        },
+        creditholdername: {
+          type: "string",
+          label: "Card Holder Name",
+        },
+         cCvalidity: {
           type: "date",        
           label: "Validity",
         },
@@ -211,6 +293,7 @@ export namespace PaymentMethods {
       },
     };
   };
+
 
   export const demandDraftForm = (options: any) => {
     return {
