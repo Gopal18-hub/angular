@@ -11,6 +11,7 @@ import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
+import { threadId } from "worker_threads";
 @Injectable({
   providedIn: "root",
 })
@@ -315,46 +316,76 @@ export class BillingService {
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
     } else if (res.title) {
-      this.selectedcompanydetails = res;
-      this.selectedcorporatedetails = [];
-      this.companyChangeEvent.next({ company: res, from });
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = companyid;
-      this.iomMessage =
-        "IOM Validity till : " +
-        (("iomValidity" in res.company && res.company.iomValidity != "") ||
-        res.company.iomValidity != undefined
-          ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
-          : "");
-      if (res.company.isTPA == 1) {
-        const iomcompanycorporate = this.matDialog.open(
-          IomCompanyBillingComponent,
-          {
-            width: "25%",
-            height: "28%",
+      let iscompanyprocess = true;
+      //fix for Staff company validation
+      if (res.company.isStaffcompany) {
+        if (this.patientDetailsInfo.companyid > 0) {
+          if (res.value != this.patientDetailsInfo.companyid) {
+            iscompanyprocess = false;
+            this.resetCompany(res, formGroup, from);
           }
-        );
+        } else {
+          iscompanyprocess = false;
+          this.resetCompany(res, formGroup, from);
+        }
+      }
 
-        iomcompanycorporate.afterClosed().subscribe((result) => {
-          if (result.data == "corporate") {
-            formGroup.controls["corporate"].enable();
-            formGroup.controls["corporate"].setValue(null);
-            this.corporateChangeEvent.next({ corporate: null, from });
-            this.disablecorporatedropdown = true;
-          } else {
-            formGroup.controls["corporate"].setValue(null);
-            formGroup.controls["corporate"].disable();
-            this.corporateChangeEvent.next({
-              corporate: null,
-              from: "disable",
-            });
-          }
-        });
-      } else {
-        this.corporateChangeEvent.next({ corporate: null, from: "disable" });
-        formGroup.controls["corporate"].setValue(null);
-        formGroup.controls["corporate"].disable();
+      if (iscompanyprocess) {
+        this.selectedcompanydetails = res;
+        this.selectedcorporatedetails = [];
+        this.companyChangeEvent.next({ company: res, from });
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =
+          companyid;
+        this.iomMessage =
+          "IOM Validity till : " +
+          (("iomValidity" in res.company && res.company.iomValidity != "") ||
+          res.company.iomValidity != undefined
+            ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+            : "");
+        if (res.company.isTPA == 1) {
+          const iomcompanycorporate = this.matDialog.open(
+            IomCompanyBillingComponent,
+            {
+              width: "25%",
+              height: "28%",
+            }
+          );
+
+          iomcompanycorporate.afterClosed().subscribe((result) => {
+            if (result.data == "corporate") {
+              formGroup.controls["corporate"].enable();
+              formGroup.controls["corporate"].setValue(null);
+              this.corporateChangeEvent.next({ corporate: null, from });
+              this.disablecorporatedropdown = true;
+            } else {
+              formGroup.controls["corporate"].setValue(null);
+              formGroup.controls["corporate"].disable();
+              this.corporateChangeEvent.next({
+                corporate: null,
+                from: "disable",
+              });
+            }
+          });
+        } else {
+          this.corporateChangeEvent.next({ corporate: null, from: "disable" });
+          formGroup.controls["corporate"].setValue(null);
+          formGroup.controls["corporate"].disable();
+        }
       }
     }
+  }
+
+  //fix for Staff company validation
+  resetCompany(res: any, formGroup: any, from: string = "header") {
+    formGroup.controls["corporate"].setValue(null);
+    this.corporateChangeEvent.next({ corporate: null, from });
+    formGroup.controls["company"].setValue(null);
+    this.corporateChangeEvent.next({ company: null, from });
+    this.messageDialogService.info(
+      "Selected Patient is not entitled for " +
+        res.title +
+        " company.Please Contact HR Dept."
+    );
   }
 
   setCorporate(
