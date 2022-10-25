@@ -9,15 +9,16 @@ export namespace PaymentMethods {
       form: "chequeForm",
       payloadKey: "tab_cheque",
     },
-    credit: { label: "Credit / Debit Card", form: "creditForm" },
+    credit: { label: "Credit Card", form: "creditForm", payloadKey: "tab_credit", },
+    debit: { label: "Debit Card", form: "debitForm", payloadKey: "tab_debit", },
     demand: {
       label: "Demand Draft",
       form: "demandDraftForm",
       payloadKey: "tab_dd",
     },
-    mobilepayment: { label: "Mobile Payment", form: "mobilePaymentForm" },
-    onlinepayment: { label: "Online Payment", form: "onlinePaymentForm" },
-    upi: { label: "UPI", form: "upiForm" },
+    mobilepayment: { label: "Mobile Payment", form: "paytmForm", payloadKey: "tab_Mobile",},
+    onlinepayment: { label: "Online Payment", form: "onlinePaymentForm" , payloadKey: "tab_Online",},
+    upi: { label: "UPI", form: "upiForm" , payloadKey: "tab_UPI",},
   };
 
   export const tab_cheque = (values: any) => {
@@ -40,6 +41,72 @@ export namespace PaymentMethods {
       flag: 1,
     };
   };
+
+  export const tab_credit = (values: any) => {
+    return {
+      posimei:values.posimei,
+      transactionid:values.transactionid,
+      ccNumber: values.ccNumber,
+      creditholdername: values.creditholdername,
+      cCvalidity:values.cCvalidity,
+      bankName: values.bankName.title,
+      approvalno: values.approvalno,
+      approvalcode:values.approvalcode,
+      terminalID:values.terminalID,
+      acquirer:values.acquirer,
+      banktid:values.banktid,
+    };
+  };
+
+   export const tab_debit = (values: any) => {
+    return {
+      posimei:values.posimei,
+      transactionid:values.transactionid,
+      ccNumber: values.ccNumber,
+      creditholdername: values.creditholdername,
+      cCvalidity:values.cCvalidity,
+      bankName: values.bankName.title,
+      creditbatchno: values.creditbatchno,
+      creditapproval:values.creditapproval,
+      creditterminal:values.creditterminal,
+      creditacquiring:values.creditacquiring,
+      banktid:values.banktid,
+    };
+  };
+
+
+  export const tab_Mobile = (values: any) => {
+    return {
+      paytmwallet:values.paytmwallet.title,
+      paytmsendermobile:values.paytmsendermobile,
+      paytmotp: values.paytmotp,
+      paytmtransacref: values.paytmtransacref,
+      paytmorderid: values.paytmorderid,
+    };
+  };
+
+  export const tab_Online = (values: any) => {
+    return {
+      onlinetransacid:values.onlinetransacid,
+      onlinebookingid:values.onlinebookingid,
+      onlinecardvalidate: values.onlinecardvalidate,
+      onlinecontactno: values.onlinecontactno,
+    };
+  };
+
+   export const tab_UPI = (values: any) => {
+    return {
+      upicardno:values.upicardno,
+      upiccvalidity:values.upiccvalidity,
+      upitransactionid:values.upitransactionid,
+      upibankname: values.upibankname,
+      upibatchno: values.upibatchno,
+      upiapproval:values.upiapproval,
+      upiterminal:values.upiterminal,
+      upiacquiring: values.upiacquiring,
+    };
+  };
+
 
   export const cashForm = (options: any) => {
     return {
@@ -101,15 +168,27 @@ export namespace PaymentMethods {
 
   export const creditForm = (options: any) => {
     return {
-      title: "Credit / Debit Card Details",
+      title: "Credit Card Details",
       type: "object",
       properties: {
+         modeOfPayment: {
+          type: "hidden",
+          value: "Credit Card",
+        },
         price: {
           type: "number",
           defaultValue: "0.00",
           label: "Amount",
         },
-        creditcardno: {
+        posimei: {
+          type: "dropdown",
+          label: "POS IMEI",
+        },
+         transactionid: {
+          type: "string",
+          label: "Transaction ID",
+        },
+        ccNumber: {
           type: "number",
           label: "Card No.",
         },
@@ -117,9 +196,78 @@ export namespace PaymentMethods {
           type: "string",
           label: "Card Holder Name",
         },
-        creditbankno: {
-          type: "number",
+         cCvalidity: {
+          type: "date",        
+          label: "Validity",
+        },
+        bankName: {
+          type: "autocomplete",
           label: "Bank Name",
+          options: options.bankList,
+        },
+        approvalno: {
+          type: "string",
+          label: "Batch No.",
+        }, //10
+
+        approvalcode: {
+          type: "number",
+          label: "Approval Code",
+        },
+        terminalID: {
+          type: "string",
+          label: "Terminal ID",
+        },
+        acquirer: {
+          type: "string",
+          label: "Acquiring Bank",
+        },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
+        },
+      },
+    };
+  };
+
+   export const debitForm = (options: any) => {
+    return {
+      title: "Debit Card Details",
+      type: "object",
+      properties: {
+         modeOfPayment: {
+          type: "hidden",
+          value: "Debit Card",
+        },
+        price: {
+          type: "number",
+          defaultValue: "0.00",
+          label: "Amount",
+        },
+        posimei: {
+          type: "dropdown",
+          label: "POS IMEI",
+        },
+         transactionid: {
+          type: "string",
+          label: "Transaction ID",
+        },
+        ccNumber: {
+          type: "number",
+          label: "Card No.",
+        },
+        creditholdername: {
+          type: "string",
+          label: "Card Holder Name",
+        },
+         cCvalidity: {
+          type: "date",        
+          label: "Validity",
+        },
+        bankName: {
+          type: "autocomplete",
+          label: "Bank Name",
+          options: options.bankList,
         },
         creditbatchno: {
           type: "string",
@@ -138,9 +286,14 @@ export namespace PaymentMethods {
           type: "string",
           label: "Acquiring Bank",
         },
+        banktid: {
+          type: "string",
+          label: "Bank TID",
+        },
       },
     };
   };
+
 
   export const demandDraftForm = (options: any) => {
     return {
@@ -228,6 +381,10 @@ export namespace PaymentMethods {
       title: "Online Payment Details",
       type: "object",
       properties: {
+         modeOfPayment: {
+          type: "hidden",
+          value: "Online Payment",
+        },
         price: {
           type: "number",
           defaultValue: "0.00",
@@ -260,30 +417,41 @@ export namespace PaymentMethods {
 
   export const paytmForm = (options: any) => {
     return {
-      title: "",
+      title: "Mobile Payment Details",
       type: "object",
       properties: {
+          modeOfPayment: {
+          type: "hidden",
+          value: "Cash Payment by Mobile",
+        },
         price: {
           type: "number",
           defaultValue: "0.00",
+          label: "Amount",
         },
         paytmwallet: {
-          type: "string",
+          type: "autocomplete",
+          label: "Wallet",
+          options: options.bankList,
         },
         paytmsendermobile: {
           type: "number",
+          label: "Sender Mobile No.",
         },
-        paytmsenername: {
-          type: "string",
-        },
+        // paytmsenername: {
+        //   type: "string",
+        // },
         paytmotp: {
           type: "number",
+          label: "OTP",
         },
         paytmtransacref: {
           type: "string",
+          label: "Transaction Reference",
         },
         paytmorderid: {
           type: "string",
+          label: "Order ID",
         }, ///40
       },
     };
@@ -294,6 +462,10 @@ export namespace PaymentMethods {
       title: "UPI Payment Details",
       type: "object",
       properties: {
+          modeOfPayment: {
+          type: "hidden",
+          value: "UPI",
+        },
         price: {
           type: "number",
           defaultValue: "0.00",
@@ -302,6 +474,10 @@ export namespace PaymentMethods {
         upicardno: {
           type: "number",
           label: "Card No.",
+        },
+        upiccvalidity: {
+          type: "date",         
+          label: "Validity",
         },
         upitransactionid: {
           type: "string",

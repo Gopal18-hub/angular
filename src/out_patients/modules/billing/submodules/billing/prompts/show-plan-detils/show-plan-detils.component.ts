@@ -119,7 +119,6 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   ngOnInit(): void {
     this.planType = this.inputdata.type;
-
     this.data = this.inputdata.planDetails;
   }
 

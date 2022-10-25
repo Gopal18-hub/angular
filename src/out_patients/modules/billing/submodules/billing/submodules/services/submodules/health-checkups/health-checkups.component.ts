@@ -71,7 +71,7 @@ export class HealthCheckupsComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
       },
     },
   };

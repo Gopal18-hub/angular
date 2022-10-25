@@ -34,7 +34,7 @@
         color: #004084;
     }
     .height{
-        height: 62vh;
+        height: 66vh;//changing from 62 to 66
     }
     .width{
         width: 30% !important;
@@ -81,7 +81,11 @@
     }
     
     ::ng-deep .refundheight{
-        height: 5vh !important;
+        height: 4vh !important;
+    }
+      ::ng-deep .payment-breakup{
+        height: 18vh !important;
+        overflow-y: scroll !important;
     }
     .payabletextbox{
     ::ng-deep .mat-form-field{
@@ -99,5 +103,5 @@
 
 ::ng-deep .mat-dialog-container{
     overflow: hidden !important;
-    padding: 10px 24px 24px 24px;
+    padding: 10px 24px 10px 24px;
 }
