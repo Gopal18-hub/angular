@@ -73,7 +73,7 @@ export class BillingService {
   activeLink = new Subject<any>();
   disableServiceTab: boolean = false;
   disablecorporatedropdown: boolean = false;
-  creditLimit:number = 0;
+  creditLimit: number = 0;
 
   maxIdEventFinished = new Subject<any>();
 
@@ -289,8 +289,8 @@ export class BillingService {
       });
   }
 
-  setCreditLimit(data:any){
-   this.creditLimit = data;
+  setCreditLimit(data: any) {
+    this.creditLimit = data;
   }
   setCompnay(
     companyid: number,
@@ -302,15 +302,19 @@ export class BillingService {
     if (this.billItems.length > 0) {
       this.refreshPrice();
       this.calculateBillService.setCompanyNonCreditItems([]);
-      this.calculateBillService.billFormGroup.form.controls[
-        "credLimit"
-      ].setValue("0.00");
+      if (
+        this.calculateBillService.billFormGroup &&
+        this.calculateBillService.billFormGroup.form
+      )
+        this.calculateBillService.billFormGroup.form.controls[
+          "credLimit"
+        ].setValue("0.00");
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
-    } else if(res.title) {
+    } else if (res.title) {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
       this.companyChangeEvent.next({ company: res, from });
@@ -334,16 +338,19 @@ export class BillingService {
           if (result.data == "corporate") {
             formGroup.controls["corporate"].enable();
             formGroup.controls["corporate"].setValue(null);
-            this.corporateChangeEvent.next({ corporate: null, from });  
-            this.disablecorporatedropdown = true;      
+            this.corporateChangeEvent.next({ corporate: null, from });
+            this.disablecorporatedropdown = true;
           } else {
             formGroup.controls["corporate"].setValue(null);
             formGroup.controls["corporate"].disable();
-            this.corporateChangeEvent.next({ corporate: null, from:"disable" });           
+            this.corporateChangeEvent.next({
+              corporate: null,
+              from: "disable",
+            });
           }
         });
       } else {
-        this.corporateChangeEvent.next({ corporate: null, from:"disable" });
+        this.corporateChangeEvent.next({ corporate: null, from: "disable" });
         formGroup.controls["corporate"].setValue(null);
         formGroup.controls["corporate"].disable();
       }
@@ -363,21 +370,21 @@ export class BillingService {
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
-      if(corporateid){
-        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
-        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
-      }
-      else{
+      if (corporateid) {
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid =
+          corporateid;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate =
+          res.title;
+      } else {
         this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
         this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = "";
       }
-     
     }
   }
 
   setCompanyData(data: any) {
     this.companyData = data;
-    this.companyChangeEvent.next({company: null,from: "header"});
+    this.companyChangeEvent.next({ company: null, from: "header" });
   }
 
   setCorporateData(data: any) {
