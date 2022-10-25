@@ -64,6 +64,7 @@ import { AnimationPlayer } from "@angular/animations";
 import { TileStyler } from "@angular/material/grid-list/tile-styler";
 import { LookupService } from "@core/services/lookup.service";
 import * as moment from "moment";
+import { BillingApiConstants } from "@modules/billing/submodules/billing/BillingApiConstant";
 
 export interface DialogData {
   expieryDate: Date;
@@ -102,6 +103,7 @@ export class OpRegistrationComponent implements OnInit {
   categoryIcons: [] = [];
   passportNo: string = "";
   isNSSHLocation: boolean = false;
+  expiredPatient:boolean=false;
   seafarerDetails: {
     HKID: string;
     Vesselname: string;
@@ -783,7 +785,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (this.maxIDChangeCall == false && value) {
+        if (this.maxIDChangeCall == false && value && !this.expiredPatient) {
           this.openHotListDialog();
         }
       });
@@ -1261,7 +1263,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   hotlistClick(event: Event) {
-    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
+    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist && ! this.expiredPatient) {
       this.openHotListDialog();
     }
   }
@@ -1609,8 +1611,11 @@ export class OpRegistrationComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
   hotlistdialogref: any;
   openHotListDialog() {
-    this.gethotlistMasterData();
-    console.log(this.hotlistDialogList);
+    if(!this.expiredPatient){
+      this.gethotlistMasterData();
+      console.log(this.hotlistDialogList);
+    }
+     
     // const dialogref = this.matDialog.open(HotListingDialogComponent, {
     //   width: "30vw",
     //   height: "52vh",
@@ -2189,7 +2194,7 @@ export class OpRegistrationComponent implements OnInit {
   //Get Patient Details by Max ID
   maxIDChangeCall: boolean = false;
   MaxIDExist: boolean = false;
-  getPatientDetailsByMaxId() {
+  async getPatientDetailsByMaxId() {
     this.maxIDChangeCall = true;
     console.log(this.OPRegForm.value.maxid);
 
@@ -2198,6 +2203,19 @@ export class OpRegistrationComponent implements OnInit {
     //HANDLING IF MAX ID IS NOT PRESENT
     if (regNumber != 0) {
       let iacode = this.OPRegForm.value.maxid.split(".")[0];
+      const expiredStatus = await this.checkPatientExpired(iacode, regNumber);
+      if (expiredStatus) {
+        this.expiredPatient = true;
+        this.OPRegForm.controls["hotlist"].disable();
+        const dialogRef = this.messageDialogService.error(
+          "Patient is an Expired Patient!"
+        );
+        await dialogRef.afterClosed().toPromise();
+      }
+      else{
+         this.expiredPatient = false;
+         this.OPRegForm.controls["hotlist"].enable();
+      }
       this.http
         .get(ApiConstants.patientDetails(regNumber, iacode))
         .pipe(takeUntil(this._destroying$))
@@ -2263,6 +2281,25 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
 
+  async checkPatientExpired(iacode: string, regNumber: number) {
+    const res = await this.http
+      .get(
+        BillingApiConstants.getforegexpiredpatientdetails(
+          iacode,
+          Number(regNumber)
+        )
+      )
+      .toPromise();
+    if (res == null) {
+      return;
+    }
+    if (res.length > 0) {
+      if (res[0].flagexpired == 1) {
+        return true;
+      }
+    }
+    return false;
+  }
   async onModifyDetail() {
     let isFormValid = await this.validateForm();
     if (!isFormValid) {
