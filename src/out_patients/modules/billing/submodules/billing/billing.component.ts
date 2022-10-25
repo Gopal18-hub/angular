@@ -718,7 +718,21 @@ export class BillingComponent implements OnInit, OnDestroy {
                 if (result && result.selected && result.selected.length > 0) {
                   const doctors: any = result.selected;
                   for (let i = 0; i < doctors.length; i++) {
-                    if (doctors[i].paymentStatus == "No") {
+                    // //GAV-530 Paid Online appointment
+                   // if (doctors[i].paymentStatus == "No") {
+                     this.formGroup.controls["bookingId"].setValue(doctors[i].bookingNo);
+                     if (
+                      doctors[i].paymentStatus == "Yes" &&
+                      doctors[i].billStatus == "No"
+                    ){
+                       this.billingService.setPaidAppointments({
+                       onlinepaidamount:doctors[i].amount,
+                       bookingid:doctors[i].bookingNo,
+                       transactionid:doctors[i].transactionNo,
+                       mobileno:doctors[i].mobileno,
+                     });
+                    }
+                    
                       this.billingService.procesConsultationAdd(
                         57,
                         doctors[i].specialisationid,
@@ -731,24 +745,25 @@ export class BillingComponent implements OnInit, OnDestroy {
                           value: doctors[i].clinicId,
                         }
                       );
-                    } else if (
-                      doctors[i].paymentStatus == "Yes" &&
-                      doctors[i].billStatus == "No"
-                    ) {
-                      this.billingService.procesConsultationAddWithOutApi(
-                        57,
-                        doctors[i].specialisationid,
-                        {
-                          value: doctors[i].doctorID,
-                          originalTitle: doctors[i].doctorname,
-                          specialisationid: doctors[i].specialisationid,
-                          price: doctors[i].amount,
-                        },
-                        {
-                          value: doctors[i].clinicId,
-                        }
-                      );
-                    }
+                     //  //GAV-530 Paid Online appointment
+                    // } else if (
+                    //   doctors[i].paymentStatus == "Yes" &&
+                    //   doctors[i].billStatus == "No"
+                    // ) {
+                    //   this.billingService.procesConsultationAddWithOutApi(
+                    //     57,
+                    //     doctors[i].specialisationid,
+                    //     {
+                    //       value: doctors[i].doctorID,
+                    //       originalTitle: doctors[i].doctorname,
+                    //       specialisationid: doctors[i].specialisationid,
+                    //       price: doctors[i].amount,
+                    //     },
+                    //     {
+                    //       value: doctors[i].clinicId,
+                    //     }
+                    //   );
+                    // }
                   }
                 }
               }

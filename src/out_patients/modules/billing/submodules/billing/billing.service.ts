@@ -39,6 +39,8 @@ export class BillingService {
 
   company: number = 0;
   billtype: number = 1;
+  // //GAV-530 Paid Online appointment
+  PaidAppointments:any;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -174,6 +176,11 @@ export class BillingService {
   setOtherPlan(data: any) {
     this.selectedOtherPlan = data;
     this.servicesTabStatus.next({ disableAll: true });
+  }
+
+  // //GAV-530 Paid Online appointment
+  setPaidAppointments(data:any){
+    this.PaidAppointments=data;
   }
 
   checkServicesAdded() {
@@ -852,7 +859,7 @@ export class BillingService {
             ),
             flag: 1,
           });
-          if ("payloadKey" in payment.method) {
+          if ("payloadKey" in payment.method) {           
             this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
               PaymentMethods[
                 payment.method.payloadKey as keyof typeof PaymentMethods
