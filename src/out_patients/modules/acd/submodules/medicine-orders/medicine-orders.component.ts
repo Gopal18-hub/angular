@@ -43,8 +43,8 @@ export class MedicineOrdersComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   medOrderLists: any = [];
-  medOrderList: any;
-  medOrderDetails: any;
+  medOrderList: any=[];
+  medOrderDetails: any=[];
   patientInfo: any;
   tokenNo: any = null;
 

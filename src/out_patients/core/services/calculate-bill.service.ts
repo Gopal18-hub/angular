@@ -45,6 +45,8 @@ export class CalculateBillService {
 
   blockActions = new Subject<boolean>();
 
+  otherPlanSelectedItems: any = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -254,22 +256,7 @@ export class CalculateBillService {
         formData: {
           authorise: { title: "As Per Policy", value: 4 },
         },
-        discounttypes:
-          [
-            { title: "On Bill", value: "On-Bill" },
-            { title: "On Service", value: "On-Service" },
-            { title: "On Item", value: "On-Item" },
-            { title: "On Patient", value: "On-Patient" },
-            { title: "On Company", value: "On-Company" },
-            { title: "On Campaign", value: "On-Campaign" },
-          ],
-        
-      };
-    }
-    else{
-      data = {
-        discounttypes:
-        [
+        discounttypes: [
           { title: "On Bill", value: "On-Bill" },
           { title: "On Service", value: "On-Service" },
           { title: "On Item", value: "On-Item" },
@@ -277,7 +264,18 @@ export class CalculateBillService {
           { title: "On Company", value: "On-Company" },
           { title: "On Campaign", value: "On-Campaign" },
         ],
-      }
+      };
+    } else {
+      data = {
+        discounttypes: [
+          { title: "On Bill", value: "On-Bill" },
+          { title: "On Service", value: "On-Service" },
+          { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
+        ],
+      };
     }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
@@ -607,31 +605,27 @@ export class CalculateBillService {
 
   //#region TaxableBill
 
-  async checkTaxableBill(){
+  async checkTaxableBill() {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
-    if(this.billingServiceRef.ProcedureItems.length > 0){
-      this.billingServiceRef.ProcedureItems.forEach((item: any) => {
-        
-      });
+    if (this.billingServiceRef.ProcedureItems.length > 0) {
+      this.billingServiceRef.ProcedureItems.forEach((item: any) => {});
     }
-
   }
 
-  async getServiceTypeByCode(codeId=1356): Promise<Number>{
-    let cstype =0;
-     const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
+  async getServiceTypeByCode(codeId = 1356): Promise<Number> {
+    let cstype = 0;
+    const res = await this.http
+      .get(ApiConstants.getservicestypebycodeid(codeId))
+      .toPromise();
 
-     if(res){
-       if(res.length > 0){
-        cstype =  res[0].value;
-       }
-     }
-     return cstype;
+    if (res) {
+      if (res.length > 0) {
+        cstype = res[0].value;
+      }
+    }
+    return cstype;
   }
-
-
 
   //#endregion TaxableBill
-
 }
