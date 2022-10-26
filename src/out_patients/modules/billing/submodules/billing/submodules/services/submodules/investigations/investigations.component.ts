@@ -145,6 +145,7 @@ export class InvestigationsComponent implements OnInit {
     this.questions = formResult.questions;
     this.billingService.InvestigationItems.forEach(
       (item: any, index: number) => {
+        item["sno"] = index + 1;
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
       }
     );
@@ -163,6 +164,14 @@ export class InvestigationsComponent implements OnInit {
       this.billingService.InvestigationItems[$event.index]
     );
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
+      $event.index,
+      1
+    );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(
+      $event.index,
+      1
+    );
     this.billingService.InvestigationItems =
       this.billingService.InvestigationItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
