@@ -65,7 +65,7 @@ export class BillPaymentDialogComponent implements OnInit {
     paymentmethods: (this.data.paymentmethods)?this.data.paymentmethods:this.paymentmethods,// //GAV-530 Paid Online appointment
     combopayment: true,
     totalAmount: this.data.toPaidAmount.toFixed(2),
-    onlinePaidAmount: this.data.onlinePaidAmount.toFixed(2),// //GAV-530 Paid Online appointment
+    onlinePaidAmount: (this.data.onlinePaidAmount)?this.data.onlinePaidAmount.toFixed(2):0.00,// //GAV-530 Paid Online appointment
     isonlinepaidappointment:this.data.isonlinepaidappointment,// //GAV-530 Paid Online appointment
     paidAppointments:this.billingService.PaidAppointments,// //GAV-530 Paid Online appointment
   };
