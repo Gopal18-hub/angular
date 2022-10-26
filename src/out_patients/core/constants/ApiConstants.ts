@@ -1516,5 +1516,9 @@ export namespace ApiConstants {
 
   export const getservicestypebycodeid = (codeId: number) => {
     return `environment.BillingApiUrl + "api/outpatientbilling/getservicestype_bycodeid/${codeId}`;
+
   };
+
+  export const checkonlinepaymentstaus =(bookingId:string)=>
+    `${environment.BillingApiUrl}api/outpatientbilling/getforonlinebillpaymentstatus/${bookingId}`;
 }

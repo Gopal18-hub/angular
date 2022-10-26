@@ -107,7 +107,7 @@
             </div>
             <div class="flex medicinew">
                 <div class="mr-2">
-                    <button mat-raised-button color="primary"  [disabled]="!isDisableBill" >Create Bill</button>
+                    <button mat-raised-button color="primary" [disabled]="!EnableBill"  (click)="createBill()" >Create Bill</button>
                 </div>
                 <div class="mr-2">
                     <button mat-raised-button color="primary" (click)="cancelDenial()"   [disabled]="!isDisableDeniel">Cancel Denial</button>
