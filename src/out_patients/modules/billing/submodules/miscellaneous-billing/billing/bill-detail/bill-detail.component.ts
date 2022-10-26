@@ -479,6 +479,9 @@ export class BillDetailComponent implements OnInit {
           this.miscServBillForm.controls["self"].setValue(false);
           this.selfDoc = false;
         }
+        // if (this.miscPatient.referralDoctor) {
+        //   referralDoctor
+        // }
         this.isEnableBillBtn = true;
       } else {
         this.isEnableBillBtn = false;
@@ -1501,7 +1504,7 @@ export class BillDetailComponent implements OnInit {
         !miscFormData.corporateId
       ) {
         this.snackbar.open(" Please select corporate!", "error");
-      } else if (!this.refDoctor.id && this.selfDoc === false) {
+      } else if (!this.miscPatient.referralDoctor && this.selfDoc === false) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
         const MakeDepositDialogref = this.matDialog.open(
@@ -1524,7 +1527,7 @@ export class BillDetailComponent implements OnInit {
           });
       }
     } else if (Number(this.miscServBillForm.value.paymentMode) === 1) {
-      if (!this.refDoctor.id && this.selfDoc === false) {
+      if (!this.miscPatient.referralDoctor && this.selfDoc === false) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
         const MakeDepositDialogref = this.matDialog.open(
@@ -1724,7 +1727,7 @@ export class BillDetailComponent implements OnInit {
     if (this.selfDoc === true) {
       refDocId = 2015;
     } else {
-      refDocId = this.refDoctor.id;
+      refDocId = this.miscPatient.referralDoctor.id;
     }
     this.postBillObj.dtSaveOBill_P = {
       registrationno: miscPatient.registrationno,

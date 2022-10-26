@@ -24,6 +24,7 @@ export class MiscService {
   billType = 0;
   serviceItemsList = [];
   selectedCompanyVal = 0;
+  makeBillLoad = false;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -354,40 +355,41 @@ export class MiscService {
         console.log(this.makeBillPayload.ds_paymode, "check");
       });
 
-      if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
-        const lessAmountWarningDialog = this.messageDialogService.confirm(
-          "",
-          "Do You Want To Save Less Amount ?"
-        );
-        const lessAmountWarningResult = await lessAmountWarningDialog
-          .afterClosed()
-          .toPromise();
-        if (lessAmountWarningResult) {
-          if (lessAmountWarningResult.type == "yes") {
-            const reasonInfoDialog = this.matDialog.open(
-              ReasonForDueBillComponent,
-              {
-                width: "40vw",
-                height: "50vh",
-              }
-            );
-            const reasonInfoResult = await reasonInfoDialog
-              .afterClosed()
-              .toPromise();
-            if (reasonInfoResult) {
-              this.calculatedBill.balance =
-                this.calculatedBill.toBePaid -
-                this.calculatedBill.collectedAmount;
-            }
-          } else {
-            return;
-          }
-        } else {
-          return;
-        }
-      } else {
-        return;
-      }
+      // if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
+      //   const lessAmountWarningDialog = this.messageDialogService.confirm(
+      //     "",
+      //     "Do You Want To Save Less Amount ?"
+      //   );
+      //   const lessAmountWarningResult = await lessAmountWarningDialog
+      //     .afterClosed()
+      //     .toPromise();
+      //   if (lessAmountWarningResult) {
+      //     if (lessAmountWarningResult.type == "yes") {
+      //       const reasonInfoDialog = this.matDialog.open(
+      //         ReasonForDueBillComponent,
+      //         {
+      //           width: "40vw",
+      //           height: "50vh",
+      //         }
+      //       );
+      //       const reasonInfoResult = await reasonInfoDialog
+      //         .afterClosed()
+      //         .toPromise();
+      //       if (reasonInfoResult) {
+      //         this.calculatedBill.balance =
+      //           this.calculatedBill.toBePaid -
+      //           this.calculatedBill.collectedAmount;
+      //       }
+      //     } else {
+      //       return;
+      //     }
+      //   } else {
+      //     return;
+      //   }
+      // } else {
+      //   return;
+      // }
+      this.makeBillLoad = true;
     }
     return this.calculatedBill;
   }
