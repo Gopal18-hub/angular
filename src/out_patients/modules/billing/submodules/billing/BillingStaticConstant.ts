@@ -112,7 +112,7 @@ export namespace BillingStaticConstants {
       gsT_value: 0,
     },
     txtOtherGroupDoc: "",
-    dtCheckedItem: {},
+    dtCheckedItem: [],
     cghsBeneficiaryChangeReason: "",
     hspLocationId: 0,
     userId: 0,

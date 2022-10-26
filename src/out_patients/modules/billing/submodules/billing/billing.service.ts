@@ -474,6 +474,8 @@ export class BillingService {
     );
     if (investigationsExist > -1) {
       this.InvestigationItems.splice(investigationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(investigationsExist,1);
+       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(investigationsExist,1);
       return;
     }
 
