@@ -117,6 +117,8 @@ export class InvestigationsComponent implements OnInit {
 
   defaultPriorityId = 1;
 
+  zeroPriceExist: boolean = false;
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -180,6 +182,8 @@ export class InvestigationsComponent implements OnInit {
     this.data = [...this.billingService.InvestigationItems];
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
+      this.zeroPriceExist = false;
+      this.billingService.changeBillTabStatus(false);
     }
     this.billingService.calculateTotalAmount();
   }
@@ -234,7 +238,7 @@ export class InvestigationsComponent implements OnInit {
             );
             await errorDialog.afterClosed().toPromise();
           } else {
-            this.billingService.changeBillTabStatus(false);
+            this.checkTableValidation();
           }
         }
         this.updatePriceByChangePriority(
@@ -243,7 +247,6 @@ export class InvestigationsComponent implements OnInit {
           res.data.index
         );
       }
-      this.checkTableValidation();
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
@@ -298,14 +301,24 @@ export class InvestigationsComponent implements OnInit {
   }
 
   checkTableValidation() {
-    setTimeout(() => {
-      console.log(this.tableRows.tableForm);
-      if (this.tableRows.tableForm.valid) {
-        this.billingService.changeBillTabStatus(false);
-      } else {
-        this.billingService.changeBillTabStatus(true);
+    this.zeroPriceExist = false;
+    this.data.forEach((item: any) => {
+      if (item.totalAmount == 0) {
+        this.zeroPriceExist = true;
       }
-    }, 200);
+    });
+    if (this.zeroPriceExist) {
+      this.billingService.changeBillTabStatus(true);
+    } else {
+      setTimeout(() => {
+        console.log(this.tableRows.tableForm);
+        if (this.tableRows.tableForm.valid) {
+          this.billingService.changeBillTabStatus(false);
+        } else {
+          this.billingService.changeBillTabStatus(true);
+        }
+      }, 200);
+    }
   }
 
   getSpecialization() {
@@ -407,6 +420,9 @@ export class InvestigationsComponent implements OnInit {
             this.messageDialogService.error(
               "Price Not Defined For " + data.investigations
             );
+            this.billingService.changeBillTabStatus(true);
+          } else {
+            this.checkTableValidation();
           }
         }
       });
