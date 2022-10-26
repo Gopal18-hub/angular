@@ -41,10 +41,10 @@ export class ReportService {
       class: "material-print-icon",
       image: "",
       click: function (event: any, winbox: any) {
-         const iframeReportUrl = (<any>document.getElementById(reportEntity))
-           .querySelector("iframe")
-           .contentWindow.document.querySelector("iframe").src;
-       // const iframeReportUrl = 'http://localhost:55746/MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=Oct 21, 2022&dtpEndDate=Oct 21, 2022&datetype=0&DocID=0&DocID1=true&location=false&Rd_Special=false&LocationName=false';
+        const iframeReportUrl = (<any>document.getElementById(reportEntity))
+          .querySelector("iframe")
+          .contentWindow.document.querySelector("iframe").src;
+        // const iframeReportUrl = 'http://localhost:55746/MAXHIS/FrontOfficeReports/DoctorShedule?dtpStartDate=Oct 21, 2022&dtpEndDate=Oct 21, 2022&datetype=0&DocID=0&DocID1=true&location=false&Rd_Special=false&LocationName=false';
         // Create a new iframe for the print job
         const printFrame = document.createElement("iframe");
         printFrame.setAttribute(
@@ -98,10 +98,10 @@ export class ReportService {
     } catch (error) {
       console.log(error);
     } finally {
-      const iframe = document.getElementById("report-print");
-      if (iframe) {
-        iframe.remove();
-      }
+      // const iframe = document.getElementById("report-print");
+      // if (iframe) {
+      //   iframe.remove();
+      // }
     }
   }
 }
