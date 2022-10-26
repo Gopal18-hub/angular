@@ -11,7 +11,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { HttpService } from "@shared/services/http.service";
 import { environment } from "@environments/environment";
 import { Subject, takeUntil } from "rxjs";
-import{MoreThanMonthComponent} from"../../../../../out_patients/modules/billing/submodules/dispatch-report/more-than-month/more-than-month.component"
+import { MoreThanMonthComponent } from "../../../../../out_patients/modules/billing/submodules/dispatch-report/more-than-month/more-than-month.component";
 import { MatDialog } from "@angular/material/dialog";
 @Component({
   selector: "reports-single",
@@ -30,7 +30,7 @@ export class SingleComponent implements OnInit, OnChanges {
     private reportService: ReportService,
     private formService: QuestionControlService,
     private http: HttpService,
-    private dialog:MatDialog
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -45,9 +45,8 @@ export class SingleComponent implements OnInit, OnChanges {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
   }
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     console.log(this.formGroup);
-   
   }
 
   ngOnChanges(changes: any): void {
@@ -69,34 +68,38 @@ export class SingleComponent implements OnInit, OnChanges {
   }
 
   buttonAction(button: any) {
-    var fromdate,todate,diff_in_days;
+    var fromdate, todate, diff_in_days;
     debugger;
     if (button.type == "clear") {
       this.formGroup.reset();
-      console.log('clear if')
+      console.log("clear if");
       for (var i = 0; i < this.questions.length; i++) {
         console.log(this.reportConfig.filterForm);
         if (this.questions[i].type == "date") {
           this.formGroup.controls[this.questions[i].key].setValue(new Date());
+        } else if (this.questions[i].type == "radio") {
+          if (this.questions[i].key == "datetype") {
+            this.formGroup.controls[this.questions[i].key].setValue("0");
+          } else {
+            this.formGroup.controls[this.questions[i].key].setValue(
+              "Plan Name"
+            );
+          }
         }
-        
       }
     } else if (button.type == "crystalReport") {
-
-      console.log('crystal report if')
+      console.log("crystal report if");
       for (var i = 0; i < this.questions.length; i++) {
-       
-        if(this.questions[i].type=="date"){
-          console.log('date type if')
-          if(this.questions[i].label.toLowerCase().includes("from date")){
-            fromdate= this.formGroup.controls[this.questions[i].key].value
+        if (this.questions[i].type == "date") {
+          console.log("date type if");
+          if (this.questions[i].label.toLowerCase().includes("from date")) {
+            fromdate = this.formGroup.controls[this.questions[i].key].value;
             console.log(fromdate);
           }
-          if(this.questions[i].label.toLowerCase().includes("to date")){
-            todate= this.formGroup.controls[this.questions[i].key].value
+          if (this.questions[i].label.toLowerCase().includes("to date")) {
+            todate = this.formGroup.controls[this.questions[i].key].value;
             console.log(todate);
           }
-
         }
         console.log(this.reportConfig.filterForm);
         if (this.questions[i].type == "date") {
@@ -110,31 +113,28 @@ export class SingleComponent implements OnInit, OnChanges {
       }
       console.log(this.formGroup);
       console.log(fromdate);
-      console.log(todate)
+      console.log(todate);
       const diffTime = Math.abs(todate - fromdate);
-      diff_in_days= Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      diff_in_days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       console.log(diff_in_days);
       if (diff_in_days > 31) {
-       
-        console.log('difference 31 if')
+        console.log("difference 31 if");
         this.dialog.open(MoreThanMonthComponent, {
           width: "30vw",
           height: "30vh",
         });
         return;
-      }
-     else 
-     if (
+      } else if (
         button.reportConfig.reportEntity ==
         "DoctorSheduleReportBySpecilialisation"
       ) {
-        console.log('else if api' );
+        console.log("else if api");
         let specilizationName;
         this.http
           .get(`${environment.CommonApiUrl}api/lookup/getallspecialisationname`)
           .pipe(takeUntil(this._destroying$))
           .subscribe((resultData: any) => {
-            console.log('specialization repoort')
+            console.log("specialization repoort");
             if (resultData) {
               if (resultData.length > 0) {
                 if (
@@ -172,7 +172,7 @@ export class SingleComponent implements OnInit, OnChanges {
           .subscribe((resultData: any) => {
             if (resultData) {
               if (resultData.length > 0) {
-                console.log('scroll report else')
+                console.log("scroll report else");
                 if (
                   !this.formGroup.value.cmbopenscrolltype ||
                   this.formGroup.value.cmbopenscrolltype == "0"
@@ -202,8 +202,34 @@ export class SingleComponent implements OnInit, OnChanges {
               }
             }
           });
+      } else if (
+        button.reportConfig.reportEntity == "HappyFamilyPlanUtilizationReport"
+      ) {
+        button.reportConfig.reportName == "HappyFamilyPlanUtilizationReport";
+        let MemberShipNo = this.formGroup.value.MemberShipNo.value;
+        console.log(MemberShipNo);
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          {
+            MemberShipNo,
+          }
+        );
+      } else if (
+        button.reportConfig.reportEntity == "SummaryReportForUtilisationReport"
+      ) {
+        button.reportConfig.reportName == "SummaryReportForUtilisationReport";
+        let membershipno = this.formGroup.value.membershipno.value;
+        console.log(membershipno);
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          {
+            membershipno,
+          }
+        );
       } else {
-        console.log('last else')
+        console.log("last else");
         this.reportService.openWindow(
           button.reportConfig.reportName,
           button.reportConfig.reportEntity,
@@ -213,4 +239,3 @@ export class SingleComponent implements OnInit, OnChanges {
     }
   }
 }
-

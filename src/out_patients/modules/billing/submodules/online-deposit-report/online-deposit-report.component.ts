@@ -258,7 +258,7 @@ export class OnlineDepositReportComponent implements OnInit {
           title: "Receipt No",
           type: "number",
           style: {
-            width: "3rem"
+            width: "6rem"
           }
         },
         // initDep_OtherDetail: {
