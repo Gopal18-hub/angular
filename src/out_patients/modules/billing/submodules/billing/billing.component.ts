@@ -32,6 +32,8 @@ import { distinctUntilChanged } from "rxjs/operators";
 import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -140,7 +142,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     private router: Router,
     public messageDialogService: MessageDialogService,
     private patientService: PatientService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private searchService: SearchService,
+    private lookupService: LookupService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +186,12 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {        
+        await this.loadGrid(formdata);
+    });
+
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
         this.links[0].disabled = true;
@@ -1288,6 +1298,54 @@ export class BillingComponent implements OnInit, OnDestroy {
     if (res) {
       this.queueId = 0;
       this.qmsSeqNo = "";
+    }
+  }
+
+   async loadGrid(formdata: any): Promise<any> {
+    let lookupdata: string | any[];
+    if (!formdata.data) {
+      lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+    } else {
+      lookupdata = await this.lookupService.searchPatient(formdata);
+    }
+
+    console.log(lookupdata);
+    if (lookupdata.length == 1) {
+      if (lookupdata[0] && "maxid" in lookupdata[0]) {
+        this.formGroup.controls["maxid"].setValue(lookupdata[0]["maxid"]);
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getAllCompany();
+        this.getAllCorporate();
+        this.getPatientDetailsByMaxId();
+        
+      }
+    } else if (lookupdata.length > 1) {
+      const similarSoundDialogref = this.matDialog.open(SimilarPatientDialog, {
+        width: "60vw",
+        height: "80vh",
+        data: {
+          searchResults: lookupdata,
+        },
+      });
+
+      similarSoundDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(async (result: any) => {
+          if (result) {
+            console.log(result.data["added"][0].maxid);
+            let maxID = result.data["added"][0].maxid;
+            this.formGroup.controls["maxid"].setValue(maxID);
+            this.apiProcessing = true; 
+            this.patient = false;
+            this.getAllCompany();
+            this.getAllCorporate();
+            this.getPatientDetailsByMaxId();
+          }
+        });
     }
   }
 }
