@@ -648,6 +648,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.clearForm();
+    this.calculateBillService.discountSelectedItems = [];
   }
 
   //SETTING ERROR FOR MAX ID

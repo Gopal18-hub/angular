@@ -14,6 +14,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { ReasonForDueBillComponent } from "../billing/prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { BillingStaticConstants } from "../billing/BillingStaticConstant";
 
 @Injectable({
   providedIn: "root",
@@ -23,6 +24,10 @@ export class MiscService {
   billType = 0;
   serviceItemsList = [];
   selectedCompanyVal = 0;
+
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
 
   transactionamount: any = 0.0;
   clearAllItems = new Subject<boolean>();
@@ -326,12 +331,11 @@ export class MiscService {
         (partialSum: number, a: number) => partialSum + a,
         0
       );
-      let tab_paymentList = [];
 
       paymentmethod.tabs.forEach((payment: any) => {
         if (paymentmethod.paymentForm[payment.key].value.price > 0) {
-          this.calculatedBill.tab_paymentList.push({
-            slNo: tab_paymentList.length + 1,
+          this.makeBillPayload.ds_paymode.tab_paymentList.push({
+            slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
             modeOfPayment:
               paymentmethod.paymentForm[payment.key].value.modeOfPayment,
             amount: parseFloat(
@@ -340,13 +344,14 @@ export class MiscService {
             flag: 1,
           });
           if ("payloadKey" in payment.method) {
-            this.calculatedBill.tab_paymentList[payment.method.payloadKey] = [
+            this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
               PaymentMethods[
                 payment.method.payloadKey as keyof typeof PaymentMethods
               ](paymentmethod.paymentForm[payment.key].value),
             ];
           }
         }
+        console.log(this.makeBillPayload.ds_paymode, "check");
       });
 
       if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {

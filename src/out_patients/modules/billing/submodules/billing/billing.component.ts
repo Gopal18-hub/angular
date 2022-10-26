@@ -115,7 +115,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   moment = moment;
 
   narrationAllowedLocations = ["67", "69"];
-  qmsManagementLocations= ["3","8","5","12","20","17","18","21","29"]
+  qmsManagementLocations = ["3", "8", "5", "12", "20", "17", "18", "21", "29"];
 
   companyData!: GetCompanyDataInterface[];
 
@@ -123,11 +123,10 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
-  counterId:number=0;
-  enableQMSManagement:boolean=false;
-  queueId:number=0;
-  qmsSeqNo:any="";
-  
+  counterId: number = 0;
+  enableQMSManagement: boolean = false;
+  queueId: number = 0;
+  qmsSeqNo: any = "";
 
   constructor(
     public matDialog: MatDialog,
@@ -152,14 +151,15 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.apiProcessing = false;
       }
     });
-    if(this.cookie.check("Counter_ID")){
-      if(this.cookie.get("Counter_ID")){
+    if (this.cookie.check("Counter_ID")) {
+      if (this.cookie.get("Counter_ID")) {
         this.counterId = Number(this.cookie.get("Counter_ID"));
       }
     }
-    if(this.counterId > 0 &&
-      this.qmsManagementLocations.includes(this.cookie.get("HSPLocationId")))
-    {
+    if (
+      this.counterId > 0 &&
+      this.qmsManagementLocations.includes(this.cookie.get("HSPLocationId"))
+    ) {
       this.enableQMSManagement = true;
     }
     let formResult: any = this.formService.createForm(
@@ -173,7 +173,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (params.maxId) {
         this.formGroup.controls["maxid"].setValue(params.maxId);
         this.apiProcessing = true;
-        this.patient = false;        
+        this.patient = false;
         this.getAllCompany();
         this.getAllCorporate();
         this.getPatientDetailsByMaxId();
@@ -210,9 +210,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["corporate"].setValue(res.corporate, {
           emitEvent: false,
         });
-        if(res.from == "disable"){
+        if (res.from == "disable") {
           this.formGroup.controls["corporate"].disable();
-        } else if(this.formGroup.value.company.value) {
+        } else if (this.formGroup.value.company.value) {
           this.formGroup.controls["corporate"].enable();
         }
       }
@@ -714,11 +714,25 @@ export class BillingComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
               //check for expired patient GAV-936
               //check for mreged max Id
-              if(!this.expiredPatient || !this.secondaryMaxId){
+              if (!this.expiredPatient || !this.secondaryMaxId) {
                 if (result && result.selected && result.selected.length > 0) {
                   const doctors: any = result.selected;
                   for (let i = 0; i < doctors.length; i++) {
-                    if (doctors[i].paymentStatus == "No") {
+                    // //GAV-530 Paid Online appointment
+                   // if (doctors[i].paymentStatus == "No") {
+                     this.formGroup.controls["bookingId"].setValue(doctors[i].bookingNo);
+                     if (
+                      doctors[i].paymentStatus == "Yes" &&
+                      doctors[i].billStatus == "No"
+                    ){
+                       this.billingService.setPaidAppointments({
+                       onlinepaidamount:doctors[i].amount,
+                       bookingid:doctors[i].bookingNo,
+                       transactionid:doctors[i].transactionNo,
+                       mobileno:doctors[i].mobileno,
+                     });
+                    }
+                    
                       this.billingService.procesConsultationAdd(
                         57,
                         doctors[i].specialisationid,
@@ -731,27 +745,28 @@ export class BillingComponent implements OnInit, OnDestroy {
                           value: doctors[i].clinicId,
                         }
                       );
-                    } else if (
-                      doctors[i].paymentStatus == "Yes" &&
-                      doctors[i].billStatus == "No"
-                    ) {
-                      this.billingService.procesConsultationAddWithOutApi(
-                        57,
-                        doctors[i].specialisationid,
-                        {
-                          value: doctors[i].doctorID,
-                          originalTitle: doctors[i].doctorname,
-                          specialisationid: doctors[i].specialisationid,
-                          price: doctors[i].amount,
-                        },
-                        {
-                          value: doctors[i].clinicId,
-                        }
-                      );
-                    }
+                     //  //GAV-530 Paid Online appointment
+                    // } else if (
+                    //   doctors[i].paymentStatus == "Yes" &&
+                    //   doctors[i].billStatus == "No"
+                    // ) {
+                    //   this.billingService.procesConsultationAddWithOutApi(
+                    //     57,
+                    //     doctors[i].specialisationid,
+                    //     {
+                    //       value: doctors[i].doctorID,
+                    //       originalTitle: doctors[i].doctorname,
+                    //       specialisationid: doctors[i].specialisationid,
+                    //       price: doctors[i].amount,
+                    //     },
+                    //     {
+                    //       value: doctors[i].clinicId,
+                    //     }
+                    //   );
+                    // }
                   }
                 }
-              }             
+              }
             });
         }
       });
@@ -816,7 +831,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         .subscribe((result) => {
           //check added for expired patient check GAV-936
           //check for merged Max Id
-          if(!this.expiredPatient || !this.secondaryMaxId){
+          if (!this.expiredPatient || !this.secondaryMaxId) {
             if (result && result.selected && result.selected.length > 0) {
               const selectedPlan = result.selected[0];
               this.formGroup.controls["company"].disable();
@@ -828,7 +843,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               );
             }
             this.checkServicesLogics();
-          }         
+          }
         });
     } else if (
       dtPatientPastDetails[7] &&
@@ -859,9 +874,9 @@ export class BillingComponent implements OnInit, OnDestroy {
           .afterClosed()
           .pipe(takeUntil(this._destroying$))
           .subscribe(async (result) => {
-             //check added for expired patient check GAV-936
-             //check for merged max Id
-            if(!this.expiredPatient || !this.secondaryMaxId){
+            //check added for expired patient check GAV-936
+            //check for merged max Id
+            if (!this.expiredPatient || !this.secondaryMaxId) {
               if (result && result.selected && result.selected.length > 0) {
                 const selectedPlan = result.selected[0];
                 this.billingService.setOtherPlan(selectedPlan);
@@ -897,14 +912,15 @@ export class BillingComponent implements OnInit, OnDestroy {
                     selectedServices.selected &&
                     selectedServices.selected.length > 0
                   ) {
+                    this.calculateBillService.otherPlanSelectedItems =
+                      selectedServices.selected;
                     console.log(selectedServices);
-                    selectedServices.forEach((slItem: any) => {});
+                    selectedServices.selected.forEach((slItem: any) => {});
                   }
                 }
               }
               this.checkServicesLogics();
             }
-           
           });
       }
     } else {
@@ -915,7 +931,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   async checkServicesLogics() {
     //check added for expired patient check GAV-936
     //check for mreged Max Id
-    if(!this.expiredPatient || !this.secondaryMaxId){
+    if (!this.expiredPatient || !this.secondaryMaxId) {
       if (this.billingService.unbilledInvestigations) {
       } else {
         let checkinvestigations = await this.http
@@ -932,7 +948,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           return;
         }
       }
-    }   
+    }
   }
 
   investigationCheck(checkinvestigations: any) {
@@ -944,7 +960,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (result && result.showlist) {
         let uDialogRef = this.matDialog.open(UnbilledInvestigationComponent, {
           width: "60vw",
-          height: "50vh",
+          height: "55vh",
           data: {
             investigations: checkinvestigations,
           },
@@ -1046,9 +1062,9 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if ("type" in result) {
           if (result.type == "yes") {
-             //check added for expired patient check GAV-936
-             //check for mergedMaxId
-            if(!this.expiredPatient || !this.secondaryMaxId){
+            //check added for expired patient check GAV-936
+            //check for mergedMaxId
+            if (!this.expiredPatient || !this.secondaryMaxId) {
               this.billingService.processProcedureAdd(1, "24", {
                 serviceid: 24,
                 value: 30632,
@@ -1056,7 +1072,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 docRequired: false,
                 popuptext: "",
               });
-            }          
+            }
             this.inPatientCheck(resultData.dtPatientPastDetails);
           } else {
             this.inPatientCheck(resultData.dtPatientPastDetails);
@@ -1219,24 +1235,29 @@ export class BillingComponent implements OnInit, OnDestroy {
       });
   }
 
-  async getNextQueue(){   
-    let queuedetail = await this.http.get(BillingApiConstants.getnextqueueno(
-        Number(this.cookie.get("HSPLocationId")),
-        Number(this.cookie.get("StationId")),
-        this.counterId)).toPromise();
+  async getNextQueue() {
+    let queuedetail = await this.http
+      .get(
+        BillingApiConstants.getnextqueueno(
+          Number(this.cookie.get("HSPLocationId")),
+          Number(this.cookie.get("StationId")),
+          this.counterId
+        )
+      )
+      .toPromise();
 
-    if(queuedetail){
+    if (queuedetail) {
       this.queueId = queuedetail.id;
       this.qmsSeqNo = queuedetail.seqNo;
-    }    
+    }
   }
 
-  async doneQueue(){
-   let res = await this.http.get(
-     BillingApiConstants.donequeueno(
-      this.queueId,this.counterId)).toPromise();
+  async doneQueue() {
+    let res = await this.http
+      .get(BillingApiConstants.donequeueno(this.queueId, this.counterId))
+      .toPromise();
 
-    if(res){
+    if (res) {
       this.queueId = 0;
       this.qmsSeqNo = "";
     }

@@ -13,6 +13,7 @@ import {
 } from "@angular/material/dialog";
 import { inject } from "@angular/core/testing";
 import { Subject, takeUntil } from "rxjs";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-expdeposit-checkdd-dialog",
   templateUrl: "./expdeposit-checkdd-dialog.component.html",
@@ -26,7 +27,8 @@ export class ExpdepositCheckddDialogComponent implements OnInit {
     properties: {
       checkdd: {
         title: "",
-        type: "string",
+        type: "number",
+        required: true,
         placeholder: "Cheque Number",
       },
     },
@@ -38,6 +40,7 @@ export class ExpdepositCheckddDialogComponent implements OnInit {
     private messageDialogService: MessageDialogService,
     private cookie: CookieService,
     private http: HttpService,
+    private snackbar: MaxHealthSnackBarService,
     private dialogRef: MatDialogRef<ExpdepositCheckddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -62,36 +65,27 @@ export class ExpdepositCheckddDialogComponent implements OnInit {
         this.data.episode
       ));
   }
+
   Checkddfun() {
-    console.log(this.CheckDDForm.controls["checkdd"].value);
-    this.http
-      .post(
-        ApiConstants.postUpdateOPExpiredDepositsPatient,
-        this.UpdateOPExpiredDepositsPatientObj()
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        console.log(res);
-        this.dialogRef.close(res);
-        // if (res != null) {
-        //   this.messageDialogService.success("Saved Sucessfully!");
-        // } else {
-        //   this.messageDialogService.error("Please check the entered Detail!");
-        // }
-      });
+    var digit = this.CheckDDForm.controls["checkdd"].value.length;
+    if (digit == 6) {
+      // this.Checkddfun();
+      console.log(this.CheckDDForm.controls["checkdd"].value);
+      this.http
+        .post(
+          ApiConstants.postUpdateOPExpiredDepositsPatient,
+          this.UpdateOPExpiredDepositsPatientObj()
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          console.log(res);
+          this.dialogRef.close(res);
+        });
+    } else {
+      this.snackbar.open("Invalid Check/DD", "error");
+    }
   }
-  // ngAfterViewInit(): void {
-  //   this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
-  //     console.log(event);
-  //     if (event.key === "Enter") {
-  //       event.preventDefault();
-  //       var digit = this.CheckDDForm.value.checkdd().length;
-  //       if (digit == 10) {
-  //         this.Checkddfun();
-  //       }
-  //     }
-  //   });
-  // }
+
   ngOnDestroy() {
     this._destroying$.next(undefined);
     this._destroying$.complete();

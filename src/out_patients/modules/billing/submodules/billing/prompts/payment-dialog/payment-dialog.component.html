@@ -45,7 +45,7 @@
           }}</span>
         </div>
         <div class="mt-2 w-full flex justify-between">
-          <mat-label>Credit Limit: </mat-label>
+          <mat-label>Paid By Company: </mat-label>
           <span>{{
             data.ceditLimit | currency: "INR":undefined:undefined:"en-IN"
           }}</span>
@@ -73,7 +73,7 @@
         </div>
       </div>
       <div
-        class="h-auto secondary col-white p-3 border-radius-md mt-2"
+        class="payment-breakup secondary col-white p-3 border-radius-md mt-2"
         *ngIf="breakupTotal() > 0"
       >
         <mat-label class="font-base">Payment Breakup</mat-label>
