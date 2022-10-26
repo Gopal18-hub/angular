@@ -11,6 +11,7 @@ import { DatePipe } from "@angular/common";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ReasonForDueBillComponent } from "./prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
+import { threadId } from "worker_threads";
 @Injectable({
   providedIn: "root",
 })
@@ -38,6 +39,8 @@ export class BillingService {
 
   company: number = 0;
   billtype: number = 1;
+  // //GAV-530 Paid Online appointment
+  PaidAppointments: any = {};
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -73,14 +76,16 @@ export class BillingService {
   activeLink = new Subject<any>();
   disableServiceTab: boolean = false;
   disablecorporatedropdown: boolean = false;
-  creditLimit:number = 0;
+  creditLimit: number = 0;
 
   maxIdEventFinished = new Subject<any>();
 
   refreshBillTab = new Subject<any>();
 
   billingFormGroup: any = { form: "", questions: [] };
-
+  dtCheckedItem: any = {};
+  txtOtherGroupDoc: any = "";
+  dtFinalGrpDoc: any = {};
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -124,6 +129,7 @@ export class BillingService {
     this.ConsumableItems = [];
     this.totalCost = 0;
     this.activeMaxId = null;
+    this.PaidAppointments = null;
     this.company = 0;
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
@@ -173,6 +179,11 @@ export class BillingService {
   setOtherPlan(data: any) {
     this.selectedOtherPlan = data;
     this.servicesTabStatus.next({ disableAll: true });
+  }
+
+  // //GAV-530 Paid Online appointment
+  setPaidAppointments(data: any) {
+    this.PaidAppointments = data;
   }
 
   checkServicesAdded() {
@@ -289,8 +300,8 @@ export class BillingService {
       });
   }
 
-  setCreditLimit(data:any){
-   this.creditLimit = data;
+  setCreditLimit(data: any) {
+    this.creditLimit = data;
   }
   setCompnay(
     companyid: number,
@@ -302,52 +313,89 @@ export class BillingService {
     if (this.billItems.length > 0) {
       this.refreshPrice();
       this.calculateBillService.setCompanyNonCreditItems([]);
-      this.calculateBillService.billFormGroup.form.controls[
-        "credLimit"
-      ].setValue("0.00");
+      if (
+        this.calculateBillService.billFormGroup &&
+        this.calculateBillService.billFormGroup.form
+      )
+        this.calculateBillService.billFormGroup.form.controls[
+          "credLimit"
+        ].setValue("0.00");
     }
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
       this.iomMessage = "";
-    } else if(res.title) {
-      this.selectedcompanydetails = res;
-      this.selectedcorporatedetails = [];
-      this.companyChangeEvent.next({ company: res, from });
-      this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId = companyid;
-      this.iomMessage =
-        "IOM Validity till : " +
-        (("iomValidity" in res.company && res.company.iomValidity != "") ||
-        res.company.iomValidity != undefined
-          ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
-          : "");
-      if (res.company.isTPA == 1) {
-        const iomcompanycorporate = this.matDialog.open(
-          IomCompanyBillingComponent,
-          {
-            width: "25%",
-            height: "28%",
+    } else if (res.title) {
+      let iscompanyprocess = true;
+      //fix for Staff company validation
+      if (res.company.isStaffcompany) {
+        if (this.patientDetailsInfo.companyid > 0) {
+          if (res.value != this.patientDetailsInfo.companyid) {
+            iscompanyprocess = false;
+            this.resetCompany(res, formGroup, from);
           }
-        );
+        } else {
+          iscompanyprocess = false;
+          this.resetCompany(res, formGroup, from);
+        }
+      }
 
-        iomcompanycorporate.afterClosed().subscribe((result) => {
-          if (result.data == "corporate") {
-            formGroup.controls["corporate"].enable();
-            formGroup.controls["corporate"].setValue(null);
-            this.corporateChangeEvent.next({ corporate: null, from });  
-            this.disablecorporatedropdown = true;      
-          } else {
-            formGroup.controls["corporate"].setValue(null);
-            formGroup.controls["corporate"].disable();
-            this.corporateChangeEvent.next({ corporate: null, from:"disable" });           
-          }
-        });
-      } else {
-        this.corporateChangeEvent.next({ corporate: null, from:"disable" });
-        formGroup.controls["corporate"].setValue(null);
-        formGroup.controls["corporate"].disable();
+      if (iscompanyprocess) {
+        this.selectedcompanydetails = res;
+        this.selectedcorporatedetails = [];
+        this.companyChangeEvent.next({ company: res, from });
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.companyId =
+          companyid;
+        this.iomMessage =
+          "IOM Validity till : " +
+          (("iomValidity" in res.company && res.company.iomValidity != "") ||
+          res.company.iomValidity != undefined
+            ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+            : "");
+        if (res.company.isTPA == 1) {
+          const iomcompanycorporate = this.matDialog.open(
+            IomCompanyBillingComponent,
+            {
+              width: "25%",
+              height: "28%",
+            }
+          );
+
+          iomcompanycorporate.afterClosed().subscribe((result) => {
+            if (result.data == "corporate") {
+              formGroup.controls["corporate"].enable();
+              formGroup.controls["corporate"].setValue(null);
+              this.corporateChangeEvent.next({ corporate: null, from });
+              this.disablecorporatedropdown = true;
+            } else {
+              formGroup.controls["corporate"].setValue(null);
+              formGroup.controls["corporate"].disable();
+              this.corporateChangeEvent.next({
+                corporate: null,
+                from: "disable",
+              });
+            }
+          });
+        } else {
+          this.corporateChangeEvent.next({ corporate: null, from: "disable" });
+          formGroup.controls["corporate"].setValue(null);
+          formGroup.controls["corporate"].disable();
+        }
       }
     }
+  }
+
+  //fix for Staff company validation
+  resetCompany(res: any, formGroup: any, from: string = "header") {
+    formGroup.controls["corporate"].setValue(null);
+    this.corporateChangeEvent.next({ corporate: null, from });
+    formGroup.controls["company"].setValue(null);
+    this.corporateChangeEvent.next({ company: null, from });
+    this.messageDialogService.info(
+      "Selected Patient is not entitled for " +
+        res.title +
+        " company.Please Contact HR Dept."
+    );
   }
 
   setCorporate(
@@ -363,21 +411,21 @@ export class BillingService {
     } else {
       this.selectedcorporatedetails = res;
       this.corporateChangeEvent.next({ corporate: res, from });
-      if(corporateid){
-        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = corporateid;
-        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = res.title;
-      }
-      else{
+      if (corporateid) {
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid =
+          corporateid;
+        this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate =
+          res.title;
+      } else {
         this.makeBillPayload.ds_insert_bill.tab_insertbill.corporateid = 0;
         this.makeBillPayload.ds_insert_bill.tab_insertbill.corporate = "";
       }
-     
     }
   }
 
   setCompanyData(data: any) {
     this.companyData = data;
-    this.companyChangeEvent.next({company: null,from: "header"});
+    this.companyChangeEvent.next({ company: null, from: "header" });
   }
 
   setCorporateData(data: any) {
@@ -416,6 +464,14 @@ export class BillingService {
     });
     if (consultationsExist > -1) {
       this.consultationItems.splice(consultationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.splice(
+        consultationsExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.splice(
+        consultationsExist,
+        1
+      );
       return;
     }
 
@@ -426,6 +482,14 @@ export class BillingService {
     );
     if (investigationsExist > -1) {
       this.InvestigationItems.splice(investigationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
+        investigationsExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(
+        investigationsExist,
+        1
+      );
       return;
     }
 
@@ -434,6 +498,14 @@ export class BillingService {
     });
     if (proceduresExist > -1) {
       this.ProcedureItems.splice(proceduresExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_procedureList.splice(
+        proceduresExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_procedureList.splice(
+        proceduresExist,
+        1
+      );
       return;
     }
 
@@ -450,6 +522,10 @@ export class BillingService {
     });
     if (helthcheckupExist > -1) {
       this.HealthCheckupItems.splice(helthcheckupExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_d_packagebillList.splice(
+        helthcheckupExist,
+        1
+      );
       return;
     }
   }
@@ -495,7 +571,7 @@ export class BillingService {
 
   removeFromBill(data: any) {
     let exist = this.billItems.findIndex((item: any) => {
-      return (item.itemId = data.billItem && data.billItem.itemId);
+      return item.itemId == (data.billItem && data.billItem.itemId);
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
@@ -530,8 +606,11 @@ export class BillingService {
         clinicId: data.clinics || 0,
         //ConsultationTypeId: data.billItem.priorityId,
       });
+      this.makeBillPayload.dtFinalGrpDoc = this.dtFinalGrpDoc;
+      this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
+      this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
-
+    console.log(this.makeBillPayload);
     this.calculateTotalAmount();
   }
 
@@ -632,16 +711,16 @@ export class BillingService {
           this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo,
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         orderNo: "",
-      }),
-        this.makeBillPayload.ds_insert_bill.tab_d_procedureList.push({
-          orderId: 0,
-          procedureId: data.billItem.itemId,
-          serviceid: data.billItem.serviceId,
-          quantity: data.billItem.qty,
-          doctorId: data.billItem.doctorID || 0,
-          opBillid: 0,
-          refDocId: 0,
-        });
+      });
+      this.makeBillPayload.ds_insert_bill.tab_d_procedureList.push({
+        orderId: 0,
+        procedureId: data.billItem.itemId,
+        serviceid: data.billItem.serviceId,
+        quantity: data.billItem.qty,
+        doctorId: data.billItem.doctorID || 0,
+        opBillid: 0,
+        refDocId: 0,
+      });
     }
 
     this.calculateTotalAmount();
@@ -927,7 +1006,7 @@ export class BillingService {
         doctorName: "",
         doctorName_required: procedure.docRequired ? true : false,
         specialisation_required: procedure.docRequired ? true : false,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         unitPrice: res[0].returnOutPut,
         itemid: procedure.value,
         priorityId: priorityId,
@@ -947,9 +1026,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
           doctorID: 0,
         },
@@ -957,7 +1036,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: procedure.value,
         serviceID: procedure.serviceid,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
@@ -994,7 +1073,7 @@ export class BillingService {
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         billItem: {
           popuptext: investigation.popuptext,
           itemId: investigation.value,
@@ -1013,9 +1092,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
           doctorID: 0,
           patient_Instructions: investigation.patient_Instructions,
@@ -1024,7 +1103,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: investigation.value,
         serviceID: serviceType || investigation.serviceid,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
@@ -1102,7 +1181,7 @@ export class BillingService {
         type: priorityId,
         scheduleSlot: "",
         bookingDate: "",
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         specialization: specialization,
         clinics: clinics ? clinics.value : 0,
         billItem: {
@@ -1119,9 +1198,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: doctorName.specialisationid,
           doctorID: doctorName.value,
         },
@@ -1130,7 +1209,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: doctorName.value,
         serviceID: 25,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }

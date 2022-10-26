@@ -99,7 +99,8 @@
 
   <div class="flex mt-2 justify-between footer-section">
     <div class="flex mt-1 gap-5">
-      <mat-label class="max-health-primary-color font-semi-bold"
+      <mat-label
+        class="max-health-primary-color font-semi-bold mat-form-field-required-marker"
         >Authorised By</mat-label
       >
       <div class="w-2/10">
@@ -142,7 +143,7 @@
         mat-raised-button
         color="primary"
         (click)="applyDiscount()"
-        [disabled]="!discAmtForm.valid"
+        [disabled]="!discAmtForm.valid || disableApply"
       >
         Apply Discount
       </button>

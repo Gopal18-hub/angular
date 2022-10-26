@@ -181,6 +181,7 @@ export class DisountReasonComponent implements OnInit {
   selectedItems: any = [];
 
   disableAdd: boolean = false;
+  disableApply: boolean = false;
 
   @ViewChild("table") tableRows: any;
 
@@ -198,6 +199,7 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dualList = [];
     if ("removeRow" in this.data) {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
     }
@@ -226,7 +228,7 @@ export class DisountReasonComponent implements OnInit {
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
       this.question[0].options = this.discounttypes.map((a: any) => {
-        return { title: a.title, value: a.value };
+        return { title: a.title, value: a.value, disabled: false };
       });
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
@@ -261,6 +263,36 @@ export class DisountReasonComponent implements OnInit {
         });
         if (this.selectedItems.length == totalItems) {
           this.disableAdd = true;
+        }
+      } else {
+        this.selectedItems.forEach((sItem: any) => {
+          if ([4, 5].includes(sItem.discTypeId)) {
+            this.dualList.push(sItem.discTypeId);
+          }
+        });
+        if (this.dualList.length > 0) {
+          const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
+          this.question[0].options = this.discounttypes.map((a: any) => {
+            if (this.dualList.includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            } else if ([4, 5].includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: false,
+              };
+            } else {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            }
+          });
         }
       }
     }
@@ -333,7 +365,12 @@ export class DisountReasonComponent implements OnInit {
   }
 
   rowRwmove($event: any) {
+    const tempDiscountType =
+      this.calculateBillService.discountSelectedItems[$event.index].discTypeId;
     this.calculateBillService.discountSelectedItems.splice($event.index, 1);
+    if (this.dualList.includes(tempDiscountType)) {
+      this.dualList.splice(this.dualList.indexOf(tempDiscountType), 1);
+    }
     this.calculateBillService.discountSelectedItems =
       this.calculateBillService.discountSelectedItems.map(
         (item: any, index: number) => {
@@ -346,14 +383,35 @@ export class DisountReasonComponent implements OnInit {
     if (this.selectedItems.length === 0) {
       this.disableAdd = false;
       this.dualList = [];
-    }
-    if (!this.discAmtForm.value.types) {
-      this.discAmtForm.controls["types"].setValue("On-Bill");
+      this.question[0].options = this.discounttypes.map((a: any) => {
+        return { title: a.title, value: a.value, disabled: false };
+      });
+      if (!this.discAmtForm.value.types) {
+        this.discAmtForm.controls["types"].setValue("On-Bill");
+      }
+    } else {
+      if (this.dualList.length > 0) {
+        const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
+        this.question[0].options = this.discounttypes.map((a: any) => {
+          if (this.dualList.includes(tempDual[a.value])) {
+            return {
+              title: a.title,
+              value: a.value,
+              disabled: true,
+            };
+          } else {
+            return {
+              title: a.title,
+              value: a.value,
+              disabled: false,
+            };
+          }
+        });
+      }
     }
   }
 
   prepareData() {
-    console.log(this.discAmtForm.value);
     switch (this.discAmtForm.value.types) {
       case "On-Bill":
         this.OnBillItemPrepare();
@@ -406,6 +464,9 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.discountSelectedItems.push(temp);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      return { title: a.title, value: a.value, disabled: true };
+    });
   }
   OnPatientPrepare() {
     const existReason: any = this.discReasonList.find(
@@ -429,14 +490,23 @@ export class DisountReasonComponent implements OnInit {
       discTypeValue: "On-Patient",
       reasonTitle: existReason.name,
     };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
-      this.discAmtFormConfig.columnsInfo.reason.options;
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[
+      this.dualList.length
+    ] = this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
     this.dualList.push(4);
+
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (this.dualList.includes(5)) {
       this.disableAdd = true;
     }
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      if (!this.disableAdd && a.value == "On-Company") {
+        return { title: a.title, value: a.value, disabled: false };
+      } else {
+        return { title: a.title, value: a.value, disabled: true };
+      }
+    });
   }
 
   OnCompanyPrepare() {
@@ -461,8 +531,9 @@ export class DisountReasonComponent implements OnInit {
       discTypeValue: "On-Company",
       reasonTitle: existReason.name,
     };
-    this.discAmtFormConfig.columnsInfo.reason.moreOptions[0] =
-      this.discAmtFormConfig.columnsInfo.reason.options;
+    this.discAmtFormConfig.columnsInfo.reason.moreOptions[
+      this.dualList.length
+    ] = this.discAmtFormConfig.columnsInfo.reason.options;
     this.calculateBillService.discountSelectedItems.push(temp);
     this.dualList.push(5);
 
@@ -470,6 +541,13 @@ export class DisountReasonComponent implements OnInit {
     if (this.dualList.includes(4)) {
       this.disableAdd = true;
     }
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      if (!this.disableAdd && a.value == "On-Patient") {
+        return { title: a.title, value: a.value, disabled: false };
+      } else {
+        return { title: a.title, value: a.value, disabled: true };
+      }
+    });
   }
 
   OnItemPrepare() {
@@ -513,6 +591,9 @@ export class DisountReasonComponent implements OnInit {
     }
 
     this.disableAdd = true;
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      return { title: a.title, value: a.value, disabled: true };
+    });
   }
 
   OnServiceItemPrepare() {
@@ -549,16 +630,25 @@ export class DisountReasonComponent implements OnInit {
       this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     }
     this.disableAdd = true;
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      return { title: a.title, value: a.value, disabled: true };
+    });
   }
 
   clear() {
     this.disableAdd = false;
+    this.dualList = [];
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (!this.discAmtForm.value.types) {
-      this.discAmtForm.controls["types"].setValue("On-Bill");      
+      this.discAmtForm.controls["types"].setValue("On-Bill");
     }
-    this.discAmtForm.controls["authorise"].setValue(null);
+    this.discAmtForm.controls["authorise"].setValue(0);
+    this.disableApply = true;
+
+    this.question[0].options = this.discounttypes.map((a: any) => {
+      return { title: a.title, value: a.value, disabled: false };
+    });
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
