@@ -196,6 +196,9 @@ export class ShowPlanDetilsComponent implements OnInit {
   getDoctorsList() {}
 
   save() {
-    this.dialogRef.close({ selected: this.tableRows.selection.selected });
+    this.dialogRef.close({
+      selected: this.tableRows.selection.selected,
+      selectedDoctor: this.selectedDoctor,
+    });
   }
 }
