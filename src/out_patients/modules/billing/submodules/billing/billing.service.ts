@@ -1018,7 +1018,7 @@ export class BillingService {
           itemId: procedure.value,
           priority: priorityId,
           serviceId: procedure.serviceid,
-          price: res[0].returnOutPut,
+          price: res[0].returnOutPut + res[0].totaltaX_Value,
           serviceName: "Procedure & Others",
           itemName: procedure.originalTitle,
           qty: 1,

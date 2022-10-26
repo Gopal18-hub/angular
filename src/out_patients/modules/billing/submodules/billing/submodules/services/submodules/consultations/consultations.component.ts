@@ -589,7 +589,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             type: priorityId,
             scheduleSlot: "",
             bookingDate: "",
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut + res[0].totaltaX_Value,
             specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
@@ -598,7 +598,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
               serviceId: 25,
-              price: res[0].returnOutPut,
+              price: res[0].returnOutPut + res[0].totaltaX_Value,
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
@@ -608,9 +608,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               cash: 0,
               disc: 0,
               discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+              gst:  + res[0].totaltaX_RATE,
+              gstValue: res[0].totaltaX_Value,
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
