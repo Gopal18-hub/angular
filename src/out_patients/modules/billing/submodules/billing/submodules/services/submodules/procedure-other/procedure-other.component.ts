@@ -135,6 +135,12 @@ export class ProcedureOtherComponent implements OnInit {
       this.config.columnsInfo.doctorName.moreOptions[index] =
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
+    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
