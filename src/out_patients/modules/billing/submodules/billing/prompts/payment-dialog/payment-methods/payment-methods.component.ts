@@ -99,13 +99,13 @@ export class BillingPaymentMethodsComponent implements OnInit {
           this.tabPrices.push(this.onlinePaidAmount);
           this.remainingAmount = this.totalAmount - this.onlinePaidAmount;           
           if(this.paidAppointments){
-            this.paymentForm[method].controls["onlinetransacid"]
+            this.paymentForm[method].controls["transactionId"]
             .setValue(this.paidAppointments.transactionid);
-            this.paymentForm[method].controls["onlinebookingid"]
+            this.paymentForm[method].controls["bookingId"]
             .setValue(this.paidAppointments.bookingid);
-            this.paymentForm[method].controls["onlinecardvalidate"]
+            this.paymentForm[method].controls["cardValidation"]
             .setValue("yes");
-            this.paymentForm[method].controls["onlinecontactno"]
+            this.paymentForm[method].controls["onlineContact"]
             .setValue(this.paidAppointments.mobileno);             
           }
     

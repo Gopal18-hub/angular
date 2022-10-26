@@ -143,13 +143,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     this.questions = formResult.questions;
     this.getSpecialization();
     this.data = this.billingService.consultationItems;
-    this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
+    this.http.get(BillingApiConstants.consultationTypes).subscribe((res:any) => {
       this.consultationTypes = res;
       this.config.columnsInfo.type.options = res.map((r: any) => {
         return { title: r.name, value: r.id };
       });
     });
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -168,6 +168,14 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       this.billingService.consultationItems[$event.index]
     );
     this.billingService.consultationItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.splice(
+      $event.index,
+      1
+    );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.splice(
+      $event.index,
+      1
+    );
     this.billingService.consultationItems =
       this.billingService.consultationItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
@@ -201,13 +209,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
-        filter((res) => {
+        filter((res:any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) => {
+        switchMap((value:any) => {
           if (
             this.formGroup.value.specialization &&
             this.formGroup.value.specialization.value
@@ -245,7 +253,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     if (!this.excludeClinicsLocations.includes(this.locationId)) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
-        .subscribe((res) => {
+        .subscribe((res:any) => {
           this.questions[2].options = res.map((r: any) => {
             return { title: r.name, value: r.id };
           });
@@ -257,7 +265,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res:any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -285,7 +293,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -365,7 +373,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       twiceConsultationReasonRef
         .afterClosed()
         .pipe(takeUntil(this._destroying$))
-        .subscribe(async (result) => {
+        .subscribe(async (result:any) => {
           console.log(result);
           if (result) {
             if (result.data) {
@@ -414,7 +422,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           if (res == 1) {
             this.checkTwiceConsultation(priorityId);
           } else {
-              //need to call DMG popup then only getcalculateopbill
+            //need to call DMG popup then only getcalculateopbill
             await this.checkOpGropupDoctor();
             this.getCalculateOpBill(priorityId);
           }
@@ -434,71 +442,78 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
   }
 
   //API call for group doctor Check
-  async checkOpGropupDoctor(){
+  async checkOpGropupDoctor() {
     let result;
-    console.log(this.formGroup.value)
-    let dsGroupDoc = await this.http.get(
-      BillingApiConstants.checkopgroupdoctor(
-        this.formGroup.value.doctorName.value,
-       this.locationId)
-    ).toPromise();
-   
-    let dsGroupDocprevious = await this.http.get(
-      BillingApiConstants.getlastgrpdocselected(
-        this.billingService.activeMaxId.regNumber,
-        this.billingService.activeMaxId.iacode,      
-        this.locationId,
-        this.formGroup.value.doctorName.value)
-    ).toPromise();
-    console.log(dsGroupDoc)
-    if(dsGroupDoc.dtGrpDoc.length > 0){
-      if(dsGroupDoc.isOPGroupDoctor[0].isOPGroupDoctor==1 &&
-          this.userSelectedDMG== 0){
-           const DMGInforef = this.messageDialogService.info("Please select organ (DMG)");
-           await DMGInforef.afterClosed().toPromise();
-            if(dsGroupDoc.dtGrpDoc.length > 0){
-              ///
-              await this.FillOPGroupDoctor(dsGroupDoc, dsGroupDocprevious);
-            }
-      }
-      else{
+    console.log(this.formGroup.value);
+    let dsGroupDoc = await this.http
+      .get(
+        BillingApiConstants.checkopgroupdoctor(
+          this.formGroup.value.doctorName.value,
+          this.locationId
+        )
+      )
+      .toPromise();
+
+    let dsGroupDocprevious = await this.http
+      .get(
+        BillingApiConstants.getlastgrpdocselected(
+          this.billingService.activeMaxId.regNumber,
+          this.billingService.activeMaxId.iacode,
+          this.locationId,
+          this.formGroup.value.doctorName.value
+        )
+      )
+      .toPromise();
+    console.log(dsGroupDoc);
+    if (dsGroupDoc.dtGrpDoc.length > 0) {
+      if (
+        dsGroupDoc.isOPGroupDoctor[0].isOPGroupDoctor == 1 &&
+        this.userSelectedDMG == 0
+      ) {
+        const DMGInforef = this.messageDialogService.info(
+          "Please select organ (DMG)"
+        );
+        await DMGInforef.afterClosed().toPromise();
+        if (dsGroupDoc.dtGrpDoc.length > 0) {
+          ///
+          await this.FillOPGroupDoctor(dsGroupDoc, dsGroupDocprevious);
+        }
+      } else {
         ///
         await this.FillOPGroupDoctor(dsGroupDoc, dsGroupDocprevious);
       }
     }
   }
-  async FillOPGroupDoctor(dsGroupDoc: any, dsGroupDocprevious: any)
-  {
+  async FillOPGroupDoctor(dsGroupDoc: any, dsGroupDocprevious: any) {
     var x = 0;
     var OtherGroupDoc;
     var dmgdata: any[] = [];
     console.log(dsGroupDoc, dsGroupDocprevious);
     dsGroupDoc.dtGrpDoc.forEach((i: any) => {
       var Odmgdata: any = {};
-      if(dsGroupDocprevious.dtGrpDocpre.filter((j: any) => { return j.dmg == i.docID}) > 0)
-      {
+      if (
+        dsGroupDocprevious.dtGrpDocpre.filter((j: any) => {
+          return j.dmg == i.docID;
+        }) > 0
+      ) {
         Odmgdata.id = 1;
-        if(i.docID == 25907)
-        {
+        if (i.docID == 25907) {
           x = 1;
           OtherGroupDoc = dsGroupDocprevious.dtGrpDocpre[0].OtherGroupDocRemark;
         }
-      }
-      else
-      {
+      } else {
         Odmgdata.id = 0;
       }
-      if(this.userSelectedDMG > 0)
-      {
-        if(dsGroupDoc.dtGrpDoc.filter((k: any) => { k.docID == this.userSelectedDMG}).length > 0)
-        {
-          if(i.docID == this.userSelectedDMG)
-          {
+      if (this.userSelectedDMG > 0) {
+        if (
+          dsGroupDoc.dtGrpDoc.filter((k: any) => {
+            k.docID == this.userSelectedDMG;
+          }).length > 0
+        ) {
+          if (i.docID == this.userSelectedDMG) {
             Odmgdata.id = 1;
           }
-        }
-        else
-        {
+        } else {
           Odmgdata.id = 0;
         }
       }
@@ -506,27 +521,25 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       Odmgdata.doctorName = i.doctorName;
       Odmgdata.specialization = i.specialization;
       dmgdata.push(Odmgdata);
-    })
+    });
     console.log(dmgdata);
-    if(x == 1)
-    {
+    if (x == 1) {
       const dialogref = this.matDialog.open(DmgOthergrpDocPopupComponent, {
         width: "30vw",
-        height: '40vh',
-        data: OtherGroupDoc
-      })
+        height: "40vh",
+        data: OtherGroupDoc,
+      });
       await dialogref.afterClosed().toPromise();
     }
-    var m = 0, count = 1;
-    if(dsGroupDocprevious.dtGrpDocSpe.length == 0)
-    {
+    var m = 0,
+      count = 1;
+    if (dsGroupDocprevious.dtGrpDocSpe.length == 0) {
       m = 1;
     }
     var SelectedGroupDoc: any[] = [];
     dsGroupDocprevious.dtGrpDocSpec.forEach((i: any) => {
       var OSelectedGroupDoc: any = {};
-      if(i.id > 0)
-      {
+      if (i.id > 0) {
         OSelectedGroupDoc.chk = true;
         OSelectedGroupDoc.id = i.id;
         OSelectedGroupDoc.name = i.name;
@@ -539,23 +552,21 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         SelectedGroupDoc.push(OSelectedGroupDoc);
       }
       count++;
-    })
-    if(dmgdata.length > 0)
-    {
+    });
+    if (dmgdata.length > 0) {
       const dialogref = this.matDialog.open(DmgPopupComponent, {
-        width: '70vw',
-        height: '80vh',
+        width: "70vw",
+        height: "80vh",
         data: {
           dmgdata: dmgdata,
           selectedgrpdoc: SelectedGroupDoc,
           specialization: this.formGroup.value.specialization.value,
           unitdocid: this.formGroup.value.doctorName.value,
-          reason: OtherGroupDoc?OtherGroupDoc:''
-        }
-      })
+          reason: OtherGroupDoc ? OtherGroupDoc : "",
+        },
+      });
       await dialogref.afterClosed().toPromise();
     }
-    
   }
   getCalculateOpBill(priorityId = 57) {
     this.http
