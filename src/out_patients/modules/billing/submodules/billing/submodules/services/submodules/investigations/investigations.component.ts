@@ -145,6 +145,7 @@ export class InvestigationsComponent implements OnInit {
     this.questions = formResult.questions;
     this.billingService.InvestigationItems.forEach(
       (item: any, index: number) => {
+        item["sno"] = index + 1;
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
       }
     );

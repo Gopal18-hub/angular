@@ -533,7 +533,7 @@ export class BillingService {
 
   removeFromBill(data: any) {
     let exist = this.billItems.findIndex((item: any) => {
-      return (item.itemId = data.billItem && data.billItem.itemId);
+      return item.itemId == (data.billItem && data.billItem.itemId);
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);
