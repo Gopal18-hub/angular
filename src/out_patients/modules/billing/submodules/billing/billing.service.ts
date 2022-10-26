@@ -40,7 +40,7 @@ export class BillingService {
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
-  PaidAppointments:any;
+  PaidAppointments:any={};
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -474,6 +474,8 @@ export class BillingService {
     );
     if (investigationsExist > -1) {
       this.InvestigationItems.splice(investigationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(investigationsExist,1);
+       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(investigationsExist,1);
       return;
     }
 
@@ -543,7 +545,7 @@ export class BillingService {
 
   removeFromBill(data: any) {
     let exist = this.billItems.findIndex((item: any) => {
-      return (item.itemId = data.billItem && data.billItem.itemId);
+      return item.itemId == (data.billItem && data.billItem.itemId);
     });
     if (exist > -1) {
       this.billItems.splice(exist, 1);

@@ -198,6 +198,7 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dualList = [];
     if ("removeRow" in this.data) {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
     }
@@ -261,6 +262,36 @@ export class DisountReasonComponent implements OnInit {
         });
         if (this.selectedItems.length == totalItems) {
           this.disableAdd = true;
+        }
+      } else {
+        this.selectedItems.forEach((sItem: any) => {
+          if ([4, 5].includes(sItem.discTypeId)) {
+            this.dualList.push(sItem.discTypeId);
+          }
+        });
+        if (this.dualList.length > 0) {
+          const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
+          this.question[0].options = this.discounttypes.map((a: any) => {
+            if (this.dualList.includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            } else if ([4, 5].includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: false,
+              };
+            } else {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            }
+          });
         }
       }
     }
