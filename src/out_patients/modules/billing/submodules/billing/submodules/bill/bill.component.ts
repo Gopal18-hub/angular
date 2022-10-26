@@ -423,9 +423,9 @@ export class BillComponent implements OnInit, OnDestroy {
   refreshForm() {
     this.calculateBillService.refreshDiscount();
     this.calculateBillService.calculateDiscount();
-    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost);
+    this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost.toFixed(2));
     this.formGroup.controls["discAmt"].setValue(
-      this.calculateBillService.totalDiscountAmt
+      this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
     this.billTypeChange(this.formGroup.value.paymentMode);
     // this.formGroup.controls["amtPayByPatient"].setValue(
@@ -1015,7 +1015,7 @@ export class BillComponent implements OnInit, OnDestroy {
       (this.formGroup.value.dipositAmtEdit || 0) -
       (this.formGroup.value.amtPayByComp || 0);
 
-    return temp;
+    return temp.toFixed(2);
   }
 
   depositdetails() {

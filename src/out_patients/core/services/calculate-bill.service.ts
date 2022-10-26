@@ -292,6 +292,11 @@ export class CalculateBillService {
       if (res && "applyDiscount" in res && res.applyDiscount) {
         this.processDiscountLogics(formGroup, componentRef, from);
       }
+      else{
+         formGroup.controls["discAmtCheck"].setValue(false, {
+        emitEvent: false,
+      });
+      }
     });
   }
 
