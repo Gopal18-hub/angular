@@ -8,6 +8,7 @@ import { Subject, takeUntil } from "rxjs";
 import { Generatehl7outboundmessagerisModel } from "@core/models/generatehl7outboundmessage.Model";
 import { CookieService } from "@shared/services/cookie.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 @Component({
   selector: "out-patients-configure-lims",
   templateUrl: "./configure-lims.component.html",
@@ -79,7 +80,8 @@ export class ConfigureLimsComponent implements OnInit {
     private formService: QuestionControlService,
     private http: HttpClient,
     private cookie: CookieService,
-    private dialogService: MessageDialogService
+    private dialogService: MessageDialogService,
+    private snackbar: MaxHealthSnackBarService
   ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -150,24 +152,44 @@ export class ConfigureLimsComponent implements OnInit {
   }
   getdata() {
     this.apiprocessing = true;
-    this.http
-      .get(
-        ApiConstants.gethl7outboundmessageris(
-          "LIMS",
-          this.limsconfigureform.controls["billno"].value
+    if (this.limsconfigureform.controls["billno"].value != "") {
+      this.http
+        .get(
+          ApiConstants.gethl7outboundmessageris(
+            "LIMS",
+            this.limsconfigureform.controls["billno"].value
+          )
         )
-      )
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(
-        (data) => {
-          console.log(data);
-          this.limsconfigureList = data as GetConfigureMessageInterface[];
-          this.apiprocessing = false;
-        },
-        (error) => {
-          this.apiprocessing = false;
-        }
-      );
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.limsconfigureList = data as GetConfigureMessageInterface[];
+            if (this.limsconfigureList != null) {
+              if (this.limsconfigureList.length > 0) {
+                this.limsconfigureList.forEach((item, index) => {
+                  if (item.messagestatus == "created") {
+                    item.disablecheckbox = true;
+                  } else {
+                    item.disablecheckbox = false;
+                  }
+                });
+              }
+            } else {
+              this.apiprocessing = false;
+            }
+
+            this.apiprocessing = false;
+          },
+          (error) => {
+            console.log(error);
+            this.apiprocessing = false;
+          }
+        );
+    } else {
+      this.snackbar.open("Please Enter Bill no");
+      this.apiprocessing = false;
+    }
   }
   recreateClick() {
     this.recreateList = [];
@@ -185,27 +207,31 @@ export class ConfigureLimsComponent implements OnInit {
         });
       });
       console.log(this.recreateList);
-      this.http
-        .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
-        .pipe(takeUntil(this._destroying$))
-        .subscribe(
-          (result) => {
-            console.log(result);
-            if (result == "Done") {
-              this.dialogService.success("Order Successfully Generated");
-              this.limsconfigureList = [];
-              this.tableRows.selection.clear();
+      if (this.recreateList.length > 0) {
+        this.http
+          .post(ApiConstants.generatehl7outboundmessageris, this.recreateList)
+          .pipe(takeUntil(this._destroying$))
+          .subscribe(
+            (result) => {
+              console.log(result);
+              if (result == "Done") {
+                this.dialogService.success("Order Successfully Generated");
+                this.limsconfigureList = [];
+                this.tableRows.selection.clear();
+              }
+            },
+            (error) => {
+              console.log(error);
+              if (error.error.text == "Done") {
+                // this.dialogService.success("Order Successfully Generated");
+                // this.limsconfigureList = [];
+                // this.tableRows.selection.clear();
+              }
             }
-          },
-          (error) => {
-            console.log(error);
-            if (error.error.text == "Done") {
-              // this.dialogService.success("Order Successfully Generated");
-              // this.limsconfigureList = [];
-              // this.tableRows.selection.clear();
-            }
-          }
-        );
+          );
+      } else {
+        this.dialogService.info("Please select atleast one item from the list");
+      }
     }
   }
 

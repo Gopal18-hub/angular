@@ -361,7 +361,7 @@ export class BillingService {
             }
           );
 
-          iomcompanycorporate.afterClosed().subscribe((result) => {
+          iomcompanycorporate.afterClosed().subscribe((result:any) => {
             if (result.data == "corporate") {
               formGroup.controls["corporate"].enable();
               formGroup.controls["corporate"].setValue(null);
@@ -386,16 +386,18 @@ export class BillingService {
   }
 
   //fix for Staff company validation
-  resetCompany(res: any, formGroup: any, from: string = "header") {
-    formGroup.controls["corporate"].setValue(null);
-    this.corporateChangeEvent.next({ corporate: null, from });
-    formGroup.controls["company"].setValue(null);
-    this.corporateChangeEvent.next({ company: null, from });
-    this.messageDialogService.info(
+ async resetCompany(res: any, formGroup: any, from: string = "header") {
+    // formGroup.controls["corporate"].setValue(null);
+    // this.corporateChangeEvent.next({ corporate: null, from });
+    // formGroup.controls["company"].setValue(null);
+    // this.corporateChangeEvent.next({ company: null, from });
+    const ERNanavatiCompany = await this.messageDialogService.info(
       "Selected Patient is not entitled for " +
         res.title +
         " company.Please Contact HR Dept."
     );
+    ERNanavatiCompany.afterClosed().toPromise();
+    formGroup.controls["company"].setValue(null);
   }
 
   setCorporate(

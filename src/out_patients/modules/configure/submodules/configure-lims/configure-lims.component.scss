@@ -59,3 +59,8 @@
 .api-loader {
     background: rgba(0, 0, 0, 0.15);
   }
+  .checkbox-margin{
+    ::ng-deep mat-checkbox .mat-checkbox-inner-container-no-side-margin{
+        margin-bottom:3px !important;
+    }
+}

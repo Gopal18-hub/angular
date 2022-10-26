@@ -288,7 +288,7 @@ export class CalculateBillService {
       height: "68vh",
       data: data,
     });
-    discountReasonPopup.afterClosed().subscribe((res) => {
+    discountReasonPopup.afterClosed().subscribe((res:any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
         this.processDiscountLogics(formGroup, componentRef, from);
       }
@@ -413,7 +413,7 @@ export class CalculateBillService {
 
         CouponConfirmationRef.afterClosed()
           .pipe(takeUntil(this._destroying$))
-          .subscribe(async (result) => {
+          .subscribe(async (result:any) => {
             if ("type" in result) {
               if (result.type == "yes") {
                 this.discountSelectedItems = this.processDiscount(res);

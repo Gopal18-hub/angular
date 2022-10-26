@@ -55,7 +55,7 @@
       color="primary"
       class="font-sm ml-2 min-width-initial"
       type="button"
-      [disabled]="!(opOrderrequestService.investigationItems.length || opOrderrequestService.procedureItems.length) || opOrderrequestService.getSaveButtononPriority() || opOrderrequestService.getSaveButtonondocrequiredStatus()"
+      [disabled]="!(opOrderrequestService.investigationItems.length || opOrderrequestService.procedureItems.length) || opOrderrequestService.getSaveButtononPriority() || opOrderrequestService.getSaveButtonondocrequiredProc()|| opOrderrequestService.getSaveButtonondocrequiredInv()"
       (click)="save()"
     >
       Save

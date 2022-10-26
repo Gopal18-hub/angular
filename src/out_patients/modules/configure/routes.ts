@@ -11,6 +11,7 @@ const routes: Routes = [
     component: ConfigureComponent,
     canActivate: [AuthGuardService],
     children: [
+      { path: "", component: ConfigureRisComponent },
       { path: "RIS", component: ConfigureRisComponent },
       { path: "LIMS", component: ConfigureLimsComponent },
     ],
