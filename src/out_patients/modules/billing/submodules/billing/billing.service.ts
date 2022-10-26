@@ -83,7 +83,7 @@ export class BillingService {
   refreshBillTab = new Subject<any>();
 
   billingFormGroup: any = { form: "", questions: [] };
-  dtCheckedItem: any = {};
+  dtCheckedItem: any = [];
   txtOtherGroupDoc: any = "";
   dtFinalGrpDoc: any = {};
   constructor(
