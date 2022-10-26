@@ -8,41 +8,32 @@
         </ul>
     </nav>
     <mat-tab-nav-panel #tabPanel>
-        <div class="p-1 h-full w-full">
-            <div class="p-2 bg-lightgray flex border-radius-xlg">
+        <div class="p-1 w-full h-full">
+            <div class=" p-2 flex w-full bg-lightgray align-items-center input-padding border-radius-xlg">
                 <div class="w-60 flex ">
-                        <mat-label class="max-health-primary-color font-semi-bold">
-                            Create RIS Requests
-                        </mat-label>
-                        <div class=" w-1/4 ml-4">
-                            <maxhealth-question
-                            [question]="questions[1]"
-                            [form]="risconfigureform"
-                            [questions]="questions[1]"
-                            [index]="0"
-                            
-                            >
-            
-                            </maxhealth-question>
-                        </div>
-                        <div  class="ml-4 w-1/4">
-                            <maxhealth-question
+                    <mat-label class="max-health-primary-color font-semi-bold">
+                        Create RIS Requests
+                    </mat-label>
+                    <maxhealth-question
+                    [question]="questions[1]"
+                    [form]="risconfigureform"
+                    [questions]="questions[1]"
+                    [index]="0"
+                    class="ml-4 w-2/10 bg-white"
+                    >
+    
+                    </maxhealth-question>
+                    <maxhealth-question
                             [question]="questions[0]"
                             [form]="risconfigureform"
                             [questions]="questions[0]"
                             [index]="1"
-                           
+                            class="ml-4 w-2/10 bg-white"
                             >
             
                             </maxhealth-question>
-                        </div>
-                        
-                 
-                    
                 </div>
-                
-                <div class="w-40 flex ml-34 ">
-                   
+                <div class="w-40 flex justify-content-end">
                     <button mat-raised-button color="primary" type="submit" class="button-height" (click)="getdata()">
                         <img src="assets/lens.svg" class="lens-icon" >
         
@@ -53,17 +44,13 @@
                     
                      <button mat-raised-button color="primary" class="button-height2 ml-2" (click)="getdata()" [disabled]="risconfigurelist.length == 0 "><span class="text-position2">Refresh</span></button>
                      <button mat-raised-button color="primary" class="ml-2 button-height2 "(click)="recreateClick()" [disabled]="risconfigurelist.length == 0 "><span class="text-position2">Recreate</span></button>
-                     <button mat-raised-button color="primary" class="button-height2  ml-2" (click)="cleardata()"><span class="text-position2">Clear</span></button>
-                    
-                </div> 
-                
+                     <button mat-raised-button color="primary" class="button-height2  ml-2" (click)="cleardata()"[disabled]="!(risconfigureform.dirty)"><span class="text-position2">Clear</span></button>
+                </div>
             </div>
             <div class="h-80 mt-2">
                 <maxhealth-table #ristable [config]="config" [data]="risconfigurelist" class="checkbox-margin"></maxhealth-table>
             </div>
-            <!-- <div *ngIf="apiprocessing" class="flex align-items-center justify-center h-full w-full fixed api-loader left-0-% top-0-% z-50">
-                <mat-spinner strokeWidth="3"></mat-spinner>
-            </div> -->
+            
         </div>
       
     </mat-tab-nav-panel>
