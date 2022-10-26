@@ -16,7 +16,7 @@ export namespace PaymentMethods {
       form: "demandDraftForm",
       payloadKey: "tab_dd",
     },
-    mobilepayment: { label: "Mobile Payment", form: "paytmForm", payloadKey: "tab_Mobile",},
+    mobilepayment: { label: "Mobile Payment", form: "mobilePaymentForm", payloadKey: "tab_Mobile",},
     onlinepayment: { label: "Online Payment", form: "onlinePaymentForm" , payloadKey: "tab_Online",},
     upi: { label: "UPI", form: "upiForm" , payloadKey: "tab_UPI",},
   };
@@ -76,34 +76,37 @@ export namespace PaymentMethods {
 
 
   export const tab_Mobile = (values: any) => {
-    return {
-      paytmwallet:values.paytmwallet.title,
-      paytmsendermobile:values.paytmsendermobile,
-      paytmotp: values.paytmotp,
-      paytmtransacref: values.paytmtransacref,
-      paytmorderid: values.paytmorderid,
+    return {     
+      mobileNo:values.mobileNo,
+      mmid: values.mmid,
+      senderName: values.senderName,
+      bankName: values.bankName,
+      branchName:values.branchName,
+      beneficiaryMobile:values.beneficiaryMobile,
+      transactionRef:values.transactionRef,
     };
   };
 
   export const tab_Online = (values: any) => {
     return {
-      onlinetransacid:values.onlinetransacid,
-      onlinebookingid:values.onlinebookingid,
-      onlinecardvalidate: values.onlinecardvalidate,
-      onlinecontactno: values.onlinecontactno,
+      transactionId:values.transactionId,
+      bookingId:values.bookingId,
+      cardValidation: values.cardValidation,
+      onlineContact: values.onlineContact,
     };
   };
 
    export const tab_UPI = (values: any) => {
     return {
-      upicardno:values.upicardno,
-      upiccvalidity:values.upiccvalidity,
-      upitransactionid:values.upitransactionid,
-      upibankname: values.upibankname,
-      upibatchno: values.upibatchno,
-      upiapproval:values.upiapproval,
-      upiterminal:values.upiterminal,
-      upiacquiring: values.upiacquiring,
+      ccNumber_UPI:values.ccNumber_UPI,
+      cCvalidity_UPI:values.cCvalidity_UPI,
+      approvalno_UPI:values.approvalno_UPI,
+      bankname_UPI: values.bankname_UPI,
+      flagman_UPI: values.flagman_UPI,
+      approvalcode_UPI:values.approvalcode_UPI,
+      terminalID_UPI:values.terminalID_UPI,
+      acquirer_UPI: values.acquirer_UPI,
+      cardholdername_UPI:values.cardholdername_UPI,
     };
   };
 
@@ -340,35 +343,44 @@ export namespace PaymentMethods {
       title: "Mobile Payment Details",
       type: "object",
       properties: {
-        mobilesendermobile: {
+        modeOfPayment: {
+          type: "hidden",
+          value: "Cash Payment by Mobile",
+        },
+        price: {
+          type: "number",
+          defaultValue: "0.00",
+          label: "Amount",
+        },
+        mobileNo: {
           type: "number",
           label: "Sender Mobile",
         },
-        mobilesendermmid: {
+        mmid: {
           type: "number",
           label: "Sender MMID No.",
         },
-        mobilesendername: {
+        senderName: {
           type: "string",
           label: "Sender Name",
         },
-        mobilebankname: {
+        bankName: {
           type: "string",
           label: "Bank Name",
         },
-        mobilebranchname: {
+        branchName: {
           type: "string",
           label: "Branch Name",
         },
-        mobilebeneficary: {
+        beneficiaryMobile: {
           type: "number",
           label: "Beneficiary Mob No.",
         },
-        mobiletransactionamt: {
-          type: "number",
-          label: "Transaction Amount",
-        },
-        mobiletransactionref: {
+        // mobiletransactionamt: {
+        //   type: "number",
+        //   label: "Transaction Amount",
+        // },
+        transactionRef: {
           type: "string",
           label: "Transaction Reference",
         },
@@ -390,15 +402,15 @@ export namespace PaymentMethods {
           defaultValue: "0.00",
           label: "Amount",
         },
-        onlinetransacid: {
+        transactionId: {
           type: "string",
           label: "Transaction ID",
         },
-        onlinebookingid: {
+        bookingId: {
           type: "string",
           label: "Booking ID",
         }, //30
-        onlinecardvalidate: {
+        cardValidation: {
           type: "radio",
           required: false,
           options: [
@@ -407,7 +419,7 @@ export namespace PaymentMethods {
           ],
           label: "Card Validate",
         },
-        onlinecontactno: {
+        onlineContact: {
           type: "number",
           label: "Contact No.",
         },
@@ -434,7 +446,7 @@ export namespace PaymentMethods {
           label: "Wallet",
           options: options.bankList,
         },
-        paytmsendermobile: {
+        mobileNo: {
           type: "number",
           label: "Sender Mobile No.",
         },
@@ -471,36 +483,39 @@ export namespace PaymentMethods {
           defaultValue: "0.00",
           label: "Amount",
         },
-        upicardno: {
+        ccNumber_UPI: {
           type: "number",
           label: "Card No.",
         },
-        upiccvalidity: {
+        cardholdername_UPI:{
+          type: "string",
+          label: "Card Holder Name",
+        },
+        cCvalidity_UPI: {
           type: "date",         
           label: "Validity",
         },
-        upitransactionid: {
+        approvalno_UPI: {
           type: "string",
           label: "Transaction ID",
         },
-        upibankname: {
+        bankname_UPI: {
           type: "string",
           label: "Bank Name",
         },
-
-        upibatchno: {
+        flagman_UPI: {
           type: "string",
           label: "Batch No.",
         },
-        upiapproval: {
+        approvalcode_UPI: {
           type: "string",
           label: "Approval Code",
         },
-        upiterminal: {
+        terminalID_UPI: {
           type: "string",
           label: "Terminal ID",
         },
-        upiacquiring: {
+        acquirer_UPI: {
           type: "string",
           label: "Acquiring Bank",
         },

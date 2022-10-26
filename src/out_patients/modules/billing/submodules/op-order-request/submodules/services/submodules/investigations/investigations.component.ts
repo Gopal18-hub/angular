@@ -208,21 +208,11 @@ export class OderInvestigationsComponent implements OnInit {
       console.log(this.tableRows);
       if (res.data.col == "specialisation") {
         console.log(this.tableRows);
+        res.data.element["doctorName"] = "";
         this.opOrderRequestService.investigationItems[
           res.data.index
         ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
-        if (res.data.element.specialisation_required == true) {
-          console.log("specialization changed 2nd time");
-          this.opOrderRequestService.investigationItems[
-            res.data.index
-          ].doctorName_required = true;
-          console.log(
-            this.opOrderRequestService.investigationItems[res.data.index]
-              .doctorName_required
-          );
-        }
-
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
@@ -534,12 +524,7 @@ export class OderInvestigationsComponent implements OnInit {
           },
           docRequired: this.formGroup.value.investigation.docRequired,
         });
-        if (this.formGroup.value.investigation.docRequired == 1) {
-          this.opOrderRequestService.docRequiredStatusvalue();
-        } else {
-          this.opOrderRequestService.docRequiredStatusvalue();
-        }
-
+        this.opOrderRequestService.docRequiredStatusvalue();
         this.opOrderRequestService.calculateTotalAmount();
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
