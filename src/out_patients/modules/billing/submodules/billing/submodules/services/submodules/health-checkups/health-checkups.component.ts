@@ -110,6 +110,10 @@ export class HealthCheckupsComponent implements OnInit {
       this.billingService.HealthCheckupItems[$event.index]
     );
     this.billingService.HealthCheckupItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_packagebillList.splice(
+      $event.index,
+      1
+    );
     this.billingService.HealthCheckupItems =
       this.billingService.HealthCheckupItems.map((item: any, index: number) => {
         item["sno"] = index + 1;

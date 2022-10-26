@@ -718,7 +718,21 @@ export class BillingComponent implements OnInit, OnDestroy {
                 if (result && result.selected && result.selected.length > 0) {
                   const doctors: any = result.selected;
                   for (let i = 0; i < doctors.length; i++) {
-                    if (doctors[i].paymentStatus == "No") {
+                    // //GAV-530 Paid Online appointment
+                   // if (doctors[i].paymentStatus == "No") {
+                     this.formGroup.controls["bookingId"].setValue(doctors[i].bookingNo);
+                     if (
+                      doctors[i].paymentStatus == "Yes" &&
+                      doctors[i].billStatus == "No"
+                    ){
+                       this.billingService.setPaidAppointments({
+                       onlinepaidamount:doctors[i].amount,
+                       bookingid:doctors[i].bookingNo,
+                       transactionid:doctors[i].transactionNo,
+                       mobileno:doctors[i].mobileno,
+                     });
+                    }
+                    
                       this.billingService.procesConsultationAdd(
                         57,
                         doctors[i].specialisationid,
@@ -731,24 +745,25 @@ export class BillingComponent implements OnInit, OnDestroy {
                           value: doctors[i].clinicId,
                         }
                       );
-                    } else if (
-                      doctors[i].paymentStatus == "Yes" &&
-                      doctors[i].billStatus == "No"
-                    ) {
-                      this.billingService.procesConsultationAddWithOutApi(
-                        57,
-                        doctors[i].specialisationid,
-                        {
-                          value: doctors[i].doctorID,
-                          originalTitle: doctors[i].doctorname,
-                          specialisationid: doctors[i].specialisationid,
-                          price: doctors[i].amount,
-                        },
-                        {
-                          value: doctors[i].clinicId,
-                        }
-                      );
-                    }
+                     //  //GAV-530 Paid Online appointment
+                    // } else if (
+                    //   doctors[i].paymentStatus == "Yes" &&
+                    //   doctors[i].billStatus == "No"
+                    // ) {
+                    //   this.billingService.procesConsultationAddWithOutApi(
+                    //     57,
+                    //     doctors[i].specialisationid,
+                    //     {
+                    //       value: doctors[i].doctorID,
+                    //       originalTitle: doctors[i].doctorname,
+                    //       specialisationid: doctors[i].specialisationid,
+                    //       price: doctors[i].amount,
+                    //     },
+                    //     {
+                    //       value: doctors[i].clinicId,
+                    //     }
+                    //   );
+                    // }
                   }
                 }
               }
@@ -900,7 +915,33 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
                     console.log(selectedServices);
-                    selectedServices.selected.forEach((slItem: any) => {});
+                    selectedServices.selected.forEach((slItem: any) => {
+                      if (slItem.serviceid == 25) {
+                        this.billingService.procesConsultationAdd(
+                          57,
+                          selectedServices.selectedDoctor.specialisationid,
+                          selectedServices.selectedDoctor,
+                          {
+                            value: selectedServices.selectedDoctor.clinicId,
+                          }
+                        );
+                      } else if ([41, 42, 43].includes(slItem.serviceid)) {
+                        this.billingService.processInvestigationAdd(
+                          1,
+                          slItem.serviceid,
+                          {
+                            title: slItem.itemName,
+                            value: slItem.itemid,
+                            originalTitle: slItem.itemName,
+                            docRequired: false,
+                            patient_Instructions: "",
+                            item_Instructions: "",
+                            serviceid: slItem.serviceid,
+                            doctorid: 0,
+                          }
+                        );
+                      }
+                    });
                   }
                 }
               }
@@ -954,6 +995,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (ures.process == 1) {
             if (ures.data.length > 0) {
               let referalDoctor: any = null;
+              this.apiProcessing = true;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
                 await this.billingService.processInvestigationAdd(
@@ -981,6 +1023,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               if (referalDoctor) {
                 this.billingService.setReferralDoctor(referalDoctor);
               }
+              this.apiProcessing = false;
               this.billingService.servicesTabStatus.next({ goToTab: 1 });
             }
             this.billingService.unbilledInvestigations = true;

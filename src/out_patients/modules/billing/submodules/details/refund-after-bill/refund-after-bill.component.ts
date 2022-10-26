@@ -326,7 +326,7 @@ export class RefundAfterBillComponent implements OnInit {
     }) 
     console.log(this.tableRows);
     var flag = 0;
-    this.tableRows.selection.changed.subscribe((s: any) => {
+    this.tableRows.selection.changed.subscribe(async (s: any) => {
       console.log(s);
       console.log(this.tableRows.selection.selected);
 
@@ -367,22 +367,43 @@ export class RefundAfterBillComponent implements OnInit {
               if(list[z].serviceId == 42 && list[z].risCan == 0)
               {
                 const dialogref = this.msgdialog.confirm('' ,'An automated email will be sent to the Radiology department, as this order has not been cancelled from the Radiology Department. Do you want to proceed?');
-                dialogref.afterClosed().subscribe(res => {
-                  if(res && "type" in res)
-                  {
-                    if(res.type == 'yes')
+                var res = await dialogref.afterClosed().toPromise();
+                console.log(res);
+                if(res && 'type' in res)
+                {
+                  if(res.type == 'yes')
                     {
-                      
+                      this.billDetailservice.addForApproval({
+                        ssn: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].ssn,
+                        maxid: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].uhid,
+                        ptnName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].name,
+                        billNo: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_DepositRefundAmountDetail[0].billno,
+                        operatorName: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_Table0[0].operator,
+                        authorisedby: '',
+                        reason: '',
+                        refundAmt: (Number(this.tableRows.selection.selected[i].amount) - Number(this.tableRows.selection.selected[i].discountamount)).toFixed(2),
+                        mop: '',
+                        serviceId: this.tableRows.selection.selected[i].serviceid,
+                        itemid: this.tableRows.selection.selected[i].itemid,
+                        serviceName: this.tableRows.selection.selected[i].servicename,
+                        itemName: this.tableRows.selection.selected[i].itemname,
+                        refundAfterAck: this.billDetailservice.patientbilldetaillist.billDetialsForRefund_RequestNoGeivePaymentModeRefund[0].refundAfterAck,
+                        itemOrderId: this.tableRows.selection.selected[i].orderid,
+                      })
+                      console.log(this.billDetailservice.sendforapproval);
+                      this.billDetailservice.calculateTotalRefund();
+                      console.log(this.billDetailservice.sendforapproval);
                     }
                     else
                     {
                       setTimeout(() => {
                         this.tableRows.selection.deselect(s.added[0]);
                       }, 100);
+                      return;
                     }
-                  }
-                })
-                return;
+
+                }
+                // return;
               }
               if(list[z].visited <= 0 && list[z].serviceId == 25)
               {

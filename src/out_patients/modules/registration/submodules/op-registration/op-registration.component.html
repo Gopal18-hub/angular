@@ -500,7 +500,7 @@
                     color="primary"
                     class="w-1/45"
                     type="submit"
-                    [disabled]="!OPRegForm.valid || MaxIDExist"
+                    [disabled]="!OPRegForm.valid || MaxIDExist || expiredPatient"
                     (click)="registationFormSubmit()"
                     accessControl
                     masterModule = "2"
@@ -515,7 +515,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
-                    [disabled]="!OPRegForm.valid || !MaxIDExist"
+                    [disabled]="!OPRegForm.valid || !MaxIDExist || expiredPatient"
                     (click)="onModifyDetail()"
                     accessControl
                     masterModule = "2"
@@ -532,7 +532,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
-                    [disabled]="!MaxIDExist"
+                    [disabled]="!MaxIDExist || expiredPatient"
                     (click)="openReportModal('PrintLabel')"
                   >
                     Print Label
@@ -542,7 +542,7 @@
                     color="primary"
                     class="w-1/45"
                     type="button"
-                    [disabled]="!isOrganDonor"
+                    [disabled]="!isOrganDonor || expiredPatient"
                     (click)="openReportModal('PrintOrganDonorForm')"
                   >
                     Print OD
@@ -573,7 +573,7 @@
             color="primary"
             class="w-full"
             type="button"
-            [disabled]="!MaxIDExist"
+            [disabled]="!MaxIDExist || expiredPatient"
             (click)="getPatientDMSDetail()"
           >
             DMS
@@ -583,7 +583,7 @@
             color="primary"
             class="w-full"
             type="button"
-            disabled
+            [disabled]="expiredPatient"
           >
             Verify Health ID
           </button>
@@ -682,7 +682,7 @@
             color="primary"
             type="button"
             class="mt-1"
-            [disabled]="!MaxIDExist"
+            [disabled]="!MaxIDExist || expiredPatient"
             (click)="openReportModal('PrintFormReport')"
           >
             Print Form

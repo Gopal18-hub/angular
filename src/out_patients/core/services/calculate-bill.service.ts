@@ -210,7 +210,8 @@ export class CalculateBillService {
       });
       if (this.discountSelectedItems[0].discTypeId == 5) {
         formGroup.controls["compDisc"].setValue(discItem.discAmt);
-      } else if (this.discountSelectedItems[0].discTypeId == 4) {
+      }
+      if (this.discountSelectedItems[0].discTypeId == 4) {
         formGroup.controls["patientDisc"].setValue(discItem.discAmt);
       }
     } else {
@@ -239,6 +240,10 @@ export class CalculateBillService {
               item.discountReason = ditem.reason;
             });
           }
+        } else if (ditem.discTypeId == 4) {
+          formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+        } else if (ditem.discTypeId == 5) {
+          formGroup.controls["compDisc"].setValue(ditem.discAmt);
         }
       });
     }
@@ -628,4 +633,17 @@ export class CalculateBillService {
   }
 
   //#endregion TaxableBill
+
+  //GAV-530 Paid Online appointment
+  async checkForOnlineBIllPaymentSTatus(): Promise<string>{
+     let res="";
+    if(this.billingServiceRef.billingFormGroup.form.value.bookingId){
+      res = await this.http
+      .get(ApiConstants.checkonlinepaymentstaus(
+        this.billingServiceRef.billingFormGroup.form.value.bookingId
+        ))
+      .toPromise();
+    }  
+    return res;
+  }
 }
