@@ -45,6 +45,8 @@ export class CalculateBillService {
 
   blockActions = new Subject<boolean>();
 
+  otherPlanSelectedItems: any = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -208,7 +210,8 @@ export class CalculateBillService {
       });
       if (this.discountSelectedItems[0].discTypeId == 5) {
         formGroup.controls["compDisc"].setValue(discItem.discAmt);
-      } else if (this.discountSelectedItems[0].discTypeId == 4) {
+      }
+      if (this.discountSelectedItems[0].discTypeId == 4) {
         formGroup.controls["patientDisc"].setValue(discItem.discAmt);
       }
     } else {
@@ -237,6 +240,10 @@ export class CalculateBillService {
               item.discountReason = ditem.reason;
             });
           }
+        } else if (ditem.discTypeId == 4) {
+          formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+        } else if (ditem.discTypeId == 5) {
+          formGroup.controls["compDisc"].setValue(ditem.discAmt);
         }
       });
     }
@@ -254,22 +261,7 @@ export class CalculateBillService {
         formData: {
           authorise: { title: "As Per Policy", value: 4 },
         },
-        discounttypes:
-          [
-            { title: "On Bill", value: "On-Bill" },
-            { title: "On Service", value: "On-Service" },
-            { title: "On Item", value: "On-Item" },
-            { title: "On Patient", value: "On-Patient" },
-            { title: "On Company", value: "On-Company" },
-            { title: "On Campaign", value: "On-Campaign" },
-          ],
-        
-      };
-    }
-    else{
-      data = {
-        discounttypes:
-        [
+        discounttypes: [
           { title: "On Bill", value: "On-Bill" },
           { title: "On Service", value: "On-Service" },
           { title: "On Item", value: "On-Item" },
@@ -277,7 +269,18 @@ export class CalculateBillService {
           { title: "On Company", value: "On-Company" },
           { title: "On Campaign", value: "On-Campaign" },
         ],
-      }
+      };
+    } else {
+      data = {
+        discounttypes: [
+          { title: "On Bill", value: "On-Bill" },
+          { title: "On Service", value: "On-Service" },
+          { title: "On Item", value: "On-Item" },
+          { title: "On Patient", value: "On-Patient" },
+          { title: "On Company", value: "On-Company" },
+          { title: "On Campaign", value: "On-Campaign" },
+        ],
+      };
     }
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
@@ -607,31 +610,40 @@ export class CalculateBillService {
 
   //#region TaxableBill
 
-  async checkTaxableBill(){
+  async checkTaxableBill() {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
-    if(this.billingServiceRef.ProcedureItems.length > 0){
-      this.billingServiceRef.ProcedureItems.forEach((item: any) => {
-        
-      });
+    if (this.billingServiceRef.ProcedureItems.length > 0) {
+      this.billingServiceRef.ProcedureItems.forEach((item: any) => {});
     }
-
   }
 
-  async getServiceTypeByCode(codeId=1356): Promise<Number>{
-    let cstype =0;
-     const res = await this.http.get(ApiConstants.getservicestypebycodeid(codeId)).toPromise()
+  async getServiceTypeByCode(codeId = 1356): Promise<Number> {
+    let cstype = 0;
+    const res = await this.http
+      .get(ApiConstants.getservicestypebycodeid(codeId))
+      .toPromise();
 
-     if(res){
-       if(res.length > 0){
-        cstype =  res[0].value;
-       }
-     }
-     return cstype;
+    if (res) {
+      if (res.length > 0) {
+        cstype = res[0].value;
+      }
+    }
+    return cstype;
   }
-
-
 
   //#endregion TaxableBill
 
+  //GAV-530 Paid Online appointment
+  async checkForOnlineBIllPaymentSTatus(): Promise<string>{
+     let res="";
+    if(this.billingServiceRef.billingFormGroup.form.value.bookingId){
+      res = await this.http
+      .get(ApiConstants.checkonlinepaymentstaus(
+        this.billingServiceRef.billingFormGroup.form.value.bookingId
+        ))
+      .toPromise();
+    }  
+    return res;
+  }
 }

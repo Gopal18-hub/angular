@@ -55,14 +55,14 @@ export class ConsumablesComponent implements OnInit {
       },
       credit: {
         title: "Credit",
-        type: "number",
+        type: "currency",
         style: {
           width: "100px",
         },
       },
       cash: {
         title: "Cash",
-        type: "number",
+        type: "currency",
         style: {
           width: "100px",
         },
@@ -73,14 +73,14 @@ export class ConsumablesComponent implements OnInit {
       },
       taxAmount: {
         title: "Tax Amount",
-        type: "number",
+        type: "currency",
         style: {
           width: "120px",
         },
       },
       totalAmount: {
         title: "Total Amount",
-        type: "number",
+        type: "currency",
       },
     },
   };
@@ -135,6 +135,7 @@ export class ConsumablesComponent implements OnInit {
 
   getData() {
     this.billingService.ConsumableItems = [];
+    this.billingService.billItems = [];
     return this.http
       .get(
         BillingApiConstants.consumableData(

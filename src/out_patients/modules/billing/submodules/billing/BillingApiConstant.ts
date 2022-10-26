@@ -263,6 +263,12 @@ export namespace BillingApiConstants {
 
   export const getbanknames = `${environment.CommonApiUrl}api/lookup/getbankname`;
 
+  export const checkopgroupdoctor =(unitDocId:number,locationId:number)=>
+  `${environment.BillingApiUrl}api/outpatientbilling/opcheckdoctorforgroupdoctor/${unitDocId}/${locationId}`;
+
+  export const getlastgrpdocselected =(Regno:number,Iacode:string,locationId:number,docId:number)=>
+  `${environment.BillingApiUrl}api/outpatientbilling/getlastgroupdoctorselected/${Regno}/${Iacode}/${locationId}/${docId}`;
+
  // #region QMS 
 
  export const getnextqueueno=(locationid:number,stationId:number,counterId:number)=>
@@ -272,4 +278,13 @@ export namespace BillingApiConstants {
     `${environment.BillingApiUrl}api/outpatientbilling/DoneQueueNo/${queueId}/${counterId}`;
 
  //#endregion
+
+ export const getgroupdoctormappedwithdmg = (DmgID : number, SpecID : number, HspLocationID: any) => 
+    `${environment.BillingApiUrl}api/outpatientbilling/getgroupdoctormappedwithdmg/${DmgID}/${SpecID}/${HspLocationID}`;
+
+ export const GetClinicDoctorsDMGRota = (DmgID: number, SpecID: number, HspLocationID: any) => 
+    `${environment.BillingApiUrl}api/outpatientbilling/getclinicdoctorsdmgrota/${DmgID}/${SpecID}/${HspLocationID}`;
+
+  export const checkfreeopdflag = (regNumber:number, iaCode:string, itemId:number) =>
+    `${environment.BillingApiUrl}api/outpatientbilling/checkfreeopdflag/${regNumber}/${iaCode}/${itemId}`;
 }

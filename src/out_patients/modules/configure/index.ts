@@ -13,6 +13,7 @@ import { DynamicFormsModule } from "../../../shared/ui/dynamic-forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MaxHealthTableModule } from "../../../shared/ui/table";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { CommonModule } from "@angular/common";
 @NgModule({
   declarations: [
     ConfigureComponent,
@@ -30,6 +31,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatButtonModule,
     MaxHealthTableModule,
     MatProgressSpinnerModule,
+    CommonModule,
   ],
   exports: [],
   providers: [],

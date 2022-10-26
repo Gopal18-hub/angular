@@ -19,6 +19,7 @@ export class ShowPlanDetilsComponent implements OnInit {
     clickedRows: false,
     actionItems: false,
     selectCheckBoxPosition: 3,
+    selectCheckBoxLabel: "Select*",
     dateformat: "dd/MM/yyyy",
     selectBox: true,
     clickSelection: "single",
@@ -118,7 +119,6 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   ngOnInit(): void {
     this.planType = this.inputdata.type;
-
     this.data = this.inputdata.planDetails;
   }
 
@@ -196,6 +196,9 @@ export class ShowPlanDetilsComponent implements OnInit {
   getDoctorsList() {}
 
   save() {
-    this.dialogRef.close({ selected: this.tableRows.selection.selected });
+    this.dialogRef.close({
+      selected: this.tableRows.selection.selected,
+      selectedDoctor: this.selectedDoctor,
+    });
   }
 }

@@ -108,7 +108,7 @@ export class ProcedureOtherComponent implements OnInit {
       },
       price: {
         title: "Price",
-        type: "number",
+        type: "currency",
       },
     },
   };
@@ -135,6 +135,12 @@ export class ProcedureOtherComponent implements OnInit {
       this.config.columnsInfo.doctorName.moreOptions[index] =
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
+    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
@@ -150,6 +156,14 @@ export class ProcedureOtherComponent implements OnInit {
       this.billingService.ProcedureItems[$event.index]
     );
     this.billingService.ProcedureItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_o_procedureList.splice(
+      $event.index,
+      1
+    );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_procedureList.splice(
+      $event.index,
+      1
+    );
     this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
       (item: any, index: number) => {
         item["sno"] = index + 1;
