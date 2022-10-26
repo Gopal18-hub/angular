@@ -457,6 +457,14 @@ export class ExpiredDepositsComponent implements OnInit {
         }
       }
     });
+    this.ExpiredDepositform.controls["fromdate"].valueChanges.subscribe(
+      (val) => {
+        this.questions[3].minimum = val;
+      }
+    );
+    this.ExpiredDepositform.controls["todate"].valueChanges.subscribe((val) => {
+      this.questions[2].maximum = val;
+    });
     console.log(this.ExpiredDepositform);
     setTimeout(() => {
       this.ExpiredDepositform.valueChanges.subscribe((val) => {
