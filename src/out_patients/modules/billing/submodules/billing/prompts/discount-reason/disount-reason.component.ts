@@ -181,6 +181,7 @@ export class DisountReasonComponent implements OnInit {
   selectedItems: any = [];
 
   disableAdd: boolean = false;
+  disableApply: boolean = false;
 
   @ViewChild("table") tableRows: any;
 
@@ -642,7 +643,9 @@ export class DisountReasonComponent implements OnInit {
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
-    this.discAmtForm.controls["authorise"].setValue(null);
+    this.discAmtForm.controls["authorise"].setValue(0);
+    this.disableApply = true;
+
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: false };
     });

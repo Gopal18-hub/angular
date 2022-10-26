@@ -1006,7 +1006,7 @@ export class BillingService {
         doctorName: "",
         doctorName_required: procedure.docRequired ? true : false,
         specialisation_required: procedure.docRequired ? true : false,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         unitPrice: res[0].returnOutPut,
         itemid: procedure.value,
         priorityId: priorityId,
@@ -1026,9 +1026,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
           doctorID: 0,
         },
@@ -1036,7 +1036,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: procedure.value,
         serviceID: procedure.serviceid,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
@@ -1073,7 +1073,7 @@ export class BillingService {
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         billItem: {
           popuptext: investigation.popuptext,
           itemId: investigation.value,
@@ -1092,9 +1092,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
           doctorID: 0,
           patient_Instructions: investigation.patient_Instructions,
@@ -1103,7 +1103,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: investigation.value,
         serviceID: serviceType || investigation.serviceid,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
@@ -1181,7 +1181,7 @@ export class BillingService {
         type: priorityId,
         scheduleSlot: "",
         bookingDate: "",
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         specialization: specialization,
         clinics: clinics ? clinics.value : 0,
         billItem: {
@@ -1198,9 +1198,9 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
-          gst: 0,
-          gstValue: 0,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+          gst: res[0].totaltaX_RATE,
+          gstValue: res[0].totaltaX_Value,
           specialisationID: doctorName.specialisationid,
           doctorID: doctorName.value,
         },
@@ -1209,7 +1209,7 @@ export class BillingService {
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: doctorName.value,
         serviceID: 25,
-        price: res[0].returnOutPut,
+        price: res[0].returnOutPut + res[0].totaltaX_Value,
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
