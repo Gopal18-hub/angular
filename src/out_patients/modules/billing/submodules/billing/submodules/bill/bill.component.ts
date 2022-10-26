@@ -367,7 +367,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
     this.billTypeChange(this.formGroup.value.paymentMode);
-    this.billingservice.clearAllItems.subscribe((clearItems) => {
+    this.billingservice.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -748,7 +748,7 @@ export class BillComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe(async (result) => {
+      .subscribe(async (result:any) => {
         if (result && "type" in result) {
           if (result.type == "yes") {
             if (this.formGroup.value.amtPayByPatient > 0) {
@@ -786,7 +786,7 @@ export class BillComponent implements OnInit, OnDestroy {
                     onlineconfirmationRef
                       .afterClosed()
                       .pipe(takeUntil(this._destroying$))
-                      .subscribe((result) => {
+                      .subscribe((result:any) => {
                         if (result && "type" in result) {
                           if (result.type == "yes") {
                             //GAV-530 Paid Online appointment
@@ -959,7 +959,7 @@ export class BillComponent implements OnInit, OnDestroy {
                   height: "35vh",
                 }
               );
-              dialogref.afterClosed().subscribe((res) => {
+              dialogref.afterClosed().subscribe((res:any) => {
                 if (res == "yes") {
                   this.reportService.openWindow(
                     "OP Prescription Report - " + this.billNo,

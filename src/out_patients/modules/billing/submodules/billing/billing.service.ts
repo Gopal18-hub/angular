@@ -361,7 +361,7 @@ export class BillingService {
             }
           );
 
-          iomcompanycorporate.afterClosed().subscribe((result) => {
+          iomcompanycorporate.afterClosed().subscribe((result:any) => {
             if (result.data == "corporate") {
               formGroup.controls["corporate"].enable();
               formGroup.controls["corporate"].setValue(null);
