@@ -40,7 +40,7 @@ export class BillingService {
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
-  PaidAppointments:any;
+  PaidAppointments:any={};
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
