@@ -462,6 +462,8 @@ export class BillDetailComponent implements OnInit {
         this.miscServBillForm.reset();
         this.resetAmt();
         this.miscServBillForm.controls["paymentMode"].setValue("1");
+        this.miscServBillForm.controls["self"].setValue(false);
+        this.miscServBillForm.controls["self"].enable();
         this.serviceselectedList = [];
         this.clearSelectedService();
       }
@@ -470,6 +472,13 @@ export class BillDetailComponent implements OnInit {
       this.serviceselectedList = this.miscPatient.cacheServitem;
       if (this.miscPatient.cacheServitem.length > 0) {
         this.calculateTotalAmount();
+        if (this.miscPatient.cacheBillTabdata.self == true) {
+          this.miscServBillForm.controls["self"].setValue(true);
+          this.selfDoc = true;
+        } else {
+          this.miscServBillForm.controls["self"].setValue(false);
+          this.selfDoc = false;
+        }
         this.isEnableBillBtn = true;
       } else {
         this.isEnableBillBtn = false;
@@ -636,6 +645,7 @@ export class BillDetailComponent implements OnInit {
         } else {
           this.selfDoc = false;
         }
+        this.miscPatient.cacheBillTabdata.self = this.selfDoc;
       });
     this.miscServBillForm.controls["discAmtCheck"].valueChanges
       .pipe(takeUntil(this._destroying$))
@@ -736,9 +746,11 @@ export class BillDetailComponent implements OnInit {
       this.amtByComp();
     }
   }
-  refreshForm(){
-    this.miscServBillForm.controls["credLimit"].setValue(this.miscPatient.creditLimit);
-    if(this.serviceselectedList.length > 0){
+  refreshForm() {
+    this.miscServBillForm.controls["credLimit"].setValue(
+      this.miscPatient.creditLimit
+    );
+    if (this.serviceselectedList.length > 0) {
       this.miscServBillForm.controls["discAmtCheck"].enable();
       this.miscServBillForm.controls["dipositAmtcheck"].enable();
     }
@@ -881,7 +893,7 @@ export class BillDetailComponent implements OnInit {
             this.miscPatient.getPriority(this.serviceName),
             this.miscServBillForm.value.item.value,
             this.serviceID,
-          Number(this.cookie.get("HSPLocationId"))
+            Number(this.cookie.get("HSPLocationId"))
           )
         )
         .pipe(takeUntil(this._destroying$))
@@ -1610,6 +1622,16 @@ export class BillDetailComponent implements OnInit {
                 this.snackbar.open(error, "error");
               }
             );
+          this.miscPatient.makeBillPayload.ds_paymode = {
+            tab_paymentList: [],
+            tab_cheque: [],
+            tab_dd: [],
+            tab_credit: [],
+            tab_debit: [],
+            tab_Mobile: [],
+            tab_Online: [],
+            tab_UPI: [],
+          };
         }
       });
   }
@@ -1707,7 +1729,8 @@ export class BillDetailComponent implements OnInit {
     this.postBillObj.dtSaveOBill_P = {
       registrationno: miscPatient.registrationno,
       iacode: miscPatient.iacode,
-      billAmount: this.miscPatient.calculatedBill.toBePaid,
+      billAmount:
+        Number(this.miscPatient.calculatedBill.amntPaidBythePatient) || 0,
       depositAmount: this.miscServBillForm.value.dipositAmtEdit,
       discountAmount: this.discountedAmt,
       stationid: this.stationId, //10475,
@@ -1715,8 +1738,9 @@ export class BillDetailComponent implements OnInit {
       categoryId: 0,
       companyId: miscFormData.companyId.value,
       operatorId: this.userID, // 9923,
-      collectedamount: this.miscPatient.calculatedBill.collectedAmount,
-      balance: this.miscPatient.calculatedBill.balance,
+      collectedamount:
+        Number(this.miscPatient.calculatedBill.collectedAmount) || 0,
+      balance: Number(this.miscPatient.calculatedBill.balance) || 0,
       hsplocationid: this.location,
       refdoctorid: refDocId,
       authorisedid: calcBill0.selectedAuthorise,
@@ -1735,25 +1759,8 @@ export class BillDetailComponent implements OnInit {
     };
     //Discount values
     this.postBillObj.dtMiscellaneous_list = miscellaneousData;
-    this.postBillObj.ds_paymode = this.miscPatient.calculatedBill
-      .tab_paymentList || {
-      tab_paymentList: [
-        {
-          slNo: 1,
-          modeOfPayment: "Cash",
-          amount: Number(this.miscServBillForm.value.amtPayByPatient),
-          flag: 1,
-        },
-      ],
-      tab_cheque: [],
-      tab_dd: [],
-      tab_credit: [],
-      tab_debit: [],
-      tab_Mobile: [],
-      tab_Online: [],
-      tab_UPI: [],
-    };
-    // this.postBillObj.ds_paymode = {
+    this.postBillObj.ds_paymode = this.miscPatient.makeBillPayload.ds_paymode;
+    // {
     //   tab_paymentList: [
     //     {
     //       slNo: 1,
@@ -1763,6 +1770,23 @@ export class BillDetailComponent implements OnInit {
     //     },
     //   ],
     //   tab_cheque: [],
+    //   tab_dd: [],
+    //   tab_credit: [],
+    //   tab_debit: [],
+    //   tab_Mobile: [],
+    //   tab_Online: [],
+    //   tab_UPI: [],
+    // };
+    // this.postBillObj.ds_paymode = {
+    //   tab_paymentList: [
+    //     {
+    //       slNo: 1,
+    //       modeOfPayment: "Cash",
+    //       amount: Number(this.miscServBillForm.value.amtPayByPatient),
+    //       flag: 1,
+    //     },
+    //   ],
+    //   tab_cheque: [],tionid
     //   tab_dd: [],
     //   tab_credit: [],
     //   tab_debit: [],
@@ -1834,7 +1858,9 @@ export class BillDetailComponent implements OnInit {
     //   //this.isEnableBillBtn = true;
     // }
 
-    this.miscPatient.setCreditLimit(Number(this.miscServBillForm.value.credLimit).toFixed(2));
+    this.miscPatient.setCreditLimit(
+      Number(this.miscServBillForm.value.credLimit).toFixed(2)
+    );
     if (this.miscServBillForm.value.coPay >= 0) {
       const amtPayByComp = balance;
       let tempAmount = this.miscServBillForm.value.credLimit;

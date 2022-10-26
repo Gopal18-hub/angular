@@ -39,6 +39,8 @@ export class BillingService {
 
   company: number = 0;
   billtype: number = 1;
+  // //GAV-530 Paid Online appointment
+  PaidAppointments:any={};
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -81,7 +83,9 @@ export class BillingService {
   refreshBillTab = new Subject<any>();
 
   billingFormGroup: any = { form: "", questions: [] };
-
+  dtCheckedItem: any = {};
+  txtOtherGroupDoc: any = '';
+  dtFinalGrpDoc: any  = {};
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -125,6 +129,7 @@ export class BillingService {
     this.ConsumableItems = [];
     this.totalCost = 0;
     this.activeMaxId = null;
+    this.PaidAppointments=null;
     this.company = 0;
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
@@ -174,6 +179,11 @@ export class BillingService {
   setOtherPlan(data: any) {
     this.selectedOtherPlan = data;
     this.servicesTabStatus.next({ disableAll: true });
+  }
+
+  // //GAV-530 Paid Online appointment
+  setPaidAppointments(data:any){
+    this.PaidAppointments=data;
   }
 
   checkServicesAdded() {
@@ -464,6 +474,8 @@ export class BillingService {
     );
     if (investigationsExist > -1) {
       this.InvestigationItems.splice(investigationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(investigationsExist,1);
+       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(investigationsExist,1);
       return;
     }
 
@@ -568,8 +580,11 @@ export class BillingService {
         clinicId: data.clinics || 0,
         //ConsultationTypeId: data.billItem.priorityId,
       });
+      this.makeBillPayload.dtFinalGrpDoc = this.dtFinalGrpDoc;
+      this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
+      this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
-
+    console.log(this.makeBillPayload)
     this.calculateTotalAmount();
   }
 
@@ -852,7 +867,7 @@ export class BillingService {
             ),
             flag: 1,
           });
-          if ("payloadKey" in payment.method) {
+          if ("payloadKey" in payment.method) {           
             this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
               PaymentMethods[
                 payment.method.payloadKey as keyof typeof PaymentMethods

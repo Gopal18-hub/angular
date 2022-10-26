@@ -633,4 +633,17 @@ export class CalculateBillService {
   }
 
   //#endregion TaxableBill
+
+  //GAV-530 Paid Online appointment
+  async checkForOnlineBIllPaymentSTatus(): Promise<string>{
+     let res="";
+    if(this.billingServiceRef.billingFormGroup.form.value.bookingId){
+      res = await this.http
+      .get(ApiConstants.checkonlinepaymentstaus(
+        this.billingServiceRef.billingFormGroup.form.value.bookingId
+        ))
+      .toPromise();
+    }  
+    return res;
+  }
 }

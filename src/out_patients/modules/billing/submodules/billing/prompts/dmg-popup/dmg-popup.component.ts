@@ -6,6 +6,8 @@ import { BillingApiConstants } from "../../BillingApiConstant";
 import { HttpService } from "@shared/services/http.service";
 import { CookieService } from "@shared/services/cookie.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { BillingStaticConstants } from "../../BillingStaticConstant";
+import { BillingService } from "../../billing.service";
 @Component({
   selector: "out-patients-dmg-popup",
   templateUrl: "./dmg-popup.component.html",
@@ -50,13 +52,17 @@ export class DmgPopupComponent implements OnInit {
   dmgDocList: any;
   check: any = 0;
   @ViewChild('table') table: any;
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
   constructor(
     public dialogRef: MatDialogRef<DmgPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public inputdata: any,
     private formService: QuestionControlService,
     private http: HttpService,
     private cookie: CookieService,
-    private msgdialog: MessageDialogService
+    private msgdialog: MessageDialogService,
+    private service: BillingService
   ) {
     console.log(inputdata);
     
@@ -84,7 +90,7 @@ export class DmgPopupComponent implements OnInit {
       }
     })
   }
-
+ SelectedGroupDoc: any[] = [];
  async getgroupdoctormappedwithdmg()
   {
     this.dmgDocList = '';
@@ -100,7 +106,6 @@ export class DmgPopupComponent implements OnInit {
         this.check = 1;
       }
       var count = 1;
-      var SelectedGroupDoc: any[] = [];
       res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
         var OSelectedGroupDoc: any = {};
         if(res.dtOncoDMGSysProposedIncluded.filter((j: any) => { return j.id == i.id}).length > 0)
@@ -119,30 +124,52 @@ export class DmgPopupComponent implements OnInit {
         OSelectedGroupDoc.specialisationId = i.specialisationId;
         OSelectedGroupDoc.shortSpec = i.shortSpec;
         OSelectedGroupDoc.active = i.active;
-        SelectedGroupDoc.push(OSelectedGroupDoc);
+        this.SelectedGroupDoc.push(OSelectedGroupDoc);
         count++;
       })
       this.dmgDocList = res;
-      this.data = SelectedGroupDoc;
+      this.data = this.SelectedGroupDoc;
       this.data.forEach((item: any) => {
         if(item.chk == 1)
           this.table.selection.select(item);
       })
-      console.log(SelectedGroupDoc)
     })
     return this.check;
   }
   save()
   {
-    this.http.get(BillingApiConstants.GetClinicDoctorsDMGRota(
-      this.dmgform.controls['radio'].value,
-      this.inputdata.specialization,
-      this.cookie.get('HSPLocationId')
-    ))
-    .subscribe(res => {
-      console.log(res);
-      this.dialogRef.close('res:'+ res);
-    })
+    if(this.dmgform.controls['radio'].value == '')
+    {
+      this.msgdialog.info('Please select organ (DMG)');
+      return;
+    }
+    else if(this.table.selection.selected.length == 0)
+    {
+      this.msgdialog.info('Please re-select organ (DMG)');
+      return;
+    }
+    else
+    {
+      this.service.dtFinalGrpDoc = {
+        chk: true,
+        unitDocID: this.inputdata.unitdocid.toString(),
+        docID: this.dmgform.controls['radio'].value.toString()
+      }
+      this.service.dtCheckedItem = this.table.selection.selected;
+      this.service.txtOtherGroupDoc = this.inputdata.reason;
+      console.log(this.service.dtFinalGrpDoc )
+      this.dialogRef.close();
+    }
+    
+    // this.http.get(BillingApiConstants.GetClinicDoctorsDMGRota(
+    //   this.dmgform.controls['radio'].value,
+    //   this.inputdata.specialization,
+    //   this.cookie.get('HSPLocationId')
+    // ))
+    // .subscribe(res => {
+    //   console.log(res);
+    //   this.dialogRef.close('res:'+ res);
+    // })
   }
   cancel()
   {

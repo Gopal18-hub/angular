@@ -757,7 +757,41 @@ export class BillComponent implements OnInit, OnDestroy {
                   }
                 }
               } else {
-                this.makereceipt();
+                //GAV-530 Paid Online appointment
+                const res = await this.calculateBillService.checkForOnlineBIllPaymentSTatus();
+                //GAV-530 Paid Online appointment
+                if(res){
+                  if(res.length > 0){
+                    const onlineconfirmationRef = 
+                      this.messageDialogService
+                      .confirm("",
+                      "This is online paid appointment billing using online payment Mode");
+
+                    onlineconfirmationRef.afterClosed()
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((result)=>{
+                      if (result && "type" in result) {
+                        if (result.type == "yes"){
+                          //GAV-530 Paid Online appointment
+                          //need to open payment receipt with auto population of online payment method
+                           this.makereceipt(true);
+                        }
+                        else{
+                          //GAV-530 Paid Online appointment
+                           this.makereceipt(false);
+                        }
+                      }
+                    });                    
+                 }
+                //  GAV-530 Paid Online appointment
+                  else{
+                     this.makereceipt(false);
+                  }
+                }  
+                //normal payment               
+                else{
+                     this.makereceipt(false);
+                }               
               }
             } else {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
@@ -794,7 +828,7 @@ export class BillComponent implements OnInit, OnDestroy {
       });
   }
 
-  makereceipt() {
+  makereceipt(ispaid=false) {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
       Number(this.formGroup.value.dipositAmtEdit) || 0;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
@@ -810,22 +844,48 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
               parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
-    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "99vh",
-      data: {
-        totalBillAmount: this.billingservice.totalCost,
-        totalDiscount: this.formGroup.value.discAmt,
-        totalDeposit: this.formGroup.value.dipositAmtEdit,
-        totalRefund: 0,
-        ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
-        settlementAmountRefund: 0,
-        settlementAmountReceived: 0,
-        toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
-        amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
-      },
-    });
-
+    var RefundDialog;
+    // //GAV-530 Paid Online appointment
+    if(ispaid){
+        RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+        width: "70vw",
+        height: "99vh",
+        data: {
+          totalBillAmount: this.billingservice.totalCost,
+          onlinePaidAmount:this.billingservice.PaidAppointments.onlinepaidamount,
+          totalDiscount: this.formGroup.value.discAmt,
+          totalDeposit: this.formGroup.value.dipositAmtEdit,
+          totalRefund: 0,
+          ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
+          settlementAmountRefund: 0,
+          settlementAmountReceived: 0,
+          toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+          amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
+          paymentmethods:["onlinepayment"], 
+          isonlinepaidappointment:true,         
+        },     
+      });
+    }// //GAV-530 Paid Online appointment
+    else{
+       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+        width: "70vw",
+        height: "99vh",
+        data: {
+          totalBillAmount: this.billingservice.totalCost,
+          onlinePaidAmount:0,
+          totalDiscount: this.formGroup.value.discAmt,
+          totalDeposit: this.formGroup.value.dipositAmtEdit,
+          totalRefund: 0,
+          ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
+          settlementAmountRefund: 0,
+          settlementAmountReceived: 0,
+          toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+          amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
+           isonlinepaidappointment:false, 
+        },     
+      });
+    }
+   
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (result: any) => {

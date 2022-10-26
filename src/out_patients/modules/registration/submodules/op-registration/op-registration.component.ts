@@ -785,7 +785,7 @@ export class OpRegistrationComponent implements OnInit {
     this.OPRegForm.controls["hotlist"].valueChanges
       .pipe(takeUntil(this._destroying$))
       .subscribe((value: any) => {
-        if (this.maxIDChangeCall == false && value) {
+        if (this.maxIDChangeCall == false && value && !this.expiredPatient) {
           this.openHotListDialog();
         }
       });
@@ -1263,7 +1263,7 @@ export class OpRegistrationComponent implements OnInit {
     }
   }
   hotlistClick(event: Event) {
-    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist) {
+    if (!this.OPRegForm.controls["hotlist"].value && this.MaxIDExist && ! this.expiredPatient) {
       this.openHotListDialog();
     }
   }
@@ -1611,8 +1611,11 @@ export class OpRegistrationComponent implements OnInit {
   hotlistReasondb: { title: string; value: number } = { title: "", value: 0 };
   hotlistdialogref: any;
   openHotListDialog() {
-    this.gethotlistMasterData();
-    console.log(this.hotlistDialogList);
+    if(!this.expiredPatient){
+      this.gethotlistMasterData();
+      console.log(this.hotlistDialogList);
+    }
+     
     // const dialogref = this.matDialog.open(HotListingDialogComponent, {
     //   width: "30vw",
     //   height: "52vh",
