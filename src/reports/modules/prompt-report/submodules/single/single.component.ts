@@ -202,6 +202,32 @@ export class SingleComponent implements OnInit, OnChanges {
               }
             }
           });
+      } else if (
+        button.reportConfig.reportEntity == "HappyFamilyPlanUtilizationReport"
+      ) {
+        button.reportConfig.reportName == "HappyFamilyPlanUtilizationReport";
+        let MemberShipNo = this.formGroup.value.MemberShipNo.value;
+        console.log(MemberShipNo);
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          {
+            MemberShipNo,
+          }
+        );
+      } else if (
+        button.reportConfig.reportEntity == "SummaryReportForUtilisationReport"
+      ) {
+        button.reportConfig.reportName == "SummaryReportForUtilisationReport";
+        let membershipno = this.formGroup.value.membershipno.value;
+        console.log(membershipno);
+        this.reportService.openWindow(
+          button.reportConfig.reportName,
+          button.reportConfig.reportEntity,
+          {
+            membershipno,
+          }
+        );
       } else {
         console.log("last else");
         this.reportService.openWindow(
