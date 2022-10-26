@@ -52,19 +52,22 @@ export class BillPaymentDialogComponent implements OnInit {
   @ViewChild(BillingPaymentMethodsComponent)
   paymentmethod!: BillingPaymentMethodsComponent;
 
-  config = {
-    paymentmethods: [
-      "cash",
+  paymentmethods=["cash",
       "credit",
       "debit",
       "cheque",
       "demand",
       "mobilepayment",
       "onlinepayment",
-      "upi",
-    ],
+      "upi",];
+
+  config = {
+    paymentmethods: (this.data.paymentmethods)?this.data.paymentmethods:this.paymentmethods,// //GAV-530 Paid Online appointment
     combopayment: true,
     totalAmount: this.data.toPaidAmount.toFixed(2),
+    onlinePaidAmount: this.data.onlinePaidAmount.toFixed(2),// //GAV-530 Paid Online appointment
+    isonlinepaidappointment:this.data.isonlinepaidappointment,// //GAV-530 Paid Online appointment
+    paidAppointments:this.billingService.PaidAppointments,// //GAV-530 Paid Online appointment
   };
   duelabel: any;
   billamount: any = 0;
@@ -109,6 +112,7 @@ export class BillPaymentDialogComponent implements OnInit {
             : this.billingService.patientDetailsInfo.paNno,
       },
     };
+  
   }
   ngAfterViewInit(): void {}
 

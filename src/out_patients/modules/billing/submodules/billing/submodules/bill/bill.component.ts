@@ -21,6 +21,7 @@ import { MaxHealthSnackBarService } from "@shared/ui/snack-bar";
 import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/details/op-prescription-dialog/op-prescription-dialog.component";
+import { BillingApiConstants } from "../../BillingApiConstant";
 
 @Component({
   selector: "out-patients-bill",
@@ -432,7 +433,7 @@ export class BillComponent implements OnInit, OnDestroy {
     // );
   }
 
-  billTypeChange(value: any) {
+  async billTypeChange(value: any) {
     if (value == 1) {
       this.data = this.data.map((dItem: any) => {
         dItem.cash = dItem.totalAmount;
@@ -459,9 +460,46 @@ export class BillComponent implements OnInit, OnDestroy {
       });
       this.data = [...this.data];
     }
+    else if(value == 4){
+      if(this.billingservice.billItems.length > 0){      
+        if(! this.billingservice.billItems[0].serviceName.includes("General OPD PPG")){
+          this.formGroup.controls["paymentMode"].setValue(1);
+          this.messageDialogService.info("You have Selected Dosn't come Under Free OPD");          
+        }
+        else{
+         await this.checkFreeOPD(this.billingservice.billItems[0].itemId);
+        }        
+      }
+      else{
+        const errorRef = this.messageDialogService.error("There is No Item Selected");
+        await errorRef.afterClosed().toPromise();
+        return;
+      }
+     
+    }
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
+  }
+
+  async checkFreeOPD(itemId:any){
+    const res = await this.http.get(
+      BillingApiConstants.checkfreeopdflag(
+        this.billingservice.activeMaxId.regNumber,
+        this.billingservice.activeMaxId.iaCode,
+        itemId
+        )).toPromise();
+    if(res){
+      if(res[0].expfreeopdflag == 1){
+        const expfreeopdRef = this.messageDialogService.info("Registration For Free OPD Expired");
+         await expfreeopdRef.afterClosed().toPromise();      
+      }
+      if(res[0].betweenfreeopflag == 1){
+         const expfreeopdRef = this.messageDialogService.info("Patient already have Free OPD Registration");
+         await expfreeopdRef.afterClosed().toPromise();
+          return;
+      }
+    }
   }
 
   ngAfterViewInit() {
@@ -719,7 +757,41 @@ export class BillComponent implements OnInit, OnDestroy {
                   }
                 }
               } else {
-                this.makereceipt();
+                //GAV-530 Paid Online appointment
+                const res = await this.calculateBillService.checkForOnlineBIllPaymentSTatus();
+                //GAV-530 Paid Online appointment
+                if(res){
+                  if(res.length > 0){
+                    const onlineconfirmationRef = 
+                      this.messageDialogService
+                      .confirm("",
+                      "This is online paid appointment billing using online payment Mode");
+
+                    onlineconfirmationRef.afterClosed()
+                    .pipe(takeUntil(this._destroying$))
+                    .subscribe((result)=>{
+                      if (result && "type" in result) {
+                        if (result.type == "yes"){
+                          //GAV-530 Paid Online appointment
+                          //need to open payment receipt with auto population of online payment method
+                           this.makereceipt(true);
+                        }
+                        else{
+                          //GAV-530 Paid Online appointment
+                           this.makereceipt(false);
+                        }
+                      }
+                    });                    
+                 }
+                //  GAV-530 Paid Online appointment
+                  else{
+                     this.makereceipt(false);
+                  }
+                }  
+                //normal payment               
+                else{
+                     this.makereceipt(false);
+                }               
               }
             } else {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
@@ -756,7 +828,7 @@ export class BillComponent implements OnInit, OnDestroy {
       });
   }
 
-  makereceipt() {
+  makereceipt(ispaid=false) {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
       Number(this.formGroup.value.dipositAmtEdit) || 0;
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.discountAmount =
@@ -772,22 +844,48 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt = 
               parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
-    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "99vh",
-      data: {
-        totalBillAmount: this.billingservice.totalCost,
-        totalDiscount: this.formGroup.value.discAmt,
-        totalDeposit: this.formGroup.value.dipositAmtEdit,
-        totalRefund: 0,
-        ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
-        settlementAmountRefund: 0,
-        settlementAmountReceived: 0,
-        toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
-        amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
-      },
-    });
-
+    var RefundDialog;
+    // //GAV-530 Paid Online appointment
+    if(ispaid){
+        RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+        width: "70vw",
+        height: "99vh",
+        data: {
+          totalBillAmount: this.billingservice.totalCost,
+          onlinePaidAmount:this.billingservice.PaidAppointments.onlinepaidamount,
+          totalDiscount: this.formGroup.value.discAmt,
+          totalDeposit: this.formGroup.value.dipositAmtEdit,
+          totalRefund: 0,
+          ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
+          settlementAmountRefund: 0,
+          settlementAmountReceived: 0,
+          toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+          amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
+          paymentmethods:["onlinepayment"], 
+          isonlinepaidappointment:true,         
+        },     
+      });
+    }// //GAV-530 Paid Online appointment
+    else{
+       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+        width: "70vw",
+        height: "99vh",
+        data: {
+          totalBillAmount: this.billingservice.totalCost,
+          onlinePaidAmount:0,
+          totalDiscount: this.formGroup.value.discAmt,
+          totalDeposit: this.formGroup.value.dipositAmtEdit,
+          totalRefund: 0,
+          ceditLimit: parseFloat(this.formGroup.value.amtPayByComp),
+          settlementAmountRefund: 0,
+          settlementAmountReceived: 0,
+          toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
+          amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
+           isonlinepaidappointment:false, 
+        },     
+      });
+    }
+   
     RefundDialog.afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe(async (result: any) => {
