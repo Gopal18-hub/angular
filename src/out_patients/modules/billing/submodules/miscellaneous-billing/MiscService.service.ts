@@ -52,6 +52,7 @@ export class MiscService {
   miscdepositDetailsData: any = [];
   disablecorporatedropdown: boolean = false;
   creditLimit: number = 0;
+  copay: number = 0;
 
   companyData: any = [];
   corporateData: any = [];
@@ -137,11 +138,16 @@ export class MiscService {
     if (!this.calcItems.depositInput) {
       this.calcItems.depositInput = 0;
     }
+    if (this.cacheBillTabdata.cacheDiscount) {
+      //this.calcItems.totalDiscount = 0;
+      this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
+    }
+    //  else {
+    //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
+    // }
+
     if (!this.calcItems.totalDeposit) {
       this.calcItems.totalDeposit = 0;
-    }
-    if (!this.calcItems.totalDiscount) {
-      this.calcItems.totalDiscount = 0;
     }
     if (!this.calcItems.totalGst) {
       this.calcItems.totalGst = 0;
@@ -164,7 +170,7 @@ export class MiscService {
     this.calculatedBill.totalBillAmount =
       this.calcItems.totalAmount -
       (this.calculatedBill.depositInput || 0) -
-      this.calcItems.totalDiscount;
+      (this.calculatedBill.totalDiscount || 0);
     this.calculatedBill.amntPaidBythePatient =
       this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
     this.calculatedBill.txtgsttaxamt =
@@ -203,6 +209,9 @@ export class MiscService {
   }
   setCreditLimit(data: any) {
     this.creditLimit = data;
+  }
+  setCoPay(data: any) {
+    this.copay = data;
   }
 
   setCompnay(

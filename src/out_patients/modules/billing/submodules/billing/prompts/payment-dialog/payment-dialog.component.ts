@@ -52,22 +52,28 @@ export class BillPaymentDialogComponent implements OnInit {
   @ViewChild(BillingPaymentMethodsComponent)
   paymentmethod!: BillingPaymentMethodsComponent;
 
-  paymentmethods=["cash",
-      "credit",
-      "debit",
-      "cheque",
-      "demand",
-      "mobilepayment",
-      "onlinepayment",
-      "upi",];
+  paymentmethods = [
+    "cash",
+    "credit",
+    "debit",
+    "cheque",
+    "demand",
+    "mobilepayment",
+    "onlinepayment",
+    "upi",
+  ];
 
   config = {
-    paymentmethods: (this.data.paymentmethods)?this.data.paymentmethods:this.paymentmethods,// //GAV-530 Paid Online appointment
+    paymentmethods: this.data.paymentmethods
+      ? this.data.paymentmethods
+      : this.paymentmethods, // //GAV-530 Paid Online appointment
     combopayment: true,
     totalAmount: this.data.toPaidAmount.toFixed(2),
-    onlinePaidAmount: (this.data.onlinePaidAmount)?this.data.onlinePaidAmount.toFixed(2):0.00,// //GAV-530 Paid Online appointment
-    isonlinepaidappointment:this.data.isonlinepaidappointment,// //GAV-530 Paid Online appointment
-    paidAppointments:this.billingService.PaidAppointments,// //GAV-530 Paid Online appointment
+    onlinePaidAmount: this.data.onlinePaidAmount
+      ? this.data.onlinePaidAmount.toFixed(2)
+      : 0.0, // //GAV-530 Paid Online appointment
+    isonlinepaidappointment: this.data.isonlinepaidappointment, // //GAV-530 Paid Online appointment
+    paidAppointments: this.billingService.PaidAppointments, // //GAV-530 Paid Online appointment
   };
   duelabel: any;
   billamount: any = 0;
@@ -112,7 +118,6 @@ export class BillPaymentDialogComponent implements OnInit {
             : this.billingService.patientDetailsInfo.paNno,
       },
     };
-  
   }
   ngAfterViewInit(): void {}
 
@@ -127,7 +132,7 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
-    if ((this.data.name == "Misc Billing")) {
+    if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
       return;
@@ -155,8 +160,15 @@ export class BillPaymentDialogComponent implements OnInit {
 
   checkToProceed() {
     const collectedAmount = this.breakupTotal();
-
-    if (
+    if (this.data.name == "Misc Billing") {
+      if (
+        Number(this.data.toPaidAmount) > collectedAmount ||
+        Number(this.data.toPaidAmount) < collectedAmount
+      ) {
+        return false;
+      }
+      return true;
+    } else if (
       !(collectedAmount <= 0) &&
       Number(this.data.toPaidAmount) >= collectedAmount
     )
