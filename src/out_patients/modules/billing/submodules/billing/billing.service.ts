@@ -40,7 +40,7 @@ export class BillingService {
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
-  PaidAppointments:any={};
+  PaidAppointments: any = {};
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -84,8 +84,8 @@ export class BillingService {
 
   billingFormGroup: any = { form: "", questions: [] };
   dtCheckedItem: any = {};
-  txtOtherGroupDoc: any = '';
-  dtFinalGrpDoc: any  = {};
+  txtOtherGroupDoc: any = "";
+  dtFinalGrpDoc: any = {};
   constructor(
     private http: HttpService,
     private cookie: CookieService,
@@ -129,7 +129,7 @@ export class BillingService {
     this.ConsumableItems = [];
     this.totalCost = 0;
     this.activeMaxId = null;
-    this.PaidAppointments=null;
+    this.PaidAppointments = null;
     this.company = 0;
     this.unbilledInvestigations = false;
     this.billingFormGroup = { form: "", questions: [] };
@@ -182,8 +182,8 @@ export class BillingService {
   }
 
   // //GAV-530 Paid Online appointment
-  setPaidAppointments(data:any){
-    this.PaidAppointments=data;
+  setPaidAppointments(data: any) {
+    this.PaidAppointments = data;
   }
 
   checkServicesAdded() {
@@ -464,6 +464,14 @@ export class BillingService {
     });
     if (consultationsExist > -1) {
       this.consultationItems.splice(consultationsExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_opdoctorList.splice(
+        consultationsExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_opdoctorList.splice(
+        consultationsExist,
+        1
+      );
       return;
     }
 
@@ -474,8 +482,14 @@ export class BillingService {
     );
     if (investigationsExist > -1) {
       this.InvestigationItems.splice(investigationsExist, 1);
-      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(investigationsExist,1);
-       this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(investigationsExist,1);
+      this.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
+        investigationsExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(
+        investigationsExist,
+        1
+      );
       return;
     }
 
@@ -484,6 +498,14 @@ export class BillingService {
     });
     if (proceduresExist > -1) {
       this.ProcedureItems.splice(proceduresExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_o_procedureList.splice(
+        proceduresExist,
+        1
+      );
+      this.makeBillPayload.ds_insert_bill.tab_d_procedureList.splice(
+        proceduresExist,
+        1
+      );
       return;
     }
 
@@ -500,6 +522,10 @@ export class BillingService {
     });
     if (helthcheckupExist > -1) {
       this.HealthCheckupItems.splice(helthcheckupExist, 1);
+      this.makeBillPayload.ds_insert_bill.tab_d_packagebillList.splice(
+        helthcheckupExist,
+        1
+      );
       return;
     }
   }
@@ -584,7 +610,7 @@ export class BillingService {
       this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
       this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
-    console.log(this.makeBillPayload)
+    console.log(this.makeBillPayload);
     this.calculateTotalAmount();
   }
 
@@ -685,16 +711,16 @@ export class BillingService {
           this.makeBillPayload.ds_insert_bill.tab_insertbill.registrationNo,
         hspLocationId: Number(this.cookie.get("HSPLocationId")),
         orderNo: "",
-      }),
-        this.makeBillPayload.ds_insert_bill.tab_d_procedureList.push({
-          orderId: 0,
-          procedureId: data.billItem.itemId,
-          serviceid: data.billItem.serviceId,
-          quantity: data.billItem.qty,
-          doctorId: data.billItem.doctorID || 0,
-          opBillid: 0,
-          refDocId: 0,
-        });
+      });
+      this.makeBillPayload.ds_insert_bill.tab_d_procedureList.push({
+        orderId: 0,
+        procedureId: data.billItem.itemId,
+        serviceid: data.billItem.serviceId,
+        quantity: data.billItem.qty,
+        doctorId: data.billItem.doctorID || 0,
+        opBillid: 0,
+        refDocId: 0,
+      });
     }
 
     this.calculateTotalAmount();
@@ -867,7 +893,7 @@ export class BillingService {
             ),
             flag: 1,
           });
-          if ("payloadKey" in payment.method) {           
+          if ("payloadKey" in payment.method) {
             this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
               PaymentMethods[
                 payment.method.payloadKey as keyof typeof PaymentMethods
