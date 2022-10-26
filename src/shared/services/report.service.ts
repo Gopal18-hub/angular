@@ -41,6 +41,10 @@ export class ReportService {
       class: "material-print-icon",
       image: "",
       click: function (event: any, winbox: any) {
+        const existIframe = document.getElementById("report-print");
+        if (existIframe) {
+          existIframe.remove();
+        }
         const iframeReportUrl = (<any>document.getElementById(reportEntity))
           .querySelector("iframe")
           .contentWindow.document.querySelector("iframe").src;
