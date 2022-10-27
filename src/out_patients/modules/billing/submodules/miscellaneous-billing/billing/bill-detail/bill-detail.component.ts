@@ -770,11 +770,9 @@ export class BillDetailComponent implements OnInit {
   }
   refreshForm() {
     this.miscServBillForm.controls["credLimit"].setValue(
-      this.miscPatient.creditLimit.toFixed(2)
+      this.miscPatient.creditLimit
     );
-    this.miscServBillForm.controls["coPay"].setValue(
-      this.miscPatient.copay.toFixed(2)
-    );
+    this.miscServBillForm.controls["coPay"].setValue(this.miscPatient.copay);
 
     if (this.serviceselectedList.length > 0) {
       this.miscServBillForm.controls["discAmtCheck"].enable();
@@ -1554,7 +1552,7 @@ export class BillDetailComponent implements OnInit {
         this.snackbar.open("Select the Company", "error");
       } else if (
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
-        !miscFormData.corporateId
+        !this.miscPatient.selectedcorporatedetails.value
       ) {
         this.snackbar.open(" Please select corporate!", "error");
       } else if (!this.miscPatient.referralDoctor && this.selfDoc === false) {
@@ -1702,8 +1700,8 @@ export class BillDetailComponent implements OnInit {
       .subscribe((result) => {
         if (result == "MakeBill") {
           if (
-            this.miscServBillForm.value.amtPayByPatient >
-            this.miscPatient.calculatedBill.collectedAmount
+            Number(this.miscServBillForm.value.amtPayByPatient) >
+            Number(this.miscPatient.calculatedBill.collectedAmount)
           ) {
             const MakeDepositDialogref = this.matDialog.open(
               MakedepositDialogComponent,
@@ -1935,8 +1933,8 @@ export class BillDetailComponent implements OnInit {
       collectedamount:
         Number(this.miscPatient.calculatedBill.collectedAmount) || 0,
       balance:
-        this.miscServBillForm.value.amtPayByPatient -
-          this.miscPatient.calculatedBill.collectedAmount || 0,
+        Number(this.miscServBillForm.value.amtPayByPatient) -
+          Number(this.miscPatient.calculatedBill.collectedAmount) || 0,
       hsplocationid: this.location,
       refdoctorid: refDocId,
       authorisedid: calcBill0.selectedAuthorise,
@@ -1945,8 +1943,8 @@ export class BillDetailComponent implements OnInit {
       tpaId: miscFormData.companyId.paidbyTPA,
       paidbyTPA: miscFormData.companyId.paidbyTPA,
       interactionID: this.miscServBillForm.value.interactionDetails,
-      corporateid: miscFormData.corporateId.value,
-      corporateName: miscFormData.corporateId.title,
+      corporateid: this.miscPatient.selectedcorporatedetails.value,
+      corporateName: this.miscPatient.selectedcorporatedetails.title,
       channelId:
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) || 0,
       billToCompany: this.billToCompId,
