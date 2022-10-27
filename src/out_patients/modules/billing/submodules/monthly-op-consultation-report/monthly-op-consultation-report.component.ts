@@ -113,6 +113,14 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         // }
       });
   }
+  ngAfterViewInit(): void {
+    this.OpConsultform.controls["fromdate"].valueChanges.subscribe((val) => {
+      this.questions[1].minimum = val;
+    });
+    this.OpConsultform.controls["todate"].valueChanges.subscribe((val) => {
+      this.questions[0].maximum = val;
+    });
+  }
   clickbtn() {
     this.OpConsultform.reset();
     this.msgresponse = "";

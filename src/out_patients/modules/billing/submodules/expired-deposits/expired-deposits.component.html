@@ -17,7 +17,7 @@
                     <div>
                         <mat-label class="max-health-primary-color font-semi-bold">Max ID</mat-label>
                     </div>
-                    <div class="ml-1 w-3/10 bg-white border-radius-md">
+                    <div class="ml-1 w-3/10 bg-white border-radius-md">                        
                         <maxhealth-question
                             [question]="questions[0]"
                             [form]="ExpiredDepositform"
@@ -67,13 +67,13 @@
                 </div>
                 <div class="w-2/5 flex">
                     <div class="ml-2 float-right btn">
-                        <button mat-raised-button color="primary" type="submit" class="btn" (click)="expireddepositsearch()" class = "button">
+                        <button mat-raised-button color="primary" type="submit" class="btn" (click)="expireddepositsearch()">
                             <img src="assets/lens.svg" class="lens-icon">
                             <span class="ml-4"> Search</span>
                         </button>
                     </div>
-                    <div class="mr-8 ml-1 float-right btn">
-                        <button mat-raised-button color="primary" type="submit" (click)="clear()" class="button">Clear</button>
+                    <div class="mr-8 ml-14 float-right btn">
+                        <button mat-raised-button color="primary" type="submit" (click)="clear()">Clear</button>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
               <!-- Button -->
               <div class="flex float-right w-1/3">
                 <div class="ml-13 mt-1">
-                    <button mat-raised-button color="primary" type="submit" (click)="export()" class="button" [disabled]="exportbtn">Excel</button>
+                    <button mat-raised-button color="primary" type="submit" (click)="export()" [disabled]="exportbtn">Excel</button>
                 </div>
                 
             </div>

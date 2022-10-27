@@ -339,7 +339,7 @@ export class HealthCheckupsComponent implements OnInit {
           this.billingService.addToHealthCheckup({
             sno: this.data.length + 1,
             healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut + res[0].totaltaX_Value,
             itemid: this.formGroup.value.healthCheckup.value,
             serviceid: 26,
             priorityId: priorityId,
@@ -358,9 +358,9 @@ export class HealthCheckupsComponent implements OnInit {
               cash: 0,
               disc: 0,
               discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+              gst: res[0].totaltaX_RATE,
+              gstValue: res[0].totaltaX_Value,          
               specialisationID: 0,
               doctorID: 0,
             },
@@ -368,7 +368,7 @@ export class HealthCheckupsComponent implements OnInit {
           this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
             itemID: this.formGroup.value.healthCheckup.value,
             serviceID: 26,
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut + res[0].totaltaX_Value,
             willModify: res[0].ret_value == 1 ? true : false,
           });
           this.getDoctorsList(this.formGroup.value.healthCheckup.value, "26");
