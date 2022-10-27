@@ -319,8 +319,8 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          //maximum: new Date(),
-          //minimum: Reportconstants.minimumDate["oneMonth"],
+          // maximum: new Date(),
+          // minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
     },
@@ -334,7 +334,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Doctor Shedule",
+            reportName: "Doctor Schedule",
             reportEntity: "DoctorSheduleReport",
           },
         },
@@ -400,7 +400,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Doctor Shedule BySpecilialisation",
+            reportName: "Doctor Schedule By Specialisation",
             reportEntity: "DoctorSheduleReportBySpecilialisation",
           },
         },
@@ -544,7 +544,7 @@ export namespace FormReport {
           },
         },
         MemberShipNo: {
-          type: "dropdown",
+          type: "autocomplete",
           placeholder: "---Membership---",
           title: "",
           required: true,
@@ -577,7 +577,7 @@ export namespace FormReport {
           label: "Preview",
           type: "crystalReport",
           reportConfig: {
-            reportName: "Happy FamilyPlan Allocation Report",
+            reportName: "Happy Family Plan Allocation Report",
             reportEntity: "HappyFamilyPlanAllocationReport",
           },
         },
@@ -689,7 +689,7 @@ export namespace FormReport {
   };
 
   export const CRPExpiredPatientDetailReport = {
-    reportName: "Selection Criteria",
+    reportName: "Expired Patient Report",
     filterForm: {
       title: "",
       type: "object",

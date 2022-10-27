@@ -58,7 +58,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     private snackbar: MaxHealthSnackBarService,
     private patientService: PatientService,
     private calculateBillService: CalculateBillService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {}
   totalDeposit = 0;
   categoryIcons: any;
@@ -66,6 +66,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   moment = moment;
   setItemsToBill: any = [];
   expiredPatient = false;
+  miscBillCache: any = [];
   isenableNarration: boolean = false;
   doCategoryIconAction(categoryIcon: any) {
     const patientDetails: any =
@@ -264,7 +265,7 @@ export class MiscellaneousBillingComponent implements OnInit {
           this.setItemsToBill.companyId = res;
           this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
-          this.Misc.setPatientDetail(this.patientDetail);
+          // this.Misc.setPatientDetail(this.patientDetail);
         } else {
           this.Misc.setCompnay(res, res, this.miscForm, "header");
           this.setItemsToBill.companyId = 0;
@@ -276,7 +277,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         if (res && res.value) {
           this.Misc.setCorporate(res.value, res, this.miscForm, "header");
           this.corporateId = res.value;
-          this.Misc.setPatientDetail(this.patientDetail);
+          // this.Misc.setPatientDetail(this.patientDetail);
           this.setItemsToBill.corporateId = res;
           this.setItemsToBill.companyIdComp = "header";
           this.Misc.setCalculateBillItems(this.setItemsToBill);
@@ -293,13 +294,14 @@ export class MiscellaneousBillingComponent implements OnInit {
         } else {
           this.setItemsToBill.b2bInvoiceType = "B2C";
         }
-        this.Misc.setPatientDetail(this.patientDetail);
+        this.Misc.setCalculateBillItems(this.setItemsToBill);
+        //this.Misc.setPatientDetail(this.patientDetail);
       });
   }
 
   getRemark() {
-    this.patientDetail.narration = this.miscForm.value.narration;
-    this.Misc.setPatientDetail(this.patientDetail);
+    this.setItemsToBill.narration = this.miscForm.value.narration;
+    this.Misc.setCalculateBillItems(this.setItemsToBill);
   }
 
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
@@ -436,7 +438,7 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.MaxIDExist = true;
 
               this.setValuesToMiscForm(this.patientDetails);
-             // this.putCachePatientDetail(this.patientDetails);
+              // this.putCachePatientDetail(this.patientDetails);
 
               this.dsPersonalDetails = resultData.dsPersonalDetails;
               this.dtPatientPastDetails = resultData.dtPatientPastDetails;
@@ -565,7 +567,7 @@ export class MiscellaneousBillingComponent implements OnInit {
               0
             ) {
               this.setValuesToMiscForm(this.patientDetails);
-             // this.putCachePatientDetail(this.patientDetails);
+              // this.putCachePatientDetail(this.patientDetails);
               if (
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
                   .pPagerNumber == "ews"
@@ -755,7 +757,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.http
       .get(
         BillingApiConstants.getcompanydetail(
-        Number(this.cookie.get("HSPLocationId"))
+          Number(this.cookie.get("HSPLocationId"))
         )
       )
       .pipe(takeUntil(this._destroying$))
@@ -857,7 +859,7 @@ export class MiscellaneousBillingComponent implements OnInit {
       patientDetail.pCellNo,
       patientDetail.paNno
     );
-    this.Misc.setPatientDetail(this.patientDetail);
+    // this.Misc.setPatientDetail(this.patientDetail);
     localStorage.setItem("patientDetail", this.patientDetail.toString());
   }
   filterList(list: any[], id: any): any {

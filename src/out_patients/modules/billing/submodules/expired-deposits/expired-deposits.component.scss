@@ -26,7 +26,7 @@
     height: 72%;
 }
 .ml-2{
-    margin-left: 18.5rem !important;
+    margin-left: 19.5rem !important;
 }
 .text-overflow{
     white-space: nowrap;
@@ -108,12 +108,12 @@
 //         pointer-events: none;
 //         opacity: 0.2;
 //     }  
-//     ::ng-deep .mat-raised-button{
-//         min-width: auto !important;
-//         height: 1.875rem;
-//         line-height: 1.875rem;
-//     }
-// }
+    ::ng-deep .mat-raised-button{
+        min-width: auto !important;
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+//}
 
 ::ng-deep tr.isExpdeopisExpdeop {
     background-color: #FFCCD5 !important;
@@ -135,11 +135,18 @@
     background-color: #FFCCD5 !important;
   }
   .ml-13{
-      margin-left: 47.5rem !important;
+    margin-left: 49rem !important;
   }
-  .button{
-    min-width: 95px !important;
-    height: 1.875rem;
-    line-height: 1.875rem;  
+  .ml-14{
+    margin-left: 1rem;
   }
+//   .error{
+//     margin: 0.6rem !important;
+//   }
+  .error{
+    ::ng-deep .mat-error{
+        margin: 0.6rem !important;
+    }
+  }
+
 }
