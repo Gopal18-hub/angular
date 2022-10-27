@@ -22,6 +22,7 @@ import { PopuptextComponent } from "../../prompts/popuptext/popuptext.component"
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/details/op-prescription-dialog/op-prescription-dialog.component";
 import { BillingApiConstants } from "../../BillingApiConstant";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "out-patients-bill",
@@ -287,7 +288,9 @@ export class BillComponent implements OnInit, OnDestroy {
   billId = "";
   depositDetails: any = [];
   totalDeposit = 0;
-
+  gstBreakupDetails:any=[];
+  finalgstDetails:any={};
+  
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -299,7 +302,9 @@ export class BillComponent implements OnInit, OnDestroy {
     private cookie: CookieService,
     private http: HttpService,
     private snackbar: MaxHealthSnackBarService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnDestroy(): void {
@@ -310,81 +315,100 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
-      this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 3, disabled: true },
-        { title: "Gen. OPD", value: 4, disabled: true },
-      ];
-    }
-    if (this.billingservice.selectedHealthPlan) {
-      this.billDataForm.properties.discAmtCheck.disabled = true;
-      this.billDataForm.properties.discAmt.disabled = true;
-      this.billDataForm.properties.paymentMode.options = [
-        { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 3, disabled: false },
-        { title: "Gen. OPD", value: 4, disabled: true },
-      ];
-    }
-    if (this.calculateBillService.companyNonCreditItems.length > 0) {
-      this.billDataForm.properties["credLimit"].readonly = false;
-    }
-    let formResult: any = this.formService.createForm(
-      this.billDataForm.properties,
-      {}
-    );
-
-    this.formGroup = formResult.form;
-    this.question = formResult.questions;
-    if (
-      this.calculateBillService.billFormGroup &&
-      this.calculateBillService.billFormGroup.form
-    ) {
-      this.formGroup.patchValue(
-        this.calculateBillService.billFormGroup.form.value
+       if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
+        this.billDataForm.properties.paymentMode.options = [
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 3, disabled: true },
+          { title: "Gen. OPD", value: 4, disabled: true },
+        ];
+      }
+      if (this.billingservice.selectedHealthPlan) {
+        this.billDataForm.properties.discAmtCheck.disabled = true;
+        this.billDataForm.properties.discAmt.disabled = true;
+        this.billDataForm.properties.paymentMode.options = [
+          { title: "Cash", value: 1, disabled: false },
+          { title: "Credit", value: 3, disabled: false },
+          { title: "Gen. OPD", value: 4, disabled: true },
+        ];
+      }
+      if (this.calculateBillService.companyNonCreditItems.length > 0) {
+        this.billDataForm.properties["credLimit"].readonly = false;
+      }
+      let formResult: any = this.formService.createForm(
+        this.billDataForm.properties,
+        {}
       );
-    }
-    this.question[1].options = await this.calculateBillService.getinteraction();
-    let popuptext: any = [];
-    this.billingservice.billItems.forEach((item: any, index: number) => {
-      item["sno"] = index + 1;
-      if (item.popuptext) {
-        popuptext.push({
-          name: item.itemName,
-          description: item.popuptext,
-        });
-      }
-    });
-    if (popuptext.length > 0) {
-      const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
-        width: "80vw",
-        data: {
-          popuptext,
-        },
-      });
-      await popuptextDialogRef.afterClosed().toPromise();
-    }
-    this.billingservice.calculateBill(this.formGroup, this.question);
-    this.data = this.billingservice.billItems;
-    this.billTypeChange(this.formGroup.value.paymentMode);
-    this.billingservice.clearAllItems.subscribe((clearItems:any) => {
-      if (clearItems) {
-        this.data = [];
-      }
-    });
 
-    this.calculateBillService.billTabActiveLogics(this.formGroup, this);
-    this.billingservice.refreshBillTab
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((event: boolean) => {
-        if (event) {
-          this.refreshForm();
-          this.refreshTable();
+      this.formGroup = formResult.form;
+      this.question = formResult.questions;
+      if (
+        this.calculateBillService.billFormGroup &&
+        this.calculateBillService.billFormGroup.form
+      ) {
+        this.formGroup.patchValue(
+          this.calculateBillService.billFormGroup.form.value
+        );
+      }
+      this.question[1].options = await this.calculateBillService.getinteraction();     
+
+      let popuptext: any = [];
+     
+      this.billingservice.calculateBill(this.formGroup, this.question);
+      this.data = this.billingservice.billItems;
+      this.billTypeChange(this.formGroup.value.paymentMode);
+      this.billingservice.clearAllItems.subscribe((clearItems:any) => {
+        if (clearItems) {
+          this.data = [];
         }
       });
 
-    this.calculateBillService.checkTaxableBill();
-    console.log(this.calculateBillService.dsTaxCode);
+      const res = await this.calculateBillService.checkTaxableBill();
+      if(!res){
+        this.router.navigate(["../services"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+        });
+      } 
+      else{  
+        if(this.calculateBillService.dsTaxCode){  
+          //total AMount is including Tax so while calculting tax subtracting tax from totalcost 
+          let totalTax=0;
+          totalTax = this.billingservice.billItems
+                  .reduce((totalTax:any, current:any) =>
+                       totalTax + current.gstValue, 0);   
+          await this.getGSTBreakUpDetails(
+              this.billingservice.totalCost - totalTax
+              ,Number(this.cookie.get("HSPLocationId")),
+              this.billingservice.company);
+        }   
+        this.billingservice.billItems.forEach((item: any, index: number) => {
+        item["sno"] = index + 1;
+          if (item.popuptext) {
+            popuptext.push({
+              name: item.itemName,
+              description: item.popuptext,
+            });
+          }
+        });
+        if (popuptext.length > 0) {
+          const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
+            width: "80vw",
+            data: {
+              popuptext,
+            },
+          });
+          await popuptextDialogRef.afterClosed().toPromise();
+        }        
+        await this.calculateBillService.billTabActiveLogics(this.formGroup, this);
+        this.billingservice.refreshBillTab
+          .pipe(takeUntil(this._destroying$))
+          .subscribe((event: boolean) => {
+            if (event) {
+              this.refreshForm();
+              this.refreshTable();
+            }
+        }); 
+      }   
   }
 
   rowRwmove($event: any) {
@@ -423,9 +447,29 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
 
-  refreshForm() {
+  async refreshForm() {
     this.calculateBillService.refreshDiscount();
     this.calculateBillService.calculateDiscount();
+    const res = await this.calculateBillService.checkTaxableBill();
+    if(!res){
+      this.router.navigate(["../services"], {
+        queryParamsHandling: "merge",
+        relativeTo: this.route,
+      });        
+    } 
+    else{
+      if(this.calculateBillService.dsTaxCode){   
+         //total AMount is including Tax so while calculting tax subtracting tax from totalcost 
+          let totalTax=0;
+          totalTax = this.billingservice.billItems
+                  .reduce((totalTax:any, current:any) =>
+                       totalTax + current.gstValue, 0);      
+        await this.getGSTBreakUpDetails(
+              this.billingservice.totalCost - totalTax
+              ,Number(this.cookie.get("HSPLocationId")),
+              this.billingservice.company);                    
+      }  
+    }
     this.formGroup.controls["billAmt"].setValue(this.billingservice.totalCost.toFixed(2));
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
@@ -1095,6 +1139,10 @@ export class BillComponent implements OnInit, OnDestroy {
     this.matDialog.open(GstTaxComponent, {
       width: "30vw",
       height: "50vh",
+      data: {
+        gstdetail:this.gstBreakupDetails,
+        saccode:this.finalgstDetails.saccode,
+      }
     });
   }
 
@@ -1151,5 +1199,61 @@ export class BillComponent implements OnInit, OnDestroy {
       // await CouponErrorRef.afterClosed().toPromise();
       // return;
     }
+  }
+
+   async getGSTBreakUpDetails(amount:any,locationId:number,companyId:number){
+    this.gstBreakupDetails=[];
+    this.finalgstDetails={};
+    this.http.get(
+      ApiConstants.getgstdata(
+        this.calculateBillService.dsTaxCode.codeId,
+        companyId,
+        locationId,
+        amount))
+    .subscribe((res:any)=>{
+      if(res){
+        if(res.length > 0){
+          this.finalgstDetails = res[0];
+          if(this.gstBreakupDetails.length <= 0){          
+            this.gstBreakupDetails.push({
+              service:"CGST",
+              percentage:res[0].cgst,
+              value:res[0].cgsT_Value,
+            });
+            this.gstBreakupDetails.push({
+              service:"SGST",
+              percentage:res[0].sgst,
+              value:res[0].sgsT_Value,
+            });
+            this.gstBreakupDetails.push({
+              service:"UTGST",
+              percentage:res[0].utgst,
+              value:res[0].utgsT_Value,
+            });
+            this.gstBreakupDetails.push({
+              service:"IGST",
+              percentage:res[0].igst,
+              value:res[0].igsT_Value,
+            });
+            this.gstBreakupDetails.push({
+              service:"CESS",
+              percentage:res[0].cess,
+              value:res[0].cesS_Value,
+            });
+            this.gstBreakupDetails.push({
+              service:"TotalTax",
+              percentage:res[0].totaltaX_RATE,
+              value: res[0].totaltaX_Value,
+            });
+            this.formGroup.controls["gstTax"].setValue(
+                  this.finalgstDetails.totaltaX_Value.toFixed(2)
+            );
+            this.billingservice.makeBillPayload.finalDSGSTDetails =
+                      this.finalgstDetails;
+            this.billingservice.makeBillPayload.sacCode = res[0].saccode;
+          }
+        }
+      }
+    });
   }
 }
