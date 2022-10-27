@@ -1350,6 +1350,7 @@ export class BillDetailComponent implements OnInit {
         { title: "On Item", value: "On-Item" },
       ],
     };
+    this.billingservice.totalCost = this.TotalAmount;
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",

@@ -108,58 +108,58 @@ export class ConfigureRisComponent implements OnInit {
         this.getdata();
       }
     });
-    this.tableRows.selection.changed
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
-        this.flag = 0;
+    //COMMENETD FOR NOW, IT WILL BE ENABLED LATER
+    // this.tableRows.selection.changed
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((data: any) => {
+    //     this.flag = 0;
 
-        //mastercheck
-        if (
-          data.removed.length == 0 &&
-          data.added.length == this.risconfigurelist.length
-        ) {
-          console.log("first if");
-          this.risconfigurelist.forEach((item: any, index: any) => {
-            if (item.messagestatus == "created") {
-              this.tableRows.selection.deselect(item);
-            } else {
-            }
-          });
-          console.log(this.tableRows.selection.selected);
-          //masteruncheck
-        } else {
-          this.risconfigurelist.forEach((item: any) => {
-            if (item.messagestatus == "created") {
-              this.flag++;
-            }
-          });
-          console.log(this.flag);
-          if (data.removed.length == 0 && data.added.length == this.flag) {
-            console.log(this.tableRows.selection.selected);
-            console.log("second if");
-            this.risconfigurelist.forEach((item: any) => {
-              this.tableRows.selection.deselect(item);
-            });
-          } else if (
-            this.tableRows.selection.selected.length !=
-              this.tableRows.selection._selectedToEmit.length &&
-            this.tableRows.selection.selected.length ==
-              this.risconfigurelist.length
-          ) {
-            console.log(this.tableRows.selection.selected);
-            console.log("third else");
-            console.log(data);
-            this.tableRows.selection.selected.forEach(
-              (item: any, index: any) => {
-                if (item.messagestatus == "created") {
-                  this.tableRows.selection.deselect(item);
-                }
-              }
-            );
-            //console.log(data);
-          }
-        }
-      });
+    //     //mastercheck
+    //     if (
+    //       data.removed.length == 0 &&
+    //       data.added.length == this.risconfigurelist.length
+    //     ) {
+    //       console.log("first if");
+    //       this.risconfigurelist.forEach((item: any, index: any) => {
+    //         if (item.messagestatus == "created") {
+    //           this.tableRows.selection.deselect(item);
+    //         } else {
+    //         }
+    //       });
+    //       console.log(this.tableRows.selection.selected);
+    //       //masteruncheck
+    //     } else {
+    //       this.risconfigurelist.forEach((item: any) => {
+    //         if (item.messagestatus == "created") {
+    //           this.flag++;
+    //         }
+    //       });
+    //       console.log(this.flag);
+    //       if (data.removed.length == 0 && data.added.length == this.flag) {
+    //         console.log(this.tableRows.selection.selected);
+    //         console.log("second if");
+    //         this.risconfigurelist.forEach((item: any) => {
+    //           this.tableRows.selection.deselect(item);
+    //         });
+    //       } else if (
+    //         this.tableRows.selection.selected.length !=
+    //           this.tableRows.selection._selectedToEmit.length &&
+    //         this.tableRows.selection.selected.length ==
+    //           this.risconfigurelist.length
+    //       ) {
+    //         console.log(this.tableRows.selection.selected);
+    //         console.log("third else");
+    //         console.log(data);
+    //         this.tableRows.selection.selected.forEach(
+    //           (item: any, index: any) => {
+    //             if (item.messagestatus == "created") {
+    //               this.tableRows.selection.deselect(item);
+    //             }
+    //           }
+    //         );
+    //       }
+    //     }
+    //   });
   }
 
   dataconfig: any = [
@@ -228,11 +228,12 @@ export class ConfigureRisComponent implements OnInit {
             if (this.risconfigurelist != null) {
               if (this.risconfigurelist.length > 0) {
                 this.risconfigurelist.forEach((item, index) => {
-                  if (item.messagestatus == "created") {
-                    item.disablecheckbox = true;
-                  } else {
-                    item.disablecheckbox = false;
-                  }
+                  //COMMENETD FOR NOW, IT WILL BE ENABLED LATER
+                  // if (item.messagestatus == "created") {
+                  //   item.disablecheckbox = true;
+                  // } else {
+                  //   item.disablecheckbox = false;
+                  // }
                 });
               } else {
                 this.apiprocessing = false;
@@ -283,9 +284,9 @@ export class ConfigureRisComponent implements OnInit {
             (error) => {
               console.log(error);
               if (error.error.text == "Done") {
-                // this.dialogService.success("Order Successfully Generated");
-                // this.risconfigurelist = [];
-                // this.tableRows.selection.clear();
+                this.dialogService.success("Order Successfully Generated");
+                this.risconfigurelist = [];
+                this.tableRows.selection.clear();
               }
             }
           );
