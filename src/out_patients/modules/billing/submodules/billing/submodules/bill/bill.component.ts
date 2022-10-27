@@ -382,6 +382,9 @@ export class BillComponent implements OnInit, OnDestroy {
           this.refreshTable();
         }
       });
+
+    this.calculateBillService.checkTaxableBill();
+    console.log(this.calculateBillService.dsTaxCode);
   }
 
   rowRwmove($event: any) {
@@ -567,7 +570,7 @@ export class BillComponent implements OnInit, OnDestroy {
           this.calculateBillService.setDiscountSelectedItems([]);
           this.calculateBillService.calculateDiscount();
           this.formGroup.controls["discAmt"].setValue(
-            this.calculateBillService.totalDiscountAmt
+            this.calculateBillService.totalDiscountAmt.toFixed(2)
           );
           this.billTypeChange(this.formGroup.value.paymentMode);
           this.applyCreditLimit();
@@ -584,8 +587,8 @@ export class BillComponent implements OnInit, OnDestroy {
           this.depositdetails();
         } else {
           this.totalDeposit = 0;
-          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-          this.formGroup.controls["dipositAmtEdit"].setValue(0);
+          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
+          this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
@@ -691,28 +694,28 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt
+          this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
         this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
         this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt
+          this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
         this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
         this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt
+          this.formGroup.value.dipositAmt.toFixed(2)
         );
       } else if (
         this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
         this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt
+          this.formGroup.value.dipositAmt.toFixed(2)
         );
       }
       this.formGroup.controls["amtPayByPatient"].setValue(
@@ -772,42 +775,46 @@ export class BillComponent implements OnInit, OnDestroy {
                 }
               } else {
                 //GAV-530 Paid Online appointment
-                const res =
-                  await this.calculateBillService.checkForOnlineBIllPaymentSTatus();
-                //GAV-530 Paid Online appointment
-                if (res) {
-                  if (res.length > 0) {
-                    const onlineconfirmationRef =
-                      this.messageDialogService.confirm(
-                        "",
-                        "This is online paid appointment billing using online payment Mode"
-                      );
+                 if(this.billingservice.billingFormGroup.form.value.bookingId){
+                    
+                        if(this.billingservice.PaidAppointments){
+                          if (this.billingservice.PaidAppointments.paymentstatus == "Yes") {
+                            const onlineconfirmationRef =
+                              this.messageDialogService.confirm(
+                                "",
+                                "This is online paid appointment billing using online payment Mode"
+                            );
 
-                    onlineconfirmationRef
-                      .afterClosed()
-                      .pipe(takeUntil(this._destroying$))
-                      .subscribe((result:any) => {
-                        if (result && "type" in result) {
-                          if (result.type == "yes") {
-                            //GAV-530 Paid Online appointment
-                            //need to open payment receipt with auto population of online payment method
-                            this.makereceipt(true);
-                          } else {
-                            //GAV-530 Paid Online appointment
+                            onlineconfirmationRef
+                              .afterClosed()
+                              .pipe(takeUntil(this._destroying$))
+                              .subscribe((result:any) => {
+                                if (result && "type" in result) {
+                                  if (result.type == "yes") {
+                                    //GAV-530 Paid Online appointment
+                                    //need to open payment receipt 
+                                    //with auto population of online payment method
+                                    this.makereceipt(true);
+                                  } else {
+                                    //GAV-530 Paid Online appointment
+                                    this.makereceipt(false);
+                                  }
+                                }
+                              });
+                         }
+                         ////  GAV-530 Paid Online appointment
+                          else {
                             this.makereceipt(false);
                           }
                         }
-                      });
-                  }
-                  //  GAV-530 Paid Online appointment
-                  else {
+                        else{
+                         this.makereceipt(false);
+                        }
+                     
+                } 
+                 else{
                     this.makereceipt(false);
-                  }
-                }
-                //normal payment
-                else {
-                  this.makereceipt(false);
-                }
+                } 
               }
             } else {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
@@ -1029,8 +1036,8 @@ export class BillComponent implements OnInit, OnDestroy {
       this.depositDetails = resultData;
 
       if (this.totalDeposit > 0) {
-        this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+        this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
+        this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1061,8 +1068,8 @@ export class BillComponent implements OnInit, OnDestroy {
               .reduce(function (r: any, s: any) {
                 return r + s;
               });
-            this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit);
-            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
+            this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
+            this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
             this.formGroup.controls["dipositAmtEdit"].enable();
             this.question[20].readonly = false;
             this.question[20].disable = false;

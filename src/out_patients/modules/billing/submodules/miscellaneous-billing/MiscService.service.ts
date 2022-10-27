@@ -226,6 +226,7 @@ export class MiscService {
     } else if (res.title) {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
+      this.selectedcompanydetails = [];
       this.misccompanyChangeEvent.next({ company: res, from });
       this.calcItems.companyId = res.value;
       this.iomMessage =

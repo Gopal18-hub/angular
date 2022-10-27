@@ -211,6 +211,10 @@ export class OderInvestigationsComponent implements OnInit {
         res.data.element["doctorName"] = "";
         this.opOrderRequestService.investigationItems[
           res.data.index
+        ].doctorId = 0;
+        this.opOrderRequestService.docRequiredStatusvalue();
+        this.opOrderRequestService.investigationItems[
+          res.data.index
         ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
         this.getdoctorlistonSpecializationClinic(

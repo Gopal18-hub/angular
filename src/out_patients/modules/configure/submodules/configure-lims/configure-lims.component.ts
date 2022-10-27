@@ -97,58 +97,58 @@ export class ConfigureLimsComponent implements OnInit {
         this.getdata();
       }
     });
-    this.tableRows.selection.changed
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((data: any) => {
-        this.flag = 0;
+    //COMMENETD FOR NOW, IT WILL BE ENABLED LATER
+    // this.tableRows.selection.changed
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((data: any) => {
+    //     this.flag = 0;
 
-        //mastercheck
-        if (
-          data.removed.length == 0 &&
-          data.added.length == this.dataconfig.length
-        ) {
-          console.log("first if");
-          this.limsconfigureList.forEach((item: any, index: any) => {
-            if (item.messagestatus == "created") {
-              this.tableRows.selection.deselect(item);
-            } else {
-            }
-          });
-          console.log(this.tableRows.selection.selected);
-          //masteruncheck
-        } else {
-          this.limsconfigureList.forEach((item: any) => {
-            if (item.messagestatus == "created") {
-              this.flag++;
-            }
-          });
-          console.log(this.flag);
-          if (data.removed.length == 0 && data.added.length == this.flag) {
-            console.log(this.tableRows.selection.selected);
-            console.log("second if");
-            this.limsconfigureList.forEach((item: any) => {
-              this.tableRows.selection.deselect(item);
-            });
-          } else if (
-            this.tableRows.selection.selected.length !=
-              this.tableRows.selection._selectedToEmit.length &&
-            this.tableRows.selection.selected.length ==
-              this.limsconfigureList.length
-          ) {
-            console.log(this.tableRows.selection.selected);
-            console.log("third else");
-            console.log(data);
-            this.tableRows.selection.selected.forEach(
-              (item: any, index: any) => {
-                if (item.messagestatus == "created") {
-                  this.tableRows.selection.deselect(item);
-                }
-              }
-            );
-            //console.log(data);
-          }
-        }
-      });
+    //     //mastercheck
+    //     if (
+    //       data.removed.length == 0 &&
+    //       data.added.length == this.dataconfig.length
+    //     ) {
+    //       console.log("first if");
+    //       this.limsconfigureList.forEach((item: any, index: any) => {
+    //         if (item.messagestatus == "created") {
+    //           this.tableRows.selection.deselect(item);
+    //         } else {
+    //         }
+    //       });
+    //       console.log(this.tableRows.selection.selected);
+    //       //masteruncheck
+    //     } else {
+    //       this.limsconfigureList.forEach((item: any) => {
+    //         if (item.messagestatus == "created") {
+    //           this.flag++;
+    //         }
+    //       });
+    //       console.log(this.flag);
+    //       if (data.removed.length == 0 && data.added.length == this.flag) {
+    //         console.log(this.tableRows.selection.selected);
+    //         console.log("second if");
+    //         this.limsconfigureList.forEach((item: any) => {
+    //           this.tableRows.selection.deselect(item);
+    //         });
+    //       } else if (
+    //         this.tableRows.selection.selected.length !=
+    //           this.tableRows.selection._selectedToEmit.length &&
+    //         this.tableRows.selection.selected.length ==
+    //           this.limsconfigureList.length
+    //       ) {
+    //         console.log(this.tableRows.selection.selected);
+    //         console.log("third else");
+    //         console.log(data);
+    //         this.tableRows.selection.selected.forEach(
+    //           (item: any, index: any) => {
+    //             if (item.messagestatus == "created") {
+    //               this.tableRows.selection.deselect(item);
+    //             }
+    //           }
+    //         );
+    //       }
+    //     }
+    //   });
   }
   getdata() {
     this.apiprocessing = true;
@@ -168,11 +168,12 @@ export class ConfigureLimsComponent implements OnInit {
             if (this.limsconfigureList != null) {
               if (this.limsconfigureList.length > 0) {
                 this.limsconfigureList.forEach((item, index) => {
-                  if (item.messagestatus == "created") {
-                    item.disablecheckbox = true;
-                  } else {
-                    item.disablecheckbox = false;
-                  }
+                  //COMMENETD FOR NOW, IT WILL BE ENABLED LATER
+                  // if (item.messagestatus == "created") {
+                  //   item.disablecheckbox = true;
+                  // } else {
+                  //   item.disablecheckbox = false;
+                  // }
                 });
               }
             } else {
@@ -223,9 +224,9 @@ export class ConfigureLimsComponent implements OnInit {
             (error) => {
               console.log(error);
               if (error.error.text == "Done") {
-                // this.dialogService.success("Order Successfully Generated");
-                // this.limsconfigureList = [];
-                // this.tableRows.selection.clear();
+                this.dialogService.success("Order Successfully Generated");
+                this.limsconfigureList = [];
+                this.tableRows.selection.clear();
               }
             }
           );
