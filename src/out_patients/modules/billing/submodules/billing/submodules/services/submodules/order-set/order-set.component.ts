@@ -151,7 +151,7 @@ export class OrderSetComponent implements OnInit {
     this.data = this.billingService.OrderSetItems;
     this.getSpecialization();
     this.getOrserSetData();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -239,7 +239,7 @@ export class OrderSetComponent implements OnInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.apiData = res;
         this.questions[0].options = res.orderSetHeader.map((r: any) => {
           return { title: r.orderSetName, value: r.orderSetId };
@@ -325,7 +325,7 @@ export class OrderSetComponent implements OnInit {
             doctorName: "",
             specialization_required: true,
             doctorName_required: true,
-            price: resItem.returnOutPut,
+            price: resItem.returnOutPut + resItem.totaltaX_Value,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.items[index],
@@ -344,9 +344,9 @@ export class OrderSetComponent implements OnInit {
               cash: 0,
               disc: 0,
               discAmount: 0,
-              totalAmount: resItem.returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              totalAmount: resItem.returnOutPut + resItem.totaltaX_Value,
+              gst: resItem.totaltaX_RATE,
+              gstValue: resItem.totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
             },
@@ -355,7 +355,7 @@ export class OrderSetComponent implements OnInit {
           this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
             itemID: subItems[index].itemId,
             serviceID: subItems[index].serviceID,
-            price: resItem.returnOutPut,
+            price: resItem.returnOutPut + resItem.totaltaX_Value,
             willModify: resItem.ret_value == 1 ? true : false,
           });
         });

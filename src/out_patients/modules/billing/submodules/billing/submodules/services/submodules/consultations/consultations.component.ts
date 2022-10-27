@@ -143,13 +143,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     this.questions = formResult.questions;
     this.getSpecialization();
     this.data = this.billingService.consultationItems;
-    this.http.get(BillingApiConstants.consultationTypes).subscribe((res) => {
+    this.http.get(BillingApiConstants.consultationTypes).subscribe((res:any) => {
       this.consultationTypes = res;
       this.config.columnsInfo.type.options = res.map((r: any) => {
         return { title: r.name, value: r.id };
       });
     });
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -209,13 +209,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
-        filter((res) => {
+        filter((res:any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) => {
+        switchMap((value:any) => {
           if (
             this.formGroup.value.specialization &&
             this.formGroup.value.specialization.value
@@ -253,7 +253,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     if (!this.excludeClinicsLocations.includes(this.locationId)) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
-        .subscribe((res) => {
+        .subscribe((res:any) => {
           this.questions[2].options = res.map((r: any) => {
             return { title: r.name, value: r.id };
           });
@@ -265,7 +265,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      this.http.get(BillingApiConstants.getspecialization).subscribe((res) => {
+      this.http.get(BillingApiConstants.getspecialization).subscribe((res:any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -293,7 +293,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -373,7 +373,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       twiceConsultationReasonRef
         .afterClosed()
         .pipe(takeUntil(this._destroying$))
-        .subscribe(async (result) => {
+        .subscribe(async (result:any) => {
           console.log(result);
           if (result) {
             if (result.data) {
@@ -589,7 +589,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
             type: priorityId,
             scheduleSlot: "",
             bookingDate: "",
-            price: res[0].returnOutPut,
+            price: res[0].returnOutPut + res[0].totaltaX_Value,
             specialization: this.formGroup.value.doctorName.specialisationid,
             clinics: this.formGroup.value.clinics
               ? this.formGroup.value.clinics.value
@@ -598,7 +598,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               itemId: this.formGroup.value.doctorName.value,
               priority: priorityId,
               serviceId: 25,
-              price: res[0].returnOutPut,
+              price: res[0].returnOutPut + res[0].totaltaX_Value,
               serviceName: "Consultation Charges",
               itemName: this.formGroup.value.doctorName.originalTitle,
               qty: 1,
@@ -608,9 +608,9 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               cash: 0,
               disc: 0,
               discAmount: 0,
-              totalAmount: res[0].returnOutPut,
-              gst: 0,
-              gstValue: 0,
+              totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
+              gst:  + res[0].totaltaX_RATE,
+              gstValue: res[0].totaltaX_Value,
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,

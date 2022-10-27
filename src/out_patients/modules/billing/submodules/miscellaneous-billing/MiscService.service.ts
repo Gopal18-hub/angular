@@ -24,6 +24,7 @@ export class MiscService {
   billType = 0;
   serviceItemsList = [];
   selectedCompanyVal = 0;
+  makeBillLoad = false;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -51,6 +52,7 @@ export class MiscService {
   miscdepositDetailsData: any = [];
   disablecorporatedropdown: boolean = false;
   creditLimit: number = 0;
+  copay: number = 0;
 
   companyData: any = [];
   corporateData: any = [];
@@ -136,11 +138,16 @@ export class MiscService {
     if (!this.calcItems.depositInput) {
       this.calcItems.depositInput = 0;
     }
+    if (this.cacheBillTabdata.cacheDiscount) {
+      //this.calcItems.totalDiscount = 0;
+      this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
+    }
+    //  else {
+    //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
+    // }
+
     if (!this.calcItems.totalDeposit) {
       this.calcItems.totalDeposit = 0;
-    }
-    if (!this.calcItems.totalDiscount) {
-      this.calcItems.totalDiscount = 0;
     }
     if (!this.calcItems.totalGst) {
       this.calcItems.totalGst = 0;
@@ -163,7 +170,7 @@ export class MiscService {
     this.calculatedBill.totalBillAmount =
       this.calcItems.totalAmount -
       (this.calculatedBill.depositInput || 0) -
-      this.calcItems.totalDiscount;
+      (this.calculatedBill.totalDiscount || 0);
     this.calculatedBill.amntPaidBythePatient =
       this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
     this.calculatedBill.txtgsttaxamt =
@@ -202,6 +209,9 @@ export class MiscService {
   }
   setCreditLimit(data: any) {
     this.creditLimit = data;
+  }
+  setCoPay(data: any) {
+    this.copay = data;
   }
 
   setCompnay(
@@ -354,40 +364,41 @@ export class MiscService {
         console.log(this.makeBillPayload.ds_paymode, "check");
       });
 
-      if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
-        const lessAmountWarningDialog = this.messageDialogService.confirm(
-          "",
-          "Do You Want To Save Less Amount ?"
-        );
-        const lessAmountWarningResult = await lessAmountWarningDialog
-          .afterClosed()
-          .toPromise();
-        if (lessAmountWarningResult) {
-          if (lessAmountWarningResult.type == "yes") {
-            const reasonInfoDialog = this.matDialog.open(
-              ReasonForDueBillComponent,
-              {
-                width: "40vw",
-                height: "50vh",
-              }
-            );
-            const reasonInfoResult = await reasonInfoDialog
-              .afterClosed()
-              .toPromise();
-            if (reasonInfoResult) {
-              this.calculatedBill.balance =
-                this.calculatedBill.toBePaid -
-                this.calculatedBill.collectedAmount;
-            }
-          } else {
-            return;
-          }
-        } else {
-          return;
-        }
-      } else {
-        return;
-      }
+      // if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
+      //   const lessAmountWarningDialog = this.messageDialogService.confirm(
+      //     "",
+      //     "Do You Want To Save Less Amount ?"
+      //   );
+      //   const lessAmountWarningResult = await lessAmountWarningDialog
+      //     .afterClosed()
+      //     .toPromise();
+      //   if (lessAmountWarningResult) {
+      //     if (lessAmountWarningResult.type == "yes") {
+      //       const reasonInfoDialog = this.matDialog.open(
+      //         ReasonForDueBillComponent,
+      //         {
+      //           width: "40vw",
+      //           height: "50vh",
+      //         }
+      //       );
+      //       const reasonInfoResult = await reasonInfoDialog
+      //         .afterClosed()
+      //         .toPromise();
+      //       if (reasonInfoResult) {
+      //         this.calculatedBill.balance =
+      //           this.calculatedBill.toBePaid -
+      //           this.calculatedBill.collectedAmount;
+      //       }
+      //     } else {
+      //       return;
+      //     }
+      //   } else {
+      //     return;
+      //   }
+      // } else {
+      //   return;
+      // }
+      this.makeBillLoad = true;
     }
     return this.calculatedBill;
   }
