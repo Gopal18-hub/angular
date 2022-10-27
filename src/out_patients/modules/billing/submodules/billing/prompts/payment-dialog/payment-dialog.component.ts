@@ -106,11 +106,11 @@ export class BillPaymentDialogComponent implements OnInit {
       patientinfo: {
         emailId:
           this.billingService.patientDetailsInfo.peMail == undefined
-            ? this.miscService.patientDetail.mail
+            ? this.miscService.patientDetail.peMail
             : this.billingService.patientDetailsInfo.peMail,
         mobileno:
           this.billingService.patientDetailsInfo.pCellNo == undefined
-            ? this.miscService.patientDetail.cellNo
+            ? this.miscService.patientDetail.pCellNo
             : this.billingService.patientDetailsInfo.pCellNo,
         panno:
           this.billingService.patientDetailsInfo.paNno == undefined
@@ -161,10 +161,7 @@ export class BillPaymentDialogComponent implements OnInit {
   checkToProceed() {
     const collectedAmount = this.breakupTotal();
     if (this.data.name == "Misc Billing") {
-      if (
-        Number(this.data.toPaidAmount) > collectedAmount ||
-        Number(this.data.toPaidAmount) < collectedAmount
-      ) {
+      if (Number(this.data.toPaidAmount) < collectedAmount) {
         return false;
       }
       return true;

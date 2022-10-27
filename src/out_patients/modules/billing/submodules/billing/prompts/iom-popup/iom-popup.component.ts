@@ -34,13 +34,11 @@ export class IomPopupComponent implements OnInit {
         )
       )
       .subscribe((res: any) => {
-        console.log(res);
         const doc = new (<any>window).RTFJS.Document(
           this.stringToArrayBuffer(res[0]),
           {}
         );
         const meta = doc.metadata();
-        console.log(meta);
         const htmlElements = doc.render();
         const div = document.createElement("div");
         div.append(...htmlElements);
