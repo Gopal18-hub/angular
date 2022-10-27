@@ -323,7 +323,6 @@ export class DynamicFormQuestionComponent
   }
 
   autocompleteOpened() {
-    console.log(this.element.nativeElement.parentNode.parentNode.parentNode);
     let inputWidth =
       this.element.nativeElement.parentNode.parentNode.parentNode.getBoundingClientRect()
         .width - 1;
