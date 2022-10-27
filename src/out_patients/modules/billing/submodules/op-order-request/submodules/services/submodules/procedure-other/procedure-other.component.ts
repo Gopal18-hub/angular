@@ -174,6 +174,8 @@ export class OrderProcedureOtherComponent implements OnInit {
           res.data.index
         ].specialisationId = res.$event.value;
         res.data.element["doctorName"] = "";
+        this.opOrderrequestService.procedureItems[res.data.index].doctorId = 0;
+        this.opOrderrequestService.docRequiredStatusvalue();
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
