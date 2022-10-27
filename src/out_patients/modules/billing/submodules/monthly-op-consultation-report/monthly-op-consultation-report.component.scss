@@ -22,13 +22,16 @@
 .mandatory{
     color: red;
 }
-.qms-body-wrapper{
+.monthlyopconsult-body-wrapper{
     .label ::ng-deep  mat-label{
         display: none;
     }
     ::ng-deep .mat-tab-link{
         min-width: auto !important;
     }
+}
+.labal{
+    display:none;
 }
 .w-35{
     width: 37%;

@@ -5,7 +5,7 @@ if (typeof RTFJS === "undefined") {
       this.message = message;
       this.stack = new Error().stack;
     },
-    loggingEnabled: true,
+    loggingEnabled: false,
     log: function (message) {
       if (RTFJS.loggingEnabled) {
         console.log(message);
@@ -212,7 +212,6 @@ if (typeof RTFJS === "undefined") {
 }
 
 RTFJS.RenderElement = function (doc, type, element) {
-  console.log(element);
   this._doc = doc;
   this._type = type;
   this._element = element;
@@ -252,7 +251,6 @@ RTFJS.RenderTextElement.prototype = Object.create(
 RTFJS.RenderTextElement.prototype.applyProps = function () {
   var chp = this._chp;
   var el = this.getElement();
-  console.log(el);
   if (chp.bold) el.style.fontWeight = "bold";
   if (chp.italic) el.style.fontStyle = "italic";
   if (chp.hasOwnProperty("fontfamily") && this._doc._fonts[chp.fontfamily]) {
@@ -1403,7 +1401,7 @@ RTFJS.Document.prototype.parse = function (blob, renderer) {
       }),
       trowd: _setTableVal(),
       intbl: _genericFormatSetNoParam("pap", "intable", true),
-      row: _genericFormatSetNoParam("pap", "isrow", true),
+      row: _setTableVal(),
       cell: function (param) {
         this._finishTableCell();
       },
@@ -2523,6 +2521,8 @@ RTFJS.Document.prototype.parse = function (blob, renderer) {
         return;
       case "ud":
         return;
+      case "cell":
+        appendText(" ");
 
       default:
         if (!parser.state.skipdestination) {

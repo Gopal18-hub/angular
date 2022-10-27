@@ -456,43 +456,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         this.onMobilenumberEnter();
       }
     });
-    // this.employeesponsorForm.controls["company"].valueChanges.subscribe(
-    //   (companyobject) => {
-    //     console.log(companyobject);
-    //     //TO CHECK WHETHER COMPANY IS SELECTED.
-    //     if (companyobject != null) {
-    //       if (companyobject.value != null && companyobject.value != 0) {
-    //         //if (value.value != 0) {
-    //         console.log("companyobject.value!=null");
-    //         this.companySelected = true;
-    //         this.enableSave();
-    //         this.enableDelete();
-    //         this.companySponsorData.forEach((company: any) => {
-    //           if (company.id == companyobject.value) {
-    //             this.companyId = companyobject.value;
-    //             this.iommessage =
-    //               "IOM Validity:" +
-    //               this.datepipe.transform(company.iomValidity, "dd-MMM-yyyy");
-    //             console.log(company.iomValidity);
-    //             console.log(this.iommessage);
-    //           }
-    //         });
-
-    //         this.disableIOM = false;
-    //       } else {
-    //         this.disableIOM = true;
-    //         this.iommessage = "";
-    //         // this.companySelected = false;
-    //         this.companyId = 0;
-    //       }
-    //     } else {
-    //       this.disableIOM = true;
-    //       this.companyId = 0;
-    //       this.iommessage = "";
-    //       // this.companySelected = false;
-    //     }
-    //   }
-    // );
 
     //CHNAGE FROM AUTOCOMPLETE TO DROPDOWN
     this.employeesponsorForm.controls["company"].valueChanges.subscribe(
@@ -533,18 +496,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           });
 
           this.disableIOM = false;
-          // } else {
-          //   this.disableIOM = true;
-          //   this.iommessage = "";
-          //   // this.companySelected = false;
-          //   this.companyId = 0;
-          // }
+
           console.log(this.companyId);
         } else {
           this.disableIOM = true;
           this.companyId = 0;
           this.iommessage = "";
-          // this.companySelected = false;
         }
       }
     );
@@ -787,24 +744,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                 } else {
                   // this.dependantChecked = false;
                 }
-                // if (item.dob.split(" ")[0]) {
-                //   console.log(item.dob.split(" ")[0]);
-                //   console.log(this.dependantChecked);
-                //   const myArray = item.dob.split(" ").slice(0, 3);
-                //   item.dob = myArray[1] + "-" + myArray[0] + "-" + myArray[2];
-                //   console.log("myarray" + myArray);
-                // } else if (item.dob.split("-")[0]) {
-                //   console.log(this.dependantChecked);
-                //   const myArray = item.dob.split("-").slice(0, 3);
-                //   item.dob = myArray[1] + "-" + myArray[0] + "-" + myArray[2];
-                //   console.log("myarray" + myArray);
-                // }
-
-                // item.dob = myArray.join("-");
-                // let date = new Date(item.dob.trim()).toDateString();
-                // console.log(date);
-                //item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
-                //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
                 console.log(this.activeflaglength);
               });
             } else {
@@ -930,51 +869,12 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               data as EmployeeDependantDetails[];
             //to check the checkbox on entering employee code details.
             this.employeeDependantDetailList.forEach((item) => {
-              // if (item.maxid != "") {
-              //   item.flag = 1;
-              //   this.empid = item.id;
-              //   this.dependantRemarks = item.remark;
-              //   this.dependantChecked = true;
-              //   // if (
-              //   //   this.employeesponsorForm.controls["maxId"].value == item.maxid
-              //   // ) {
-              //   this.maxidmapped = true;
-
-              //   // }
-              //   //this.maxidmapped = true;
-              //   console.log(this.empid);
-              //   this.enableSave();
-              //   this.enableDelete();
-              // } else {
-              //   this.employeelistLength++;
-              //   console.log(this.empid);
-              // }
-              // item.dob = this.datepipe.transform(item.dob, "dd/MM/yyyy");
-              //item.doj = this.datepipe.transform(item.doj, "dd/MM/yyyy");
               if (item.flag != 1) {
                 item.remark_disabled = true;
-                //ADDED sep 5
-                //this.dependantChecked = true;
-                // this.activeflaglength++;
-                // this.empid = item.id;
-                // this.dependantRemarks = item.remark;
               }
               if (item.maxid != "") {
-                //item.flag = 1;
-                //ADDED sep 5
-                //if(item.maxid == this.employeesponsorForm.controls["maxId"].value){
-                // this.maxidmapped = true;
-                //}
                 this.empid = item.id;
                 this.dependantRemarks = item.remark;
-                // if(item.flag == 1){
-                // this.dependantChecked = true;
-                // this.maxidmapped = true;
-                // this.activeflaglength++;
-                // }
-                //this.dependantChecked = true;
-                //this.maxidmapped = true;
-                //this.activeflaglength++;
                 console.log(this.empid);
                 console.log(this.activeflaglength);
                 this.enableSave();
@@ -1013,22 +913,17 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log(this.employeeDependanttable.selection.selected);
     console.log(this.employeesponsorForm.controls["company"].value);
     console.log(this.companyId);
-    // this.employeeDependanttable.config.columnsInfo.remark.disable();
     console.log("inside save");
     this.onDelete = false;
-    let dialogRef = this.dialog.open(SavedialogComponent, {
-      width: "25vw",
-      height: "30vh",
-    });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value == true) {
+    // let dialogRef = this.dialog.open(SavedialogComponent, {
+    //   width: "25vw",
+    //   height: "30vh",
+    // });
+    let dialogRef = this.dialogService.confirm("", "Do You Want to Save?");
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.type == "yes") {
         console.log(this.activeflaglength);
-        // if (this.empid == null) {
-        //   this.dialogService.info("Please select one dependant");
-        // } else
-        // if (this.activeflaglength == this.employeeDependantDetailList.length) {
-        //   this.dialogService.info("Only one dependant can be selected");
-        // } else
+
         if (this.activeflaglength > 1) {
           console.log("active flag more than 1");
           this.dialogService.info("Only one dependant can be selected");
@@ -1049,46 +944,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
                   this.employeesponsorForm.controls["maxId"].value
                 );
                 this.maxidmapped = true;
-                // this.updatedTableList =
-                //   data as SaveDeleteEmployeeSponsorResponse[];
-                // this.updatedTableList.forEach((item) => {
-                //   item.addedDateTime = this.datepipe.transform(
-                //     item.addedDateTime,
-                //     "dd/MM/yyyy hh:mm:ss a"
-                //   );
-                //   item.updatedDateTime = this.datepipe.transform(
-                //     item.updatedDateTime,
-                //     "dd/MM/yyyy"
-                //   );
-                // });
 
-                // for (let i = 0; i < this.updatedTableList.length; i++) {
-                //   this.updatedTableList[i].slno = i + 1;
-                //   this.updatedTableList[0].flag = true;
-                // }
-                // console.log(this.empid);
-                // //To SET THE MAXID AGAINST THE MAPPED DEPENDANT
-                // var selectedIndex = this.employeeDependantDetailList
-                //   .map((a) => a.id)
-                //   .indexOf(this.empid);
-                // console.log(selectedIndex);
-                // this.employeeDependantDetailList.forEach((item, index) => {
-                //   if (item.maxid != "") {
-                //     if (item.id != this.empid) {
-                //       console.log("get the maxid and bind");
-                //       this.employeeDependantDetailList[index].maxid = "";
-                //       this.employeeDependantDetailList[selectedIndex].maxid =
-                //         this.employeesponsorForm.controls["maxId"].value;
-                //     } else {
-                //     }
-                //   } else {
-                //     if (selectedIndex != -1) {
-                //       this.employeeDependantDetailList[selectedIndex].maxid =
-                //         this.employeesponsorForm.controls["maxId"].value;
-                //       this.maxidmapped = true;
-                //     }
-                //   }
-                // });
                 //Once saved, empid=null;
                 this.enableDelete();
                 this.employeelistLength = 0;
@@ -1114,6 +970,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
               }
             );
         }
+      } else {
+        console.log("result type NO");
       }
       console.log(this.getSaveDeleteEmployeeObj());
     });
@@ -1126,16 +984,17 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
     console.log("inside delete");
     this.count = 0;
     this.onDelete = true;
-    let deleteDialogref = this.dialog.open(DeletedialogComponent, {
-      width: "25vw",
-      height: "30vh",
-      panelClass: "custom-container",
-    });
-    deleteDialogref
+    // let deleteDialogref = this.dialog.open(DeletedialogComponent, {
+    //   width: "25vw",
+    //   height: "30vh",
+    //   panelClass: "custom-container",
+    // });
+    let dialogRef = this.dialogService.confirm("", "Do You Want to Delete?");
+    dialogRef
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result) => {
-        if (result) {
+        if (result.type == "yes") {
           this.employeeDependantDetailList.forEach((item) => {
             if (
               item.maxid == this.employeesponsorForm.controls["maxId"].value
@@ -1209,6 +1068,8 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           }
 
           //}
+        } else {
+          console.log("result type NO");
         }
       });
   }
@@ -1242,15 +1103,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
         }
       });
     }
-
-    // let validfrom = this.datepipe.transform(
-    //   this.employeesponsorForm.controls["fromdate"].value,
-    //   "yyyy-MM-ddThh:mm:ss"
-    // );
-    // let validto = this.datepipe.transform(
-    //   this.employeesponsorForm.controls["todate"].value,
-    //   "yyyy-MM-ddThh:mm:ss"
-    // );
     if (this.updatedTableList.length == 0 && this.onDelete == false) {
       this.flag = 1;
       this.iacode =
@@ -1279,11 +1131,7 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
           console.log(this.employeesponsorForm.controls["maxId"].value);
           console.log(this.iacode);
           console.log(this.regno);
-          // this.iacode = item.maxid.split(".")[0];
-          // this.regno = item.maxid.split(".")[1];
         } else {
-          // this.iacode = "";
-          //this.regno = "";
         }
       });
     }
@@ -1366,36 +1214,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
   iomdata: any;
   iomClick() {
     console.log("inside iomclick");
-    //DO an api call here
-    // this.http
-    //   .get(
-    //     ApiConstants.getopcompanyiomlocationwise(
-    //       this.hsplocationId,
-    //       this.companyId
-    //     )
-    //   )
-    //   .subscribe((data) => {
-    //     console.log(data);
-    //     this.iomdata = data;
-    //   });
-    // this.dialog.open(CompanydialogComponent, {
-    //   width: "40vw",
-    //   height: "70vh",
-    //   data: {
-    //     iomresponse: this.iomdata,
-    //   },
-    // });
-    // debugger;
-    // const rtfToHTML = require("@iarna/rtf-to-html");
-    // const fs = require("fs");
-    // fs.createReadStream(
-    //   this.iomdata.pipe(
-    //     rtfToHTML((err: any, html: any) => {
-    //       // …
-    //       console.log(html);
-    //     })
-    //   )
-    // );
     this.http
       .get(
         ApiConstants.getopcompanyiomlocationwise(
@@ -1420,13 +1238,6 @@ export class EmployeeSponsorTaggingComponent implements OnInit {
             });
           }
         }
-        // this.dialog.open(IomPopupComponent, {
-        //   width: "70%",
-        //   height: "50%",
-        //   data: {
-        //     company: this.employeesponsorForm.value.company,
-        //   },
-        // });
       });
   }
 
