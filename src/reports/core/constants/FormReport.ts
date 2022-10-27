@@ -425,7 +425,7 @@ export namespace FormReport {
   };
 
   export const GeneralOPDReport = {
-    reportName: "Selection Criteria",
+    reportName: "General OPD Scroll Report",
     filterForm: {
       title: "",
       type: "object",
