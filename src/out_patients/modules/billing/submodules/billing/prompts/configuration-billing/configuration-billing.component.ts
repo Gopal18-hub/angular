@@ -105,13 +105,14 @@ export class ConfigurationBillingComponent implements OnInit {
       "." +
       this.data.patientdetails.registrationno;
     this.companyname = this.data.companyname;
-    this.patientname = this.data.patientdetails.firstname;
+    this.patientname = this.data.patientdetails.firstname + " " + this.data.patientdetails.lastname;
     this.creditLimit = this.data.creditLimit;
   }
 
   clearconfiguration() {
     this.companyservice = [];
     this.patientservice = [];
+    this.calculateBillService.companyNonCreditItems = [];
     this.maxid = "";
     this.patientname = "";
     this.companyname = "";
