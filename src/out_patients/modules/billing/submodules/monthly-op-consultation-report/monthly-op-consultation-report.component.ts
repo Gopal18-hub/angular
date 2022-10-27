@@ -102,7 +102,9 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       )
       .subscribe((result) => {
         console.log(result);
-        if (result) {
+        if (result != 0 && result != null) {
+          this.msgresponse = "Total No. of OP Consultation: " + result;
+        } else {
           this.msgresponse = "Total No. of OP Consultation: " + result;
         }
         //else {
