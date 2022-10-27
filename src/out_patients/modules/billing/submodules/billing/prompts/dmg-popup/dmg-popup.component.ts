@@ -80,7 +80,7 @@ export class DmgPopupComponent implements OnInit {
     })
   }
   ngAfterViewInit(): void{
-    this.dmgform.controls['radio'].valueChanges.subscribe(async res => {
+    this.dmgform.controls['radio'].valueChanges.subscribe(async (res:any) => {
       console.log(this.dmgform.controls['radio'].value);
       var val = await this.getgroupdoctormappedwithdmg();
       console.log(val);
@@ -99,7 +99,7 @@ export class DmgPopupComponent implements OnInit {
       this.inputdata.specialization,
       this.cookie.get('HSPLocationId')
     ))
-    .subscribe(res => {
+    .subscribe((res:any) => {
       console.log(res);
       if(res.dtOncoDMGSysProposedExcluded.length == 0)
       {
@@ -155,7 +155,7 @@ export class DmgPopupComponent implements OnInit {
         unitDocID: this.inputdata.unitdocid.toString(),
         docID: this.dmgform.controls['radio'].value.toString()
       }
-      this.service.dtCheckedItem = this.table.selection.selected;
+      this.service.dtCheckedItem.push(this.table.selection.selected);
       this.service.txtOtherGroupDoc = this.inputdata.reason;
       console.log(this.service.dtFinalGrpDoc )
       this.dialogRef.close();

@@ -323,7 +323,7 @@ export class DisountReasonComponent implements OnInit {
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
-    this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
+    this.discAmtForm.controls["reason"].valueChanges.subscribe((val:any) => {
       if (val) {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
@@ -343,13 +343,13 @@ export class DisountReasonComponent implements OnInit {
             height: "80vh",
           });
 
-          dialogref.afterClosed().subscribe((res) => {
+          dialogref.afterClosed().subscribe((res:any) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
       }
     });
-    this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
+    this.discAmtForm.controls["head"].valueChanges.subscribe((val:any) => {
       if (val) {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val
@@ -695,7 +695,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
           return { title: a.name, value: a.id };
@@ -713,7 +713,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.discReasonList = data;
         this.question[2].options = this.discReasonList.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -745,7 +745,7 @@ export class DisountReasonComponent implements OnInit {
         ApiConstants.getauthorisedby(Number(this.cookie.get("HSPLocationId")))
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
           return { title: a.name, value: { title: a.name, value: a.id } };

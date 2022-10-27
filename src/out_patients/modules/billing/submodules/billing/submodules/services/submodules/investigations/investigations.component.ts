@@ -154,7 +154,7 @@ export class InvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -250,13 +250,13 @@ export class InvestigationsComponent implements OnInit {
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
-        filter((res) => {
+        filter((res:any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) => {
+        switchMap((value:any) => {
           if (
             this.formGroup.value.serviceType &&
             this.formGroup.value.serviceType.value
@@ -324,7 +324,7 @@ export class InvestigationsComponent implements OnInit {
   getSpecialization() {
     this.http
       .get(BillingApiConstants.getInvetigationPriorities)
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.config.columnsInfo.priority.options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -346,7 +346,7 @@ export class InvestigationsComponent implements OnInit {
   getServiceTypes() {
     this.http
       .get(BillingApiConstants.getinvestigationservice)
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -369,7 +369,7 @@ export class InvestigationsComponent implements OnInit {
           serviceId
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -409,11 +409,11 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.length > 0) {
           this.billingService.InvestigationItems[index].price =
-            res[0].returnOutPut;
+            res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.price =
-            res[0].returnOutPut;
+            res[0].returnOutPut+ res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
-            res[0].returnOutPut;
+            res[0].returnOutPut + res[0].totaltaX_Value;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
@@ -461,7 +461,7 @@ export class InvestigationsComponent implements OnInit {
   ) {
     this.http
       .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
-      .subscribe(async (res) => {
+      .subscribe(async (res:any) => {
         if (res == 1) {
           await this.billingService.processInvestigationAdd(
             priorityId,
