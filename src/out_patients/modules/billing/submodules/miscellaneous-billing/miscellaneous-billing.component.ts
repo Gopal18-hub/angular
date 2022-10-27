@@ -652,6 +652,8 @@ export class MiscellaneousBillingComponent implements OnInit {
     this.clearForm();
     this.calculateBillService.discountSelectedItems = [];
     this.billingService.totalCost = 0;
+    this.Misc.selectedcompanydetails = [];
+    this.Misc.selectedcorporatedetails = [];
   }
 
   //SETTING ERROR FOR MAX ID

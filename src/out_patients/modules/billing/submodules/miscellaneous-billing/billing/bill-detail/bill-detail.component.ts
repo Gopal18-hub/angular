@@ -1340,6 +1340,7 @@ export class BillDetailComponent implements OnInit {
         if (result == "Success") {
           this.opendiscAmtDialog();
         } else {
+          this.calculateBillService.discountSelectedItems = [];
           this.miscServBillForm.controls["discAmtCheck"].setValue(false, {
             emitEvent: false,
           });
@@ -1543,7 +1544,7 @@ export class BillDetailComponent implements OnInit {
           "Credit limit should not be less than bill amount",
           "error"
         );
-      } else if (!this.miscPatient.selectedcompanydetails) {
+      } else if (!this.miscPatient.selectedcompanydetails.value) {
         this.snackbar.open("Select the Company", "error");
       } else if (
         Number(this.miscPatient.cacheCreditTabdata.isCorporateChannel) === 1 &&
@@ -1610,79 +1611,136 @@ export class BillDetailComponent implements OnInit {
   }
 
   openPaymentModeDialog() {
-    const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
-      width: "70vw",
-      height: "98vh",
-      data: {
-        totalBillAmount: this.TotalAmount,
-        totalDiscount: this.miscServBillForm.value.discAmt,
-        totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
-        totalRefund: 0,
-        ceditLimit: parseFloat(this.miscServBillForm.value.credLimit),
-        settlementAmountRefund: 0,
-        settlementAmountReceived: 0,
-        toPaidAmount: parseFloat(this.miscServBillForm.value.amtPayByPatient),
-        amtPayByCompany: parseFloat(this.miscServBillForm.value.amtPayByComp),
-        name: "Misc Billing",
-      },
-    });
-    RefundDialog.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((result) => {
-        if (result == "MakeBill") {
-          this.addNewItem();
-          this.http
-            .post(ApiConstants.postMiscBill, this.postBillObj)
-            .pipe(takeUntil(this._destroying$))
-            .subscribe(
-              (resultData) => {
-                if (resultData[0].successFlag === true) {
-                  this.generatedBillNo = resultData[0].billId;
-                  this.enablePrint = true;
-                  this.isEnableBillBtn = false;
-                  const successInfo = this.messageDialogService.info(
-                    `Bill saved with the Bill No ${resultData[0].billNo} and Amount ${this.billAmnt}`
+    //credit
+    if (Number(this.miscServBillForm.value.paymentMode) === 3) {
+      this.addNewItem();
+      this.http
+        .post(ApiConstants.postMiscBill, this.postBillObj)
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(
+          (resultData) => {
+            if (resultData[0].successFlag === true) {
+              this.generatedBillNo = resultData[0].billId;
+              this.enablePrint = true;
+              this.isEnableBillBtn = false;
+              const successInfo = this.messageDialogService.info(
+                `Bill saved with the Bill No ${resultData[0].billNo} and Amount ${this.billAmnt}`
+              );
+              successInfo
+                .afterClosed()
+                .pipe(takeUntil(this._destroying$))
+                .subscribe((result: any) => {
+                  const printDialog = this.messageDialogService.confirm(
+                    "",
+                    `Do you want to print bill?`
                   );
-                  successInfo
+                  printDialog
                     .afterClosed()
                     .pipe(takeUntil(this._destroying$))
                     .subscribe((result: any) => {
-                      const printDialog = this.messageDialogService.confirm(
-                        "",
-                        `Do you want to print bill?`
-                      );
-                      printDialog
-                        .afterClosed()
-                        .pipe(takeUntil(this._destroying$))
-                        .subscribe((result: any) => {
-                          if ("type" in result) {
-                            if (result.type == "yes") {
-                              this.print();
-                            } else {
-                            }
-                          }
-                        });
+                      if ("type" in result) {
+                        if (result.type == "yes") {
+                          this.print();
+                        } else {
+                        }
+                      }
                     });
-                } else if (resultData[0].successFlag === false) {
-                  this.snackbar.open(resultData[0].returnMessage, "error");
-                }
-              },
-              (error) => {
-                this.snackbar.open(error, "error");
-              }
-            );
-          this.miscPatient.makeBillPayload.ds_paymode = {
-            tab_paymentList: [],
-            tab_cheque: [],
-            tab_dd: [],
-            tab_credit: [],
-            tab_debit: [],
-            tab_Mobile: [],
-            tab_Online: [],
-            tab_UPI: [],
-          };
-        }
+                });
+            } else if (resultData[0].successFlag === false) {
+              this.snackbar.open(resultData[0].returnMessage, "error");
+            }
+          },
+          (error) => {
+            this.snackbar.open(error, "error");
+          }
+        );
+      this.miscPatient.makeBillPayload.ds_paymode = {
+        tab_paymentList: [],
+        tab_cheque: [],
+        tab_dd: [],
+        tab_credit: [],
+        tab_debit: [],
+        tab_Mobile: [],
+        tab_Online: [],
+        tab_UPI: [],
+      };
+    }
+    if (Number(this.miscServBillForm.value.paymentMode) === 1) {
+      //cash
+      const RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
+        width: "70vw",
+        height: "98vh",
+        data: {
+          totalBillAmount: this.TotalAmount,
+          totalDiscount: this.miscServBillForm.value.discAmt,
+          totalDeposit: this.miscServBillForm.value.dipositAmtEdit,
+          totalRefund: 0,
+          ceditLimit: parseFloat(this.miscServBillForm.value.credLimit),
+          settlementAmountRefund: 0,
+          settlementAmountReceived: 0,
+          toPaidAmount: parseFloat(this.miscServBillForm.value.amtPayByPatient),
+          amtPayByCompany: parseFloat(this.miscServBillForm.value.amtPayByComp),
+          name: "Misc Billing",
+        },
       });
+      RefundDialog.afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((result) => {
+          if (result == "MakeBill") {
+            this.addNewItem();
+            this.http
+              .post(ApiConstants.postMiscBill, this.postBillObj)
+              .pipe(takeUntil(this._destroying$))
+              .subscribe(
+                (resultData) => {
+                  if (resultData[0].successFlag === true) {
+                    this.generatedBillNo = resultData[0].billId;
+                    this.enablePrint = true;
+                    this.isEnableBillBtn = false;
+                    const successInfo = this.messageDialogService.info(
+                      `Bill saved with the Bill No ${resultData[0].billNo} and Amount ${this.billAmnt}`
+                    );
+                    successInfo
+                      .afterClosed()
+                      .pipe(takeUntil(this._destroying$))
+                      .subscribe((result: any) => {
+                        const printDialog = this.messageDialogService.confirm(
+                          "",
+                          `Do you want to print bill?`
+                        );
+                        printDialog
+                          .afterClosed()
+                          .pipe(takeUntil(this._destroying$))
+                          .subscribe((result: any) => {
+                            if ("type" in result) {
+                              if (result.type == "yes") {
+                                this.print();
+                              } else {
+                              }
+                            }
+                          });
+                      });
+                  } else if (resultData[0].successFlag === false) {
+                    this.snackbar.open(resultData[0].returnMessage, "error");
+                  }
+                },
+                (error) => {
+                  this.snackbar.open(error, "error");
+                }
+              );
+            this.miscPatient.makeBillPayload.ds_paymode = {
+              tab_paymentList: [],
+              tab_cheque: [],
+              tab_dd: [],
+              tab_credit: [],
+              tab_debit: [],
+              tab_Mobile: [],
+              tab_Online: [],
+              tab_UPI: [],
+            };
+          }
+        });
+    }
   }
   //Calculate TA
   calculateTotalAmount() {
@@ -1812,24 +1870,24 @@ export class BillDetailComponent implements OnInit {
     };
     //Discount values
     this.postBillObj.dtMiscellaneous_list = miscellaneousData;
-    this.postBillObj.ds_paymode = this.miscPatient.makeBillPayload.ds_paymode;
-    // {
-    //   tab_paymentList: [
-    //     {
-    //       slNo: 1,
-    //       modeOfPayment: "Cash",
-    //       amount: Number(this.miscServBillForm.value.amtPayByPatient),
-    //       flag: 1,
-    //     },
-    //   ],
-    //   tab_cheque: [],
-    //   tab_dd: [],
-    //   tab_credit: [],
-    //   tab_debit: [],
-    //   tab_Mobile: [],
-    //   tab_Online: [],
-    //   tab_UPI: [],
-    // };
+    this.postBillObj.ds_paymode = this.miscPatient.makeBillPayload
+      .ds_paymode || {
+      tab_paymentList: [
+        {
+          slNo: 1,
+          modeOfPayment: "Cash",
+          amount: Number(this.miscServBillForm.value.amtPayByCompany),
+          flag: 1,
+        },
+      ],
+      tab_cheque: [],
+      tab_dd: [],
+      tab_credit: [],
+      tab_debit: [],
+      tab_Mobile: [],
+      tab_Online: [],
+      tab_UPI: [],
+    };
     // this.postBillObj.ds_paymode = {
     //   tab_paymentList: [
     //     {
