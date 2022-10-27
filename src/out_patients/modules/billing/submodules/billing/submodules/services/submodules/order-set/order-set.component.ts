@@ -151,7 +151,7 @@ export class OrderSetComponent implements OnInit {
     this.data = this.billingService.OrderSetItems;
     this.getSpecialization();
     this.getOrserSetData();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -239,7 +239,7 @@ export class OrderSetComponent implements OnInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.apiData = res;
         this.questions[0].options = res.orderSetHeader.map((r: any) => {
           return { title: r.orderSetName, value: r.orderSetId };

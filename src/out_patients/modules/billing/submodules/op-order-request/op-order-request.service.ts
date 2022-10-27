@@ -15,6 +15,8 @@ export class OpOrderRequestService {
   disablesaveOndoctorreqStatus = new Subject<boolean>();
   disableSaveonPriority: boolean = false;
   disablesaveOndoctorreq: boolean = false;
+  disablesaveOndoctorreqProc: boolean = false;
+  disablesaveOndoctorreqInv: boolean = false;
   investigationFormGroup: any = { form: "", questions: [] };
   procedureFormGroup: any = { form: "", questions: [] };
   serviceTab = new Subject<boolean>();
@@ -57,33 +59,46 @@ export class OpOrderRequestService {
   getSaveButtononPriority() {
     return this.disableSaveonPriority;
   }
-  // docRequiredStatusvalue(value: boolean) {
-  //   this.disablesaveOndoctorreq = value;
-  //   this.disablesaveOndoctorreqStatus.next(value);
-  // }
   docRequiredStatusvalue() {
     console.log(this.investigationItems);
     console.log(this.procedureItems);
-    this.investigationItems.forEach((item: any) => {
-      console.log(item);
-      if (item.docRequired == 1 && item.doctorId == 0) {
-        console.log("inisde inv item docr required loop");
-        this.disablesaveOndoctorreq = true;
-      } else {
-        this.disablesaveOndoctorreq = false;
-      }
-    });
-    this.procedureItems.forEach((item: any) => {
-      if (item.docRequired == 1 && item.doctorId == 0) {
-        this.disablesaveOndoctorreq = true;
-      } else {
-        this.disablesaveOndoctorreq = false;
-      }
-    });
+    try {
+      this.investigationItems.forEach((item: any) => {
+        console.log(item);
+        if (item.docRequired == 1 && item.doctorId == 0) {
+          console.log("inisde inv item docr required loop");
+          this.disablesaveOndoctorreqInv = true;
+          throw new Error();
+        } else {
+          this.disablesaveOndoctorreqInv = false;
+        }
+      });
+    } catch {
+      console.log("inside investigation catch");
+    }
+    try {
+      this.procedureItems.forEach((item: any) => {
+        if (item.docRequired == 1 && item.doctorId == 0) {
+          console.log("inisde procedure item docr required loop");
+          this.disablesaveOndoctorreqProc = true;
+        } else {
+          this.disablesaveOndoctorreqProc = false;
+        }
+      });
+    } catch {
+      console.log("inside procedure  catch");
+    }
+
     console.log(this.disablesaveOndoctorreq);
   }
   getSaveButtonondocrequiredStatus() {
     return this.disablesaveOndoctorreq;
+  }
+  getSaveButtonondocrequiredProc() {
+    return this.disablesaveOndoctorreqProc;
+  }
+  getSaveButtonondocrequiredInv() {
+    return this.disablesaveOndoctorreqInv;
   }
   calculateTotalAmount() {
     this.totalCost = 0;
@@ -118,6 +133,8 @@ export class OpOrderRequestService {
     this.totalCost = 0;
     this.disablesaveOndoctorreq = false;
     this.disableSaveonPriority = false;
+    this.disablesaveOndoctorreqProc = false;
+    this.disablesaveOndoctorreqInv = false;
     console.log(this.investigationFormGroup);
   }
 }
