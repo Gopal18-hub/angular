@@ -644,6 +644,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.reset();
             this.opOrderRequestService.procedureItems = [];
             this.config.columnsInfo.doctorName.moreOptions = {};
+            this.defaultPriorityId = 1;
           }
         });
     }
