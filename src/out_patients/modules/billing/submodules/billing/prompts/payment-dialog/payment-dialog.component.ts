@@ -161,10 +161,7 @@ export class BillPaymentDialogComponent implements OnInit {
   checkToProceed() {
     const collectedAmount = this.breakupTotal();
     if (this.data.name == "Misc Billing") {
-      if (
-        Number(this.data.toPaidAmount) > collectedAmount ||
-        Number(this.data.toPaidAmount) < collectedAmount
-      ) {
+      if (Number(this.data.toPaidAmount) < collectedAmount) {
         return false;
       }
       return true;
