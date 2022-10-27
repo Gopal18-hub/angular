@@ -1523,8 +1523,8 @@ export class BillDetailComponent implements OnInit {
   }
   openMakeBilldialog() {
     this.makebillFlag = true;
+    console.log(this.miscPatient.selectedcompanydetails, "checkc");
     if (Number(this.miscServBillForm.value.paymentMode) === 3) {
-      let miscFormData = this.miscPatient.getCalculateBillItems();
       if (this.miscPatient.selectedcompanydetails) {
         this.miscCompanyId = this.miscPatient.selectedcompanydetails.value;
       } else {
@@ -1617,9 +1617,9 @@ export class BillDetailComponent implements OnInit {
   openPaymentModeDialog() {
     //credit
     if (Number(this.miscServBillForm.value.paymentMode) === 3) {
-      if (this.miscServBillForm.value.amtPayByPatient > 0) {
+      if (Number(this.miscServBillForm.value.amtPayByPatient) > 0) {
         this.paymentDialog();
-      } else if (this.miscServBillForm.value.amtPayByPatient === 0) {
+      } else if (Number(this.miscServBillForm.value.amtPayByPatient) === 0) {
         this.addNewItem();
         this.http
           .post(ApiConstants.postMiscBill, this.postBillObj)
