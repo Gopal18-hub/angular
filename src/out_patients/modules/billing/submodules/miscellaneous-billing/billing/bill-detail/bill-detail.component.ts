@@ -494,6 +494,7 @@ export class BillDetailComponent implements OnInit {
           this.selfDoc = true;
         } else {
           this.miscServBillForm.controls["self"].setValue(false);
+          this.miscServBillForm.controls["self"].disable();
           this.selfDoc = false;
         }
         this.isEnableBillBtn = true;
@@ -1297,6 +1298,10 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["amtPayByComp"].setValue("0.00");
     this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
 
+    this.miscServBillForm.controls["discAmtCheck"].disable();
+    this.miscServBillForm.controls["discAmtCheck"].setValue(false);
+    this.miscServBillForm.controls["dipositAmtcheck"].disable();
+    this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
     this.isEnableBillBtn = false;
     this.enablePrint = false;
   }
