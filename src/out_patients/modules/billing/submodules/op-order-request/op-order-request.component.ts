@@ -370,6 +370,7 @@ export class OpOrderRequestComponent implements OnInit {
   }
 
   setValuesToForm(pDetails: Registrationdetails) {
+    console.log(this.formGroup.value.maxid);
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
       this.snackbar.open("Invalid Max ID", "error");
       this.patient = false;
@@ -386,7 +387,7 @@ export class OpOrderRequestComponent implements OnInit {
       nationality: patientDetails.nationalityName,
       ssn: patientDetails.ssn,
     };
-
+    this.formGroup.controls["maxid"].setValue(this.formGroup.value.maxid);
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     this.patientName = patientDetails.firstname + " " + patientDetails.lastname;
     this.ssn = patientDetails.ssn;
