@@ -102,7 +102,9 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       )
       .subscribe((result) => {
         console.log(result);
-        if (result) {
+        if (result != 0 && result != null) {
+          this.msgresponse = "Total No. of OP Consultation: " + result;
+        } else {
           this.msgresponse = "Total No. of OP Consultation: " + result;
         }
         //else {
@@ -112,6 +114,14 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         //   this.questions[2].snackbar = "Location is Required";
         // }
       });
+  }
+  ngAfterViewInit(): void {
+    this.OpConsultform.controls["fromdate"].valueChanges.subscribe((val) => {
+      this.questions[1].minimum = val;
+    });
+    this.OpConsultform.controls["todate"].valueChanges.subscribe((val) => {
+      this.questions[0].maximum = val;
+    });
   }
   clickbtn() {
     this.OpConsultform.reset();

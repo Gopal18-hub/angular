@@ -117,6 +117,8 @@ export class InvestigationsComponent implements OnInit {
 
   defaultPriorityId = 1;
 
+  zeroPriceExist: boolean = false;
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -145,13 +147,14 @@ export class InvestigationsComponent implements OnInit {
     this.questions = formResult.questions;
     this.billingService.InvestigationItems.forEach(
       (item: any, index: number) => {
+        item["sno"] = index + 1;
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
       }
     );
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -163,6 +166,14 @@ export class InvestigationsComponent implements OnInit {
       this.billingService.InvestigationItems[$event.index]
     );
     this.billingService.InvestigationItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_o_optestList.splice(
+      $event.index,
+      1
+    );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_optestorderList.splice(
+      $event.index,
+      1
+    );
     this.billingService.InvestigationItems =
       this.billingService.InvestigationItems.map((item: any, index: number) => {
         item["sno"] = index + 1;
@@ -171,6 +182,8 @@ export class InvestigationsComponent implements OnInit {
     this.data = [...this.billingService.InvestigationItems];
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
+      this.zeroPriceExist = false;
+      this.billingService.changeBillTabStatus(false);
     }
     this.billingService.calculateTotalAmount();
   }
@@ -225,7 +238,7 @@ export class InvestigationsComponent implements OnInit {
             );
             await errorDialog.afterClosed().toPromise();
           } else {
-            this.billingService.changeBillTabStatus(false);
+            this.checkTableValidation();
           }
         }
         this.updatePriceByChangePriority(
@@ -234,17 +247,16 @@ export class InvestigationsComponent implements OnInit {
           res.data.index
         );
       }
-      this.checkTableValidation();
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
-        filter((res) => {
+        filter((res:any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) => {
+        switchMap((value:any) => {
           if (
             this.formGroup.value.serviceType &&
             this.formGroup.value.serviceType.value
@@ -289,20 +301,30 @@ export class InvestigationsComponent implements OnInit {
   }
 
   checkTableValidation() {
-    setTimeout(() => {
-      console.log(this.tableRows.tableForm);
-      if (this.tableRows.tableForm.valid) {
-        this.billingService.changeBillTabStatus(false);
-      } else {
-        this.billingService.changeBillTabStatus(true);
+    this.zeroPriceExist = false;
+    this.data.forEach((item: any) => {
+      if (item.totalAmount == 0) {
+        this.zeroPriceExist = true;
       }
-    }, 200);
+    });
+    if (this.zeroPriceExist) {
+      this.billingService.changeBillTabStatus(true);
+    } else {
+      setTimeout(() => {
+        console.log(this.tableRows.tableForm);
+        if (this.tableRows.tableForm.valid) {
+          this.billingService.changeBillTabStatus(false);
+        } else {
+          this.billingService.changeBillTabStatus(true);
+        }
+      }, 200);
+    }
   }
 
   getSpecialization() {
     this.http
       .get(BillingApiConstants.getInvetigationPriorities)
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.config.columnsInfo.priority.options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -324,7 +346,7 @@ export class InvestigationsComponent implements OnInit {
   getServiceTypes() {
     this.http
       .get(BillingApiConstants.getinvestigationservice)
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -347,7 +369,7 @@ export class InvestigationsComponent implements OnInit {
           serviceId
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -387,17 +409,20 @@ export class InvestigationsComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.length > 0) {
           this.billingService.InvestigationItems[index].price =
-            res[0].returnOutPut;
+            res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.price =
-            res[0].returnOutPut;
+            res[0].returnOutPut+ res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
-            res[0].returnOutPut;
+            res[0].returnOutPut + res[0].totaltaX_Value;
           this.data = [...this.billingService.InvestigationItems];
           this.billingService.calculateTotalAmount();
           if (res[0].returnOutPut == 0) {
             this.messageDialogService.error(
               "Price Not Defined For " + data.investigations
             );
+            this.billingService.changeBillTabStatus(true);
+          } else {
+            this.checkTableValidation();
           }
         }
       });
@@ -436,7 +461,7 @@ export class InvestigationsComponent implements OnInit {
   ) {
     this.http
       .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
-      .subscribe(async (res) => {
+      .subscribe(async (res:any) => {
         if (res == 1) {
           await this.billingService.processInvestigationAdd(
             priorityId,

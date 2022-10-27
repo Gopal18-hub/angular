@@ -43,6 +43,7 @@ export class ExpiredDepositsComponent implements OnInit {
     type: "object",
     properties: {
       maxid: {
+        title: "MaxID",
         type: "string",
         //required: false,
         defaultValue: this.cookie.get("LocationIACode") + ".",
@@ -209,6 +210,7 @@ export class ExpiredDepositsComponent implements OnInit {
   sucessflag = false;
   selectedrowid = 0;
   checkDD: any;
+  regNumber: any;
   constructor(
     private formService: QuestionControlService,
     private router: Router,
@@ -386,6 +388,8 @@ export class ExpiredDepositsComponent implements OnInit {
               }
             });
             this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
+          } else {
+            this.snackbar.open("MAXID Has No Expired Deposits");
           }
         });
     } else if (registrationno == 0) {
@@ -421,6 +425,8 @@ export class ExpiredDepositsComponent implements OnInit {
               }
             });
             this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
+          } else {
+            this.snackbar.open("MAXID Has No Expired Deposits");
           }
         });
     }
@@ -457,6 +463,14 @@ export class ExpiredDepositsComponent implements OnInit {
         }
       }
     });
+    this.ExpiredDepositform.controls["fromdate"].valueChanges.subscribe(
+      (val) => {
+        this.questions[3].minimum = val;
+      }
+    );
+    this.ExpiredDepositform.controls["todate"].valueChanges.subscribe((val) => {
+      this.questions[2].maximum = val;
+    });
     console.log(this.ExpiredDepositform);
     setTimeout(() => {
       this.ExpiredDepositform.valueChanges.subscribe((val) => {
@@ -474,16 +488,6 @@ export class ExpiredDepositsComponent implements OnInit {
     this.ExpiredDepositform.controls["todate"].valueChanges.subscribe((val) => {
       this.questions[2].maximum = val;
     });
-    //   this.tablerow.selection.changed.subscribe((res: any) => {
-    //     console.log(res);
-    //     if (this.tablerow.selection.selected.length > 0) {
-    //       console.log("table selected");
-    //       this.onDelete = false;
-    //       if(res.checkDD != ""){
-    //         this.snackbar.open("Refund Does Not Exist!", "error");
-    //     }
-    //   }
-    // }
 
     this.tablerow.selection.changed.subscribe((res: any) => {
       console.log(res);
@@ -561,13 +565,6 @@ export class ExpiredDepositsComponent implements OnInit {
             this.getPatientDetails();
           } else {
             if (this.similarContactPatientList.length != 0) {
-              let dialogRef = this.matDialog.open(
-                SimilarDetailsPopupComponent,
-                { width: "30vw", height: "30vh" }
-              );
-              dialogRef.afterClosed().subscribe((result) => {
-                console.log(result);
-              });
               const similarSoundDialogref = this.matDialog.open(
                 SimilarPatientDialog,
                 {
@@ -586,7 +583,13 @@ export class ExpiredDepositsComponent implements OnInit {
                     console.log(result.data["added"][0].maxid);
                     let maxID = result.data["added"][0].maxid;
                     this.ExpiredDepositform.controls["maxid"].setValue(maxID);
-                    this.getPatientDetails();
+                    this.iacode = maxID.split(".")[0];
+                    this.regNumber = Number(maxID.split(".")[1]);
+                    this.expireddepositsearch();
+                    //this.getPatientDetails();
+                    if (length == 0) {
+                      this.snackbar.open("MAXID Has No Expired Deposits");
+                    }
                   }
                   this.similarContactPatientList = [];
                 });
@@ -619,6 +622,7 @@ export class ExpiredDepositsComponent implements OnInit {
       .pipe(takeUntil(this._destroying$))
       .subscribe(
         (resultData: getRegisteredPatientDetailsModel[]) => {
+          this.expireddepositsearch();
           console.log(resultData);
           if (resultData == null) {
             this.ExpiredDepositform.controls["maxid"].setErrors({
@@ -660,7 +664,7 @@ export class ExpiredDepositsComponent implements OnInit {
             this.searchbtn = false;
             this.apiProcessing = false;
             this.showtable = true;
-            this.expireddepositsearch();
+            //this.expireddepositsearch();
           }
         },
         (error) => {

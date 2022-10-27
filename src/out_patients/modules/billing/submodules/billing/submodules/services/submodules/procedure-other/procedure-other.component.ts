@@ -135,10 +135,16 @@ export class ProcedureOtherComponent implements OnInit {
       this.config.columnsInfo.doctorName.moreOptions[index] =
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
+    this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
+      (item: any, index: number) => {
+        item["sno"] = index + 1;
+        return item;
+      }
+    );
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems) => {
+    this.billingService.clearAllItems.subscribe((clearItems:any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -150,6 +156,14 @@ export class ProcedureOtherComponent implements OnInit {
       this.billingService.ProcedureItems[$event.index]
     );
     this.billingService.ProcedureItems.splice($event.index, 1);
+    this.billingService.makeBillPayload.ds_insert_bill.tab_o_procedureList.splice(
+      $event.index,
+      1
+    );
+    this.billingService.makeBillPayload.ds_insert_bill.tab_d_procedureList.splice(
+      $event.index,
+      1
+    );
     this.billingService.ProcedureItems = this.billingService.ProcedureItems.map(
       (item: any, index: number) => {
         item["sno"] = index + 1;
@@ -194,13 +208,13 @@ export class ProcedureOtherComponent implements OnInit {
     });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
-        filter((res) => {
+        filter((res:any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value) => {
+        switchMap((value:any) => {
           if (
             this.formGroup.value.otherService &&
             this.formGroup.value.otherService.value
@@ -257,7 +271,7 @@ export class ProcedureOtherComponent implements OnInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id, isBundle: r.isBundle };
         });
@@ -282,7 +296,7 @@ export class ProcedureOtherComponent implements OnInit {
         )
       )
       .subscribe(
-        (res) => {
+        (res:any) => {
           this.formGroup.controls["procedure"].reset();
           if (Array.isArray(res)) {
             this.questions[1].options = res.map((r: any) => {
@@ -301,7 +315,7 @@ export class ProcedureOtherComponent implements OnInit {
 
           this.questions[1] = { ...this.questions[1] };
         },
-        (error) => {
+        (error:any) => {
           this.formGroup.controls["procedure"].reset();
           this.questions[1].options = [];
           this.questions[1] = { ...this.questions[1] };

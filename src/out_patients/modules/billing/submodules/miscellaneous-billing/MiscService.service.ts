@@ -14,6 +14,7 @@ import { ApiConstants } from "@core/constants/ApiConstants";
 import { PaymentMethods } from "@core/constants/PaymentMethods";
 import { ReasonForDueBillComponent } from "../billing/prompts/reason-for-due-bill/reason-for-due-bill.component";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { BillingStaticConstants } from "../billing/BillingStaticConstant";
 
 @Injectable({
   providedIn: "root",
@@ -23,6 +24,11 @@ export class MiscService {
   billType = 0;
   serviceItemsList = [];
   selectedCompanyVal = 0;
+  makeBillLoad = false;
+
+  makeBillPayload: any = JSON.parse(
+    JSON.stringify(BillingStaticConstants.makeBillPayload)
+  );
 
   transactionamount: any = 0.0;
   clearAllItems = new Subject<boolean>();
@@ -46,6 +52,7 @@ export class MiscService {
   miscdepositDetailsData: any = [];
   disablecorporatedropdown: boolean = false;
   creditLimit: number = 0;
+  copay: number = 0;
 
   companyData: any = [];
   corporateData: any = [];
@@ -131,11 +138,16 @@ export class MiscService {
     if (!this.calcItems.depositInput) {
       this.calcItems.depositInput = 0;
     }
+    if (this.cacheBillTabdata.cacheDiscount) {
+      //this.calcItems.totalDiscount = 0;
+      this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
+    }
+    //  else {
+    //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
+    // }
+
     if (!this.calcItems.totalDeposit) {
       this.calcItems.totalDeposit = 0;
-    }
-    if (!this.calcItems.totalDiscount) {
-      this.calcItems.totalDiscount = 0;
     }
     if (!this.calcItems.totalGst) {
       this.calcItems.totalGst = 0;
@@ -158,7 +170,7 @@ export class MiscService {
     this.calculatedBill.totalBillAmount =
       this.calcItems.totalAmount -
       (this.calculatedBill.depositInput || 0) -
-      this.calcItems.totalDiscount;
+      (this.calculatedBill.totalDiscount || 0);
     this.calculatedBill.amntPaidBythePatient =
       this.calculatedBill.totalBillAmount + this.calcItems.totalGst;
     this.calculatedBill.txtgsttaxamt =
@@ -198,6 +210,9 @@ export class MiscService {
   setCreditLimit(data: any) {
     this.creditLimit = data;
   }
+  setCoPay(data: any) {
+    this.copay = data;
+  }
 
   setCompnay(
     companyid: number,
@@ -209,8 +224,23 @@ export class MiscService {
       this.misccompanyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
     } else if (res.title) {
+      let iscompanyprocess = true;
+      //fix for Staff company validation
+      if (res.company.isStaffcompany) {
+        if (this.patientDetail.companyid > 0) {
+          if (res.value != this.patientDetail.companyid) {
+            iscompanyprocess = false;
+            this.resetCompany(res, formGroup, from);
+          }
+        } else {
+          iscompanyprocess = false;
+          this.resetCompany(res, formGroup, from);
+        }
+      }
+      if (iscompanyprocess) {
       this.selectedcompanydetails = res;
       this.selectedcorporatedetails = [];
+      this.selectedcompanydetails = [];
       this.misccompanyChangeEvent.next({ company: res, from });
       this.calcItems.companyId = res.value;
       this.iomMessage =
@@ -262,7 +292,17 @@ export class MiscService {
       }
     }
   }
-
+  }
+  //fix for Staff company validation
+  async resetCompany(res: any, formGroup: any, from: string = "header") {
+    const ERNanavatiCompany = await this.messageDialogService.info(
+      "Selected Patient is not entitled for " +
+        res.title +
+        " company.Please Contact HR Dept."
+    );
+    ERNanavatiCompany.afterClosed().toPromise();
+    formGroup.controls["company"].setValue(null);
+  }
   setCorporate(
     corporateid: number,
     res: any,
@@ -326,12 +366,11 @@ export class MiscService {
         (partialSum: number, a: number) => partialSum + a,
         0
       );
-      let tab_paymentList = [];
 
       paymentmethod.tabs.forEach((payment: any) => {
         if (paymentmethod.paymentForm[payment.key].value.price > 0) {
-          this.calculatedBill.tab_paymentList.push({
-            slNo: tab_paymentList.length + 1,
+          this.makeBillPayload.ds_paymode.tab_paymentList.push({
+            slNo: this.makeBillPayload.ds_paymode.tab_paymentList.length + 1,
             modeOfPayment:
               paymentmethod.paymentForm[payment.key].value.modeOfPayment,
             amount: parseFloat(
@@ -340,49 +379,51 @@ export class MiscService {
             flag: 1,
           });
           if ("payloadKey" in payment.method) {
-            this.calculatedBill.tab_paymentList[payment.method.payloadKey] = [
+            this.makeBillPayload.ds_paymode[payment.method.payloadKey] = [
               PaymentMethods[
                 payment.method.payloadKey as keyof typeof PaymentMethods
               ](paymentmethod.paymentForm[payment.key].value),
             ];
           }
         }
+        console.log(this.makeBillPayload.ds_paymode, "check");
       });
 
-      if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
-        const lessAmountWarningDialog = this.messageDialogService.confirm(
-          "",
-          "Do You Want To Save Less Amount ?"
-        );
-        const lessAmountWarningResult = await lessAmountWarningDialog
-          .afterClosed()
-          .toPromise();
-        if (lessAmountWarningResult) {
-          if (lessAmountWarningResult.type == "yes") {
-            const reasonInfoDialog = this.matDialog.open(
-              ReasonForDueBillComponent,
-              {
-                width: "40vw",
-                height: "50vh",
-              }
-            );
-            const reasonInfoResult = await reasonInfoDialog
-              .afterClosed()
-              .toPromise();
-            if (reasonInfoResult) {
-              this.calculatedBill.balance =
-                this.calculatedBill.toBePaid -
-                this.calculatedBill.collectedAmount;
-            }
-          } else {
-            return;
-          }
-        } else {
-          return;
-        }
-      } else {
-        return;
-      }
+      // if (this.calculatedBill.toBePaid > this.calculatedBill.collectedAmount) {
+      //   const lessAmountWarningDialog = this.messageDialogService.confirm(
+      //     "",
+      //     "Do You Want To Save Less Amount ?"
+      //   );
+      //   const lessAmountWarningResult = await lessAmountWarningDialog
+      //     .afterClosed()
+      //     .toPromise();
+      //   if (lessAmountWarningResult) {
+      //     if (lessAmountWarningResult.type == "yes") {
+      //       const reasonInfoDialog = this.matDialog.open(
+      //         ReasonForDueBillComponent,
+      //         {
+      //           width: "40vw",
+      //           height: "50vh",
+      //         }
+      //       );
+      //       const reasonInfoResult = await reasonInfoDialog
+      //         .afterClosed()
+      //         .toPromise();
+      //       if (reasonInfoResult) {
+      //         this.calculatedBill.balance =
+      //           this.calculatedBill.toBePaid -
+      //           this.calculatedBill.collectedAmount;
+      //       }
+      //     } else {
+      //       return;
+      //     }
+      //   } else {
+      //     return;
+      //   }
+      // } else {
+      //   return;
+      // }
+      this.makeBillLoad = true;
     }
     return this.calculatedBill;
   }

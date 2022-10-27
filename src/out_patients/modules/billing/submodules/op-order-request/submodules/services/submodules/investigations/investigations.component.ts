@@ -188,6 +188,7 @@ export class OderInvestigationsComponent implements OnInit {
   rowRwmove($event: any) {
     console.log($event);
     this.opOrderRequestService.investigationItems.splice($event.index, 1);
+    this.config.columnsInfo.doctorName.moreOptions[$event.index] = {};
     this.opOrderRequestService.investigationItems =
       this.opOrderRequestService.investigationItems.map(
         (item: any, index: number) => {
@@ -198,8 +199,10 @@ export class OderInvestigationsComponent implements OnInit {
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
     }
+
     this.data = [...this.opOrderRequestService.investigationItems];
     this.opOrderRequestService.calculateTotalAmount();
+    this.opOrderRequestService.docRequiredStatusvalue();
   }
 
   ngAfterViewInit(): void {
@@ -208,21 +211,15 @@ export class OderInvestigationsComponent implements OnInit {
       console.log(this.tableRows);
       if (res.data.col == "specialisation") {
         console.log(this.tableRows);
+        res.data.element["doctorName"] = "";
+        this.opOrderRequestService.investigationItems[
+          res.data.index
+        ].doctorId = 0;
+        this.opOrderRequestService.docRequiredStatusvalue();
         this.opOrderRequestService.investigationItems[
           res.data.index
         ].specialisationId = res.$event.value;
         console.log(this.config.columnsInfo.specialisation.value);
-        if (res.data.element.specialisation_required == true) {
-          console.log("specialization changed 2nd time");
-          this.opOrderRequestService.investigationItems[
-            res.data.index
-          ].doctorName_required = true;
-          console.log(
-            this.opOrderRequestService.investigationItems[res.data.index]
-              .doctorName_required
-          );
-        }
-
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
@@ -534,15 +531,11 @@ export class OderInvestigationsComponent implements OnInit {
           },
           docRequired: this.formGroup.value.investigation.docRequired,
         });
-        if (this.formGroup.value.investigation.docRequired == 1) {
-          this.opOrderRequestService.docRequiredStatusvalue();
-        } else {
-          this.opOrderRequestService.docRequiredStatusvalue();
-        }
 
-        this.opOrderRequestService.calculateTotalAmount();
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
+        this.opOrderRequestService.docRequiredStatusvalue();
+        this.opOrderRequestService.calculateTotalAmount();
         console.log(this.data);
         this.formGroup.reset();
       });
@@ -652,6 +645,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.reset();
             this.opOrderRequestService.procedureItems = [];
             this.config.columnsInfo.doctorName.moreOptions = {};
+            this.defaultPriorityId = 1;
           }
         });
     }

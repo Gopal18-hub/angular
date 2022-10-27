@@ -32,6 +32,8 @@ import { distinctUntilChanged } from "rxjs/operators";
 import { InvestigationWarningComponent } from "./prompts/investigation-warning/investigation-warning.component";
 import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation/unbilled-investigation.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
 
 @Component({
   selector: "out-patients-billing",
@@ -140,7 +142,9 @@ export class BillingComponent implements OnInit, OnDestroy {
     private router: Router,
     public messageDialogService: MessageDialogService,
     private patientService: PatientService,
-    private calculateBillService: CalculateBillService
+    private calculateBillService: CalculateBillService,
+    private searchService: SearchService,
+    private lookupService: LookupService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +186,12 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {        
+        await this.loadGrid(formdata);
+    });
+
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
         this.links[0].disabled = true;
@@ -711,14 +721,30 @@ export class BillingComponent implements OnInit, OnDestroy {
           dialogRef
             .afterClosed()
             .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
+            .subscribe((result:any) => {
               //check for expired patient GAV-936
               //check for mreged max Id
               if (!this.expiredPatient || !this.secondaryMaxId) {
                 if (result && result.selected && result.selected.length > 0) {
                   const doctors: any = result.selected;
                   for (let i = 0; i < doctors.length; i++) {
-                    if (doctors[i].paymentStatus == "No") {
+                    // //GAV-530 Paid Online appointment
+                   // if (doctors[i].paymentStatus == "No") {
+                     this.formGroup.controls["bookingId"].setValue(doctors[i].bookingNo);
+                     if (
+                      doctors[i].paymentStatus == "Yes" &&
+                      doctors[i].billStatus == "No"
+                    ){
+                       this.billingService.setPaidAppointments({
+                       paymentstatus:doctors[i].paymentStatus,
+                       billstatus: doctors[i].billStatus,
+                       onlinepaidamount:doctors[i].amount,
+                       bookingid:doctors[i].bookingNo,
+                       transactionid:doctors[i].transactionNo,
+                       mobileno:doctors[i].mobileno,
+                     });
+                    }
+                    
                       this.billingService.procesConsultationAdd(
                         57,
                         doctors[i].specialisationid,
@@ -731,24 +757,25 @@ export class BillingComponent implements OnInit, OnDestroy {
                           value: doctors[i].clinicId,
                         }
                       );
-                    } else if (
-                      doctors[i].paymentStatus == "Yes" &&
-                      doctors[i].billStatus == "No"
-                    ) {
-                      this.billingService.procesConsultationAddWithOutApi(
-                        57,
-                        doctors[i].specialisationid,
-                        {
-                          value: doctors[i].doctorID,
-                          originalTitle: doctors[i].doctorname,
-                          specialisationid: doctors[i].specialisationid,
-                          price: doctors[i].amount,
-                        },
-                        {
-                          value: doctors[i].clinicId,
-                        }
-                      );
-                    }
+                     //  //GAV-530 Paid Online appointment
+                    // } else if (
+                    //   doctors[i].paymentStatus == "Yes" &&
+                    //   doctors[i].billStatus == "No"
+                    // ) {
+                    //   this.billingService.procesConsultationAddWithOutApi(
+                    //     57,
+                    //     doctors[i].specialisationid,
+                    //     {
+                    //       value: doctors[i].doctorID,
+                    //       originalTitle: doctors[i].doctorname,
+                    //       specialisationid: doctors[i].specialisationid,
+                    //       price: doctors[i].amount,
+                    //     },
+                    //     {
+                    //       value: doctors[i].clinicId,
+                    //     }
+                    //   );
+                    // }
                   }
                 }
               }
@@ -900,7 +927,33 @@ export class BillingComponent implements OnInit, OnDestroy {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
                     console.log(selectedServices);
-                    selectedServices.selected.forEach((slItem: any) => {});
+                    selectedServices.selected.forEach((slItem: any) => {
+                      if (slItem.serviceid == 25) {
+                        this.billingService.procesConsultationAdd(
+                          57,
+                          selectedServices.selectedDoctor.specialisationid,
+                          selectedServices.selectedDoctor,
+                          {
+                            value: selectedServices.selectedDoctor.clinicId,
+                          }
+                        );
+                      } else if ([41, 42, 43].includes(slItem.serviceid)) {
+                        this.billingService.processInvestigationAdd(
+                          1,
+                          slItem.serviceid,
+                          {
+                            title: slItem.itemName,
+                            value: slItem.itemid,
+                            originalTitle: slItem.itemName,
+                            docRequired: false,
+                            patient_Instructions: "",
+                            item_Instructions: "",
+                            serviceid: slItem.serviceid,
+                            doctorid: 0,
+                          }
+                        );
+                      }
+                    });
                   }
                 }
               }
@@ -954,6 +1007,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           if (ures.process == 1) {
             if (ures.data.length > 0) {
               let referalDoctor: any = null;
+              this.apiProcessing = true;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
                 await this.billingService.processInvestigationAdd(
@@ -981,6 +1035,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               if (referalDoctor) {
                 this.billingService.setReferralDoctor(referalDoctor);
               }
+              this.apiProcessing = false;
               this.billingService.servicesTabStatus.next({ goToTab: 1 });
             }
             this.billingService.unbilledInvestigations = true;
@@ -1245,6 +1300,54 @@ export class BillingComponent implements OnInit, OnDestroy {
     if (res) {
       this.queueId = 0;
       this.qmsSeqNo = "";
+    }
+  }
+
+   async loadGrid(formdata: any): Promise<any> {
+    let lookupdata: string | any[];
+    if (!formdata.data) {
+      lookupdata = await this.lookupService.searchPatient({
+        data: formdata,
+      });
+    } else {
+      lookupdata = await this.lookupService.searchPatient(formdata);
+    }
+
+    console.log(lookupdata);
+    if (lookupdata.length == 1) {
+      if (lookupdata[0] && "maxid" in lookupdata[0]) {
+        this.formGroup.controls["maxid"].setValue(lookupdata[0]["maxid"]);
+        this.apiProcessing = true;
+        this.patient = false;
+        this.getAllCompany();
+        this.getAllCorporate();
+        this.getPatientDetailsByMaxId();
+        
+      }
+    } else if (lookupdata.length > 1) {
+      const similarSoundDialogref = this.matDialog.open(SimilarPatientDialog, {
+        width: "60vw",
+        height: "80vh",
+        data: {
+          searchResults: lookupdata,
+        },
+      });
+
+      similarSoundDialogref
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe(async (result: any) => {
+          if (result) {
+            console.log(result.data["added"][0].maxid);
+            let maxID = result.data["added"][0].maxid;
+            this.formGroup.controls["maxid"].setValue(maxID);
+            this.apiProcessing = true; 
+            this.patient = false;
+            this.getAllCompany();
+            this.getAllCorporate();
+            this.getPatientDetailsByMaxId();
+          }
+        });
     }
   }
 }

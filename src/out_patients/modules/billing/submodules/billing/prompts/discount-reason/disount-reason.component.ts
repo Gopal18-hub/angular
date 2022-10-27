@@ -181,6 +181,7 @@ export class DisountReasonComponent implements OnInit {
   selectedItems: any = [];
 
   disableAdd: boolean = false;
+  disableApply: boolean = false;
 
   @ViewChild("table") tableRows: any;
 
@@ -198,6 +199,7 @@ export class DisountReasonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dualList = [];
     if ("removeRow" in this.data) {
       this.discAmtFormConfig.removeRow = this.data.removeRow;
     }
@@ -262,6 +264,36 @@ export class DisountReasonComponent implements OnInit {
         if (this.selectedItems.length == totalItems) {
           this.disableAdd = true;
         }
+      } else {
+        this.selectedItems.forEach((sItem: any) => {
+          if ([4, 5].includes(sItem.discTypeId)) {
+            this.dualList.push(sItem.discTypeId);
+          }
+        });
+        if (this.dualList.length > 0) {
+          const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
+          this.question[0].options = this.discounttypes.map((a: any) => {
+            if (this.dualList.includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            } else if ([4, 5].includes(tempDual[a.value])) {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: false,
+              };
+            } else {
+              return {
+                title: a.title,
+                value: a.value,
+                disabled: true,
+              };
+            }
+          });
+        }
       }
     }
   }
@@ -291,7 +323,7 @@ export class DisountReasonComponent implements OnInit {
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
-    this.discAmtForm.controls["reason"].valueChanges.subscribe((val) => {
+    this.discAmtForm.controls["reason"].valueChanges.subscribe((val:any) => {
       if (val) {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
@@ -311,13 +343,13 @@ export class DisountReasonComponent implements OnInit {
             height: "80vh",
           });
 
-          dialogref.afterClosed().subscribe((res) => {
+          dialogref.afterClosed().subscribe((res:any) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
       }
     });
-    this.discAmtForm.controls["head"].valueChanges.subscribe((val) => {
+    this.discAmtForm.controls["head"].valueChanges.subscribe((val:any) => {
       if (val) {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val
@@ -611,7 +643,9 @@ export class DisountReasonComponent implements OnInit {
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
-    this.discAmtForm.controls["authorise"].setValue(null);
+    this.discAmtForm.controls["authorise"].setValue(0);
+    this.disableApply = true;
+
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: false };
     });
@@ -661,7 +695,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
           return { title: a.name, value: a.id };
@@ -679,7 +713,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.discReasonList = data;
         this.question[2].options = this.discReasonList.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -711,7 +745,7 @@ export class DisountReasonComponent implements OnInit {
         ApiConstants.getauthorisedby(Number(this.cookie.get("HSPLocationId")))
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
           return { title: a.name, value: { title: a.name, value: a.id } };

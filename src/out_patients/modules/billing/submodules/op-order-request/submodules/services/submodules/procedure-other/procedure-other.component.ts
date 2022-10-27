@@ -156,6 +156,7 @@ export class OrderProcedureOtherComponent implements OnInit {
 
   rowRwmove($event: any) {
     this.opOrderrequestService.procedureItems.splice($event.index, 1);
+    this.config.columnsInfo.doctorName.moreOptions[$event.index] = {};
     this.opOrderrequestService.procedureItems =
       this.opOrderrequestService.procedureItems.map(
         (item: any, index: number) => {
@@ -163,8 +164,10 @@ export class OrderProcedureOtherComponent implements OnInit {
           return item;
         }
       );
-    this.opOrderrequestService.calculateTotalAmount();
+
     this.data = [...this.opOrderrequestService.procedureItems];
+    this.opOrderrequestService.calculateTotalAmount();
+    this.opOrderrequestService.docRequiredStatusvalue();
   }
 
   ngAfterViewInit(): void {
@@ -173,6 +176,9 @@ export class OrderProcedureOtherComponent implements OnInit {
         this.opOrderrequestService.procedureItems[
           res.data.index
         ].specialisationId = res.$event.value;
+        res.data.element["doctorName"] = "";
+        this.opOrderrequestService.procedureItems[res.data.index].doctorId = 0;
+        this.opOrderrequestService.docRequiredStatusvalue();
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
           res.data.index
@@ -406,13 +412,9 @@ export class OrderProcedureOtherComponent implements OnInit {
             : false,
           docRequired: this.formGroup.value.procedure.docRequired,
         });
-        if (this.formGroup.value.procedure.docRequired == 1) {
-          this.opOrderrequestService.docRequiredStatusvalue();
-        } else {
-          this.opOrderrequestService.docRequiredStatusvalue();
-        }
-        this.opOrderrequestService.calculateTotalAmount();
         this.data = [...this.opOrderrequestService.procedureItems];
+        this.opOrderrequestService.docRequiredStatusvalue();
+        this.opOrderrequestService.calculateTotalAmount();
         this.formGroup.reset();
       });
   }
