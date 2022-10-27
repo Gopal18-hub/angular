@@ -412,9 +412,9 @@ export class OrderProcedureOtherComponent implements OnInit {
             : false,
           docRequired: this.formGroup.value.procedure.docRequired,
         });
+        this.data = [...this.opOrderrequestService.procedureItems];
         this.opOrderrequestService.docRequiredStatusvalue();
         this.opOrderrequestService.calculateTotalAmount();
-        this.data = [...this.opOrderrequestService.procedureItems];
         this.formGroup.reset();
       });
   }
