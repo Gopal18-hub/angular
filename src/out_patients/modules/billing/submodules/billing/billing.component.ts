@@ -721,7 +721,7 @@ export class BillingComponent implements OnInit, OnDestroy {
           dialogRef
             .afterClosed()
             .pipe(takeUntil(this._destroying$))
-            .subscribe((result) => {
+            .subscribe((result:any) => {
               //check for expired patient GAV-936
               //check for mreged max Id
               if (!this.expiredPatient || !this.secondaryMaxId) {
@@ -736,6 +736,8 @@ export class BillingComponent implements OnInit, OnDestroy {
                       doctors[i].billStatus == "No"
                     ){
                        this.billingService.setPaidAppointments({
+                       paymentstatus:doctors[i].paymentStatus,
+                       billstatus: doctors[i].billStatus,
                        onlinepaidamount:doctors[i].amount,
                        bookingid:doctors[i].bookingNo,
                        transactionid:doctors[i].transactionNo,
