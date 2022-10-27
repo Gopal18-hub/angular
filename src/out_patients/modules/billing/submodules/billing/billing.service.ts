@@ -324,6 +324,7 @@ export class BillingService {
     if (res === "" || res == null) {
       this.companyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
+      this.selectedcompanydetails = [];
       this.iomMessage = "";
     } else if (res.title) {
       let iscompanyprocess = true;
