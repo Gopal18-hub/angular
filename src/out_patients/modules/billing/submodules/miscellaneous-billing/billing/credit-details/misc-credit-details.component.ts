@@ -150,6 +150,38 @@ export class MiscCreditDetailsComponent implements OnInit {
     this.getAllCompany();
     this.getAllCorporate();
 
+    // if (this.Miscservice.cacheCreditTabdata.creditCompany) {
+    //   this.comapnyFormGroup.controls["company"].setValue(
+    //     this.Miscservice.cacheCreditTabdata.creditCompany
+    //   );
+    // }
+    // if (this.Miscservice.cacheCreditTabdata.creditCorporate) {
+    //   this.comapnyFormGroup.controls["corporate"].setValue(
+    //     this.Miscservice.cacheCreditTabdata.creditCorporate
+    //   );
+    // }
+    // this.Miscservice.companyChangeMiscEvent.subscribe((res: any) => {
+    //   if (res.companyIdComp != "MiscCredit") {
+    //     if (res.companyId) {
+    //       this.cacheCreditTabdata.creditCompany = res.companyId;
+    //       this.Miscservice.cacheCreditTab(this.cacheCreditTabdata);
+    //       this.comapnyFormGroup.controls["company"].setValue(res.companyId, {
+    //         emitEvent: false,
+    //       });
+    //     }
+
+    //     if (res.corporateId && this.isChannel === 1) {
+    //       this.cacheCreditTabdata.creditCorporate = res.corporateId;
+    //       this.Miscservice.cacheCreditTab(this.cacheCreditTabdata);
+    //       this.comapnyFormGroup.controls["corporate"].setValue(
+    //         res.corporateId,
+    //         {
+    //           emitEvent: false,
+    //         }
+    //       );
+    //     }
+    //   }
+    // });
     this.Miscservice.misccompanyChangeEvent.subscribe((res: any) => {
       if (res.from != "credit") {
         this.companyexists = true;
@@ -214,6 +246,48 @@ export class MiscCreditDetailsComponent implements OnInit {
             "credit"
           );
         }
+        // if (res != null && res != 0 && res != undefined) {
+        //   this.companyname = res;
+        //   this.companyexists = true;
+        //   let iomcompany = this.companyList.filter(
+        //     (iom) => iom.id == res.value
+        //   );
+        //   this.iommessage =
+        //     "IOM Validity till : " +
+        //     this.datepipe.transform(iomcompany[0].iomValidity, "dd-MMM-yyyy");
+        //   TPA = iomcompany[0].isTPA;
+        //   if (TPA == 1) {
+        //     const iomcompanycorporate = this.matDialog.open(
+        //       IomCompanyBillingComponent,
+        //       {
+        //         width: "25%",
+        //         height: "28%",
+        //       }
+        //     );
+
+        //     iomcompanycorporate
+        //       .afterClosed()
+        //       .pipe(takeUntil(this._destroying$))
+        //       .subscribe((result) => {
+        //         if (result.data == "corporate") {
+        //           this.isChannel = 1;
+        //           this.setItemsToBill.isChannel = this.isChannel;
+        //           this.Miscservice.setCalculateBillItems(this.setItemsToBill);
+        //           this.comapnyFormGroup.controls["corporate"].enable();
+        //           this.comapnyFormGroup.controls["corporate"].setValue(0);
+        //         } else {
+        //           this.isChannel = 0;
+        //           this.setItemsToBill.isChannel = this.isChannel;
+        //           this.Miscservice.setCalculateBillItems(this.setItemsToBill);
+        //           this.comapnyFormGroup.controls["corporate"].setValue(0);
+        //           this.comapnyFormGroup.controls["corporate"].disable();
+        //         }
+        //       });
+        //   } else {
+        //     this.comapnyFormGroup.controls["corporate"].setValue(0);
+        //     this.comapnyFormGroup.controls["corporate"].disable();
+        //   }
+        // }
       }
     );
 
@@ -249,6 +323,30 @@ export class MiscCreditDetailsComponent implements OnInit {
   }
 
   getAllCompany() {
+    // let miscBillType = this.Miscservice.getBillType();
+    //let miscServiceitemsConfig = this.Miscservice.cacheServitem;
+    // if (miscBillType != 3) {
+    // this.disableCredit();
+    //  this.dialogService.error("Select credit check first");
+    // } else
+    // if (miscServiceitemsConfig.length == 0) {
+    //   this.disableCredit();
+    //   this.dialogService.error("There is no items for configuration");
+    // } else
+    // {
+    // let location = 67;
+    // let location: number = Number(this.cookie.get("HSPLocationId"));
+    // this.enableCredit();
+    // this.http
+    //   .get(BillingApiConstants.getcompanydetail(location))
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((data: GetCompanyDataInterface[]) => {
+    //     this.companyList = data;
+    //     this.companyQuestions[0].options = this.companyList.map((a: any) => {
+    //       return { title: a.name, value: a.id, company: a };
+    //     });
+    //     this.companyQuestions[0] = { ...this.companyQuestions[0] };
+    //   });
     this.companyList = this.Miscservice.companyData;
     this.companyQuestions[0].options = this.companyList.map((a: any) => {
       return { title: a.name, value: a.id, company: a };
@@ -310,6 +408,8 @@ export class MiscCreditDetailsComponent implements OnInit {
     } else if (miscServiceitemsConfig.length == 0) {
       //  this.disableCredit();
       this.dialogService.error("There is no items for configuration");
+    } else if (!this.comapnyFormGroup.value.company.title) {
+      this.dialogService.error("Select the Company");
     } else {
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",
