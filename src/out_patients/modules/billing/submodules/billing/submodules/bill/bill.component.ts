@@ -291,6 +291,9 @@ export class BillComponent implements OnInit, OnDestroy {
   gstBreakupDetails:any=[];
   finalgstDetails:any={};
   
+
+  precautionExcludeLocations = [69];
+
   private readonly _destroying$ = new Subject<void>();
 
   constructor(
@@ -315,6 +318,13 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+     if (
+      this.precautionExcludeLocations.includes(
+        Number(this.cookie.get("HSPLocationId"))
+      )
+    ) {
+      this.config.displayedColumns.splice(3, 1);
+    }
        if (this.billingservice.patientDetailsInfo.pPagerNumber == "ews") {
         this.billDataForm.properties.paymentMode.options = [
           { title: "Cash", value: 1, disabled: false },
@@ -631,8 +641,10 @@ export class BillComponent implements OnInit, OnDestroy {
           this.depositdetails();
         } else {
           this.totalDeposit = 0;
-          this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
-          this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
+          this.formGroup.controls["dipositAmt"].setValue(
+            this.totalDeposit.toFixed(2)
+          );
+          this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
           this.formGroup.controls["dipositAmtEdit"].disable();
           this.formGroup.controls["amtPayByPatient"].setValue(
             this.getAmountPayByPatient()
@@ -795,7 +807,7 @@ export class BillComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
-      .subscribe(async (result:any) => {
+      .subscribe(async (result: any) => {
         if (result && "type" in result) {
           if (result.type == "yes") {
             if (this.formGroup.value.amtPayByPatient > 0) {
@@ -819,46 +831,45 @@ export class BillComponent implements OnInit, OnDestroy {
                 }
               } else {
                 //GAV-530 Paid Online appointment
-                 if(this.billingservice.billingFormGroup.form.value.bookingId){
-                    
-                        if(this.billingservice.PaidAppointments){
-                          if (this.billingservice.PaidAppointments.paymentstatus == "Yes") {
-                            const onlineconfirmationRef =
-                              this.messageDialogService.confirm(
-                                "",
-                                "This is online paid appointment billing using online payment Mode"
-                            );
+                if (this.billingservice.billingFormGroup.form.value.bookingId) {
+                  if (this.billingservice.PaidAppointments) {
+                    if (
+                      this.billingservice.PaidAppointments.paymentstatus ==
+                      "Yes"
+                    ) {
+                      const onlineconfirmationRef =
+                        this.messageDialogService.confirm(
+                          "",
+                          "This is online paid appointment billing using online payment Mode"
+                        );
 
-                            onlineconfirmationRef
-                              .afterClosed()
-                              .pipe(takeUntil(this._destroying$))
-                              .subscribe((result:any) => {
-                                if (result && "type" in result) {
-                                  if (result.type == "yes") {
-                                    //GAV-530 Paid Online appointment
-                                    //need to open payment receipt 
-                                    //with auto population of online payment method
-                                    this.makereceipt(true);
-                                  } else {
-                                    //GAV-530 Paid Online appointment
-                                    this.makereceipt(false);
-                                  }
-                                }
-                              });
-                         }
-                         ////  GAV-530 Paid Online appointment
-                          else {
-                            this.makereceipt(false);
+                      onlineconfirmationRef
+                        .afterClosed()
+                        .pipe(takeUntil(this._destroying$))
+                        .subscribe((result: any) => {
+                          if (result && "type" in result) {
+                            if (result.type == "yes") {
+                              //GAV-530 Paid Online appointment
+                              //need to open payment receipt
+                              //with auto population of online payment method
+                              this.makereceipt(true);
+                            } else {
+                              //GAV-530 Paid Online appointment
+                              this.makereceipt(false);
+                            }
                           }
-                        }
-                        else{
-                         this.makereceipt(false);
-                        }
-                     
-                } 
-                 else{
+                        });
+                    }
+                    ////  GAV-530 Paid Online appointment
+                    else {
+                      this.makereceipt(false);
+                    }
+                  } else {
                     this.makereceipt(false);
-                } 
+                  }
+                } else {
+                  this.makereceipt(false);
+                }
               }
             } else {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
@@ -1010,7 +1021,7 @@ export class BillComponent implements OnInit, OnDestroy {
                   height: "35vh",
                 }
               );
-              dialogref.afterClosed().subscribe((res:any) => {
+              dialogref.afterClosed().subscribe((res: any) => {
                 if (res == "yes") {
                   this.reportService.openWindow(
                     "OP Prescription Report - " + this.billNo,
@@ -1080,8 +1091,10 @@ export class BillComponent implements OnInit, OnDestroy {
       this.depositDetails = resultData;
 
       if (this.totalDeposit > 0) {
-        this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
-        this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
+        this.formGroup.controls["dipositAmt"].setValue(
+          this.totalDeposit.toFixed(2)
+        );
+        this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
       } else {
         this.depositDetails = this.depositDetails.filter(
           (e: any) =>
@@ -1112,8 +1125,10 @@ export class BillComponent implements OnInit, OnDestroy {
               .reduce(function (r: any, s: any) {
                 return r + s;
               });
-            this.formGroup.controls["dipositAmt"].setValue(this.totalDeposit.toFixed(2));
-            this.formGroup.controls["dipositAmtEdit"].setValue(0.00);
+            this.formGroup.controls["dipositAmt"].setValue(
+              this.totalDeposit.toFixed(2)
+            );
+            this.formGroup.controls["dipositAmtEdit"].setValue(0.0);
             this.formGroup.controls["dipositAmtEdit"].enable();
             this.question[20].readonly = false;
             this.question[20].disable = false;

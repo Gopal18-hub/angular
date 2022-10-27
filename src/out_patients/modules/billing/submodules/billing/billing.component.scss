@@ -47,6 +47,8 @@
   }
   mat-label {
     font-weight: 500;
+  }
+  .overflow-ellipsis {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

@@ -188,6 +188,7 @@ export class OderInvestigationsComponent implements OnInit {
   rowRwmove($event: any) {
     console.log($event);
     this.opOrderRequestService.investigationItems.splice($event.index, 1);
+    this.config.columnsInfo.doctorName.moreOptions[$event.index] = {};
     this.opOrderRequestService.investigationItems =
       this.opOrderRequestService.investigationItems.map(
         (item: any, index: number) => {
@@ -198,8 +199,10 @@ export class OderInvestigationsComponent implements OnInit {
     if (this.data.length == 0) {
       this.defaultPriorityId = 1;
     }
+
     this.data = [...this.opOrderRequestService.investigationItems];
     this.opOrderRequestService.calculateTotalAmount();
+    this.opOrderRequestService.docRequiredStatusvalue();
   }
 
   ngAfterViewInit(): void {
@@ -528,10 +531,11 @@ export class OderInvestigationsComponent implements OnInit {
           },
           docRequired: this.formGroup.value.investigation.docRequired,
         });
-        this.opOrderRequestService.docRequiredStatusvalue();
-        this.opOrderRequestService.calculateTotalAmount();
+
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
+        this.opOrderRequestService.docRequiredStatusvalue();
+        this.opOrderRequestService.calculateTotalAmount();
         console.log(this.data);
         this.formGroup.reset();
       });
@@ -641,6 +645,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.reset();
             this.opOrderRequestService.procedureItems = [];
             this.config.columnsInfo.doctorName.moreOptions = {};
+            this.defaultPriorityId = 1;
           }
         });
     }
