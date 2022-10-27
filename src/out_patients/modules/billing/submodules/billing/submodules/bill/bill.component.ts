@@ -382,6 +382,14 @@ export class BillComponent implements OnInit, OnDestroy {
           this.refreshTable();
         }
       });
+
+    // this.calculateBillService.checkTaxableBill();
+
+    // if(this.calculateBillService.dsTaxCode){
+    //   if(this.calculateBillService.dsTaxCode.length > 0){
+
+    //   }
+    // }
   }
 
   rowRwmove($event: any) {
