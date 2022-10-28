@@ -958,78 +958,78 @@ export class CalculateBillService {
         Countindx = Countindx + 1;
       });
     }
-    Countindx = 0;
-     if (this.billingServiceRef.ConsumableItems.length > 0) {
-      this.billingServiceRef.ConsumableItems.forEach((item: any) => {
-        countProc= countProc+1;
+    // Countindx = 0;
+    //  if (this.billingServiceRef.ConsumableItems.length > 0) {
+    //   this.billingServiceRef.ConsumableItems.forEach((item: any) => {
+    //     countProc= countProc+1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
-          GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
-        }
+    //     if(item.gstCode.tax > 0){
+    //       taxapplicable= true;
+    //       GSTTaxPer = item.gstCode.tax;
+    //       STax= STax+1;
+    //     }
+    //     else{
+    //       taxapplicable= false;
+    //       GSTTaxPer = 0;
+    //       SNonTax= SNonTax+1;
+    //     }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
-        }
+    //     if(cstype > 0 && item.gstCode.codeId==cstype){
+    //        citem = citem + 1;
+    //     }
+    //     else{
+    //       ncitem= ncitem + 1;
+    //     }
 
-        if(STax > 0  && SNonTax > 0){
-          cosflag = true;
-          TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
-            CosmeticFlag = true;
-          }          
-        }
+    //     if(STax > 0  && SNonTax > 0){
+    //       cosflag = true;
+    //       TaxNontaxFlag = true;
+    //       if(item.billItem.serviceId == 83){
+    //         CosmeticFlag = true;
+    //       }          
+    //     }
 
-        if(citem >0 && ncitem > 0){ 
-          cosflag = true;
-          TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
-            CosmeticFlag = true;
-          }           
-        }
+    //     if(citem >0 && ncitem > 0){ 
+    //       cosflag = true;
+    //       TaxNontaxFlag = true;
+    //       if(item.billItem.serviceId == 83){
+    //         CosmeticFlag = true;
+    //       }           
+    //     }
 
-        if(SACCode == ""){
-          SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
-        }
+    //     if(SACCode == ""){
+    //       SACCode = item.gstDetail.saccode;
+    //     }
+    //     else if(SACCode != item.gstDetail.saccode){
+    //       BillFlag_ForGST=  true;
+    //     }
 
-        if(Countindx == 0 && taxapplicable){
-          flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
-          }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
-          }
-        }
+    //     if(Countindx == 0 && taxapplicable){
+    //       flg = 1;
+    //     }
+    //     else {
+    //       if(flg== 1 && !taxapplicable){
+    //         strErrormsg += item.billItem.itemName+",";
+    //       }
+    //       if(flg==0 &&taxapplicable){
+    //         strErrormsg += item.billItem.itemName+",";
+    //       }
+    //     }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
-        }
-        Countindx = Countindx + 1;
-      });
-    }
+    //     if(item.billItem.serviceId != 92){
+    //       if(item.gstCode.tax == 0){
+    //         this.dsTaxCode = item.gstDetail;
+    //       }
+    //       else if(item.gstCode.tax > 0){
+    //         this.dsTaxCode = item.gstDetail;
+    //       }
+    //     }
+    //     else{
+    //      this.dsTaxCode = item.gstDetail;
+    //     }
+    //     Countindx = Countindx + 1;
+    //   });
+    // }
     Countindx = 0;
     citem = 0;
     ncitem = 0;

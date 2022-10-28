@@ -525,7 +525,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ) {
           this.formGroup.controls["paymentMode"].setValue(1);
           this.messageDialogService.info(
-            "You have Selected Dosn't come Under Free OPD"
+            "You have Selected services(s) Dosn't come Under Free OPD"
           );
         } else {
           await this.checkFreeOPD(this.billingservice.billItems[0].itemId);
