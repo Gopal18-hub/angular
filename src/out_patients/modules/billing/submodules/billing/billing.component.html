@@ -270,7 +270,7 @@
               <div class="qms-container ml-3" *ngIf="enableQMSManagement">
                 <span class="text-white">Counter No. </span
                 ><span class="ml-1 max-health-primary-color font-semi-bold">{{
-                  counterId
+                  counterName
                 }}</span>
                 <span class="ml-2 text-white">Queue No.</span>
                 <span
@@ -331,7 +331,7 @@
                   <button
                     mat-button
                     (click)="doneQueue()"
-                    disabled="queueId<=0"
+                    [disabled]="disableStopQueueBtn"
                     class="mr-5 p-0 logout-button"
                   >
                     <svg

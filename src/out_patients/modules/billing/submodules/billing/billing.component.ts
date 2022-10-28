@@ -126,9 +126,11 @@ export class BillingComponent implements OnInit, OnDestroy {
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
   counterId: number = 0;
+  counterName="";
   enableQMSManagement: boolean = false;
+  disableStopQueueBtn:boolean= true;
   queueId: number = 0;
-  qmsSeqNo: any = "";
+  qmsSeqNo = "";
 
   constructor(
     public matDialog: MatDialog,
@@ -157,7 +159,12 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     if (this.cookie.check("Counter_ID")) {
       if (this.cookie.get("Counter_ID")) {
-        this.counterId = Number(this.cookie.get("Counter_ID"));
+        this.counterId = Number(this.cookie.get("Counter_ID"));        
+      }
+      if(this.cookie.check("CounterName")){
+        if (this.cookie.get("Counter_ID")) {
+          this.counterName = this.cookie.get("CounterName");        
+        }
       }
     }
     if (
@@ -1288,8 +1295,11 @@ export class BillingComponent implements OnInit, OnDestroy {
       .toPromise();
 
     if (queuedetail) {
-      this.queueId = queuedetail.id;
-      this.qmsSeqNo = queuedetail.seqNo;
+      this.queueId = queuedetail[0].id;
+      this.qmsSeqNo = queuedetail[0].seqNo;
+      if(this.queueId){
+        this.disableStopQueueBtn = false;
+      }
     }
   }
 
@@ -1301,6 +1311,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     if (res) {
       this.queueId = 0;
       this.qmsSeqNo = "";
+       this.disableStopQueueBtn = true;
     }
   }
 
