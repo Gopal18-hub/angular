@@ -1305,7 +1305,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   async doneQueue() {
     let res = await this.http
-      .get(BillingApiConstants.donequeueno(this.queueId, this.counterId))
+      .post(BillingApiConstants.donequeueno(this.queueId, this.counterId),{})
       .toPromise();
 
     if (res) {
