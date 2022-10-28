@@ -45,7 +45,10 @@
 .clr-primary {
     color: #004084;
 }
-
+.isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
 .depositradiobutton {
     ::ng-deep .mat-radio-group {
         flex-direction: row !important;

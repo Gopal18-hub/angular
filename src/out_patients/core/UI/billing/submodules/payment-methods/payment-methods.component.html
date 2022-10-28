@@ -104,16 +104,7 @@
                             [index]="6"
                             ></maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
-                       
-                        <div class="ml-8">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="savecheque()">Ok</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetchequedetails()">Cancel</button>
-                        </div>
-                    </div>
+                    </div>                   
                 </div>
             </mat-tab>
             <mat-tab label="Credit Card" *ngIf="config.paymentmethod.credit">
@@ -346,15 +337,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
-                       
-                        <div class="ml-8">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="savecheque()">Ok</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetchequedetails()">Cancel</button>
-                        </div>
-                    </div>
+                  
                 </div>
             </mat-tab>
             <mat-tab label="Mobile Payment" *ngIf="config.paymentmethod.mobilepayment">
@@ -797,12 +780,15 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
+                    <div class="flex mt-3 ml-5 align-items-center creditbuttonwidth">
                         <div class="">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Last Txn Status</button>
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Get Status</button>
                         </div>
                         <div class="ml-3">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Ok</button>
+                        </div>
+                        <div class="ml-3">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Retry</button>
                         </div>
                     </div>
                 </div>

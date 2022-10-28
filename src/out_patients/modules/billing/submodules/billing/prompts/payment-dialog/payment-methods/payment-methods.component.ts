@@ -95,19 +95,32 @@ export class BillingPaymentMethodsComponent implements OnInit {
       if (index == 0) {
         // //GAV-530 Paid Online appointment
         if(this.isOnlinePaidAppointment){
-          this.paymentForm[method].controls["price"].setValue(this.onlinePaidAmount);
-          this.tabPrices.push(this.onlinePaidAmount);
-          this.remainingAmount = this.totalAmount - this.onlinePaidAmount;           
-          if(this.paidAppointments){
-            this.paymentForm[method].controls["transactionId"]
-            .setValue(this.paidAppointments.transactionid);
-            this.paymentForm[method].controls["bookingId"]
-            .setValue(this.paidAppointments.bookingid);
-            this.paymentForm[method].controls["cardValidation"]
-            .setValue("yes");
-            this.paymentForm[method].controls["onlineContact"]
-            .setValue(this.paidAppointments.mobileno);             
+          if(method=="onlinepayment"){
+            if(this.totalAmount >= this.onlinePaidAmount){
+              this.paymentForm[method].controls["price"].setValue(this.onlinePaidAmount);
+              this.tabPrices.push(this.onlinePaidAmount);
+              this.remainingAmount = this.totalAmount - this.onlinePaidAmount; 
+            }else{
+              this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+              this.tabPrices.push(this.totalAmount);
+              this.remainingAmount = 0;
+            }    
+            if(this.paidAppointments){
+              this.paymentForm[method].controls["transactionId"]
+              .setValue(this.paidAppointments.transactionid);
+              this.paymentForm[method].controls["bookingId"]
+              .setValue(this.paidAppointments.bookingid);
+              this.paymentForm[method].controls["cardValidation"]
+              .setValue("yes");
+              this.paymentForm[method].controls["onlineContact"]
+              .setValue(this.paidAppointments.mobileno);             
+            }
           }
+          else{
+          this.paymentForm[method].controls["price"].setValue(this.totalAmount);
+          this.tabPrices.push(this.totalAmount);
+          this.remainingAmount = 0;
+        }         
     
         }
         else{
@@ -142,9 +155,34 @@ export class BillingPaymentMethodsComponent implements OnInit {
     if (this.remainingAmount > 0) {
       if (Number(this.paymentForm[this.activeTab.key].value.price) > 0) {
       } else {
-        this.paymentForm[this.activeTab.key].controls["price"].setValue(
+         if(this.isOnlinePaidAppointment){
+          if(this.activeTab.key=="onlinepayment"){
+            if(this.remainingAmount > this.onlinePaidAmount)
+               this.paymentForm[this.activeTab.key].controls["price"].setValue(this.onlinePaidAmount);
+            else
+              this.paymentForm[this.activeTab.key].controls["price"].setValue(this.remainingAmount);
+            if(this.paidAppointments){
+              this.paymentForm[this.activeTab.key].controls["transactionId"]
+              .setValue(this.paidAppointments.transactionid);
+              this.paymentForm[this.activeTab.key].controls["bookingId"]
+              .setValue(this.paidAppointments.bookingid);
+              this.paymentForm[this.activeTab.key].controls["cardValidation"]
+              .setValue("yes");
+              this.paymentForm[this.activeTab.key].controls["onlineContact"]
+              .setValue(this.paidAppointments.mobileno);             
+            }
+          }
+          else{
+          this.paymentForm[this.activeTab.key].controls["price"].setValue(
           this.remainingAmount
         );
+        }  
+        }
+        else{
+          this.paymentForm[this.activeTab.key].controls["price"].setValue(
+          this.remainingAmount
+        );
+        } 
       }
     }
   }
