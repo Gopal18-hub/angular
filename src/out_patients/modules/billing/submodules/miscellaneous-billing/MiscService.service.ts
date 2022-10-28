@@ -138,9 +138,12 @@ export class MiscService {
     if (!this.calcItems.depositInput) {
       this.calcItems.depositInput = 0;
     }
-    if (this.cacheBillTabdata.cacheDiscount) {
+    if (this.cacheBillTabdata.cacheDiscount >= 0) {
       //this.calcItems.totalDiscount = 0;
       this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
+    }
+    if (this.cacheBillTabdata.cacheDepositInput >= 0) {
+      this.calculatedBill.depositInput = this.calculatedBill.depositInput;
     }
     //  else {
     //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
@@ -200,6 +203,12 @@ export class MiscService {
     this.referralDoctor = null;
     this.cacheServitem = [];
     this.creditLimit = 0;
+    this.calcItems = [];
+    this.calculatedBill = [];
+    this.companyList = [];
+    this.cacheServitem = [];
+    this.cacheCreditTabdata = [];
+    this.cacheBillTabdata = [];
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
