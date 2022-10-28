@@ -126,9 +126,11 @@ export class BillingComponent implements OnInit, OnDestroy {
   expiredPatient: boolean = false;
   secondaryMaxId: boolean = false;
   counterId: number = 0;
+  counterName="";
   enableQMSManagement: boolean = false;
+  disableStopQueueBtn:boolean= true;
   queueId: number = 0;
-  qmsSeqNo: any = "";
+  qmsSeqNo = "";
 
   constructor(
     public matDialog: MatDialog,
@@ -157,7 +159,12 @@ export class BillingComponent implements OnInit, OnDestroy {
     });
     if (this.cookie.check("Counter_ID")) {
       if (this.cookie.get("Counter_ID")) {
-        this.counterId = Number(this.cookie.get("Counter_ID"));
+        this.counterId = Number(this.cookie.get("Counter_ID"));        
+      }
+      if(this.cookie.check("CounterName")){
+        if (this.cookie.get("Counter_ID")) {
+          this.counterName = this.cookie.get("CounterName");        
+        }
       }
     }
     if (
@@ -265,7 +272,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     this.formGroup.controls["b2bInvoice"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         if (res) {
           this.billingService.makeBillPayload.invoiceType = "B2B";
         } else {
@@ -506,6 +513,15 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.formGroup.controls["company"].disable();
                 this.formGroup.controls["corporate"].disable();
                 this.links[2].disabled = true;
+                const tpacompanyExist: any = this.companyData.find(
+                  (c: any) => c.isTPA == 18
+                );
+                if (tpacompanyExist) {
+                  this.formGroup.controls["company"].setValue({
+                    title: tpacompanyExist.name,
+                    value: tpacompanyExist.id,
+                  });
+                }
               }
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
@@ -610,6 +626,17 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["company"].setValue({
           title: companyExist.name,
           value: patientDetails.companyid,
+        });
+      }
+    }
+    if (patientDetails.corporateid) {
+      const corporateExist: any = this.coorporateList.find(
+        (c: any) => c.id == patientDetails.corporateid
+      );
+      if (corporateExist) {
+        this.formGroup.controls["corporate"].setValue({
+          title: corporateExist.name,
+          value: patientDetails.corporateid,
         });
       }
     }
@@ -1208,6 +1235,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.gender = "";
     this.age = "";
     this.billingService.clear();
+    this.calculateBillService.dsTaxCode={};
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
@@ -1287,19 +1315,23 @@ export class BillingComponent implements OnInit, OnDestroy {
       .toPromise();
 
     if (queuedetail) {
-      this.queueId = queuedetail.id;
-      this.qmsSeqNo = queuedetail.seqNo;
+      this.queueId = queuedetail[0].id;
+      this.qmsSeqNo = queuedetail[0].seqNo;
+      if(this.queueId){
+        this.disableStopQueueBtn = false;
+      }
     }
   }
 
   async doneQueue() {
     let res = await this.http
-      .get(BillingApiConstants.donequeueno(this.queueId, this.counterId))
+      .post(BillingApiConstants.donequeueno(this.queueId, this.counterId),{})
       .toPromise();
 
     if (res) {
       this.queueId = 0;
       this.qmsSeqNo = "";
+       this.disableStopQueueBtn = true;
     }
   }
 

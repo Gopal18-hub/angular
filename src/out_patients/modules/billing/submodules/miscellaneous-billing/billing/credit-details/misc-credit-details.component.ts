@@ -409,7 +409,11 @@ export class MiscCreditDetailsComponent implements OnInit {
     if (miscServiceitemsConfig.length == 0) {
     //  this.disableCredit();
       this.dialogService.error("There is no items for configuration");
-    } else 
+    }
+    else if(!this.comapnyFormGroup.value.company.title){
+      this.dialogService.error("Select the Company");
+    }
+     else 
     {
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",

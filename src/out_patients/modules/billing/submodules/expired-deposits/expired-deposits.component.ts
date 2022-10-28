@@ -426,7 +426,9 @@ export class ExpiredDepositsComponent implements OnInit {
             });
             this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
           } else {
-            this.snackbar.open("MAXID Has No Expired Deposits");
+            this.snackbar.open(
+              "Specific Date Criteria Has No Expired Deposits"
+            );
           }
         });
     }
@@ -441,6 +443,7 @@ export class ExpiredDepositsComponent implements OnInit {
     });
     this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
       if (event.key === "Tab") {
+        event.preventDefault();
         this.getPatientDetails();
       }
     });

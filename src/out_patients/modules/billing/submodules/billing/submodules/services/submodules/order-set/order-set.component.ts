@@ -377,6 +377,7 @@ export class OrderSetComponent implements OnInit {
           totaltaX_RATE_VALUE:resItem.totaltaX_Value,
           saccode:resItem.saccode,
           taxgrpid:resItem.taxgrpid,
+          codeId:resItem.codeId,
         },
          gstCode:{
               tax:resItem.tax,
