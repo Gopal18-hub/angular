@@ -77,10 +77,12 @@ export class DepositComponent implements OnInit {
         this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
         const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
         if (expiredStatus) {
+          
           const dialogRef = this.messageDialogService.error(
             "Patient is an Expired Patient!"
           );
           await dialogRef.afterClosed().toPromise();
+          this.expiredpatientexists = true;
         }
         this.getPatientDetailsForDeposit();
       }
@@ -110,6 +112,7 @@ export class DepositComponent implements OnInit {
                 "Patient is an Expired Patient!"
               );
                dialogRef.afterClosed().toPromise();
+               this.expiredpatientexists = true;
             }
             this.getPatientDetailsForDeposit();
           }
@@ -331,6 +334,7 @@ export class DepositComponent implements OnInit {
   categoryIcons: [] = [];
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
   tableselectionexists: boolean = false;
+  expiredpatientexists: boolean = false;
 
   depositForm!: FormGroup;
   questions: any;
@@ -493,6 +497,7 @@ export class DepositComponent implements OnInit {
                 "Patient is an Expired Patient!"
               );
                dialogRef.afterClosed().toPromise();
+               this.expiredpatientexists = true;
             }
             this.getDepositType();
             this.getPatientDetailsForDeposit();
@@ -797,6 +802,7 @@ export class DepositComponent implements OnInit {
                         "Patient is an Expired Patient!"
                       );
                        dialogRef.afterClosed().toPromise();
+                       this.expiredpatientexists = true;
                     }
                     this.getPatientDetailsForDeposit();
                   }

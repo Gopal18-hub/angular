@@ -115,6 +115,7 @@ export class QmsComponent implements OnInit {
         this.cookie.set('Counter_ID', this.qmsform.value.counter);
         var area = this.areacounter.find(e => e.areaId == this.qmsform.controls["area"].value);
         var counter = this.areacounter.find(e => e.counterId == this.qmsform.controls["counter"].value);
+        this.cookie.set('CounterName', counter?.counterName);
         this.matdialog.success( area?.areaName + ", " + counter?.counterName + " Selected successfully");
       }
     })

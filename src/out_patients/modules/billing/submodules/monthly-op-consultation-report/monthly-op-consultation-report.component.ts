@@ -32,7 +32,7 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       },
       Location: {
         type: "autocomplete",
-        title: "",
+        title: "Location",
         required: true,
         placeholder: "--Select--",
         defaultValue: this.locationmaster,
@@ -44,6 +44,8 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
   msgresponse: any;
   private readonly _destroying$ = new Subject<void>();
   snackbar: any;
+  today: any;
+  fromdate: any;
 
   constructor(
     private formService: QuestionControlService,
@@ -58,6 +60,12 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
     );
     this.OpConsultform = formResult.form;
     this.questions = formResult.questions;
+    this.today = new Date();
+    this.OpConsultform.controls["todate"].setValue(this.today);
+    this.fromdate = new Date(this.today);
+    this.OpConsultform.controls["fromdate"].setValue(this.fromdate);
+    this.questions[0].maximum = this.OpConsultform.controls["todate"].value;
+    this.questions[1].minimum = this.OpConsultform.controls["fromdate"].value;
     this.getLocationMasterdropdown();
     // this.OpConsultform.controls["Location"].setErrors({ required: true });
     // this.questions[0].customErrorMessage = "Location Required";
@@ -102,7 +110,9 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       )
       .subscribe((result) => {
         console.log(result);
-        if (result) {
+        if (result != 0 && result != null) {
+          this.msgresponse = "Total No. of OP Consultation: " + result;
+        } else {
           this.msgresponse = "Total No. of OP Consultation: " + result;
         }
         //else {

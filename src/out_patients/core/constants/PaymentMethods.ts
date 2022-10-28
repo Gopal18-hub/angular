@@ -9,7 +9,7 @@ export namespace PaymentMethods {
       form: "chequeForm",
       payloadKey: "tab_cheque",
     },
-    credit: { label: "Credit Card", form: "creditForm", payloadKey: "tab_credit", },
+    credit: { label: "Credit / Debit Card", form: "creditForm", payloadKey: "tab_credit", },
     debit: { label: "Debit Card", form: "debitForm", payloadKey: "tab_debit", },
     demand: {
       label: "Demand Draft",
