@@ -17,7 +17,7 @@ export namespace BillingForm {
             maximum: new Date(),
           },
           chequebankname: {
-            type: "string"
+            type: "autocomplete",
           },
           chequebranchname: {
             type: "string"
@@ -35,8 +35,8 @@ export namespace BillingForm {
           creditholdername: {
             type: "string"
           },
-          creditbankno:{
-            type: "string"
+          creditbankname: {
+            type: "autocomplete",
           },
           creditbatchno:{
             type: "string"
