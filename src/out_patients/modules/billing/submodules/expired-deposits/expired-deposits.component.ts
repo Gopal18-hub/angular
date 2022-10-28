@@ -443,6 +443,7 @@ export class ExpiredDepositsComponent implements OnInit {
     });
     this.questions[0].elementRef.addEventListener("keydown", (event: any) => {
       if (event.key === "Tab") {
+        event.preventDefault();
         this.getPatientDetails();
       }
     });
