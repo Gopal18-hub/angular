@@ -477,7 +477,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-
+          required: true,
           defaultValue: "Plan Name",
           conditions: [
             {
