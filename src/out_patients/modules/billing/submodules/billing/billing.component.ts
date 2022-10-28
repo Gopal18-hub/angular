@@ -265,7 +265,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
     this.formGroup.controls["b2bInvoice"].valueChanges
       .pipe(takeUntil(this._destroying$))
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         if (res) {
           this.billingService.makeBillPayload.invoiceType = "B2B";
         } else {
@@ -1208,6 +1208,7 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.gender = "";
     this.age = "";
     this.billingService.clear();
+    this.calculateBillService.dsTaxCode={};
     this.questions[0].readonly = false;
     this.questions[1].readonly = false;
     this.questions[2].readonly = false;
