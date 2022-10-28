@@ -15,6 +15,7 @@ form.prompt-report-form {
             }
             mat-form-field {
               width: 70%;
+              color: black;
               .mat-form-field-wrapper {
                 padding-bottom: 0;
               }
@@ -44,3 +45,8 @@ form.prompt-report-form {
       margin-top:4%;
   }
 }
+::ng-deep .mat-input-element 
+{
+    color: black;
+}
+

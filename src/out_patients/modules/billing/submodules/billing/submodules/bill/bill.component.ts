@@ -525,7 +525,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ) {
           this.formGroup.controls["paymentMode"].setValue(1);
           this.messageDialogService.info(
-            "You have Selected services(s) Dosn't come Under Free OPD"
+            "You have Selected services(s) Doesn't come Under Free OPD"
           );
         } else {
           await this.checkFreeOPD(this.billingservice.billItems[0].itemId);
@@ -662,6 +662,12 @@ export class BillComponent implements OnInit, OnDestroy {
           name: "",
           specialisation: "",
         });
+      }else{
+        this.billingservice.setReferralDoctor({
+          id: 0,
+          name: "",
+          specialisation: "",
+        });
       }
     });
 
@@ -788,7 +794,7 @@ export class BillComponent implements OnInit, OnDestroy {
       await referralErrorRef.afterClosed().toPromise();
       return;
     }
-    if (!this.billingservice.referralDoctor) {
+    if (!this.billingservice.referralDoctor || this.billingservice.referralDoctor.id === 0) {
       const referralErrorRef = this.messageDialogService.error(
         "Please select Referral Doctor"
       );
@@ -1167,7 +1173,7 @@ export class BillComponent implements OnInit, OnDestroy {
     if (data.docotr) {
       console.log(data.docotr);
       this.formGroup.controls["self"].setValue(false);
-      this.formGroup.controls["self"].disable();
+     // this.formGroup.controls["self"].disable();
       this.billingservice.setReferralDoctor(data.docotr);
     }
   }

@@ -227,9 +227,7 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes.map((a: any) => {
-        return { title: a.title, value: a.value, disabled: false };
-      });
+      this.question[0].options = this.discounttypes;
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.getDiscountReasonHead();
@@ -474,17 +472,26 @@ export class DisountReasonComponent implements OnInit {
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+      (parseFloat(
+        this.calculateBillService.billFormGroup.form.value.amtPayByPatient
+      ) *
+        existReason.discountPer) /
+      100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Patient",
       discTypeId: 4,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: parseFloat(
+        this.calculateBillService.billFormGroup.form.value.amtPayByPatient
+      ),
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt:
+        parseFloat(
+          this.calculateBillService.billFormGroup.form.value.amtPayByPatient
+        ) - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
