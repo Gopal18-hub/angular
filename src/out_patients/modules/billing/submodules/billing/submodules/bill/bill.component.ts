@@ -720,15 +720,15 @@ export class BillComponent implements OnInit, OnDestroy {
     let tempAmount = this.formGroup.value.credLimit;
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
     if (parseFloat(tempAmount) <= amtPayByComp) {
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
     } else {
-      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp);
+      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp.toFixed(2));
     }
     if (this.formGroup.value.coPay > 0) {
       tempAmount =
         this.formGroup.value.amtPayByComp -
         (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount);
+      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
     }
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
