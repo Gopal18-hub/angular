@@ -32,7 +32,7 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
       },
       Location: {
         type: "autocomplete",
-        title: "",
+        title: "Location",
         required: true,
         placeholder: "--Select--",
         defaultValue: this.locationmaster,

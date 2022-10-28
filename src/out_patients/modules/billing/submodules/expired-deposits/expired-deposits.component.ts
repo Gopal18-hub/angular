@@ -426,7 +426,9 @@ export class ExpiredDepositsComponent implements OnInit {
             });
             this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
           } else {
-            this.snackbar.open("MAXID Has No Expired Deposits");
+            this.snackbar.open(
+              "Specific Date Criteria Has No Expired Deposits"
+            );
           }
         });
     }
