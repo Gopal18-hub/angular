@@ -154,7 +154,7 @@ export class InvestigationsComponent implements OnInit {
     this.data = this.billingService.InvestigationItems;
     this.getServiceTypes();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems:any) => {
+    this.billingService.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -250,13 +250,13 @@ export class InvestigationsComponent implements OnInit {
     });
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
-        filter((res:any) => {
+        filter((res: any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value:any) => {
+        switchMap((value: any) => {
           if (
             this.formGroup.value.serviceType &&
             this.formGroup.value.serviceType.value
@@ -324,7 +324,7 @@ export class InvestigationsComponent implements OnInit {
   getSpecialization() {
     this.http
       .get(BillingApiConstants.getInvetigationPriorities)
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.config.columnsInfo.priority.options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -346,7 +346,7 @@ export class InvestigationsComponent implements OnInit {
   getServiceTypes() {
     this.http
       .get(BillingApiConstants.getinvestigationservice)
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id };
         });
@@ -369,7 +369,7 @@ export class InvestigationsComponent implements OnInit {
           serviceId
         )
       )
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -411,7 +411,7 @@ export class InvestigationsComponent implements OnInit {
           this.billingService.InvestigationItems[index].price =
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.price =
-            res[0].returnOutPut+ res[0].totaltaX_Value;
+            res[0].returnOutPut + res[0].totaltaX_Value;
           this.billingService.InvestigationItems[index].billItem.totalAmount =
             res[0].returnOutPut + res[0].totaltaX_Value;
           this.data = [...this.billingService.InvestigationItems];
@@ -437,6 +437,7 @@ export class InvestigationsComponent implements OnInit {
       }
     );
     if (exist > -1) {
+      this.calculateBillService.blockActions.next(false);
       this.messageDialogService.error(
         "Investigation already added to the service list"
       );
@@ -461,7 +462,7 @@ export class InvestigationsComponent implements OnInit {
   ) {
     this.http
       .get(BillingApiConstants.checkPatientSex(testId, gender, serviceId, type))
-      .subscribe(async (res:any) => {
+      .subscribe(async (res: any) => {
         if (res == 1) {
           await this.billingService.processInvestigationAdd(
             priorityId,
