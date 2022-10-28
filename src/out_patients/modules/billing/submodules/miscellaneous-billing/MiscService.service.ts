@@ -134,20 +134,16 @@ export class MiscService {
       } else {
         this.calculatedBill.depositInput = this.calcItems.depositInput;
       }
+    } else {
+      this.calculatedBill.depositInput = 0;
     }
-    if (!this.calcItems.depositInput) {
-      this.calcItems.depositInput = 0;
-    }
+
     if (this.cacheBillTabdata.cacheDiscount >= 0) {
-      //this.calcItems.totalDiscount = 0;
       this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
     }
     if (this.cacheBillTabdata.cacheDepositInput >= 0) {
       this.calculatedBill.depositInput = this.calculatedBill.depositInput;
     }
-    //  else {
-    //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
-    // }
 
     if (!this.calcItems.totalDeposit) {
       this.calcItems.totalDeposit = 0;
