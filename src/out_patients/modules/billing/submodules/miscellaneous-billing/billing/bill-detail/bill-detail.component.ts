@@ -459,7 +459,6 @@ export class BillDetailComponent implements OnInit {
 
     this.miscPatient.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
-        this.miscServBillForm.controls["paymentMode"].setValue("1");
         this.miscServBillForm.controls["self"].setValue(false);
         this.miscServBillForm.controls["self"].enable();
         this.clearItem = true;
@@ -467,6 +466,7 @@ export class BillDetailComponent implements OnInit {
         this.serviceselectedList = [];
         this.miscServBillForm.reset();
         this.resetAmt();
+        this.miscServBillForm.controls["paymentMode"].setValue("1");
       }
     });
 
@@ -501,7 +501,6 @@ export class BillDetailComponent implements OnInit {
           this.selfDoc = true;
         } else if (this.miscPatient.cacheBillTabdata.self == false) {
           this.miscServBillForm.controls["self"].setValue(false);
-          this.miscServBillForm.controls["self"].disable();
           this.selfDoc = false;
         }
       } else {
@@ -667,6 +666,11 @@ export class BillDetailComponent implements OnInit {
       .subscribe((value: any) => {
         this.enableDiscount = false;
         if (value === true) {
+          this.miscPatient.setReferralDoctor({
+            id: 2015,
+            name: "",
+            specialisation: "",
+          });
           this.selfDoc = true;
         } else {
           this.selfDoc = false;
@@ -865,7 +869,6 @@ export class BillDetailComponent implements OnInit {
     if (data.docotr) {
       console.log(data.docotr);
       this.miscServBillForm.controls["self"].setValue(false);
-      this.miscServBillForm.controls["self"].disable();
       this.miscPatient.setReferralDoctor(data.docotr);
     }
   }
@@ -1837,7 +1840,7 @@ export class BillDetailComponent implements OnInit {
                       }
                     );
                 } else {
-                  return;
+                  this.openPaymentModeDialog();
                 }
               });
           } else {
