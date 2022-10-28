@@ -1062,6 +1062,7 @@ export class BillingService {
               totaltaX_RATE_VALUE:res[0].totaltaX_Value,
               saccode:res[0].saccode,
               taxgrpid:res[0].taxgrpid,
+              codeId:res[0].codeId,
         },
          gstCode:{
               tax:res[0].tax,
@@ -1116,7 +1117,7 @@ export class BillingService {
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
-          price: res[0].returnOutPut,
+          price: res[0].returnOutPut + res[0].totaltaX_Value,
           serviceName: "Investigations",
           itemName: investigation.title,
           qty: 1,
@@ -1163,6 +1164,7 @@ export class BillingService {
               totaltaX_RATE_VALUE:res[0].totaltaX_Value,
               saccode:res[0].saccode,
               taxgrpid:res[0].taxgrpid,
+              codeId:res[0].codeId,
         },
          gstCode:{
               tax:res[0].tax,
@@ -1259,7 +1261,7 @@ export class BillingService {
           itemId: doctorName.value,
           priority: priorityId,
           serviceId: 25,
-          price: res[0].returnOutPut,
+          price: res[0].returnOutPut+ res[0].totaltaX_Value,
           serviceName: "Consultation Charges",
           itemName: doctorName.originalTitle,
           qty: 1,
@@ -1302,6 +1304,7 @@ export class BillingService {
           totaltaX_RATE_VALUE:res[0].totaltaX_Value,
           saccode:res[0].saccode,
           taxgrpid:res[0].taxgrpid,
+          codeId:res[0].codeId,
         },
         gstCode:{
               tax:res[0].tax,
