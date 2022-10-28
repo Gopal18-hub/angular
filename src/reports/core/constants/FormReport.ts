@@ -102,12 +102,13 @@ export namespace FormReport {
         },
         RepType: {
           type: "radio",
-          defaultValue: "",
+          title: "Rep Type",
+          defaultValue: "1",
           options: [
-            { title: "OP", value: "OP" },
-            { title: "PreAdmission", value: "PreAdmission" },
-            { title: "Emergency", value: "Emergency" },
-            { title: "IP", value: "IP" },
+            { title: "OP", value: "1" },
+            { title: "PreAdmission", value: "2" },
+            { title: "Emergency", value: "3" },
+            { title: "IP", value: "4" },
           ],
         },
       },
@@ -115,7 +116,6 @@ export namespace FormReport {
     form: {
       layout: {
         locationid: "w-full",
-        openScrollFor: "w-full",
       },
       actionItems: [
         {
@@ -148,13 +148,14 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
+      format: "MM/dd/YYYY",
       // FromDate: moment("dd/MM/YYYY"),
       // todate: moment("dd/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
           title: "Date",
-          defaultValue: moment().format("MM/DD/YYYY"),
+          // defaultValue: moment().format("MM/DD/YYYY"),
         },
         // todate: {
         //   type: "hidden",
@@ -165,7 +166,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
-          questionClasses: "max-hide",
+          // questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
@@ -190,7 +191,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        locationID: "w-screen",
+        locationID: "w-full",
       },
       actionItems: [
         {
@@ -220,7 +221,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/dd/MM",
+      format: "YYYY/MM/dd",
       properties: {
         ValueFromDate: {
           type: "date",
