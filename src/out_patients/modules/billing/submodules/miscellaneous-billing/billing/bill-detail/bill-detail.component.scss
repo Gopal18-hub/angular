@@ -6,6 +6,10 @@
         
       }
     }
+    .isDisabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
   
     .h-dropdown{
       ::ng-deep mat-form-field {

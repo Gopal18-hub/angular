@@ -206,6 +206,7 @@ export class ConsumablesComponent implements OnInit {
           totaltaX_RATE_VALUE:head.totaltaX_Value,
           saccode:head.saccode,
           taxgrpid:head.taxgrpid,
+          codeId:head.codeId,
         },
          gstCode:{
               tax:head.tax,
