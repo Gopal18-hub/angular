@@ -134,17 +134,16 @@ export class MiscService {
       } else {
         this.calculatedBill.depositInput = this.calcItems.depositInput;
       }
+    } else {
+      this.calculatedBill.depositInput = 0;
     }
-    if (!this.calcItems.depositInput) {
-      this.calcItems.depositInput = 0;
-    }
-    if (this.cacheBillTabdata.cacheDiscount) {
-      //this.calcItems.totalDiscount = 0;
+
+    if (this.cacheBillTabdata.cacheDiscount >= 0) {
       this.calculatedBill.totalDiscount = this.cacheBillTabdata.cacheDiscount;
     }
-    //  else {
-    //   this.calculatedBill.totalDiscount = this.calcItems.totalDiscount;
-    // }
+    if (this.cacheBillTabdata.cacheDepositInput >= 0) {
+      this.calculatedBill.depositInput = this.calculatedBill.depositInput;
+    }
 
     if (!this.calcItems.totalDeposit) {
       this.calcItems.totalDeposit = 0;
@@ -200,6 +199,12 @@ export class MiscService {
     this.referralDoctor = null;
     this.cacheServitem = [];
     this.creditLimit = 0;
+    this.calcItems = [];
+    this.calculatedBill = [];
+    this.companyList = [];
+    this.cacheServitem = [];
+    this.cacheCreditTabdata = [];
+    this.cacheBillTabdata = [];
   }
   cacheCreditTab(data: any) {
     this.cacheCreditTabdata = data;
@@ -238,60 +243,59 @@ export class MiscService {
         }
       }
       if (iscompanyprocess) {
-      this.selectedcompanydetails = res;
-      this.selectedcorporatedetails = [];
-      this.selectedcompanydetails = [];
-      this.misccompanyChangeEvent.next({ company: res, from });
-      this.calcItems.companyId = res.value;
-      this.iomMessage =
-        "IOM Validity till : " +
-        (("iomValidity" in res.company && res.company.iomValidity != "") ||
-        res.company.iomValidity != undefined
-          ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
-          : "");
-      if (res.company.isTPA == 1) {
-        const iomcompanycorporate = this.matDialog.open(
-          IomCompanyBillingComponent,
-          {
-            width: "25%",
-            height: "28%",
-          }
-        );
+        this.selectedcompanydetails = res;
+        this.selectedcorporatedetails = [];
+        this.misccompanyChangeEvent.next({ company: res, from });
+        this.calcItems.companyId = res.value;
+        this.iomMessage =
+          "IOM Validity till : " +
+          (("iomValidity" in res.company && res.company.iomValidity != "") ||
+          res.company.iomValidity != undefined
+            ? this.datepipe.transform(res.company.iomValidity, "dd-MMM-yyyy")
+            : "");
+        if (res.company.isTPA == 1) {
+          const iomcompanycorporate = this.matDialog.open(
+            IomCompanyBillingComponent,
+            {
+              width: "25%",
+              height: "28%",
+            }
+          );
 
-        iomcompanycorporate.afterClosed().subscribe((result) => {
-          if (result.data == "corporate") {
-            this.cacheCreditTabdata.isCorporateChannel = 1;
-            this.cacheCreditTab(this.cacheCreditTabdata);
-            formGroup.controls["corporate"].enable();
-            formGroup.controls["corporate"].setValue(null);
-            this.misccorporateChangeEvent.next({ corporate: null, from });
-            this.disablecorporatedropdown = true;
-          } else {
-            this.cacheCreditTabdata.isCorporateChannel = 0;
-            this.cacheCreditTab(this.cacheCreditTabdata);
-            formGroup.controls["corporate"].setValue(null);
-            formGroup.controls["corporate"].disable();
-            this.misccorporateChangeEvent.next({
-              corporate: null,
-              from: "disable",
-            });
-          }
-        });
-      } else {
-        this.misccorporateChangeEvent.next({
-          corporate: null,
-          from: "disable",
-        });
-        // if(from == "credit"){
-        formGroup.controls["corporate"].setValue(null);
-        formGroup.controls["corporate"].disable();
-        // }
-        // else{
-        //   this.corporateChangeEvent.next({ corporate: 0, from });
-        // }
+          iomcompanycorporate.afterClosed().subscribe((result) => {
+            if (result.data == "corporate") {
+              this.cacheCreditTabdata.isCorporateChannel = 1;
+              this.cacheCreditTab(this.cacheCreditTabdata);
+              formGroup.controls["corporate"].enable();
+              formGroup.controls["corporate"].setValue(null);
+              this.misccorporateChangeEvent.next({ corporate: null, from });
+              this.disablecorporatedropdown = true;
+            } else {
+              this.cacheCreditTabdata.isCorporateChannel = 0;
+              this.cacheCreditTab(this.cacheCreditTabdata);
+              formGroup.controls["corporate"].setValue(null);
+              formGroup.controls["corporate"].disable();
+              this.misccorporateChangeEvent.next({
+                corporate: null,
+                from: "disable",
+              });
+            }
+          });
+        } else {
+          this.misccorporateChangeEvent.next({
+            corporate: null,
+            from: "disable",
+          });
+          // if(from == "credit"){
+          formGroup.controls["corporate"].setValue(null);
+          formGroup.controls["corporate"].disable();
+          // }
+          // else{
+          //   this.corporateChangeEvent.next({ corporate: 0, from });
+          // }
+        }
       }
     }
-  }
   }
   //fix for Staff company validation
   async resetCompany(res: any, formGroup: any, from: string = "header") {
@@ -312,6 +316,7 @@ export class MiscService {
     if (res === "" || res == null) {
       this.misccorporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
+      this.selectedcompanydetails = [];
     } else {
       this.selectedcorporatedetails = res;
       this.misccorporateChangeEvent.next({ corporate: res, from });

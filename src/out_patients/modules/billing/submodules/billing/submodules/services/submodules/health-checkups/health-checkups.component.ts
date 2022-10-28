@@ -391,6 +391,7 @@ export class HealthCheckupsComponent implements OnInit {
           totaltaX_RATE_VALUE:res[0].totaltaX_Value,
           saccode:res[0].saccode,
           taxgrpid:res[0].taxgrpid,
+          codeId:res[0].codeId,
         },
          gstCode:{
               tax:res[0].tax,
