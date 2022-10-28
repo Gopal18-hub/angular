@@ -674,6 +674,11 @@ export class BillDetailComponent implements OnInit {
           this.selfDoc = true;
         } else {
           this.selfDoc = false;
+          this.miscPatient.setReferralDoctor({
+            id: 0,
+            name: "",
+            specialisation: "",
+          });
         }
         this.miscPatient.cacheBillTabdata.self = this.selfDoc;
       });
@@ -1618,7 +1623,10 @@ export class BillDetailComponent implements OnInit {
         !this.miscPatient.selectedcorporatedetails.value
       ) {
         this.snackbar.open(" Please select corporate!", "error");
-      } else if (!this.miscPatient.referralDoctor && this.selfDoc === false) {
+      } else if (
+        !this.miscPatient.referralDoctor ||
+        this.miscPatient.referralDoctor.id === 0
+      ) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
         const MakeDepositDialogref = this.matDialog.open(
@@ -1639,9 +1647,12 @@ export class BillDetailComponent implements OnInit {
               this.makeBill();
             }
           });
-      }
+      } 
     } else if (Number(this.miscServBillForm.value.paymentMode) === 1) {
-      if (!this.miscPatient.referralDoctor && this.selfDoc === false) {
+      if (
+        !this.miscPatient.referralDoctor ||
+        this.miscPatient.referralDoctor.id === 0
+      ) {
         this.snackbar.open("Please select Referral Doctor", "error");
       } else {
         const MakeDepositDialogref = this.matDialog.open(
@@ -1997,12 +2008,12 @@ export class BillDetailComponent implements OnInit {
     if (!miscPatient.b2bInvoiceType) {
       miscPatient.b2bInvoiceType = "B2C";
     }
-    let refDocId = 0;
-    if (this.selfDoc === true) {
-      refDocId = 2015;
-    } else {
-      refDocId = this.miscPatient.referralDoctor.id;
-    }
+    // let refDocId = 0;
+    // if (this.selfDoc === true) {
+    //   refDocId = 2015;
+    // } else {
+    //   refDocId = this.miscPatient.referralDoctor.id;
+    // }
     this.postBillObj.dtSaveOBill_P = {
       registrationno: miscPatient.registrationno,
       iacode: miscPatient.iacode,
@@ -2021,7 +2032,7 @@ export class BillDetailComponent implements OnInit {
         Number(this.miscServBillForm.value.amtPayByPatient) -
           Number(this.miscPatient.calculatedBill.collectedAmount) || 0,
       hsplocationid: this.location,
-      refdoctorid: refDocId,
+      refdoctorid: this.miscPatient.referralDoctor.id,
       authorisedid: calcBill0.selectedAuthorise,
       serviceTax: this.txtServiceTaxAmt,
       creditLimit: this.miscServBillForm.value.credLimit,
