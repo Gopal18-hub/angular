@@ -513,6 +513,15 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.formGroup.controls["company"].disable();
                 this.formGroup.controls["corporate"].disable();
                 this.links[2].disabled = true;
+                const tpacompanyExist: any = this.companyData.find(
+                  (c: any) => c.isTPA == 18
+                );
+                if (tpacompanyExist) {
+                  this.formGroup.controls["company"].setValue({
+                    title: tpacompanyExist.name,
+                    value: tpacompanyExist.id,
+                  });
+                }
               }
               this.billingService.setPatientDetails(
                 this.patientDetails.dsPersonalDetails.dtPersonalDetails1[0]
@@ -617,6 +626,17 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.formGroup.controls["company"].setValue({
           title: companyExist.name,
           value: patientDetails.companyid,
+        });
+      }
+    }
+    if (patientDetails.corporateid) {
+      const corporateExist: any = this.coorporateList.find(
+        (c: any) => c.id == patientDetails.corporateid
+      );
+      if (corporateExist) {
+        this.formGroup.controls["corporate"].setValue({
+          title: corporateExist.name,
+          value: patientDetails.corporateid,
         });
       }
     }
