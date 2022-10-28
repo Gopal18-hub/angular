@@ -119,6 +119,9 @@ export class OrderSetComponent implements OnInit {
       price: {
         title: "Price",
         type: "currency",
+        style: {
+          width: "150px",
+        },
       },
     },
   };
