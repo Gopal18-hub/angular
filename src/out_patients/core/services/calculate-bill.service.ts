@@ -51,7 +51,7 @@ export class CalculateBillService {
     public matDialog: MatDialog,
     private http: HttpService,
     public cookie: CookieService,
-    public messageDialogService: MessageDialogService
+    public messageDialogService: MessageDialogService,  
   ) {}
 
   setCompanyNonCreditItems(items: any) {
@@ -614,8 +614,8 @@ export class CalculateBillService {
   //#endregion
 
   //#region TaxableBill
-  dsTaxCode:any={};
-  async checkTaxableBill() {
+  dsTaxCode:any={}; 
+  async checkTaxableBill():Promise<boolean> {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
     let Countindx=0;
@@ -639,7 +639,7 @@ export class CalculateBillService {
 
         if(item.gstCode.tax > 0){
           taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;
+          GSTTaxPer = item.gstCode.tax;         
           STax= STax+1;
         }
         else{
@@ -711,7 +711,7 @@ export class CalculateBillService {
          
         if(item.gstCode.tax > 0){
           taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;
+          GSTTaxPer = item.gstCode.tax;         
           STax= STax+1;
         }
         else{
@@ -766,7 +766,7 @@ export class CalculateBillService {
          
         if(item.gstCode.tax > 0){
           taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;
+          GSTTaxPer = item.gstCode.tax;         
           STax= STax+1;
         }
         else{
@@ -1031,23 +1031,30 @@ export class CalculateBillService {
       });
     }
     Countindx = 0;
+    citem = 0;
+    ncitem = 0;
+    STax = 0;
+    SNonTax = 0;
     if(TaxNontaxFlag && !CosmeticFlag){
       const infoRef = this.messageDialogService
       .info("Kindly Prepare Separate Bill For Taxable and Non Taxable services "
            + strErrormsg);
       await infoRef.afterClosed().toPromise();
+      TaxNontaxFlag = false;  
+      CosmeticFlag = false; 
+      return false;
     }
     if(CosmeticFlag){
        const infoRef = this.messageDialogService
       .info("Kindly Prepare Separate Bill For Cosmetic services");
       await infoRef.afterClosed().toPromise();
+      TaxNontaxFlag = false;  
+      CosmeticFlag = false;
+      return false;
     }
-    citem = 0;
-    ncitem = 0;
-    STax = 0;
-    SNonTax = 0;
+    TaxNontaxFlag = false;  
     CosmeticFlag = false;
-    TaxNontaxFlag = false;    
+    return true;
   }
 
   async getServiceTypeByCode(codeId = 1356): Promise<Number> {
@@ -1062,9 +1069,9 @@ export class CalculateBillService {
       }
     }
     return cstype;
-  }
+  } 
 
+ 
   //#endregion TaxableBill
-
-
+ 
 }

@@ -531,10 +531,11 @@ export class OderInvestigationsComponent implements OnInit {
           },
           docRequired: this.formGroup.value.investigation.docRequired,
         });
-        this.opOrderRequestService.docRequiredStatusvalue();
-        this.opOrderRequestService.calculateTotalAmount();
+
         console.log(this.opOrderRequestService.investigationItems);
         this.data = [...this.opOrderRequestService.investigationItems];
+        this.opOrderRequestService.docRequiredStatusvalue();
+        this.opOrderRequestService.calculateTotalAmount();
         console.log(this.data);
         this.formGroup.reset();
       });
