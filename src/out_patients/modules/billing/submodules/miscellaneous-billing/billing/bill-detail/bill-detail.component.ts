@@ -251,7 +251,7 @@ export class BillDetailComponent implements OnInit {
       },
       //16
       dipositAmt: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
