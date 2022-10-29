@@ -74,7 +74,7 @@ export class RefundDialogComponent implements OnInit {
 
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any =  Number(this.cookie.get("UserId"));
+  operatorID:any = Number(this.cookie.get("UserId"));
 
 
   SendOTP:string="Send OTP";
@@ -180,11 +180,14 @@ export class RefundDialogComponent implements OnInit {
        {
           this.PaymentType = 2;
           this.PaymentTypedepositamount = Number( this.RefundcashMode.chequeamount);
-          if(this.RefundcashMode.chequeno == "" || this.RefundcashMode.chequebankname == "" || this.RefundcashMode.chequebranchname == ""){
+          if(this.RefundcashMode.chequeno == "" || this.RefundcashMode.chequeno == null
+          || this.RefundcashMode.chequebankname == ""  || this.RefundcashMode.chequebankname == null
+          || this.RefundcashMode.chequebranchname == "" || this.RefundcashMode.chequebranchname == null
+          || this.RefundcashMode.chequeissuedate == ""  || this.RefundcashMode.chequeissuedate == null
+          || this.RefundcashMode.chequeauth == "" || this.RefundcashMode.chequeauth == null){
             this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
             this.validationexists = true;
-          }
-         
+          }         
        }
       if(this.PaymentTypedepositamount == 0){
         this.messageDialogService.error("Refund Amount must not be Zero or Negative number");

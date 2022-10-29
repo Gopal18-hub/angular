@@ -51,7 +51,7 @@ export class CalculateBillService {
     public matDialog: MatDialog,
     private http: HttpService,
     public cookie: CookieService,
-    public messageDialogService: MessageDialogService,  
+    public messageDialogService: MessageDialogService
   ) {}
 
   setCompanyNonCreditItems(items: any) {
@@ -273,12 +273,22 @@ export class CalculateBillService {
     } else {
       data = {
         discounttypes: [
-          { title: "On Bill", value: "On-Bill" },
-          { title: "On Service", value: "On-Service" },
-          { title: "On Item", value: "On-Item" },
-          { title: "On Patient", value: "On-Patient" },
-          { title: "On Company", value: "On-Company" },
-          { title: "On Campaign", value: "On-Campaign" },
+          { title: "On Bill", value: "On-Bill", disabled: false },
+          { title: "On Service", value: "On-Service", disabled: false },
+          { title: "On Item", value: "On-Item", disabled: false },
+          {
+            title: "On Patient",
+            value: "On-Patient",
+            disabled:
+              parseFloat(formGroup.value.amtPayByPatient) > 0 ? false : true,
+          },
+          {
+            title: "On Company",
+            value: "On-Company",
+            disabled:
+              parseFloat(formGroup.value.amtPayByComp) > 0 ? false : true,
+          },
+          { title: "On Campaign", value: "On-Campaign", disabled: false },
         ],
       };
     }
@@ -288,14 +298,13 @@ export class CalculateBillService {
       height: "68vh",
       data: data,
     });
-    discountReasonPopup.afterClosed().subscribe((res:any) => {
+    discountReasonPopup.afterClosed().subscribe((res: any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
         this.processDiscountLogics(formGroup, componentRef, from);
-      }
-      else{
-         formGroup.controls["discAmtCheck"].setValue(false, {
-        emitEvent: false,
-      });
+      } else {
+        formGroup.controls["discAmtCheck"].setValue(false, {
+          emitEvent: false,
+        });
       }
     });
   }
@@ -418,7 +427,7 @@ export class CalculateBillService {
 
         CouponConfirmationRef.afterClosed()
           .pipe(takeUntil(this._destroying$))
-          .subscribe(async (result:any) => {
+          .subscribe(async (result: any) => {
             if ("type" in result) {
               if (result.type == "yes") {
                 this.discountSelectedItems = this.processDiscount(res);
@@ -614,274 +623,254 @@ export class CalculateBillService {
   //#endregion
 
   //#region TaxableBill
-  dsTaxCode:any={}; 
-  async checkTaxableBill():Promise<boolean> {
+  dsTaxCode: any = {};
+  async checkTaxableBill(): Promise<boolean> {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
-    let Countindx=0;
-    let taxapplicable=false;
-    let GSTTaxPer =0;
-    let STax=0;
-    let SNonTax=0;
-    let citem=0;
-    let ncitem=0;
-    let cosflag=false;
-    let TaxNontaxFlag=false;
+    let Countindx = 0;
+    let taxapplicable = false;
+    let GSTTaxPer = 0;
+    let STax = 0;
+    let SNonTax = 0;
+    let citem = 0;
+    let ncitem = 0;
+    let cosflag = false;
+    let TaxNontaxFlag = false;
     let CosmeticFlag = false;
-    let HomeCareFlag= false;
-    let SACCode="";
-    let BillFlag_ForGST= false;
-    let flg=0;
-    let strErrormsg="";
+    let HomeCareFlag = false;
+    let SACCode = "";
+    let BillFlag_ForGST = false;
+    let flg = 0;
+    let strErrormsg = "";
     if (this.billingServiceRef.ProcedureItems.length > 0) {
       this.billingServiceRef.ProcedureItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
     }
     Countindx = 0;
-    if(this.billingServiceRef.consultationItems.length > 0){
-       this.billingServiceRef.consultationItems.forEach((item: any) => {
-        countProc= countProc+1;
-         
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+    if (this.billingServiceRef.consultationItems.length > 0) {
+      this.billingServiceRef.consultationItems.forEach((item: any) => {
+        countProc = countProc + 1;
+
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-         if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
           this.dsTaxCode = item.gstDetail;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.serviceName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.serviceName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.serviceName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.serviceName + ",";
           }
         }
         Countindx = Countindx + 1;
-       });  
+      });
     }
     Countindx = 0;
-    if(this.billingServiceRef.HealthCheckupItems.length > 0){
-       this.billingServiceRef.HealthCheckupItems.forEach((item: any) => {
-        countProc= countProc+1;
-         
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+    if (this.billingServiceRef.HealthCheckupItems.length > 0) {
+      this.billingServiceRef.HealthCheckupItems.forEach((item: any) => {
+        countProc = countProc + 1;
+
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-         if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
           this.dsTaxCode = item.gstDetail;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
         Countindx = Countindx + 1;
-       });  
+      });
     }
     Countindx = 0;
     if (this.billingServiceRef.InvestigationItems.length > 0) {
       this.billingServiceRef.InvestigationItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
           GSTTaxPer = item.gstCode.tax;
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
@@ -889,71 +878,65 @@ export class CalculateBillService {
     Countindx = 0;
     if (this.billingServiceRef.OrderSetItems.length > 0) {
       this.billingServiceRef.OrderSetItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
           GSTTaxPer = item.gstCode.tax;
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
@@ -986,15 +969,15 @@ export class CalculateBillService {
     //       TaxNontaxFlag = true;
     //       if(item.billItem.serviceId == 83){
     //         CosmeticFlag = true;
-    //       }          
+    //       }
     //     }
 
-    //     if(citem >0 && ncitem > 0){ 
+    //     if(citem >0 && ncitem > 0){
     //       cosflag = true;
     //       TaxNontaxFlag = true;
     //       if(item.billItem.serviceId == 83){
     //         CosmeticFlag = true;
-    //       }           
+    //       }
     //     }
 
     //     if(SACCode == ""){
@@ -1035,24 +1018,26 @@ export class CalculateBillService {
     ncitem = 0;
     STax = 0;
     SNonTax = 0;
-    if(TaxNontaxFlag && !CosmeticFlag){
-      const infoRef = this.messageDialogService
-      .info("Kindly Prepare Separate Bill For Taxable and Non Taxable services "
-           + strErrormsg);
+    if (TaxNontaxFlag && !CosmeticFlag) {
+      const infoRef = this.messageDialogService.info(
+        "Kindly Prepare Separate Bill For Taxable and Non Taxable services " +
+          strErrormsg
+      );
       await infoRef.afterClosed().toPromise();
-      TaxNontaxFlag = false;  
-      CosmeticFlag = false; 
-      return false;
-    }
-    if(CosmeticFlag){
-       const infoRef = this.messageDialogService
-      .info("Kindly Prepare Separate Bill For Cosmetic services");
-      await infoRef.afterClosed().toPromise();
-      TaxNontaxFlag = false;  
+      TaxNontaxFlag = false;
       CosmeticFlag = false;
       return false;
     }
-    TaxNontaxFlag = false;  
+    if (CosmeticFlag) {
+      const infoRef = this.messageDialogService.info(
+        "Kindly Prepare Separate Bill For Cosmetic services"
+      );
+      await infoRef.afterClosed().toPromise();
+      TaxNontaxFlag = false;
+      CosmeticFlag = false;
+      return false;
+    }
+    TaxNontaxFlag = false;
     CosmeticFlag = false;
     return true;
   }
@@ -1069,9 +1054,7 @@ export class CalculateBillService {
       }
     }
     return cstype;
-  } 
+  }
 
- 
   //#endregion TaxableBill
- 
 }

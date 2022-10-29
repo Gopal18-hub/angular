@@ -34,6 +34,7 @@ export class OderInvestigationsComponent implements OnInit {
   formGroup!: FormGroup;
   questions: any;
   investigationList: any = [];
+  invReferenceList: any = [];
   reqItemDetail: string = "";
   variable = true;
   saveResponsedata: any;
@@ -267,6 +268,16 @@ export class OderInvestigationsComponent implements OnInit {
     this.formGroup.controls["investigation"].valueChanges
       .pipe(
         filter((res) => {
+          if (res == null) {
+            // if (this.invReferenceList) {
+            this.formGroup.controls["investigation"].reset();
+            console.log(this.invReferenceList);
+            this.questions[1].options = this.invReferenceList.map((a: any) => {
+              return { title: a.name, value: a.id };
+            });
+            this.questions[1] = { ...this.questions[1] };
+          }
+          //  }
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
@@ -279,6 +290,7 @@ export class OderInvestigationsComponent implements OnInit {
           ) {
             return of([]);
           } else {
+            console.log(value);
             return this.http
               .get(
                 BillingApiConstants.getinvestigationSearch(
@@ -292,6 +304,7 @@ export class OderInvestigationsComponent implements OnInit {
         })
       )
       .subscribe((data: any) => {
+        console.log(data);
         if (data.length > 0) {
           this.questions[1].options = data.map((r: any) => {
             return {
@@ -309,13 +322,15 @@ export class OderInvestigationsComponent implements OnInit {
           });
           this.questions[1] = { ...this.questions[1] };
           console.log(this.questions[1]);
-          console.log(this.formGroup.value.investigation.docRequired);
+          //  console.log(this.formGroup.value.investigation.docRequired);
           console.log(this.formGroup.controls["investigation"].value);
         }
       });
     this.formGroup.controls["serviceType"].valueChanges.subscribe(
       (val: any) => {
+        console.log(val);
         if (val) {
+          this.formGroup.controls["investigation"].reset();
           this.getInvestigations(val);
         }
       }
@@ -388,9 +403,7 @@ export class OderInvestigationsComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.investigationList = res;
-        this.investigationList.forEach((item: any) => {
-          item.name = item.name.trim();
-        });
+        this.invReferenceList = res;
         this.formGroup.controls["investigation"].reset();
         this.questions[1].options = this.investigationList.map((r: any) => {
           return {

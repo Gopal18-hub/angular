@@ -297,6 +297,11 @@
                   [disabled]="!data.length || billNo != ''"
                   (click)="makeBill()"
                   type="button"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="62"
+                    actionId="146"
                 >
                   Make Bill
                 </button>
@@ -322,6 +327,11 @@
                   [disabled]="!data.length || !billNo"
                   (click)="makePrint()"
                   type="button"
+                    accessControl
+                    masterModule = "2"
+                    moduleId="7"
+                    featureId="62"
+                    actionId="147"
                 >
                   Print Bill&nbsp;
                 </button>

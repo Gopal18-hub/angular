@@ -208,7 +208,6 @@ export class OrderProcedureOtherComponent implements OnInit {
             return this.http
               .get(
                 BillingApiConstants.getotherservicebillingSearch(
-                  // 67,
                   this.locationid,
                   // Number(this.cookie.get("HSPLocationId")),
                   value
