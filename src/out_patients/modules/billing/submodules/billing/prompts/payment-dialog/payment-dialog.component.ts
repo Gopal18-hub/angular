@@ -73,6 +73,7 @@ export class BillPaymentDialogComponent implements OnInit {
       : 0.0, // //GAV-530 Paid Online appointment
     isonlinepaidappointment: this.data.isonlinepaidappointment, // //GAV-530 Paid Online appointment
     paidAppointments: this.billingService.PaidAppointments, // //GAV-530 Paid Online appointment
+    formData: this.data.formData,
   };
   duelabel: any;
   billamount: any = 0;
