@@ -1425,18 +1425,32 @@ export class BillDetailComponent implements OnInit {
         this.serviceselectedList.forEach((e: any) => {
           discountRow.forEach((d: any) => {
             if (Number(d.discTypeId) == 1) {
-              e.Disc = 0;
-              e.DiscAmount = "0.00";
-              e.TotalAmount = (Number(e.PriceNo) * Number(e.Qty)).toFixed(2);
-              e.discType = 0;
-              e.reason = 0;
+              if (
+                discountRow.length == 1 &&
+                [1].includes(discountRow[0].discTypeId)
+              ) {
+                const discItem = discountRow[0];
+                this.serviceselectedList.forEach((item: any) => {
+                  item.Disc = Number(discItem.disc);
+                  item.DiscAmount =
+                    (item.PriceNo * item.Qty * discItem.disc) / 100; //Number(d.discAmt).toFixed(2);
+                  item.TotalAmount = item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
+                  item.discType = discountRow[0].discTypeId;
+                  item.reason = Number(discItem.reason);
+                });
+              }
             } else if (Number(d.discTypeId) == 2) {
-              if (e.ServiceType === d.service) {
-                e.Disc = Number(d.disc);
-                e.DiscAmount = Number(d.discAmt).toFixed(2);
-                e.TotalAmount = Number(d.totalAmt).toFixed(2);
-                e.discType = Number(d.discTypeId);
-                e.reason = Number(d.reason);
+              const items = this.serviceselectedList.filter(
+                (l: any) => l.ServiceType == d.service
+              );
+              if (items) {
+                items.forEach((item: any) => {
+                  item.Disc = Number(d.disc);
+                  item.DiscAmount = (item.PriceNo * item.Qty * d.disc) / 100; //Number(d.discAmt).toFixed(2);
+                  item.TotalAmount = item.PriceNo * item.Qty - item.DiscAmount; //Number(d.totalAmt).toFixed(2);
+                  item.discType = Number(d.discTypeId);
+                  item.reason = Number(d.reason);
+                });
               }
             } else if (Number(d.discTypeId) == 3) {
               if (e.ItemDescription == d.doctor) {
@@ -1647,7 +1661,7 @@ export class BillDetailComponent implements OnInit {
               this.makeBill();
             }
           });
-      } 
+      }
     } else if (Number(this.miscServBillForm.value.paymentMode) === 1) {
       if (
         !this.miscPatient.referralDoctor ||
