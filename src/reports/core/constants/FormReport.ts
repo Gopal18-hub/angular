@@ -204,7 +204,7 @@ export namespace FormReport {
         },
         {
           label: "Excel",
-          type: "",
+          type: "export",
         },
         {
           label: "Clear",
@@ -261,6 +261,7 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
         },
         {
           label: "Clear",
@@ -754,6 +755,7 @@ export namespace FormReport {
       },
       {
         title: "Export",
+        type: "export",
       },
     ],
   };
@@ -818,6 +820,7 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
         },
         {
           label: "Clear",
@@ -882,6 +885,7 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
         },
         {
           label: "Clear",

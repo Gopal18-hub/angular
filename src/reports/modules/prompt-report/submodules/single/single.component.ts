@@ -87,6 +87,7 @@ export class SingleComponent implements OnInit, OnChanges {
           }
         }
       }
+    } else if (button.type == "export") {
     } else if (button.type == "crystalReport") {
       console.log("crystal report if");
       for (var i = 0; i < this.questions.length; i++) {
