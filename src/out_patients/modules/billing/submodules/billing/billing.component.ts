@@ -771,6 +771,12 @@ export class BillingComponent implements OnInit, OnDestroy {
                        mobileno:doctors[i].mobileno,
                      });
                     }
+                    else  if (doctors[i].paymentStatus == "No"){
+                      this.billingService.setPaidAppointments({
+                         paymentstatus:doctors[i].paymentStatus,
+                      })
+                    }
+
                     
                       this.billingService.procesConsultationAdd(
                         57,

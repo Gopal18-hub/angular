@@ -366,6 +366,9 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billingservice.calculateBill(this.formGroup, this.question);
       this.data = this.billingservice.billItems;
       this.billTypeChange(this.formGroup.value.paymentMode);
+      if(this.billingservice.PaidAppointments){        
+        this.formGroup.controls["self"].setValue(true);
+      }
       this.billingservice.clearAllItems.subscribe((clearItems:any) => {
         if (clearItems) {
           this.data = [];
@@ -896,13 +899,15 @@ export class BillComponent implements OnInit, OnDestroy {
     //GAV-530 Paid Online Appointment
     let amount = 0;
     if(this.billingservice.PaidAppointments){
-       if(this.billingservice.PaidAppointments.onlinepaidamount 
+      if(this.billingservice.PaidAppointments.paymentStatus == "Yes"){
+        if(this.billingservice.PaidAppointments.onlinepaidamount 
             >  this.billingservice.totalCost){
           amount = this.billingservice.totalCost;
-      }
-      else{
-        amount = this.billingservice.PaidAppointments.onlinepaidamount;
-      }
+        }
+        else{
+          amount = this.billingservice.PaidAppointments.onlinepaidamount;
+        }
+      }       
     }
     
     var RefundDialog;
