@@ -92,6 +92,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
       let formResult: any = this.formService.createForm(form.properties, {});
       this.paymentForm[method] = formResult.form;
       this.questions[method] = formResult.questions;
+      if(this.config.formData){
+        this.paymentForm[method].patchValue(this.config.formData[method]);
+      }
       if (index == 0) {
         // //GAV-530 Paid Online appointment
         if(this.isOnlinePaidAppointment){
@@ -190,4 +193,9 @@ export class BillingPaymentMethodsComponent implements OnInit {
   PaymentMethodvalidation() {}
 
   ngAfterViewInit(): void {}
+
+  clearTabForm(tab:any){
+    console.log(tab);
+    this.paymentForm[tab.key].reset();
+  }
 }

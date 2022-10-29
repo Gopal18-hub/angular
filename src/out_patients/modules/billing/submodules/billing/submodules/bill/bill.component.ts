@@ -950,6 +950,7 @@ export class BillComponent implements OnInit, OnDestroy {
           amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
           paymentmethods: ["onlinepayment"],
           isonlinepaidappointment: true,
+          FormData:{onlinepayment:{}},
         },
       });
     } // //GAV-530 Paid Online appointment
