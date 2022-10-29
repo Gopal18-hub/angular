@@ -930,16 +930,26 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
       parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
+    //GAV-530 Paid Online Appointment
+    let amount = 0;
+    if(this.billingservice.PaidAppointments){
+       if(this.billingservice.PaidAppointments.onlinepaidamount 
+            >  this.billingservice.totalCost){
+          amount = this.billingservice.totalCost;
+      }
+      else{
+        amount = this.billingservice.PaidAppointments.onlinepaidamount;
+      }
+    }
+    
     var RefundDialog;
     // //GAV-530 Paid Online appointment
-    if (ispaid) {
+    if (ispaid) {     
       RefundDialog = this.matDialog.open(BillPaymentDialogComponent, {
         width: "70vw",
         height: "99vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
-          onlinePaidAmount:
-            this.billingservice.PaidAppointments.onlinepaidamount,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
@@ -949,8 +959,15 @@ export class BillComponent implements OnInit, OnDestroy {
           toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
           amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
           paymentmethods: ["onlinepayment"],
-          isonlinepaidappointment: true,
-          FormData:{onlinepayment:{}},
+          isonlinepaidappointment:true,
+          formData:{
+            onlinepayment:{
+              price: amount,
+              transactionId: this.billingservice.PaidAppointments.transactionid,
+              bookingId: this.billingservice.PaidAppointments.bookingid,
+              cardValidation: "yes",
+              onlineContact: this.billingservice.PaidAppointments.mobileno,
+          }},
         },
       });
     } // //GAV-530 Paid Online appointment
@@ -960,9 +977,6 @@ export class BillComponent implements OnInit, OnDestroy {
         height: "99vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
-          onlinePaidAmount:  (this.billingservice.PaidAppointments)
-                              ? this.billingservice.PaidAppointments.onlinepaidamount
-                              :0,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
@@ -971,7 +985,15 @@ export class BillComponent implements OnInit, OnDestroy {
           settlementAmountReceived: 0,
           toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
           amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
-          isonlinepaidappointment: (this.billingservice.PaidAppointments)?true:false,
+           isonlinepaidappointment:false,
+          formData:{
+            onlinepayment:{
+              price: amount,
+              transactionId: this.billingservice.PaidAppointments.transactionid || "",
+              bookingId: this.billingservice.PaidAppointments.bookingid||"",
+              cardValidation: "yes",
+              onlineContact: this.billingservice.PaidAppointments.mobileno||"",
+          }},
         },
       });
     }
@@ -1023,13 +1045,10 @@ export class BillComponent implements OnInit, OnDestroy {
                 Number(this.cookie.get("HSPLocationId"))
               )
             ) {
-              const dialogref = this.matDialog.open(
-                OpPrescriptionDialogComponent,
-                {
-                  width: "30vw",
-                  height: "35vh",
-                }
-              );
+              const dialogref =  this.messageDialogService.confirm(
+                          "",
+                          `Do you want Print Blank Op Prescription?`
+                        );
               dialogref.afterClosed().subscribe((res: any) => {
                 if (res == "yes") {
                   this.reportService.openWindow(
