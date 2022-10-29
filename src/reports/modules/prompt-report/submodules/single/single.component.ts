@@ -6,7 +6,7 @@ import { HttpService } from "@shared/services/http.service";
 import { Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
 import { environment } from "@environments/environment";
-import { CrystalReport } from "@core/constants/CrystalReport";
+import { CrystalReport } from "../../../../core/constants/CrystalReport";
 
 @Component({
   selector: "reports-single",
