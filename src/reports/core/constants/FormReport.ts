@@ -356,6 +356,9 @@ export namespace FormReport {
       type: "object",
       format: "YYYY/MM/dd",
       properties: {
+        specilizationName: {
+          type: "hiden",
+        },
         Cmb_Special: {
           type: "autocomplete",
           placeholder: "---All Specialisation---",
@@ -368,6 +371,13 @@ export namespace FormReport {
               title: "name",
             },
           },
+          conditions: [
+            {
+              expression: "self.value",
+              controlKey: "specilizationName",
+              type: "value",
+            },
+          ],
         },
 
         datetype: {
@@ -881,6 +891,10 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
+          reportEntity: "CROPItemPriceModifiedReport",
+          fileName: "Op Item PriceModification Report.xls",
+          contenType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
