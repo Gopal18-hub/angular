@@ -357,7 +357,7 @@ export namespace FormReport {
       format: "YYYY/MM/dd",
       properties: {
         specilizationName: {
-          type: "hiden",
+          type: "hidden",
         },
         Cmb_Special: {
           type: "autocomplete",
