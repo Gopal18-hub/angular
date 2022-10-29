@@ -180,8 +180,8 @@ export class SingleComponent implements OnInit, OnChanges {
                   this.formGroup.value.cmbopenscrolltype = 0;
                 }
                 openscrolltypename = resultData.filter(
-                  (e: any) => e.id === this.formGroup.value.cmbopenscrolltype
-                )[0].name;
+                  (e: any) => e.flag === this.formGroup.value.cmbopenscrolltype
+                )[0].scrollName;
                 let user = this.formGroup.value.user;
                 let cmbopenscrolltype = this.formGroup.value.cmbopenscrolltype;
                 let datetype = this.formGroup.value.datetype;
