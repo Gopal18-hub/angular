@@ -23,11 +23,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     properties: {
       mobileno: {
         type: "number",
-        readonly: "true"
+        readonly: "true",
+        requied:"true",
       },
       email: {
         type: "string",
-        readonly: "true"
+        readonly: "true",
+        requied:"true",
       },      
       panno: {
         type: "string",
