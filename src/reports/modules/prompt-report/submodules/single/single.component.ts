@@ -1,18 +1,13 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
+import { Component, OnInit, Input, OnChanges } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { ReportService } from "@shared/services/report.service";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { HttpService } from "@shared/services/http.service";
-import { environment } from "@environments/environment";
-import { Subject, takeUntil } from "rxjs";
-import { MoreThanMonthComponent } from "../../../../../out_patients/modules/billing/submodules/dispatch-report/more-than-month/more-than-month.component";
+import { Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
+import { environment } from "@environments/environment";
+import { CrystalReport } from "../../../../core/constants/CrystalReport";
+
 @Component({
   selector: "reports-single",
   templateUrl: "./single.component.html",
@@ -45,9 +40,6 @@ export class SingleComponent implements OnInit, OnChanges {
     this.formGroup = formResult.form;
     this.questions = formResult.questions;
   }
-  ngAfterViewInit() {
-    console.log(this.formGroup);
-  }
 
   ngOnChanges(changes: any): void {
     if (changes.reportConfig.previousValue) {
@@ -68,175 +60,71 @@ export class SingleComponent implements OnInit, OnChanges {
   }
 
   buttonAction(button: any) {
-    var fromdate, todate, diff_in_days;
-    debugger;
     if (button.type == "clear") {
       this.formGroup.reset();
-      console.log("clear if");
-      for (var i = 0; i < this.questions.length; i++) {
-        console.log(this.reportConfig.filterForm);
-        if (this.questions[i].type == "date") {
-          this.formGroup.controls[this.questions[i].key].setValue(new Date());
-        } else if (this.questions[i].type == "radio") {
-          if (this.questions[i].key == "datetype") {
-            this.formGroup.controls[this.questions[i].key].setValue("0");
-          } else {
-            this.formGroup.controls[this.questions[i].key].setValue(
-              "Plan Name"
-            );
-          }
-        }
-      }
     } else if (button.type == "export") {
-    } else if (button.type == "crystalReport") {
-      console.log("crystal report if");
-      for (var i = 0; i < this.questions.length; i++) {
-        if (this.questions[i].type == "date") {
-          console.log("date type if");
-          if (this.questions[i].label.toLowerCase().includes("from date")) {
-            fromdate = this.formGroup.controls[this.questions[i].key].value;
-            console.log(fromdate);
-          }
-          if (this.questions[i].label.toLowerCase().includes("to date")) {
-            todate = this.formGroup.controls[this.questions[i].key].value;
-            console.log(todate);
-          }
-        }
-        console.log(this.reportConfig.filterForm);
-        if (this.questions[i].type == "date") {
-          console.log(this.questions[i]);
-          var temp = this.datepipe.transform(
-            this.formGroup.controls[this.questions[i].key].value,
-            this.reportConfig.filterForm.format
-          );
-          this.formGroup.controls[this.questions[i].key].setValue(temp);
-        }
-      }
-      console.log(this.formGroup);
-      console.log(fromdate);
-      console.log(todate);
-      const diffTime = Math.abs(todate - fromdate);
-      diff_in_days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      console.log(diff_in_days);
-      if (diff_in_days > 31) {
-        console.log("difference 31 if");
-        this.dialog.open(MoreThanMonthComponent, {
-          width: "30vw",
-          height: "30vh",
-        });
-        return;
-      } else if (
-        button.reportConfig.reportEntity ==
-        "DoctorSheduleReportBySpecilialisation"
+      let url = "";
+      let tempValues: any = this.formGroup.value.map((va: any) => {
+        return typeof va == "string" ? va : va.value;
+      });
+      tempValues["exportflag"] = 1;
+      if (
+        typeof CrystalReport[
+          button.reportEntity as keyof typeof CrystalReport
+        ] == "string"
       ) {
-        console.log("else if api");
-        let specilizationName;
-        this.http
-          .get(`${environment.CommonApiUrl}api/lookup/getallspecialisationname`)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((resultData: any) => {
-            console.log("specialization repoort");
-            if (resultData) {
-              if (resultData.length > 0) {
-                if (
-                  !this.formGroup.value.Cmb_Special ||
-                  this.formGroup.value.Cmb_Special == "0"
-                ) {
-                  this.formGroup.value.Cmb_Special = 0;
-                }
-                specilizationName = resultData.filter(
-                  (e: any) => e.id === this.formGroup.value.Cmb_Special
-                )[0].name;
-                let Cmb_Special = this.formGroup.value.Cmb_Special;
-                let datetype = this.formGroup.value.datetype;
-                let dtpEndDate = this.formGroup.value.dtpEndDate;
-                let dtpStartDate = this.formGroup.value.dtpStartDate;
-                this.reportService.openWindow(
-                  button.reportConfig.reportName,
-                  button.reportConfig.reportEntity,
-                  {
-                    Cmb_Special,
-                    datetype,
-                    dtpEndDate,
-                    dtpStartDate,
-                    specilizationName,
-                  }
-                );
-              }
-            }
-          });
-      } else if (button.reportConfig.reportEntity == "OpenScrollReport") {
-        let openscrolltypename;
-        this.http
-          .get(`${environment.CommonApiUrl}api/lookup/getopenscrolldata/0`)
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((resultData: any) => {
-            if (resultData) {
-              if (resultData.length > 0) {
-                console.log("scroll report else");
-                if (
-                  !this.formGroup.value.cmbopenscrolltype ||
-                  this.formGroup.value.cmbopenscrolltype == "0"
-                ) {
-                  this.formGroup.value.cmbopenscrolltype = 0;
-                }
-                openscrolltypename = resultData.filter(
-                  (e: any) => e.id === this.formGroup.value.cmbopenscrolltype
-                )[0].name;
-                let user = this.formGroup.value.user;
-                let cmbopenscrolltype = this.formGroup.value.cmbopenscrolltype;
-                let datetype = this.formGroup.value.datetype;
-                let dtpEndDate = this.formGroup.value.dtpEndDate;
-                let dtpStartDate = this.formGroup.value.dtpStartDate;
-                this.reportService.openWindow(
-                  button.reportConfig.reportName,
-                  button.reportConfig.reportEntity,
-                  {
-                    cmbopenscrolltype,
-                    datetype,
-                    dtpEndDate,
-                    dtpStartDate,
-                    openscrolltypename,
-                    user,
-                  }
-                );
-              }
-            }
-          });
-      } else if (
-        button.reportConfig.reportEntity == "HappyFamilyPlanUtilizationReport"
-      ) {
-        button.reportConfig.reportName == "HappyFamilyPlanUtilizationReport";
-        let MemberShipNo = this.formGroup.value.MemberShipNo.value;
-        console.log(MemberShipNo);
-        this.reportService.openWindow(
-          button.reportConfig.reportName,
-          button.reportConfig.reportEntity,
-          {
-            MemberShipNo,
-          }
-        );
-      } else if (
-        button.reportConfig.reportEntity == "SummaryReportForUtilisationReport"
-      ) {
-        button.reportConfig.reportName == "SummaryReportForUtilisationReport";
-        let membershipno = this.formGroup.value.membershipno.value;
-        console.log(membershipno);
-        this.reportService.openWindow(
-          button.reportConfig.reportName,
-          button.reportConfig.reportEntity,
-          {
-            membershipno,
-          }
-        );
+        url =
+          CrystalReport[
+            button.reportEntity as keyof typeof CrystalReport
+          ].toString();
       } else {
-        console.log("last else");
-        this.reportService.openWindow(
-          button.reportConfig.reportName,
-          button.reportConfig.reportEntity,
-          this.formGroup.value
+        let func: Function = <Function>(
+          CrystalReport[button.reportEntity as keyof typeof CrystalReport]
         );
+        url = func(tempValues).toString();
       }
+      this.downloadFile(url, button.fileName, button.contenType);
+    } else if (button.type == "crystalReport") {
+      this.reportService.openWindow(
+        button.reportConfig.reportName,
+        button.reportConfig.reportEntity,
+        {
+          exportflag: 0,
+          ...this.formGroup.value.map((va: any) => {
+            return typeof va == "string" ? va : va.value;
+          }),
+        }
+      );
     }
+  }
+
+  downloadFile(
+    url: string,
+    filename: string = "",
+    contenType = "application/vnd.ms-excel"
+  ) {
+    const req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "blob";
+    req.onload = function () {
+      const blob = new Blob([req.response], {
+        type: contenType,
+      });
+
+      const isIE = false || !!(<any>document).documentMode;
+      if (isIE) {
+        (<any>window).navigator.msSaveBlob(blob, filename);
+      } else {
+        const windowUrl = window.URL || (<any>window).webkitURL;
+        const href = windowUrl.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.setAttribute("download", filename);
+        a.setAttribute("href", href);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    };
+    req.send();
   }
 }

@@ -102,13 +102,12 @@ export namespace FormReport {
         },
         RepType: {
           type: "radio",
-          title: "Rep Type",
-          defaultValue: "1",
+          defaultValue: "",
           options: [
-            { title: "OP", value: "1" },
-            { title: "PreAdmission", value: "2" },
-            { title: "Emergency", value: "3" },
-            { title: "IP", value: "4" },
+            { title: "OP", value: "OP" },
+            { title: "PreAdmission", value: "PreAdmission" },
+            { title: "Emergency", value: "Emergency" },
+            { title: "IP", value: "IP" },
           ],
         },
       },
@@ -116,6 +115,7 @@ export namespace FormReport {
     form: {
       layout: {
         locationid: "w-full",
+        openScrollFor: "w-full",
       },
       actionItems: [
         {
@@ -148,14 +148,13 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "MM/dd/YYYY",
       // FromDate: moment("dd/MM/YYYY"),
       // todate: moment("dd/MM/YYYY"),
       properties: {
         FromDate: {
           type: "date",
           title: "Date",
-          // defaultValue: moment().format("MM/DD/YYYY"),
+          defaultValue: moment().format("MM/DD/YYYY"),
         },
         // todate: {
         //   type: "hidden",
@@ -166,7 +165,7 @@ export namespace FormReport {
           type: "dropdown",
           placeholder: "---Location---",
           title: "Location",
-          // questionClasses: "max-hide",
+          questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
@@ -191,7 +190,7 @@ export namespace FormReport {
     },
     form: {
       layout: {
-        locationID: "w-full",
+        locationID: "w-screen",
       },
       actionItems: [
         {
@@ -204,7 +203,7 @@ export namespace FormReport {
         },
         {
           label: "Excel",
-          type: "export",
+          type: "",
         },
         {
           label: "Clear",
@@ -221,7 +220,7 @@ export namespace FormReport {
     filterForm: {
       title: "",
       type: "object",
-      format: "YYYY/MM/dd",
+      format: "YYYY/dd/MM",
       properties: {
         ValueFromDate: {
           type: "date",
@@ -261,7 +260,6 @@ export namespace FormReport {
         },
         {
           label: "Export",
-          type: "export",
         },
         {
           label: "Clear",
@@ -358,6 +356,9 @@ export namespace FormReport {
       type: "object",
       format: "YYYY/MM/dd",
       properties: {
+        specilizationName: {
+          type: "hidden",
+        },
         Cmb_Special: {
           type: "autocomplete",
           placeholder: "---All Specialisation---",
@@ -370,6 +371,13 @@ export namespace FormReport {
               title: "name",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "specilizationName",
+              type: "value",
+            },
+          ],
         },
 
         datetype: {
@@ -755,7 +763,6 @@ export namespace FormReport {
       },
       {
         title: "Export",
-        type: "export",
       },
     ],
   };
@@ -820,7 +827,6 @@ export namespace FormReport {
         },
         {
           label: "Export",
-          type: "export",
         },
         {
           label: "Clear",
@@ -886,6 +892,9 @@ export namespace FormReport {
         {
           label: "Export",
           type: "export",
+          reportEntity: "CROPItemPriceModifiedReport",
+          fileName: "Op Item PriceModification Report.xls",
+          contenType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
