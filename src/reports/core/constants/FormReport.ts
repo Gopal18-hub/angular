@@ -373,7 +373,7 @@ export namespace FormReport {
           },
           conditions: [
             {
-              expression: "self.value",
+              expression: "self.title",
               controlKey: "specilizationName",
               type: "value",
             },
