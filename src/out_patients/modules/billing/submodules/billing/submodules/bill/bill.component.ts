@@ -959,7 +959,9 @@ export class BillComponent implements OnInit, OnDestroy {
         height: "99vh",
         data: {
           totalBillAmount: this.billingservice.totalCost,
-          onlinePaidAmount: 0,
+          onlinePaidAmount:  (this.billingservice.PaidAppointments)
+                              ? this.billingservice.PaidAppointments.onlinepaidamount
+                              :0,
           totalDiscount: this.formGroup.value.discAmt,
           totalDeposit: this.formGroup.value.dipositAmtEdit,
           totalRefund: 0,
@@ -968,7 +970,7 @@ export class BillComponent implements OnInit, OnDestroy {
           settlementAmountReceived: 0,
           toPaidAmount: parseFloat(this.formGroup.value.amtPayByPatient),
           amtPayByCompany: parseFloat(this.formGroup.value.amtPayByComp),
-          isonlinepaidappointment: false,
+          isonlinepaidappointment: (this.billingservice.PaidAppointments)?true:false,
         },
       });
     }
