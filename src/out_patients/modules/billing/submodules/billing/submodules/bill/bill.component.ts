@@ -364,6 +364,13 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
+    if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
+      let planAmount = 0;
+      this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
+        planAmount += oItem.price;
+      });
+      this.formGroup.patchValue({ planAmt: planAmount });
+    }
     this.billTypeChange(this.formGroup.value.paymentMode);
 
     // #region GAV-1053 - referal doctor as self autochck
@@ -1088,7 +1095,8 @@ export class BillComponent implements OnInit, OnDestroy {
       (this.formGroup.value.dipositAmtEdit || 0) -
       (this.formGroup.value.discAmt || 0) -
       (this.formGroup.value.amtPayByComp || 0) +
-      (parseFloat(this.formGroup.value.gstTax) || 0);
+      (parseFloat(this.formGroup.value.gstTax) || 0) -
+      (parseFloat(this.formGroup.value.planAmt) || 0);
 
     return temp.toFixed(2);
   }

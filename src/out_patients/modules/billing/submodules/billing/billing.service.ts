@@ -1172,6 +1172,59 @@ export class BillingService {
     }
   }
 
+  async processInvestigationWithOutApi(
+    priorityId: number,
+    serviceType: string,
+    investigation: any
+  ) {
+    this.addToInvestigations({
+      sno: this.InvestigationItems.length + 1,
+      investigations: investigation.title,
+      precaution:
+        investigation.precaution == "P"
+          ? '<span class="max-health-red-color">P</span>'
+          : investigation.precaution,
+      priority: priorityId,
+      priority_required: false,
+      specialisation: "",
+      doctorName: investigation.doctorid || "",
+      specialisation_required: investigation.docRequired ? true : false,
+      doctorName_required: investigation.docRequired ? true : false,
+      price: investigation.price,
+      billItem: {
+        popuptext: investigation.popuptext,
+        itemId: investigation.value,
+        priority: priorityId,
+        serviceId: serviceType || investigation.serviceid,
+        price: investigation.price,
+        serviceName: "Investigations",
+        itemName: investigation.title,
+        qty: 1,
+        precaution:
+          investigation.precaution == "P"
+            ? '<span class="max-health-red-color">P</span>'
+            : investigation.precaution,
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: investigation.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: 0,
+        doctorID: 0,
+        patient_Instructions: investigation.patient_Instructions,
+      },
+    });
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: investigation.value,
+      serviceID: serviceType || investigation.serviceid,
+      price: investigation.price,
+      willModify: false,
+    });
+  }
+
   procesConsultationAddWithOutApi(
     priorityId: number,
     specialization: any,
