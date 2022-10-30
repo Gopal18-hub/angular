@@ -74,7 +74,13 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.patientidentityform.controls["panno"].setValue(this.data.patientinfo.panno);
     }
     this.patientidentityform.controls["mobileno"].setValue(this.data.patientinfo.mobileno);
-    this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
+    if(this.data.patientinfo.emailId){
+       this.patientidentityform.controls["email"].setValue(this.data.patientinfo.emailId);
+    }
+    else{
+       this.patientidentityform.controls["email"].setValue("info@maxhealthcare.com");
+    }  
+    
     this.form60PatientInfo = this.data.patientinfo;   
 
     this.depositservice.clearAllItems.subscribe((clearItems) => {
