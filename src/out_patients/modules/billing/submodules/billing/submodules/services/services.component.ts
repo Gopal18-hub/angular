@@ -149,9 +149,9 @@ export class ServicesComponent implements OnInit {
     ) {
       ////GAV-902 Registration Charges with Health Checkup
       if (
-        BillingStaticConstants.allowService[
+        BillingStaticConstants.allowService[tab.id].includes(
           this.billingService.ProcedureItems[0].itemid
-        ].includes(tab.id)
+        )
       ) {
       } else {
         this.healthCheckupWarning();

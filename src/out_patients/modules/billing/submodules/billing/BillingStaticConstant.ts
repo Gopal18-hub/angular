@@ -125,8 +125,8 @@ export namespace BillingStaticConstants {
   };
 
   //constant to add allow items with Healthchekup/ consumables
-  //itemid:[tabid,tabid]
+  //tabid:[itemid]
   export const allowService: any = {
-    30632: [3],
+    3: [30632],
   };
 }
