@@ -166,33 +166,29 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
-  refreshDiscount() {
-    this.discountSelectedItems.forEach((disIt: any) => {
-      if ([1, 4, 5, 6].includes(disIt.discTypeId)) {
-        disIt.price = this.billingServiceRef.totalCost;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      } else if (disIt.discTypeId == 2) {
-        const serviceItem = this.serviceBasedListItems.find(
-          (sbli: any) => sbli.name == disIt.service
-        );
-        let price = 0;
-        serviceItem.items.forEach((item: any) => {
-          price += item.price * item.qty;
-        });
-        const discAmt = (price * disIt.disc) / 100;
-        disIt.price = price;
-        disIt.discAmt = discAmt;
-        disIt.totalAmt = price - discAmt;
-      } else if (disIt.discTypeId == 3) {
-        const billItem = this.billingServiceRef.billItems.find(
-          (it: any) => it.itemId == disIt.itemId
-        );
-        disIt.price = billItem.price * billItem.qty;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      }
-    });
+  refreshDiscount(formGroup: any) {
+    if (this.discountSelectedItems.length > 0) {
+      this.discountSelectedItems.forEach((disIt: any) => {
+        if ([1, 6].includes(disIt.discTypeId)) {
+          disIt.price = this.billingServiceRef.totalCost;
+          disIt.discAmt = (disIt.price * disIt.disc) / 100;
+          disIt.totalAmt = disIt.price - disIt.discAmt;
+        } else if (disIt.discTypeId == 2) {
+          const serviceItem = this.serviceBasedListItems.find(
+            (sbli: any) => sbli.name == disIt.service
+          );
+          let price = 0;
+          serviceItem.items.forEach((item: any) => {
+            price += item.price * item.qty;
+          });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        }
+      });
+      this.applyDiscount("biilTab", formGroup);
+    }
   }
 
   applyDiscount(from: string, formGroup: any) {
@@ -200,7 +196,9 @@ export class CalculateBillService {
       this.billingServiceRef.billItems.forEach((item: any) => {
         item.disc = 0;
         item.discAmount = 0;
-        item.totalAmount = item.price * item.qty;
+        const price = item.price * item.qty;
+        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+        item.totalAmount = item.price * item.qty + item.gstValue;
         item.discountType = 0;
         item.discountReason = 0;
       });
@@ -213,7 +211,9 @@ export class CalculateBillService {
         this.billingServiceRef.billItems.forEach((item: any) => {
           item.disc = discItem.disc;
           item.discAmount = (item.price * item.qty * discItem.disc) / 100;
-          item.totalAmount = item.price * item.qty - item.discAmount;
+          const itemPrice = item.price * item.qty - item.discAmount;
+          item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+          item.totalAmount = itemPrice + item.gstValue;
           item.discountType = this.discountSelectedItems[0].discTypeId;
           item.discountReason = discItem.reason;
         });
@@ -232,7 +232,9 @@ export class CalculateBillService {
             if (item) {
               item.disc = ditem.disc;
               item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-              item.totalAmount = item.price * item.qty - item.discAmount;
+              const itemPrice = item.price * item.qty - item.discAmount;
+              item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+              item.totalAmount = itemPrice + item.gstValue;
               item.discountType = 3;
               item.discountReason = ditem.reason;
             }
@@ -244,7 +246,9 @@ export class CalculateBillService {
               items.forEach((item: any) => {
                 item.disc = ditem.disc;
                 item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-                item.totalAmount = item.price * item.qty - item.discAmount;
+                const itemPrice = item.price * item.qty - item.discAmount;
+                item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+                item.totalAmount = itemPrice + item.gstValue;
                 item.discountType = 2;
                 item.discountReason = ditem.reason;
               });
