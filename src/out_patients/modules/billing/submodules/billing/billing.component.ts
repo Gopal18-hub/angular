@@ -959,7 +959,6 @@ export class BillingComponent implements OnInit, OnDestroy {
                   ) {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
-                    console.log(selectedServices);
                     selectedServices.selected.forEach((slItem: any) => {
                       if (slItem.serviceid == 25) {
                         this.billingService.procesConsultationAddWithOutApi(
@@ -974,7 +973,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                           }
                         );
                       } else if ([41, 42, 43].includes(slItem.serviceid)) {
-                        this.billingService.processInvestigationAdd(
+                        this.billingService.processInvestigationWithOutApi(
                           1,
                           slItem.serviceid,
                           {
@@ -986,6 +985,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                             item_Instructions: "",
                             serviceid: slItem.serviceid,
                             doctorid: 0,
+                            price: slItem.price,
                           }
                         );
                       }
