@@ -52,7 +52,7 @@ export class DisountReasonComponent implements OnInit {
         readonly: true,
       },
       authorise: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "-Select-",
         required: true,
       },
@@ -181,7 +181,6 @@ export class DisountReasonComponent implements OnInit {
   selectedItems: any = [];
 
   disableAdd: boolean = false;
-  disableApply: boolean = false;
 
   @ViewChild("table") tableRows: any;
 
@@ -432,7 +431,13 @@ export class DisountReasonComponent implements OnInit {
       default:
         console.log("default");
     }
-    this.discAmtForm.reset();
+    this.discAmtForm.patchValue({
+      types: null,
+      head: null,
+      reason: null,
+      percentage: null,
+      amt: null,
+    });
   }
 
   OnCampaignPrepare() {
@@ -462,7 +467,6 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.discountSelectedItems.push(temp);
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
-    this.disableApply = false;
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: true };
     });
@@ -507,7 +511,6 @@ export class DisountReasonComponent implements OnInit {
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (this.dualList.includes(5)) {
       this.disableAdd = true;
-      this.disableApply = false;
     }
     this.question[0].options = this.discounttypes.map((a: any) => {
       if (!this.disableAdd && a.value == "On-Company") {
@@ -549,7 +552,6 @@ export class DisountReasonComponent implements OnInit {
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (this.dualList.includes(4)) {
       this.disableAdd = true;
-      this.disableApply = false;
     }
     this.question[0].options = this.discounttypes.map((a: any) => {
       if (!this.disableAdd && a.value == "On-Patient") {
@@ -578,10 +580,10 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: (item.price * item.qty).toFixed(2),
-          disc: existReason.discountPer.toFixed(2),
-          discAmt: discAmt.toFixed(2),
-          totalAmt: (price - discAmt).toFixed(2),
+          price: item.price * item.qty,
+          disc: existReason.discountPer,
+          discAmt: discAmt,
+          totalAmt: price - discAmt,
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
@@ -601,7 +603,6 @@ export class DisountReasonComponent implements OnInit {
     }
 
     this.disableAdd = true;
-    this.disableApply = false;
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: true };
     });
@@ -641,7 +642,6 @@ export class DisountReasonComponent implements OnInit {
       this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     }
     this.disableAdd = true;
-    this.disableApply = false;
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: true };
     });
@@ -650,17 +650,18 @@ export class DisountReasonComponent implements OnInit {
   clear() {
     this.disableAdd = false;
     this.dualList = [];
+    this.discAmtForm.reset();
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.discAmtForm.controls["authorise"].setValue(0);
-    this.disableApply = true;
 
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: false };
     });
+    this.calculateBillService.calculateDiscount();
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
@@ -697,7 +698,6 @@ export class DisountReasonComponent implements OnInit {
 
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     this.disableAdd = true;
-    this.disableApply = false;
   }
 
   getDiscountReasonHead() {
@@ -761,8 +761,9 @@ export class DisountReasonComponent implements OnInit {
       .subscribe((data: any) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
-          return { title: a.name, value: { title: a.name, value: a.id } };
+          return { title: a.name, value: a.id };
         });
+        this.question[5] = { ...this.question[5] };
       });
   }
 }
