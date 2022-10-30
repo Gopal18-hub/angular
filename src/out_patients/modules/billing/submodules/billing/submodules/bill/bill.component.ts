@@ -910,13 +910,15 @@ export class BillComponent implements OnInit, OnDestroy {
     //GAV-530 Paid Online Appointment
     let amount = 0;
     if (this.billingservice.PaidAppointments) {
-      if (
-        this.billingservice.PaidAppointments.onlinepaidamount >
-        this.billingservice.totalCost
-      ) {
-        amount = this.billingservice.totalCost;
-      } else {
-        amount = this.billingservice.PaidAppointments.onlinepaidamount;
+      if(this.billingservice.PaidAppointments.paymentStatus == "Yes"){
+        if (
+          this.billingservice.PaidAppointments.onlinepaidamount >
+          this.billingservice.totalCost
+        ) {
+          amount = this.billingservice.totalCost;
+        } else {
+          amount = this.billingservice.PaidAppointments.onlinepaidamount;
+        }
       }
     }
 
