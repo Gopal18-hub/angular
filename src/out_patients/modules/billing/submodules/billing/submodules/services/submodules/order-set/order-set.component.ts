@@ -187,6 +187,7 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
           res.$event.value;
