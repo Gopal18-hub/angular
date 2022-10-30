@@ -96,7 +96,7 @@ export class ConsumablesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
-    this.billingService.clearAllItems.subscribe((clearItems:any) => {
+    this.billingService.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -114,17 +114,20 @@ export class ConsumablesComponent implements OnInit {
           procedureDataForConsumable: res.element.procedureDataForConsumable,
         },
       });
-      dialogConst.afterClosed().subscribe((result:any) => {
+      dialogConst.afterClosed().subscribe((result: any) => {
         if ("data" in result) {
           let tempAmount = 0;
           result.data.forEach((selectedItem: any) => {
             tempAmount += selectedItem.amount;
           });
           this.billingService.ConsumableItems[res.index].totalAmount =
+            this.billingService.ConsumableItems[res.index].totalAmount -
             tempAmount;
           this.billingService.ConsumableItems[res.index].billItem.totalAmount =
-            tempAmount;
+            this.billingService.ConsumableItems[res.index].billItem
+              .totalAmount - tempAmount;
           this.billingService.ConsumableItems[res.index].billItem.price =
+            this.billingService.ConsumableItems[res.index].billItem.price -
             tempAmount;
           this.data = [...this.billingService.ConsumableItems];
           this.billingService.calculateTotalAmount();
@@ -145,7 +148,7 @@ export class ConsumablesComponent implements OnInit {
         )
       )
       .subscribe(
-        (res:any) => {
+        (res: any) => {
           let data: any = [];
           res.consumableServiceHeadData.forEach((head: any, index: number) => {
             this.billingService.addToConsumables({
@@ -179,46 +182,46 @@ export class ConsumablesComponent implements OnInit {
                 specialisationID: 0,
                 doctorID: 0,
               },
-        //       gstDetail:{
-        //   gsT_value:head.totaltaX_Value,
-        //   gsT_percent:head.totaltaX_RATE,
-        //   cgsT_Value:head.cgsT_Value,
-        //   cgsT_Percent:head.cgst,
-        //   sgsT_value:head.sgsT_Value,
-        //   sgsT_percent:head.sgst,
-        //   utgsT_value:head.utgsT_Value,
-        //   utgsT_percent:head.utgst,
-        //   igsT_Value:head.igsT_Value,
-        //   igsT_percent:head.igst,
-        //   cesS_value:head.cesS_Value,
-        //   cesS_percent:head.cess,
-        //   taxratE1_Value:head.taxratE1_Value,
-        //   taxratE1_Percent:head.taxratE1,
-        //   taxratE2_Value:head.taxratE2_Value,
-        //   taxratE2_Percent:head.taxratE2,
-        //   taxratE3_Value:head.taxratE3_Value,
-        //   taxratE3_Percent:head.taxratE3,
-        //   taxratE4_Value:head.taxratE4_Value,
-        //   taxratE4_Percent:head.taxratE4,
-        //   taxratE5_Value:head.taxratE5_Value,
-        //   taxratE5_Percent:head.taxratE5,
-        //   totaltaX_RATE:head.totaltaX_RATE,
-        //   totaltaX_RATE_VALUE:head.totaltaX_Value,
-        //   saccode:head.saccode,
-        //   taxgrpid:head.taxgrpid,
-        //   codeId:head.codeId,
-        // },
-        //  gstCode:{
-        //       tax:head.tax,
-        //       taxType:head.taxType,
-        //       codeId:head.codeId,
-        //       code:head.code,
-        //     }
+              //       gstDetail:{
+              //   gsT_value:head.totaltaX_Value,
+              //   gsT_percent:head.totaltaX_RATE,
+              //   cgsT_Value:head.cgsT_Value,
+              //   cgsT_Percent:head.cgst,
+              //   sgsT_value:head.sgsT_Value,
+              //   sgsT_percent:head.sgst,
+              //   utgsT_value:head.utgsT_Value,
+              //   utgsT_percent:head.utgst,
+              //   igsT_Value:head.igsT_Value,
+              //   igsT_percent:head.igst,
+              //   cesS_value:head.cesS_Value,
+              //   cesS_percent:head.cess,
+              //   taxratE1_Value:head.taxratE1_Value,
+              //   taxratE1_Percent:head.taxratE1,
+              //   taxratE2_Value:head.taxratE2_Value,
+              //   taxratE2_Percent:head.taxratE2,
+              //   taxratE3_Value:head.taxratE3_Value,
+              //   taxratE3_Percent:head.taxratE3,
+              //   taxratE4_Value:head.taxratE4_Value,
+              //   taxratE4_Percent:head.taxratE4,
+              //   taxratE5_Value:head.taxratE5_Value,
+              //   taxratE5_Percent:head.taxratE5,
+              //   totaltaX_RATE:head.totaltaX_RATE,
+              //   totaltaX_RATE_VALUE:head.totaltaX_Value,
+              //   saccode:head.saccode,
+              //   taxgrpid:head.taxgrpid,
+              //   codeId:head.codeId,
+              // },
+              //  gstCode:{
+              //       tax:head.tax,
+              //       taxType:head.taxType,
+              //       codeId:head.codeId,
+              //       code:head.code,
+              //     }
             });
           });
           this.data = [...this.billingService.ConsumableItems];
         },
-        (error:any) => {}
+        (error: any) => {}
       );
   }
 
