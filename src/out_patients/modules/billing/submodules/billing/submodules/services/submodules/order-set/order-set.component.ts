@@ -331,7 +331,7 @@ export class OrderSetComponent implements OnInit {
             doctorName: "",
             specialization_required: true,
             doctorName_required: true,
-            price: resItem.returnOutPut + resItem.totaltaX_Value,
+            price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.items[index],

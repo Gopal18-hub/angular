@@ -23,7 +23,7 @@ export class GstTaxComponent implements OnInit {
       },
       percentage: {
         title: 'Percentage',
-        type: 'input',
+        type: 'string',
       },
       value: {
         title: 'Value',
