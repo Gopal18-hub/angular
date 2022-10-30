@@ -496,7 +496,7 @@ export class BillComponent implements OnInit, OnDestroy {
   async billTypeChange(value: any) {
     if (value == 1) {
       this.data = this.data.map((dItem: any) => {
-        dItem.cash = dItem.totalAmount;
+        dItem.cash = dItem.price * dItem.qty;
         dItem.credit = 0;
         return dItem;
       });
@@ -509,11 +509,11 @@ export class BillComponent implements OnInit, OnDestroy {
       );
       this.data = this.data.map((dItem: any) => {
         if (exceptions.includes(dItem.itemId)) {
-          dItem.cash = dItem.totalAmount;
+          dItem.cash = dItem.price * dItem.qty;
           dItem.credit = 0;
         } else {
           dItem.cash = 0;
-          dItem.credit = dItem.totalAmount;
+          dItem.credit = dItem.price * dItem.qty;
         }
 
         return dItem;

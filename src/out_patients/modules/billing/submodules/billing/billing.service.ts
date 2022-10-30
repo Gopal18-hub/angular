@@ -151,19 +151,19 @@ export class BillingService {
   calculateTotalAmount() {
     this.totalCost = 0;
     this.consultationItems.forEach((item: any) => {
-      this.totalCost += item.price;
+      this.totalCost += item.totalAmount;
     });
     this.InvestigationItems.forEach((item: any) => {
-      this.totalCost += item.price;
+      this.totalCost += item.totalAmount;
     });
     this.ProcedureItems.forEach((item: any) => {
-      this.totalCost += item.price;
+      this.totalCost += item.totalAmount;
     });
     this.OrderSetItems.forEach((item: any) => {
-      this.totalCost += item.price;
+      this.totalCost += item.totalAmount;
     });
     this.HealthCheckupItems.forEach((item: any) => {
-      this.totalCost += item.price;
+      this.totalCost += item.totalAmount;
     });
     this.ConsumableItems.forEach((item: any) => {
       this.totalCost += item.totalAmount;
