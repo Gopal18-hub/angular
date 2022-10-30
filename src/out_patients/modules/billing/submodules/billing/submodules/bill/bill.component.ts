@@ -960,12 +960,16 @@ export class BillComponent implements OnInit, OnDestroy {
           formData: {
             onlinepayment: {
               price: amount,
-              transactionId:
-                this.billingservice.PaidAppointments.transactionid || "",
-              bookingId: this.billingservice.PaidAppointments.bookingid || "",
+              transactionId: this.billingservice.PaidAppointments
+                ? this.billingservice.PaidAppointments.transactionid
+                : "",
+              bookingId: this.billingservice.PaidAppointments
+                ? this.billingservice.PaidAppointments.bookingid
+                : "",
               cardValidation: "yes",
-              onlineContact:
-                this.billingservice.PaidAppointments.mobileno || "",
+              onlineContact: this.billingservice.PaidAppointments
+                ? this.billingservice.PaidAppointments.mobileno
+                : "",
             },
           },
         },
