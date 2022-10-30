@@ -365,6 +365,15 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
     this.billTypeChange(this.formGroup.value.paymentMode);
+
+    // #region GAV-1053 - referal doctor as self autochck
+
+    if (this.billingservice.PaidAppointments) {
+      this.formGroup.controls["self"].setValue(true);
+    } else {
+      this.formGroup.controls["self"].setValue(false);
+    }
+    // #endregion
     this.billingservice.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
@@ -900,7 +909,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //GAV-530 Paid Online Appointment
     let amount = 0;
     if (this.billingservice.PaidAppointments) {
-      if (this.billingservice.PaidAppointments.paymentStatus == "Yes") {
+      if (this.billingservice.PaidAppointments.paymentstatus == "Yes") {
         if (
           this.billingservice.PaidAppointments.onlinepaidamount >
           this.billingservice.totalCost
