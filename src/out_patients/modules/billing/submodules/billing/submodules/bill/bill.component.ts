@@ -530,7 +530,7 @@ export class BillComponent implements OnInit, OnDestroy {
         ) {
           this.formGroup.controls["paymentMode"].setValue(1);
           this.messageDialogService.info(
-            "You have Selected services(s) Doesn't come Under Free OPD"
+            "Selected service(s) Does not come under Gen. OPD"
           );
         } else {
           await this.checkFreeOPD(this.billingservice.billItems[0].itemId);
