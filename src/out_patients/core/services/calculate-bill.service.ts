@@ -200,7 +200,9 @@ export class CalculateBillService {
       this.billingServiceRef.billItems.forEach((item: any) => {
         item.disc = 0;
         item.discAmount = 0;
-        item.totalAmount = item.price * item.qty;
+        const price = item.price * item.qty;
+        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+        item.totalAmount = item.price * item.qty + item.gstValue;
         item.discountType = 0;
         item.discountReason = 0;
       });
@@ -213,7 +215,9 @@ export class CalculateBillService {
         this.billingServiceRef.billItems.forEach((item: any) => {
           item.disc = discItem.disc;
           item.discAmount = (item.price * item.qty * discItem.disc) / 100;
-          item.totalAmount = item.price * item.qty - item.discAmount;
+          const itemPrice = item.price * item.qty - item.discAmount;
+          item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+          item.totalAmount = itemPrice + item.gstValue;
           item.discountType = this.discountSelectedItems[0].discTypeId;
           item.discountReason = discItem.reason;
         });
@@ -232,7 +236,9 @@ export class CalculateBillService {
             if (item) {
               item.disc = ditem.disc;
               item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-              item.totalAmount = item.price * item.qty - item.discAmount;
+              const itemPrice = item.price * item.qty - item.discAmount;
+              item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+              item.totalAmount = itemPrice + item.gstValue;
               item.discountType = 3;
               item.discountReason = ditem.reason;
             }
@@ -244,7 +250,9 @@ export class CalculateBillService {
               items.forEach((item: any) => {
                 item.disc = ditem.disc;
                 item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-                item.totalAmount = item.price * item.qty - item.discAmount;
+                const itemPrice = item.price * item.qty - item.discAmount;
+                item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+                item.totalAmount = itemPrice + item.gstValue;
                 item.discountType = 2;
                 item.discountReason = ditem.reason;
               });

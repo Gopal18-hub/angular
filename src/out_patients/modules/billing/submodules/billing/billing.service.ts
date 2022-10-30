@@ -37,6 +37,8 @@ export class BillingService {
 
   totalCost = 0;
 
+  totalCostWithOutGst = 0;
+
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
@@ -128,6 +130,7 @@ export class BillingService {
     this.OrderSetItems = [];
     this.ConsumableItems = [];
     this.totalCost = 0;
+    this.totalCostWithOutGst = 0;
     this.activeMaxId = null;
     this.PaidAppointments = null;
     this.company = 0;
@@ -150,23 +153,10 @@ export class BillingService {
 
   calculateTotalAmount() {
     this.totalCost = 0;
-    this.consultationItems.forEach((item: any) => {
+    this.totalCostWithOutGst = 0;
+    this.billItems.forEach((item: any) => {
       this.totalCost += item.totalAmount;
-    });
-    this.InvestigationItems.forEach((item: any) => {
-      this.totalCost += item.totalAmount;
-    });
-    this.ProcedureItems.forEach((item: any) => {
-      this.totalCost += item.totalAmount;
-    });
-    this.OrderSetItems.forEach((item: any) => {
-      this.totalCost += item.totalAmount;
-    });
-    this.HealthCheckupItems.forEach((item: any) => {
-      this.totalCost += item.totalAmount;
-    });
-    this.ConsumableItems.forEach((item: any) => {
-      this.totalCost += item.totalAmount;
+      this.totalCostWithOutGst += item.price * item.qty;
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
@@ -1029,7 +1019,7 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
           gst: res[0].totaltaX_RATE,
           gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
@@ -1130,7 +1120,7 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
           gst: res[0].totaltaX_RATE,
           gstValue: res[0].totaltaX_Value,
           specialisationID: 0,
@@ -1271,7 +1261,7 @@ export class BillingService {
           cash: 0,
           disc: 0,
           discAmount: 0,
-          totalAmount: res[0].returnOutPut,
+          totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
           gst: res[0].totaltaX_RATE,
           gstValue: res[0].totaltaX_Value,
           specialisationID: doctorName.specialisationid,

@@ -123,7 +123,7 @@ export class BillComponent implements OnInit, OnDestroy {
         readonly: true,
       },
       gstTax: {
-        type: "number",
+        type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
@@ -182,9 +182,9 @@ export class BillComponent implements OnInit, OnDestroy {
       "cash",
       "disc",
       "discAmount",
-      "totalAmount",
       "gst",
       "gstValue",
+      "totalAmount",
     ],
     columnsInfo: {
       sno: {
@@ -447,6 +447,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.billItems.forEach((item: any, index: number) => {
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
+      ].amount = item.totalAmount;
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
+        index
       ].discountamount = parseFloat(item.discAmount);
       this.billingservice.makeBillPayload.ds_insert_bill.tab_d_opbillList[
         index
@@ -482,7 +485,7 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     }
     this.formGroup.controls["billAmt"].setValue(
-      this.billingservice.totalCost.toFixed(2)
+      this.billingservice.totalCostWithOutGst.toFixed(2)
     );
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
@@ -598,6 +601,7 @@ export class BillComponent implements OnInit, OnDestroy {
           this.question[13].readonly = true;
         }
         this.billTypeChange(value);
+        this.billingservice.calculateTotalAmount();
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
@@ -699,7 +703,9 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.billItems.forEach((item: any) => {
       item.disc = 0;
       item.discAmount = 0;
-      item.totalAmount = item.price * item.qty;
+      const price = item.price * item.qty;
+      item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+      item.totalAmount = price + item.gstValue;
       item.discountType = 0;
       item.discountReason = 0;
     });
@@ -722,10 +728,10 @@ export class BillComponent implements OnInit, OnDestroy {
     let creditDiscount = 0;
     this.billingservice.billItems.forEach((bItem: any) => {
       if (parseFloat(bItem.cash) > 0) {
-        cashAmount += parseFloat(bItem.cash);
+        cashAmount += parseFloat(bItem.totalAmount);
         cashDiscount += parseFloat(bItem.discAmount);
       } else if (parseFloat(bItem.credit) > 0) {
-        creditAmount += parseFloat(bItem.credit);
+        creditAmount += parseFloat(bItem.totalAmount);
         creditDiscount += parseFloat(bItem.discAmount);
       }
     });
@@ -910,7 +916,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //GAV-530 Paid Online Appointment
     let amount = 0;
     if (this.billingservice.PaidAppointments) {
-      if(this.billingservice.PaidAppointments.paymentStatus == "Yes"){
+      if (this.billingservice.PaidAppointments.paymentStatus == "Yes") {
         if (
           this.billingservice.PaidAppointments.onlinepaidamount >
           this.billingservice.totalCost
@@ -1071,23 +1077,21 @@ export class BillComponent implements OnInit, OnDestroy {
 
   getAmountPayByPatient() {
     let cashAmount = 0;
-    let cashDiscount = 0;
     let creditAmount = 0;
-    let creditDiscount = 0;
     this.data.forEach((bItem: any) => {
       if (parseFloat(bItem.cash) > 0) {
         cashAmount += parseFloat(bItem.cash);
-        cashDiscount += parseFloat(bItem.discAmount);
       } else if (parseFloat(bItem.credit) > 0) {
         creditAmount += parseFloat(bItem.credit);
-        creditDiscount += parseFloat(bItem.discAmount);
       }
     });
     const temp =
       cashAmount +
       creditAmount -
       (this.formGroup.value.dipositAmtEdit || 0) -
-      (this.formGroup.value.amtPayByComp || 0);
+      (this.formGroup.value.discAmt || 0) -
+      (this.formGroup.value.amtPayByComp || 0) +
+      (parseFloat(this.formGroup.value.gstTax) || 0);
 
     return temp.toFixed(2);
   }
@@ -1285,6 +1289,9 @@ export class BillComponent implements OnInit, OnDestroy {
               this.billingservice.makeBillPayload.finalDSGSTDetails =
                 this.finalgstDetails;
               this.billingservice.makeBillPayload.sacCode = res[0].saccode;
+              this.formGroup.controls["amtPayByPatient"].setValue(
+                this.getAmountPayByPatient()
+              );
             }
           }
         }

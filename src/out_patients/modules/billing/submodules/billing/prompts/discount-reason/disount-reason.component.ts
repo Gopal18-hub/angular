@@ -444,18 +444,18 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = this.billingService.totalCostWithOutGst;
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Campaign",
       discTypeId: 6,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -475,27 +475,20 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (parseFloat(
-        this.calculateBillService.billFormGroup.form.value.amtPayByPatient
-      ) *
-        existReason.discountPer) /
-      100;
+    const price = parseFloat(
+      this.calculateBillService.billFormGroup.form.value.amtPayByPatient
+    );
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Patient",
       discTypeId: 4,
       service: "",
       doctor: "",
-      price: parseFloat(
-        this.calculateBillService.billFormGroup.form.value.amtPayByPatient
-      ),
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt:
-        parseFloat(
-          this.calculateBillService.billFormGroup.form.value.amtPayByPatient
-        ) - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -525,18 +518,20 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = parseFloat(
+      this.calculateBillService.billFormGroup.form.value.amtPayByComp
+    );
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Company",
       discTypeId: 5,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -674,18 +669,18 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = this.billingService.totalCostWithOutGst;
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Bill",
       discTypeId: 1,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
