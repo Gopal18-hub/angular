@@ -156,7 +156,7 @@ export class ConsumablesComponent implements OnInit {
               cash: 0,
               doctorName: head.doctorName,
               taxAmount: head.totaltaX_Value,
-              totalAmount: head.amount + head.totaltaX_Value,
+              totalAmount: head.amount,
               items: res.consumableServiceDetailsData,
               procedureDataForConsumable: res.procedureDataForConsumable,
               billItem: {
@@ -173,7 +173,7 @@ export class ConsumablesComponent implements OnInit {
                 cash: 0,
                 disc: 0,
                 discAmount: 0,
-                totalAmount: head.amount + head.totaltaX_Value,
+                totalAmount: head.amount,
                 gst: head.totaltaX_RATE,
                 gstValue: head.totaltaX_Value,
                 specialisationID: 0,
