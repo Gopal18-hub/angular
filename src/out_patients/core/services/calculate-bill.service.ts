@@ -166,33 +166,29 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
-  refreshDiscount() {
-    this.discountSelectedItems.forEach((disIt: any) => {
-      if ([1, 4, 5, 6].includes(disIt.discTypeId)) {
-        disIt.price = this.billingServiceRef.totalCost;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      } else if (disIt.discTypeId == 2) {
-        const serviceItem = this.serviceBasedListItems.find(
-          (sbli: any) => sbli.name == disIt.service
-        );
-        let price = 0;
-        serviceItem.items.forEach((item: any) => {
-          price += item.price * item.qty;
-        });
-        const discAmt = (price * disIt.disc) / 100;
-        disIt.price = price;
-        disIt.discAmt = discAmt;
-        disIt.totalAmt = price - discAmt;
-      } else if (disIt.discTypeId == 3) {
-        const billItem = this.billingServiceRef.billItems.find(
-          (it: any) => it.itemId == disIt.itemId
-        );
-        disIt.price = billItem.price * billItem.qty;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      }
-    });
+  refreshDiscount(formGroup: any) {
+    if (this.discountSelectedItems.length > 0) {
+      this.discountSelectedItems.forEach((disIt: any) => {
+        if ([1, 6].includes(disIt.discTypeId)) {
+          disIt.price = this.billingServiceRef.totalCost;
+          disIt.discAmt = (disIt.price * disIt.disc) / 100;
+          disIt.totalAmt = disIt.price - disIt.discAmt;
+        } else if (disIt.discTypeId == 2) {
+          const serviceItem = this.serviceBasedListItems.find(
+            (sbli: any) => sbli.name == disIt.service
+          );
+          let price = 0;
+          serviceItem.items.forEach((item: any) => {
+            price += item.price * item.qty;
+          });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        }
+      });
+      this.applyDiscount("biilTab", formGroup);
+    }
   }
 
   applyDiscount(from: string, formGroup: any) {

@@ -379,14 +379,9 @@ export class BillComponent implements OnInit, OnDestroy {
       });
     } else {
       if (this.calculateBillService.dsTaxCode) {
-        //total AMount is including Tax so while calculting tax subtracting tax from totalcost
-        let totalTax = 0;
-        totalTax = this.billingservice.billItems.reduce(
-          (totalTax: any, current: any) => totalTax + current.gstValue,
-          0
-        );
         await this.getGSTBreakUpDetails(
-          this.billingservice.totalCost - totalTax,
+          this.billingservice.totalCostWithOutGst -
+            parseFloat(this.formGroup.value.discAmt),
           Number(this.cookie.get("HSPLocationId")),
           this.billingservice.company
         );
@@ -441,7 +436,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.refreshForm();
   }
 
-  refreshTable() {
+  async refreshTable() {
     this.data = [...this.billingservice.billItems];
     this.billingservice.calculateTotalAmount();
     this.billingservice.billItems.forEach((item: any, index: number) => {
@@ -458,32 +453,20 @@ export class BillComponent implements OnInit, OnDestroy {
         index
       ].oldOPBillId = item.discountReason || 0;
     });
+    if (this.calculateBillService.dsTaxCode) {
+      await this.getGSTBreakUpDetails(
+        this.billingservice.totalCostWithOutGst -
+          parseFloat(this.formGroup.value.discAmt),
+        Number(this.cookie.get("HSPLocationId")),
+        this.billingservice.company
+      );
+    }
   }
 
   async refreshForm() {
-    this.calculateBillService.refreshDiscount();
+    this.calculateBillService.refreshDiscount(this.formGroup);
     this.calculateBillService.calculateDiscount();
-    const res = await this.calculateBillService.checkTaxableBill();
-    if (!res) {
-      this.router.navigate(["../services"], {
-        queryParamsHandling: "merge",
-        relativeTo: this.route,
-      });
-    } else {
-      if (this.calculateBillService.dsTaxCode) {
-        //total AMount is including Tax so while calculting tax subtracting tax from totalcost
-        let totalTax = 0;
-        totalTax = this.billingservice.billItems.reduce(
-          (totalTax: any, current: any) => totalTax + current.gstValue,
-          0
-        );
-        await this.getGSTBreakUpDetails(
-          this.billingservice.totalCost - totalTax,
-          Number(this.cookie.get("HSPLocationId")),
-          this.billingservice.company
-        );
-      }
-    }
+
     this.formGroup.controls["billAmt"].setValue(
       this.billingservice.totalCostWithOutGst.toFixed(2)
     );
@@ -600,7 +583,8 @@ export class BillComponent implements OnInit, OnDestroy {
           this.question[14].readonly = true;
           this.question[13].readonly = true;
         }
-        this.billTypeChange(value);
+        this.refreshTable();
+        //this.billTypeChange(value);
         this.billingservice.calculateTotalAmount();
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
@@ -717,8 +701,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billTypeChange(this.formGroup.value.paymentMode);
     this.applyCreditLimit();
     this.formGroup.controls["coupon"].setValue("");
-    this.formGroup.controls["compDisc"].setValue("");
-    this.formGroup.controls["patientDisc"].setValue("");
+    this.formGroup.controls["compDisc"].setValue("0.00");
+    this.formGroup.controls["patientDisc"].setValue("0.00");
   }
 
   applyCreditLimit() {
