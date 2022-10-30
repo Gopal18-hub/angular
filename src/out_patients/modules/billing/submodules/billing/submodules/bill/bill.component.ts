@@ -846,50 +846,13 @@ export class BillComponent implements OnInit, OnDestroy {
                   if (availDepositResult.type == "yes") {
                     this.depositdetails();
                   } else {
-                    this.makereceipt();
+                    //GAV-1053 Paid Online appointment
+                    this.onlinePaymentConfirmation();
                   }
                 }
               } else {
                 //GAV-530 Paid Online appointment
-                if (this.billingservice.billingFormGroup.form.value.bookingId) {
-                  if (this.billingservice.PaidAppointments) {
-                    if (
-                      this.billingservice.PaidAppointments.paymentstatus ==
-                      "Yes"
-                    ) {
-                      const onlineconfirmationRef =
-                        this.messageDialogService.confirm(
-                          "",
-                          "This is online paid appointment billing using online payment Mode"
-                        );
-
-                      onlineconfirmationRef
-                        .afterClosed()
-                        .pipe(takeUntil(this._destroying$))
-                        .subscribe((result: any) => {
-                          if (result && "type" in result) {
-                            if (result.type == "yes") {
-                              //GAV-530 Paid Online appointment
-                              //need to open payment receipt
-                              //with auto population of online payment method
-                              this.makereceipt(true);
-                            } else {
-                              //GAV-530 Paid Online appointment
-                              this.makereceipt(false);
-                            }
-                          }
-                        });
-                    }
-                    ////  GAV-530 Paid Online appointment
-                    else {
-                      this.makereceipt(false);
-                    }
-                  } else {
-                    this.makereceipt(false);
-                  }
-                } else {
-                  this.makereceipt(false);
-                }
+                this.onlinePaymentConfirmation();
               }
             } else {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.depositAmount =
@@ -1324,5 +1287,43 @@ export class BillComponent implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  onlinePaymentConfirmation() {
+    if (this.billingservice.billingFormGroup.form.value.bookingId) {
+      if (this.billingservice.PaidAppointments) {
+        if (this.billingservice.PaidAppointments.paymentstatus == "Yes") {
+          const onlineconfirmationRef = this.messageDialogService.confirm(
+            "",
+            "This is online paid appointment billing using online payment Mode"
+          );
+
+          onlineconfirmationRef
+            .afterClosed()
+            .pipe(takeUntil(this._destroying$))
+            .subscribe((result: any) => {
+              if (result && "type" in result) {
+                if (result.type == "yes") {
+                  //GAV-530 Paid Online appointment
+                  //need to open payment receipt
+                  //with auto population of online payment method
+                  this.makereceipt(true);
+                } else {
+                  //GAV-530 Paid Online appointment
+                  this.makereceipt(false);
+                }
+              }
+            });
+        }
+        ////  GAV-530 Paid Online appointment
+        else {
+          this.makereceipt(false);
+        }
+      } else {
+        this.makereceipt(false);
+      }
+    } else {
+      this.makereceipt(false);
+    }
   }
 }
