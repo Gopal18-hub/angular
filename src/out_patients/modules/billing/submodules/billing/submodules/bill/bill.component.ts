@@ -295,6 +295,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
 
+  totalPlanDiscount = 0;
+
   constructor(
     private formService: QuestionControlService,
     public billingservice: BillingService,
@@ -404,6 +406,7 @@ export class BillComponent implements OnInit, OnDestroy {
       }
       this.billingservice.billItems.forEach((item: any, index: number) => {
         item["sno"] = index + 1;
+        this.totalPlanDiscount += item.discAmount;
         if (item.popuptext) {
           popuptext.push({
             name: item.itemName,
@@ -411,6 +414,11 @@ export class BillComponent implements OnInit, OnDestroy {
           });
         }
       });
+      if (this.billingservice.selectedHealthPlan) {
+        this.formGroup.patchValue({
+          availDisc: this.totalPlanDiscount,
+        });
+      }
       if (popuptext.length > 0) {
         const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
           width: "80vw",
@@ -476,6 +484,11 @@ export class BillComponent implements OnInit, OnDestroy {
         Number(this.cookie.get("HSPLocationId")),
         this.billingservice.company
       );
+    }
+    if (this.billingservice.selectedHealthPlan) {
+      this.formGroup.patchValue({
+        availDisc: this.totalPlanDiscount,
+      });
     }
   }
 
@@ -1096,7 +1109,8 @@ export class BillComponent implements OnInit, OnDestroy {
       (this.formGroup.value.discAmt || 0) -
       (this.formGroup.value.amtPayByComp || 0) +
       (parseFloat(this.formGroup.value.gstTax) || 0) -
-      (parseFloat(this.formGroup.value.planAmt) || 0);
+      (parseFloat(this.formGroup.value.planAmt) || 0) -
+      (parseFloat(this.formGroup.value.availDisc) || 0);
 
     return temp.toFixed(2);
   }
