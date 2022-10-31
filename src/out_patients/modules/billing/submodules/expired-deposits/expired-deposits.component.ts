@@ -399,12 +399,12 @@ export class ExpiredDepositsComponent implements OnInit {
             (this.iacode = ""),
             (this.registrationno = 0),
             this.datepipe.transform(
-              this.ExpiredDepositform.value.fromdate,
-              "YYYY-MM-dd"
+              this.ExpiredDepositform.controls["fromdate"].value,
+              "yyyy-MM-dd"
             ),
             this.datepipe.transform(
-              this.ExpiredDepositform.value.todate,
-              "YYYY-MM-dd"
+              this.ExpiredDepositform.controls["todate"].value,
+              "yyyy-MM-dd"
             )
           )
         )

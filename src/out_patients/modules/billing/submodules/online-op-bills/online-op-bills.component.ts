@@ -9,6 +9,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { HttpService } from '@shared/services/http.service';
 import { DatePipe } from '@angular/common';
 import { ReportService } from '@shared/services/report.service';
+import * as moment from "moment";
 
 @Component({
   selector: 'out-patients-online-op-bills',
@@ -32,8 +33,9 @@ export class OnlineOpBillsComponent implements OnInit {
   MaxIDExist: boolean = false;
   specialisationlist=[];
   private readonly _destroying$ = new Subject<void>();
-  hspLocationid:any = 67; // Number(this.cookie.get("HSPLocationId"));
+  hspLocationid:any = Number(this.cookie.get("HSPLocationId"));
   onlineopbillList: any = [];
+  moment = moment;
 
   onlineopbillsformdata = {
     type:"object",
@@ -139,7 +141,8 @@ export class OnlineOpBillsComponent implements OnInit {
     this.onlineopbillsForm.controls["fromdate"].setValue(todaydate);
     this.onlineopbillsForm.controls["todate"].setValue(todaydate);
     
-    this.lastUpdatedBy = this.cookie.get("UserName"); 
+    this.lastUpdatedBy =
+    this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.getspecialisation();
   }
 

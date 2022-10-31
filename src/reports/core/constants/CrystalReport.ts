@@ -133,9 +133,9 @@ export namespace CrystalReport {
       params.dtpfromdate
     }&dtptodate=${params.dtptodate}&locationid=${
       params.locationid
-    }&LocationName=${MaxHealthStorage.getCookie(
-      "Location"
-    )}&user=${MaxHealthStorage.getCookie("UserName")}`;
+    }&LocationName=${params.LocationName}&user=${MaxHealthStorage.getCookie(
+      "UserName"
+    )}`;
   };
 
   export const CROPItemPriceModifiedReport = (params: any) => {

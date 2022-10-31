@@ -7,7 +7,7 @@
     <mat-icon
       mat-dialog-close
       color="primary"
-      class="float-right cursor-pointer"
+      class="float-right cursor-pointer max-dialog-close-icon"
       aria-hidden="false"
       aria-label="Example home icon"
       >close</mat-icon
@@ -143,7 +143,7 @@
         mat-raised-button
         color="primary"
         (click)="applyDiscount()"
-        [disabled]="!discAmtForm.valid || disableApply"
+        [disabled]="!discAmtForm.valid || selectedItems.length == 0"
       >
         Apply Discount
       </button>

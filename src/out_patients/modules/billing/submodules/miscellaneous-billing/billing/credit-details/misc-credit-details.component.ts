@@ -222,7 +222,8 @@ export class MiscCreditDetailsComponent implements OnInit {
     let TPA;
 
     this.comapnyFormGroup.controls["company"].valueChanges.subscribe(
-      (res: any) => {        
+      (res: any) => {  
+        if(res != "" && res != null){      
         if (res.value != null && res.value != 0 && res.value != undefined) {
         this.setItemsToBill.companyId = res;
         this.setItemsToBill.companyIdComp = "credit";
@@ -237,7 +238,9 @@ export class MiscCreditDetailsComponent implements OnInit {
             this.comapnyFormGroup,
             "credit"
           );
-        } else {
+        }
+        
+      } else {
           this.companyexists = false;
           this.Miscservice.setCompnay(
             res,
@@ -246,6 +249,7 @@ export class MiscCreditDetailsComponent implements OnInit {
             "credit"
           );
         }
+      
         // if (res != null && res != 0 && res != undefined) {
         //   this.companyname = res;
         //   this.companyexists = true;
