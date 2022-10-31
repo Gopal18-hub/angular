@@ -526,7 +526,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Plan Name---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
@@ -542,7 +542,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
@@ -557,7 +557,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Membership---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${

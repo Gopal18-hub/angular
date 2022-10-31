@@ -437,6 +437,12 @@ export class BillComponent implements OnInit, OnDestroy {
           }
         });
     }
+    // this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
+    //   console.log(res);
+    //   if (res) {
+    //     this.formGroup.controls["paymentMode"].setValue(1);
+    //   }
+    // }); 
   }
 
   rowRwmove($event: any) {

@@ -13,7 +13,7 @@ import { InitiateDepositModel } from "@core/models/initiatedepositModel.Model";
 import { SearchService } from "../../../../../shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
 import { SimilarPatientDialog } from '@modules/registration/submodules/op-registration/op-registration.component';
-
+import * as moment from "moment";
 
 @Component({
   selector: 'out-patients-initiate-deposit',
@@ -98,6 +98,7 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
   hsplocationId:any =  Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
   operatorID:any =   Number(this.cookie.get("UserId"));
+  moment = moment;
     
   initiatedepositformdata = {
     type:"object",
@@ -161,7 +162,8 @@ export class InitiateDepositComponent implements OnInit, AfterViewInit {
     this.initiatedepositForm=formResult.form;
     this.questions=formResult.questions;
     
-    this.lastUpdatedBy = this.cookie.get("UserName"); 
+    this.lastUpdatedBy =
+    this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     
     this.searchService.searchTrigger
     .pipe(takeUntil(this._destroying$))
