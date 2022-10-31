@@ -67,8 +67,6 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
     this.questions[0].maximum = this.OpConsultform.controls["todate"].value;
     this.questions[1].minimum = this.OpConsultform.controls["fromdate"].value;
     this.getLocationMasterdropdown();
-    // this.OpConsultform.controls["Location"].setErrors({ required: true });
-    // this.questions[0].customErrorMessage = "Location Required";
   }
   getLocationMasterdropdown() {
     this.http
@@ -99,11 +97,11 @@ export class MonthlyOpConsultationReportComponent implements OnInit {
         ApiConstants.getopconsultationcount(
           this.datepipe.transform(
             this.OpConsultform.controls["fromdate"].value,
-            "YYYY-MM-dd"
+            "yyyy-MM-dd"
           ),
           this.datepipe.transform(
             this.OpConsultform.controls["todate"].value,
-            "YYYY-MM-dd"
+            "yyyy-MM-dd"
           ),
           this.OpConsultform.controls["Location"].value.value
         )

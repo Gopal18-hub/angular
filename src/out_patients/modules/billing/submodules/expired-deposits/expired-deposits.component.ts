@@ -300,7 +300,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 365);
+    this.fromdate.setDate(this.fromdate.getDate());
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[2].maximum =
       this.ExpiredDepositform.controls["todate"].value;
@@ -532,8 +532,6 @@ export class ExpiredDepositsComponent implements OnInit {
                     this.sucessflag = true;
                     this.expireddepositsearch();
                     this.exportbtn = false;
-                    // let getExpiredDepositReportModel: any = [];
-                    //this.response.isExpdeop == 1;
                   }
                 });
               } else {
@@ -589,7 +587,6 @@ export class ExpiredDepositsComponent implements OnInit {
                     this.iacode = maxID.split(".")[0];
                     this.regNumber = Number(maxID.split(".")[1]);
                     this.expireddepositsearch();
-                    //this.getPatientDetails();
                     if (length == 0) {
                       this.snackbar.open("MAXID Has No Expired Deposits");
                     }
@@ -667,7 +664,6 @@ export class ExpiredDepositsComponent implements OnInit {
             this.searchbtn = false;
             this.apiProcessing = false;
             this.showtable = true;
-            //this.expireddepositsearch();
           }
         },
         (error) => {
