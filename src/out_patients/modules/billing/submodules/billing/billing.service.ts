@@ -588,7 +588,12 @@ export class BillingService {
   applyHealthPlandiscount(data: any) {
     if (this.selectedHealthPlan) {
       const findService = this.selectedHealthPlan.odtHealthDiscount.find(
-        (serItem: any) => serItem.serviceid == data.billItem.serviceId
+        (serItem: any) =>
+          (serItem.serviceid == data.billItem.serviceId &&
+            serItem.isserviceiditemid == 0) ||
+          (serItem.isserviceiditemid == 1 &&
+            serItem.serviceid == data.billItem.serviceId &&
+            serItem.itemid == data.billItem.itemId)
       );
       if (findService) {
         const discount = (data.price * findService.discount) / 100;
