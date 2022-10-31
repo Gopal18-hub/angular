@@ -34,6 +34,7 @@ import { UnbilledInvestigationComponent } from "./prompts/unbilled-investigation
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { SearchService } from "@shared/services/search.service";
 import { LookupService } from "@core/services/lookup.service";
+import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatemasterdetail.Interface";
 
 @Component({
   selector: "out-patients-billing",
@@ -110,7 +111,8 @@ export class BillingComponent implements OnInit, OnDestroy {
   apiProcessing: boolean = false;
 
   complanyList!: GetCompanyDataInterface[];
-  coorporateList: { id: number; name: string }[] = [] as any;
+  coorporateList: any = [];
+  creditcorporateList: any =[];
 
   dmsProcessing: boolean = false;
 
@@ -623,10 +625,17 @@ export class BillingComponent implements OnInit, OnDestroy {
         (c: any) => c.id == patientDetails.companyid
       );
       if (companyExist) {
-        this.formGroup.controls["company"].setValue({
+        let res = {
+          company: companyExist,
           title: companyExist.name,
           value: patientDetails.companyid,
-        });
+        }
+        this.billingService.setCompnay(
+          patientDetails.companyid,
+          res,
+          this.formGroup,
+          "companyexists"
+        );
       }
     }
     if (patientDetails.corporateid) {
@@ -1299,13 +1308,15 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   getAllCorporate() {
     this.http
-      .get(ApiConstants.getCorporate)
+      .get(ApiConstants.getCorporatemasterdetail)
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;
-        this.billingService.setCorporateData(resultData);
-        resultData.unshift({ name: "Select", id: -1 });
-        this.questions[4].options = this.coorporateList.map((l) => {
+      .subscribe((resultData: getCorporatemasterdetail) => {
+        this.coorporateList = resultData.oCompanyName;
+        this.creditcorporateList = resultData.ohsplocation;
+
+        this.billingService.setCorporateData(resultData.oCompanyName);
+        resultData.oCompanyName.unshift({ name: "Select", id: -1 });
+        this.questions[4].options = this.coorporateList.map((l:any) => {
           return { title: l.name, value: l.id };
         });
         this.questions[4] = { ...this.questions[4] };

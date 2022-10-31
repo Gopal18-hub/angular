@@ -334,4 +334,8 @@ export namespace BillingApiConstants {
     itemId: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkfreeopdflag/${regNumber}/${iaCode}/${itemId}`;
-}
+ 
+  export const getcompanydetailcreditallow = (CompanyId: number, episode: string, LocId: number, userId:number) => {
+      return `${environment.BillingApiUrl}api/outpatientbilling/iscompanycreditallow/${CompanyId}/${episode}/${LocId}/${userId}`;
+    };
+  }
