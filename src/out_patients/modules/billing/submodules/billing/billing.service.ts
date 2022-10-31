@@ -610,7 +610,9 @@ export class BillingService {
         //ConsultationTypeId: data.billItem.priorityId,
       });
       this.makeBillPayload.dtFinalGrpDoc = this.dtFinalGrpDoc;
-      this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
+      this.dtCheckedItem.forEach((item: any) => {
+        this.makeBillPayload.dtCheckedItem.push(item);
+      });
       this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
     console.log(this.makeBillPayload);

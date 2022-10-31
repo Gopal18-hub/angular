@@ -79,21 +79,26 @@ export class DmgPopupComponent implements OnInit {
       return { title: l.doctorName.split('.')[1].trim(), value: l.docID}
     })
   }
+  SelectedGroupDoc: any = [];
   ngAfterViewInit(): void{
-    this.dmgform.controls['radio'].valueChanges.subscribe(async (res:any) => {
+    this.dmgform.controls['radio'].valueChanges.subscribe(() => {
       console.log(this.dmgform.controls['radio'].value);
-      var val = await this.getgroupdoctormappedwithdmg();
+      this.data = [];
+      this.SelectedGroupDoc = [];
+      var val = this.getgroupdoctormappedwithdmg();
       console.log(val);
+      console.log(this.SelectedGroupDoc);
       if(val == 1)
       {
         this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
       }
     })
   }
- SelectedGroupDoc: any[] = [];
- async getgroupdoctormappedwithdmg()
+ 
+  getgroupdoctormappedwithdmg()
   {
     this.dmgDocList = '';
+    this.SelectedGroupDoc = [];
     this.http.get(BillingApiConstants.getgroupdoctormappedwithdmg(
       this.dmgform.controls['radio'].value,
       this.inputdata.specialization,
@@ -101,26 +106,28 @@ export class DmgPopupComponent implements OnInit {
     ))
     .subscribe((res:any) => {
       console.log(res);
+      console.log(this.SelectedGroupDoc);
       if(res.dtOncoDMGSysProposedExcluded.length == 0)
       {
         this.check = 1;
       }
       var count = 1;
+      this.SelectedGroupDoc = [];
       res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
         var OSelectedGroupDoc: any = {};
         if(res.dtOncoDMGSysProposedIncluded.filter((j: any) => { return j.id == i.id}).length > 0)
         {
-          OSelectedGroupDoc.chk = 1;
+          OSelectedGroupDoc.chk = true;
         }
         else
         {
-          OSelectedGroupDoc.chk = 0;
+          OSelectedGroupDoc.chk = false;
         }
         OSelectedGroupDoc.id = i.id;
         OSelectedGroupDoc.name = i.name;
         OSelectedGroupDoc.dmgid = i.dmgid;
         OSelectedGroupDoc.seq = count;
-        OSelectedGroupDoc.counter = i.counter;
+        OSelectedGroupDoc.counter = i.counter.toString();
         OSelectedGroupDoc.specialisationId = i.specialisationId;
         OSelectedGroupDoc.shortSpec = i.shortSpec;
         OSelectedGroupDoc.active = i.active;
@@ -134,6 +141,7 @@ export class DmgPopupComponent implements OnInit {
           this.table.selection.select(item);
       })
     })
+    console.log(this.SelectedGroupDoc);
     return this.check;
   }
   save()
@@ -155,7 +163,9 @@ export class DmgPopupComponent implements OnInit {
         unitDocID: this.inputdata.unitdocid.toString(),
         docID: this.dmgform.controls['radio'].value.toString()
       }
-      this.service.dtCheckedItem.push(this.table.selection.selected);
+      this.table.selection.selected.forEach((item: any) => {
+        this.service.dtCheckedItem.push(item);
+      })
       this.service.txtOtherGroupDoc = this.inputdata.reason;
       console.log(this.service.dtFinalGrpDoc )
       this.dialogRef.close();
