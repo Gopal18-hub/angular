@@ -502,12 +502,18 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     var OtherGroupDoc;
     var dmgdata: any[] = [];
     console.log(dsGroupDoc, dsGroupDocprevious);
+    debugger;
+    if(dsGroupDocprevious.dtGrpDocpre.length > 0)
+    {
+      this.userSelectedDMG = dsGroupDocprevious.dtGrpDocpre[0].dmg;
+    }
     dsGroupDoc.dtGrpDoc.forEach((i: any) => {
       var Odmgdata: any = {};
-      if (
-        dsGroupDocprevious.dtGrpDocpre.filter((j: any) => {
-          return j.dmg == i.docID;
-        }) > 0
+      var list = [];
+      list = dsGroupDocprevious.dtGrpDocpre.filter((j: any) => {
+        return j.dmg == i.docID;
+      })
+      if (list.length > 0
       ) {
         Odmgdata.id = 1;
         if (i.docID == 25907) {
@@ -518,10 +524,11 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         Odmgdata.id = 0;
       }
       if (this.userSelectedDMG > 0) {
-        if (
-          dsGroupDoc.dtGrpDoc.filter((k: any) => {
-            k.docID == this.userSelectedDMG;
-          }).length > 0
+        var list1 = [];
+        list1 = dsGroupDoc.dtGrpDoc.filter((k: any) => {
+          return k.docID == this.userSelectedDMG;
+        })
+        if (list1.length > 0
         ) {
           if (i.docID == this.userSelectedDMG) {
             Odmgdata.id = 1;
@@ -576,6 +583,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           specialization: this.formGroup.value.specialization.value,
           unitdocid: this.formGroup.value.doctorName.value,
           reason: OtherGroupDoc ? OtherGroupDoc : "",
+
         },
       });
       await dialogref.afterClosed().toPromise();
