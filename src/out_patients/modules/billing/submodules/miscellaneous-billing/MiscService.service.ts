@@ -228,10 +228,12 @@ export class MiscService {
     if (res === "" || res == null) {
       this.misccompanyChangeEvent.next({ company: null, from });
       this.selectedcorporatedetails = [];
+      this.selectedcompanydetails = [];
+      this.iomMessage = "";
     } else if (res.title) {
       let iscompanyprocess = true;
       //fix for Staff company validation
-      if (res.company.isStaffcompany) {
+      if (res.company.isStaffcompany && from != "companyexists") {
         if (this.patientDetail.companyid > 0) {
           if (res.value != this.patientDetail.companyid) {
             iscompanyprocess = false;
@@ -299,12 +301,12 @@ export class MiscService {
   }
   //fix for Staff company validation
   async resetCompany(res: any, formGroup: any, from: string = "header") {
-    const ERNanavatiCompany = await this.messageDialogService.info(
+    const ERNanavatiMiscCompany = await this.messageDialogService.info(
       "Selected Patient is not entitled for " +
         res.title +
         " company.Please Contact HR Dept."
     );
-    ERNanavatiCompany.afterClosed().toPromise();
+    ERNanavatiMiscCompany.afterClosed().toPromise();
     formGroup.controls["company"].setValue(null);
   }
   setCorporate(
@@ -316,7 +318,6 @@ export class MiscService {
     if (res === "" || res == null) {
       this.misccorporateChangeEvent.next({ corporate: null, from });
       this.selectedcorporatedetails = [];
-      this.selectedcompanydetails = [];
     } else {
       this.selectedcorporatedetails = res;
       this.misccorporateChangeEvent.next({ corporate: res, from });

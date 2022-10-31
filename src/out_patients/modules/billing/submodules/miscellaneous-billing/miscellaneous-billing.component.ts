@@ -37,6 +37,8 @@ import { IomPopupComponent } from "../billing/prompts/iom-popup/iom-popup.compon
 import { distinctUntilChanged } from "rxjs/operators";
 import { OnlineAppointmentComponent } from "../billing/prompts/online-appointment/online-appointment.component";
 import { CalculateBillService } from "@core/services/calculate-bill.service";
+import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatemasterdetail.Interface";
+
 
 @Component({
   selector: "out-patients-miscellaneous-billing",
@@ -117,7 +119,9 @@ export class MiscellaneousBillingComponent implements OnInit {
   companyList!: GetCompanyDataInterface[];
   corporateId = "";
   companyId = "";
-  coorporateList: { id: number; name: string }[] = [] as any;
+  coorporateList: any = [];
+  creditcorporateList: any =[];
+
   miscFormData = {
     type: "object",
     title: "",
@@ -192,7 +196,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     }
 
     this.getssnandmaxid();
-    this.getAllCompany();
+   // this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
     // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
@@ -409,6 +413,8 @@ export class MiscellaneousBillingComponent implements OnInit {
         );
         await dialogRef.afterClosed().toPromise();
       }
+      this.getAllCompany();
+      this.getAllCorporate();
       this.getSimilarSoundDetails(iacode, regNumber);
       this.disableBtn = true;
       this.http
@@ -429,8 +435,8 @@ export class MiscellaneousBillingComponent implements OnInit {
             ) {
               this.questions[0].readonly = true;
               this.questions[1].readonly = true;
-              this.getAllCompany();
-              this.getAllCorporate();
+              // this.getAllCompany();
+              // this.getAllCorporate();
               this.miscForm.controls["company"].enable();
               this.miscForm.controls["corporate"].enable();
 
@@ -474,8 +480,8 @@ export class MiscellaneousBillingComponent implements OnInit {
       .subscribe(
         (resultData: any) => {
           if (resultData && resultData.length > 0) {
-            this.getAllCompany();
-            this.getAllCorporate();
+            // this.getAllCompany();
+            // this.getAllCorporate();
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.linkedMaxId(
@@ -546,8 +552,8 @@ export class MiscellaneousBillingComponent implements OnInit {
         async (resultData: Registrationdetails) => {
           if (resultData) {
             this.patientDetails = resultData;
-            this.getAllCompany();
-            this.getAllCorporate();
+            // this.getAllCompany();
+            // this.getAllCorporate();
             this.miscForm.controls["company"].enable();
             this.miscForm.controls["corporate"].enable();
             this.setValuesToMiscForm(this.patientDetails);
@@ -723,15 +729,22 @@ export class MiscellaneousBillingComponent implements OnInit {
   }
   setCompany(patientDetails: PatientDetail) {
     if (patientDetails.companyid != 0) {
-      let company = this.filterList(
-        this.companyList,
-        patientDetails.companyid
-      )[0];
-      this.miscForm.controls["company"].setValue({
-        title: company.name,
-        value: company.id,
-        isTPA: company.isTPA,
-      });
+      const companyExist: any = this.companyList.find(
+        (c: any) => c.id == patientDetails.companyid
+      );
+    if(companyExist){
+      let res = {
+        company: companyExist,
+        title: companyExist.name,
+        value: patientDetails.companyid,
+      }
+      this.Misc.setCompnay(
+        patientDetails.companyid,
+        res,
+        this.miscForm,
+        "companyexists"
+      );
+    }
     }
   }
   setCorporate(patientDetails: PatientDetail) {
@@ -777,13 +790,15 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   getAllCorporate() {
     this.http
-      .get(ApiConstants.getCorporate)
+      .get(ApiConstants.getCorporatemasterdetail)
       .pipe(takeUntil(this._destroying$))
-      .subscribe((resultData: { id: number; name: string }[]) => {
-        this.coorporateList = resultData;
-        this.Misc.setCorporateData(resultData);
-        resultData.unshift({ name: "Select", id: -1 });
-        this.questions[3].options = this.coorporateList.map((l) => {
+      .subscribe((resultData: getCorporatemasterdetail) => {
+        this.coorporateList = resultData.oCompanyName;
+        this.creditcorporateList = resultData.ohsplocation;
+
+        this.Misc.setCorporateData(resultData.oCompanyName);
+        resultData.oCompanyName.unshift({ name: "Select", id: -1 });
+        this.questions[3].options = this.coorporateList.map((l:any) => {
           return { title: l.name, value: l.id };
         });
         this.questions[3] = { ...this.questions[3] };

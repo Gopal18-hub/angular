@@ -117,6 +117,7 @@ export class OpRegistrationComponent implements OnInit {
   };
   today: Date = new Date(new Date().getTime() - 3888000000);
   maxIDSearch: boolean = false;
+  moment = moment;
 
   passportDetails: {
     passportNo: string;
@@ -470,7 +471,7 @@ export class OpRegistrationComponent implements OnInit {
   ngOnInit(): void {
     this.bool = true;
     this.lastUpdatedBy =
-      this.cookie.get("Name") + "(" + this.cookie.get("UserName") + ")";
+      this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.formInit();
     this.route.queryParams
       .pipe(takeUntil(this._destroying$))
