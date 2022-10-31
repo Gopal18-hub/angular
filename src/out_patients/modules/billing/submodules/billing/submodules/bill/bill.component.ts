@@ -372,6 +372,7 @@ export class BillComponent implements OnInit, OnDestroy {
         planAmount += oItem.price;
       });
       this.formGroup.patchValue({ planAmt: planAmount });
+      this.formGroup.controls["self"].setValue(true);
     }
     this.billTypeChange(this.formGroup.value.paymentMode);
 
@@ -379,8 +380,6 @@ export class BillComponent implements OnInit, OnDestroy {
 
     if (this.billingservice.PaidAppointments) {
       this.formGroup.controls["self"].setValue(true);
-    } else {
-      this.formGroup.controls["self"].setValue(false);
     }
     // #endregion
     this.billingservice.clearAllItems.subscribe((clearItems: any) => {
