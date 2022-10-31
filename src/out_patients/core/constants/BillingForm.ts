@@ -208,7 +208,7 @@ export namespace BillingForm {
             type: "string",
           }, //60
           posimei:{
-            type: "dropdown",
+            type: "string",
           },
           creditcardtransactionid:{
             type: "string",

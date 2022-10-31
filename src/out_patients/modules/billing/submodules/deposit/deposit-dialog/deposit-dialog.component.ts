@@ -142,6 +142,14 @@ export class DepositDialogComponent implements OnInit {
        else if(this.DepositcashMode.creditamount > 0){
           this.PaymentType = 4;
           this.PaymentTypedepositamount =  Number(this.DepositcashMode.creditamount);
+          if(this.DepositcashMode.creditcardno == "" || this.DepositcashMode.creditcardno == null
+           || this.DepositcashMode.creditholdername == "" || this.DepositcashMode.creditholdername == null
+           || this.DepositcashMode.creditbankname == "" || this.DepositcashMode.creditbankname == null
+           || this.DepositcashMode.creditbatchno == "" || this.DepositcashMode.creditbatchno == null
+           ){
+            this.messageDialogService.error("Please Fill All Credit Card Mandatory Fields ");
+            this.validationexists = true;
+          }
       }
       else if(this.DepositcashMode.demandamount > 0){
         this.PaymentType = 3;
