@@ -780,6 +780,10 @@ export namespace ApiConstants {
   export const getCorporate =
     environment.CommonApiUrl + "api/lookup/getcorporatemaster?flag=2";
 
+  export const getCorporatemasterdetail =
+    environment.BillingApiUrl + "api/outpatientbilling/getcorporatemasterdetail/0/2";
+
+
   export const getSimilarPatientonMobilenumber = (mobilenumber: string) => {
     return (
       environment.PatientApiUrl +
@@ -1515,7 +1519,7 @@ export namespace ApiConstants {
     "api/outpatientbilling/generatehl7outboundmessageris";
 
   export const getservicestypebycodeid = (codeId: number) => {
-    return `environment.BillingApiUrl + "api/outpatientbilling/getservicestype_bycodeid/${codeId}`;
+    return `${environment.BillingApiUrl}api/outpatientbilling/getservicestype_bycodeid/${codeId}`;
 
   };
 

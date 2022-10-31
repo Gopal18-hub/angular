@@ -50,7 +50,7 @@ export class DepositDialogComponent implements OnInit {
   
   hsplocationId:any = Number(this.cookie.get("HSPLocationId"));
   stationId:any =  Number(this.cookie.get("StationId"));
-  operatorID:any = Number(this.cookie.get("UserId"));
+  operatorID:any =  Number(this.cookie.get("UserId"));
   
   private readonly _destroying$ = new Subject<void>();
 
@@ -129,14 +129,42 @@ export class DepositDialogComponent implements OnInit {
        else if(this.DepositcashMode.chequeamount > 0){
           this.PaymentType = 2;
           this.PaymentTypedepositamount =  Number(this.DepositcashMode.chequeamount);
+
+          if(this.DepositcashMode.chequeno == "" || this.DepositcashMode.chequeno == null
+           || this.DepositcashMode.chequebankname == "" || this.DepositcashMode.chequebankname == null
+           || this.DepositcashMode.chequebranchname == ""  || this.DepositcashMode.chequebranchname == null 
+           || this.DepositcashMode.chequeissuedate == "" || this.DepositcashMode.chequeissuedate == null
+           || this.DepositcashMode.chequeauth == "" || this.DepositcashMode.chequeauth == null){
+            this.messageDialogService.error("Please Fill All Cheque Mandatory Fields ");
+            this.validationexists = true;
+          }         
        }
        else if(this.DepositcashMode.creditamount > 0){
           this.PaymentType = 4;
           this.PaymentTypedepositamount =  Number(this.DepositcashMode.creditamount);
+          if(this.DepositcashMode.creditcardno == "" || this.DepositcashMode.creditcardno == null
+           || this.DepositcashMode.creditholdername == "" || this.DepositcashMode.creditholdername == null
+           || this.DepositcashMode.creditbankname == "" || this.DepositcashMode.creditbankname == null
+           || this.DepositcashMode.creditbatchno == "" || this.DepositcashMode.creditbatchno == null
+           ){
+            this.messageDialogService.error("Please Fill All Credit Card Mandatory Fields ");
+            this.validationexists = true;
+          }
       }
       else if(this.DepositcashMode.demandamount > 0){
         this.PaymentType = 3;
         this.PaymentTypedepositamount =  Number(this.DepositcashMode.demandamount);
+
+        if(this.DepositcashMode.demandddno == "" || this.DepositcashMode.demandddno == null
+        || this.DepositcashMode.demandissuedate == "" || this.DepositcashMode.demandissuedate == null
+        || this.DepositcashMode.demandbankname == "" || this.DepositcashMode.demandbankname == null
+        || this.DepositcashMode.demandbranchname == "" || this.DepositcashMode.demandbranchname == null
+        || this.DepositcashMode.demandauth == "" || this.DepositcashMode.demandauth == null)
+        {
+         this.messageDialogService.error("Please Fill All Demand Draft Mandatory Fields ");
+         this.validationexists = true;
+       }  
+
       }
       else if(this.DepositcashMode.upiamount > 0){
         this.PaymentType = 8;
@@ -226,20 +254,20 @@ export class DepositDialogComponent implements OnInit {
       this.PaymentType,
       this.DepositcashMode.chequeno,      
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",
-      this.DepositcashMode.banknamecheque,
+      this.DepositcashMode.banknamecheque != undefined ? this.DepositcashMode.banknamecheque.title : this.DepositcashMode.banknamecheque,
       this.DepositcashMode.branchnamecheque,
       this.DepositcashMode.demandddno,
       this.datepipe.transform(Date.now(), "yyyy-MM-ddThh:mm:ss") || "{}",
-      this.DepositcashMode.demandbankname,
+      this.DepositcashMode.demandbankname != undefined ? this.DepositcashMode.demandbankname.title : this.DepositcashMode.demandbankname,
+      "",
       this.DepositcashMode.demandbranchname,
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
+      this.DepositcashMode.creditcardno,
+      this.DepositcashMode.creditbatchno,
+      this.DepositcashMode.creditbankname != undefined ? this.DepositcashMode.creditbankname.title : this.DepositcashMode.creditbankname,
+      this.DepositcashMode.creditapproval,
+      this.DepositcashMode.creditterminal,
+      this.DepositcashMode.creditacquiring,
+      this.DepositcashMode.creditholdername,      
       0,
       this.formsixtysubmit == false ? this.depositpatientidentityinfo.panno : "Form60",
       this.selecteddepositservicetype.servicetype,
@@ -263,5 +291,9 @@ export class DepositDialogComponent implements OnInit {
   formsixtysuccess(event:any){
     console.log(event);
     this.formsixtysubmit = event;
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
   }
 }

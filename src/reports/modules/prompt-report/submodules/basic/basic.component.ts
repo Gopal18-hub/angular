@@ -16,6 +16,7 @@ export class BasicComponent implements OnInit {
   questions: any;
 
   reportConfig: any;
+  reportName: string = "";
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
@@ -27,6 +28,7 @@ export class BasicComponent implements OnInit {
           params.reportName &&
           FormReport[params.reportName as keyof typeof FormReport]
         ) {
+          this.reportName = params.reportName;
           this.reportConfig =
             FormReport[params.reportName as keyof typeof FormReport];
         } else {

@@ -15,6 +15,11 @@ import { takeUntil } from "rxjs/operators";
 import { QuestionControlService } from "../../../../../../shared/ui/dynamic-forms/service/question-control.service";
 import { DepositService } from "@core/services/deposit.service";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
+import { BillDetailsApiConstants } from "@modules/billing/submodules/details/BillDetailsApiConstants";
+import { getBankName } from '../../../../../core/types/billdetails/getBankName.Interface';
+import { getcreditcard } from '../../../../../core/types/billdetails/getcreditcard.Interface';
+import { CookieService } from '@shared/services/cookie.service';
+import { HttpService } from '@shared/services/http.service';
 
 @Component({
   selector: "payment-methods",
@@ -25,6 +30,9 @@ export class PaymentMethodsComponent implements OnInit {
   @Input() config: any;
   @Input() Refundavalaiblemaount: any;
 
+  bankname: getBankName[] = [];
+  creditcard: getcreditcard[] = [];
+
   refundFormData = BillingForm.refundFormData;
   refundform!: FormGroup;
   questions: any;
@@ -32,7 +40,9 @@ export class PaymentMethodsComponent implements OnInit {
   constructor(
     private formService: QuestionControlService,
     private depositservice: DepositService,
-    private messageDialogService: MessageDialogService
+    private messageDialogService: MessageDialogService,
+    private cookie: CookieService,  
+    private http: HttpService,
   ) {}
 
   private readonly _destroying$ = new Subject<void>();
@@ -51,7 +61,10 @@ export class PaymentMethodsComponent implements OnInit {
     }
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
-    console.log(this.Refundavalaiblemaount);
+    this.refundform.controls["chequevaliditydate"].setValue(this.today);
+    this.refundform.controls["demandvaliditydate"].setValue(this.today);
+    this.getbankname();
+    this.getcreditcard();
     this.depositservice.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
         this.clearpaymentmethod();
@@ -133,7 +146,7 @@ export class PaymentMethodsComponent implements OnInit {
   Enablecreditfields() {
     this.refundform.controls["creditcardno"].enable();
     this.refundform.controls["creditholdername"].enable();
-    this.refundform.controls["creditbankno"].enable();
+    this.refundform.controls["creditbankname"].enable();
     this.refundform.controls["creditbatchno"].enable();
     this.refundform.controls["creditapproval"].enable();
     this.refundform.controls["creditacquiring"].enable();
@@ -143,7 +156,7 @@ export class PaymentMethodsComponent implements OnInit {
   Disablecreditfields() {
     this.refundform.controls["creditcardno"].disable();
     this.refundform.controls["creditholdername"].disable();
-    this.refundform.controls["creditbankno"].disable();
+    this.refundform.controls["creditbankname"].disable();
     this.refundform.controls["creditbatchno"].disable();
     this.refundform.controls["creditapproval"].disable();
     this.refundform.controls["creditacquiring"].disable();
@@ -154,19 +167,20 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.reset();
     this.today = new Date();
     this.refundform.controls["chequeissuedate"].setValue(this.today);
-    this.refundform.controls["demandissuedate"].setValue(this.today);
+    this.refundform.controls["demandissuedate"].setValue(this.today);    
+    this.refundform.controls["chequevaliditydate"].setValue(this.today);
+    this.refundform.controls["demandvaliditydate"].setValue(this.today);
     this.refundform.controls["cashamount"].setValue("0.00");
     this.refundform.controls["chequeamount"].setValue("0.00");
     this.refundform.controls["creditamount"].setValue("0.00");
     this.refundform.controls["demandamount"].setValue("0.00");
     this.refundform.controls["paytmamount"].setValue("0.00");
-    this.refundform.controls["upiamount"].setValue(this.today);
   }
 
   resetcreditcard() {
     this.refundform.controls["creditcardno"].setValue("");
     this.refundform.controls["creditholdername"].setValue("");
-    this.refundform.controls["creditbankno"].setValue("");
+    this.refundform.controls["creditbankname"].setValue("");
     this.refundform.controls["creditbatchno"].setValue("");
     this.refundform.controls["creditapproval"].setValue("");
     this.refundform.controls["creditacquiring"].setValue("");
@@ -180,4 +194,40 @@ export class PaymentMethodsComponent implements OnInit {
   resetchequedetails(){
     
   }
+  getbankname()
+  {
+    this.http.get(BillDetailsApiConstants.getbankname)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe( res => {
+      console.log(res);
+      this.bankname = res;
+      this.questions[3].options = this.bankname.map(l => {
+        return { title: l.name, value: l.name}
+      })
+      this.questions[3] = {...this.questions[3]};
+      this.questions[17].options = this.bankname.map(l => {
+        return { title: l.name, value: l.name}
+      })
+      this.questions[17] = {...this.questions[17]};
+    })
+  }
+  getcreditcard()
+  {
+    this.http.get(BillDetailsApiConstants.getcreditcard)
+    .pipe(takeUntil(this._destroying$))
+    .subscribe( res => {
+      console.log(res);
+      this.creditcard = res;
+      this.questions[9].options = this.creditcard.map(l => {
+        return { title: l.name, value: l.id}
+      })
+      this.questions[9] = {...this.questions[9]};
+    })
+    
+  }
+  ngOnDestroy(): void {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
+
 }

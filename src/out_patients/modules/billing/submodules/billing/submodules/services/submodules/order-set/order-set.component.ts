@@ -119,6 +119,9 @@ export class OrderSetComponent implements OnInit {
       price: {
         title: "Price",
         type: "currency",
+        style: {
+          width: "150px",
+        },
       },
     },
   };
@@ -151,7 +154,7 @@ export class OrderSetComponent implements OnInit {
     this.data = this.billingService.OrderSetItems;
     this.getSpecialization();
     this.getOrserSetData();
-    this.billingService.clearAllItems.subscribe((clearItems:any) => {
+    this.billingService.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -175,7 +178,7 @@ export class OrderSetComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "specialisation") {
+      if (res.data.col == "specialization") {
         res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -184,6 +187,7 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
           res.$event.value;
@@ -218,6 +222,7 @@ export class OrderSetComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    console.log(index);
     this.config.columnsInfo.doctorName.moreOptions[index] =
       await this.specializationService.getdoctorlistonSpecialization(
         clinicSpecializationId
@@ -225,11 +230,13 @@ export class OrderSetComponent implements OnInit {
   }
 
   checkTableValidation() {
-    if (this.tableRows.tableForm.valid) {
-      this.billingService.changeBillTabStatus(false);
-    } else {
-      this.billingService.changeBillTabStatus(true);
-    }
+    setTimeout(() => {
+      if (this.tableRows.tableForm.valid) {
+        this.billingService.changeBillTabStatus(false);
+      } else {
+        this.billingService.changeBillTabStatus(true);
+      }
+    }, 200);
   }
 
   getOrserSetData() {
@@ -239,7 +246,7 @@ export class OrderSetComponent implements OnInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.apiData = res;
         this.questions[0].options = res.orderSetHeader.map((r: any) => {
           return { title: r.orderSetName, value: r.orderSetId };
@@ -325,7 +332,7 @@ export class OrderSetComponent implements OnInit {
             doctorName: "",
             specialization_required: true,
             doctorName_required: true,
-            price: resItem.returnOutPut + resItem.totaltaX_Value,
+            price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.items[index],
@@ -350,40 +357,41 @@ export class OrderSetComponent implements OnInit {
               specialisationID: 0,
               doctorID: 0,
             },
-            gstDetail:{
-          gsT_value:resItem.totaltaX_Value,
-          gsT_percent:resItem.totaltaX_RATE,
-          cgsT_Value:resItem.cgsT_Value,
-          cgsT_Percent:resItem.cgst,
-          sgsT_value:resItem.sgsT_Value,
-          sgsT_percent:resItem.sgst,
-          utgsT_value:resItem.utgsT_Value,
-          utgsT_percent:resItem.utgst,
-          igsT_Value:resItem.igsT_Value,
-          igsT_percent:resItem.igst,
-          cesS_value:resItem.cesS_Value,
-          cesS_percent:resItem.cess,
-          taxratE1_Value:resItem.taxratE1_Value,
-          taxratE1_Percent:resItem.taxratE1,
-          taxratE2_Value:resItem.taxratE2_Value,
-          taxratE2_Percent:resItem.taxratE2,
-          taxratE3_Value:resItem.taxratE3_Value,
-          taxratE3_Percent:resItem.taxratE3,
-          taxratE4_Value:resItem.taxratE4_Value,
-          taxratE4_Percent:resItem.taxratE4,
-          taxratE5_Value:resItem.taxratE5_Value,
-          taxratE5_Percent:resItem.taxratE5,
-          totaltaX_RATE:resItem.totaltaX_RATE,
-          totaltaX_RATE_VALUE:resItem.totaltaX_Value,
-          saccode:resItem.saccode,
-          taxgrpid:resItem.taxgrpid,
-        },
-         gstCode:{
-              tax:resItem.tax,
-              taxType:resItem.taxType,
-              codeId:resItem.codeId,
-              code:resItem.code,
-            }
+            gstDetail: {
+              gsT_value: resItem.totaltaX_Value,
+              gsT_percent: resItem.totaltaX_RATE,
+              cgsT_Value: resItem.cgsT_Value,
+              cgsT_Percent: resItem.cgst,
+              sgsT_value: resItem.sgsT_Value,
+              sgsT_percent: resItem.sgst,
+              utgsT_value: resItem.utgsT_Value,
+              utgsT_percent: resItem.utgst,
+              igsT_Value: resItem.igsT_Value,
+              igsT_percent: resItem.igst,
+              cesS_value: resItem.cesS_Value,
+              cesS_percent: resItem.cess,
+              taxratE1_Value: resItem.taxratE1_Value,
+              taxratE1_Percent: resItem.taxratE1,
+              taxratE2_Value: resItem.taxratE2_Value,
+              taxratE2_Percent: resItem.taxratE2,
+              taxratE3_Value: resItem.taxratE3_Value,
+              taxratE3_Percent: resItem.taxratE3,
+              taxratE4_Value: resItem.taxratE4_Value,
+              taxratE4_Percent: resItem.taxratE4,
+              taxratE5_Value: resItem.taxratE5_Value,
+              taxratE5_Percent: resItem.taxratE5,
+              totaltaX_RATE: resItem.totaltaX_RATE,
+              totaltaX_RATE_VALUE: resItem.totaltaX_Value,
+              saccode: resItem.saccode,
+              taxgrpid: resItem.taxgrpid,
+              codeId: resItem.codeId,
+            },
+            gstCode: {
+              tax: resItem.tax,
+              taxType: resItem.taxType,
+              codeId: resItem.codeId,
+              code: resItem.code,
+            },
           };
           this.billingService.addToOrderSet(data1);
           this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({

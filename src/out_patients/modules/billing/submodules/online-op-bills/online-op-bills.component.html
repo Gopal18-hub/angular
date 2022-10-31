@@ -72,5 +72,8 @@
 </section>
 <div class="flex justify-between mx-5 max-health-primary-color">
   <p>Last Update By: {{ lastUpdatedBy }}</p>
-  <P> Date: {{ currentTime }} </P>
+  <div class="right">
+    Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+    {{ moment().format("LT") }}
+  </div>
 </div>

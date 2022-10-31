@@ -279,13 +279,16 @@ export class CreditDetailsComponent implements OnInit {
 
   openconfiguration() {
     let billtype;
-    billtype = this.billingservice.getbilltype();
+    billtype = this.billingservice.billtype;
     let configurationitems: any = this.billingservice.billItems;
     if (billtype != 3) {
       this.dialogService.error("Select credit check first");
     } else if (configurationitems.length == 0) {
       this.dialogService.error("There is no items for configuration");
-    } else {
+    }else if(!this.comapnyFormGroup.value.company.title){
+      this.dialogService.error("Select the Company");
+    }
+     else {
       this.matDialog.open(ConfigurationBillingComponent, {
         width: "70%",
         height: "80%",

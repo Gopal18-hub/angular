@@ -64,7 +64,7 @@
     </div>
   </form>
 
-  <div class="w-full mt-1 billdetailtable-table h-30vh">
+  <div class="w-full mt-1 billdetailtable-table h-30vh" >
     <!-- NEED TO ADD THIS LATER POINT OF TIME --[data]="serviceselectedList" #selectedServices -->
     <!-- <ng-container class="w-full h-table"> -->
     <maxhealth-table [data]="serviceselectedList" [config]="config" (columnClick)="tablerow($event)"class = billdetailtable (rowRwmove)="rowRwmove($event)"></maxhealth-table>
@@ -76,7 +76,7 @@
   <div class="mt-1 mb-1 tableh">
     <form [formGroup]="miscServBillForm" class="sub-bill-form h-full">
       <div class="flex w-full h-full">
-        <div class="w-13 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center">
+        <div class="w-13 h-full bg-blue border-radius-lg flex flex-column mr-2 justify-center" >
           <div class="ml-2 mt-2 w-Reff">
             <!-- Self -->
             <div class="flex float-right">
@@ -107,7 +107,7 @@
 
         <!-- -------------------------------------------grey billing block------------------------------------------------------------------------- -->
         <div class="bg-deposit bg-paymet h-full border-radius-lg px-0 py-2 flex w-86">
-          <div class="flex-column w-1/3 flex justify-between">
+          <div class="flex-column w-1/3 flex justify-between" >
             <!-- Bill amount  -->
             <div>
               <div class="flex">
@@ -176,7 +176,7 @@
           </div>
 
 
-          <div class="flex-column w-1/15 flex justify-between">
+          <div class="flex-column w-1/15 flex justify-between" >
             <div>
               <div class="flex">
                 <mat-label class="wt-nowrap mr-5">Patient Disc.</mat-label>
@@ -206,7 +206,7 @@
           </div>
 
 
-          <div class="ml-2 flex-column w-17 flex border-radius-lg justify-between">
+          <div class="ml-2 flex-column w-17 flex border-radius-lg justify-between" >
             <div>
               <div class="flex">
                 <mat-label class="wt-nowrap mr-4">Co-Payment %</mat-label>
@@ -252,10 +252,10 @@
 
           <div class="bg-deposit flex-column w-1/3 flex justify-between">
             <div class="flex">
-              <mat-label class="mr-6 ml-3 mt-1">Amt. Paid by Patient</mat-label>
-              <div class="flex w-2/5">
+              <mat-label class="mr-6 ml-3 mt-1" >Amt. Paid by Patient</mat-label>
+              <div class="flex w-2/5" >
                 <maxhealth-question [question]="question[24]" [form]="miscServBillForm" [questions]="question[24]"
-                  class="w-5/9 mt-1 mr-1" [index]="24">
+                  class="w-5/9 mt-1 mr-1" [index]="24" >
                 </maxhealth-question>
                 <button mat-raised-button color="primary" class="btn-md min-width-bill  ml-5" type="button" [disabled]="!isEnableBillBtn"
                         accessControl
@@ -269,11 +269,11 @@
               </div>
             </div>
             <div class="flex">
-              <mat-label class="wt-nowrap mr-2 mt-1 ml-3">Amt. Paid by Company</mat-label>
+              <mat-label class="wt-nowrap mr-2 mt-1 ml-3" >Amt. Paid by Company</mat-label>
 
               <div class="flex w-2/5">
                 <maxhealth-question [question]="question[25]" [form]="miscServBillForm" [questions]="question[25]"
-                  class="w-5/9 mt-1 mr-1" [index]="25">
+                  class="w-5/9 mt-1 mr-1" [index]="25" >
                 </maxhealth-question>
                 <button mat-raised-button color="primary" class="btn-md min-width-bill ml-5" type="submit" [disabled]="!enablePrint" (click)="print()"
                         accessControl
@@ -295,7 +295,7 @@
             </div> -->
 
             <div
-            class="flex border-radius-lg bg-blue px-1 py-0 align-items-center ml-2 mr-1 mt-1 shadow-1"
+            class="flex border-radius-lg bg-blue px-1 py-0 align-items-center ml-2 mr-1 mt-1 shadow-1" 
           >
             <mat-label class="wt-nowrap mr-6 ml-2 inline"
               >Bill Type</mat-label

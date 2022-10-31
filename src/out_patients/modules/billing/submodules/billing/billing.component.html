@@ -140,7 +140,7 @@
       <!-- Second Row -->
       <div class="w-full flex mt-1 border-radius-xlg px-2 py-1 bg-secondary">
         <div class="flex w-3/4 align-items-center">
-          <div class="w-1/4">
+          <div class="w-1/4 overflow-ellipsis">
             <mat-label class="max-health-primary-color"
               >Name:
               <span class="text-color">{{ patientName }}</span></mat-label
@@ -270,7 +270,7 @@
               <div class="qms-container ml-3" *ngIf="enableQMSManagement">
                 <span class="text-white">Counter No. </span
                 ><span class="ml-1 max-health-primary-color font-semi-bold">{{
-                  counterId
+                  counterName
                 }}</span>
                 <span class="ml-2 text-white">Queue No.</span>
                 <span
@@ -331,7 +331,7 @@
                   <button
                     mat-button
                     (click)="doneQueue()"
-                    disabled="queueId<=0"
+                    [disabled]="disableStopQueueBtn"
                     class="mr-5 p-0 logout-button"
                   >
                     <svg

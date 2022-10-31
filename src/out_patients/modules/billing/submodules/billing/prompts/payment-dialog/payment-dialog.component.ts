@@ -55,7 +55,6 @@ export class BillPaymentDialogComponent implements OnInit {
   paymentmethods = [
     "cash",
     "credit",
-    "debit",
     "cheque",
     "demand",
     "mobilepayment",
@@ -69,11 +68,8 @@ export class BillPaymentDialogComponent implements OnInit {
       : this.paymentmethods, // //GAV-530 Paid Online appointment
     combopayment: true,
     totalAmount: this.data.toPaidAmount.toFixed(2),
-    onlinePaidAmount: this.data.onlinePaidAmount
-      ? this.data.onlinePaidAmount.toFixed(2)
-      : 0.0, // //GAV-530 Paid Online appointment
     isonlinepaidappointment: this.data.isonlinepaidappointment, // //GAV-530 Paid Online appointment
-    paidAppointments: this.billingService.PaidAppointments, // //GAV-530 Paid Online appointment
+    formData: this.data.formData,
   };
   duelabel: any;
   billamount: any = 0;
@@ -106,11 +102,11 @@ export class BillPaymentDialogComponent implements OnInit {
       patientinfo: {
         emailId:
           this.billingService.patientDetailsInfo.peMail == undefined
-            ? this.miscService.patientDetail.mail
+            ? this.miscService.patientDetail.peMail
             : this.billingService.patientDetailsInfo.peMail,
         mobileno:
           this.billingService.patientDetailsInfo.pCellNo == undefined
-            ? this.miscService.patientDetail.cellNo
+            ? this.miscService.patientDetail.pCellNo
             : this.billingService.patientDetailsInfo.pCellNo,
         panno:
           this.billingService.patientDetailsInfo.paNno == undefined
@@ -161,10 +157,7 @@ export class BillPaymentDialogComponent implements OnInit {
   checkToProceed() {
     const collectedAmount = this.breakupTotal();
     if (this.data.name == "Misc Billing") {
-      if (
-        Number(this.data.toPaidAmount) > collectedAmount ||
-        Number(this.data.toPaidAmount) < collectedAmount
-      ) {
+      if (Number(this.data.toPaidAmount) < collectedAmount) {
         return false;
       }
       return true;

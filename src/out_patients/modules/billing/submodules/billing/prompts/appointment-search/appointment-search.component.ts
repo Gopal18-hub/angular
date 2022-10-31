@@ -6,7 +6,8 @@ import { AppointmentSearchModel } from "../../../../../../core/models/appointmen
 import { DatePipe } from "@angular/common";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { ApiConstants } from "../../../../../../core/constants/ApiConstants";
+import { BillingApiConstants } from "../../BillingApiConstant";
+import { CookieService } from "@shared/services/cookie.service";
 
 @Component({
   selector: "out-patients-billing-appointment-search",
@@ -43,7 +44,8 @@ export class AppointmentSearchComponent implements OnInit {
     private datepipe: DatePipe,
     private formService: QuestionControlService,
     public dialogRef: MatDialogRef<AppointmentSearchComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public cookie: CookieService
   ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
@@ -503,11 +505,11 @@ export class AppointmentSearchComponent implements OnInit {
   }
   getAppointmentSearch() {
     return this.http.get(
-      ApiConstants.appointmentPatientDetail(
+      BillingApiConstants.getbillingappointmentsearch(
         this.OPAppointmentForm.value.phoneNo || this.data.phoneNumber,
         this.OPAppointmentForm.value.name || "",
         this.OPAppointmentForm.value.lastname || "",
-        this.OPAppointmentForm.value.datevalidation == false ? 0 : 1,
+        this.OPAppointmentForm.value.datevalidation == false ? false : true,
         this.datepipe.transform(
           this.OPAppointmentForm.value.fromDate,
           "yyyy-MM-dd"
@@ -516,7 +518,8 @@ export class AppointmentSearchComponent implements OnInit {
           this.OPAppointmentForm.value.toDate,
           "yyyy-MM-dd"
         ) || "",
-        this.OPAppointmentForm.value.bookingNo
+        this.OPAppointmentForm.value.bookingNo,
+        this.cookie.get("HSPLocationId")
       )
     );
   }

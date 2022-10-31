@@ -15,9 +15,10 @@ export namespace BillingForm {
           chequeissuedate: {
             type: "date",
             maximum: new Date(),
+            defaultValue: new Date(),
           },
           chequebankname: {
-            type: "string"
+            type: "autocomplete",
           },
           chequebranchname: {
             type: "string"
@@ -35,8 +36,8 @@ export namespace BillingForm {
           creditholdername: {
             type: "string"
           },
-          creditbankno:{
-            type: "string"
+          creditbankname: {
+            type: "autocomplete",
           },
           creditbatchno:{
             type: "string"
@@ -60,6 +61,7 @@ export namespace BillingForm {
           demandissuedate: {
             type: "date",
             maximum: new Date(),
+            defaultValue: new Date(),
           },
           demandbankname: {
             type: "autocomplete"
@@ -188,11 +190,13 @@ export namespace BillingForm {
           },
           chequevaliditydate:{
             type: "date",
-            maximum: new Date(),
+            defaultValue: new Date(),
+            minimum: new Date()
           },
           demandvaliditydate:{
             type: "date",
-            maximum: new Date(),
+            defaultValue: new Date(),
+            minimum: new Date()
           },
           mobilewallet:{
             type: "dropdown",
@@ -204,7 +208,7 @@ export namespace BillingForm {
             type: "string",
           }, //60
           posimei:{
-            type: "dropdown",
+            type: "string",
           },
           creditcardtransactionid:{
             type: "string",

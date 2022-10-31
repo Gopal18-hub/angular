@@ -29,6 +29,7 @@ import { LookupService } from "@core/services/lookup.service";
 import { PatientService } from "@core/services/patient.service";
 import { Form60YesOrNoComponent } from "./form60-dialog/form60-yes-or-no.component";
 import { BillingApiConstants } from "../billing/BillingApiConstant";
+import * as moment from "moment";
 
 @Component({
   selector: "out-patients-deposit",
@@ -77,10 +78,12 @@ export class DepositComponent implements OnInit {
         this.regNumber = Number(this.depositForm.value.maxid.split(".")[1]);
         const expiredStatus = await this.checkPatientExpired(this.iacode, this.regNumber);
         if (expiredStatus) {
+          
           const dialogRef = this.messageDialogService.error(
             "Patient is an Expired Patient!"
           );
           await dialogRef.afterClosed().toPromise();
+          this.expiredpatientexists = true;
         }
         this.getPatientDetailsForDeposit();
       }
@@ -110,6 +113,7 @@ export class DepositComponent implements OnInit {
                 "Patient is an Expired Patient!"
               );
                dialogRef.afterClosed().toPromise();
+               this.expiredpatientexists = true;
             }
             this.getPatientDetailsForDeposit();
           }
@@ -331,6 +335,8 @@ export class DepositComponent implements OnInit {
   categoryIcons: [] = [];
   similarContactPatientList: SimilarSoundPatientResponse[] = [];
   tableselectionexists: boolean = false;
+  expiredpatientexists: boolean = false;
+  moment = moment;
 
   depositForm!: FormGroup;
   questions: any;
@@ -376,7 +382,8 @@ export class DepositComponent implements OnInit {
     );
     this.depositForm = formResult.form;
     this.questions = formResult.questions;
-    this.lastUpdatedBy = this.cookie.get("UserName");
+    this.lastUpdatedBy =
+      this.cookie.get("Name") + " ( " + this.cookie.get("UserName") + " )";
     this.depositForm.controls["panno"].disable();
     this.depositForm.controls["mainradio"].disable();
 
@@ -493,6 +500,7 @@ export class DepositComponent implements OnInit {
                 "Patient is an Expired Patient!"
               );
                dialogRef.afterClosed().toPromise();
+               this.expiredpatientexists = true;
             }
             this.getDepositType();
             this.getPatientDetailsForDeposit();
@@ -797,6 +805,7 @@ export class DepositComponent implements OnInit {
                         "Patient is an Expired Patient!"
                       );
                        dialogRef.afterClosed().toPromise();
+                       this.expiredpatientexists = true;
                     }
                     this.getPatientDetailsForDeposit();
                   }

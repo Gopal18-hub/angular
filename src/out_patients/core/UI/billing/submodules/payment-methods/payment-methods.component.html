@@ -67,6 +67,19 @@
                     </div>
                     <div class="flex w-3/4 mt-1">
                         <div class="w-3/10">
+                            <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
+                        </div>
+                        <div class="w-5/9 ml-3">
+                            <maxhealth-question
+                            [question]="questions[55]"
+                            [form]="refundform"
+                            [questions]="questions[55]"
+                            [index]="3"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex w-3/4 mt-1">
+                        <div class="w-3/10">
                             <mat-label class="max-health-primary-color  font-medium">Bank Name</mat-label>
                         </div>
                         <div class="w-5/9 ml-3">
@@ -104,16 +117,7 @@
                             [index]="6"
                             ></maxhealth-question>
                         </div>
-                    </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
-                       
-                        <div class="ml-8">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="savecheque()">Ok</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetchequedetails()">Cancel</button>
-                        </div>
-                    </div>
+                    </div>                   
                 </div>
             </mat-tab>
             <mat-tab label="Credit Card" *ngIf="config.paymentmethod.credit">
@@ -308,6 +312,19 @@
                     </div>
                     <div class="flex w-3/4 mt-1">
                         <div class="w-3/10">
+                            <mat-label class="max-health-primary-color  font-medium">Validity</mat-label>
+                        </div>
+                        <div class="w-5/9 ml-3">
+                            <maxhealth-question
+                            [question]="questions[56]"
+                            [form]="refundform"
+                            [questions]="questions[56]"
+                            [index]="17"
+                            ></maxhealth-question>
+                        </div>
+                    </div>
+                    <div class="flex w-3/4 mt-1">
+                        <div class="w-3/10">
                             <mat-label class="max-health-primary-color font-medium">Bank Name</mat-label>
                         </div>
                         <div class="w-5/9 ml-3">
@@ -346,15 +363,7 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
-                       
-                        <div class="ml-8">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="savecheque()">Ok</button>
-                        </div>
-                        <div class="ml-3">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1" (click)="resetchequedetails()">Cancel</button>
-                        </div>
-                    </div>
+                  
                 </div>
             </mat-tab>
             <mat-tab label="Mobile Payment" *ngIf="config.paymentmethod.mobilepayment">
@@ -797,12 +806,15 @@
                             ></maxhealth-question>
                         </div>
                     </div>
-                    <div class="flex mt-3 ml-10 align-items-center creditbuttonwidth">
+                    <div class="flex mt-3 ml-5 align-items-center creditbuttonwidth">
                         <div class="">
-                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Last Txn Status</button>
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Get Status</button>
                         </div>
                         <div class="ml-3">
                             <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Ok</button>
+                        </div>
+                        <div class="ml-3">
+                            <button mat-raised-button color="primary" type="submit" class="mt-1 btn">Retry</button>
                         </div>
                     </div>
                 </div>
