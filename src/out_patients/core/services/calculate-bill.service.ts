@@ -111,6 +111,7 @@ export class CalculateBillService {
     this.depositDetailsData = [];
     this.seniorCitizen = false;
     this.billFormGroup = null;
+    this.otherPlanSelectedItems = [];
   }
 
   setDiscountSelectedItems(items: any) {
