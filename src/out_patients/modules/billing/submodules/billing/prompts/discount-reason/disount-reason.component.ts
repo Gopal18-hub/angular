@@ -52,7 +52,7 @@ export class DisountReasonComponent implements OnInit {
         readonly: true,
       },
       authorise: {
-        type: "dropdown",
+        type: "autocomplete",
         placeholder: "-Select-",
         required: true,
       },
@@ -181,7 +181,6 @@ export class DisountReasonComponent implements OnInit {
   selectedItems: any = [];
 
   disableAdd: boolean = false;
-  disableApply: boolean = false;
 
   @ViewChild("table") tableRows: any;
 
@@ -227,9 +226,7 @@ export class DisountReasonComponent implements OnInit {
     }
     if ("discounttypes" in this.data) {
       this.discounttypes = this.data.discounttypes;
-      this.question[0].options = this.discounttypes.map((a: any) => {
-        return { title: a.title, value: a.value, disabled: false };
-      });
+      this.question[0].options = this.discounttypes;
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.getDiscountReasonHead();
@@ -323,7 +320,7 @@ export class DisountReasonComponent implements OnInit {
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
-    this.discAmtForm.controls["reason"].valueChanges.subscribe((val:any) => {
+    this.discAmtForm.controls["reason"].valueChanges.subscribe((val: any) => {
       if (val) {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
@@ -343,13 +340,13 @@ export class DisountReasonComponent implements OnInit {
             height: "80vh",
           });
 
-          dialogref.afterClosed().subscribe((res:any) => {
+          dialogref.afterClosed().subscribe((res: any) => {
             this.discAmtForm.controls["empCode"].setValue(res.data);
           });
         }
       }
     });
-    this.discAmtForm.controls["head"].valueChanges.subscribe((val:any) => {
+    this.discAmtForm.controls["head"].valueChanges.subscribe((val: any) => {
       if (val) {
         const filterData = this.discReasonList.filter(
           (rl: any) => rl.mainhead == val
@@ -434,25 +431,31 @@ export class DisountReasonComponent implements OnInit {
       default:
         console.log("default");
     }
-    this.discAmtForm.reset();
+    this.discAmtForm.patchValue({
+      types: null,
+      head: null,
+      reason: null,
+      percentage: null,
+      amt: null,
+    });
   }
 
   OnCampaignPrepare() {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = this.billingService.totalCostWithOutGst;
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Campaign",
       discTypeId: 6,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -472,18 +475,20 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = parseFloat(
+      this.calculateBillService.billFormGroup.form.value.amtPayByPatient
+    );
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Patient",
       discTypeId: 4,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -513,18 +518,20 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = parseFloat(
+      this.calculateBillService.billFormGroup.form.value.amtPayByComp
+    );
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Company",
       discTypeId: 5,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -568,10 +575,10 @@ export class DisountReasonComponent implements OnInit {
           service: selecetdServices[i].name,
           itemId: item.itemId,
           doctor: item.itemName,
-          price: (item.price * item.qty).toFixed(2),
-          disc: existReason.discountPer.toFixed(2),
-          discAmt: discAmt.toFixed(2),
-          totalAmt: (price - discAmt).toFixed(2),
+          price: item.price * item.qty,
+          disc: existReason.discountPer,
+          discAmt: discAmt,
+          totalAmt: price - discAmt,
           head: this.discAmtForm.value.head,
           reason: this.discAmtForm.value.reason,
           value: "0",
@@ -638,17 +645,18 @@ export class DisountReasonComponent implements OnInit {
   clear() {
     this.disableAdd = false;
     this.dualList = [];
+    this.discAmtForm.reset();
     this.calculateBillService.discountSelectedItems = [];
     this.selectedItems = [...this.calculateBillService.discountSelectedItems];
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.discAmtForm.controls["authorise"].setValue(0);
-    this.disableApply = true;
 
     this.question[0].options = this.discounttypes.map((a: any) => {
       return { title: a.title, value: a.value, disabled: false };
     });
+    this.calculateBillService.calculateDiscount();
   }
   applyDiscount() {
     this.calculateBillService.calculateDiscount();
@@ -661,18 +669,18 @@ export class DisountReasonComponent implements OnInit {
     const existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
-    const discAmt =
-      (this.billingService.totalCost * existReason.discountPer) / 100;
+    const price = this.billingService.totalCostWithOutGst;
+    const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
       discType: "On Bill",
       discTypeId: 1,
       service: "",
       doctor: "",
-      price: this.billingService.totalCost,
+      price: price,
       disc: existReason.discountPer,
       discAmt: discAmt,
-      totalAmt: this.billingService.totalCost - discAmt,
+      totalAmt: price - discAmt,
       head: this.discAmtForm.value.head,
       reason: this.discAmtForm.value.reason,
       value: "0",
@@ -695,7 +703,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         this.mainHeadList = data;
         this.question[1].options = this.mainHeadList.map((a) => {
           return { title: a.name, value: a.id };
@@ -713,7 +721,7 @@ export class DisountReasonComponent implements OnInit {
         )
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         this.discReasonList = data;
         this.question[2].options = this.discReasonList.map((a) => {
           return { title: a.name, value: a.id, discountPer: a.discountPer };
@@ -745,11 +753,12 @@ export class DisountReasonComponent implements OnInit {
         ApiConstants.getauthorisedby(Number(this.cookie.get("HSPLocationId")))
       )
       .pipe(takeUntil(this._destroying$))
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         this.authorisedBy = data;
         this.question[5].options = this.authorisedBy.map((a) => {
-          return { title: a.name, value: { title: a.name, value: a.id } };
+          return { title: a.name, value: a.id };
         });
+        this.question[5] = { ...this.question[5] };
       });
   }
 }

@@ -51,7 +51,7 @@ export class DmgPopupComponent implements OnInit {
   questions: any;
   dmgDocList: any;
   check: any = 0;
-  @ViewChild('table') table: any;
+  @ViewChild("table") table: any;
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
   );
@@ -65,7 +65,6 @@ export class DmgPopupComponent implements OnInit {
     private service: BillingService
   ) {
     console.log(inputdata);
-    
   }
 
   ngOnInit(): void {
@@ -76,8 +75,8 @@ export class DmgPopupComponent implements OnInit {
     this.dmgform = formResult.form;
     this.questions = formResult.questions;
     this.questions[0].options = this.inputdata.dmgdata.map((l: any) => {
-      return { title: l.doctorName.split('.')[1].trim(), value: l.docID}
-    })
+      return { title: l.doctorName.split(".")[1].trim(), value: l.docID };
+    });
   }
   SelectedGroupDoc: any = [];
   ngAfterViewInit(): void{
@@ -92,7 +91,7 @@ export class DmgPopupComponent implements OnInit {
       {
         this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
       }
-    })
+    });
   }
  
   getgroupdoctormappedwithdmg()
@@ -144,20 +143,14 @@ export class DmgPopupComponent implements OnInit {
     console.log(this.SelectedGroupDoc);
     return this.check;
   }
-  save()
-  {
-    if(this.dmgform.controls['radio'].value == '')
-    {
-      this.msgdialog.info('Please select organ (DMG)');
+  save() {
+    if (this.dmgform.controls["radio"].value == "") {
+      this.msgdialog.info("Please select organ (DMG)");
       return;
-    }
-    else if(this.table.selection.selected.length == 0)
-    {
-      this.msgdialog.info('Please re-select organ (DMG)');
+    } else if (this.table.selection.selected.length == 0) {
+      this.msgdialog.info("Please re-select organ (DMG)");
       return;
-    }
-    else
-    {
+    } else {
       this.service.dtFinalGrpDoc = {
         chk: true,
         unitDocID: this.inputdata.unitdocid.toString(),
@@ -167,10 +160,10 @@ export class DmgPopupComponent implements OnInit {
         this.service.dtCheckedItem.push(item);
       })
       this.service.txtOtherGroupDoc = this.inputdata.reason;
-      console.log(this.service.dtFinalGrpDoc )
+      console.log(this.service.dtFinalGrpDoc);
       this.dialogRef.close();
     }
-    
+
     // this.http.get(BillingApiConstants.GetClinicDoctorsDMGRota(
     //   this.dmgform.controls['radio'].value,
     //   this.inputdata.specialization,
@@ -181,8 +174,7 @@ export class DmgPopupComponent implements OnInit {
     //   this.dialogRef.close('res:'+ res);
     // })
   }
-  cancel()
-  {
-    this.dialogRef.close('Cancel');
+  cancel() {
+    this.dialogRef.close("Cancel");
   }
 }

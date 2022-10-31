@@ -55,7 +55,7 @@ import {
 export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() config: any;
 
-  @Input() data: any=[];
+  @Input() data: any = [];
 
   @Input() childTableRefId: any = -1;
 
@@ -193,6 +193,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.displayedColumns.push("maxRemoveRow");
     }
     this.initiateTable = true;
+    this.tableForm.markAllAsTouched();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
