@@ -61,6 +61,8 @@ export class PaymentMethodsComponent implements OnInit {
     }
     this.refundform.controls["chequeissuedate"].setValue(this.today);
     this.refundform.controls["demandissuedate"].setValue(this.today);
+    this.refundform.controls["chequevaliditydate"].setValue(this.today);
+    this.refundform.controls["demandvaliditydate"].setValue(this.today);
     this.getbankname();
     this.getcreditcard();
     this.depositservice.clearAllItems.subscribe((clearItems) => {
@@ -165,7 +167,9 @@ export class PaymentMethodsComponent implements OnInit {
     this.refundform.reset();
     this.today = new Date();
     this.refundform.controls["chequeissuedate"].setValue(this.today);
-    this.refundform.controls["demandissuedate"].setValue(this.today);
+    this.refundform.controls["demandissuedate"].setValue(this.today);    
+    this.refundform.controls["chequevaliditydate"].setValue(this.today);
+    this.refundform.controls["demandvaliditydate"].setValue(this.today);
     this.refundform.controls["cashamount"].setValue("0.00");
     this.refundform.controls["chequeamount"].setValue("0.00");
     this.refundform.controls["creditamount"].setValue("0.00");

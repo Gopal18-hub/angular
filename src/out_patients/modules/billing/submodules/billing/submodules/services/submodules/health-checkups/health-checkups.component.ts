@@ -339,7 +339,7 @@ export class HealthCheckupsComponent implements OnInit {
           this.billingService.addToHealthCheckup({
             sno: this.data.length + 1,
             healthCheckups: this.formGroup.value.healthCheckup.originalTitle,
-            price: res[0].returnOutPut + res[0].totaltaX_Value,
+            price: res[0].returnOutPut,
             itemid: this.formGroup.value.healthCheckup.value,
             serviceid: 26,
             priorityId: priorityId,
