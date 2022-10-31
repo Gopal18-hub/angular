@@ -147,10 +147,10 @@ export class ShowPlanDetilsComponent implements OnInit {
           this.doctorList = res.map((r: any) => {
             return {
               title: r.doctorname + " (" + r.specialityname + ")",
-              value: r.doctorId,
-              originalTitle: r.doctorName,
+              value: r.doctorid,
+              originalTitle: r.doctorname,
               specialisationid: r.specialisationid,
-              //clinicID: r.clinicID,
+              clinicId: 0,
             };
           });
           this.isConsultationExist = true;
@@ -196,9 +196,10 @@ export class ShowPlanDetilsComponent implements OnInit {
   getDoctorsList() {}
 
   save() {
+    console.log(this.selectedDoctor);
     this.dialogRef.close({
       selected: this.tableRows.selection.selected,
-      selectedDoctor: this.selectedDoctor,
+      selectedDoctor: this.selectedDoctor.value,
     });
   }
 }

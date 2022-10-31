@@ -144,7 +144,7 @@ export class ProcedureOtherComponent implements OnInit {
     this.data = this.billingService.ProcedureItems;
     this.getOtherService();
     this.getSpecialization();
-    this.billingService.clearAllItems.subscribe((clearItems:any) => {
+    this.billingService.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -194,6 +194,7 @@ export class ProcedureOtherComponent implements OnInit {
         this.billingService.ProcedureItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
           res.$event.value;
@@ -208,13 +209,13 @@ export class ProcedureOtherComponent implements OnInit {
     });
     this.formGroup.controls["procedure"].valueChanges
       .pipe(
-        filter((res:any) => {
+        filter((res: any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value:any) => {
+        switchMap((value: any) => {
           if (
             this.formGroup.value.otherService &&
             this.formGroup.value.otherService.value
@@ -271,7 +272,7 @@ export class ProcedureOtherComponent implements OnInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.questions[0].options = res.map((r: any) => {
           return { title: r.name, value: r.id, isBundle: r.isBundle };
         });
@@ -296,7 +297,7 @@ export class ProcedureOtherComponent implements OnInit {
         )
       )
       .subscribe(
-        (res:any) => {
+        (res: any) => {
           this.formGroup.controls["procedure"].reset();
           if (Array.isArray(res)) {
             this.questions[1].options = res.map((r: any) => {
@@ -315,7 +316,7 @@ export class ProcedureOtherComponent implements OnInit {
 
           this.questions[1] = { ...this.questions[1] };
         },
-        (error:any) => {
+        (error: any) => {
           this.formGroup.controls["procedure"].reset();
           this.questions[1].options = [];
           this.questions[1] = { ...this.questions[1] };
@@ -350,11 +351,13 @@ export class ProcedureOtherComponent implements OnInit {
   }
 
   checkTableValidation() {
-    if (this.tableRows.tableForm.valid) {
-      this.billingService.changeBillTabStatus(false);
-    } else {
-      this.billingService.changeBillTabStatus(true);
-    }
+    setTimeout(() => {
+      if (this.tableRows.tableForm.valid) {
+        this.billingService.changeBillTabStatus(false);
+      } else {
+        this.billingService.changeBillTabStatus(true);
+      }
+    }, 200);
   }
 
   async add(priorityId = 1) {
