@@ -51,7 +51,7 @@ export class CalculateBillService {
     public matDialog: MatDialog,
     private http: HttpService,
     public cookie: CookieService,
-    public messageDialogService: MessageDialogService,  
+    public messageDialogService: MessageDialogService
   ) {}
 
   setCompanyNonCreditItems(items: any) {
@@ -166,86 +166,100 @@ export class CalculateBillService {
     return this.interactionDetails;
   }
 
-  refreshDiscount() {
-    this.discountSelectedItems.forEach((disIt: any) => {
-      if ([1, 4, 5, 6].includes(disIt.discTypeId)) {
-        disIt.price = this.billingServiceRef.totalCost;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      } else if (disIt.discTypeId == 2) {
-        const serviceItem = this.serviceBasedListItems.find(
-          (sbli: any) => sbli.name == disIt.service
-        );
-        let price = 0;
-        serviceItem.items.forEach((item: any) => {
-          price += item.price * item.qty;
-        });
-        const discAmt = (price * disIt.disc) / 100;
-        disIt.price = price;
-        disIt.discAmt = discAmt;
-        disIt.totalAmt = price - discAmt;
-      } else if (disIt.discTypeId == 3) {
-        const billItem = this.billingServiceRef.billItems.find(
-          (it: any) => it.itemId == disIt.itemId
-        );
-        disIt.price = billItem.price * billItem.qty;
-        disIt.discAmt = (disIt.price * disIt.disc) / 100;
-        disIt.totalAmt = disIt.price - disIt.discAmt;
-      }
-    });
+  refreshDiscount(formGroup: any) {
+    if (this.discountSelectedItems.length > 0) {
+      this.discountSelectedItems.forEach((disIt: any) => {
+        if ([1, 6].includes(disIt.discTypeId)) {
+          disIt.price = this.billingServiceRef.totalCost;
+          disIt.discAmt = (disIt.price * disIt.disc) / 100;
+          disIt.totalAmt = disIt.price - disIt.discAmt;
+        } else if (disIt.discTypeId == 2) {
+          const serviceItem = this.serviceBasedListItems.find(
+            (sbli: any) => sbli.name == disIt.service
+          );
+          let price = 0;
+          serviceItem.items.forEach((item: any) => {
+            price += item.price * item.qty;
+          });
+          const discAmt = (price * disIt.disc) / 100;
+          disIt.price = price;
+          disIt.discAmt = discAmt;
+          disIt.totalAmt = price - discAmt;
+        }
+      });
+      this.applyDiscount("biilTab", formGroup);
+    }
   }
 
   applyDiscount(from: string, formGroup: any) {
-    if (
-      this.discountSelectedItems.length == 1 &&
-      [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
-    ) {
-      const discItem = this.discountSelectedItems[0];
+    if (this.discountSelectedItems.length == 0) {
       this.billingServiceRef.billItems.forEach((item: any) => {
-        item.disc = discItem.disc;
-        item.discAmount = (item.price * item.qty * discItem.disc) / 100;
-        item.totalAmount = item.price * item.qty - item.discAmount;
-        item.discountType = this.discountSelectedItems[0].discTypeId;
-        item.discountReason = discItem.reason;
+        item.disc = 0;
+        item.discAmount = 0;
+        const price = item.price * item.qty;
+        item.gstValue = item.gst > 0 ? (item.gst * price) / 100 : 0;
+        item.totalAmount = item.price * item.qty + item.gstValue;
+        item.discountType = 0;
+        item.discountReason = 0;
       });
-      if (this.discountSelectedItems[0].discTypeId == 5) {
-        formGroup.controls["compDisc"].setValue(discItem.discAmt);
-      }
-      if (this.discountSelectedItems[0].discTypeId == 4) {
-        formGroup.controls["patientDisc"].setValue(discItem.discAmt);
-      }
     } else {
-      this.discountSelectedItems.forEach((ditem: any) => {
-        if (ditem.discTypeId == 3) {
-          const item = this.billingServiceRef.billItems.find(
-            (it: any) => it.itemId == ditem.itemId
-          );
-          if (item) {
-            item.disc = ditem.disc;
-            item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-            item.totalAmount = item.price * item.qty - item.discAmount;
-            item.discountType = 3;
-            item.discountReason = ditem.reason;
-          }
-        } else if (ditem.discTypeId == 2) {
-          const items = this.billingServiceRef.billItems.filter(
-            (it: any) => it.serviceName == ditem.service
-          );
-          if (items) {
-            items.forEach((item: any) => {
+      if (
+        this.discountSelectedItems.length == 1 &&
+        [1, 4, 5, 6].includes(this.discountSelectedItems[0].discTypeId)
+      ) {
+        const discItem = this.discountSelectedItems[0];
+        this.billingServiceRef.billItems.forEach((item: any) => {
+          item.disc = discItem.disc;
+          item.discAmount = (item.price * item.qty * discItem.disc) / 100;
+          const itemPrice = item.price * item.qty - item.discAmount;
+          item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+          item.totalAmount = itemPrice + item.gstValue;
+          item.discountType = this.discountSelectedItems[0].discTypeId;
+          item.discountReason = discItem.reason;
+        });
+        if (this.discountSelectedItems[0].discTypeId == 5) {
+          formGroup.controls["compDisc"].setValue(discItem.discAmt);
+        }
+        if (this.discountSelectedItems[0].discTypeId == 4) {
+          formGroup.controls["patientDisc"].setValue(discItem.discAmt);
+        }
+      } else {
+        this.discountSelectedItems.forEach((ditem: any) => {
+          if (ditem.discTypeId == 3) {
+            const item = this.billingServiceRef.billItems.find(
+              (it: any) => it.itemId == ditem.itemId
+            );
+            if (item) {
               item.disc = ditem.disc;
               item.discAmount = (item.price * item.qty * ditem.disc) / 100;
-              item.totalAmount = item.price * item.qty - item.discAmount;
-              item.discountType = 2;
+              const itemPrice = item.price * item.qty - item.discAmount;
+              item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+              item.totalAmount = itemPrice + item.gstValue;
+              item.discountType = 3;
               item.discountReason = ditem.reason;
-            });
+            }
+          } else if (ditem.discTypeId == 2) {
+            const items = this.billingServiceRef.billItems.filter(
+              (it: any) => it.serviceName == ditem.service
+            );
+            if (items) {
+              items.forEach((item: any) => {
+                item.disc = ditem.disc;
+                item.discAmount = (item.price * item.qty * ditem.disc) / 100;
+                const itemPrice = item.price * item.qty - item.discAmount;
+                item.gstValue = item.gst > 0 ? (item.gst * itemPrice) / 100 : 0;
+                item.totalAmount = itemPrice + item.gstValue;
+                item.discountType = 2;
+                item.discountReason = ditem.reason;
+              });
+            }
+          } else if (ditem.discTypeId == 4) {
+            formGroup.controls["patientDisc"].setValue(ditem.discAmt);
+          } else if (ditem.discTypeId == 5) {
+            formGroup.controls["compDisc"].setValue(ditem.discAmt);
           }
-        } else if (ditem.discTypeId == 4) {
-          formGroup.controls["patientDisc"].setValue(ditem.discAmt);
-        } else if (ditem.discTypeId == 5) {
-          formGroup.controls["compDisc"].setValue(ditem.discAmt);
-        }
-      });
+        });
+      }
     }
   }
 
@@ -272,13 +286,27 @@ export class CalculateBillService {
       };
     } else {
       data = {
+        formData: this.discountForm ? this.discountForm.value : {},
         discounttypes: [
-          { title: "On Bill", value: "On-Bill" },
-          { title: "On Service", value: "On-Service" },
-          { title: "On Item", value: "On-Item" },
-          { title: "On Patient", value: "On-Patient" },
-          { title: "On Company", value: "On-Company" },
-          { title: "On Campaign", value: "On-Campaign" },
+          { title: "On Bill", value: "On-Bill", disabled: false },
+          { title: "On Service", value: "On-Service", disabled: false },
+          { title: "On Item", value: "On-Item", disabled: false },
+          {
+            title: "On Patient",
+            value: "On-Patient",
+            disabled:
+              formGroup.value.paymentMode == 3 &&
+              parseFloat(formGroup.value.amtPayByPatient) > 0
+                ? false
+                : true,
+          },
+          {
+            title: "On Company",
+            value: "On-Company",
+            disabled:
+              parseFloat(formGroup.value.amtPayByComp) > 0 ? false : true,
+          },
+          { title: "On Campaign", value: "On-Campaign", disabled: false },
         ],
       };
     }
@@ -288,14 +316,14 @@ export class CalculateBillService {
       height: "68vh",
       data: data,
     });
-    discountReasonPopup.afterClosed().subscribe((res:any) => {
+    discountReasonPopup.afterClosed().subscribe((res: any) => {
       if (res && "applyDiscount" in res && res.applyDiscount) {
         this.processDiscountLogics(formGroup, componentRef, from);
-      }
-      else{
-         formGroup.controls["discAmtCheck"].setValue(false, {
-        emitEvent: false,
-      });
+      } else if (this.totalDiscountAmt == 0) {
+        this.processDiscountLogics(formGroup, componentRef, from);
+        formGroup.controls["discAmtCheck"].setValue(false, {
+          emitEvent: false,
+        });
       }
     });
   }
@@ -304,23 +332,28 @@ export class CalculateBillService {
     this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
     this.applyDiscount(from, formGroup);
     componentRef.billTypeChange(formGroup.value.paymentMode);
-    this.discountSelectedItems.forEach((discItem: any) => {
-      this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
-        discOn: discItem.discType,
-        disType: discItem.discTypeId.toString(),
-        disPer: discItem.disc,
-        disReason: discItem.reasonTitle,
-        disAmt: discItem.discAmt,
+    if (this.discountSelectedItems.length > 0) {
+      this.discountSelectedItems.forEach((discItem: any) => {
+        this.billingServiceRef.makeBillPayload.tab_o_opDiscount.push({
+          discOn: discItem.discType,
+          disType: discItem.discTypeId.toString(),
+          disPer: discItem.disc,
+          disReason: discItem.reasonTitle,
+          disAmt: discItem.discAmt,
+        });
       });
-    });
+    } else {
+      this.billingServiceRef.makeBillPayload.tab_o_opDiscount = [];
+    }
+
     formGroup.controls["discAmt"].setValue(this.totalDiscountAmt);
     componentRef.applyCreditLimit();
     if (this.totalDiscountAmt > 0) {
       formGroup.controls["discAmtCheck"].setValue(true, {
         emitEvent: false,
       });
-      componentRef.refreshTable();
     }
+    componentRef.refreshTable();
     formGroup.controls["amtPayByPatient"].setValue(
       componentRef.getAmountPayByPatient()
     );
@@ -418,7 +451,7 @@ export class CalculateBillService {
 
         CouponConfirmationRef.afterClosed()
           .pipe(takeUntil(this._destroying$))
-          .subscribe(async (result:any) => {
+          .subscribe(async (result: any) => {
             if ("type" in result) {
               if (result.type == "yes") {
                 this.discountSelectedItems = this.processDiscount(res);
@@ -614,274 +647,254 @@ export class CalculateBillService {
   //#endregion
 
   //#region TaxableBill
-  dsTaxCode:any={}; 
-  async checkTaxableBill():Promise<boolean> {
+  dsTaxCode: any = {};
+  async checkTaxableBill(): Promise<boolean> {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
-    let Countindx=0;
-    let taxapplicable=false;
-    let GSTTaxPer =0;
-    let STax=0;
-    let SNonTax=0;
-    let citem=0;
-    let ncitem=0;
-    let cosflag=false;
-    let TaxNontaxFlag=false;
+    let Countindx = 0;
+    let taxapplicable = false;
+    let GSTTaxPer = 0;
+    let STax = 0;
+    let SNonTax = 0;
+    let citem = 0;
+    let ncitem = 0;
+    let cosflag = false;
+    let TaxNontaxFlag = false;
     let CosmeticFlag = false;
-    let HomeCareFlag= false;
-    let SACCode="";
-    let BillFlag_ForGST= false;
-    let flg=0;
-    let strErrormsg="";
+    let HomeCareFlag = false;
+    let SACCode = "";
+    let BillFlag_ForGST = false;
+    let flg = 0;
+    let strErrormsg = "";
     if (this.billingServiceRef.ProcedureItems.length > 0) {
       this.billingServiceRef.ProcedureItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
     }
     Countindx = 0;
-    if(this.billingServiceRef.consultationItems.length > 0){
-       this.billingServiceRef.consultationItems.forEach((item: any) => {
-        countProc= countProc+1;
-         
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+    if (this.billingServiceRef.consultationItems.length > 0) {
+      this.billingServiceRef.consultationItems.forEach((item: any) => {
+        countProc = countProc + 1;
+
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-         if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
           this.dsTaxCode = item.gstDetail;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.serviceName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.serviceName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.serviceName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.serviceName + ",";
           }
         }
         Countindx = Countindx + 1;
-       });  
+      });
     }
     Countindx = 0;
-    if(this.billingServiceRef.HealthCheckupItems.length > 0){
-       this.billingServiceRef.HealthCheckupItems.forEach((item: any) => {
-        countProc= countProc+1;
-         
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
-          GSTTaxPer = item.gstCode.tax;         
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+    if (this.billingServiceRef.HealthCheckupItems.length > 0) {
+      this.billingServiceRef.HealthCheckupItems.forEach((item: any) => {
+        countProc = countProc + 1;
+
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
+          GSTTaxPer = item.gstCode.tax;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-         if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
           this.dsTaxCode = item.gstDetail;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
         Countindx = Countindx + 1;
-       });  
+      });
     }
     Countindx = 0;
     if (this.billingServiceRef.InvestigationItems.length > 0) {
       this.billingServiceRef.InvestigationItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
           GSTTaxPer = item.gstCode.tax;
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
@@ -889,71 +902,65 @@ export class CalculateBillService {
     Countindx = 0;
     if (this.billingServiceRef.OrderSetItems.length > 0) {
       this.billingServiceRef.OrderSetItems.forEach((item: any) => {
-        countProc= countProc+1;
+        countProc = countProc + 1;
 
-        if(item.gstCode.tax > 0){
-          taxapplicable= true;
+        if (item.gstCode.tax > 0) {
+          taxapplicable = true;
           GSTTaxPer = item.gstCode.tax;
-          STax= STax+1;
-        }
-        else{
-          taxapplicable= false;
+          STax = STax + 1;
+        } else {
+          taxapplicable = false;
           GSTTaxPer = 0;
-          SNonTax= SNonTax+1;
+          SNonTax = SNonTax + 1;
         }
 
-        if(cstype > 0 && item.gstCode.codeId==cstype){
-           citem = citem + 1;
-        }
-        else{
-          ncitem= ncitem + 1;
+        if (cstype > 0 && item.gstCode.codeId == cstype) {
+          citem = citem + 1;
+        } else {
+          ncitem = ncitem + 1;
         }
 
-        if(STax > 0  && SNonTax > 0){
+        if (STax > 0 && SNonTax > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }          
+          }
         }
 
-        if(citem >0 && ncitem > 0){ 
+        if (citem > 0 && ncitem > 0) {
           cosflag = true;
           TaxNontaxFlag = true;
-          if(item.billItem.serviceId == 83){
+          if (item.billItem.serviceId == 83) {
             CosmeticFlag = true;
-          }           
+          }
         }
 
-        if(SACCode == ""){
+        if (SACCode == "") {
           SACCode = item.gstDetail.saccode;
-        }
-        else if(SACCode != item.gstDetail.saccode){
-          BillFlag_ForGST=  true;
+        } else if (SACCode != item.gstDetail.saccode) {
+          BillFlag_ForGST = true;
         }
 
-        if(Countindx == 0 && taxapplicable){
+        if (Countindx == 0 && taxapplicable) {
           flg = 1;
-        }
-        else {
-          if(flg== 1 && !taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+        } else {
+          if (flg == 1 && !taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
-          if(flg==0 &&taxapplicable){
-            strErrormsg += item.billItem.itemName+",";
+          if (flg == 0 && taxapplicable) {
+            strErrormsg += item.billItem.itemName + ",";
           }
         }
 
-        if(item.billItem.serviceId != 92){
-          if(item.gstCode.tax == 0){
+        if (item.billItem.serviceId != 92) {
+          if (item.gstCode.tax == 0) {
+            this.dsTaxCode = item.gstDetail;
+          } else if (item.gstCode.tax > 0) {
             this.dsTaxCode = item.gstDetail;
           }
-          else if(item.gstCode.tax > 0){
-            this.dsTaxCode = item.gstDetail;
-          }
-        }
-        else{
-         this.dsTaxCode = item.gstDetail;
+        } else {
+          this.dsTaxCode = item.gstDetail;
         }
         Countindx = Countindx + 1;
       });
@@ -986,15 +993,15 @@ export class CalculateBillService {
     //       TaxNontaxFlag = true;
     //       if(item.billItem.serviceId == 83){
     //         CosmeticFlag = true;
-    //       }          
+    //       }
     //     }
 
-    //     if(citem >0 && ncitem > 0){ 
+    //     if(citem >0 && ncitem > 0){
     //       cosflag = true;
     //       TaxNontaxFlag = true;
     //       if(item.billItem.serviceId == 83){
     //         CosmeticFlag = true;
-    //       }           
+    //       }
     //     }
 
     //     if(SACCode == ""){
@@ -1035,24 +1042,26 @@ export class CalculateBillService {
     ncitem = 0;
     STax = 0;
     SNonTax = 0;
-    if(TaxNontaxFlag && !CosmeticFlag){
-      const infoRef = this.messageDialogService
-      .info("Kindly Prepare Separate Bill For Taxable and Non Taxable services "
-           + strErrormsg);
+    if (TaxNontaxFlag && !CosmeticFlag) {
+      const infoRef = this.messageDialogService.info(
+        "Kindly Prepare Separate Bill For Taxable and Non Taxable services " +
+          strErrormsg
+      );
       await infoRef.afterClosed().toPromise();
-      TaxNontaxFlag = false;  
-      CosmeticFlag = false; 
-      return false;
-    }
-    if(CosmeticFlag){
-       const infoRef = this.messageDialogService
-      .info("Kindly Prepare Separate Bill For Cosmetic services");
-      await infoRef.afterClosed().toPromise();
-      TaxNontaxFlag = false;  
+      TaxNontaxFlag = false;
       CosmeticFlag = false;
       return false;
     }
-    TaxNontaxFlag = false;  
+    if (CosmeticFlag) {
+      const infoRef = this.messageDialogService.info(
+        "Kindly Prepare Separate Bill For Cosmetic services"
+      );
+      await infoRef.afterClosed().toPromise();
+      TaxNontaxFlag = false;
+      CosmeticFlag = false;
+      return false;
+    }
+    TaxNontaxFlag = false;
     CosmeticFlag = false;
     return true;
   }
@@ -1069,9 +1078,7 @@ export class CalculateBillService {
       }
     }
     return cstype;
-  } 
+  }
 
- 
   //#endregion TaxableBill
- 
 }

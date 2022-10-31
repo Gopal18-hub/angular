@@ -15,6 +15,7 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { SpecializationService } from "../../specialization.service";
+import { BillingStaticConstants } from "../../BillingStaticConstant";
 
 @Component({
   selector: "out-patients-services",
@@ -146,8 +147,16 @@ export class ServicesComponent implements OnInit {
       tab.id == 3 &&
       this.billingService.checkOtherServicesForHealthCheckups()
     ) {
-      this.healthCheckupWarning();
-      return;
+      ////GAV-902 Registration Charges with Health Checkup
+      if (
+        BillingStaticConstants.allowService[tab.id].includes(
+          this.billingService.ProcedureItems[0].itemid
+        )
+      ) {
+      } else {
+        this.healthCheckupWarning();
+        return;
+      }
     } else if (
       tab.id == 6 &&
       this.billingService.checkOtherServicesForConsumables()

@@ -4,6 +4,7 @@ import { HttpService } from "@shared/services/http.service";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { CookieService } from "@shared/services/cookie.service";
 import { SpecializationService } from "../../specialization.service";
+import { BillingService } from "../../billing.service";
 
 @Component({
   selector: "out-patients-package-doctor-modification",
@@ -49,7 +50,8 @@ export class PackageDoctorModificationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private http: HttpService,
     private cookie: CookieService,
-    private specializationService: SpecializationService
+    private specializationService: SpecializationService,
+    private billingService: BillingService
   ) {}
 
   getData(hid: string, serviceid: string) {
@@ -116,6 +118,14 @@ export class PackageDoctorModificationComponent implements OnInit {
   }
 
   checkValidationSubmit() {
+    if (this.tableRows && this.tableRows.tableForm) {
+      if (this.tableRows.tableForm.valid) {
+        this.billingService.changeBillTabStatus(false);
+      } else {
+        this.billingService.changeBillTabStatus(true);
+      }
+    }
+
     if (this.data.doctorsList.length > 0) {
       if (
         this.data.doctorsList.length ==
@@ -129,7 +139,6 @@ export class PackageDoctorModificationComponent implements OnInit {
   }
 
   close() {
-    console.log(this.tableRows.tableForm);
     this.dialogRef.close({
       data: this.itemsData,
       itemId: this.data.orderSet.itemid,
