@@ -1,6 +1,6 @@
 <section class="paymentmethod-wrapper">
-  <div class="width h-full float-left maxhealth-vertical-tab">
-    <div class="flex h-1/10">
+  <div class="width h-full float-left maxhealth-vertical-tab flex flex-column">
+    <div class="flex h-1/10 mb-4">
       <div class="w-1/4">
         <mat-label
           class="max-health-primary-color font-medium font-base absolute mt-3"
@@ -18,21 +18,22 @@
         <mat-tab>
           <ng-template mat-tab-label>
             <button
-              [hidden]="activeTab.key==tab.method.label && tab.form.properties['price'].value==0"  
+              *ngIf="
+                activeTab.key != tab.key && paymentForm[tab.key].value.price > 0
+              "
               mat-icon-button
-              aria-label="close dialog"              
+              aria-label="close dialog"
               class="absolute max-dialog-close-icon mt-2 mr-3"
-              type="button" 
-              (click)="clearTabForm(tab)"                      
-            >  
-            <mat-icon>close</mat-icon>
-            </button>          
-           {{tab.method.label}}
+              type="button"
+              (click)="clearTabForm(tab)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            {{ tab.method.label }}
           </ng-template>
           <div class="ml-10">
-            <mat-label class="max-health-primary-color font-base font-medium">{{
-              tab.form.title
-            }}          
+            <mat-label class="max-health-primary-color font-base font-medium"
+              >{{ tab.form.title }}
             </mat-label>
             <ng-container
               *ngFor="let question of questions[tab.key]; let i = index"

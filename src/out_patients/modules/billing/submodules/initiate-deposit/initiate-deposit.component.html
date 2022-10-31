@@ -169,3 +169,10 @@
         </div>
     </mat-tab-nav-panel>
 </section>
+<div class="flex justify-between mx-5 max-health-primary-color font-xs">
+    <p>Last updated by: {{ lastUpdatedBy }}</p>
+    <div class="right">
+        Date: {{ moment().format("DD-MM-YYYY") }} | Time:
+        {{ moment().format("LT") }}
+      </div>
+  </div>

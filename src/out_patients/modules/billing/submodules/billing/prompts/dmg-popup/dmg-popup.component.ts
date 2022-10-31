@@ -51,7 +51,7 @@ export class DmgPopupComponent implements OnInit {
   questions: any;
   dmgDocList: any;
   check: any = 0;
-  @ViewChild('table') table: any;
+  @ViewChild("table") table: any;
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
   );
@@ -65,7 +65,6 @@ export class DmgPopupComponent implements OnInit {
     private service: BillingService
   ) {
     console.log(inputdata);
-    
   }
 
   ngOnInit(): void {
@@ -76,91 +75,87 @@ export class DmgPopupComponent implements OnInit {
     this.dmgform = formResult.form;
     this.questions = formResult.questions;
     this.questions[0].options = this.inputdata.dmgdata.map((l: any) => {
-      return { title: l.doctorName.split('.')[1].trim(), value: l.docID}
-    })
+      return { title: l.doctorName.split(".")[1].trim(), value: l.docID };
+    });
   }
-  ngAfterViewInit(): void{
-    this.dmgform.controls['radio'].valueChanges.subscribe(async (res:any) => {
-      console.log(this.dmgform.controls['radio'].value);
+  ngAfterViewInit(): void {
+    this.dmgform.controls["radio"].valueChanges.subscribe(async (res: any) => {
+      console.log(this.dmgform.controls["radio"].value);
       var val = await this.getgroupdoctormappedwithdmg();
       console.log(val);
-      if(val == 1)
-      {
-        this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
+      if (val == 1) {
+        this.msgdialog.info(
+          "No Doctor is mapped with this DMG, Please proceed with uncheck"
+        );
       }
-    })
+    });
   }
- SelectedGroupDoc: any[] = [];
- async getgroupdoctormappedwithdmg()
-  {
-    this.dmgDocList = '';
-    this.http.get(BillingApiConstants.getgroupdoctormappedwithdmg(
-      this.dmgform.controls['radio'].value,
-      this.inputdata.specialization,
-      this.cookie.get('HSPLocationId')
-    ))
-    .subscribe((res:any) => {
-      console.log(res);
-      if(res.dtOncoDMGSysProposedExcluded.length == 0)
-      {
-        this.check = 1;
-      }
-      var count = 1;
-      res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
-        var OSelectedGroupDoc: any = {};
-        if(res.dtOncoDMGSysProposedIncluded.filter((j: any) => { return j.id == i.id}).length > 0)
-        {
-          OSelectedGroupDoc.chk = 1;
+  SelectedGroupDoc: any[] = [];
+  async getgroupdoctormappedwithdmg() {
+    this.dmgDocList = "";
+    this.http
+      .get(
+        BillingApiConstants.getgroupdoctormappedwithdmg(
+          this.dmgform.controls["radio"].value,
+          this.inputdata.specialization,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        console.log(res);
+        if (res.dtOncoDMGSysProposedExcluded.length == 0) {
+          this.check = 1;
         }
-        else
-        {
-          OSelectedGroupDoc.chk = 0;
-        }
-        OSelectedGroupDoc.id = i.id;
-        OSelectedGroupDoc.name = i.name;
-        OSelectedGroupDoc.dmgid = i.dmgid;
-        OSelectedGroupDoc.seq = count;
-        OSelectedGroupDoc.counter = i.counter;
-        OSelectedGroupDoc.specialisationId = i.specialisationId;
-        OSelectedGroupDoc.shortSpec = i.shortSpec;
-        OSelectedGroupDoc.active = i.active;
-        this.SelectedGroupDoc.push(OSelectedGroupDoc);
-        count++;
-      })
-      this.dmgDocList = res;
-      this.data = this.SelectedGroupDoc;
-      this.data.forEach((item: any) => {
-        if(item.chk == 1)
-          this.table.selection.select(item);
-      })
-    })
+        var count = 1;
+        res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
+          var OSelectedGroupDoc: any = {};
+          if (
+            res.dtOncoDMGSysProposedIncluded.filter((j: any) => {
+              return j.id == i.id;
+            }).length > 0
+          ) {
+            OSelectedGroupDoc.chk = true;
+          } else {
+            OSelectedGroupDoc.chk = false;
+          }
+          OSelectedGroupDoc.id = i.id;
+          OSelectedGroupDoc.name = i.name;
+          OSelectedGroupDoc.dmgid = i.dmgid;
+          OSelectedGroupDoc.seq = count;
+          OSelectedGroupDoc.counter = i.counter.toString() || "";
+          OSelectedGroupDoc.specialisationId = i.specialisationId;
+          OSelectedGroupDoc.shortSpec = i.shortSpec;
+          OSelectedGroupDoc.active = i.active;
+          this.SelectedGroupDoc.push(OSelectedGroupDoc);
+          count++;
+        });
+        this.dmgDocList = res;
+        this.data = this.SelectedGroupDoc;
+        this.data.forEach((item: any) => {
+          if (item.chk) this.table.selection.select(item);
+        });
+      });
     return this.check;
   }
-  save()
-  {
-    if(this.dmgform.controls['radio'].value == '')
-    {
-      this.msgdialog.info('Please select organ (DMG)');
+  save() {
+    if (this.dmgform.controls["radio"].value == "") {
+      this.msgdialog.info("Please select organ (DMG)");
       return;
-    }
-    else if(this.table.selection.selected.length == 0)
-    {
-      this.msgdialog.info('Please re-select organ (DMG)');
+    } else if (this.table.selection.selected.length == 0) {
+      this.msgdialog.info("Please re-select organ (DMG)");
       return;
-    }
-    else
-    {
+    } else {
       this.service.dtFinalGrpDoc = {
         chk: true,
         unitDocID: this.inputdata.unitdocid.toString(),
-        docID: this.dmgform.controls['radio'].value.toString()
-      }
-      this.service.dtCheckedItem.push(this.table.selection.selected);
+        docID: this.dmgform.controls["radio"].value.toString(),
+      };
+      this.service.dtCheckedItem = this.table.selection.selected;
       this.service.txtOtherGroupDoc = this.inputdata.reason;
-      console.log(this.service.dtFinalGrpDoc )
+      console.log(this.service.dtFinalGrpDoc);
       this.dialogRef.close();
     }
-    
+
     // this.http.get(BillingApiConstants.GetClinicDoctorsDMGRota(
     //   this.dmgform.controls['radio'].value,
     //   this.inputdata.specialization,
@@ -171,8 +166,7 @@ export class DmgPopupComponent implements OnInit {
     //   this.dialogRef.close('res:'+ res);
     // })
   }
-  cancel()
-  {
-    this.dialogRef.close('Cancel');
+  cancel() {
+    this.dialogRef.close("Cancel");
   }
 }

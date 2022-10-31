@@ -71,10 +71,11 @@
             <input
               matInput
               placeholder=""
-              [(ngModel)]="selectedDoctor"
+              [formControl]="selectedDoctor"
               required="true"
               [matAutocomplete]="auto"
               autocomplete="off"
+              placeholder="--Select Doctor--"
             />
             <mat-icon matSuffix>{{ arrowIcon }}</mat-icon>
             <mat-autocomplete
@@ -115,7 +116,7 @@
         (click)="save()"
         [disabled]="
           (tableRows && tableRows.selection.selected == 0) ||
-          (isConsultationExist && !selectedDoctor)
+          (isConsultationExist && !selectedDoctor.valid)
         "
       >
         Ok

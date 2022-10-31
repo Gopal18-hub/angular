@@ -64,8 +64,12 @@ export class SingleComponent implements OnInit, OnChanges {
       this.formGroup.reset();
     } else if (button.type == "export") {
       let url = "";
-      let tempValues: any = this.formGroup.value.map((va: any) => {
-        return typeof va == "string" ? va : va.value;
+      let tempValues: any = {};
+      Object.keys(this.formGroup.value).forEach((va: any) => {
+        tempValues[va] =
+          typeof this.formGroup.value[va] == "string"
+            ? this.formGroup.value[va]
+            : this.formGroup.value[va].value;
       });
       tempValues["exportflag"] = 1;
       if (
@@ -85,14 +89,19 @@ export class SingleComponent implements OnInit, OnChanges {
       }
       this.downloadFile(url, button.fileName, button.contenType);
     } else if (button.type == "crystalReport") {
+      let tempValues: any = {};
+      Object.keys(this.formGroup.value).forEach((va: any) => {
+        tempValues[va] =
+          typeof this.formGroup.value[va] == "string"
+            ? this.formGroup.value[va]
+            : this.formGroup.value[va].value;
+      });
       this.reportService.openWindow(
         button.reportConfig.reportName,
         button.reportConfig.reportEntity,
         {
           exportflag: 0,
-          ...this.formGroup.value.map((va: any) => {
-            return typeof va == "string" ? va : va.value;
-          }),
+          ...tempValues,
         }
       );
     }
