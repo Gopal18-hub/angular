@@ -487,7 +487,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-          required: true,
+          required: false,
           defaultValue: "Plan Name",
           conditions: [
             {
@@ -526,7 +526,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Plan Name---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
@@ -542,7 +542,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
@@ -557,7 +557,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Membership---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${
@@ -705,6 +705,9 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        LocationName: {
+          type: "hidden",
+        },
         dtpfromdate: {
           type: "date",
           title: "From Date",
@@ -732,6 +735,13 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "LocationName",
+              type: "value",
+            },
+          ],
         },
       },
     },

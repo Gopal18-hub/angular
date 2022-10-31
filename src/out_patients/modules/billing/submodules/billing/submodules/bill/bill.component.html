@@ -120,6 +120,10 @@
                       class="min-width-initial p-0 bg-deposit"
                       (click)="discountreason()"
                       type="button"
+                      [disabled]="
+                        calculateBillService.otherPlanSelectedItems.length >
+                          0 || billingservice.selectedHealthPlan
+                      "
                     >
                       <mat-icon class="icon-more p-0 font-xs"
                         >more_horiz</mat-icon
@@ -297,11 +301,11 @@
                   [disabled]="!data.length || billNo != ''"
                   (click)="makeBill()"
                   type="button"
-                    accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="62"
-                    actionId="146"
+                  accessControl
+                  masterModule="2"
+                  moduleId="7"
+                  featureId="62"
+                  actionId="146"
                 >
                   Make Bill
                 </button>
@@ -327,11 +331,11 @@
                   [disabled]="!data.length || !billNo"
                   (click)="makePrint()"
                   type="button"
-                    accessControl
-                    masterModule = "2"
-                    moduleId="7"
-                    featureId="62"
-                    actionId="147"
+                  accessControl
+                  masterModule="2"
+                  moduleId="7"
+                  featureId="62"
+                  actionId="147"
                 >
                   Print Bill&nbsp;
                 </button>

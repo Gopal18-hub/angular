@@ -50,9 +50,9 @@ export class BillingService {
 
   patientDetailsInfo: any = [];
 
-  selectedHealthPlan: any;
+  selectedHealthPlan: any = null;
 
-  selectedOtherPlan: any;
+  selectedOtherPlan: any = null;
 
   unbilledInvestigations: boolean = false;
 
@@ -151,6 +151,8 @@ export class BillingService {
     this.corporateData = [];
     this.selectedcompanydetails = {};
     this.selectedcorporatedetails = [];
+    this.selectedHealthPlan = null;
+    this.selectedOtherPlan = null;
   }
 
   calculateTotalAmount() {
@@ -165,7 +167,18 @@ export class BillingService {
   }
 
   setHealthPlan(data: any) {
-    this.selectedHealthPlan = data;
+    this.http
+      .get(
+        BillingApiConstants.getselectedhappyfamilyplandetail(
+          this.activeMaxId.iacode,
+          this.activeMaxId.regNumber,
+          data.planId,
+          this.cookie.get("HSPLocationId")
+        )
+      )
+      .subscribe((res: any) => {
+        this.selectedHealthPlan = res;
+      });
   }
 
   setOtherPlan(data: any) {
@@ -594,7 +607,30 @@ export class BillingService {
     }
   }
 
+  applyHealthPlandiscount(data: any) {
+    if (this.selectedHealthPlan) {
+      const findService = this.selectedHealthPlan.odtHealthDiscount.find(
+        (serItem: any) =>
+          (serItem.serviceid == data.billItem.serviceId &&
+            serItem.isserviceiditemid == 0) ||
+          (serItem.isserviceiditemid == 1 &&
+            serItem.serviceid == data.billItem.serviceId &&
+            serItem.itemid == data.billItem.itemId)
+      );
+      if (findService) {
+        const discount = (data.price * findService.discount) / 100;
+        data.billItem.gstValue =
+          data.billItem.gst > 0 ? (data.price * data.billItem.gst) / 100 : 0;
+        data.billItem.totalAmount =
+          data.price - discount + data.billItem.gstValue;
+        data.billItem.discAmount = discount;
+      }
+    }
+    return data;
+  }
+
   addToConsultation(data: any) {
+    data = this.applyHealthPlandiscount(data);
     this.consultationItems.push(data);
     if (data.billItem) {
       this.addToBill(data.billItem);
@@ -630,6 +666,7 @@ export class BillingService {
   }
 
   addToInvestigations(data: any) {
+    data = this.applyHealthPlandiscount(data);
     this.InvestigationItems.push(data);
     if (data.billItem) {
       this.addToBill(data.billItem);
@@ -673,6 +710,7 @@ export class BillingService {
     this.calculateTotalAmount();
   }
   addToHealthCheckup(data: any) {
+    data = this.applyHealthPlandiscount(data);
     this.HealthCheckupItems.push(data);
     this.configurationservice.push({
       itemname: data.healthCheckups,
@@ -709,6 +747,7 @@ export class BillingService {
   }
 
   addToProcedure(data: any) {
+    data = this.applyHealthPlandiscount(data);
     this.ProcedureItems.push(data);
     this.configurationservice.push({
       itemname: data.procedures,
@@ -741,6 +780,7 @@ export class BillingService {
     this.calculateTotalAmount();
   }
   addToOrderSet(data: any) {
+    data = this.applyHealthPlandiscount(data);
     this.OrderSetItems.push(data);
     this.configurationservice.push({
       itemname: data.billItem.itemName,

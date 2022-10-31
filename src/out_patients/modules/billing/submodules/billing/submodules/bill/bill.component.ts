@@ -81,12 +81,14 @@ export class BillComponent implements OnInit, OnDestroy {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
+        disabled: false,
       },
       dipositAmt: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
+        disabled: false,
       },
       patientDisc: {
         type: "currency",
@@ -295,6 +297,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
   private readonly _destroying$ = new Subject<void>();
 
+  totalPlanDiscount = 0;
+
   constructor(
     private formService: QuestionControlService,
     public billingservice: BillingService,
@@ -304,7 +308,7 @@ export class BillComponent implements OnInit, OnDestroy {
     private cookie: CookieService,
     private http: HttpService,
     private snackbar: MaxHealthSnackBarService,
-    private calculateBillService: CalculateBillService,
+    public calculateBillService: CalculateBillService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -340,6 +344,17 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
+    if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.dipositAmtcheck.disabled = true;
+      this.billDataForm.properties.dipositAmt.disabled = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: false },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    }
     if (this.calculateBillService.companyNonCreditItems.length > 0) {
       this.billDataForm.properties["credLimit"].readonly = false;
     }
@@ -364,8 +379,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
+    let planAmount = 0;
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
-      let planAmount = 0;
       this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
         planAmount += oItem.price;
       });
@@ -403,6 +418,7 @@ export class BillComponent implements OnInit, OnDestroy {
       }
       this.billingservice.billItems.forEach((item: any, index: number) => {
         item["sno"] = index + 1;
+        this.totalPlanDiscount += item.discAmount;
         if (item.popuptext) {
           popuptext.push({
             name: item.itemName,
@@ -410,6 +426,11 @@ export class BillComponent implements OnInit, OnDestroy {
           });
         }
       });
+      if (this.billingservice.selectedHealthPlan) {
+        this.formGroup.patchValue({
+          availDisc: this.totalPlanDiscount,
+        });
+      }
       if (popuptext.length > 0) {
         const popuptextDialogRef = this.matDialog.open(PopuptextComponent, {
           width: "80vw",
@@ -434,7 +455,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //   if (res) {
     //     this.formGroup.controls["paymentMode"].setValue(1);
     //   }
-    // }); 
+    // });
   }
 
   rowRwmove($event: any) {
@@ -481,6 +502,11 @@ export class BillComponent implements OnInit, OnDestroy {
         Number(this.cookie.get("HSPLocationId")),
         this.billingservice.company
       );
+    }
+    if (this.billingservice.selectedHealthPlan) {
+      this.formGroup.patchValue({
+        availDisc: this.totalPlanDiscount,
+      });
     }
   }
 
@@ -880,6 +906,14 @@ export class BillComponent implements OnInit, OnDestroy {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
                 parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
+                parseFloat(this.formGroup.value.planAmt) || 0;
+
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
+                this.billingservice.selectedOtherPlan
+                  ? this.billingservice.selectedOtherPlan.planId
+                  : 0;
+
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
                 if (res[0].billNo) {
@@ -917,6 +951,14 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
       parseFloat(this.formGroup.value.amtPayByComp) || 0;
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
+      parseFloat(this.formGroup.value.planAmt) || 0;
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
+      this.billingservice.selectedOtherPlan
+        ? this.billingservice.selectedOtherPlan.planId
+        : 0;
 
     //GAV-530 Paid Online Appointment
     let amount = 0;
@@ -1101,7 +1143,8 @@ export class BillComponent implements OnInit, OnDestroy {
       (this.formGroup.value.discAmt || 0) -
       (this.formGroup.value.amtPayByComp || 0) +
       (parseFloat(this.formGroup.value.gstTax) || 0) -
-      (parseFloat(this.formGroup.value.planAmt) || 0);
+      (parseFloat(this.formGroup.value.planAmt) || 0) -
+      (parseFloat(this.formGroup.value.availDisc) || 0);
 
     return temp.toFixed(2);
   }

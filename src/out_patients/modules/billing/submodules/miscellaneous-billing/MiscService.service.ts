@@ -25,6 +25,7 @@ export class MiscService {
   serviceItemsList = [];
   selectedCompanyVal = 0;
   makeBillLoad = false;
+  billNoGenerated = new Subject<boolean>();
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -191,6 +192,7 @@ export class MiscService {
   }
   clearMiscBlling() {
     this.clearAllItems.next(true);
+    this.billNoGenerated.next(false);
     this.companyData = [];
     this.corporateData = [];
     this.selectedcompanydetails = [];
