@@ -705,6 +705,9 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        LocationName: {
+          type: "hidden",
+        },
         dtpfromdate: {
           type: "date",
           title: "From Date",
@@ -732,6 +735,13 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "LocationName",
+              type: "value",
+            },
+          ],
         },
       },
     },
