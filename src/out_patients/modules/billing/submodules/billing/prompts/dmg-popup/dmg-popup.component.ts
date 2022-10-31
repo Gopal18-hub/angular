@@ -77,23 +77,35 @@ export class DmgPopupComponent implements OnInit {
     this.questions[0].options = this.inputdata.dmgdata.map((l: any) => {
       return { title: l.doctorName.split(".")[1].trim(), value: l.docID };
     });
+    var list = this.inputdata.dmgdata.filter((i: any) => {
+      return i.id == 1;
+    })
+    if(list.length > 0)
+    {
+      this.dmgform.controls['radio'].setValue(list[0].docID);
+      this.groupdoctorcheck();
+    }
   }
   SelectedGroupDoc: any = [];
   ngAfterViewInit(): void{
     this.dmgform.controls['radio'].valueChanges.subscribe(() => {
       console.log(this.dmgform.controls['radio'].value);
-      this.data = [];
-      this.SelectedGroupDoc = [];
-      var val = this.getgroupdoctormappedwithdmg();
-      console.log(val);
-      console.log(this.SelectedGroupDoc);
-      if(val == 1)
-      {
-        this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
-      }
+      this.groupdoctorcheck();
     });
   }
  
+  groupdoctorcheck()
+  {
+    this.data = [];
+    this.SelectedGroupDoc = [];
+    var val = this.getgroupdoctormappedwithdmg();
+    console.log(val);
+    console.log(this.SelectedGroupDoc);
+    if(val == 1)
+    {
+      this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
+    }
+  }
   getgroupdoctormappedwithdmg()
   {
     this.dmgDocList = '';
