@@ -1172,6 +1172,13 @@ export namespace FormReport {
           },
         },
         {
+          label: "Export",
+          type: "export",
+          reportEntity: "opBillRegisterReport",
+          fileName: "Op Bill Register Report.xls",
+          contenType: "application/vnd.ms-excel",
+        },
+        {
           label: "Clear",
           type: "clear",
         },
@@ -1235,6 +1242,14 @@ export namespace FormReport {
             reportEntity: "OPRefundReport",
           },
         },
+        {
+          label: "Export",
+          type: "export",
+          reportEntity: "OPRefundReport",
+          fileName: "OP Refund Report.xls",
+          contenType: "application/vnd.ms-excel",
+        },
+        
         {
           label: "Clear",
           type: "clear",
@@ -1308,6 +1323,13 @@ export namespace FormReport {
             reportName: "OP Discount Report",
             reportEntity: "opDiscountReport",
           },
+        },
+        {
+          label: "Export",
+          type: "export",
+          reportEntity: "opDiscountReport",
+          fileName: "Op Discount Report.xls",
+          contenType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
