@@ -288,5 +288,12 @@ export namespace CrystalReport {
     }&cmbSortOrderId=${params.SortOrderId}`;
   };
   export const MiscellaneousReportMIS = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/MiscellaneousReportMIS/MiscellaneousReportMIS?FromDate=${params.FromDate}&ToDate=${params.ToDate}&ChkAllLocation=${params.ChkAllLocation?1:0}&CmbLocation=${MaxHealthStorage.getCookie("HSPLocationId")}`;  };
+    return `${
+      environment.ReportsSampleUrl
+    }MAXHIS/MISReports/MiscellaneousReportMIS/MiscellaneousReportMIS?FromDate=${
+      params.FromDate
+    }&ToDate=${params.ToDate}&ChkAllLocation=${
+      params.ChkAllLocation ? 1 : 0
+    }&CmbLocation=${MaxHealthStorage.getCookie("HSPLocationId")}`;
+  };
 }

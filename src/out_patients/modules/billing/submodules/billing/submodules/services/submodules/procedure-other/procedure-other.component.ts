@@ -194,6 +194,7 @@ export class ProcedureOtherComponent implements OnInit {
         this.billingService.ProcedureItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.ProcedureItems[res.data.index].billItem.doctorID =
           res.$event.value;

@@ -217,6 +217,7 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.InvestigationItems[
           res.data.index
@@ -227,6 +228,7 @@ export class InvestigationsComponent implements OnInit {
         this.billingService.InvestigationItems[
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
+        this.checkTableValidation();
       } else if (res.data.col == "priority") {
         if (this.data.length == 1) {
           this.defaultPriorityId = res.$event.value;
@@ -302,8 +304,9 @@ export class InvestigationsComponent implements OnInit {
 
   checkTableValidation() {
     this.zeroPriceExist = false;
+    console.log(this.data);
     this.data.forEach((item: any) => {
-      if (item.totalAmount == 0) {
+      if (item.price == 0) {
         this.zeroPriceExist = true;
       }
     });

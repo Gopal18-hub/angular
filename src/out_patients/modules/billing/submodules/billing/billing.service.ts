@@ -37,10 +37,12 @@ export class BillingService {
 
   totalCost = 0;
 
+  totalCostWithOutGst = 0;
+
   company: number = 0;
   billtype: number = 1;
   // //GAV-530 Paid Online appointment
-  PaidAppointments: any = {};
+  PaidAppointments: any;
 
   makeBillPayload: any = JSON.parse(
     JSON.stringify(BillingStaticConstants.makeBillPayload)
@@ -128,6 +130,7 @@ export class BillingService {
     this.OrderSetItems = [];
     this.ConsumableItems = [];
     this.totalCost = 0;
+    this.totalCostWithOutGst = 0;
     this.activeMaxId = null;
     this.PaidAppointments = null;
     this.company = 0;
@@ -150,23 +153,10 @@ export class BillingService {
 
   calculateTotalAmount() {
     this.totalCost = 0;
-    this.consultationItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.InvestigationItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.ProcedureItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.OrderSetItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.HealthCheckupItems.forEach((item: any) => {
-      this.totalCost += item.price;
-    });
-    this.ConsumableItems.forEach((item: any) => {
+    this.totalCostWithOutGst = 0;
+    this.billItems.forEach((item: any) => {
       this.totalCost += item.totalAmount;
+      this.totalCostWithOutGst += item.price * item.qty;
     });
     this.makeBillPayload.ds_insert_bill.tab_insertbill.billAmount =
       this.totalCost;
@@ -362,7 +352,7 @@ export class BillingService {
             }
           );
 
-          iomcompanycorporate.afterClosed().subscribe((result:any) => {
+          iomcompanycorporate.afterClosed().subscribe((result: any) => {
             if (result.data == "corporate") {
               formGroup.controls["corporate"].enable();
               formGroup.controls["corporate"].setValue(null);
@@ -387,7 +377,7 @@ export class BillingService {
   }
 
   //fix for Staff company validation
- async resetCompany(res: any, formGroup: any, from: string = "header") {
+  async resetCompany(res: any, formGroup: any, from: string = "header") {
     // formGroup.controls["corporate"].setValue(null);
     // this.corporateChangeEvent.next({ corporate: null, from });
     // formGroup.controls["company"].setValue(null);
@@ -1009,7 +999,7 @@ export class BillingService {
         doctorName: "",
         doctorName_required: procedure.docRequired ? true : false,
         specialisation_required: procedure.docRequired ? true : false,
-        price: res[0].returnOutPut + res[0].totaltaX_Value,
+        price: res[0].returnOutPut,
         unitPrice: res[0].returnOutPut,
         itemid: procedure.value,
         priorityId: priorityId,
@@ -1019,7 +1009,7 @@ export class BillingService {
           itemId: procedure.value,
           priority: priorityId,
           serviceId: procedure.serviceid,
-          price: res[0].returnOutPut + res[0].totaltaX_Value,
+          price: res[0].returnOutPut,
           serviceName: "Procedure & Others",
           itemName: procedure.originalTitle,
           qty: 1,
@@ -1035,41 +1025,41 @@ export class BillingService {
           specialisationID: 0,
           doctorID: 0,
         },
-        gstDetail:{
-              gsT_value:res[0].totaltaX_Value,
-              gsT_percent:res[0].totaltaX_RATE,
-              cgsT_Value:res[0].cgsT_Value,
-              cgsT_Percent:res[0].cgst,
-              sgsT_value:res[0].sgsT_Value,
-              sgsT_percent:res[0].sgst,
-              utgsT_value:res[0].utgsT_Value,
-              utgsT_percent:res[0].utgst,
-              igsT_Value:res[0].igsT_Value,
-              igsT_percent:res[0].igst,
-              cesS_value:res[0].cesS_Value,
-              cesS_percent:res[0].cess,
-              taxratE1_Value:res[0].taxratE1_Value,
-              taxratE1_Percent:res[0].taxratE1,
-              taxratE2_Value:res[0].taxratE2_Value,
-              taxratE2_Percent:res[0].taxratE2,
-              taxratE3_Value:res[0].taxratE3_Value,
-              taxratE3_Percent:res[0].taxratE3,
-              taxratE4_Value:res[0].taxratE4_Value,
-              taxratE4_Percent:res[0].taxratE4,
-              taxratE5_Value:res[0].taxratE5_Value,
-              taxratE5_Percent:res[0].taxratE5,
-              totaltaX_RATE:res[0].totaltaX_RATE,
-              totaltaX_RATE_VALUE:res[0].totaltaX_Value,
-              saccode:res[0].saccode,
-              taxgrpid:res[0].taxgrpid,
-              codeId:res[0].codeId,
+        gstDetail: {
+          gsT_value: res[0].totaltaX_Value,
+          gsT_percent: res[0].totaltaX_RATE,
+          cgsT_Value: res[0].cgsT_Value,
+          cgsT_Percent: res[0].cgst,
+          sgsT_value: res[0].sgsT_Value,
+          sgsT_percent: res[0].sgst,
+          utgsT_value: res[0].utgsT_Value,
+          utgsT_percent: res[0].utgst,
+          igsT_Value: res[0].igsT_Value,
+          igsT_percent: res[0].igst,
+          cesS_value: res[0].cesS_Value,
+          cesS_percent: res[0].cess,
+          taxratE1_Value: res[0].taxratE1_Value,
+          taxratE1_Percent: res[0].taxratE1,
+          taxratE2_Value: res[0].taxratE2_Value,
+          taxratE2_Percent: res[0].taxratE2,
+          taxratE3_Value: res[0].taxratE3_Value,
+          taxratE3_Percent: res[0].taxratE3,
+          taxratE4_Value: res[0].taxratE4_Value,
+          taxratE4_Percent: res[0].taxratE4,
+          taxratE5_Value: res[0].taxratE5_Value,
+          taxratE5_Percent: res[0].taxratE5,
+          totaltaX_RATE: res[0].totaltaX_RATE,
+          totaltaX_RATE_VALUE: res[0].totaltaX_Value,
+          saccode: res[0].saccode,
+          taxgrpid: res[0].taxgrpid,
+          codeId: res[0].codeId,
         },
-         gstCode:{
-              tax:res[0].tax,
-              taxType:res[0].taxType,
-              codeId:res[0].codeId,
-              code:res[0].code,
-            }
+        gstCode: {
+          tax: res[0].tax,
+          taxType: res[0].taxType,
+          codeId: res[0].codeId,
+          code: res[0].code,
+        },
       });
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: procedure.value,
@@ -1111,13 +1101,13 @@ export class BillingService {
         doctorName: investigation.doctorid || "",
         specialisation_required: investigation.docRequired ? true : false,
         doctorName_required: investigation.docRequired ? true : false,
-        price: res[0].returnOutPut + res[0].totaltaX_Value,
+        price: res[0].returnOutPut,
         billItem: {
           popuptext: investigation.popuptext,
           itemId: investigation.value,
           priority: priorityId,
           serviceId: serviceType || investigation.serviceid,
-          price: res[0].returnOutPut + res[0].totaltaX_Value,
+          price: res[0].returnOutPut,
           serviceName: "Investigations",
           itemName: investigation.title,
           qty: 1,
@@ -1137,41 +1127,41 @@ export class BillingService {
           doctorID: 0,
           patient_Instructions: investigation.patient_Instructions,
         },
-        gstDetail:{
-              gsT_value:res[0].totaltaX_Value,
-              gsT_percent:res[0].totaltaX_RATE,
-              cgsT_Value:res[0].cgsT_Value,
-              cgsT_Percent:res[0].cgst,
-              sgsT_value:res[0].sgsT_Value,
-              sgsT_percent:res[0].sgst,
-              utgsT_value:res[0].utgsT_Value,
-              utgsT_percent:res[0].utgst,
-              igsT_Value:res[0].igsT_Value,
-              igsT_percent:res[0].igst,
-              cesS_value:res[0].cesS_Value,
-              cesS_percent:res[0].cess,
-              taxratE1_Value:res[0].taxratE1_Value,
-              taxratE1_Percent:res[0].taxratE1,
-              taxratE2_Value:res[0].taxratE2_Value,
-              taxratE2_Percent:res[0].taxratE2,
-              taxratE3_Value:res[0].taxratE3_Value,
-              taxratE3_Percent:res[0].taxratE3,
-              taxratE4_Value:res[0].taxratE4_Value,
-              taxratE4_Percent:res[0].taxratE4,
-              taxratE5_Value:res[0].taxratE5_Value,
-              taxratE5_Percent:res[0].taxratE5,
-              totaltaX_RATE:res[0].totaltaX_RATE,
-              totaltaX_RATE_VALUE:res[0].totaltaX_Value,
-              saccode:res[0].saccode,
-              taxgrpid:res[0].taxgrpid,
-              codeId:res[0].codeId,
+        gstDetail: {
+          gsT_value: res[0].totaltaX_Value,
+          gsT_percent: res[0].totaltaX_RATE,
+          cgsT_Value: res[0].cgsT_Value,
+          cgsT_Percent: res[0].cgst,
+          sgsT_value: res[0].sgsT_Value,
+          sgsT_percent: res[0].sgst,
+          utgsT_value: res[0].utgsT_Value,
+          utgsT_percent: res[0].utgst,
+          igsT_Value: res[0].igsT_Value,
+          igsT_percent: res[0].igst,
+          cesS_value: res[0].cesS_Value,
+          cesS_percent: res[0].cess,
+          taxratE1_Value: res[0].taxratE1_Value,
+          taxratE1_Percent: res[0].taxratE1,
+          taxratE2_Value: res[0].taxratE2_Value,
+          taxratE2_Percent: res[0].taxratE2,
+          taxratE3_Value: res[0].taxratE3_Value,
+          taxratE3_Percent: res[0].taxratE3,
+          taxratE4_Value: res[0].taxratE4_Value,
+          taxratE4_Percent: res[0].taxratE4,
+          taxratE5_Value: res[0].taxratE5_Value,
+          taxratE5_Percent: res[0].taxratE5,
+          totaltaX_RATE: res[0].totaltaX_RATE,
+          totaltaX_RATE_VALUE: res[0].totaltaX_Value,
+          saccode: res[0].saccode,
+          taxgrpid: res[0].taxgrpid,
+          codeId: res[0].codeId,
         },
-         gstCode:{
-              tax:res[0].tax,
-              taxType:res[0].taxType,
-              codeId:res[0].codeId,
-              code:res[0].code,
-            }
+        gstCode: {
+          tax: res[0].tax,
+          taxType: res[0].taxType,
+          codeId: res[0].codeId,
+          code: res[0].code,
+        },
       });
       this.makeBillPayload.tab_o_opItemBasePrice.push({
         itemID: investigation.value,
@@ -1180,6 +1170,59 @@ export class BillingService {
         willModify: res[0].ret_value == 1 ? true : false,
       });
     }
+  }
+
+  async processInvestigationWithOutApi(
+    priorityId: number,
+    serviceType: string,
+    investigation: any
+  ) {
+    this.addToInvestigations({
+      sno: this.InvestigationItems.length + 1,
+      investigations: investigation.title,
+      precaution:
+        investigation.precaution == "P"
+          ? '<span class="max-health-red-color">P</span>'
+          : investigation.precaution,
+      priority: priorityId,
+      priority_required: false,
+      specialisation: "",
+      doctorName: investigation.doctorid || "",
+      specialisation_required: investigation.docRequired ? true : false,
+      doctorName_required: investigation.docRequired ? true : false,
+      price: investigation.price,
+      billItem: {
+        popuptext: investigation.popuptext,
+        itemId: investigation.value,
+        priority: priorityId,
+        serviceId: serviceType || investigation.serviceid,
+        price: investigation.price,
+        serviceName: "Investigations",
+        itemName: investigation.title,
+        qty: 1,
+        precaution:
+          investigation.precaution == "P"
+            ? '<span class="max-health-red-color">P</span>'
+            : investigation.precaution,
+        procedureDoctor: "",
+        credit: 0,
+        cash: 0,
+        disc: 0,
+        discAmount: 0,
+        totalAmount: investigation.price,
+        gst: 0,
+        gstValue: 0,
+        specialisationID: 0,
+        doctorID: 0,
+        patient_Instructions: investigation.patient_Instructions,
+      },
+    });
+    this.makeBillPayload.tab_o_opItemBasePrice.push({
+      itemID: investigation.value,
+      serviceID: serviceType || investigation.serviceid,
+      price: investigation.price,
+      willModify: false,
+    });
   }
 
   procesConsultationAddWithOutApi(
@@ -1254,14 +1297,14 @@ export class BillingService {
         type: priorityId,
         scheduleSlot: "",
         bookingDate: "",
-        price: res[0].returnOutPut + res[0].totaltaX_Value,
+        price: res[0].returnOutPut,
         specialization: specialization,
         clinics: clinics ? clinics.value : 0,
         billItem: {
           itemId: doctorName.value,
           priority: priorityId,
           serviceId: 25,
-          price: res[0].returnOutPut+ res[0].totaltaX_Value,
+          price: res[0].returnOutPut,
           serviceName: "Consultation Charges",
           itemName: doctorName.originalTitle,
           qty: 1,
@@ -1277,41 +1320,41 @@ export class BillingService {
           specialisationID: doctorName.specialisationid,
           doctorID: doctorName.value,
         },
-        gstDetail:{
-          gsT_value:res[0].totaltaX_Value,
-          gsT_percent:res[0].totaltaX_RATE,
-          cgsT_Value:res[0].cgsT_Value,
-          cgsT_Percent:res[0].cgst,
-          sgsT_value:res[0].sgsT_Value,
-          sgsT_percent:res[0].sgst,
-          utgsT_value:res[0].utgsT_Value,
-          utgsT_percent:res[0].utgst,
-          igsT_Value:res[0].igsT_Value,
-          igsT_percent:res[0].igst,
-          cesS_value:res[0].cesS_Value,
-          cesS_percent:res[0].cess,
-          taxratE1_Value:res[0].taxratE1_Value,
-          taxratE1_Percent:res[0].taxratE1,
-          taxratE2_Value:res[0].taxratE2_Value,
-          taxratE2_Percent:res[0].taxratE2,
-          taxratE3_Value:res[0].taxratE3_Value,
-          taxratE3_Percent:res[0].taxratE3,
-          taxratE4_Value:res[0].taxratE4_Value,
-          taxratE4_Percent:res[0].taxratE4,
-          taxratE5_Value:res[0].taxratE5_Value,
-          taxratE5_Percent:res[0].taxratE5,
-          totaltaX_RATE:res[0].totaltaX_RATE,
-          totaltaX_RATE_VALUE:res[0].totaltaX_Value,
-          saccode:res[0].saccode,
-          taxgrpid:res[0].taxgrpid,
-          codeId:res[0].codeId,
+        gstDetail: {
+          gsT_value: res[0].totaltaX_Value,
+          gsT_percent: res[0].totaltaX_RATE,
+          cgsT_Value: res[0].cgsT_Value,
+          cgsT_Percent: res[0].cgst,
+          sgsT_value: res[0].sgsT_Value,
+          sgsT_percent: res[0].sgst,
+          utgsT_value: res[0].utgsT_Value,
+          utgsT_percent: res[0].utgst,
+          igsT_Value: res[0].igsT_Value,
+          igsT_percent: res[0].igst,
+          cesS_value: res[0].cesS_Value,
+          cesS_percent: res[0].cess,
+          taxratE1_Value: res[0].taxratE1_Value,
+          taxratE1_Percent: res[0].taxratE1,
+          taxratE2_Value: res[0].taxratE2_Value,
+          taxratE2_Percent: res[0].taxratE2,
+          taxratE3_Value: res[0].taxratE3_Value,
+          taxratE3_Percent: res[0].taxratE3,
+          taxratE4_Value: res[0].taxratE4_Value,
+          taxratE4_Percent: res[0].taxratE4,
+          taxratE5_Value: res[0].taxratE5_Value,
+          taxratE5_Percent: res[0].taxratE5,
+          totaltaX_RATE: res[0].totaltaX_RATE,
+          totaltaX_RATE_VALUE: res[0].totaltaX_Value,
+          saccode: res[0].saccode,
+          taxgrpid: res[0].taxgrpid,
+          codeId: res[0].codeId,
         },
-        gstCode:{
-              tax:res[0].tax,
-              taxType:res[0].taxType,
-              codeId:res[0].codeId,
-              code:res[0].code,
-            }
+        gstCode: {
+          tax: res[0].tax,
+          taxType: res[0].taxType,
+          codeId: res[0].codeId,
+          code: res[0].code,
+        },
       });
       this.consultationItemsAdded.next(true);
       this.makeBillPayload.tab_o_opItemBasePrice.push({
