@@ -340,7 +340,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billDataForm.properties.discAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 3, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
@@ -351,7 +351,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billDataForm.properties.dipositAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 3, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }

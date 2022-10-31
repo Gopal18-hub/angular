@@ -143,13 +143,15 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     this.questions = formResult.questions;
     this.getSpecialization();
     this.data = this.billingService.consultationItems;
-    this.http.get(BillingApiConstants.consultationTypes).subscribe((res:any) => {
-      this.consultationTypes = res;
-      this.config.columnsInfo.type.options = res.map((r: any) => {
-        return { title: r.name, value: r.id };
+    this.http
+      .get(BillingApiConstants.consultationTypes)
+      .subscribe((res: any) => {
+        this.consultationTypes = res;
+        this.config.columnsInfo.type.options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
       });
-    });
-    this.billingService.clearAllItems.subscribe((clearItems:any) => {
+    this.billingService.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
       }
@@ -197,6 +199,15 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       const source = res.added[0] || res.removed[0];
       this.update(source.type, source.sno, source.doctorId);
     });
+    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+      if (res.data.col == "type") {
+        this.update(
+          res.data.element.type,
+          res.data.element.sno,
+          res.data.element.doctorId
+        );
+      }
+    });
     this.questions[1].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key == "Enter") {
         if (this.formGroup.valid) {
@@ -209,13 +220,13 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     }
     this.formGroup.controls["doctorName"].valueChanges
       .pipe(
-        filter((res:any) => {
+        filter((res: any) => {
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
         debounceTime(1000),
         tap(() => {}),
-        switchMap((value:any) => {
+        switchMap((value: any) => {
           if (
             this.formGroup.value.specialization &&
             this.formGroup.value.specialization.value
@@ -253,7 +264,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     if (!this.excludeClinicsLocations.includes(this.locationId)) {
       this.http
         .get(BillingApiConstants.getclinics(this.locationId))
-        .subscribe((res:any) => {
+        .subscribe((res: any) => {
           this.questions[2].options = res.map((r: any) => {
             return { title: r.name, value: r.id };
           });
@@ -265,12 +276,14 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      this.http.get(BillingApiConstants.getspecialization).subscribe((res:any) => {
-        this.questions[0].options = res.map((r: any) => {
-          return { title: r.name, value: r.id };
+      this.http
+        .get(BillingApiConstants.getspecialization)
+        .subscribe((res: any) => {
+          this.questions[0].options = res.map((r: any) => {
+            return { title: r.name, value: r.id };
+          });
+          this.questions[0] = { ...this.questions[0] };
         });
-        this.questions[0] = { ...this.questions[0] };
-      });
       this.formGroup.controls["specialization"].valueChanges.subscribe(
         (val: any) => {
           if (val && val.value) {
@@ -293,7 +306,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           Number(this.cookie.get("HSPLocationId"))
         )
       )
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         this.formGroup.controls["doctorName"].reset();
         this.questions[1].options = res.map((r: any) => {
           return {
@@ -373,7 +386,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       twiceConsultationReasonRef
         .afterClosed()
         .pipe(takeUntil(this._destroying$))
-        .subscribe(async (result:any) => {
+        .subscribe(async (result: any) => {
           console.log(result);
           if (result) {
             if (result.data) {
@@ -609,47 +622,47 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
               disc: 0,
               discAmount: 0,
               totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
-              gst:  + res[0].totaltaX_RATE,
+              gst: +res[0].totaltaX_RATE,
               gstValue: res[0].totaltaX_Value,
               specialisationID:
                 this.formGroup.value.doctorName.specialisationid,
               doctorID: this.formGroup.value.doctorName.value,
             },
-            gstDetail:{
-              gsT_value:res[0].totaltaX_Value,
-              gsT_percent:res[0].totaltaX_RATE,
-              cgsT_Value:res[0].cgsT_Value,
-              cgsT_Percent:res[0].cgst,
-              sgsT_value:res[0].sgsT_Value,
-              sgsT_percent:res[0].sgst,
-              utgsT_value:res[0].utgsT_Value,
-              utgsT_percent:res[0].utgst,
-              igsT_Value:res[0].igsT_Value,
-              igsT_percent:res[0].igst,
-              cesS_value:res[0].cesS_Value,
-              cesS_percent:res[0].cess,
-              taxratE1_Value:res[0].taxratE1_Value,
-              taxratE1_Percent:res[0].taxratE1,
-              taxratE2_Value:res[0].taxratE2_Value,
-              taxratE2_Percent:res[0].taxratE2,
-              taxratE3_Value:res[0].taxratE3_Value,
-              taxratE3_Percent:res[0].taxratE3,
-              taxratE4_Value:res[0].taxratE4_Value,
-              taxratE4_Percent:res[0].taxratE4,
-              taxratE5_Value:res[0].taxratE5_Value,
-              taxratE5_Percent:res[0].taxratE5,
-              totaltaX_RATE:res[0].totaltaX_RATE,
-              totaltaX_RATE_VALUE:res[0].totaltaX_Value,
-              saccode:res[0].saccode,
-              taxgrpid:res[0].taxgrpid,
-              codeId:res[0].codeId,
+            gstDetail: {
+              gsT_value: res[0].totaltaX_Value,
+              gsT_percent: res[0].totaltaX_RATE,
+              cgsT_Value: res[0].cgsT_Value,
+              cgsT_Percent: res[0].cgst,
+              sgsT_value: res[0].sgsT_Value,
+              sgsT_percent: res[0].sgst,
+              utgsT_value: res[0].utgsT_Value,
+              utgsT_percent: res[0].utgst,
+              igsT_Value: res[0].igsT_Value,
+              igsT_percent: res[0].igst,
+              cesS_value: res[0].cesS_Value,
+              cesS_percent: res[0].cess,
+              taxratE1_Value: res[0].taxratE1_Value,
+              taxratE1_Percent: res[0].taxratE1,
+              taxratE2_Value: res[0].taxratE2_Value,
+              taxratE2_Percent: res[0].taxratE2,
+              taxratE3_Value: res[0].taxratE3_Value,
+              taxratE3_Percent: res[0].taxratE3,
+              taxratE4_Value: res[0].taxratE4_Value,
+              taxratE4_Percent: res[0].taxratE4,
+              taxratE5_Value: res[0].taxratE5_Value,
+              taxratE5_Percent: res[0].taxratE5,
+              totaltaX_RATE: res[0].totaltaX_RATE,
+              totaltaX_RATE_VALUE: res[0].totaltaX_Value,
+              saccode: res[0].saccode,
+              taxgrpid: res[0].taxgrpid,
+              codeId: res[0].codeId,
             },
-            gstCode:{
-              tax:res[0].tax,
-              taxType:res[0].taxType,
-              codeId:res[0].codeId,
-              code:res[0].code,
-            }
+            gstCode: {
+              tax: res[0].tax,
+              taxType: res[0].taxType,
+              codeId: res[0].codeId,
+              code: res[0].code,
+            },
           });
         }
         this.data = [...this.billingService.consultationItems];
