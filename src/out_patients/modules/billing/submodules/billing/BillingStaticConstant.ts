@@ -123,4 +123,10 @@ export namespace BillingStaticConstants {
     "6085":
       "Please refer to the prescription, in case of diagnosed/provisional/follow up Dengue, select the right CBC",
   };
+
+  //constant to add allow items with Healthchekup/ consumables
+  //tabid:[itemid]
+  export const allowService: any = {
+    3: [30632],
+  };
 }

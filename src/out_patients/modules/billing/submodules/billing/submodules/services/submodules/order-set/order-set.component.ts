@@ -178,7 +178,7 @@ export class OrderSetComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
-      if (res.data.col == "specialisation") {
+      if (res.data.col == "specialization") {
         res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
           res.$event.value,
@@ -187,6 +187,7 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.specialisationID = res.$event.value;
+        this.checkTableValidation();
       } else if (res.data.col == "doctorName") {
         this.billingService.OrderSetItems[res.data.index].billItem.doctorID =
           res.$event.value;
@@ -221,6 +222,7 @@ export class OrderSetComponent implements OnInit {
     clinicSpecializationId: number,
     index: number
   ) {
+    console.log(index);
     this.config.columnsInfo.doctorName.moreOptions[index] =
       await this.specializationService.getdoctorlistonSpecialization(
         clinicSpecializationId
@@ -330,7 +332,7 @@ export class OrderSetComponent implements OnInit {
             doctorName: "",
             specialization_required: true,
             doctorName_required: true,
-            price: resItem.returnOutPut + resItem.totaltaX_Value,
+            price: resItem.returnOutPut,
             items: this.formGroup.value.items,
             orderSetId: this.formGroup.value.orderSet.value,
             itemid: this.formGroup.value.items[index],

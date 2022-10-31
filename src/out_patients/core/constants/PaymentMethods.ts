@@ -417,7 +417,7 @@ export namespace PaymentMethods {
             { title: "Yes", value: "yes" },
             { title: "No", value: "no" },
           ],
-          label: "Card Validate",
+          label: "Card Validation",
         },
         onlineContact: {
           type: "number",
