@@ -487,7 +487,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-          required: true,
+          required: false,
           defaultValue: "Plan Name",
           conditions: [
             {
@@ -705,6 +705,9 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        LocationName: {
+          type: "hidden",
+        },
         dtpfromdate: {
           type: "date",
           title: "From Date",
@@ -732,6 +735,13 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "LocationName",
+              type: "value",
+            },
+          ],
         },
       },
     },
