@@ -105,7 +105,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   addItem(newItem: any) {
     this.items.push(newItem);
   }
-  links = [
+  links: any = [
     {
       title: "Bills",
       path: "bill",
@@ -232,6 +232,13 @@ export class MiscellaneousBillingComponent implements OnInit {
         }
       }
     });
+    // this.Misc.billNoGenerated.subscribe((res: boolean) => {
+    //   if (res) {
+    //     this.links[1].disabled = true;
+    //   } else {
+    //     this.links[1].disabled = false;
+    //   }
+    // });
   }
   lastUpdatedBy: string = "";
   currentTime: string = new Date().toLocaleString();
@@ -657,6 +664,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   ngOnDestroy(): void {
     this.clearForm();
     this.calculateBillService.discountSelectedItems = [];
+    this.calculateBillService.discountForm.value.authorise.value = 0;
     this.billingService.totalCost = 0;
     this.Misc.selectedcompanydetails = [];
     this.Misc.selectedcorporatedetails = [];
