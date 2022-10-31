@@ -338,4 +338,16 @@ export namespace BillingApiConstants {
   export const getcompanydetailcreditallow = (CompanyId: number, episode: string, LocId: number, userId:number) => {
       return `${environment.BillingApiUrl}api/outpatientbilling/iscompanycreditallow/${CompanyId}/${episode}/${LocId}/${userId}`;
     };
+
+  export const isemailenablelocation = (HsplocationId: any) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/isemailenablelocation/${HsplocationId}`;
   }
+
+  export const sendemailalerttoservice = (
+    OPBillID : number,
+    EmailID: string,
+    Remarks: string
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/sendemailalerttoservice/${OPBillID}/${EmailID}/${Remarks}`
+  }
+}
