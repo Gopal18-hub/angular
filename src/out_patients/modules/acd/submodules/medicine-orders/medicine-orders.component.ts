@@ -499,6 +499,7 @@ export class MedicineOrdersComponent implements OnInit {
     });
   }
   listRowClick(event: any) {
+    this.EnableBill = false;
     this.medOrderDetailsTable.selection.clear();
     this.selectedInv = event;
     //this.isDisableCancel = false;
@@ -508,6 +509,9 @@ export class MedicineOrdersComponent implements OnInit {
     let maxId = event.row.maxid;
     this.maxid = event.row.maxid;
     this.orderid = event.row.orderId;
+    if (this.orderid) {
+      this.EnableBill = true;
+    }
     this.patientInfo =
       event.row.maxid + " / " + event.row.ptnName + " / " + event.row.mobileNo;
 
@@ -539,7 +543,6 @@ export class MedicineOrdersComponent implements OnInit {
             .pipe(takeUntil(this._destroying$))
             .subscribe((res: any) => {
               if (this.medOrderDetailsTable.selection.selected.length > 0) {
-                this.EnableBill = true;
                 this.isDisableCancel = true;
                 this.isDisableDeniel = true;
                 this.tableSelectedRows =

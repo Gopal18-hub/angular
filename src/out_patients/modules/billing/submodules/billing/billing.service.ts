@@ -69,6 +69,8 @@ export class BillingService {
 
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
+  cerditCompanyBilltypeEvent = new Subject<any>();
+  allowCreditcompany : boolean = false;
 
   companyData: any = [];
   corporateData: any = [];
@@ -331,8 +333,10 @@ export class BillingService {
       this.iomMessage = "";
     } else if (res.title) {
       let iscompanyprocess = true;
+
+      //this.checkcreditcompany(res, formGroup);
       //fix for Staff company validation
-      if (res.company.isStaffcompany) {
+      if (res.company.isStaffcompany && from != "companyexists") {
         if (this.patientDetailsInfo.companyid > 0) {
           if (res.value != this.patientDetailsInfo.companyid) {
             iscompanyprocess = false;
@@ -389,12 +393,34 @@ export class BillingService {
     }
   }
 
+  //check company credit
+  checkcreditcompany(res: any , formGroup: any){
+   if(this.billtype == 3 && res.company.id > 0){
+     if(Number(this.patientDetailsInfo.creditFlag) == 0){
+
+     }
+     else{
+         this.http.get(
+      BillingApiConstants.getcompanydetailcreditallow(res.company.id, "OP", 
+      // Number(this.cookie.get("HSPLocationId")),
+      // Number(this.cookie.get("UserId"))))
+      67,
+      60925))
+    .subscribe(async (data) => {
+       if(data == 0){
+       this.allowCreditcompany = true;
+       const creditbasedcompany = await this.messageDialogService.error("Credit not allow for this company.Please contact marketing, if credit need to be extended for this company.");
+       creditbasedcompany.afterClosed().toPromise(); 
+       formGroup.controls["company"].setValue(null);
+       this.cerditCompanyBilltypeEvent.next({ billtype: 1});
+      }
+    });
+     }
+   }
+ }
+
   //fix for Staff company validation
-  async resetCompany(res: any, formGroup: any, from: string = "header") {
-    // formGroup.controls["corporate"].setValue(null);
-    // this.corporateChangeEvent.next({ corporate: null, from });
-    // formGroup.controls["company"].setValue(null);
-    // this.corporateChangeEvent.next({ company: null, from });
+ async resetCompany(res: any, formGroup: any, from: string = "header") {
     const ERNanavatiCompany = await this.messageDialogService.info(
       "Selected Patient is not entitled for " +
         res.title +
@@ -440,10 +466,6 @@ export class BillingService {
 
   setBilltype(billtype: number) {
     this.billtype = billtype;
-  }
-
-  getbilltype() {
-    return this.billtype;
   }
 
   setActiveMaxId(
