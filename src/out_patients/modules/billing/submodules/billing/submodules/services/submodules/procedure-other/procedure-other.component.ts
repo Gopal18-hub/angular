@@ -368,8 +368,23 @@ export class ProcedureOtherComponent implements OnInit {
       this.messageDialogService.error(
         "Procedure already added to the service list"
       );
+      this.formGroup.reset();
       return;
     }
+
+    let existOrderSet = this.billingService.OrderSetItems.findIndex(
+      (item: any) => {
+        return item.itemid == this.formGroup.value.procedure.value;
+      }
+    );
+    if (existOrderSet > -1) {
+      this.messageDialogService.error(
+        "Procedure already added to the service list"
+      );
+      this.formGroup.reset();
+      return;
+    }
+
     await this.billingService.processProcedureAdd(
       priorityId,
       this.formGroup.value.procedure.serviceid,

@@ -648,7 +648,7 @@ export class CalculateBillService {
   //#endregion
 
   //#region TaxableBill
-  dsTaxCode: any = {};
+  dsTaxCode: any;
   async checkTaxableBill(): Promise<boolean> {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
