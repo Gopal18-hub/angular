@@ -518,7 +518,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                 const tpacompanyExist: any = this.companyData.filter(
                   (c: any) => c.isTPA == 18
                 );
-                if (tpacompanyExist) {
+                if (tpacompanyExist && tpacompanyExist.length > 0) {
                   this.formGroup.controls["company"].setValue({
                     title: tpacompanyExist[0].name,
                     value: tpacompanyExist[0].id,
@@ -624,7 +624,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       const companyExist: any = this.companyData.filter(
         (c: any) => c.id == patientDetails.companyid
       );
-      if (companyExist) {
+      if (companyExist && companyExist.length > 0) {
         let res = {
           company: companyExist[0],
           title: companyExist[0].name,
