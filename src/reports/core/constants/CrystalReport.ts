@@ -74,7 +74,7 @@ export namespace CrystalReport {
   };
 
   export const HappyFamilyPlanUtilizationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?MemberShipNo=${params.MemberShipNo}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/HappyFamilyPlanUtilizationReport?MembershipNo=${params.MemberShipNo}`;
   };
 
   export const GeneralOPDReport = (params: any) => {
@@ -210,13 +210,13 @@ export namespace CrystalReport {
   };
 
   export const opBillRegisterReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/OP%20Bill%20Register/OPBillRegister?FromDate=${params.FromDate}&ToDate=${params.ToDate}&sortBy=${params.sortBy}&locationID=${params.locationID}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/OP%20Bill%20Register/OPBillRegister?FromDate=${params.FromDate}&ToDate=${params.ToDate}&sortBy=${params.sortBy}&locationID=${params.locationID}&exportflag=${params.exportflag}`;
   };
   export const CashScrollReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Billing/CashScrollReport?Fromdate=${params.Fromdate}&Todate=${params.Todate}&Operatorid=${params.Operatorid}&LocationID=${params.LocationID}&EmployeeName=${params.EmployeeName}&TimeTakenAt=${params.TimeTakenAt}&ack=${params.ack}&IsAckByOperator=${params.IsAckByOperator}&ScrollNo=${params.ScrollNo}`;
   };
   export const SummaryReportForUtilisationReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?MemberShipNo=${params.membershipno}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Out_Patient/SummaryReportForUtilisation?MembershipNo=${params.membershipno}`;
   };
   export const PHPTracksheet = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PHPTrackSheet?BillNo=${params.BillNo}`;
@@ -246,10 +246,10 @@ export namespace CrystalReport {
       params.ValueToDate
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-    )}&SelectedLocationsId=${params.SelectedLocationsId}`;
+    )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;
   };
   export const OPRefundReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;
   };
   export const FormSixty = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/FormSixty?LocationId=${params.LocationId}&Iacode=${params.Iacode}&RegistrationNo=${params.RegistrationNo}&BillNo=${params.BillNo}`;
