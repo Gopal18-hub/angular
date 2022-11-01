@@ -1054,23 +1054,43 @@ export class BillingComponent implements OnInit, OnDestroy {
             if (ures.data.length > 0) {
               let referalDoctor: any = null;
               this.apiProcessing = true;
+              let gotoTab = 1;
+              let investigationExists = false;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
-                await this.billingService.processInvestigationAdd(
-                  1,
-                  item.serviceId,
-                  {
-                    title: item.testName,
-                    value: item.testID,
-                    originalTitle: item.testName,
-                    docRequired: item.docRequired ? true : false,
-                    patient_Instructions: item.patient_Instructions,
-                    serviceid: item.serviceId,
-                    doctorid: item.doctorid,
-                    popuptext: item.popuptext,
-                    precaution: item.precaution,
-                  }
-                );
+
+                if ([41, 42, 43].includes(item.serviceId)) {
+                  investigationExists = true;
+                  await this.billingService.processInvestigationAdd(
+                    1,
+                    item.serviceId,
+                    {
+                      title: item.testName,
+                      value: item.testID,
+                      originalTitle: item.testName,
+                      docRequired: item.docRequired ? true : false,
+                      patient_Instructions: item.patient_Instructions,
+                      serviceid: item.serviceId,
+                      doctorid: item.doctorid,
+                      popuptext: item.popuptext,
+                      precaution: item.precaution,
+                    }
+                  );
+                } else {
+                  gotoTab = 3;
+                  await this.billingService.processProcedureAdd(
+                    1,
+                    item.serviceId,
+                    {
+                      serviceid: item.serviceId,
+                      value: item.testID,
+                      originalTitle: item.testName,
+                      docRequired: item.docRequired,
+                      popuptext: item.popuptext,
+                    }
+                  );
+                }
+
                 if (item.doctorid)
                   referalDoctor = {
                     id: item.doctorid,
@@ -1082,7 +1102,9 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.billingService.setReferralDoctor(referalDoctor);
               }
               this.apiProcessing = false;
-              this.billingService.servicesTabStatus.next({ goToTab: 1 });
+              this.billingService.servicesTabStatus.next({
+                goToTab: investigationExists ? 1 : gotoTab,
+              });
             }
             this.billingService.unbilledInvestigations = true;
           }
