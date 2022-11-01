@@ -368,4 +368,13 @@ export namespace BillingApiConstants {
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/doctorconsulttypesorder/${locationId}/${doctorId}/${iaCode}/${RegNumber}`;
   };
+
+  export const checkCGHSBeneficiary = (
+    iacode: string,
+    regNumber: number,
+    companyId: number,
+    adhaarId: string
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/checkcghsbeneficiary/${iacode}/${regNumber}/${companyId}/${adhaarId}`;
+  };
 }
