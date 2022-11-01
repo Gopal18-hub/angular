@@ -7,16 +7,19 @@ export namespace CrystalReport {
     "https://MaxHIS-Reports-sit.maxhealthcare.in/PrintOrganDonorForm?BHTN.230538";
 
   export const PrintOrganDonorForm = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintOrganDonorForm?${params.maxId}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintOrganDonorForm?MAXID=${params.maxId}`;
   };
   export const PrintLabel = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintLabel?${params.maxId}`;
   };
   export const PrintFormReport = (params: any) => {
-    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintFormReport?${params.maxId}`;
+    return `${environment.ReportsSampleUrl}MAXHIS/Opd_Registration/PrintFormReport?MAXID=${params.maxId}`;
   };
   export const billingreport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+  };
+  export const billdetailsreport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/BilldetailsOPbillreport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
   export const billingreportPDF = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReportPDF?opbillid=${params.opbillid}&locationID=${params.locationID}`;
@@ -246,7 +249,9 @@ export namespace CrystalReport {
       params.ValueToDate
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-    )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;
+    )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${
+      params.exportflag
+    }`;
   };
   export const OPRefundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;

@@ -70,7 +70,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
-  allowCreditcompany : boolean = false;
+  allowCreditcompany: boolean = false;
 
   companyData: any = [];
   corporateData: any = [];
@@ -394,33 +394,38 @@ export class BillingService {
   }
 
   //check company credit
-  checkcreditcompany(res: any , formGroup: any){
-   if(this.billtype == 3 && res.company.id > 0){
-     if(Number(this.patientDetailsInfo.creditFlag) == 0){
-
-     }
-     else{
-         this.http.get(
-      BillingApiConstants.getcompanydetailcreditallow(res.company.id, "OP", 
-      // Number(this.cookie.get("HSPLocationId")),
-      // Number(this.cookie.get("UserId"))))
-      67,
-      60925))
-    .subscribe(async (data) => {
-       if(data == 0){
-       this.allowCreditcompany = true;
-       const creditbasedcompany = await this.messageDialogService.error("Credit not allow for this company.Please contact marketing, if credit need to be extended for this company.");
-       creditbasedcompany.afterClosed().toPromise(); 
-       formGroup.controls["company"].setValue(null);
-       this.cerditCompanyBilltypeEvent.next({ billtype: 1});
+  checkcreditcompany(res: any, formGroup: any) {
+    if (this.billtype == 3 && res.company.id > 0) {
+      if (Number(this.patientDetailsInfo.creditFlag) == 0) {
+      } else {
+        this.http
+          .get(
+            BillingApiConstants.getcompanydetailcreditallow(
+              res.company.id,
+              "OP",
+              // Number(this.cookie.get("HSPLocationId")),
+              // Number(this.cookie.get("UserId"))))
+              67,
+              60925
+            )
+          )
+          .subscribe(async (data) => {
+            if (data == 0) {
+              this.allowCreditcompany = true;
+              const creditbasedcompany = await this.messageDialogService.error(
+                "Credit not allow for this company.Please contact marketing, if credit need to be extended for this company."
+              );
+              creditbasedcompany.afterClosed().toPromise();
+              formGroup.controls["company"].setValue(null);
+              this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
+            }
+          });
       }
-    });
-     }
-   }
- }
+    }
+  }
 
   //fix for Staff company validation
- async resetCompany(res: any, formGroup: any, from: string = "header") {
+  async resetCompany(res: any, formGroup: any, from: string = "header") {
     const ERNanavatiCompany = await this.messageDialogService.info(
       "Selected Patient is not entitled for " +
         res.title +
@@ -1289,7 +1294,7 @@ export class BillingService {
     });
   }
 
-  procesConsultationAddWithOutApi(
+  async procesConsultationAddWithOutApi(
     priorityId: number,
     specialization: any,
     doctorName: any,
@@ -1341,6 +1346,26 @@ export class BillingService {
     doctorName: any,
     clinics: any
   ) {
+    let onlinePaidAppoinment = this.PaidAppointments
+      ? this.PaidAppointments.paymentstatus == "Yes"
+        ? true
+        : false
+      : false;
+    if (!this.selectedOtherPlan && !onlinePaidAppoinment) {
+      let consultType = await this.http
+        .get(
+          BillingApiConstants.getDoctorConsultType(
+            Number(this.cookie.get("HSPLocationId")),
+            doctorName.value,
+            this.activeMaxId.iacode,
+            this.activeMaxId.regNumber
+          )
+        )
+        .toPromise();
+      if (consultType) {
+        priorityId = consultType[0].consultId;
+      }
+    }
     const res = await this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.company,

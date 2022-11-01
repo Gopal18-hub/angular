@@ -435,10 +435,10 @@ export class BillDetailTableComponent implements OnInit {
         this.billDetailservice.sendforapproval = [];
         this.billDetailservice.totalrefund = 0;
         var ackflag = 0;
-        for(var i = 0; i < this.tableRows.selection.selected.length; i++)
+        for(var i = 0; i < s.added.length; i++)
         {
           var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-            return a.itemid == this.tableRows.selection.selected[i].itemid;
+            return a.itemid == s.added[i].itemid;
           })
           console.log(list);
           for(var z = 0; z < list.length; z++)
