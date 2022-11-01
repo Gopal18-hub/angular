@@ -582,6 +582,7 @@ export class BillComponent implements OnInit, OnDestroy {
     );
   }
 
+  ////validation check for GenOPD Bill type
   async checkFreeOPD(itemId: any) {
     const res = await this.http
       .get(
@@ -863,6 +864,19 @@ export class BillComponent implements OnInit, OnDestroy {
     if (!consulatationStatus) {
       return;
     }
+
+    //Credit Limit check for Billtype Credit
+    if (
+      this.formGroup.value.paymentMode == 3 &&
+      this.billingservice.company &&
+      this.formGroup.value.credLimit <= 0
+    ) {
+      const credLimitStatus = await this.checkForCreditLimit();
+      if (!credLimitStatus) {
+        return;
+      }
+    }
+
     const dialogRef = this.messageDialogService.confirm(
       "",
       `Do you want to make the Bill?`
@@ -1513,5 +1527,25 @@ export class BillComponent implements OnInit, OnDestroy {
     } else {
       this.makereceipt(false);
     }
+  }
+
+  async checkForCreditLimit() {
+    const credLimitWarningPopup: any = this.messageDialogService.confirm(
+      "",
+      "Do you want to enter credit limit?"
+    );
+    const credLimitWarning = await credLimitWarningPopup
+      .afterClosed()
+      .toPromise();
+    if (credLimitWarning) {
+      if (credLimitWarning.type == "yes") {
+        this.question[14].elementRef.focus();
+        return false;
+      } else {
+        this.formGroup.controls["paymentMode"].setValue(1);
+        return true;
+      }
+    }
+    return true;
   }
 }
