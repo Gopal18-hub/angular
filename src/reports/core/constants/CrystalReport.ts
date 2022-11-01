@@ -18,6 +18,9 @@ export namespace CrystalReport {
   export const billingreport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
+  export const billdetailsreport = (params: any) => {
+    return `${environment.ReportsSampleUrl}MAXHIS/Billing/BilldetailsOPbillreport?opbillid=${params.opbillid}&locationID=${params.locationID}`;
+  };
   export const billingreportPDF = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/Billing/OpBillingReportPDF?opbillid=${params.opbillid}&locationID=${params.locationID}`;
   };
@@ -246,7 +249,9 @@ export namespace CrystalReport {
       params.ValueToDate
     }&locationID=${MaxHealthStorage.getCookie(
       "HSPLocationId"
-    )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;
+    )}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${
+      params.exportflag
+    }`;
   };
   export const OPRefundReport = (params: any) => {
     return `${environment.ReportsSampleUrl}MAXHIS/MISReports/OPRefundReport?ValueFromDate=${params.ValueFromDate}&ValueToDate=${params.ValueToDate}&SelectedLocationsId=${params.SelectedLocationsId}&exportflag=${params.exportflag}`;
