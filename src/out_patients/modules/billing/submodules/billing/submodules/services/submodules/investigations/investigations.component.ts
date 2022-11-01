@@ -453,7 +453,7 @@ export class InvestigationsComponent implements OnInit {
     if (this.childItems.includes(this.formGroup.value.investigation.value)) {
       this.calculateBillService.blockActions.next(false);
       this.messageDialogService.error(
-        "Investigation already exist under the profile adeed"
+        "Investigation already exist under the profile added"
       );
       return;
     }
