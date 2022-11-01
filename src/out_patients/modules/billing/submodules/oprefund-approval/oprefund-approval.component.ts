@@ -37,6 +37,7 @@ export class OprefundApprovalComponent implements OnInit {
   oprefundicon: string = "placeholder";
   pendingList: any = [];
   approvedList: any = [];
+  risReasonList: any = [];
   oprefundPendingList: OpRefundApprovalListInterface[] = [];
   oprefundApprovedList: OpRefundApprovalListInterface[] = [];
   oprefundRejectedList: OpRefundApprovalListInterface[] = [];
@@ -63,7 +64,8 @@ export class OprefundApprovalComponent implements OnInit {
   oprefundConfig: any = {
     actionItems: true,
     selectBox: true,
-   // dateformat: "dd/MM/yyyy",
+    clickedRows: true,
+    // dateformat: "dd/MM/yyyy",
     datetimeformat: "dd/MM/yyyy HH:mm:ss",
     actionItemList: [
       {
@@ -208,12 +210,20 @@ export class OprefundApprovalComponent implements OnInit {
           width: "7rem",
         },
       },
+      // risReason: {
+      //   title: "RISReason",
+      //   type: "string",
+      //   tooltipColumn: "risReason",
+      //   style: {
+      //     width: "8rem",
+      //   },
+      // },
       risReason: {
         title: "RISReason",
-        type: "string",
-        tooltipColumn: "risReason",
+        type: "dropdown",
+        options: this.risReasonList,
         style: {
-          width: "8rem",
+          width: "15rem",
         },
       },
     },
@@ -576,6 +586,20 @@ export class OprefundApprovalComponent implements OnInit {
     this.userId = Number(this.cookie.get("UserId"));
     console.log(this.userId);
     this.hsplocationId = Number(this.cookie.get("HSPLocationId"));
+    this.risReasonList.push(
+      {
+        title: "Cancellation Not Received from RIS",
+        value: "Cancellation Not Received from RIS",
+      },
+      {
+        title: "Urgent cancellation",
+        value: "Urgent cancellation",
+      },
+      {
+        title: "Item Not Acknowledged",
+        value: "Item Not Acknowledged",
+      }
+    );
     this.searchService.searchTrigger
       .pipe(takeUntil(this._destroying$))
       .subscribe((formdata: any) => {
@@ -583,13 +607,14 @@ export class OprefundApprovalComponent implements OnInit {
       });
     if (this.from == undefined && this.to == undefined) {
       this.from = this.datepipe.transform(
-        new Date().setMonth(new Date().getMonth() - 2),
+        new Date().setMonth(new Date().getMonth() - 10),
         "yyyy-MM-dd"
       );
       this.to = this.datepipe.transform(new Date(), "yyyy-MM-dd");
     }
     this.showmain(this.link1[2]);
   }
+  ngAfterViewInit(): void {}
   // loadIp() {
   //   this.httpclient
   //     .get("https://jsonip.com")
@@ -609,7 +634,6 @@ export class OprefundApprovalComponent implements OnInit {
   //       }
   //     );
   // }
-  ngAfterViewInit(): void {}
 
   searchOpRefundapproval(formdata: any) {
     console.log("inside searchopreu=fundapproval method");
@@ -853,11 +877,14 @@ export class OprefundApprovalComponent implements OnInit {
         } else {
           this.flag = 1;
         }
+        // var list = this.risReasonList.filter((i: any) => {
+        //   return i.value == a.risReason;
+        // });
         this.pendingList.push({
           recordId: a.id,
           flag: this.flag,
           hostName: "HostNameTest",
-          risReason: "",
+          risReason: a.risReason,
           serviceId: 0,
           testStatus: 0,
           iacode: iacode,
@@ -867,7 +894,7 @@ export class OprefundApprovalComponent implements OnInit {
         });
         this.useridList.push({
           id: a.requestRaisedById,
-          maxid:a.maxid
+          maxid: a.maxid,
         });
         console.log(this.pendingList);
       });
@@ -891,11 +918,10 @@ export class OprefundApprovalComponent implements OnInit {
             this.useridList = [];
             this.pendingList = [];
             return;
-           
           }
         });
-          if(this.pendingList.length != 0){
-            this.http
+        if (this.pendingList.length != 0) {
+          this.http
             .post(
               ApiConstants.oprefundapprovereject,
               this.getpendingoprefundobject()
@@ -934,7 +960,7 @@ export class OprefundApprovalComponent implements OnInit {
                 }
               }
             );
-          }
+        }
       }
       //  }
     }

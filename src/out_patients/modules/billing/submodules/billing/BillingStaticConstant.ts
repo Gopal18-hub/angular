@@ -129,4 +129,12 @@ export namespace BillingStaticConstants {
   export const allowService: any = {
     3: [30632],
   };
+
+  //CGHS Beneficiary Reasons
+  export const cghsBeneficiaryReasons: any = [
+    { title: "---Select---", value: 1 },
+    { title: "Speciality not covered under CGHS", value: 2 },
+    { title: "Hospital is not on CGHS Panel", value: 3 },
+    { title: "As per Patient Instruction request", value: 4 },
+  ];
 }
