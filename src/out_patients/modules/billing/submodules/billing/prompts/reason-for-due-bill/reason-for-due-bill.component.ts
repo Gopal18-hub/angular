@@ -78,6 +78,9 @@ export class ReasonForDueBillComponent implements OnInit {
                 this.question[0].options = response.reasons.map((r: any) => {
                   return { title: r.reason, value: r.id };
                 });
+                this.reasonForDueBillForm.controls["reason"].setValue(
+                  response.reasons[0].id
+                );
               }
             }
 
@@ -87,6 +90,9 @@ export class ReasonForDueBillComponent implements OnInit {
                   (r: any) => {
                     return { title: r.name, value: r.id };
                   }
+                );
+                this.reasonForDueBillForm.controls["authorisedby"].setValue(
+                  response.authorisedBy[0].id
                 );
               }
             }
