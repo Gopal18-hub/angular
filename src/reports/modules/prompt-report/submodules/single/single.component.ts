@@ -62,6 +62,7 @@ export class SingleComponent implements OnInit, OnChanges {
   buttonAction(button: any) {
     if (button.type == "clear") {
       this.formGroup.reset();
+      this.init();
     } else if (button.type == "export") {
       let url = "";
       let tempValues: any = {};
@@ -94,7 +95,9 @@ export class SingleComponent implements OnInit, OnChanges {
         tempValues[va] =
           typeof this.formGroup.value[va] == "string"
             ? this.formGroup.value[va]
-            : this.formGroup.value[va].value;
+            : this.formGroup.value[va]
+            ? this.formGroup.value[va].value
+            : "";
       });
       this.reportService.openWindow(
         button.reportConfig.reportName,
