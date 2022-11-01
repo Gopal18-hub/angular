@@ -503,8 +503,7 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
     var dmgdata: any[] = [];
     console.log(dsGroupDoc, dsGroupDocprevious);
     debugger;
-    if(dsGroupDocprevious.dtGrpDocpre.length > 0)
-    {
+    if (dsGroupDocprevious.dtGrpDocpre.length > 0) {
       this.userSelectedDMG = dsGroupDocprevious.dtGrpDocpre[0].dmg;
     }
     dsGroupDoc.dtGrpDoc.forEach((i: any) => {
@@ -512,9 +511,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
       var list = [];
       list = dsGroupDocprevious.dtGrpDocpre.filter((j: any) => {
         return j.dmg == i.docID;
-      })
-      if (list.length > 0
-      ) {
+      });
+      if (list.length > 0) {
         Odmgdata.id = 1;
         if (i.docID == 25907) {
           x = 1;
@@ -527,9 +525,8 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
         var list1 = [];
         list1 = dsGroupDoc.dtGrpDoc.filter((k: any) => {
           return k.docID == this.userSelectedDMG;
-        })
-        if (list1.length > 0
-        ) {
+        });
+        if (list1.length > 0) {
           if (i.docID == this.userSelectedDMG) {
             Odmgdata.id = 1;
           }
@@ -583,13 +580,32 @@ export class ConsultationsComponent implements OnInit, AfterViewInit {
           specialization: this.formGroup.value.specialization.value,
           unitdocid: this.formGroup.value.doctorName.value,
           reason: OtherGroupDoc ? OtherGroupDoc : "",
-
         },
       });
       await dialogref.afterClosed().toPromise();
     }
   }
-  getCalculateOpBill(priorityId = 57) {
+  async getCalculateOpBill(priorityId = 57) {
+    let onlinePaidAppoinment = this.billingService.PaidAppointments
+      ? this.billingService.PaidAppointments.paymentstatus == "Yes"
+        ? true
+        : false
+      : false;
+    if (!this.billingService.selectedOtherPlan && !onlinePaidAppoinment) {
+      let consultType = await this.http
+        .get(
+          BillingApiConstants.getDoctorConsultType(
+            Number(this.cookie.get("HSPLocationId")),
+            this.formGroup.value.doctorName.value,
+            this.billingService.activeMaxId.iacode,
+            this.billingService.activeMaxId.regNumber
+          )
+        )
+        .toPromise();
+      if (consultType) {
+        priorityId = consultType[0].consultId;
+      }
+    }
     this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.billingService.company,
