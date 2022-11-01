@@ -62,11 +62,11 @@ export class SendMailDialogComponent implements OnInit {
     this.http.post(BillingApiConstants.sendemailalerttoservice(
       Number(this.data.billid),
       this.sendMailForm.controls['mailid'].value,
-      this.sendMailForm.controls['mobileno'].value
+      this.sendMailForm.controls['remarks'].value
     ),'')
     .subscribe(res => {
       console.log(res);
-      if(res)
+      if(res.success == true)
       {
         this.dialogRef.close('close');
       }
