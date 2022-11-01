@@ -843,7 +843,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (resAction) {
         if ("paynow" in resAction && resAction.paynow) {
           this.router.navigate(["/out-patient-billing/details"], {
-            queryParams: { maxID: this.formGroup.value.maxid },
+            queryParams: { maxID: this.formGroup.value.maxid, from: 1 },
           });
           return;
         }

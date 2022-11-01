@@ -53,6 +53,8 @@ export class DetailsComponent implements OnInit {
   private check!: KeyValueDiffer<string, any>;
   maxid: any;
   billno: any;
+  frombill: any = 0;
+  duesettlement: any = 0;
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
@@ -77,7 +79,12 @@ export class DetailsComponent implements OnInit {
         console.log(value);
         if(value.billno)
         {
+          this.duesettlement = 1;
           this.getpatientbilldetails();
+        }
+        if(value.from == 1)
+        {
+          this.frombill = 1;
         }
         if (Object.keys(value).length > 0) {         
           const lookupdata = await this.loadGrid(value); 
@@ -324,7 +331,24 @@ export class DetailsComponent implements OnInit {
         this.result = res;
         this.BServiceForm.markAsDirty();
         if (this.result.length > 1) {
-          this.search();
+          if(this.frombill == 1)
+          {
+            this.result = this.result.filter((i: any) => {
+              return i.balance > 0;
+            });
+            if(this.result.length == 1)
+            {
+              this.BServiceForm.controls["billNo"].setValue(this.result[0].billno);
+              this.getpatientbilldetails();
+            }
+            else
+            {
+              this.search();
+            }
+          }
+          else{
+            this.search();
+          }
         } else if (this.result.length == 1) {
           this.BServiceForm.controls["billNo"].setValue(this.result[0].billno);
           this.getpatientbilldetails();
@@ -735,10 +759,21 @@ export class DetailsComponent implements OnInit {
               this.refundbill == true;
             }
             this.printbill = false;
-            this.router.navigate(["out-patient-billing/details", "services"], {
-              queryParams: { maxid: this.BServiceForm.controls["maxid"].value },
-              queryParamsHandling: "merge",
-            });
+            if(this.frombill == 1 || this.duesettlement == 1)
+            {
+              this.router.navigate(["out-patient-billing/details", "cred-bill-settlement"], {
+                queryParams: { maxid: this.BServiceForm.controls["maxid"].value },
+                queryParamsHandling: "merge",
+              });
+            }
+            else
+            {
+              this.router.navigate(["out-patient-billing/details", "services"], {
+                queryParams: { maxid: this.BServiceForm.controls["maxid"].value },
+                queryParamsHandling: "merge",
+              });
+            }
+            
           }
         }
       }),
@@ -895,6 +930,7 @@ export class DetailsComponent implements OnInit {
         check: this.BServiceForm.value.datevalidation,
         fromdate: this.BServiceForm.value.fromDate,
         todate: this.BServiceForm.value.toDate,
+        frombill: this.frombill
       },
     });
     dialogref.afterClosed().subscribe((res) => {
@@ -1010,6 +1046,8 @@ export class DetailsComponent implements OnInit {
     this.linkList[1].disabled = false;
     this.linkList[2].disabled = false;
     this.linkList[3].disabled = false;
+    this.frombill = 0;
+    this.duesettlement = 0;
     // this.ngOnInit();
   }
   doxperredirect() {
