@@ -334,8 +334,38 @@ export namespace BillingApiConstants {
     itemId: number
   ) =>
     `${environment.BillingApiUrl}api/outpatientbilling/checkfreeopdflag/${regNumber}/${iaCode}/${itemId}`;
- 
-  export const getcompanydetailcreditallow = (CompanyId: number, episode: string, LocId: number, userId:number) => {
-      return `${environment.BillingApiUrl}api/outpatientbilling/iscompanycreditallow/${CompanyId}/${episode}/${LocId}/${userId}`;
-    };
-  }
+
+  export const getcompanydetailcreditallow = (
+    CompanyId: number,
+    episode: string,
+    LocId: number,
+    userId: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/iscompanycreditallow/${CompanyId}/${episode}/${LocId}/${userId}`;
+  };
+
+  export const gettestprofileid = (profileid: any) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/gettestprofileid/${profileid}`;
+  };
+
+  export const isemailenablelocation = (HsplocationId: any) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/isemailenablelocation/${HsplocationId}`;
+  };
+
+  export const sendemailalerttoservice = (
+    OPBillID: number,
+    EmailID: string,
+    Remarks: string
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/sendemailalerttoservice/${OPBillID}/${EmailID}/${Remarks}`;
+  };
+
+  export const getDoctorConsultType = (
+    locationId: number,
+    doctorId: number,
+    iaCode: string,
+    RegNumber: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/doctorconsulttypesorder/${locationId}/${doctorId}/${iaCode}/${RegNumber}`;
+  };
+}

@@ -112,7 +112,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
   complanyList!: GetCompanyDataInterface[];
   coorporateList: any = [];
-  creditcorporateList: any =[];
+  creditcorporateList: any = [];
 
   dmsProcessing: boolean = false;
 
@@ -441,7 +441,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       if (expiredStatus) {
         this.expiredPatient = true;
         const dialogRef = this.messageDialogService.error(
-          "Patient is an Expired Patient!"
+          "This is an expired patient, no transaction is allowed"
         );
         await dialogRef.afterClosed().toPromise();
       }
@@ -515,13 +515,13 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.formGroup.controls["company"].disable();
                 this.formGroup.controls["corporate"].disable();
                 this.links[2].disabled = true;
-                const tpacompanyExist: any = this.companyData.find(
+                const tpacompanyExist: any = this.companyData.filter(
                   (c: any) => c.isTPA == 18
                 );
-                if (tpacompanyExist) {
+                if (tpacompanyExist && tpacompanyExist.length > 0) {
                   this.formGroup.controls["company"].setValue({
-                    title: tpacompanyExist.name,
-                    value: tpacompanyExist.id,
+                    title: tpacompanyExist[0].name,
+                    value: tpacompanyExist[0].id,
                   });
                 }
               }
@@ -621,15 +621,15 @@ export class BillingComponent implements OnInit, OnDestroy {
     const patientDetails = pDetails.dsPersonalDetails.dtPersonalDetails1[0];
     this.formGroup.controls["mobile"].setValue(patientDetails.pCellNo);
     if (patientDetails.companyid) {
-      const companyExist: any = this.companyData.find(
+      const companyExist: any = this.companyData.filter(
         (c: any) => c.id == patientDetails.companyid
       );
-      if (companyExist) {
+      if (companyExist && companyExist.length > 0) {
         let res = {
-          company: companyExist,
-          title: companyExist.name,
+          company: companyExist[0],
+          title: companyExist[0].name,
           value: patientDetails.companyid,
-        }
+        };
         this.billingService.setCompnay(
           patientDetails.companyid,
           res,
@@ -968,6 +968,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   ) {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
+                    this.links[2].disabled = true;
                     selectedServices.selected.forEach((slItem: any) => {
                       if (slItem.serviceid == 25) {
                         this.billingService.procesConsultationAddWithOutApi(
@@ -1053,23 +1054,43 @@ export class BillingComponent implements OnInit, OnDestroy {
             if (ures.data.length > 0) {
               let referalDoctor: any = null;
               this.apiProcessing = true;
+              let gotoTab = 1;
+              let investigationExists = false;
               for (let i = 0; i < ures.data.length; i++) {
                 const item = ures.data[i];
-                await this.billingService.processInvestigationAdd(
-                  1,
-                  item.serviceId,
-                  {
-                    title: item.testName,
-                    value: item.testID,
-                    originalTitle: item.testName,
-                    docRequired: item.docRequired ? true : false,
-                    patient_Instructions: item.patient_Instructions,
-                    serviceid: item.serviceId,
-                    doctorid: item.doctorid,
-                    popuptext: item.popuptext,
-                    precaution: item.precaution,
-                  }
-                );
+
+                if ([41, 42, 43].includes(item.serviceId)) {
+                  investigationExists = true;
+                  await this.billingService.processInvestigationAdd(
+                    1,
+                    item.serviceId,
+                    {
+                      title: item.testName,
+                      value: item.testID,
+                      originalTitle: item.testName,
+                      docRequired: item.docRequired ? true : false,
+                      patient_Instructions: item.patient_Instructions,
+                      serviceid: item.serviceId,
+                      doctorid: item.doctorid,
+                      popuptext: item.popuptext,
+                      precaution: item.precaution,
+                    }
+                  );
+                } else {
+                  gotoTab = 3;
+                  await this.billingService.processProcedureAdd(
+                    1,
+                    item.serviceId,
+                    {
+                      serviceid: item.serviceId,
+                      value: item.testID,
+                      originalTitle: item.testName,
+                      docRequired: item.docRequired,
+                      popuptext: item.popuptext,
+                    }
+                  );
+                }
+
                 if (item.doctorid)
                   referalDoctor = {
                     id: item.doctorid,
@@ -1081,7 +1102,9 @@ export class BillingComponent implements OnInit, OnDestroy {
                 this.billingService.setReferralDoctor(referalDoctor);
               }
               this.apiProcessing = false;
-              this.billingService.servicesTabStatus.next({ goToTab: 1 });
+              this.billingService.servicesTabStatus.next({
+                goToTab: investigationExists ? 1 : gotoTab,
+              });
             }
             this.billingService.unbilledInvestigations = true;
           }
@@ -1115,7 +1138,7 @@ export class BillingComponent implements OnInit, OnDestroy {
   linkedMaxId(maxId: string, iacode: string, regNumber: number) {
     const dialogRef = this.messageDialogService.confirm(
       "",
-      `This Record has been mapped with ${maxId}. Do you want to Pick this number for further transaction ?`
+      `This Max ID has been mapped with  ${maxId}, do you want to proceed?`
     );
     dialogRef
       .afterClosed()
@@ -1316,7 +1339,7 @@ export class BillingComponent implements OnInit, OnDestroy {
 
         this.billingService.setCorporateData(resultData.oCompanyName);
         resultData.oCompanyName.unshift({ name: "Select", id: -1 });
-        this.questions[4].options = this.coorporateList.map((l:any) => {
+        this.questions[4].options = this.coorporateList.map((l: any) => {
           return { title: l.name, value: l.id };
         });
         this.questions[4] = { ...this.questions[4] };

@@ -265,8 +265,17 @@ export class OrderSetComponent implements OnInit {
         });
         const selectedItems: any = [];
         this.questions[1].options = filter.map((r: any) => {
-          selectedItems.push(r.testId);
-          return { title: r.name, value: r.testId };
+          const exitInOters = this.billingService.ProcedureItems.findIndex(
+            (item: any) => {
+              return item.itemid == r.testId;
+            }
+          );
+          if (exitInOters == -1) selectedItems.push(r.testId);
+          return {
+            title: r.name,
+            value: r.testId,
+            disabled: exitInOters == -1 ? false : true,
+          };
         });
         this.questions[1].value = selectedItems;
         this.questions[1] = { ...this.questions[1] };
@@ -281,6 +290,7 @@ export class OrderSetComponent implements OnInit {
       this.messageDialogService.error(
         "Order Set already added to the service list"
       );
+      this.formGroup.reset();
       return;
     }
 

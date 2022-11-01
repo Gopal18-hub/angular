@@ -77,64 +77,82 @@ export class DmgPopupComponent implements OnInit {
     this.questions[0].options = this.inputdata.dmgdata.map((l: any) => {
       return { title: l.doctorName.split(".")[1].trim(), value: l.docID };
     });
+    var list = this.inputdata.dmgdata.filter((i: any) => {
+      return i.id == 1;
+    })
+    if(list.length > 0)
+    {
+      this.dmgform.controls['radio'].setValue(list[0].docID);
+      this.groupdoctorcheck();
+    }
   }
-  ngAfterViewInit(): void {
-    this.dmgform.controls["radio"].valueChanges.subscribe(async (res: any) => {
-      console.log(this.dmgform.controls["radio"].value);
-      var val = await this.getgroupdoctormappedwithdmg();
-      console.log(val);
-      if (val == 1) {
-        this.msgdialog.info(
-          "No Doctor is mapped with this DMG, Please proceed with uncheck"
-        );
-      }
+  SelectedGroupDoc: any = [];
+  ngAfterViewInit(): void{
+    this.dmgform.controls['radio'].valueChanges.subscribe(() => {
+      console.log(this.dmgform.controls['radio'].value);
+      this.groupdoctorcheck();
     });
   }
-  SelectedGroupDoc: any[] = [];
-  async getgroupdoctormappedwithdmg() {
-    this.dmgDocList = "";
-    this.http
-      .get(
-        BillingApiConstants.getgroupdoctormappedwithdmg(
-          this.dmgform.controls["radio"].value,
-          this.inputdata.specialization,
-          this.cookie.get("HSPLocationId")
-        )
-      )
-      .subscribe((res: any) => {
-        console.log(res);
-        if (res.dtOncoDMGSysProposedExcluded.length == 0) {
-          this.check = 1;
+ 
+  groupdoctorcheck()
+  {
+    this.data = [];
+    this.SelectedGroupDoc = [];
+    var val = this.getgroupdoctormappedwithdmg();
+    console.log(val);
+    console.log(this.SelectedGroupDoc);
+    if(val == 1)
+    {
+      this.msgdialog.info('No Doctor is mapped with this DMG, Please proceed with uncheck');
+    }
+  }
+  getgroupdoctormappedwithdmg()
+  {
+    this.dmgDocList = '';
+    this.SelectedGroupDoc = [];
+    this.http.get(BillingApiConstants.getgroupdoctormappedwithdmg(
+      this.dmgform.controls['radio'].value,
+      this.inputdata.specialization,
+      this.cookie.get('HSPLocationId')
+    ))
+    .subscribe((res:any) => {
+      console.log(res);
+      console.log(this.SelectedGroupDoc);
+      if(res.dtOncoDMGSysProposedExcluded.length == 0)
+      {
+        this.check = 1;
+      }
+      var count = 1;
+      this.SelectedGroupDoc = [];
+      res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
+        var OSelectedGroupDoc: any = {};
+        if(res.dtOncoDMGSysProposedIncluded.filter((j: any) => { return j.id == i.id}).length > 0)
+        {
+          OSelectedGroupDoc.chk = true;
         }
-        var count = 1;
-        res.dtOncoDMGSysProposedExcluded.forEach((i: any) => {
-          var OSelectedGroupDoc: any = {};
-          if (
-            res.dtOncoDMGSysProposedIncluded.filter((j: any) => {
-              return j.id == i.id;
-            }).length > 0
-          ) {
-            OSelectedGroupDoc.chk = true;
-          } else {
-            OSelectedGroupDoc.chk = false;
-          }
-          OSelectedGroupDoc.id = i.id;
-          OSelectedGroupDoc.name = i.name;
-          OSelectedGroupDoc.dmgid = i.dmgid;
-          OSelectedGroupDoc.seq = count;
-          OSelectedGroupDoc.counter = i.counter.toString() || "";
-          OSelectedGroupDoc.specialisationId = i.specialisationId;
-          OSelectedGroupDoc.shortSpec = i.shortSpec;
-          OSelectedGroupDoc.active = i.active;
-          this.SelectedGroupDoc.push(OSelectedGroupDoc);
-          count++;
-        });
-        this.dmgDocList = res;
-        this.data = this.SelectedGroupDoc;
-        this.data.forEach((item: any) => {
-          if (item.chk) this.table.selection.select(item);
-        });
-      });
+        else
+        {
+          OSelectedGroupDoc.chk = false;
+        }
+        OSelectedGroupDoc.id = i.id;
+        OSelectedGroupDoc.name = i.name;
+        OSelectedGroupDoc.dmgid = i.dmgid;
+        OSelectedGroupDoc.seq = count;
+        OSelectedGroupDoc.counter = i.counter.toString();
+        OSelectedGroupDoc.specialisationId = i.specialisationId;
+        OSelectedGroupDoc.shortSpec = i.shortSpec;
+        OSelectedGroupDoc.active = i.active;
+        this.SelectedGroupDoc.push(OSelectedGroupDoc);
+        count++;
+      })
+      this.dmgDocList = res;
+      this.data = this.SelectedGroupDoc;
+      this.data.forEach((item: any) => {
+        if(item.chk == 1)
+          this.table.selection.select(item);
+      })
+    })
+    console.log(this.SelectedGroupDoc);
     return this.check;
   }
   save() {
@@ -148,9 +166,11 @@ export class DmgPopupComponent implements OnInit {
       this.service.dtFinalGrpDoc = {
         chk: true,
         unitDocID: this.inputdata.unitdocid.toString(),
-        docID: this.dmgform.controls["radio"].value.toString(),
-      };
-      this.service.dtCheckedItem = this.table.selection.selected;
+        docID: this.dmgform.controls['radio'].value.toString()
+      }
+      this.table.selection.selected.forEach((item: any) => {
+        this.service.dtCheckedItem.push(item);
+      })
       this.service.txtOtherGroupDoc = this.inputdata.reason;
       console.log(this.service.dtFinalGrpDoc);
       this.dialogRef.close();

@@ -23,6 +23,7 @@ import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/details/op-prescription-dialog/op-prescription-dialog.component";
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -81,12 +82,14 @@ export class BillComponent implements OnInit, OnDestroy {
         type: "checkbox",
         required: false,
         options: [{ title: "Deposit Amount ( - )" }],
+        disabled: false,
       },
       dipositAmt: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
+        disabled: false,
       },
       patientDisc: {
         type: "currency",
@@ -306,7 +309,7 @@ export class BillComponent implements OnInit, OnDestroy {
     private cookie: CookieService,
     private http: HttpService,
     private snackbar: MaxHealthSnackBarService,
-    private calculateBillService: CalculateBillService,
+    public calculateBillService: CalculateBillService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -338,7 +341,18 @@ export class BillComponent implements OnInit, OnDestroy {
       this.billDataForm.properties.discAmt.disabled = true;
       this.billDataForm.properties.paymentMode.options = [
         { title: "Cash", value: 1, disabled: false },
-        { title: "Credit", value: 3, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
+        { title: "Gen. OPD", value: 4, disabled: true },
+      ];
+    }
+    if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
+      this.billDataForm.properties.discAmtCheck.disabled = true;
+      this.billDataForm.properties.discAmt.disabled = true;
+      this.billDataForm.properties.dipositAmtcheck.disabled = true;
+      this.billDataForm.properties.dipositAmt.disabled = true;
+      this.billDataForm.properties.paymentMode.options = [
+        { title: "Cash", value: 1, disabled: false },
+        { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
     }
@@ -366,8 +380,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.calculateBill(this.formGroup, this.question);
     this.data = this.billingservice.billItems;
+    let planAmount = 0;
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
-      let planAmount = 0;
       this.calculateBillService.otherPlanSelectedItems.forEach((oItem: any) => {
         planAmount += oItem.price;
       });
@@ -442,7 +456,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //   if (res) {
     //     this.formGroup.controls["paymentMode"].setValue(1);
     //   }
-    // }); 
+    // });
   }
 
   rowRwmove($event: any) {
@@ -893,6 +907,14 @@ export class BillComponent implements OnInit, OnDestroy {
               this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
                 parseFloat(this.formGroup.value.amtPayByComp) || 0;
 
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
+                parseFloat(this.formGroup.value.planAmt) || 0;
+
+              this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
+                this.billingservice.selectedOtherPlan
+                  ? this.billingservice.selectedOtherPlan.planId
+                  : 0;
+
               const res = await this.billingservice.makeBill();
               if (res.length > 0) {
                 if (res[0].billNo) {
@@ -930,6 +952,14 @@ export class BillComponent implements OnInit, OnDestroy {
 
     this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt =
       parseFloat(this.formGroup.value.amtPayByComp) || 0;
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planAmount =
+      parseFloat(this.formGroup.value.planAmt) || 0;
+
+    this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.planId =
+      this.billingservice.selectedOtherPlan
+        ? this.billingservice.selectedOtherPlan.planId
+        : 0;
 
     //GAV-530 Paid Online Appointment
     let amount = 0;
@@ -1040,51 +1070,164 @@ export class BillComponent implements OnInit, OnDestroy {
     const successInfo = this.messageDialogService.info(
       `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
-    successInfo
+    console.log(this.billingservice.makeBillPayload);
+    if (
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+        .companyId == 0 &&
+      Number(
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+          .companyPaidAmt
+      ) == 0
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.isemailenablelocation(
+            this.cookie.get("HSPLocationId")
+          )
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res) => {
+          console.log(res);
+          if (res == 1) {
+            successInfo
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((res: any) => {
+                const maildialog = this.messageDialogService.confirm(
+                  "",
+                  "Do you want to Email this bill?"
+                );
+                maildialog
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result: any) => {
+                    console.log(result);
+                    if ("type" in result) {
+                      if (result.type == "yes") {
+                        const sendmaildialog = this.matDialog.open(
+                          SendMailDialogComponent,
+                          {
+                            width: "40vw",
+                            height: "50vh",
+                            data: {
+                              mail: this.billingservice.makeBillPayload
+                                .ds_insert_bill.tab_insertbill.emailId,
+                              mobile:
+                                this.billingservice.makeBillPayload
+                                  .ds_insert_bill.tab_insertbill.mobileNo,
+                              billid: this.billId,
+                            },
+                          }
+                        );
+                        sendmaildialog
+                          .afterClosed()
+                          .pipe(takeUntil(this._destroying$))
+                          .subscribe(() => {
+                            this.dialogopen();
+                          });
+                      } else {
+                        this.dialogopen();
+                      }
+                    }
+                  });
+              });
+          } else {
+            this.dialogopen();
+          }
+        });
+    } else {
+      successInfo
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
+          this.dialogopen();
+        });
+    }
+    // successInfo
+    //   .afterClosed()
+    //   .pipe(takeUntil(this._destroying$))
+    //   .subscribe((result: any) => {
+    //     const printDialog = this.messageDialogService.confirm(
+    //       "",
+    //       `Do you want to print bill?`
+    //     );
+    //     printDialog
+    //       .afterClosed()
+    //       .pipe(takeUntil(this._destroying$))
+    //       .subscribe((result: any) => {
+    //         if (
+    //           this.locationexclude.includes(
+    //             Number(this.cookie.get("HSPLocationId"))
+    //           )
+    //         ) {
+    //           const dialogref = this.messageDialogService.confirm(
+    //             "",
+    //             `Do you want Print Blank Op Prescription?`
+    //           );
+    //           dialogref.afterClosed().subscribe((res: any) => {
+    //             if (res == "yes") {
+    //               this.reportService.openWindow(
+    //                 "OP Prescription Report - " + this.billNo,
+    //                 "PrintOPPrescriptionReport",
+    //                 {
+    //                   opbillid: this.billId,
+    //                   locationID: this.cookie.get("HSPLocationId"),
+    //                 }
+    //               );
+    //             }
+    //           });
+    //         }
+
+    //         if ("type" in result) {
+    //           if (result.type == "yes") {
+    //             this.makePrint();
+    //           } else {
+    //           }
+    //         }
+    //       });
+    //   });
+  }
+
+  dialogopen() {
+    const printDialog = this.messageDialogService.confirm(
+      "",
+      `Do you want to print bill?`
+    );
+    printDialog
       .afterClosed()
       .pipe(takeUntil(this._destroying$))
       .subscribe((result: any) => {
-        const printDialog = this.messageDialogService.confirm(
-          "",
-          `Do you want to print bill?`
-        );
-        printDialog
-          .afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((result: any) => {
-            if (
-              this.locationexclude.includes(
-                Number(this.cookie.get("HSPLocationId"))
-              )
-            ) {
-              const dialogref = this.messageDialogService.confirm(
-                "",
-                `Do you want Print Blank Op Prescription?`
-              );
-              dialogref.afterClosed().subscribe((res: any) => {
-                if (res == "yes") {
-                  this.reportService.openWindow(
-                    "OP Prescription Report - " + this.billNo,
-                    "PrintOPPrescriptionReport",
-                    {
-                      opbillid: this.billId,
-                      locationID: this.cookie.get("HSPLocationId"),
-                    }
-                  );
+        if (
+          this.locationexclude.includes(
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        ) {
+          const dialogref = this.messageDialogService.confirm(
+            "",
+            `Do you want Print Blank Op Prescription?`
+          );
+          dialogref.afterClosed().subscribe((res: any) => {
+            if (res == "yes") {
+              this.reportService.openWindow(
+                "OP Prescription Report - " + this.billNo,
+                "PrintOPPrescriptionReport",
+                {
+                  opbillid: this.billId,
+                  locationID: this.cookie.get("HSPLocationId"),
                 }
-              });
-            }
-
-            if ("type" in result) {
-              if (result.type == "yes") {
-                this.makePrint();
-              } else {
-              }
+              );
             }
           });
+        }
+
+        if ("type" in result) {
+          if (result.type == "yes") {
+            this.makePrint();
+          } else {
+          }
+        }
       });
   }
-
   makePrint() {
     this.reportService.openWindow(
       this.billNo + " - Billing Report",
@@ -1263,63 +1406,70 @@ export class BillComponent implements OnInit, OnDestroy {
   ) {
     this.gstBreakupDetails = [];
     this.finalgstDetails = {};
-    this.http
-      .get(
-        ApiConstants.getgstdata(
-          this.calculateBillService.dsTaxCode.codeId,
-          companyId,
-          locationId,
-          amount
+    if (this.calculateBillService.dsTaxCode.codeId > 0) {
+      this.http
+        .get(
+          ApiConstants.getgstdata(
+            this.calculateBillService.dsTaxCode.codeId,
+            companyId,
+            locationId,
+            amount
+          )
         )
-      )
-      .subscribe((res: any) => {
-        if (res) {
-          if (res.length > 0) {
-            this.finalgstDetails = res[0];
-            if (this.gstBreakupDetails.length <= 0) {
-              this.gstBreakupDetails.push({
-                service: "CGST",
-                percentage: res[0].cgst,
-                value: res[0].cgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "SGST",
-                percentage: res[0].sgst,
-                value: res[0].sgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "UTGST",
-                percentage: res[0].utgst,
-                value: res[0].utgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "IGST",
-                percentage: res[0].igst,
-                value: res[0].igsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "CESS",
-                percentage: res[0].cess,
-                value: res[0].cesS_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "TotalTax",
-                percentage: res[0].totaltaX_RATE,
-                value: res[0].totaltaX_Value,
-              });
-              this.formGroup.controls["gstTax"].setValue(
-                this.finalgstDetails.totaltaX_Value.toFixed(2)
-              );
-              this.billingservice.makeBillPayload.finalDSGSTDetails =
-                this.finalgstDetails;
-              this.billingservice.makeBillPayload.sacCode = res[0].saccode;
-              this.formGroup.controls["amtPayByPatient"].setValue(
-                this.getAmountPayByPatient()
-              );
+        .subscribe((res: any) => {
+          if (res) {
+            if (res.length > 0) {
+              this.finalgstDetails = res[0];
+              if (this.gstBreakupDetails.length <= 0) {
+                this.gstBreakupDetails.push({
+                  service: "CGST",
+                  percentage: res[0].cgst,
+                  value: res[0].cgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "SGST",
+                  percentage: res[0].sgst,
+                  value: res[0].sgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "UTGST",
+                  percentage: res[0].utgst,
+                  value: res[0].utgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "IGST",
+                  percentage: res[0].igst,
+                  value: res[0].igsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "CESS",
+                  percentage: res[0].cess,
+                  value: res[0].cesS_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "TotalTax",
+                  percentage: res[0].totaltaX_RATE,
+                  value: res[0].totaltaX_Value,
+                });
+                this.formGroup.controls["gstTax"].setValue(
+                  this.finalgstDetails.totaltaX_Value.toFixed(2)
+                );
+                this.billingservice.makeBillPayload.finalDSGSTDetails =
+                  this.finalgstDetails;
+                this.billingservice.makeBillPayload.sacCode = res[0].saccode;
+                this.formGroup.controls["amtPayByPatient"].setValue(
+                  this.getAmountPayByPatient()
+                );
+              }
             }
           }
-        }
-      });
+        });
+    } else {
+      this.billingservice.makeBillPayload.finalDSGSTDetails =
+        this.calculateBillService.dsTaxCode;
+      this.billingservice.makeBillPayload.sacCode =
+        this.calculateBillService.dsTaxCode.saccode;
+    }
   }
 
   onlinePaymentConfirmation() {

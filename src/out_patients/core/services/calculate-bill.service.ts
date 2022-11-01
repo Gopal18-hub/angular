@@ -111,6 +111,7 @@ export class CalculateBillService {
     this.depositDetailsData = [];
     this.seniorCitizen = false;
     this.billFormGroup = null;
+    this.otherPlanSelectedItems = [];
   }
 
   setDiscountSelectedItems(items: any) {
@@ -313,7 +314,7 @@ export class CalculateBillService {
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
-      height: "68vh",
+      height: "69vh",
       data: data,
     });
     discountReasonPopup.afterClosed().subscribe((res: any) => {
@@ -647,7 +648,7 @@ export class CalculateBillService {
   //#endregion
 
   //#region TaxableBill
-  dsTaxCode: any = {};
+  dsTaxCode: any;
   async checkTaxableBill(): Promise<boolean> {
     let cstype = await this.getServiceTypeByCode(1356);
     let countProc = 0;
