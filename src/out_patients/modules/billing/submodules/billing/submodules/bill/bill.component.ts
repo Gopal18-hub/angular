@@ -24,7 +24,8 @@ import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/detai
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
-
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { BillingStaticConstants } from "../../BillingStaticConstant";
 
 @Component({
   selector: "out-patients-bill",
@@ -844,6 +845,9 @@ export class BillComponent implements OnInit, OnDestroy {
       await referralErrorRef.afterClosed().toPromise();
       return;
     }
+    //CGHS Beneficiary check
+    await this.calculateBillService.checkCGHSBeneficiary();
+
     if (
       !this.billingservice.referralDoctor ||
       this.billingservice.referralDoctor.id === 0
@@ -1072,72 +1076,78 @@ export class BillComponent implements OnInit, OnDestroy {
       `Bill saved with the Bill No ${result.billNo} and Amount ${this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.collectedAmount}`
     );
     console.log(this.billingservice.makeBillPayload);
-    if(
-      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyId == 0 &&
-      Number(this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.companyPaidAmt) == 0
-    )
-    {
-      this.http.get(BillingApiConstants.isemailenablelocation(
-        this.cookie.get('HSPLocationId')
-      ))
-      .pipe(takeUntil(this._destroying$))
-      .subscribe( res => {
-        console.log(res);
-        if(res == 1)
-        {
-          successInfo.afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((res: any) => {
-          const maildialog = this.messageDialogService.confirm(
-          "",
-          'Do you want to Email this bill?'
-          );
-          maildialog.afterClosed()
-          .pipe(takeUntil(this._destroying$))
-          .subscribe((result: any) => {
-            console.log(result);
-            if("type" in result)
-            {
-              if(result.type == 'yes')
-              {
-                const sendmaildialog = this.matDialog.open(SendMailDialogComponent, {
-                  width: "40vw",
-                  height: "50vh",
-                  data:{
-                    mail: this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.emailId,
-                    mobile: this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill.mobileNo,
-                    billid: this.billId
-                  }
-                })
-                sendmaildialog.afterClosed()
-                .pipe(takeUntil(this._destroying$))
-                .subscribe(() => {
-                  this.dialogopen();
-                })
-              }
-              else
-              {
-                this.dialogopen();
-              }
-            }
-          })
-          })
-        }
-        else
-        {
+    if (
+      this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+        .companyId == 0 &&
+      Number(
+        this.billingservice.makeBillPayload.ds_insert_bill.tab_insertbill
+          .companyPaidAmt
+      ) == 0
+    ) {
+      this.http
+        .get(
+          BillingApiConstants.isemailenablelocation(
+            this.cookie.get("HSPLocationId")
+          )
+        )
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res) => {
+          console.log(res);
+          if (res == 1) {
+            successInfo
+              .afterClosed()
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((res: any) => {
+                const maildialog = this.messageDialogService.confirm(
+                  "",
+                  "Do you want to Email this bill?"
+                );
+                maildialog
+                  .afterClosed()
+                  .pipe(takeUntil(this._destroying$))
+                  .subscribe((result: any) => {
+                    console.log(result);
+                    if ("type" in result) {
+                      if (result.type == "yes") {
+                        const sendmaildialog = this.matDialog.open(
+                          SendMailDialogComponent,
+                          {
+                            width: "40vw",
+                            height: "50vh",
+                            data: {
+                              mail: this.billingservice.makeBillPayload
+                                .ds_insert_bill.tab_insertbill.emailId,
+                              mobile:
+                                this.billingservice.makeBillPayload
+                                  .ds_insert_bill.tab_insertbill.mobileNo,
+                              billid: this.billId,
+                            },
+                          }
+                        );
+                        sendmaildialog
+                          .afterClosed()
+                          .pipe(takeUntil(this._destroying$))
+                          .subscribe(() => {
+                            this.dialogopen();
+                          });
+                      } else {
+                        this.dialogopen();
+                      }
+                    }
+                  });
+              });
+          } else {
+            this.dialogopen();
+          }
+        });
+    } else {
+      successInfo
+        .afterClosed()
+        .pipe(takeUntil(this._destroying$))
+        .subscribe((res: any) => {
           this.dialogopen();
-        }
-      })
+        });
     }
-    else
-    {
-      successInfo.afterClosed()
-      .pipe(takeUntil(this._destroying$))
-      .subscribe((res: any) => {
-        this.dialogopen();
-      })
-      
-    }    
     // successInfo
     //   .afterClosed()
     //   .pipe(takeUntil(this._destroying$))
@@ -1183,8 +1193,7 @@ export class BillComponent implements OnInit, OnDestroy {
     //   });
   }
 
-  dialogopen()
-  {
+  dialogopen() {
     const printDialog = this.messageDialogService.confirm(
       "",
       `Do you want to print bill?`
@@ -1402,63 +1411,70 @@ export class BillComponent implements OnInit, OnDestroy {
   ) {
     this.gstBreakupDetails = [];
     this.finalgstDetails = {};
-    this.http
-      .get(
-        ApiConstants.getgstdata(
-          this.calculateBillService.dsTaxCode.codeId,
-          companyId,
-          locationId,
-          amount
+    if (this.calculateBillService.dsTaxCode.codeId > 0) {
+      this.http
+        .get(
+          ApiConstants.getgstdata(
+            this.calculateBillService.dsTaxCode.codeId,
+            companyId,
+            locationId,
+            amount
+          )
         )
-      )
-      .subscribe((res: any) => {
-        if (res) {
-          if (res.length > 0) {
-            this.finalgstDetails = res[0];
-            if (this.gstBreakupDetails.length <= 0) {
-              this.gstBreakupDetails.push({
-                service: "CGST",
-                percentage: res[0].cgst,
-                value: res[0].cgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "SGST",
-                percentage: res[0].sgst,
-                value: res[0].sgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "UTGST",
-                percentage: res[0].utgst,
-                value: res[0].utgsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "IGST",
-                percentage: res[0].igst,
-                value: res[0].igsT_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "CESS",
-                percentage: res[0].cess,
-                value: res[0].cesS_Value,
-              });
-              this.gstBreakupDetails.push({
-                service: "TotalTax",
-                percentage: res[0].totaltaX_RATE,
-                value: res[0].totaltaX_Value,
-              });
-              this.formGroup.controls["gstTax"].setValue(
-                this.finalgstDetails.totaltaX_Value.toFixed(2)
-              );
-              this.billingservice.makeBillPayload.finalDSGSTDetails =
-                this.finalgstDetails;
-              this.billingservice.makeBillPayload.sacCode = res[0].saccode;
-              this.formGroup.controls["amtPayByPatient"].setValue(
-                this.getAmountPayByPatient()
-              );
+        .subscribe((res: any) => {
+          if (res) {
+            if (res.length > 0) {
+              this.finalgstDetails = res[0];
+              if (this.gstBreakupDetails.length <= 0) {
+                this.gstBreakupDetails.push({
+                  service: "CGST",
+                  percentage: res[0].cgst,
+                  value: res[0].cgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "SGST",
+                  percentage: res[0].sgst,
+                  value: res[0].sgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "UTGST",
+                  percentage: res[0].utgst,
+                  value: res[0].utgsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "IGST",
+                  percentage: res[0].igst,
+                  value: res[0].igsT_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "CESS",
+                  percentage: res[0].cess,
+                  value: res[0].cesS_Value,
+                });
+                this.gstBreakupDetails.push({
+                  service: "TotalTax",
+                  percentage: res[0].totaltaX_RATE,
+                  value: res[0].totaltaX_Value,
+                });
+                this.formGroup.controls["gstTax"].setValue(
+                  this.finalgstDetails.totaltaX_Value.toFixed(2)
+                );
+                this.billingservice.makeBillPayload.finalDSGSTDetails =
+                  this.finalgstDetails;
+                this.billingservice.makeBillPayload.sacCode = res[0].saccode;
+                this.formGroup.controls["amtPayByPatient"].setValue(
+                  this.getAmountPayByPatient()
+                );
+              }
             }
           }
-        }
-      });
+        });
+    } else {
+      this.billingservice.makeBillPayload.finalDSGSTDetails =
+        this.calculateBillService.dsTaxCode;
+      this.billingservice.makeBillPayload.sacCode =
+        this.calculateBillService.dsTaxCode.saccode;
+    }
   }
 
   onlinePaymentConfirmation() {
