@@ -359,4 +359,13 @@ export namespace BillingApiConstants {
   ) => {
     return `${environment.BillingApiUrl}api/outpatientbilling/sendemailalerttoservice/${OPBillID}/${EmailID}/${Remarks}`;
   };
+
+  export const getDoctorConsultType = (
+    locationId: number,
+    doctorId: number,
+    iaCode: string,
+    RegNumber: number
+  ) => {
+    return `${environment.BillingApiUrl}api/outpatientbilling/doctorconsulttypesorder/${locationId}/${doctorId}/${iaCode}/${RegNumber}`;
+  };
 }
