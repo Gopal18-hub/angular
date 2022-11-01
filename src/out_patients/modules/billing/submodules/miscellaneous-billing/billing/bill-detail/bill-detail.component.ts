@@ -807,10 +807,17 @@ export class BillDetailComponent implements OnInit {
   }
   creditClick() {
     if (
-      Number(this.miscServBillForm.value.paymentMode) === 3 &&
-      this.miscServBillForm.value.credLimit &&
-      this.miscServBillForm.value.credLimit > 0
+      Number(this.miscServBillForm.value.paymentMode) === 3
+
+      //  &&
+      // this.miscServBillForm.value.credLimit
+      //  &&
+      // this.miscServBillForm.value.credLimit > 0
     ) {
+      if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
+        this.miscServBillForm.controls["discAmt"].setValue("0.00");
+        this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+      }
       this.amtByComp();
     }
   }
@@ -1343,7 +1350,7 @@ export class BillDetailComponent implements OnInit {
 
   resetAmt() {
     this.TotalAmount = "0.00";
-    this.billingservice.totalCost = 0;
+    this.billingservice.totalCostWithOutGst = 0;
     this.billAmnt = 0;
     this.generatedBillNo = "";
     this.miscServBillForm.controls["billAmt"].setValue("0.00");
@@ -1425,7 +1432,7 @@ export class BillDetailComponent implements OnInit {
         { title: "On Item", value: "On-Item" },
       ],
     };
-    this.billingservice.totalCost = this.TotalAmount;
+    this.billingservice.totalCostWithOutGst = this.TotalAmount;
     const discountReasonPopup = this.matDialog.open(DisountReasonComponent, {
       width: "80vw",
       minWidth: "90vw",
@@ -1484,8 +1491,8 @@ export class BillDetailComponent implements OnInit {
           });
         });
         this.serviceselectedList = [...this.serviceselectedList];
-        this.calculateBillService.discountSelectedItems.forEach((e: any) => {
-          discountedAmount += Number(e.discAmt);
+        this.serviceselectedList.forEach((e: any) => {
+          discountedAmount += Number(e.DiscAmount);
         });
         this.miscServBillForm.controls["discAmt"].setValue(
           discountedAmount.toFixed(2)
@@ -2171,6 +2178,10 @@ export class BillDetailComponent implements OnInit {
   }
 
   amtByComp() {
+    if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
+      this.miscServBillForm.controls["discAmt"].setValue("0.00");
+      this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+    }
     let balance =
       this.billAmnt -
       (this.miscServBillForm.value.discAmt || 0) -

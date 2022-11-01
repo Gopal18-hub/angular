@@ -39,7 +39,6 @@ import { OnlineAppointmentComponent } from "../billing/prompts/online-appointmen
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatemasterdetail.Interface";
 
-
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -120,7 +119,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   corporateId = "";
   companyId = "";
   coorporateList: any = [];
-  creditcorporateList: any =[];
+  creditcorporateList: any = [];
 
   miscFormData = {
     type: "object",
@@ -196,7 +195,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     }
 
     this.getssnandmaxid();
-   // this.getAllCompany();
+    // this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
     // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
@@ -418,7 +417,9 @@ export class MiscellaneousBillingComponent implements OnInit {
         const dialogRef = this.messageDialogService.error(
           "Patient is an Expired Patient!"
         );
+        this.disableBtn = true;
         await dialogRef.afterClosed().toPromise();
+        return;
       }
       this.getAllCompany();
       this.getAllCorporate();
@@ -740,19 +741,19 @@ export class MiscellaneousBillingComponent implements OnInit {
       const companyExist: any = this.companyList.find(
         (c: any) => c.id == patientDetails.companyid
       );
-    if(companyExist){
-      let res = {
-        company: companyExist,
-        title: companyExist.name,
-        value: patientDetails.companyid,
+      if (companyExist) {
+        let res = {
+          company: companyExist,
+          title: companyExist.name,
+          value: patientDetails.companyid,
+        };
+        this.Misc.setCompnay(
+          patientDetails.companyid,
+          res,
+          this.miscForm,
+          "companyexists"
+        );
       }
-      this.Misc.setCompnay(
-        patientDetails.companyid,
-        res,
-        this.miscForm,
-        "companyexists"
-      );
-    }
     }
   }
   setCorporate(patientDetails: PatientDetail) {
@@ -806,7 +807,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
         this.Misc.setCorporateData(resultData.oCompanyName);
         resultData.oCompanyName.unshift({ name: "Select", id: -1 });
-        this.questions[3].options = this.coorporateList.map((l:any) => {
+        this.questions[3].options = this.coorporateList.map((l: any) => {
           return { title: l.name, value: l.id };
         });
         this.questions[3] = { ...this.questions[3] };

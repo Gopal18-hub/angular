@@ -319,7 +319,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
-          // maximum: new Date(),
+          maximum: new Date(),
           // minimum: Reportconstants.minimumDate["oneMonth"],
         },
       },
@@ -397,6 +397,7 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          maximum: new Date(),
         },
       },
     },
@@ -487,7 +488,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-          required: true,
+          required: false,
           defaultValue: "Plan Name",
           conditions: [
             {
@@ -526,7 +527,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Plan Name---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getfamilyplanname`,
@@ -542,7 +543,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Location---",
           title: "Location",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
           optionsModelConfig: {
@@ -557,7 +558,7 @@ export namespace FormReport {
           type: "autocomplete",
           placeholder: "---Membership---",
           title: "",
-          required: true,
+          required: false,
           questionClasses: "max-hide",
           optionsModelConfig: {
             uri: `${
@@ -705,6 +706,9 @@ export namespace FormReport {
       type: "object",
       format: "MM/dd/YYYY",
       properties: {
+        LocationName: {
+          type: "hidden",
+        },
         dtpfromdate: {
           type: "date",
           title: "From Date",
@@ -714,12 +718,9 @@ export namespace FormReport {
           type: "date",
           title: "To Date",
           defaultValue: new Date().toISOString().slice(0, 10),
+          maximum: new Date(),
+          minimum: new Date("From Date"),
         },
-        // location: {
-        //   type: "dropdown",
-        //   placeholder: "---Location---",
-        //   title: "Location",
-        // },
         locationid: {
           type: "autocomplete",
           placeholder: "---Location---",
@@ -732,6 +733,13 @@ export namespace FormReport {
               value: "id",
             },
           },
+          conditions: [
+            {
+              expression: "self.title",
+              controlKey: "LocationName",
+              type: "value",
+            },
+          ],
         },
       },
     },
@@ -827,6 +835,10 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
+          reportEntity: "OpenScrollReport",
+          fileName: "Open Scroll Report.xls",
+          contentType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
@@ -972,6 +984,10 @@ export namespace FormReport {
         },
         {
           label: "Export",
+          type: "export",
+          reportEntity: "ServiceTaxReportData",
+          fileName: "Service Tax Report.xls",
+          contentType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
@@ -1172,6 +1188,13 @@ export namespace FormReport {
           },
         },
         {
+          label: "Export",
+          type: "export",
+          reportEntity: "opBillRegisterReport",
+          fileName: "Op Bill Register Report.xls",
+          contenType: "application/vnd.ms-excel",
+        },
+        {
           label: "Clear",
           type: "clear",
         },
@@ -1235,6 +1258,14 @@ export namespace FormReport {
             reportEntity: "OPRefundReport",
           },
         },
+        {
+          label: "Export",
+          type: "export",
+          reportEntity: "OPRefundReport",
+          fileName: "OP Refund Report.xls",
+          contenType: "application/vnd.ms-excel",
+        },
+        
         {
           label: "Clear",
           type: "clear",
@@ -1308,6 +1339,13 @@ export namespace FormReport {
             reportName: "OP Discount Report",
             reportEntity: "opDiscountReport",
           },
+        },
+        {
+          label: "Export",
+          type: "export",
+          reportEntity: "opDiscountReport",
+          fileName: "Op Discount Report.xls",
+          contenType: "application/vnd.ms-excel",
         },
         {
           label: "Clear",
