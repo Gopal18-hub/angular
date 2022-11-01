@@ -48,6 +48,13 @@ export class GstTaxComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     console.log(data);
+    data.gstdetail.forEach((i: any) => {
+      i.value = i.value.toFixed(2);
+      if(i.percentage == 0)
+      {
+        i.percentage = i.percentage.toFixed(2);
+      }
+    })
   }
 
   ngOnInit(): void {
