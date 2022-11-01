@@ -465,7 +465,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.investigation.value,
             this.opOrderRequestService.patientDemographicdata.gender,
             this.formGroup.value.investigation.serviceid,
-            "2"
+            "1"
           )
         )
         .pipe(takeUntil(this._destroying$))
