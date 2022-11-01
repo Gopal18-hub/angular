@@ -24,6 +24,8 @@ import { OpPrescriptionDialogComponent } from "@modules/billing/submodules/detai
 import { BillingApiConstants } from "../../BillingApiConstant";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
+import { BillingStaticConstants } from "../../BillingStaticConstant";
 
 @Component({
   selector: "out-patients-bill",
@@ -843,6 +845,9 @@ export class BillComponent implements OnInit, OnDestroy {
       await referralErrorRef.afterClosed().toPromise();
       return;
     }
+    //CGHS Beneficiary check
+    await this.calculateBillService.checkCGHSBeneficiary();
+
     if (
       !this.billingservice.referralDoctor ||
       this.billingservice.referralDoctor.id === 0
