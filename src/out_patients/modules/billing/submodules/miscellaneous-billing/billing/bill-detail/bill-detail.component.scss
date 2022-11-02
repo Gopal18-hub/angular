@@ -1,241 +1,123 @@
 .sub-bill-overall {
-    ::ng-deep mat-form-field {
-      .mat-form-field-wrapper {
-        margin: 0;
-        padding: 0;
-        
+  ::ng-deep .max-table-wrapper {
+    table {
+      width: 120% !important;
+
+      .mat-column-qty,
+      .mat-column-disc,
+      .mat-column-gst,
+      .mat-column-precaution {
+        text-align: center;
       }
     }
-    .isDisabled {
-      pointer-events: none;
-      opacity: 0.7;
+  }
+  .w-12 {
+    width: 12%;
+  }
+  .w-14 {
+    width: 14%;
+  }
+  .w-86 {
+    width: 85.5%;
+  }
+  .w-21 {
+    width: 21%;
+  }
+  .w-23 {
+    width: 23%;
+  }
+  .w-26 {
+    width: 26%;
+  }
+  .w-27 {
+    width: 27%;
+  }
+  .h-30vh {
+    height: 50% !important;
+  }
+  .h-22vh {
+    height: 22vh;
+  }
+  .w-44 {
+    width: 44%;
+  }
+  .w-42 {
+    width: 38%;
+  }
+  .mr-24 {
+    margin-right: 2.4rem !important;
+  }
+  .bg-blue {
+    background-color: #bfe8e7;
+  }
+  .print-button {
+    background-color: #5a5a5a;
+  }
+  .bg-deposit {
+    background-color: #f6f6f6;
+    &.mat-button-base {
+      padding: 0 !important;
+      height: 24px;
+      line-height: 24px;
+      ::ng-deep .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        mat-icon {
+          height: auto !important;
+        }
+      }
     }
-  
-    .h-dropdown{
-      ::ng-deep mat-form-field {
-        .mat-form-field-wrapper {
-          margin: 0;
-          padding: 0;
-          height: 0.7rem;
-      line-height: 0.7rem;
-        }
+  }
+  ::ng-deep {
+    .sub-bill-form {
+      mat-form-field {
+        background-color: #fff;
       }
-      
+      button {
+        height: 26px;
+        line-height: 26px;
+      }
+      .mat-checkbox-layout .mat-checkbox-label {
+        color: inherit !important;
+      }
     }
-    ::ng-deep .mat-error {
-      display: none;
-  }  
-  .bill-label{
-  ::ng-deep mat-label {
-    color: var(--primary-color);
-    font-weight: 600;
-  }    
-}
-::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick
-{
-  color:#ababab;
-}
-      // ::ng-deep .max-table-wrapper {
-      //   table {
-      //     width: 110% !important;        
-      //   }
-      // }
-      ::ng-deep .w-12 {
-        width: 12%;
+    mat-radio-group {
+      flex-direction: row;
+      width: 100%;
+      mat-radio-button {
+        margin-right: 1.2rem;
       }
-      ::ng-deep .w-13 {
-        width: 13%;
-      }
-      ::ng-deep .w-86 {
-        width: 87.25%;
-      }
-      ::ng-deep  .w-26 {
-        width: 26%;
-      }
-      ::ng-deep .h-30vh {
-      
-       height:50% !important;
-      // overflow-y:scroll !important;       
-      }
-      ::ng-deep  .h-22vh {
-        height: 22vh;
-      }
-      ::ng-deep  .w-44 {
-        width: 44%;
-      }
-      ::ng-deep .bg-blue {
-        background-color: #bfe8e7;
-      }
-      ::ng-deep .pr5int-button {
-        background-color: #5a5a5a;
-      }
-      ::ng-deep .bg-deposit {
-        background-color: #f6f6f6;
-      }
-      ::ng-deep {
-        .sub-bill-form {
-          mat-form-field {
-            background-color: #fff;
-          }
-          button {
-            height: 26px;
-            line-height: 26px;
-          }
-          .mat-checkbox-layout .mat-checkbox-label {
-            color: inherit !important;
-          }
-        }
-        mat-radio-group {
-          flex-direction: row;
-          width: 100%;
-          mat-radio-button {
-            margin-right: 1.2rem;
-          }
-        }
-        .w-tarrif{
-  width:7%;
-        }
-        .w-24
-        {
-          width:26%
-        }
-        .w-17
-        {
-          width:17%
-        }
-        .w-16
-        {
-          width:16%
-        }
-        ::ng-deep {
-          .min-width-initial {
-            min-width: 82px !important;
-          }
-          button {
-            height: 1.875rem;
-            line-height: 1.875rem;
-          }
-      
-          .mat-tab-header {
-            border-bottom: none;
-          }
-          .mat-tab-links {
-            background-color: #45c0be;
-            border-radius: 13px 13px 0 0;
-            border: 4px solid #45c0be;
-            border-bottom: 0;
-            a {
-              color: #fff;
-              background-color: #bfe8e7;
-              border-radius: 13px 13px 0 0;
-              margin-right: 4px;
-              color: #08504f;
-              opacity: 1;
-              &.mat-tab-link {
-                height: 26px;
-              }
-              &.mat-tab-label-active {
-                background-color: #fff;
-                color: #08504f;
-                font-weight: 600;
+    }
+    .w-tarrif{
+      width:7%;
+            }
+            .h-dropdown{
+              ::ng-deep mat-form-field {
+                .mat-form-field-wrapper {
+                  margin: 0;
+                  padding: 0;
+                  height: 0.7rem;
+              line-height: 0.7rem;
+                }
               }
             }
-          }
-          .mat-ink-bar {
-            display: none;
-          }
-        }
-      }
-      // .addbtn
-      // {
-      //   width : 8% !important
-      // }
-      ::ng-deep .w-Reff
-      {
-        width: 93%
-      }
-      ::ng-deep  .icon-more
-  {   
-   
-          background-color:#D2D0D0;
-          border-radius: 4px;
-          color: black;
-          margin-left: 1px;
-          height: 22.9px;
-  
-     
-  }
-  ::ng-deep .interaction {
-    mat-label{
-    font-weight: 400;
-  }
-}
-::ng-deep .tableh
+            .bill-label{
+              ::ng-deep mat-label {
+                color: var(--primary-color);
+                font-weight: 600;
+              }    
+            }
+            ::ng-deep  .addbtn
+            {
+              min-width: fit-content !important;
+              min-height: fit-content !important;
+            }
+            ::ng-deep .tableh
   {
     height : 35% !important
   }
-  ::ng-deep .min-width-bill {
-    min-width: 100px !important;
+              
+        
   }
-  ::ng-deep  .addbtn
-  {
-    min-width: fit-content !important;
-    min-height: fit-content !important;
-  }
-  .billdetailtable{
-   
-    ::ng-deep .max-table-wrapper {
-        border: 1px solid #707070 !important;
-        table {
-          width: 135% !important;
-         .mat-column-maxRemoveRow{
-          width: 3% !important
-         }
-        }
-    tbody tr td:nth-child(5),
-    tbody tr td:nth-child(6),
-    tbody tr td:nth-child(7),
-    tbody tr td:nth-child(10),
-    tbody tr td:nth-child(11)  {
-        text-align: right !important;
-    }
-    tbody tr td:nth-child(5)
-    {
-        padding-right: 1.9rem !important;
-    }
-    
-    tbody tr td:nth-child(11),  
-    tbody tr td:nth-child(10){
-      padding-right: 1.7rem !important;
-    }
-   tbody tr td:nth-child(6){
-       padding-right: 1rem !important;
-   }
-    tbody tr td:nth-child(9),
-    tbody tr td:nth-child(12)
-    {
-      padding-left: 0.5rem !important;
-    }
-    tbody tr td:nth-child(7){
-        padding-right: 2rem !important;
-    }
-   
-    thead tr th:nth-child(15){
-        padding-left: 2rem;
-    }
-    thead tr th:nth-child(5){
-        padding-left: 4.5rem;
-    }
-    thead tr th:nth-child(10),
-    thead tr th:nth-child(11){
-        padding-left: 3.5rem;
-    }
-  
-    thead tr th:nth-child(7){
-      padding-left: 6.6rem;
-  }
-    
 }
-}  
-    }
-    
