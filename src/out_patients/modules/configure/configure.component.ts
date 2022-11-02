@@ -86,16 +86,16 @@ export class ConfigureComponent implements OnInit {
     );
     this.risconfigureform = formResult.form;
     this.questions = formResult.questions;
-    // this.searchService.searchTrigger
-    //   .pipe(takeUntil(this._destroying$))
-    //   .subscribe(async (formdata: any) => {
-    //     console.log(formdata);
-    //     this.router.navigate([], {
-    //       queryParams: {},
-    //       relativeTo: this.route,
-    //     });
-    //     const lookupdata = await this.lookupService.searchPatient(formdata);
-    //   });
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+      });
   }
   risconfigureformData = {
     title: "",
@@ -106,4 +106,8 @@ export class ConfigureComponent implements OnInit {
       },
     },
   };
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
