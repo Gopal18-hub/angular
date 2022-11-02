@@ -689,7 +689,7 @@ export class ExpiredDepositsComponent implements OnInit {
     this.today = new Date();
     this.ExpiredDepositform.controls["todate"].setValue(this.today);
     this.fromdate = new Date(this.today);
-    this.fromdate.setDate(this.fromdate.getDate() - 365);
+    this.fromdate.setDate(this.fromdate.getDate());
     this.ExpiredDepositform.controls["fromdate"].setValue(this.fromdate);
     this.questions[0].readonly = false;
     this.ExpiredDepositform.controls["maxid"].setValue(

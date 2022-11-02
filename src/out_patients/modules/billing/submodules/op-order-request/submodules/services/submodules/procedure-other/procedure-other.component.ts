@@ -354,7 +354,7 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.formGroup.value.procedure.value,
             this.opOrderrequestService.patientDemographicdata.gender,
             this.formGroup.value.procedure.serviceid,
-            "9"
+            "1"
           )
         )
         .pipe(takeUntil(this._destroying$))

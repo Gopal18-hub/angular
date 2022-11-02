@@ -325,13 +325,16 @@ export class BillingComponent implements OnInit, OnDestroy {
     this.questions[0].elementRef.addEventListener("keypress", (event: any) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.apiProcessing = true;
-        this.patient = false;
-        this.router.navigate([], {
-          queryParams: { maxId: this.formGroup.value.maxid },
-          relativeTo: this.route,
-          queryParamsHandling: "merge",
-        });
+        if (!this.route.snapshot.queryParams["maxId"]) {
+          this.apiProcessing = true;
+          this.patient = false;
+          this.router.navigate([], {
+            queryParams: { maxId: this.formGroup.value.maxid },
+            relativeTo: this.route,
+            queryParamsHandling: "merge",
+          });
+        }
+
         //this.getPatientDetailsByMaxId();
       }
     });
