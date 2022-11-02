@@ -6,6 +6,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { Observable } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { map, startWith } from "rxjs/operators";
+import { SpecializationService } from "../../specialization.service";
 
 @Component({
   selector: "out-patients-show-plan-detils",
@@ -120,7 +121,8 @@ export class ShowPlanDetilsComponent implements OnInit {
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
     @Inject(MAT_DIALOG_DATA) public inputdata: any,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -149,35 +151,18 @@ export class ShowPlanDetilsComponent implements OnInit {
     }
   }
 
-  getDoctorsListInfo() {
+  async getDoctorsListInfo() {
     if (this.doctorList.length == 0) {
-      this.http
-        .get(
-          BillingApiConstants.getalldoctorname(
-            Number(this.cookie.get("HSPLocationId"))
-          )
+      this.doctorList = await this.specializationService.getDoctorsListInfo();
+      console.log(this.doctorList);
+      this.isConsultationExist = true;
+      this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
+        startWith(""),
+        map((value: any) => (typeof value === "string" ? value : value?.title)),
+        map((title: any) =>
+          title ? this._filter(title) : this.doctorList.slice()
         )
-        .subscribe((res) => {
-          this.doctorList = res.map((r: any) => {
-            return {
-              title: r.doctorname + " (" + r.specialityname + ")",
-              value: r.doctorid,
-              originalTitle: r.doctorname,
-              specialisationid: r.specialisationid,
-              clinicId: 0,
-            };
-          });
-          this.isConsultationExist = true;
-          this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
-            startWith(""),
-            map((value: any) =>
-              typeof value === "string" ? value : value?.title
-            ),
-            map((title: any) =>
-              title ? this._filter(title) : this.doctorList.slice()
-            )
-          );
-        });
+      );
     } else {
       this.isConsultationExist = true;
     }

@@ -12,6 +12,8 @@ export class SpecializationService {
 
   specializationDocotorsList: any = {};
 
+  allDoctorsList: any = [];
+
   constructor(private http: HttpService, private cookie: CookieService) {}
 
   getSpecialization() {
@@ -41,6 +43,30 @@ export class SpecializationService {
       });
       this.specializationDocotorsList[specializationId.toString()] = options;
       return options;
+    }
+  }
+
+  async getDoctorsListInfo() {
+    if (this.allDoctorsList.length == 0) {
+      const res = await this.http
+        .get(
+          BillingApiConstants.getalldoctorname(
+            Number(this.cookie.get("HSPLocationId"))
+          )
+        )
+        .toPromise();
+      this.allDoctorsList = res.map((r: any) => {
+        return {
+          title: r.doctorname + " (" + r.specialityname + ")",
+          value: r.doctorid,
+          originalTitle: r.doctorname,
+          specialisationid: r.specialisationid,
+          clinicId: 0,
+        };
+      });
+      return this.allDoctorsList;
+    } else {
+      return this.allDoctorsList;
     }
   }
 }
