@@ -335,6 +335,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["corporate"].enable();
             let maxID = this.similarContactPatientList[0].maxid;
             this.miscForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId();
           } else {
             if (this.similarContactPatientList.length != 0) {
               const similarSoundDialogref = this.matDialog.open(
@@ -363,6 +364,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         },
         (error) => {
           this.messageDialogService.info(error.error);
+          this.apiProcessing = false;
         }
       );
   }
@@ -424,7 +426,6 @@ export class MiscellaneousBillingComponent implements OnInit {
       this.getAllCompany();
       this.getAllCorporate();
       this.getSimilarSoundDetails(iacode, regNumber);
-      this.disableBtn = true;
       this.http
         .get(
           ApiConstants.getregisteredpatientdetailsForMisc(
@@ -436,6 +437,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.disableBtn = true;
             this.patientDetails = resultData;
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length !=
@@ -461,9 +463,6 @@ export class MiscellaneousBillingComponent implements OnInit {
                 this.dsPersonalDetails.dtPersonalDetails1[0].cashLimit;
               this.setItemsToBill.cashLimit = cashLimit;
               this.setItemsToBill.enableBill = true;
-            } else {
-              this.snackbar.open("Invalid Max ID", "error");
-              this.disableBtn = false;
             }
           },
           (error) => {
@@ -471,14 +470,17 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.setMaxIdError(iacode, regNumber);
               this.MaxIDExist = false;
             }
-            this.snackbar.open("Invalid Max ID", "error");
-            this.disableBtn = false;
+            // this.snackbar.open("Invalid Max ID", "error");
+            // this.disableBtn = false;
           }
         );
     } else if (regNumber === 0 || iacode === 0) {
       this.snackbar.open("Not a valid registration number", "error");
     } else {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
+      this.questions[0].readonly = false;
+      return;
     }
   }
   getSimilarSoundDetails(iacode: string, regNumber: number) {
@@ -502,8 +504,10 @@ export class MiscellaneousBillingComponent implements OnInit {
           }
         },
         (error) => {
-          this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
+          if (error.error == "Patient Not found") {
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
+          }
         }
       );
   }
@@ -606,12 +610,15 @@ export class MiscellaneousBillingComponent implements OnInit {
           } else {
             this.apiProcessing = false;
             this.snackbar.open("Invalid Max ID", "error");
+            this.disableBtn = false;
+            this.questions[0].readonly = false;
+            return;
           }
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.miscForm.controls["maxid"].setValue(iacode + "." + regNumber);
-            this.snackbar.open("Invalid Max ID", "error");
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
           }
           this.apiProcessing = false;
         }
@@ -689,6 +696,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setValuesToMiscForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
       this.apiProcessing = false;
       return;
     }
