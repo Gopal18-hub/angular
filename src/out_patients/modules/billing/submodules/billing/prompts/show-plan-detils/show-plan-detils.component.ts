@@ -77,7 +77,7 @@ export class ShowPlanDetilsComponent implements OnInit {
         title: "Item Name",
         type: "string",
         style: {
-          width: "30%",
+          width: "40%",
         },
       },
       noOfTimes: {
@@ -89,11 +89,17 @@ export class ShowPlanDetilsComponent implements OnInit {
       },
       price: {
         title: "App Amount",
-        type: "string",
+        type: "currency",
+        style: {
+          width: "150px",
+        },
       },
       availnooftimes: {
         title: "Avail no.of time",
         type: "number",
+        style: {
+          width: "120px",
+        },
       },
     },
   };
@@ -119,7 +125,15 @@ export class ShowPlanDetilsComponent implements OnInit {
 
   ngOnInit(): void {
     this.planType = this.inputdata.type;
-    this.data = this.inputdata.planDetails;
+    if (this.inputdata.type == "otherPlanDetails") {
+      this.inputdata.planDetails.forEach((item: any) => {
+        item.disablecheckbox =
+          item.availnooftimes == item.noOfTimes ? true : false;
+      });
+      this.data = this.inputdata.planDetails;
+    } else {
+      this.data = this.inputdata.planDetails;
+    }
   }
 
   ngAfterViewInit(): void {
