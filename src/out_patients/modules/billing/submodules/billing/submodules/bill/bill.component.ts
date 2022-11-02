@@ -849,6 +849,9 @@ export class BillComponent implements OnInit, OnDestroy {
     //CGHS Beneficiary check
     await this.calculateBillService.checkCGHSBeneficiary();
 
+    ////GAV-910 - Domestic Tarrif check
+    await this.calculateBillService.checkDoemsticTarrif();
+
     if (
       !this.billingservice.referralDoctor ||
       this.billingservice.referralDoctor.id === 0
