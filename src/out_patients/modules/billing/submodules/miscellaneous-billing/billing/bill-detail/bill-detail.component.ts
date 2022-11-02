@@ -702,7 +702,6 @@ export class BillDetailComponent implements OnInit {
           this.miscPatient.setCalculateBillItems(this.calcBillData);
           this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
           let calcBill0 = this.miscPatient.calculateBill();
-          this.miscServBillForm.controls["discAmtCheck"].setValue(false);
           this.calculateBillService.discountSelectedItems = [];
           this.serviceselectedList.forEach((e: any) => {
             e.Disc = 0;
@@ -1970,13 +1969,13 @@ export class BillDetailComponent implements OnInit {
   //Calculate TA
   calculateTotalAmount() {
     this.TotalAmount = 0;
-    this.getgstdata();
     this.getDipositedAmountByMaxID();
     this.serviceselectedList.forEach((element) => {
       this.TotalAmount =
         Number(this.TotalAmount) +
         Number(element.PriceNo) * Number(element.Qty);
     });
+    this.getgstdata();
     this.calcBillData.totalAmount = this.TotalAmount;
     this.miscPatient.setCalculateBillItems(this.calcBillData);
     this.billAmnt = this.TotalAmount;
