@@ -232,7 +232,7 @@ export class BillDetailComponent implements OnInit {
       discAmtCheck: {
         type: "checkbox",
         required: false,
-        disabled: true,
+        //disabled: true,
         options: [{ title: " Discount  Amount  (  -  ) " }],
       },
       //14
@@ -246,7 +246,7 @@ export class BillDetailComponent implements OnInit {
       dipositAmtcheck: {
         type: "checkbox",
         required: false,
-        disabled: true,
+        //disabled: true,
         options: [{ title: "Deposit Amount ( - )" }],
       },
       //16
@@ -842,10 +842,10 @@ export class BillDetailComponent implements OnInit {
       this.miscServBillForm.controls["coPay"].setValue("0.00");
     }
 
-    if (this.serviceselectedList.length > 0) {
-      this.miscServBillForm.controls["discAmtCheck"].enable();
-      this.miscServBillForm.controls["dipositAmtcheck"].enable();
-    }
+    // if (this.serviceselectedList.length > 0) {
+    //   this.miscServBillForm.controls["discAmtCheck"].enable();
+    //   this.miscServBillForm.controls["dipositAmtcheck"].enable();
+    // }
   }
   onModifyMiscDepositAmt() {
     this.calcBillData.depositInput = Number(
@@ -1143,9 +1143,9 @@ export class BillDetailComponent implements OnInit {
         if (data) {
           this.gstData = data;
           this.totaltaX_Value = data[0].totaltaX_Value;
-          this.miscServBillForm.controls["gstTax"].setValue(
-            this.totaltaX_Value.toFixed(2) || "0.00"
-          );
+          // this.miscServBillForm.controls["gstTax"].setValue(
+          //   this.totaltaX_Value.toFixed(2) || "0.00"
+          // );
           this.calcBillData.totalGst = this.totaltaX_Value;
           this.miscPatient.setCalculateBillItems(this.calcBillData);
           let calcBill0 = this.miscPatient.calculateBill();
@@ -1248,8 +1248,8 @@ export class BillDetailComponent implements OnInit {
             this.isEnableBillBtn = false;
             //this.enableForm = 0;
           }
-          this.miscServBillForm.controls["discAmtCheck"].enable();
-          this.miscServBillForm.controls["dipositAmtcheck"].enable();
+          // this.miscServBillForm.controls["discAmtCheck"].enable();
+          // this.miscServBillForm.controls["dipositAmtcheck"].enable();
         }
       }
 

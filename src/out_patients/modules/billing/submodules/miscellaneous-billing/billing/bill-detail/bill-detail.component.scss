@@ -117,6 +117,10 @@
   {
     height : 35% !important
   }
+  .isDisabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
               
         
   }
