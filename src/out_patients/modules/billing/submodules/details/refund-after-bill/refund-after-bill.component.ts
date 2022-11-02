@@ -347,10 +347,10 @@ export class RefundAfterBillComponent implements OnInit {
       {  
           this.billDetailservice.sendforapproval = [];
           this.billDetailservice.totalrefund = 0;
-          for(var i = 0; i < s.added.length; i++)
+          for(var i = 0; i < this.tableRows.selection.selected.length; i++)
           {
             var list = this.billDetailservice.patientbilldetaillist.billDetialsForRefund_ServiceItemID.filter((a:any)=>{
-              return a.itemid == s.added[i].itemid;
+              return a.itemid == this.tableRows.selection.selected[i].itemid;
             })
             console.log(list);
             for(var z = 0; z < list.length; z++)
@@ -360,7 +360,7 @@ export class RefundAfterBillComponent implements OnInit {
                 this.msgdialog.info('Item cannot be refunded from this Tab Kindly unacknowledge first / Refund this item from Service Tab');
                 console.log(this.tableRows.selection);
                 setTimeout(() => {
-                  this.tableRows.selection.deselect(s.added[0]);
+                  this.tableRows.selection.deselect(this.tableRows.selection.selected[0]);
                 }, 100);
                 return;
               }

@@ -97,7 +97,7 @@
     </div>
 
     <div class="flex justify-center gap-05 mt-7">
-        <button mat-raised-button color="primary" (click)="savebtn()">Save</button>
+        <button mat-raised-button color="primary" (click)="savebtn()" [disabled]="!sendMailForm.valid">Save</button>
         <button mat-raised-button color="primary" (click)="cancelbtn()">Cancel</button>
     </div>
       

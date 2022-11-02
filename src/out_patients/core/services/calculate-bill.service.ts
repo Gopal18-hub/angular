@@ -49,6 +49,8 @@ export class CalculateBillService {
 
   otherPlanSelectedItems: any = [];
 
+  consumablesUnselectedItems = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,
@@ -1081,6 +1083,61 @@ export class CalculateBillService {
       }
     }
     return cstype;
+  }
+
+  async mapFinalGSTDetails(details: any) {
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.gsT_value =
+      details.totaltaX_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.gsT_percent =
+      details.gst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cgsT_Value =
+      details.cgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cgsT_Percent =
+      details.cgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.sgsT_value =
+      details.sgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.sgsT_percent =
+      details.sgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.utgsT_value =
+      details.utgsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.utgsT_percent =
+      details.utgst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.igsT_Value =
+      details.igsT_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.igsT_percent =
+      details.igst;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cesS_value =
+      details.cesS_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.cesS_percent =
+      details.cess;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE1_Value =
+      details.taxratE1_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE1_Percent =
+      details.taxratE1;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE2_Value =
+      details.taxratE2_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE2_Percent =
+      details.taxratE2;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE3_Value =
+      details.taxratE3_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE3_Percent =
+      details.taxratE3;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE4_Value =
+      details.taxratE4_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE4_Percent =
+      details.taxratE4;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE5_Value =
+      details.taxratE5_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxratE5_Percent =
+      details.taxratE5;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.totaltaX_RATE =
+      details.totaltaX_RATE;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.totaltaX_RATE_VALUE =
+      details.totaltaX_Value;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.saccode =
+      details.saccode;
+    this.billingServiceRef.makeBillPayload.finalDSGSTDetails.taxgrpid =
+      details.taxgrpid;
   }
 
   //#endregion TaxableBill
