@@ -2,13 +2,17 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { DynamicFormQuestionComponent } from "@shared/ui/dynamic-forms/dynamic-form-question.component";
 import { QuestionControlService } from "@shared/ui/dynamic-forms/service/question-control.service";
-
+import { SearchService } from "@shared/services/search.service";
+import { LookupService } from "@core/services/lookup.service";
+import { Subject, takeUntil } from "rxjs";
+import { Router, ActivatedRoute } from "@angular/router";
 @Component({
   selector: "out-patients-configure",
   templateUrl: "./configure.component.html",
   styleUrls: ["./configure.component.scss"],
 })
 export class ConfigureComponent implements OnInit {
+  private readonly _destroying$ = new Subject<void>();
   questions: any;
   risconfigureform!: FormGroup;
   config: any = {
@@ -68,7 +72,13 @@ export class ConfigureComponent implements OnInit {
       },
     },
   };
-  constructor(private formService: QuestionControlService) {}
+  constructor(
+    private formService: QuestionControlService,
+    private searchService: SearchService,
+    private lookupService: LookupService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
   ngOnInit(): void {
     let formResult: any = this.formService.createForm(
       this.risconfigureformData.properties,
@@ -76,6 +86,16 @@ export class ConfigureComponent implements OnInit {
     );
     this.risconfigureform = formResult.form;
     this.questions = formResult.questions;
+    this.searchService.searchTrigger
+      .pipe(takeUntil(this._destroying$))
+      .subscribe(async (formdata: any) => {
+        console.log(formdata);
+        this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+        });
+        const lookupdata = await this.lookupService.searchPatient(formdata);
+      });
   }
   risconfigureformData = {
     title: "",
@@ -86,4 +106,8 @@ export class ConfigureComponent implements OnInit {
       },
     },
   };
+  ngOnDestroy() {
+    this._destroying$.next(undefined);
+    this._destroying$.complete();
+  }
 }
