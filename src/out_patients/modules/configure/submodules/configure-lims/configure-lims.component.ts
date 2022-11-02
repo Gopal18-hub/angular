@@ -164,6 +164,7 @@ export class ConfigureLimsComponent implements OnInit {
         .subscribe(
           (data) => {
             console.log(data);
+            this.apiprocessing = false;
             this.limsconfigureList = data as GetConfigureMessageInterface[];
             if (this.limsconfigureList != null) {
               if (this.limsconfigureList.length > 0) {

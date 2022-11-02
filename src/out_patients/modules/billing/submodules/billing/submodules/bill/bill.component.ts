@@ -849,6 +849,9 @@ export class BillComponent implements OnInit, OnDestroy {
     //CGHS Beneficiary check
     await this.calculateBillService.checkCGHSBeneficiary();
 
+    ////GAV-910 - Domestic Tarrif check
+    await this.calculateBillService.checkDoemsticTarrif();
+
     if (
       !this.billingservice.referralDoctor ||
       this.billingservice.referralDoctor.id === 0
@@ -1073,6 +1076,7 @@ export class BillComponent implements OnInit, OnDestroy {
             await messageRef.afterClosed().toPromise();
             return;
           }
+          this.calculateBillService.blockActions.next(false);
         } else {
           this.calculateBillService.blockActions.next(false);
         }
@@ -1473,8 +1477,11 @@ export class BillComponent implements OnInit, OnDestroy {
                 this.formGroup.controls["gstTax"].setValue(
                   this.finalgstDetails.totaltaX_Value.toFixed(2)
                 );
-                this.billingservice.makeBillPayload.finalDSGSTDetails =
-                  this.finalgstDetails;
+                this.calculateBillService.mapFinalGSTDetails(
+                  this.finalgstDetails
+                );
+                // this.billingservice.makeBillPayload.finalDSGSTDetails =
+                //   this.finalgstDetails;
                 this.billingservice.makeBillPayload.sacCode = res[0].saccode;
                 this.formGroup.controls["amtPayByPatient"].setValue(
                   this.getAmountPayByPatient()

@@ -1459,4 +1459,53 @@ export class BillingService {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
   }
+
+  resetgstfromservices(service: any, reason: any)
+  {
+    this.makeBillPayload.taxReason = reason;
+    service[0].gstDetail = {
+      gsT_value: 0,
+      gsT_percent: 0,
+      cgsT_Value: 0,
+      cgsT_Percent: 0,
+      sgsT_value: 0,
+      sgsT_percent: 0,
+      utgsT_value: 0,
+      utgsT_percent: 0,
+      igsT_Value: 0,
+      igsT_percent: 0,
+      cesS_value: 0,
+      cesS_percent: 0,
+      taxratE1_Value: 0,
+      taxratE1_Percent: 0,
+      taxratE2_Value: 0,
+      taxratE2_Percent: 0,
+      taxratE3_Value: 0,
+      taxratE3_Percent: 0,
+      taxratE4_Value: 0,
+      taxratE4_Percent: 0,
+      taxratE5_Value: 0,
+      taxratE5_Percent: 0,
+      totaltaX_RATE: 0,
+      totaltaX_RATE_VALUE: 0,
+      taxgrpid: 0,
+      codeId: 0,
+    };
+    service[0].billItem.totalAmount = service[0].billItem.totalAmount - service[0].billItem.gstValue;
+    service[0].billItem.gst = 0;
+    service[0].billItem.gstValue = 0;            
+    this.makeBillPayload.tab_o_opItemBasePrice.forEach((item: any) => {
+      if(item.itemID == service[0].itemid)
+      {
+        item.price = service[0].billItem.totalAmount;
+      }
+    })
+    this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach((item: any) => {
+      if(item.itemId == service[0].itemid)
+      {
+        item.amount = service[0].billItem.totalAmount;
+      }
+    })
+    this.calculateTotalAmount();
+  }
 }

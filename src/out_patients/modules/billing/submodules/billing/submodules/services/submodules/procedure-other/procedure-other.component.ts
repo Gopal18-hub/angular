@@ -18,6 +18,8 @@ import { of } from "rxjs";
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SpecializationService } from "../../../../specialization.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ReasonForGxtTaxComponent } from "@modules/billing/submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component";
 
 @Component({
   selector: "out-patients-procedure-other",
@@ -121,7 +123,8 @@ export class ProcedureOtherComponent implements OnInit {
     public messageDialogService: MessageDialogService,
     private router: Router,
     private route: ActivatedRoute,
-    private specializationService: SpecializationService
+    private specializationService: SpecializationService,
+    private matdialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -391,9 +394,98 @@ export class ProcedureOtherComponent implements OnInit {
       this.formGroup.value.procedure
     );
 
-    this.data = [...this.billingService.ProcedureItems];
+    // this.data = [...this.billingService.ProcedureItems];
+    if(Number(this.billingService.ProcedureItems[0].gstDetail.totaltaX_RATE_VALUE) > 0)
+    {
+      const gstxdialog = this.messageDialogService.confirm(
+        '',
+        'GST Tax is applicable on ' + this.billingService.ProcedureItems[0].billItem.itemName +' , Do you want to proceed with GST tax?'
+      );
+      gstxdialog.afterClosed().subscribe((res: any) => {
+        if('type' in res)
+        {
+          if(res.type == 'yes')
+          {
+            this.data = [...this.billingService.ProcedureItems];
+            this.checkTableValidation();
+          }
+          else{
+            const reasondialog = this.matdialog.open(ReasonForGxtTaxComponent, {
+              width: "30vw",
+              height: '40vh'
+            })
+            reasondialog.afterClosed().subscribe(async (res: any) => {
+              console.log(res);
+              if(res == 'cancel')
+              {
+                this.billingService.removeFromBill(this.billingService.ProcedureItems[0]);
+                this.billingService.ProcedureItems = [];
+                this.billingService.calculateTotalAmount();
+                this.data = [...this.billingService.ProcedureItems];
+              }
+              else{
+                this.billingService.resetgstfromservices(this.billingService.ProcedureItems, res)
+                // this.billingService.makeBillPayload.taxReason = res;
+                // this.billingService.ProcedureItems[0].gstDetail = {
+                //   gsT_value: 0,
+                //   gsT_percent: 0,
+                //   cgsT_Value: 0,
+                //   cgsT_Percent: 0,
+                //   sgsT_value: 0,
+                //   sgsT_percent: 0,
+                //   utgsT_value: 0,
+                //   utgsT_percent: 0,
+                //   igsT_Value: 0,
+                //   igsT_percent: 0,
+                //   cesS_value: 0,
+                //   cesS_percent: 0,
+                //   taxratE1_Value: 0,
+                //   taxratE1_Percent: 0,
+                //   taxratE2_Value: 0,
+                //   taxratE2_Percent: 0,
+                //   taxratE3_Value: 0,
+                //   taxratE3_Percent: 0,
+                //   taxratE4_Value: 0,
+                //   taxratE4_Percent: 0,
+                //   taxratE5_Value: 0,
+                //   taxratE5_Percent: 0,
+                //   totaltaX_RATE: 0,
+                //   totaltaX_RATE_VALUE: 0,
+                //   taxgrpid: 0,
+                //   codeId: 0,
+                // };
+                // this.billingService.ProcedureItems[0].billItem.totalAmount = this.billingService.ProcedureItems[0].billItem.totalAmount - this.billingService.ProcedureItems[0].billItem.gstValue;
+                // this.billingService.ProcedureItems[0].billItem.gst = 0;
+                // this.billingService.ProcedureItems[0].billItem.gstValue = 0;
+                // this.billingService.makeBillPayload.tab_o_opItemBasePrice.forEach((item: any) => {
+                //   if(item.itemID == this.billingService.ProcedureItems[0].itemid)
+                //   {
+                //     item.price = this.billingService.ProcedureItems[0].billItem.totalAmount;
+                //   }
+                // })
+                // this.billingService.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach((item: any) => {
+                //   if(item.itemId == this.billingService.ProcedureItems[0].itemid)
+                //   {
+                //     item.amount = this.billingService.ProcedureItems[0].billItem.totalAmount;
+                //   }
+                // })
+                // this.billingService.calculateTotalAmount();
+                this.data = [...this.billingService.ProcedureItems];
+                this.checkTableValidation();
+                console.log(this.data);
+              }
+              console.log(this.billingService.makeBillPayload);
+            }) 
+          }
+        }
+      })
+    }
+    else{
+      this.data = [...this.billingService.ProcedureItems];
+      this.checkTableValidation();
+    }
     this.formGroup.reset();
-    this.checkTableValidation();
+    
   }
 
   goToBill() {
