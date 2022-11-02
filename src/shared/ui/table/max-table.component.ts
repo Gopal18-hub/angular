@@ -115,6 +115,8 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChildren("childTable") childTable!: QueryList<any>;
 
+  disabledCheckItems = 0;
+
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private _ngZone: NgZone,
@@ -312,7 +314,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.dataSource.data.length - this.disabledCheckItems;
     return numSelected === numRows;
   }
 
@@ -322,10 +324,19 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.selection.clear();
       return;
     }
-    this.selection.select(...this.dataSource.data);
+    let selected = 0;
+    this.disabledCheckItems = 0;
+    this.dataSource.data.forEach((item: any) => {
+      if ("disablecheckbox" in item && item.disablecheckbox) {
+        this.disabledCheckItems++;
+      } else {
+        this.selection.select(item);
+        selected++;
+      }
+    });
     //If mastercheck includes deselection,
     //the mastercheckbox has to change from indeterminate to checked status
-    this.selection.selected.length = this.dataSource.data.length;
+    this.selection.selected.length = selected;
   }
 
   /** The label for the checkbox on the passed row */
@@ -359,6 +370,7 @@ export class MaxTableComponent implements OnInit, AfterViewInit, OnChanges {
   columnClickFun(element: any, col: string) {
     this.columnClick.emit({ row: element, column: col });
     if (this.config.selectBox && this.config.clickedRows) return;
+    if (this.config.selectBox && !this.config.clickedRows) return;
     if (!this.config.selectBox && !this.config.clickedRows) return;
     this.selection.toggle(element);
   }
