@@ -88,9 +88,14 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   copyReason() {
-    const copyText = this.itemsData[0].reason;
+    let copyText = "";
+    const tempids: any = [];
+    this.tableRows.selection.selected.forEach((item: any) => {
+      copyText = item.reason;
+      tempids.push(item.itemid);
+    });
     this.itemsData.forEach((item: any) => {
-      item.reason = copyText;
+      if (tempids.includes(item.itemid)) item.reason = copyText;
     });
     this.itemsData = [...this.itemsData];
   }
