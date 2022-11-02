@@ -370,10 +370,12 @@ export class OrderProcedureOtherComponent implements OnInit {
             this.messageDialogService.info(
               "This service is not allowed for this sex"
             );
+            this.formGroup.reset();
           }
         });
     } else {
       this.messageDialogService.info("Please Select Procedure");
+      this.formGroup.reset();
     }
   }
 
