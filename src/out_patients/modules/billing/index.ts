@@ -140,6 +140,7 @@ import { MiscDiscountReasonComponent } from "./submodules/miscellaneous-billing/
 import { TwiceConsultationReasonComponent } from "./submodules/billing/prompts/twice-consultation-reason/twice-consultation-reason.component";
 import { EcareOpSummaryReportComponent } from './submodules/ecare-op-summary-report/ecare-op-summary-report.component';
 import { DmgOthergrpDocPopupComponent } from './submodules/billing/prompts/dmg-othergrp-doc-popup/dmg-othergrp-doc-popup.component';
+import { ReasonForGxtTaxComponent } from './submodules/billing/prompts/reason-for-gxt-tax/reason-for-gxt-tax.component';
 @NgModule({
   declarations: [
     BillingStaffDeptDialogComponent,
@@ -248,6 +249,7 @@ import { DmgOthergrpDocPopupComponent } from './submodules/billing/prompts/dmg-o
     TwiceConsultationReasonComponent,
     EcareOpSummaryReportComponent,
     DmgOthergrpDocPopupComponent,
+    ReasonForGxtTaxComponent,
   ],
   imports: [
     BillingRoutingModule,
