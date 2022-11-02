@@ -951,7 +951,9 @@ export class BillingComponent implements OnInit, OnDestroy {
                   const dialogRefDetails = this.matDialog.open(
                     ShowPlanDetilsComponent,
                     {
-                      width: "70vw",
+                      width: "80vw",
+                      maxHeight: "80vh",
+                      height: "100%",
                       data: {
                         planDetails: ores,
                         type: "otherPlanDetails",
