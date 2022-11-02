@@ -12,6 +12,8 @@ import { BillingApiConstants } from "../../modules/billing/submodules/billing/Bi
 import { Subject, takeUntil } from "rxjs";
 import { DisountReasonComponent } from "../../modules/billing/submodules/billing/prompts/discount-reason/disount-reason.component";
 import { ApiConstants } from "@core/constants/ApiConstants";
+import { BillingStaticConstants } from "@modules/billing/submodules/billing/BillingStaticConstant";
+import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 
 @Injectable({
   providedIn: "root",
@@ -1082,4 +1084,97 @@ export class CalculateBillService {
   }
 
   //#endregion TaxableBill
+
+  //#region  CGHS Beneficiary
+  async checkCGHSBeneficiary() {
+    if (
+      this.billingServiceRef.patientDetailsInfo &&
+      this.billingServiceRef.patientDetailsInfo.adhaarID
+    ) {
+      let cghsBeneficiary = await this.http
+        .get(
+          BillingApiConstants.checkCGHSBeneficiary(
+            this.billingServiceRef.activeMaxId.iacode,
+            this.billingServiceRef.activeMaxId.regNumber,
+            this.billingServiceRef.company,
+            this.billingServiceRef.patientDetailsInfo.adhaarID
+          )
+        )
+        .toPromise();
+
+      if (cghsBeneficiary) {
+        if (
+          cghsBeneficiary.cghsResult &&
+          cghsBeneficiary.cghsResult.length > 0
+        ) {
+          if (cghsBeneficiary.cghsResult[0].result == 1) {
+            const infoRef = this.messageDialogService.info(
+              "Patient belongs to Panel CGHS beneficiary, but you have not selected that company, Please select appropriate reason."
+            );
+            await infoRef.afterClosed().toPromise();
+            await this.openCGHSChangeReason();
+          }
+        }
+
+        if (
+          cghsBeneficiary.cghS_ECHSFlag &&
+          cghsBeneficiary.cghS_ECHSFlag.length > 0
+        ) {
+          if (cghsBeneficiary.cghS_ECHSFlag[0].echs == 1) {
+            if (
+              this.billingServiceRef.patientDetailsInfo.agetype == 1 &&
+              this.billingServiceRef.patientDetailsInfo.age >= 18 &&
+              this.billingServiceRef.patientDetailsInfo.age <= 25
+            ) {
+              const infoECHSRef = this.messageDialogService.info(
+                "If Patient is ECHS Dependent & age is between 18-25 Years, Please collect dependent list."
+              );
+              await infoECHSRef.afterClosed().toPromise();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  async openCGHSChangeReason() {
+    const chgsChangeDialogref = this.matDialog.open(FormDialogueComponent, {
+      width: "28vw",
+      // height: "42vh",
+      data: {
+        title: "CGHS Beneficiary Change",
+        form: {
+          title: "",
+          type: "object",
+          properties: {
+            reason: {
+              type: "dropdown",
+              title: "Reason",
+              required: true,
+              options: BillingStaticConstants.cghsBeneficiaryReasons,
+            },
+          },
+        },
+        layout: "single",
+        buttonLabel: "Save",
+      },
+    });
+    let res = await chgsChangeDialogref
+      .afterClosed()
+      .pipe(takeUntil(this._destroying$))
+      .toPromise();
+    if (res && res.data) {
+      let reason = BillingStaticConstants.cghsBeneficiaryReasons.filter(
+        (r: any) => r.value === res.data.reason
+      );
+      if (reason && reason.length > 0) {
+        this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason =
+          reason[0].title;
+      }
+      console.log(
+        this.billingServiceRef.makeBillPayload.cghsBeneficiaryChangeReason
+      );
+    }
+  }
+  //#endregion
 }

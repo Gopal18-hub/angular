@@ -358,6 +358,7 @@ export namespace FormReport {
       properties: {
         specilizationName: {
           type: "hidden",
+          //defaultValue: "specilizationName",
         },
         Cmb_Special: {
           type: "autocomplete",
@@ -1265,7 +1266,7 @@ export namespace FormReport {
           fileName: "OP Refund Report.xls",
           contenType: "application/vnd.ms-excel",
         },
-        
+
         {
           label: "Clear",
           type: "clear",
