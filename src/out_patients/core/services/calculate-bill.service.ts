@@ -49,6 +49,8 @@ export class CalculateBillService {
 
   otherPlanSelectedItems: any = [];
 
+  consumablesUnselectedItems = [];
+
   constructor(
     public matDialog: MatDialog,
     private http: HttpService,

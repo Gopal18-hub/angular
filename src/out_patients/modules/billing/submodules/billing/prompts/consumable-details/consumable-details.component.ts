@@ -84,17 +84,24 @@ export class ConsumableDetailsComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    //this.tableRows.selection.select(...this.tableRows.dataSource.data);
+    this.itemsData.forEach((item: any, index: number) => {
+      let exist = this.data.consumablesUnselectedItems.find(
+        (gi: any) => gi.itemid == item.itemid
+      );
+      if (exist) {
+        this.tableRows.selection.select(item);
+      }
+    });
   }
 
   copyReason() {
     let copyText = "";
     const tempids: any = [];
-    this.tableRows.selection.selected.forEach((item: any) => {
-      copyText = item.reason;
+    this.tableRows.selection.selected.forEach((item: any, index: number) => {
+      if (item.reason) copyText = item.reason;
       tempids.push(item.itemid);
     });
-    this.itemsData.forEach((item: any) => {
+    this.itemsData.forEach((item: any, index: number) => {
       if (tempids.includes(item.itemid)) item.reason = copyText;
     });
     this.itemsData = [...this.itemsData];
