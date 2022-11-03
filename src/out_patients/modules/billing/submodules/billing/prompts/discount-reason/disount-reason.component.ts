@@ -396,6 +396,7 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtForm.reset();
       this.dualList = [];
       this.question[0].options = this.discounttypes;
+      this.question[4].readonly = true;
       if (!this.discAmtForm.value.types) {
         this.discAmtForm.controls["types"].setValue("On-Bill");
       }
@@ -451,6 +452,7 @@ export class DisountReasonComponent implements OnInit {
       percentage: null,
       amt: null,
     });
+    this.question[4].readonly = true;
   }
 
   discretionaryCheck(reason: any, price: number) {
@@ -681,6 +683,7 @@ export class DisountReasonComponent implements OnInit {
       return { title: a.title, value: a.value, disabled: false };
     });
     this.question[0].options = this.discounttypes;
+    this.question[4].readonly = true;
     this.calculateBillService.calculateDiscount();
   }
   applyDiscount() {
