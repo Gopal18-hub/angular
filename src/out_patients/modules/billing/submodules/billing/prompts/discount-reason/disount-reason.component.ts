@@ -390,26 +390,9 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.calculateDiscount();
     if (this.selectedItems.length === 0) {
       this.disableAdd = false;
-      this.discAmtForm.controls["authorise"].setValue(0);
-      this.discAmtForm.controls["empCode"].setValue("");
-      this.discAmtForm.controls["coupon"].setValue("");
+      this.discAmtForm.reset();
       this.dualList = [];
-      const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
-      this.question[0].options = this.discounttypes.map((a: any) => {
-        if ([4, 5].includes(tempDual[a.value])) {
-          return {
-            title: a.title,
-            value: a.value,
-            disabled: true,
-          };
-        } else {
-          return {
-            title: a.title,
-            value: a.value,
-            disabled: false,
-          };
-        }
-      });
+      this.question[0].options = this.discounttypes;
       if (!this.discAmtForm.value.types) {
         this.discAmtForm.controls["types"].setValue("On-Bill");
       }
@@ -678,25 +661,10 @@ export class DisountReasonComponent implements OnInit {
     if (!this.discAmtForm.value.types) {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
-    this.discAmtForm.controls["authorise"].setValue(0);
-    this.discAmtForm.controls["empCode"].setValue("");
-    this.discAmtForm.controls["coupon"].setValue("");
-    const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
     this.question[0].options = this.discounttypes.map((a: any) => {
-      if ([4, 5].includes(tempDual[a.value])) {
-        return {
-          title: a.title,
-          value: a.value,
-          disabled: true,
-        };
-      } else {
-        return {
-          title: a.title,
-          value: a.value,
-          disabled: false,
-        };
-      }
+      return { title: a.title, value: a.value, disabled: false };
     });
+    this.question[0].options = this.discounttypes;
     this.calculateBillService.calculateDiscount();
   }
   applyDiscount() {
