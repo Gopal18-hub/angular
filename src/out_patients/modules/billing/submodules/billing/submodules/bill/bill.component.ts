@@ -397,7 +397,7 @@ export class BillComponent implements OnInit, OnDestroy {
       this.formGroup.patchValue({ planAmt: planAmount });
       this.formGroup.controls["self"].setValue(true);
     }
-    this.billTypeChange(this.formGroup.value.paymentMode);
+    //this.billTypeChange(this.formGroup.value.paymentMode);
 
     // #region GAV-1053 - referal doctor as self autochck
 
@@ -531,10 +531,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
+
     this.billTypeChange(this.formGroup.value.paymentMode);
-    // this.formGroup.controls["amtPayByPatient"].setValue(
-    //   this.getAmountPayByPatient()
-    // );
   }
 
   async billTypeChange(value: any) {
@@ -763,10 +761,10 @@ export class BillComponent implements OnInit, OnDestroy {
       this.calculateBillService.totalDiscountAmt.toFixed(2)
     );
     this.billTypeChange(this.formGroup.value.paymentMode);
-    this.applyCreditLimit();
     this.formGroup.controls["coupon"].setValue("");
     this.formGroup.controls["compDisc"].setValue("0.00");
     this.formGroup.controls["patientDisc"].setValue("0.00");
+    this.applyCreditLimit();
   }
 
   applyCreditLimit() {
@@ -784,23 +782,40 @@ export class BillComponent implements OnInit, OnDestroy {
       }
     });
     const amtPayByComp = creditAmount;
-    // const amountToBePaid =
-    //   this.billingservice.totalCost -
-    //   (this.formGroup.value.discAmt || 0) -
-    //   (this.formGroup.value.dipositAmtEdit || 0);
+
     let tempAmount = parseFloat(this.formGroup.value.credLimit);
     this.billingservice.setCreditLimit(this.formGroup.value.credLimit);
+    let tempFAmount = 0;
     if (tempAmount <= amtPayByComp) {
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
+      tempFAmount = tempAmount;
     } else {
-      this.formGroup.controls["amtPayByComp"].setValue(amtPayByComp.toFixed(2));
+      tempFAmount = amtPayByComp;
     }
     if (this.formGroup.value.coPay > 0) {
-      tempAmount =
-        this.formGroup.value.amtPayByComp -
-        (this.formGroup.value.amtPayByComp * this.formGroup.value.coPay) / 100;
-      this.formGroup.controls["amtPayByComp"].setValue(tempAmount.toFixed(2));
+      tempFAmount =
+        tempFAmount - (tempFAmount * this.formGroup.value.coPay) / 100;
     }
+    const companyDiscount =
+      this.calculateBillService.discountSelectedItems.find(
+        (dItem: any) => dItem.discTypeId == 5
+      );
+    if (companyDiscount) {
+      companyDiscount.price = tempFAmount;
+      companyDiscount.discAmt = (tempFAmount * companyDiscount.disc) / 100;
+      companyDiscount.totalAmt =
+        companyDiscount.price - companyDiscount.discAmt;
+      console.log(companyDiscount);
+      this.formGroup.controls["compDisc"].setValue(
+        companyDiscount.discAmt.toFixed(2)
+      );
+      this.calculateBillService.calculateDiscount();
+      this.formGroup.controls["discAmt"].setValue(
+        this.calculateBillService.totalDiscountAmt.toFixed(2)
+      );
+      tempFAmount -= parseFloat(companyDiscount.discAmt);
+    }
+    this.formGroup.controls["amtPayByComp"].setValue(tempFAmount.toFixed(2));
+
     this.formGroup.controls["amtPayByPatient"].setValue(
       this.getAmountPayByPatient()
     );
@@ -1294,15 +1309,32 @@ export class BillComponent implements OnInit, OnDestroy {
         creditAmount += parseFloat(bItem.credit);
       }
     });
-    const temp =
-      cashAmount +
-      creditAmount -
-      (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
-      (parseFloat(this.formGroup.value.discAmt) || 0) -
-      (parseFloat(this.formGroup.value.amtPayByComp) || 0) +
-      (parseFloat(this.formGroup.value.gstTax) || 0) -
-      (parseFloat(this.formGroup.value.planAmt) || 0) -
-      (parseFloat(this.formGroup.value.availDisc) || 0);
+    let temp = 0;
+    if (
+      parseFloat(this.formGroup.value.patientDisc) > 0 ||
+      parseFloat(this.formGroup.value.compDisc) > 0
+    ) {
+      temp =
+        cashAmount +
+        creditAmount -
+        (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+        (parseFloat(this.formGroup.value.patientDisc) || 0) -
+        (parseFloat(this.formGroup.value.amtPayByComp) +
+          parseFloat(this.formGroup.value.compDisc) || 0) +
+        (parseFloat(this.formGroup.value.gstTax) || 0) -
+        (parseFloat(this.formGroup.value.planAmt) || 0) -
+        (parseFloat(this.formGroup.value.availDisc) || 0);
+    } else {
+      temp =
+        cashAmount +
+        creditAmount -
+        (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+        (parseFloat(this.formGroup.value.discAmt) || 0) -
+        (parseFloat(this.formGroup.value.amtPayByComp) || 0) +
+        (parseFloat(this.formGroup.value.gstTax) || 0) -
+        (parseFloat(this.formGroup.value.planAmt) || 0) -
+        (parseFloat(this.formGroup.value.availDisc) || 0);
+    }
 
     return temp > 0 ? temp.toFixed(2) : 0;
   }
