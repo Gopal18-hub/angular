@@ -367,7 +367,7 @@ export class OrderSetComponent implements OnInit {
             orderSetName: this.formGroup.value.orderSet.title,
             serviceType: selectedSubItems[index].serviceType,
             serviceItemName: resItem.procedureName,
-            precaution: "",
+            precaution: selectedSubItems[index].precaution,
             priority: selectedSubItems[index].priority
               ? selectedSubItems[index].priority
               : priorityId,
@@ -390,7 +390,7 @@ export class OrderSetComponent implements OnInit {
               serviceName: selectedSubItems[index].serviceType,
               itemName: resItem.procedureName,
               qty: 1,
-              precaution: "",
+              precaution: selectedSubItems[index].precaution,
               procedureDoctor: "",
               credit: 0,
               cash: 0,
