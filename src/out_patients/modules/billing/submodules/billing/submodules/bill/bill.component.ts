@@ -461,9 +461,9 @@ export class BillComponent implements OnInit, OnDestroy {
             this.refreshTable();
           }
         });
+      this.billTypeChange(this.formGroup.value.paymentMode);
     }
     this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
-      console.log(res);
       if (res) {
         this.formGroup.controls["paymentMode"].setValue(1);
       }
@@ -1336,6 +1336,8 @@ export class BillComponent implements OnInit, OnDestroy {
         (parseFloat(this.formGroup.value.planAmt) || 0) -
         (parseFloat(this.formGroup.value.availDisc) || 0);
     }
+
+    console.log("Amount Pay by Patinet: ", temp);
 
     return temp > 0 ? temp.toFixed(2) : 0;
   }
