@@ -195,11 +195,9 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.orderId = Number(params.orderid);
       }
     });
-    this.searchService.searchTrigger
-      .pipe(takeUntil(this._destroying$))
-      .subscribe(async (formdata: any) => {
-        await this.loadGrid(formdata);
-      });
+    this.searchService.searchTrigger.subscribe(async (formdata: any) => {
+      await this.loadGrid(formdata);
+    });
 
     this.billingService.billNoGenerated.subscribe((res: boolean) => {
       if (res) {
