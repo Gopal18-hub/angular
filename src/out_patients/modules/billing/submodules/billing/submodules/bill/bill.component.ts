@@ -440,6 +440,7 @@ export class BillComponent implements OnInit, OnDestroy {
       if (this.billingservice.selectedHealthPlan) {
         this.formGroup.patchValue({
           availDisc: this.totalPlanDiscount,
+          availDiscCheck: true,
         });
       }
       if (popuptext.length > 0) {
