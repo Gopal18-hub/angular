@@ -87,14 +87,15 @@ export class OrderSetComponent implements OnInit {
       },
       precaution: {
         title: "Precaution",
-        type: "string",
+        type: "string_link",
         style: {
           width: "100px",
         },
       },
       priority: {
         title: "Priority",
-        type: "string",
+        type: "dropdown",
+        options: [],
         style: {
           width: "100px",
         },
@@ -127,7 +128,7 @@ export class OrderSetComponent implements OnInit {
   };
 
   apiData: any = {};
-
+  defaultPriorityId = 1;
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -152,6 +153,9 @@ export class OrderSetComponent implements OnInit {
         this.getdoctorlistonSpecializationClinic(item.specialisation, index);
     });
     this.data = this.billingService.OrderSetItems;
+    if (this.data.length == 0) {
+      this.defaultPriorityId = 1;
+    }
     this.getSpecialization();
     this.getOrserSetData();
     this.billingService.clearAllItems.subscribe((clearItems: any) => {
@@ -177,7 +181,7 @@ export class OrderSetComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.tableRows.controlValueChangeTrigger.subscribe((res: any) => {
+    this.tableRows.controlValueChangeTrigger.subscribe(async (res: any) => {
       if (res.data.col == "specialization") {
         res.data.element["doctorName"] = "";
         this.getdoctorlistonSpecializationClinic(
@@ -197,6 +201,25 @@ export class OrderSetComponent implements OnInit {
         this.billingService.OrderSetItems[
           res.data.index
         ].billItem.procedureDoctor = findDoctor.title;
+      } else if (res.data.col == "priority") {
+        if (this.data.length == 1) {
+          this.defaultPriorityId = res.$event.value;
+        } else {
+          if (this.defaultPriorityId != res.$event.value) {
+            this.billingService.changeBillTabStatus(true);
+            const errorDialog = this.messageDialogService.error(
+              "Investigations can not have different priorities"
+            );
+            await errorDialog.afterClosed().toPromise();
+          } else {
+            this.checkTableValidation();
+          }
+        }
+        this.updatePriceByChangePriority(
+          res.$event.value,
+          res.data.element,
+          res.data.index
+        );
       }
       this.checkTableValidation();
     });
@@ -214,6 +237,13 @@ export class OrderSetComponent implements OnInit {
   }
 
   getSpecialization() {
+    this.http
+      .get(BillingApiConstants.getInvetigationPriorities)
+      .subscribe((res: any) => {
+        this.config.columnsInfo.priority.options = res.map((r: any) => {
+          return { title: r.name, value: r.id };
+        });
+      });
     this.config.columnsInfo.specialization.options =
       this.specializationService.specializationData;
   }
@@ -282,7 +312,8 @@ export class OrderSetComponent implements OnInit {
       }
     });
   }
-  add(priorityId = 1) {
+  add() {
+    const priorityId = this.defaultPriorityId;
     let exist = this.billingService.OrderSetItems.findIndex((item: any) => {
       return this.formGroup.value.items.includes(item.itemid);
     });
@@ -308,7 +339,7 @@ export class OrderSetComponent implements OnInit {
           serviceID: temp.serviceid,
           itemId: temp.testId,
           bundleId: 0,
-          priority: temp.serviceid == 25 ? 57 : 1,
+          priority: temp.serviceid == 25 ? 57 : priorityId,
         });
       }
     });
@@ -336,8 +367,10 @@ export class OrderSetComponent implements OnInit {
             orderSetName: this.formGroup.value.orderSet.title,
             serviceType: selectedSubItems[index].serviceType,
             serviceItemName: resItem.procedureName,
-            precaution: "P",
-            priority: "Routine",
+            precaution: "",
+            priority: selectedSubItems[index].priority
+              ? selectedSubItems[index].priority
+              : priorityId,
             specialization: "",
             doctorName: "",
             specialization_required: true,
@@ -349,13 +382,15 @@ export class OrderSetComponent implements OnInit {
             apiItems: orderSetItems,
             billItem: {
               itemId: subItems[index].itemId,
-              priority: subItems[index].priority,
+              priority: subItems[index].priority
+                ? subItems[index].priority
+                : priorityId,
               serviceId: subItems[index].serviceID,
               price: resItem.returnOutPut,
               serviceName: selectedSubItems[index].serviceType,
               itemName: resItem.procedureName,
               qty: 1,
-              precaution: "P",
+              precaution: "",
               procedureDoctor: "",
               credit: 0,
               cash: 0,
@@ -415,6 +450,39 @@ export class OrderSetComponent implements OnInit {
         this.data = [...this.billingService.OrderSetItems];
         this.formGroup.reset();
         this.checkTableValidation();
+      });
+  }
+
+  updatePriceByChangePriority(priorityId: number, data: any, index: number) {
+    this.http
+      .post(BillingApiConstants.getcalculateopbill, {
+        compId: this.billingService.company,
+        priority: priorityId,
+        itemId: data.billItem.itemId,
+        serviceId: data.billItem.serviceId,
+        locationId: this.cookie.get("HSPLocationId"),
+        ipoptype: 1,
+        bedType: 0,
+        bundleId: 0,
+      })
+      .subscribe((res: any) => {
+        if (res.length > 0) {
+          this.billingService.OrderSetItems[index].price =
+            res[0].returnOutPut + res[0].totaltaX_Value;
+          this.billingService.OrderSetItems[index].billItem.price =
+            res[0].returnOutPut + res[0].totaltaX_Value;
+          this.billingService.OrderSetItems[index].billItem.totalAmount =
+            res[0].returnOutPut + res[0].totaltaX_Value;
+          this.data = [...this.billingService.OrderSetItems];
+          this.billingService.calculateTotalAmount();
+          if (res[0].returnOutPut == 0) {
+            this.messageDialogService.error(
+              "Price Not Defined For " + data.orderSetItems
+            );
+          } else {
+            this.checkTableValidation();
+          }
+        }
       });
   }
 
