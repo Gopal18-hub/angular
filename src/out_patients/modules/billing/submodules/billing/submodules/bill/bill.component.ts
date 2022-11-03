@@ -408,6 +408,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billingservice.clearAllItems.subscribe((clearItems: any) => {
       if (clearItems) {
         this.data = [];
+        this.resetDiscount();
       }
     });
 
@@ -754,7 +755,7 @@ export class BillComponent implements OnInit, OnDestroy {
       item.discountReason = 0;
     });
     this.calculateBillService.setDiscountSelectedItems([]);
-
+    this.calculateBillService.discountForm.reset();
     this.calculateBillService.calculateDiscount();
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
