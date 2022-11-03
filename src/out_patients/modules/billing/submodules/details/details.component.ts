@@ -1202,12 +1202,18 @@ export class DetailsComponent implements OnInit {
     let regno = Number(this.BServiceForm.value.maxid.split(".")[1]);
     let iacode = this.BServiceForm.value.maxid.split(".")[0];
     let billno = this.billno;
-    this.reportService.openWindow("FormSixty", "FormSixty", {
-      LocationId: Number(this.cookie.get("HSPLocationId")),
-      Iacode: iacode,
-      RegistrationNo: regno,
-      BillNo: billno,
-    });
+    this.reportService.openWindow(
+      "FormSixty",
+      "FormSixty",
+      {
+        LocationId: Number(this.cookie.get("HSPLocationId")),
+        Iacode: iacode,
+        RegistrationNo: regno,
+        BillNo: billno,
+      },
+      "right",
+      "center"
+    );
   }
   ngDoCheck(): void {
     const changes = this.check.diff(this.billdetailservice.sendforapproval);

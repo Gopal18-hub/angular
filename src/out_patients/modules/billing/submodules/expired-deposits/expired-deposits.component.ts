@@ -390,7 +390,7 @@ export class ExpiredDepositsComponent implements OnInit {
               }
             });
             this.ExpiredDepositformlist = [...this.ExpiredDepositformlist];
-            this.getPatientDetails();
+            //this.getPatientDetails();
             this.apiProcessing = false;
             this.searchbtn = true;
           } else {
@@ -541,6 +541,8 @@ export class ExpiredDepositsComponent implements OnInit {
                     this.sucessflag = true;
                     this.expireddepositsearch();
                     this.exportbtn = false;
+                    this.apiProcessing = false;
+                    this.searchbtn = true;
                   }
                 });
               } else {
