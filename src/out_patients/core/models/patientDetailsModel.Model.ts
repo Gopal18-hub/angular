@@ -135,7 +135,10 @@ export class PatientDetails{
     hotlist:boolean;
     hotlistcomments:string;
     hotlistreason:string;
-  
+    image?:string;
+    registeredOn?:string;
+    registeredOperatorName?:string;
+    lastUpdatedOn?:string;
       constructor(
           id: number,
     registrationno: number,
@@ -272,7 +275,11 @@ export class PatientDetails{
     nationalityName: string,
     hotlist: boolean,
     hotlistcomments:string,
-    hotlistreason:string
+    hotlistreason:string,
+    image?:string,
+    registeredOn?:string,
+    registeredOperatorName?:string,
+    lastUpdatedOn ?:string,
   )
   {
       this.id= id;
@@ -411,7 +418,9 @@ export class PatientDetails{
       this.hotlist=hotlist;
       this.hotlistcomments = hotlistcomments;
       this.hotlistreason = hotlistreason;
-      
-  
+      this.image = image,
+      this.registeredOn = registeredOn,
+      this.registeredOperatorName = registeredOperatorName  
+      this.lastUpdatedOn = lastUpdatedOn
   }
   }
