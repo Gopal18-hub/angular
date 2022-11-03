@@ -818,6 +818,12 @@ export class BillDetailComponent implements OnInit {
       if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
         this.miscServBillForm.controls["discAmt"].setValue("0.00");
         this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+        this.calcBillData.totalDiscount = 0;
+        this.calcBillData.depositInput = 0;
+        this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
+        this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+
+        this.miscPatient.setCalculateBillItems(this.calcBillData);
       }
       this.amtByComp();
     }
@@ -2195,6 +2201,11 @@ export class BillDetailComponent implements OnInit {
     if (this.miscServBillForm.value.credLimit >= this.billAmnt) {
       this.miscServBillForm.controls["discAmt"].setValue("0.00");
       this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
+      this.calcBillData.totalDiscount = 0;
+      this.calcBillData.depositInput = 0;
+      this.miscPatient.cacheBillTabdata.cacheDiscount = 0;
+      this.miscPatient.cacheBillTabdata.cacheDepositInput = 0;
+      this.miscPatient.setCalculateBillItems(this.calcBillData);
     }
     let balance =
       this.billAmnt -
