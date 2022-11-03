@@ -1285,6 +1285,8 @@ export class BillingService {
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.makeBillPayload.tab_o_opItemBasePrice.push({
       itemID: investigation.value,
@@ -1330,6 +1332,8 @@ export class BillingService {
         specialisationID: doctorName.specialisationid,
         doctorID: doctorName.value,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.consultationItemsAdded.next(true);
     this.makeBillPayload.tab_o_opItemBasePrice.push({
@@ -1460,8 +1464,7 @@ export class BillingService {
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
   }
 
-  resetgstfromservices(service: any, reason: any)
-  {
+  resetgstfromservices(service: any, reason: any) {
     this.makeBillPayload.taxReason = reason;
     service[0].gstDetail = {
       gsT_value: 0,
@@ -1491,21 +1494,22 @@ export class BillingService {
       taxgrpid: 0,
       codeId: 0,
     };
-    service[0].billItem.totalAmount = service[0].billItem.totalAmount - service[0].billItem.gstValue;
+    service[0].billItem.totalAmount =
+      service[0].billItem.totalAmount - service[0].billItem.gstValue;
     service[0].billItem.gst = 0;
-    service[0].billItem.gstValue = 0;            
+    service[0].billItem.gstValue = 0;
     this.makeBillPayload.tab_o_opItemBasePrice.forEach((item: any) => {
-      if(item.itemID == service[0].itemid)
-      {
+      if (item.itemID == service[0].itemid) {
         item.price = service[0].billItem.totalAmount;
       }
-    })
-    this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach((item: any) => {
-      if(item.itemId == service[0].itemid)
-      {
-        item.amount = service[0].billItem.totalAmount;
+    });
+    this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+      (item: any) => {
+        if (item.itemId == service[0].itemid) {
+          item.amount = service[0].billItem.totalAmount;
+        }
       }
-    })
+    );
     this.calculateTotalAmount();
   }
 }
