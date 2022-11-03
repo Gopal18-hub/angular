@@ -57,7 +57,7 @@ export class OnlineAppointmentComponent implements OnInit {
       },
       mobileno: {
         title: "Mobile No",
-        type: "string",
+        type: "tel",
       },
       specialisationName: {
         title: "Specialisation",

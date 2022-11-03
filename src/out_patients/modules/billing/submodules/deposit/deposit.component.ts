@@ -408,6 +408,7 @@ export class DepositComponent implements OnInit {
         patientinfo: {
           emailId: this.patientpersonaldetails[0]?.pEMail,
           mobileno: this.patientpersonaldetails[0]?.pcellno,
+          screename: "Deposit",
         },
         clickedrowdepositdetails: this.patientRefundDetails,
       },
