@@ -77,19 +77,16 @@ export class DetailsComponent implements OnInit {
       .subscribe(async (value: any) => {
         console.log(Object.keys(value).length);
         console.log(value);
-        if(value.billno)
-        {
+        if (value.billno) {
           this.duesettlement = 1;
           this.getpatientbilldetails();
         }
-        if(value.from == 1)
-        {
+        if (value.from == 1) {
           this.frombill = 1;
         }
-        if (Object.keys(value).length > 0) {         
-          const lookupdata = await this.loadGrid(value); 
-        }
-        else{
+        if (Object.keys(value).length > 0) {
+          const lookupdata = await this.loadGrid(value);
+        } else {
           // this.ngOnInit();
           // this.clear();
         }
@@ -143,7 +140,7 @@ export class DetailsComponent implements OnInit {
       },
       mobileno: {
         type: "tel",
-        // pattern: "^[1-9]{1}[0-9]{9}",
+        //pattern: "^[1-9]{1}[0-9]{9}",
       },
       billDate: {
         type: "date",
@@ -331,22 +328,19 @@ export class DetailsComponent implements OnInit {
         this.result = res;
         this.BServiceForm.markAsDirty();
         if (this.result.length > 1) {
-          if(this.frombill == 1)
-          {
+          if (this.frombill == 1) {
             this.result = this.result.filter((i: any) => {
               return i.balance > 0;
             });
-            if(this.result.length == 1)
-            {
-              this.BServiceForm.controls["billNo"].setValue(this.result[0].billno);
+            if (this.result.length == 1) {
+              this.BServiceForm.controls["billNo"].setValue(
+                this.result[0].billno
+              );
               this.getpatientbilldetails();
-            }
-            else
-            {
+            } else {
               this.search();
             }
-          }
-          else{
+          } else {
             this.search();
           }
         } else if (this.result.length == 1) {
@@ -759,21 +753,27 @@ export class DetailsComponent implements OnInit {
               this.refundbill == true;
             }
             this.printbill = false;
-            if(this.frombill == 1 || this.duesettlement == 1)
-            {
-              this.router.navigate(["out-patient-billing/details", "cred-bill-settlement"], {
-                queryParams: { maxid: this.BServiceForm.controls["maxid"].value },
-                queryParamsHandling: "merge",
-              });
+            if (this.frombill == 1 || this.duesettlement == 1) {
+              this.router.navigate(
+                ["out-patient-billing/details", "cred-bill-settlement"],
+                {
+                  queryParams: {
+                    maxid: this.BServiceForm.controls["maxid"].value,
+                  },
+                  queryParamsHandling: "merge",
+                }
+              );
+            } else {
+              this.router.navigate(
+                ["out-patient-billing/details", "services"],
+                {
+                  queryParams: {
+                    maxid: this.BServiceForm.controls["maxid"].value,
+                  },
+                  queryParamsHandling: "merge",
+                }
+              );
             }
-            else
-            {
-              this.router.navigate(["out-patient-billing/details", "services"], {
-                queryParams: { maxid: this.BServiceForm.controls["maxid"].value },
-                queryParamsHandling: "merge",
-              });
-            }
-            
           }
         }
       }),
@@ -938,7 +938,7 @@ export class DetailsComponent implements OnInit {
         check: this.BServiceForm.value.datevalidation,
         fromdate: this.BServiceForm.value.fromDate,
         todate: this.BServiceForm.value.toDate,
-        frombill: this.frombill
+        frombill: this.frombill,
       },
     });
     dialogref.afterClosed().subscribe((res) => {
