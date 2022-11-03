@@ -975,6 +975,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   ) {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
+                    this.links[0].disabled = true;
                     this.links[2].disabled = true;
                     selectedServices.selected.forEach((slItem: any) => {
                       if (slItem.serviceid == 25) {
@@ -1006,6 +1007,11 @@ export class BillingComponent implements OnInit, OnDestroy {
                           }
                         );
                       }
+                    });
+                    this.router.navigate(["bill"], {
+                      queryParams: { maxId: this.formGroup.value.maxid },
+                      relativeTo: this.route,
+                      queryParamsHandling: "merge",
                     });
                   }
                 }
