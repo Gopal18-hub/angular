@@ -43,7 +43,7 @@ export class PatientHistoryComponent implements OnInit {
       },
       mobile: {
         title: "Mobile No",
-        type: "number",
+        type: "tel",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       fromdate: {
@@ -862,25 +862,37 @@ export class PatientHistoryComponent implements OnInit {
 
   openReportModal(btnname: string) {
     if (btnname == "DepositReport") {
-      this.reportService.openWindow('Deposit Report - '+this.billno , btnname, {
-        receiptnumber: this.receiptno,
-        locationID: this.hsplocationId,
-      });
+      this.reportService.openWindow(
+        "Deposit Report - " + this.billno,
+        btnname,
+        {
+          receiptnumber: this.receiptno,
+          locationID: this.hsplocationId,
+        }
+      );
     } else if (btnname == "rptRefund") {
-      this.reportService.openWindow('Deposit Refund Report - '+this.billno, btnname, {
-        receiptno: this.billno,
-        locationID: this.hsplocationId,
-      });
+      this.reportService.openWindow(
+        "Deposit Refund Report - " + this.billno,
+        btnname,
+        {
+          receiptno: this.billno,
+          locationID: this.hsplocationId,
+        }
+      );
     } else if (btnname == "billingreport") {
-      this.reportService.openWindow('OPD Report - '+this.billno, btnname, {
+      this.reportService.openWindow("OPD Report - " + this.billno, btnname, {
         opbillid: this.billId,
         locationID: this.hsplocationId,
       });
     } else if (btnname == "refundReport") {
-      this.reportService.openWindow('OP Refund Report- '+this.billno, btnname, {
-        refundBill: this.billno,
-        locationID: this.hsplocationId,
-      });
+      this.reportService.openWindow(
+        "OP Refund Report- " + this.billno,
+        btnname,
+        {
+          refundBill: this.billno,
+          locationID: this.hsplocationId,
+        }
+      );
     }
   }
   formreport() {

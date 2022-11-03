@@ -191,7 +191,7 @@ export class MedicineOrdersComponent implements OnInit {
       },
       mobileNo: {
         title: "Mobile No.",
-        type: "string",
+        type: "tel",
         style: {
           width: "8%",
         },

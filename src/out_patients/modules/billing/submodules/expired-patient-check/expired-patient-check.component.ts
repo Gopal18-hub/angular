@@ -42,7 +42,7 @@ export class ExpiredPatientCheckComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobileno: {
-        type: "number",
+        type: "tel",
         title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
