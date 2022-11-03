@@ -360,7 +360,7 @@ export class RefundAfterBillComponent implements OnInit {
                 this.msgdialog.info('Item cannot be refunded from this Tab Kindly unacknowledge first / Refund this item from Service Tab');
                 console.log(this.tableRows.selection);
                 setTimeout(() => {
-                  this.tableRows.selection.deselect(s.added[0]);
+                  this.tableRows.selection.deselect(this.tableRows.selection.selected[0]);
                 }, 100);
                 return;
               }

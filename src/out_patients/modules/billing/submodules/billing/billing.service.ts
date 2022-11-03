@@ -70,7 +70,7 @@ export class BillingService {
   companyChangeEvent = new Subject<any>();
   corporateChangeEvent = new Subject<any>();
   cerditCompanyBilltypeEvent = new Subject<any>();
-  allowCreditcompany : boolean = false;
+  allowCreditcompany: boolean = false;
 
   companyData: any = [];
   corporateData: any = [];
@@ -394,33 +394,38 @@ export class BillingService {
   }
 
   //check company credit
-  checkcreditcompany(res: any , formGroup: any){
-   if(this.billtype == 3 && res.company.id > 0){
-     if(Number(this.patientDetailsInfo.creditFlag) == 0){
-
-     }
-     else{
-         this.http.get(
-      BillingApiConstants.getcompanydetailcreditallow(res.company.id, "OP", 
-      // Number(this.cookie.get("HSPLocationId")),
-      // Number(this.cookie.get("UserId"))))
-      67,
-      60925))
-    .subscribe(async (data) => {
-       if(data == 0){
-       this.allowCreditcompany = true;
-       const creditbasedcompany = await this.messageDialogService.error("Credit not allow for this company.Please contact marketing, if credit need to be extended for this company.");
-       creditbasedcompany.afterClosed().toPromise(); 
-       formGroup.controls["company"].setValue(null);
-       this.cerditCompanyBilltypeEvent.next({ billtype: 1});
+  checkcreditcompany(res: any, formGroup: any) {
+    if (this.billtype == 3 && res.company.id > 0) {
+      if (Number(this.patientDetailsInfo.creditFlag) == 0) {
+      } else {
+        this.http
+          .get(
+            BillingApiConstants.getcompanydetailcreditallow(
+              res.company.id,
+              "OP",
+              // Number(this.cookie.get("HSPLocationId")),
+              // Number(this.cookie.get("UserId"))))
+              67,
+              60925
+            )
+          )
+          .subscribe(async (data) => {
+            if (data == 0) {
+              this.allowCreditcompany = true;
+              const creditbasedcompany = await this.messageDialogService.error(
+                "Credit not allow for this company.Please contact marketing, if credit need to be extended for this company."
+              );
+              creditbasedcompany.afterClosed().toPromise();
+              formGroup.controls["company"].setValue(null);
+              this.cerditCompanyBilltypeEvent.next({ billtype: 1 });
+            }
+          });
       }
-    });
-     }
-   }
- }
+    }
+  }
 
   //fix for Staff company validation
- async resetCompany(res: any, formGroup: any, from: string = "header") {
+  async resetCompany(res: any, formGroup: any, from: string = "header") {
     const ERNanavatiCompany = await this.messageDialogService.info(
       "Selected Patient is not entitled for " +
         res.title +
@@ -658,7 +663,9 @@ export class BillingService {
         //ConsultationTypeId: data.billItem.priorityId,
       });
       this.makeBillPayload.dtFinalGrpDoc = this.dtFinalGrpDoc;
-      this.makeBillPayload.dtCheckedItem = this.dtCheckedItem;
+      this.dtCheckedItem.forEach((item: any) => {
+        this.makeBillPayload.dtCheckedItem.push(item);
+      });
       this.makeBillPayload.txtOtherGroupDoc = this.txtOtherGroupDoc;
     }
     console.log(this.makeBillPayload);
@@ -1278,6 +1285,8 @@ export class BillingService {
         doctorID: 0,
         patient_Instructions: investigation.patient_Instructions,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.makeBillPayload.tab_o_opItemBasePrice.push({
       itemID: investigation.value,
@@ -1287,7 +1296,7 @@ export class BillingService {
     });
   }
 
-  procesConsultationAddWithOutApi(
+  async procesConsultationAddWithOutApi(
     priorityId: number,
     specialization: any,
     doctorName: any,
@@ -1323,6 +1332,8 @@ export class BillingService {
         specialisationID: doctorName.specialisationid,
         doctorID: doctorName.value,
       },
+      gstDetail: {},
+      gstCode: {},
     });
     this.consultationItemsAdded.next(true);
     this.makeBillPayload.tab_o_opItemBasePrice.push({
@@ -1339,6 +1350,26 @@ export class BillingService {
     doctorName: any,
     clinics: any
   ) {
+    let onlinePaidAppoinment = this.PaidAppointments
+      ? this.PaidAppointments.paymentstatus == "Yes"
+        ? true
+        : false
+      : false;
+    if (!this.selectedOtherPlan && !onlinePaidAppoinment) {
+      let consultType = await this.http
+        .get(
+          BillingApiConstants.getDoctorConsultType(
+            Number(this.cookie.get("HSPLocationId")),
+            doctorName.value,
+            this.activeMaxId.iacode,
+            this.activeMaxId.regNumber
+          )
+        )
+        .toPromise();
+      if (consultType) {
+        priorityId = consultType[0].consultId;
+      }
+    }
     const res = await this.http
       .post(BillingApiConstants.getcalculateopbill, {
         compId: this.company,
@@ -1431,5 +1462,54 @@ export class BillingService {
   setReferralDoctor(doctor: any) {
     this.referralDoctor = doctor;
     this.makeBillPayload.ds_insert_bill.tab_insertbill.refDoctorId = doctor.id;
+  }
+
+  resetgstfromservices(service: any, reason: any) {
+    this.makeBillPayload.taxReason = reason;
+    service[0].gstDetail = {
+      gsT_value: 0,
+      gsT_percent: 0,
+      cgsT_Value: 0,
+      cgsT_Percent: 0,
+      sgsT_value: 0,
+      sgsT_percent: 0,
+      utgsT_value: 0,
+      utgsT_percent: 0,
+      igsT_Value: 0,
+      igsT_percent: 0,
+      cesS_value: 0,
+      cesS_percent: 0,
+      taxratE1_Value: 0,
+      taxratE1_Percent: 0,
+      taxratE2_Value: 0,
+      taxratE2_Percent: 0,
+      taxratE3_Value: 0,
+      taxratE3_Percent: 0,
+      taxratE4_Value: 0,
+      taxratE4_Percent: 0,
+      taxratE5_Value: 0,
+      taxratE5_Percent: 0,
+      totaltaX_RATE: 0,
+      totaltaX_RATE_VALUE: 0,
+      taxgrpid: 0,
+      codeId: 0,
+    };
+    service[0].billItem.totalAmount =
+      service[0].billItem.totalAmount - service[0].billItem.gstValue;
+    service[0].billItem.gst = 0;
+    service[0].billItem.gstValue = 0;
+    this.makeBillPayload.tab_o_opItemBasePrice.forEach((item: any) => {
+      if (item.itemID == service[0].itemid) {
+        item.price = service[0].billItem.totalAmount;
+      }
+    });
+    this.makeBillPayload.ds_insert_bill.tab_d_opbillList.forEach(
+      (item: any) => {
+        if (item.itemId == service[0].itemid) {
+          item.amount = service[0].billItem.totalAmount;
+        }
+      }
+    );
+    this.calculateTotalAmount();
   }
 }

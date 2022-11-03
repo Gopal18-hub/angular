@@ -39,7 +39,6 @@ import { OnlineAppointmentComponent } from "../billing/prompts/online-appointmen
 import { CalculateBillService } from "@core/services/calculate-bill.service";
 import { getCorporatemasterdetail } from "@core/types/billdetails/getCorporatemasterdetail.Interface";
 
-
 @Component({
   selector: "out-patients-miscellaneous-billing",
   templateUrl: "./miscellaneous-billing.component.html",
@@ -120,7 +119,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   corporateId = "";
   companyId = "";
   coorporateList: any = [];
-  creditcorporateList: any =[];
+  creditcorporateList: any = [];
 
   miscFormData = {
     type: "object",
@@ -196,7 +195,7 @@ export class MiscellaneousBillingComponent implements OnInit {
     }
 
     this.getssnandmaxid();
-   // this.getAllCompany();
+    // this.getAllCompany();
     this.miscForm.controls["company"].disable();
     this.miscForm.controls["corporate"].disable();
     // this.Misc.companyChangeMiscEvent.subscribe((res: any) => {
@@ -336,6 +335,7 @@ export class MiscellaneousBillingComponent implements OnInit {
             this.miscForm.controls["corporate"].enable();
             let maxID = this.similarContactPatientList[0].maxid;
             this.miscForm.controls["maxid"].setValue(maxID);
+            this.getPatientDetailsByMaxId();
           } else {
             if (this.similarContactPatientList.length != 0) {
               const similarSoundDialogref = this.matDialog.open(
@@ -364,6 +364,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         },
         (error) => {
           this.messageDialogService.info(error.error);
+          this.apiProcessing = false;
         }
       );
   }
@@ -418,12 +419,13 @@ export class MiscellaneousBillingComponent implements OnInit {
         const dialogRef = this.messageDialogService.error(
           "Patient is an Expired Patient!"
         );
+        this.disableBtn = true;
         await dialogRef.afterClosed().toPromise();
+        return;
       }
       this.getAllCompany();
       this.getAllCorporate();
       this.getSimilarSoundDetails(iacode, regNumber);
-      this.disableBtn = true;
       this.http
         .get(
           ApiConstants.getregisteredpatientdetailsForMisc(
@@ -435,6 +437,7 @@ export class MiscellaneousBillingComponent implements OnInit {
         .pipe(takeUntil(this._destroying$))
         .subscribe(
           (resultData: Registrationdetails) => {
+            this.disableBtn = true;
             this.patientDetails = resultData;
             if (
               this.patientDetails.dsPersonalDetails.dtPersonalDetails1.length !=
@@ -460,9 +463,6 @@ export class MiscellaneousBillingComponent implements OnInit {
                 this.dsPersonalDetails.dtPersonalDetails1[0].cashLimit;
               this.setItemsToBill.cashLimit = cashLimit;
               this.setItemsToBill.enableBill = true;
-            } else {
-              this.snackbar.open("Invalid Max ID", "error");
-              this.disableBtn = false;
             }
           },
           (error) => {
@@ -470,14 +470,17 @@ export class MiscellaneousBillingComponent implements OnInit {
               this.setMaxIdError(iacode, regNumber);
               this.MaxIDExist = false;
             }
-            this.snackbar.open("Invalid Max ID", "error");
-            this.disableBtn = false;
+            // this.snackbar.open("Invalid Max ID", "error");
+            // this.disableBtn = false;
           }
         );
     } else if (regNumber === 0 || iacode === 0) {
       this.snackbar.open("Not a valid registration number", "error");
     } else {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
+      this.questions[0].readonly = false;
+      return;
     }
   }
   getSimilarSoundDetails(iacode: string, regNumber: number) {
@@ -501,8 +504,10 @@ export class MiscellaneousBillingComponent implements OnInit {
           }
         },
         (error) => {
-          this.snackbar.open("Invalid Max ID", "error");
-          this.apiProcessing = false;
+          if (error.error == "Patient Not found") {
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
+          }
         }
       );
   }
@@ -605,12 +610,15 @@ export class MiscellaneousBillingComponent implements OnInit {
           } else {
             this.apiProcessing = false;
             this.snackbar.open("Invalid Max ID", "error");
+            this.disableBtn = false;
+            this.questions[0].readonly = false;
+            return;
           }
         },
         (error) => {
           if (error.error == "Patient Not found") {
-            this.miscForm.controls["maxid"].setValue(iacode + "." + regNumber);
-            this.snackbar.open("Invalid Max ID", "error");
+            this.setMaxIdError(iacode, regNumber);
+            this.MaxIDExist = false;
           }
           this.apiProcessing = false;
         }
@@ -688,6 +696,7 @@ export class MiscellaneousBillingComponent implements OnInit {
   setValuesToMiscForm(pDetails: Registrationdetails) {
     if (pDetails.dsPersonalDetails.dtPersonalDetails1.length == 0) {
       this.snackbar.open("Invalid Max ID", "error");
+      this.disableBtn = false;
       this.apiProcessing = false;
       return;
     }
@@ -740,19 +749,19 @@ export class MiscellaneousBillingComponent implements OnInit {
       const companyExist: any = this.companyList.find(
         (c: any) => c.id == patientDetails.companyid
       );
-    if(companyExist){
-      let res = {
-        company: companyExist,
-        title: companyExist.name,
-        value: patientDetails.companyid,
+      if (companyExist) {
+        let res = {
+          company: companyExist,
+          title: companyExist.name,
+          value: patientDetails.companyid,
+        };
+        this.Misc.setCompnay(
+          patientDetails.companyid,
+          res,
+          this.miscForm,
+          "companyexists"
+        );
       }
-      this.Misc.setCompnay(
-        patientDetails.companyid,
-        res,
-        this.miscForm,
-        "companyexists"
-      );
-    }
     }
   }
   setCorporate(patientDetails: PatientDetail) {
@@ -806,7 +815,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
         this.Misc.setCorporateData(resultData.oCompanyName);
         resultData.oCompanyName.unshift({ name: "Select", id: -1 });
-        this.questions[3].options = this.coorporateList.map((l:any) => {
+        this.questions[3].options = this.coorporateList.map((l: any) => {
           return { title: l.name, value: l.id };
         });
         this.questions[3] = { ...this.questions[3] };

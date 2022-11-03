@@ -269,15 +269,19 @@ export class OderInvestigationsComponent implements OnInit {
       .pipe(
         filter((res) => {
           if (res == null) {
-            // if (this.invReferenceList) {
-            this.formGroup.controls["investigation"].reset();
-            console.log(this.invReferenceList);
-            this.questions[1].options = this.invReferenceList.map((a: any) => {
-              return { title: a.name, value: a.id };
-            });
-            this.questions[1] = { ...this.questions[1] };
+            if (this.invReferenceList.length > 0) {
+              // this.formGroup.controls["investigation"].reset();
+              console.log("inside reference list loop");
+              console.log(this.invReferenceList);
+              this.questions[1].options = this.invReferenceList.map(
+                (a: any) => {
+                  return { title: a.name, value: a.id };
+                }
+              );
+              this.questions[1] = { ...this.questions[1] };
+            } else {
+            }
           }
-          //  }
           return res !== null && res.length >= 3;
         }),
         distinctUntilChanged(),
@@ -465,7 +469,7 @@ export class OderInvestigationsComponent implements OnInit {
             this.formGroup.value.investigation.value,
             this.opOrderRequestService.patientDemographicdata.gender,
             this.formGroup.value.investigation.serviceid,
-            "2"
+            "1"
           )
         )
         .pipe(takeUntil(this._destroying$))
@@ -486,6 +490,7 @@ export class OderInvestigationsComponent implements OnInit {
         });
     } else {
       this.messageDialogService.info("Please Select Investigation");
+      this.formGroup.reset();
     }
   }
 

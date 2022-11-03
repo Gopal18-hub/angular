@@ -184,6 +184,7 @@ export class SearchDialogComponent implements OnInit {
       check: any,
       fromdate: any,
       todate: any,
+      frombill: any
     },
     private dialogRef: MatDialogRef<SearchDialogComponent>,
     private snackbar: MaxHealthSnackBarService
@@ -329,13 +330,9 @@ export class SearchDialogComponent implements OnInit {
     ))
     .pipe(takeUntil(this._destroying$))
     .subscribe(res=>{
-      if(res.length > 0 && res != null) 
+      if(res && res.length > 0 && res != null) 
       {
         this.getsearchopbillslist = res;
-        for(var i = 0 ; i < res.length; i++)
-        {
-          this.getsearchopbillslist[i].sno = i + 1;
-        }
         this.getsearchopbillslist.forEach(e=>{
           if(e.billStatus == 0)
           {
@@ -352,13 +349,27 @@ export class SearchDialogComponent implements OnInit {
           e.balance = e.balance.toFixed(2);
           e.billamount = e.billamount.toFixed(2);
         })
+        if(this.formdata.frombill == 1)
+        {
+          this.getsearchopbillslist = this.getsearchopbillslist.filter(i => {
+            return i.balance > 0;
+          })
+        }
+        for(var i = 0 ; i < this.getsearchopbillslist.length; i++)
+        {
+          this.getsearchopbillslist[i].sno = i + 1;
+        }
         this.apiProcessing = false;
         console.log(this.getsearchopbillslist);
       }
       else
       {
         this.apiProcessing = false;
+        this.snackbar.open('No Data Available / Invalid Input Data');
       }
+    },
+    (error) => {
+      console.log(error);
     })
   }
   clear()

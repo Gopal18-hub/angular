@@ -63,6 +63,7 @@
             [aria-label]="checkboxLabel(row)"
             color="primary"
             [disabled]="row.disablecheckbox"
+            [indeterminate]="row.disablecheckbox ? true : false"
           >
           </mat-checkbox>
         </td>

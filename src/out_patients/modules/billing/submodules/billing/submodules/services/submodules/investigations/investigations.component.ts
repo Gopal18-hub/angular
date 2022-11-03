@@ -119,6 +119,8 @@ export class InvestigationsComponent implements OnInit {
 
   zeroPriceExist: boolean = false;
 
+  childItems: any = [];
+
   constructor(
     private formService: QuestionControlService,
     private http: HttpService,
@@ -292,6 +294,7 @@ export class InvestigationsComponent implements OnInit {
                 ],
               precaution: r.precaution,
               popuptext: r.popuptext,
+              profileid: r.profileid,
               ngStyle: {
                 color: r.outsourceColor == 2 ? "red" : "",
               },
@@ -388,6 +391,7 @@ export class InvestigationsComponent implements OnInit {
             serviceid: r.serviceid,
             popuptext: r.popuptext,
             precaution: r.precaution,
+            profileid: r.profileid,
             ngStyle: {
               color: r.outsourceColor == 2 ? "red" : "",
             },
@@ -432,28 +436,53 @@ export class InvestigationsComponent implements OnInit {
   }
 
   async add() {
-    this.calculateBillService.blockActions.next(true);
-    const priorityId = this.defaultPriorityId;
-    let exist = this.billingService.InvestigationItems.findIndex(
-      (item: any) => {
-        return item.billItem.itemId == this.formGroup.value.investigation.value;
-      }
-    );
-    if (exist > -1) {
-      this.calculateBillService.blockActions.next(false);
-      this.messageDialogService.error(
-        "Investigation already added to the service list"
+    ////GAV-871
+    if (this.formGroup.value.investigation.value) {
+      this.calculateBillService.blockActions.next(true);
+      const priorityId = this.defaultPriorityId;
+      let exist = this.billingService.InvestigationItems.findIndex(
+        (item: any) => {
+          return (
+            item.billItem.itemId == this.formGroup.value.investigation.value
+          );
+        }
       );
-      return;
+      if (exist > -1) {
+        this.calculateBillService.blockActions.next(false);
+        this.messageDialogService.error(
+          "Investigation already added to the service list"
+        );
+        return;
+      }
+      if (this.childItems.includes(this.formGroup.value.investigation.value)) {
+        this.calculateBillService.blockActions.next(false);
+        this.messageDialogService.error(
+          "Investigation already exist under the profile added"
+        );
+        return;
+      }
+
+      if (this.formGroup.value.investigation.profileid == 1) {
+        this.http
+          .get(
+            BillingApiConstants.gettestprofileid(
+              this.formGroup.value.investigation.value
+            )
+          )
+          .subscribe((res: any) => {
+            this.childItems = [...this.childItems, ...res];
+          });
+      }
+
+      this.checkPatientSex(
+        this.formGroup.value.investigation.value,
+        this.billingService.activeMaxId.gender,
+        this.formGroup.value.serviceType ||
+          this.formGroup.value.investigation.serviceid,
+        "1",
+        priorityId
+      );
     }
-    this.checkPatientSex(
-      this.formGroup.value.investigation.value,
-      this.billingService.activeMaxId.gender,
-      this.formGroup.value.serviceType ||
-        this.formGroup.value.investigation.serviceid,
-      "1",
-      priorityId
-    );
   }
 
   checkPatientSex(

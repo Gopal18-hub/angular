@@ -271,6 +271,13 @@
                       class="p-0 bg-deposit min-width-initial"
                       (click)="gsttaxdialog()"
                       type="button"
+                      [disabled]="
+                        !finalgstDetails ||
+                        !calculateBillService.dsTaxCode ||
+                        (calculateBillService.dsTaxCode &&
+                          calculateBillService.dsTaxCode.totaltaX_RATE_VALUE ==
+                            0)
+                      "
                     >
                       <mat-icon class="icon-more p-0 font-xs"
                         >more_horiz</mat-icon
