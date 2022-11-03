@@ -132,7 +132,7 @@ export class DepositComponent implements OnInit {
         // title: "Max ID"
       },
       mobileno: {
-        type: "number",
+        type: "tel",
         title: "Mobile No.",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
@@ -403,6 +403,7 @@ export class DepositComponent implements OnInit {
         patientinfo: {
           emailId: this.patientpersonaldetails[0]?.pEMail,
           mobileno: this.patientpersonaldetails[0]?.pcellno,
+          screename: "Deposit",
         },
         clickedrowdepositdetails: this.patientRefundDetails,
       },

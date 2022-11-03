@@ -27,7 +27,7 @@ export class SendMailDialogComponent implements OnInit {
       },
       mobileno: {
         title: "Mobile Number",
-        type: "string",
+        type: "tel",
         required: true
       },
       sendtowhatsapp:{
