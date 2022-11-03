@@ -320,6 +320,17 @@ export class MiscellaneousBillingComponent implements OnInit {
 
   onPhoneModify() {
     this.matDialog.closeAll();
+
+    if (
+      !this.miscForm.value.mobileNo ||
+      this.miscForm.value.mobileNo.length != 10
+    ) {
+      this.snackbar.open("Invalid Mobile No.", "error");
+      this.apiProcessing = false;
+      // this.patient = false;
+      return;
+    }
+
     this.http
       .post(ApiConstants.similarSoundPatientDetail, {
         phone: this.miscForm.value.mobileNo,

@@ -219,6 +219,7 @@ export class BillDetailComponent implements OnInit {
       availDiscCheck: {
         type: "checkbox",
         required: false,
+        readonly: true,
         options: [{ title: "Avail Plan Disc ( - )" }],
       },
       //12
@@ -457,6 +458,7 @@ export class BillDetailComponent implements OnInit {
     );
     this.miscServBillForm = serviceFormResult.form;
     this.question = serviceFormResult.questions;
+    this.miscServBillForm.controls["availDiscCheck"].disable();
 
     this.miscPatient.clearAllItems.subscribe((clearItems) => {
       if (clearItems) {
@@ -880,9 +882,10 @@ export class BillDetailComponent implements OnInit {
       this.generatedBillNo == ""
     ) {
       this.enableItemsService = true;
-    } else {
-      this.enableItemsService = false;
     }
+    // else {
+    //   this.enableItemsService = false;
+    // }
   }
 
   selectedReferralDoctor(data: any) {
@@ -1175,18 +1178,25 @@ export class BillDetailComponent implements OnInit {
   addService() {
     if (!this.miscServBillForm.value.serviceType) {
       this.snackbar.open("Select Service Item", "error");
+      this.question[0].elementRef.focus();
     } else if (!this.miscServBillForm.value.item) {
       this.snackbar.open("Enter the Item Description First", "error");
+      this.question[1].elementRef.focus();
     } else if (!this.miscServBillForm.value.qty) {
       this.snackbar.open("Enter the Item Quantity", "error");
+      this.question[3].elementRef.focus();
     } else if (this.miscServBillForm.value.qty <= 0) {
       this.snackbar.open("Quantity Can Not be Zero", "error");
+      this.question[3].elementRef.focus();
     } else if (!this.miscServBillForm.value.reqAmt) {
       this.snackbar.open("Enter the Item Price", "error");
+      this.question[4].elementRef.focus();
     } else if (this.miscServBillForm.value.reqAmt <= 0) {
       this.snackbar.open("Item Price Can Not be Zero", "error");
+      this.question[4].elementRef.focus();
     } else if (!this.miscServBillForm.value.remark) {
       this.snackbar.open("Please select remarks!", "error");
+      this.question[6].elementRef.focus();
     } else if (this.noMap.length === 0) {
       this.snackbar.open("Selected Service not Mapped with Tax.", "error");
       this.clearSelectedService();
@@ -1207,6 +1217,7 @@ export class BillDetailComponent implements OnInit {
         }
       });
       if (!present) {
+        this.enableItemsService = false;
         this.pushDataToServiceTable();
         this.serviceselectedList.forEach((e: any) => {
           e.TariffPriceNo = Number(e.TariffPrice).toFixed(2);
@@ -1337,6 +1348,7 @@ export class BillDetailComponent implements OnInit {
     this.miscServBillForm.controls["remark"].reset();
     this.miscServBillForm.controls["reqAmt"].reset();
     this.miscServBillForm.controls["serviceType"].reset();
+    this.enableItemsService = false;
     this.checkService();
   }
   clearSelectedService() {
@@ -1366,9 +1378,9 @@ export class BillDetailComponent implements OnInit {
 
     this.miscServBillForm.controls["dipositAmtEdit"].setValue("0.00");
 
-    this.miscServBillForm.controls["discAmtCheck"].disable();
+    //this.miscServBillForm.controls["discAmtCheck"].disable();
     this.miscServBillForm.controls["discAmtCheck"].setValue(false);
-    this.miscServBillForm.controls["dipositAmtcheck"].disable();
+    //this.miscServBillForm.controls["dipositAmtcheck"].disable();
     this.miscServBillForm.controls["dipositAmtcheck"].setValue(false);
 
     this.miscServBillForm.controls["amtPayByPatient"].setValue("0.00");
