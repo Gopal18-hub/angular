@@ -142,32 +142,55 @@ export class ShowPlanDetilsComponent implements OnInit {
     if (this.planType == "otherPlanDetails") {
       this.tableRows.selection.changed.subscribe((res: any) => {
         this.isConsultationExist = false;
-        this.tableRows.selection.selected.forEach((sItem: any) => {
-          if (sItem.serviceid == 25) {
-            this.getDoctorsListInfo(sItem.itemid);
+        let consultationExist = 0;
+        if (this.tableRows.selection.selected.length == 0) {
+          this.data.forEach((item: any) => {
+            item.disablecheckbox =
+              item.availnooftimes == item.noOfTimes ? true : false;
+          });
+          this.data = [...this.data];
+        } else {
+          this.tableRows.selection.selected.forEach((sItem: any) => {
+            if (sItem.serviceid == 25) {
+              if (!consultationExist) {
+                consultationExist = sItem.itemid;
+                this.getDoctorsListInfo(sItem.itemid);
+              }
+            }
+          });
+
+          if (consultationExist) {
+            this.data.forEach((item: any) => {
+              if (item.serviceid == 25) {
+                item.disablecheckbox =
+                  item.itemid == consultationExist ? false : true;
+              }
+            });
+            this.data = [...this.data];
+          } else {
+            this.data.forEach((item: any) => {
+              item.disablecheckbox =
+                item.availnooftimes == item.noOfTimes ? true : false;
+            });
+            this.data = [...this.data];
           }
-        });
+        }
       });
     }
   }
 
   async getDoctorsListInfo(specialisationId: number) {
-    if (this.doctorList.length == 0) {
-      this.doctorList = await this.specializationService.getDoctorsListInfo(
-        specialisationId
-      );
-      console.log(this.doctorList);
-      this.isConsultationExist = true;
-      this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
-        startWith(""),
-        map((value: any) => (typeof value === "string" ? value : value?.title)),
-        map((title: any) =>
-          title ? this._filter(title) : this.doctorList.slice()
-        )
-      );
-    } else {
-      this.isConsultationExist = true;
-    }
+    this.doctorList = await this.specializationService.getDoctorsListInfo(
+      specialisationId
+    );
+    this.isConsultationExist = true;
+    this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
+      startWith(""),
+      map((value: any) => (typeof value === "string" ? value : value?.title)),
+      map((title: any) =>
+        title ? this._filter(title) : this.doctorList.slice()
+      )
+    );
   }
 
   private _filter(title: string): any[] {

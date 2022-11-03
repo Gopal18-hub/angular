@@ -12,7 +12,7 @@ export class SpecializationService {
 
   specializationDocotorsList: any = {};
 
-  allDoctorsList: any = [];
+  allDoctorsList: any = {};
 
   constructor(private http: HttpService, private cookie: CookieService) {}
 
@@ -47,7 +47,10 @@ export class SpecializationService {
   }
 
   async getDoctorsListInfo(specializationId: number) {
-    if (this.allDoctorsList.length == 0) {
+    if (!specializationId) return;
+    if (this.allDoctorsList[specializationId.toString()]) {
+      return this.allDoctorsList[specializationId.toString()];
+    } else {
       const res = await this.http
         .get(
           BillingApiConstants.getdoctorlistonSpecializationClinic(
@@ -57,7 +60,7 @@ export class SpecializationService {
           )
         )
         .toPromise();
-      this.allDoctorsList = res.map((r: any) => {
+      this.allDoctorsList[specializationId.toString()] = res.map((r: any) => {
         return {
           title: r.doctorName,
           value: r.doctorId,
@@ -66,9 +69,7 @@ export class SpecializationService {
           clinicId: r.clinicID,
         };
       });
-      return this.allDoctorsList;
-    } else {
-      return this.allDoctorsList;
+      return this.allDoctorsList[specializationId.toString()];
     }
   }
 }
