@@ -7,6 +7,7 @@ import { DepositService } from '@core/services/deposit.service';
 import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { BillingService } from '@modules/billing/submodules/billing/billing.service';
 
 @Component({
   selector: 'patient-identity-info',
@@ -50,10 +51,11 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
   patientidentityform!: FormGroup;
   questions: any;
   form60PatientInfo:any=[];
-  DepositPaymentMethod: { transactionamount : number, MOP: string}[] =[];
+  PaymentMethod: { transactionamount : number, MOP: string}[] =[];
   Form60success:boolean = false;
 
   constructor( private formService: QuestionControlService,  private depositservice: DepositService, private messageDialogService: MessageDialogService,
+    private billingservice: BillingService,
   private matdialog: MatDialog) {
    }
 
@@ -81,6 +83,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
        this.patientidentityform.controls["email"].setValue("info@maxhealthcare.com");
     }  
     
+    //iacode and registartion no is required
     this.form60PatientInfo = this.data.patientinfo;   
 
     this.depositservice.clearAllItems.subscribe((clearItems) => {
@@ -96,11 +99,29 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
     this.patientidentityform.controls["mainradio"].valueChanges.subscribe((value:any)=>{
       if(value == "form60")
       { 
-        this.DepositPaymentMethod = this.depositservice.data;         
-        {
+        let tobepaidby: number = 0, paymentmode:string = "" ;
+        if(this.data.patientinfo.screenname == "Billing"){
+          if(this.billingservice.makeBillPayload.ds_paymode.tab_paymentList){
+            this.billingservice.makeBillPayload.ds_paymode.tab_paymentList.forEach((item: any) => {
+              tobepaidby += Number(item.amount);
+              paymentmode = paymentmode + " ," + item.modeOfPayment
+            });
+            this.PaymentMethod = [{
+              transactionamount : tobepaidby ,
+              MOP : paymentmode
+            }]
+          }
+        }
+        else if(this.data.patientinfo.screenname == "Deposit"){          
+        this.PaymentMethod = this.depositservice.data;  
+        }
+        else{
+
+        }       
+    
          const form60dialog = this.matdialog.open(FormSixtyComponent, {width: "50vw", height: "94vh", 
           data: {from60data:this.form60PatientInfo,
-                paymentamount: this.DepositPaymentMethod[0]
+                paymentamount: this.PaymentMethod[0]
               }
             });
 
@@ -116,7 +137,7 @@ export class PatientIdentityInfoComponent implements OnInit, AfterViewInit {
 
           this.patientidentityform.controls["panno"].disable();
           this.patientidentityform.controls["panno"].setValue('');
-        }      
+          
       }
       else{
         this.patientidentityform.controls["panno"].enable();
