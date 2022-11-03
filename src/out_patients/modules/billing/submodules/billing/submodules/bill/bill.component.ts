@@ -60,12 +60,14 @@ export class BillComponent implements OnInit, OnDestroy {
         type: "checkbox",
         required: false,
         options: [{ title: "Avail Plan Disc ( - )" }],
+        disabled: false,
       },
       availDisc: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
+        disabled: false,
       },
       discAmtCheck: {
         type: "checkbox",
@@ -346,6 +348,9 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
+    } else {
+      this.billDataForm.properties.availDiscCheck.disabled = true;
+      this.billDataForm.properties.availDisc.disabled = true;
     }
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.billDataForm.properties.discAmtCheck.disabled = true;

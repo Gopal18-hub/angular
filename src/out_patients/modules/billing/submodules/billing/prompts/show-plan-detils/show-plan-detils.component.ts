@@ -6,6 +6,7 @@ import { CookieService } from "@shared/services/cookie.service";
 import { Observable } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { map, startWith } from "rxjs/operators";
+import { SpecializationService } from "../../specialization.service";
 
 @Component({
   selector: "out-patients-show-plan-detils",
@@ -120,7 +121,8 @@ export class ShowPlanDetilsComponent implements OnInit {
     public dialogRef: MatDialogRef<ShowPlanDetilsComponent>,
     @Inject(MAT_DIALOG_DATA) public inputdata: any,
     private http: HttpService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
@@ -140,47 +142,55 @@ export class ShowPlanDetilsComponent implements OnInit {
     if (this.planType == "otherPlanDetails") {
       this.tableRows.selection.changed.subscribe((res: any) => {
         this.isConsultationExist = false;
-        this.tableRows.selection.selected.forEach((sItem: any) => {
-          if (sItem.serviceid == 25) {
-            this.getDoctorsListInfo();
+        let consultationExist = 0;
+        if (this.tableRows.selection.selected.length == 0) {
+          this.data.forEach((item: any) => {
+            item.disablecheckbox =
+              item.availnooftimes == item.noOfTimes ? true : false;
+          });
+          this.data = [...this.data];
+        } else {
+          this.tableRows.selection.selected.forEach((sItem: any) => {
+            if (sItem.serviceid == 25) {
+              if (!consultationExist) {
+                consultationExist = sItem.itemid;
+                this.getDoctorsListInfo(sItem.itemid);
+              }
+            }
+          });
+
+          if (consultationExist) {
+            this.data.forEach((item: any) => {
+              if (item.serviceid == 25) {
+                item.disablecheckbox =
+                  item.itemid == consultationExist ? false : true;
+              }
+            });
+            this.data = [...this.data];
+          } else {
+            this.data.forEach((item: any) => {
+              item.disablecheckbox =
+                item.availnooftimes == item.noOfTimes ? true : false;
+            });
+            this.data = [...this.data];
           }
-        });
+        }
       });
     }
   }
 
-  getDoctorsListInfo() {
-    if (this.doctorList.length == 0) {
-      this.http
-        .get(
-          BillingApiConstants.getalldoctorname(
-            Number(this.cookie.get("HSPLocationId"))
-          )
-        )
-        .subscribe((res) => {
-          this.doctorList = res.map((r: any) => {
-            return {
-              title: r.doctorname + " (" + r.specialityname + ")",
-              value: r.doctorid,
-              originalTitle: r.doctorname,
-              specialisationid: r.specialisationid,
-              clinicId: 0,
-            };
-          });
-          this.isConsultationExist = true;
-          this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
-            startWith(""),
-            map((value: any) =>
-              typeof value === "string" ? value : value?.title
-            ),
-            map((title: any) =>
-              title ? this._filter(title) : this.doctorList.slice()
-            )
-          );
-        });
-    } else {
-      this.isConsultationExist = true;
-    }
+  async getDoctorsListInfo(specialisationId: number) {
+    this.doctorList = await this.specializationService.getDoctorsListInfo(
+      specialisationId
+    );
+    this.isConsultationExist = true;
+    this.filteredOptions = this.selectedDoctor.valueChanges.pipe(
+      startWith(""),
+      map((value: any) => (typeof value === "string" ? value : value?.title)),
+      map((title: any) =>
+        title ? this._filter(title) : this.doctorList.slice()
+      )
+    );
   }
 
   private _filter(title: string): any[] {

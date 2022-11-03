@@ -33,6 +33,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.api-loader {
+    background: rgba(0, 0, 0, 0.15);
+  }
 .lens-icon{
     position: absolute;
     left: 2px;
@@ -140,6 +143,7 @@
   .ml-14{
     margin-left: 1rem;
   }
+
 //   .error{
 //     margin: 0.6rem !important;
 //   }
