@@ -302,24 +302,26 @@ export class HealthCheckupsComponent implements OnInit {
       );
       return;
     }
-    let exist = this.billingService.HealthCheckupItems.findIndex(
-      (item: any) => {
-        return item.itemid == this.formGroup.value.healthCheckup.value;
-      }
-    );
-    if (exist > -1) {
-      this.messageDialogService.error(
-        "Health Checkup Item already added to the service list"
+    if (this.formGroup.value.healthCheckup.value) {
+      let exist = this.billingService.HealthCheckupItems.findIndex(
+        (item: any) => {
+          return item.itemid == this.formGroup.value.healthCheckup.value;
+        }
       );
-      return;
+      if (exist > -1) {
+        this.messageDialogService.error(
+          "Health Checkup Item already added to the service list"
+        );
+        return;
+      }
+      this.checkPatientSex(
+        this.formGroup.value.healthCheckup.value,
+        this.billingService.activeMaxId.gender,
+        "26",
+        "1",
+        priorityId
+      );
     }
-    this.checkPatientSex(
-      this.formGroup.value.healthCheckup.value,
-      this.billingService.activeMaxId.gender,
-      "26",
-      "1",
-      priorityId
-    );
   }
 
   proceedToAdd(priorityId: number) {
@@ -360,45 +362,45 @@ export class HealthCheckupsComponent implements OnInit {
               discAmount: 0,
               totalAmount: res[0].returnOutPut + res[0].totaltaX_Value,
               gst: res[0].totaltaX_RATE,
-              gstValue: res[0].totaltaX_Value,          
+              gstValue: res[0].totaltaX_Value,
               specialisationID: 0,
               doctorID: 0,
             },
-            gstDetail:{
-          gsT_value:res[0].totaltaX_Value,
-          gsT_percent:res[0].totaltaX_RATE,
-          cgsT_Value:res[0].cgsT_Value,
-          cgsT_Percent:res[0].cgst,
-          sgsT_value:res[0].sgsT_Value,
-          sgsT_percent:res[0].sgst,
-          utgsT_value:res[0].utgsT_Value,
-          utgsT_percent:res[0].utgst,
-          igsT_Value:res[0].igsT_Value,
-          igsT_percent:res[0].igst,
-          cesS_value:res[0].cesS_Value,
-          cesS_percent:res[0].cess,
-          taxratE1_Value:res[0].taxratE1_Value,
-          taxratE1_Percent:res[0].taxratE1,
-          taxratE2_Value:res[0].taxratE2_Value,
-          taxratE2_Percent:res[0].taxratE2,
-          taxratE3_Value:res[0].taxratE3_Value,
-          taxratE3_Percent:res[0].taxratE3,
-          taxratE4_Value:res[0].taxratE4_Value,
-          taxratE4_Percent:res[0].taxratE4,
-          taxratE5_Value:res[0].taxratE5_Value,
-          taxratE5_Percent:res[0].taxratE5,
-          totaltaX_RATE:res[0].totaltaX_RATE,
-          totaltaX_RATE_VALUE:res[0].totaltaX_Value,
-          saccode:res[0].saccode,
-          taxgrpid:res[0].taxgrpid,
-          codeId:res[0].codeId,
-        },
-         gstCode:{
-              tax:res[0].tax,
-              taxType:res[0].taxType,
-              codeId:res[0].codeId,
-              code:res[0].code,
-            }
+            gstDetail: {
+              gsT_value: res[0].totaltaX_Value,
+              gsT_percent: res[0].totaltaX_RATE,
+              cgsT_Value: res[0].cgsT_Value,
+              cgsT_Percent: res[0].cgst,
+              sgsT_value: res[0].sgsT_Value,
+              sgsT_percent: res[0].sgst,
+              utgsT_value: res[0].utgsT_Value,
+              utgsT_percent: res[0].utgst,
+              igsT_Value: res[0].igsT_Value,
+              igsT_percent: res[0].igst,
+              cesS_value: res[0].cesS_Value,
+              cesS_percent: res[0].cess,
+              taxratE1_Value: res[0].taxratE1_Value,
+              taxratE1_Percent: res[0].taxratE1,
+              taxratE2_Value: res[0].taxratE2_Value,
+              taxratE2_Percent: res[0].taxratE2,
+              taxratE3_Value: res[0].taxratE3_Value,
+              taxratE3_Percent: res[0].taxratE3,
+              taxratE4_Value: res[0].taxratE4_Value,
+              taxratE4_Percent: res[0].taxratE4,
+              taxratE5_Value: res[0].taxratE5_Value,
+              taxratE5_Percent: res[0].taxratE5,
+              totaltaX_RATE: res[0].totaltaX_RATE,
+              totaltaX_RATE_VALUE: res[0].totaltaX_Value,
+              saccode: res[0].saccode,
+              taxgrpid: res[0].taxgrpid,
+              codeId: res[0].codeId,
+            },
+            gstCode: {
+              tax: res[0].tax,
+              taxType: res[0].taxType,
+              codeId: res[0].codeId,
+              code: res[0].code,
+            },
           });
           this.billingService.makeBillPayload.tab_o_opItemBasePrice.push({
             itemID: this.formGroup.value.healthCheckup.value,

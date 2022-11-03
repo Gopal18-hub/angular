@@ -198,7 +198,7 @@ export class InvestigationOrdersComponent implements OnInit {
       },
       mobileNo: {
         title: "Mobile No.",
-        type: "string",
+        type: "tel",
         style: {
           width: "9%",
         },

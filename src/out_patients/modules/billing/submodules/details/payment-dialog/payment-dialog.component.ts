@@ -160,6 +160,7 @@ export class PaymentDialogComponent implements OnInit {
   private readonly _destroying$ = new Subject<void>();
 
   @ViewChild(PaymentMethodsComponent) paymentmethod! : PaymentMethodsComponent;
+  @ViewChild("billpatientIdentityInfo") billingpatientidentity:any;
 
   config = {
     paymentmethod: {
@@ -172,6 +173,7 @@ export class PaymentDialogComponent implements OnInit {
     combopayment: true
   }
   patientIdentityInfo:any=[];
+  billpatientIdentityInfo:any = [];
   duelabel: any;
   billamount: any = 0;
   prepaidamount: any = 0;
@@ -465,7 +467,7 @@ export class PaymentDialogComponent implements OnInit {
   ddflag: any = 0;
   onlineflag: any = 0;
   submitbtn()
-  {
+  {    
     var callflag: any = 0;
     this.modeOfPayment = [];
     if(Number(this.cashamt) > 0)
@@ -619,6 +621,20 @@ export class PaymentDialogComponent implements OnInit {
     {
       this.messageDialogService.info('Amount could not be zero');
     }
+
+     //pan card and form 60
+    
+    this.billpatientIdentityInfo = this.billingpatientidentity.patientidentityform.value;
+    if(Number(this.finalamount >= 200000) &&  (this.billpatientIdentityInfo.length == 0 || 
+      this.billpatientIdentityInfo.mainradio == "pancardno" && (this.billpatientIdentityInfo.panno == undefined || this.billpatientIdentityInfo.panno == ""))){
+      this.messageDialogService.info('Please Enter a valid PAN Number');
+    }
+
+     else if(this.billpatientIdentityInfo.mainradio == "form60" && this.formsixtysubmit == false){
+      this.messageDialogService.error("Please fill the form60 ");   
+     } 
+
+
     console.log(callflag, this.modeOfPayment);
     if(callflag == this.modeOfPayment.length)
     {
@@ -813,6 +829,12 @@ export class PaymentDialogComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+
+  formsixtysubmit:boolean = false;
+  billingformsixtysuccess(event:any){
+    console.log(event);
+    this.formsixtysubmit = event;
   }
 
 }

@@ -489,7 +489,7 @@ export namespace FormReport {
             { title: "Plan Name", value: "Plan Name" },
             { title: "Membership No", value: "Membership No" },
           ],
-          required: false,
+          required: true,
           defaultValue: "Plan Name",
           conditions: [
             {
@@ -499,6 +499,11 @@ export namespace FormReport {
             },
             {
               expression: "self == 'Plan Name'",
+              controlKey: "planID",
+              type: "required",
+            },
+            {
+              expression: "self == 'Plan Name'",
               controlKey: "Location",
               type: "hide",
             },
@@ -521,6 +526,16 @@ export namespace FormReport {
               expression: "self == 'Membership No'",
               controlKey: "Location",
               type: "show",
+            },
+            {
+              expression: "self == 'Membership No'",
+              controlKey: "Location",
+              type: "required",
+            },
+            {
+              expression: "self == 'Membership No'",
+              controlKey: "MemberShipNo",
+              type: "required",
             },
           ],
         },
@@ -537,7 +552,6 @@ export namespace FormReport {
               value: "id",
             },
           },
-          defaultValue: "0",
         },
 
         Location: {
@@ -546,7 +560,10 @@ export namespace FormReport {
           title: "Location",
           required: false,
           questionClasses: "max-hide",
-          defaultValue: MaxHealthStorage.getCookie("HSPLocationId"),
+          defaultValue: {
+            title: MaxHealthStorage.getCookie("Location"),
+            value: MaxHealthStorage.getCookie("HSPLocationId"),
+          },
           optionsModelConfig: {
             uri: `${environment.CommonApiUrl}api/lookup/getlocationmaster`,
             fields: {
@@ -572,8 +589,6 @@ export namespace FormReport {
               value: "membershipno",
             },
           },
-
-          defaultValue: "membershipno",
         },
       },
     },

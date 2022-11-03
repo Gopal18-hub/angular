@@ -140,7 +140,7 @@ export class DetailsComponent implements OnInit {
       },
       mobileno: {
         type: "tel",
-        // pattern: "^[1-9]{1}[0-9]{9}",
+        //pattern: "^[1-9]{1}[0-9]{9}",
       },
       billDate: {
         type: "date",
