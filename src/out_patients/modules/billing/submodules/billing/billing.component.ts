@@ -937,6 +937,8 @@ export class BillingComponent implements OnInit, OnDestroy {
               if (result && result.selected && result.selected.length > 0) {
                 const selectedPlan = result.selected[0];
                 this.billingService.setOtherPlan(selectedPlan);
+                this.formGroup.controls["company"].disable();
+                this.formGroup.controls["corporate"].disable();
                 const planSelectDialog = this.messageDialogService.info(
                   "You have selected " + selectedPlan.planName
                 );
