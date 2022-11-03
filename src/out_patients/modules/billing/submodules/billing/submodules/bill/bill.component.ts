@@ -650,6 +650,7 @@ export class BillComponent implements OnInit, OnDestroy {
         this.formGroup.controls["amtPayByComp"].setValue("0.00");
         this.formGroup.controls["credLimit"].setValue("0.00");
         this.formGroup.controls["coPay"].setValue(0);
+        this.formGroup.controls["dipositAmtEdit"].setValue(0);
         this.formGroup.controls["amtPayByPatient"].setValue(
           this.getAmountPayByPatient()
         );
