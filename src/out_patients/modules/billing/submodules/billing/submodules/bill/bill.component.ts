@@ -26,6 +26,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SendMailDialogComponent } from "../../prompts/send-mail-dialog/send-mail-dialog.component";
 import { FormDialogueComponent } from "@shared/ui/form-dialogue/form-dialogue.component";
 import { BillingStaticConstants } from "../../BillingStaticConstant";
+import { Form60YesOrNoComponent } from "@modules/billing/submodules/deposit/form60-dialog/form60-yes-or-no.component";
 
 @Component({
   selector: "out-patients-bill",
@@ -297,7 +298,8 @@ export class BillComponent implements OnInit, OnDestroy {
   totalDeposit = 0;
   gstBreakupDetails: any = [];
   finalgstDetails: any = {};
-
+  hspLocationid: any = this.cookie.get("HSPLocationId");
+  form60: any;
   precautionExcludeLocations = [69];
 
   private readonly _destroying$ = new Subject<void>();
@@ -458,12 +460,12 @@ export class BillComponent implements OnInit, OnDestroy {
           }
         });
     }
-    // this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
-    //   console.log(res);
-    //   if (res) {
-    //     this.formGroup.controls["paymentMode"].setValue(1);
-    //   }
-    // });
+    this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
+      console.log(res);
+      if (res) {
+        this.formGroup.controls["paymentMode"].setValue(1);
+      }
+    });
   }
 
   rowRwmove($event: any) {
@@ -635,6 +637,8 @@ export class BillComponent implements OnInit, OnDestroy {
         if (value == 3) {
           this.question[14].readonly = false;
           this.question[13].readonly = false;
+          this.billingservice.setCompnay(0, "", this.formGroup, "header");          
+          this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
           this.question[14].readonly = true;
           this.question[13].readonly = true;
@@ -809,29 +813,37 @@ export class BillComponent implements OnInit, OnDestroy {
   onModifyDepositAmt() {
     if (this.formGroup.value.dipositAmtEdit > 0) {
       if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >=
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
-        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.dipositAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.dipositAmt.toFixed(2)
@@ -1250,8 +1262,41 @@ export class BillComponent implements OnInit, OnDestroy {
 
         if ("type" in result) {
           if (result.type == "yes") {
-            this.makePrint();
-          } else {
+            this.http
+              .get(
+                ApiConstants.getform60(
+                  this.hspLocationid,
+                  this.billNo,
+                  this.billingservice.activeMaxId.iacode,
+                  this.billingservice.activeMaxId.regNumber
+                )
+              )
+              .pipe(takeUntil(this._destroying$))
+              .subscribe((resultdata: any) => {
+                console.log(resultdata);
+                this.form60 = resultdata;
+                console.log(this.form60);
+                if (this.form60 == 1) {
+                  const dialogref = this.matDialog.open(
+                    Form60YesOrNoComponent,
+                    {
+                      width: "30vw",
+                      height: "35vh",
+                    }
+                  );
+                  dialogref.afterClosed().subscribe((res) => {
+                    if (res == "yes") {
+                      this.makePrint();
+                      this.formreport();
+                    } else if (res == "no") {
+                      this.makePrint();
+                    }
+                  });
+                } else {
+                  this.makePrint();
+                }
+              });
+            //this.makePrint();
           }
         }
       });
@@ -1265,6 +1310,23 @@ export class BillComponent implements OnInit, OnDestroy {
 
         locationID: this.cookie.get("HSPLocationId"),
       }
+    );
+  }
+  formreport() {
+    let regno = this.billingservice.activeMaxId.regNumber;
+    let iacode = this.billingservice.activeMaxId.iacode;
+    let billno = this.billNo;
+    this.reportService.openWindow(
+      "FormSixty",
+      "FormSixty",
+      {
+        LocationId: Number(this.cookie.get("HSPLocationId")),
+        Iacode: iacode,
+        RegistrationNo: regno,
+        BillNo: billno,
+      },
+      "right",
+      "center"
     );
   }
 
@@ -1281,9 +1343,9 @@ export class BillComponent implements OnInit, OnDestroy {
     const temp =
       cashAmount +
       creditAmount -
-      (this.formGroup.value.dipositAmtEdit || 0) -
-      (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.amtPayByComp || 0) +
+      (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+      (parseFloat(this.formGroup.value.discAmt) || 0) -
+      (parseFloat(this.formGroup.value.amtPayByComp) || 0) +
       (parseFloat(this.formGroup.value.gstTax) || 0) -
       (parseFloat(this.formGroup.value.planAmt) || 0) -
       (parseFloat(this.formGroup.value.availDisc) || 0);
