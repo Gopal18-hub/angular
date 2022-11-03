@@ -637,7 +637,7 @@ export class BillComponent implements OnInit, OnDestroy {
         if (value == 3) {
           this.question[14].readonly = false;
           this.question[13].readonly = false;
-          this.billingservice.setCompnay(0, "", this.formGroup, "header");          
+          this.billingservice.setCompnay(0, "", this.formGroup, "header");
           this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
           this.question[14].readonly = true;
@@ -819,7 +819,7 @@ export class BillComponent implements OnInit, OnDestroy {
           parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt.toFixed(2)
+          parseFloat(this.formGroup.value.billAmt).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
@@ -828,7 +828,7 @@ export class BillComponent implements OnInit, OnDestroy {
           parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.billAmt.toFixed(2)
+          parseFloat(this.formGroup.value.billAmt).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmtEdit) >
@@ -837,7 +837,7 @@ export class BillComponent implements OnInit, OnDestroy {
           parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt.toFixed(2)
+          parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       } else if (
         parseFloat(this.formGroup.value.dipositAmt) <
@@ -846,7 +846,7 @@ export class BillComponent implements OnInit, OnDestroy {
           parseFloat(this.formGroup.value.dipositAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
-          this.formGroup.value.dipositAmt.toFixed(2)
+          parseFloat(this.formGroup.value.dipositAmt).toFixed(2)
         );
       }
       this.formGroup.controls["amtPayByPatient"].setValue(
