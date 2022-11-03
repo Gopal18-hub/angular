@@ -132,6 +132,7 @@ export class MiscellaneousBillingComponent implements OnInit {
 
       mobileNo: {
         type: "tel",
+        title: "Mobile Number",
         pattern: "^[1-9]{1}[0-9]{9}",
       },
       company: {
