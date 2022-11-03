@@ -755,7 +755,8 @@ export class BillComponent implements OnInit, OnDestroy {
       item.discountReason = 0;
     });
     this.calculateBillService.setDiscountSelectedItems([]);
-    this.calculateBillService.discountForm.reset();
+    if (this.calculateBillService.discountForm)
+      this.calculateBillService.discountForm.reset();
     this.calculateBillService.calculateDiscount();
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
@@ -1302,7 +1303,7 @@ export class BillComponent implements OnInit, OnDestroy {
       (parseFloat(this.formGroup.value.planAmt) || 0) -
       (parseFloat(this.formGroup.value.availDisc) || 0);
 
-    return temp.toFixed(2);
+    return temp > 0 ? temp.toFixed(2) : 0;
   }
 
   depositdetails() {
