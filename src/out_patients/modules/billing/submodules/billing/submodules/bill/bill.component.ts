@@ -60,12 +60,14 @@ export class BillComponent implements OnInit, OnDestroy {
         type: "checkbox",
         required: false,
         options: [{ title: "Avail Plan Disc ( - )" }],
+        disabled: false,
       },
       availDisc: {
         type: "currency",
         required: false,
         defaultValue: "0.00",
         readonly: true,
+        disabled: false,
       },
       discAmtCheck: {
         type: "checkbox",
@@ -346,6 +348,9 @@ export class BillComponent implements OnInit, OnDestroy {
         { title: "Credit", value: 3, disabled: true },
         { title: "Gen. OPD", value: 4, disabled: true },
       ];
+    } else {
+      this.billDataForm.properties.availDiscCheck.disabled = true;
+      this.billDataForm.properties.availDisc.disabled = true;
     }
     if (this.calculateBillService.otherPlanSelectedItems.length > 0) {
       this.billDataForm.properties.discAmtCheck.disabled = true;
@@ -804,29 +809,37 @@ export class BillComponent implements OnInit, OnDestroy {
   onModifyDepositAmt() {
     if (this.formGroup.value.dipositAmtEdit > 0) {
       if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt >= this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >=
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt &&
-        this.formGroup.value.dipositAmt > this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) >
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.billAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.dipositAmt.toFixed(2)
         );
       } else if (
-        this.formGroup.value.dipositAmt < this.formGroup.value.billAmt &&
-        this.formGroup.value.dipositAmtEdit > this.formGroup.value.dipositAmt
+        parseFloat(this.formGroup.value.dipositAmt) <
+          parseFloat(this.formGroup.value.billAmt) &&
+        parseFloat(this.formGroup.value.dipositAmtEdit) >
+          parseFloat(this.formGroup.value.dipositAmt)
       ) {
         this.formGroup.controls["dipositAmtEdit"].setValue(
           this.formGroup.value.dipositAmt.toFixed(2)
@@ -848,6 +861,9 @@ export class BillComponent implements OnInit, OnDestroy {
     }
     //CGHS Beneficiary check
     await this.calculateBillService.checkCGHSBeneficiary();
+
+    ////GAV-910 - Domestic Tarrif check
+    await this.calculateBillService.checkDoemsticTarrif();
 
     if (
       !this.billingservice.referralDoctor ||
@@ -1273,9 +1289,9 @@ export class BillComponent implements OnInit, OnDestroy {
     const temp =
       cashAmount +
       creditAmount -
-      (this.formGroup.value.dipositAmtEdit || 0) -
-      (this.formGroup.value.discAmt || 0) -
-      (this.formGroup.value.amtPayByComp || 0) +
+      (parseFloat(this.formGroup.value.dipositAmtEdit) || 0) -
+      (parseFloat(this.formGroup.value.discAmt) || 0) -
+      (parseFloat(this.formGroup.value.amtPayByComp) || 0) +
       (parseFloat(this.formGroup.value.gstTax) || 0) -
       (parseFloat(this.formGroup.value.planAmt) || 0) -
       (parseFloat(this.formGroup.value.availDisc) || 0);
