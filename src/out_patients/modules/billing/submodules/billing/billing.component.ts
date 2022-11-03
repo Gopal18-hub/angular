@@ -1217,11 +1217,11 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         if (result && result.data) {
           let apppatientDetails = result.data.added[0];
-          if (apppatientDetails.iAcode == "") {
+          if (apppatientDetails.maxId.split('.')[1] == "") {
             this.snackbar.open("Invalid Max ID", "error");
           } else {
-            let maxid =
-              apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
+            let maxid = apppatientDetails.maxId;
+              // apppatientDetails.iAcode + "." + apppatientDetails.registrationno;
             this.formGroup.controls["maxid"].setValue(maxid);
             this.apiProcessing = true;
             this.patient = false;
