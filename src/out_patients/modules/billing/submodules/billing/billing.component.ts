@@ -1034,6 +1034,19 @@ export class BillingComponent implements OnInit, OnDestroy {
                             price: slItem.price,
                           }
                         );
+                      } else {
+                        this.billingService.processProcedureAddWithOutApi(
+                          1,
+                          slItem.serviceid,
+                          {
+                            serviceid: slItem.serviceid,
+                            value: slItem.itemid,
+                            originalTitle: slItem.itemName,
+                            docRequired: false,
+                            popuptext: false,
+                            price: slItem.price,
+                          }
+                        );
                       }
                     });
                     this.router.navigate(["bill"], {
