@@ -480,7 +480,9 @@
 
     <!-- Footer Part -->
     <div class="mt-7 bottom">
-        <patient-identity-info [data]="patientIdentityInfo"></patient-identity-info>
+        <patient-identity-info [data]="patientIdentityInfo" (neweventform60ssave)="billingformsixtysuccess($event)" #billpatientIdentityInfo>
+
+        </patient-identity-info>
     </div>
 
     <!-- button -->

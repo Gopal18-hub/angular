@@ -11,7 +11,7 @@ import { QuestionControlService } from "@shared/ui/dynamic-forms/service/questio
 import { Subject } from "rxjs";
 import { BillingService } from "../../billing.service";
 import { MiscService } from "@modules/billing/submodules/miscellaneous-billing/MiscService.service";
-
+import { MessageDialogService } from "@shared/ui/message-dialog/message-dialog.service";
 @Component({
   selector: "out-patients-payment-dialog",
   templateUrl: "./payment-dialog.component.html",
@@ -49,8 +49,8 @@ export class BillPaymentDialogComponent implements OnInit {
 
   private readonly _destroying$ = new Subject<void>();
 
-  @ViewChild(BillingPaymentMethodsComponent)
-  paymentmethod!: BillingPaymentMethodsComponent;
+  @ViewChild(BillingPaymentMethodsComponent) paymentmethod!: BillingPaymentMethodsComponent;
+  @ViewChild("billpatientIdentityInfo") billingpatientidentity:any;
 
   paymentmethods = [
     "cash",
@@ -79,10 +79,13 @@ export class BillPaymentDialogComponent implements OnInit {
   due: any = 0;
   totaldue: any = 0;
   finalamount: number = 0;
+  
+  billpatientIdentityInfo:any = [];
 
   constructor(
     public matDialog: MatDialog,
     private formService: QuestionControlService,
+    private messageDialogService: MessageDialogService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private cookie: CookieService,
     private dialogRef: MatDialogRef<BillPaymentDialogComponent>,
@@ -112,6 +115,15 @@ export class BillPaymentDialogComponent implements OnInit {
           this.billingService.patientDetailsInfo.paNno == undefined
             ? this.miscService.patientDetail.paNno
             : this.billingService.patientDetailsInfo.paNno,
+        screenname: "Billing",
+        iacode:
+          this.billingService.patientDetailsInfo.iacode == undefined
+            ? this.miscService.patientDetail.iacode
+           : this.billingService.patientDetailsInfo.iacode,
+        registrationno: 
+          this.billingService.patientDetailsInfo.registrationno == undefined
+            ? this.miscService.patientDetail.registrationno
+            : this.billingService.patientDetailsInfo.registrationno,
       },
     };
   }
@@ -128,6 +140,19 @@ export class BillPaymentDialogComponent implements OnInit {
   }
 
   async makeBill() {
+   //pan card and form 60
+   this.billpatientIdentityInfo = this.billingpatientidentity.patientidentityform.value;
+   if(Number(this.data.toPaidAmount >= 200000) &&  (this.billpatientIdentityInfo.length == 0 || 
+     this.billpatientIdentityInfo.mainradio == "pancardno" && (this.billpatientIdentityInfo.panno == undefined || this.billpatientIdentityInfo.panno == ""))){
+     this.messageDialogService.info('Please Enter a valid PAN Number');
+     return;
+   }
+
+    else if(this.billpatientIdentityInfo.mainradio == "form60" && this.formsixtysubmit == false){
+     this.messageDialogService.error("Please fill the form60 ");   
+     return;
+    } 
+   
     if (this.data.name == "Misc Billing") {
       this.miscService.makeBill(this.paymentmethod);
       this.dialogRef.close("MakeBill");
@@ -167,5 +192,11 @@ export class BillPaymentDialogComponent implements OnInit {
     )
       return true;
     return false;
+  }
+
+  formsixtysubmit:boolean = false;
+  billingformsixtysuccess(event:any){
+    console.log(event);
+    this.formsixtysubmit = event;
   }
 }

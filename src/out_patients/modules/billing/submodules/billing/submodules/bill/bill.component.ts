@@ -458,12 +458,12 @@ export class BillComponent implements OnInit, OnDestroy {
           }
         });
     }
-    // this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
-    //   console.log(res);
-    //   if (res) {
-    //     this.formGroup.controls["paymentMode"].setValue(1);
-    //   }
-    // });
+    this.billingservice.cerditCompanyBilltypeEvent.subscribe((res: any) => {
+      console.log(res);
+      if (res) {
+        this.formGroup.controls["paymentMode"].setValue(1);
+      }
+    });
   }
 
   rowRwmove($event: any) {
@@ -635,6 +635,8 @@ export class BillComponent implements OnInit, OnDestroy {
         if (value == 3) {
           this.question[14].readonly = false;
           this.question[13].readonly = false;
+          this.billingservice.setCompnay(0, "", this.formGroup, "header");          
+          this.billingservice.setCompnay(0, "", this.formGroup, "credit");
         } else {
           this.question[14].readonly = true;
           this.question[13].readonly = true;
