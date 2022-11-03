@@ -13,6 +13,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { StaffDeptDialogComponent } from "@modules/billing/submodules/miscellaneous-billing/billing/staff-dept-dialog/staff-dept-dialog.component";
+import { isTemplateMiddle } from "typescript";
 
 @Component({
   selector: "out-patients-disount-reason",
@@ -221,6 +222,13 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtForm.controls["percentage"].disable();
       this.discAmtForm.controls["amt"].disable();
     }
+    if ("disabledRowControls" in this.data && this.data.disabledRowControls) {
+      // this.discAmtFormConfig.columnsInfo.head.readonly();
+      // this.discAmtFormConfig.columnsInfo.reason.readonly();
+      this.discAmtForm.controls["authorise"].disable();
+      this.discAmtForm.controls["coupon"].disable();
+      this.discAmtForm.controls["empCode"].disable();
+    }
     if ("formData" in this.data) {
       this.discAmtForm.patchValue(this.data.formData);
     }
@@ -317,6 +325,9 @@ export class DisountReasonComponent implements OnInit {
         item.disc = existReason.discountPer;
         item.discAmt = discAmt;
         item.totalAmt = price - discAmt;
+        item.reasonTitle = existReason.name;
+        item.reason = existReason.id;
+        item.head = existReason.mainhead;
         this.calculateBillService.discountSelectedItems[res.data.index] = item;
       }
     });
@@ -379,9 +390,25 @@ export class DisountReasonComponent implements OnInit {
     this.calculateBillService.calculateDiscount();
     if (this.selectedItems.length === 0) {
       this.disableAdd = false;
+      this.discAmtForm.controls["authorise"].setValue(0);
+      this.discAmtForm.controls["empCode"].setValue("");
+      this.discAmtForm.controls["coupon"].setValue("");
       this.dualList = [];
+      const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
       this.question[0].options = this.discounttypes.map((a: any) => {
-        return { title: a.title, value: a.value, disabled: false };
+        if ([4, 5].includes(tempDual[a.value])) {
+          return {
+            title: a.title,
+            value: a.value,
+            disabled: true,
+          };
+        } else {
+          return {
+            title: a.title,
+            value: a.value,
+            disabled: false,
+          };
+        }
       });
       if (!this.discAmtForm.value.types) {
         this.discAmtForm.controls["types"].setValue("On-Bill");
@@ -652,9 +679,23 @@ export class DisountReasonComponent implements OnInit {
       this.discAmtForm.controls["types"].setValue("On-Bill");
     }
     this.discAmtForm.controls["authorise"].setValue(0);
-
+    this.discAmtForm.controls["empCode"].setValue("");
+    this.discAmtForm.controls["coupon"].setValue("");
+    const tempDual: any = { "On-Patient": 4, "On-Company": 5 };
     this.question[0].options = this.discounttypes.map((a: any) => {
-      return { title: a.title, value: a.value, disabled: false };
+      if ([4, 5].includes(tempDual[a.value])) {
+        return {
+          title: a.title,
+          value: a.value,
+          disabled: true,
+        };
+      } else {
+        return {
+          title: a.title,
+          value: a.value,
+          disabled: false,
+        };
+      }
     });
     this.calculateBillService.calculateDiscount();
   }
