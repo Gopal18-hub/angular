@@ -336,6 +336,9 @@ export class DisountReasonComponent implements OnInit {
         const existReason: any = this.discReasonList.find(
           (rl: any) => rl.id == val
         );
+        if (existReason.valuebasedDisc == 1) {
+          this.question[4].readonly = false;
+        }
         this.discAmtForm.controls["percentage"].setValue(
           existReason.discountPer
         );
@@ -450,11 +453,20 @@ export class DisountReasonComponent implements OnInit {
     });
   }
 
+  discretionaryCheck(reason: any, price: number) {
+    if (this.discAmtForm.value.amt > 0) {
+      reason.discountPer =
+        (parseFloat(this.discAmtForm.value.amt) / price) * 100;
+    }
+    return reason;
+  }
+
   OnCampaignPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = this.billingService.totalCostWithOutGst;
+    existReason = this.discretionaryCheck(existReason, price);
     const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
@@ -482,12 +494,13 @@ export class DisountReasonComponent implements OnInit {
     });
   }
   OnPatientPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = parseFloat(
       this.calculateBillService.billFormGroup.form.value.amtPayByPatient
     );
+    existReason = this.discretionaryCheck(existReason, price);
     const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
@@ -525,12 +538,13 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnCompanyPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = parseFloat(
       this.calculateBillService.billFormGroup.form.value.amtPayByComp
     );
+    existReason = this.discretionaryCheck(existReason, price);
     const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
@@ -568,7 +582,7 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnItemPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const selecetdServices: any = Object.values(this.serviceBasedList);
@@ -577,6 +591,7 @@ export class DisountReasonComponent implements OnInit {
       for (let j = 0; j < selecetdServices[i].items.length; j++) {
         let item = selecetdServices[i].items[j];
         let price = item.price * item.qty;
+        existReason = this.discretionaryCheck(existReason, price);
         const discAmt = (price * existReason.discountPer) / 100;
         let temp = {
           sno: this.selectedItems.length + 1,
@@ -614,7 +629,7 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnServiceItemPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const selecetdServices: any = Object.values(this.serviceBasedList);
@@ -623,6 +638,7 @@ export class DisountReasonComponent implements OnInit {
       selecetdServices[i].items.forEach((item: any) => {
         price += item.price * item.qty;
       });
+      existReason = this.discretionaryCheck(existReason, price);
       const discAmt = (price * existReason.discountPer) / 100;
       let temp = {
         sno: this.selectedItems.length + 1,
@@ -675,10 +691,11 @@ export class DisountReasonComponent implements OnInit {
   }
 
   OnBillItemPrepare() {
-    const existReason: any = this.discReasonList.find(
+    let existReason: any = this.discReasonList.find(
       (rl: any) => rl.id == this.discAmtForm.value.reason
     );
     const price = this.billingService.totalCostWithOutGst;
+    existReason = this.discretionaryCheck(existReason, price);
     const discAmt = (price * existReason.discountPer) / 100;
     let temp = {
       sno: this.selectedItems.length + 1,
