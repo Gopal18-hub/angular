@@ -532,11 +532,12 @@ export class MiscellaneousBillingComponent implements OnInit {
         )
       )
       .toPromise();
-    if (res.length > 0) {
-      if (res[0].flagexpired == 1) {
-        return true;
+    if (res)
+      if (res.length > 0) {
+        if (res[0].flagexpired == 1) {
+          return true;
+        }
       }
-    }
     return false;
   }
 
