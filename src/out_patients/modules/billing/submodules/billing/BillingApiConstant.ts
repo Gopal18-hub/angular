@@ -242,8 +242,6 @@ export namespace BillingApiConstants {
       fromdate +
       "&toDate=" +
       todate +
-      "&SearchFrom=" +
-      1 +
       "&BookingNo=" +
       bookingNo
     );
