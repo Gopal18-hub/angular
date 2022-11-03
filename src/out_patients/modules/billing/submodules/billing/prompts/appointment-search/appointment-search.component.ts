@@ -291,7 +291,7 @@ export class AppointmentSearchComponent implements OnInit {
       },
       mobileno: {
         title: "Mobiel No.",
-        type: "string",
+        type: "tel",
         style: {
           width: "120px",
         },
