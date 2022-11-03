@@ -1264,41 +1264,8 @@ export class BillComponent implements OnInit, OnDestroy {
 
         if ("type" in result) {
           if (result.type == "yes") {
-            this.http
-              .get(
-                ApiConstants.getform60(
-                  this.hspLocationid,
-                  this.billNo,
-                  this.billingservice.activeMaxId.iacode,
-                  this.billingservice.activeMaxId.regNumber
-                )
-              )
-              .pipe(takeUntil(this._destroying$))
-              .subscribe((resultdata: any) => {
-                console.log(resultdata);
-                this.form60 = resultdata;
-                console.log(this.form60);
-                if (this.form60 == 1) {
-                  const dialogref = this.matDialog.open(
-                    Form60YesOrNoComponent,
-                    {
-                      width: "30vw",
-                      height: "35vh",
-                    }
-                  );
-                  dialogref.afterClosed().subscribe((res) => {
-                    if (res == "yes") {
-                      this.makePrint();
-                      this.formreport();
-                    } else if (res == "no") {
-                      this.makePrint();
-                    }
-                  });
-                } else {
-                  this.makePrint();
-                }
-              });
-            //this.makePrint();
+            this.makePrint();
+          } else {
           }
         }
       });
@@ -1312,23 +1279,6 @@ export class BillComponent implements OnInit, OnDestroy {
 
         locationID: this.cookie.get("HSPLocationId"),
       }
-    );
-  }
-  formreport() {
-    let regno = this.billingservice.activeMaxId.regNumber;
-    let iacode = this.billingservice.activeMaxId.iacode;
-    let billno = this.billNo;
-    this.reportService.openWindow(
-      "FormSixty",
-      "FormSixty",
-      {
-        LocationId: Number(this.cookie.get("HSPLocationId")),
-        Iacode: iacode,
-        RegistrationNo: regno,
-        BillNo: billno,
-      },
-      "right",
-      "center"
     );
   }
 
