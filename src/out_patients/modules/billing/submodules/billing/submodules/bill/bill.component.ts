@@ -754,6 +754,7 @@ export class BillComponent implements OnInit, OnDestroy {
       item.discountReason = 0;
     });
     this.calculateBillService.setDiscountSelectedItems([]);
+
     this.calculateBillService.calculateDiscount();
     this.formGroup.controls["discAmt"].setValue(
       this.calculateBillService.totalDiscountAmt.toFixed(2)
