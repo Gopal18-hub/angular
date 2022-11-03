@@ -144,16 +144,18 @@ export class ShowPlanDetilsComponent implements OnInit {
         this.isConsultationExist = false;
         this.tableRows.selection.selected.forEach((sItem: any) => {
           if (sItem.serviceid == 25) {
-            this.getDoctorsListInfo();
+            this.getDoctorsListInfo(sItem.itemid);
           }
         });
       });
     }
   }
 
-  async getDoctorsListInfo() {
+  async getDoctorsListInfo(specialisationId: number) {
     if (this.doctorList.length == 0) {
-      this.doctorList = await this.specializationService.getDoctorsListInfo();
+      this.doctorList = await this.specializationService.getDoctorsListInfo(
+        specialisationId
+      );
       console.log(this.doctorList);
       this.isConsultationExist = true;
       this.filteredOptions = this.selectedDoctor.valueChanges.pipe(

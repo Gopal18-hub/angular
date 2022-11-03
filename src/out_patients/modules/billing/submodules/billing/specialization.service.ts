@@ -46,22 +46,24 @@ export class SpecializationService {
     }
   }
 
-  async getDoctorsListInfo() {
+  async getDoctorsListInfo(specializationId: number) {
     if (this.allDoctorsList.length == 0) {
       const res = await this.http
         .get(
-          BillingApiConstants.getalldoctorname(
+          BillingApiConstants.getdoctorlistonSpecializationClinic(
+            false,
+            specializationId,
             Number(this.cookie.get("HSPLocationId"))
           )
         )
         .toPromise();
       this.allDoctorsList = res.map((r: any) => {
         return {
-          title: r.doctorname + " (" + r.specialityname + ")",
-          value: r.doctorid,
-          originalTitle: r.doctorname,
+          title: r.doctorName,
+          value: r.doctorId,
+          originalTitle: r.doctorName,
           specialisationid: r.specialisationid,
-          clinicId: 0,
+          clinicId: r.clinicID,
         };
       });
       return this.allDoctorsList;
