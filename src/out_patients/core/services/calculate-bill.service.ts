@@ -1250,7 +1250,7 @@ export class CalculateBillService {
           (c: any) => c.id === this.billingServiceRef.company
         );
         if (tpacompanyExist && tpacompanyExist.length > 0) {
-          if (tpacompanyExist.isTPA != 5) {
+          if (tpacompanyExist[0].isTPA != 5) {
             const tarrifRef = this.messageDialogService.confirm(
               "",
               "Are you sure of domestic tariff?"

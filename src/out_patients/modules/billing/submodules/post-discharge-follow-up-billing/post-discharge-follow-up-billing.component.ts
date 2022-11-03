@@ -55,7 +55,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "number",
+        type: "tel",
+        title: "Mobile Number",
+        pattern: "^[1-9]{1}[0-9]{9}",
       },
       bookingId: {
         type: "string",
@@ -121,7 +123,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.navigate([
-      "/out-patient-billing/post-discharge-follow-up-billing/"
+      "/out-patient-billing/post-discharge-follow-up-billing/",
     ]);
     this.getAllCompany();
     this.getAllCorporate();
@@ -146,15 +148,12 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     //   }
     // });
     this.service.billedtrigger.subscribe((res) => {
-      if(res)
-      {
+      if (res) {
         this.links[0].disabled = true;
-      }
-      else
-      {
+      } else {
         this.links[0].disabled = false;
       }
-    })
+    });
   }
   iomMessage: any;
   ngAfterViewInit(): void {
@@ -531,7 +530,9 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
     this.country = "";
     this.dob = "";
     this.categoryIcons = [];
-    this.router.navigate(['/out-patient-billing/post-discharge-follow-up-billing']);
+    this.router.navigate([
+      "/out-patient-billing/post-discharge-follow-up-billing",
+    ]);
     // this.router.navigate(["services"], {
     //   queryParams: {},
     //   relativeTo: this.route,
@@ -556,7 +557,7 @@ export class PostDischargeFollowUpBillingComponent implements OnInit {
         this.questions[3].options = data.map((a: any) => {
           return { title: a.name, value: a.id };
         });
-        this.questions[3] = {...this.questions[3]};
+        this.questions[3] = { ...this.questions[3] };
       });
   }
 

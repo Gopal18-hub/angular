@@ -35,7 +35,7 @@
         color="primary"
         class="w-5/2 mt-2"
         type="button"
-        [disabled]="button.type=='clear'?!formGroup.dirty: !formGroup.valid"
+        [disabled]="!formGroup.valid"
         (click)="buttonAction(button)"
       >
         {{ button.label }}

@@ -66,7 +66,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         defaultValue: this.cookie.get("LocationIACode") + ".",
       },
       mobile: {
-        type: "string",
+        type: "tel",
       },
       bookingId: {
         type: "string",
@@ -250,6 +250,7 @@ export class BillingComponent implements OnInit, OnDestroy {
       )
       .pipe(takeUntil(this._destroying$))
       .subscribe((res) => {
+        let referalDoctor: any = null;
         if (res.tempOrderBreakup.length > 0) {
           res.tempOrderBreakup.forEach((item: any) => {
             if (item.serviceType == "Investigation") {
@@ -262,8 +263,24 @@ export class BillingComponent implements OnInit, OnDestroy {
                 item_Instructions: "",
                 serviceid: item.serviceId,
                 doctorid: item.doctorid,
+                specialization: item.specialization,
+                specializationId: item.specializationId,
               });
+              if (item.doctorid)
+                referalDoctor = {
+                  id: item.refDocID,
+                  name: item.refDocName,
+                  specialisation: "",
+                };
             }
+          });
+
+          if (referalDoctor) {
+            this.billingService.setReferralDoctor(referalDoctor);
+          }
+          this.apiProcessing = false;
+          this.billingService.servicesTabStatus.next({
+            goToTab: 1,
           });
         }
       });
@@ -286,12 +303,21 @@ export class BillingComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         if (res && res.value) {
           console.log(res);
-          this.billingService.setCompnay(
-            res.value,
-            res,
-            this.formGroup,
-            "header"
-          );
+          if (this.billingService.billtype == 3 && res.company.id > 0) {
+            this.billingService.checkcreditcompany(
+              res.value,
+              res,
+              this.formGroup,
+              "header"
+            );
+          } else {
+            this.billingService.setCompnay(
+              res.value,
+              res,
+              this.formGroup,
+              "header"
+            );
+          }
         } else {
           this.billingService.setCompnay(res, res, this.formGroup, "header");
         }
@@ -351,7 +377,11 @@ export class BillingComponent implements OnInit, OnDestroy {
   }
 
   searchByMobileNumber() {
-    if (!this.formGroup.value.mobile) {
+    if (
+      !this.formGroup.value.mobile ||
+      this.formGroup.value.mobile.length != 10
+    ) {
+      this.snackbar.open("Invalid Mobile No.", "error");
       this.apiProcessing = false;
       this.patient = false;
       return;
@@ -380,7 +410,7 @@ export class BillingComponent implements OnInit, OnDestroy {
               SimilarPatientDialog,
               {
                 width: "60vw",
-                height: "63vh",
+                height: "80vh",
                 data: {
                   searchResults: res,
                 },
@@ -1351,6 +1381,7 @@ export class BillingComponent implements OnInit, OnDestroy {
         this.creditcorporateList = resultData.ohsplocation;
 
         this.billingService.setCorporateData(resultData.oCompanyName);
+        this.billingService.setcreditcorporateData(resultData.ohsplocation);
         resultData.oCompanyName.unshift({ name: "Select", id: -1 });
         this.questions[4].options = this.coorporateList.map((l: any) => {
           return { title: l.name, value: l.id };
