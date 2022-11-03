@@ -61,8 +61,16 @@ export class SingleComponent implements OnInit, OnChanges {
 
   buttonAction(button: any) {
     if (button.type == "clear") {
-      this.formGroup.reset();
-      this.init();
+      let defaultValues: any = {};
+      Object.keys(this.reportConfig.filterForm.properties).forEach(
+        (controlKey: any) => {
+          if (this.reportConfig.filterForm.properties[controlKey].defaultValue)
+            defaultValues[controlKey] =
+              this.reportConfig.filterForm.properties[controlKey].defaultValue;
+        }
+      );
+      this.formGroup.reset(defaultValues);
+      //this.init();
     } else if (button.type == "export") {
       let url = "";
       let tempValues: any = {};
