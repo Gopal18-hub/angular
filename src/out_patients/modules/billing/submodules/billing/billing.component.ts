@@ -937,6 +937,8 @@ export class BillingComponent implements OnInit, OnDestroy {
               if (result && result.selected && result.selected.length > 0) {
                 const selectedPlan = result.selected[0];
                 this.billingService.setOtherPlan(selectedPlan);
+                this.formGroup.controls["company"].disable();
+                this.formGroup.controls["corporate"].disable();
                 const planSelectDialog = this.messageDialogService.info(
                   "You have selected " + selectedPlan.planName
                 );
@@ -973,6 +975,7 @@ export class BillingComponent implements OnInit, OnDestroy {
                   ) {
                     this.calculateBillService.otherPlanSelectedItems =
                       selectedServices.selected;
+                    this.links[0].disabled = true;
                     this.links[2].disabled = true;
                     selectedServices.selected.forEach((slItem: any) => {
                       if (slItem.serviceid == 25) {
@@ -1004,6 +1007,11 @@ export class BillingComponent implements OnInit, OnDestroy {
                           }
                         );
                       }
+                    });
+                    this.router.navigate(["bill"], {
+                      queryParams: { maxId: this.formGroup.value.maxid },
+                      relativeTo: this.route,
+                      queryParamsHandling: "merge",
                     });
                   }
                 }
