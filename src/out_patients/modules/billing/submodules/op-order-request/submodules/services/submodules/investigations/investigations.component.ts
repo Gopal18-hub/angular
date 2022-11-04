@@ -275,7 +275,7 @@ export class OderInvestigationsComponent implements OnInit {
               console.log(this.invReferenceList);
               this.questions[1].options = this.invReferenceList.map(
                 (a: any) => {
-                  return { title: a.name, value: a.id };
+                  return { title: a.name, value: a.id, serviceid: a.serviceid };
                 }
               );
               this.questions[1] = { ...this.questions[1] };
