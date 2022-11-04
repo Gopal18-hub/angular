@@ -26,12 +26,12 @@ export class MessageInfoComponent implements OnInit {
 }
 
 @Component({
-  selector: "maxhealth-warning-message",
+  selector: "maxhealth-error-message",
   templateUrl: "./error.html",
 })
-export class MessageWarningComponent implements OnInit {
+export class MessageErrorComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<MessageWarningComponent>,
+    public dialogRef: MatDialogRef<MessageErrorComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnInit(): void {}
@@ -53,4 +53,16 @@ export class MessageConfirmComponent implements OnInit {
   no() {
     this.dialogRef.close({ type: "no" });
   }
+}
+
+@Component({
+  selector: "maxhealth-warning-message",
+  templateUrl: "./warning.html",
+})
+export class MessageWarningComponent implements OnInit {
+  constructor(
+    public dialogRef: MatDialogRef<MessageWarningComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+  ngOnInit(): void {}
 }
